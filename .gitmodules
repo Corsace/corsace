@@ -1,0 +1,6 @@
+[submodule "MCA"]
+	path = MCA
+	url = https://github.com/VINXIS/MCA.git
+[submodule "AYIM"]
+	path = AYIM
+	url = https://github.com/VINXIS/AYIM.git
