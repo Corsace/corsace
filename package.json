@@ -2,18 +2,20 @@
    "name": "corsace",
    "version": "1.0.0",
    "description": "Everything Corsace",
-   "main": "core.ts",
+   "main": "index.ts",
    "dependencies": {
       "axios": "^0.19.0",
       "discord.js": "^11.5.1",
       "koa": "^2.11.0",
-      "sequelize": "^5.21.2",
-      "typeorm": "0.2.21",
+      "koa-router": "^7.4.0",
+      "mysql": "^2.14.1",
+      "nuxt": "^2.10.2",
       "reflect-metadata": "^0.1.10",
-      "mysql": "^2.14.1"
+      "sequelize": "^5.21.2",
+      "typeorm": "0.2.21"
    },
    "devDependencies": {
-      "@nuxt/typescript-build": "^0.3.4",
+      "@nuxt/typescript": "^2.8.1",
       "@types/bluebird": "^3.5.29",
       "@types/koa": "^2.0.52",
       "@types/koa-bodyparser": "^4.3.0",
@@ -22,12 +24,13 @@
       "@types/validator": "^10.11.3",
       "concurrently": "^5.0.0",
       "nodemon": "^1.19.4",
-      "typescript": "3.3.3333",
-      "ts-node": "3.3.0"
+      "ts-node": "3.3.0",
+      "typescript": "^3.3.3333"
    },
    "scripts": {
       "test": "",
-      "start": "ts-node index.ts"
+      "dev": "ts-node ./api/index.ts",
+      "nuxt": "nuxt"
    },
    "repository": {
       "type": "git",
