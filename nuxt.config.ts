@@ -1,4 +1,4 @@
 export default {
-    serverMiddleware: ['~/api'],
-    buildModules: ['@nuxt/typescript-build'],
+  serverMiddleware: ['~/MCA/api'],
+  buildModules: ['@nuxt/typescript-build'],
 }
