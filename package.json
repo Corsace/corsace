@@ -24,15 +24,16 @@
       "@types/koa-router": "^7.0.42",
       "@types/node": "^8.0.29",
       "@types/validator": "^10.11.3",
-      "concurrently": "^5.0.0",
+      "concurrently": "^5.0.2",
       "nodemon": "^1.19.4",
       "ts-node": "3.3.0",
       "typescript": "^3.3.3333"
    },
    "scripts": {
       "test": "",
-      "mca-dev": "ts-node ./MCA/api/index.ts",
-      "nuxt": "nuxt-ts"
+      "mca-dev": "cd ./MCA && nodemon --watch api --exec nuxt-ts",
+      "ayim-dev": "cd ./AYIM && nodemon --watch api --exec nuxt-ts",
+      "dev": "concurrently \"npm run mca-dev\" \"npm run ayim-dev\""
    },
    "repository": {
       "type": "git",
