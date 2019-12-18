@@ -10,4 +10,6 @@ Install node-modules:
 npm i
 ```
 
-Duplicate `ormconfig.example.json` and rename it to `ormconfig.json`. Edit all parts as necessary.
+Duplicate `config.example.ts` and rename it to `config.ts`. Edit all parts as necessary.
+
+Run `npm run dev`
