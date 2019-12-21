@@ -4,14 +4,14 @@ import Crypto from 'crypto';
 
 const osuRouter = new Router();
 
-osuRouter.get("/osu", async (ctx) => {
+osuRouter.get("/", async (ctx) => {
     ctx.body = {
         status: 'success',
         message: 'hello'
     }
     console.log("Good job.")
 })
-osuRouter.get("/osu/callback", async (ctx) => {
+osuRouter.get("/callback", async (ctx) => {
     ctx.body = {
         status: 'success',
         message: 'hello'

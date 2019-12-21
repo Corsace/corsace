@@ -15,20 +15,12 @@ export class App {
     private config: Config;
 
     constructor(URL: string) {
+        // Initialize vars
         this.koa = new Koa();
         this.koaRouter = new Router()
         this.config = new Config()
-        this.koaRouter.get("/test", (ctx) => {
-            ctx.body = {
-                status: 'success',
-                message: 'hello'
-            }
-            console.log("Good job.")
-        });
-        this.koaRouter.use("/discord", discordRouter.middleware);
-        this.koaRouter.use("/osu", osuRouter.middleware);
-
         
+        // Connect to DB
         createConnection({
             "type": "mariadb",
             "host": "localhost",
@@ -45,6 +37,7 @@ export class App {
             console.log("Connected to the " + connection.options.database + " database!");
         }).catch(error => console.log("An error has occurred in connecting.", error));
         
+        // Setup passport
         passport.use(new DiscordStrategy({
             clientID: this.config.discord.clientID,
             clientSecret: this.config.discord.clientSecret,
@@ -83,8 +76,20 @@ export class App {
                 done(error, null);
             }        
         });
-        this.koa.use(passport.initialize());
-        this.koa.use(passport.session());
+        
+        // Configure api router
+        this.koaRouter.use(passport.initialize());
+        this.koaRouter.use(passport.session());
+        this.koaRouter.get("/test", (ctx) => {
+            ctx.body = {
+                status: 'success',
+                message: 'hello'
+            }
+            console.log("Good job.")
+        });
+        this.koaRouter.use("/discord", discordRouter.routes());
+        this.koaRouter.use("/osu", osuRouter.routes());
+
         this.koa.use(this.koaRouter.routes());
     }
 }
