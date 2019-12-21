@@ -10,16 +10,11 @@ import discordRouter from "./login/discord"
 import osuRouter from "./login/osu";
 
 export class App {
-    public koa:  Koa;
-    public koaRouter: Router;
-    private config: Config;
+    public koa = new Koa();
+    public koaRouter = new Router();
+    private config = new Config();
 
     constructor(URL: string) {
-        // Initialize vars
-        this.koa = new Koa();
-        this.koaRouter = new Router()
-        this.config = new Config()
-        
         // Connect to DB
         createConnection({
             "type": "mariadb",
@@ -89,6 +84,7 @@ export class App {
         });
         this.koaRouter.use("/discord", discordRouter.routes());
         this.koaRouter.use("/osu", osuRouter.routes());
+        this.koaRouter.use("*", () => { throw new Error("404: NOT FOUND")});
 
         this.koa.use(this.koaRouter.routes());
     }
