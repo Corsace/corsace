@@ -69,13 +69,13 @@ export class App {
                 done(null, user);
             } catch(error) {
                 console.log("Error while authenticating user via Discord", error);
-                done(error);
+                done(error, null);
             }
         }));
-        passport.serializeUser(function(user, done) {
-            done(null, user && user.id ? user.id : null);
+        passport.serializeUser((user: User, done) => {
+            done(null, user.id);
         });
-        passport.deserializeUser(async function(id, done) {
+        passport.deserializeUser(async (id, done) => {
             try {
                 let user = null;
                 if(id)

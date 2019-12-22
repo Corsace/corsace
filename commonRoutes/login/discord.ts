@@ -5,8 +5,16 @@ const discordRouter = new Router();
 
 discordRouter.get("/", passport.authenticate("discord", { scope: ["identify", "guilds.join"]}))
 discordRouter.get("/callback", async (ctx) => {
-    return passport.authenticate("discord", { scope: ["identify", "guilds.join"], failureRedirect: "/" }, () => {
-        ctx.redirect('/');
+    // @ts-ignore
+    return passport.authenticate("discord", { scope: ["identify", "guilds.join"], failureRedirect: "/" }, (err, user, info, status) => {
+        if (user) {
+            // @ts-ignore
+            ctx.login(user);
+            ctx.redirect('/');
+        } else {
+            ctx.status = 400;
+            ctx.body = { status: 'error' };
+        }
     })(ctx)
 })
 
