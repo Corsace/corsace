@@ -1,20 +1,31 @@
 import "reflect-metadata";
+import * as Discord from "discord.js";
 import {createConnection} from "typeorm";
 import Koa from 'koa';
+import BodyParser from 'koa-bodyparser';
+import Mount from 'koa-mount';
+import passport from "koa-passport";
 import Router from 'koa-router';
+import Session from 'koa-session';
 import { Config } from "../config"
-import * as passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
-import { User } from '../CorsaceModels/user';
+import { User, OAuth } from '../CorsaceModels/user';
 import discordRouter from "./login/discord"
 import osuRouter from "./login/osu";
 
 export class App {
+    public discordClient = new Discord.Client();
+    public discordGuild: Discord.Guild;
+
     public koa = new Koa();
     public koaRouter = new Router();
     private config = new Config();
 
-    constructor(URL: string) {
+    constructor(URL: string, keys: Array<string>) {
+        // Connect to Discord
+        this.discordClient.login(this.config.discord.token)
+        this.discordGuild = this.discordClient.guilds.get(this.config.discord.guild);
+        
         // Connect to DB
         createConnection({
             "type": "mariadb",
@@ -26,7 +37,7 @@ export class App {
             "synchronize": true,
             "logging": false,
             "entities": [
-               "../../CorsaceModels/**/*.ts"
+               "../CorsaceModels/**/*.ts"
             ],
         }).then(async (connection) => {
             console.log("Connected to the " + connection.options.database + " database!");
@@ -40,16 +51,20 @@ export class App {
         }, async (accessToken, refreshToken, profile, done) => {
             try {
                 let user = await User.findOne({ where: { "discord.userId": profile.id }});
-                if(user)
-                    user.lastLogin = user.discord.lastVerified = new Date();
-                else
+                if (!user)
                 {
                     user = new User();
+                    user.discord = new OAuth();
+                    user.discord.dateAdded = new Date();
                 }
         
+                user.discord.userID = profile.id
+                user.discord.username = profile.username
                 user.discord.accessToken = accessToken;
                 user.discord.refreshToken = refreshToken;
-        
+                user.discord.avatar = profile.avatar;
+                user.lastLogin = user.discord.lastVerified = new Date();
+
                 await user.save();
                 done(null, user);
             } catch(error) {
@@ -73,8 +88,6 @@ export class App {
         });
         
         // Configure api router
-        this.koaRouter.use(passport.initialize());
-        this.koaRouter.use(passport.session());
         this.koaRouter.get("/test", (ctx) => {
             ctx.body = {
                 status: 'success',
@@ -82,10 +95,13 @@ export class App {
             }
             console.log("Good job.")
         });
-        this.koaRouter.use("/discord", discordRouter.routes());
-        this.koaRouter.use("/osu", osuRouter.routes());
-        this.koaRouter.use("*", () => { throw new Error("404: NOT FOUND")});
-
+        this.koa.keys = keys
+        this.koa.use(Session(this.koa))
+        this.koa.use(BodyParser());
+        this.koa.use(passport.initialize());
+        this.koa.use(passport.session());
+        this.koa.use(Mount("/discord", discordRouter.routes()));
+        this.koa.use(Mount("/osu", osuRouter.routes()));
         this.koa.use(this.koaRouter.routes());
     }
 }

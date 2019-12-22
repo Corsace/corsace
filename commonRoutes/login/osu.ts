@@ -9,14 +9,14 @@ osuRouter.get("/", async (ctx) => {
         status: 'success',
         message: 'hello'
     }
-    console.log("Good job.")
+    console.log("Good job OSU.")
 })
 osuRouter.get("/callback", async (ctx) => {
     ctx.body = {
         status: 'success',
         message: 'hello'
     }
-    console.log("Good job.")
+    console.log("Good job OSU callback.")
 })
 
 export default osuRouter;

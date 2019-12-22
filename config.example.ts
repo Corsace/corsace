@@ -53,7 +53,6 @@ export class Config {
 
     osu : {
         id: number,
-        redirect: string,
         secret: string,
         v1: string,
     };
@@ -62,30 +61,35 @@ export class Config {
         host: string,
         port: number,
         publicURL: string,
+        keys: Array<string>,
     }
 
     corsace : {
         host: string,
         port: number,
         publicURL: string,
+        keys: Array<string>,
     }
 
     invitational : {
         host: string,
         port: number,
         publicURL: string,
+        keys: Array<string>,
     }
 
     mca : {
         host: string,
         port: number,
         publicURL: string,
+        keys: Array<string>,
     }
 
     open : {
         host: string,
         port: number,
         publicURL: string,
+        keys: Array<string>,
     }
 
     constructor() {
@@ -96,7 +100,6 @@ export class Config {
         },
         this.osu = {
             id: 0,
-            redirect: '',
             secret: '',
             v1: '',
         },
@@ -149,26 +152,31 @@ export class Config {
             host: '',
             port: 0,
             publicURL: '',
+            keys: [''],
         }
         this.corsace = {
             host: '',
             port: 0,
             publicURL: '',
+            keys: [''],
         }
         this.invitational = {
             host: '',
             port: 0,
             publicURL: '',
+            keys: [''],
         }
         this.mca = {
             host: '',
             port: 0,
             publicURL: '',
+            keys: [''],
         }
         this.open = {
             host: '',
             port: 0,
             publicURL: '',
+            keys: [''],
         }
     }
 }

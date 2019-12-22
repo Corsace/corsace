@@ -1,13 +1,13 @@
 import Router from 'koa-router';
-import * as passport from "passport";
+import passport from "koa-passport";
 
 const discordRouter = new Router();
 
-discordRouter.get("/", async (ctx) => {
-    passport.authenticate("discord", { scope: ["identify", "guilds.join"]})
-})
+discordRouter.get("/", passport.authenticate("discord", { scope: ["identify", "guilds.join"]}))
 discordRouter.get("/callback", async (ctx) => {
-    passport.authenticate("discord", { failureRedirect: "/" }), (req, res) => res.redirect("/")
+    return passport.authenticate("discord", { scope: ["identify", "guilds.join"], failureRedirect: "/" }, () => {
+        ctx.redirect('/');
+    })(ctx)
 })
 
 export default discordRouter;
