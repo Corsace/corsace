@@ -10,7 +10,7 @@ import { Config } from "../config"
 import { Strategy as DiscordStrategy } from "passport-discord";
 import { User, OAuth } from '../CorsaceModels/user';
 import discordRouter from "./login/discord"
-import osuRouter from "./login/osu";
+import { osuRouter } from "./login/osu";
 
 export class App {
     public discordClient = new Discord.Client();
@@ -23,6 +23,9 @@ export class App {
         // Connect to Discord
         this.discordClient.login(this.config.discord.token)
         this.discordGuild = this.discordClient.guilds.get(this.config.discord.guild);
+
+        // Create osu! router
+        const osu = new osuRouter(URL);
         
         // Connect to DB
         createConnection({
@@ -91,6 +94,6 @@ export class App {
         this.koa.use(passport.initialize());
         this.koa.use(passport.session());
         this.koa.use(Mount("/discord", discordRouter.routes()));
-        this.koa.use(Mount("/osu", osuRouter.routes()));
+        this.koa.use(Mount("/osu", osu.router.routes()));
     }
 }

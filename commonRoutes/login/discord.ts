@@ -13,7 +13,7 @@ discordRouter.get("/callback", async (ctx) => {
             ctx.redirect('/');
         } else {
             ctx.status = 400;
-            ctx.body = { status: 'error' };
+            ctx.body = { error: err };
         }
     })(ctx)
 })
