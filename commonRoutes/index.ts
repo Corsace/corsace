@@ -10,7 +10,7 @@ import { Config } from "../config"
 import { Strategy as DiscordStrategy } from "passport-discord";
 import { User, OAuth } from '../CorsaceModels/user';
 import discordRouter from "./login/discord"
-import { osuRouter } from "./login/osu";
+import osuRouter from "./login/osu";
 
 export class App {
     public discordClient = new Discord.Client();
@@ -78,13 +78,18 @@ export class App {
         });
         passport.deserializeUser(async (id, done) => {
             try {
-                let user = null;
+                let user: User;
                 if(id)
                     user = await User.findOne(id);
+                
+                if (typeof user === "undefined") {
+                    user = null
+                }
+
                 done(null, user);
-            } catch(error) {
-                console.log("Error while deserializing user", error);
-                done(error, null);
+            } catch(err) {
+                console.log("Error while deserializing user", err);
+                done(err, null);
             }        
         });
 
