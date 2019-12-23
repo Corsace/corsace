@@ -5,7 +5,6 @@ import Koa from 'koa';
 import BodyParser from 'koa-bodyparser';
 import Mount from 'koa-mount';
 import passport from "koa-passport";
-import Router from 'koa-router';
 import Session from 'koa-session';
 import { Config } from "../config"
 import { Strategy as DiscordStrategy } from "passport-discord";
@@ -18,7 +17,6 @@ export class App {
     public discordGuild: Discord.Guild;
 
     public koa = new Koa();
-    public koaRouter = new Router();
     private config = new Config();
 
     constructor(URL: string, keys: Array<string>) {
@@ -86,15 +84,7 @@ export class App {
                 done(error, null);
             }        
         });
-        
-        // Configure api router
-        this.koaRouter.get("/test", (ctx) => {
-            ctx.body = {
-                status: 'success',
-                message: 'hello'
-            }
-            console.log("Good job.")
-        });
+
         this.koa.keys = keys
         this.koa.use(Session(this.koa))
         this.koa.use(BodyParser());
@@ -102,6 +92,5 @@ export class App {
         this.koa.use(passport.session());
         this.koa.use(Mount("/discord", discordRouter.routes()));
         this.koa.use(Mount("/osu", osuRouter.routes()));
-        this.koa.use(this.koaRouter.routes());
     }
 }
