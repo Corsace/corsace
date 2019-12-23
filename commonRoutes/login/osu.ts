@@ -6,7 +6,7 @@ import { User } from '../../CorsaceModels/user';
 
 const config = new Config();
 
-export class osuRouter {
+class osuRouter {
     public router = new Router();
 
     constructor(redirect: string) {
@@ -72,3 +72,5 @@ export class osuRouter {
         })
     }
 }
+
+export default osuRouter
