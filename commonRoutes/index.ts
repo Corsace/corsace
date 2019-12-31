@@ -48,7 +48,7 @@ export class App {
         passport.use(new DiscordStrategy({
             clientID: this.config.discord.clientID,
             clientSecret: this.config.discord.clientSecret,
-            callbackURL: URL + "/api/discord/callback",
+            callbackURL: URL + "/api/login/discord/callback",
         }, async (accessToken, refreshToken, profile, done) => {
             try {
                 let user = await User.findOne({ where: { "discord.userId": profile.id }});
@@ -98,7 +98,7 @@ export class App {
         this.koa.use(BodyParser());
         this.koa.use(passport.initialize());
         this.koa.use(passport.session());
-        this.koa.use(Mount("/discord", discordRouter.routes()));
-        this.koa.use(Mount("/osu", osu.router.routes()));
+        this.koa.use(Mount("/login/discord", discordRouter.routes()));
+        this.koa.use(Mount("/login/osu", osu.router.routes()));
     }
 }
