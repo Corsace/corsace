@@ -16,3 +16,6 @@
 [submodule "CorsaceInvitational"]
 	path = CorsaceInvitational
 	url = https://github.com/VINXIS/CorsaceInvitational.git
+[submodule "CorsaceServer"]
+	path = CorsaceServer
+	url = https://github.com/VINXIS/CorsaceServer.git
