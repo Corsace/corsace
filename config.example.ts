@@ -10,11 +10,13 @@ export class Config {
             corsace: {
                 corsace: string,
                 headStaff: string,
+                staff: string,
                 writer: string,
             },
             open: {
                 participants: string,
                 captains: string,
+                staff: string,
                 mappooler: string,
                 testplayer: string,
                 scheduler: string,
@@ -26,6 +28,7 @@ export class Config {
             invitational: {
                 participants: string,
                 captains: string,
+                staff: string,
                 mappooler: string,
                 scheduler: string,
                 streamManager: string,
@@ -34,6 +37,7 @@ export class Config {
                 referee: string,
             },
             mca: {
+                staff: string,
                 standard: string,
                 taiko: string,
                 fruits: string,
@@ -107,11 +111,13 @@ export class Config {
                 corsace: {
                     corsace: '',
                     headStaff: '',
+                    staff: '',
                     writer: '',
                 },
                 open: {
                     participants: '',
                     captains: '',
+                    staff: '',
                     mappooler: '',
                     testplayer: '',
                     scheduler: '',
@@ -123,6 +129,7 @@ export class Config {
                 invitational: {
                     participants: '',
                     captains: '',
+                    staff: '',
                     mappooler: '',
                     scheduler: '',
                     streamManager: '',
@@ -131,6 +138,7 @@ export class Config {
                     referee: '',
                 },
                 mca: {
+                    staff: '',
                     standard: '',
                     taiko: '',
                     fruits: '',
