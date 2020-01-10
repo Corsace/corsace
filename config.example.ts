@@ -54,46 +54,17 @@ export class Config {
         logChannel: string,
     };
 
-    osu : {
-        id: number,
-        secret: string,
-        v1: string,
-    };
+    osuV1: string
 
-    ayim : {
-        host: string,
-        port: number,
-        publicURL: string,
-        keys: Array<string>,
-    }
+    ayim : subConfig
 
-    corsace : {
-        host: string,
-        port: number,
-        publicURL: string,
-        keys: Array<string>,
-    }
+    corsace : subConfig
 
-    invitational : {
-        host: string,
-        port: number,
-        publicURL: string,
-        keys: Array<string>,
-    }
+    invitational : subConfig
 
-    mca : {
-        host: string,
-        port: number,
-        publicURL: string,
-        keys: Array<string>,
-    }
+    mca : subConfig
 
-    open : {
-        host: string,
-        port: number,
-        publicURL: string,
-        keys: Array<string>,
-    }
+    open : subConfig
 
     constructor() {
         this.database = {
@@ -101,11 +72,7 @@ export class Config {
             username: '',
             password: '',
         },
-        this.osu = {
-            id: 0,
-            secret: '',
-            v1: '',
-        },
+        this.osuV1 = '',
         this.discord = {
             roles: {
                 corsace: {
@@ -159,30 +126,49 @@ export class Config {
             port: 0,
             publicURL: '',
             keys: [''],
+            osuID: 0,
+            osuSecret: '',
         }
         this.corsace = {
             host: '',
             port: 0,
             publicURL: '',
             keys: [''],
+            osuID: 0,
+            osuSecret: '',
         }
         this.invitational = {
             host: '',
             port: 0,
             publicURL: '',
             keys: [''],
+            osuID: 0,
+            osuSecret: '',
         }
         this.mca = {
             host: '',
             port: 0,
             publicURL: '',
             keys: [''],
+            osuID: 0,
+            osuSecret: '',
         }
         this.open = {
             host: '',
             port: 0,
             publicURL: '',
             keys: [''],
+            osuID: 0,
+            osuSecret: '',
         }
     }
+}
+
+export class subConfig {
+    host: string
+    port: number
+    publicURL: string
+    keys: Array<string>
+    osuID: number
+    osuSecret: string
 }
