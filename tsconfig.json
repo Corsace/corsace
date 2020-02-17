@@ -3,5 +3,6 @@
       "emitDecoratorMetadata": true,
       "esModuleInterop": true,
       "experimentalDecorators": true,
+      "outDir": "build"
     }
  }

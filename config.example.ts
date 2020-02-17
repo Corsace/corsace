@@ -1,4 +1,4 @@
-export class subConfig {
+export class SubConfig {
     host: string
     port: number
     publicURL: string
@@ -65,15 +65,15 @@ export class Config {
 
     osuV1: string
 
-    ayim : subConfig
+    ayim : SubConfig
 
-    corsace : subConfig
+    corsace : SubConfig
 
-    invitational : subConfig
+    invitational : SubConfig
 
-    mca : subConfig
+    mca : SubConfig
 
-    open : subConfig
+    open : SubConfig
 
     constructor() {
         this.database = {
