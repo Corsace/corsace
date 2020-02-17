@@ -23,4 +23,24 @@ module.exports = {
         'plugin:vue/recommended',
         'prettier/@typescript-eslint'
     ],
+    rules: {
+        '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/ban-ts-ignore': 'off',
+        '@typescript-eslint/camelcase': 'off',
+        '@typescript-eslint/no-explicit-any': 'off'
+    },
+    overrides: [
+        {
+            'files': ['*.vue'],
+            'rules': {
+                '@typescript-eslint/explicit-function-return-type': 'off'
+            }
+        },
+        {
+            'files': ['./CorsaceModels/**/*.ts'],
+            'rules': {
+                '@typescript-eslint/no-unused-vars': 'off'
+            }
+        }
+    ]
 };
