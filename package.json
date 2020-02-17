@@ -39,7 +39,6 @@
       "typescript": "^3.3.3333"
    },
    "scripts": {
-      "test": "",
       "mca-dev": "cd ./MCA && nuxt-ts",
       "ayim-dev": "cd ./AYIM && nuxt-ts",
       "dev": "concurrently \"npm run mca-dev\" \"npm run ayim-dev\""
