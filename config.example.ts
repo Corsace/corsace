@@ -1,3 +1,12 @@
+export class subConfig {
+    host: string
+    port: number
+    publicURL: string
+    keys: Array<string>
+    osuID: number
+    osuSecret: string
+}
+
 export class Config {
     database : {
         name: string,
@@ -162,13 +171,4 @@ export class Config {
             osuSecret: '',
         }
     }
-}
-
-export class subConfig {
-    host: string
-    port: number
-    publicURL: string
-    keys: Array<string>
-    osuID: number
-    osuSecret: string
 }
