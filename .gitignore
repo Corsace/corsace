@@ -6,3 +6,4 @@ build/
 tmp/
 temp/
 config.ts
+*.js
