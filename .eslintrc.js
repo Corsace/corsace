@@ -27,7 +27,8 @@ module.exports = {
         '@typescript-eslint/no-misused-promises': 'off',
         '@typescript-eslint/ban-ts-ignore': 'off',
         '@typescript-eslint/camelcase': 'off',
-        '@typescript-eslint/no-explicit-any': 'off'
+        '@typescript-eslint/no-explicit-any': 'off',
+        'vue/html-indent': 'off'
     },
     overrides: [
         {
