@@ -1,10 +1,10 @@
 export class SubConfig {
-    host: string
-    port: number
-    publicURL: string
-    keys: Array<string>
-    osuID: number
-    osuSecret: string
+    host!: string;
+    port!: number;
+    publicURL!: string;
+    keys!: Array<string>;
+    osuID!: number;
+    osuSecret!: string;
 }
 
 export class Config {
