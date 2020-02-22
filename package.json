@@ -17,6 +17,7 @@
       "nuxt": "^2.10.2",
       "passport": "^0.4.1",
       "passport-discord": "^0.1.3",
+      "passport-oauth2": "^1.5.0",
       "reflect-metadata": "^0.1.10",
       "sequelize": "^5.21.2",
       "typeorm": "0.2.21"
@@ -50,7 +51,6 @@
       "mca-dev": "cd ./MCA && nuxt-ts",
       "ayim-dev": "cd ./AYIM && nuxt-ts",
       "dev": "concurrently \"npm run mca-dev\" \"npm run ayim-dev\"",
-
       "lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",
       "lintfix": "eslint --fix --ext .ts,.vue --ignore-path .gitignore ."
    },
