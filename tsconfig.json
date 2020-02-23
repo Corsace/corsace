@@ -5,5 +5,8 @@
       "experimentalDecorators": true,
       "outDir": "build",
       "strict": true,
+      "types": [
+        "nuxt-i18n"
+      ],
     }
  }
