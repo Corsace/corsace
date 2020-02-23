@@ -8,6 +8,8 @@ export class SubConfig {
 }
 
 export class Config {
+    [k: string]: any;
+
     database : {
         name: string,
         username: string,
@@ -16,6 +18,8 @@ export class Config {
 
     discord: {
         roles: {
+            [k: string]: any;
+
             corsace: {
                 corsace: string,
                 headStaff: string,
