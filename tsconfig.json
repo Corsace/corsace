@@ -8,5 +8,6 @@
       "types": [
         "nuxt-i18n"
       ],
+      "noImplicitAny": false
     }
  }
