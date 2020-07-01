@@ -1,3 +1,5 @@
+const { off } = require("process");
+
 module.exports = {
     root: true,
     env: {
@@ -28,6 +30,7 @@ module.exports = {
         "@typescript-eslint/ban-ts-ignore": "off",
         "@typescript-eslint/camelcase": "off",
         "@typescript-eslint/no-explicit-any": "off",
+        "vue/no-v-html": "off",
         "vue/html-indent": [
             "error", 
             4
