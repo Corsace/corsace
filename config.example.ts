@@ -25,6 +25,7 @@ export class Config {
                 headStaff: string,
                 staff: string,
                 writer: string,
+                verified: string,
             },
             open: {
                 participants: string,
@@ -93,6 +94,7 @@ export class Config {
                     headStaff: "role ID",
                     staff: "role ID",
                     writer: "role ID",
+                    verified: "role ID",
                 },
                 open: {
                     participants: "role ID",
