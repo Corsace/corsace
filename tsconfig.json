@@ -5,6 +5,7 @@
       "experimentalDecorators": true,
       "outDir": "build",
       "strict": true,
+      "target": "ES5",
       "types": [
         "nuxt-i18n"
       ],
