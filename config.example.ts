@@ -3,7 +3,7 @@ export class SubConfig {
     port!: number;
     publicURL!: string;
     keys!: Array<string>;
-    osuID!: number;
+    osuID!: string;
     osuSecret!: string;
 }
 
@@ -141,7 +141,7 @@ export class Config {
             port: 3000,
             publicURL: "http://localhost:3000",
             keys: [""],
-            osuID: 0,
+            osuID: "",
             osuSecret: "obtain from https://osu.ppy.sh/home/account/edit",
         };
         this.corsace = {
@@ -149,7 +149,7 @@ export class Config {
             port: 4000,
             publicURL: "http://localhost:4000",
             keys: [""],
-            osuID: 0,
+            osuID: "",
             osuSecret: "obtain from https://osu.ppy.sh/home/account/edit",
         };
         this.invitational = {
@@ -157,7 +157,7 @@ export class Config {
             port: 5000,
             publicURL: "http://localhost:5000",
             keys: [""],
-            osuID: 0,
+            osuID: "",
             osuSecret: "obtain from https://osu.ppy.sh/home/account/edit",
         };
         this.mca = {
@@ -165,7 +165,7 @@ export class Config {
             port: 8000,
             publicURL: "http://localhost:8000",
             keys: [""],
-            osuID: 0,
+            osuID: "",
             osuSecret: "obtain from https://osu.ppy.sh/home/account/edit",
         };
         this.open = {
@@ -173,7 +173,7 @@ export class Config {
             port: 7000,
             publicURL: "http://localhost:7000",
             keys: [""],
-            osuID: 0,
+            osuID: "",
             osuSecret: "obtain from https://osu.ppy.sh/home/account/edit",
         };
     }
