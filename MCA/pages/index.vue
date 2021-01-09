@@ -152,7 +152,7 @@ export default Vue.extend({
     &__wheel-img {
         width: 950px;
         height: 950px;
-        background: url("../../Assets/img/ayim-mca/wheel.png") no-repeat center;
+        background: url("../../Assets/img/ayim-mca/site/wheel.png") no-repeat center;
         background-size: cover;
         left: -730px;
         top: -400px;

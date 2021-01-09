@@ -18,9 +18,9 @@
             >
 
             <div class="footer__socials">
-                <a href="https://twitter.com/corsace_"> <img src="../../../Assets/img/ayim-mca/site/twitter.png"> </a>
-                <a href="https://discord.gg/Z6vEMsr"><img src="../../../Assets/img/ayim-mca/site/discord.png"></a>
-                <a href="https://www.twitch.tv/corsace"><img src="../../../Assets/img/ayim-mca/site/ttv.png"></a>
+                <a href="https://twitter.com/corsace_"> <img src="../../../Assets/img/social/twitter.png"> </a>
+                <a href="https://discord.gg/Z6vEMsr"><img src="../../../Assets/img/social/discord.png"></a>
+                <a href="https://www.twitch.tv/corsace"><img src="../../../Assets/img/social/ttv.png"></a>
             </div>
         </div>
 
