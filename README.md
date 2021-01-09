@@ -2,7 +2,7 @@ Please use this repository when you are changing any of the code for Corsace pro
 
 To get started:
 ```
-git clone --recurse-submodules https://github.com/VINXIS/Corsace
+git clone https://github.com/VINXIS/Corsace
 ```
 
 Install node-modules:
