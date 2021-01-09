@@ -1,0 +1,58 @@
+{
+    "flag": "https://osu.ppy.sh/images/flags/CN.png",
+    "login": "登录",
+    "mca_ayim": {
+        "header": {
+            "mca": "谱师之选奖",
+            "ayim": "做谱又一年",
+            "login": "登录",
+            "welcomeBack": "欢迎回来",
+            "logout": "注销"
+        },
+        "login": {
+            "login": "登录",
+            "message": {
+                "1": "你好像并没有登录！<br>只需要通过osu!登录，你就可以立刻进行谱面投票/提名！",
+                "2": ""
+            },
+            "authOsu": "点击这里通过osu!登录",
+            "authOsuComp": "osu!认证通过。你好，",
+            "authDiscord": "点击这里通过Discord登录",
+            "authDiscordComp": "Discord认证通过。你好，"
+        },
+        "main": {
+            "voting": "投票",
+            "nominating": "提名",
+            "results": "",
+            "undefined": "",
+			"mapsetsLabel": "谱面",
+			"mappersLabel": "谱师",
+			"commentsLabel": "评论",
+			"recordsLabel": "纪录",
+			"statisticsLabel": "统计",
+            "stage": {
+                "voting": "投票阶段",
+                "nominating": "提名阶段",
+                "undefined": ""
+            },
+            "rankedSets": "Ranked谱面",
+            "nominateNow": "现在提名！",
+            "voteNow": "现在投票！",
+            "daysLeft": "天剩余",
+            "message": {
+                "1": "2019年，第四届谱师之选奖（Mapper's Choice Awards），归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面和谱师进行提名、投票！ ",
+                "2": "我们的目标是为“2019年度最佳谱面”提供一个与群众之选（Community Choice）不同的、基于做谱（Mapping）社群的全新视角！",
+                "3": "今年，我们尽全力制作了一个网站，以便符合要求的你能够尽可能轻松地立刻开始提名和投票！",
+                "4": "我们希望更多的人能够参与到这次评选当中来！"
+            },
+            "categories": {
+                "map": "谱面分类",
+                "user": "谱师分类",
+				"approachRate": "缩圈速度（AR）",
+				"circleSize": "圆圈尺寸（CS）",
+				"overallDifficulty": "整体难度（OD）"
+            },
+            "organized": "组织者："
+        }
+    }
+}

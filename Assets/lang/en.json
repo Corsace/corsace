@@ -1,0 +1,58 @@
+{
+    "flag": "https://osu.ppy.sh/images/flags/GB.png",
+    "login": "LOG IN",
+    "mca_ayim": {
+        "header": {
+            "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
+            "ayim": "A YEAR <br> IN <br> MAPPING",
+            "login": "LOG IN",
+            "welcomeBack": "welcome back",
+            "logout": "LOGOUT"
+        },
+        "login": {
+            "login": "login",
+            "message": {
+                "1": "It seems that you are not logged in!<br>Simply login with osu! and you can start voting/nominating immediately!",
+                "2": "You may login on discord in addition as well after, but it is <b>not required</b> to vote/nominate.<br>Discord login <b>is required</b> for staff members working on MCA/AYIM.</span>"
+            },
+            "authOsu": "click here to authenticate with osu!",
+            "authOsuComp": "osu! verification complete. Hi ",
+            "authDiscord": "click here to authenticate with discord",
+            "authDiscordComp": "Discord verification complete. Hi "
+        },
+        "main": {
+            "voting": "voting",
+            "nominating": "nominating",
+            "results": "results",
+            "undefined": "",
+			"mapsetsLabel": "MAPSETS",
+			"mappersLabel": "MAPPERS",
+			"commentsLabel": "COMMENTS",
+			"recordsLabel": "RECORDS",
+			"statisticsLabel": "STATISTICS",
+            "stage": {
+                "voting": "voting stage",
+                "nominating": "nomination stage",
+                "undefined": ""
+            },
+            "rankedSets": "RANKED SETS",
+            "nominateNow": "nominate now !",
+            "voteNow": "vote now !",
+            "daysLeft": "days left",
+            "message": {
+                "1": "Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!",
+                "2": "Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community in comparison to Community Choice!",
+                "3": "This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!",
+                "4": "We hope as many participants as possible take part in this event!"
+            },
+            "categories": {
+                "map": "map categories",
+                "user": "user categories",
+				"approachRate": "APPROACH RATE",
+				"circleSize": "CIRCLE SIZE",
+				"overallDifficulty": "OVERALL DIFFICULTY"
+            },
+            "organized": "ORGANIZED BY"
+        }
+    }
+}

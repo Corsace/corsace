@@ -1,0 +1,58 @@
+{
+    "flag": "",
+    "login": "",
+    "mca_ayim": {
+        "header": {
+            "mca": "",
+            "ayim": "",
+            "login": "",
+            "welcomeBack": "",
+            "logout": ""
+        },
+        "login": {
+            "login": "",
+            "message": {
+                "1": "",
+                "2": ""
+            },
+            "authOsu": "",
+            "authOsuComp": "",
+            "authDiscord": "",
+            "authDiscordComp": ""
+        },
+        "main": {
+            "voting": "",
+            "nominating": "",
+            "results": "",
+            "undefined": "",
+			"mapsetsLabel": "",
+			"mappersLabel": "",
+			"commentsLabel": "",
+			"recordsLabel": "",
+			"statisticsLabel": "",
+            "stage": {
+                "voting": "",
+                "nominating": "",
+                "undefined": ""
+            },
+            "rankedSets": "",
+            "nominateNow": "",
+            "voteNow": "",
+            "daysLeft": "",
+            "message": {
+                "1": "",
+                "2": "",
+                "3": "",
+                "4": ""
+            },
+            "categories": {
+                "map": "",
+                "user": "",
+				"approachRate": "",
+				"circleSize": "",
+				"overallDifficulty": ""
+            },
+            "organized": ""
+        }
+    }
+}

@@ -1,0 +1,47 @@
+@font-face {
+    font-family: Scoreboard;
+    src: url("../../CorsaceAssets/fonts/scoreboard.ttf");
+}
+
+:root {
+    --standard: #fb2475;
+    --taiko: #ff890a;
+    --fruits: #0abdff;
+    --mania: #48f326;
+    --storyboard: #919191;
+}
+
+*, *:after, *:before {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: 'Red Hat Display', sans-serif;
+    height: 100%;
+}
+
+body {
+    margin:0;
+    min-height: 100%;
+    background-image: url("../../CorsaceAssets/img/ayim-mca/site/bg.png");
+    background-position: center;
+    background-size: cover;
+    font-family: 'Red Hat Display', sans-serif;
+    color: white;
+	font-size: 1rem;
+}
+
+.triangle {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 10px solid;
+    border-bottom: none;
+    transition: all 0.25s;
+
+    &--active {
+        border-top: none;
+        border-bottom: 10px solid #fb2475;
+    }
+}

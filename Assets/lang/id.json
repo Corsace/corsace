@@ -1,0 +1,58 @@
+{
+    "flag": "https://osu.ppy.sh/images/flags/ID.png",
+    "login": "MASUK",
+    "mca_ayim": {
+        "header": {
+            "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
+            "ayim": "A YEAR <br> IN <br> MAPPING",
+            "login": "MASUK",
+            "welcomeBack": "selamat datang kembali",
+            "logout": "KELUAR"
+        },
+        "login": {
+            "login": "masuk",
+            "message": {
+                "1": "Sepertinya Anda belum terhubung masuk!<br>Anda harus masuk terlebih dahulu dengan menggunakan akun osu! Anda untuk dapat mulai menominasikan/memberikan suara kepada beatmap-beatmap yang Anda kehendaki.",
+                "2": ""
+            },
+            "authOsu": "klik di sini untuk menghubungkan akun osu! Anda",
+            "authOsuComp": "akun osu! Anda telah terhubung. Halo!",
+            "authDiscord": "klik di sini untuk menghubungkan akun Discord Anda",
+            "authDiscordComp": "akun Discord Anda telah terhubung. Halo!"
+        },
+        "main": {
+            "voting": "voting",
+            "nominating": "nominasi",
+            "results": "",
+            "undefined": "",
+            "mapsetsLabel": "MAPSET",
+            "mappersLabel": "MAPPER",
+            "commentsLabel": "KOMENTAR",
+            "recordsLabel": "REKOR",
+            "statisticsLabel": "STATISTIK",
+            "stage": {
+                "voting": "tahapan voting",
+                "nominating": "tahapan nominasi",
+                "undefined": ""
+            },
+            "rankedSets": "TOTAL BEATMAP YANG BERSTATUS RANKED",
+            "nominateNow": "nominasi sekarang !",
+            "voteNow": "vote sekarang !",
+            "daysLeft": "hari tersisa",
+            "message": {
+                "1": "Mapper's Choice Awards hadir kembali untuk keempat kalinya pada tahun 2019! Tidak jauh berbeda dari tahun-tahun sebelumnya, Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.",
+                "2": "Tujuan kami menyelenggarakan Mapper's Choice Awards dari tahun ke tahun adalah untuk memberikan perspektif baru seputar beatmap-beatmap dan mapper-mapper terbaik selama satu tahun ke belakang dilihat dari mata komunitas mapping sebagai sudut pandang alternatif terhadap hasil Community Choice Awards tahun lalu!",
+                "3": "Tahun ini, kami telah secara khusus menyediakan situs web bagi Mapper's Choice Awards agar para mapper/modder yang memiliki hak suara dapat menyalurkan suaranya dengan lebih mudah.",
+                "4": "Kami berharap Anda semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!"
+            },
+            "categories": {
+                "map": "kategori per map",
+                "user": "kategori per pengguna",
+				"approachRate": "APPROACH RATE",
+				"circleSize": "CIRCLE SIZE",
+				"overallDifficulty": "OVERALL DIFFICULTY"
+            },
+            "organized": "DIORGANISIR OLEH"
+        }
+    }
+}

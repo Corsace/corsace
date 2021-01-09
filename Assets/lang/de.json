@@ -1,0 +1,58 @@
+{
+    "flag": "https://osu.ppy.sh/images/flags/DE.png",
+    "login": "EINLOGGEN",
+    "mca_ayim": {
+        "header": {
+            "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
+            "ayim": "A YEAR <br> IN <br> MAPPING",
+            "login": "EINLOGGEN",
+            "welcomeBack": "Willkommen zurück",
+            "logout": "AUSLOGGEN"
+        },
+        "login": {
+            "login": "einloggen",
+            "message": {
+                "1": "Scheinbar bist du nicht eingeloggt!<br>Logge dich einfach über deinen osu!-Account ein und du kannst sofort anfangen, abzustimmen/zu nominieren!",
+                "2": ""
+            },
+            "authOsu": "Klicke hier, um dich über osu! zu authentifizieren",
+            "authOsuComp": "osu! Verifizierung abgeschlossen. Hallo ",
+            "authDiscord": "Klicke hier, um dich über Discord zu authentifizieren",
+            "authDiscordComp": "Discord Verifizierung abgeschlossen. Hallo "
+        },
+        "main": {
+            "voting": "abstimmen",
+            "nominating": "nominieren",
+            "results": "",
+            "undefined": "",
+			"mapsetsLabel": "MAPSETS",
+			"mappersLabel": "MAPPER",
+			"commentsLabel": "KOMMENTARE",
+			"recordsLabel": "REKORDE",
+			"statisticsLabel": "STATISTIKEN",
+            "stage": {
+                "voting": "Abstimmungsphase",
+                "nominating": "Nominierungsphase",
+                "undefined": ""
+            },
+            "rankedSets": "RANKED SETS",
+            "nominateNow": "jetzt nominieren !",
+            "voteNow": "jetzt abstimmen !",
+            "daysLeft": "tage übrig",
+            "message": {
+                "1": "Die Mapper's Choice Awards sind in 2019 zurück für Runde 4! Dies ist ein Abstimmungsevent, bei welchem alle Mapper/Modder dafür nominieren und abstimmen können, wer/was der/die beste Mapper*in/Map in jeder Kategorie ist!",
+                "2": "Unsere Absicht ist es, eine neue Perspektive auf die besten Maps von 2019 in den Augen der Mapping-Community im Vergleich zur Community Choice zu liefern!",
+                "3": "Dieses Jahr haben wir sogar eine Website, um es für Abstimmungsberechtigte so einfach wie möglich zu machen, zu nominieren und abzustimmen!",
+                "4": "Wir hoffen, dass so viele Leute wie möglich an diesem Event teilnehmen!"
+            },
+            "categories": {
+                "map": "Mapkategorien",
+                "user": "Nutzerkategorien",
+				"approachRate": "APPROACH RATE",
+				"circleSize": "CIRCLE SIZE",
+				"overallDifficulty": "OVERALL DIFFICULTY"
+            },
+            "organized": "ORGANISIERT VON"
+        }
+    }
+}

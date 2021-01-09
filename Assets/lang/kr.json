@@ -1,0 +1,58 @@
+{
+    "flag": "https://osu.ppy.sh/images/flags/KR.png",
+    "login": "로그인",
+    "mca_ayim": {
+        "header": {
+            "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
+            "ayim": "A YEAR <br> IN <br> MAPPING",
+            "login": "로그인",
+            "welcomeBack": "환영합니다",
+            "logout": "로그아웃"
+        },
+        "login": {
+            "login": "로그인",
+            "message": {
+                "1": "아직 로그인하지 않으셨습니다!<br>osu! 계정으로 로그인하시면 추천과 투표를 바로 하실 수 있습니다!",
+                "2": ""
+            },
+            "authOsu": "여기를 클릭하여 osu!로 로그인하세요",
+            "authOsuComp": "osu!로 로그인되었습니다. 안녕하세요 ",
+            "authDiscord": "여기를 클릭하여 디스코드로 로그인하세요",
+            "authDiscordComp": "디스코드로 로그인되었습니다. 안녕하세요 "
+        },
+        "main": {
+            "voting": "투표",
+            "nominating": "추천",
+            "results": "",
+            "undefined": "",
+			"mapsetsLabel": "맵셋",
+			"mappersLabel": "매퍼",
+			"commentsLabel": "댓글",
+			"recordsLabel": "기록",
+			"statisticsLabel": "통계",
+            "stage": {
+                "voting": "투표 기간",
+                "nominating": "추천 기간",
+                "undefined": ""
+            },
+            "rankedSets": "랭크맵 수",
+            "nominateNow": "지금 추천하세요 !",
+            "voteNow": "지금 투표하세요 !",
+            "daysLeft": "일 남음",
+            "message": {
+                "1": "2019년, 네 번째 Mapper's Choice Awards가 시작합니다! MCA는 매퍼/모더들이 자신이 생각하기에 각 카테고리에서 최고인 맵/매퍼를 추천, 투표할 수 있는 이벤트입니다.",
+                "2": "Community Choice와 달리, 매핑 커뮤니티의 눈을 통해 2019년 최고의 맵에 새로운 관점을 제시하고자 합니다!",
+                "3": "올해는 추천 및 투표를 용이하게 하기 위해, 모든 과정이 웹사이트에서 이루어지도록 개편했습니다!",
+                "4": "최대한 많은 분이 이 이벤트에 참여해주셨으면 좋겠습니다!"
+            },
+            "categories": {
+                "map": "맵 카테고리",
+                "user": "매퍼 카테고리",
+                "approachRate": "APPROACH RATE",
+                "circleSize": "CIRCLE SIZE",
+                "overallDifficulty": "OVERALL DIFFICULTY"
+            },
+            "organized": "주최자"
+        }
+    }
+}
