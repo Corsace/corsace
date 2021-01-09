@@ -1,12 +1,12 @@
 import Router from "koa-router";
-import { isLoggedInOsu } from "../../../CorsaceServer/middleware";
-import { Nomination } from "../../../CorsaceModels/MCA_AYIM/nomination";
-import { Category, CategoryType, CategoryStageInfo } from "../../../CorsaceModels/MCA_AYIM/category";
-import { Beatmapset, BeatmapsetInfo } from "../../../CorsaceModels/beatmapset";
-import { User, UserCondensedInfo } from "../../../CorsaceModels/user";
+import { isLoggedInOsu } from "../../../Server/middleware";
+import { Nomination } from "../../../Models/MCA_AYIM/nomination";
+import { Category, CategoryType, CategoryStageInfo } from "../../../Models/MCA_AYIM/category";
+import { Beatmapset, BeatmapsetInfo } from "../../../Models/beatmapset";
+import { User, UserCondensedInfo } from "../../../Models/user";
 import { isEligibleFor, isEligibleCurrentYear, isPhaseStarted, isPhase, validatePhaseYear } from "../middleware";
 import { getRepository } from "typeorm";
-import { ModeDivisionType } from "../../../CorsaceModels/MCA_AYIM/modeDivision";
+import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 
 const nominationsRouter = new Router();
 

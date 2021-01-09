@@ -4,7 +4,7 @@ import * as fs from "fs";
 const config = new Config;
 const locales: any[] = [];
 
-fs.readdirSync("../CorsaceAssets/lang").forEach(file => {
+fs.readdirSync("../Assets/lang").forEach(file => {
     if (file !== "example.json" && file !== "index.js")
         locales.push({
             code: file.split(".")[0],
@@ -27,7 +27,7 @@ export default {
                 defaultLocale: "en",
                 strategy: "no_prefix",
                 lazy: true,
-                langDir: "../CorsaceAssets/lang/",
+                langDir: "../Assets/lang/",
                 vueI18n: {
                     fallbackLocale: "en",
                 },

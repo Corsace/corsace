@@ -220,7 +220,7 @@ $modes: "storyboard", "mania" , "fruits", "taiko", "standard";
 
         &__mode {
             &--#{$mode} {
-                background-image: url("../../../CorsaceAssets/img/ayim-mca/#{$mode}.png");
+                background-image: url("../../../Assets/img/ayim-mca/#{$mode}.png");
 
                 &::before {
                     border-bottom: 3px solid var(--#{$mode});

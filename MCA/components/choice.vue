@@ -54,7 +54,7 @@
                 <img
                     class="choice__selectionCheck"
                     :class="{'choice__selectionCheck--chosen':choice.chosen}"
-                    src="../../CorsaceAssets/img/ayim-mca/site/checkmark.png"
+                    src="../../Assets/img/ayim-mca/site/checkmark.png"
                 >
             </div>
         </div>

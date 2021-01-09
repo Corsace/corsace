@@ -3,7 +3,7 @@
         <div class="search__pre">
             <img 
                 class="search__preImage"
-                src="../../CorsaceAssets/img/ayim-mca/site/magnifying glass.png"
+                src="../../Assets/img/ayim-mca/site/magnifying glass.png"
             >
         </div>
         <input

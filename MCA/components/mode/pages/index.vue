@@ -55,7 +55,7 @@ import Axios from "axios";
 
 import collapsible from "../../collapsible.vue";
 
-import { CategoryInfo } from "../../../../CorsaceModels/MCA_AYIM/category";
+import { CategoryInfo } from "../../../../Models/MCA_AYIM/category";
 
 interface FullFrontInfo {
     standard: FrontInfo;

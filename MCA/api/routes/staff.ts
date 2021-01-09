@@ -1,8 +1,8 @@
 import Router from "koa-router";
-import { isLoggedInDiscord, isStaff } from "../../../CorsaceServer/middleware";
-import { MCA } from "../../../CorsaceModels/MCA_AYIM/mca";
-import { Category } from "../../../CorsaceModels/MCA_AYIM/category";
-import { Nomination } from "../../../CorsaceModels/MCA_AYIM/nomination";
+import { isLoggedInDiscord, isStaff } from "../../../Server/middleware";
+import { MCA } from "../../../Models/MCA_AYIM/mca";
+import { Category } from "../../../Models/MCA_AYIM/category";
+import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 
 const staffRouter = new Router;
 

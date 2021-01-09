@@ -1,12 +1,12 @@
 <template>
     <div class="header">
-        <img src="../../../CorsaceAssets/img/ayim-mca/site/2019.png">
+        <img src="../../../Assets/img/ayim-mca/site/2019.png">
         <a
             class="header__title"
             :href="'/'"
             v-html="$t('mca_ayim.header.mca')"
         />
-        <a class="header__seperator"><img src="../../../CorsaceAssets/img/ayim-mca/site/l.png"></a>
+        <a class="header__seperator"><img src="../../../Assets/img/ayim-mca/site/l.png"></a>
         <a
             class="header__title--active"
             href="ayim.html"

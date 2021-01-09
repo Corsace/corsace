@@ -1,6 +1,6 @@
 import Router from "koa-router";
-import { isLoggedIn, hasRole, isLoggedInDiscord } from "../../../../CorsaceServer/middleware";
-import { UserComment } from "../../../../CorsaceModels/MCA_AYIM/userComments";
+import { isLoggedIn, hasRole, isLoggedInDiscord } from "../../../../Server/middleware";
+import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
 
 const commentsReviewRouter = new Router();
 

@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue, { PropOptions } from "vue";
 
-import { UserMCAInfo } from "../../../CorsaceModels/user";
+import { UserMCAInfo } from "../../../Models/user";
 
 export default Vue.extend({
     props: {

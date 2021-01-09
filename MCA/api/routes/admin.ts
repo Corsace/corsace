@@ -1,9 +1,9 @@
 import Router from "koa-router";
-import { isLoggedInDiscord, isCorsace } from "../../../CorsaceServer/middleware";
-import { Vote } from "../../../CorsaceModels/MCA_AYIM/vote";
-import { Category, CategoryGenerator, CategoryType } from "../../../CorsaceModels/MCA_AYIM/category";
-import { MCA } from "../../../CorsaceModels/MCA_AYIM/mca";
-import { ModeDivision } from "../../../CorsaceModels/MCA_AYIM/modeDivision";
+import { isLoggedInDiscord, isCorsace } from "../../../Server/middleware";
+import { Vote } from "../../../Models/MCA_AYIM/vote";
+import { Category, CategoryGenerator, CategoryType } from "../../../Models/MCA_AYIM/category";
+import { MCA } from "../../../Models/MCA_AYIM/mca";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 
 interface CategoryWinners {
     categoryID: number;

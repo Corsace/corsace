@@ -1,7 +1,7 @@
 import Router from "koa-router";
 import { Like } from "typeorm";
-import { User } from "../../../CorsaceModels/user";
-import { isLoggedIn } from "../../../CorsaceServer/middleware";
+import { User } from "../../../Models/user";
+import { isLoggedIn } from "../../../Server/middleware";
 
 const usersRouter = new Router();
 

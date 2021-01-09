@@ -87,8 +87,8 @@ import scroll from "../../scroll.vue";
 import categoryPopout from "../../popout/adminCategoryPopout.vue";
 import yearPopout from "../../popout/adminYearPopout.vue";
 
-import { MCAInfo } from "../../../../CorsaceModels/MCA_AYIM/mca";
-import { CategoryInfo } from "../../../../CorsaceModels/MCA_AYIM/category";
+import { MCAInfo } from "../../../../Models/MCA_AYIM/mca";
+import { CategoryInfo } from "../../../../Models/MCA_AYIM/category";
 
 export default Vue.extend({
     components: {

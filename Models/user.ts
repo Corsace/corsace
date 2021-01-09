@@ -10,7 +10,7 @@ import { Vote } from "./MCA_AYIM/vote";
 import { Beatmapset } from "./beatmapset";
 import { Config } from "../config";
 import { GuildMember } from "discord.js";
-import { discordGuild } from "../CorsaceServer/discord";
+import { discordGuild } from "../Server/discord";
 
 // General middlewares
 const config = new Config();

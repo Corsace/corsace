@@ -14,7 +14,7 @@
             v-html="$t('mca_ayim.login.message.1')"
         />
         <div class="login__auth">
-            <img src="../../../CorsaceAssets/img/osu.png">
+            <img src="../../../Assets/img/osu.png">
             <a 
                 v-if="!user || (user && !user.osu.userID)"
                 class="login__authText"
@@ -34,7 +34,7 @@
             v-html="$t('mca_ayim.login.message.2')"
         />
         <div class="login__auth">
-            <img src="../../../CorsaceAssets/img/ayim-mca/site/discord.png">
+            <img src="../../../Assets/img/ayim-mca/site/discord.png">
             <a 
                 v-if="!user || (user && !user.discord.userID)"
                 class="login__authText"

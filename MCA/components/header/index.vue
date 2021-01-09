@@ -11,7 +11,7 @@
             :to="'/'"
             v-html="$t('mca_ayim.header.mca')"
         />
-        <a class="header__seperator"><img src="../../../CorsaceAssets/img/ayim-mca/site/l.png"></a>
+        <a class="header__seperator"><img src="../../../Assets/img/ayim-mca/site/l.png"></a>
         <a
             class="header__title"
             href="https://ayim.corsace.io"
@@ -74,7 +74,7 @@ import Vue, { PropOptions } from "vue";
 import login from "./login.vue";
 import dropdown from "./dropdown.vue";
 
-import { UserMCAInfo } from "../../../CorsaceModels/user";
+import { UserMCAInfo } from "../../../Models/user";
 
 export default Vue.extend({
     components: {

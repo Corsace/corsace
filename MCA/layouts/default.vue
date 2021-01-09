@@ -28,7 +28,7 @@ import axios from "axios";
 import header from "../components/header/index.vue";
 import footer from "../components/footer/index.vue";
 
-import { UserMCAInfo } from "../../CorsaceModels/user";
+import { UserMCAInfo } from "../../Models/user";
 
 export default Vue.extend({
     components: {

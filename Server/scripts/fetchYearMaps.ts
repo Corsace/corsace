@@ -1,12 +1,12 @@
 import { createConnection } from "typeorm";
 import { Config } from "../../config";
 import axios from "axios";
-import { ModeDivisionType, ModeDivision } from "../../CorsaceModels/MCA_AYIM/modeDivision";
-import { Beatmapset } from "../../CorsaceModels/beatmapset";
-import { Beatmap } from "../../CorsaceModels/beatmap";
-import { User, OAuth } from "../../CorsaceModels/user";
-import { UsernameChange } from "../../CorsaceModels/usernameChange";
-import { MCAEligibility } from "../../CorsaceModels/MCA_AYIM/mcaEligibility";
+import { ModeDivisionType, ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
+import { Beatmapset } from "../../Models/beatmapset";
+import { Beatmap } from "../../Models/beatmap";
+import { User, OAuth } from "../../Models/user";
+import { UsernameChange } from "../../Models/usernameChange";
+import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
 
 const config = new Config();
 const args = process.argv.slice(2); // Year to get the maps for
@@ -148,7 +148,7 @@ async function fetchYearMaps(): Promise<void> {
             "synchronize": true,
             "logging": false,
             "entities": [
-                __dirname + "/../../CorsaceModels/**/*{.ts,.js}",
+                __dirname + "/../../Models/**/*{.ts,.js}",
             ],
         });
 

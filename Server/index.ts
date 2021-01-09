@@ -5,10 +5,10 @@ import BodyParser from "koa-bodyparser";
 import Mount from "koa-mount";
 import passport from "koa-passport";
 import Session from "koa-session";
-import { Config, SubConfig } from "../config";
+import { Config } from "../config";
 import OAuth2Strategy from "passport-oauth2";
 import { Strategy as DiscordStrategy } from "passport-discord";
-import { User } from "../CorsaceModels/user";
+import { User } from "../Models/user";
 import discordRouter from "./login/discord";
 import { discordPassport, osuPassport } from "./passportFunctions";
 import osuRouter from "./login/osu";
@@ -20,7 +20,7 @@ export class App {
     private config = new Config;
 
     constructor(type: string) {
-        const subconfig = this.config[type] as SubConfig;
+        const subconfig = this.config[type];
         
         // Connect to DB
         createConnection({
@@ -33,7 +33,7 @@ export class App {
             "synchronize": true,
             "logging": false,
             "entities": [
-                "../CorsaceModels/**/*.ts",
+                "../Models/**/*.ts",
             ],
         }).then((connection) => {
             console.log("Connected to the " + connection.options.database + " database!");

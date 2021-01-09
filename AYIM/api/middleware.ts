@@ -1,6 +1,6 @@
 import { ParameterizedContext, Next } from "koa";
 import Router from "koa-router";
-import { ModeDivisionType } from "../../CorsaceModels/MCA_AYIM/modeDivision";
+import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
 
 async function isEligible(ctx: ParameterizedContext<any, Router.IRouterParamContext<any, {}>>, next: Next): Promise<void> {
     if (!ctx.params.year) {

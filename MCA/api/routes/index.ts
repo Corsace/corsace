@@ -1,11 +1,11 @@
 import Router from "koa-router";
-import { MCA } from "../../../CorsaceModels/MCA_AYIM/mca";
-import { Category } from "../../../CorsaceModels/MCA_AYIM/category";
-import { Beatmapset } from "../../../CorsaceModels/beatmapset";
+import { MCA } from "../../../Models/MCA_AYIM/mca";
+import { Category } from "../../../Models/MCA_AYIM/category";
+import { Beatmapset } from "../../../Models/beatmapset";
 import { getRepository } from "typeorm";
-import { discordGuild } from "../../../CorsaceServer/discord";
+import { discordGuild } from "../../../Server/discord";
 import { Config } from "../../../config";
-import { ModeDivision } from "../../../CorsaceModels/MCA_AYIM/modeDivision";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 
 const indexRouter = new Router();
 const config = new Config;

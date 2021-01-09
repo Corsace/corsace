@@ -1,9 +1,8 @@
 import Router from "koa-router";
-import { isLoggedInOsu } from "../../../CorsaceServer/middleware";
-import { Vote } from "../../../CorsaceModels/MCA_AYIM/vote";
-import { Category, CategoryType } from "../../../CorsaceModels/MCA_AYIM/category";
-import { Nomination } from "../../../CorsaceModels/MCA_AYIM/nomination";
-import { isEligibleCurrentYear, isEligibleFor } from "../middleware";
+import { isLoggedInOsu } from "../../../Server/middleware";
+import { Vote } from "../../../Models/MCA_AYIM/vote";
+import { Category } from "../../../Models/MCA_AYIM/category";
+import { isEligibleCurrentYear } from "../middleware";
 import { MoreThan } from "typeorm";
 
 async function isVotingPhase(ctx, next): Promise<any> {

@@ -54,7 +54,7 @@ export default Vue.extend({
 
 <style lang="scss">
 .error {
-    background-image: url("../../CorsaceAssets/img/ayim-mca/site/error.png");
+    background-image: url("../../Assets/img/ayim-mca/site/error.png");
     background-size: 80%;
     background-repeat: no-repeat;
     background-position: center;

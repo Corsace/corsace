@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { App } from "../../CorsaceServer";
+import { App } from "../../Server";
 import Mount from "koa-mount";
 import UserRouter from "./routes/user";
 import usersRouter from "./routes/users";

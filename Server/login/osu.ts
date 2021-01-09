@@ -1,9 +1,9 @@
 import Router from "koa-router";
 import passport from "koa-passport";
 import Axios from "axios";
-import { MCAEligibility } from "../../CorsaceModels/MCA_AYIM/mcaEligibility";
+import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
 import { Config } from "../../config";
-import { UsernameChange } from "../../CorsaceModels/usernameChange";
+import { UsernameChange } from "../../Models/usernameChange";
 
 const osuRouter = new Router();
 const config = new Config();

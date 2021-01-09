@@ -1,8 +1,8 @@
 import Router from "koa-router";
-import { isLoggedIn } from "../../../CorsaceServer/middleware";
-import { User } from "../../../CorsaceModels/user";
-import { UserComment } from "../../../CorsaceModels/MCA_AYIM/userComments";
-import { ModeDivision, ModeDivisionType } from "../../../CorsaceModels/MCA_AYIM/modeDivision";
+import { isLoggedIn } from "../../../Server/middleware";
+import { User } from "../../../Models/user";
+import { UserComment } from "../../../Models/MCA_AYIM/userComments";
+import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { ParameterizedContext, Next } from "koa";
 
 async function canComment(ctx: ParameterizedContext<any, Router.IRouterParamContext<any, {}>>, next: Next): Promise<any> {

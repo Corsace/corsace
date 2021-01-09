@@ -1,6 +1,6 @@
 @font-face {
     font-family: Scoreboard;
-    src: url("../../CorsaceAssets/fonts/scoreboard.ttf");
+    src: url("../../Assets/fonts/scoreboard.ttf");
 }
 
 :root {
@@ -23,7 +23,7 @@ html {
 body {
     margin:0;
     min-height: 100%;
-    background-image: url("../../CorsaceAssets/img/ayim-mca/site/bg.png");
+    background-image: url("../../Assets/img/ayim-mca/site/bg.png");
     background-position: center;
     background-size: cover;
     font-family: 'Red Hat Display', sans-serif;

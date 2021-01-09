@@ -1,6 +1,6 @@
 import { Strategy as DiscordStrategy } from "passport-discord";
 import OAuth2Strategy from "passport-oauth2";
-import { User, OAuth } from "../CorsaceModels/user";
+import { User, OAuth } from "../Models/user";
 import Axios from "axios";
 import { discordClient } from "./discord";
 

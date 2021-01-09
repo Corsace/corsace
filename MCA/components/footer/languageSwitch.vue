@@ -44,7 +44,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { NuxtVueI18n } from "nuxt-i18n";
-import lang from "../../../CorsaceAssets/lang/index";
+import lang from "../../../Assets/lang/index";
 
 export default Vue.extend({
     data () {

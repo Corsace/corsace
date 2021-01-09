@@ -1,12 +1,12 @@
 import Router from "koa-router";
-import { Beatmap } from "../../../CorsaceModels/beatmap";
-import { User } from "../../../CorsaceModels/user";
-import { isLoggedIn } from "../../../CorsaceServer/middleware";
+import { Beatmap } from "../../../Models/beatmap";
+import { User } from "../../../Models/user";
+import { isLoggedIn } from "../../../Server/middleware";
 import { isNotEligible } from "../middleware";
 import { Config } from "../../../config";
 import axios from "axios";
-import { GuestRequest, RequestStatus } from "../../../CorsaceModels/MCA_AYIM/guestRequest";
-import { ModeDivision } from "../../../CorsaceModels/MCA_AYIM/modeDivision";
+import { GuestRequest, RequestStatus } from "../../../Models/MCA_AYIM/guestRequest";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 
 const UserRouter = new Router();
 const config = new Config();

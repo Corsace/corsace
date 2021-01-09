@@ -79,7 +79,7 @@ $modes: "storyboard", "mania" , "fruits", "taiko", "standard";
     width: 100%;
     padding-bottom: 9vh;
 
-    background-image: url("../../CorsaceAssets/img/ayim-mca/site/ayim bg.png");
+    background-image: url("../../Assets/img/ayim-mca/site/ayim bg.png");
     background-size: auto 80%;
     background-repeat: no-repeat;
     background-position: center left;

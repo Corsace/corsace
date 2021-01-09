@@ -14,7 +14,7 @@
             v-html="$t('mca_ayim.login.message.1')"
         />
         <div class="login__auth">
-            <img src="../../../CorsaceAssets/img/osu.png">
+            <img src="../../../Assets/img/osu.png">
             <a 
                 v-if="!user || !user.osu || !user.osu.username"
                 class="login__authText"
@@ -34,7 +34,7 @@
             v-html="$t('mca_ayim.login.message.2')"
         />
         <div class="login__auth">
-            <img src="../../../CorsaceAssets/img/ayim-mca/site/discord.png">
+            <img src="../../../Assets/img/ayim-mca/site/discord.png">
             <a 
                 v-if="!user || !user.discord || !user.discord.username"
                 class="login__authText"
@@ -55,7 +55,7 @@
 <script lang="ts">
 import Vue, { PropOptions } from "vue";
 
-import { UserMCAInfo } from "../../../CorsaceModels/user";
+import { UserMCAInfo } from "../../../Models/user";
 
 export default Vue.extend({
     props: {
