@@ -60,7 +60,7 @@ const modeList = [
     "mania",
 ];
 
-function createSet(map: any): Beatmapset {
+function createSet (map: any): Beatmapset {
     
     const dbSet = new Beatmapset;
     dbSet.ID = parseInt(map.beatmapset_id);
@@ -83,15 +83,15 @@ function createSet(map: any): Beatmapset {
     return dbSet;
 }
 
-async function createMap(map: any): Promise<Beatmap> {
+async function createMap (map: any): Promise<Beatmap> {
     const dbMap = new Beatmap;
     dbMap.ID = parseInt(map.beatmap_id);
     
     // see if mode exists already, if it doesn't then add it
-    let mode = await ModeDivision.findOne(parseInt(map.mode)+1);
+    let mode = await ModeDivision.findOne(parseInt(map.mode) + 1);
     if (!mode) {
         mode = new ModeDivision;
-        mode.ID = parseInt(map.mode)+1;
+        mode.ID = parseInt(map.mode) + 1;
         mode.name = ModeDivisionType[mode.ID];
         await mode.save();
     }
@@ -133,7 +133,7 @@ async function createMap(map: any): Promise<Beatmap> {
     return dbMap;
 }
 
-async function fetchYearMaps(): Promise<void> {
+async function fetchYearMaps (): Promise<void> {
     // Connect
     const start = new Date;
     console.log("Connecting to the DB...");
@@ -146,7 +146,7 @@ async function fetchYearMaps(): Promise<void> {
             "database": config.database.name,
             "timezone": "Z",
             "synchronize": true,
-            "logging": false,
+            "logging": ["error"],
             "entities": [
                 __dirname + "/../../Models/**/*{.ts,.js}",
             ],

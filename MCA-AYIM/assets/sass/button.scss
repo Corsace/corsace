@@ -1,0 +1,34 @@
+@import '_variables';
+@import '_mixins';
+
+.button {
+    color: white;
+    padding: 5px;
+    margin: 0;
+    background: black;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.63);
+    border-radius: 5.5px;
+    font-size: $font-lg;
+    font-family: $font-body;
+    text-shadow: 0 0 4px white;
+    text-transform: uppercase;
+    min-width: 165px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include transition;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    &:hover, &:focus {
+        background: white;
+        color: black;
+    }
+
+    &:focus {
+        outline: 1px solid #fff;
+        outline-offset: -4px;
+    }
+}

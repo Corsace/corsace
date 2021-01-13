@@ -9,7 +9,7 @@ export class Beatmap extends BaseEntity {
     @PrimaryColumn()
     ID!: number;
 
-    @ManyToOne(type => Beatmapset, beatmapset => beatmapset.beatmaps)
+    @ManyToOne(() => Beatmapset, beatmapset => beatmapset.beatmaps)
     beatmapset!: Beatmapset;
 
     @Column()
@@ -33,7 +33,7 @@ export class Beatmap extends BaseEntity {
     @Column("double")
     hpDrain!: number;
 
-    @ManyToOne(type => ModeDivision, modeDivision => modeDivision.beatmaps, {
+    @ManyToOne(() => ModeDivision, modeDivision => modeDivision.beatmaps, {
         nullable: false,
         eager: true,
     })
@@ -78,7 +78,7 @@ export class Beatmap extends BaseEntity {
     @Column("double")
     totalSR!: number;
 
-    @OneToMany(type => GuestRequest, guestRequest => guestRequest.beatmap)
+    @OneToMany(() => GuestRequest, guestRequest => guestRequest.beatmap)
     guestRequests!: GuestRequest[];
 
 }

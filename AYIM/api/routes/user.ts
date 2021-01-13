@@ -1,12 +1,13 @@
-import Router from "koa-router";
+import Router from "@koa/router";
 import { Beatmap } from "../../../Models/beatmap";
 import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
 import { isNotEligible } from "../middleware";
 import { Config } from "../../../config";
 import axios from "axios";
-import { GuestRequest, RequestStatus } from "../../../Models/MCA_AYIM/guestRequest";
+import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
+import { RequestStatus } from "../../../interfaces/guestRequests";
 
 const UserRouter = new Router();
 const config = new Config();
@@ -67,7 +68,7 @@ UserRouter.post("/guestDifficulty/:year", isLoggedIn, isNotEligible, async (ctx)
 
     // Create guest requesst
     const guestReq = new GuestRequest;
-    guestReq.mode = await ModeDivision.findOneOrFail(parseInt(beatmap.mode)+1);
+    guestReq.mode = await ModeDivision.findOneOrFail(parseInt(beatmap.mode) + 1);
     guestReq.accepted = RequestStatus.Pending;
     guestReq.beatmap = dbMap;
     guestReq.year = parseInt(ctx.params.year);

@@ -1,6 +1,9 @@
 <template>
-    <div class="home">
-        <div class="left-side">
+    <div>
+        <div
+            v-if="phase"
+            class="left-side"
+        >
             <div class="voting-date">
                 <div
                     v-if="phase.phase === 'nominating' || phase.phase === 'voting'" 
@@ -15,6 +18,10 @@
                             <b>{{ $t(`mca_ayim.main.stage.${phase.phase}`) }}</b>
                         </div>
                         <div class="voting-date__subtitle">
+                            <!-- Only show on mobile instead of wheel -->
+                            <div class="voting-date__days">
+                                {{ remainingDays }}
+                            </div>
                             {{ $t('mca_ayim.main.daysLeft') }}
                         </div>
                     </div>
@@ -37,54 +44,32 @@
         </div>
 
         <div class="right-side">
-            <modeSwitcher
-                :page="'index'"
-                :phase="phase"
-                :user="user"
-                :eligible="eligible"
-                :selected-mode="mode"
-                @mode="updateMode"
-            />
+            <mode-switcher>
+                <index-page />
+            </mode-switcher>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import modeSwitcher from "../components/mode/modeSwitcher.vue";
+import { Vue, Component } from "vue-property-decorator";
+import { State } from "vuex-class";
 
-export default Vue.extend({
+import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
+import IndexPage from "../components/IndexPage.vue";
+
+import { Phase } from "../../interfaces/mca";
+
+@Component({
     components: {
-        "modeSwitcher": modeSwitcher,
+        ModeSwitcher,
+        IndexPage,
     },
-    data () {
-        return {
-            dateInfo: Intl.DateTimeFormat().resolvedOptions(),
-        };
-    },
-    computed: {
-        remainingDays (): number {
-            return Math.floor((this.phase.endDate?.getTime() - Date.now()) / (1000*60*60*24));
-        },
-        eligible () {
-            return this.$parent.$attrs.eligible;
-        },
-        mode () {
-            return this.$parent.$attrs.mode;
-        },
-        phase () {
-            return this.$parent.$attrs.phase as any;
-        },
-        user () {
-            return this.$parent.$attrs.user;
-        },
-        timeRange (): string {
-            const dateInfo = Intl.DateTimeFormat().resolvedOptions();
-            const options = { timeZone: dateInfo.timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
+})
+export default class Index extends Vue {
 
-            return this.phase.startDate.toLocaleString(dateInfo.locale, options) + " - " + this.phase.endDate.toLocaleString(dateInfo.locale, options);
-        },
-    },
+    @State phase!: Phase;
+
     mounted () {
         let days = 0;
 
@@ -100,28 +85,25 @@ export default Vue.extend({
         if (wheel) {
             wheel.style["transform"] = `rotate(${(360 / 32) * days}deg)`;
         }
-    },
-    methods: {
-        updateMode (val) {
-            this.$parent.$emit("mode", val);
-        },
-    },
-});
+    }
+
+    get remainingDays (): number {
+        return Math.floor((this.phase?.endDate?.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+    }
+
+    get timeRange (): string {
+        const dateInfo = Intl.DateTimeFormat().resolvedOptions();
+        const options = { timeZone: dateInfo.timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
+
+        return this.phase?.startDate.toLocaleString(dateInfo.locale, options) + " - " + this.phase?.endDate.toLocaleString(dateInfo.locale, options);
+    }
+
+}
 </script>
 
 <style lang="scss">
-.home {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    flex: 1 1 auto;
-    margin-bottom: 9%;
-        
-    @media (min-width: 1200px) {
-        margin-bottom: 0px;
-    }
-}
+@import '@s-sass/_mixins';
+@import '@s-sass/_variables';
 
 .left-side {
     overflow: hidden;
@@ -150,6 +132,7 @@ export default Vue.extend({
     }
 
     &__wheel-img {
+        display: none;
         width: 950px;
         height: 950px;
         background: url("../../Assets/img/ayim-mca/site/wheel.png") no-repeat center;
@@ -161,6 +144,7 @@ export default Vue.extend({
     }
 
     &__wheel-box {
+        display: none;
         box-shadow: inset 0 0 20px 0px #222;
         border: 3px solid rgba(0, 0, 0, 0.3);
         border-radius: 15px;
@@ -192,6 +176,20 @@ export default Vue.extend({
         text-align: right;
         letter-spacing: -8.96px;
     }
+
+    &__days {
+        display: inline-block;
+    }
+
+    @include breakpoint(tablet) {
+        &__wheel-img, &__wheel-box {
+            display: block;
+        }
+
+        &__days {
+            display: none;
+        }
+    }
 }
 
 .general-info {
@@ -205,9 +203,10 @@ export default Vue.extend({
     width: 100%;
     display: flex;
     flex-direction: column;
+    padding-top: 30px;
 }
 
-@media (min-width: 1040px) {    
+@include breakpoint(desktop) {
     .left-side, .right-side {
         flex: 0 0 50%;
         max-width: 50%;

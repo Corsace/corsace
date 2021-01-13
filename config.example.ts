@@ -80,7 +80,7 @@ export class Config {
 
     open : SubConfig
 
-    constructor() {
+    constructor () {
         this.database = {
             name: "DB_Name (not literally MariaDB)",
             username: "MariaDB username",

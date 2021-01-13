@@ -1,0 +1,22 @@
+@import '_variables';
+
+@mixin breakpoint($device) {
+    @if $device == desktop {
+        @media (min-width: $breakpoint-xl) { @content ; }
+    }
+    @else if $device == laptop {
+        @media (min-width: $breakpoint-lg) { @content ; }
+    }
+    @else if $device == tablet {
+        @media (min-width: $breakpoint-md) { @content ; }
+    }
+    @else if $device == mobile {
+        @media (max-width: $breakpoint-sm)  { @content ; }
+    }
+}
+
+@mixin transition($properties: 'all') {
+    transition-property: #{$properties};
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+}

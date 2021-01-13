@@ -1,4 +1,4 @@
-import Router from "koa-router";
+import Router from "@koa/router";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { Beatmapset } from "../../../Models/beatmapset";
@@ -15,7 +15,7 @@ indexRouter.get("/front", async (ctx) => {
     const newDate = new Date;
 
     try {
-        const mca = await MCA.findOne(newDate.getUTCFullYear()-1);
+        const mca = await MCA.findOne(newDate.getUTCFullYear() - 1);
 
         if (!mca)
             return ctx.body = { error: "There is no MCA for this year currently!" };
@@ -26,7 +26,7 @@ indexRouter.get("/front", async (ctx) => {
             const beatmapCounter = getRepository(Beatmapset)
                 .createQueryBuilder("beatmapset")
                 .innerJoinAndSelect("beatmapset.beatmaps", "beatmap", mode.ID === 5 ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: mode.ID === 5 ? true : mode.ID })
-                .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${mca.year}-01-01`, end: `${mca.year+1}-01-01` })
+                .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${mca.year}-01-01`, end: `${mca.year + 1}-01-01` })
                 .getCount();
 
             const [categories, beatmapCount, organizers] = await Promise.all([
@@ -55,7 +55,7 @@ indexRouter.get("/phase", async (ctx) => {
     const newDate = new Date;
 
     try {
-        const mca = await MCA.findOne(newDate.getUTCFullYear()-1);
+        const mca = await MCA.findOne(newDate.getUTCFullYear() - 1);
 
         if (!mca)
             return ctx.body = { error: "There is no MCA for this year currently!" };

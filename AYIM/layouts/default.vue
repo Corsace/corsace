@@ -1,69 +1,67 @@
 <template>
     <div
-        v-if="loaded"
+        :style="loadingTransition"
         class="layout"
     >
-        <headerComponent 
-            :user="user"
-        />
-        <nuxt 
-            :user="user" 
-            :eligible="eligible"
-        />
-        <footerComponent />
+        <the-header site="ayim" />
+
+        <transition name="fade">
+            <nuxt class="main" />
+        </transition>
+        
+        <the-footer />
     </div>
 </template>
 
-<script>
-import axios from "axios";
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 
-import header from "../components/header/header";
-import footer from "../components/footer/footer";
+import TheHeader from "../../MCA-AYIM/components/header/TheHeader.vue";
+import TheFooter from "../../MCA-AYIM/components/footer/TheFooter.vue";
 
-export default {
+@Component({
     components: {
-        "headerComponent": header,
-        "footerComponent": footer,
+        TheHeader,
+        TheFooter,
     },
-    data () {
-        return {
-            loaded: false,
-            user: null,
-            eligible: false,
-        };
-    },
-    created: async function () {
-        await this.update();
-        this.loaded = true;
-    },
-    methods: {
-        update: async function() {
-            try {
-                const data = (await axios.get(`/api/user`)).data;
+})
+export default class Default extends Vue {
 
-                if (!data.error) {
-                    this.user = data.user;
-                    for (const eligibility of this.user.mcaEligibility) {
-                        if (eligibility.year === (new Date).getUTCFullYear) {
-                            this.eligible = true;
-                        }
-                    }
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        },
-    },
-};
+    loaded = false;
+
+    get loadingTransition () {
+        if (!this.loaded)
+            return {
+                opacity: 0,
+            };
+        else
+            return {
+                opacity: 1,
+            };
+    }
+
+    async mounted () {
+        await this.$store.dispatch("setInitialData");
+        this.loaded = true;
+    }
+    
+}
 </script>
 
 <style lang="scss">
+@import '@s-sass/_mixins';
 
 .layout {
+    height: 100%;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    width: 100vw;
+    
+    @include transition;
 }
 
+.main {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+}
 </style>

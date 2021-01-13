@@ -1,4 +1,4 @@
-import Router from "koa-router";
+import Router from "@koa/router";
 import { Like } from "typeorm";
 import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";

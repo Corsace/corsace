@@ -1,13 +1,14 @@
-import Router from "koa-router";
+import Router from "@koa/router";
 import passport from "koa-passport";
 import Axios from "axios";
+import { ParameterizedContext } from "koa";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
 import { Config } from "../../config";
 import { UsernameChange } from "../../Models/usernameChange";
 
 const osuRouter = new Router();
 const config = new Config();
-const mode = [
+const modes = [
     "standard",
     "taiko",
     "fruits",
@@ -15,27 +16,18 @@ const mode = [
 ];
 
 osuRouter.get("/", passport.authenticate("oauth2", { scope: ["identify", "public"] }));
-osuRouter.get("/callback", async (ctx, next) => {
-    // @ts-ignore
+osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
     return await passport.authenticate("oauth2", { scope: ["identify", "public"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
-            if (ctx.state.user) {
-                await ctx.state.user.remove();
-                ctx.state.user.ID = user.ID;
-                ctx.state.user.osu = user.osu;
-                user = ctx.state.user;
-            }
-
             await user.save();
-            // @ts-ignore
             ctx.login(user);
             await next();
         } else {
             ctx.status = 400;
             ctx.body = { error: err };
         }
-    })(ctx);
-}, async (ctx, next) => {
+    })(ctx, next);
+}, async (ctx, next) => {    
     // Username changes
     const res = await Axios.get("https://osu.ppy.sh/api/v2/me", {
         headers: {
@@ -68,8 +60,8 @@ osuRouter.get("/callback", async (ctx, next) => {
                     eligibility.user = ctx.state.user;
                 }
                 
-                if (!eligibility[mode[beatmap.mode]]) {
-                    eligibility[mode[beatmap.mode]] = true;
+                if (!eligibility[modes[beatmap.mode]]) {
+                    eligibility[modes[beatmap.mode]] = true;
                     eligibility.storyboard = true;
                     await eligibility.save();
                     const i = ctx.state.user.mcaEligibility.findIndex((e: MCAEligibility) => e.year === year);

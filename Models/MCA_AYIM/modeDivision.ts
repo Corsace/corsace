@@ -13,16 +13,16 @@ export class ModeDivision extends BaseEntity {
     @Column()
     name!: string;
 
-    @OneToMany(type => GuestRequest, guestRequest => guestRequest.mode)
+    @OneToMany(() => GuestRequest, guestRequest => guestRequest.mode)
     guestRequests!: GuestRequest[];
 
-    @OneToMany(type => UserComment, userComment => userComment.mode)
+    @OneToMany(() => UserComment, userComment => userComment.mode)
     userComments!: UserComment[];
 
-    @OneToMany(type => Beatmap, beatmap => beatmap.mode)
+    @OneToMany(() => Beatmap, beatmap => beatmap.mode)
     beatmaps!: Beatmap[];
     
-    @OneToMany(type => Category, category => category.mode)
+    @OneToMany(() => Category, category => category.mode)
     categories!: Category[];
 
 }

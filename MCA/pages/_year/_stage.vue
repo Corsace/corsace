@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div v-if="phase">
         <div
             v-if="phase.phase && (phase.phase === 'nominating' || phase.phase === 'voting')"
             class="stage__remainingDays" 
-            :class="`stage__remainingDays--${mode}`"
+            :class="`stage__remainingDays--${selectedMode}`"
         >
             <div class="stage__remainingDaysNumber">
                 {{ remainingDays }}
@@ -18,69 +18,68 @@
                 !
             </div>
         </div>
-        <modeSwitcher
-            :page="'stage'"
-            :phase="phase"
-            :selected-mode="mode"
-            :user="user"
-            @mode="updateMode"
-        />
+        <div class="stage-wrapper">
+            <mode-switcher :enable-mode-eligibility="true">
+                <stage-page />
+            </mode-switcher>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import modeSwitcher from "../../components/mode/modeSwitcher.vue";
+import { Vue, Component } from "vue-property-decorator";
+import { State } from "vuex-class";
 
-export default Vue.extend({
-    validate ({ params }) {
-        if (/^(nominating|nominate|vote|voting)$/i.test(params.year))
-        {
-            if (/^(nominating|nominate|vote|voting)$/i.test(params.stage))
-                return false;
+import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
+import StagePage from "../../components/stage/StagePage.vue";
 
+import { Phase } from "../../../interfaces/mca";
+
+@Component({
+    components: {
+        ModeSwitcher,
+        StagePage,
+    },
+    validate ({ params }): boolean {
+        const stageRegex = /^(nominating|nominate|vote|voting)$/i;
+        // Allow /nominating
+        if (stageRegex.test(params.year)) {
             params.stage = params.year;
-            params.year = ((new Date).getUTCFullYear()-1).toString();
+            params.year = (new Date().getUTCFullYear() + 1).toString();
+
+            return true;
         }
 
-        return params.year && !/^20\d\d$/.test(params.year) ? false : /^(nominating|nominate|vote|voting)$/i.test(params.stage);
+        // /2020/nominating
+        return /^20\d\d$/.test(params.year) && stageRegex.test(params.stage);
     },
-    components: {
-        "modeSwitcher": modeSwitcher,
-    },
-    data () {
-        return {
-            modes: ["standard", "taiko", "fruits", "mania", "storyboard"],
-        };
-    },
-    computed: {
-        remainingDays (): string {
-            const date = Math.floor((this.phase.endDate - Date.now()) / (1000*60*60*24));
+})
+export default class Stage extends Vue {
+
+    @State phase!: Phase;
+    @State selectedMode!: string;
+
+    get remainingDays (): string {
+        if (this.phase) {
+            const date = Math.floor((this.phase.endDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
             return date > 9 ? date.toString() : "0" + date;
-        },
-        eligible () {
-            return this.$parent.$attrs.eligible;
-        },
-        mode () {
-            return this.$parent.$attrs.mode;
-        },
-        phase () {
-            return this.$parent.$attrs.phase as any;
-        },
-        user () {
-            return this.$parent.$attrs.user;
-        },
-    },
-    methods: {
-        updateMode (val) {
-            this.$parent.$emit("mode", val);
-        },
-    },
-});
+        }
+
+        return "0";
+    }
+
+}
 </script>
 
 <style lang="scss">
-$modes: "storyboard", "mania" , "fruits", "taiko", "standard";
+@import '@s-sass/_variables';
+@import '@s-sass/_mixins';
+
+.stage-wrapper {
+    padding-top: 35px;
+    height: 100%;
+    width: 100%;
+}
 
 @mixin mode-vote-color {
     @each $mode in $modes {
@@ -104,8 +103,7 @@ $modes: "storyboard", "mania" , "fruits", "taiko", "standard";
     z-index: -100;
 
     @include mode-vote-color;
-
-    transition: all 0.25s ease-out;
+    @include transition;
 }
 
 .stage__remainingDaysNumber {

@@ -1,12 +1,11 @@
 import { Config } from "../config";
 import { discordGuild } from "./discord";
 import { ParameterizedContext, Next } from "koa";
-import Router from "koa-router";
 
 // General middlewares
 const config = new Config();
 
-async function isLoggedIn(ctx: ParameterizedContext<any, Router.IRouterParamContext<any, {}>>, next: Next): Promise<void> {
+async function isLoggedIn (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (!ctx.state.user) {
         ctx.body = { error: "No user found!" };
         return;
@@ -15,7 +14,7 @@ async function isLoggedIn(ctx: ParameterizedContext<any, Router.IRouterParamCont
     await next();
 }
 
-async function isLoggedInDiscord(ctx: ParameterizedContext<any, Router.IRouterParamContext<any, {}>>, next: Next): Promise<void> {
+async function isLoggedInDiscord (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (!ctx.state.user?.discord?.accessToken) {
         ctx.body = { error: "User is not logged in via discord!" };
         return; 
@@ -24,7 +23,7 @@ async function isLoggedInDiscord(ctx: ParameterizedContext<any, Router.IRouterPa
     await next();
 }
 
-async function isLoggedInOsu(ctx: ParameterizedContext<any, Router.IRouterParamContext<any, {}>>, next: Next): Promise<void> {
+async function isLoggedInOsu (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (!ctx.state.user?.osu?.accessToken) {
         ctx.body = { error: "User is not logged in via osu!" };
         return; 
@@ -33,7 +32,7 @@ async function isLoggedInOsu(ctx: ParameterizedContext<any, Router.IRouterParamC
     await next();
 }
 
-async function isStaff(ctx: ParameterizedContext<any, Router.IRouterParamContext<any, {}>>, next: Next): Promise<void> {
+async function isStaff (ctx: ParameterizedContext, next: Next): Promise<void> {
     const member = await (await discordGuild()).members.fetch(ctx.state.user.discord.userID);
     if (member) {
         const roles = [
@@ -53,11 +52,11 @@ async function isStaff(ctx: ParameterizedContext<any, Router.IRouterParamContext
     return; 
 }
 
-function hasRole(section: string, role: string) {
-    return async (ctx: ParameterizedContext<any, Router.IRouterParamContext<any, {}>>, next: Next): Promise<void> => {
+function hasRole (section: string, role: string) {
+    return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
         const member = await (await discordGuild()).members.fetch(ctx.state.user.discord.userID);
         if (member && (member.roles.cache.has(config.discord.roles[section][role]) || member.roles.cache.has(config.discord.roles.corsace.corsace))) {
-            await next();    
+            await next();
             return;
         } 
         

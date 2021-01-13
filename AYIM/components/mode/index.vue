@@ -35,8 +35,6 @@ export default {
 };
 </script>
 <style lang="scss">
-$modes: "storyboard", "mania" , "fruits", "taiko", "standard";
-
 .general-info {
     border-radius: 15px 0 0 15px; 
     background-color: rgba(0, 0, 0, 0.8); 

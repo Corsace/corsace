@@ -17,7 +17,7 @@ export class UserComment extends BaseEntity {
     @Column({ default: false })
     isValid!: boolean;
 
-    @ManyToOne(type => ModeDivision, modeDivision => modeDivision.userComments, {
+    @ManyToOne(() => ModeDivision, modeDivision => modeDivision.userComments, {
         nullable: false,
         eager: true,
     })
@@ -26,13 +26,13 @@ export class UserComment extends BaseEntity {
     @Column()
     commenterID!: number;
 
-    @ManyToOne(type => User, user => user.commentsMade, { nullable: false })
+    @ManyToOne(() => User, user => user.commentsMade, { nullable: false })
     commenter!: User;
 
-    @ManyToOne(type => User, user => user.commentsReceived, { nullable: false })
+    @ManyToOne(() => User, user => user.commentsReceived, { nullable: false })
     target!: User;
 
-    @ManyToOne(type => User, user => user.commentReviews)
+    @ManyToOne(() => User, user => user.commentReviews)
     reviewer!: User;
 
     @Column()

@@ -1,6 +1,6 @@
 
 export class Timer {
-    constructor() {
+    constructor () {
         this.start = Date.now();
         this.phases = [this.start];
         this.timesElapsed = [];
@@ -15,8 +15,8 @@ export class Timer {
     public tick = (log = true): void => {
         this.phases.push(Date.now());
         if (log) {
-            this.timesElapsed.push(this.phases[this.phases.length-1] - this.phases[this.phases.length-2]);
-            console.log(`Elapsed: ${this.timesElapsed[this.timesElapsed.length-1]}ms`);
+            this.timesElapsed.push(this.phases[this.phases.length - 1] - this.phases[this.phases.length - 2]);
+            console.log(`Elapsed: ${this.timesElapsed[this.timesElapsed.length - 1]}ms`);
         }
     }
 

@@ -1,9 +1,8 @@
-import { Entity, Column, BaseEntity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, BaseEntity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 
 @Entity()
 export class MCAEligibility extends BaseEntity {
-    [k: string]: any;
 
     @PrimaryGeneratedColumn()
     ID!: number;
@@ -26,7 +25,7 @@ export class MCAEligibility extends BaseEntity {
     @Column({ default: false })
     storyboard!: boolean;
 
-    @ManyToOne(type => User, user => user.mcaEligibility)
+    @ManyToOne(() => User, user => user.mcaEligibility)
     user!: User;
 
 }

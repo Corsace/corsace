@@ -3,21 +3,20 @@
         <div class="ayim-bg" />
         <div class="left-side" />
         <div class="right-side">
-            <modeSwitcher 
-                :page="'index'"
-            />
+            <mode-switcher />
         </div>
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import axios from "axios";
 
-import modeSwitcher from "../components/mode/modeSwitcher";
+import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
 
-export default {
+export default Vue.extend({
     components: {
-        "modeSwitcher": modeSwitcher,
+        ModeSwitcher,
     },
     data () {
         return {
@@ -28,7 +27,7 @@ export default {
             modes: ["standard", "taiko", "fruits", "mania", "storyboard"],
         };
     },
-    mounted: async function() {
+    async mounted () {
         this.selectedMode = this.$route.params.mode || "standard";
 
         try {
@@ -44,16 +43,14 @@ export default {
         }
     },
     methods: {
-        async run () {
+        async run (): Promise<void> {
             console.log((await axios.post(`/api/user/guestDifficulty/2019/osu`)).data);
         },
     },
-};
+});
 </script>
 
 <style lang="scss">
-$modes: "storyboard", "mania" , "fruits", "taiko", "standard";
-
 .home {
     width: 100%;
     padding-bottom: 9vh;

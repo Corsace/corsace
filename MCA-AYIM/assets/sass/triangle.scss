@@ -1,0 +1,25 @@
+@import '_variables';
+@import '_mixins';
+
+@mixin mode-triangle {
+    @each $mode in $modes {
+        &--#{$mode} {
+            border-top: none;
+            border-bottom: 10px solid var(--#{$mode});
+        }
+    }
+}
+
+.triangle {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 10px solid;
+    border-bottom: none;
+    @include transition();
+
+    &-active {
+        @include mode-triangle;
+    }
+}
