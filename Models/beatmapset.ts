@@ -1,5 +1,5 @@
 import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne } from "typeorm";
-import { BeatmapsetInfo } from "../interfaces/beatmap";
+import { BeatmapsetInfo } from "../Interfaces/beatmap";
 import { Beatmap } from "./beatmap";
 import { Nomination } from "./MCA_AYIM/nomination";
 import { Vote } from "./MCA_AYIM/vote";

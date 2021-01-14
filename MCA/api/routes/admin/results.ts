@@ -2,7 +2,7 @@ import Router from "@koa/router";
 import { isLoggedInDiscord, isCorsace } from "../../../../Server/middleware";
 import { Vote } from "../../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../../Models/MCA_AYIM/category";
-import { CategoryType } from "../../../../interfaces/category";
+import { CategoryType } from "../../../../Interfaces/category";
 
 interface CategoryWinners {
     categoryID: number;

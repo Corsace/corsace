@@ -1,5 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, OneToMany } from "typeorm";
-import { MCAInfo } from "../../interfaces/mca";
+import { MCAInfo } from "../../Interfaces/mca";
 import { Category } from "./category";
 
 export class Phase {

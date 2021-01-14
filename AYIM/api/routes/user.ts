@@ -7,7 +7,7 @@ import { Config } from "../../../config";
 import axios from "axios";
 import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
-import { RequestStatus } from "../../../interfaces/guestRequests";
+import { RequestStatus } from "../../../Interfaces/guestRequests";
 
 const UserRouter = new Router();
 const config = new Config();

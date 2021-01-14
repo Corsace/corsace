@@ -2,7 +2,7 @@ import { Entity, Column, BaseEntity, ManyToOne, OneToOne, JoinTable, PrimaryGene
 import { User } from "../user";
 import { Beatmap } from "../beatmap";
 import { ModeDivision } from "./modeDivision";
-import { RequestStatus } from "../../interfaces/guestRequests";
+import { RequestStatus } from "../../Interfaces/guestRequests";
 
 @Entity()
 export class GuestRequest extends BaseEntity {

@@ -3,7 +3,7 @@
         "target": "ES5",
         "module": "commonjs",
         "moduleResolution": "node",
-        "outDir": "build",
+        "outDir": "Build",
         "emitDecoratorMetadata": true,
         "esModuleInterop": true,
         "experimentalDecorators": true,

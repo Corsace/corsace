@@ -7,9 +7,9 @@ import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
 import { isEligibleFor, isEligibleCurrentYear, isPhaseStarted, isPhase, validatePhaseYear } from "../middleware";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
-import { CategoryStageInfo, CategoryType } from "../../../interfaces/category";
-import { BeatmapsetInfo } from "../../../interfaces/beatmap";
-import { UserCondensedInfo } from "../../../interfaces/user";
+import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
+import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
+import { UserCondensedInfo } from "../../../Interfaces/user";
 
 const nominationsRouter = new Router();
 

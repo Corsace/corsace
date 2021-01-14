@@ -12,7 +12,7 @@
             >
                 <img
                     class="choice__selection-check"
-                    :class="{ 'choice__selectionCheck--chosen': choice.chosen }"
+                    :class="{ 'choice__selection-check--chosen': choice.chosen }"
                     src="../../Assets/img/ayim-mca/site/checkmark.png"
                 >
             </div>

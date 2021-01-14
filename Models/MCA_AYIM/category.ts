@@ -3,7 +3,7 @@ import { ModeDivision } from "./modeDivision";
 import { Nomination } from "./nomination";
 import { Vote } from "./vote";
 import { MCA } from "./mca";
-import { CategoryInfo, CategoryType } from "../../interfaces/category";
+import { CategoryInfo, CategoryType } from "../../Interfaces/category";
 
 export class CategoryFilter {
 

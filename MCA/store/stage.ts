@@ -1,9 +1,9 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import axios from "axios";
-import { UserCondensedInfo } from "../../interfaces/user";
+import { UserCondensedInfo } from "../../Interfaces/user";
 import { RootState } from ".";
-import { CategoryStageInfo } from "../../interfaces/category";
-import { BeatmapsetInfo } from "../../interfaces/beatmap";
+import { CategoryStageInfo } from "../../Interfaces/category";
+import { BeatmapsetInfo } from "../../Interfaces/beatmap";
 
 export type SectionCategory = "beatmaps" | "users";
 

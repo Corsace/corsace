@@ -3,7 +3,7 @@ import { isLoggedInDiscord, isCorsace } from "../../../../Server/middleware";
 import { Category, CategoryGenerator } from "../../../../Models/MCA_AYIM/category";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { ModeDivision } from "../../../../Models/MCA_AYIM/modeDivision";
-import { CategoryInfo, CategoryType } from "../../../../interfaces/category";
+import { CategoryInfo, CategoryType } from "../../../../Interfaces/category";
 
 const adminCategoriesRouter = new Router;
 const categoryGenerator = new CategoryGenerator;

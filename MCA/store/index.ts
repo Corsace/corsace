@@ -1,7 +1,7 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import axios from "axios";
-import { Phase } from "../../interfaces/mca";
-import { UserMCAInfo } from "../../interfaces/user";
+import { Phase } from "../../Interfaces/mca";
+import { UserMCAInfo } from "../../Interfaces/user";
 
 const modeRegex = /^(standard|taiko|fruits|mania|storyboard)$/;
 

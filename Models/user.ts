@@ -11,7 +11,7 @@ import { Beatmapset } from "./beatmapset";
 import { Config } from "../config";
 import { GuildMember } from "discord.js";
 import { discordGuild } from "../Server/discord";
-import { UserCondensedInfo, UserInfo, UserMCAInfo } from "../interfaces/user";
+import { UserCondensedInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 
 // General middlewares
 const config = new Config();
