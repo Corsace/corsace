@@ -57,7 +57,7 @@
       "dev": "concurrently --names \"MCA,AYIM\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run mca-dev\" \"npm run ayim-dev\"",
       "lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",
       "lintfix": "eslint --fix --ext .ts,.vue --ignore-path .gitignore .",
-      "fetchMaps": "tsc && node ./build/CorsaceServer/scripts/fetchYearMaps.js"
+      "fetchMaps": "tsc && node ./build/Server/scripts/fetchYearMaps.js"
    },
    "repository": {
       "type": "git",
