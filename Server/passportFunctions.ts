@@ -5,7 +5,7 @@ import Axios from "axios";
 import { discordClient } from "./discord";
 
 
-async function discordPassport(accessToken: string, refreshToken: string, profile: DiscordStrategy.Profile, done: OAuth2Strategy.VerifyCallback): Promise<void> {
+async function discordPassport (accessToken: string, refreshToken: string, profile: DiscordStrategy.Profile, done: OAuth2Strategy.VerifyCallback): Promise<void> {
     try {
         let user = await User.findOne({ 
             discord: {
@@ -34,7 +34,7 @@ async function discordPassport(accessToken: string, refreshToken: string, profil
     }
 }
 
-async function osuPassport(accessToken: string, refreshToken: string, profile: any, done: OAuth2Strategy.VerifyCallback): Promise<void> {
+async function osuPassport (accessToken: string, refreshToken: string, profile: any, done: OAuth2Strategy.VerifyCallback): Promise<void> {
     try {
         const res = await Axios.get("https://osu.ppy.sh/api/v2/me", {
             headers: {
@@ -60,7 +60,6 @@ async function osuPassport(accessToken: string, refreshToken: string, profile: a
         user.osu.accessToken = accessToken;
         user.osu.refreshToken = refreshToken;
         user.osu.lastVerified = user.lastLogin = new Date;
-        user.mcaEligibility = [];
 
         done(null, user);
     } catch (error) {

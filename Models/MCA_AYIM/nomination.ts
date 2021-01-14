@@ -9,23 +9,23 @@ export class Nomination extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
 
-    @ManyToOne(type => User, user => user.nominations, {
+    @ManyToOne(() => User, user => user.nominations, {
         nullable: false,
     })
     nominator!: User;
     
-    @ManyToOne(type => Category, category => category.nominations, {
+    @ManyToOne(() => Category, category => category.nominations, {
         nullable: false,
         eager: true,
     })
     category!: Category;
 
-    @ManyToOne(type => User, user => user.nominationsReceived, {
+    @ManyToOne(() => User, user => user.nominationsReceived, {
         eager: true,
     })
     user?: User;
 
-    @ManyToOne(type => Beatmapset, Beatmapset => Beatmapset.nominationsReceived, {
+    @ManyToOne(() => Beatmapset, Beatmapset => Beatmapset.nominationsReceived, {
         eager: true,
     })
     beatmapset?: Beatmapset;
@@ -33,7 +33,7 @@ export class Nomination extends BaseEntity {
     @Column({ default: false })
     isValid!: boolean;
     
-    @ManyToOne(type => User, user => user.nominationReviews)
+    @ManyToOne(() => User, user => user.nominationReviews)
     reviewer!: User;
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })

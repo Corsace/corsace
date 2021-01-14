@@ -1,36 +1,24 @@
 <template>
-    <modeSwitcher 
-        :eligible="eligible"
-        :page="'admin'"
-        :selected-mode="mode"
-        @mode="updateMode"
-    />
+    <div>
+        <mode-switcher :hide-phase="true">
+            <admin-page />
+        </mode-switcher>
+    </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Vue, Component } from "vue-property-decorator";
 
-import modeSwitcher from "../components/mode/modeSwitcher.vue";
+import AdminPage from "../components/admin/AdminPage.vue";
+import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
 
-export default Vue.extend({
+@Component({
     components: {
-        "modeSwitcher": modeSwitcher,
+        ModeSwitcher,
+        AdminPage,
     },
-    computed: {
-        eligible () {
-            return this.$parent.$attrs.eligible;
-        },
-        mode () {
-            return this.$parent.$attrs.mode;
-        },
-        user () {
-            return this.$parent.$attrs.user;
-        },
-    },
-    methods: {
-        updateMode (val) {
-            this.$parent.$emit("mode", val);
-        },
-    },
-});
+})
+export default class Admin extends Vue {
+    
+}
 </script>

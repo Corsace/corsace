@@ -1,8 +1,8 @@
 import { ParameterizedContext, Next } from "koa";
-import Router from "koa-router";
 import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
+import { User } from "../../Models/user";
 
-async function isEligible(ctx: ParameterizedContext<any, Router.IRouterParamContext<any, {}>>, next: Next): Promise<void> {
+async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (!ctx.params.year) {
         ctx.body = { error: "No year given!" };
         return;
@@ -18,7 +18,7 @@ async function isEligible(ctx: ParameterizedContext<any, Router.IRouterParamCont
     ctx.body = { error: "User is currently not eligible!" };
 }
 
-async function isNotEligible(ctx: ParameterizedContext<any, Router.IRouterParamContext<any, {}>>, next: Next): Promise<void> {
+async function isNotEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (!ctx.params.year) {
         ctx.body = { error: "No year given!" };
         return;
@@ -34,7 +34,7 @@ async function isNotEligible(ctx: ParameterizedContext<any, Router.IRouterParamC
     await next();
 }
 
-async function isEligibleCurrentYear(ctx, next): Promise<void> {
+async function isEligibleCurrentYear (ctx: ParameterizedContext, next: Next): Promise<void> {
     const currentYear = new Date().getFullYear() - 1;
     
     if (ctx.state.user.mcaEligibility.find(e => e.year === currentYear)) {
@@ -46,7 +46,7 @@ async function isEligibleCurrentYear(ctx, next): Promise<void> {
     };
 }
 
-function isEligibleFor(user, modeID): boolean {
+function isEligibleFor (user: User, modeID: number): boolean {
     const currentYear = new Date().getFullYear() - 1;
 
     for (const eligibility of user.mcaEligibility) {

@@ -9,12 +9,12 @@ export class Vote extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
 
-    @ManyToOne(type => User, user => user.votes, {
+    @ManyToOne(() => User, user => user.votes, {
         nullable: false,
     })
     voter!: User;
     
-    @ManyToOne(type => Category, category => category.votes, {
+    @ManyToOne(() => Category, category => category.votes, {
         nullable: false,
     })
     category!: Category;
@@ -22,13 +22,13 @@ export class Vote extends BaseEntity {
     @Column({ nullable: true })
     userID?: number;
 
-    @ManyToOne(type => User, user => user.votesReceived)
+    @ManyToOne(() => User, user => user.votesReceived)
     user?: User;
 
     @Column({ nullable: true })
     beatmapsetID?: number;
 
-    @ManyToOne(type => Beatmapset, Beatmapset => Beatmapset.votesReceived)
+    @ManyToOne(() => Beatmapset, Beatmapset => Beatmapset.votesReceived)
     beatmapset?: Beatmapset;
 
     @Column()

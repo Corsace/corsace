@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+import { createConnection, getConnectionManager } from "typeorm";
 import Koa from "koa";
 import BodyParser from "koa-bodyparser";
 import Mount from "koa-mount";
@@ -18,49 +18,101 @@ export class App {
 
     public koa = new Koa;
     private config = new Config;
+    private subConfig = new Config;
+    private hasCreatedConnection = false;
 
-    constructor(type: string) {
-        const subconfig = this.config[type];
-        
-        // Connect to DB
-        createConnection({
-            "type": "mariadb",
-            "host": "localhost",
-            "username": this.config.database.username,
-            "password": this.config.database.password,
-            "database": this.config.database.name,
-            "timezone": "Z",
-            "synchronize": true,
-            "logging": false,
-            "entities": [
-                "../Models/**/*.ts",
-            ],
-        }).then((connection) => {
-            console.log("Connected to the " + connection.options.database + " database!");
-        }).catch(error => console.log("An error has occurred in connecting.", error));
-        
-        // Setup passport
-        passport.use(new DiscordStrategy({
-            clientID: this.config.discord.clientID,
-            clientSecret: this.config.discord.clientSecret,
-            callbackURL: subconfig.publicURL + "/api/login/discord/callback",
-        }, discordPassport));
+    constructor (project: string) {
+        this.subConfig = this.config[project];
 
-        passport.use(new OAuth2Strategy({
-            authorizationURL: "https://osu.ppy.sh/oauth/authorize",
-            tokenURL: "https://osu.ppy.sh/oauth/token",
-            clientID: subconfig.osuID,
-            clientSecret: subconfig.osuSecret,
-            callbackURL: subconfig.publicURL + "/api/login/osu/callback",
-        }, osuPassport));
+        // Cant use promise here cuz passport stops working... Errors inc
+        this.initializeDb();
+        this.setupPassport();
+
+        this.koa.keys = this.subConfig.keys;
+        this.koa.use(Session(this.koa));
+        this.koa.use(BodyParser());
+        this.koa.use(passport.initialize());
+        this.koa.use(passport.session());
+
+        // Error handler
+        this.koa.use(async (ctx, next) => {
+            try {
+                if (ctx.originalUrl !== "/favicon.ico") {
+                    console.log("\x1b[33m%s\x1b[0m", ctx.originalUrl);
+                }
+
+                await next();
+            } catch (err) {
+                ctx.status = err.status || 500;
+                ctx.body = { error: "Something went wrong!" };
+            }
+        });
+
+        this.koa.use(Mount("/login/discord", discordRouter.routes()));
+        this.koa.use(Mount("/login/osu", osuRouter.routes()));
+        this.koa.use(Mount("/logout", logoutRouter.routes()));
+    }
+
+    async initializeDb () {
+        try {
+            const currentConnection = getConnectionManager().has("default") ? getConnectionManager().get("default") : undefined;
+
+            // Code was reloaded but connection is still open or exists but disconnected idk why
+            if (currentConnection && !this.hasCreatedConnection) {
+                console.log("Recreating connection due to hot reloading");
+                
+                if (currentConnection.isConnected) {
+                    await currentConnection.close();
+                }
+
+                console.log("Done closing");
+            } else if (currentConnection) {
+                console.log("Connection already created");
+
+                if (!currentConnection.isConnected) {
+                    console.log("Reconnecting DB");
+                    await currentConnection.connect();
+                }
+
+                return;
+            }
+
+            console.log("Making new connection...");
+            this.hasCreatedConnection = true;
     
+            // Connect to DB
+            const connection = await createConnection({
+                "name": "default",
+                "type": "mariadb",
+                "host": "localhost",
+                "username": this.config.database.username,
+                "password": this.config.database.password,
+                "database": this.config.database.name,
+                "timezone": "Z",
+                "synchronize": true,
+                "logging": ["error"],
+                "entities": [
+                    "../Models/**/*.ts",
+                ],
+            });
+
+            console.log(`Connected to the ${connection.options.database} (${connection.options.name}) database!`);
+        } catch (error) {
+            console.log("An error has occurred in connecting.", error);
+        }
+    }
+
+    setupPassport () {
+        // Setup passport
         passport.serializeUser((user: User, done) => {
             done(null, user.ID);
         });
-        passport.deserializeUser(async (id, done) => {
+
+        passport.deserializeUser(async (id: number, done) => {
             if (!id) return done(null, null);
+
             try {
-                const user = await User.findOne(id as number);
+                const user = await User.findOne(id);
                 if (user)
                     done(null, user);
                 else
@@ -71,13 +123,18 @@ export class App {
             }        
         });
 
-        this.koa.keys = subconfig.keys;
-        this.koa.use(Session(this.koa));
-        this.koa.use(BodyParser());
-        this.koa.use(passport.initialize());
-        this.koa.use(passport.session());
-        this.koa.use(Mount("/login/discord", discordRouter.routes()));
-        this.koa.use(Mount("/login/osu", osuRouter.routes()));
-        this.koa.use(Mount("/logout", logoutRouter.routes()));
+        passport.use(new DiscordStrategy({
+            clientID: this.config.discord.clientID,
+            clientSecret: this.config.discord.clientSecret,
+            callbackURL: this.subConfig.publicURL + "/api/login/discord/callback",
+        }, discordPassport));
+
+        passport.use(new OAuth2Strategy({
+            authorizationURL: "https://osu.ppy.sh/oauth/authorize",
+            tokenURL: "https://osu.ppy.sh/oauth/token",
+            clientID: this.subConfig.osuID,
+            clientSecret: this.subConfig.osuSecret,
+            callbackURL: this.subConfig.publicURL + "/api/login/osu/callback",
+        }, osuPassport));
     }
 }

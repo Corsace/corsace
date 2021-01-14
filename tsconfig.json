@@ -1,14 +1,19 @@
 {
     "compilerOptions": {
-      "emitDecoratorMetadata": true,
-      "esModuleInterop": true,
-      "experimentalDecorators": true,
-      "outDir": "build",
-      "strict": true,
-      "target": "ES5",
-      "types": [
-        "nuxt-i18n"
-      ],
-      "noImplicitAny": false
+        "target": "ES5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "outDir": "Build",
+        "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "resolveJsonModule": true,
+        "strict": true,
+        "noImplicitAny": false,
+        "types": [
+            "@types/node",
+            "@nuxt/types",
+            "nuxt-i18n"
+        ]
     }
- }
+}

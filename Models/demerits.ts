@@ -10,13 +10,13 @@ export class DemeritReport extends BaseEntity {
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     reportDate!: Date;
 
-    @Column({ type: "longtext", default: "" })
-    reason!: string;
+    @Column({ type: "longtext", nullable: true })
+    reason?: string;
 
     @Column({ default: 0 })
     amount!: number;
 
-    @ManyToOne(type => User, user => user.demerits)
+    @ManyToOne(() => User, user => user.demerits)
     user!: User;
 
     public getInfo = function(this: DemeritReport): DemeritInfo {
@@ -33,6 +33,6 @@ export class DemeritReport extends BaseEntity {
 export class DemeritInfo {
     date!: Date;
     user!: string;
-    reason!: string;
+    reason?: string;
     amount!: number;
 }

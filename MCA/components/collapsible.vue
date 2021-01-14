@@ -1,56 +1,65 @@
 <template>
     <div 
         class="collapsible"
-        :class="{'collapsible--active': active}"
-        :style="{'overflow-y': scroll ? 'visible' : 'hidden'}"
-        @click="!active ? ($emit('activate'), target = {}) : 0"
+        :class="{ 'collapsible--scrollable': scroll }"
     >
-        {{ title }}
+        <div
+            class="collapsible__title"
+            :class="{ 'collapsible__title--active': active }"
+            @click="activate"
+        >
+            {{ title }}
+        </div>
         <hr 
-            class="collapsible__Bar"
+            class="collapsible__bar"
             :class="`collapsible--${selectedMode}`"
         >
-        <div 
-            class="collapsible__Items"
-            :class="{ collapsible__ItemsExtra: !showExtra }"
-        >
+
+        <transition name="fade">
             <div
-                v-for="(item, i) in list"
-                :key="i"
-                class="collapsible__Info"
-                @click="$emit('target', item); target===item ? 0 : target=item"
+                v-if="active"
+                class="collapsible__items"
+                :class="{ 'collapsible__items-extra': !showExtra }"
             >
-                <div 
-                    class="collapsible__Name"
-                    :class="{'collapsible__Name--active': showExtra && target===item && active}"
-                >
-                    {{ item.name }} {{ showExtra ? item.maxNominations && !('count' in item) ? "- " + item.maxNominations: "" : "" }}
-                </div>
-                <hr
-                    class="collapsible__InfoBar"
-                    :class="[{'collapsible__InfoBar--active': showExtra && target===item && active}, `collapsible--${selectedMode}`]"
-                >
                 <div
-                    v-if="showExtra && 'count' in item && 'maxNominations' in item"
-                    class="collapsible__Count"
-                    :class="{'collapsible__Count--active': target===item && active}"
+                    v-for="(item, i) in list"
+                    :key="i"
+                    class="collapsible__info"
+                    @click="setTarget(item)"
                 >
-                    {{ item.count }}/{{ item.maxNominations }}
-                </div>
-                <div
-                    v-else-if="showExtra && 'type' in item"
-                    class="collapsible__Count"
-                    :class="{'collapsible__Count--active': target===item && active}"
-                >
-                    {{ item.type }}
+                    <div 
+                        class="collapsible__name"
+                        :class="{'collapsible__name--active': showExtra && target===item && active}"
+                    >
+                        {{ item.name }} {{ showExtra ? item.maxNominations && !('count' in item) ? "- " + item.maxNominations: "" : "" }}
+                    </div>
+                    <hr
+                        class="collapsible__info-bar"
+                        :class="[{'collapsible__info-bar--active': showExtra && target===item && active}, `collapsible--${selectedMode}`]"
+                    >
+                    <div
+                        v-if="showExtra && 'count' in item && 'maxNominations' in item"
+                        class="collapsible__count"
+                        :class="{'collapsible__count--active': target===item && active}"
+                    >
+                        {{ item.count }}/{{ item.maxNominations }}
+                    </div>
+                    <div
+                        v-else-if="showExtra && 'type' in item"
+                        class="collapsible__count"
+                        :class="{'collapsible__count--active': target===item && active}"
+                    >
+                        {{ item.type }}
+                    </div>
                 </div>
             </div>
-        </div>
+        </transition>
     </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { State } from "vuex-class";
 
 interface SubItem {
     name: string;
@@ -61,56 +70,47 @@ interface SubItem {
     [key: string]: any;
 }
 
-export default Vue.extend({
-    props: {
-        selectedMode: {
-            type: String,
-            default: "standard",
-        },
-        title: {
-            type: String,
-            default: "",
-        },
-        list: {
-            type: Array,
-            default: function () {
-                return [];
-            },
-        },
-        active: Boolean,
-        showExtra: Boolean,
-        scroll: Boolean,
-    },
-    data () {
-        return {
-            target: {} as SubItem,
-        };
-    },
+@Component
+export default class Collapsible extends Vue {
+    
+    @Prop({ type: String, default: "" }) readonly title!: string;
+    @Prop({ type: Array, default: () => [] }) readonly list!: SubItem[];
+    @Prop(Boolean) readonly active!: boolean[];
+    @Prop(Boolean) readonly showExtra!: boolean[];
+    @Prop(Boolean) readonly scroll!: boolean[];
+
+    @State selectedMode!: string;
+
+    target: SubItem | null = null;
+    
     mounted () {
         if (this.list.length > 0) {
-            this.target = this.list[0] as SubItem;
+            this.target = this.list[0];
         }
-    },
-});
+    }
+
+    activate () {
+        if (this.active) return;
+
+        this.$emit("activate");
+        this.target = null;
+    }
+
+    setTarget (item: SubItem) {
+        this.$emit("target", item);
+
+        if (this.target !== item) {
+            this.target = item;
+        }
+    }
+        
+}
 </script>
 
 <style lang="scss">
-$modes: "storyboard", "mania" , "fruits", "taiko", "standard";
-
-%half-box {
-    background-color: rgba(0, 0, 0, 0.6); 
-
-    border-radius: 7px; 
-    margin: 5px 20px;
-    padding: 2%;
-
-    flex: 1 1 100%;
-    
-    @media (min-width: 1200px) {
-        flex-wrap: nowrap;
-        flex: 1 1 50%;
-    }
-}
+@import '@s-sass/_mixins';
+@import '@s-sass/_variables';
+@import '@s-sass/_partials';
 
 @mixin mode-collapsible {
     @each $mode in $modes {
@@ -121,50 +121,51 @@ $modes: "storyboard", "mania" , "fruits", "taiko", "standard";
 }
 
 .collapsible {
-    @extend %half-box;
-    font-family: 'Lexend Peta';
-    font-size: 2rem;
-    letter-spacing: -3px;
-    text-align: center;
-    color: gray;
-    text-shadow: none;
-    font-weight: 100;
-
+    @extend %flex-box;
+    flex-direction: column;
+    color: $gray;
     white-space: nowrap;
-
-    cursor: pointer;
-
-    height: 66px;
     overflow: hidden;
+    padding: 15px;
 
-    transition: all 0.25s ease-out;
+    @include transition;
 
-    &--active {
+    &--scrollable {
+        overflow-y: visible;
+    }
 
-        color: white;
-        text-shadow: 0 0 8px white;
-        height: 425px;
+    &__title {
+        white-space: normal;
+        letter-spacing: -3px;
+        font-family: $font-display;
+        text-align: center;
+        font-size: $font-xxl;
+        cursor: pointer;
+
+        &--active {
+            cursor: default;
+            color: white;
+            text-shadow: 0 0 8px white;
+        }
     }
 
     @include mode-collapsible;
-
 }
 
-.collapsible__Bar {
+.collapsible__bar {
     right: -25%;
     top: -2px;
     position: relative;
-
     margin: 0;
-    margin-bottom: 15px;
 
-    transition: all 0.25s ease-out;
+    @include transition;
 }
 
-.collapsible__Items {
+.collapsible__items {
+    margin-top: 15px;
     position: relative;
     
-    &Extra {
+    &-extra {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -172,64 +173,45 @@ $modes: "storyboard", "mania" , "fruits", "taiko", "standard";
     }
 }
 
-.collapsible__Info {
+.collapsible__info {
     position: relative;
-
     display: flex;
     align-items: center;
+    font-size: $font-lg;
 
-    padding: 1%;
-
-    &Bar {
+    &-bar {
         left: 1%;
         right: 0;
         bottom: 0;
-        top: 85%;
 
         width: 0;
         border-width: 0;
-
         margin: 0;
-        margin-bottom: 15px;
-
         position: absolute;
 
-        transition: all 0.25s ease-out;
+        @include transition;
 
         &--active {
             width: 60%;
             border-width: 1px;
         }
-
     }
 }
 
-.collapsible__Name, .collapsible__Count {
-    font-size: 1.5rem;
-    letter-spacing: initial;
-    font-family: 'Red Hat Display';
-}
+.collapsible__name {
+    cursor: pointer;
+    @include transition;
 
-.collapsible__Name {
-    text-shadow: none;
-    font-weight: 100;
-
-    transition: all 0.25s ease-out;
-
-    &--active {
+    &:hover, &--active {
         text-shadow: 0 0 8px white;
-        font-weight: 700;
+        font-weight: 500;
     }
 }
 
-.collapsible__Count {
+.collapsible__count {
     width: 14%;
     min-width: fit-content;
-
-    background-color: none;
     color: white;
-    text-shadow: none;
-    font-weight: 100;
     border: 1px solid white;
     border-radius: 7px;
 
@@ -237,8 +219,8 @@ $modes: "storyboard", "mania" , "fruits", "taiko", "standard";
     margin-left: auto;
 
     letter-spacing: 2px;
-
-    transition: all 0.25s ease-out;
+    cursor: default;
+    @include transition;
 
     &--active {
         background-color: white;
@@ -247,9 +229,8 @@ $modes: "storyboard", "mania" , "fruits", "taiko", "standard";
     }
 }
 
-.collapsible__Scroll {
+.collapsible__scroll {
     height: 350px;
-
     top: 16%;
 }
 </style>

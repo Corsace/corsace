@@ -1,4 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, OneToMany } from "typeorm";
+import { MCAInfo } from "../../Interfaces/mca";
 import { Category } from "./category";
 
 export class Phase {
@@ -17,16 +18,16 @@ export class MCA extends BaseEntity {
     @PrimaryColumn({ type: "year" })
     year!: number;
 
-    @Column(type => Phase)
+    @Column(() => Phase)
     nomination!: Phase;
 
-    @Column(type => Phase)
+    @Column(() => Phase)
     voting!: Phase;
 
     @Column({ type: "timestamp" })
     results!: Date;
 
-    @OneToMany(type => Category, category => category.mca)
+    @OneToMany(() => Category, category => category.mca)
     categories!: Category[];
 
     public getInfo = function(this: MCA): MCAInfo {
@@ -38,13 +39,4 @@ export class MCA extends BaseEntity {
             categories: this.categories,
         };
     }
-}
-
-
-export interface MCAInfo {
-    name: number;
-    nomination: Phase;
-    voting: Phase;
-    results: Date;
-    categories: Category[];
 }

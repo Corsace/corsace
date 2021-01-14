@@ -1,4 +1,5 @@
-import { Entity, BaseEntity, PrimaryColumn, OneToMany, ManyToMany, JoinTable, Column, ManyToOne } from "typeorm";
+import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne } from "typeorm";
+import { BeatmapsetInfo } from "../Interfaces/beatmap";
 import { Beatmap } from "./beatmap";
 import { Nomination } from "./MCA_AYIM/nomination";
 import { Vote } from "./MCA_AYIM/vote";
@@ -41,20 +42,20 @@ export class Beatmapset extends BaseEntity {
     })
     tags!: string;
     
-    @OneToMany(type => Beatmap, beatmap => beatmap.beatmapset, {
+    @OneToMany(() => Beatmap, beatmap => beatmap.beatmapset, {
         eager: true,
     })
     beatmaps!: Beatmap[];
 
-    @ManyToOne(type => User, user => user.beatmapsets, {
+    @ManyToOne(() => User, user => user.beatmapsets, {
         eager: true,
     })
     creator!: User;
     
-    @OneToMany(type => Nomination, nomination => nomination.beatmapset)
+    @OneToMany(() => Nomination, nomination => nomination.beatmapset)
     nominationsReceived!: Nomination[];
     
-    @OneToMany(type => Vote, vote => vote.beatmapset)
+    @OneToMany(() => Vote, vote => vote.beatmapset)
     votesReceived!: Vote[];
 
     public getInfo = function(this: Beatmapset, chosen = false): BeatmapsetInfo {
@@ -66,13 +67,4 @@ export class Beatmapset extends BaseEntity {
             chosen,
         };
     }
-}
-
-
-export interface BeatmapsetInfo {
-    id: number;
-    artist: string;
-    title: string;
-    hoster: string;
-    chosen: boolean;
 }

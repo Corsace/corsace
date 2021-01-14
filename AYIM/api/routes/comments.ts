@@ -1,11 +1,11 @@
-import Router from "koa-router";
+import Router from "@koa/router";
+import { ParameterizedContext, Next } from "koa";
 import { isLoggedIn } from "../../../Server/middleware";
 import { User } from "../../../Models/user";
 import { UserComment } from "../../../Models/MCA_AYIM/userComments";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
-import { ParameterizedContext, Next } from "koa";
 
-async function canComment(ctx: ParameterizedContext<any, Router.IRouterParamContext<any, {}>>, next: Next): Promise<any> {
+async function canComment (ctx: ParameterizedContext, next: Next): Promise<any> {
     if (!ctx.state.user.canComment) {
         return ctx.body = {
             error: "You cannot comment",
@@ -15,7 +15,7 @@ async function canComment(ctx: ParameterizedContext<any, Router.IRouterParamCont
     await next();
 }
 
-async function isOwnerComment(ctx: ParameterizedContext<any, Router.IRouterParamContext<any, {}>>, next: Next): Promise<any> {
+async function isOwnerComment (ctx: ParameterizedContext, next: Next): Promise<any> {
     const comment = await UserComment.findOneOrFail(ctx.params.id);
 
     if (comment.commenterID !== ctx.state.user.ID) {

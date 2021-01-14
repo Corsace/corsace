@@ -1,5 +1,5 @@
 
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, OneToOne, JoinColumn, JoinTable, ManyToOne, ManyToMany } from "typeorm";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, OneToOne, JoinColumn, JoinTable } from "typeorm";
 import { DemeritReport } from "./demerits";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
@@ -11,6 +11,7 @@ import { Beatmapset } from "./beatmapset";
 import { Config } from "../config";
 import { GuildMember } from "discord.js";
 import { discordGuild } from "../Server/discord";
+import { UserCondensedInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 
 // General middlewares
 const config = new Config();
@@ -26,11 +27,11 @@ export class OAuth {
     @Column({ default: "" })
     avatar!: string;
 
-    @Column({ type: "longtext", default: "" })
-    accessToken!: string;
+    @Column({ type: "longtext", nullable: true })
+    accessToken?: string;
 
-    @Column({ type: "longtext", default: "" })
-    refreshToken!: string;
+    @Column({ type: "longtext", nullable: true })
+    refreshToken?: string;
 
     @CreateDateColumn()
     dateAdded!: Date;
@@ -46,10 +47,10 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
 
-    @Column(type => OAuth)
+    @Column(() => OAuth)
     discord!: OAuth;
     
-    @Column(type => OAuth)
+    @Column(() => OAuth)
     osu!: OAuth;
 
     @CreateDateColumn()
@@ -58,62 +59,62 @@ export class User extends BaseEntity {
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     lastLogin!: Date;
 
-    @OneToMany(type => UsernameChange, change => change.user, {
+    @OneToMany(() => UsernameChange, change => change.user, {
         eager: true,
     })
     otherNames!: UsernameChange[];
 
-    @OneToMany(type => DemeritReport, demerit => demerit.user, {
+    @OneToMany(() => DemeritReport, demerit => demerit.user, {
         eager: true,
     })
     demerits!: DemeritReport[];
 
-    @OneToOne(type => GuestRequest, guestRequest => guestRequest.user, {
+    @OneToOne(() => GuestRequest, guestRequest => guestRequest.user, {
         eager: true,
     })
     @JoinColumn()
     guestRequest!: GuestRequest;
 
-    @OneToMany(type => MCAEligibility, eligibility => eligibility.user, {
+    @OneToMany(() => MCAEligibility, eligibility => eligibility.user, {
         eager: true,
     })
     @JoinTable()
     mcaEligibility!: MCAEligibility[];
 
-    @OneToMany(type => Beatmapset, set => set.creator)
+    @OneToMany(() => Beatmapset, set => set.creator)
     beatmapsets!: Beatmapset[];
 
-    @OneToMany(type => UserComment, userComment => userComment.commenter)
+    @OneToMany(() => UserComment, userComment => userComment.commenter)
     commentsMade!: UserComment[];
 
-    @OneToMany(type => UserComment, userComment => userComment.target)
+    @OneToMany(() => UserComment, userComment => userComment.target)
     commentsReceived!: UserComment[];
 
-    @OneToMany(type => UserComment, userComment => userComment.reviewer)
+    @OneToMany(() => UserComment, userComment => userComment.reviewer)
     commentReviews!: UserComment[];
 
-    @OneToMany(type => Nomination, userComment => userComment.reviewer)
+    @OneToMany(() => Nomination, userComment => userComment.reviewer)
     nominationReviews!: Nomination[];
 
     @Column({ default: true })
     canComment!: boolean;
     
-    @OneToMany(type => Nomination, nomination => nomination.nominator)
+    @OneToMany(() => Nomination, nomination => nomination.nominator)
     nominations!: Nomination[];
     
-    @OneToMany(type => Nomination, nomination => nomination.user)
+    @OneToMany(() => Nomination, nomination => nomination.user)
     nominationsReceived!: Nomination[];
 
-    @OneToMany(type => Vote, vote => vote.voter)
+    @OneToMany(() => Vote, vote => vote.voter)
     votes!: Vote[];
     
-    @OneToMany(type => Vote, vote => vote.user)
+    @OneToMany(() => Vote, vote => vote.user)
     votesReceived!: Vote[];
 
     public getCondensedInfo = function(this: User, chosen = false): UserCondensedInfo {
         return {
             corsaceID: this.ID,
-            avatar: this.osu.avatar + "?" + Math.round(Math.random()*1000000),
+            avatar: this.osu.avatar + "?" + Math.round(Math.random() * 1000000),
             userID: this.osu.userID,
             username: this.osu.username,
             otherNames: this.otherNames.map(otherName => otherName.name),
@@ -133,7 +134,7 @@ export class User extends BaseEntity {
                 username: this.discord.username,
             },
             osu: {
-                avatar: this.osu.avatar + "?" + Math.round(Math.random()*1000000),
+                avatar: this.osu.avatar + "?" + Math.round(Math.random() * 1000000),
                 userID: this.osu.userID,
                 username: this.osu.username,
                 otherNames: this.otherNames.map(otherName => otherName.name),
@@ -166,47 +167,4 @@ export class User extends BaseEntity {
 
         return mcaInfo;
     }
-}
-
-export interface UserMCAInfo extends UserInfo {
-    guestReq: GuestRequest;
-    eligibility: MCAEligibility[];
-    mcaStaff: {
-        standard: boolean;
-        taiko: boolean;
-        fruits: boolean;
-        mania: boolean;
-        storyboard: boolean;
-    }
-}
-
-export interface UserInfo {
-    corsaceID: number;
-    discord: {
-        avatar: string;
-        userID: string;
-        username: string;
-    };
-    osu: {
-        avatar: string;
-        userID: string;
-        username: string;
-        otherNames: string[];
-    };
-    staff: {
-        corsace: boolean;
-        headStaff: boolean;
-        staff: boolean;
-    };
-    joinDate: Date;
-    lastLogin: Date;
-}
-
-export interface UserCondensedInfo {
-    corsaceID: number;
-    username: string;
-    avatar: string;
-    userID: string;
-    otherNames: string[];
-    chosen: boolean;
 }

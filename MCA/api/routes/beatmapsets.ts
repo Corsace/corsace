@@ -1,4 +1,4 @@
-import Router from "koa-router";
+import Router from "@koa/router";
 import { isLoggedInOsu } from "../../../Server/middleware";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { Brackets } from "typeorm";

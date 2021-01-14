@@ -36,20 +36,18 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
-    props: {
-        error: {
-            type: Object,
-            required: true,
-        },
-    },
-    methods: {
-        goBack: function () {
-            this.$router.go(-1);
-        },
-    },
-});
+import { Vue, Component, Prop } from "vue-property-decorator";
+
+@Component
+export default class Error extends Vue {
+
+    @Prop({ type: Object, required: true }) readonly error!: Record<string, unknown>;
+
+    goBack () {
+        this.$router.go(-1);
+    }
+
+}
 </script>
 
 <style lang="scss">

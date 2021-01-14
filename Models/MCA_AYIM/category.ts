@@ -1,13 +1,9 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne, OneToMany } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
 import { ModeDivision } from "./modeDivision";
 import { Nomination } from "./nomination";
 import { Vote } from "./vote";
 import { MCA } from "./mca";
-
-export enum CategoryType {
-    Beatmapsets,
-    Users,
-}
+import { CategoryInfo, CategoryType } from "../../Interfaces/category";
 
 export class CategoryFilter {
 
@@ -36,7 +32,7 @@ export class CategoryFilter {
     maxCS?: number;
 
     @Column({ nullable: true })
-    rookie?: number;
+    rookie?: boolean;
 
 }
 
@@ -61,28 +57,28 @@ export class Category extends BaseEntity {
     @Column({ default: false })
     requiresVetting!: boolean;
 
-    @Column(type => CategoryFilter)
+    @Column(() => CategoryFilter)
     filter?: CategoryFilter;
 
-    @Column()
+    @Column({ type: "enum", enum: CategoryType, default: CategoryType.Beatmapsets })
     type!: CategoryType;
     
-    @ManyToOne(type => ModeDivision, modeDivision => modeDivision.categories, {
+    @ManyToOne(() => ModeDivision, modeDivision => modeDivision.categories, {
         nullable: false,
         eager: true,
     })
     mode!: ModeDivision;
 
-    @ManyToOne(type => MCA, mca => mca.categories, {
+    @ManyToOne(() => MCA, mca => mca.categories, {
         nullable: false,
         eager: true,
     })
     mca!: MCA;
 
-    @OneToMany(type => Nomination, nomination => nomination.category)
+    @OneToMany(() => Nomination, nomination => nomination.category)
     nominations!: Nomination[];
     
-    @OneToMany(type => Vote, vote => vote.category)
+    @OneToMany(() => Vote, vote => vote.category)
     votes!: Vote[];
 
     public getInfo = function(this: Category): CategoryInfo {
@@ -100,7 +96,7 @@ export class Category extends BaseEntity {
         };
     }
 
-    public addFilter = function(this: Category, params?: any): void {
+    public addFilter = function(this: Category, params?: CategoryFilter): void {
         if (!params)
             return;
 
@@ -116,24 +112,6 @@ export class Category extends BaseEntity {
         filter.rookie = params.rookie ?? undefined;
         this.filter = filter;
     }
-}
-
-export interface CategoryStageInfo extends CategoryInfo {
-    count: number;
-}
-
-export interface CategoryInfo {
-    id: number;
-    name: string;
-    description: string;
-    maxNominations: number;
-    isRequired: boolean;
-    requiresVetting: boolean;
-    type: string;
-    mode: string;
-
-    isFiltered: boolean;
-    filter?: CategoryFilter;
 }
 
 export class CategoryGenerator {
@@ -157,11 +135,11 @@ export class CategoryGenerator {
     /**
      * Creates a regular award.
      */
-    public create = function(name: string, desc: string, type: CategoryType, mca: MCA, mode: ModeDivision): Category {
+    public create = function(name: string, description: string, type: CategoryType, mca: MCA, mode: ModeDivision): Category {
         const category = new Category;
         
         category.name = name;
-        category.description = desc;
+        category.description = description;
         category.maxNominations = 3;
         category.isRequired = false;
         category.type = type;

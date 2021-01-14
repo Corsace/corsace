@@ -1,11 +1,11 @@
-import Router from "koa-router";
+import Router from "@koa/router";
 import { isLoggedInOsu } from "../../../Server/middleware";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { isEligibleCurrentYear } from "../middleware";
 import { MoreThan } from "typeorm";
 
-async function isVotingPhase(ctx, next): Promise<any> {
+async function isVotingPhase (ctx, next): Promise<any> {
     const now = new Date();
     
     // edit this date according to schedule

@@ -1,12 +1,15 @@
-import Router from "koa-router";
+import Router from "@koa/router";
+import { getRepository } from "typeorm";
 import { isLoggedInOsu } from "../../../Server/middleware";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
-import { Category, CategoryType, CategoryStageInfo } from "../../../Models/MCA_AYIM/category";
-import { Beatmapset, BeatmapsetInfo } from "../../../Models/beatmapset";
-import { User, UserCondensedInfo } from "../../../Models/user";
+import { Category } from "../../../Models/MCA_AYIM/category";
+import { Beatmapset } from "../../../Models/beatmapset";
+import { User } from "../../../Models/user";
 import { isEligibleFor, isEligibleCurrentYear, isPhaseStarted, isPhase, validatePhaseYear } from "../middleware";
-import { getRepository } from "typeorm";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
+import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
+import { UserCondensedInfo } from "../../../Interfaces/user";
 
 const nominationsRouter = new Router();
 
@@ -41,23 +44,21 @@ nominationsRouter.get("/:year?", async (ctx) => {
     };
 });
 
-nominationsRouter.get("/search/:mode/:category/:order/:skip?/:year?/", async (ctx) => {
+nominationsRouter.get("/:year?/search", async (ctx) => {
     let list: BeatmapsetInfo[] | UserCondensedInfo[] = [];
     let setList: BeatmapsetInfo[] = [];
     let userList: UserCondensedInfo[] = [];
-    const category = await Category.findOneOrFail(ctx.params.category);
+    const category = await Category.findOneOrFail(ctx.query.category);
 
     // Obtain mode and amount to skip
-    let mode = 1;
-    if (/\d+/.test(ctx.params.mode))
-        mode = parseInt(ctx.params.mode);
-    const modeString = ModeDivisionType[mode];
+    const modeString: string = ctx.query.mode || "standard";
+    const modeId = ModeDivisionType[modeString];
 
     let skip = 0;
-    if (/\d+/.test(ctx.params.skip))
-        skip = parseInt(ctx.params.skip);
+    if (/\d+/.test(ctx.query.skip))
+        skip = parseInt(ctx.query.skip);
     
-    // Check if this is the intiial call, add currently nominated beatmaps/users at the top of the list
+    // Check if this is the initial call, add currently nominated beatmaps/users at the top of the list
     if (skip === 0) {
         let nominations = await Nomination.find({
             nominator: ctx.state.user,
@@ -72,124 +73,121 @@ nominationsRouter.get("/search/:mode/:category/:order/:skip?/:year?/", async (ct
             userList = nominations.map(nom => nom.user?.getCondensedInfo(true) as UserCondensedInfo);
     }
     
-
     // Make sure user is eligible to nominate in this mode
-    if (!isEligibleFor(ctx.state.user, mode, ctx.state.year))
+    if (!isEligibleFor(ctx.state.user, modeId, ctx.state.year))
         return ctx.body = { error: "Not eligible for this mode!" };
     
-    try {
-        let count = 0;
-        if (category.type == CategoryType.Beatmapsets) { // Search for beatmaps
-            // Ordering
-            let orderMethod = "beatmapset.approvedDate";
-            let ascDesc: any = "ASC";
-            if (/(artist|title|favs|creator|sr)/i.test(ctx.params.order.toLowerCase())) {
-                if (ctx.params.order.toLowerCase().includes("artist"))
-                    orderMethod = "beatmapset.artist";
-                else if (ctx.params.order.toLowerCase().includes("title"))
-                    orderMethod = "beatmapset.title";
-                else if (ctx.params.order.toLowerCase().includes("favs"))
-                    orderMethod = "beatmapset.favourites";
-                else if (ctx.params.order.toLowerCase().includes("creator"))
-                    orderMethod = "user_osuUsername";
-                else if (ctx.params.order.toLowerCase().includes("sr"))
-                    orderMethod = "beatmap.totalSR";
-            }
+    let count = 0;
+    if (category.type == CategoryType.Beatmapsets) { // Search for beatmaps
+        // Ordering
+        const order = ctx.query.order || "ASC";
+        let option = "beatmapset.approvedDate";
+        if (/(artist|title|favs|creator|sr)/i.test(ctx.query.order.toLowerCase())) {
+            if (ctx.query.option.toLowerCase().includes("artist"))
+                option = "beatmapset.artist";
+            else if (ctx.query.option.toLowerCase().includes("title"))
+                option = "beatmapset.title";
+            else if (ctx.query.option.toLowerCase().includes("favs"))
+                option = "beatmapset.favourites";
+            else if (ctx.query.option.toLowerCase().includes("creator"))
+                option = "user_osuUsername";
+            else if (ctx.query.option.toLowerCase().includes("sr"))
+                option = "beatmap.totalSR";
+        }
 
-            if (ctx.params.order.toLowerCase().includes("desc"))
-                ascDesc = "DESC";
-
-            // Initial repo setup
-            let beatmapQueryBuilder = getRepository(Beatmapset)
-                .createQueryBuilder("beatmapset")
-                .leftJoinAndSelect("beatmapset.creator", "user")
-                .leftJoinAndSelect("user.otherNames", "otherName")
-                .innerJoinAndSelect("beatmapset.beatmaps", "beatmap", mode === 5 ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: mode === 5 ? true : mode })
-                .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${ctx.state.year}-01-01`, end: `${ctx.state.year+1}-01-01` });
-                
-            // Check if the category has filters since this is a beatmap search
-            if (category.filter) {
-                if (category.filter.minLength)
-                    beatmapQueryBuilder = beatmapQueryBuilder
-                        .andWhere(`beatmap.hitLength>=${category.filter.minLength}`);
-                if (category.filter.maxLength)
-                    beatmapQueryBuilder = beatmapQueryBuilder
-                        .andWhere(`beatmap.hitLength<=${category.filter.maxLength}`);
-                if (category.filter.minBPM)
-                    beatmapQueryBuilder = beatmapQueryBuilder
-                        .andWhere(`beatmapset.BPM>=${category.filter.minBPM}`);
-                if (category.filter.maxBPM)
-                    beatmapQueryBuilder = beatmapQueryBuilder
-                        .andWhere(`beatmapset.BPM<=${category.filter.maxBPM}`);
-                if (category.filter.minSR)
-                    beatmapQueryBuilder = beatmapQueryBuilder
-                        .andWhere(`beatmap.totalSR>=${category.filter.minSR}`);
-                if (category.filter.maxSR)
-                    beatmapQueryBuilder = beatmapQueryBuilder
-                        .andWhere(`beatmap.totalSR<=${category.filter.maxSR}`);
-                if (category.filter.minCS)
-                    beatmapQueryBuilder = beatmapQueryBuilder
-                        .andWhere(`beatmap.circleSize>=${category.filter.minCS}`);
-                if (category.filter.maxCS)
-                    beatmapQueryBuilder = beatmapQueryBuilder
-                        .andWhere(`beatmap.circleSize>=${category.filter.maxCS}`);
-            }
-
-            // Check for search text
-            if (ctx.query.text)
+        // Initial repo setup
+        const includeStoryboard = modeId === ModeDivisionType.storyboard;
+        let beatmapQueryBuilder = getRepository(Beatmapset)
+            .createQueryBuilder("beatmapset")
+            .leftJoinAndSelect("beatmapset.creator", "user")
+            .leftJoinAndSelect("user.otherNames", "otherName")
+            .innerJoinAndSelect("beatmapset.beatmaps", "beatmap", includeStoryboard ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: includeStoryboard ? true : modeId })
+            .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${ctx.state.year}-01-01`, end: `${ctx.state.year + 1}-01-01` });
+                                
+        // Check if the category has filters since this is a beatmap search
+        if (category.filter) {
+            if (category.filter.minLength)
                 beatmapQueryBuilder = beatmapQueryBuilder
-                    .andWhere("(beatmapset.ID LIKE :criteria OR beatmap.ID LIKE :criteria OR beatmapset.artist LIKE :criteria OR beatmapset.title LIKE :criteria OR beatmapset.tags LIKE :criteria OR beatmap.difficulty LIKE :criteria OR user.osuUsername LIKE :criteria OR user.osuUserID LIKE :criteria OR otherName.name LIKE :criteria)", {criteria: `%${ctx.query.text}%`});
+                    .andWhere(`beatmap.hitLength>=${category.filter.minLength}`);
+            if (category.filter.maxLength)
+                beatmapQueryBuilder = beatmapQueryBuilder
+                    .andWhere(`beatmap.hitLength<=${category.filter.maxLength}`);
+            if (category.filter.minBPM)
+                beatmapQueryBuilder = beatmapQueryBuilder
+                    .andWhere(`beatmapset.BPM>=${category.filter.minBPM}`);
+            if (category.filter.maxBPM)
+                beatmapQueryBuilder = beatmapQueryBuilder
+                    .andWhere(`beatmapset.BPM<=${category.filter.maxBPM}`);
+            if (category.filter.minSR)
+                beatmapQueryBuilder = beatmapQueryBuilder
+                    .andWhere(`beatmap.totalSR>=${category.filter.minSR}`);
+            if (category.filter.maxSR)
+                beatmapQueryBuilder = beatmapQueryBuilder
+                    .andWhere(`beatmap.totalSR<=${category.filter.maxSR}`);
+            if (category.filter.minCS)
+                beatmapQueryBuilder = beatmapQueryBuilder
+                    .andWhere(`beatmap.circleSize>=${category.filter.minCS}`);
+            if (category.filter.maxCS)
+                beatmapQueryBuilder = beatmapQueryBuilder
+                    .andWhere(`beatmap.circleSize<=${category.filter.maxCS}`);
+        }
 
-            // Search
-            setList.push(...await Promise.all((await beatmapQueryBuilder
+        // Check for search text
+        if (ctx.query.text)
+            beatmapQueryBuilder = beatmapQueryBuilder
+                .andWhere("(beatmapset.ID LIKE :criteria OR beatmap.ID LIKE :criteria OR beatmapset.artist LIKE :criteria OR beatmapset.title LIKE :criteria OR beatmapset.tags LIKE :criteria OR beatmap.difficulty LIKE :criteria OR user.osuUsername LIKE :criteria OR user.osuUserID LIKE :criteria OR otherName.name LIKE :criteria)", {criteria: `%${ctx.query.text}%`});
+
+        // Search
+        const [beatmaps, totalCount] = await Promise.all([
+            beatmapQueryBuilder
                 .skip(skip)
                 .take(50)
-                .orderBy(orderMethod, ascDesc)
-                .getMany()).map(map => map.getInfo())));
-            list = setList;
-            count = await beatmapQueryBuilder.getCount();
-        } else if (category.type == CategoryType.Users) { // Search for users
-            // Ordering
-            let orderMethod = "CAST(user_osuUserID AS INT)";
-            let ascDesc: any = "ASC";
-            if (ctx.params.order.toLowerCase().includes("alph"))
-                orderMethod = "user_osuUsername";
+                .orderBy(option, order)
+                .getMany(),
+            
+            beatmapQueryBuilder.getCount(),
+        ]);
+        setList.push(...beatmaps.map(map => map.getInfo()));
+        list = setList;
+        count = totalCount;
+    } else if (category.type == CategoryType.Users) { // Search for users
+        // Ordering
+        let orderMethod = "CAST(user_osuUserID AS INT)";
+        let ascDesc: any = "ASC";
+        if (ctx.query.order.toLowerCase().includes("alph"))
+            orderMethod = "user_osuUsername";
 
-            if (ctx.params.order.toLowerCase().includes("desc"))
-                ascDesc = "DESC";
+        if (ctx.query.order.toLowerCase().includes("desc"))
+            ascDesc = "DESC";
 
-            // Initial repo setup
-            let userQueryBuilder = getRepository(User)
-                .createQueryBuilder("user")
-                .leftJoinAndSelect("user.otherNames", "otherName")
-                .leftJoinAndSelect("user.mcaEligibility", "mca")
-                .where(`mca.year = :q AND mca.${modeString} = 1`, { q: ctx.state.year });
+        // Initial repo setup
+        let userQueryBuilder = getRepository(User)
+            .createQueryBuilder("user")
+            .leftJoinAndSelect("user.otherNames", "otherName")
+            .leftJoinAndSelect("user.mcaEligibility", "mca")
+            .where(`mca.year = :q AND mca.${modeString} = 1`, { q: ctx.state.year });
 
-            if (category.filter?.rookie)
-                userQueryBuilder = userQueryBuilder
-                    .andWhere(`NOT EXISTS (SELECT * FROM mca_eligibility WHERE mca_eligibility.year < :q AND mca_eligibility.userID = user.ID AND mca.${modeString} = 1)`, { q: ctx.state.year });
+        if (category.filter?.rookie)
+            userQueryBuilder = userQueryBuilder
+                .andWhere(`NOT EXISTS (SELECT * FROM mca_eligibility WHERE mca_eligibility.year < :q AND mca_eligibility.userID = user.ID AND mca.${modeString} = 1)`, { q: ctx.state.year });
         
-            // Check for search text
-            if (ctx.query.text)
-                userQueryBuilder = userQueryBuilder
-                    .andWhere("(user.osuUsername LIKE :criteria OR user.osuUserID LIKE :criteria OR otherName.name LIKE :criteria)", {criteria: `%${ctx.query.text}%`});
+        // Check for search text
+        if (ctx.query.text)
+            userQueryBuilder = userQueryBuilder
+                .andWhere("(user.osuUsername LIKE :criteria OR user.osuUserID LIKE :criteria OR otherName.name LIKE :criteria)", {criteria: `%${ctx.query.text}%`});
 
-            // Search
-            userList.push(...await Promise.all((await userQueryBuilder
-                .skip(skip)
-                .take(50)
-                .orderBy(orderMethod, ascDesc)
-                .getMany()).map(user => user.getCondensedInfo())));
-            list = userList;
-            count = await userQueryBuilder.getCount();
-        } else
-            return ctx.body = { error: "Invalid type parameter. Only 'beatmapsets' or 'users' are allowed."};
+        // Search
+        userList.push(...await Promise.all((await userQueryBuilder
+            .skip(skip)
+            .take(50)
+            .orderBy(orderMethod, ascDesc)
+            .getMany()).map(user => user.getCondensedInfo())));
+        list = userList;
+        count = await userQueryBuilder.getCount();
+    } else
+        return ctx.body = { error: "Invalid type parameter. Only 'beatmapsets' or 'users' are allowed."};
 
-        ctx.body = {list, count};
-    } catch (err) {
-        console.error(err);
-        ctx.body = err;
-    }
+    ctx.body = {list, count};
 });
 
 nominationsRouter.post("/create", isPhase("nomination"), isEligibleCurrentYear, async (ctx) => {

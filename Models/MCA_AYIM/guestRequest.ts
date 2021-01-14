@@ -1,7 +1,8 @@
-import { Entity, Column, BaseEntity, ManyToOne, PrimaryColumn, OneToOne, JoinTable, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, BaseEntity, ManyToOne, OneToOne, JoinTable, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 import { Beatmap } from "../beatmap";
 import { ModeDivision } from "./modeDivision";
+import { RequestStatus } from "../../Interfaces/guestRequests";
 
 @Entity()
 export class GuestRequest extends BaseEntity {
@@ -12,30 +13,24 @@ export class GuestRequest extends BaseEntity {
     @Column({ type: "year" })
     year!: number;
 
-    @ManyToOne(type => ModeDivision, modeDivision => modeDivision.guestRequests, {
+    @ManyToOne(() => ModeDivision, modeDivision => modeDivision.guestRequests, {
         nullable: false,
         eager: true,
     })
     mode!: ModeDivision;
 
-    @Column()
-    accepted!: RequestStatus;
+    @Column({ type: "enum", enum: RequestStatus, default: RequestStatus.Pending })
+    accepted!: RequestStatus
 
-    @OneToOne(type => User, user => user.guestRequest, {
+    @OneToOne(() => User, user => user.guestRequest, {
         nullable: false,
     })
     user!: User;
 
-    @ManyToOne(type => Beatmap, beatmap => beatmap.guestRequests, {
+    @ManyToOne(() => Beatmap, beatmap => beatmap.guestRequests, {
         eager: true,
     })
     @JoinTable()
     beatmap!: Beatmap;
 
-}
-
-export enum RequestStatus {
-    Pending,
-    Accepted,
-    Rejected
 }
