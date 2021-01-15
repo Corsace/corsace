@@ -132,7 +132,21 @@ export const getters: GetterTree<StageState, RootState> = {
         if (!state.selectedCategory) return [];
 
         return state.votes.filter(v => v.category.ID === state.selectedCategory?.id);
-    },    
+    },
+    categoriesInfo (state): CategoryStageInfo[] {
+        if (state.stage === "voting") {
+            return state.categories.map(c => {
+                const info = {
+                    ...c,
+                    count: state.votes.filter(v => v.category.ID === c.id).length,
+                };
+                info.maxNominations = 10;
+                return info;
+            });
+        } else {
+            return state.categories;
+        }
+    },
 };
 
 export const actions: ActionTree<StageState, RootState> = {
