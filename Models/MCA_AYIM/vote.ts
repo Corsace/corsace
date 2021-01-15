@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column, SelectQueryBuilder } from "typeorm";
 import { User } from "../user";
 import { Beatmapset } from "../beatmapset";
 import { Category } from "./category";
@@ -33,5 +33,14 @@ export class Vote extends BaseEntity {
 
     @Column()
     choice!: number;
+
+    static populate (): SelectQueryBuilder<Vote> {
+        return this
+            .createQueryBuilder("vote")
+            .leftJoinAndSelect("vote.category", "category")
+            .leftJoinAndSelect("vote.beatmapset", "beatmapset")
+            .leftJoinAndSelect("vote.user", "user")
+            .leftJoinAndSelect("vote.voter", "voter");
+    }
     
 }
