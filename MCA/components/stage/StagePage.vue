@@ -57,8 +57,8 @@ import { namespace, State } from "vuex-class";
 import StagePageCategories from "./StagePageCategories.vue";
 import StagePageList from "./StagePageList.vue";
 
-import { Phase } from "../../../interfaces/mca";
-import { CategoryStageInfo } from "../../../interfaces/category";
+import { Phase } from "../../../Interfaces/mca";
+import { CategoryStageInfo } from "../../../Interfaces/category";
 
 const stageModule = namespace("stage");
 
@@ -304,6 +304,7 @@ export default class StateContent extends Vue {
 
     &-maps {
         @extend %spaced-container;
+        align-content: flex-start;
         height: 100%;
         overflow-y: scroll;
         margin-right: 50px; // Space for scrollbar
