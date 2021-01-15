@@ -112,14 +112,6 @@ export default class Collapsible extends Vue {
 @import '@s-sass/_variables';
 @import '@s-sass/_partials';
 
-@mixin mode-collapsible {
-    @each $mode in $modes {
-        &--#{$mode} {
-            border: 1px solid var(--#{$mode});
-        }
-    }
-}
-
 .collapsible {
     @extend %flex-box;
     flex-direction: column;
@@ -149,7 +141,7 @@ export default class Collapsible extends Vue {
         }
     }
 
-    @include mode-collapsible;
+    @include mode-border;
 }
 
 .collapsible__bar {

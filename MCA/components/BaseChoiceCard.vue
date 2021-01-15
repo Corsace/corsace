@@ -3,10 +3,11 @@
         <slot />
         
         <div 
+            v-if="stage === 'nominating'"
             class="choice__selection"
             @click="$emit('choose')"
         >
-            <div 
+            <div
                 class="choice__selection-box" 
                 :class="{ 'choice__selection-box--chosen': choice.chosen }"
             >
@@ -17,16 +18,70 @@
                 >
             </div>
         </div>
+
+        <div
+            v-else-if="stage === 'voting'"
+            class="choice__voting"
+            @click="togglePopup()"
+        >
+            <div class="choice__voting-title">
+                vote
+            </div>
+            <div class="choice__voting-vote">
+                {{ currentVote && currentVote.choice || '!' }}
+            </div>
+
+            <transition name="fade">
+                <voting-box
+                    v-if="votingFor === (choice.id || choice.corsaceID)"
+                    :choice="choice"
+                />
+            </transition>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 
-@Component
+import VotingBox from "./stage/VotingBox.vue";
+
+import { StageType } from "../store/stage";
+import { Vote } from "../../Interfaces/vote";
+
+const stageModule = namespace("stage");
+
+@Component({
+    components: {
+        VotingBox,
+    },
+})
 export default class BaseChoiceCard extends Vue {
 
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
+    
+    @stageModule.State votingFor!: null | number;
+    @stageModule.Mutation updateVotingFor;
+    @stageModule.State stage!: StageType;
+    @stageModule.Getter relatedVotes!: Vote[];
+
+    get currentVote (): Vote | undefined {
+        return this.relatedVotes.find(v => {
+            if (this.choice.id) return v.beatmapset?.ID === this.choice.id;
+            else return v.user?.ID === this.choice.corsaceID;
+        });
+    }
+
+    togglePopup () {
+        const id = this.choice.id || this.choice.corsaceID;
+
+        if (id === this.votingFor) {
+            this.updateVotingFor(null);
+        } else {
+            this.updateVotingFor(id);
+        }
+    }
 
 }
 </script>
@@ -44,6 +99,30 @@ export default class BaseChoiceCard extends Vue {
     box-shadow: 0 0 8px rgba(255,255,255,0.25);
 
     cursor: pointer;
+}
+
+.choice__voting {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    // position: relative; It should be here instead of .category__selection-maps...
+
+    @include transition('color');
+
+    &-title {
+        font-size: $font-sm;
+    }
+
+    &-vote {
+        font-size: 3rem;
+        font-weight: bold;
+    }
+
+    &:hover {
+        color: $standard;
+    }
 }
 
 .choice__selection {

@@ -310,6 +310,7 @@ export default class StateContent extends Vue {
         margin-right: 50px; // Space for scrollbar
         margin-top: 0;
         margin-bottom: 0;
+        position: relative;
 
         mask-image: linear-gradient(to top, transparent 0%, black 25%);
 

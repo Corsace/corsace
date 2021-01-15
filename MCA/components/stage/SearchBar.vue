@@ -32,7 +32,7 @@ import _ from "lodash";
 
 import ToggleButton from "../ToggleButton.vue";
 
-import { StageQuery } from "../../store/stage";
+import { StageQuery } from "../../../Interfaces/queries";
 
 const stageModule = namespace("stage");
 
