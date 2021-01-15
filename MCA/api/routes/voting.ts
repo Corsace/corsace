@@ -122,7 +122,7 @@ votingRouter.post("/:year?/create", async (ctx) => {
     
     if (alreadyVoted) {
         return ctx.body = {
-            error: "Already chosen",
+            error: "Already voted for this",
         };
     }
 
