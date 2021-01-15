@@ -129,10 +129,7 @@ votingRouter.post("/:year?/create", async (ctx) => {
     vote.choice = choice;
     await vote.save();
 
-    ctx.body = await Vote.populate()
-        .where("category.mcaYear = :year", { year: ctx.state.year })
-        .andWhere("voter.ID = :id", { id: vote.ID })
-        .getMany();
+    ctx.body = vote;
 });
 
 votingRouter.post("/:year?/:id/remove", isEligibleCurrentYear, async (ctx) => {
