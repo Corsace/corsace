@@ -33,9 +33,9 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Getter, State } from "vuex-class";
 
-import { Eligibility } from "../../interfaces/eligibility";
-import { UserMCAInfo } from "../../interfaces/user";
-import { Phase } from "../../interfaces/mca";
+import { Eligibility } from "../../Interfaces/eligibility";
+import { UserMCAInfo } from "../../Interfaces/user";
+import { Phase } from "../../Interfaces/mca";
 
 @Component
 export default class ModeSwitcher extends Vue {

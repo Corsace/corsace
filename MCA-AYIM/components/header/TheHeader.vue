@@ -95,8 +95,8 @@ import { State } from "vuex-class";
 import LoginModal from "./LoginModal.vue";
 import TheHeaderDropdown from "./TheHeaderDropdown.vue";
 
-import { UserMCAInfo } from "../../../interfaces/user";
-import { Phase } from "../../../interfaces/mca";
+import { UserMCAInfo } from "../../../Interfaces/user";
+import { Phase } from "../../../Interfaces/mca";
 
 @Component({
     components: {

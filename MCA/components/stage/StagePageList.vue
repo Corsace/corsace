@@ -44,10 +44,10 @@ import ChoiceBeatmapsetCard from "../ChoiceBeatmapsetCard.vue";
 import ChoiceUserCard from "../ChoiceUserCard.vue";
 import ScrollBar from "../ScrollBar.vue";
 
-import { CategoryStageInfo } from "../../../interfaces/category";
+import { CategoryStageInfo } from "../../../Interfaces/category";
 import { SectionCategory } from "../../store/stage";
-import { UserCondensedInfo } from "../../../interfaces/user";
-import { BeatmapsetInfo } from "../../../interfaces/beatmap";
+import { UserCondensedInfo } from "../../../Interfaces/user";
+import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 
 const stageModule = namespace("stage");
 

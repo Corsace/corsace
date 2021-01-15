@@ -65,7 +65,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import axios from "axios";
 
-import { MCAInfo } from "../../../interfaces/mca";
+import { MCAInfo } from "../../../Interfaces/mca";
 
 @Component
 export default class AdminModalYear extends Vue {

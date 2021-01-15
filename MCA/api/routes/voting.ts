@@ -3,7 +3,7 @@ import { isLoggedInOsu } from "../../../Server/middleware";
 import { isEligibleCurrentYear, isEligibleFor, isPhaseStarted, validatePhaseYear } from "../middleware";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../Models/MCA_AYIM/category";
-import { CategoryType } from "../../../interfaces/category";
+import { CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";

@@ -25,7 +25,7 @@ import { namespace, State } from "vuex-class";
 
 import Collapsible from "../Collapsible.vue";
 
-import { CategoryStageInfo } from "../../../interfaces/category";
+import { CategoryStageInfo } from "../../../Interfaces/category";
 
 const stageModule = namespace("stage");
 

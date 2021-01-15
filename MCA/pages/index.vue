@@ -58,7 +58,7 @@ import { State } from "vuex-class";
 import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
 import IndexPage from "../components/IndexPage.vue";
 
-import { Phase } from "../../interfaces/mca";
+import { Phase } from "../../Interfaces/mca";
 
 @Component({
     components: {

@@ -56,8 +56,8 @@ import Axios from "axios";
 
 import Collapsible from "./Collapsible.vue";
 
-import { Phase } from "../../interfaces/mca";
-import { CategoryInfo } from "../../interfaces/category";
+import { Phase } from "../../Interfaces/mca";
+import { CategoryInfo } from "../../Interfaces/category";
 
 interface FullFrontInfo {
     standard: FrontInfo;
