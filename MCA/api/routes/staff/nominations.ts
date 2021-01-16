@@ -31,7 +31,7 @@ staffNominationsRouter.get("/", async (ctx) => {
 });
 
 // Endpoint for accepting a nomination
-staffNominationsRouter.put("/:id/validate", async (ctx) => {
+staffNominationsRouter.post("/:id/toggleValidation", async (ctx) => {
     let nominationID = ctx.params.id;
     if (!nominationID || !/\d+/.test(nominationID))
         return ctx.body = { error: "Invalid nomination ID given!" };
@@ -42,30 +42,11 @@ staffNominationsRouter.put("/:id/validate", async (ctx) => {
     if (!nomination)
         return ctx.body = { error: "No nomination found for the given ID!" };
 
-    nomination.isValid = true;
+    nomination.isValid = !nomination.isValid;
     nomination.reviewer = ctx.state.user;
     nomination.lastReviewedAt = new Date;
     await nomination.save();
-    ctx.body = { error: false, nomination };
-});
-
-// Endpoint for rejecting a nomination
-staffNominationsRouter.put("/:id/invalidate", async (ctx) => {
-    let nominationID = ctx.params.id;
-    if (!nominationID || !/\d+/.test(nominationID))
-        return ctx.body = { error: "Invalid nomination ID given!" };
-
-    nominationID = parseInt(nominationID);
-    const nomination = await Nomination.findOneOrFail(nominationID);
-
-    if (!nomination)
-        return ctx.body = { error: "No nomination found for the given ID!" };
-
-    nomination.isValid = false;
-    nomination.reviewer = ctx.state.user;
-    nomination.lastReviewedAt = new Date;
-    await nomination.save();
-    ctx.body = { error: false, nomination };
+    ctx.body = { nomination };
 });
 
 export default staffNominationsRouter;
