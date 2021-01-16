@@ -6,7 +6,7 @@ import usersRouter from "./routes/users";
 import beatmapsetsRouter from "./routes/beatmapsets";
 import nominationsRouter from "./routes/nominations";
 import votingRouter from "./routes/voting";
-import staffRouter from "./routes/staff";
+import staffRouter from "./routes/staff/index";
 import indexRouter from "./routes";
 import adminRouter from "./routes/admin/index";
 import adminCategoriesRouter from "./routes/admin/categories";
@@ -27,6 +27,7 @@ app.koa.use(Mount("/nominating", nominationsRouter.routes()));
 app.koa.use(Mount("/voting", votingRouter.routes()));
 
 app.koa.use(Mount("/staff", staffRouter.routes()));
+app.koa.use(Mount("/staff/nominations", staffRouter.routes()));
 app.koa.use(Mount("/admin", adminRouter.routes()));
 app.koa.use(Mount("/admin/results", adminResultsRouter.routes()));
 app.koa.use(Mount("/admin/categories", adminCategoriesRouter.routes()));
