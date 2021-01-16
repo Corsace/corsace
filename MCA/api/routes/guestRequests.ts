@@ -29,6 +29,13 @@ async function validateBody (user: User, year: number, data: BodyData): Promise<
         };
     }
 
+    // Check if there's already a guest difficulty request sent
+    if (user.guestRequests.some(r => r.mca.year === year && r.mode.ID === mode.ID)) {
+        return { 
+            error: "A guest request already exists!",
+        };
+    }
+
     // Check URL
     const linkRegex = /(osu|old)\.ppy\.sh\/(b|beatmaps|beatmapsets)\/(\d+)(#(osu|taiko|fruits|mania)\/(\d+))?/i;
     if (!linkRegex.test(data.url)) {
@@ -84,13 +91,6 @@ guestRequestRouter.post("/:year/create", async (ctx) => {
 
     if ("error" in res) {
         return ctx.body = res;
-    }
-
-    // Check if there's already a guest difficulty request sent
-    if (user.guestRequests.some(r => r.mca.year === year && r.mode.ID === res.mode.ID)) {
-        return ctx.body = { 
-            error: "A guest request already exists!",
-        };
     }
 
     // Create guest requesst
