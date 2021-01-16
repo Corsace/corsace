@@ -1,5 +1,5 @@
 
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, OneToOne, JoinColumn, JoinTable, Brackets } from "typeorm";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets } from "typeorm";
 import { DemeritReport } from "./demerits";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
@@ -71,11 +71,10 @@ export class User extends BaseEntity {
     })
     demerits!: DemeritReport[];
 
-    @OneToOne(() => GuestRequest, guestRequest => guestRequest.user, {
+    @OneToMany(() => GuestRequest, guestRequest => guestRequest.user, {
         eager: true,
     })
-    @JoinColumn()
-    guestRequest!: GuestRequest;
+    guestRequests!: GuestRequest[];
 
     @OneToMany(() => MCAEligibility, eligibility => eligibility.user, {
         eager: true,
@@ -219,7 +218,7 @@ export class User extends BaseEntity {
         if (this.discord?.userID)
             member = await (await discordGuild()).members.fetch(this.discord.userID);
         const mcaInfo: UserMCAInfo = await this.getInfo() as UserMCAInfo;
-        mcaInfo.guestReq = this.guestRequest,
+        mcaInfo.guestRequests = this.guestRequests,
         mcaInfo.eligibility = this.mcaEligibility,
         mcaInfo.mcaStaff = {
             standard: member ? member.roles.cache.has(config.discord.roles.mca.standard) : false,

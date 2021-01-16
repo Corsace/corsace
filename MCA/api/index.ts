@@ -12,6 +12,7 @@ import adminRouter from "./routes/admin/index";
 import adminCategoriesRouter from "./routes/admin/categories";
 import adminYearsRouter from "./routes/admin/years";
 import adminResultsRouter from "./routes/admin/results";
+import guestRequestRouter from "./routes/guestRequests";
 
 const app = new App("mca");
 
@@ -20,6 +21,7 @@ app.koa.use(Mount("/", indexRouter.routes()));
 app.koa.use(Mount("/user", UserRouter.routes()));
 app.koa.use(Mount("/users", usersRouter.routes()));
 app.koa.use(Mount("/beatmapsets", beatmapsetsRouter.routes()));
+app.koa.use(Mount("/guestRequests", guestRequestRouter.routes()));
 
 app.koa.use(Mount("/nominating", nominationsRouter.routes()));
 app.koa.use(Mount("/voting", votingRouter.routes()));

@@ -9,7 +9,7 @@ async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void>
         return;
     }
     
-    for (const eligibility of ctx.state.user.mca) {
+    for (const eligibility of ctx.state.user.mcaEligibility) {
         if (eligibility.year === parseInt(ctx.params.year)) {
             await next();
             return;
@@ -25,7 +25,7 @@ async function isNotEligible (ctx: ParameterizedContext, next: Next): Promise<vo
         return;
     }
     
-    for (const eligibility of ctx.state.user.mca) {
+    for (const eligibility of ctx.state.user.mcaEligibility) {
         if (eligibility.year === parseInt(ctx.params.year)) {
             ctx.body = { error: "User is currently eligible!" };
             return;

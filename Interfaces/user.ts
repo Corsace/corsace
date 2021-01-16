@@ -1,17 +1,18 @@
 import { Beatmap, Beatmapset } from "./beatmap";
 import { Eligibility } from "./eligibility";
 import { RequestStatus } from "./guestRequests";
+import { MCA } from "./mca";
 import { ModeDivision } from "./modes";
 
 export interface UserMCAInfo extends UserInfo {
-    guestReq: {
+    guestRequests: {
         ID: number,
-        year: number,
+        mca: MCA,
         mode: ModeDivision,
-        accepted: RequestStatus,
+        status: RequestStatus,
         user: User,
         beatmap: Beatmap,
-    };
+    }[];
     eligibility: Eligibility[];
     mcaStaff: {
         standard: boolean;
