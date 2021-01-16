@@ -1,9 +1,16 @@
+import Vue from "vue";
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import axios from "axios";
 import { Phase } from "../../Interfaces/mca";
 import { UserMCAInfo } from "../../Interfaces/user";
+import { GuestRequest } from "../../Interfaces/guestRequests";
 
 const modeRegex = /^(standard|taiko|fruits|mania|storyboard)$/;
+
+interface GuestRequestPayload {
+    mode: string;
+    url: string;
+}
 
 export interface RootState {
     loggedInUser: null | UserMCAInfo;
@@ -39,6 +46,17 @@ export const mutations: MutationTree<RootState> = {
             localStorage.setItem("mode", mode);
         }
     },
+    addGuestRequest (state, request: GuestRequest) {
+        if (!request || !state.loggedInUser) return;
+
+        state.loggedInUser.guestRequests.push(request);
+    },
+    updateGuestRequest (state, request: GuestRequest) {
+        if (!request || !state.loggedInUser) return;
+
+        const i = state.loggedInUser.guestRequests.findIndex(r => r.ID === request.ID);
+        if (i !== -1) Vue.set(state.loggedInUser.guestRequests, i, request);
+    },
 };
 
 export const getters: GetterTree<RootState, RootState> = {
@@ -56,6 +74,21 @@ export const getters: GetterTree<RootState, RootState> = {
             }
         
         return false;
+    },
+    inactiveModes (state): string[] {
+        if (!state.loggedInUser) return [];
+
+        const eligibility = state.loggedInUser.eligibility.find(e => e.year === state.phase?.year);
+
+        if (!eligibility) return [];
+
+        const inactiveModes: string[] = [];
+
+        for (const mode of state.modes) {
+            if (!eligibility[mode]) inactiveModes.push(mode);
+        }
+
+        return inactiveModes;
     },
 };
 
@@ -88,5 +121,35 @@ export const actions: ActionTree<RootState, RootState> = {
     },
     updateSelectedMode ({ commit }, mode) {
         commit("updateSelectedMode", mode);
+    },
+    async submitGuestRequest ({ commit, state }, payload: GuestRequestPayload) {
+        if (!state.phase) return;
+
+        const { data } = await axios.post(`/api/guestRequests/${state.phase.year}/create`, {
+            mode: payload.mode,
+            url: payload.url,
+        });
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        commit("addGuestRequest", data);
+    },
+    async updateGuestRequest ({ commit, state }, payload: GuestRequestPayload & { id: number }) {
+        if (!state.phase) return;
+
+        const { data } = await axios.post(`/api/guestRequests/${state.phase.year}/${payload.id}/update`, {
+            mode: payload.mode,
+            url: payload.url,
+        });
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        commit("updateGuestRequest", data);
     },
 };

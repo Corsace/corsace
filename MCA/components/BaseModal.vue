@@ -1,10 +1,12 @@
 <template>
-    <div class="container fixed flex flex-col items-center justify-items-center flex-wrap shadow bg-gray-900 z-50 h-full w-full">
-        <div class="flex justify-items-center">
-            <h1>{{ title }}</h1>
+    <div class="login">
+        <div class="">
+            <div class="login__title">
+                {{ title }}
+            </div>
             <a
                 href="#"
-                class="justify-self-end"
+                class="login__close"
                 @click="$emit('close')"
             >
                 x
