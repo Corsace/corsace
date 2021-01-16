@@ -1,5 +1,5 @@
 
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, OneToOne, JoinColumn, JoinTable } from "typeorm";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, OneToOne, JoinColumn, JoinTable, Brackets } from "typeorm";
 import { DemeritReport } from "./demerits";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
@@ -12,6 +12,8 @@ import { Config } from "../config";
 import { GuildMember } from "discord.js";
 import { discordGuild } from "../Server/discord";
 import { UserCondensedInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
+import { Category } from "../Interfaces/category";
+import { StageQuery } from "../Interfaces/queries";
 
 // General middlewares
 const config = new Config();
@@ -110,6 +112,68 @@ export class User extends BaseEntity {
     
     @OneToMany(() => Vote, vote => vote.user)
     votesReceived!: Vote[];
+
+    static search (year: number, modeString: string, stage: "voting" | "nominating", category: Category, query: StageQuery): Promise<[User[], number]> {
+        // Initial repo setup
+        const queryBuilder = User.createQueryBuilder("user");
+            
+        if (stage === "voting") {
+            queryBuilder
+                .innerJoinAndSelect(
+                    "user.nominationsReceived", 
+                    "nominationReceived", 
+                    "nominationReceived.isValid = true AND nominationReceived.categoryID = :categoryId", 
+                    { categoryId: category.ID }
+                );
+        }
+
+        queryBuilder
+            .leftJoinAndSelect("user.otherNames", "otherName")
+            .leftJoinAndSelect("user.mcaEligibility", "mca")
+            .where(`mca.year = :q AND mca.${modeString} = 1`, { q: year });
+
+        if (category.filter?.rookie) {
+            queryBuilder
+                .andWhere((qb) => {
+                    const subQuery = qb.subQuery()
+                        .from(MCAEligibility, "mcaEligibility")
+                        .where("year < :year", { year: year })
+                        .andWhere("userID = user.ID")
+                        .andWhere(`mca.${modeString} = 1`)
+                        .getQuery();
+
+                    return "NOT EXISTS " + subQuery;
+                });
+        }
+        
+        // Check for search text
+        if (query.text) {
+            queryBuilder
+                .andWhere(new Brackets(qb => {
+                    qb.where("user.osuUsername LIKE :criteria")
+                        .orWhere("user.osuUserid LIKE :criteria")
+                        .orWhere("otherName.name LIKE :criteria");
+                }))
+                .setParameter("criteria", `%${query.text}%`);
+        }
+        
+        // Ordering
+        const ascDesc = query.order || "ASC";
+        let orderMethod = "CAST(user.osuUserid AS UNSIGNED)";
+        if (query.option.toLowerCase().includes("alph"))
+            orderMethod = "user.osuUsername";
+            
+        // Search
+        return Promise.all([
+            queryBuilder
+                .offset(query.skip)
+                .limit(50)
+                .orderBy(orderMethod, ascDesc)
+                .getMany(),
+
+            queryBuilder.getCount(),
+        ]);
+    }
 
     public getCondensedInfo = function(this: User, chosen = false): UserCondensedInfo {
         return {

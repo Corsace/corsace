@@ -162,7 +162,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { State } from "vuex-class";
 import axios from "axios";
 
-import { CategoryFilter, CategoryInfo } from "../../../interfaces/category";
+import { CategoryFilter, CategoryInfo } from "../../../Interfaces/category";
 
 @Component
 export default class AdminModalCategory extends Vue {

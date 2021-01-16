@@ -25,7 +25,7 @@ import { namespace, State } from "vuex-class";
 
 import Collapsible from "../Collapsible.vue";
 
-import { CategoryStageInfo } from "../../../interfaces/category";
+import { CategoryStageInfo } from "../../../Interfaces/category";
 
 const stageModule = namespace("stage");
 
@@ -38,16 +38,16 @@ export default class StagePageCategories extends Vue {
 
     @State selectedMode!: string;
     @stageModule.State section!: string;
-    @stageModule.State categories!: CategoryStageInfo[];
+    @stageModule.Getter categoriesInfo!: CategoryStageInfo[];
     @stageModule.Action updateCategory;
     @stageModule.Action updateSection;
     
     get userCategories (): CategoryStageInfo[] {
-        return this.categories.filter(c => c.type === "Users" && c.mode === this.selectedMode);
+        return this.categoriesInfo.filter(c => c.type === "Users" && c.mode === this.selectedMode);
     }
 
     get beatmapCategories (): CategoryStageInfo[] {
-        return this.categories.filter(c => c.type === "Beatmapsets" && c.mode === this.selectedMode);
+        return this.categoriesInfo.filter(c => c.type === "Beatmapsets" && c.mode === this.selectedMode);
     }
 
     async changeCategory (category: string) {

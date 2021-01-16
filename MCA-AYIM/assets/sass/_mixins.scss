@@ -20,3 +20,13 @@
     transition-duration: 0.25s;
     transition-timing-function: ease-out;
 }
+
+@mixin mode-border($sides: [left right top bottom]) {
+    @each $mode in $modes {
+        &--#{$mode} {
+            @each $side in $sides {
+                border-#{$side}: 1px solid var(--#{$mode});
+            }
+        }
+    }
+}

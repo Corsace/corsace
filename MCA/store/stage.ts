@@ -4,28 +4,26 @@ import { UserCondensedInfo } from "../../Interfaces/user";
 import { RootState } from ".";
 import { CategoryStageInfo } from "../../Interfaces/category";
 import { BeatmapsetInfo } from "../../Interfaces/beatmap";
+import { Vote } from "../../Interfaces/vote";
+import { StageQuery } from "../../Interfaces/queries";
 
 export type SectionCategory = "beatmaps" | "users";
-
-export interface StageQuery {
-    category: number;
-    option: string;
-    order: string;
-    text: string;
-    skip: number;
-}
+export type StageType = "nominating" | "voting";
 
 interface StageState {
     section: SectionCategory,
     categories: CategoryStageInfo[];
     selectedCategory: CategoryStageInfo | null;
     nominations: [];
+    votes: Vote[];
     year: number;
-    stage: string;
+    stage: StageType;
     count: number;
     beatmaps: BeatmapsetInfo[];
     users: UserCondensedInfo[];
     query: StageQuery;
+    /** to keep only 1 popup visible at a time */
+    votingFor: null | number;
 }
 
 export const state = (): StageState => ({
@@ -33,6 +31,7 @@ export const state = (): StageState => ({
     selectedCategory: null,
     categories: [],
     nominations: [],
+    votes: [],
     year: (new Date).getUTCFullYear() - 1,
     stage: "nominating",
     count: 0,
@@ -41,10 +40,11 @@ export const state = (): StageState => ({
     query: {
         category: 0,
         option: "",
-        order: "",
+        order: "ASC",
         text: "",
         skip: 0,
     },
+    votingFor: null,
 });
 
 export const mutations: MutationTree<StageState> = {
@@ -58,6 +58,18 @@ export const mutations: MutationTree<StageState> = {
     },
     updateCategories (state, categories) {
         state.categories = categories || [];
+    },
+    updateVotes (state, votes) {
+        state.votes = votes || [];
+    },
+    addVote (state, vote) {
+        if (vote) {
+            state.votes.push(vote);
+        }
+    },
+    removeVote (state, voteId: number) {
+        const i = state.votes.findIndex(v => v.ID === voteId);
+        if (i !== -1) state.votes.splice(i, 1);
     },
     updateNominations (state, nominations) {
         state.nominations = nominations || [];
@@ -110,10 +122,31 @@ export const mutations: MutationTree<StageState> = {
         state.users = [];
         state.count = 0;
     },
+    updateVotingFor (state, voteId) {
+        state.votingFor = voteId;
+    },
 };
 
 export const getters: GetterTree<StageState, RootState> = {
-    
+    relatedVotes (state): Vote[] {
+        if (!state.selectedCategory) return [];
+
+        return state.votes.filter(v => v.category.ID === state.selectedCategory?.id);
+    },
+    categoriesInfo (state): CategoryStageInfo[] {
+        if (state.stage === "voting") {
+            return state.categories.map(c => {
+                const info = {
+                    ...c,
+                    count: state.votes.filter(v => v.category.ID === c.id).length,
+                };
+                info.maxNominations = 10;
+                return info;
+            });
+        } else {
+            return state.categories;
+        }
+    },
 };
 
 export const actions: ActionTree<StageState, RootState> = {
@@ -133,6 +166,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
         commit("updateCategories", data.categories);
         commit("updateNominations", data.nominations);
+        commit("updateVotes", data.votes);
 
         if (data.categories?.length) {
             await dispatch("updateCategory", data.categories[0]);
@@ -159,7 +193,7 @@ export const actions: ActionTree<StageState, RootState> = {
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
 
-        const { data } = await axios.get(`/api/nominating/${state.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&text=${state.query.text}&skip=${skip}`);
+        const { data } = await axios.get(`/api/${state.stage}/${state.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&text=${state.query.text}&skip=${skip}`);
         if (data.error)
             return alert(data.error);
 
@@ -189,5 +223,33 @@ export const actions: ActionTree<StageState, RootState> = {
     },
     reset ({ commit }) {
         commit("reset");
+    },
+    async createVote ({ commit, state }, payload: { nomineeId: number, vote: number }) {
+        if (!state.selectedCategory) return;
+        
+        const { data } = await axios.post(`/api/voting/${state.year}/create`, {
+            category: state.selectedCategory.id,
+            nomineeId: payload.nomineeId,
+            choice: payload.vote,
+        });
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        commit("addVote", data);
+    },
+    async removeVote ({ commit, state }, voteId: number) {
+        const { data } = await axios.post(`/api/voting/${state.year}/${voteId}/remove`);
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        if (data.success) {
+            commit("removeVote", voteId);
+        }
     },
 };

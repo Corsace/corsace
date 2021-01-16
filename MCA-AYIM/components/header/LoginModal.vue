@@ -56,7 +56,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
-import { UserMCAInfo } from "../../../interfaces/user";
+import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component
 export default class LoginModal extends Vue {

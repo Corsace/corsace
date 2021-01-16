@@ -90,8 +90,8 @@ import ScrollBar from "../ScrollBar.vue";
 import AdminModalCategory from "./AdminModalCategory.vue";
 import AdminModalYear from "./AdminModalYear.vue";
 
-import { CategoryInfo } from "../../../interfaces/category";
-import { MCAInfo } from "../../../interfaces/mca";
+import { CategoryInfo } from "../../../Interfaces/category";
+import { MCAInfo } from "../../../Interfaces/mca";
 
 @Component({
     components: {

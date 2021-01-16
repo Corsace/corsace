@@ -33,7 +33,7 @@ import { State } from "vuex-class";
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import StagePage from "../../components/stage/StagePage.vue";
 
-import { Phase } from "../../../interfaces/mca";
+import { Phase } from "../../../Interfaces/mca";
 
 @Component({
     components: {

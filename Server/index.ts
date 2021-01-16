@@ -43,6 +43,8 @@ export class App {
 
                 await next();
             } catch (err) {
+                console.log(err);
+                
                 ctx.status = err.status || 500;
                 ctx.body = { error: "Something went wrong!" };
             }
