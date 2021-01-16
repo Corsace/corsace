@@ -21,7 +21,7 @@
                 :class="[
                     `mode-selection__mode--${mode}`,
                     (selectedMode === mode) ? `mode-selection__mode--${mode}-selected` : '',
-                    isSelectable(mode) ? '' : 'mode-selection__mode--inactive',
+                    (!enableModeEligibility || isEligibleFor(mode, year)) ? '' : 'mode-selection__mode--inactive',
                 ]"
                 @click="setMode(mode)"
             />
@@ -33,7 +33,6 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Getter, State } from "vuex-class";
 
-import { Eligibility } from "../../Interfaces/eligibility";
 import { UserMCAInfo } from "../../Interfaces/user";
 import { Phase } from "../../Interfaces/mca";
 
@@ -43,29 +42,20 @@ export default class ModeSwitcher extends Vue {
     @Prop(Boolean) readonly hidePhase!: boolean;
     @Prop(Boolean) readonly enableModeEligibility!: boolean;
 
-    year = /20\d\d/.test(this.$route.params.year) ? this.$route.params.year : (new Date).getUTCFullYear() - 1;
-
     @State loggedInUser!: UserMCAInfo | null;
     @State phase!: Phase;
     @State selectedMode!: string;
     @State modes!: string[];
-    @Getter eligible!: boolean;
+    @Getter isEligibleFor!: (mode: string, year?: number) => boolean;
 
-    get eligibility (): Eligibility | undefined {
-        const user = this.loggedInUser;
-        return user?.eligibility ? user.eligibility.find(x => x.year == this.year) : undefined;
-    }
+    year = /20\d\d/.test(this.$route.params.year) ? parseInt(this.$route.params.year) : (new Date().getUTCFullYear() - 1);
 
     setMode (mode): void {
-        if (this.isSelectable(mode)) {
+        if (!this.enableModeEligibility || this.isEligibleFor(mode, this.year)) {
             this.$store.dispatch("updateSelectedMode", mode);
+        } else {
+            this.$emit("inactiveModeClicked");
         }
-    }
-
-    isSelectable (mode: string): boolean {
-        if (!this.enableModeEligibility) return true;
-
-        return !this.loggedInUser || this.loggedInUser.staff?.headStaff || this.eligibility?.[mode];
     }
 
 }
@@ -223,8 +213,7 @@ $border-margin: 5px;
         @include transition;
 
         &--inactive {
-            opacity: 0;
-            cursor: default;
+            opacity: 0.3;
         }
     }
 

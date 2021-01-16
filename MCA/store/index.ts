@@ -17,6 +17,7 @@ export interface RootState {
     phase: null | Phase;
     selectedMode: string;
     modes: string[];
+    showGuestDifficultyModal: boolean,
 }
 
 export const state = (): RootState => ({
@@ -24,6 +25,7 @@ export const state = (): RootState => ({
     phase: null,
     selectedMode: "standard",
     modes: ["standard", "taiko", "fruits", "mania", "storyboard"],
+    showGuestDifficultyModal: false,
 });
 
 export const mutations: MutationTree<RootState> = {
@@ -57,23 +59,26 @@ export const mutations: MutationTree<RootState> = {
         const i = state.loggedInUser.guestRequests.findIndex(r => r.ID === request.ID);
         if (i !== -1) Vue.set(state.loggedInUser.guestRequests, i, request);
     },
+    toggleGuestDifficultyModal (state) {
+        state.showGuestDifficultyModal = !state.showGuestDifficultyModal;
+    },
 };
 
 export const getters: GetterTree<RootState, RootState> = {
-    eligible (state): boolean {
-        if (state.loggedInUser?.staff?.headStaff)
-            return true;
+    isEligibleFor (state) {
+        return (mode: string, year?: number) => {
+            if (state.loggedInUser?.staff?.headStaff) {
+                return true;
+            }
+    
+            if (state.loggedInUser?.eligibility) {
+                const eligibility = state.loggedInUser?.eligibility?.find(e => e.year === (year || state.phase?.year));
 
-        if (state.loggedInUser?.eligibility)
-            for (const eligibility of state.loggedInUser.eligibility) {
-                if (
-                    eligibility.year === (new Date).getUTCFullYear() - 1 && 
-                    eligibility[state.selectedMode]
-                )
-                    return true;
+                return eligibility?.[mode];
             }
         
-        return false;
+            return false;
+        };
     },
     inactiveModes (state): string[] {
         if (!state.loggedInUser) return [];
@@ -82,13 +87,7 @@ export const getters: GetterTree<RootState, RootState> = {
 
         if (!eligibility) return [];
 
-        const inactiveModes: string[] = [];
-
-        for (const mode of state.modes) {
-            if (!eligibility[mode]) inactiveModes.push(mode);
-        }
-
-        return inactiveModes;
+        return state.modes.filter(m => !eligibility[m]);
     },
 };
 

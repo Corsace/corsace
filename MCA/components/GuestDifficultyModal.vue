@@ -1,37 +1,49 @@
 <template>
-    <div>
-        <base-modal title="Access Request">
-            <guest-difficulty-submission @submit="submit($event)" />
+    <base-modal
+        v-if="showGuestDifficultyModal"
+        title="Access Request"
+        @close="toggleGuestDifficultyModal"
+    >
+        <div class="request__title">
+            Submit a beatmap where you did a guest difficulty here
+        </div>
+        <guest-difficulty-submission @submit="submit($event)" />
 
+        <div
+            v-if="currentRequests.length"
+            class="current-requests column-box"
+        >
+            <div class="current-requests__title">
+                Current requests
+            </div>
             <div
-                v-if="currentRequests.length"
-                class="current-requests"
+                v-for="request in currentRequests"
+                :key="request.ID"
+                class="current-requests__item"
             >
-                <div class="current-requests__title">
-                    Current requests
+                <guest-difficulty-submission
+                    :url="generateUrl(request)"
+                    :selected-mode="request.mode.name"
+                    @submit="update($event, request.ID)"
+                />
+                
+                <div>Status: <b>{{ getStatusName(request.status) }}</b></div>
+                <div v-if="isPending(request.status)">
+                    Please check back later
                 </div>
-                <div
-                    v-for="request in currentRequests"
-                    :key="request.ID"
-                    class="current-requests__item"
-                >
-                    <guest-difficulty-submission
-                        :url="generateUrl(request)"
-                        :selected-mode="request.mode.name"
-                        @submit="update($event, request.ID)"
-                    />
-                    {{ getStatusName(request.status) }}
+                <div v-if="wasRejected(request.status)">
+                    Let a staff know if you disagree!
                 </div>
             </div>
-        </base-modal>
-    </div>
+        </div>
+    </base-modal>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Action, Getter, State } from "vuex-class";
+import { Action, Getter, Mutation, State } from "vuex-class";
 
-import BaseModal from "./BaseModal.vue";
+import BaseModal from "../../MCA-AYIM/components/BaseModal.vue";
 import GuestDifficultySubmission from "./GuestDifficultySubmission.vue";
 
 import { GuestRequest, RequestStatus } from "../../Interfaces/guestRequests";
@@ -50,6 +62,9 @@ interface RequestData {
     },
 })
 export default class GuestDifficultyModal extends Vue {
+
+    @State showGuestDifficultyModal!: boolean;
+    @Mutation toggleGuestDifficultyModal;
 
     @State modes!: string[];
     @State loggedInUser!: UserMCAInfo;
@@ -85,5 +100,32 @@ export default class GuestDifficultyModal extends Vue {
         });
     }
 
+    isPending (status: RequestStatus) {
+        return status === RequestStatus.Pending;
+    }
+
+    wasRejected (status: RequestStatus) {
+        return status === RequestStatus.Rejected;
+    }
+
 }
 </script>
+
+<style lang="scss">
+@use '@s-sass/_partials';
+
+.column-box {
+    @extend %box;
+    display: flex;
+    flex-direction: column;    
+}
+
+.current-requests__title, .request__title {
+    border-bottom: 1px solid white;
+}
+
+.current-requests {
+    margin-top: 30px;
+}
+
+</style>
