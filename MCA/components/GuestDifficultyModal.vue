@@ -4,10 +4,12 @@
         title="Access Request"
         @close="toggleGuestDifficultyModal"
     >
-        <div class="request__title">
-            Submit a beatmap where you did a guest difficulty here
+        <div class="column-box">
+            <div class="request__title">
+                Submit a beatmap where you did a guest difficulty here
+            </div>
+            <guest-difficulty-submission @submit="submit($event)" />
         </div>
-        <guest-difficulty-submission @submit="submit($event)" />
 
         <div
             v-if="currentRequests.length"
@@ -27,13 +29,13 @@
                     @submit="update($event, request.ID)"
                 />
                 
-                <div>Status: <b>{{ getStatusName(request.status) }}</b></div>
-                <div v-if="isPending(request.status)">
-                    Please check back later
-                </div>
-                <div v-if="wasRejected(request.status)">
-                    Let a staff know if you disagree!
-                </div>
+                <span>Status: <b>{{ getStatusName(request.status) }}</b></span>
+                <span v-if="isPending(request.status)">
+                    - Please check back later
+                </span>
+                <span v-else-if="wasRejected(request.status)">
+                    - Updating makes the request go back to pending state
+                </span>
             </div>
         </div>
     </base-modal>
@@ -113,6 +115,7 @@ export default class GuestDifficultyModal extends Vue {
 
 <style lang="scss">
 @use '@s-sass/_partials';
+@import '@s-sass/_variables';
 
 .column-box {
     @extend %box;
@@ -121,7 +124,7 @@ export default class GuestDifficultyModal extends Vue {
 }
 
 .current-requests__title, .request__title {
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid $gray;
 }
 
 .current-requests {

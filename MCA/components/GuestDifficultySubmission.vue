@@ -15,7 +15,7 @@
         <input
             v-model="newUrl"
             class="request__link"
-            placeholder="link to a beatmap"
+            placeholder="paste a beatmap link"
         >
         <button
             class="button"
@@ -76,11 +76,16 @@ export default class GuestDifficultySubmission extends Vue {
         font-family: $font-body;
         font-size: $font-lg;
 
-        border: 0;
+        border-bottom: 1px solid $gray;
+        border-right: 1px solid $gray;
         border-radius: 0 5.5px 5.5px 0;
+        border-bottom-right-radius: 0px;
+        border-top-right-radius: 0px;
 
         margin-right: 10px;
         margin-right: 10px;
+
+        outline: 0;
     }
 }
 </style>
