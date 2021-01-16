@@ -26,6 +26,8 @@
                 <stage-page />
             </mode-switcher>
         </div>
+
+        <guest-difficulty-modal v-if="loggedInUser" />
     </div>
 </template>
 
@@ -35,6 +37,7 @@ import { Mutation, State } from "vuex-class";
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import StagePage from "../../components/stage/StagePage.vue";
+import GuestDifficultyModal from "../../components/GuestDifficultyModal.vue";
 
 import { Phase } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
@@ -43,6 +46,7 @@ import { UserMCAInfo } from "../../../Interfaces/user";
     components: {
         ModeSwitcher,
         StagePage,
+        GuestDifficultyModal,
     },
     validate ({ params }): boolean {
         const stageRegex = /^(nominating|nominate|vote|voting)$/i;
