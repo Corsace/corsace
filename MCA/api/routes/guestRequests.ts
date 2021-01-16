@@ -2,7 +2,7 @@ import Router from "@koa/router";
 import { Beatmap } from "../../../Models/beatmap";
 import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
-import { isNotEligible, validatePhaseYear } from "../middleware";
+import { isEligibleFor, validatePhaseYear } from "../middleware";
 import { Config } from "../../../config";
 import axios from "axios";
 import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";
@@ -18,10 +18,16 @@ interface BodyData {
     url: string;
 }
 
-async function validateBody (year: number, data: BodyData): Promise<{ error: string } | { beatmap: Beatmap; mode: ModeDivision; }> {
+async function validateBody (user: User, year: number, data: BodyData): Promise<{ error: string } | { beatmap: Beatmap; mode: ModeDivision; }> {
     // Validate mode
     const modeId = ModeDivisionType[data.mode];
     const mode = await ModeDivision.findOneOrFail(modeId);
+    
+    if (isEligibleFor(user, mode.ID, year)) {
+        return {
+            error: `User is already eligible for ${mode.name} (${year})`,
+        };
+    }
 
     // Check URL
     const linkRegex = /(osu|old)\.ppy\.sh\/(b|beatmaps|beatmapsets)\/(\d+)(#(osu|taiko|fruits|mania)\/(\d+))?/i;
@@ -67,45 +73,37 @@ async function validateBody (year: number, data: BodyData): Promise<{ error: str
 
 guestRequestRouter.use(isLoggedIn);
 guestRequestRouter.use(validatePhaseYear);
-guestRequestRouter.use(isNotEligible);
 
 guestRequestRouter.post("/:year/create", async (ctx) => {
     const year: number = parseInt(ctx.params.year);
+    const user: User = ctx.state.user;
 
     // Check if there's already a guest difficulty request sent
-    const [user, mca] = await Promise.all([
-        User.findOneOrFail({
-            where: { id: ctx.state.user.id },
-            relations: ["guestRequests"],
-        }),
-
-        MCA.findOneOrFail({
-            year,
-        }),
-    ]);
+    const mca = await MCA.findOneOrFail({
+        year,
+    });
 
     if (user.guestRequests.some(r => r.mca.year === year)) {
         ctx.body = { error: "A guest request already exists!" };
         return;
     }
 
-    const res = await validateBody(year, ctx.request.body);
+    const res = await validateBody(user, year, ctx.request.body);
 
     if ("error" in res) {
-        return ctx.body = res.error;
+        return ctx.body = res;
     }
 
     // Create guest requesst
     const guestReq = new GuestRequest;
+    guestReq.user = user;
     guestReq.mca = mca;
     guestReq.mode = res.mode;
     guestReq.beatmap = res.beatmap;
     guestReq.status = RequestStatus.Pending;
     await guestReq.save();
 
-    ctx.body = { 
-        success: guestReq,
-    };
+    ctx.body = guestReq;
 });
 
 guestRequestRouter.post("/:year/:id/update", async (ctx) => {
@@ -120,10 +118,10 @@ guestRequestRouter.post("/:year/:id/update", async (ctx) => {
         };
     }
     
-    const res = await validateBody(year, ctx.request.body);
+    const res = await validateBody(user, year, ctx.request.body);
 
     if ("error" in res) {
-        return ctx.body = res.error;
+        return ctx.body = res;
     }
 
     request.mode = res.mode;
@@ -131,9 +129,7 @@ guestRequestRouter.post("/:year/:id/update", async (ctx) => {
     request.status = RequestStatus.Pending;
     await request.save();
 
-    ctx.body = {
-        success: "Updated",
-    };
+    ctx.body = request;
 });
 
 export default guestRequestRouter;
