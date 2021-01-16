@@ -77,21 +77,20 @@ guestRequestRouter.use(validatePhaseYear);
 guestRequestRouter.post("/:year/create", async (ctx) => {
     const year: number = parseInt(ctx.params.year);
     const user: User = ctx.state.user;
-
-    // Check if there's already a guest difficulty request sent
     const mca = await MCA.findOneOrFail({
         year,
     });
-
-    if (user.guestRequests.some(r => r.mca.year === year)) {
-        ctx.body = { error: "A guest request already exists!" };
-        return;
-    }
-
     const res = await validateBody(user, year, ctx.request.body);
 
     if ("error" in res) {
         return ctx.body = res;
+    }
+
+    // Check if there's already a guest difficulty request sent
+    if (user.guestRequests.some(r => r.mca.year === year && r.mode.ID === res.mode.ID)) {
+        return ctx.body = { 
+            error: "A guest request already exists!",
+        };
     }
 
     // Create guest requesst
