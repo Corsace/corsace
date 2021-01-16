@@ -90,6 +90,13 @@ guestRequestRouter.post("/create", async (ctx) => {
         return ctx.body = res;
     }
 
+    // Check if there's already a guest difficulty request sent
+    if (user.guestRequests.some(r => r.mca.year === year && r.mode.ID === res.mode.ID)) {
+        return ctx.body = { 
+            error: "A guest request already exists!",
+        };
+    }
+
     // Create guest requesst
     const guestReq = new GuestRequest;
     guestReq.user = user;
