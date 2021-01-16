@@ -9,7 +9,12 @@ export class Beatmap extends BaseEntity {
     @PrimaryColumn()
     ID!: number;
 
-    @ManyToOne(() => Beatmapset, beatmapset => beatmapset.beatmaps)
+    @Column()
+    beatmapsetID!: number;
+
+    @ManyToOne(() => Beatmapset, beatmapset => beatmapset.beatmaps, {
+        nullable: false,
+    })
     beatmapset!: Beatmapset;
 
     @Column()
