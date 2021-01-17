@@ -1,14 +1,8 @@
 <template>
-    <div class="login">
-        <div 
-            class="login__close"
-            @click="close"
-        >
-            X
-        </div>
-        <div class="login__title">
-            {{ $t('mca_ayim.login.login') }}
-        </div>
+    <base-modal
+        :title="$t('mca_ayim.login.login')"
+        @close="close"
+    >
         <div 
             class="login__text"
             v-html="$t('mca_ayim.login.message.1')"
@@ -17,14 +11,14 @@
             <img src="../../../Assets/img/osu.png">
             <a 
                 v-if="!loggedInUser || !loggedInUser.osu || !loggedInUser.osu.username"
-                class="login__authText"
+                class="login__auth-text"
                 :href="'/api/login/osu?url=' + $route.fullPath"
             >
                 {{ $t('mca_ayim.login.authOsu') }}
             </a>
             <span 
                 v-else
-                class="login__authComplete"
+                class="login__auth-complete"
             >
                 {{ $t('mca_ayim.login.authOsuComp') }} <b>{{ loggedInUser.osu.username }}!</b>
             </span>
@@ -37,19 +31,19 @@
             <img src="../../../Assets/img/social/discord.png">
             <a 
                 v-if="!loggedInUser || !loggedInUser.discord || !loggedInUser.discord.username"
-                class="login__authText"
+                class="login__auth-text"
                 href="/api/login/discord"
             >
                 {{ $t('mca_ayim.login.authDiscord') }}
             </a>
             <span 
                 v-else
-                class="login__authComplete"
+                class="login__auth-complete"
             >
                 {{ $t('mca_ayim.login.authDiscordComp') }} <b>{{ loggedInUser.discord.username }}!</b>
             </span>
         </div>
-    </div>
+    </base-modal>
 </template>
 
 <script lang="ts">
@@ -58,7 +52,13 @@ import { State } from "vuex-class";
 
 import { UserMCAInfo } from "../../../Interfaces/user";
 
-@Component
+import BaseModal from "../BaseModal.vue";
+
+@Component({
+    components: {
+        BaseModal,
+    },
+})
 export default class LoginModal extends Vue {
 
     @State loggedInUser!: UserMCAInfo | null;
@@ -71,69 +71,35 @@ export default class LoginModal extends Vue {
 </script>
 
 <style lang="scss">
-.login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    
-    width: 100%;
-    height: 100%;
-
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    background-color: rgba(0,0,0,0.83);
-    backdrop-filter: blur(7px);
-
-    z-index: 100;
-    
-    text-align: center;
-    font-size: 1.5rem;
-    text-shadow: 0px 0px 16px #ffffff;
-
-    a {
-        margin: 35px;
-    }
-}
-
-.login__close {
-    font-size: 5rem;
-    position: fixed;
-    top: 20%;
-    right: 20%;
-    cursor: pointer;
-}
-
-.login__title {
-    font-family: 'Lexend Peta';
-    font-size: 3rem;
-}
+@import '@s-sass/_variables';
 
 .login__text {
     margin: 35px;
+    font-size: $font-xl;
 }
 
 .login__auth {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
 }
 
-.login__authText {
+.login__auth-text {
     cursor: pointer;
+    margin: 35px;
     padding: 12px 100px;
     background-color: white;
     border-radius: 15px;
+    box-shadow: 0px 0px 16px #ffffff;
+
     color: black;
     font-style: italic;
     text-shadow: 0px 0px 16px #000000;
-    box-shadow: 0px 0px 16px #ffffff;
+    font-size: $font-xl;
 }
 
-.login__authComplete {
+.login__auth-complete {
     padding: 12px 100px;
     margin: 35px;
 }

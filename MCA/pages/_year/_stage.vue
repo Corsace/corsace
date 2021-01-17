@@ -19,7 +19,10 @@
             </div>
         </div>
         <div class="stage-wrapper">
-            <mode-switcher :enable-mode-eligibility="true">
+            <mode-switcher
+                :enable-mode-eligibility="true"
+                @inactiveModeClicked="toggleGuestDifficultyModal"
+            >
                 <stage-page />
             </mode-switcher>
         </div>
@@ -28,12 +31,13 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { Mutation, State } from "vuex-class";
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import StagePage from "../../components/stage/StagePage.vue";
 
 import { Phase } from "../../../Interfaces/mca";
+import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component({
     components: {
@@ -45,7 +49,7 @@ import { Phase } from "../../../Interfaces/mca";
         // Allow /nominating
         if (stageRegex.test(params.year)) {
             params.stage = params.year;
-            params.year = (new Date().getUTCFullYear() + 1).toString();
+            params.year = (new Date().getUTCFullYear() - 1).toString();
 
             return true;
         }
@@ -56,8 +60,11 @@ import { Phase } from "../../../Interfaces/mca";
 })
 export default class Stage extends Vue {
 
+    @State loggedInUser!: UserMCAInfo | null;
     @State phase!: Phase;
     @State selectedMode!: string;
+    @State showGuestDifficultyModal;
+    @Mutation toggleGuestDifficultyModal;
 
     get remainingDays (): string {
         if (this.phase) {

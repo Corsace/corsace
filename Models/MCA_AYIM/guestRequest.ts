@@ -1,8 +1,9 @@
-import { Entity, Column, BaseEntity, ManyToOne, OneToOne, JoinTable, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, BaseEntity, ManyToOne, JoinTable, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 import { Beatmap } from "../beatmap";
 import { ModeDivision } from "./modeDivision";
 import { RequestStatus } from "../../Interfaces/guestRequests";
+import { MCA } from "./mca";
 
 @Entity()
 export class GuestRequest extends BaseEntity {
@@ -10,8 +11,11 @@ export class GuestRequest extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
 
-    @Column({ type: "year" })
-    year!: number;
+    @ManyToOne(() => MCA, {
+        nullable: false,
+        eager: true,
+    })
+    mca!: MCA;
 
     @ManyToOne(() => ModeDivision, modeDivision => modeDivision.guestRequests, {
         nullable: false,
@@ -20,14 +24,15 @@ export class GuestRequest extends BaseEntity {
     mode!: ModeDivision;
 
     @Column({ type: "enum", enum: RequestStatus, default: RequestStatus.Pending })
-    accepted!: RequestStatus
+    status!: RequestStatus
 
-    @OneToOne(() => User, user => user.guestRequest, {
+    @ManyToOne(() => User, user => user.guestRequests, {
         nullable: false,
     })
     user!: User;
 
     @ManyToOne(() => Beatmap, beatmap => beatmap.guestRequests, {
+        nullable: false,
         eager: true,
     })
     @JoinTable()

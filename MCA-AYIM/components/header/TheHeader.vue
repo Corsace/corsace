@@ -152,7 +152,7 @@ export default class TheHeader extends Vue {
     @include transition();
     height: 70px;
 
-	a {
+	a > {
 		float: left;
 		text-decoration: none;
     }

@@ -10,14 +10,24 @@
                 </div>
             </div>
 
-            <a
-                v-if="phase"
+            <nuxt-link
+                v-if="phase && isEligibleFor(selectedMode)"
                 class="vote-now"
                 :class="[
                     `vote-now--${selectedMode}`,
-                    {'vote-now--inactive': !eligible},
                 ]"
-                :href="eligible ? `/${phase.phase}` : undefined"
+                :to="`/${phase.phase}`"
+            >
+                {{ $t(`mca_ayim.main.${buttonText}`) }} <span>>></span>
+            </nuxt-link>
+            <a
+                v-else-if="phase"
+                class="vote-now vote-now--inactive"
+                :class="[
+                    `vote-now--${selectedMode}`,
+                ]"
+                href="#"
+                @click.prevent="toggleGuestDifficultyModal"
             >
                 {{ $t(`mca_ayim.main.${buttonText}`) }} <span>>></span>
             </a>
@@ -51,7 +61,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter, State } from "vuex-class";
+import { Getter, Mutation, State } from "vuex-class";
 import Axios from "axios";
 
 import Collapsible from "./Collapsible.vue";
@@ -82,7 +92,8 @@ export default class IndexContent extends Vue {
 
     @State phase!: Phase | null;
     @State selectedMode!: string;
-    @Getter eligible!: boolean;
+    @Getter isEligibleFor!: (mode: string) => boolean;
+    @Mutation toggleGuestDifficultyModal!: boolean;
     
     info: FullFrontInfo | null = null;
 
@@ -230,8 +241,7 @@ export default class IndexContent extends Vue {
     @include mode-vote-color;
 
     &--inactive {
-        opacity: 0;
-        cursor: default;
+        opacity: 0.3;
     }
     
     span {

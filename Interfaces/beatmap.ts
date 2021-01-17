@@ -15,6 +15,7 @@ export interface Beatmapset {
 
 export interface Beatmap {
     ID: number;
+    beatmapsetID: number;
     beatmapset: Beatmapset;
     totalLength: number;
     hitLength: number;
