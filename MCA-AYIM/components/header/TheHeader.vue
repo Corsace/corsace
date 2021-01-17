@@ -112,7 +112,7 @@ export default class TheHeader extends Vue {
     @State selectedMode!: string;
     @State phase!: Phase;
 
-    year = this.phase?.year || (new Date).getUTCFullYear() - 1;
+    year = this.phase?.year || new Date().getUTCFullYear() - 1;
     showLoginModal = false;
     showDropdown = false;
 

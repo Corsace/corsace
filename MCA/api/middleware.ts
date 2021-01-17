@@ -1,45 +1,19 @@
 import { ParameterizedContext, Next } from "koa";
-import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
 import { MCA } from "../../Models/MCA_AYIM/mca";
 import { User } from "../../Models/user";
 
-async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
-    if (!ctx.params.year) {
-        ctx.body = { error: "No year given!" };
-        return;
-    }
-    
-    for (const eligibility of ctx.state.user.mcaEligibility) {
-        if (eligibility.year === parseInt(ctx.params.year)) {
-            await next();
-            return;
-        }
-    }
-    
-    ctx.body = { error: "User is currently not eligible!" };
-}
+async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> {
+    ctx.state.mca = await MCA.current();
 
-async function isNotEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
-    if (!ctx.params.year) {
-        ctx.body = { error: "No year given!" };
-        return;
-    }
-    
-    for (const eligibility of ctx.state.user.mcaEligibility) {
-        if (eligibility.year === parseInt(ctx.params.year)) {
-            ctx.body = { error: "User is currently eligible!" };
-            return;
-        }
-    }
-    
     await next();
 }
 
-async function isEligibleCurrentYear (ctx: ParameterizedContext, next: Next): Promise<void> {
-    const currentYear = new Date().getFullYear() - 1;
+async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
+    const mca: MCA = ctx.state.mca;
+    const user: User = ctx.state.user;
     
-    if (ctx.state.user.mcaEligibility.find(e => e.year === currentYear)) {
+    if (user.mcaEligibility.find(e => e.year === mca.year)) {
         return await next();
     }
     
@@ -70,27 +44,15 @@ function isEligibleFor (user: User, modeID: number, year: number): boolean {
     }
 }
 
-async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> {
-    const mca = await MCA.findOneOrFail({
-        results: MoreThanOrEqual(new Date()),
-        nomination: {
-            start: LessThanOrEqual(new Date()),
-        },
-    });
-
-    ctx.state.mca = mca;
-
-    await next();
-}
-
 async function validatePhaseYear (ctx: ParameterizedContext, next: Next): Promise<any> {
     let year = ctx.params.year;
 
     if (!year || !/20\d\d/.test(year)) {
-        const date = new Date;
-        year = date.getUTCFullYear() - 1;
+        ctx.state.mca = await MCA.current();
+        year = ctx.state.mca.year;
     } else {
         year = parseInt(year, 10);
+        ctx.state.mca = await MCA.findOneOrFail(year);
     }
 
     ctx.state.year = year;
@@ -100,10 +62,10 @@ async function validatePhaseYear (ctx: ParameterizedContext, next: Next): Promis
 
 function isPhase (phase: string) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
-        const mca = await MCA.findOne((new Date).getUTCFullYear() - 1);
+        const mca: MCA = ctx.state.mca;
         const now = new Date();
 
-        if (!mca || now < mca[phase].start || now > mca[phase].end) {
+        if (now < mca[phase].start || now > mca[phase].end) {
             ctx.body = { error: "Not the right time" };
             return;
         }
@@ -115,11 +77,10 @@ function isPhase (phase: string) {
 
 function isPhaseStarted (phase: string) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
-        
-        const mca = await MCA.findOne(ctx.state.year);
+        const mca: MCA = ctx.state.mca;
         const now = new Date();
 
-        if (!mca || now < mca[phase].start) {
+        if (now < mca[phase].start) {
             ctx.body = { error: "Not the right time" };
             return;
         }
@@ -129,4 +90,4 @@ function isPhaseStarted (phase: string) {
     };
 }
 
-export { isEligible, isNotEligible, isEligibleCurrentYear, isEligibleFor, currentMCA, validatePhaseYear, isPhase, isPhaseStarted };
+export { isEligible, isEligibleFor, currentMCA, validatePhaseYear, isPhase, isPhaseStarted };

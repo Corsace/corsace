@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import { isLoggedInOsu } from "../../../Server/middleware";
-import { isEligibleCurrentYear, isEligibleFor, isPhaseStarted, validatePhaseYear } from "../middleware";
+import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase } from "../middleware";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { CategoryType } from "../../../Interfaces/category";
@@ -52,7 +52,7 @@ votingRouter.get("/:year?/search", stageSearch("voting", async (ctx, category) =
     return votes;
 }));
 
-votingRouter.post("/:year?/create", async (ctx) => {
+votingRouter.post("/create", isPhase("voting"), async (ctx) => {
     const nomineeId = ctx.request.body.nomineeId;
     const categoryId = ctx.request.body.category;
     const choice = ctx.request.body.choice;
@@ -132,7 +132,7 @@ votingRouter.post("/:year?/create", async (ctx) => {
     ctx.body = vote;
 });
 
-votingRouter.post("/:year?/:id/remove", isEligibleCurrentYear, async (ctx) => {
+votingRouter.post("/:id/remove", isPhase("voting"), isEligible, async (ctx) => {
     const vote = await Vote.findOneOrFail({
         ID: ctx.params.id,
         voter: ctx.state.user.ID,

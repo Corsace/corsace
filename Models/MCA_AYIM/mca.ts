@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryColumn, OneToMany } from "typeorm";
+import { Entity, Column, BaseEntity, PrimaryColumn, OneToMany, MoreThanOrEqual, LessThanOrEqual } from "typeorm";
 import { MCAInfo } from "../../Interfaces/mca";
 import { Category } from "./category";
 
@@ -29,6 +29,38 @@ export class MCA extends BaseEntity {
 
     @OneToMany(() => Category, category => category.mca)
     categories!: Category[];
+
+    static current (): Promise<MCA> {
+        const date = new Date();
+
+        return MCA.findOneOrFail({
+            results: MoreThanOrEqual(date),
+            nomination: {
+                start: LessThanOrEqual(date),
+            },
+        });
+    }
+
+    static currentOrLatest (): Promise<MCA | undefined> {
+        const date = new Date();
+
+        return MCA.findOne({
+            where: [
+                {
+                    results: MoreThanOrEqual(date),
+                    nomination: {
+                        start: LessThanOrEqual(date),
+                    },
+                },
+                {
+                    year: date.getUTCFullYear() - 1,
+                },
+            ],
+            order: {
+                results: "DESC",
+            },
+        });
+    }
 
     public getInfo = function(this: MCA): MCAInfo {
         return {
