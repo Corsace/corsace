@@ -31,4 +31,9 @@
         outline: 1px solid #fff;
         outline-offset: -4px;
     }
+
+    &--small {
+        min-width: 100px;
+        text-transform: none;
+    }
 }

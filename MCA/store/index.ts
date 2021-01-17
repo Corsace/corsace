@@ -65,8 +65,19 @@ export const mutations: MutationTree<RootState> = {
 };
 
 export const getters: GetterTree<RootState, RootState> = {
+    isMCAStaff (state): boolean {
+        if (!state.loggedInUser) return false;
+
+        return state.loggedInUser.staff.corsace || 
+            state.loggedInUser.staff.headStaff || 
+            state.loggedInUser.mcaStaff.standard ||
+            state.loggedInUser.mcaStaff.taiko ||
+            state.loggedInUser.mcaStaff.mania ||
+            state.loggedInUser.mcaStaff.fruits ||
+            state.loggedInUser.mcaStaff.storyboard;
+    },
     isEligibleFor (state) {
-        return (mode: string, year?: number) => {
+        return (mode: string, year?: number): boolean => {
             if (state.loggedInUser?.staff?.headStaff) {
                 return true;
             }
