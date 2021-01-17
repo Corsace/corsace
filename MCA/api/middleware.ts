@@ -4,12 +4,6 @@ import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
 import { MCA } from "../../Models/MCA_AYIM/mca";
 import { User } from "../../Models/user";
 
-async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> {
-    ctx.state.mca = await MCA.current();
-
-    await next();
-}
-
 async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
     const mca: MCA = ctx.state.mca;
     const user: User = ctx.state.user;
