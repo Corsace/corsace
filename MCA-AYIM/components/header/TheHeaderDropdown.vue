@@ -16,8 +16,8 @@
             ADMIN
         </nuxt-link>
         <nuxt-link
-            v-if="isMCAStaff && phase"
-            :to="`/${phase.year}/staff`"
+            v-if="isMCAStaff"
+            to="/staff"
         >
             STAFF
         </nuxt-link>
