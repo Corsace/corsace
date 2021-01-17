@@ -18,10 +18,11 @@
             placeholder="paste a beatmap link"
         >
         <button
+            v-if="!wasAccepted"
             class="button"
             @click="submit"
         >
-            Submit
+            {{ isUpdating ? 'update' : 'submit' }}
         </button>
     </div>
 </template>
@@ -30,11 +31,14 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
+import { RequestStatus } from "../../Interfaces/guestRequests";
+
 @Component
 export default class GuestDifficultySubmission extends Vue {
     
     @Prop({ type: String, default: "" }) readonly url!: string;
     @Prop({ type: String, default: "" }) readonly selectedMode!: string;
+    @Prop({ type: Number, default: null }) readonly status!: RequestStatus | null;
 
     @Getter inactiveModes!: string[];
     
@@ -50,6 +54,14 @@ export default class GuestDifficultySubmission extends Vue {
             url: this.newUrl,
             mode: this.newSelectedMode,
         });
+    }
+
+    get isUpdating (): boolean {
+        return (this.status || this.status === 0) ? true : false;
+    }
+
+    get wasAccepted (): boolean {
+        return this.status === RequestStatus.Accepted;
     }
 
 }

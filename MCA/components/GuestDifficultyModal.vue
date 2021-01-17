@@ -24,6 +24,7 @@
                 class="current-requests__item"
             >
                 <guest-difficulty-submission
+                    :status="request.status"
                     :url="generateUrl(request)"
                     :selected-mode="request.mode.name"
                     @submit="update($event, request.ID)"

@@ -1,4 +1,5 @@
 import { ParameterizedContext, Next } from "koa";
+import { MoreThanOrEqual } from "typeorm";
 import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
 import { MCA } from "../../Models/MCA_AYIM/mca";
 import { User } from "../../Models/user";
@@ -69,12 +70,26 @@ function isEligibleFor (user: User, modeID: number, year: number): boolean {
     }
 }
 
+async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> {
+    const mca = await MCA.findOneOrFail({
+        results: MoreThanOrEqual(new Date()),
+    });
+
+    ctx.state.mca = mca;
+
+    await next();
+}
+
 async function validatePhaseYear (ctx: ParameterizedContext, next: Next): Promise<any> {
     let year = ctx.params.year;
+
     if (!year || !/20\d\d/.test(year)) {
         const date = new Date;
         year = date.getUTCFullYear() - 1;
+    } else {
+        year = parseInt(year, 10);
     }
+
     ctx.state.year = year;
 
     await next();
@@ -111,4 +126,4 @@ function isPhaseStarted (phase: string) {
     };
 }
 
-export { isEligible, isNotEligible, isEligibleCurrentYear, isEligibleFor, validatePhaseYear, isPhase, isPhaseStarted };
+export { isEligible, isNotEligible, isEligibleCurrentYear, isEligibleFor, currentMCA, validatePhaseYear, isPhase, isPhaseStarted };

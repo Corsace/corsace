@@ -124,7 +124,7 @@ export const actions: ActionTree<RootState, RootState> = {
     async submitGuestRequest ({ commit, state }, payload: GuestRequestPayload) {
         if (!state.phase) return;
 
-        const { data } = await axios.post(`/api/guestRequests/${state.phase.year}/create`, {
+        const { data } = await axios.post(`/api/guestRequests/create`, {
             mode: payload.mode,
             url: payload.url,
         });
@@ -139,7 +139,7 @@ export const actions: ActionTree<RootState, RootState> = {
     async updateGuestRequest ({ commit, state }, payload: GuestRequestPayload & { id: number }) {
         if (!state.phase) return;
 
-        const { data } = await axios.post(`/api/guestRequests/${state.phase.year}/${payload.id}/update`, {
+        const { data } = await axios.post(`/api/guestRequests/${payload.id}/update`, {
             mode: payload.mode,
             url: payload.url,
         });
