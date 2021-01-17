@@ -18,11 +18,16 @@ staffNominationsRouter.get("/", async (ctx) => {
 
     const nominations = await Nomination
         .createQueryBuilder("nomination")
+        .innerJoinAndSelect("nomination.nominator", "nominator")
         .innerJoinAndSelect("nomination.category", "category")
+        .leftJoinAndSelect("nomination.user", "user")
+        .leftJoinAndSelect("nomination.beatmapset", "beatmapset")
+        .leftJoinAndSelect("nomination.reviewer", "reviewer")
         .where("category.requiresVetting = true")
         .andWhere("category.ID = :id", { id: categoryID })
-        .orderBy("nomination.isValid", "DESC")
-        .addOrderBy("nomination.reviewerID", "DESC")
+        .orderBy("nomination.nominatorID", "DESC")
+        .addOrderBy("nomination.isValid", "ASC")
+        .addOrderBy("nomination.reviewerID", "ASC")
         .getMany();
 
     ctx.body = nominations;
