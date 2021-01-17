@@ -1,5 +1,5 @@
 import { ParameterizedContext, Next } from "koa";
-import { MoreThanOrEqual } from "typeorm";
+import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
 import { MCA } from "../../Models/MCA_AYIM/mca";
 import { User } from "../../Models/user";
@@ -73,6 +73,9 @@ function isEligibleFor (user: User, modeID: number, year: number): boolean {
 async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> {
     const mca = await MCA.findOneOrFail({
         results: MoreThanOrEqual(new Date()),
+        nomination: {
+            start: LessThanOrEqual(new Date()),
+        },
     });
 
     ctx.state.mca = mca;
