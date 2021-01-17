@@ -13,24 +13,71 @@
                     <a
                         class="staff-container__title"
                         href="#"
-                        @click="selectCategory(category.id)"
+                        @click.prevent="selectCategory(category.id)"
                     >
                         {{ category.name }}
                     </a>
 
-                    <div
-                        v-for="userNominations in selectedCategoryInfo"
-                        :key="userNominations.nominator.ID + '-nominator'"
-                    >
-                        {{ userNominations.nominator.osu.username }}
-
+                    <template v-if="category.id === selectedCategoryId">
                         <div
-                            v-for="nomination in userNominations.nominations"
-                            :key="nomination.ID + '-nomination'"
+                            v-for="userNominations in selectedCategoryInfo"
+                            :key="userNominations.nominator.ID + '-nominator'"
+                            class="staff-nomination-container"
                         >
-                            {{ nomination.isValid ? 'valid' : 'invalid' }}
+                            <a
+                                :href="`https://osu.ppy.sh/users/${userNominations.nominator.osu.userID}`"
+                                target="_blank"
+                                class="staff-page__link"
+                            >
+                                {{ userNominations.nominator.osu.username }}
+                            </a>
+
+                            <ul>
+                                <li
+                                    v-for="nomination in userNominations.nominations"
+                                    :key="nomination.ID + '-nomination'"
+                                >
+                                    <div class="staff-nomination">
+                                        <div class="staff-nomination__info">
+                                            <a
+                                                class="staff-page__link"
+                                                :href="generateUrl(nomination)"
+                                                target="_blank"
+                                            >
+                                                {{ getNomineeName(nomination) }}
+                                            </a>
+                                            <span
+                                                class="staff-nomination__status"
+                                                :class="`staff-nomination__status--${nomination.isValid ? 'valid' : 'invalid'}`"
+                                            >
+                                                {{ nomination.isValid ? 'valid' : 'invalid' }}
+                                            </span>
+                                            <div v-if="nomination.reviewer">
+                                                Last reviewed by:
+                                                {{ nomination.reviewer.osu.username }}
+                                                at {{ new Date(nomination.lastReviewedAt).toDateString() }}
+                                            </div>
+                                        </div>
+
+                                        <div class="staff-nomination__actions">
+                                            <button
+                                                class="button button--small staff-nomination__action"
+                                                @click="updateNomination(nomination.ID, true)"
+                                            >
+                                                accept
+                                            </button>
+                                            <button
+                                                class="button button--small staff-nomination__action"
+                                                @click="updateNomination(nomination.ID, false)"
+                                            >
+                                                reject
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
-                    </div>
+                    </template>
                 </div>
             </div>
         </mode-switcher>
@@ -73,7 +120,7 @@ export default class Nominations extends Vue {
     nominations: Nomination[] = [];
     selectedCategoryId: null | number = null;
 
-    get relatedCategories () {
+    get relatedCategories (): CategoryInfo[] {
         return this.categories.filter(c => c.mode === this.selectedMode);
     }
 
@@ -125,5 +172,75 @@ export default class Nominations extends Vue {
         this.selectedCategoryId = id;
     }
 
+    generateUrl (nomination: Nomination): string {
+        if (nomination.beatmapset) {
+            return `https://osu.ppy.sh/beatmapsets/${nomination.beatmapset.ID}`;
+        }
+        
+        return `https://osu.ppy.sh/users/${nomination.user?.osu.userID}`;
+    }
+
+    getNomineeName (nomination: Nomination) {
+        if (nomination.beatmapset) {
+            return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title}`;
+        }
+
+        return `${nomination.user?.osu.username}`;
+    }
+
+    updateLocalNomination (id: number, isValid) {
+        const i = this.nominations.findIndex(n => n.ID === id);
+        if (i !== -1) this.nominations[i].isValid = isValid;
+    }
+
+    async updateNomination (id: number, isValid) {
+        const { data } = await axios.post(`/api/staff/nominations/${id}/update`, {
+            isValid,
+        });
+
+        if (!data.error) {
+            this.updateLocalNomination(id, isValid);
+        }
+    }
+
 }
 </script>
+
+<style lang="scss">
+@use '@s-sass/_partials';
+@import '@s-sass/_variables';
+
+.staff-nomination {
+    &-container {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+        border-bottom: 1px solid white;
+    }
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &__status {
+        margin-left: 5px;
+
+        &--valid {
+            color: $green;
+        }
+
+        &--invalid {
+            color: $red;
+        }
+    }
+
+    &__actions {
+        display: flex;
+    }
+
+    &__action {
+        margin: 5px;
+    }
+}
+
+</style>
