@@ -227,7 +227,7 @@ export const actions: ActionTree<StageState, RootState> = {
     async createVote ({ commit, state }, payload: { nomineeId: number, vote: number }) {
         if (!state.selectedCategory) return;
         
-        const { data } = await axios.post(`/api/voting/${state.year}/create`, {
+        const { data } = await axios.post(`/api/voting/create`, {
             category: state.selectedCategory.id,
             nomineeId: payload.nomineeId,
             choice: payload.vote,
@@ -240,8 +240,8 @@ export const actions: ActionTree<StageState, RootState> = {
 
         commit("addVote", data);
     },
-    async removeVote ({ commit, state }, voteId: number) {
-        const { data } = await axios.post(`/api/voting/${state.year}/${voteId}/remove`);
+    async removeVote ({ commit }, voteId: number) {
+        const { data } = await axios.post(`/api/voting/${voteId}/remove`);
 
         if (data.error) {
             alert(data.error);

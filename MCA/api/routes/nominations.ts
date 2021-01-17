@@ -4,7 +4,7 @@ import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
-import { isEligibleFor, isEligibleCurrentYear, isPhaseStarted, isPhase, validatePhaseYear } from "../middleware";
+import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear } from "../middleware";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
 
@@ -51,10 +51,10 @@ nominationsRouter.get("/:year?/search", stageSearch("nominating", async (ctx, ca
     return nominations;
 }));
 
-nominationsRouter.post("/create", isPhase("nomination"), isEligibleCurrentYear, async (ctx) => {
+nominationsRouter.post("/create", isPhase("nomination"), isEligible, async (ctx) => {
     const category = await Category.findOneOrFail(ctx.request.body.categoryId);
     
-    if (!isEligibleFor(ctx.state.user, category.mode.ID, new Date().getFullYear() - 1))
+    if (!isEligibleFor(ctx.state.user, category.mode.ID, ctx.state.year))
         return ctx.body = { 
             error: "You weren't active for this mode",
         };
@@ -111,7 +111,7 @@ nominationsRouter.post("/create", isPhase("nomination"), isEligibleCurrentYear, 
     ctx.body = nomination;
 });
 
-nominationsRouter.delete("/remove/:category/:id", isPhase("nomination"), isEligibleCurrentYear, async (ctx) => {
+nominationsRouter.delete("/remove/:category/:id", isPhase("nomination"), isEligible, async (ctx) => {
     const category = await Category.findOneOrFail(ctx.params.category);
     const nominations = await Nomination.find({
         nominator: ctx.state.user,
