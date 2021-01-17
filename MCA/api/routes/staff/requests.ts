@@ -1,29 +1,34 @@
 import Router from "@koa/router";
 import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
-import { validatePhaseYear } from "../../middleware";
+import { currentMCA } from "../../middleware";
 import { GuestRequest } from "../../../../Models/MCA_AYIM/guestRequest";
+import { MCA } from "../../../../Models/MCA_AYIM/mca";
 
 const staffRequestsRouter = new Router;
 
 staffRequestsRouter.use(isLoggedInDiscord);
 staffRequestsRouter.use(isStaff);
-staffRequestsRouter.use(validatePhaseYear);
+staffRequestsRouter.use(currentMCA);
 
-staffRequestsRouter.get("/:year", async (ctx) => {
-    const year = ctx.state.year;
+staffRequestsRouter.get("/", async (ctx) => {
+    const mca: MCA = ctx.state.mca;
     const requests = await GuestRequest.find({
         where: {
-            mca: {
-                year,
-            },
+            mca,
         },
-        relations: ["user", "beatmap", "mode", "mca"],
+        relations: [
+            "user",
+            "mode",
+            "mca",
+            "beatmap",
+            "beatmap.beatmapset",
+        ],
     });
 
     ctx.body = requests;
 });
 
-staffRequestsRouter.get("/:year/:id/update", async (ctx) => {
+staffRequestsRouter.post("/:id/update", async (ctx) => {
     const request = await GuestRequest.findOneOrFail(ctx.params.id);
     request.status = ctx.request.body.status;
     await request.save();

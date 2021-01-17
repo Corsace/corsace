@@ -25,9 +25,7 @@ staffNominationsRouter.get("/", async (ctx) => {
         .addOrderBy("nomination.reviewerID", "DESC")
         .getMany();
 
-    ctx.body = { 
-        nominations,
-    };
+    ctx.body = nominations;
 });
 
 // Endpoint for accepting a nomination
@@ -46,7 +44,7 @@ staffNominationsRouter.post("/:id/toggleValidation", async (ctx) => {
     nomination.reviewer = ctx.state.user;
     nomination.lastReviewedAt = new Date;
     await nomination.save();
-    ctx.body = { nomination };
+    ctx.body = nomination;
 });
 
 export default staffNominationsRouter;
