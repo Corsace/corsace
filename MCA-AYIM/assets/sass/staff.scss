@@ -1,3 +1,4 @@
+@import '_partials';
 @import '_variables';
 
 .staff-page {
@@ -17,5 +18,21 @@
         &:hover {
             text-decoration: underline;
         }
+    }
+}
+
+.staff-container {
+    @extend %spaced-container;
+    flex-direction: column;
+
+    &__title {
+        border-bottom: 1px solid white;
+        margin-bottom: 10px;
+        font-size: $font-xl;
+    }
+
+    &__box {
+        @extend %flex-box;
+        flex-direction: column;
     }
 }

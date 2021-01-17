@@ -1,7 +1,9 @@
 <template>
     <div class="mode-wrapper">
         <div class="mode-title">
-            {{ selectedMode }} <span v-if="hidePhase && phase">| {{ $t(`mca_ayim.main.${phase.phase}`) }}</span>
+            {{ selectedMode }} 
+            <span v-if="!hidePhase && phase">| {{ $t(`mca_ayim.main.${phase.phase}`) }}</span>
+            <span v-if="title">| {{ title }}</span>
         </div>
 
         <div
@@ -40,6 +42,7 @@ import { Phase } from "../../Interfaces/mca";
 export default class ModeSwitcher extends Vue {
 
     @Prop(Boolean) readonly hidePhase!: boolean;
+    @Prop({ type: String, default: "" }) readonly title!: string;
     @Prop(Boolean) readonly enableModeEligibility!: boolean;
 
     @State loggedInUser!: UserMCAInfo | null;

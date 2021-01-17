@@ -4,13 +4,13 @@
             Requests
         </div>
 
-        <div class="staff-requests">
+        <div class="staff-container">
             <div
                 v-for="group in groupedRequests"
                 :key="group.mode"
-                class="staff-requests__item"
+                class="staff-container__box"
             >
-                <div class="staff-requests__mode">
+                <div class="staff-container__title">
                     {{ group.mode }}
                 </div>
 
@@ -136,21 +136,6 @@ export default class StaffRequests extends Vue {
 <style lang="scss">
 @use '@s-sass/_partials';
 @import '@s-sass/_variables';
-
-.staff-requests {
-    @extend %spaced-container;
-    flex-direction: column;
-
-    &__item {
-        @extend %flex-box;
-        flex-direction: column;
-    }
-
-    &__mode {
-        border-bottom: 1px solid white;
-        margin-bottom: 10px;
-    }
-}
 
 .staff-request {
     display: flex;

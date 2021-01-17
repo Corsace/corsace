@@ -1,45 +1,48 @@
 <template>
     <div class="staff-page">
-        <div class="staff-page__title">
-            Nominations
-        </div>
-
-        <div class="staff-requests">
-            <div
-                v-for="category in categories"
-                :key="category.id + '-category'"
-                class="staff-requests__item"
-            >
-                <a
-                    class="staff-requests__mode"
-                    href="#"
-                    @click="selectCategory(category.id)"
-                >
-                    {{ category.name }}
-                </a>
-
+        <mode-switcher
+            :hide-phase="true"
+            title="nominations"
+        >
+            <div class="staff-container">
                 <div
-                    v-for="userNominations in selectedCategoryInfo"
-                    :key="userNominations.nominator.ID + '-nominator'"
+                    v-for="category in relatedCategories"
+                    :key="category.id + '-category'"
+                    class="staff-container__box"
                 >
-                    {{ userNominations.nominator.osu.username }}
+                    <a
+                        class="staff-container__title"
+                        href="#"
+                        @click="selectCategory(category.id)"
+                    >
+                        {{ category.name }}
+                    </a>
 
                     <div
-                        v-for="nomination in userNominations.nominations"
-                        :key="nomination.ID + '-nomination'"
+                        v-for="userNominations in selectedCategoryInfo"
+                        :key="userNominations.nominator.ID + '-nominator'"
                     >
-                        {{ nomination.isValid ? 'valid' : 'invalid' }}
+                        {{ userNominations.nominator.osu.username }}
+
+                        <div
+                            v-for="nomination in userNominations.nominations"
+                            :key="nomination.ID + '-nomination'"
+                        >
+                            {{ nomination.isValid ? 'valid' : 'invalid' }}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </mode-switcher>
     </div>
 </template>
 
 <script lang="ts">
 import axios from "axios";
 import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { namespace, State } from "vuex-class";
+
+import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 
 import { Category, CategoryInfo } from "../../../Interfaces/category";
 import { Nomination } from "../../../Interfaces/nomination";
@@ -57,13 +60,22 @@ interface NominationsByCategory {
     userNominations: UserNomination[];
 }
 
-@Component
+@Component({
+    components: {
+        ModeSwitcher,
+    },
+})
 export default class Nominations extends Vue {
     
+    @State selectedMode!: string;
     @staffModule.State categories!: CategoryInfo[];
 
     nominations: Nomination[] = [];
     selectedCategoryId: null | number = null;
+
+    get relatedCategories () {
+        return this.categories.filter(c => c.mode === this.selectedMode);
+    }
 
     get nominationsByCategory (): NominationsByCategory[] {
         const groups: NominationsByCategory[] = [];
