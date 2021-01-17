@@ -1,0 +1,21 @@
+@import '_variables';
+
+.staff-page {
+    display: flex;
+    flex-flow: column wrap;
+    padding: 30px;
+
+    &__title {
+        font-family: $font-display;
+        font-size: $font-xxl;
+        margin-bottom: 30px;
+    }
+
+    &__link {
+        font-weight: bold;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

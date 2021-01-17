@@ -16,8 +16,8 @@
             ADMIN
         </nuxt-link>
         <nuxt-link
-            v-if="isMCAStaff"
-            :to="'/staff'"
+            v-if="isMCAStaff && phase"
+            :to="`/${phase.year}/staff`"
         >
             STAFF
         </nuxt-link>
@@ -29,25 +29,18 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { Getter, State } from "vuex-class";
 
+import { Phase } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component
 export default class TheHeaderDropdown extends Vue {
 
     @State loggedInUser!: UserMCAInfo;
+    @State phase!: Phase | null;
+    @Getter isMCAStaff!: boolean;
     
-    get isMCAStaff (): boolean {
-        return this.loggedInUser.staff.corsace || 
-                this.loggedInUser.staff.headStaff || 
-                this.loggedInUser.mcaStaff.standard ||
-                this.loggedInUser.mcaStaff.taiko ||
-                this.loggedInUser.mcaStaff.mania ||
-                this.loggedInUser.mcaStaff.fruits ||
-                this.loggedInUser.mcaStaff.storyboard;
-    }
-        
 }
 </script>
 

@@ -23,6 +23,10 @@ staffRequestsRouter.get("/", async (ctx) => {
             "beatmap",
             "beatmap.beatmapset",
         ],
+        order: {
+            "mode": "ASC",
+            "status": "ASC",
+        },
     });
 
     ctx.body = requests;

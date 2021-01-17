@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { Action, Getter, State } from "vuex-class";
 
 import TheHeader from "../../MCA-AYIM/components/header/TheHeader.vue";
 import TheFooter from "../../MCA-AYIM/components/footer/TheFooter.vue";
@@ -37,6 +37,7 @@ import { User } from "../../Interfaces/user";
 export default class Default extends Vue {
 
     @State loggedInUser!: User;
+    @Getter isMCAStaff!: boolean;
 
     loaded = false;
 
@@ -54,6 +55,10 @@ export default class Default extends Vue {
     async mounted () {
         await this.$store.dispatch("setInitialData");
         this.loaded = true;
+
+        if (this.isMCAStaff) {
+            await this.$store.dispatch("staff/setInitialData");
+        }
     }
     
 }

@@ -10,7 +10,7 @@ staffRouter.use(isLoggedInDiscord);
 staffRouter.use(isStaff);
 staffRouter.use(currentMCA);
 
-// Endpoint to obtain all MCAs and their info
+// Endpoint to obtain current MCA and its info
 staffRouter.get("/", async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const mcaInfo = mca.getInfo();
