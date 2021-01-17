@@ -168,15 +168,23 @@ async function fetchYearMaps (): Promise<void> {
         await mode.save();
     }
 
-    // Start a loop in obtaining the beatmaps
-    let date = year + "-01-01";
+    // Start a loop in obtaining the beatmaps, use latest date if there is any
+    let date = "2006-01-01";
+    const map = await Beatmapset.findOne({
+        order: {
+            approvedDate: "DESC",
+        },
+    });
+    if (map)
+        date = map.approvedDate.toJSON().slice(0, 10);
+
     let mapNum = 0;
     for (;;) {
         try {
             const maps = (await axios.get("https://osu.ppy.sh/api/get_beatmaps?k=" + config.osuV1 + "&since=" + date)).data;
             for (const map of maps) {
                 // Check if this map's date year is the same as the year that was given
-                if (new Date(map.approved_date).getFullYear() !== year) {
+                if (new Date(map.approved_date).getFullYear() > year) {
                     console.log("Final " + year + " map was found.");
                     const finish = new Date;
                     const duration = new Date(finish.valueOf() - start.valueOf());
@@ -198,6 +206,7 @@ async function fetchYearMaps (): Promise<void> {
                     if (!dbSet.beatmaps?.some(b => b.ID === parseInt(map.beatmap_id))) {
                         const dbMap = await createMap(map);
                         dbMap.beatmapset = dbSet;
+                        dbMap.beatmapsetID = dbSet.ID;
                         await dbMap.save();
                     }
 
