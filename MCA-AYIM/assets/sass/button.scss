@@ -36,4 +36,11 @@
         min-width: 100px;
         text-transform: none;
     }
+
+    &--active {
+        background-color: white;
+        font-weight: 500;
+    }
+
+    @include mode-text-color;
 }

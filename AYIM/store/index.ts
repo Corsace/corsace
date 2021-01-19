@@ -8,12 +8,14 @@ export interface RootState {
     loggedInUser: null | UserMCAInfo;
     selectedMode: string;
     modes: string[];
+    year: number;
 }
 
 export const state = (): RootState => ({
     loggedInUser: null,
     selectedMode: "standard",
     modes: ["standard", "taiko", "fruits", "mania", "storyboard"],
+    year: new Date().getFullYear() - 1,
 });
 
 export const mutations: MutationTree<RootState> = {
@@ -33,10 +35,23 @@ export const mutations: MutationTree<RootState> = {
             localStorage.setItem("mode", mode);
         }
     },
+    updateYear (state, year) {
+        state.year = year;
+    },
 };
 
 export const getters: GetterTree<RootState, RootState> = {
+    isMCAStaff (state): boolean {
+        if (!state.loggedInUser) return false;
 
+        return state.loggedInUser.staff.corsace || 
+            state.loggedInUser.staff.headStaff || 
+            state.loggedInUser.mcaStaff.standard ||
+            state.loggedInUser.mcaStaff.taiko ||
+            state.loggedInUser.mcaStaff.mania ||
+            state.loggedInUser.mcaStaff.fruits ||
+            state.loggedInUser.mcaStaff.storyboard;
+    },
 };
 
 export const actions: ActionTree<RootState, RootState> = {
@@ -58,5 +73,8 @@ export const actions: ActionTree<RootState, RootState> = {
     },
     updateSelectedMode ({ commit }, mode) {
         commit("updateSelectedMode", mode);
+    },
+    updateYear ({ commit }, year) {
+        commit("updateYear", year);
     },
 };

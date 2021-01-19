@@ -15,6 +15,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { Getter } from "vuex-class";
 
 import TheHeader from "../../MCA-AYIM/components/header/TheHeader.vue";
 import TheFooter from "../../MCA-AYIM/components/footer/TheFooter.vue";
@@ -26,6 +27,8 @@ import TheFooter from "../../MCA-AYIM/components/footer/TheFooter.vue";
     },
 })
 export default class Default extends Vue {
+
+    @Getter isMCAStaff!: boolean;
 
     loaded = false;
 
@@ -43,6 +46,10 @@ export default class Default extends Vue {
     async mounted () {
         await this.$store.dispatch("setInitialData");
         this.loaded = true;
+
+        if (this.isMCAStaff) {
+            await this.$store.dispatch("staff/setInitialData");
+        }
     }
     
 }
