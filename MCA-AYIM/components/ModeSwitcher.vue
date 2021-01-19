@@ -1,9 +1,12 @@
 <template>
     <div class="mode-wrapper">
-        <div class="mode-title">
-            {{ selectedMode }} 
-            <span v-if="!hidePhase && phase">| {{ $t(`mca_ayim.main.${phase.phase}`) }}</span>
-            <span v-if="title">| {{ title }}</span>
+        <div class="mode-title-container">
+            <slot name="title" />
+            <div class="mode-title">
+                {{ selectedMode }} 
+                <span v-if="!hidePhase && phase">| {{ $t(`mca_ayim.main.${phase.phase}`) }}</span>
+                <span v-if="title">| {{ title }}</span>
+            </div>
         </div>
 
         <div
@@ -89,6 +92,13 @@ $border-margin: 5px;
     overflow: hidden;
 
     margin-left: 30px;
+}
+
+.mode-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .mode-title {
