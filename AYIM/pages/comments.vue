@@ -61,7 +61,7 @@ import Axios from "axios";
 export default Vue.extend({
     data () {
         return {
-            comments: [],
+            comments: [] as any[],
             modes: [],
             user: null,
             newTarget: "",
