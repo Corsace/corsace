@@ -30,3 +30,11 @@
         }
     }
 }
+
+@mixin mode-text-color {
+    @each $mode in $modes {
+        &--#{$mode} {
+            color: var(--#{$mode});
+        }
+    }
+}

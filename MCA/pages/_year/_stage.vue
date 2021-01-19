@@ -88,14 +88,6 @@ export default class Stage extends Vue {
     width: 100%;
 }
 
-@mixin mode-vote-color {
-    @each $mode in $modes {
-        &--#{$mode} {
-            color: var(--#{$mode});
-        }
-    }
-}
-
 .stage__remainingDays {
     position: absolute;
     background-color: white;
@@ -109,7 +101,7 @@ export default class Stage extends Vue {
     overflow: hidden;
     z-index: -100;
 
-    @include mode-vote-color;
+    @include mode-text-color;
     @include transition;
 }
 

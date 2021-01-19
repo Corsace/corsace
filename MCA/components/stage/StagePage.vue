@@ -103,14 +103,6 @@ export default class StateContent extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
 
-@mixin mode-category__text {
-    @each $mode in $modes {
-        &--#{$mode} {
-            color: var(--#{$mode});
-        }
-    }
-}
-
 @mixin mode-category__candidates {
     @each $mode in $modes {
         &--#{$mode} {
@@ -191,7 +183,7 @@ export default class StateContent extends Vue {
         font-size: 1.2rem;
         line-height: 0.7;
 
-        @include mode-category__text;
+        @include mode-text-color;
         @include transition;
     }
 
@@ -217,7 +209,7 @@ export default class StateContent extends Vue {
     overflow: hidden;
     z-index: -1;
 
-    @include mode-category__text;
+    @include mode-text-color;
 
     &-title {
         font-weight: bold;
