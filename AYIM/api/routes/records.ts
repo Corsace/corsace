@@ -3,7 +3,7 @@ import { BeatmapsetRecord } from "../../../Interfaces/records";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 
-function mapBeatmapsetRecord (response: Record<string, any>): BeatmapsetRecord {
+function mapBeatmapsetRecord (response: Record<string, any>): BeatmapsetRecord[] {
     return response.map(res => ({
         beatmapset: {
             id: res.beatmapset_ID,
@@ -58,7 +58,7 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
             .getRawMany(),
     ]);
 
-    const records = {
+    const records: Record<string, BeatmapsetRecord[]> = {
         playcount: mapBeatmapsetRecord(playcount),
         favourites: mapBeatmapsetRecord(favourites),
         length: mapBeatmapsetRecord(length),

@@ -11,3 +11,8 @@ export interface BeatmapsetRecord {
     },
     value: string;
 }
+
+export interface BeatmapsetStatistic {
+    constraint: string;
+    value: string;
+}

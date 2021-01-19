@@ -165,6 +165,16 @@ export class Beatmapset extends BaseEntity {
             .cache(true);
     }
 
+    static queryStatistic (year: number, modeId: number): SelectQueryBuilder<Beatmapset> {
+        return this
+            .createQueryBuilder("beatmapset")
+            .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
+            .innerJoin("beatmapset.creator", "creator")
+            .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+            .limit(1)
+            .cache(true);
+    }
+
     public getInfo (chosen = false): BeatmapsetInfo {
         return {
             id: this.ID,
