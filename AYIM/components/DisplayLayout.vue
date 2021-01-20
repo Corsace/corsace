@@ -28,25 +28,33 @@
             </template>
 
             <div class="ayim-mode-container">
-                <div class="ayim-record-nav">
+                <div
+                    v-if="includeSubnav"
+                    class="ayim-record-nav"
+                >
                     <div class="ayim-record-nav__title">
                         {{ navTitle }}
                     </div>
                     <nuxt-link
-                        :to="`/${year}/mapsets/records`"
+                        :to="`/${year}/${routeType}/records`"
                         class="ayim-record-nav__item"
                         :class="getSubnavClass('records')"
                     >
                         records
                     </nuxt-link>
                     <nuxt-link
-                        :to="`/${year}/mapsets/statistics`"
+                        :to="`/${year}/${routeType}/statistics`"
                         class="ayim-record-nav__item"
                         :class="getSubnavClass('statistics')"
                     >
                         statistics
                     </nuxt-link>
                 </div>
+
+                <slot
+                    v-else
+                    name="sub-nav"
+                />
 
                 <div class="ayim-layout-scroller">
                     <div class="ayim-layout">
@@ -74,7 +82,8 @@ import ScrollBar from "../../MCA/components/ScrollBar.vue";
 })
 export default class DisplayLayout extends Vue {
 
-    @Prop({ type: String, required: true }) readonly navTitle!: string;
+    @Prop({ type: String, default: "" }) readonly navTitle!: string;
+    @Prop({ type: Boolean, default: true }) readonly includeSubnav!: boolean;
 
     @State selectedMode!: string;
     @State year!: number;
@@ -86,6 +95,10 @@ export default class DisplayLayout extends Vue {
         if (!isNaN(routeYear) && this.year !== routeYear) {
             this.updateYear(routeYear);
         }
+    }
+
+    get routeType (): string {
+        return this.$route.name?.includes("mapsets") ? "mapsets" : "mappers";
     }
 
     getNavClass (routeName: string): string {

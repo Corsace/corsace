@@ -1,5 +1,5 @@
 <template>
-    <display-layout nav-title="mapsets">
+    <display-layout nav-title="mappers">
         <record-item
             v-for="(recordsItems, recordName) in records"
             :key="recordName"
