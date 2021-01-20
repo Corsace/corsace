@@ -60,7 +60,10 @@
                     <div class="ayim-layout">
                         <slot />
                     </div>
-                    <scroll-bar selector=".ayim-layout" />
+                    <scroll-bar
+                        selector=".ayim-layout"
+                        @bottom="$emit('scroll-bottom')"
+                    />
                 </div>
             </div>
         </mode-switcher>

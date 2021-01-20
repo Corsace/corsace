@@ -1,7 +1,7 @@
 <template>
     <display-layout
-        nav-title="mapsets"
         :include-subnav="false"
+        @scroll-bottom="skipSearch"
     >
         <template #sub-nav>
             <search-bar
@@ -11,31 +11,25 @@
         </template>
 
         <div
-            v-for="i in 20"
-            :key="i"
+            v-for="mapper in mappers"
+            :key="mapper.ID"
             class="ayim-user"
         >
             <img
-                :src="`https://a.ppy.sh/${6203841}`"
+                :src="`https://a.ppy.sh/${mapper.osu.userID}`"
                 class="ayim-user__avatar"
             >
             
             <div class="ayim-user__username ayim-text ayim-text--xl">
-                kagetsu
+                {{ mapper.osu.username }}
             </div>
             
             <div class="ayim-user__links">
                 <nuxt-link
-                    :to="`/2020/comments/kagetsu`"
+                    :to="`/${year}/comments/${mapper.ID}`"
                     class="button button--small"
                 >
-                    view comments
-                </nuxt-link>
-                <nuxt-link
-                    :to="`/2020/comments/submit/kagetsu`"
-                    class="button button--small"
-                >
-                    submit/edit
+                    view/submit comments
                 </nuxt-link>
             </div>
         </div>
@@ -43,10 +37,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
+import axios from "axios";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
+import { State } from "vuex-class";
+import { User } from "../../../../Interfaces/user";
 
 @Component({
     components: {
@@ -56,8 +53,43 @@ import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 })
 export default class Comments extends Vue {
 
-    updateQuery (query) {
-        console.log(query);
+    @State year!: number;
+    @State selectedMode!: string;
+
+    skip = 0;
+    text = "";
+    mappers: User[] = [];
+
+    @Watch("selectedMode")
+    async onSelectedModeChanged () {
+        this.skip = 0;
+        await this.getMappers();
+    }
+    
+    async mounted () {
+        this.getMappers();
+    }
+
+    async updateQuery (query) {
+        this.text = query;
+        await this.getMappers();
+    }
+
+    async skipSearch () {
+        this.skip = this.mappers.length;
+        await this.getMappers();
+    }
+
+    async getMappers () {
+        const { data } = await axios.get(`/api/mappers/search?skip=${this.skip}&year=${this.year}&mode=${this.selectedMode}&text=${this.text}`);
+
+        if (data.error) {
+            alert(data.error);
+        } else if (this.skip === 0) {
+            this.mappers = data;
+        } else {
+            this.mappers.push(...data);
+        }
     }
 
 }
