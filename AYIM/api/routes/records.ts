@@ -1,5 +1,6 @@
 import Router from "@koa/router";
-import { BeatmapsetRecord } from "../../../Interfaces/records";
+import { createQueryBuilder } from "typeorm";
+import { BeatmapsetRecord, MapperRecord } from "../../../Interfaces/records";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 
@@ -63,6 +64,44 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
         favourites: mapBeatmapsetRecord(favourites),
         length: mapBeatmapsetRecord(length),
         difficulties: mapBeatmapsetRecord(difficulties),
+    };
+
+    ctx.body = records;
+});
+
+recordsRouter.get("/mappers", async (ctx) => {
+    const year = parseInt(ctx.query.year || new Date().getFullYear());
+    const modeString: string = ctx.query.mode || "standard";
+    const modeId = ModeDivisionType[modeString];
+            
+    const [mostRanked] = await Promise.all([
+        createQueryBuilder()
+            .from(sub => {
+                return sub
+                    .from("beatmapset", "beatmapset")
+                    .innerJoin("beatmapset.creator", "creator")
+                    .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
+                    .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+                    .select("creator.osuUsername", "username")
+                    .addSelect("creator.osuUserid", "osuId")
+                    .addSelect("beatmapset.ID", "beatmapsetId")
+                    .groupBy("creator.osuUsername")
+                    .addGroupBy("creator.osuUserid")
+                    .addGroupBy("beatmapsetId");
+            }, "sub")
+            .select("sub.username", "username")
+            .addSelect("sub.osuId", "osuId")
+            .addSelect("COUNT(sub.beatmapsetID)", "value")
+            .groupBy("sub.username")
+            .addGroupBy("sub.osuId")
+            .orderBy("value", "DESC")
+            .limit(3)
+            .cache(true)
+            .getRawMany(),
+    ]);
+
+    const records: Record<string, MapperRecord[]> = {
+        mostRanked: mostRanked,
     };
 
     ctx.body = records;

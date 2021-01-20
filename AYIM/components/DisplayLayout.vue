@@ -3,24 +3,27 @@
         <mode-switcher :hide-phase="true">
             <template #title>
                 <div class="ayim-nav">
-                    <button
+                    <nuxt-link
+                        :to="`/${year}/mapsets/records`"
                         class="ayim-nav__item button"
                         :class="getNavClass('mapsets')"
                     >
                         mapsets
-                    </button>
-                    <button
+                    </nuxt-link>
+                    <nuxt-link
+                        :to="`/${year}/mappers/records`"
                         class="ayim-nav__item button"
                         :class="getNavClass('mappers')"
                     >
                         mappers
-                    </button>
-                    <button
+                    </nuxt-link>
+                    <nuxt-link
+                        :to="`/${year}/comments`"
                         class="ayim-nav__item button"
                         :class="getNavClass('comments')"
                     >
                         comments
-                    </button>
+                    </nuxt-link>
                 </div>
             </template>
 
@@ -188,7 +191,18 @@ export default class DisplayLayout extends Vue {
     text-shadow: $text-shadow;
 
     &--lg {
+        font-size: $font-lg;
+        text-shadow: $text-shadow;
+    }
+
+    &--xl {
         font-size: $font-xl;
+        text-shadow: $text-shadow-lg;
+        font-weight: 500;
+    }
+
+    &--xxl {
+        font-size: $font-xxl;
         text-shadow: $text-shadow-lg;
         font-weight: 500;
     }

@@ -24,3 +24,10 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+%ayim-record {
+    @extend %flex-box;
+    flex-direction: column;
+    box-shadow: $gray-shadow;
+    position: relative;
+}

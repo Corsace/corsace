@@ -8,18 +8,18 @@
             <div
                 v-for="statistic in statisticItems"
                 :key="statistic.constraint + '-stat'"
-                class="ayim-record"
+                class="ayim-mapset-record"
             >
-                <div class="ayim-record__info">
+                <div class="ayim-mapset-record__info">
                     <div class="ayim-text ayim-text--italic">
                         number of maps with
                     </div>
                             
-                    <div class="ayim-text ayim-text--lg">
+                    <div class="ayim-text ayim-text--xl">
                         {{ statistic.constraint }}
                     </div>
                 </div>
-                <div class="ayim-record__total">
+                <div class="ayim-mapset-record__total">
                     {{ statistic.value }}
                 </div>
             </div>
@@ -43,7 +43,7 @@ import { BeatmapsetStatistic } from "../../../../Interfaces/records";
         RecordItem,
     },
 })
-export default class Statistics extends Vue {
+export default class MapsetStatistics extends Vue {
 
     @State selectedMode!: string;
     @State year!: string;
@@ -65,7 +65,6 @@ export default class Statistics extends Vue {
         if (!data.error) {
             this.statistics = data;
         }
-
     }
     
 }

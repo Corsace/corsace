@@ -12,6 +12,12 @@ export interface BeatmapsetRecord {
     value: string;
 }
 
+export interface MapperRecord {
+    username: string;
+    osuId: string;
+    value: string;
+}
+
 export interface BeatmapsetStatistic {
     constraint: string;
     value: string;

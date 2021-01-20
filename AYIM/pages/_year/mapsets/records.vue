@@ -9,30 +9,30 @@
                 <a
                     v-if="i == 0"
                     :key="i + '-record'"
-                    class="ayim-record"
+                    class="ayim-mapset-record"
                     :href="`https://osu.ppy.sh/beatmapsets/${record.beatmapset.id}`"
                     target="_blank"
                 >
                     <div
-                        class="ayim-record__image"
+                        class="ayim-mapset-record__image"
                         :style="`background-image: url('https://assets.ppy.sh/beatmaps/${record.beatmapset.id}/covers/cover.jpg')`"
                     />
-                    <div class="ayim-record__info">
-                        <div class="ayim-text ayim-text--lg">
+                    <div class="ayim-mapset-record__info">
+                        <div class="ayim-text ayim-text--xl">
                             {{ record.beatmapset.title }}
                         </div>
                                 
                         <div class="ayim-text">
                             {{ record.beatmapset.artist }}
                         </div>
-                        <div class="ayim-record__description">
+                        <div class="ayim-mapset-record__description">
                             hosted by | 
                             <span class="ayim-text ayim-text--italic">
                                 {{ record.creator.username }}
                             </span>
                         </div>
                     </div>
-                    <div class="ayim-record__total">
+                    <div class="ayim-mapset-record__total">
                         {{ record.value }}
                     </div>
                 </a>
@@ -40,18 +40,18 @@
                 <a
                     v-else
                     :key="i + '-record'"
-                    class="ayim-record ayim-record--small"
+                    class="ayim-mapset-record ayim-mapset-record--small"
                     :href="`https://osu.ppy.sh/beatmapsets/${record.beatmapset.id}`"
                     target="_blank"
                 >
                     <div
-                        class="ayim-record__image"
+                        class="ayim-mapset-record__image"
                         :style="`background-image: url('https://assets.ppy.sh/beatmaps/${record.beatmapset.id}/covers/cover.jpg')`"
                     />
                     <div class="ayim-text">
                         {{ record.beatmapset.title }}
                     </div>
-                    <div class="ayim-record__total ayim-record__total--small">
+                    <div class="ayim-mapset-record__total ayim-mapset-record__total--small">
                         {{ record.value }}
                     </div>
                 </a>
@@ -76,7 +76,7 @@ import { BeatmapsetRecord } from "../../../../Interfaces/records";
         RecordItem,
     },
 })
-export default class Records extends Vue {
+export default class MapsetRecords extends Vue {
 
     @State selectedMode!: string;
     @State year!: string;
@@ -108,11 +108,8 @@ export default class Records extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
 
-.ayim-record {
-    @extend %flex-box;
-    flex-direction: column;
-    box-shadow: $gray-shadow;
-    position: relative;
+.ayim-mapset-record {
+    @extend %ayim-record;
 
     &__image {
         position: absolute;
