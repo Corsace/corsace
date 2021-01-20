@@ -112,16 +112,7 @@ export default class MapsetRecords extends Vue {
     @extend %ayim-record;
 
     &__image {
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 100%;
-        background-repeat: no-repeat;
-        background-size: cover;
-        opacity: 0.7;
-        z-index: -1;
-        border-radius: inherit;
+        @extend %background-image;
     }
 
     &__total {

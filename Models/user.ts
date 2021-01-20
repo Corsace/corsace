@@ -13,7 +13,8 @@ import { GuildMember } from "discord.js";
 import { discordGuild } from "../Server/discord";
 import { UserCondensedInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
-import { StageQuery } from "../Interfaces/queries";
+import { MapperQuery, StageQuery } from "../Interfaces/queries";
+import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 
 // General middlewares
 const config = new Config();
@@ -111,6 +112,36 @@ export class User extends BaseEntity {
     
     @OneToMany(() => Vote, vote => vote.user)
     votesReceived!: Vote[];
+
+    static basicSearch (query: MapperQuery) {
+        const queryBuilder = User
+            .createQueryBuilder("user")
+            .leftJoinAndSelect("user.otherNames", "otherName")
+            .leftJoinAndSelect("user.mcaEligibility", "mca")
+            .where(`mca.year = :q`, { q: parseInt(query.year) });
+
+        if (query.mode in ModeDivisionType) {
+            queryBuilder.andWhere(`mca.${query.mode} = true`);
+        }
+
+        // Check for search text
+        if (query.text) {
+            queryBuilder
+                .andWhere(new Brackets(qb => {
+                    qb.where("user.osuUsername LIKE :criteria")
+                        .orWhere("user.osuUserid LIKE :criteria")
+                        .orWhere("otherName.name LIKE :criteria");
+                }))
+                .setParameter("criteria", `%${query.text}%`);
+        }
+            
+        // Search
+        return queryBuilder
+            .offset(parseInt(query.skip))
+            .limit(50)
+            .orderBy("user.osuUsername", "DESC")
+            .getMany();
+    }
 
     static search (year: number, modeString: string, stage: "voting" | "nominating", category: Category, query: StageQuery): Promise<[User[], number]> {
         // Initial repo setup

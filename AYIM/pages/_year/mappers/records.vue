@@ -116,17 +116,8 @@ export default class MappersRecords extends Vue {
     height: auto;
 
     &__image {
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
+        @extend %background-image;
         width: 60%;
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        opacity: 0.7;
-        z-index: -1;
-        border-radius: inherit;
 
         &--small {
             width: 30%;

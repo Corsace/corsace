@@ -29,14 +29,17 @@ export class UserComment extends BaseEntity {
     @ManyToOne(() => User, user => user.commentsMade, { nullable: false })
     commenter!: User;
 
+    @Column()
+    targetID!: number;
+
     @ManyToOne(() => User, user => user.commentsReceived, { nullable: false })
     target!: User;
 
     @ManyToOne(() => User, user => user.commentReviews)
-    reviewer!: User;
+    reviewer?: User;
 
-    @Column()
-    lastReviewedAt!: Date;
+    @Column({ nullable: true })
+    lastReviewedAt?: Date;
 
     @CreateDateColumn()
     createdAt!: Date;

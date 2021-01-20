@@ -74,4 +74,3 @@ export default class RecordItem extends Vue {
     }
 }
 </style>
-

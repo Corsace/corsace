@@ -33,3 +33,17 @@
     box-shadow: $gray-shadow;
     position: relative;
 }
+
+%background-image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.7;
+    z-index: -1;
+    border-radius: inherit;
+}

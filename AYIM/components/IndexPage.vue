@@ -23,22 +23,25 @@
     </div>
 </template>
 
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+import { State } from "vuex-class";
 
-<script>
-export default {
-    props: {
-        selectedMode: {
-            type: String,
-            default: "standard",
-        },
-    }, 
-};
+@Component
+export default class DisplayLayout extends Vue {
+
+    @State selectedMode!: string;
+
+}
 </script>
+
 <style lang="scss">
+
 .general-info {
     border-radius: 15px 0 0 15px; 
     background-color: rgba(0, 0, 0, 0.8); 
     padding: 30px 70px;
     margin-bottom: 30px;
 }
+
 </style>
