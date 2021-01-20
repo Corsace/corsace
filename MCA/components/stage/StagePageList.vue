@@ -1,7 +1,7 @@
 <template>
     <div class="category__selection">
         <div class="category__selection-search">
-            <search-bar />
+            <stage-page-filters />
         </div>
 
         <div class="category__selection-area">
@@ -39,7 +39,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import axios from "axios";
 
-import SearchBar from "./SearchBar.vue";
+import StagePageFilters from "./StagePageFilters.vue";
 import ChoiceBeatmapsetCard from "../ChoiceBeatmapsetCard.vue";
 import ChoiceUserCard from "../ChoiceUserCard.vue";
 import ScrollBar from "../ScrollBar.vue";
@@ -53,7 +53,7 @@ const stageModule = namespace("stage");
 
 @Component({
     components: {
-        SearchBar,
+        StagePageFilters,
         ChoiceBeatmapsetCard,
         ChoiceUserCard,
         ScrollBar,
