@@ -184,7 +184,8 @@ async function fetchYearMaps (): Promise<void> {
             const maps = (await axios.get("https://osu.ppy.sh/api/get_beatmaps?k=" + config.osuV1 + "&since=" + date)).data;
             for (const map of maps) {
                 // Check if this map's date year is the same as the year that was given
-                if (new Date(map.approved_date).getFullYear() > year) {
+                const mapYear = new Date(map.approved_date).getFullYear();
+                if (mapYear > year) {
                     console.log("Final " + year + " map was found.");
                     const finish = new Date;
                     const duration = new Date(finish.valueOf() - start.valueOf());
@@ -229,7 +230,7 @@ async function fetchYearMaps (): Promise<void> {
 
                         if (!map.version.includes("'")) {
                             const eligibility = new MCAEligibility();
-                            eligibility.year = year;
+                            eligibility.year = mapYear;
                             eligibility.user = dbUser;
                             eligibility[modeList[map.mode]] = true;
                             eligibility.storyboard = true;
@@ -254,10 +255,10 @@ async function fetchYearMaps (): Promise<void> {
                             await dbUser.save();
                         
                         if (!map.version.includes("'")) {
-                            let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: dbUser }});
+                            let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: mapYear, user: dbUser }});
                             if (!eligibility) {
                                 eligibility = new MCAEligibility();
-                                eligibility.year = year;
+                                eligibility.year = mapYear;
                                 eligibility.user = dbUser;
                             }
                             
