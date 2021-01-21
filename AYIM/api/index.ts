@@ -9,9 +9,11 @@ import recordsRouter from "./routes/records";
 import statisticsRouter from "./routes/statistics";
 import staffRouter from "./routes/staff";
 import mappersRouter from "./routes/mappers";
+import mcaRouter from "./routes/mca";
 
 const app = new App("ayim");
 
+app.koa.use(mount("/mca", mcaRouter.routes()));
 app.koa.use(mount("/records", recordsRouter.routes()));
 app.koa.use(mount("/statistics", statisticsRouter.routes()));
 app.koa.use(mount("/mappers", mappersRouter.routes()));

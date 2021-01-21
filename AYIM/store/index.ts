@@ -1,6 +1,7 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import axios from "axios";
 import { UserMCAInfo } from "../../Interfaces/user";
+import { MCA } from "../../Interfaces/mca";
 
 const modeRegex = /^(standard|taiko|fruits|mania|storyboard)$/;
 
@@ -9,6 +10,7 @@ export interface RootState {
     selectedMode: string;
     modes: string[];
     year: number;
+    mca: MCA | null;
 }
 
 export const state = (): RootState => ({
@@ -16,6 +18,7 @@ export const state = (): RootState => ({
     selectedMode: "standard",
     modes: ["standard", "taiko", "fruits", "mania", "storyboard"],
     year: new Date().getFullYear() - 1,
+    mca: null,
 });
 
 export const mutations: MutationTree<RootState> = {
@@ -37,6 +40,9 @@ export const mutations: MutationTree<RootState> = {
     },
     updateYear (state, year) {
         state.year = year;
+    },
+    updateMCA (state, mca) {
+        state.mca = mca;
     },
 };
 
@@ -74,7 +80,13 @@ export const actions: ActionTree<RootState, RootState> = {
     updateSelectedMode ({ commit }, mode) {
         commit("updateSelectedMode", mode);
     },
-    updateYear ({ commit }, year) {
+    async updateYear ({ commit }, year) {
         commit("updateYear", year);
+        
+        const { data } = await axios.get(`/api/mca`);
+
+        if (!data.error) {
+            commit("updateMCA", data);
+        }
     },
 };
