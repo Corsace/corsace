@@ -50,21 +50,3 @@ export default class Default extends Vue {
     
 }
 </script>
-
-<style lang="scss">
-@import '@s-sass/_mixins';
-
-.layout {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    
-    @include transition;
-}
-
-.main {
-    display: flex;
-    flex-wrap: wrap;
-    flex: 1;
-}
-</style>

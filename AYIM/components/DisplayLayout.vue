@@ -128,16 +128,6 @@ export default class DisplayLayout extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
 
-.ayim-nav {
-    display: flex;
-    justify-content: space-around;
-    
-    &__item {
-        margin-left: 15px;
-        margin-right: 15px;
-    }
-}
-
 .ayim-mode-container {
     padding-right: 25px;
 }

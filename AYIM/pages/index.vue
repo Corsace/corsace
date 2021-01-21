@@ -1,71 +1,34 @@
 <template>
-    <div class="home">
+    <div>
         <div class="ayim-bg" />
         <div class="left-side" />
         <div class="right-side">
-            <mode-switcher />
+            <mode-switcher>
+                <index-page />
+            </mode-switcher>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import axios from "axios";
+import { Vue, Component } from "vue-property-decorator";
 
 import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
+import IndexPage from "../components/IndexPage.vue";
 
-export default Vue.extend({
+@Component({
     components: {
         ModeSwitcher,
+        IndexPage,
     },
-    data () {
-        return {
-            user: null,
-            value: "0%",
-            eligible: false,
-            selectedMode: "",
-            modes: ["standard", "taiko", "fruits", "mania", "storyboard"],
-        };
-    },
-    async mounted () {
-        this.selectedMode = this.$route.params.mode || "standard";
+})
+export default class Index extends Vue {
 
-        try {
-            const data = (await axios.get(`/api/user`)).data;
-            
-            if (!data.error) {
-                this.user = data.user;
-            } else {
-                console.error(data.error);
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    },
-    methods: {
-        async run (): Promise<void> {
-            console.log((await axios.post(`/api/user/guestDifficulty/2019/osu`)).data);
-        },
-    },
-});
+
+}
 </script>
 
 <style lang="scss">
-.home {
-    width: 100%;
-    padding-bottom: 9vh;
-   
-    display: flex;
-    flex-grow: 1;
-        
-    @media (min-width: 1200px) {
-        margin-bottom: 0px;
-    }
-
-    overflow: hidden;
-
-}
-
 .ayim-bg {
     position: absolute;
     bottom: 0px;
