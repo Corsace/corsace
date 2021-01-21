@@ -3,7 +3,10 @@
         v-if="user"
         :include-subnav="false"
     >
-        <template #sub-nav>
+        <template
+            v-if="canComment"
+            #sub-nav
+        >
             <div class="ayim-comment">
                 <div class="ayim-comment__commenter">
                     <div
@@ -17,7 +20,7 @@
 
                 <textarea
                     v-model.trim="newComment"
-                    class="ayim-comment__input"
+                    class="ayim-comment__input textarea"
                     placeholder="write a new comment for this mapper here"
                 />
             
@@ -99,6 +102,7 @@ import DisplayLayout from "../../../../components/DisplayLayout.vue";
 
 import { Comment } from "../../../../../Interfaces/comment";
 import { User, UserMCAInfo } from "../../../../../Interfaces/user";
+import { MCA } from "../../../../../Interfaces/mca";
 
 @Component({
     components: {
@@ -110,12 +114,17 @@ export default class MapperComments extends Vue {
     @State loggedInUser!: UserMCAInfo | null;
     @State selectedMode!: string;
     @State year!: number;
+    @State mca!: MCA | null;
 
     user: User | null = null;
     comments: Comment[] = []
     targetID = this.$route.params.mapper;
     newComment = "";
     info = "";
+
+    get canComment (): boolean {
+        return (this.loggedInUser?.canComment && this.mca && new Date(this.mca.results) > new Date()) || false;
+    }
 
     get ownCommentIndex (): number {
         return this.comments.findIndex(c => c.commenter.ID === this.loggedInUser?.corsaceID);
@@ -241,21 +250,6 @@ export default class MapperComments extends Vue {
 
     &__comment {
         @extend %ayim-record;
-    }
-
-    &__input {
-        color: white;
-        padding: 5px;
-        margin: 0;
-        background: black;
-        box-shadow: $black-shadow;
-        border-radius: 5.5px;
-        font-size: $font-base;
-        font-family: $font-body;
-        border: none;
-        margin-left: 10px;
-        margin-right: 10px;
-        width: 100%;
     }
 
     & > .button {

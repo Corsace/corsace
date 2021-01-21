@@ -240,6 +240,7 @@ export class User extends BaseEntity {
             },
             joinDate: this.registered,
             lastLogin: this.lastLogin,
+            canComment: this.canComment,
         };
         return info;
     }
