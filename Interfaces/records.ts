@@ -18,7 +18,7 @@ export interface MapperRecord {
     value: string;
 }
 
-export interface BeatmapsetStatistic {
+export interface Statistic {
     constraint: string;
     value: string;
 }

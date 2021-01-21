@@ -35,7 +35,6 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
             .orderBy("value", "DESC")
             .getRawMany(),
 
-            
         Beatmapset
             .queryRecord(year, modeId)
             .addSelect("beatmapset.favourites", "value")
@@ -74,7 +73,7 @@ recordsRouter.get("/mappers", async (ctx) => {
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
             
-    const [mostRanked] = await Promise.all([
+    const [mostRanked, mostFavourited, mostPlayed] = await Promise.all([
         createQueryBuilder()
             .from(sub => {
                 return sub
@@ -98,10 +97,64 @@ recordsRouter.get("/mappers", async (ctx) => {
             .limit(3)
             .cache(true)
             .getRawMany(),
+
+        createQueryBuilder()
+            .from(sub => {
+                return sub
+                    .from("beatmapset", "beatmapset")
+                    .innerJoin("beatmapset.creator", "creator")
+                    .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
+                    .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+                    .select("creator.osuUsername", "username")
+                    .addSelect("creator.osuUserid", "osuId")
+                    .addSelect("beatmapset.ID", "beatmapsetId")
+                    .addSelect("beatmapset.favourites", "favourites")
+                    .groupBy("creator.osuUsername")
+                    .addGroupBy("creator.osuUserid")
+                    .addGroupBy("beatmapset.ID")
+                    .addGroupBy("beatmapset.favourites");
+            }, "sub")
+            .select("sub.username", "username")
+            .addSelect("sub.osuId", "osuId")
+            .addSelect("SUM(sub.favourites)", "value")
+            .groupBy("sub.username")
+            .addGroupBy("sub.osuId")
+            .orderBy("value", "DESC")
+            .limit(3)
+            .cache(true)
+            .getRawMany(),
+
+        createQueryBuilder()
+            .from(sub => {
+                return sub
+                    .from("beatmapset", "beatmapset")
+                    .innerJoin("beatmapset.creator", "creator")
+                    .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
+                    .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+                    .select("creator.osuUsername", "username")
+                    .addSelect("creator.osuUserid", "osuId")
+                    .addSelect("beatmapset.ID", "beatmapsetId")
+                    .addSelect("beatmap.playCount", "playCount")
+                    .groupBy("creator.osuUsername")
+                    .addGroupBy("creator.osuUserid")
+                    .addGroupBy("beatmapset.ID")
+                    .addGroupBy("beatmap.playCount");
+            }, "sub")
+            .select("sub.username", "username")
+            .addSelect("sub.osuId", "osuId")
+            .addSelect("SUM(sub.playCount)", "value")
+            .groupBy("sub.username")
+            .addGroupBy("sub.osuId")
+            .orderBy("value", "DESC")
+            .limit(3)
+            .cache(true)
+            .getRawMany(),
     ]);
 
     const records: Record<string, MapperRecord[]> = {
-        mostRanked: mostRanked,
+        mostRanked,
+        mostFavourited,
+        mostPlayed,
     };
 
     ctx.body = records;

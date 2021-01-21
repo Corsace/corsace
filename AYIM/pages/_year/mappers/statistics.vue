@@ -1,5 +1,5 @@
 <template>
-    <display-layout nav-title="mapsets">
+    <display-layout nav-title="mappers">
         <record-item
             v-for="(statisticItems, statisticName) in statistics"
             :key="statisticName"
@@ -12,7 +12,7 @@
             >
                 <div class="ayim-mapset-record__info">
                     <div class="ayim-text ayim-text--italic">
-                        number of maps with
+                        number of
                     </div>
                             
                     <div class="ayim-text ayim-text--xl">
@@ -43,7 +43,7 @@ import { Statistic } from "../../../../Interfaces/records";
         RecordItem,
     },
 })
-export default class MapsetStatistics extends Vue {
+export default class MapperStatistics extends Vue {
 
     @State selectedMode!: string;
     @State year!: string;
@@ -60,7 +60,7 @@ export default class MapsetStatistics extends Vue {
     }
 
     async getStats () {
-        const { data } = await axios.get(`/api/statistics/beatmapsets?year=${this.$route.params.year}&mode=${this.selectedMode}`);
+        const { data } = await axios.get(`/api/statistics/mappers?year=${this.$route.params.year}&mode=${this.selectedMode}`);
 
         if (!data.error) {
             this.statistics = data;
@@ -69,10 +69,3 @@ export default class MapsetStatistics extends Vue {
     
 }
 </script>
-
-<style lang="scss">
-@import '@s-sass/_variables';
-@import '@s-sass/_mixins';
-@import '@s-sass/_partials';
-
-</style>
