@@ -5,6 +5,8 @@ import { User } from "../../../Models/user";
 import { UserComment } from "../../../Models/MCA_AYIM/userComments";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { isEligibleFor } from "../../../MCA/api/middleware";
+import { MCA } from "../../../Models/MCA_AYIM/mca";
+import { FindConditions } from "typeorm";
 
 async function canComment (ctx: ParameterizedContext, next: Next): Promise<any> {
     if (!ctx.state.user.canComment) {
@@ -17,7 +19,12 @@ async function canComment (ctx: ParameterizedContext, next: Next): Promise<any> 
 }
 
 async function isCommentOwner (ctx: ParameterizedContext, next: Next): Promise<any> {
-    const comment = await UserComment.findOneOrFail(ctx.params.id);
+    const comment = await UserComment.findOneOrFail({ 
+        where: {
+            ID: ctx.params.id,
+        },
+        relations: ["commenter"],
+    });
 
     if (comment.commenterID !== ctx.state.user.ID) {
         return ctx.body = {
@@ -37,24 +44,35 @@ commentsRouter.get("/", async (ctx) => {
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
 
+    const mca = await MCA.findOneOrFail({
+        year,
+    });
+
+    let query: FindConditions<UserComment> | FindConditions<UserComment>[] = {
+        targetID: userId,
+        year: year,
+        mode: modeId,
+        commenter: ctx.state.user,
+    };
+
+    // Show all comments if mca results are out
+    if (new Date() >= mca?.results) {
+        query = [
+            query,
+            {
+                targetID: userId,
+                year: year,
+                mode: modeId,
+                isValid: true,
+            },
+        ];
+    }
+
     const [user, comments] = await Promise.all([
         User.findOneOrFail(userId),
 
         UserComment.find({
-            where: [
-                {
-                    targetID: userId,
-                    year: year,
-                    mode: modeId,
-                    commenter: ctx.state.user,
-                },
-                {
-                    targetID: userId,
-                    year: year,
-                    mode: modeId,
-                    isValid: true,
-                },
-            ],
+            where: query,
             relations: ["commenter"],
             order: {
                 updatedAt: "DESC",
@@ -79,6 +97,16 @@ commentsRouter.post("/create", isLoggedInOsu, canComment, async (ctx) => {
     if (!newComment || !modeInput || !year || !targetID) {
         return ctx.body = {
             error: "Missing data",
+        };
+    }
+
+    const mca = await MCA.findOneOrFail({
+        year,
+    });
+
+    if (!mca.isNominationPhase()) {
+        return ctx.body = {
+            error: "Can only create during MCA nomination phase",
         };
     }
 
@@ -134,6 +162,16 @@ commentsRouter.post("/:id/update", isLoggedInOsu, canComment, isCommentOwner, as
     }
 
     const comment: UserComment = ctx.state.comment;
+    const mca = await MCA.findOneOrFail({
+        year: comment.year,
+    });
+
+    if (!mca.isNominationPhase()) {
+        return ctx.body = {
+            error: "Can only update during MCA nomination phase",
+        };
+    }
+
     comment.comment = newComment;
     comment.isValid = false;
     await comment.save();
@@ -142,6 +180,17 @@ commentsRouter.post("/:id/update", isLoggedInOsu, canComment, isCommentOwner, as
 });
 
 commentsRouter.post("/:id/remove", isLoggedInOsu, canComment, isCommentOwner, async (ctx) => {
+    const comment: UserComment = ctx.state.comment;
+    const mca = await MCA.findOneOrFail({
+        year: comment.year,
+    });
+
+    if (new Date() >= mca?.results) {
+        return ctx.body = {
+            error: "Can only remove before MCA results",
+        };
+    }
+
     await ctx.state.comment.remove();
 
     ctx.body = {

@@ -71,4 +71,10 @@ export class MCA extends BaseEntity {
             categories: this.categories,
         };
     }
+
+    public isNominationPhase (): boolean {
+        const now = new Date();
+    
+        return now < this.nomination.end && now > this.nomination.start;
+    }
 }

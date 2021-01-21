@@ -8,6 +8,13 @@
                 placeholder="search for a mapper"
                 @update:search="updateQuery($event)"
             />
+            
+            <div
+                v-if="info"
+                class="info"
+            >
+                {{ info }}
+            </div>
         </template>
 
         <div
@@ -44,6 +51,7 @@ import DisplayLayout from "../../../components/DisplayLayout.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 import { State } from "vuex-class";
 import { User } from "../../../../Interfaces/user";
+import { MCA } from "../../../../Interfaces/mca";
 
 @Component({
     components: {
@@ -53,12 +61,21 @@ import { User } from "../../../../Interfaces/user";
 })
 export default class Comments extends Vue {
 
+    @State mca!: MCA | null;
     @State year!: number;
     @State selectedMode!: string;
 
     skip = 0;
     text = "";
     mappers: User[] = [];
+    
+    get info (): string {
+        if (!this.mca || new Date() < this.mca.results) {
+            return `All comments become public after MCA results date! You can submit your own comments now`;
+        }
+
+        return "";
+    }
 
     @Watch("selectedMode")
     async onSelectedModeChanged () {

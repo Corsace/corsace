@@ -21,13 +21,29 @@
                     placeholder="write a new comment for this mapper here"
                 />
             
-                <button
-                    v-if="loggedInUser"
-                    class="button"
-                    @click="create"
-                >
-                    Create
-                </button>
+                <template v-if="loggedInUser">
+                    <template v-if="ownComment">
+                        <button
+                            class="button"
+                            @click="update"
+                        >
+                            Update
+                        </button>
+                        <button
+                            class="button"
+                            @click="remove"
+                        >
+                            Remove
+                        </button>
+                    </template>
+                    <button
+                        v-else
+                        class="button"
+                        @click="create"
+                    >
+                        Create
+                    </button>
+                </template>
                 <button
                     v-else
                     class="button"
@@ -38,7 +54,7 @@
 
             <div
                 v-if="info"
-                class="ayim-comment__info"
+                class="info"
             >
                 {{ info }}
             </div>
@@ -82,7 +98,7 @@ import axios from "axios";
 import DisplayLayout from "../../../../components/DisplayLayout.vue";
 
 import { Comment } from "../../../../../Interfaces/comment";
-import { User } from "../../../../../Interfaces/user";
+import { User, UserMCAInfo } from "../../../../../Interfaces/user";
 
 @Component({
     components: {
@@ -91,7 +107,7 @@ import { User } from "../../../../../Interfaces/user";
 })
 export default class MapperComments extends Vue {
 
-    @State loggedInUser!: User | null;
+    @State loggedInUser!: UserMCAInfo | null;
     @State selectedMode!: string;
     @State year!: number;
 
@@ -100,6 +116,20 @@ export default class MapperComments extends Vue {
     targetID = this.$route.params.mapper;
     newComment = "";
     info = "";
+
+    get ownCommentIndex (): number {
+        return this.comments.findIndex(c => c.commenter.ID === this.loggedInUser?.corsaceID);
+    }
+
+    get ownComment (): Comment | undefined {
+        if (this.ownCommentIndex !== -1) {
+            this.newComment = this.comments[this.ownCommentIndex].comment;
+
+            return this.comments[this.ownCommentIndex];
+        }
+
+        return undefined;
+    }
 
     @Watch("selectedMode")
     async onSelectedModeChanged () {
@@ -137,32 +167,42 @@ export default class MapperComments extends Vue {
         }
     }
 
-    async update (id) {
+    async update () {
+        if (!this.ownComment) return;
+
+        if (this.ownComment.isValid) {
+            if (!confirm("Updating will revert the status to pending!")) {
+                return;
+            }
+        }
+
         this.info = "";
-        const i = this.comments.findIndex(c => c.ID === id);
-        const res = await axios.post(`/api/comments/${id}/update`, {
-            comment: this.comments[i].comment,
+        const { data } = await axios.post(`/api/comments/${this.ownComment.ID}/update`, {
+            comment: this.newComment,
         });
             
-        if (res.data.error) {
-            this.info = res.data.error;
-        } else if (res.data) {
+        if (data.error) {
+            this.info = data.error;
+        } else {
             this.info = "ok";
+            this.comments[this.ownCommentIndex] = data;
         }
     }
 
-    async remove (id) {
-        this.info = "";
-        const res = await axios.post(`/api/comments/${id}/remove`);
-            
-        if (res.data.error) {
-            this.info = res.data.error;
-        } else if (res.data) {
-            const i = this.comments.findIndex(c => c.ID === id);
+    async remove () {
+        if (!this.ownComment) return;
 
-            if (i !== -1) {
-                this.comments.splice(i, 1);
-            }
+        if (!confirm("Are you sure?")) {
+            return;
+        }
+
+        this.info = "";
+        const { data } = await axios.post(`/api/comments/${this.ownComment.ID}/remove`);
+            
+        if (data.error) {
+            this.info = data.error;
+        } else {
+            this.comments.splice(this.ownCommentIndex, 1);
         }
     }
 }
@@ -218,10 +258,8 @@ export default class MapperComments extends Vue {
         width: 100%;
     }
 
-    &__info {
-        @extend %box;
-        color: $red;
-        background-color: $bg-dark;
+    & > .button {
+        margin-left: 10px;
     }
 }
 
