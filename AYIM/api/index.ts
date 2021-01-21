@@ -7,7 +7,6 @@ import commentsReviewRouter from "./routes/staff/comments";
 import usersRouter from "./routes/staff/users";
 import recordsRouter from "./routes/records";
 import statisticsRouter from "./routes/statistics";
-import staffRouter from "./routes/staff";
 import mappersRouter from "./routes/mappers";
 import mcaRouter from "./routes/mca";
 
@@ -19,7 +18,6 @@ app.koa.use(mount("/statistics", statisticsRouter.routes()));
 app.koa.use(mount("/mappers", mappersRouter.routes()));
 app.koa.use(mount("/user", userRouter.routes()));
 app.koa.use(mount("/comments", commentsRouter.routes()));
-app.koa.use(mount("/staff", staffRouter.routes()));
 app.koa.use(mount("/staff/comments", commentsReviewRouter.routes()));
 app.koa.use(mount("/staff/users", usersRouter.routes()));
 

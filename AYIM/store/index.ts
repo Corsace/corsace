@@ -58,6 +58,12 @@ export const getters: GetterTree<RootState, RootState> = {
             state.loggedInUser.mcaStaff.fruits ||
             state.loggedInUser.mcaStaff.storyboard;
     },
+    isHeadStaff (state): boolean {
+        if (!state.loggedInUser) return false;
+
+        return state.loggedInUser.staff.corsace || 
+            state.loggedInUser.staff.headStaff;
+    },
 };
 
 export const actions: ActionTree<RootState, RootState> = {
@@ -80,10 +86,9 @@ export const actions: ActionTree<RootState, RootState> = {
     updateSelectedMode ({ commit }, mode) {
         commit("updateSelectedMode", mode);
     },
-    async updateYear ({ commit }, year) {
+    async updateYear ({ commit, state }, year) {
         commit("updateYear", year);
-        
-        const { data } = await axios.get(`/api/mca`);
+        const { data } = await axios.get(`/api/mca?year=${state.year}`);
 
         if (!data.error) {
             commit("updateMCA", data);

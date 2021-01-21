@@ -1,27 +1,32 @@
 import Router from "@koa/router";
-import { isLoggedIn, hasRole, isLoggedInDiscord } from "../../../../Server/middleware";
+import { hasRole, isLoggedInDiscord } from "../../../../Server/middleware";
 import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
+import { currentMCA } from "../../../../MCA/api/middleware";
+import { MCA } from "../../../../Models/MCA_AYIM/mca";
 
 const commentsReviewRouter = new Router();
 
-commentsReviewRouter.get("/:year", isLoggedIn, isLoggedInDiscord, hasRole("mca", "staff"), async (ctx) => {
+commentsReviewRouter.use(isLoggedInDiscord);
+commentsReviewRouter.use(hasRole("mca", "staff"));
+commentsReviewRouter.use(currentMCA);
+
+commentsReviewRouter.get("/", async (ctx) => {
+    const mca: MCA = ctx.state.mca;
     const comments = await UserComment.find({
-        relations: ["target", "reviewer", "commenter"],
         where: {
-            year: ctx.params.year,
+            year: mca.year,
+            isValid: false,
         },
+        relations: ["target", "reviewer", "commenter"],
     });
 
-    ctx.body = {
-        comments,
-        user: ctx.state.user,
-    };
+    ctx.body = comments;
 });
 
-commentsReviewRouter.post("/:id/review", isLoggedIn, isLoggedInDiscord, hasRole("mca", "staff"), async (ctx) => {
+commentsReviewRouter.post("/:id/review", async (ctx) => {
     const comment = await UserComment.findOneOrFail(ctx.params.id);
     comment.comment = ctx.request.body.comment.trim();
-    comment.isValid = ctx.request.body.isValid;
+    comment.isValid = true;
     comment.reviewer = ctx.state.user;
     comment.lastReviewedAt = new Date();
     await comment.save();
@@ -29,7 +34,7 @@ commentsReviewRouter.post("/:id/review", isLoggedIn, isLoggedInDiscord, hasRole(
     ctx.body = comment;
 });
 
-commentsReviewRouter.post("/:id/remove", isLoggedIn, isLoggedInDiscord, hasRole("mca", "staff"), async (ctx) => {
+commentsReviewRouter.post("/:id/remove", async (ctx) => {
     const comment = await UserComment.findOneOrFail(ctx.params.id);
     await comment.remove();
 

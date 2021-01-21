@@ -73,6 +73,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Action, State } from "vuex-class";
+import { MCA } from "../../Interfaces/mca";
 
 import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
 import ScrollBar from "../../MCA/components/ScrollBar.vue";
@@ -90,12 +91,13 @@ export default class DisplayLayout extends Vue {
 
     @State selectedMode!: string;
     @State year!: number;
+    @State mca!: MCA | null;
     @Action updateYear;
 
     mounted () {
         const routeYear = parseInt(this.$route.params.year);
 
-        if (!isNaN(routeYear) && this.year !== routeYear) {
+        if (!isNaN(routeYear) && (this.year !== routeYear || !this.mca)) {
             this.updateYear(routeYear);
         }
     }

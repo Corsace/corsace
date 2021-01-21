@@ -46,10 +46,6 @@ export default class Default extends Vue {
     async mounted () {
         await this.$store.dispatch("setInitialData");
         this.loaded = true;
-
-        if (this.isMCAStaff) {
-            await this.$store.dispatch("staff/setInitialData");
-        }
     }
     
 }
