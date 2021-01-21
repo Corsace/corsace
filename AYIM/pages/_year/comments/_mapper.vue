@@ -98,11 +98,11 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
 import axios from "axios";
 
-import DisplayLayout from "../../../../components/DisplayLayout.vue";
+import DisplayLayout from "../../../components/DisplayLayout.vue";
 
-import { Comment } from "../../../../../Interfaces/comment";
-import { User, UserMCAInfo } from "../../../../../Interfaces/user";
-import { MCA } from "../../../../../Interfaces/mca";
+import { Comment } from "../../../../Interfaces/comment";
+import { User, UserMCAInfo } from "../../../../Interfaces/user";
+import { MCA } from "../../../../Interfaces/mca";
 
 @Component({
     components: {
