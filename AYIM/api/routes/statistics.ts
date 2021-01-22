@@ -1,4 +1,5 @@
 import Router from "@koa/router";
+import { createQueryBuilder } from "typeorm";
 import { Statistic } from "../../../Interfaces/records";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { MCAEligibility } from "../../../Models/MCA_AYIM/mcaEligibility";
@@ -11,7 +12,22 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
 
-    const [minApproachRate, maxApproachRate, overallDifficulty, minHpDrain, maxHpDrain, maxCircleSize, minCircleSize] = await Promise.all([
+    const [totalRanked, minApproachRate, maxApproachRate, overallDifficulty, minHpDrain, maxHpDrain, maxCircleSize, minCircleSize] = await Promise.all([
+        createQueryBuilder()
+            .from(sub => {
+                return sub
+                    .from("beatmapset", "beatmapset")
+                    .innerJoin("beatmapset.creator", "creator")
+                    .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
+                    .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+                    .select("beatmapset.ID", "beatmapsetID")
+                    .groupBy("beatmapset.ID");
+            }, "sub")
+            .select("COUNT(sub.beatmapsetID)", "value")
+            .addSelect("'ranked'", "constraint")
+            .cache(true)
+            .getRawOne(),
+
         Beatmapset
             .queryStatistic(year, modeId)
             .andWhere("beatmap.approachRate = 10")
@@ -70,6 +86,7 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
     ]);
 
     const statistics: Record<string, Statistic[]> = {
+        totalRanked: [totalRanked],
         approachRate: [
             minApproachRate,
             maxApproachRate,
@@ -93,45 +110,39 @@ statisticsRouter.get("/mappers", async (ctx) => {
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
 
-    const eligibilityQuery = MCAEligibility
-        .createQueryBuilder("eligibility");
-
-    switch (modeId) {
-        case ModeDivisionType.standard:
-            eligibilityQuery.where("eligibility.standard = 1");
-            break;
-        case ModeDivisionType.taiko:
-            eligibilityQuery.where("eligibility.taiko = 1");
-            break;
-        case ModeDivisionType.mania:
-            eligibilityQuery.where("eligibility.mania = 1");
-            break;
-        case ModeDivisionType.fruits:
-            eligibilityQuery.where("eligibility.fruits = 1");
-            break;
-        case ModeDivisionType.storyboard:
-            eligibilityQuery.where("eligibility.storyboard = 1");
-            break;
-        default:
-            return ctx.body = {
-                error: "Invalid request",
-            };
-    }
-
-    const [uniqueMappers] = await Promise.all([
-        eligibilityQuery
+    const [uniqueMappers, newMappers] = await Promise.all([
+        MCAEligibility
+            .whereMode(modeId)
             .andWhere("eligibility.year = :year", { year })
             .select("COUNT(eligibility.ID)", "value")
             .addSelect("'mappers'", "constraint")
-            .orderBy("value", "DESC")
-            .limit(1)
             .cache(true)
             .getRawOne(),
-        
+
+        MCAEligibility
+            .whereMode(modeId)
+            .andWhere("eligibility.year = :year", { year })
+            .andWhere(qb => {
+                let subQuery = qb
+                    .subQuery()
+                    .from(MCAEligibility, "sub");
+
+                subQuery = MCAEligibility.whereMode(modeId, subQuery);
+                subQuery
+                    .andWhere("sub.year != :year", { year })
+                    .select("sub.userID", "userID");
+                
+                return "eligibility.userID NOT IN " + subQuery.getQuery();
+            })
+            .select("COUNT(eligibility.ID)", "value")
+            .addSelect("'new mappers'", "constraint")
+            .cache(true)
+            .getRawOne(),
     ]);
 
     const statistics: Record<string, Statistic[]> = {
         uniqueMappers: [uniqueMappers],
+        newMappers: [newMappers],
     };
 
     ctx.body = statistics;

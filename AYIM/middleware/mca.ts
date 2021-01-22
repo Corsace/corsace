@@ -12,5 +12,7 @@ export default async function ({ redirect, route, store }: Context) {
         });
     }
 
-    await store.dispatch("setInitialData", year);
+    if (!store.state.mca || store.state.mca.year != year) {
+        await store.dispatch("setInitialData", year);
+    }
 }
