@@ -1,5 +1,6 @@
-import { Entity, Column, BaseEntity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, BaseEntity, ManyToOne, PrimaryGeneratedColumn, SelectQueryBuilder } from "typeorm";
 import { User } from "../user";
+import { ModeDivisionType } from "./modeDivision";
 
 @Entity()
 export class MCAEligibility extends BaseEntity {
@@ -27,5 +28,29 @@ export class MCAEligibility extends BaseEntity {
 
     @ManyToOne(() => User, user => user.mcaEligibility)
     user!: User;
+
+    static whereMode (modeId: number, qb?: SelectQueryBuilder<MCAEligibility>): SelectQueryBuilder<MCAEligibility> {
+        const eligibilityQuery = qb || this.createQueryBuilder("eligibility");
+        
+        switch (modeId) {
+            case ModeDivisionType.standard:
+                eligibilityQuery.where("eligibility.standard = 1");
+                break;
+            case ModeDivisionType.taiko:
+                eligibilityQuery.where("eligibility.taiko = 1");
+                break;
+            case ModeDivisionType.mania:
+                eligibilityQuery.where("eligibility.mania = 1");
+                break;
+            case ModeDivisionType.fruits:
+                eligibilityQuery.where("eligibility.fruits = 1");
+                break;
+            case ModeDivisionType.storyboard:
+                eligibilityQuery.where("eligibility.storyboard = 1");
+                break;
+        }
+
+        return eligibilityQuery;
+    }
 
 }
