@@ -74,7 +74,6 @@ export default class StateContent extends Vue {
     @State selectedMode!: string;
     @stageModule.State count!: number;
     @stageModule.State selectedCategory!: CategoryStageInfo | null;
-    @stageModule.Action updateYear;
     @stageModule.Action updateStage;
     @stageModule.Action setInitialData;
     @stageModule.Action reset;
@@ -85,8 +84,6 @@ export default class StateContent extends Vue {
     }
 
     async mounted () {
-        this.updateYear(this.$route.params.year);
-
         if (/^(nominating|nominate)$/i.test(this.$route.params.year) || /^(nominating|nominate)$/.test(this.$route.params.stage))
             this.updateStage("nominating");
         else if (/^(vote|voting)$/i.test(this.$route.params.year) || /^(vote|voting)$/.test(this.$route.params.stage))

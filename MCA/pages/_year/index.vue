@@ -55,10 +55,10 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
-import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
-import IndexPage from "../components/IndexPage.vue";
+import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
+import IndexPage from "../../components/IndexPage.vue";
 
-import { Phase } from "../../Interfaces/mca";
+import { Phase } from "../../../Interfaces/mca";
 
 @Component({
     components: {
@@ -135,7 +135,7 @@ export default class Index extends Vue {
         display: none;
         width: 950px;
         height: 950px;
-        background: url("../../Assets/img/ayim-mca/site/wheel.png") no-repeat center;
+        background: url("../../../Assets/img/ayim-mca/site/wheel.png") no-repeat center;
         background-size: cover;
         left: -730px;
         top: -400px;

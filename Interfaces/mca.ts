@@ -14,20 +14,14 @@ export interface MCA {
 
 export interface MCAInfo {
     name: number;
-    nomination: {
-        start: Date,
-        end: Date,
-    };
-    voting: {
-        start: Date,
-        end: Date,
-    };
+    nomination: InternalPhase;
+    voting: InternalPhase;
     results: Date;
     categories: Category[];
 }
 
 export interface Phase {
-    phase: string;
+    phase: "nominating" | "voting" | "results";
     startDate: Date;
     endDate: Date;
     year: number;

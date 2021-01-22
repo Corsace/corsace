@@ -1,6 +1,5 @@
 import Vue from "vue";
 import { ActionTree, MutationTree, GetterTree } from "vuex";
-import axios from "axios";
 import { Phase } from "../../Interfaces/mca";
 import { UserMCAInfo } from "../../Interfaces/user";
 import { GuestRequest } from "../../Interfaces/guestRequests";
@@ -104,14 +103,14 @@ export const getters: GetterTree<RootState, RootState> = {
 
 export const actions: ActionTree<RootState, RootState> = {
     async setLoggedInUser ({ commit }) {
-        const { data } = await axios.get(`/api/user`);
+        const { data } = await this.$axios.get(`/api/user`);
 
         if (!data.error) {
             commit("setLoggedInUser", data);
         }
     },
-    async setPhase ({ commit }) {
-        const { data } = await axios.get(`/api/phase`);
+    async setPhase ({ commit }, year: number) {
+        const { data } = await this.$axios.get(`/api/phase?year=${year}`);
 
         if (!data.error) {
             data.startDate = new Date(data.startDate);
@@ -122,11 +121,10 @@ export const actions: ActionTree<RootState, RootState> = {
     setSelectedMode ({ commit }) {
         commit("setSelectedMode");
     },
-    async setInitialData ({ dispatch }) {
+    async setInitialData ({ dispatch }, year: number) {
         await Promise.all([
             dispatch("setLoggedInUser"),
-            dispatch("setPhase"),
-            dispatch("setSelectedMode"),
+            dispatch("setPhase", year),
         ]);
     },
     updateSelectedMode ({ commit }, mode) {
@@ -135,7 +133,7 @@ export const actions: ActionTree<RootState, RootState> = {
     async submitGuestRequest ({ commit, state }, payload: GuestRequestPayload) {
         if (!state.phase) return;
 
-        const { data } = await axios.post(`/api/guestRequests/create`, {
+        const { data } = await this.$axios.post(`/api/guestRequests/create`, {
             mode: payload.mode,
             url: payload.url,
         });
@@ -150,7 +148,7 @@ export const actions: ActionTree<RootState, RootState> = {
     async updateGuestRequest ({ commit, state }, payload: GuestRequestPayload & { id: number }) {
         if (!state.phase) return;
 
-        const { data } = await axios.post(`/api/guestRequests/${payload.id}/update`, {
+        const { data } = await this.$axios.post(`/api/guestRequests/${payload.id}/update`, {
             mode: payload.mode,
             url: payload.url,
         });

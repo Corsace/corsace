@@ -44,7 +44,7 @@ indexRouter.get("/front", async (ctx) => {
 });
 
 indexRouter.get("/phase", async (ctx) => {
-    const mca = await MCA.currentOrLatest();
+    const mca = await MCA.findOne(ctx.query.year);
 
     if (!mca)
         return ctx.body = { error: "There is no MCA for this year currently!" };

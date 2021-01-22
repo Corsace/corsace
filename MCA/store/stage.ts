@@ -5,6 +5,7 @@ import { RootState } from ".";
 import { CategoryStageInfo } from "../../Interfaces/category";
 import { BeatmapsetInfo } from "../../Interfaces/beatmap";
 import { Vote } from "../../Interfaces/vote";
+import { Nomination } from "../../Interfaces/nomination";
 import { StageQuery } from "../../Interfaces/queries";
 
 export type SectionCategory = "beatmaps" | "users";
@@ -14,9 +15,8 @@ interface StageState {
     section: SectionCategory,
     categories: CategoryStageInfo[];
     selectedCategory: CategoryStageInfo | null;
-    nominations: [];
+    nominations: Nomination[];
     votes: Vote[];
-    year: number;
     stage: StageType;
     count: number;
     beatmaps: BeatmapsetInfo[];
@@ -32,7 +32,6 @@ export const state = (): StageState => ({
     categories: [],
     nominations: [],
     votes: [],
-    year: (new Date).getUTCFullYear() - 1,
     stage: "nominating",
     count: 0,
     beatmaps: [],
@@ -48,11 +47,6 @@ export const state = (): StageState => ({
 });
 
 export const mutations: MutationTree<StageState> = {
-    updateYear (state, year) {
-        if (/^20\d\d$/.test(year)) {
-            state.year = parseInt(year);
-        }
-    },
     updateStage (state, stage) {
         state.stage = stage;
     },
@@ -150,14 +144,11 @@ export const getters: GetterTree<StageState, RootState> = {
 };
 
 export const actions: ActionTree<StageState, RootState> = {
-    updateYear ({ commit }, year) {
-        commit("updateYear", year);
-    },
     updateStage ({ commit }, stage) {
         commit("updateStage", stage);
     },
-    async setInitialData ({ state, commit, dispatch }) {
-        const { data } = await axios.get(`/api/${state.stage}/${state.year}`);
+    async setInitialData ({ state, commit, dispatch, rootState }) {
+        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.phase?.year}`);
 
         if (data.error) {
             console.error(data.error);
@@ -193,7 +184,7 @@ export const actions: ActionTree<StageState, RootState> = {
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
 
-        const { data } = await axios.get(`/api/${state.stage}/${state.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&text=${state.query.text}&skip=${skip}`);
+        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.phase?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&text=${state.query.text}&skip=${skip}`);
         if (data.error)
             return alert(data.error);
 
@@ -227,7 +218,7 @@ export const actions: ActionTree<StageState, RootState> = {
     async createVote ({ commit, state }, payload: { nomineeId: number, vote: number }) {
         if (!state.selectedCategory) return;
         
-        const { data } = await axios.post(`/api/voting/create`, {
+        const { data } = await this.$axios.post(`/api/voting/create`, {
             category: state.selectedCategory.id,
             nomineeId: payload.nomineeId,
             choice: payload.vote,
@@ -241,7 +232,7 @@ export const actions: ActionTree<StageState, RootState> = {
         commit("addVote", data);
     },
     async removeVote ({ commit }, voteId: number) {
-        const { data } = await axios.post(`/api/voting/${voteId}/remove`);
+        const { data } = await this.$axios.post(`/api/voting/${voteId}/remove`);
 
         if (data.error) {
             alert(data.error);

@@ -89,11 +89,11 @@ import axios from "axios";
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
+import ModeSwitcher from "../../../../MCA-AYIM/components/ModeSwitcher.vue";
 
-import { Category, CategoryInfo } from "../../../Interfaces/category";
-import { Nomination } from "../../../Interfaces/nomination";
-import { User } from "../../../Interfaces/user";
+import { Category, CategoryInfo } from "../../../../Interfaces/category";
+import { Nomination } from "../../../../Interfaces/nomination";
+import { User } from "../../../../Interfaces/user";
 
 const staffModule = namespace("staff");
 

@@ -9,8 +9,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import AdminPage from "../components/admin/AdminPage.vue";
-import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
+import AdminPage from "../../components/admin/AdminPage.vue";
+import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 
 @Component({
     components: {

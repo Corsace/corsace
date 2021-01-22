@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter, State } from "vuex-class";
+import { State } from "vuex-class";
 
 import TheHeader from "../../MCA-AYIM/components/header/TheHeader.vue";
 import TheFooter from "../../MCA-AYIM/components/footer/TheFooter.vue";
@@ -28,18 +28,14 @@ import { User } from "../../Interfaces/user";
         TheFooter,
         GuestDifficultyModal,
     },
+    middleware: "mca",
 })
 export default class Default extends Vue {
 
     @State loggedInUser!: User;
-    @Getter isMCAStaff!: boolean;
 
     async mounted () {
-        await this.$store.dispatch("setInitialData");
-
-        if (this.isMCAStaff) {
-            await this.$store.dispatch("staff/setInitialData");
-        }
+        await this.$store.dispatch("setSelectedMode");
     }
     
 }

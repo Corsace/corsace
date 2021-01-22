@@ -16,7 +16,7 @@
                 :class="[
                     `vote-now--${selectedMode}`,
                 ]"
-                :to="`/${phase.phase}`"
+                :to="`/${phase.year}/${phase.phase}`"
             >
                 {{ $t(`mca_ayim.main.${buttonText}`) }} <span>>></span>
             </nuxt-link>
