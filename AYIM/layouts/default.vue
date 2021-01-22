@@ -1,13 +1,8 @@
 <template>
-    <div
-        :style="loadingTransition"
-        class="layout"
-    >
+    <div class="layout">
         <the-header site="ayim" />
 
-        <transition name="fade">
-            <nuxt class="main" />
-        </transition>
+        <nuxt class="main" />
         
         <the-footer />
     </div>
@@ -30,22 +25,8 @@ export default class Default extends Vue {
 
     @Getter isMCAStaff!: boolean;
 
-    loaded = false;
-
-    get loadingTransition () {
-        if (!this.loaded)
-            return {
-                opacity: 0,
-            };
-        else
-            return {
-                opacity: 1,
-            };
-    }
-
     async mounted () {
         await this.$store.dispatch("setInitialData");
-        this.loaded = true;
     }
     
 }

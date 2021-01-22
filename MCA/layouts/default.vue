@@ -1,13 +1,8 @@
 <template>
-    <div
-        :style="loadingTransition"
-        class="layout"
-    >
+    <div class="layout">
         <the-header site="mca" />
 
-        <transition name="fade">
-            <nuxt class="main" />
-        </transition>
+        <nuxt class="main" />
         
         <the-footer />
         
@@ -39,22 +34,8 @@ export default class Default extends Vue {
     @State loggedInUser!: User;
     @Getter isMCAStaff!: boolean;
 
-    loaded = false;
-
-    get loadingTransition () {
-        if (!this.loaded)
-            return {
-                opacity: 0,
-            };
-        else
-            return {
-                opacity: 1,
-            };
-    }
-
     async mounted () {
         await this.$store.dispatch("setInitialData");
-        this.loaded = true;
 
         if (this.isMCAStaff) {
             await this.$store.dispatch("staff/setInitialData");
