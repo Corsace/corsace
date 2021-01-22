@@ -1,7 +1,7 @@
 <template>
     <display-layout
         :include-subnav="false"
-        @scroll-bottom="skipSearch"
+        @scroll-bottom="getMappers"
     >
         <template #sub-nav>
             <search-bar
@@ -28,7 +28,7 @@
             >
             
             <div class="ayim-user__username ayim-text ayim-text--xl">
-                {{ mapper.osu.username }}
+                {{ mapper.osu.username.substring(0,7) + (mapper.osu.username.length > 7 ? "..." : "") }}
             </div>
             
             <div class="ayim-user__links">
@@ -64,7 +64,6 @@ export default class Comments extends Vue {
     @State mca!: MCA;
     @State selectedMode!: string;
 
-    skip = 0;
     text = "";
     mappers: User[] = [];
     
@@ -78,7 +77,7 @@ export default class Comments extends Vue {
 
     @Watch("selectedMode")
     async onSelectedModeChanged () {
-        this.skip = 0;
+        this.mappers = [];
         await this.getMappers();
     }
     
@@ -91,18 +90,11 @@ export default class Comments extends Vue {
         await this.getMappers();
     }
 
-    async skipSearch () {
-        this.skip = this.mappers.length;
-        await this.getMappers();
-    }
-
     async getMappers () {
-        const { data } = await axios.get(`/api/mappers/search?skip=${this.skip}&year=${this.mca.year}&mode=${this.selectedMode}&text=${this.text}`);
+        const { data } = await axios.get(`/api/mappers/search?skip=${this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&text=${this.text}`);
 
         if (data.error) {
             alert(data.error);
-        } else if (this.skip === 0) {
-            this.mappers = data;
         } else {
             this.mappers.push(...data);
         }

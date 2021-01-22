@@ -137,9 +137,9 @@ export class User extends BaseEntity {
             
         // Search
         return queryBuilder
-            .offset(parseInt(query.skip))
-            .limit(50)
-            .orderBy("user.osuUsername", "DESC")
+            .skip(parseInt(query.skip))
+            .take(50)
+            .orderBy("user_osuUsername", "DESC")
             .getMany();
     }
 
@@ -189,15 +189,15 @@ export class User extends BaseEntity {
         
         // Ordering
         const ascDesc = query.order || "ASC";
-        let orderMethod = "CAST(user.osuUserid AS UNSIGNED)";
+        let orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
         if (query.option.toLowerCase().includes("alph"))
-            orderMethod = "user.osuUsername";
+            orderMethod = "user_osuUsername";
             
         // Search
         return Promise.all([
             queryBuilder
-                .offset(query.skip)
-                .limit(50)
+                .skip(query.skip)
+                .take(50)
                 .orderBy(orderMethod, ascDesc)
                 .getMany(),
 
