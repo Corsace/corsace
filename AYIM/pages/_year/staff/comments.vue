@@ -86,11 +86,11 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
 import { Vue, Component } from "vue-property-decorator";
-import { Action, Getter, State } from "vuex-class";
-import { Comment } from "../../../Interfaces/comment";
-import { MCA } from "../../../Interfaces/mca";
+import { Getter } from "vuex-class";
+import axios from "axios";
+
+import { Comment } from "../../../../Interfaces/comment";
 
 interface GroupedComment {
     mode: string;
@@ -100,10 +100,7 @@ interface GroupedComment {
 @Component
 export default class StaffComments extends Vue {
             
-    @State year!: number;
-    @State mca!: MCA | null;
     @Getter isHeadStaff!: boolean;
-    @Action updateYear;
 
     info = "";
     comments: Comment[] = [];
@@ -125,10 +122,6 @@ export default class StaffComments extends Vue {
     }
     
     async mounted () {
-        if (!this.mca) {
-            await this.updateYear(this.year);
-        }
-
         const { data } = await axios.get(`/api/staff/comments`);
 
         if (!data.error) {
@@ -136,7 +129,7 @@ export default class StaffComments extends Vue {
         }
     }
 
-    async update (id) {
+    async update (id: number) {
         this.info = "";
         const i = this.comments.findIndex(c => c.ID === id);
         const res = await axios.post(`/api/staff/comments/${id}/review`, {
@@ -150,7 +143,7 @@ export default class StaffComments extends Vue {
         }
     }
 
-    async remove (id) {
+    async remove (id: number) {
         this.info = "";
 
         if (!confirm("Are you sure?")) 
@@ -169,7 +162,7 @@ export default class StaffComments extends Vue {
         }
     }
 
-    async ban (id) {
+    async ban (id: number) {
         this.info = "";
 
         if (!confirm(`User will not be able to submit new comments and not validated comments will be removed`)) 

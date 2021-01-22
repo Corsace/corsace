@@ -4,21 +4,21 @@
             <template #title>
                 <div class="ayim-nav">
                     <nuxt-link
-                        :to="`/${year}/mapsets/records`"
+                        :to="`/${mca.year}/mapsets/records`"
                         class="ayim-nav__item button"
                         :class="getNavClass('mapsets')"
                     >
                         mapsets
                     </nuxt-link>
                     <nuxt-link
-                        :to="`/${year}/mappers/records`"
+                        :to="`/${mca.year}/mappers/records`"
                         class="ayim-nav__item button"
                         :class="getNavClass('mappers')"
                     >
                         mappers
                     </nuxt-link>
                     <nuxt-link
-                        :to="`/${year}/comments`"
+                        :to="`/${mca.year}/comments`"
                         class="ayim-nav__item button"
                         :class="getNavClass('comments')"
                     >
@@ -36,14 +36,14 @@
                         {{ navTitle }}
                     </div>
                     <nuxt-link
-                        :to="`/${year}/${routeType}/records`"
+                        :to="`/${mca.year}/${routeType}/records`"
                         class="ayim-record-nav__item"
                         :class="getSubnavClass('records')"
                     >
                         records
                     </nuxt-link>
                     <nuxt-link
-                        :to="`/${year}/${routeType}/statistics`"
+                        :to="`/${mca.year}/${routeType}/statistics`"
                         class="ayim-record-nav__item"
                         :class="getSubnavClass('statistics')"
                     >
@@ -72,11 +72,12 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { Action, State } from "vuex-class";
-import { MCA } from "../../Interfaces/mca";
+import { State } from "vuex-class";
 
 import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
 import ScrollBar from "../../MCA/components/ScrollBar.vue";
+
+import { MCA } from "../../Interfaces/mca";
 
 @Component({
     components: {
@@ -90,17 +91,7 @@ export default class DisplayLayout extends Vue {
     @Prop({ type: Boolean, default: true }) readonly includeSubnav!: boolean;
 
     @State selectedMode!: string;
-    @State year!: number;
-    @State mca!: MCA | null;
-    @Action updateYear;
-
-    mounted () {
-        const routeYear = parseInt(this.$route.params.year);
-
-        if (!isNaN(routeYear) && (this.year !== routeYear || !this.mca)) {
-            this.updateYear(routeYear);
-        }
-    }
+    @State mca!: MCA;
 
     get routeType (): string {
         return this.$route.name?.includes("mapsets") ? "mapsets" : "mappers";

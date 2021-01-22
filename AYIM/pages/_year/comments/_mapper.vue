@@ -113,8 +113,7 @@ export default class MapperComments extends Vue {
 
     @State loggedInUser!: UserMCAInfo | null;
     @State selectedMode!: string;
-    @State year!: number;
-    @State mca!: MCA | null;
+    @State mca!: MCA;
 
     user: User | null = null;
     comments: Comment[] = []
@@ -123,7 +122,7 @@ export default class MapperComments extends Vue {
     info = "";
 
     get canComment (): boolean {
-        return (this.loggedInUser?.canComment && this.mca && new Date(this.mca.results) > new Date()) || false;
+        return (this.loggedInUser?.canComment && new Date(this.mca.results) > new Date()) || false;
     }
 
     get ownCommentIndex (): number {
@@ -150,7 +149,7 @@ export default class MapperComments extends Vue {
     }
     
     async getData () {
-        const { data } = await axios.get(`/api/comments?year=${this.year}&user=${this.targetID}&mode=${this.selectedMode}`);
+        const { data } = await axios.get(`/api/comments?year=${this.mca.year}&user=${this.targetID}&mode=${this.selectedMode}`);
 
         if (data.error) {
             alert(data.error);
@@ -166,7 +165,7 @@ export default class MapperComments extends Vue {
             targetID: this.targetID,
             comment: this.newComment,
             mode: this.selectedMode,
-            year: this.year,
+            year: this.mca.year,
         });
             
         if (data.error) {

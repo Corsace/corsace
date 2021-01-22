@@ -69,6 +69,7 @@ import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
 
 import { BeatmapsetRecord } from "../../../../Interfaces/records";
+import { MCA } from "../../../../Interfaces/mca";
 
 @Component({
     components: {
@@ -79,7 +80,7 @@ import { BeatmapsetRecord } from "../../../../Interfaces/records";
 export default class MapsetRecords extends Vue {
 
     @State selectedMode!: string;
-    @State year!: string;
+    @State mca!: MCA;
 
     records: Record<string, BeatmapsetRecord[]> = {};
 
@@ -93,7 +94,7 @@ export default class MapsetRecords extends Vue {
     }
 
     async getRecords () {
-        const { data } = await axios.get(`/api/records/beatmapsets?year=${this.year}&mode=${this.selectedMode}`);
+        const { data } = await axios.get(`/api/records/beatmapsets?year=${this.mca.year}&mode=${this.selectedMode}`);
 
         if (!data.error) {
             this.records = data;

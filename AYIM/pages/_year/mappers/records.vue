@@ -67,6 +67,7 @@ import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
 
 import { MapperRecord } from "../../../../Interfaces/records";
+import { MCA } from "../../../../Interfaces/mca";
 
 @Component({
     components: {
@@ -77,7 +78,7 @@ import { MapperRecord } from "../../../../Interfaces/records";
 export default class MappersRecords extends Vue {
 
     @State selectedMode!: string;
-    @State year!: string;
+    @State mca!: MCA;
 
     records: Record<string, MapperRecord[]> = {};
 
@@ -91,7 +92,7 @@ export default class MappersRecords extends Vue {
     }
 
     async getRecords () {
-        const { data } = await axios.get(`/api/records/mappers?year=${this.year}&mode=${this.selectedMode}`);
+        const { data } = await axios.get(`/api/records/mappers?year=${this.mca.year}&mode=${this.selectedMode}`);
 
         if (!data.error) {
             this.records = data;

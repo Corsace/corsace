@@ -1,5 +1,4 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
-import axios from "axios";
 import { UserMCAInfo } from "../../Interfaces/user";
 import { MCA } from "../../Interfaces/mca";
 
@@ -9,7 +8,6 @@ export interface RootState {
     loggedInUser: null | UserMCAInfo;
     selectedMode: string;
     modes: string[];
-    year: number;
     mca: MCA | null;
 }
 
@@ -17,7 +15,6 @@ export const state = (): RootState => ({
     loggedInUser: null,
     selectedMode: "standard",
     modes: ["standard", "taiko", "fruits", "mania", "storyboard"],
-    year: new Date().getFullYear() - 1,
     mca: null,
 });
 
@@ -37,9 +34,6 @@ export const mutations: MutationTree<RootState> = {
             state.selectedMode = mode;
             localStorage.setItem("mode", mode);
         }
-    },
-    updateYear (state, year) {
-        state.year = year;
     },
     updateMCA (state, mca) {
         state.mca = mca;
@@ -68,30 +62,29 @@ export const getters: GetterTree<RootState, RootState> = {
 
 export const actions: ActionTree<RootState, RootState> = {
     async setLoggedInUser ({ commit }) {
-        const { data } = await axios.get(`/api/user`);
+        const { data } = await this.$axios.get(`/api/user`);
 
         if (!data.error) {
             commit("setLoggedInUser", data);
         }
     },
-    setSelectedMode ({ commit }) {
-        commit("setSelectedMode");
-    },
-    async setInitialData ({ dispatch }) {
-        await Promise.all([
-            dispatch("setLoggedInUser"),
-            dispatch("setSelectedMode"),
-        ]);
-    },
-    updateSelectedMode ({ commit }, mode) {
-        commit("updateSelectedMode", mode);
-    },
-    async updateYear ({ commit, state }, year) {
-        commit("updateYear", year);
-        const { data } = await axios.get(`/api/mca?year=${state.year}`);
+    async updateMCA ({ commit }, year: number) {
+        const { data } = await this.$axios.get(`/api/mca?year=${year}`);
 
         if (!data.error) {
             commit("updateMCA", data);
         }
+    },
+    async setInitialData ({ dispatch }, year: number) {
+        await Promise.all([
+            dispatch("setLoggedInUser"),
+            dispatch("updateMCA", year),
+        ]);
+    },
+    setSelectedMode ({ commit }) {
+        commit("setSelectedMode");
+    },
+    updateSelectedMode ({ commit }, mode) {
+        commit("updateSelectedMode", mode);
     },
 };

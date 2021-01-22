@@ -13,6 +13,7 @@
         "types": [
             "@types/node",
             "@nuxt/types",
+            "@nuxtjs/axios",
             "nuxt-i18n"
         ]
     }

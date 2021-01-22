@@ -33,7 +33,7 @@
             
             <div class="ayim-user__links">
                 <nuxt-link
-                    :to="`/${year}/comments/${mapper.ID}`"
+                    :to="`/${mca.year}/comments/${mapper.ID}`"
                     class="button button--small"
                 >
                     view/submit comments
@@ -61,8 +61,7 @@ import { MCA } from "../../../../Interfaces/mca";
 })
 export default class Comments extends Vue {
 
-    @State mca!: MCA | null;
-    @State year!: number;
+    @State mca!: MCA;
     @State selectedMode!: string;
 
     skip = 0;
@@ -70,7 +69,7 @@ export default class Comments extends Vue {
     mappers: User[] = [];
     
     get info (): string {
-        if (!this.mca || new Date() < this.mca.results) {
+        if (new Date() < this.mca.results) {
             return `All comments become public after MCA results date! You can submit your own comments now`;
         }
 
@@ -98,7 +97,7 @@ export default class Comments extends Vue {
     }
 
     async getMappers () {
-        const { data } = await axios.get(`/api/mappers/search?skip=${this.skip}&year=${this.year}&mode=${this.selectedMode}&text=${this.text}`);
+        const { data } = await axios.get(`/api/mappers/search?skip=${this.skip}&year=${this.mca.year}&mode=${this.selectedMode}&text=${this.text}`);
 
         if (data.error) {
             alert(data.error);

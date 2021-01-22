@@ -16,6 +16,7 @@ export default {
     serverMiddleware: ["~/api"],
     buildModules: ["@nuxt/typescript-build"],
     modules: [
+        "@nuxtjs/axios",
         [
             "nuxt-i18n",
             {

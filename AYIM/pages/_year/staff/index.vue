@@ -1,8 +1,5 @@
 <template>
-    <div
-        v-if="mca"
-        class="staff-page"
-    >
+    <div class="staff-page">
         <div class="staff-page__title">
             MCA - {{ mca.year }}
         </div>
@@ -18,20 +15,14 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Action, State } from "vuex-class";
+import { State } from "vuex-class";
 
-import { MCA } from "../../../Interfaces/mca";
+import { MCA } from "../../../../Interfaces/mca";
 
 @Component
 export default class Staff extends Vue {
 
-    @State mca!: MCA | null;
-    @State year!: number;
-    @Action updateYear;
-
-    async mounted () {
-        await this.updateYear(this.year);
-    }
+    @State mca!: MCA;
 
 }
 </script>

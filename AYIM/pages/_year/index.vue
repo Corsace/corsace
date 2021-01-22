@@ -13,8 +13,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
-import IndexPage from "../components/IndexPage.vue";
+import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
+import IndexPage from "../../components/IndexPage.vue";
 
 @Component({
     components: {
@@ -39,7 +39,7 @@ export default class Index extends Vue {
     width: 100%;
     padding-bottom: 9vh;
 
-    background-image: url("../../Assets/img/ayim-mca/site/ayim bg.png");
+    background-image: url("../../../Assets/img/ayim-mca/site/ayim bg.png");
     background-size: auto 80%;
     background-repeat: no-repeat;
     background-position: center left;

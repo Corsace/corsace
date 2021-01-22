@@ -36,6 +36,7 @@ import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
 
 import { Statistic } from "../../../../Interfaces/records";
+import { MCA } from "../../../../Interfaces/mca";
 
 @Component({
     components: {
@@ -46,7 +47,7 @@ import { Statistic } from "../../../../Interfaces/records";
 export default class MapsetStatistics extends Vue {
 
     @State selectedMode!: string;
-    @State year!: string;
+    @State mca!: MCA;
     
     statistics: Record<string, Statistic[]> = {};
 
@@ -60,7 +61,7 @@ export default class MapsetStatistics extends Vue {
     }
 
     async getStats () {
-        const { data } = await axios.get(`/api/statistics/beatmapsets?year=${this.$route.params.year}&mode=${this.selectedMode}`);
+        const { data } = await axios.get(`/api/statistics/beatmapsets?year=${this.mca.year}&mode=${this.selectedMode}`);
 
         if (!data.error) {
             this.statistics = data;
