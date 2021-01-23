@@ -96,7 +96,13 @@ interface GroupedComment {
     comments: Comment[];
 }
 
-@Component
+@Component({
+    head () {
+        return {
+            title: "Comments | Staff | AYIM",
+        };
+    },
+})
 export default class StaffComments extends Vue {
             
     @Getter isHeadStaff!: boolean;

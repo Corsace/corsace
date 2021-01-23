@@ -57,6 +57,13 @@ import { UserMCAInfo } from "../../../Interfaces/user";
         // /2020/nominating
         return /^20\d\d$/.test(params.year) && stageRegex.test(params.stage);
     },
+    head () {
+        return {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            title: `${this.phase.phase === "nominating" ? "Nominating" : "Voting"} | MCA`,
+        };
+    },
 })
 export default class Stage extends Vue {
 

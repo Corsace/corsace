@@ -40,4 +40,7 @@ export default {
             config.resolve.alias["../../MCA-AYIM/components"] = path.join(__dirname, "../MCA-AYIM/components");
         },
     },
+    dir: {
+        static: "../Assets/static",
+    },
 };

@@ -110,6 +110,11 @@ interface NominationsByCategory {
     components: {
         ModeSwitcher,
     },
+    head () {
+        return {
+            title: "Nominations | Staff | MCA",
+        };
+    },
 })
 export default class Nominations extends Vue {
     

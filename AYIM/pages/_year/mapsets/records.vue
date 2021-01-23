@@ -75,6 +75,11 @@ import { MCA } from "../../../../Interfaces/mca";
         DisplayLayout,
         RecordItem,
     },
+    head () {
+        return {
+            title: "Mapsets' Records | AYIM",
+        };
+    },
 })
 export default class MapsetRecords extends Vue {
 

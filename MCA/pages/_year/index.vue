@@ -65,6 +65,11 @@ import { Phase } from "../../../Interfaces/mca";
         ModeSwitcher,
         IndexPage,
     },
+    head () {
+        return {
+            title: "Mappers' Choice Awards",
+        };
+    },
 })
 export default class Index extends Vue {
 

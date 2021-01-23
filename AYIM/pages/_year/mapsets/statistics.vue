@@ -42,6 +42,11 @@ import { MCA } from "../../../../Interfaces/mca";
         DisplayLayout,
         RecordItem,
     },
+    head () {
+        return {
+            title: "Mapsets' Statistics | AYIM",
+        };
+    },
 })
 export default class MapsetStatistics extends Vue {
 

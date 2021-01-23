@@ -42,6 +42,11 @@ import { MCA } from "../../../../Interfaces/mca";
         DisplayLayout,
         RecordItem,
     },
+    head () {
+        return {
+            title: "Mappers' Statistics | AYIM",
+        };
+    },
 })
 export default class MapperStatistics extends Vue {
 

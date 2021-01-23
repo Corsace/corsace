@@ -35,7 +35,13 @@ import { GuestRequest } from "../../../../Interfaces/guestRequests";
 
 const staffModule = namespace("staff");
 
-@Component
+@Component({
+    head () {
+        return {
+            title: "Staff | MCA",
+        };
+    },
+})
 export default class Staff extends Vue {
 
     @staffModule.State mca!: MCAInfo | null;

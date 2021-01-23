@@ -57,6 +57,11 @@ import { MCA } from "../../../../Interfaces/mca";
         DisplayLayout,
         SearchBar,
     },
+    head () {
+        return {
+            title: "Users' Comments | AYIM",
+        };
+    },
 })
 export default class Comments extends Vue {
 

@@ -107,6 +107,13 @@ import { MCA } from "../../../../Interfaces/mca";
     components: {
         DisplayLayout,
     },
+    head () {
+        return {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            title: `${this.user?.osu.username} Comments | AYIM`,
+        };
+    },
 })
 export default class MapperComments extends Vue {
 

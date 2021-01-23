@@ -73,6 +73,11 @@ import { MCA } from "../../../../Interfaces/mca";
         DisplayLayout,
         RecordItem,
     },
+    head () {
+        return {
+            title: "Mappers' Records | AYIM",
+        };
+    },
 })
 export default class MappersRecords extends Vue {
 

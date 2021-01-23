@@ -19,7 +19,13 @@ import { State } from "vuex-class";
 
 import { MCA } from "../../../../Interfaces/mca";
 
-@Component
+@Component({
+    head () {
+        return {
+            title: "Staff | AYIM",
+        };
+    },
+})
 export default class Staff extends Vue {
 
     @State mca!: MCA;
