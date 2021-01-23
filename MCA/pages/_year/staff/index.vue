@@ -9,7 +9,7 @@
 
         <nuxt-link
             v-if="requests.length"
-            to="/staff/requests"
+            :to="`/${mca.name}/staff/requests`"
             class="staff-page__link"
         >
             Requests pending >
@@ -17,7 +17,7 @@
 
         <nuxt-link
             v-if="categories.length"
-            to="/staff/nominations"
+            :to="`/${mca.name}/staff/nominations`"
             class="staff-page__link"
         >
             Nominations review >

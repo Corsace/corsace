@@ -67,7 +67,10 @@ indexRouter.get("/phase", async (ctx) => {
     } else 
         return ctx.body = { error: "No phase currently", year: mca.year };
 
-    ctx.body = { phase, startDate, endDate, year: mca.year };
+    ctx.body = {
+        phase: { phase, startDate, endDate, year: mca.year },
+        mca,
+    };
 });
 
 export default indexRouter;

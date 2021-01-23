@@ -5,7 +5,7 @@
         </div>
 
         <nuxt-link
-            to="/staff/comments"
+            :to="`/${mca.year}/staff/comments`"
             class="staff-page__link"
         >
             Comments pending >

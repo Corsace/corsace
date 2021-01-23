@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { ActionTree, MutationTree, GetterTree } from "vuex";
-import { Phase } from "../../Interfaces/mca";
+import { MCA, Phase } from "../../Interfaces/mca";
 import { UserMCAInfo } from "../../Interfaces/user";
 import { GuestRequest } from "../../Interfaces/guestRequests";
 
@@ -14,6 +14,7 @@ interface GuestRequestPayload {
 export interface RootState {
     loggedInUser: null | UserMCAInfo;
     phase: null | Phase;
+    mca: MCA | null;
     selectedMode: string;
     modes: string[];
     showGuestDifficultyModal: boolean,
@@ -22,6 +23,7 @@ export interface RootState {
 export const state = (): RootState => ({
     loggedInUser: null,
     phase: null,
+    mca: null,
     selectedMode: "standard",
     modes: ["standard", "taiko", "fruits", "mania", "storyboard"],
     showGuestDifficultyModal: false,
@@ -33,6 +35,9 @@ export const mutations: MutationTree<RootState> = {
     },
     setPhase (state, phase) {
         state.phase = phase;
+    },
+    updateMCA (state, mca) {
+        state.mca = mca;
     },
     setSelectedMode (state) {
         const localMode = localStorage.getItem("mode");
@@ -113,9 +118,10 @@ export const actions: ActionTree<RootState, RootState> = {
         const { data } = await this.$axios.get(`/api/phase?year=${year}`);
 
         if (!data.error) {
-            data.startDate = new Date(data.startDate);
-            data.endDate = new Date(data.endDate);
-            commit("setPhase", data);
+            data.phase.startDate = new Date(data.startDate);
+            data.phase.endDate = new Date(data.endDate);
+            commit("setPhase", data.phase);
+            commit("updateMCA", data.mca);
         }
     },
     setSelectedMode ({ commit }) {

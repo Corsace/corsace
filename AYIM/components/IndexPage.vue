@@ -25,19 +25,19 @@
         
         <div class="ayim-nav">
             <nuxt-link
-                :to="`/${2020}/mapsets/records`"
+                :to="`/${mca.year}/mapsets/records`"
                 class="ayim-nav__item button"
             >
                 mapsets
             </nuxt-link>
             <nuxt-link
-                :to="`/${2020}/mappers/records`"
+                :to="`/${mca.year}/mappers/records`"
                 class="ayim-nav__item button"
             >
                 mappers
             </nuxt-link>
             <nuxt-link
-                :to="`/${2020}/comments`"
+                :to="`/${mca.year}/comments`"
                 class="ayim-nav__item button"
             >
                 comments
@@ -50,10 +50,13 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
+import { MCA } from "../../Interfaces/mca";
+
 @Component
 export default class IndexPage extends Vue {
 
     @State selectedMode!: string;
+    @State mca!: MCA;
 
 }
 </script>
