@@ -28,7 +28,7 @@
             >
             
             <div class="ayim-user__username ayim-text ayim-text--xl">
-                {{ mapper.osu.username.substring(0,7) + (mapper.osu.username.length > 7 ? "..." : "") }}
+                {{ mapper.osu.username }}
             </div>
             
             <div class="ayim-user__links">
