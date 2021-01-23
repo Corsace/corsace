@@ -160,7 +160,6 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { State } from "vuex-class";
-import axios from "axios";
 
 import { CategoryFilter, CategoryInfo } from "../../../Interfaces/category";
 
@@ -197,7 +196,7 @@ export default class AdminModalCategory extends Vue {
     }
 
     async save () {
-        const { data } = await axios.post("/api/admin/categories/create", {
+        const { data } = await this.$axios.post("/api/admin/categories/create", {
             categoryInfo: {
                 name: this.name,
                 description: this.description,

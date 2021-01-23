@@ -45,7 +45,6 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import axios from "axios";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
@@ -91,7 +90,7 @@ export default class Comments extends Vue {
     }
 
     async getMappers () {
-        const { data } = await axios.get(`/api/mappers/search?skip=${this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&text=${this.text}`);
+        const { data } = await this.$axios.get(`/api/mappers/search?skip=${this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&text=${this.text}`);
 
         if (data.error) {
             alert(data.error);

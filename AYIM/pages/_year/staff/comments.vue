@@ -88,7 +88,6 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Getter } from "vuex-class";
-import axios from "axios";
 
 import { Comment } from "../../../../Interfaces/comment";
 
@@ -122,7 +121,7 @@ export default class StaffComments extends Vue {
     }
     
     async mounted () {
-        const { data } = await axios.get(`/api/staff/comments`);
+        const { data } = await this.$axios.get(`/api/staff/comments`);
 
         if (!data.error) {
             this.comments = data;
@@ -132,7 +131,7 @@ export default class StaffComments extends Vue {
     async update (id: number) {
         this.info = "";
         const i = this.comments.findIndex(c => c.ID === id);
-        const res = await axios.post(`/api/staff/comments/${id}/review`, {
+        const res = await this.$axios.post(`/api/staff/comments/${id}/review`, {
             comment: this.comments[i].comment,
         });
             
@@ -149,7 +148,7 @@ export default class StaffComments extends Vue {
         if (!confirm("Are you sure?")) 
             return;
             
-        const res = await axios.post(`/api/staff/comments/${id}/remove`);
+        const res = await this.$axios.post(`/api/staff/comments/${id}/remove`);
             
         if (res.data.error) {
             this.info = res.data.error;
@@ -168,7 +167,7 @@ export default class StaffComments extends Vue {
         if (!confirm(`User will not be able to submit new comments and not validated comments will be removed`)) 
             return;
         
-        const { data } = await axios.post(`/api/staff/users/${id}/ban`);
+        const { data } = await this.$axios.post(`/api/staff/users/${id}/ban`);
             
         if (data.error) {
             this.info = data.error;

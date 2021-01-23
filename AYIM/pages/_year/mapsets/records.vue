@@ -63,7 +63,6 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
-import axios from "axios";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
@@ -94,7 +93,7 @@ export default class MapsetRecords extends Vue {
     }
 
     async getRecords () {
-        const { data } = await axios.get(`/api/records/beatmapsets?year=${this.mca.year}&mode=${this.selectedMode}`);
+        const { data } = await this.$axios.get(`/api/records/beatmapsets?year=${this.mca.year}&mode=${this.selectedMode}`);
 
         if (!data.error) {
             this.records = data;

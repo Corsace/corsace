@@ -62,7 +62,6 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, State } from "vuex-class";
-import Axios from "axios";
 
 import Collapsible from "./Collapsible.vue";
 
@@ -141,7 +140,7 @@ export default class IndexContent extends Vue {
     }
 
     async mounted () {
-        const res = (await Axios.get("/api/front")).data;
+        const res = (await this.$axios.get("/api/front")).data;
         if (res.error) {
             alert(res.error);
             return;

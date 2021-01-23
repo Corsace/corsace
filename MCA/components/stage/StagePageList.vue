@@ -41,7 +41,6 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import axios from "axios";
 
 import StagePageFilters from "./StagePageFilters.vue";
 import ChoiceBeatmapsetCard from "../ChoiceBeatmapsetCard.vue";
@@ -83,12 +82,12 @@ export default class StagePageList extends Vue {
         let res: { error?: string };
         
         if (!choice.chosen) {
-            res = (await axios.post(`/api/nominating/create`, {
+            res = (await this.$axios.post(`/api/nominating/create`, {
                 categoryId: this.selectedCategory.id,
                 nomineeId: this.section === "beatmaps" ? choice.id : choice.corsaceID,
             })).data;
         } else
-            res = (await axios.delete(`/api/nominating/remove/${this.selectedCategory.id}/${this.section === "beatmaps" ? choice.id : choice.corsaceID}`)).data;
+            res = (await this.$axios.delete(`/api/nominating/remove/${this.selectedCategory.id}/${this.section === "beatmaps" ? choice.id : choice.corsaceID}`)).data;
 
         if (res.error)
             return alert(res.error);
