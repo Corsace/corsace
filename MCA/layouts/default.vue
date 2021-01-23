@@ -20,7 +20,7 @@ import TheHeader from "../../MCA-AYIM/components/header/TheHeader.vue";
 import TheFooter from "../../MCA-AYIM/components/footer/TheFooter.vue";
 import GuestDifficultyModal from "../components/GuestDifficultyModal.vue";
 
-import { User } from "../../Interfaces/user";
+import { UserMCAInfo } from "../../Interfaces/user";
 
 @Component({
     components: {
@@ -32,7 +32,7 @@ import { User } from "../../Interfaces/user";
 })
 export default class Default extends Vue {
 
-    @State loggedInUser!: User;
+    @State loggedInUser!: UserMCAInfo;
 
     async mounted () {
         await this.$store.dispatch("setSelectedMode");

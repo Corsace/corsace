@@ -1,7 +1,7 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
+import { RootState } from "../../MCA-AYIM/store/index";
 import { UserCondensedInfo } from "../../Interfaces/user";
-import { RootState } from ".";
-import { CategoryStageInfo } from "../../Interfaces/category";
+import { CategoryStageInfo, CategoryType } from "../../Interfaces/category";
 import { BeatmapsetInfo } from "../../Interfaces/beatmap";
 import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
@@ -77,7 +77,7 @@ export const mutations: MutationTree<StageState> = {
     updateUsers (state, users) {
         state.users = users || [];
     },
-    updateCategory (state, category) {
+    updateSelectedCategory (state, category) {
         state.selectedCategory = category;
     },
     updateSection (state, section) {
@@ -150,8 +150,8 @@ export const actions: ActionTree<StageState, RootState> = {
     updateStage ({ commit }, stage) {
         commit("updateStage", stage);
     },
-    async setInitialData ({ state, commit, dispatch, rootState }) {
-        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.phase?.year}`);
+    async setInitialData ({ state, commit, rootState }) {
+        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}`);
 
         if (data.error) {
             console.error(data.error);
@@ -161,13 +161,9 @@ export const actions: ActionTree<StageState, RootState> = {
         commit("updateCategories", data.categories);
         commit("updateNominations", data.nominations);
         commit("updateVotes", data.votes);
-
-        if (data.categories?.length) {
-            await dispatch("updateCategory", data.categories[0]);
-        }
     },
-    async updateCategory ({ commit, dispatch }, category) {
-        commit("updateCategory", category);
+    async updateSelectedCategory ({ commit, dispatch }, category) {
+        commit("updateSelectedCategory", category);
         dispatch("search");
     },
     async updateSection ({ commit }, section) {
@@ -187,7 +183,7 @@ export const actions: ActionTree<StageState, RootState> = {
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
 
-        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.phase?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&text=${state.query.text}&skip=${skip}`);
+        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&text=${state.query.text}&skip=${skip}`);
         if (data.error)
             return alert(data.error);
 

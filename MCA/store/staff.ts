@@ -1,8 +1,8 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
+import { RootState } from "../../MCA-AYIM/store/index";
 import { MCAInfo } from "../../Interfaces/mca";
 import { GuestRequest } from "../../Interfaces/guestRequests";
 import { CategoryInfo } from "../../Interfaces/category";
-import { RootState } from "./index";
 
 export interface UpdateRequestData {
     id: number;

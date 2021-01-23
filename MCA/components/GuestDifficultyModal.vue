@@ -44,14 +44,14 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Action, Getter, Mutation, State } from "vuex-class";
+import { Action, Mutation, State } from "vuex-class";
 
 import BaseModal from "../../MCA-AYIM/components/BaseModal.vue";
 import GuestDifficultySubmission from "./GuestDifficultySubmission.vue";
 
 import { GuestRequest, RequestStatus } from "../../Interfaces/guestRequests";
-import { Phase } from "../../Interfaces/mca";
 import { UserMCAInfo } from "../../Interfaces/user";
+import { GuestRequestPayload, UpdateGuestRequestPayload } from "../../MCA-AYIM/store";
 
 interface RequestData {
     url: string;
@@ -69,12 +69,9 @@ export default class GuestDifficultyModal extends Vue {
     @State showGuestDifficultyModal!: boolean;
     @Mutation toggleGuestDifficultyModal;
 
-    @State modes!: string[];
     @State loggedInUser!: UserMCAInfo;
-    @State phase!: Phase;
-    @Getter inactiveModes!: string[];
-    @Action updateGuestRequest;
-    @Action submitGuestRequest;
+    @Action updateGuestRequest!: (payload: UpdateGuestRequestPayload) => Promise<void>;
+    @Action submitGuestRequest!: (payload: GuestRequestPayload) => Promise<void>;
 
     get currentRequests (): GuestRequest[] {
         return this.loggedInUser.guestRequests || [];

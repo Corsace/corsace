@@ -20,8 +20,10 @@ export interface MCAInfo {
     categories: Category[];
 }
 
+export type PhaseType = "nominating" | "voting" | "results" | "preparation";
+
 export interface Phase {
-    phase: "nominating" | "voting" | "results";
+    phase: PhaseType;
     startDate: Date;
     endDate: Date;
     year: number;
