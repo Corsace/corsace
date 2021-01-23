@@ -29,14 +29,14 @@
                 >
                     <div 
                         class="collapsible__name"
-                        :class="{'collapsible__name--active': showExtra && target===item}"
+                        :class="{'collapsible__name--active': showExtra && isSelected(item)}"
                     >
                         {{ item.name }} {{ showExtra ? item.maxNominations && !('count' in item) ? "- " + item.maxNominations: "" : "" }}
                     </div>
                     <hr
                         class="collapsible__info-bar"
                         :class="[
-                            {'collapsible__info-bar--active': showExtra && target===item}, 
+                            {'collapsible__info-bar--active': showExtra && isSelected(item)}, 
                             `collapsible--${selectedMode}`
                         ]"
                     >
@@ -45,14 +45,14 @@
                         <div
                             v-if="'count' in item && 'maxNominations' in item"
                             class="collapsible__count"
-                            :class="{'collapsible__count--active': target===item}"
+                            :class="{'collapsible__count--active': isSelected(item)}"
                         >
                             {{ item.count }}/{{ item.maxNominations }}
                         </div>
                         <div
                             v-else-if="'type' in item"
                             class="collapsible__count"
-                            :class="{'collapsible__count--active': target===item}"
+                            :class="{'collapsible__count--active': isSelected(item)}"
                         >
                             {{ item.type }}
                         </div>
@@ -106,9 +106,13 @@ export default class Collapsible extends Vue {
     setTarget (item: SubItem) {
         this.$emit("target", item);
 
-        if (this.target !== item) {
+        if (!this.isSelected(item)) {
             this.target = item;
         }
+    }
+
+    isSelected (item: SubItem): boolean {
+        return this.target?.id === item.id;
     }
         
 }
