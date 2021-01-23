@@ -59,11 +59,7 @@ staffRequestsRouter.post("/:id/update", async (ctx) => {
         }
 
         eligibility[request.mode.name] = true;
-        eligibility.user.canComment = true;
-        await Promise.all([
-            eligibility.user.save(),
-            eligibility.save(),
-        ]);
+        await eligibility.save();
     }
 
     await request.save();
