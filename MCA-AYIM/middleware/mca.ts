@@ -6,7 +6,7 @@ export default async function ({ redirect, error, route, store }: Context) {
 
     // optional really but easier to understand where anyone is...
     // convert /nominating or /staff/nominations to /2020/nominating or /2020/staff/nominations
-    if (route.name && !/^20\d\d$/.test(year)) {
+    if ((route.name && !/^20\d\d$/.test(year)) || route.path === "/") {
         return redirect({
             path: "/" + lastYear.toString() + route.path,
         });
