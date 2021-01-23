@@ -204,12 +204,22 @@ export const actions: ActionTree<StageState, RootState> = {
     updateBeatmapState ({ commit, state }, beatmapId) {
         commit("updateBeatmapState", beatmapId);
         const beatmap = state.beatmaps.find(b => b.id === beatmapId);
-        if (beatmap) commit("updateCategoryCount", beatmap.chosen);
+        if (beatmap) {
+            commit("updateCategoryCount", {
+                categoryId: state.selectedCategory?.id,
+                chosen: beatmap.chosen,
+            });
+        }
     },
     updateUserState ({ commit, state }, userId) {
         commit("updateUserState", userId);
         const user = state.users.find(u => u.corsaceID === userId);
-        if (user) commit("updateCategoryCount", user.chosen);
+        if (user) {
+            commit("updateCategoryCount", {
+                categoryId: state.selectedCategory?.id,
+                chosen: user.chosen,
+            });
+        }
     },
     reset ({ commit }) {
         commit("reset");
