@@ -1,5 +1,4 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
-import axios from "axios";
 import { UserCondensedInfo } from "../../Interfaces/user";
 import { RootState } from ".";
 import { CategoryStageInfo } from "../../Interfaces/category";
@@ -22,7 +21,7 @@ interface StageState {
     beatmaps: BeatmapsetInfo[];
     users: UserCondensedInfo[];
     query: StageQuery;
-    /** to keep only 1 popup visible at a time */
+    incrementalVoting: boolean;
     votingFor: null | number;
 }
 
@@ -43,6 +42,7 @@ export const state = (): StageState => ({
         text: "",
         skip: 0,
     },
+    incrementalVoting: true,
     votingFor: null,
 });
 
@@ -118,6 +118,9 @@ export const mutations: MutationTree<StageState> = {
     },
     updateVotingFor (state, voteId) {
         state.votingFor = voteId;
+    },
+    changeVotingType (state) {
+        state.incrementalVoting = !state.incrementalVoting;
     },
 };
 

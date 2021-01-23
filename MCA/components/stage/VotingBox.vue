@@ -7,6 +7,7 @@
             class="voting__title"
             :class="`voting__title--${selectedMode}`"
         >
+            voting for {{ title }} -
             remaining votes
         </div>
         <div class="voting__list">
@@ -44,31 +45,56 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
+import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
+import { UserCondensedInfo } from "../../../Interfaces/user";
 
 import { Vote } from "../../../Interfaces/vote";
+import { SectionCategory } from "../../store/stage";
 
 const stageModule = namespace("stage");
 
 @Component
 export default class VotingBox extends Vue {
     
-    @Prop({ type: Object, required: true }) readonly choice!: Record<string, any>;
-    
     @State selectedMode!: string;
+    @stageModule.State section!: SectionCategory;
+    @stageModule.State votingFor!: number;
+    @stageModule.State beatmaps!: BeatmapsetInfo[];
+    @stageModule.State users!: UserCondensedInfo[];
     @stageModule.Getter relatedVotes!: Vote[];
     @stageModule.Action createVote;
     @stageModule.Action removeVote;
 
     maxChoices = 10;
 
+    get votingObject (): UserCondensedInfo | BeatmapsetInfo | undefined {
+        if (this.section === "beatmaps") {
+            return this.beatmaps.find(b => b.id === this.votingFor);
+        } else if (this.section === "users") {
+            return this.users.find(u => u.corsaceID === this.votingFor);
+        }
+        
+        return undefined;
+    }
+
+    get title (): string {
+        if (!this.votingObject) return "";
+
+        if (this.section === "beatmaps") return (this.votingObject as BeatmapsetInfo).title;
+        else return (this.votingObject as UserCondensedInfo).username;
+    }
+
     chosenVote (i: number): Vote | undefined {
         return this.relatedVotes.find(v => v.choice === i);
     }
 
     async vote (vote: number) {
-        await this.createVote({ nomineeId: this.choice.id || this.choice.corsaceID, vote });
+        await this.createVote({ 
+            nomineeId: this.votingFor,
+            vote,
+        });
     }
     
     async remove (voteChoice: number) {
@@ -88,14 +114,11 @@ export default class VotingBox extends Vue {
 @import '@s-sass/_partials';
 
 .voting {
-    position: absolute;
-    right: 20%;
-    top: 0;
+    margin-top: 15px;
     background: black;
     border-radius: $border-radius;
     box-shadow: 0 0 8px 2px rgb($standard, .55);
     padding: 5px;
-    z-index: 100;
     cursor: default;
 
     @include mode-border;

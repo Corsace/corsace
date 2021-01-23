@@ -1,5 +1,9 @@
 <template>
     <div class="category__selection">
+        <transition name="fade">
+            <voting-box v-if="votingFor && !incrementalVoting" />
+        </transition>
+
         <div class="category__selection-search">
             <stage-page-filters />
         </div>
@@ -43,6 +47,7 @@ import StagePageFilters from "./StagePageFilters.vue";
 import ChoiceBeatmapsetCard from "../ChoiceBeatmapsetCard.vue";
 import ChoiceUserCard from "../ChoiceUserCard.vue";
 import ScrollBar from "../ScrollBar.vue";
+import VotingBox from "./VotingBox.vue";
 
 import { CategoryStageInfo } from "../../../Interfaces/category";
 import { SectionCategory } from "../../store/stage";
@@ -57,6 +62,7 @@ const stageModule = namespace("stage");
         ChoiceBeatmapsetCard,
         ChoiceUserCard,
         ScrollBar,
+        VotingBox,
     },
 })
 export default class StagePageList extends Vue {
@@ -65,6 +71,8 @@ export default class StagePageList extends Vue {
     @stageModule.State section!: SectionCategory;
     @stageModule.State users!: UserCondensedInfo[];
     @stageModule.State beatmaps!: BeatmapsetInfo[];
+    @stageModule.State votingFor!: null | number;
+    @stageModule.State incrementalVoting!: boolean;
     @stageModule.Action updateBeatmapState;
     @stageModule.Action updateUserState;
     @stageModule.Action search;
