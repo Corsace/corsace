@@ -4,6 +4,7 @@ import { Statistic } from "../../../Interfaces/records";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { User } from "../../../Models/user";
+import getHistoryStat from "../bnNatHistory";
 
 const statisticsRouter = new Router();
 const yearIDthresholds = [
@@ -356,6 +357,14 @@ statisticsRouter.get("/mappers", async (ctx) => {
         new_mapper_ages: newYears,
         mapper_ages: years,
         maps_per_mapper_ages: mapYears,
+        bns: [
+            getHistoryStat(year, modeString, "bns", "joined"),
+            getHistoryStat(year, modeString, "bns", "left"),
+        ],
+        nat: [
+            getHistoryStat(year, modeString, "nat", "joined"),
+            getHistoryStat(year, modeString, "nat", "left"),
+        ],
     };
 
     ctx.body = statistics;
