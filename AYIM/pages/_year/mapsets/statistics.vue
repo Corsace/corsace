@@ -30,7 +30,6 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
-import axios from "axios";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
@@ -42,6 +41,11 @@ import { MCA } from "../../../../Interfaces/mca";
     components: {
         DisplayLayout,
         RecordItem,
+    },
+    head () {
+        return {
+            title: "Mapsets' Statistics | AYIM",
+        };
     },
 })
 export default class MapsetStatistics extends Vue {
@@ -61,7 +65,7 @@ export default class MapsetStatistics extends Vue {
     }
 
     async getStats () {
-        const { data } = await axios.get(`/api/statistics/beatmapsets?year=${this.mca.year}&mode=${this.selectedMode}`);
+        const { data } = await this.$axios.get(`/api/statistics/beatmapsets?year=${this.mca.year}&mode=${this.selectedMode}`);
 
         if (!data.error) {
             this.statistics = data;

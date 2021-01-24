@@ -11,7 +11,7 @@ const config = new Config;
 const modeStaff = config.discord.roles.mca;
 
 indexRouter.get("/front", async (ctx) => {
-    const mca = await MCA.currentOrLatest();
+    const mca = await MCA.findOne(ctx.query.year);
     
     if (!mca)
         return ctx.body = { error: "There is no MCA for this year currently!" };
@@ -41,33 +41,6 @@ indexRouter.get("/front", async (ctx) => {
     }
 
     ctx.body = { frontData };
-});
-
-indexRouter.get("/phase", async (ctx) => {
-    const mca = await MCA.findOne(ctx.query.year);
-
-    if (!mca)
-        return ctx.body = { error: "There is no MCA for this year currently!" };
-
-    let phase: string;
-    const newDate = new Date;
-    let startDate: Date = newDate;
-    let endDate: Date = newDate;
-    
-    if (newDate > mca.nomination.start && newDate < mca.nomination.end) {
-        phase = "nominating";
-        startDate = mca.nomination.start;
-        endDate = mca.nomination.end;
-    } else if (newDate > mca.voting.start && newDate < mca.voting.end) {
-        phase = "voting";
-        startDate = mca.voting.start;
-        endDate = mca.voting.end;
-    } else if (newDate > mca.results) {
-        phase = "results";
-    } else 
-        return ctx.body = { error: "No phase currently", year: mca.year };
-
-    ctx.body = { phase, startDate, endDate, year: mca.year };
 });
 
 export default indexRouter;

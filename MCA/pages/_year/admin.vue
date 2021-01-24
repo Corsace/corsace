@@ -17,6 +17,11 @@ import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
         ModeSwitcher,
         AdminPage,
     },
+    head () {
+        return {
+            title: "Admin | MCA",
+        };
+    },
 })
 export default class Admin extends Vue {
     

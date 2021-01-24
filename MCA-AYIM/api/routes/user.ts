@@ -1,10 +1,10 @@
 import Router from "@koa/router";
 import { isLoggedIn } from "../../../Server/middleware";
 
-const UserRouter = new Router();
+const userRouter = new Router();
 
-UserRouter.get("/", isLoggedIn, async (ctx) => {
+userRouter.get("/", isLoggedIn, async (ctx) => {
     ctx.body = await ctx.state.user.getMCAInfo();
 });
 
-export default UserRouter;
+export default userRouter;

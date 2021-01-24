@@ -63,7 +63,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import axios from "axios";
 
 import { MCAInfo } from "../../../Interfaces/mca";
 
@@ -99,7 +98,7 @@ export default class AdminModalYear extends Vue {
     }
 
     async save () {
-        const { data } = await axios.post("/api/admin/years/create", {
+        const { data } = await this.$axios.post("/api/admin/years/create", {
             year: this.year,
             nominationStart: new Date(this.nominationStart + "UTC"),
             nominationEnd: new Date(this.nominationEnd + "UTC"),

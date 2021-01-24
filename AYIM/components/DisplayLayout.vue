@@ -188,6 +188,7 @@ export default class DisplayLayout extends Vue {
 .ayim-text {
     @extend %text-wrap;
     text-shadow: $text-shadow;
+    max-width: 160px;
 
     &--lg {
         font-size: $font-lg;

@@ -96,7 +96,6 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
-import axios from "axios";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 
@@ -107,6 +106,13 @@ import { MCA } from "../../../../Interfaces/mca";
 @Component({
     components: {
         DisplayLayout,
+    },
+    head () {
+        return {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            title: `${this.user?.osu.username} Comments | AYIM`,
+        };
     },
 })
 export default class MapperComments extends Vue {
@@ -149,7 +155,7 @@ export default class MapperComments extends Vue {
     }
     
     async getData () {
-        const { data } = await axios.get(`/api/comments?year=${this.mca.year}&user=${this.targetID}&mode=${this.selectedMode}`);
+        const { data } = await this.$axios.get(`/api/comments?year=${this.mca.year}&user=${this.targetID}&mode=${this.selectedMode}`);
 
         if (data.error) {
             alert(data.error);
@@ -161,7 +167,7 @@ export default class MapperComments extends Vue {
 
     async create () {
         this.info = "";
-        const { data } = await axios.post("/api/comments/create", {
+        const { data } = await this.$axios.post("/api/comments/create", {
             targetID: this.targetID,
             comment: this.newComment,
             mode: this.selectedMode,
@@ -185,7 +191,7 @@ export default class MapperComments extends Vue {
         }
 
         this.info = "";
-        const { data } = await axios.post(`/api/comments/${this.ownComment.ID}/update`, {
+        const { data } = await this.$axios.post(`/api/comments/${this.ownComment.ID}/update`, {
             comment: this.newComment,
         });
             
@@ -205,7 +211,7 @@ export default class MapperComments extends Vue {
         }
 
         this.info = "";
-        const { data } = await axios.post(`/api/comments/${this.ownComment.ID}/remove`);
+        const { data } = await this.$axios.post(`/api/comments/${this.ownComment.ID}/remove`);
             
         if (data.error) {
             this.info = data.error;

@@ -61,7 +61,6 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
-import axios from "axios";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
@@ -73,6 +72,11 @@ import { MCA } from "../../../../Interfaces/mca";
     components: {
         DisplayLayout,
         RecordItem,
+    },
+    head () {
+        return {
+            title: "Mappers' Records | AYIM",
+        };
     },
 })
 export default class MappersRecords extends Vue {
@@ -92,7 +96,7 @@ export default class MappersRecords extends Vue {
     }
 
     async getRecords () {
-        const { data } = await axios.get(`/api/records/mappers?year=${this.mca.year}&mode=${this.selectedMode}`);
+        const { data } = await this.$axios.get(`/api/records/mappers?year=${this.mca.year}&mode=${this.selectedMode}`);
 
         if (!data.error) {
             this.records = data;

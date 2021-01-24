@@ -12,6 +12,11 @@
             :options="orderOptions"
             @change="changeOrder"
         />
+
+        <toggle-button
+            :options="votingOptions"
+            @change="changeVotingType"
+        />
     </search-bar>
 </template>
 
@@ -38,10 +43,12 @@ export default class StagePageFilters extends Vue {
     @stageModule.State section!: string;
     @stageModule.State query!: StageQuery;
     @stageModule.Action updateQuery;
+    @stageModule.Mutation changeVotingType;
 
     beatmapOptions = ["DATE", "ARTIST", "TITLE", "FAVS", "CREATOR", "SR"];
     userOptions = ["ID", "ALPH"];
     orderOptions = ["ASC", "DESC"];
+    votingOptions = ["INCREMENTAL VOTE", "VOTE CHOICE"];
 
     get sectionOptions () {
         if (this.section === "beatmaps") return this.beatmapOptions;

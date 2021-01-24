@@ -85,7 +85,6 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
@@ -110,6 +109,11 @@ interface NominationsByCategory {
 @Component({
     components: {
         ModeSwitcher,
+    },
+    head () {
+        return {
+            title: "Nominations | Staff | MCA",
+        };
     },
 })
 export default class Nominations extends Vue {
@@ -161,7 +165,7 @@ export default class Nominations extends Vue {
     }
 
     async selectCategory (id: number) {
-        const { data } = await axios.get(`/api/staff/nominations?category=${id}`);
+        const { data } = await this.$axios.get(`/api/staff/nominations?category=${id}`);
 
         if (data.error) {
             alert(data.error);
@@ -194,7 +198,7 @@ export default class Nominations extends Vue {
     }
 
     async updateNomination (id: number, isValid) {
-        const { data } = await axios.post(`/api/staff/nominations/${id}/update`, {
+        const { data } = await this.$axios.post(`/api/staff/nominations/${id}/update`, {
             isValid,
         });
 

@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { Getter } from "vuex-class";
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import IndexPage from "../../components/IndexPage.vue";
@@ -65,10 +65,15 @@ import { Phase } from "../../../Interfaces/mca";
         ModeSwitcher,
         IndexPage,
     },
+    head () {
+        return {
+            title: "Mappers' Choice Awards",
+        };
+    },
 })
 export default class Index extends Vue {
 
-    @State phase!: Phase;
+    @Getter phase!: Phase;
 
     mounted () {
         let days = 0;

@@ -87,6 +87,11 @@ const staffModule = namespace("staff");
     components: {
         ChoiceBeatmapsetCard,
     },
+    head () {
+        return {
+            title: "GD Requests | Staff | MCA",
+        };
+    },
 })
 export default class StaffRequests extends Vue {
 

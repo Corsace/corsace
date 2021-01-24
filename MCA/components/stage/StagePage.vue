@@ -57,7 +57,6 @@ import { namespace, State } from "vuex-class";
 import StagePageCategories from "./StagePageCategories.vue";
 import StagePageList from "./StagePageList.vue";
 
-import { Phase } from "../../../Interfaces/mca";
 import { CategoryStageInfo } from "../../../Interfaces/category";
 
 const stageModule = namespace("stage");
@@ -70,7 +69,6 @@ const stageModule = namespace("stage");
 })
 export default class StateContent extends Vue {
 
-    @State phase!: Phase | null;
     @State selectedMode!: string;
     @stageModule.State count!: number;
     @stageModule.State selectedCategory!: CategoryStageInfo | null;
@@ -84,9 +82,9 @@ export default class StateContent extends Vue {
     }
 
     async mounted () {
-        if (/^(nominating|nominate)$/i.test(this.$route.params.year) || /^(nominating|nominate)$/.test(this.$route.params.stage))
+        if (/^(nominating|nominate)$/.test(this.$route.params.stage))
             this.updateStage("nominating");
-        else if (/^(vote|voting)$/i.test(this.$route.params.year) || /^(vote|voting)$/.test(this.$route.params.stage))
+        else if (/^(vote|voting)$/.test(this.$route.params.stage))
             this.updateStage("voting");
 
         await this.setInitialData();
@@ -200,6 +198,7 @@ export default class StateContent extends Vue {
     display: grid;
     width: 100%;
     height: auto;
+    min-height: 80px;
     position: relative;
     padding-right: 3%;
     line-height: 0.9;

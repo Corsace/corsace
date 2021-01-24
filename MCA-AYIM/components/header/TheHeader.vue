@@ -1,27 +1,29 @@
 <template>
     <div class="header">
-        <nuxt-link
-            class="header__year-container"
-            to="/"
-        >
-            <div class="header__year">
-                {{ year }}
-            </div>
-            <div class="header__year header__year--coloured">
-                <span class="header__year--standard">
-                    {{ (''+year)[0] }}
-                </span>
-                <span class="header__year--taiko">
-                    {{ (''+year)[1] }}
-                </span>
-                <span class="header__year--fruits">
-                    {{ (''+year)[2] }}
-                </span>
-                <span class="header__year--mania">
-                    {{ (''+year)[3] }}
-                </span>
-            </div>
-        </nuxt-link>
+        <template v-if="mca">
+            <nuxt-link
+                class="header__year-container"
+                :to="`/${mca.year}`"
+            >
+                <div class="header__year">
+                    {{ mca.year }}
+                </div>
+                <div class="header__year header__year--coloured">
+                    <span class="header__year--standard">
+                        {{ ('' + mca.year)[0] }}
+                    </span>
+                    <span class="header__year--taiko">
+                        {{ ('' + mca.year)[1] }}
+                    </span>
+                    <span class="header__year--fruits">
+                        {{ ('' + mca.year)[2] }}
+                    </span>
+                    <span class="header__year--mania">
+                        {{ ('' + mca.year)[3] }}
+                    </span>
+                </div>
+            </nuxt-link>
+        </template>
         <a
             class="header__title"
             :class="site === 'mca' ? 'header__title--active' : ''"
@@ -96,7 +98,7 @@ import LoginModal from "./LoginModal.vue";
 import TheHeaderDropdown from "./TheHeaderDropdown.vue";
 
 import { UserMCAInfo } from "../../../Interfaces/user";
-import { Phase } from "../../../Interfaces/mca";
+import { MCA } from "../../../Interfaces/mca";
 
 @Component({
     components: {
@@ -110,9 +112,8 @@ export default class TheHeader extends Vue {
 
     @State loggedInUser!: UserMCAInfo;
     @State selectedMode!: string;
-    @State phase!: Phase;
+    @State mca!: MCA;
 
-    year = this.phase?.year || new Date().getUTCFullYear() - 1;
     showLoginModal = false;
     showDropdown = false;
 

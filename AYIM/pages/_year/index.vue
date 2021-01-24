@@ -21,6 +21,11 @@ import IndexPage from "../../components/IndexPage.vue";
         ModeSwitcher,
         IndexPage,
     },
+    head () {
+        return {
+            title: "A Year in Mapping",
+        };
+    },
 })
 export default class Index extends Vue {
 

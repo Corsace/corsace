@@ -31,13 +31,12 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Mutation, State } from "vuex-class";
+import { Getter, Mutation, State } from "vuex-class";
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import StagePage from "../../components/stage/StagePage.vue";
 
 import { Phase } from "../../../Interfaces/mca";
-import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component({
     components: {
@@ -46,24 +45,20 @@ import { UserMCAInfo } from "../../../Interfaces/user";
     },
     validate ({ params }): boolean {
         const stageRegex = /^(nominating|nominate|vote|voting)$/i;
-        // Allow /nominating
-        if (stageRegex.test(params.year)) {
-            params.stage = params.year;
-            params.year = (new Date().getUTCFullYear() - 1).toString();
-
-            return true;
-        }
 
         // /2020/nominating
         return /^20\d\d$/.test(params.year) && stageRegex.test(params.stage);
     },
+    head () {
+        return {
+            title: `${this.$route.params.stage} | MCA`,
+        };
+    },
 })
 export default class Stage extends Vue {
 
-    @State loggedInUser!: UserMCAInfo | null;
-    @State phase!: Phase;
     @State selectedMode!: string;
-    @State showGuestDifficultyModal;
+    @Getter phase!: Phase;
     @Mutation toggleGuestDifficultyModal;
 
     get remainingDays (): string {

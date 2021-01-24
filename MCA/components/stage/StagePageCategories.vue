@@ -3,18 +3,18 @@
         <collapsible
             :title="'beatmap categories'"
             :list="beatmapCategories"
-            :active="section === 'beatmaps'"
+            :active="toUpdateSection === 'beatmaps'"
             :show-extra="true"
-            @activate="updateSection('beatmaps')"
-            @target="changeCategory"
+            @activate="saveSection('beatmaps')"
+            @target="updateCategory($event)"
         />
         <collapsible
             :title="'user categories'"
             :list="userCategories"
-            :active="section === 'users'"
+            :active="toUpdateSection === 'users'"
             :show-extra="true"
-            @activate="updateSection('users')"
-            @target="changeCategory"
+            @activate="saveSection('users')"
+            @target="updateCategory($event)"
         />
     </div>
 </template>
@@ -39,8 +39,14 @@ export default class StagePageCategories extends Vue {
     @State selectedMode!: string;
     @stageModule.State section!: string;
     @stageModule.Getter categoriesInfo!: CategoryStageInfo[];
-    @stageModule.Action updateCategory;
+    @stageModule.Action updateSelectedCategory;
     @stageModule.Action updateSection;
+    
+    toUpdateSection = "";
+
+    mounted () {
+        this.toUpdateSection = this.section || "";
+    }
     
     get userCategories (): CategoryStageInfo[] {
         return this.categoriesInfo.filter(c => c.type === "Users" && c.mode === this.selectedMode);
@@ -50,8 +56,15 @@ export default class StagePageCategories extends Vue {
         return this.categoriesInfo.filter(c => c.type === "Beatmapsets" && c.mode === this.selectedMode);
     }
 
-    async changeCategory (category: string) {
-        this.updateCategory(category);
+    // Only change the choices list on category change
+    saveSection (section: string): void {
+        this.toUpdateSection = section;
     }
+
+    updateCategory (category: string): void {
+        this.updateSection(this.toUpdateSection);
+        this.updateSelectedCategory(category);
+    }
+
 }
 </script>

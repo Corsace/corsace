@@ -22,7 +22,7 @@
         <div
             v-else-if="stage === 'voting'"
             class="choice__voting"
-            @click="togglePopup()"
+            @click="choose()"
         >
             <div class="choice__voting-title">
                 vote
@@ -30,13 +30,6 @@
             <div class="choice__voting-vote">
                 {{ currentVote && currentVote.choice || '!' }}
             </div>
-
-            <transition name="fade">
-                <voting-box
-                    v-if="votingFor === (choice.id || choice.corsaceID)"
-                    :choice="choice"
-                />
-            </transition>
         </div>
     </div>
 </template>
@@ -45,26 +38,22 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import VotingBox from "./stage/VotingBox.vue";
-
 import { StageType } from "../store/stage";
 import { Vote } from "../../Interfaces/vote";
 
 const stageModule = namespace("stage");
 
-@Component({
-    components: {
-        VotingBox,
-    },
-})
+@Component
 export default class BaseChoiceCard extends Vue {
 
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
     
     @stageModule.State votingFor!: null | number;
-    @stageModule.Mutation updateVotingFor;
     @stageModule.State stage!: StageType;
+    @stageModule.State incrementalVoting!: boolean;
+    @stageModule.Mutation updateVotingFor;
     @stageModule.Getter relatedVotes!: Vote[];
+    @stageModule.Action createVote;
 
     get currentVote (): Vote | undefined {
         return this.relatedVotes.find(v => {
@@ -73,13 +62,26 @@ export default class BaseChoiceCard extends Vue {
         });
     }
 
-    togglePopup () {
+    async choose () {
         const id = this.choice.id || this.choice.corsaceID;
 
-        if (id === this.votingFor) {
-            this.updateVotingFor(null);
+        if (this.incrementalVoting) {
+            let vote = 1;
+
+            if (this.relatedVotes.length) {
+                vote = this.relatedVotes.sort((a, b) => b.choice - a.choice)[0].choice + 1;
+            }
+
+            await this.createVote({ 
+                nomineeId: id,
+                vote,
+            });
         } else {
-            this.updateVotingFor(id);
+            if (id === this.votingFor) {
+                this.updateVotingFor(null);
+            } else {
+                this.updateVotingFor(id);
+            }
         }
     }
 
