@@ -61,7 +61,7 @@
    },
    "repository": {
       "type": "git",
-      "url": "git+https://github.com/VINXIS/Corsace.git"
+      "url": "git+https://github.com/Corsace/Corsace.git"
    },
    "keywords": [
       "osu",
@@ -72,7 +72,7 @@
    "author": "VINXIS",
    "license": "MIT",
    "bugs": {
-      "url": "https://github.com/VINXIS/Corsace/issues"
+      "url": "https://github.com/Corsace/Corsace/issues"
    },
-   "homepage": "https://github.com/VINXIS/Corsace#readme"
+   "homepage": "https://github.com/Corsace/Corsace#readme"
 }
