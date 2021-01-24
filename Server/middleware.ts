@@ -65,6 +65,8 @@ function hasRole (section: string, role: string) {
     };
 }
 
+const isMCAStaff = hasRole("mca", "staff");
+const isHeadStaff = hasRole("corsace", "headStaff");
 const isCorsace = hasRole("corsace", "corsace");
 
-export { isLoggedIn, isLoggedInDiscord, isLoggedInOsu, isStaff, isCorsace, hasRole };
+export { isLoggedIn, isLoggedInDiscord, isLoggedInOsu, isStaff, isHeadStaff, isCorsace, hasRole };
