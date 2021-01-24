@@ -87,6 +87,7 @@ export default class GuestDifficultySubmission extends Vue {
 
         font-family: $font-body;
         font-size: $font-lg;
+        text-align: center;
 
         border-bottom: 1px solid $gray;
         border-right: 1px solid $gray;
@@ -98,6 +99,9 @@ export default class GuestDifficultySubmission extends Vue {
         margin-right: 10px;
 
         outline: 0;
+        border: 0;
+
+        box-shadow: 0 0 6px white;
     }
 }
 </style>

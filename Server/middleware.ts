@@ -69,4 +69,4 @@ const isMCAStaff = hasRole("mca", "staff");
 const isHeadStaff = hasRole("corsace", "headStaff");
 const isCorsace = hasRole("corsace", "corsace");
 
-export { isLoggedIn, isLoggedInDiscord, isLoggedInOsu, isStaff, isHeadStaff, isCorsace, hasRole };
+export { isLoggedIn, isLoggedInDiscord, isLoggedInOsu, isStaff, isMCAStaff, isHeadStaff, isCorsace, hasRole };

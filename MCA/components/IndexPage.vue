@@ -242,6 +242,7 @@ export default class IndexContent extends Vue {
 
     &--inactive {
         opacity: 0.3;
+        filter: blur(7px);
     }
     
     span {
