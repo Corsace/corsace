@@ -2,10 +2,27 @@ import Router from "@koa/router";
 import { createQueryBuilder } from "typeorm";
 import { Statistic } from "../../../Interfaces/records";
 import { Beatmapset } from "../../../Models/beatmapset";
-import { MCAEligibility } from "../../../Models/MCA_AYIM/mcaEligibility";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { User } from "../../../Models/user";
 
 const statisticsRouter = new Router();
+const yearIDthresholds = [
+    1, // 2007
+    5130, // 2008
+    59489, // 2009
+    224499, // 2010
+    626609, // 2011
+    1299678, // 2012
+    2231102, // 2013
+    3810183, // 2014
+    5466373, // 2015
+    7672151, // 2016
+    9501617, // 2017
+    11454549, // 2018
+    13683105, // 2019
+    15887198, // 2020
+    20136967, // 2021
+]; // IDs where they are the first for each year starting from 2007
 
 statisticsRouter.get("/beatmapsets", async (ctx) => {
     const year = parseInt(ctx.query.year || new Date().getFullYear());
@@ -80,6 +97,37 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
             );
     }
 
+    const [yearQ, mapsQ]: [Promise<any>[], Promise<any>[]] = [[], []];
+    for (let i = 0; i < yearIDthresholds.length; i++) {
+        if (i + 2007 > year)
+            break;
+        yearQ.push(Beatmapset
+            .queryStatistic(year, modeId)
+            .andWhere(`year(beatmapset.submitDate) = ${i + 2007}`)
+            .select("count(distinct beatmapset.submitDate)", "value")
+            .addSelect(`'Maps Submitted in ${i + 2007}'`, "constraint")
+            .getRawOne()
+        );
+
+        let query = User
+            .createQueryBuilder("user")
+            .innerJoin("user.beatmapsets", "beatmapset","beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+            .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId });
+        if (i === yearIDthresholds.length - 1)
+            query = query
+                .andWhere(`user.osuUserid >= ${yearIDthresholds[i]}`);
+        else
+            query = query
+                .andWhere(`user.osuUserid >= ${yearIDthresholds[i]} and user.osuUserid < ${yearIDthresholds[i + 1]}`);
+            
+        mapsQ.push(query
+            .select("count(distinct beatmapset.ID)", "value")
+            .addSelect(`'Maps Ranked by ${i + 2007} Users'`, "constraint")
+            .cache(true)
+            .getRawOne()
+        );
+    }
+
 
     const query = createQueryBuilder()
         .from(sub => {
@@ -102,6 +150,9 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
         totalInsanes,
         totalExtras,
         totalExpertPlus,
+
+        years,
+        mapYears,
 
         // CS AR OD HP SR
         CS,
@@ -166,6 +217,9 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
             .orderBy("value", "DESC")
             .getRawOne(),
 
+        Promise.all(yearQ),
+        Promise.all(mapsQ),
+        
         // CS AR OD HP
         Promise.all(CSq),
         Promise.all(ARq),
@@ -187,6 +241,8 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
             totalExtras,
             totalExpertPlus,
         ],
+        submit_dates: years,
+        maps_per_year: mapYears,
         star_ratings: SR,
         approach_rate: AR,
         overall_difficulty: OD,
@@ -206,39 +262,92 @@ statisticsRouter.get("/mappers", async (ctx) => {
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
 
-    const [uniqueMappers, newMappers] = await Promise.all([
-        MCAEligibility
-            .whereMode(modeId)
-            .andWhere("eligibility.year = :year", { year })
-            .select("COUNT(eligibility.ID)", "value")
-            .addSelect("'mappers'", "constraint")
+    const [yearQ, newyearQ]: [Promise<any>[], Promise<any>[]] = [[], []];
+    for (let i = 0; i < yearIDthresholds.length; i++) {
+        if (i + 2007 > year)
+            break;
+        let query = User
+            .createQueryBuilder("user")
+            .innerJoin("user.beatmapsets", "beatmapset","beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+            .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId });
+        if (i === yearIDthresholds.length - 1)
+            query = query
+                .andWhere(`user.osuUserid >= ${yearIDthresholds[i]}`);
+        else
+            query = query
+                .andWhere(`user.osuUserid >= ${yearIDthresholds[i]} and user.osuUserid < ${yearIDthresholds[i + 1]}`);
+        
+        yearQ.push(query
+            .select("count(distinct user.osuUserid)", "value")
+            .addSelect(`'${i + 2007} Users Ranking Sets'`, "constraint")
             .cache(true)
-            .getRawOne(),
+            .getRawOne()
+        );
 
-        MCAEligibility
-            .whereMode(modeId)
-            .andWhere("eligibility.year = :year", { year })
+        newyearQ.push(query
             .andWhere(qb => {
                 let subQuery = qb
                     .subQuery()
-                    .from(MCAEligibility, "sub");
-
-                subQuery = MCAEligibility.whereMode(modeId, subQuery);
-                subQuery
-                    .andWhere("sub.year != :year", { year })
-                    .select("sub.userID", "userID");
-                
-                return "eligibility.userID NOT IN " + subQuery.getQuery();
+                    .from(Beatmapset, "sub");
+                subQuery = Beatmapset
+                    .createQueryBuilder("beatmapset")
+                    .where(`year(beatmapset.approvedDate) < ${year}`)
+                    .select("beatmapset.creatorID");
+                return "user.ID not in (" + subQuery.getQuery() + ")";
             })
-            .select("COUNT(eligibility.ID)", "value")
-            .addSelect("'new mappers'", "constraint")
+            .select("count(distinct user.osuUserid)", "value")
+            .addSelect(`'${i + 2007} Users Ranking First Set'`, "constraint")
+            .cache(true)
+            .getRawOne()
+        );
+    }
+
+    const [
+        uniqueMappers, 
+        newMappers,
+
+        years,
+        newYears,
+    ] = await Promise.all([
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("count(distinct creator.id)", "value")
+            .addSelect("'Total Mappers Ranking Sets'", "constraint")
+            .getRawOne(),
+
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .andWhere(qb => {
+                let subQuery = qb
+                    .subQuery()
+                    .from(Beatmapset, "sub");
+                subQuery = Beatmapset
+                    .createQueryBuilder("beatmapset")
+                    .where(`year(beatmapset.approvedDate) < ${year}`)
+                    .select("beatmapset.creatorID");
+                return "creator.ID not in (" + subQuery.getQuery() + ")";
+            })
+            .select("count(distinct creator.id)", "value")
+            .addSelect("'Total Mappers Ranking First Set'", "constraint")
             .cache(true)
             .getRawOne(),
+
+        Promise.all(yearQ),
+        Promise.all(newyearQ),
     ]);
 
     const statistics: Record<string, Statistic[]> = {
-        uniqueMappers: [uniqueMappers],
-        newMappers: [newMappers],
+        mappers: [
+            uniqueMappers,
+            newMappers,
+            {
+                constraint: "Percent of Mappers Ranking First Set",
+                value: (newMappers.value / uniqueMappers.value * 100).toFixed(2) + "%",
+            },
+        ],
+        new_mapper_ages: newYears,
+        mapper_ages: years,
+
     };
 
     ctx.body = statistics;

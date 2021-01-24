@@ -1,7 +1,7 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { RootState } from "../../MCA-AYIM/store/index";
 import { UserCondensedInfo } from "../../Interfaces/user";
-import { CategoryStageInfo, CategoryType } from "../../Interfaces/category";
+import { CategoryStageInfo } from "../../Interfaces/category";
 import { BeatmapsetInfo } from "../../Interfaces/beatmap";
 import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";

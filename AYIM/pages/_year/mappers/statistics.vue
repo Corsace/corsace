@@ -3,7 +3,7 @@
         <record-item
             v-for="(statisticItems, statisticName) in statistics"
             :key="statisticName"
-            :title="statisticName"
+            :title="statisticName.replaceAll('_', ' ')"
         >
             <div
                 v-for="statistic in statisticItems"
