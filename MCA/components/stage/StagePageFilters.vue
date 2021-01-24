@@ -1,18 +1,8 @@
 <template>
-    <div class="search">
-        <div class="search__pre">
-            <img 
-                class="search__pre-image"
-                src="../../../Assets/img/ayim-mca/site/magnifying glass.png"
-            >
-        </div>
-        <input
-            class="search__input"
-            placeholder="search for a beatmap / user"
-            maxlength="50"
-            @input="updateText($event)"
-        >
-
+    <search-bar
+        placeholder="search for a beatmap / user"
+        @update:search="updateText($event)"
+    >
         <toggle-button
             :options="sectionOptions"
             @change="changeOption"
@@ -22,7 +12,12 @@
             :options="orderOptions"
             @change="changeOrder"
         />
-    </div>    
+
+        <toggle-button
+            :options="votingOptions"
+            @change="changeVotingType"
+        />
+    </search-bar>
 </template>
 
 <script lang="ts">
@@ -31,6 +26,7 @@ import { namespace } from "vuex-class";
 import _ from "lodash";
 
 import ToggleButton from "../ToggleButton.vue";
+import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
 
 import { StageQuery } from "../../../Interfaces/queries";
 
@@ -39,21 +35,28 @@ const stageModule = namespace("stage");
 @Component({
     components: {
         ToggleButton,
+        SearchBar,
     },
 })
-export default class SearchBar extends Vue {
+export default class StagePageFilters extends Vue {
 
     @stageModule.State section!: string;
     @stageModule.State query!: StageQuery;
     @stageModule.Action updateQuery;
+    @stageModule.Mutation changeVotingType;
 
     beatmapOptions = ["DATE", "ARTIST", "TITLE", "FAVS", "CREATOR", "SR"];
     userOptions = ["ID", "ALPH"];
     orderOptions = ["ASC", "DESC"];
+    votingOptions = ["INCREMENTAL VOTE", "VOTE CHOICE"];
 
     get sectionOptions () {
         if (this.section === "beatmaps") return this.beatmapOptions;
         return this.userOptions;
+    }
+
+    updateText (text: string) {
+        this.updateQuery({ text });
     }
 
     changeOption (option: string) {
@@ -62,10 +65,6 @@ export default class SearchBar extends Vue {
 
     changeOrder (order: string) {
         this.debounce({ order });
-    }
-
-    updateText (e) {
-        this.debounce({ text: e.target.value });
     }
     
     // Vue doesnt allow using debounce inside methods, so no idea how this stuff below works, but works Ok
@@ -83,63 +82,3 @@ export default class SearchBar extends Vue {
 
 }
 </script>
-
-<style lang="scss">
-@import '@s-sass/_variables';
-
-.search {
-    display: flex;
-    justify-content: space-between;
-
-    & > * {
-        padding: 5px;
-        margin: 5px;
-    }
-}
-
-.search__pre, .search__input {
-    color: white;
-    background-color: black;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.63);
-}
-
-.search__pre {
-    width: 20%;
-    border-radius: 5.5px 0 0 5.5px;
-    margin-right: 0px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &-image {
-        width: 35px;
-    }
-
-    &::before {
-        width: 1px;
-        height: 75%;
-        background-color: white;
-    }
-}
-
-.search__input {
-    font-family: $font-body;
-    font-size: $font-lg;
-
-    border: 0;
-    border-radius: 0 5.5px 5.5px 0;
-
-    width: 100%;
-    margin-left: 0px;
-
-    &:focus {
-        outline: none;
-    }
-
-    &::placeholder, &:placeholder-shown {
-        color: rgba(255, 255, 255, 0.26);
-        font-style: italic;
-    }
-}
-</style>

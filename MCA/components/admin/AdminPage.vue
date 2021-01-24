@@ -82,7 +82,6 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
-import Axios from "axios";
 
 import ChoiceBeatmapsetCard from "../ChoiceBeatmapsetCard.vue";
 import Collapsible from "../Collapsible.vue";
@@ -119,7 +118,7 @@ export default class AdminPage extends Vue {
     }
 
     async getMcaInfo () {
-        const res = (await Axios.get("/api/admin/")).data;
+        const res = (await this.$axios.get("/api/admin/")).data;
 
         if (res.error)
             this.$router.replace("/");
@@ -144,7 +143,7 @@ export default class AdminPage extends Vue {
 
     async getCategories (year: MCAInfo) {
         this.selectedYear = year;
-        const res = (await Axios.get(`/api/admin/years/${this.selectedYear.name}`)).data;
+        const res = (await this.$axios.get(`/api/admin/years/${this.selectedYear.name}`)).data;
 
         if (res.error) {
             alert(res.error);
@@ -156,7 +155,7 @@ export default class AdminPage extends Vue {
 
     async getBeatmaps (category: CategoryInfo) {
         this.selectedCategory = category;
-        const res = (await Axios.get(`/api/admin/categories/${this.selectedCategory.id}`)).data;
+        const res = (await this.$axios.get(`/api/admin/categories/${this.selectedCategory.id}`)).data;
         if (res.error) {
             alert(res.error);
             return;
@@ -168,7 +167,7 @@ export default class AdminPage extends Vue {
         if (!this.selectedYear || !confirm(`Are you sure you want to delete ${this.selectedYear.name}?`))
             return;
 
-        const res = (await Axios.delete(`/api/admin/years/${this.selectedYear.name}/delete`)).data;
+        const res = (await this.$axios.delete(`/api/admin/years/${this.selectedYear.name}/delete`)).data;
 
         if (res.error) {
             alert(res.error);
@@ -185,7 +184,7 @@ export default class AdminPage extends Vue {
         if (!this.selectedCategory || !confirm(`Are you sure you want to delete ${this.selectedCategory.name}?`))
             return;
             
-        const res = (await Axios.delete(`/api/admin/categories/${this.selectedCategory.id}/delete`)).data;
+        const res = (await this.$axios.delete(`/api/admin/categories/${this.selectedCategory.id}/delete`)).data;
 
         if (res.error) {
             alert(res.error);

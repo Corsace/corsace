@@ -26,5 +26,9 @@ export default {
                 },
             ],
         },
+        css: [
+            "../MCA-AYIM/assets/sass/main.scss",
+            "./assets/ayim.scss",
+        ],
     },
 };

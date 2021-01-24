@@ -5,3 +5,10 @@ export interface StageQuery {
     text: string;
     skip: number;
 }
+
+export interface MapperQuery {
+    text: string;
+    skip: string;
+    year: string;
+    mode: string;
+}

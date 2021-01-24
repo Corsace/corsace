@@ -6,7 +6,7 @@
     padding: 5px;
     margin: 0;
     background: black;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.63);
+    box-shadow: $black-shadow;
     border-radius: 5.5px;
     font-size: $font-lg;
     font-family: $font-body;
@@ -35,5 +35,13 @@
     &--small {
         min-width: 100px;
         text-transform: none;
+        font-size: $font-base;
     }
+
+    &--active {
+        background-color: white;
+        font-weight: 500;
+    }
+
+    @include mode-text-color;
 }

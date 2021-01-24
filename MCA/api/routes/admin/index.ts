@@ -1,11 +1,11 @@
 import Router from "@koa/router";
-import { isLoggedInDiscord, isCorsace } from "../../../../Server/middleware";
+import { isLoggedInDiscord, isHeadStaff } from "../../../../Server/middleware";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 
 const adminRouter = new Router;
 
 adminRouter.use(isLoggedInDiscord);
-adminRouter.use(isCorsace);
+adminRouter.use(isHeadStaff);
 
 // Endpoint to obtain all MCAs and their info
 adminRouter.get("/", async (ctx) => {

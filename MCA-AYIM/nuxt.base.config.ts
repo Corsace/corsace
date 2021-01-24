@@ -16,6 +16,7 @@ export default {
     serverMiddleware: ["~/api"],
     buildModules: ["@nuxt/typescript-build"],
     modules: [
+        "@nuxtjs/axios",
         [
             "nuxt-i18n",
             {
@@ -38,5 +39,8 @@ export default {
             config.resolve.alias["@s-sass"] = path.join(__dirname, "../MCA-AYIM/assets/sass");
             config.resolve.alias["../../MCA-AYIM/components"] = path.join(__dirname, "../MCA-AYIM/components");
         },
+    },
+    dir: {
+        static: "../Assets/static",
     },
 };

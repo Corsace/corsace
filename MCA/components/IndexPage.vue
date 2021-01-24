@@ -16,7 +16,7 @@
                 :class="[
                     `vote-now--${selectedMode}`,
                 ]"
-                :to="`/${phase.phase}`"
+                :to="`/${phase.year}/${phase.phase}`"
             >
                 {{ $t(`mca_ayim.main.${buttonText}`) }} <span>>></span>
             </nuxt-link>
@@ -62,11 +62,10 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, State } from "vuex-class";
-import Axios from "axios";
 
 import Collapsible from "./Collapsible.vue";
 
-import { Phase } from "../../Interfaces/mca";
+import { MCA, Phase } from "../../Interfaces/mca";
 import { CategoryInfo } from "../../Interfaces/category";
 
 interface FullFrontInfo {
@@ -90,8 +89,9 @@ interface FrontInfo {
 })
 export default class IndexContent extends Vue {
 
-    @State phase!: Phase | null;
+    @State mca!: MCA;
     @State selectedMode!: string;
+    @Getter phase!: Phase | null;
     @Getter isEligibleFor!: (mode: string) => boolean;
     @Mutation toggleGuestDifficultyModal!: boolean;
     
@@ -141,7 +141,7 @@ export default class IndexContent extends Vue {
     }
 
     async mounted () {
-        const res = (await Axios.get("/api/front")).data;
+        const res = (await this.$axios.get(`/api/front?year=${this.mca.year}`)).data;
         if (res.error) {
             alert(res.error);
             return;

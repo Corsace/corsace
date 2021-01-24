@@ -57,7 +57,6 @@ import { namespace, State } from "vuex-class";
 import StagePageCategories from "./StagePageCategories.vue";
 import StagePageList from "./StagePageList.vue";
 
-import { Phase } from "../../../Interfaces/mca";
 import { CategoryStageInfo } from "../../../Interfaces/category";
 
 const stageModule = namespace("stage");
@@ -70,11 +69,9 @@ const stageModule = namespace("stage");
 })
 export default class StateContent extends Vue {
 
-    @State phase!: Phase | null;
     @State selectedMode!: string;
     @stageModule.State count!: number;
     @stageModule.State selectedCategory!: CategoryStageInfo | null;
-    @stageModule.Action updateYear;
     @stageModule.Action updateStage;
     @stageModule.Action setInitialData;
     @stageModule.Action reset;
@@ -85,11 +82,9 @@ export default class StateContent extends Vue {
     }
 
     async mounted () {
-        this.updateYear(this.$route.params.year);
-
-        if (/^(nominating|nominate)$/i.test(this.$route.params.year) || /^(nominating|nominate)$/.test(this.$route.params.stage))
+        if (/^(nominating|nominate)$/.test(this.$route.params.stage))
             this.updateStage("nominating");
-        else if (/^(vote|voting)$/i.test(this.$route.params.year) || /^(vote|voting)$/.test(this.$route.params.stage))
+        else if (/^(vote|voting)$/.test(this.$route.params.stage))
             this.updateStage("voting");
 
         await this.setInitialData();
@@ -102,14 +97,6 @@ export default class StateContent extends Vue {
 @import '@s-sass/_variables';
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
-
-@mixin mode-category__text {
-    @each $mode in $modes {
-        &--#{$mode} {
-            color: var(--#{$mode});
-        }
-    }
-}
 
 @mixin mode-category__candidates {
     @each $mode in $modes {
@@ -191,7 +178,7 @@ export default class StateContent extends Vue {
         font-size: 1.2rem;
         line-height: 0.7;
 
-        @include mode-category__text;
+        @include mode-text-color;
         @include transition;
     }
 
@@ -211,13 +198,14 @@ export default class StateContent extends Vue {
     display: grid;
     width: 100%;
     height: auto;
+    min-height: 80px;
     position: relative;
     padding-right: 3%;
     line-height: 0.9;
     overflow: hidden;
     z-index: -1;
 
-    @include mode-category__text;
+    @include mode-text-color;
 
     &-title {
         font-weight: bold;

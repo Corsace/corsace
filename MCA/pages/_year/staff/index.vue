@@ -9,7 +9,7 @@
 
         <nuxt-link
             v-if="requests.length"
-            to="/staff/requests"
+            :to="`/${mca.name}/staff/requests`"
             class="staff-page__link"
         >
             Requests pending >
@@ -17,7 +17,7 @@
 
         <nuxt-link
             v-if="categories.length"
-            to="/staff/nominations"
+            :to="`/${mca.name}/staff/nominations`"
             class="staff-page__link"
         >
             Nominations review >
@@ -29,28 +29,24 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import { MCAInfo } from "../../../Interfaces/mca";
-import { CategoryInfo } from "../../../Interfaces/category";
-import { GuestRequest } from "../../../Interfaces/guestRequests";
+import { MCAInfo } from "../../../../Interfaces/mca";
+import { CategoryInfo } from "../../../../Interfaces/category";
+import { GuestRequest } from "../../../../Interfaces/guestRequests";
 
 const staffModule = namespace("staff");
 
-@Component
+@Component({
+    head () {
+        return {
+            title: "Staff | MCA",
+        };
+    },
+})
 export default class Staff extends Vue {
 
-    @staffModule.Action setInitialData;
     @staffModule.State mca!: MCAInfo | null;
     @staffModule.State categories!: CategoryInfo[];
     @staffModule.State requests!: GuestRequest[];
 
-    async mounted () {
-        await this.setInitialData();
-    }
-
 }
 </script>
-
-<style lang="scss">
-
-
-</style>

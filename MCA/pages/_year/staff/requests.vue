@@ -71,10 +71,10 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import ChoiceBeatmapsetCard from "../../components/ChoiceBeatmapsetCard.vue";
+import ChoiceBeatmapsetCard from "../../../components/ChoiceBeatmapsetCard.vue";
 
-import { GuestRequest, RequestStatus } from "../../../Interfaces/guestRequests";
-import { UpdateRequestData } from "../../store/staff";
+import { GuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
+import { UpdateRequestData } from "../../../store/staff";
 
 interface GroupedRequest {
     mode: string;
@@ -86,6 +86,11 @@ const staffModule = namespace("staff");
 @Component({
     components: {
         ChoiceBeatmapsetCard,
+    },
+    head () {
+        return {
+            title: "GD Requests | Staff | MCA",
+        };
     },
 })
 export default class StaffRequests extends Vue {

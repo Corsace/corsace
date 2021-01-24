@@ -13,7 +13,8 @@ import { GuildMember } from "discord.js";
 import { discordGuild } from "../Server/discord";
 import { UserCondensedInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
-import { StageQuery } from "../Interfaces/queries";
+import { MapperQuery, StageQuery } from "../Interfaces/queries";
+import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 
 // General middlewares
 const config = new Config();
@@ -112,6 +113,36 @@ export class User extends BaseEntity {
     @OneToMany(() => Vote, vote => vote.user)
     votesReceived!: Vote[];
 
+    static basicSearch (query: MapperQuery) {
+        const queryBuilder = User
+            .createQueryBuilder("user")
+            .leftJoinAndSelect("user.otherNames", "otherName")
+            .leftJoinAndSelect("user.mcaEligibility", "mca")
+            .where(`mca.year = :q`, { q: parseInt(query.year) });
+
+        if (query.mode in ModeDivisionType) {
+            queryBuilder.andWhere(`mca.${query.mode} = true`);
+        }
+
+        // Check for search text
+        if (query.text) {
+            queryBuilder
+                .andWhere(new Brackets(qb => {
+                    qb.where("user.osuUsername LIKE :criteria")
+                        .orWhere("user.osuUserid LIKE :criteria")
+                        .orWhere("otherName.name LIKE :criteria");
+                }))
+                .setParameter("criteria", `%${query.text}%`);
+        }
+            
+        // Search
+        return queryBuilder
+            .skip(parseInt(query.skip))
+            .take(50)
+            .orderBy("user_osuUsername", "DESC")
+            .getMany();
+    }
+
     static search (year: number, modeString: string, stage: "voting" | "nominating", category: Category, query: StageQuery): Promise<[User[], number]> {
         // Initial repo setup
         const queryBuilder = User.createQueryBuilder("user");
@@ -158,15 +189,15 @@ export class User extends BaseEntity {
         
         // Ordering
         const ascDesc = query.order || "ASC";
-        let orderMethod = "CAST(user.osuUserid AS UNSIGNED)";
+        let orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
         if (query.option.toLowerCase().includes("alph"))
-            orderMethod = "user.osuUsername";
+            orderMethod = "user_osuUsername";
             
         // Search
         return Promise.all([
             queryBuilder
-                .offset(query.skip)
-                .limit(50)
+                .skip(query.skip)
+                .take(50)
                 .orderBy(orderMethod, ascDesc)
                 .getMany(),
 
@@ -209,6 +240,7 @@ export class User extends BaseEntity {
             },
             joinDate: this.registered,
             lastLogin: this.lastLogin,
+            canComment: this.canComment,
         };
         return info;
     }

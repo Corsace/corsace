@@ -96,6 +96,9 @@ export class App {
                 "entities": [
                     "../Models/**/*.ts",
                 ],
+                "cache": {
+                    duration: 60000,
+                },
             });
 
             console.log(`Connected to the ${connection.options.database} (${connection.options.name}) database!`);

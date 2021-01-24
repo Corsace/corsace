@@ -1,9 +1,8 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
-import axios from "axios";
+import { RootState } from "../../MCA-AYIM/store/index";
 import { MCAInfo } from "../../Interfaces/mca";
 import { GuestRequest } from "../../Interfaces/guestRequests";
 import { CategoryInfo } from "../../Interfaces/category";
-import { RootState } from "./index";
 
 export interface UpdateRequestData {
     id: number;
@@ -44,21 +43,21 @@ export const getters: GetterTree<StaffState, RootState> = {
 
 export const actions: ActionTree<StaffState, RootState> = {
     async setMca ({ commit }) {
-        const { data } = await axios.get(`/api/staff`);
+        const { data } = await this.$axios.get(`/api/staff`);
 
         if (!data.error) {
             commit("setMca", data);
         }
     },
     async setCategories ({ commit }) {
-        const { data } = await axios.get(`/api/staff/categories`);
+        const { data } = await this.$axios.get(`/api/staff/categories`);
 
         if (!data.error) {
             commit("setCategories", data);
         }
     },
     async setRequests ({ commit }) {
-        const { data } = await axios.get(`/api/staff/requests`);
+        const { data } = await this.$axios.get(`/api/staff/requests`);
 
         if (!data.error) {
             commit("setRequests", data);
@@ -72,7 +71,7 @@ export const actions: ActionTree<StaffState, RootState> = {
         ]);
     },
     async updateRequest ({ commit }, payload: UpdateRequestData) {
-        const { data } = await axios.post(`/api/staff/requests/${payload.id}/update`, {
+        const { data } = await this.$axios.post(`/api/staff/requests/${payload.id}/update`, {
             status: payload.status,
         });
 

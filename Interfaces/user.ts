@@ -34,6 +34,7 @@ export interface UserInfo {
     };
     joinDate: Date;
     lastLogin: Date;
+    canComment: boolean;
 }
 
 export interface UserCondensedInfo {

@@ -73,6 +73,7 @@ nominationsRouter.post("/create", isPhase("nomination"), isEligible, async (ctx)
     const nomination = new Nomination();
     nomination.nominator = ctx.state.user;
     nomination.category = category;
+    nomination.isValid = true;
 
     let beatmapset: Beatmapset;
     let user: User;

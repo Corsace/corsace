@@ -1,3 +1,5 @@
+@import '_variables';
+
 %spaced-container {
     margin-top: 15px;
     margin-bottom: 15px;
@@ -8,7 +10,7 @@
 
 %box {
     background-color: rgba(0, 0, 0, 0.65);
-    border-radius: 15px;
+    border-radius: $border-radius;
     padding: 5px 20px;
     margin: 5px;
 }
@@ -23,4 +25,25 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+%ayim-record {
+    @extend %flex-box;
+    flex-direction: column;
+    box-shadow: $gray-shadow;
+    position: relative;
+}
+
+%background-image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.7;
+    z-index: -1;
+    border-radius: inherit;
 }

@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne } from "typeorm";
+import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne, SelectQueryBuilder } from "typeorm";
 import { BeatmapsetInfo } from "../Interfaces/beatmap";
 import { Category } from "../Interfaces/category";
 import { StageQuery } from "../Interfaces/queries";
@@ -151,6 +151,28 @@ export class Beatmapset extends BaseEntity {
             
             queryBuilder.getCount(),
         ]);
+    }
+
+    static queryRecord (year: number, modeId: number): SelectQueryBuilder<Beatmapset> {
+        return this
+            .createQueryBuilder("beatmapset")
+            .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
+            .innerJoin("beatmapset.creator", "creator")
+            .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+            .select(["beatmapset.ID", "beatmapset.title", "beatmapset.artist"])
+            .addSelect(["creator.ID", "creator.osu.username", "creator.osu.userID"])
+            .limit(3)
+            .cache(true);
+    }
+
+    static queryStatistic (year: number, modeId: number): SelectQueryBuilder<Beatmapset> {
+        return this
+            .createQueryBuilder("beatmapset")
+            .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
+            .innerJoin("beatmapset.creator", "creator")
+            .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+            .limit(1)
+            .cache(true);
     }
 
     public getInfo (chosen = false): BeatmapsetInfo {

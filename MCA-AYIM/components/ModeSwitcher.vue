@@ -1,9 +1,12 @@
 <template>
     <div class="mode-wrapper">
-        <div class="mode-title">
-            {{ selectedMode }} 
-            <span v-if="!hidePhase && phase">| {{ $t(`mca_ayim.main.${phase.phase}`) }}</span>
-            <span v-if="title">| {{ title }}</span>
+        <div class="mode-title-container">
+            <slot name="title" />
+            <div class="mode-title">
+                {{ selectedMode }} 
+                <span v-if="!hidePhase && phase">| {{ $t(`mca_ayim.main.${phase.phase}`) }}</span>
+                <span v-if="title">| {{ title }}</span>
+            </div>
         </div>
 
         <div
@@ -23,7 +26,7 @@
                 :class="[
                     `mode-selection__mode--${mode}`,
                     (selectedMode === mode) ? `mode-selection__mode--${mode}-selected` : '',
-                    (!enableModeEligibility || isEligibleFor(mode, year)) ? '' : 'mode-selection__mode--inactive',
+                    (!enableModeEligibility || isEligibleFor(mode)) ? '' : 'mode-selection__mode--inactive',
                 ]"
                 @click="setMode(mode)"
             />
@@ -35,7 +38,6 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Getter, State } from "vuex-class";
 
-import { UserMCAInfo } from "../../Interfaces/user";
 import { Phase } from "../../Interfaces/mca";
 
 @Component
@@ -45,16 +47,13 @@ export default class ModeSwitcher extends Vue {
     @Prop({ type: String, default: "" }) readonly title!: string;
     @Prop(Boolean) readonly enableModeEligibility!: boolean;
 
-    @State loggedInUser!: UserMCAInfo | null;
-    @State phase!: Phase;
     @State selectedMode!: string;
     @State modes!: string[];
-    @Getter isEligibleFor!: (mode: string, year?: number) => boolean;
-
-    year = /20\d\d/.test(this.$route.params.year) ? parseInt(this.$route.params.year) : (new Date().getUTCFullYear() - 1);
+    @Getter phase!: Phase;
+    @Getter isEligibleFor!: (mode: string) => boolean;
 
     setMode (mode): void {
-        if (!this.enableModeEligibility || this.isEligibleFor(mode, this.year)) {
+        if (!this.enableModeEligibility || this.isEligibleFor(mode)) {
             this.$store.dispatch("updateSelectedMode", mode);
         } else {
             this.$emit("inactiveModeClicked");
@@ -89,6 +88,13 @@ $border-margin: 5px;
     overflow: hidden;
 
     margin-left: 30px;
+}
+
+.mode-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .mode-title {

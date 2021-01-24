@@ -6,7 +6,7 @@
    "dependencies": {
       "@koa/router": "^10.0.0",
       "@nuxt/typescript-runtime": "^2.0.0",
-      "axios": "^0.21.1",
+      "@nuxtjs/axios": "^5.12.5",
       "discord.js": "^12.5.1",
       "koa": "^2.13.1",
       "koa-bodyparser": "^4.3.0",
@@ -52,8 +52,8 @@
       "vuex-class": "^0.3.2"
    },
    "scripts": {
-      "mca-dev": "cd ./MCA && nodemon --watch api -e ts --exec nuxt-ts",
-      "ayim-dev": "cd ./AYIM && nodemon --watch api -e ts --exec nuxt-ts",
+      "mca-dev": "cd ./MCA && nodemon --watch api --watch ../MCA-AYIM --watch ../Models --watch ../Interfaces -e ts --exec nuxt-ts",
+      "ayim-dev": "cd ./AYIM && nodemon --watch api --watch ../MCA-AYIM --watch ../Models --watch ../Interfaces -e ts --exec nuxt-ts",
       "dev": "concurrently --names \"MCA,AYIM\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run mca-dev\" \"npm run ayim-dev\"",
       "lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",
       "lintfix": "eslint --fix --ext .ts,.vue --ignore-path .gitignore .",

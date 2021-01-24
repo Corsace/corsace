@@ -1,0 +1,7 @@
+@import '_partials';
+
+.info {
+    @extend %box;
+    color: $red;
+    background-color: $bg-dark;
+}

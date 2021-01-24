@@ -1,13 +1,8 @@
 <template>
-    <div
-        :style="loadingTransition"
-        class="layout"
-    >
+    <div class="layout">
         <the-header site="mca" />
 
-        <transition name="fade">
-            <nuxt class="main" />
-        </transition>
+        <nuxt class="main" />
         
         <the-footer />
         
@@ -19,13 +14,13 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter, State } from "vuex-class";
+import { State } from "vuex-class";
 
 import TheHeader from "../../MCA-AYIM/components/header/TheHeader.vue";
 import TheFooter from "../../MCA-AYIM/components/footer/TheFooter.vue";
 import GuestDifficultyModal from "../components/GuestDifficultyModal.vue";
 
-import { User } from "../../Interfaces/user";
+import { UserMCAInfo } from "../../Interfaces/user";
 
 @Component({
     components: {
@@ -33,51 +28,15 @@ import { User } from "../../Interfaces/user";
         TheFooter,
         GuestDifficultyModal,
     },
+    middleware: "mca",
 })
 export default class Default extends Vue {
 
-    @State loggedInUser!: User;
-    @Getter isMCAStaff!: boolean;
-
-    loaded = false;
-
-    get loadingTransition () {
-        if (!this.loaded)
-            return {
-                opacity: 0,
-            };
-        else
-            return {
-                opacity: 1,
-            };
-    }
+    @State loggedInUser!: UserMCAInfo;
 
     async mounted () {
-        await this.$store.dispatch("setInitialData");
-        this.loaded = true;
-
-        if (this.isMCAStaff) {
-            await this.$store.dispatch("staff/setInitialData");
-        }
+        await this.$store.dispatch("setSelectedMode");
     }
     
 }
 </script>
-
-<style lang="scss">
-@import '@s-sass/_mixins';
-
-.layout {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    
-    @include transition;
-}
-
-.main {
-    display: flex;
-    flex-wrap: wrap;
-    flex: 1;
-}
-</style>

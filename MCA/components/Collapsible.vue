@@ -29,28 +29,34 @@
                 >
                     <div 
                         class="collapsible__name"
-                        :class="{'collapsible__name--active': showExtra && target===item && active}"
+                        :class="{'collapsible__name--active': showExtra && isSelected(item)}"
                     >
                         {{ item.name }} {{ showExtra ? item.maxNominations && !('count' in item) ? "- " + item.maxNominations: "" : "" }}
                     </div>
                     <hr
                         class="collapsible__info-bar"
-                        :class="[{'collapsible__info-bar--active': showExtra && target===item && active}, `collapsible--${selectedMode}`]"
+                        :class="[
+                            {'collapsible__info-bar--active': showExtra && isSelected(item)}, 
+                            `collapsible--${selectedMode}`
+                        ]"
                     >
-                    <div
-                        v-if="showExtra && 'count' in item && 'maxNominations' in item"
-                        class="collapsible__count"
-                        :class="{'collapsible__count--active': target===item && active}"
-                    >
-                        {{ item.count }}/{{ item.maxNominations }}
-                    </div>
-                    <div
-                        v-else-if="showExtra && 'type' in item"
-                        class="collapsible__count"
-                        :class="{'collapsible__count--active': target===item && active}"
-                    >
-                        {{ item.type }}
-                    </div>
+
+                    <template v-if="showExtra">
+                        <div
+                            v-if="'count' in item && 'maxNominations' in item"
+                            class="collapsible__count"
+                            :class="{'collapsible__count--active': isSelected(item)}"
+                        >
+                            {{ item.count }}/{{ item.maxNominations }}
+                        </div>
+                        <div
+                            v-else-if="'type' in item"
+                            class="collapsible__count"
+                            :class="{'collapsible__count--active': isSelected(item)}"
+                        >
+                            {{ item.type }}
+                        </div>
+                    </template>
                 </div>
             </div>
         </transition>
@@ -84,8 +90,9 @@ export default class Collapsible extends Vue {
     target: SubItem | null = null;
     
     mounted () {
-        if (this.list.length > 0) {
+        if (this.list.length > 0 && this.active && !this.target) {
             this.target = this.list[0];
+            this.$emit("target", this.target);
         }
     }
 
@@ -99,9 +106,13 @@ export default class Collapsible extends Vue {
     setTarget (item: SubItem) {
         this.$emit("target", item);
 
-        if (this.target !== item) {
+        if (!this.isSelected(item)) {
             this.target = item;
         }
+    }
+
+    isSelected (item: SubItem): boolean {
+        return this.target?.id === item.id;
     }
         
 }
