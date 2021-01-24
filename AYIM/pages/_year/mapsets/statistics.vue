@@ -3,7 +3,7 @@
         <record-item
             v-for="(statisticItems, statisticName) in statistics"
             :key="statisticName"
-            :title="statisticName"
+            :title="statisticName.replace(/_/, ' ')"
         >
             <div
                 v-for="statistic in statisticItems"
@@ -12,7 +12,7 @@
             >
                 <div class="ayim-mapset-record__info">
                     <div class="ayim-text ayim-text--italic">
-                        number of maps with
+                        number of {{ /CS|AR|OD|HP|Keys/.test(statistic.constraint) ? "maps with" : "" }}
                     </div>
                             
                     <div class="ayim-text ayim-text--xl">
