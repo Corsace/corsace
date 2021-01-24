@@ -152,7 +152,6 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
         totalExpertPlus,
 
         years,
-        mapYears,
 
         // CS AR OD HP SR
         CS,
@@ -218,7 +217,6 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
             .getRawOne(),
 
         Promise.all(yearQ),
-        Promise.all(mapsQ),
         
         // CS AR OD HP
         Promise.all(CSq),
@@ -242,7 +240,6 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
             totalExpertPlus,
         ],
         submit_dates: years,
-        maps_per_year: mapYears,
         star_ratings: SR,
         approach_rate: AR,
         overall_difficulty: OD,
@@ -262,7 +259,7 @@ statisticsRouter.get("/mappers", async (ctx) => {
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
 
-    const [yearQ, newyearQ]: [Promise<any>[], Promise<any>[]] = [[], []];
+    const [yearQ, newyearQ, mapsQ]: [Promise<any>[], Promise<any>[], Promise<any>[]] = [[], [], []];
     for (let i = 0; i < yearIDthresholds.length; i++) {
         if (i + 2007 > year)
             break;
@@ -300,6 +297,13 @@ statisticsRouter.get("/mappers", async (ctx) => {
             .cache(true)
             .getRawOne()
         );
+
+        mapsQ.push(query
+            .select("count(distinct beatmapset.ID)", "value")
+            .addSelect(`'Maps Ranked by ${i + 2007} Users'`, "constraint")
+            .cache(true)
+            .getRawOne()
+        );
     }
 
     const [
@@ -308,6 +312,8 @@ statisticsRouter.get("/mappers", async (ctx) => {
 
         years,
         newYears,
+
+        mapYears,
     ] = await Promise.all([
         Beatmapset
             .queryStatistic(year, modeId)
@@ -334,6 +340,8 @@ statisticsRouter.get("/mappers", async (ctx) => {
 
         Promise.all(yearQ),
         Promise.all(newyearQ),
+        
+        Promise.all(mapsQ),
     ]);
 
     const statistics: Record<string, Statistic[]> = {
@@ -347,7 +355,7 @@ statisticsRouter.get("/mappers", async (ctx) => {
         ],
         new_mapper_ages: newYears,
         mapper_ages: years,
-
+        maps_per_mapper_ages: mapYears,
     };
 
     ctx.body = statistics;
