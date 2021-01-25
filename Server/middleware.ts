@@ -36,6 +36,8 @@ async function isStaff (ctx: ParameterizedContext, next: Next): Promise<void> {
     const member = await (await discordGuild()).members.fetch(ctx.state.user.discord.userID);
     if (member) {
         const roles = [
+            config.discord.roles.corsace.corsace,
+            config.discord.roles.corsace.headStaff,
             config.discord.roles.corsace.staff,
             config.discord.roles.open.staff,
             config.discord.roles.invitational.staff,
@@ -55,7 +57,12 @@ async function isStaff (ctx: ParameterizedContext, next: Next): Promise<void> {
 function hasRole (section: string, role: string) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
         const member = await (await discordGuild()).members.fetch(ctx.state.user.discord.userID);
-        if (member && (member.roles.cache.has(config.discord.roles[section][role]) || member.roles.cache.has(config.discord.roles.corsace.corsace))) {
+        if (
+            member && 
+            (member.roles.cache.has(config.discord.roles[section][role]) || 
+            member.roles.cache.has(config.discord.roles.corsace.corsace) || 
+            role === "corsace" ? false : member.roles.cache.has(config.discord.roles.corsace.headStaff))
+        ) {
             await next();
             return;
         } 
