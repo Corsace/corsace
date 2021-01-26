@@ -3,19 +3,19 @@
     "login": "登录",
     "mca_ayim": {
         "header": {
-            "mca": "谱师之选奖",
-            "ayim": "做谱又一年",
+            "mca": "谱师之选奖（MCA）",
+            "ayim": "制谱又一年（AYIM）",
             "login": "登录",
             "welcomeBack": "欢迎回来",
-            "admin": "",
-            "staff": "",
+            "admin": "管理员",
+            "staff": "工作人员",
             "logout": "注销"
         },
         "login": {
             "login": "登录",
             "message": {
-                "1": "你好像并没有登录！<br>只需要通过osu!登录，你就可以立刻进行谱面投票/提名！",
-                "2": ""
+                "1": "你好像并没有登录！<br>只需要通过osu!登录，你就可以立刻开始进行谱面的投票/提名工作！",
+                "2": "你也可以选择在这之后通过Discord登录，不过进行谱面的投票/提名<b>并不需要</b>你通过Discord登录。<br>MCA/AYIM的工作人员<b>必须</b>要通过Discord登录。</br>"
             },
             "authOsu": "点击这里通过osu!登录",
             "authOsuComp": "osu!认证通过。你好，",
@@ -25,55 +25,55 @@
     },
     "ayim": {
         "main": {
-            "records": "",
-            "statistics": "",
-            "search": "",
-            "numberof": "",
-            "numberwith": ""
+            "records": "纪录",
+            "statistics": "统计数据",
+            "search": "搜索",
+            "numberof": "总计",
+            "numberwith": "包含下述属性的难度个数"
         },
         "mapsets": {
-            "name": "",
-            "playcount": "",
-            "favourites": "",
-            "length": "",
-            "difficulties": "",
-            "totalRanked": "",
-            "totalDiff": "",
-            "submitDates": "",
-            "starRatings": "",
-            "approachRate": "",
-            "overallDifficulty": "",
-            "hpDrain": "",
-            "circleSize": ""
+            "name": "谱面名称",
+            "playcount": "游玩次数",
+            "favourites": "点赞次数",
+            "length": "谱面长度",
+            "difficulties": "难度个数",
+            "totalRanked": "总Ranked图个数",
+            "totalDiff": "总难度数",
+            "submitDates": "提交时间",
+            "starRatings": "难度星级",
+            "approachRate": "缩圈速度（AR）",
+            "overallDifficulty": "整体难度（OD）",
+            "hpDrain": "掉血快慢（HP）",
+            "circleSize": "圆圈大小（CS）"
         },
         "mappers": {
-            "name": "",
-            "mostRanked": "",
-            "mostFavs": "",
-            "mostPlayed": "",
-            "totalMappers": "",
+            "name": "谱师姓名",
+            "mostRanked": "拥有最多Ranked",
+            "mostFavs": "拥有最多点赞次数",
+            "mostPlayed": "拥有最多游玩次数",
+            "totalMappers": "谱师总数",
             "newMapperAges": "",
             "mapperAges": "",
             "mapsPerMapperAges": "",
-            "bng": "",
-            "nat": ""
+            "bng": "谱面提名小组（BNG）",
+            "nat": "提名审核团队（NAT）"
         },
         "comments": {
-            "name": "",
-            "info": "",
-            "viewSubmit": "",
-            "update": "",
-            "remove": "",
-            "create": "",
-            "login": "",
-            "visible": ""
+            "name": "用户姓名",
+            "info": "所有评论都会在MCA结果公布后对外公开！在那之前，你都可以提交自己的评论。",
+            "viewSubmit": "浏览/发表评论",
+            "update": "更新",
+            "remove": "删除",
+            "create": "新建",
+            "login": "登录以发表评论",
+            "visible": "（暂不可见）"
         }
     },
     "mca": {
         "main": {
             "voting": "投票",
             "nominating": "提名",
-            "results": "",
+            "results": "结果",
             "undefined": "",
 			"mapsetsLabel": "谱面",
 			"mappersLabel": "谱师",
@@ -91,73 +91,73 @@
             "daysLeft": "天剩余",
             "message": {
                 "1": "2019年，第四届谱师之选奖（Mapper's Choice Awards），归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面和谱师进行提名、投票！ ",
-                "2": "我们的目标是为“2019年度最佳谱面”提供一个与群众之选（Community Choice）不同的、基于做谱（Mapping）社群的全新视角！",
+                "2": "我们的目标是为“2019年度最佳谱面”提供一个与群众之选（Community Choice）不同的、基于制谱（Mapping）社群的全新视角！",
                 "3": "今年，我们尽全力制作了一个网站，以便符合要求的你能够尽可能轻松地立刻开始提名和投票！",
                 "4": "我们希望更多的人能够参与到这次评选当中来！"
             },
             "categories": {
-                "map": "",
-                "user": ""
+                "map": "谱面分类",
+                "user": "谱师分类"
             },
-            "organized": ""
+            "organized": "组织者："
         },
         "categories": {
             "grandAward": {
-                "name": "",
-                "description": ""
+                "name": "大奖",
+                "description": "独一无二。"
             },
             "marathon": {
-                "name": "",
-                "description": ""
+                "name": "马拉松",
+                "description": "总有效时长5分钟以上的最佳谱面。"
             },
             "hitsounding": {
-                "name": "",
-                "description": ""
+                "name": "音效",
+                "description": "余音袅袅。"
             },
             "collab": {
-                "name": "",
-                "description": ""
+                "name": "合作",
+                "description": "最佳合作（最高难度由2人以上共同制作的）谱面。"
             },
             "simple": {
-                "name": "",
-                "description": ""
+                "name": "低难度",
+                "description": "最高难度不高于Insane的最佳谱面。"
             },
             "highBPM": {
-                "name": "",
-                "description": ""
+                "name": "高BPM",
+                "description": "以超大间距串或高强度单点为特征的最佳谱面。"
             },
             "smallCircles": {
-                "name": "",
-                "description": ""
+                "name": "小圈",
+                "description": "最高难度的圆圈大小（CS）对应于5或更小的最佳谱面。"
             },
             "heavy13": {
-                "name": "",
-                "description": ""
+                "name": "三拍子",
+                "description": "以1/3、1/6或1/12为主要节奏的最佳谱面"
             },
             "throwback": {
-                "name": "",
-                "description": ""
+                "name": "怀旧",
+                "description": "具有老式风格的最佳谱面。"
             }
         },
         "nom_vote": {
-            "search": "",
-            "candidates": "",
+            "search": "搜索谱面/用户",
+            "candidates": "候选人",
             "options": {
-                "date": "",
-                "artist": "",
-                "title": "",
-                "favs": "",
-                "creator": "",
-                "sr": "",
-                "id": "",
-                "alph": "",
-                "asc": "",
-                "desc": "",
+                "date": "日期",
+                "artist": "艺术家",
+                "title": "标题",
+                "favs": "点赞数",
+                "creator": "谱师",
+                "sr": "星数",
+                "id": "ID",
+                "alph": "首字母",
+                "asc": "升序",
+                "desc": "降序",
                 "incVote": "",
                 "voteChoice": ""
             },
-            "hosted": "",
-            "userID": ""
+            "hosted": "谱面上传者",
+            "userID": "用户ID"
         }
     }
 }
