@@ -19,7 +19,9 @@
             "authOsuComp": "osu! verification complete. Hi ",
             "authDiscord": "click here to authenticate with discord",
             "authDiscordComp": "Discord verification complete. Hi "
-        },
+        }
+    },
+    "mca": {
         "main": {
             "voting": "voting",
             "nominating": "nominating",

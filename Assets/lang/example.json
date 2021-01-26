@@ -19,7 +19,9 @@
             "authOsuComp": "",
             "authDiscord": "",
             "authDiscordComp": ""
-        },
+        }
+    },
+    "mca": {
         "main": {
             "voting": "",
             "nominating": "",

@@ -19,7 +19,9 @@
             "authOsuComp": "osu!로 로그인되었습니다. 안녕하세요 ",
             "authDiscord": "여기를 클릭하여 디스코드로 로그인하세요",
             "authDiscordComp": "디스코드로 로그인되었습니다. 안녕하세요 "
-        },
+        }
+    },
+    "mca": {
         "main": {
             "voting": "투표",
             "nominating": "추천",

@@ -2,7 +2,7 @@
     <div class="index">
         <div class="general">
             <div class="ranked-sets">
-                <small>{{ $t('mca_ayim.main.rankedSets') }}</small>
+                <small>{{ $t('mca.main.rankedSets') }}</small>
                 <div class="ranked-sets__divider" />
                 <div class="ranked-sets__content">
                     {{ splitBeatmapCount[1] }}
@@ -18,7 +18,7 @@
                 ]"
                 :to="`/${phase.year}/${phase.phase}`"
             >
-                {{ $t(`mca_ayim.main.${buttonText}`) }} <span>>></span>
+                {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
             </nuxt-link>
             <a
                 v-else-if="phase"
@@ -29,20 +29,20 @@
                 href="#"
                 @click.prevent="toggleGuestDifficultyModal"
             >
-                {{ $t(`mca_ayim.main.${buttonText}`) }} <span>>></span>
+                {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
             </a>
         </div>
 
         <div class="categories">
             <collapsible
                 class="categories__list"
-                :title="$t('mca_ayim.main.categories.map')"
+                :title="$t('mca.main.categories.map')"
                 :list="beatmapCategories"
                 :active="true"
             />
             <collapsible
                 class="categories__list"
-                :title="$t('mca_ayim.main.categories.user')"
+                :title="$t('mca.main.categories.user')"
                 :list="userCategories"
                 :active="true"
             />
@@ -50,7 +50,7 @@
             
         <div class="organizers">
             <div class="organizers__title">
-                <small>{{ $t('mca_ayim.main.organized') }}</small>
+                <small>{{ $t('mca.main.organized') }}</small>
             </div>
             <div class="organizers__content">
                 {{ organizers }}

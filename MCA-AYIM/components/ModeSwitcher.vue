@@ -4,7 +4,7 @@
             <slot name="title" />
             <div class="mode-title">
                 {{ selectedMode }} 
-                <span v-if="!hidePhase && phase">| {{ $t(`mca_ayim.main.${phase.phase}`) }}</span>
+                <span v-if="!hidePhase && phase">| {{ $t(`mca.main.${phase.phase}`) }}</span>
                 <span v-if="title">| {{ title }}</span>
             </div>
         </div>

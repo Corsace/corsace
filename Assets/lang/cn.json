@@ -19,7 +19,9 @@
             "authOsuComp": "osu!认证通过。你好，",
             "authDiscord": "点击这里通过Discord登录",
             "authDiscordComp": "Discord认证通过。你好，"
-        },
+        }
+    },
+    "mca": {
         "main": {
             "voting": "投票",
             "nominating": "提名",

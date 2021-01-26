@@ -19,7 +19,9 @@
             "authOsuComp": "osu! Verifizierung abgeschlossen. Hallo ",
             "authDiscord": "Klicke hier, um dich über Discord zu authentifizieren",
             "authDiscordComp": "Discord Verifizierung abgeschlossen. Hallo "
-        },
+        }
+    },
+    "mca": {
         "main": {
             "voting": "abstimmen",
             "nominating": "nominieren",

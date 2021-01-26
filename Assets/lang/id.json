@@ -19,7 +19,9 @@
             "authOsuComp": "akun osu! Anda telah terhubung. Halo!",
             "authDiscord": "klik di sini untuk menghubungkan akun Discord Anda",
             "authDiscordComp": "akun Discord Anda telah terhubung. Halo!"
-        },
+        }
+    },
+    "mca": {
         "main": {
             "voting": "voting",
             "nominating": "nominasi",

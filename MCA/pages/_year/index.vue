@@ -15,14 +15,14 @@
 
                     <div class="voting-date__content">
                         <div class="voting-date__title">
-                            <b>{{ $t(`mca_ayim.main.stage.${phase.phase}`) }}</b>
+                            <b>{{ $t(`mca.main.stage.${phase.phase}`) }}</b>
                         </div>
                         <div class="voting-date__subtitle">
                             <!-- Only show on mobile instead of wheel -->
                             <div class="voting-date__days">
                                 {{ remainingDays }}
                             </div>
-                            {{ $t('mca_ayim.main.daysLeft') }}
+                            {{ $t('mca.main.daysLeft') }}
                         </div>
                     </div>
                 </div>
@@ -33,13 +33,13 @@
                     {{ timeRange }}
                 </p>
 
-                <p>{{ $t('mca_ayim.main.message.1') }}</p>
+                <p>{{ $t('mca.main.message.1') }}</p>
 
-                <p>{{ $t('mca_ayim.main.message.2') }}</p>
+                <p>{{ $t('mca.main.message.2') }}</p>
                                 
-                <p>{{ $t('mca_ayim.main.message.3') }}</p>
+                <p>{{ $t('mca.main.message.3') }}</p>
                                 
-                <p>{{ $t('mca_ayim.main.message.4') }}</p>
+                <p>{{ $t('mca.main.message.4') }}</p>
             </div>
         </div>
 
