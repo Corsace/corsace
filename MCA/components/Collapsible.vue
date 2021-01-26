@@ -31,7 +31,7 @@
                         class="collapsible__name"
                         :class="{'collapsible__name--active': showExtra && isSelected(item)}"
                     >
-                        {{ item.name }} {{ showExtra ? item.maxNominations && !('count' in item) ? "- " + item.maxNominations: "" : "" }}
+                        {{ showExtra ? $t(`mca.categories.${item.name}.name`) : item.name }} {{ showExtra ? item.maxNominations && !('count' in item) ? "- " + item.maxNominations: "" : "" }}
                     </div>
                     <hr
                         class="collapsible__info-bar"

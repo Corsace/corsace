@@ -7,6 +7,8 @@
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "EINLOGGEN",
             "welcomeBack": "Willkommen zurück",
+            "admin": "",
+            "staff": "",
             "logout": "AUSLOGGEN"
         },
         "login": {
@@ -19,6 +21,52 @@
             "authOsuComp": "osu! Verifizierung abgeschlossen. Hallo ",
             "authDiscord": "Klicke hier, um dich über Discord zu authentifizieren",
             "authDiscordComp": "Discord Verifizierung abgeschlossen. Hallo "
+        }
+    },
+    "ayim": {
+        "main": {
+            "records": "",
+            "statistics": "",
+            "search": "",
+            "numberof": "",
+            "numberwith": ""
+        },
+        "mapsets": {
+            "name": "",
+            "playcount": "",
+            "favourites": "",
+            "length": "",
+            "difficulties": "",
+            "totalRanked": "",
+            "totalDiff": "",
+            "submitDates": "",
+            "starRatings": "",
+            "approachRate": "",
+            "overallDifficulty": "",
+            "hpDrain": "",
+            "circleSize": ""
+        },
+        "mappers": {
+            "name": "",
+            "mostRanked": "",
+            "mostFavs": "",
+            "mostPlayed": "",
+            "totalMappers": "",
+            "newMapperAges": "",
+            "mapperAges": "",
+            "mapsPerMapperAges": "",
+            "bng": "",
+            "nat": ""
+        },
+        "comments": {
+            "name": "",
+            "info": "",
+            "viewSubmit": "",
+            "update": "",
+            "remove": "",
+            "create": "",
+            "login": "",
+            "visible": ""
         }
     },
     "mca": {
@@ -48,13 +96,68 @@
                 "4": "Wir hoffen, dass so viele Leute wie möglich an diesem Event teilnehmen!"
             },
             "categories": {
-                "map": "Mapkategorien",
-                "user": "Nutzerkategorien",
-				"approachRate": "APPROACH RATE",
-				"circleSize": "CIRCLE SIZE",
-				"overallDifficulty": "OVERALL DIFFICULTY"
+                "map": "",
+                "user": ""
             },
-            "organized": "ORGANISIERT VON"
+            "organized": ""
+        },
+        "categories": {
+            "grandAward": {
+                "name": "",
+                "description": ""
+            },
+            "marathon": {
+                "name": "",
+                "description": ""
+            },
+            "hitsounding": {
+                "name": "",
+                "description": ""
+            },
+            "collab": {
+                "name": "",
+                "description": ""
+            },
+            "simple": {
+                "name": "",
+                "description": ""
+            },
+            "highBPM": {
+                "name": "",
+                "description": ""
+            },
+            "smallCircles": {
+                "name": "",
+                "description": ""
+            },
+            "heavy13": {
+                "name": "",
+                "description": ""
+            },
+            "throwback": {
+                "name": "",
+                "description": ""
+            }
+        },
+        "nom_vote": {
+            "search": "",
+            "candidates": "",
+            "options": {
+                "date": "",
+                "artist": "",
+                "title": "",
+                "favs": "",
+                "creator": "",
+                "sr": "",
+                "id": "",
+                "alph": "",
+                "asc": "",
+                "desc": "",
+                "incVote": "",
+                "voteChoice": ""
+            },
+            "hosted": "",
+            "userID": ""
         }
     }
 }

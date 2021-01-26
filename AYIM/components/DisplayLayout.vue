@@ -8,21 +8,21 @@
                         class="ayim-nav__item button"
                         :class="getNavClass('mapsets')"
                     >
-                        mapsets
+                        {{ $t('ayim.mapsets.name') }}
                     </nuxt-link>
                     <nuxt-link
                         :to="`/${mca.year}/mappers/records`"
                         class="ayim-nav__item button"
                         :class="getNavClass('mappers')"
                     >
-                        mappers
+                        {{ $t('ayim.mappers.name') }}
                     </nuxt-link>
                     <nuxt-link
                         :to="`/${mca.year}/comments`"
                         class="ayim-nav__item button"
                         :class="getNavClass('comments')"
                     >
-                        comments
+                        {{ $t('ayim.comments.name') }}
                     </nuxt-link>
                 </div>
             </template>
@@ -33,21 +33,21 @@
                     class="ayim-record-nav"
                 >
                     <div class="ayim-record-nav__title">
-                        {{ navTitle }}
+                        {{ $t(`ayim.${navTitle}.name`) }}
                     </div>
                     <nuxt-link
                         :to="`/${mca.year}/${routeType}/records`"
                         class="ayim-record-nav__item"
                         :class="getSubnavClass('records')"
                     >
-                        records
+                        {{ $t('ayim.main.records') }}
                     </nuxt-link>
                     <nuxt-link
                         :to="`/${mca.year}/${routeType}/statistics`"
                         class="ayim-record-nav__item"
                         :class="getSubnavClass('statistics')"
                     >
-                        statistics
+                        {{ $t('ayim.main.statistics') }}
                     </nuxt-link>
                 </div>
 

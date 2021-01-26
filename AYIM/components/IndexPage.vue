@@ -28,19 +28,19 @@
                 :to="`/${mca.year}/mapsets/records`"
                 class="ayim-nav__item button"
             >
-                mapsets
+                {{ $t('ayim.mapsets.name') }}
             </nuxt-link>
             <nuxt-link
                 :to="`/${mca.year}/mappers/records`"
                 class="ayim-nav__item button"
             >
-                mappers
+                {{ $t('ayim.mappers.name') }}
             </nuxt-link>
             <nuxt-link
                 :to="`/${mca.year}/comments`"
                 class="ayim-nav__item button"
             >
-                comments
+                {{ $t('ayim.comments.name') }}
             </nuxt-link>
         </div>
     </div>

@@ -7,6 +7,8 @@
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "LOG IN",
             "welcomeBack": "welcome back",
+            "admin": "ADMIN",
+            "staff": "STAFF",
             "logout": "LOGOUT"
         },
         "login": {
@@ -19,6 +21,52 @@
             "authOsuComp": "osu! verification complete. Hi ",
             "authDiscord": "click here to authenticate with discord",
             "authDiscordComp": "Discord verification complete. Hi "
+        }
+    },
+    "ayim": {
+        "main": {
+            "records": "RECORDS",
+            "statistics": "STATISTICS",
+            "search": "search for a mapper",
+            "numberof": "number of",
+            "numberwith": "number of maps with"
+        },
+        "mapsets": {
+            "name": "MAPSETS",
+            "playcount": "PLAYCOUNT",
+            "favourites": "FAVOURITES",
+            "length": "LENGTH",
+            "difficulties": "DIFFICULTIES",
+            "totalRanked": "TOTAL RANKED",
+            "totalDiff": "TOTAL DIFFICULTIES",
+            "submitDates": "SUBMIT DATES",
+            "starRatings": "STAR RATINGS",
+            "approachRate": "APPROACH RATE",
+            "overallDifficulty": "OVERALL DIFFICULTY",
+            "hpDrain": "HP DRAIN",
+            "circleSize": "CIRCLE SIZE"
+        },
+        "mappers": {
+            "name": "MAPPERS",
+            "mostRanked": "MOST RANKED",
+            "mostFavs": "MOST FAVOURITES",
+            "mostPlayed": "MOST PLAYED",
+            "totalMappers": "TOTAL MAPPERS",
+            "newMapperAges": "NEW MAPPER AGES",
+            "mapperAges": "MAPPER AGES",
+            "mapsPerMapperAges": "MAPS PER MAPPER PER AGE",
+            "bng": "BNG",
+            "nat": "NAT"
+        },
+        "comments": {
+            "name": "COMMENTS",
+            "info": "All comments become public after this MCA's results are out! You can submit your own comments until then.",
+            "viewSubmit": "view/submit comments",
+            "update": "Update",
+            "remove": "Remove",
+            "create": "Create",
+            "login": "Login to create",
+            "visible": "(not visible yet)"
         }
     },
     "mca": {
@@ -49,12 +97,67 @@
             },
             "categories": {
                 "map": "map categories",
-                "user": "user categories",
-				"approachRate": "APPROACH RATE",
-				"circleSize": "CIRCLE SIZE",
-				"overallDifficulty": "OVERALL DIFFICULTY"
+                "user": "user categories"
             },
             "organized": "ORGANIZED BY"
+        },
+        "categories": {
+            "grandAward": {
+                "name": "Grand Award",
+                "description": "The best of the best."
+            },
+            "marathon": {
+                "name": "Marathon",
+                "description": "The best set with 5+ minute drain time."
+            },
+            "hitsounding": {
+                "name": "Hitsounding",
+                "description": "The best bells and whistles out there."
+            },
+            "collab": {
+                "name": "Collab",
+                "description": "The best set with 2+ mappers creating the top difficulty."
+            },
+            "simple": {
+                "name": "Simple",
+                "description": "The best set with the top difficulty lower than an insane."
+            },
+            "highBPM": {
+                "name": "High BPM",
+                "description": "The best set with atypical spaced streams or high singletap strain."
+            },
+            "smallCircles": {
+                "name": "Small Circles",
+                "description": "The best set with top difficulties using circle size 5 or smaller."
+            },
+            "heavy13": {
+                "name": "1/3 Heavy",
+                "description": "The best set with top difficulties using lots of purple ticks."
+            },
+            "throwback": {
+                "name": "Throwback",
+                "description": "The best set with a style of the old."
+            }
+        },
+        "nom_vote": {
+            "search": "search for a beatmap / user",
+            "candidates": "candidates",
+            "options": {
+                "date": "DATE",
+                "artist": "ARTIST",
+                "title": "TITLE",
+                "favs": "FAVS",
+                "creator": "CREATOR",
+                "sr": "SR",
+                "id": "ID",
+                "alph": "ALPH",
+                "asc": "ASC",
+                "desc": "DESC",
+                "incVote": "INCREMENTAL VOTE",
+                "voteChoice": "VOTE CHOICE"
+            },
+            "hosted": "HOSTED BY",
+            "userID": "USER ID"
         }
     }
 }

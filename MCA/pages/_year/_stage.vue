@@ -9,7 +9,7 @@
                 {{ remainingDays }}
             </div> 
             <div class="stage__remainingDaysLeft">
-                days left 
+                {{ $t(`mca.main.daysLeft`) }}
             </div>
             <div class="stage_remainingDaysExclamation">
                 !

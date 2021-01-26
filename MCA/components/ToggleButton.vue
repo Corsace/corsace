@@ -3,7 +3,7 @@
         class="button"
         @click="changeIndex"
     >
-        {{ currentOption }}
+        {{ $t(`mca.nom_vote.options.${currentOption}`) }}
     </button>
 </template>
 

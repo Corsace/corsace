@@ -7,6 +7,8 @@
             "ayim": "",
             "login": "",
             "welcomeBack": "",
+            "admin": "",
+            "staff": "",
             "logout": ""
         },
         "login": {
@@ -19,6 +21,52 @@
             "authOsuComp": "",
             "authDiscord": "",
             "authDiscordComp": ""
+        }
+    },
+    "ayim": {
+        "main": {
+            "records": "",
+            "statistics": "",
+            "search": "",
+            "numberof": "",
+            "numberwith": ""
+        },
+        "mapsets": {
+            "name": "",
+            "playcount": "",
+            "favourites": "",
+            "length": "",
+            "difficulties": "",
+            "totalRanked": "",
+            "totalDiff": "",
+            "submitDates": "",
+            "starRatings": "",
+            "approachRate": "",
+            "overallDifficulty": "",
+            "hpDrain": "",
+            "circleSize": ""
+        },
+        "mappers": {
+            "name": "",
+            "mostRanked": "",
+            "mostFavs": "",
+            "mostPlayed": "",
+            "totalMappers": "",
+            "newMapperAges": "",
+            "mapperAges": "",
+            "mapsPerMapperAges": "",
+            "bng": "",
+            "nat": ""
+        },
+        "comments": {
+            "name": "",
+            "info": "",
+            "viewSubmit": "",
+            "update": "",
+            "remove": "",
+            "create": "",
+            "login": "",
+            "visible": ""
         }
     },
     "mca": {
@@ -49,12 +97,67 @@
             },
             "categories": {
                 "map": "",
-                "user": "",
-				"approachRate": "",
-				"circleSize": "",
-				"overallDifficulty": ""
+                "user": ""
             },
             "organized": ""
+        },
+        "categories": {
+            "grandAward": {
+                "name": "",
+                "description": ""
+            },
+            "marathon": {
+                "name": "",
+                "description": ""
+            },
+            "hitsounding": {
+                "name": "",
+                "description": ""
+            },
+            "collab": {
+                "name": "",
+                "description": ""
+            },
+            "simple": {
+                "name": "",
+                "description": ""
+            },
+            "highBPM": {
+                "name": "",
+                "description": ""
+            },
+            "smallCircles": {
+                "name": "",
+                "description": ""
+            },
+            "heavy13": {
+                "name": "",
+                "description": ""
+            },
+            "throwback": {
+                "name": "",
+                "description": ""
+            }
+        },
+        "nom_vote": {
+            "search": "",
+            "candidates": "",
+            "options": {
+                "date": "",
+                "artist": "",
+                "title": "",
+                "favs": "",
+                "creator": "",
+                "sr": "",
+                "id": "",
+                "alph": "",
+                "asc": "",
+                "desc": "",
+                "incVote": "",
+                "voteChoice": ""
+            },
+            "hosted": "",
+            "userID": ""
         }
     }
 }

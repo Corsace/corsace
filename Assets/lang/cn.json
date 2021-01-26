@@ -7,6 +7,8 @@
             "ayim": "做谱又一年",
             "login": "登录",
             "welcomeBack": "欢迎回来",
+            "admin": "",
+            "staff": "",
             "logout": "注销"
         },
         "login": {
@@ -19,6 +21,52 @@
             "authOsuComp": "osu!认证通过。你好，",
             "authDiscord": "点击这里通过Discord登录",
             "authDiscordComp": "Discord认证通过。你好，"
+        }
+    },
+    "ayim": {
+        "main": {
+            "records": "",
+            "statistics": "",
+            "search": "",
+            "numberof": "",
+            "numberwith": ""
+        },
+        "mapsets": {
+            "name": "",
+            "playcount": "",
+            "favourites": "",
+            "length": "",
+            "difficulties": "",
+            "totalRanked": "",
+            "totalDiff": "",
+            "submitDates": "",
+            "starRatings": "",
+            "approachRate": "",
+            "overallDifficulty": "",
+            "hpDrain": "",
+            "circleSize": ""
+        },
+        "mappers": {
+            "name": "",
+            "mostRanked": "",
+            "mostFavs": "",
+            "mostPlayed": "",
+            "totalMappers": "",
+            "newMapperAges": "",
+            "mapperAges": "",
+            "mapsPerMapperAges": "",
+            "bng": "",
+            "nat": ""
+        },
+        "comments": {
+            "name": "",
+            "info": "",
+            "viewSubmit": "",
+            "update": "",
+            "remove": "",
+            "create": "",
+            "login": "",
+            "visible": ""
         }
     },
     "mca": {
@@ -48,13 +96,68 @@
                 "4": "我们希望更多的人能够参与到这次评选当中来！"
             },
             "categories": {
-                "map": "谱面分类",
-                "user": "谱师分类",
-				"approachRate": "缩圈速度（AR）",
-				"circleSize": "圆圈尺寸（CS）",
-				"overallDifficulty": "整体难度（OD）"
+                "map": "",
+                "user": ""
             },
-            "organized": "组织者："
+            "organized": ""
+        },
+        "categories": {
+            "grandAward": {
+                "name": "",
+                "description": ""
+            },
+            "marathon": {
+                "name": "",
+                "description": ""
+            },
+            "hitsounding": {
+                "name": "",
+                "description": ""
+            },
+            "collab": {
+                "name": "",
+                "description": ""
+            },
+            "simple": {
+                "name": "",
+                "description": ""
+            },
+            "highBPM": {
+                "name": "",
+                "description": ""
+            },
+            "smallCircles": {
+                "name": "",
+                "description": ""
+            },
+            "heavy13": {
+                "name": "",
+                "description": ""
+            },
+            "throwback": {
+                "name": "",
+                "description": ""
+            }
+        },
+        "nom_vote": {
+            "search": "",
+            "candidates": "",
+            "options": {
+                "date": "",
+                "artist": "",
+                "title": "",
+                "favs": "",
+                "creator": "",
+                "sr": "",
+                "id": "",
+                "alph": "",
+                "asc": "",
+                "desc": "",
+                "incVote": "",
+                "voteChoice": ""
+            },
+            "hosted": "",
+            "userID": ""
         }
     }
 }

@@ -16,7 +16,7 @@
                 {{ choice.artist }}
             </div>
             <span class="choice__info-host">
-                HOSTED BY | <span class="choice__info-hoster">{{ choice.hoster }}</span>
+                {{ $t('mca.nom_vote.hosted') }} | <span class="choice__info-hoster">{{ choice.hoster }}</span>
             </span>
         </a>
     </base-choice-card>

@@ -1,6 +1,6 @@
 <template>
     <search-bar
-        placeholder="search for a beatmap / user"
+        :placeholder="$t('mca.nom_vote.search')"
         @update:search="updateText($event)"
     >
         <toggle-button
@@ -45,10 +45,10 @@ export default class StagePageFilters extends Vue {
     @stageModule.Action updateQuery;
     @stageModule.Mutation changeVotingType;
 
-    beatmapOptions = ["DATE", "ARTIST", "TITLE", "FAVS", "CREATOR", "SR"];
-    userOptions = ["ID", "ALPH"];
-    orderOptions = ["ASC", "DESC"];
-    votingOptions = ["INCREMENTAL VOTE", "VOTE CHOICE"];
+    beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
+    userOptions = ["id", "alph"];
+    orderOptions = ["asc", "desc"];
+    votingOptions = ["incVote", "voteChoice"];
 
     get sectionOptions () {
         if (this.section === "beatmaps") return this.beatmapOptions;

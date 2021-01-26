@@ -13,7 +13,7 @@
                 v-if="info"
                 class="info"
             >
-                {{ info }}
+                {{ $t('ayim.comments.info') }}
             </div>
         </template>
 
@@ -36,7 +36,7 @@
                     :to="`/${mca.year}/comments/${mapper.ID}`"
                     class="button button--small"
                 >
-                    view/submit comments
+                    {{ $t('ayim.comments.viewSubmit') }}
                 </nuxt-link>
             </div>
         </div>

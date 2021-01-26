@@ -121,8 +121,8 @@ export class CategoryGenerator {
     public createGrandAward = function(mca: MCA, mode: ModeDivision, type: CategoryType): Category {
         const category = new Category;
         
-        category.name = "Grand Award";
-        category.description = "The best of the best.";
+        category.name = "grandAward";
+        category.description = "grandAward";
         category.maxNominations = 1;
         category.isRequired = true;
         category.type = type;
@@ -135,11 +135,11 @@ export class CategoryGenerator {
     /**
      * Creates a regular award.
      */
-    public create = function(name: string, description: string, type: CategoryType, mca: MCA, mode: ModeDivision): Category {
+    public create = function(name: string, type: CategoryType, mca: MCA, mode: ModeDivision): Category {
         const category = new Category;
         
         category.name = name;
-        category.description = description;
+        category.description = name;
         category.maxNominations = 3;
         category.isRequired = false;
         category.type = type;

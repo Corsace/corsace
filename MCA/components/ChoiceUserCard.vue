@@ -16,7 +16,7 @@
                 {{ choice.otherNames.length ? choice.otherNames.join(", ") : '--' }}
             </div>
             <span class="choice__info-host">
-                User ID | <span class="choice__infoHoster">{{ choice.userID }}</span>
+                {{ $t('mca.nom_vote.userID') }} | <span class="choice__infoHoster">{{ choice.userID }}</span>
             </span>
         </a>
     </base-choice-card>

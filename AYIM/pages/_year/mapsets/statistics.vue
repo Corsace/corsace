@@ -4,6 +4,7 @@
             v-for="(statisticItems, statisticName) in statistics"
             :key="statisticName"
             :title="statisticName"
+            :type="'mapsets'"
         >
             <div
                 v-for="statistic in statisticItems"

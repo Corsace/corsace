@@ -7,6 +7,8 @@
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "로그인",
             "welcomeBack": "환영합니다",
+            "admin": "",
+            "staff": "",
             "logout": "로그아웃"
         },
         "login": {
@@ -19,6 +21,52 @@
             "authOsuComp": "osu!로 로그인되었습니다. 안녕하세요 ",
             "authDiscord": "여기를 클릭하여 디스코드로 로그인하세요",
             "authDiscordComp": "디스코드로 로그인되었습니다. 안녕하세요 "
+        }
+    },
+    "ayim": {
+        "main": {
+            "records": "",
+            "statistics": "",
+            "search": "",
+            "numberof": "",
+            "numberwith": ""
+        },
+        "mapsets": {
+            "name": "",
+            "playcount": "",
+            "favourites": "",
+            "length": "",
+            "difficulties": "",
+            "totalRanked": "",
+            "totalDiff": "",
+            "submitDates": "",
+            "starRatings": "",
+            "approachRate": "",
+            "overallDifficulty": "",
+            "hpDrain": "",
+            "circleSize": ""
+        },
+        "mappers": {
+            "name": "",
+            "mostRanked": "",
+            "mostFavs": "",
+            "mostPlayed": "",
+            "totalMappers": "",
+            "newMapperAges": "",
+            "mapperAges": "",
+            "mapsPerMapperAges": "",
+            "bng": "",
+            "nat": ""
+        },
+        "comments": {
+            "name": "",
+            "info": "",
+            "viewSubmit": "",
+            "update": "",
+            "remove": "",
+            "create": "",
+            "login": "",
+            "visible": ""
         }
     },
     "mca": {
@@ -48,13 +96,68 @@
                 "4": "최대한 많은 분이 이 이벤트에 참여해주셨으면 좋겠습니다!"
             },
             "categories": {
-                "map": "맵 카테고리",
-                "user": "매퍼 카테고리",
-                "approachRate": "APPROACH RATE",
-                "circleSize": "CIRCLE SIZE",
-                "overallDifficulty": "OVERALL DIFFICULTY"
+                "map": "",
+                "user": ""
             },
-            "organized": "주최자"
+            "organized": ""
+        },
+        "categories": {
+            "grandAward": {
+                "name": "",
+                "description": ""
+            },
+            "marathon": {
+                "name": "",
+                "description": ""
+            },
+            "hitsounding": {
+                "name": "",
+                "description": ""
+            },
+            "collab": {
+                "name": "",
+                "description": ""
+            },
+            "simple": {
+                "name": "",
+                "description": ""
+            },
+            "highBPM": {
+                "name": "",
+                "description": ""
+            },
+            "smallCircles": {
+                "name": "",
+                "description": ""
+            },
+            "heavy13": {
+                "name": "",
+                "description": ""
+            },
+            "throwback": {
+                "name": "",
+                "description": ""
+            }
+        },
+        "nom_vote": {
+            "search": "",
+            "candidates": "",
+            "options": {
+                "date": "",
+                "artist": "",
+                "title": "",
+                "favs": "",
+                "creator": "",
+                "sr": "",
+                "id": "",
+                "alph": "",
+                "asc": "",
+                "desc": "",
+                "incVote": "",
+                "voteChoice": ""
+            },
+            "hosted": "",
+            "userID": ""
         }
     }
 }

@@ -19,8 +19,6 @@ adminCategoriesRouter.post("/create", async (ctx) => {
 
     if (!categoryInfo.name)
         return ctx.body = { error: "Missing category name!" };
-    else if (!categoryInfo.description)
-        return ctx.body = { error: "Missing category description!" };
     else if (!categoryInfo.type)
         return ctx.body = { error: "Missing category type!" };
     else if (!categoryInfo.maxNominations || categoryInfo.maxNominations <= 0)
@@ -41,7 +39,7 @@ adminCategoriesRouter.post("/create", async (ctx) => {
     if (!mode)
         return ctx.body = { error: "The mode provided does not exist!" };
 
-    const category = categoryGenerator.create(categoryInfo.name, categoryInfo.description, CategoryType[categoryInfo.type], mca, mode);
+    const category = categoryGenerator.create(categoryInfo.name, CategoryType[categoryInfo.type], mca, mode);
         
     if (categoryInfo.type === "beatmapsets" && categoryInfo.filter)
         category.addFilter(categoryInfo.filter);

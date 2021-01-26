@@ -5,7 +5,7 @@
                 <span class="triangle" />
                 <span class="triangle" />
             </div>
-            {{ title }}
+            {{ $t(`ayim.${type}.${title}`) }}
         </div>
 
         <slot />
@@ -19,6 +19,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 export default class RecordItem extends Vue {
     
     @Prop({ type: String, required: true }) readonly title!: string;
+    @Prop({ type: String, required: true }) readonly type!: string;
 
 }
 </script>

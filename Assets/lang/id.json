@@ -7,6 +7,8 @@
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "MASUK",
             "welcomeBack": "selamat datang kembali",
+            "admin": "",
+            "staff": "",
             "logout": "KELUAR"
         },
         "login": {
@@ -19,6 +21,52 @@
             "authOsuComp": "akun osu! Anda telah terhubung. Halo!",
             "authDiscord": "klik di sini untuk menghubungkan akun Discord Anda",
             "authDiscordComp": "akun Discord Anda telah terhubung. Halo!"
+        }
+    },
+    "ayim": {
+        "main": {
+            "records": "",
+            "statistics": "",
+            "search": "",
+            "numberof": "",
+            "numberwith": ""
+        },
+        "mapsets": {
+            "name": "",
+            "playcount": "",
+            "favourites": "",
+            "length": "",
+            "difficulties": "",
+            "totalRanked": "",
+            "totalDiff": "",
+            "submitDates": "",
+            "starRatings": "",
+            "approachRate": "",
+            "overallDifficulty": "",
+            "hpDrain": "",
+            "circleSize": ""
+        },
+        "mappers": {
+            "name": "",
+            "mostRanked": "",
+            "mostFavs": "",
+            "mostPlayed": "",
+            "totalMappers": "",
+            "newMapperAges": "",
+            "mapperAges": "",
+            "mapsPerMapperAges": "",
+            "bng": "",
+            "nat": ""
+        },
+        "comments": {
+            "name": "",
+            "info": "",
+            "viewSubmit": "",
+            "update": "",
+            "remove": "",
+            "create": "",
+            "login": "",
+            "visible": ""
         }
     },
     "mca": {
@@ -48,13 +96,68 @@
                 "4": "Kami berharap Anda semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!"
             },
             "categories": {
-                "map": "kategori per map",
-                "user": "kategori per pengguna",
-				"approachRate": "APPROACH RATE",
-				"circleSize": "CIRCLE SIZE",
-				"overallDifficulty": "OVERALL DIFFICULTY"
+                "map": "",
+                "user": ""
             },
-            "organized": "DIORGANISIR OLEH"
+            "organized": ""
+        },
+        "categories": {
+            "grandAward": {
+                "name": "",
+                "description": ""
+            },
+            "marathon": {
+                "name": "",
+                "description": ""
+            },
+            "hitsounding": {
+                "name": "",
+                "description": ""
+            },
+            "collab": {
+                "name": "",
+                "description": ""
+            },
+            "simple": {
+                "name": "",
+                "description": ""
+            },
+            "highBPM": {
+                "name": "",
+                "description": ""
+            },
+            "smallCircles": {
+                "name": "",
+                "description": ""
+            },
+            "heavy13": {
+                "name": "",
+                "description": ""
+            },
+            "throwback": {
+                "name": "",
+                "description": ""
+            }
+        },
+        "nom_vote": {
+            "search": "",
+            "candidates": "",
+            "options": {
+                "date": "",
+                "artist": "",
+                "title": "",
+                "favs": "",
+                "creator": "",
+                "sr": "",
+                "id": "",
+                "alph": "",
+                "asc": "",
+                "desc": "",
+                "incVote": "",
+                "voteChoice": ""
+            },
+            "hosted": "",
+            "userID": ""
         }
     }
 }

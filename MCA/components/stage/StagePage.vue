@@ -12,7 +12,7 @@
                     class="category__count-candidates"
                     :class="`category__count-candidates--${selectedMode}`"
                 >
-                    candidates
+                    {{ $t('mca.nom_vote.candidates') }}
                 </div>
             </div>
         </div>
@@ -37,10 +37,10 @@
                 </div>
                 <template v-if="selectedCategory">
                     <div class="category__head-title">
-                        {{ selectedCategory.name.toUpperCase() }}
+                        {{ ($t(`mca.categories.${selectedCategory.name}.name`)).toUpperCase() }}
                     </div>
                     <div class="category__head-desc">
-                        {{ selectedCategory.description + (selectedCategory.isFiltered ? " (auto filter enabled)" : "") }}
+                        {{ $t(`mca.categories.${selectedCategory.name}.description`) + (selectedCategory.isFiltered ? " (auto filter enabled)" : "") }}
                     </div>
                 </template>
             </div>

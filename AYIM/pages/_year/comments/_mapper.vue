@@ -30,13 +30,13 @@
                             class="button"
                             @click="update"
                         >
-                            Update
+                            {{ $t('ayim.comments.update') }}
                         </button>
                         <button
                             class="button"
                             @click="remove"
                         >
-                            Remove
+                            {{ $t('ayim.comments.remove') }}
                         </button>
                     </template>
                     <button
@@ -44,14 +44,14 @@
                         class="button"
                         @click="create"
                     >
-                        Create
+                        {{ $t('ayim.comments.create') }}
                     </button>
                 </template>
                 <button
                     v-else
                     class="button"
                 >
-                    Login to create
+                    {{ $t('ayim.comments.login') }}
                 </button>
             </div>
 
@@ -59,7 +59,7 @@
                 v-if="info"
                 class="info"
             >
-                {{ info }}
+                {{ $t('ayim.comments.info') }}
             </div>
         </template>
         
@@ -81,7 +81,7 @@
                         v-if="!comment.isValid"
                         class="ayim-text"
                     >
-                        (not visible yet)
+                        {{ $t('ayim.comments.visible') }}
                     </div>
                 </div>
 

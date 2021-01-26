@@ -1,7 +1,7 @@
 <template>
     <div class="stage__categories">
         <collapsible
-            :title="'beatmap categories'"
+            :title="$t('mca.main.categories.map')"
             :list="beatmapCategories"
             :active="toUpdateSection === 'beatmaps'"
             :show-extra="true"
@@ -9,7 +9,7 @@
             @target="updateCategory($event)"
         />
         <collapsible
-            :title="'user categories'"
+            :title="$t('mca.main.categories.user')"
             :list="userCategories"
             :active="toUpdateSection === 'users'"
             :show-extra="true"

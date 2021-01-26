@@ -4,6 +4,7 @@
             v-for="(recordsItems, recordName) in records"
             :key="recordName"
             :title="recordName"
+            :type="'mapsets'"
         >
             <template v-for="(record, i) in recordsItems">
                 <a
