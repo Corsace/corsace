@@ -52,9 +52,9 @@
             "mostFavs": "拥有最多点赞次数",
             "mostPlayed": "拥有最多游玩次数",
             "totalMappers": "谱师总数",
-            "newMapperAges": "",
-            "mapperAges": "",
-            "mapsPerMapperAges": "",
+            "newMapperAges": "新谱师号龄",
+            "mapperAges": "谱师号龄",
+            "mapsPerMapperAges": "谱面持有者号龄",
             "bng": "谱面提名小组（BNG）",
             "nat": "提名审核团队（NAT）"
         },
@@ -154,7 +154,7 @@
                 "asc": "升序",
                 "desc": "降序",
                 "incVote": "",
-                "voteChoice": ""
+                "voteChoice": "排序"
             },
             "hosted": "谱面上传者",
             "userID": "用户ID"
