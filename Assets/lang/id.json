@@ -8,14 +8,14 @@
             "login": "MASUK",
             "welcomeBack": "selamat datang kembali",
             "admin": "ADMIN",
-            "staff": "STAFF",
+            "staff": "STAF",
             "logout": "KELUAR"
         },
         "login": {
             "login": "masuk",
             "message": {
                 "1": "Sepertinya Anda belum terhubung masuk!<br>Anda harus masuk terlebih dahulu dengan menggunakan akun osu! Anda untuk dapat mulai menominasikan beatmap dan menyalurkan hak suara Anda.",
-                "2": "Anda juga dapat masuk dengan menggunakan Discord setelahnya, namun hal ini <b>tidak bersifat wajib</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staff</b> yang bertugas.</span>"
+                "2": "Anda juga dapat masuk dengan menggunakan Discord setelahnya, namun hal ini <b>tidak bersifat wajib</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staf</b> yang bertugas.</span>"
             },
             "authOsu": "klik di sini untuk menghubungkan akun osu! Anda",
             "authOsuComp": "akun osu! Anda telah terhubung. Halo ",
@@ -59,34 +59,34 @@
             "nat": "NAT"
         },
         "comments": {
-            "name": "",
-            "info": "",
-            "viewSubmit": "",
-            "update": "",
-            "remove": "",
-            "create": "",
-            "login": "",
-            "visible": ""
+            "name": "KOMENTAR",
+            "info": "Komentar-komentar yang masuk akan dipublikasikan segera setelah hasil akhir MCA diumumkan! Anda dibebaskan untuk berkomentar hingga hari pengumuman hasil MCA.",
+            "viewSubmit": "lihat/kirim komentar",
+            "update": "Perbarui",
+            "remove": "Hapus",
+            "create": "Tulis",
+            "login": "Harap masuk untuk berkomentar",
+            "visible": "(belum tersedia)"
         }
     },
     "mca": {
         "main": {
             "voting": "voting",
             "nominating": "nominasi",
-            "results": "",
+            "results": "hasil",
             "undefined": "",
-            "mapsetsLabel": "MAPSET",
-            "mappersLabel": "MAPPER",
-            "commentsLabel": "KOMENTAR",
-            "recordsLabel": "REKOR",
-            "statisticsLabel": "STATISTIK",
+                        "mapsetsLabel": "MAPSET",
+                        "mappersLabel": "MAPPER",
+                        "commentsLabel": "KOMENTAR",
+                        "recordsLabel": "REKOR",
+                        "statisticsLabel": "STATISTIK",
             "stage": {
                 "voting": "tahapan voting",
                 "nominating": "tahapan nominasi",
                 "undefined": ""
             },
-            "rankedSets": "TOTAL BEATMAP YANG BERSTATUS RANKED",
-            "nominateNow": "nominasi sekarang !",
+            "rankedSets": "TOTAL BEATMAP RANKED",
+            "nominateNow": "nominasikan sekarang !",
             "voteNow": "vote sekarang !",
             "daysLeft": "hari tersisa",
             "message": {
@@ -96,30 +96,30 @@
                 "4": "Kami berharap Anda semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!"
             },
             "categories": {
-                "map": "",
-                "user": ""
+                "map": "kategori map",
+                "user": "kategori pengguna"
             },
-            "organized": ""
+            "organized": "DIORGANISIR OLEH"
         },
         "categories": {
             "grandAward": {
-                "name": "",
-                "description": ""
+                "name": "Grand Award",
+                "description": "Yang terbaik dari yang terbaik."
             },
             "marathon": {
-                "name": "",
-                "description": ""
+                "name": "Marathon",
+                "description": "Mapset terbaik dengan drain time di atas 5 menit."
             },
             "hitsounding": {
                 "name": "",
                 "description": ""
             },
             "collab": {
-                "name": "",
-                "description": ""
+                "name": "Collab",
+                "description": "Mapset terbaik yang tingkat kesulitan tertingginya merupakan hasil kolaborasi 2 mapper atau lebih."
             },
             "simple": {
-                "name": "",
+                "name": "Simple",
                 "description": ""
             },
             "highBPM": {
@@ -140,24 +140,24 @@
             }
         },
         "nom_vote": {
-            "search": "",
-            "candidates": "",
+            "search": "cari beatmap/user",
+            "candidates": "kandidat",
             "options": {
-                "date": "",
-                "artist": "",
-                "title": "",
-                "favs": "",
-                "creator": "",
-                "sr": "",
-                "id": "",
-                "alph": "",
-                "asc": "",
-                "desc": "",
-                "incVote": "",
-                "voteChoice": ""
+                "date": "TANGGAL",
+                "artist": "ARTIS",
+                "title": "JUDUL",
+                "favs": "JML. FAVORIT",
+                "creator": "MAPPER",
+                "sr": "SR",
+                "id": "ID",
+                "alph": "ALPH",
+                "asc": "ASC",
+                "desc": "DESC",
+                "incVote": "VOTE INKREMENTAL",
+                "voteChoice": "PILIHAN"
             },
-            "hosted": "",
-            "userID": ""
+            "hosted": "DI-HOST OLEH",
+            "userID": "USER ID"
         }
     }
 }
