@@ -117,6 +117,10 @@ export default class AdminPage extends Vue {
         return this.categories.filter(x => x.mode === this.selectedMode);
     }
 
+    async mounted () {
+        await this.getMcaInfo();
+    }
+
     async getMcaInfo () {
         const res = (await this.$axios.get("/api/admin/")).data;
 
