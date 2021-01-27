@@ -116,7 +116,7 @@
             },
             "collab": {
                 "name": "Collab",
-                "description": "Mapset terbaik yang tingkat kesulitan tertingginya merupakan hasil kolaborasi 2 mapper atau lebih."
+                "description": "Mapset terbaik yang tingkat kesulitan tertingginya merupakan hasil kolaborasi antar 2 mapper atau lebih."
             },
             "simple": {
                 "name": "Simple",
@@ -124,7 +124,7 @@
             },
             "highBPM": {
                 "name": "High BPM",
-                "description": "Mapset terbaik"
+                "description": "Mapset terbaik yang bertitik berat pada spaced stream atau singletap."
             },
             "smallCircles": {
                 "name": "Small Circles",
@@ -132,7 +132,7 @@
             },
             "heavy13": {
                 "name": "1/3 Heavy",
-                "description": "Mapset terbaik dengan snapping dominan 1/3."
+                "description": "Mapset terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6)."
             },
             "throwback": {
                 "name": "Throwback",
