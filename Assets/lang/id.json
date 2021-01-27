@@ -15,7 +15,7 @@
             "login": "masuk",
             "message": {
                 "1": "Sepertinya Anda belum terhubung masuk!<br>Anda harus masuk terlebih dahulu dengan menggunakan akun osu! Anda untuk dapat mulai menominasikan beatmap dan menyalurkan hak suara Anda.",
-                "2": "Anda juga dapat masuk dengan menggunakan Discord setelahnya, namun hal ini <b>tidak bersifat wajib</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staf</b> yang bertugas.</span>"
+                "2": "Anda juga dapat masuk dengan menggunakan Discord setelahnya, namun hal ini <b>tidak bersifat wajib</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staf yang bertugas.</b></span>"
             },
             "authOsu": "klik di sini untuk menghubungkan akun osu! Anda",
             "authOsuComp": "akun osu! Anda telah terhubung. Halo ",
