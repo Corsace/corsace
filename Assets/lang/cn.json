@@ -132,7 +132,7 @@
             },
             "heavy13": {
                 "name": "三拍子",
-                "description": "以1/3、1/6或1/12为主要节奏的最佳谱面"
+                "description": "以1/3、1/6或1/12为主要节奏的最佳谱面。"
             },
             "throwback": {
                 "name": "怀旧",
@@ -153,8 +153,8 @@
                 "alph": "首字母",
                 "asc": "升序",
                 "desc": "降序",
-                "incVote": "",
-                "voteChoice": "排序"
+                "incVote": "剩余可选",
+                "voteChoice": "投票选项"
             },
             "hosted": "谱面上传者",
             "userID": "用户ID"
