@@ -156,7 +156,7 @@
                 "incVote": "剩余可选",
                 "voteChoice": "投票选项"
             },
-            "hosted": "谱面上传者",
+            "hosted": "谱面持有者",
             "userID": "用户ID"
         }
     }
