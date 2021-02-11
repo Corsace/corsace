@@ -44,10 +44,10 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
             
         Beatmapset
             .queryRecord(year, modeId)
-            .addSelect("beatmap.hitLength", "value")
+            .addSelect("concat(floor(beatmap.hitLength/60),':',beatmap.hitLength - floor(beatmap.hitLength/60)*60)", "value")
             .groupBy("beatmapset.ID")
             .addGroupBy("beatmap.hitLength")
-            .orderBy("value", "DESC")
+            .orderBy("beatmap.hitLength", "DESC")
             .getRawMany(),
 
         Beatmapset

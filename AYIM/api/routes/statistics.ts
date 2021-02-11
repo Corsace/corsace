@@ -1,5 +1,5 @@
 import Router from "@koa/router";
-import { createQueryBuilder } from "typeorm";
+import { createQueryBuilder, SelectQueryBuilder } from "typeorm";
 import { Statistic } from "../../../Interfaces/records";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
@@ -24,6 +24,20 @@ const yearIDthresholds = [
     15887198, // 2020
     20136967, // 2021
 ]; // IDs where they are the first for each year starting from 2007
+
+function createUserQuery (year, modeId, i) : SelectQueryBuilder<User> {
+    let query = User
+        .createQueryBuilder("user")
+        .innerJoin("user.beatmapsets", "beatmapset","beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+        .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId });
+    if (i === yearIDthresholds.length - 1)
+        query = query
+            .andWhere(`user.osuUserid >= ${yearIDthresholds[i]}`);
+    else
+        query = query
+            .andWhere(`user.osuUserid >= ${yearIDthresholds[i]} and user.osuUserid < ${yearIDthresholds[i + 1]}`);
+    return query;
+}
 
 statisticsRouter.get("/beatmapsets", async (ctx) => {
     const year = parseInt(ctx.query.year || new Date().getFullYear());
@@ -264,25 +278,15 @@ statisticsRouter.get("/mappers", async (ctx) => {
     for (let i = 0; i < yearIDthresholds.length; i++) {
         if (i + 2007 > year)
             break;
-        let query = User
-            .createQueryBuilder("user")
-            .innerJoin("user.beatmapsets", "beatmapset","beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
-            .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId });
-        if (i === yearIDthresholds.length - 1)
-            query = query
-                .andWhere(`user.osuUserid >= ${yearIDthresholds[i]}`);
-        else
-            query = query
-                .andWhere(`user.osuUserid >= ${yearIDthresholds[i]} and user.osuUserid < ${yearIDthresholds[i + 1]}`);
         
-        yearQ.push(query
+        yearQ.push(createUserQuery(year, modeId, i)
             .select("count(distinct user.osuUserid)", "value")
             .addSelect(`'${i + 2007} Users Ranking Sets'`, "constraint")
             .cache(true)
             .getRawOne()
         );
 
-        newyearQ.push(query
+        newyearQ.push(createUserQuery(year, modeId, i)
             .andWhere(qb => {
                 let subQuery = qb
                     .subQuery()
@@ -299,7 +303,7 @@ statisticsRouter.get("/mappers", async (ctx) => {
             .getRawOne()
         );
 
-        mapsQ.push(query
+        mapsQ.push(createUserQuery(year, modeId, i)
             .select("count(distinct beatmapset.ID)", "value")
             .addSelect(`'Maps Ranked by ${i + 2007} Users'`, "constraint")
             .cache(true)

@@ -4,7 +4,7 @@ import path from "path";
 const locales: any[] = [];
 
 fs.readdirSync("../Assets/lang").forEach(file => {
-    if (file !== "example.json" && file !== "flagCodes.json")
+    if (file !== "example.json" && file !== "flagCodes.json" && file !== "index.js")
         locales.push({
             code: file.split(".")[0],
             file,
