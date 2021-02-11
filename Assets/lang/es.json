@@ -15,11 +15,11 @@
             "login": "INICIAR SESIÓN",
             "message": {
                 "1": "Parece que no has iniciado sesión!<br>¡Simplemente inicia sesión a travéz de osu! y puedes comenzar a votar/nominar immediatamente!",
-                "2": "Tambien puedes iniciar sesión a travez de Discord, pero no es requerido para votar/nominar.<br>Miembros del equipo que esten trabajando en MCA/AYIM <b>deben iniciar sesión a travez de Discord/b>.</span>"
+                "2": "Tambien puedes iniciar sesión a travez de Discord, pero no es requerido para votar/nominar.<br>Miembros del equipo que esten trabajando en MCA/AYIM <b>deben iniciar sesión a travez de Discord</b>.</span>"
             },
-            "authOsu": "Haz click aquí para autentificar con osu!",
+            "authOsu": "¡Haz click aquí para autentificar con osu!",
             "authOsuComp": "Verificacion con osu! completada. Saludos ",
-            "authDiscord": "Haz click aquí para autentificar con Discord!",
+            "authDiscord": "¡Haz click aquí para autentificar con Discord!",
             "authDiscordComp": "Verificacion con osu! completada. Saludos "
         }
     },
