@@ -14,12 +14,12 @@
         "login": {
             "login": "connexion",
             "message": {
-                "1": "Il semblerait que vous n'êtes pas connecté !<br>Connectez vous avec osu! et vous pourrez immédiatement voter ou nominer!",
-                "2": "Vous pourrez également vous connecter avec Discord par la suite, mais cela n'est <b>pas nécessaire</b> pour voter ou nominer.<br>La connection par Discord <b>est nécessaire</b> pour les membres du staff travaillant sur les MCA ou AYIM.</span>"
+                "1": "Il semblerait que vous n'êtes pas connecté !<br>Connectez-vous avec osu! et vous pourrez immédiatement voter ou nominer!",
+                "2": "Vous pourrez également vous connecter avec Discord par la suite, mais cela n'est <b>pas nécessaire</b> pour voter ou nominer.<br>La connexion par Discord <b>est nécessaire</b> pour les membres du staff travaillant sur les MCA ou AYIM.</span>"
             },
-            "authOsu": "Cliquez ici pour vous authentifier via osu!",
+            "authOsu": "Cliquez ici pour vous identifier via osu!",
             "authOsuComp": "Vérification par osu! complète. Bonjour ",
-            "authDiscord": "Ciquez ici pour vous authentifier via Discord",
+            "authDiscord": "Cliquez ici pour vous identifier via Discord",
             "authDiscordComp": "Vérification par Discord complète. Bonjour "
         }
     },
@@ -43,7 +43,7 @@
             "starRatings": "DIFFICULTÉ EN ÉTOILES",
             "approachRate": "NIVEAU D'APPROCHE",
             "overallDifficulty": "PRÉCISION",
-            "hpDrain": "DRAINAGE PV",
+            "hpDrain": "DRAIN DE PV",
             "circleSize": "TAILLE DES CERCLES"
         },
         "mappers": {
@@ -54,13 +54,13 @@
             "totalMappers": "NOMBRE DE MAPPERS AU TOTAL",
             "newMapperAges": "L'ANNÉE D'INSCRIPTION DES NOUVEAUX MAPPERS",
             "mapperAges": "L'ANNÉE D'INSCRIPTION DES MAPPERS",
-            "mapsPerMapperAges": "MAPS MAR MAPPER PAR ANNÉE D'INSCRIPTION",
+            "mapsPerMapperAges": "MAPS PAR MAPPER PAR ANNÉE D'INSCRIPTION",
             "bng": "BNG",
             "nat": "NAT"
         },
         "comments": {
-            "name": "COMMENTS",
-            "info": "Tous les commentaires deviendront publiques une fois que les résultats sont annoncés ! D'ici là, vous pouvez soumettre vos propres commentaires.",
+            "name": "COMMENTAIRES",
+            "info": "Tous les commentaires deviendront publiques une fois que les résultats seront annoncés ! D'ici là, vous pouvez soumettre vos propres commentaires.",
             "viewSubmit": "voir/soumettre des commentaires",
             "update": "Mettre à jour",
             "remove": "Supprimer",
@@ -86,7 +86,7 @@
                 "undefined": ""
             },
             "rankedSets": "MAPSETS CLASSÉS",
-            "nominateNow": "nominez now !",
+            "nominateNow": "nominez maintenant !",
             "voteNow": "votez maintenant !",
             "daysLeft": "jours restants",
             "message": {
@@ -128,11 +128,11 @@
             },
             "smallCircles": {
                 "name": "Petits Cercles",
-                "description": "Le meilleur mapset où la difficulté la plus haute utilise une taille de cercles de 5 ou moins."
+                "description": "Le meilleur mapset où la plus haute difficulté utilise une taille de cercles de 5 ou moins."
             },
             "heavy13": {
                 "name": "1/3 à foison",
-                "description": "Le meilleur mapset où les difficultés les plus hautes utilisent beaucoup de ticks violets."
+                "description": "Le meilleur mapset où les plus hautes difficultés utilisent beaucoup de ticks violets."
             },
             "throwback": {
                 "name": "Retour aux Sources",
