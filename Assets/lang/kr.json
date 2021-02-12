@@ -7,15 +7,15 @@
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "로그인",
             "welcomeBack": "환영합니다",
-            "admin": "",
-            "staff": "",
+            "admin": "어드민",
+            "staff": "스태프",
             "logout": "로그아웃"
         },
         "login": {
             "login": "로그인",
             "message": {
                 "1": "아직 로그인하지 않으셨습니다!<br>osu! 계정으로 로그인하시면 추천과 투표를 바로 하실 수 있습니다!",
-                "2": ""
+                "2": "이후 디스코드로도 로그인하실 수 있지만, 추천/투표하는 데에는 <b>필요하지 않습니다.</b><br>MCA/AYIM 관련 스태프분들은 디스코드로 로그인을 <b>반드시</b> 하셔야 합니다."
             },
             "authOsu": "여기를 클릭하여 osu!로 로그인하세요",
             "authOsuComp": "osu!로 로그인되었습니다. 안녕하세요 ",
@@ -25,59 +25,59 @@
     },
     "ayim": {
         "main": {
-            "records": "",
-            "statistics": "",
-            "search": "",
-            "numberof": "",
-            "numberwith": ""
+            "records": "기록",
+            "statistics": "통계",
+            "search": "매퍼 검색",
+            "numberof": "개수",
+            "numberwith": "맵 개수"
         },
         "mapsets": {
-            "name": "",
-            "playcount": "",
-            "favourites": "",
-            "length": "",
-            "difficulties": "",
-            "totalRanked": "",
-            "totalDiff": "",
-            "submitDates": "",
-            "starRatings": "",
-            "approachRate": "",
-            "overallDifficulty": "",
-            "hpDrain": "",
-            "circleSize": ""
+            "name": "맵셋",
+            "playcount": "플레이 횟수",
+            "favourites": "즐겨찾기 수",
+            "length": "길이",
+            "difficulties": "난이도 개수",
+            "totalRanked": "전체 랭크",
+            "totalDiff": "전체 난이도",
+            "submitDates": "업로드 날짜",
+            "starRatings": "별 개수",
+            "approachRate": "AR",
+            "overallDifficulty": "OD",
+            "hpDrain": "HP",
+            "circleSize": "CS"
         },
         "mappers": {
-            "name": "",
-            "mostRanked": "",
-            "mostFavs": "",
-            "mostPlayed": "",
-            "totalMappers": "",
-            "newMapperAges": "",
-            "mapperAges": "",
-            "mapsPerMapperAges": "",
-            "bng": "",
-            "nat": ""
+            "name": "매퍼",
+            "mostRanked": "랭크 수",
+            "mostFavs": "즐겨찾기 수",
+            "mostPlayed": "플레이 횟수",
+            "totalMappers": "전체 매퍼",
+            "newMapperAges": "새 매퍼 계정 나이",
+            "mapperAges": "매퍼 계정 나이",
+            "mapsPerMapperAges": "매퍼 계정 나이 별 맵 개수",
+            "bng": "BNG",
+            "nat": "NAT"
         },
         "comments": {
-            "name": "",
-            "info": "",
-            "viewSubmit": "",
-            "update": "",
-            "remove": "",
-            "create": "",
-            "login": "",
-            "visible": ""
+            "name": "코멘트",
+            "info": "모든 코멘트는 MCA의 결과가 나온 후 공개할 예정입니다! 그때까지 자유롭게 코멘트를 적으실 수 있습니다.",
+            "viewSubmit": "코멘트 조회/작성",
+            "update": "수정",
+            "remove": "삭제",
+            "create": "생성",
+            "login": "먼저 로그인하세요",
+            "visible": "(아직 비공개)"
         }
     },
     "mca": {
         "main": {
             "voting": "투표",
             "nominating": "추천",
-            "results": "",
+            "results": "결과",
             "undefined": "",
 			"mapsetsLabel": "맵셋",
 			"mappersLabel": "매퍼",
-			"commentsLabel": "댓글",
+			"commentsLabel": "코멘트",
 			"recordsLabel": "기록",
 			"statisticsLabel": "통계",
             "stage": {
@@ -96,68 +96,68 @@
                 "4": "최대한 많은 분이 이 이벤트에 참여해주셨으면 좋겠습니다!"
             },
             "categories": {
-                "map": "",
-                "user": ""
+                "map": "맵 카테고리",
+                "user": "매퍼 카테고리"
             },
-            "organized": ""
+            "organized": "주최자"
         },
         "categories": {
             "grandAward": {
-                "name": "",
-                "description": ""
+                "name": "그랜드 어워드",
+                "description": "한 해를 빛낸 최고의 비트맵"
             },
             "marathon": {
-                "name": "",
-                "description": ""
+                "name": "마라톤",
+                "description": "5분 이상의 장곡 중 최고의 비트맵"
             },
             "hitsounding": {
-                "name": "",
-                "description": ""
+                "name": "히트사운딩",
+                "description": "당신의 귀를 즐겁게 해줄 최고의 히트사운드"
             },
             "collab": {
-                "name": "",
-                "description": ""
+                "name": "콜라보레이션",
+                "description": "2명 이상의 매퍼들이 공동 제작한 최고의 비트맵"
             },
             "simple": {
-                "name": "",
-                "description": ""
+                "name": "심플",
+                "description": "인세인 미만의 난이도들로 구성된 최고의 비트맵"
             },
             "highBPM": {
-                "name": "",
-                "description": ""
+                "name": "고BPM",
+                "description": "숨막히는 속도와 노트 밀도를 자랑하는 최고의 비트맵"
             },
             "smallCircles": {
-                "name": "",
-                "description": ""
+                "name": "작은 CS",
+                "description": "최상위 난이도가 CS5 이상(작은 서클)인 맵셋 중 최고의 비트맵"
             },
             "heavy13": {
-                "name": "",
-                "description": ""
+                "name": "1/3 위주",
+                "description": "최상위 난이도가 1/3 계열의 리듬 위주로 구성된 맵셋 중 최고의 비트맵"
             },
             "throwback": {
-                "name": "",
-                "description": ""
+                "name": "그때 그 시절",
+                "description": "옛날 스타일의 추억을 불러일으키는 최고의 비트맵"
             }
         },
         "nom_vote": {
-            "search": "",
-            "candidates": "",
+            "search": "맵/매퍼 검색",
+            "candidates": "후보",
             "options": {
-                "date": "",
-                "artist": "",
-                "title": "",
-                "favs": "",
-                "creator": "",
-                "sr": "",
-                "id": "",
-                "alph": "",
-                "asc": "",
-                "desc": "",
+                "date": "날짜",
+                "artist": "아티스트",
+                "title": "제목",
+                "favs": "즐겨찾기 수",
+                "creator": "매퍼",
+                "sr": "별 개수",
+                "id": "ID",
+                "alph": "알파벳순",
+                "asc": "오름차순",
+                "desc": "내림차순",
                 "incVote": "",
-                "voteChoice": ""
+                "voteChoice": "투표 선택"
             },
-            "hosted": "",
-            "userID": ""
+            "hosted": "매퍼",
+            "userID": "매퍼 ID"
         }
     }
 }
