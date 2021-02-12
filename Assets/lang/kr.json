@@ -153,7 +153,7 @@
                 "alph": "알파벳순",
                 "asc": "오름차순",
                 "desc": "내림차순",
-                "incVote": "",
+                "incVote": "추가 투표",
                 "voteChoice": "투표 선택"
             },
             "hosted": "매퍼",
