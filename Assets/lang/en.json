@@ -44,7 +44,13 @@
             "approachRate": "APPROACH RATE",
             "overallDifficulty": "OVERALL DIFFICULTY",
             "hpDrain": "HP DRAIN",
-            "circleSize": "CIRCLE SIZE"
+            "circleSize": "CIRCLE SIZE",
+            "sliders": "SLIDERS",
+            "circles": "CIRCLES",
+            "avgSlidersPerSet": "AVG SLIDERS PER SET",
+            "avgCirclesPerSet": "AVG CIRCLES PER SET",
+            "highestSr": "HIGHEST STAR RATING",
+            "lowestSr": "LOWEST STAR RATING"
         },
         "mappers": {
             "name": "MAPPERS",
@@ -56,7 +62,14 @@
             "mapperAges": "MAPPER AGES",
             "mapsPerMapperAges": "MAPS PER MAPPER PER AGE",
             "bng": "BNG",
-            "nat": "NAT"
+            "nat": "NAT",
+            "uniqueMappers": "TOTAL MAPPERS",
+            "newMappers": "NEW MAPPERS",
+            "highestAvgSr": "HIGHEST AVG SR",
+            "leastFavs": "LEAST FAVOURITES",
+            "leastPlayed": "LEAST PLAYED",
+            "lowestAvgSr": "LOWEST AVG SR",
+            "mappers": "MAPPERS"
         },
         "comments": {
             "name": "COMMENTS",
