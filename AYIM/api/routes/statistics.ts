@@ -39,6 +39,11 @@ function createUserQuery (year, modeId, i) : SelectQueryBuilder<User> {
     return query;
 }
 
+function valueToFixed (record: any, digits = 2): any {
+    record.value = parseFloat(record.value).toFixed(digits);
+    return record;
+}
+
 statisticsRouter.get("/beatmapsets", async (ctx) => {
     const year = parseInt(ctx.query.year || new Date().getFullYear());
     const modeString: string = ctx.query.mode || "standard";
@@ -134,7 +139,7 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
         else
             query = query
                 .andWhere(`user.osuUserid >= ${yearIDthresholds[i]} and user.osuUserid < ${yearIDthresholds[i + 1]}`);
-            
+
         mapsQ.push(query
             .select("count(distinct beatmapset.ID)", "value")
             .addSelect(`'Maps Ranked by ${i + 2007} Users'`, "constraint")
@@ -174,6 +179,20 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
         OD,
         HP,
         SR,
+
+        // Total sliders/circles
+        totalSliders,
+        avgSlidersPerMapset,
+        avgSlidersPerDiff,
+
+        totalCircles,
+        avgCirclesPerMapset,
+        avgCirclesPerDiff,
+
+        setsToDifficulties,
+
+        avgSR,
+
     ] = await Promise.all([
         // Total ranked
         query
@@ -232,21 +251,80 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
             .getRawOne(),
 
         Promise.all(yearQ),
-        
+
         // CS AR OD HP
         Promise.all(CSq),
         Promise.all(ARq),
         Promise.all(ODq),
         Promise.all(HPq),
         Promise.all(SRq),
+
+
+        // Total Sliders
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.sliders)", "value")
+            .addSelect("'Sliders Ranked'", "constraint")
+            .getRawOne(),
+
+        // Avg Sliders per Mapset
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.sliders)/COUNT(DISTINCT beatmap.beatmapsetID)", "value")
+            .addSelect("'Sliders per Set'", "constraint")
+            .getRawOne(),
+
+        // Avg Sliders per Diff
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.sliders)/COUNT(beatmap.ID)", "value")
+            .addSelect("'Sliders per Diff'", "constraint")
+            .getRawOne(),
+
+
+        // Total Circles
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.circles)", "value")
+            .addSelect("'Circles Ranked'", "constraint")
+            .getRawOne(),
+
+        // Avg Circles per Mapset
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.circles)/COUNT(DISTINCT beatmap.beatmapsetID)", "value")
+            .addSelect("'Circles per Set'", "constraint")
+            .getRawOne(),
+
+        // Avg Circles per Diff
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.circles)/COUNT(beatmap.ID)", "value")
+            .addSelect("'Circles per Diff'", "constraint")
+            .getRawOne(),
+
+        // Ratio of Sets to Difficulties
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("COUNT(beatmap.ID)/COUNT(DISTINCT beatmap.beatmapsetID)", "value")
+            .addSelect("'Diffs per Set'", "constraint")
+            .getRawOne(),
+
+        // Average SR
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("ROUND(AVG(totalSR), 2)", "value")
+            .addSelect("'SR Ranked'", "constraint")
+            .getRawOne(),
     ]);
 
     const statistics: Record<string, Statistic[]> = {
-        total_ranked: [
+        totalRanked: [
             totalSets,
             totalDiffs,
         ],
-        total_difficulties: [
+        difficulties: [
+            valueToFixed(setsToDifficulties),
             totalEasies,
             totalMediums,
             totalHards,
@@ -254,15 +332,17 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
             totalExtras,
             totalExpertPlus,
         ],
-        submit_dates: years,
-        star_ratings: SR,
-        approach_rate: AR,
-        overall_difficulty: OD,
-        hp_drain: HP,
+        submitDates: years,
+        starRatings: [valueToFixed(avgSR), ...SR],
+        approachRate: AR,
+        overallDifficulty: OD,
+        hpDrain: HP,
+        sliders: [totalSliders, valueToFixed(avgSlidersPerMapset), valueToFixed(avgSlidersPerDiff)],
+        circles: [totalCircles, valueToFixed(avgCirclesPerMapset), valueToFixed(avgCirclesPerDiff)],
     };
 
     if (modeId === ModeDivisionType.fruits || ModeDivisionType.standard)
-        statistics.circle_size = CS;
+        statistics.circleSize = CS;
     else if (modeId === ModeDivisionType.mania)
         statistics.keys = CS;
 
@@ -278,7 +358,7 @@ statisticsRouter.get("/mappers", async (ctx) => {
     for (let i = 0; i < yearIDthresholds.length; i++) {
         if (i + 2007 > year)
             break;
-        
+
         yearQ.push(createUserQuery(year, modeId, i)
             .select("count(distinct user.osuUserid)", "value")
             .addSelect(`'${i + 2007} Users Ranking Sets'`, "constraint")
@@ -287,11 +367,8 @@ statisticsRouter.get("/mappers", async (ctx) => {
         );
 
         newyearQ.push(createUserQuery(year, modeId, i)
-            .andWhere(qb => {
-                let subQuery = qb
-                    .subQuery()
-                    .from(Beatmapset, "sub");
-                subQuery = Beatmapset
+            .andWhere(() => {
+                const subQuery = Beatmapset
                     .createQueryBuilder("beatmapset")
                     .where(`year(beatmapset.approvedDate) < ${year}`)
                     .select("beatmapset.creatorID");
@@ -303,6 +380,7 @@ statisticsRouter.get("/mappers", async (ctx) => {
             .getRawOne()
         );
 
+        // Maps Ranked by <YEAR> Users
         mapsQ.push(createUserQuery(year, modeId, i)
             .select("count(distinct beatmapset.ID)", "value")
             .addSelect(`'Maps Ranked by ${i + 2007} Users'`, "constraint")
@@ -312,7 +390,7 @@ statisticsRouter.get("/mappers", async (ctx) => {
     }
 
     const [
-        uniqueMappers, 
+        uniqueMappers,
         newMappers,
 
         years,
@@ -345,7 +423,7 @@ statisticsRouter.get("/mappers", async (ctx) => {
 
         Promise.all(yearQ),
         Promise.all(newyearQ),
-        
+
         Promise.all(mapsQ),
     ]);
 
@@ -358,10 +436,10 @@ statisticsRouter.get("/mappers", async (ctx) => {
                 value: (newMappers.value / uniqueMappers.value * 100).toFixed(2) + "%",
             },
         ],
-        new_mapper_ages: newYears,
-        mapper_ages: years,
-        maps_per_mapper_ages: mapYears,
-        bns: [
+        newMapperAges: newYears,
+        mapperAges: years,
+        mapsPerMapperAges: mapYears,
+        bng: [
             getHistoryStat(year, modeString, "bns", "joined"),
             getHistoryStat(year, modeString, "bns", "left"),
         ],

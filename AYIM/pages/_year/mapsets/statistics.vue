@@ -13,9 +13,13 @@
             >
                 <div class="ayim-mapset-record__info">
                     <div class="ayim-text ayim-text--italic">
-                        number of {{ /CS|AR|OD|HP|SR|Keys/.test(statistic.constraint) ? "maps with" : "" }}
+                        {{
+                            /per|SR Ranked/.test(statistic.constraint) ? "Average" :
+                            /CS|AR|OD|HP|SR|Keys/.test(statistic.constraint) ? "number of maps with" :
+                            "number of"
+                        }}
                     </div>
-                            
+
                     <div class="ayim-text ayim-text--xl">
                         {{ statistic.constraint }}
                     </div>
@@ -53,7 +57,7 @@ export default class MapsetStatistics extends Vue {
 
     @State selectedMode!: string;
     @State mca!: MCA;
-    
+
     statistics: Record<string, Statistic[]> = {};
 
     @Watch("selectedMode")
@@ -72,7 +76,7 @@ export default class MapsetStatistics extends Vue {
             this.statistics = data;
         }
     }
-    
+
 }
 </script>
 

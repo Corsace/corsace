@@ -44,7 +44,13 @@
             "approachRate": "",
             "overallDifficulty": "",
             "hpDrain": "",
-            "circleSize": ""
+            "circleSize": "",
+            "sliders": "",
+            "circles": "",
+            "avgSlidersPerSet": "",
+            "avgCirclesPerSet": "",
+            "highestSr": "",
+            "lowestSr": ""
         },
         "mappers": {
             "name": "",
@@ -56,7 +62,13 @@
             "mapperAges": "",
             "mapsPerMapperAges": "",
             "bng": "",
-            "nat": ""
+            "nat": "",
+            "uniqueMappers": "",
+            "newMappers": "",
+            "highestAvgSr": "",
+            "leastFavs": "",
+            "leastPlayed": "",
+            "lowestAvgSr": ""
         },
         "comments": {
             "name": "",
