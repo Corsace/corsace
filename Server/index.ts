@@ -23,7 +23,7 @@ export class App {
         this.initializeDb();
         this.setupPassport();
 
-        this.koa.keys = this.config.database.keys;
+        this.koa.keys = this.config.keys;
         this.koa.use(Session(this.koa));
         this.koa.use(BodyParser());
         this.koa.use(passport.initialize());

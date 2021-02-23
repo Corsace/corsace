@@ -11,7 +11,6 @@ export class Config {
         name: string,
         username: string,
         password: string,
-        keys: Array<string>,
     };
 
     discord: {
@@ -72,6 +71,8 @@ export class Config {
         clientSecret: string,
     };
 
+    keys: Array<string>
+
     ayim : SubConfig
 
     corsace : SubConfig
@@ -87,7 +88,6 @@ export class Config {
             name: "DB_Name (not literally MariaDB)",
             username: "MariaDB username",
             password: "MariaDB password",
-            keys: [""],
         },
         this.discord = {
             roles: {
@@ -143,6 +143,7 @@ export class Config {
             clientID: "obtain from https://osu.ppy.sh/home/account/edit",
             clientSecret: "obtain from https://osu.ppy.sh/home/account/edit",
         };
+        this.keys = [""];
         this.ayim = {
             host: "localhost",
             port: 3000,
