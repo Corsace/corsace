@@ -181,7 +181,7 @@ async function fetchYearMaps (): Promise<void> {
     let mapNum = 0;
     for (;;) {
         try {
-            const maps = (await axios.get("https://osu.ppy.sh/api/get_beatmaps?k=" + config.osuV1 + "&since=" + date)).data;
+            const maps = (await axios.get("https://osu.ppy.sh/api/get_beatmaps?k=" + config.osu.v1 + "&since=" + date)).data;
             for (const map of maps) {
                 // Check if this map's date year is the same as the year that was given
                 const mapYear = new Date(map.approved_date).getFullYear();

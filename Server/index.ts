@@ -9,26 +9,21 @@ import { Config } from "../config";
 import OAuth2Strategy from "passport-oauth2";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import { User } from "../Models/user";
-import discordRouter from "./login/discord";
 import { discordPassport, osuPassport } from "./passportFunctions";
-import osuRouter from "./login/osu";
 import logoutRouter from "./logout";
 
 export class App {
 
     public koa = new Koa;
     private config = new Config;
-    private subConfig = new Config;
     private hasCreatedConnection = false;
 
-    constructor (project: string) {
-        this.subConfig = this.config[project];
-
+    constructor () {
         // Cant use promise here cuz passport stops working... Errors inc
         this.initializeDb();
         this.setupPassport();
 
-        this.koa.keys = this.subConfig.keys;
+        this.koa.keys = this.config.database.keys;
         this.koa.use(Session(this.koa));
         this.koa.use(BodyParser());
         this.koa.use(passport.initialize());
@@ -50,8 +45,6 @@ export class App {
             }
         });
 
-        this.koa.use(Mount("/login/discord", discordRouter.routes()));
-        this.koa.use(Mount("/login/osu", osuRouter.routes()));
         this.koa.use(Mount("/logout", logoutRouter.routes()));
     }
 
@@ -131,15 +124,15 @@ export class App {
         passport.use(new DiscordStrategy({
             clientID: this.config.discord.clientID,
             clientSecret: this.config.discord.clientSecret,
-            callbackURL: this.subConfig.publicURL + "/api/login/discord/callback",
+            callbackURL: this.config.corsace.publicURL + "/api/login/discord/callback",
         }, discordPassport));
 
         passport.use(new OAuth2Strategy({
             authorizationURL: "https://osu.ppy.sh/oauth/authorize",
             tokenURL: "https://osu.ppy.sh/oauth/token",
-            clientID: this.subConfig.osuID,
-            clientSecret: this.subConfig.osuSecret,
-            callbackURL: this.subConfig.publicURL + "/api/login/osu/callback",
+            clientID: this.config.osu.clientID,
+            clientSecret: this.config.osu.clientSecret,
+            callbackURL: this.config.corsace.publicURL + "/api/login/osu/callback",
         }, osuPassport));
     }
 }

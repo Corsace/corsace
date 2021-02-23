@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { App } from "../../Server";
 import Mount from "koa-mount";
+import loginRouter from "../../MCA-AYIM/api/routes/login";
 import mcaRouter from "../../MCA-AYIM/api/routes/mca";
 import userRouter from "../../MCA-AYIM/api/routes/user";
 import nominationsRouter from "./routes/nominations";
@@ -15,9 +16,10 @@ import staffRouter from "./routes/staff/index";
 import staffNominationsRouter from "./routes/staff/nominations";
 import staffRequestsRouter from "./routes/staff/requests";
 
-const app = new App("mca");
+const app = new App();
 
 app.koa.use(Mount("/", indexRouter.routes()));
+app.koa.use(Mount("/login", loginRouter.routes()));
 app.koa.use(Mount("/mca", mcaRouter.routes()));
 
 app.koa.use(Mount("/user", userRouter.routes()));

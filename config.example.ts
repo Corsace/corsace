@@ -2,9 +2,6 @@ export class SubConfig {
     host!: string;
     port!: number;
     publicURL!: string;
-    keys!: Array<string>;
-    osuID!: string;
-    osuSecret!: string;
 }
 
 export class Config {
@@ -14,6 +11,7 @@ export class Config {
         name: string,
         username: string,
         password: string,
+        keys: Array<string>,
     };
 
     discord: {
@@ -68,7 +66,11 @@ export class Config {
         logChannel: string,
     };
 
-    osuV1: string
+    osu: {
+        v1: string,
+        clientID: string,
+        clientSecret: string,
+    };
 
     ayim : SubConfig
 
@@ -85,8 +87,8 @@ export class Config {
             name: "DB_Name (not literally MariaDB)",
             username: "MariaDB username",
             password: "MariaDB password",
+            keys: [""],
         },
-        this.osuV1 = "osu! api key from https://osu.ppy.sh/p/api/",
         this.discord = {
             roles: {
                 corsace: {
@@ -136,45 +138,35 @@ export class Config {
             invite: "invite link",
             logChannel: "channel ID",
         };
+        this.osu = {
+            v1: "obtain from https://osu.ppy.sh/p/api/",
+            clientID: "obtain from https://osu.ppy.sh/home/account/edit",
+            clientSecret: "obtain from https://osu.ppy.sh/home/account/edit",
+        };
         this.ayim = {
             host: "localhost",
             port: 3000,
             publicURL: "http://localhost:3000",
-            keys: [""],
-            osuID: "",
-            osuSecret: "obtain from https://osu.ppy.sh/home/account/edit",
         };
         this.corsace = {
             host: "localhost",
             port: 4000,
             publicURL: "http://localhost:4000",
-            keys: [""],
-            osuID: "",
-            osuSecret: "obtain from https://osu.ppy.sh/home/account/edit",
         };
         this.invitational = {
             host: "localhost",
             port: 5000,
             publicURL: "http://localhost:5000",
-            keys: [""],
-            osuID: "",
-            osuSecret: "obtain from https://osu.ppy.sh/home/account/edit",
         };
         this.mca = {
             host: "localhost",
             port: 8000,
             publicURL: "http://localhost:8000",
-            keys: [""],
-            osuID: "",
-            osuSecret: "obtain from https://osu.ppy.sh/home/account/edit",
         };
         this.open = {
             host: "localhost",
             port: 7000,
             publicURL: "http://localhost:7000",
-            keys: [""],
-            osuID: "",
-            osuSecret: "obtain from https://osu.ppy.sh/home/account/edit",
         };
     }
 }

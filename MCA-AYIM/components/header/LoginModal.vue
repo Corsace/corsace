@@ -12,7 +12,7 @@
             <a 
                 v-if="!loggedInUser || !loggedInUser.osu || !loggedInUser.osu.username"
                 class="login__auth-text"
-                :href="'/api/login/osu?url=' + $route.fullPath"
+                :href="'/api/login/osu?site=' + site + '&redirect=' + $route.fullPath"
             >
                 {{ $t('mca_ayim.login.authOsu') }}
             </a>
@@ -32,7 +32,7 @@
             <a 
                 v-if="!loggedInUser || !loggedInUser.discord || !loggedInUser.discord.username"
                 class="login__auth-text"
-                href="/api/login/discord"
+                :href="'/api/login/discord?site=' + site + '&redirect=' + $route.fullPath"
             >
                 {{ $t('mca_ayim.login.authDiscord') }}
             </a>
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 import { UserMCAInfo } from "../../../Interfaces/user";
@@ -63,7 +63,10 @@ export default class LoginModal extends Vue {
 
     @State loggedInUser!: UserMCAInfo | null;
 
+    @Prop({ type: String, required: true }) readonly site!: string;
+
     close () {
+        console.log(this.$router);
         this.$emit("close");
     }
 

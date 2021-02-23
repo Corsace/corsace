@@ -15,11 +15,21 @@ npm i
 Duplicate `config.example.ts` and call the duplicate `config.ts`. Edit all parts as necessary. 
 The values in the constructor of `config.ts` will be referred to as `config` from now on.
 
-### osu! API V1
+### osu! API
 
-`config.osuV1`
+`config.osu.v1`
 
-You can obtain your osu! API V1 key at https://osu.ppy.sh/p/api/
+You can obtain your osu! API V1 key at https://osu.ppy.sh/p/api/]
+
+`config.osu.clientID`
+`config.osu.clientSecret`
+
+You will need to create a "New OAuth Application" at the bottom of https://osu.ppy.sh/home/account/edit.
+
+The callback URL should be set to:
+```
+config.corsace.publicURL + /api/login/osu/callback
+```
 
 ### Database
 
@@ -125,35 +135,6 @@ This might also change based on which app you are working on.
 ###### Bot Token
 Head to the Bot section of the bot and copy your bot token. 
 Paste it into `config.discord.token`
-
-### osu! API V2
-
-#### Setup
-
-`config.ayim`
-`config.corsace`
-`config.invitational`
-`config.mca`
-`config.open`
-`config.<any other app>`
-
-You will need to create a "New OAuth Application" at the bottom of https://osu.ppy.sh/home/account/edit.
-
-For default local development, the callback URL should be set to:
-```
-http://localhost:8000/api/login/osu/callback
-```
-Note: You might need to change the port from 8000 to whatever your current app is using.
-
-Copy your Client ID and Client Secret to update the app configs as follows:
-```
-this.<app> = {
-    host: "localhost",
-    ...,
-    osuID: "<CLIENT ID>",
-    osuSecret: "<CLIENT SECRET>",
-};
-```
 
 #### Development
 

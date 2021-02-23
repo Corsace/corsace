@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { App } from "../../Server";
 import mount from "koa-mount";
+import loginRouter from "../../MCA-AYIM/api/routes/login";
 import mcaRouter from "../../MCA-AYIM/api/routes/mca";
 import userRouter from "../../MCA-AYIM/api/routes/user";
 import commentsRouter from "./routes/comments";
@@ -10,8 +11,9 @@ import recordsRouter from "./routes/records";
 import statisticsRouter from "./routes/statistics";
 import mappersRouter from "./routes/mappers";
 
-const app = new App("ayim");
+const app = new App();
 
+app.koa.use(mount("/login", loginRouter.routes()));
 app.koa.use(mount("/mca", mcaRouter.routes()));
 app.koa.use(mount("/user", userRouter.routes()));
 
