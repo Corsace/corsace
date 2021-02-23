@@ -22,7 +22,7 @@ export default {
                 {
                     hid: "description",
                     name: "description",
-                    content: "MCA 2020",
+                    content: "MCA",
                 },
             ],
         },
