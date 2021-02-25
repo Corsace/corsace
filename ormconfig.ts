@@ -1,5 +1,6 @@
 import { config } from "node-config-ts";
 import { ConnectionOptions } from "typeorm";
+import { resolve } from "path";
 
 export default {
     name: "default",
@@ -13,10 +14,17 @@ export default {
     synchronize: false,
     logging: ["error"],
     entities: [
-        "./Models/**/*.ts",
-        "./Models/**/*.js",
+        `${resolve(__dirname, "Models")}/**/*.ts`,
+        `${resolve(__dirname, "Models")}/**/*.js`,
     ],
     cache: {
         duration: 60000,
+    },
+    migrations: [
+        `${resolve(__dirname, "Models/migrations")}/*.ts`,
+        `${resolve(__dirname, "Models/migrations")}/*.js`,
+    ],
+    cli: {
+        migrationsDir: "Models/migrations",
     },
 } as ConnectionOptions;

@@ -43,6 +43,9 @@ services:
     ports:
       - 127.0.0.1:8000:8000
     command: "mca"
+  migrator:
+    <<: *x-node
+    command: "typeorm migration:run"
 
 volumes:
   database:
