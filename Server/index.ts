@@ -88,6 +88,7 @@ export class App {
                 "logging": ["error"],
                 "entities": [
                     "../Models/**/*.ts",
+                    "../Models/**/*.js",
                 ],
                 "cache": {
                     duration: 60000,

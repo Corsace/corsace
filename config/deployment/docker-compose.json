@@ -1,0 +1,24 @@
+{
+    "database": {
+        "host": "database",
+        "port": 3306,
+        "database": "corsace",
+        "username": "corsace",
+        "password": "corsace"
+    },
+    "ayim": {
+        "host": "0.0.0.0"
+    },
+    "corsace": {
+        "host": "0.0.0.0"
+    },
+    "invitational": {
+        "host": "0.0.0.0"
+    },
+    "mca": {
+        "host": "0.0.0.0"
+    },
+    "open": {
+        "host": "0.0.0.0"
+    }
+}

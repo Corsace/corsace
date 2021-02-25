@@ -12,6 +12,7 @@ fs.readdirSync("../Assets/lang").forEach(file => {
 });
 
 export default {
+    ssr: false,
     server: {
         host: config.corsace.host,
         port: config.corsace.port,

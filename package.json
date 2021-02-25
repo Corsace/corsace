@@ -53,9 +53,14 @@
       "vuex-class": "^0.3.2"
    },
    "scripts": {
+      "build:ayim": "cd ./AYIM && nuxt-ts build",
+      "build:mca": "cd ./MCA && nuxt-ts build",
+      "build:main": "cd ./Main && nuxt-ts build",
       "mca-dev": "concurrently \"cd ./MCA && nodemon --watch api --watch ../MCA-AYIM --watch ../Models --watch ../Interfaces -e ts --exec nuxt-ts\" \"cd ./Main && nodemon --watch api --watch ../Models --watch ../Interfaces -e ts --exec nuxt-ts\"",
       "ayim-dev": "concurrently \"cd ./AYIM && nodemon --watch api --watch ../MCA-AYIM --watch ../Models --watch ../Interfaces -e ts --exec nuxt-ts\" \"cd ./Main && nodemon --watch api --watch ../Models --watch ../Interfaces -e ts --exec nuxt-ts\"",
-      "ayim": "cd ./AYIM && nuxt-ts",
+      "ayim": "cd ./AYIM && nuxt-ts start",
+      "mca": "cd ./MCA && nuxt-ts start",
+      "main": "cd ./Main && nuxt-ts start",
       "dev": "concurrently --names \"MCA,AYIM\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run mca-dev\" \"npm run ayim-dev\"",
       "lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",
       "lintfix": "eslint --fix --ext .ts,.vue --ignore-path .gitignore .",
