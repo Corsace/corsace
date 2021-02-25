@@ -8,7 +8,7 @@ import { UsernameChange } from "./usernameChange";
 import { Nomination } from "./MCA_AYIM/nomination";
 import { Vote } from "./MCA_AYIM/vote";
 import { Beatmapset } from "./beatmapset";
-import { Config } from "../config";
+import { config } from "node-config-ts";
 import { GuildMember } from "discord.js";
 import { discordGuild } from "../Server/discord";
 import { UserCondensedInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
@@ -17,7 +17,6 @@ import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 
 // General middlewares
-const config = new Config();
 
 export class OAuth {
 

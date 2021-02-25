@@ -1,7 +1,5 @@
-import { Config } from "../config";
+import { config } from "node-config-ts";
 import nuxtConfig from "../MCA-AYIM/nuxt.base.config";
-
-const config = new Config;
 
 export default {
     ...nuxtConfig,

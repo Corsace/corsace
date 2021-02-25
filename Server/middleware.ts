@@ -1,9 +1,8 @@
-import { Config } from "../config";
+import { config } from "node-config-ts";
 import { discordGuild } from "./discord";
 import { ParameterizedContext, Next } from "koa";
 
 // General middlewares
-const config = new Config();
 
 async function isLoggedIn (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (!ctx.state.user) {

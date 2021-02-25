@@ -1,4 +1,4 @@
-import { Config } from "../config";
+import { config } from "node-config-ts";
 import * as fs from "fs";
 
 const locales: any[] = [];
@@ -11,10 +11,8 @@ fs.readdirSync("../Assets/lang").forEach(file => {
         });
 });
 
-
-const config = new Config;
-
 export default {
+    ssr: false,
     server: {
         host: config.corsace.host,
         port: config.corsace.port,
