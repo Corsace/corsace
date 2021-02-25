@@ -5,7 +5,7 @@ import BodyParser from "koa-bodyparser";
 import Mount from "koa-mount";
 import passport from "koa-passport";
 import Session from "koa-session";
-import { Config } from "../config";
+import { config } from "node-config-ts";
 import OAuth2Strategy from "passport-oauth2";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import { User } from "../Models/user";
@@ -15,7 +15,6 @@ import logoutRouter from "./logout";
 export class App {
 
     public koa = new Koa;
-    private config = new Config;
     private hasCreatedConnection = false;
 
     constructor () {
@@ -23,7 +22,7 @@ export class App {
         this.initializeDb();
         this.setupPassport();
 
-        this.koa.keys = this.config.keys;
+        this.koa.keys = config.keys;
         this.koa.use(Session(this.koa));
         this.koa.use(BodyParser());
         this.koa.use(passport.initialize());
@@ -79,10 +78,11 @@ export class App {
             const connection = await createConnection({
                 "name": "default",
                 "type": "mariadb",
-                "host": "localhost",
-                "username": this.config.database.username,
-                "password": this.config.database.password,
-                "database": this.config.database.name,
+                "host": config.database.host,
+                "port": config.database.port,
+                "database": config.database.database,
+                "username": config.database.username,
+                "password": config.database.password,
                 "timezone": "Z",
                 "synchronize": true,
                 "logging": ["error"],
@@ -122,17 +122,17 @@ export class App {
         });
 
         passport.use(new DiscordStrategy({
-            clientID: this.config.discord.clientID,
-            clientSecret: this.config.discord.clientSecret,
-            callbackURL: this.config.corsace.publicURL + "/api/login/discord/callback",
+            clientID: config.discord.clientId,
+            clientSecret: config.discord.clientSecret,
+            callbackURL: config.corsace.publicUrl + "/api/login/discord/callback",
         }, discordPassport));
 
         passport.use(new OAuth2Strategy({
             authorizationURL: "https://osu.ppy.sh/oauth/authorize",
             tokenURL: "https://osu.ppy.sh/oauth/token",
-            clientID: this.config.osu.clientID,
-            clientSecret: this.config.osu.clientSecret,
-            callbackURL: this.config.corsace.publicURL + "/api/login/osu/callback",
+            clientID: config.osu.v2.clientId,
+            clientSecret: config.osu.v2.clientSecret,
+            callbackURL: config.corsace.publicUrl + "/api/login/osu/callback",
         }, osuPassport));
     }
 }

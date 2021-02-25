@@ -1,5 +1,5 @@
 import { createConnection } from "typeorm";
-import { Config } from "../../config";
+import { config } from "node-config-ts";
 import axios from "axios";
 import { ModeDivisionType, ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
 import { Beatmapset } from "../../Models/beatmapset";
@@ -8,7 +8,6 @@ import { User, OAuth } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
 
-const config = new Config();
 const args = process.argv.slice(2); // Year to get the maps for
 const year = parseInt(args[0]);
 if (Number.isNaN(year))
@@ -140,10 +139,11 @@ async function fetchYearMaps (): Promise<void> {
     try {
         const connection = await createConnection({
             "type": "mariadb",
-            "host": "localhost",
+            "host": config.database.host,
+            "port": config.database.port,
+            "database": config.database.database,
             "username": config.database.username,
             "password": config.database.password,
-            "database": config.database.name,
             "timezone": "Z",
             "synchronize": true,
             "logging": ["error"],
@@ -181,7 +181,7 @@ async function fetchYearMaps (): Promise<void> {
     let mapNum = 0;
     for (;;) {
         try {
-            const maps = (await axios.get("https://osu.ppy.sh/api/get_beatmaps?k=" + config.osu.v1 + "&since=" + date)).data;
+            const maps = (await axios.get("https://osu.ppy.sh/api/get_beatmaps?k=" + config.osu.v1.apiKey + "&since=" + date)).data;
             for (const map of maps) {
                 // Check if this map's date year is the same as the year that was given
                 const mapYear = new Date(map.approved_date).getFullYear();

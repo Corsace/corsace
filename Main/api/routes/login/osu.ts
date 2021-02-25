@@ -3,13 +3,12 @@ import passport from "koa-passport";
 import Axios from "axios";
 import { ParameterizedContext } from "koa";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
-import { Config } from "../../../../config";
+import { config } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
 const osuRouter = new Router();
-const config = new Config();
 const modes = [
     "standard",
     "taiko",
@@ -60,7 +59,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
 }, async ctx => {
     try {
         // MCA data
-        const beatmaps = (await Axios.get(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osu.v1}&u=${ctx.state.user.osu.userID}`)).data;
+        const beatmaps = (await Axios.get(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osu.v1.apiKey}&u=${ctx.state.user.osu.userID}`)).data;
         if (beatmaps.length != 0) {
             for (const beatmap of beatmaps) {
                 if (!beatmap.version.includes("'") && (beatmap.approved == 2 || beatmap.approved == 1)) {
