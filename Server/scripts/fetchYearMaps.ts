@@ -137,20 +137,7 @@ async function fetchYearMaps (): Promise<void> {
     const start = new Date;
     console.log("Connecting to the DB...");
     try {
-        const connection = await createConnection({
-            "type": "mariadb",
-            "host": config.database.host,
-            "port": config.database.port,
-            "database": config.database.database,
-            "username": config.database.username,
-            "password": config.database.password,
-            "timezone": "Z",
-            "synchronize": true,
-            "logging": ["error"],
-            "entities": [
-                __dirname + "/../../Models/**/*{.ts,.js}",
-            ],
-        });
+        const connection = await createConnection();
 
         console.log("Connected to the " + connection.options.database + " database!");
     } catch (err) {
