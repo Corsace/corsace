@@ -1,0 +1,75 @@
+{
+    "database": {
+        "host": "database",
+        "port": 3306,
+        "database": "corsace",
+        "username": "corsace",
+        "password": "corsace"
+    },
+    "discord": {
+        "roles": {
+            "corsace": {
+                "corsace": "461570069533687808",
+                "headStaff": "461570829625458688",
+                "staff": "461571998963990539",
+                "writer": "461584747244683278",
+                "verified": "625020515697950723"
+            },
+            "open": {
+                "participants": "485092513640742913",
+                "captains": "485092709179326474",
+                "staff": "461571998963990539",
+                "mappooler": "461583913287024643",
+                "testplayer": "565333762586443776",
+                "scheduler": "461584274404016138",
+                "streamManager": "461584529627414538",
+                "streamer": "461584578461696000",
+                "commentator": "461584618643259400",
+                "referee": "461584657042112543"
+            },
+            "invitational": {
+                "staff": "461571998963990539",
+                "mappooler": "774795961691406366"
+            },
+            "mca": {
+                "staff": "461571998963990539",
+                "standard": "461585071053209631",
+                "taiko": "461585200376184842",
+                "fruits": "461585112518230018",
+                "mania": "461585150849843205",
+                "storyboard": "461585259742625792"
+            }
+        },
+        "token": "@@DISCORD_TOKEN",
+        "guild": "461569547145838596",
+        "clientId": "485083088226091015",
+        "clientSecret": "@@DISCORD_CLIENTSECRET",
+        "invite": "Z6vEMsr",
+        "logChannel": "461591966321344513"
+    },
+    "osu": {
+        "v1": {
+            "apiKey": "@@OSU_V1_APIKEY"
+        },
+        "v2": {
+            "clientId": "2012",
+            "clientSecret": "@@OSU_V2_CLIENTSECRET"
+        }
+    },
+    "koaKeys": ["@@KOA_KEY"],
+    "ayim": {
+        "host": "0.0.0.0",
+        "port": 80,
+        "publicUrl": "https://ayim.corsace.io"
+    },
+    "corsace": {
+        "host": "0.0.0.0",
+        "port": 80,
+        "publicUrl": "https://corsace.io"
+    },
+    "mca": {
+        "host": "0.0.0.0",
+        "port": 80,
+        "publicUrl": "https://mca.corsace.io"
+    }
+}
