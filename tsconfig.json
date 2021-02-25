@@ -24,7 +24,4 @@
         "sourceMap": true,
         "noEmit": true
     },
-    "include": [
-        "./config/**/*",
-    ],
 }
