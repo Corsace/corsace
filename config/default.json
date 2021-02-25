@@ -2,9 +2,9 @@
     "database": {
         "host": "localhost",
         "port": 3306,
-        "database": "DB_Name (not literally MariaDB)",
-        "username": "MariaDB username",
-        "password": "MariaDB password"
+        "database": "corsace",
+        "username": "corsace",
+        "password": "corsace"
     },
     "discord": {
         "roles": {

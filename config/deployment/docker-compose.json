@@ -1,10 +1,6 @@
 {
     "database": {
-        "host": "database",
-        "port": 3306,
-        "database": "corsace",
-        "username": "corsace",
-        "password": "corsace"
+        "host": "database"
     },
     "ayim": {
         "host": "0.0.0.0"

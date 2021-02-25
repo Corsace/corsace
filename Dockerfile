@@ -2,7 +2,7 @@ FROM node:14-alpine
 
 WORKDIR /src
 
-COPY LICENSE package.json package-lock.json README.md tsconfig.json /src/
+COPY LICENSE package.json package-lock.json README.md tsconfig.json ormconfig.ts /src/
 
 RUN npm ci
 

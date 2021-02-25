@@ -75,25 +75,7 @@ export class App {
             this.hasCreatedConnection = true;
     
             // Connect to DB
-            const connection = await createConnection({
-                "name": "default",
-                "type": "mariadb",
-                "host": config.database.host,
-                "port": config.database.port,
-                "database": config.database.database,
-                "username": config.database.username,
-                "password": config.database.password,
-                "timezone": "Z",
-                "synchronize": true,
-                "logging": ["error"],
-                "entities": [
-                    "../Models/**/*.ts",
-                    "../Models/**/*.js",
-                ],
-                "cache": {
-                    duration: 60000,
-                },
-            });
+            const connection = await createConnection();
 
             console.log(`Connected to the ${connection.options.database} (${connection.options.name}) database!`);
         } catch (error) {
