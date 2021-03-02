@@ -60,7 +60,7 @@ const modeList = [
 ];
 
 function createSet (map: any): Beatmapset {
-    
+
     const dbSet = new Beatmapset;
     dbSet.ID = parseInt(map.beatmapset_id);
 
@@ -85,7 +85,7 @@ function createSet (map: any): Beatmapset {
 async function createMap (map: any): Promise<Beatmap> {
     const dbMap = new Beatmap;
     dbMap.ID = parseInt(map.beatmap_id);
-    
+
     // see if mode exists already, if it doesn't then add it
     let mode = await ModeDivision.findOne(parseInt(map.mode) + 1);
     if (!mode) {
@@ -128,7 +128,7 @@ async function createMap (map: any): Promise<Beatmap> {
         dbMap.storyboard = true;
     if (map.video == 1)
         dbMap.video = true;
-    
+
     return dbMap;
 }
 
@@ -179,9 +179,9 @@ async function fetchYearMaps (): Promise<void> {
                     console.log("Operation lasted for " + duration.getUTCHours() + " hours, " + duration.getUTCMinutes() + " minutes, and " + duration.getUTCSeconds() + " seconds.");
                     process.exit(0);
                 }
-    
+
                 // Check if ranked / approved
-                if (map.approved == 1 || map.approved == 2) { 
+                if (map.approved == 1 || map.approved == 2) {
 
                     // see if set exists already, if it doesn't then add it
                     let dbSet = await Beatmapset.findOne(map.beatmapset_id);
@@ -199,13 +199,16 @@ async function fetchYearMaps (): Promise<void> {
                     }
 
                     // see if user exists, if they don't then add them
-                    let dbUser = await User.findOne({ 
+                    let dbUser = await User.findOne({
                         osu: {
                             userID: map.creator_id,
                         },
-                    }, {
-                        relations: ["beatmapsets"],
                     });
+                    if (dbUser) {
+                        // Loading beatmapsets separately prevents some memory issues
+                        const beatmapsets = await dbUser?.beatmapsets;
+                        dbUser.beatmapsets = beatmapsets ? beatmapsets : [];
+                    }
                     if (!dbUser) {
                         dbUser = new User;
                         dbUser.osu = new OAuth;
@@ -240,7 +243,7 @@ async function fetchYearMaps (): Promise<void> {
                             await nameChange.save();
                         } else
                             await dbUser.save();
-                        
+
                         if (!map.version.includes("'")) {
                             let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: mapYear, user: dbUser }});
                             if (!eligibility) {
@@ -248,7 +251,7 @@ async function fetchYearMaps (): Promise<void> {
                                 eligibility.year = mapYear;
                                 eligibility.user = dbUser;
                             }
-                            
+
                             if (!eligibility[modeList[map.mode]]) {
                                 eligibility[modeList[map.mode]] = true;
                                 eligibility.storyboard = true;
