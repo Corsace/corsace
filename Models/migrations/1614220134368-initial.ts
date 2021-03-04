@@ -4,6 +4,7 @@ export class initial1614220134368 implements MigrationInterface {
     name = "initial1614220134368"
 
     public async up (queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query("ALTER DATABASE COLLATE = `utf8mb4_general_ci`");
         await queryRunner.query("CREATE TABLE `demerit_report` (`ID` int NOT NULL AUTO_INCREMENT, `reportDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `reason` longtext NULL, `amount` int NOT NULL DEFAULT '0', `userID` int NULL, PRIMARY KEY (`ID`)) ENGINE=InnoDB");
         await queryRunner.query("CREATE TABLE `user_comment` (`ID` int NOT NULL AUTO_INCREMENT, `comment` text NOT NULL, `year` year NOT NULL, `isValid` tinyint NOT NULL DEFAULT 0, `commenterID` int NOT NULL, `targetID` int NOT NULL, `lastReviewedAt` datetime NULL, `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `updatedAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `modeID` int NOT NULL, `reviewerID` int NULL, PRIMARY KEY (`ID`)) ENGINE=InnoDB");
         await queryRunner.query("CREATE TABLE `vote` (`ID` int NOT NULL AUTO_INCREMENT, `userID` int NULL, `beatmapsetID` int NULL, `choice` int NOT NULL, `voterID` int NOT NULL, `categoryID` int NOT NULL, PRIMARY KEY (`ID`)) ENGINE=InnoDB");
