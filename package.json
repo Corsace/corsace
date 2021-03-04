@@ -58,7 +58,7 @@
       "build:main": "cd ./Main && nuxt-ts build",
       "ayim-dev": "concurrently \"cd ./AYIM && nodemon --watch api --watch ../MCA-AYIM --watch ../Models --watch ../Interfaces -e ts --exec nuxt-ts\" \"npm run main-dev\"",
       "mca-dev": "concurrently \"cd ./MCA && nodemon --watch api --watch ../MCA-AYIM --watch ../Models --watch ../Interfaces -e ts --exec nuxt-ts\" \"npm run main-dev\"",
-      "main-dev": "cd ./Main && nodemon --watch api --watch ../Models --watch ../Interfaces -e ts --exec nuxt-ts", 
+      "main-dev": "cd ./Main && nodemon --watch api --watch ../Models --watch ../Interfaces -e ts --exec nuxt-ts",
       "ayim": "cd ./AYIM && nuxt-ts start",
       "mca": "cd ./MCA && nuxt-ts start",
       "main": "cd ./Main && nuxt-ts start",

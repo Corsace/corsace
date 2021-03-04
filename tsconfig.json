@@ -22,6 +22,5 @@
             "dom"
         ],
         "sourceMap": true,
-        "noEmit": true
     },
 }
