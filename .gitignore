@@ -5,6 +5,7 @@ node_modules/
 Build/
 tmp/
 temp/
+dist/
 config.ts
 *.js
 !.eslintrc.js
