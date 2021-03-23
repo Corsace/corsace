@@ -251,5 +251,17 @@
             "hosted": "",
             "userID": ""
         }
+    },
+    "main": {
+        "header": {
+            "login": "",
+            "register": ""
+        },
+        "index": {
+            "underConstruction": "",
+            "sorry": "",
+            "development": "",
+            "theTeam": ""
+        }
     }
 }

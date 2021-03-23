@@ -1,5 +1,6 @@
 import { config } from "node-config-ts";
 import * as fs from "fs";
+import path from "path";
 
 const locales: any[] = [];
 
@@ -52,6 +53,14 @@ export default {
             },
         ],
     ],
+    css: [
+        "./assets/main.scss",
+    ],
+    build: {
+        extend (config) {
+            config.resolve.alias["@s-sass"] = path.join(__dirname, "../MCA-AYIM/assets/sass");
+        },
+    },
     dir: {
         static: "../Assets/static",
     },
