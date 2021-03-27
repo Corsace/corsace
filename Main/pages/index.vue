@@ -30,6 +30,9 @@
                     >
                         {{ loggedInUser.osu.username }}
                     </div>
+                    <a class="header-login__welcome" href="/api/logout">
+                        {{ $t('mca_ayim.header.logout') }}
+                    </a>
                 </div>
             </div>
 
