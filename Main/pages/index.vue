@@ -17,6 +17,10 @@
                 class="header-login"
             >
                 <div class="header-login__welcome-container">
+                    <img 
+                        :src="avatarURL"
+                        class="header-login__avatar"
+                    >
                     <div class="header-login__welcome">
                         {{ $t('mca_ayim.header.welcomeBack') }}
                     </div>
@@ -175,6 +179,11 @@ import { UserInfo } from "../../Interfaces/user";
         LoginModal,
         LanguageSwitcher,
     },
+    head () {
+        return {
+            title: "Corsace",
+        };
+    },
 })
 export default class Default extends Vue {
 
@@ -199,6 +208,10 @@ export default class Default extends Vue {
             url: "#",
         },
     };
+
+    get avatarURL (): string  {
+        return this.loggedInUser?.osu?.avatar || "";
+    }
     
     toogleLoginModal (): void {
         this.showLoginModal = !this.showLoginModal;
@@ -215,7 +228,7 @@ export default class Default extends Vue {
 $dark: #0f0f0f;
 $dark-gray: #242424;
 $gray: #343434;
-$red: #d75b5d;
+$pink: #e98792;
 
 .layout {
     height: 100%;
@@ -247,7 +260,7 @@ $red: #d75b5d;
         &-container {
             width: 70px;
             height: 70px;
-            background-image: linear-gradient(to top, rgba(255, 136, 124, 0.82), #e0344c);
+            background-image: linear-gradient(to top, rgba(244, 182, 193, 0.82), #e98792);
         }
 
         width: 100%;
@@ -263,6 +276,26 @@ $red: #d75b5d;
     align-items: flex-end;
     justify-content: center;
     margin-right: 30px;
+
+    &__welcome-container {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+
+        justify-content: center;
+        align-content: flex-end;
+
+        height: 100%;
+    }
+
+    &__avatar {
+		border-radius: 100%;
+
+		width: 20%;
+
+        margin-left: 15px;
+        margin-right: 15px;
+	}
     
     &__link {
         display: flex;
@@ -320,7 +353,7 @@ $red: #d75b5d;
 }
 
 .info-warning {
-    color: $red;
+    color: $pink;
     background-color: $dark;
     border-radius: 20px;
     padding: 10px;
@@ -350,7 +383,7 @@ $red: #d75b5d;
 
 .events-title {
     text-transform: uppercase;
-    border-bottom-color: $red;
+    border-bottom-color: $pink;
     border-bottom-style: solid;
     border-bottom-width: 1px;
 }
@@ -389,7 +422,7 @@ $red: #d75b5d;
     }
 
     &__title {
-        border-top: 1px solid $red;
+        border-top: 1px solid $pink;
         text-transform: uppercase;
         padding: 10px 10px 2em 10px;
     }
