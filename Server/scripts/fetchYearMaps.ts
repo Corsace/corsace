@@ -1,4 +1,4 @@
-import { createConnection } from "typeorm";
+import {createConnection, getConnection} from "typeorm";
 import { config } from "node-config-ts";
 import axios from "axios";
 import { ModeDivisionType, ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
@@ -204,11 +204,6 @@ async function fetchYearMaps (): Promise<void> {
                             userID: map.creator_id,
                         },
                     });
-                    if (dbUser) {
-                        // Loading beatmapsets separately prevents some memory issues
-                        const beatmapsets = await dbUser?.beatmapsets;
-                        dbUser.beatmapsets = beatmapsets ? beatmapsets : [];
-                    }
                     if (!dbUser) {
                         dbUser = new User;
                         dbUser.osu = new OAuth;
@@ -227,7 +222,6 @@ async function fetchYearMaps (): Promise<void> {
                             await eligibility.save();
                         }
                     } else {
-                        dbUser.beatmapsets.push(dbSet);
                         if (dbUser.osu.username !== map.creator && !dbUser.otherNames.some(v => v.name === map.creator)) { // Check for username change
                             let nameChange = await UsernameChange.findOne({ name: map.creator, user: dbUser });
                             if (nameChange)
@@ -259,6 +253,12 @@ async function fetchYearMaps (): Promise<void> {
                             }
                         }
                     }
+
+                    await getConnection()
+                        .createQueryBuilder()
+                        .relation(User, "beatmapsets")
+                        .of(dbUser)
+                        .add(dbSet);
 
                     date = map.approved_date;
                 }
