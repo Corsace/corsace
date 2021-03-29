@@ -138,6 +138,7 @@ async function fetchYearMaps (): Promise<void> {
     console.log("Connecting to the DB...");
     try {
         const connection = await createConnection();
+        await connection.synchronize();
 
         console.log("Connected to the " + connection.options.database + " database!");
     } catch (err) {
@@ -145,14 +146,15 @@ async function fetchYearMaps (): Promise<void> {
         process.exit(1);
     }
 
-    // In case storyboard mode doesn't exist
-    let mode = await ModeDivision.findOne(5);
-    if (!mode)
-    {
-        mode = new ModeDivision;
-        mode.ID = 5;
-        mode.name = ModeDivisionType[5];
-        await mode.save();
+    // Check for all mode divisions
+    for (let i = 1; i < 6; i++) {
+        let mode = await ModeDivision.findOne(i);
+        if (!mode) {
+            mode = new ModeDivision;
+            mode.ID = i;
+            mode.name = ModeDivisionType[mode.ID];
+            await mode.save();
+        }
     }
 
     // Start a loop in obtaining the beatmaps, use latest date if there is any
@@ -165,110 +167,122 @@ async function fetchYearMaps (): Promise<void> {
     if (map)
         date = map.approvedDate.toJSON().slice(0, 10);
 
-    let mapNum = 0;
-    for (;;) {
+    let batch = 1;
+    let final = false;
+    while (!final) {
         try {
-            const maps = (await axios.get("https://osu.ppy.sh/api/get_beatmaps?k=" + config.osu.v1.apiKey + "&since=" + date)).data;
-            for (const map of maps) {
-                // Check if this map's date year is the same as the year that was given
-                const mapYear = new Date(map.approved_date).getFullYear();
-                if (mapYear > year) {
-                    console.log("Final " + year + " map was found.");
-                    const finish = new Date;
-                    const duration = new Date(finish.valueOf() - start.valueOf());
-                    console.log("Operation lasted for " + duration.getUTCHours() + " hours, " + duration.getUTCMinutes() + " minutes, and " + duration.getUTCSeconds() + " seconds.");
-                    process.exit(0);
+            // Fetch the batch of maps
+            let maps = (await axios.get("https://osu.ppy.sh/api/get_beatmaps?k=" + config.osu.v1.apiKey + "&since=" + date)).data;
+            
+            if (maps.some(map => new Date(map.approved_date).getFullYear() > year)) {
+                final = true;
+                maps = maps.filter(map => new Date(map.approved_date).getFullYear() <= year);
+            }
+
+            maps = maps.filter(map => map.approved == 1 || map.approved == 2);
+            const sets = maps.map(map => map.beatmapset_id).filter((id, i, self) => self.indexOf(id) === i);
+
+            // Get and create sets
+            await Promise.all(sets.map(async id => {
+                // see if set exists already, if it doesn't then add it
+                let dbSet = await Beatmapset.findOne(id);
+                if (!dbSet) {
+                    const map = maps.find(map => id == map.beatmapset_id);
+                    dbSet = createSet(map);
                 }
+                return dbSet.save();
+            }));
 
-                // Check if ranked / approved
-                if (map.approved == 1 || map.approved == 2) {
+            // Get and create all maps
+            await Promise.all(maps.map(async map => {
+                let dbSet = await Beatmapset.findOne(map.beatmapset_id) as Beatmapset;
+                if (!dbSet.beatmaps?.some(b => b.ID === parseInt(map.beatmap_id))) {
+                    const dbMap = await createMap(map);
+                    dbMap.beatmapset = dbSet;
+                    dbMap.beatmapsetID = dbSet.ID;
+                    return dbMap.save();
+                }
+            }));
 
-                    // see if set exists already, if it doesn't then add it
-                    let dbSet = await Beatmapset.findOne(map.beatmapset_id);
-                    if (!dbSet) {
-                        dbSet = createSet(map);
-                        await dbSet.save();
+            // Get and create all users
+            await Promise.all(maps.map(async map => {
+                const mapYear = new Date(map.approved_date).getFullYear();
+                
+                // see if user exists, if they don't then add them
+                let [dbUser, dbSet] = await Promise.all([User.findOne({
+                    osu: {
+                        userID: map.creator_id,
+                    },
+                }), Beatmapset.findOne(map.beatmapset_id)]);
+                if (!dbUser) {
+                    dbUser = new User;
+                    dbUser.osu = new OAuth;
+                    dbUser.osu.userID = map.creator_id;
+                    dbUser.osu.username = map.creator;
+                    dbUser.osu.avatar = "https://a.ppy.sh/" + map.creator_id;
+                    dbUser.beatmapsets = [dbSet as Beatmapset];
+                    await dbUser.save();
+
+                    if (!map.version.includes("'")) {
+                        const eligibility = new MCAEligibility();
+                        eligibility.year = mapYear;
+                        eligibility.user = dbUser;
+                        eligibility[modeList[map.mode]] = true;
+                        eligibility.storyboard = true;
+                        await eligibility.save();
                     }
+                } else {
+                    if (dbUser.osu.username !== map.creator && !dbUser.otherNames.some(v => v.name === map.creator)) { // Check for username change
+                        let nameChange = await UsernameChange.findOne({ name: map.creator, user: dbUser });
+                        if (nameChange)
+                            await nameChange.remove();
 
-                    // see if beatmap exists, if it doesn't then add it
-                    if (!dbSet.beatmaps?.some(b => b.ID === parseInt(map.beatmap_id))) {
-                        const dbMap = await createMap(map);
-                        dbMap.beatmapset = dbSet;
-                        dbMap.beatmapsetID = dbSet.ID;
-                        await dbMap.save();
-                    }
-
-                    // see if user exists, if they don't then add them
-                    let dbUser = await User.findOne({
-                        osu: {
-                            userID: map.creator_id,
-                        },
-                    });
-                    if (!dbUser) {
-                        dbUser = new User;
-                        dbUser.osu = new OAuth;
-                        dbUser.osu.userID = map.creator_id;
+                        const oldName = dbUser.osu.username;
                         dbUser.osu.username = map.creator;
-                        dbUser.osu.avatar = "https://a.ppy.sh/" + map.creator_id;
-                        dbUser.beatmapsets = [dbSet];
                         await dbUser.save();
 
-                        if (!map.version.includes("'")) {
-                            const eligibility = new MCAEligibility();
+                        nameChange = new UsernameChange;
+                        nameChange.user = dbUser;
+                        nameChange.name = oldName;
+                        await nameChange.save();
+                    } else
+                        await dbUser.save();
+
+                    if (!map.version.includes("'")) {
+                        let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: mapYear, user: dbUser }});
+                        if (!eligibility) {
+                            eligibility = new MCAEligibility();
                             eligibility.year = mapYear;
                             eligibility.user = dbUser;
+                        }
+
+                        if (!eligibility[modeList[map.mode]]) {
                             eligibility[modeList[map.mode]] = true;
                             eligibility.storyboard = true;
                             await eligibility.save();
                         }
-                    } else {
-                        if (dbUser.osu.username !== map.creator && !dbUser.otherNames.some(v => v.name === map.creator)) { // Check for username change
-                            let nameChange = await UsernameChange.findOne({ name: map.creator, user: dbUser });
-                            if (nameChange)
-                                await nameChange.remove();
-
-                            const oldName = dbUser.osu.username;
-                            dbUser.osu.username = map.creator;
-                            await dbUser.save();
-
-                            nameChange = new UsernameChange;
-                            nameChange.user = dbUser;
-                            nameChange.name = oldName;
-                            await nameChange.save();
-                        } else
-                            await dbUser.save();
-
-                        if (!map.version.includes("'")) {
-                            let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: mapYear, user: dbUser }});
-                            if (!eligibility) {
-                                eligibility = new MCAEligibility();
-                                eligibility.year = mapYear;
-                                eligibility.user = dbUser;
-                            }
-
-                            if (!eligibility[modeList[map.mode]]) {
-                                eligibility[modeList[map.mode]] = true;
-                                eligibility.storyboard = true;
-                                await eligibility.save();
-                            }
-                        }
                     }
-
-                    await getConnection()
+                }
+                await getConnection()
                         .createQueryBuilder()
                         .relation(User, "beatmapsets")
                         .of(dbUser)
                         .add(dbSet);
+            }));
 
-                    date = map.approved_date;
-                }
-                mapNum++;
-                console.log("Checked map number " + mapNum);
-            }
+            date = maps[maps.length - 1].approved_date;
+
+            console.log("Batch " + batch + " done (" + (batch*500) + " maps)");
+            batch++;
         } catch (err) {
             console.error(err);
         }
     }
+    console.log("Final " + year + " map was found.");
+    const finish = new Date;
+    const duration = new Date(finish.valueOf() - start.valueOf());
+    console.log("Operation lasted for " + duration.getUTCHours() + " hours, " + duration.getUTCMinutes() + " minutes, and " + duration.getUTCSeconds() + " seconds.");
+    process.exit(0);
 }
 
 fetchYearMaps();
