@@ -173,7 +173,7 @@ async function fetchYearMaps (): Promise<void> {
         try {
             // Fetch the batch of maps
             let maps = (await axios.get("https://osu.ppy.sh/api/get_beatmaps?k=" + config.osu.v1.apiKey + "&since=" + date)).data;
-            
+
             if (maps.some(map => new Date(map.approved_date).getFullYear() > year)) {
                 final = true;
                 maps = maps.filter(map => new Date(map.approved_date).getFullYear() <= year);
@@ -207,7 +207,7 @@ async function fetchYearMaps (): Promise<void> {
             // Get and create all users
             await Promise.all(maps.map(async map => {
                 const mapYear = new Date(map.approved_date).getFullYear();
-                
+
                 // see if user exists, if they don't then add them
                 let [dbUser, dbSet] = await Promise.all([User.findOne({
                     osu: {
@@ -221,7 +221,13 @@ async function fetchYearMaps (): Promise<void> {
                     dbUser.osu.username = map.creator;
                     dbUser.osu.avatar = "https://a.ppy.sh/" + map.creator_id;
                     dbUser.beatmapsets = [dbSet as Beatmapset];
-                    await dbUser.save();
+                    await getConnection()
+                        .createQueryBuilder()
+                        .insert()
+                        .into(User)
+                        .values(dbUser)
+                        .onConflict(`("osuUserid") DO NOTHING`)
+                        .execute();
 
                     if (!map.version.includes("'")) {
                         const eligibility = new MCAEligibility();
@@ -264,10 +270,10 @@ async function fetchYearMaps (): Promise<void> {
                     }
                 }
                 await getConnection()
-                        .createQueryBuilder()
-                        .relation(User, "beatmapsets")
-                        .of(dbUser)
-                        .add(dbSet);
+                    .createQueryBuilder()
+                    .relation(User, "beatmapsets")
+                    .of(dbUser)
+                    .add(dbSet);
             }));
 
             date = maps[maps.length - 1].approved_date;
