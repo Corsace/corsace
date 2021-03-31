@@ -12,7 +12,6 @@ fs.readdirSync("../Assets/lang").forEach(file => {
 });
 
 export default {
-    ssr: false,
     watch: ["~/api"],
     serverMiddleware: ["~/api"],
     buildModules: ["@nuxt/typescript-build"],

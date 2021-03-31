@@ -2,7 +2,7 @@ import { Strategy as DiscordStrategy } from "passport-discord";
 import OAuth2Strategy from "passport-oauth2";
 import { User, OAuth } from "../Models/user";
 import Axios from "axios";
-import {discordClient} from "./discord";
+import { discordClient } from "./discord";
 
 // If you are looking for osu and discord auth login endpoints info then go to Main > api > routes > login
 
@@ -25,7 +25,7 @@ async function discordPassport (accessToken: string, refreshToken: string, profi
         user.discord.username = profile.username;
         user.discord.accessToken = accessToken;
         user.discord.refreshToken = refreshToken;
-        user.discord.avatar = (await discordClient().users.fetch(profile.id)).displayAvatarURL();
+        user.discord.avatar = (await discordClient.users.fetch(profile.id)).displayAvatarURL();
         user.lastLogin = user.discord.lastVerified = new Date;
 
         done(null, user);
