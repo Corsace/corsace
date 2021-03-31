@@ -1,3 +1,4 @@
+import { NuxtConfig } from "@nuxt/types";
 import * as fs from "fs";
 import path from "path";
 
@@ -36,11 +37,13 @@ export default {
     ],
     build: {
         extend (config) {
-            config.resolve.alias["@s-sass"] = path.join(__dirname, "../MCA-AYIM/assets/sass");
-            config.resolve.alias["../../MCA-AYIM/components"] = path.join(__dirname, "../MCA-AYIM/components");
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            config.resolve!.alias!["@s-sass"] = path.join(__dirname, "../MCA-AYIM/assets/sass");
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            config.resolve!.alias!["../../MCA-AYIM/components"] = path.join(__dirname, "../MCA-AYIM/components");
         },
     },
     dir: {
         static: "../Assets/static",
     },
-};
+} as Partial<NuxtConfig>;
