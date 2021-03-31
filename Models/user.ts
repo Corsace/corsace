@@ -207,7 +207,7 @@ export class User extends BaseEntity {
     public getCondensedInfo = function(this: User, chosen = false): UserCondensedInfo {
         return {
             corsaceID: this.ID,
-            avatar: this.osu.avatar + "?" + Math.round(Math.random() * 1000000),
+            avatar: this.osu.avatar,
             userID: this.osu.userID,
             username: this.osu.username,
             otherNames: this.otherNames.map(otherName => otherName.name),
@@ -227,7 +227,7 @@ export class User extends BaseEntity {
                 username: this.discord.username,
             },
             osu: {
-                avatar: this.osu.avatar + "?" + Math.round(Math.random() * 1000000),
+                avatar: this.osu.avatar,
                 userID: this.osu.userID,
                 username: this.osu.username,
                 otherNames: this.otherNames.map(otherName => otherName.name),

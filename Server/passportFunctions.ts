@@ -57,7 +57,7 @@ async function osuPassport (accessToken: string, refreshToken: string, profile: 
 
         user.osu.userID = userProfile.id;
         user.osu.username = userProfile.username;
-        user.osu.avatar = "https://a.ppy.sh/" + userProfile.id;
+        user.osu.avatar = userProfile.avatar_url;
         user.osu.accessToken = accessToken;
         user.osu.refreshToken = refreshToken;
         user.osu.lastVerified = user.lastLogin = new Date;
