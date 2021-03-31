@@ -100,11 +100,11 @@ export default class AdminModalYear extends Vue {
     async save () {
         const { data } = await this.$axios.post("/api/admin/years/create", {
             year: this.year,
-            nominationStart: new Date(this.nominationStart + "UTC"),
-            nominationEnd: new Date(this.nominationEnd + "UTC"),
-            votingStart: new Date(this.votingStart + "UTC"),
-            votingEnd: new Date(this.votingEnd + "UTC"),
-            results: new Date(this.results + "UTC"), 
+            nominationStart: new Date(`${this.nominationStart} UTC`),
+            nominationEnd: new Date(`${this.nominationEnd} UTC`),
+            votingStart: new Date(`${this.votingStart} UTC`),
+            votingEnd: new Date(`${this.votingEnd} UTC`),
+            results: new Date(`${this.results} UTC`), 
         });
 
         if (data.error) {
