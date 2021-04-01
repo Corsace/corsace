@@ -15,7 +15,7 @@ export default {
             {
                 hid: "description",
                 name: "description",
-                content: "AYIM 2020",
+                content: "AYIM",
             },
         ],
     },
