@@ -1,6 +1,8 @@
 import { NuxtConfig } from "@nuxt/types";
 import * as fs from "fs";
+import { config } from "node-config-ts";
 import path from "path";
+import setSpa from "./serverMiddlewares/setSpa";
 
 const locales: any[] = [];
 
@@ -12,10 +14,14 @@ fs.readdirSync("../Assets/lang").forEach(file => {
         });
 });
 
-export default {
+export default (subSite: string): Partial<NuxtConfig> => ({
     watch: ["~/api"],
-    serverMiddleware: ["~/api"],
+    serverMiddleware: [setSpa(subSite), "~/api"],
     buildModules: ["@nuxt/typescript-build"],
+    server: {
+        host: config[subSite].host,
+        port: config[subSite].port,
+    },
     modules: [
         "@nuxtjs/axios",
         [
@@ -46,4 +52,4 @@ export default {
     dir: {
         static: "../Assets/static",
     },
-} as Partial<NuxtConfig>;
+});

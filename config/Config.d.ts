@@ -3,6 +3,7 @@ declare module "node-config-ts" {
         host: string;
         port: number;
         publicUrl: string;
+        spa: boolean;
     }
 
     interface IConfig {
