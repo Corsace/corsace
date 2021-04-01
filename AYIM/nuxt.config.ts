@@ -1,5 +1,4 @@
 import { NuxtConfig } from "@nuxt/types";
-import { config } from "node-config-ts";
 import nuxtConfig from "../MCA-AYIM/nuxt.base.config";
 
 export default {
@@ -24,7 +23,4 @@ export default {
         "../MCA-AYIM/assets/sass/main.scss",
         "./assets/ayim.scss",
     ],
-    axios: {
-        browserBaseURL: config.mca.publicUrl,
-    },
 } as NuxtConfig;
