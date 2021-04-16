@@ -1,6 +1,6 @@
 {
     "database": {
-        "host": "database",
+        "host": "@@DB_URL",
         "port": 3306,
         "database": "corsace",
         "username": "corsace",
