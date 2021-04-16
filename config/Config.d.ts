@@ -76,6 +76,7 @@ declare module "node-config-ts" {
         };
 
         koaKeys: string[];
+        cookiesDomain: string;
 
         ayim: ISubSiteConfig;
         corsace: ISubSiteConfig;

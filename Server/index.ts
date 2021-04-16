@@ -23,7 +23,11 @@ export class App {
         this.setupPassport();
 
         this.koa.keys = config.koaKeys;
-        this.koa.use(Session(this.koa));
+        this.koa.use(Session({
+            domain: config.cookiesDomain,
+            secure: true,
+            httpOnly: true,
+        }, this.koa));
         this.koa.use(BodyParser());
         this.koa.use(passport.initialize());
         this.koa.use(passport.session());

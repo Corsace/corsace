@@ -57,6 +57,7 @@
         }
     },
     "koaKeys": ["@@KOA_KEY"],
+    "cookiesDomain": "corsace.io",
     "ayim": {
         "host": "0.0.0.0",
         "port": 80,
