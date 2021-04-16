@@ -60,16 +60,16 @@
     "ayim": {
         "host": "0.0.0.0",
         "port": 80,
-        "publicUrl": "https://ayim.corsace.io"
+        "publicUrl": "@@AYIM_PUBLICURL"
     },
     "corsace": {
         "host": "0.0.0.0",
         "port": 80,
-        "publicUrl": "https://corsace.io"
+        "publicUrl": "@@CORSACE_PUBLICURL"
     },
     "mca": {
         "host": "0.0.0.0",
         "port": 80,
-        "publicUrl": "https://mca.corsace.io"
+        "publicUrl": "@@MCA_PUBLICURL"
     }
 }
