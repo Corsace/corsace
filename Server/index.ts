@@ -23,6 +23,7 @@ export class App {
         this.setupPassport();
 
         this.koa.keys = config.koaKeys;
+        this.koa.proxy = true;
         this.koa.use(Session({
             domain: config.cookiesDomain,
             secure: true,
