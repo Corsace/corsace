@@ -53,6 +53,6 @@ export default (subSite: string): Partial<NuxtConfig> => ({
         static: "../Assets/static",
     },
     axios: {
-        browserBaseURL: config[subSite].publicUrl,
+        browserBaseURL: "/",
     },
 });
