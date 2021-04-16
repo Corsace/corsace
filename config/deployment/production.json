@@ -52,7 +52,7 @@
             "apiKey": "@@OSU_V1_APIKEY"
         },
         "v2": {
-            "clientId": "2012",
+            "clientId": "@@OSU_V2_CLIENTID",
             "clientSecret": "@@OSU_V2_CLIENTSECRET"
         }
     },
