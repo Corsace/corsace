@@ -51,7 +51,7 @@
       "lodash": "^4.17.20",
       "memoizee": "^0.4.15",
       "nodemon": "^2.0.7",
-      "nodesu": "github:ThePooN/nodesu#fix-missing-beatmap-fields",
+      "nodesu": "https://github.com/ThePooN/nodesu/archive/502d65b9f84dd2fbe0a24f4eeaf9359305f8bcc3.tar.gz",
       "sass": "^1.32.2",
       "sass-loader": "^10.1.0",
       "vue-class-component": "^7.2.6",
