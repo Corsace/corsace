@@ -159,5 +159,17 @@
             "hosted": "ORGANISÉ PAR",
             "userID": "ID DE L'UTILISATEUR"
         }
+    },
+    "main": {
+        "header": {
+            "login": "SE CONNECTER",
+            "register": "S'INSCRIRE"
+        },
+        "index": {
+            "underConstruction": "en cours de construction",
+            "sorry": "désolé pour le désagrément",
+            "development": "le site corsace est encore en développement",
+            "theTeam": "l'équipe corsace"
+        }
     }
 }
