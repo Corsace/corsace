@@ -63,4 +63,7 @@ export default {
     dir: {
         static: "../Assets/static",
     },
+    axios: {
+        browserBaseURL: "/",
+    },
 };
