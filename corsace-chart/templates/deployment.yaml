@@ -1,0 +1,114 @@
+{{- range $webServiceName, $webService := .Values.webServices }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "corsace-chart.fullname" $ }}-{{ $webServiceName }}
+  labels:
+    webServiceName: {{ $webServiceName }}
+    {{- include "corsace-chart.labels" $ | nindent 4 }}
+spec:
+  {{- if not $.Values.autoscaling.enabled }}
+  replicas: {{ $webService.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      webServiceName: {{ $webServiceName }}
+      {{- include "corsace-chart.selectorLabels" $ | nindent 6 }}
+  template:
+    metadata:
+      {{- with $.Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        webServiceName: {{ $webServiceName }}
+        {{- include "corsace-chart.selectorLabels" $ | nindent 8 }}
+    spec:
+      {{- with $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "corsace-chart.serviceAccountName" $ }}
+      securityContext:
+        {{- toYaml $.Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ $.Chart.Name }}
+          securityContext:
+            {{- toYaml $.Values.securityContext | nindent 12 }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          command:
+            - npm
+            - run
+            - {{ $webService.command }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml $.Values.resources | nindent 12 }}
+          env:
+            - name: DEPLOYMENT
+              value: production
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "corsace-chart.fullname" $ }}
+                  key: databaseHost
+            - name: DISCORD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "corsace-chart.fullname" $ }}
+                  key: discordToken
+            - name: DISCORD_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "corsace-chart.fullname" $ }}
+                  key: discordClientSecret
+            - name: OSU_V1_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "corsace-chart.fullname" $ }}
+                  key: osuv1ApiKey
+            - name: OSU_V2_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "corsace-chart.fullname" $ }}
+                  key: osuv2ClientId
+            - name: OSU_V2_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "corsace-chart.fullname" $ }}
+                  key: osuv2ClientSecret
+            - name: KOA_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "corsace-chart.fullname" $ }}
+                  key: koaKey
+            {{- range $webServiceName, $webService := $.Values.webServices }}
+            - name: {{ $webServiceName | upper }}_PUBLICURL
+              value: {{ $webService.publicUrl }}
+            {{- end }}
+
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
