@@ -25,6 +25,15 @@ function valueToFixed (record: any, digits = 2): any {
     return record;
 }
 
+function padLengthWithZero (lengthRecord: Record<string, any>): Record<string, any> {
+    // e.g. a time like 6:5 should actually be 6:05
+    const value = lengthRecord.value;
+    if (value.slice(-2, -1) === ":") {
+        lengthRecord.value =  value.slice(0, -1) + "0" + value.slice(-1);
+    }
+    return lengthRecord;
+}
+
 const recordsRouter = new Router();
 
 recordsRouter.get("/beatmapsets", async (ctx) => {
@@ -130,7 +139,7 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
     const records: Record<string, BeatmapsetRecord[]> = {
         playcount: mapBeatmapsetRecord(playcount),
         favourites: mapBeatmapsetRecord(favourites),
-        length: mapBeatmapsetRecord(length),
+        length: mapBeatmapsetRecord(length.map(l => padLengthWithZero(l))),
         difficulties: mapBeatmapsetRecord(difficulties),
         sliders: mapBeatmapsetRecord(sliders),
         avgSlidersPerSet: mapBeatmapsetRecord(avgSliders).map(o => valueToFixed(o, 0)),
