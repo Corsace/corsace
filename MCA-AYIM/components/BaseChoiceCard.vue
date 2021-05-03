@@ -38,7 +38,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import { StageType } from "../store/stage";
+import { StageType } from "../../MCA-AYIM/store/stage";
 import { Vote } from "../../Interfaces/vote";
 
 const stageModule = namespace("stage");

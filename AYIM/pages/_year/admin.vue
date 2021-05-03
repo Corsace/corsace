@@ -19,7 +19,7 @@ import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
     },
     head () {
         return {
-            title: "Admin | MCA",
+            title: "Admin | AYIM",
         };
     },
 })

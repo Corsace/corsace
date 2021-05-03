@@ -75,7 +75,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
-import ScrollBar from "../../MCA/components/ScrollBar.vue";
+import ScrollBar from "../../MCA-AYIM/components/ScrollBar.vue";
 
 import { MCA } from "../../Interfaces/mca";
 

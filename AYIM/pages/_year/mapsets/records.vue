@@ -132,7 +132,6 @@ export default class MapsetRecords extends Vue {
     }
 
     &--small {
-        flex-wrap: wrap;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;

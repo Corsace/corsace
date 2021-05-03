@@ -43,13 +43,13 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
 import StagePageFilters from "./StagePageFilters.vue";
-import ChoiceBeatmapsetCard from "../ChoiceBeatmapsetCard.vue";
+import ChoiceBeatmapsetCard from "../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
 import ChoiceUserCard from "../ChoiceUserCard.vue";
-import ScrollBar from "../ScrollBar.vue";
+import ScrollBar from "../../../MCA-AYIM/components/ScrollBar.vue";
 import VotingBox from "./VotingBox.vue";
 
 import { CategoryStageInfo } from "../../../Interfaces/category";
-import { SectionCategory } from "../../store/stage";
+import { SectionCategory } from "../../../MCA-AYIM/store/stage";
 import { UserCondensedInfo } from "../../../Interfaces/user";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 

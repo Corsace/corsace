@@ -63,7 +63,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, State } from "vuex-class";
 
-import Collapsible from "./Collapsible.vue";
+import Collapsible from "../../MCA-AYIM/components/Collapsible.vue";
 
 import { MCA, Phase } from "../../Interfaces/mca";
 import { CategoryInfo } from "../../Interfaces/category";

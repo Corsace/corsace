@@ -23,7 +23,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import Collapsible from "../Collapsible.vue";
+import Collapsible from "../../../MCA-AYIM/components/Collapsible.vue";
 
 import { CategoryStageInfo } from "../../../Interfaces/category";
 

@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import BaseChoiceCard from "./BaseChoiceCard.vue";
+import BaseChoiceCard from "../../MCA-AYIM/components/BaseChoiceCard.vue";
 
 @Component({
     components: {
