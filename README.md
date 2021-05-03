@@ -134,6 +134,3 @@ Paste it into `config.discord.token`
 #### Development
 
 Run `npm run dev`, if you only want to run one of the projects, refer to the scripts in `package.json`.
-
-Note: `npm run dev` can run into some concurrency issues. 
-Either try rerunning it or running the individual project scripts.
