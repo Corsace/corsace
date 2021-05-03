@@ -125,6 +125,7 @@ export default class Collapsible extends Vue {
 
 .collapsible {
     @extend %flex-box;
+    flex: 1 1 auto;
     flex-direction: column;
     color: $gray;
     white-space: nowrap;

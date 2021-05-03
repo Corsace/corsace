@@ -188,6 +188,7 @@ export default class IndexContent extends Vue {
 
 .ranked-sets {
     @extend %flex-box;
+    flex: 1 1 auto;
     align-items: center;
     justify-content: space-between;
 
@@ -224,6 +225,7 @@ export default class IndexContent extends Vue {
 
 .vote-now {
     @extend %flex-box;
+    flex: 1 1 auto;
     justify-content: flex-end;
     align-items: center;
 
