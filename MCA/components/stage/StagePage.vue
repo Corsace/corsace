@@ -293,6 +293,7 @@ export default class StateContent extends Vue {
     &-maps {
         @extend %spaced-container;
         align-content: flex-start;
+        justify-content: initial;
         height: 100%;
         overflow-y: scroll;
         margin-right: 50px; // Space for scrollbar

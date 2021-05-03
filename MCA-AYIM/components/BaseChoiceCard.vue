@@ -95,9 +95,8 @@ export default class BaseChoiceCard extends Vue {
 
 .choice {
     @extend %flex-box;
-    flex: 1;
     padding: 0;
-    min-width: 350px;
+    width: 32%;
     box-shadow: 0 0 8px rgba(255,255,255,0.25);
 
     cursor: pointer;

@@ -154,7 +154,14 @@ export default class DisplayLayout extends Vue {
 .ayim-layout {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+
+    height: 53vh;
+    padding-right: 40px;
+    position: relative;
+    overflow-y: scroll;
+    
+    @include breakpoint(tablet) {
+    }
     
     &__item {
         width: 100%;
@@ -169,15 +176,6 @@ export default class DisplayLayout extends Vue {
     &-scroller {
         height: 100%;
         position: relative;
-    }
-
-    height: 100vh;
-    padding-right: 40px;
-    position: relative;
-    overflow-y: scroll;
-    
-    @include breakpoint(tablet) {
-        height: 60vh;
     }
 
     &::-webkit-scrollbar {
