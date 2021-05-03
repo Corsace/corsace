@@ -86,11 +86,12 @@ export default class Comments extends Vue {
     }
     
     async mounted () {
-        this.getMappers();
+        await this.getMappers();
     }
 
     async updateQuery (query) {
         this.text = query;
+        this.mappers = [];
         await this.getMappers();
     }
 
