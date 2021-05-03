@@ -133,12 +133,29 @@ export class User extends BaseEntity {
                 }))
                 .setParameter("criteria", `%${query.text}%`);
         }
+
+        // Check for search text
+        if (query.text) {
+            queryBuilder
+                .andWhere(new Brackets(qb => {
+                    qb.where("user.osuUsername LIKE :criteria")
+                        .orWhere("user.osuUserid LIKE :criteria")
+                        .orWhere("otherName.name LIKE :criteria");
+                }))
+                .setParameter("criteria", `%${query.text}%`);
+        }
+        
+        // Ordering
+        const ascDesc = query.order || "ASC";
+        let orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
+        if (query.option?.toLowerCase().includes("alph"))
+            orderMethod = "user_osuUsername";
             
         // Search
         return queryBuilder
             .skip(parseInt(query.skip))
             .take(50)
-            .orderBy("user_osuUsername", "DESC")
+            .orderBy(orderMethod, ascDesc)
             .getMany();
     }
 

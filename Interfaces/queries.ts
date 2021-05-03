@@ -11,4 +11,6 @@ export interface MapperQuery {
     skip: string;
     year: string;
     mode: string;
+    option: string;
+    order: "ASC" | "DESC" | undefined;
 }
