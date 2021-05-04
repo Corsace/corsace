@@ -436,9 +436,6 @@ statisticsRouter.get("/mappers", async (ctx) => {
                 value: (newMappers.value / uniqueMappers.value * 100).toFixed(2) + "%",
             },
         ],
-        newMapperAges: newYears,
-        mapperAges: years,
-        mapsPerMapperAges: mapYears,
         bng: [
             getHistoryStat(year, modeString, "bns", "joined"),
             getHistoryStat(year, modeString, "bns", "left"),
@@ -447,6 +444,9 @@ statisticsRouter.get("/mappers", async (ctx) => {
             getHistoryStat(year, modeString, "nat", "joined"),
             getHistoryStat(year, modeString, "nat", "left"),
         ],
+        newMapperAges: newYears,
+        mapperAges: years,
+        mapsPerMapperAges: mapYears,
     };
 
     ctx.body = statistics;
