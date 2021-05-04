@@ -208,6 +208,7 @@ export default class Collapsible extends Vue {
 
     &:hover, &--active {
         text-shadow: 0 0 8px white;
+        font-size: 1.3rem;
         font-weight: 500;
     }
 }

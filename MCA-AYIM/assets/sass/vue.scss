@@ -1,6 +1,6 @@
 // Per page nuxt auto transition
 .page-enter-active, .page-leave-active {
-  transition: opacity 0.25s ease-out;
+  transition: opacity 0.2s ease-out;
 }
 
 .page-enter, .page-leave-to {
@@ -8,9 +8,17 @@
 }
 
 .fade-enter-active, .fade-leave-active {
-    transition: opacity .25s ease-out;
+    transition: all 0.2s ease-out;
 }
 
 .fade-enter, .fade-leave-to {
-    opacity: 0;
+  overflow: hidden;
+  max-height: 0px;
+  opacity: 0;
+}
+
+.fade-enter-to, .fade-leave {
+  overflow: hidden;
+  max-height: 100px;
+  opacity: 1;
 }
