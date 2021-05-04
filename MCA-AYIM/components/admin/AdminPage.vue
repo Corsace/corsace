@@ -18,6 +18,7 @@
                 title="years"
                 :list="years"
                 :show-extra="true"
+                :categoryName="false"
                 :active="true"
                 @target="getCategories"
             />
@@ -50,6 +51,7 @@
                 :title="'categories'"
                 :list="activeCategories"
                 :show-extra="true"
+                :categoryName="true"
                 :active="true"
                 :scroll="true"
                 @target="getBeatmaps"

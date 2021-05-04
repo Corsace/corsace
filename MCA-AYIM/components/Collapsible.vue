@@ -28,10 +28,9 @@
                     @click="setTarget(item)"
                 >
                     <div 
-                        class="collapsible__name"
-                        :class="{'collapsible__name--active': showExtra && isSelected(item)}"
+                        :class="{'collapsible__name': clickable, 'collapsible__name--active': showExtra && isSelected(item)}"
                     >
-                        {{ showExtra ? $t(`mca.categories.${item.name}.name`) : item.name }} {{ showExtra ? item.maxNominations && !('count' in item) ? "- " + item.maxNominations: "" : "" }}
+                        {{ categoryName ? $t(`mca.categories.${item.name}.name`) : item.name }} {{ showExtra ? item.maxNominations && !('count' in item) ? "- " + item.maxNominations: "" : "" }}
                     </div>
                     <hr
                         class="collapsible__info-bar"
@@ -81,8 +80,10 @@ export default class Collapsible extends Vue {
     
     @Prop({ type: String, default: "" }) readonly title!: string;
     @Prop({ type: Array, default: () => [] }) readonly list!: SubItem[];
+    @Prop({ type: Boolean, default: true}) readonly clickable!: boolean[];
     @Prop(Boolean) readonly active!: boolean[];
     @Prop(Boolean) readonly showExtra!: boolean[];
+    @Prop(Boolean) readonly categoryName!: boolean[];
     @Prop(Boolean) readonly scroll!: boolean[];
 
     @State selectedMode!: string;

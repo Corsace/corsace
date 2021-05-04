@@ -39,12 +39,16 @@
                 :title="$t('mca.main.categories.map')"
                 :list="beatmapCategories"
                 :active="true"
+                :categoryName="true"
+                :clickable="false"
             />
             <collapsible
                 class="categories__list"
                 :title="$t('mca.main.categories.user')"
                 :list="userCategories"
                 :active="true"
+                :categoryName="true"
+                :clickable="false"
             />
         </div>
             
