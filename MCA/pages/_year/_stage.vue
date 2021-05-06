@@ -37,6 +37,7 @@ import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import StagePage from "../../components/stage/StagePage.vue";
 
 import { Phase } from "../../../Interfaces/mca";
+import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component({
     components: {
@@ -58,8 +59,14 @@ import { Phase } from "../../../Interfaces/mca";
 export default class Stage extends Vue {
 
     @State selectedMode!: string;
+    @State loggedInUser!: UserMCAInfo;
     @Getter phase!: Phase;
     @Mutation toggleGuestDifficultyModal;
+    
+    mounted () {
+        if (!this.loggedInUser || !this.loggedInUser.eligibility.some(eligibility => eligibility.year == parseInt(this.$route.params.year)))
+            this.$router.push("/");
+    }
 
     get remainingDays (): string {
         if (this.phase) {
