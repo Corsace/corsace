@@ -14,6 +14,7 @@
         />
 
         <toggle-button
+            v-if="$route.params.stage === 'voting'"
             :options="votingOptions"
             @change="changeVotingType"
         />
