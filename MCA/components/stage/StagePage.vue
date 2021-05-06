@@ -28,7 +28,7 @@
                     />
                     <div 
                         class="category__head-shape-small"
-                        :class="`category__headShape--${selectedMode}`"
+                        :class="`category__head-shape--${selectedMode}`"
                     />
                     <div 
                         class="category__head-shape-small2"
@@ -126,20 +126,20 @@ export default class StateContent extends Vue {
 }
 
 .category__count {
-    &-container {
-        display: none;
-        
-        @include breakpoint(laptop) {
-            display: block;
-        }
-    }
     margin-left: 20px;
     margin-right: 20px;
     flex: 0;
     display: flex;
+    flex-direction: column;
 
     align-items: center;
-    height: fit-content;
+    justify-content: space-evenly;
+    height: 100%;
+
+    @include breakpoint(laptop) {
+        flex-direction: row;
+        height: fit-content;
+    }
 
     position: relative;
 
@@ -166,14 +166,24 @@ export default class StateContent extends Vue {
         width: 5px;
         border-bottom: none;
         box-shadow: 0 0 2px white;
+
+        display: none;
+        
+        @include breakpoint(laptop) {
+            display: block;
+        }
     }
 
     &-candidates {
         padding: 6px;
         background-color: white;
-        border-radius: 0 25px 25px 0;
-        position: absolute;
-        left: 97%;
+        border-radius: 25px;
+        
+        @include breakpoint(laptop) {
+            border-radius: 0 25px 25px 0;
+            position: absolute;
+            left: 97%;
+        }
 
         font-size: 1.2rem;
         line-height: 0.7;
@@ -185,9 +195,13 @@ export default class StateContent extends Vue {
 }
 
 .category__general {
-    flex: 3 1 50%;
+    flex: 3 1 100%;
     display: flex;
     flex-direction: column;
+
+    @include breakpoint(laptop) {
+        flex: 3 1 50%;
+    }
 }
 
 .category__head {
@@ -209,7 +223,16 @@ export default class StateContent extends Vue {
 
     &-title {
         font-weight: bold;
-        font-size: 4.5rem;
+        font-size: 2rem;
+        @include breakpoint(tablet) {
+            font-size: 3.6rem;
+        }
+        @include breakpoint(laptop) {
+            font-size: 2.5rem;
+        }
+        @include breakpoint(desktop) {
+            font-size: 4.1rem;
+        }
 
         grid-column: 2;
         justify-self: end;
@@ -219,7 +242,10 @@ export default class StateContent extends Vue {
     }
 
     &-desc {
-        font-size: $font-lg;
+        font-size: $font-base;
+        @include breakpoint(tablet) {
+            font-size: $font-lg;
+        }
         font-style: italic;
 
         grid-column: 2;
@@ -258,16 +284,16 @@ export default class StateContent extends Vue {
             width: 300px;
 
             right: 30%;
-            top: -150%;
+            top: -200%;
         }
 
         &-small {
-            right: 43%;
-            top: 48%;   
+            right: 31%;
+            top: 20%;   
         }
 
         &-small2 {
-            right: 3%;
+            right: 5%;
             top: 4%;
         }
     }
