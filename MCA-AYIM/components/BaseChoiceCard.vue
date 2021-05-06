@@ -98,6 +98,11 @@ export default class BaseChoiceCard extends Vue {
     padding: 0;
     width: 32%;
     box-shadow: 0 0 8px rgba(255,255,255,0.25);
+    transition: all 0.2s;
+
+    &:hover {
+        box-shadow: 0 0 12px rgba(255,255,255,0.75);
+    }
 
     cursor: pointer;
 }
