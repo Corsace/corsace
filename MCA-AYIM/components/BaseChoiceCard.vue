@@ -105,7 +105,7 @@ export default class BaseChoiceCard extends Vue {
         box-shadow: 0 0 12px rgba(255,255,255,0.75);
     }
 
-    width: 100%;
+    width: calc(100vw - 113px);
     @include breakpoint(tablet) {
         width: 48.1%;
     }

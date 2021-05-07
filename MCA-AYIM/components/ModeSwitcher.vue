@@ -86,7 +86,6 @@ $border-margin: 5px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    overflow: hidden;
 
     margin-left: 30px;
 }
@@ -107,6 +106,11 @@ $border-margin: 5px;
     white-space: nowrap;
 
     margin: #{$mode-title-padding-y + 25px} 25px #{$mode-title-padding-y} auto;
+    @include breakpoint(mobile) {
+        font-size: $font-base;
+        height: 0;
+        margin: #{$mode-title-padding-y} 25px 28px auto;
+    }
     @include breakpoint(laptop) {
         font-size: 2.25rem;
         margin: #{$mode-title-padding-y} 25px #{$mode-title-padding-y} auto;
@@ -117,7 +121,7 @@ $border-margin: 5px;
     width: 100%;
     height: 100%;
     padding: 25px 0 0 25px;
-    overflow: hidden;
+    overflow-y: hidden;
 }
 
 .mode-selection {
@@ -154,6 +158,11 @@ $border-margin: 5px;
         border-top-left-radius: 25px;
         border-bottom-left-radius: 25px;
         z-index: -1;
+
+        @include breakpoint(mobile) {
+            top: $mode-title-height;
+            height: calc(100% - #{$mode-title-height} - #{$mode-selection-bottom-space});
+        }
 
         @include breakpoint(laptop) {
             top: $mode-title-height + $mode-title-padding-y * 2;

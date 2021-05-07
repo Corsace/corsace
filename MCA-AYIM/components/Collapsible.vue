@@ -144,8 +144,16 @@ export default class Collapsible extends Vue {
         letter-spacing: -3px;
         font-family: $font-display;
         text-align: center;
-        font-size: $font-xxl;
+        font-size: $font-lg;
         cursor: pointer;
+
+        @include breakpoint(laptop) { 
+            font-size: $font-xl;
+        }
+
+        @include breakpoint(desktop) { 
+            font-size: $font-xxl;
+        }
 
         &--active {
             cursor: default;
@@ -167,7 +175,6 @@ export default class Collapsible extends Vue {
 }
 
 .collapsible__items {
-    margin-top: 15px;
     position: relative;
     
     &-extra {
@@ -182,7 +189,11 @@ export default class Collapsible extends Vue {
     position: relative;
     display: flex;
     align-items: center;
-    font-size: $font-lg;
+    font-size: $font-base;
+    @include breakpoint(desktop) { 
+        font-size: $font-lg;
+    }
+    padding-top: 15px;
 
     &-bar {
         left: 1%;
@@ -209,15 +220,23 @@ export default class Collapsible extends Vue {
 
     &:hover, &--active {
         text-shadow: 0 0 8px white;
-        font-size: 1.3rem;
+        font-size: 1.088rem;
         font-weight: 500;
+
+        @include breakpoint(desktop) { 
+            font-size: 1.3rem;
+        }
     }
 }
 
 .collapsible__count {
-    width: 14%;
-    min-width: fit-content;
+    min-width: 52px;
+    @include breakpoint(desktop) { 
+        min-width: 58px;
+    }
+
     color: white;
+    text-align: center;
     border: 1px solid white;
     border-radius: 7px;
 

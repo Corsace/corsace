@@ -155,7 +155,7 @@ export default class DisplayLayout extends Vue {
     display: flex;
     flex-wrap: wrap;
 
-    height: 55vh;
+    height: 60vh;
     padding-right: 40px;
     position: relative;
     overflow-y: scroll;

@@ -126,8 +126,8 @@ export default class StateContent extends Vue {
 }
 
 .category__count {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 5px;
+    margin-right: 10px;
     flex: 0;
     display: flex;
     flex-direction: column;
@@ -198,6 +198,7 @@ export default class StateContent extends Vue {
     flex: 3 1 100%;
     display: flex;
     flex-direction: column;
+    height: 100%;
 
     @include breakpoint(laptop) {
         flex: 3 1 50%;
@@ -302,9 +303,8 @@ export default class StateContent extends Vue {
 .category__selection {
     width: 100%;
     height: 100vh;
-
     @include breakpoint(tablet) {
-        height: 40vh;
+        height: 45vh;
     }
 
     &-search {
@@ -327,7 +327,13 @@ export default class StateContent extends Vue {
         margin-bottom: 0;
         position: relative;
 
-        mask-image: linear-gradient(to top, transparent 0%, black 25%);
+        mask-image: linear-gradient(to top, transparent 10%, black 25%);
+        @include breakpoint(tablet) {
+            mask-image: linear-gradient(to top, transparent 25%, black 50%);
+        }
+        @include breakpoint(laptop) {
+            mask-image: linear-gradient(to top, transparent 0%, black 25%);
+        }
 
         &::-webkit-scrollbar {
             display: none;

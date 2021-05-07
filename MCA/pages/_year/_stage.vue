@@ -110,12 +110,18 @@ export default class Stage extends Vue {
 .stage__remainingDaysNumber {
     font-size: 6rem;
     font-weight: bold;
+    @include breakpoint(mobile) { 
+        font-size: 4rem;
+    }
 }
 
 .stage__remainingDaysLeft {
     font-size: 1.5rem;
     padding: 0 4px;
     letter-spacing: 1px;
+    @include breakpoint(mobile) { 
+        font-size: 1rem;
+    }
 }
 
 .stage_remainingDaysExclamation {
@@ -123,5 +129,8 @@ export default class Stage extends Vue {
     font-weight: 900;
     transform: rotate(30deg);
     margin-bottom: 10%;
+    @include breakpoint(mobile) { 
+        font-size: 8rem;
+    }
 }
 </style>
