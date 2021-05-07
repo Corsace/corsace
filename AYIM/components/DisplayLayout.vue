@@ -155,10 +155,12 @@ export default class DisplayLayout extends Vue {
     display: flex;
     flex-wrap: wrap;
 
-    height: 53vh;
+    height: 55vh;
     padding-right: 40px;
     position: relative;
     overflow-y: scroll;
+
+    mask-image: linear-gradient(to top, transparent 0%, black 25%);
     
     @include breakpoint(tablet) {
     }
