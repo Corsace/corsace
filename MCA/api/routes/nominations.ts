@@ -43,8 +43,12 @@ nominationsRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomin
     const nominations = await Nomination.find({
         nominator: ctx.state.user,
     });
-    if (!category.isRequired && !nominations.some(nom => nom.category.name === "Grand Award" && nom.category.type === (category.type === CategoryType.Beatmapsets ? CategoryType.Beatmapsets : CategoryType.Users)))
-        return ctx.body = { error: "Please nominate in the Grand Award categories first!" };
+    if (
+        !category.isRequired && 
+        !nominations.some(nom => nom.category.name === "Grand Award" && nom.category.type === (category.type === CategoryType.Beatmapsets ? CategoryType.Beatmapsets : CategoryType.Users))
+    ) {
+        throw "Please nominate in the Grand Award categories first!";
+    }
         
     return nominations;
 }));

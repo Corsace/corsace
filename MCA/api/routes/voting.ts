@@ -41,10 +41,11 @@ votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), 
         .andWhere("category.type = :categoryType", { categoryType: category.type })
         .getMany();
 
-    if (!category.isRequired && 
+    if (
+        !category.isRequired && 
         !votes.some(v => v.category.name === "Grand Award")
     ) {
-        return ctx.body = { error: "Please vote in the Grand Award categories first!" };
+        throw "Please vote in the Grand Award categories first!";
     }
 
     return votes;
