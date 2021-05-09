@@ -14,9 +14,9 @@
                 <div class="ayim-mapset-record__info">
                     <div class="ayim-text ayim-text--italic">
                         {{
-                            /per|SR Ranked/.test(statistic.constraint) ? "Average" :
-                            /CS|AR|OD|HP|SR|Keys/.test(statistic.constraint) ? "number of maps with" :
-                            "number of"
+                            /per|SR Ranked/.test(statistic.constraint) ? $t('ayim.statistics.average') :
+                            /CS|AR|OD|HP|SR|Keys/.test(statistic.constraint) ? $t('ayim.statistics.numberOfMapsWith') :
+                            $t('ayim.statistics.numberOf')
                         }}
                     </div>
 

@@ -6,7 +6,7 @@
         <template #sub-nav>
             <div class="ayim-comments__filter">
                 <search-bar
-                    placeholder="search for a mapper"
+                    :placeholder="$t('ayim.comments.search')"
                     @update:search="updateQuery($event)"
                 >
                     <toggle-button

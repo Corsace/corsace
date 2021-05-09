@@ -32,14 +32,7 @@
                 <p v-if="phase.startDate && phase.endDate">
                     {{ timeRange }}
                 </p>
-
-                <p>{{ $t('mca.main.message.1') }}</p>
-
-                <p>{{ $t('mca.main.message.2') }}</p>
-                                
-                <p>{{ $t('mca.main.message.3') }}</p>
-                                
-                <p>{{ $t('mca.main.message.4') }}</p>
+                <div v-html="$t(`mca.main.message.${$route.params.year}`)" />
             </div>
         </div>
 

@@ -27,7 +27,7 @@
                             {{ record.beatmapset.artist }}
                         </div>
                         <div class="ayim-mapset-record__description">
-                            hosted by | 
+                            {{ $t('mca.nom_vote.hosted') }} | 
                             <span class="ayim-text ayim-text--italic">
                                 {{ record.creator.username }}
                             </span>
