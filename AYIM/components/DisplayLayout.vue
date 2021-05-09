@@ -118,10 +118,6 @@ export default class DisplayLayout extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
 
-// .ayim-mode-container {
-//     padding-right: 25px;
-// }
-
 .ayim-record-nav {
     @extend %flex-box;
     justify-content: space-between;
@@ -198,18 +194,27 @@ export default class DisplayLayout extends Vue {
     &--lg {
         font-size: $font-lg;
         text-shadow: $text-shadow;
+        @include breakpoint(mobile) {
+            font-size: $font-base;
+        }
     }
 
     &--xl {
         font-size: $font-xl;
         text-shadow: $text-shadow-lg;
         font-weight: 500;
+        @include breakpoint(mobile) {
+            font-size: $font-lg;
+        }
     }
 
     &--xxl {
         font-size: $font-xxl;
         text-shadow: $text-shadow-lg;
         font-weight: 500;
+        @include breakpoint(mobile) {
+            font-size: $font-xl;
+        }
     }
 
     &--italic {
