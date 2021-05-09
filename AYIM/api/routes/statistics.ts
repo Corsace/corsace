@@ -323,6 +323,8 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
             totalSets,
             totalDiffs,
         ],
+        sliders: [totalSliders, valueToFixed(avgSlidersPerMapset), valueToFixed(avgSlidersPerDiff)],
+        circles: [totalCircles, valueToFixed(avgCirclesPerMapset), valueToFixed(avgCirclesPerDiff)],
         difficulties: [
             valueToFixed(setsToDifficulties),
             totalEasies,
@@ -337,8 +339,6 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
         approachRate: AR,
         overallDifficulty: OD,
         hpDrain: HP,
-        sliders: [totalSliders, valueToFixed(avgSlidersPerMapset), valueToFixed(avgSlidersPerDiff)],
-        circles: [totalCircles, valueToFixed(avgCirclesPerMapset), valueToFixed(avgCirclesPerDiff)],
     };
 
     if (modeId === ModeDivisionType.fruits || ModeDivisionType.standard)
