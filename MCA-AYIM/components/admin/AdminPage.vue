@@ -2,13 +2,13 @@
     <div class="admin">
         <div class="admin__section">
             <button 
-                class="admin__button admin__add button"
+                class="button admin__button button__add"
                 @click="showYearModal = !showYearModal"
             >
                 add
             </button>
             <button 
-                class="admin__button admin__remove button" 
+                class="button admin__button button__remove" 
                 @click="deleteYear"
             >
                 remove
@@ -35,13 +35,13 @@
             class="admin__section"
         >
             <button
-                class="admin__button admin__add button" 
+                class="button admin__button button__add" 
                 @click="showCategoryModal = !showCategoryModal"
             >
                 add
             </button>
             <button 
-                class="admin__button admin__remove button"
+                class="button admin__button button__remove"
                 @click="deleteCategory"
             >
                 remove
@@ -234,16 +234,6 @@ export default class AdminPage extends Vue {
     margin: 12px;
 
     @include transition;
-}
-
-.admin__add {
-    color: rgba(0, 255, 0, 0.6);
-    text-shadow: 0 0 4px rgba(0, 255, 0, 0.6);
-}
-
-.admin__remove {
-    color: rgba(255, 0, 0, 0.6);
-    text-shadow: 0 0 4px rgba(255, 0, 0, 0.6);
 }
 
 .admin__collapsible {

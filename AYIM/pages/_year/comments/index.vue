@@ -9,7 +9,6 @@
                     placeholder="search for a mapper"
                     @update:search="updateQuery($event)"
                 >
-
                     <toggle-button
                         :options="userOptions"
                         @change="changeOption"
@@ -19,11 +18,10 @@
                         :options="orderOptions"
                         @change="changeOrder"
                     />
-
                 </search-bar>
             </div>
             <div
-                v-if="info"
+                v-if="showInfo"
                 class="info"
             >
                 {{ $t('ayim.comments.info') }}
@@ -73,7 +71,7 @@ import { MCA } from "../../../../Interfaces/mca";
     components: {
         DisplayLayout,
         SearchBar,
-        ToggleButton
+        ToggleButton,
     },
     head () {
         return {
@@ -93,12 +91,8 @@ export default class Comments extends Vue {
     userOptions = ["id", "alph"];
     orderOptions = ["asc", "desc"];
     
-    get info (): string {
-        if (new Date() < this.mca.results) {
-            return `All comments become public after MCA results date! You can submit your own comments now`;
-        }
-
-        return "";
+    get showInfo (): boolean {
+        return new Date() < this.mca.results;
     }
 
     @Watch("selectedMode")
@@ -125,7 +119,7 @@ export default class Comments extends Vue {
         await this.getMappers();
     }
 
-    async getMappers (replace: boolean = true) {
+    async getMappers (replace = true) {
         const { data } = await this.$axios.get(`/api/mappers/search?skip=${replace ? 0 : this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&option=${this.userOption}&order=${this.orderOption.toUpperCase()}&text=${this.text}`);
 
         if (data.error)

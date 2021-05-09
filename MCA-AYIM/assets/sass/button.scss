@@ -56,5 +56,15 @@
         font-weight: 500;
     }
 
+    &__add {
+        color: rgba(0, 255, 0, 0.6);
+        text-shadow: 0 0 4px rgba(0, 255, 0, 0.6);
+    }
+    
+    &__remove {
+        color: rgba(255, 0, 0, 0.6);
+        text-shadow: 0 0 4px rgba(255, 0, 0, 0.6);
+    }
+
     @include mode-text-color;
 }
