@@ -63,13 +63,16 @@
             <div class="section-info">
                 <div class="info-container">
                     <div class="info-warning">
-                        <template v-for="i in 4">
+                        <template v-for="i in 10">
                             <img
                                 :key="i"
                                 class="info-warning__lines"
                                 src="../../Assets/img/main/lines.png"
                             >
-                            <div :key="i + '-text'">
+                            <div 
+                                :key="i + '-text'"
+                                class="info-warning__text"
+                            >
                                 {{ $t('main.index.underConstruction') }}
                             </div>
                         </template>
@@ -81,13 +84,16 @@
                         {{ $t('main.index.theTeam') }}
                     </h2>
                     <div class="info-warning">
-                        <template v-for="i in 4">
+                        <template v-for="i in 10">
                             <img
                                 :key="i"
                                 class="info-warning__lines"
                                 src="../../Assets/img/main/lines.png"
                             >
-                            <div :key="i + '-text'">
+                            <div 
+                                :key="i + '-text'"
+                                class="info-warning__text"
+                            >
                                 {{ $t('main.index.underConstruction') }}
                             </div>
                         </template>
@@ -233,6 +239,15 @@ $dark-gray: #242424;
 $gray: #343434;
 $pink: #e98792;
 
+@keyframes leftscroll {
+    from {
+        left: 0%;
+    }
+    to {
+        left: 18%;
+    }
+}
+
 .layout {
     height: 100%;
     display: flex;
@@ -352,6 +367,7 @@ $pink: #e98792;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: center;
     padding: 20px 40px;
 }
 
@@ -367,9 +383,16 @@ $pink: #e98792;
     overflow: hidden;
     white-space: nowrap;
 
+    width: 80%;
+
     &__lines {
         max-height: 15px;
         margin: 0 10px;
+    }
+
+    &__lines, &__text {
+        position: relative;
+        animation: leftscroll 4s infinite linear;
     }
 }
 
