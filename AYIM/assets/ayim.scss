@@ -7,14 +7,14 @@
     position: absolute;
     z-index: 100;
 
-    @include breakpoint(mobile) {
-        flex-wrap: wrap;
-    }
-
     margin-top: 10px;
     margin-left: 30px;
     @include breakpoint(laptop) {
         margin-top: 25px;
+    }
+    @include breakpoint(mobile) {
+        width: 100%;
+        margin-left: 0;
     }
     
     &__item {
