@@ -43,7 +43,7 @@ votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), 
 
     if (
         !category.isRequired && 
-        !votes.some(v => v.category.name === "Grand Award")
+        !votes.some(v => v.category.name === "grandAward" && v.category.type === (category.type === CategoryType.Beatmapsets ? CategoryType.Beatmapsets : CategoryType.Users))
     ) {
         throw "Please vote in the Grand Award categories first!";
     }

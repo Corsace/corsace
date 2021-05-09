@@ -45,7 +45,7 @@ nominationsRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomin
     });
     if (
         !category.isRequired && 
-        !nominations.some(nom => nom.category.name === "Grand Award" && nom.category.type === (category.type === CategoryType.Beatmapsets ? CategoryType.Beatmapsets : CategoryType.Users))
+        !nominations.some(nom => nom.category.name === "grandAward" && nom.category.type === (category.type === CategoryType.Beatmapsets ? CategoryType.Beatmapsets : CategoryType.Users))
     ) {
         throw "Please nominate in the Grand Award categories first!";
     }
