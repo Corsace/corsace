@@ -141,6 +141,7 @@ export default class Comments extends Vue {
 .ayim-user {
     @extend %ayim-record;
     align-items: center;
+    height: fit-content;
 
     &__avatar {
         width: 100px;
