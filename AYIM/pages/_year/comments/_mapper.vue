@@ -59,7 +59,7 @@
                 v-if="info"
                 class="info"
             >
-                {{ $t('ayim.comments.info') }}
+                {{ info }}
             </div>
         </template>
         
@@ -234,12 +234,18 @@ export default class MapperComments extends Vue {
     }
     
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     
     margin-top: 10px;
     margin-bottom: 10px;
     
     min-height: 80px;
+    
+    @include breakpoint(laptop) {
+        flex-wrap: nowrap;
+        justify-content: start;
+    }
 
     &__image {
         @extend %background-image;
@@ -255,6 +261,7 @@ export default class MapperComments extends Vue {
 
     &__comment {
         @extend %ayim-record;
+        width: 100%;
     }
 
     & > .button {
