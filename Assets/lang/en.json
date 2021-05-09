@@ -71,14 +71,21 @@
             "lowestAvgSr": "LOWEST AVG SR",
             "mappers": "MAPPERS"
         },
+        "statistics": {
+            "numberOf": "number of",
+            "numberOfMapsWith": "number of maps with",
+            "average": "average"
+        },
         "comments": {
             "name": "COMMENTS",
             "info": "All comments become public after this MCA's results are out! You can submit your own comments until then.",
+            "search": "search for a mapper",
             "viewSubmit": "view/submit comments",
+            "writeHere": "Write a new comment for this mapper here!",
             "update": "Update",
             "remove": "Remove",
             "create": "Create",
-            "login": "Login to create",
+            "login": "Login to create a comment!",
             "visible": "(not visible yet)"
         }
     },
@@ -103,10 +110,8 @@
             "voteNow": "vote now !",
             "daysLeft": "days left",
             "message": {
-                "1": "Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!",
-                "2": "Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community in comparison to Community Choice!",
-                "3": "This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!",
-                "4": "We hope as many participants as possible take part in this event!"
+                "2019": "<p>Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community in comparison to Community Choice!</p><p>This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!</p><p>We hope as many participants as possible take part in this event!</p>",
+                "2020": "Hii"
             },
             "categories": {
                 "map": "map categories",

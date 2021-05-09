@@ -68,12 +68,20 @@
             "highestAvgSr": "",
             "leastFavs": "",
             "leastPlayed": "",
-            "lowestAvgSr": ""
+            "lowestAvgSr": "",
+            "mappers": ""
+        },
+        "statistics": {
+            "numberOf": "number of",
+            "numberOfMapsWith": "number of maps with",
+            "average": "average"
         },
         "comments": {
             "name": "",
             "info": "",
+            "search": "",
             "viewSubmit": "",
+            "writeHere": "",
             "update": "",
             "remove": "",
             "create": "",
@@ -102,10 +110,8 @@
             "voteNow": "",
             "daysLeft": "",
             "message": {
-                "1": "",
-                "2": "",
-                "3": "",
-                "4": ""
+                "2019": "",
+                "2020": ""
             },
             "categories": {
                 "map": "",
