@@ -18,14 +18,19 @@
     }
     
     &__item {
-        margin-left: 15px;
-        margin-right: 15px;
+        margin: 0 15px;
+        @include breakpoint(mobile) {
+            margin: 15px 0;
+        }
     }
 
     &__front {
         display: flex;
         justify-content: space-around;
         position: relative;
+        @include breakpoint(mobile) {
+            flex-direction: column;
+        }
     }
 }
 
