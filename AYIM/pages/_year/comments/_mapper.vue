@@ -55,12 +55,14 @@
                 </button>
             </div>
 
-            <div
-                v-if="info"
-                class="info"
-            >
-                {{ info }}
-            </div>
+            <transition name="fade">
+                <div
+                    v-if="info"
+                    class="info"
+                >
+                    {{ info }}
+                </div>
+            </transition>
         </template>
         
         <div class="ayim-comment-layout">
@@ -177,7 +179,9 @@ export default class MapperComments extends Vue {
         if (data.error) {
             this.info = data.error;
         } else {
-            this.comments.push(data);
+            this.info = "Created comment!";
+            this.removeInfo();
+            this.comments = [data, ...this.comments];
         }
     }
 
@@ -198,7 +202,8 @@ export default class MapperComments extends Vue {
         if (data.error) {
             this.info = data.error;
         } else {
-            this.info = "ok";
+            this.info = "Updated comment!";
+            this.removeInfo();
             this.$set(this.comments, this.ownCommentIndex, data);
         }
     }
@@ -210,7 +215,8 @@ export default class MapperComments extends Vue {
             return;
         }
 
-        this.info = "";
+        this.info = "Removed comment!";
+        this.removeInfo();
         const { data } = await this.$axios.post(`/api/comments/${this.ownComment.ID}/remove`);
             
         if (data.error) {
@@ -218,6 +224,10 @@ export default class MapperComments extends Vue {
         } else {
             this.comments.splice(this.ownCommentIndex, 1);
         }
+    }
+
+    async removeInfo() {
+        setTimeout(() => this.info = "", 5000);
     }
 }
 </script>
