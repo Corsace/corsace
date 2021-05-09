@@ -11,7 +11,7 @@ import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { User } from "../../../Models/user";
 import { isEligibleFor } from "../middleware";
 
-export default function stageSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[] | { error: string }>) {
+export default function stageSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
     return async (ctx: ParameterizedContext) => {
         let list: BeatmapsetInfo[] | UserCondensedInfo[] = [];
         let setList: BeatmapsetInfo[] = [];
@@ -33,13 +33,17 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
         
         // Check if this is the initial call, add currently nominated beatmaps/users at the top of the list
         if (skip === 0) {
-            let objects = await initialCall(ctx, category) as Vote[]; // doesnt really matter the type in this case
-            objects = objects.filter(o => o.category.ID === category.ID);
+            try {
+                let objects = await initialCall(ctx, category) as Vote[]; // doesnt really matter the type in this case
+                objects = objects.filter(o => o.category.ID === category.ID);
 
-            if (category.type == CategoryType.Beatmapsets)
-                setList = objects.map(o => o.beatmapset?.getInfo(true) as BeatmapsetInfo);  
-            else if (category.type == CategoryType.Users)
-                userList = objects.map(o => o.user?.getCondensedInfo(true) as UserCondensedInfo);
+                if (category.type == CategoryType.Beatmapsets)
+                    setList = objects.map(o => o.beatmapset?.getInfo(true) as BeatmapsetInfo);  
+                else if (category.type == CategoryType.Users)
+                    userList = objects.map(o => o.user?.getCondensedInfo(true) as UserCondensedInfo);
+            } catch (e) {
+                if (e) return ctx.body = { error: e };
+            }
         }
         
         // Make sure user is eligible to nominate in this mode

@@ -121,6 +121,10 @@ export default class Index extends Vue {
     align-items: flex-end;
     flex: 0 0 100%;
     width: 100%;
+
+    @include breakpoint(mobile) {
+        margin-bottom: 0;
+    }
 }
 
 .voting-date {
@@ -209,9 +213,13 @@ export default class Index extends Vue {
     display: flex;
     flex-direction: column;
     padding-top: 30px;
+
+    @include breakpoint(mobile) {
+        padding-top: 0;
+    }
 }
 
-@include breakpoint(desktop) {
+@include breakpoint(laptop) {
     .left-side, .right-side {
         flex: 0 0 50%;
         max-width: 50%;

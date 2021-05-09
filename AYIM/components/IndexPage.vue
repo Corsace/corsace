@@ -23,7 +23,7 @@
             <p>Select your preferred mode with the icons below to get started</p>
         </div>
         
-        <div class="ayim-nav">
+        <div class="ayim-nav__front">
             <nuxt-link
                 :to="`/${mca.year}/mapsets/records`"
                 class="ayim-nav__item button"
@@ -63,6 +63,7 @@ export default class IndexPage extends Vue {
 
 <style lang="scss">
 @import '@s-sass/_variables';
+@import '@s-sass/_mixins';
 
 .general-info {
     display: flex;
@@ -70,9 +71,19 @@ export default class IndexPage extends Vue {
     justify-content: space-between;
     border-radius: 15px 0 0 15px; 
     background-color: $bg-dark; 
-    padding: 30px 70px;
+    padding: 30px;
     margin-bottom: 30px;
     height: 100%;
+    
+    @include breakpoint(laptop) {
+        padding: 30px 70px;
+    }
+
+    &__text {
+        @include breakpoint(mobile) {
+            font-size: $font-sm;
+        }
+    }
 }
 
 </style>

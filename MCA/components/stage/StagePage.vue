@@ -28,7 +28,7 @@
                     />
                     <div 
                         class="category__head-shape-small"
-                        :class="`category__headShape--${selectedMode}`"
+                        :class="`category__head-shape--${selectedMode}`"
                     />
                     <div 
                         class="category__head-shape-small2"
@@ -126,20 +126,20 @@ export default class StateContent extends Vue {
 }
 
 .category__count {
-    &-container {
-        display: none;
-        
-        @include breakpoint(laptop) {
-            display: block;
-        }
-    }
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 5px;
+    margin-right: 10px;
     flex: 0;
     display: flex;
+    flex-direction: column;
 
     align-items: center;
-    height: fit-content;
+    justify-content: space-evenly;
+    height: 100%;
+
+    @include breakpoint(laptop) {
+        flex-direction: row;
+        height: fit-content;
+    }
 
     position: relative;
 
@@ -166,14 +166,24 @@ export default class StateContent extends Vue {
         width: 5px;
         border-bottom: none;
         box-shadow: 0 0 2px white;
+
+        display: none;
+        
+        @include breakpoint(laptop) {
+            display: block;
+        }
     }
 
     &-candidates {
         padding: 6px;
         background-color: white;
-        border-radius: 0 25px 25px 0;
-        position: absolute;
-        left: 97%;
+        border-radius: 25px;
+        
+        @include breakpoint(laptop) {
+            border-radius: 0 25px 25px 0;
+            position: absolute;
+            left: 97%;
+        }
 
         font-size: 1.2rem;
         line-height: 0.7;
@@ -185,9 +195,14 @@ export default class StateContent extends Vue {
 }
 
 .category__general {
-    flex: 3 1 50%;
+    flex: 3 1 100%;
     display: flex;
     flex-direction: column;
+    height: 100%;
+
+    @include breakpoint(laptop) {
+        flex: 3 1 50%;
+    }
 }
 
 .category__head {
@@ -205,26 +220,55 @@ export default class StateContent extends Vue {
     overflow: hidden;
     z-index: -1;
 
+    @include breakpoint(mobile) {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
     @include mode-text-color;
 
     &-title {
         font-weight: bold;
-        font-size: 4.5rem;
+        font-size: 2rem;
+        @include breakpoint(tablet) {
+            font-size: 3.6rem;
+        }
+        @include breakpoint(laptop) {
+            font-size: 2.5rem;
+        }
+        @include breakpoint(desktop) {
+            font-size: 4.1rem;
+        }
 
         grid-column: 2;
         justify-self: end;
         align-self: end;
 
+        @include breakpoint(mobile) {
+            grid-column: 1;
+            justify-self: center;
+            align-self: center;
+        }
+
         @include transition;
     }
 
     &-desc {
-        font-size: $font-lg;
+        font-size: $font-base;
+        @include breakpoint(tablet) {
+            font-size: $font-lg;
+        }
         font-style: italic;
 
         grid-column: 2;
         justify-self: end;
-
+        @include breakpoint(mobile) {
+            grid-column: 1;
+            justify-self: center;
+            align-self: center;
+        }
         @include transition;
     }
 
@@ -235,6 +279,10 @@ export default class StateContent extends Vue {
 
         grid-row: 1 / 3;
         width: 206px;
+
+        @include breakpoint(mobile) {
+            display: none;
+        }
     }
 
     &-shape {
@@ -258,16 +306,16 @@ export default class StateContent extends Vue {
             width: 300px;
 
             right: 30%;
-            top: -150%;
+            top: -200%;
         }
 
         &-small {
-            right: 43%;
-            top: 48%;   
+            right: 31%;
+            top: 20%;
         }
 
         &-small2 {
-            right: 3%;
+            right: 5%;
             top: 4%;
         }
     }
@@ -276,9 +324,8 @@ export default class StateContent extends Vue {
 .category__selection {
     width: 100%;
     height: 100vh;
-
     @include breakpoint(tablet) {
-        height: 40vh;
+        height: 45vh;
     }
 
     &-search {
@@ -301,7 +348,13 @@ export default class StateContent extends Vue {
         margin-bottom: 0;
         position: relative;
 
-        mask-image: linear-gradient(to top, transparent 0%, black 25%);
+        mask-image: linear-gradient(to top, transparent 10%, black 25%);
+        @include breakpoint(tablet) {
+            mask-image: linear-gradient(to top, transparent 25%, black 50%);
+        }
+        @include breakpoint(laptop) {
+            mask-image: linear-gradient(to top, transparent 0%, black 25%);
+        }
 
         &::-webkit-scrollbar {
             display: none;

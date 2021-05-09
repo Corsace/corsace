@@ -21,7 +21,7 @@
                 {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
             </nuxt-link>
             <a
-                v-else-if="phase"
+                v-else-if="phase && loggedInUser"
                 class="vote-now vote-now--inactive"
                 :class="[
                     `vote-now--${selectedMode}`,
@@ -31,6 +31,7 @@
             >
                 {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
             </a>
+            <div v-else />
         </div>
 
         <div class="categories">
@@ -71,6 +72,7 @@ import Collapsible from "../../MCA-AYIM/components/Collapsible.vue";
 
 import { MCA, Phase } from "../../Interfaces/mca";
 import { CategoryInfo } from "../../Interfaces/category";
+import { UserMCAInfo } from "../../Interfaces/user";
 
 interface FullFrontInfo {
     standard: FrontInfo;
@@ -95,6 +97,7 @@ export default class IndexContent extends Vue {
 
     @State mca!: MCA;
     @State selectedMode!: string;
+    @State loggedInUser!: UserMCAInfo;
     @Getter phase!: Phase | null;
     @Getter isEligibleFor!: (mode: string) => boolean;
     @Mutation toggleGuestDifficultyModal!: boolean;

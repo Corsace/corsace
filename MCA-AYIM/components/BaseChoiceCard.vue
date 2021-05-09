@@ -96,15 +96,23 @@ export default class BaseChoiceCard extends Vue {
 .choice {
     @extend %flex-box;
     padding: 0;
-    width: 32%;
     box-shadow: 0 0 8px rgba(255,255,255,0.25);
-    transition: all 0.2s;
+    cursor: pointer;
+
+    @include transition();
 
     &:hover {
         box-shadow: 0 0 12px rgba(255,255,255,0.75);
     }
 
-    cursor: pointer;
+    width: calc(100vw - 113px);
+    @include breakpoint(tablet) {
+        width: 48.1%;
+    }
+    @include breakpoint(desktop) {
+        width: 31.9%;
+    }
+
 }
 
 .choice__voting {
@@ -138,11 +146,11 @@ export default class BaseChoiceCard extends Vue {
     justify-content: flex-end;
     align-items: center;
 
-    padding-bottom: 4%;
+    padding-bottom: 15px;
 
     &-box {
-        height: 35px;
-        width: 35px;
+        height: 30px;
+        width: 30px;
     
         border: 4px solid rgba(255, 255, 255, 0.3); 
         border-radius: 5px;
@@ -191,6 +199,10 @@ export default class BaseChoiceCard extends Vue {
     &-artist {
         text-shadow: 0 0 4px white;
         font-size: $font-base;
+        @extend %text-wrap;
+    }
+
+    &-host {
         @extend %text-wrap;
     }
 
