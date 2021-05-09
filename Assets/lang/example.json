@@ -29,7 +29,11 @@
             "statistics": "",
             "search": "",
             "numberof": "",
-            "numberwith": ""
+            "numberwith": "",
+            "message": {
+                "2019": "",
+                "2020": ""
+            }
         },
         "mapsets": {
             "name": "",

@@ -1,27 +1,9 @@
 <template>
     <div class="general-info">
-        <div class="general-info__text">
-            <p>Hello 2020.</p>
-
-            <p>A Year in Mapping has returned for 2019 to bring you etc etc etc</p>
-
-            <p>
-                sdasdsadasd<br>
-                asdsadsad
-            </p>
-
-            <p>
-                asdasdsadasdsad<br>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute 
-                irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia 
-                deserunt mollit anim id est laborum
-            </p>
-
-            <p>Select your preferred mode with the icons below to get started</p>
-        </div>
+        <div
+            v-html="$t(`ayim.main.message.${mca.year}`)" 
+            class="general-info__text" 
+        />
         
         <div class="ayim-nav__front">
             <nuxt-link
@@ -80,6 +62,7 @@ export default class IndexPage extends Vue {
     }
 
     &__text {
+        font-size: $font-lg;
         @include breakpoint(mobile) {
             font-size: $font-sm;
         }
