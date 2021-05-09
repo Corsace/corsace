@@ -27,13 +27,13 @@
                 <template v-if="loggedInUser">
                     <template v-if="ownComment">
                         <button
-                            class="button"
+                            class="button button__add"
                             @click="update"
                         >
                             {{ $t('ayim.comments.update') }}
                         </button>
                         <button
-                            class="button"
+                            class="button button__remove"
                             @click="remove"
                         >
                             {{ $t('ayim.comments.remove') }}
@@ -41,7 +41,7 @@
                     </template>
                     <button
                         v-else
-                        class="button"
+                        class="button button__add"
                         @click="create"
                     >
                         {{ $t('ayim.comments.create') }}
