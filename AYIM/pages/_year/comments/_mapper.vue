@@ -199,7 +199,7 @@ export default class MapperComments extends Vue {
             this.info = data.error;
         } else {
             this.info = "ok";
-            this.comments[this.ownCommentIndex] = data;
+            this.$set(this.comments, this.ownCommentIndex, data);
         }
     }
 
