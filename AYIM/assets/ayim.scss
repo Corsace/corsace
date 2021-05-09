@@ -1,9 +1,39 @@
+@import '@s-sass/_variables';
+@import '@s-sass/_mixins';
+
 .ayim-nav {
     display: flex;
     justify-content: space-around;
+    position: absolute;
+    z-index: 100;
+
+    @include breakpoint(mobile) {
+        flex-wrap: wrap;
+    }
+
+    margin-top: 10px;
+    margin-left: 30px;
+    @include breakpoint(laptop) {
+        margin-top: 25px;
+    }
     
     &__item {
         margin-left: 15px;
         margin-right: 15px;
+    }
+
+    &__front {
+        display: flex;
+        justify-content: space-around;
+        position: relative;
+    }
+}
+
+.ayim-wrapper {
+    height: 100%;
+    width: 100%;
+    padding-top: 15px;
+    @include breakpoint(mobile) {
+        padding-top: 40px;
     }
 }

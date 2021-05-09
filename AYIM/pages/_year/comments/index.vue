@@ -44,7 +44,7 @@
                 :href="`https://osu.ppy.sh/users/${mapper.osu.userID}`" 
                 class="ayim-user__username ayim-text ayim-text--xl"
             >
-                {{ mapper.osu.username }}
+                {{ mapper.osu.username.length > 9 ? mapper.osu.username.slice(0, 9) + "..." : mapper.osu.username }}
             </a>
             
             <div class="ayim-user__links">

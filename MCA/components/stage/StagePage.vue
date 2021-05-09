@@ -220,6 +220,13 @@ export default class StateContent extends Vue {
     overflow: hidden;
     z-index: -1;
 
+    @include breakpoint(mobile) {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
     @include mode-text-color;
 
     &-title {
@@ -239,6 +246,12 @@ export default class StateContent extends Vue {
         justify-self: end;
         align-self: end;
 
+        @include breakpoint(mobile) {
+            grid-column: 1;
+            justify-self: center;
+            align-self: center;
+        }
+
         @include transition;
     }
 
@@ -251,7 +264,11 @@ export default class StateContent extends Vue {
 
         grid-column: 2;
         justify-self: end;
-
+        @include breakpoint(mobile) {
+            grid-column: 1;
+            justify-self: center;
+            align-self: center;
+        }
         @include transition;
     }
 
@@ -262,6 +279,10 @@ export default class StateContent extends Vue {
 
         grid-row: 1 / 3;
         width: 206px;
+
+        @include breakpoint(mobile) {
+            display: none;
+        }
     }
 
     &-shape {
@@ -290,7 +311,7 @@ export default class StateContent extends Vue {
 
         &-small {
             right: 31%;
-            top: 20%;   
+            top: 20%;
         }
 
         &-small2 {

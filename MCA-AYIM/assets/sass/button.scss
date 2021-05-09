@@ -14,10 +14,16 @@
     text-shadow: 0 0 4px white;
     text-transform: uppercase;
     color: white;
+    @include breakpoint(mobile) {
+        font-size: $font-base;
+    }
 
     min-width: 80px;
     @include breakpoint(tablet) {
         min-width: 165px;
+    }
+    @include breakpoint(mobile) {
+        min-width: 50px;
     }
 
     display: flex;

@@ -1,72 +1,71 @@
 <template>
     <div>
-        <mode-switcher :hide-phase="true">
-            <template #title>
-                <div class="ayim-nav">
-                    <nuxt-link
-                        :to="`/${mca.year}/mapsets/records`"
-                        class="ayim-nav__item button"
-                        :class="getNavClass('mapsets')"
+        <div class="ayim-nav">
+            <nuxt-link
+                :to="`/${mca.year}/mapsets/records`"
+                class="ayim-nav__item button"
+                :class="getNavClass('mapsets')"
+            >
+                {{ $t('ayim.mapsets.name') }}
+            </nuxt-link>
+            <nuxt-link
+                :to="`/${mca.year}/mappers/records`"
+                class="ayim-nav__item button"
+                :class="getNavClass('mappers')"
+            >
+                {{ $t('ayim.mappers.name') }}
+            </nuxt-link>
+            <nuxt-link
+                :to="`/${mca.year}/comments`"
+                class="ayim-nav__item button"
+                :class="getNavClass('comments')"
+            >
+                {{ $t('ayim.comments.name') }}
+            </nuxt-link>
+        </div>
+        <div class="ayim-wrapper">
+            <mode-switcher :hide-phase="true">
+                <div class="ayim-mode-container">
+                    <div
+                        v-if="includeSubnav"
+                        class="ayim-record-nav"
                     >
-                        {{ $t('ayim.mapsets.name') }}
-                    </nuxt-link>
-                    <nuxt-link
-                        :to="`/${mca.year}/mappers/records`"
-                        class="ayim-nav__item button"
-                        :class="getNavClass('mappers')"
-                    >
-                        {{ $t('ayim.mappers.name') }}
-                    </nuxt-link>
-                    <nuxt-link
-                        :to="`/${mca.year}/comments`"
-                        class="ayim-nav__item button"
-                        :class="getNavClass('comments')"
-                    >
-                        {{ $t('ayim.comments.name') }}
-                    </nuxt-link>
-                </div>
-            </template>
-
-            <div class="ayim-mode-container">
-                <div
-                    v-if="includeSubnav"
-                    class="ayim-record-nav"
-                >
-                    <div class="ayim-record-nav__title">
-                        {{ $t(`ayim.${navTitle}.name`) }}
+                        <div class="ayim-record-nav__title">
+                            {{ $t(`ayim.${navTitle}.name`) }}
+                        </div>
+                        <nuxt-link
+                            :to="`/${mca.year}/${routeType}/records`"
+                            class="ayim-record-nav__item"
+                            :class="getSubnavClass('records')"
+                        >
+                            {{ $t('ayim.main.records') }}
+                        </nuxt-link>
+                        <nuxt-link
+                            :to="`/${mca.year}/${routeType}/statistics`"
+                            class="ayim-record-nav__item"
+                            :class="getSubnavClass('statistics')"
+                        >
+                            {{ $t('ayim.main.statistics') }}
+                        </nuxt-link>
                     </div>
-                    <nuxt-link
-                        :to="`/${mca.year}/${routeType}/records`"
-                        class="ayim-record-nav__item"
-                        :class="getSubnavClass('records')"
-                    >
-                        {{ $t('ayim.main.records') }}
-                    </nuxt-link>
-                    <nuxt-link
-                        :to="`/${mca.year}/${routeType}/statistics`"
-                        class="ayim-record-nav__item"
-                        :class="getSubnavClass('statistics')"
-                    >
-                        {{ $t('ayim.main.statistics') }}
-                    </nuxt-link>
-                </div>
 
-                <slot
-                    v-else
-                    name="sub-nav"
-                />
-
-                <div class="ayim-layout-scroller">
-                    <div class="ayim-layout">
-                        <slot />
-                    </div>
-                    <scroll-bar
-                        selector=".ayim-layout"
-                        @bottom="$emit('scroll-bottom')"
+                    <slot
+                        v-else
+                        name="sub-nav"
                     />
+
+                    <div class="ayim-layout-scroller">
+                        <div class="ayim-layout">
+                            <slot />
+                        </div>
+                        <scroll-bar
+                            selector=".ayim-layout"
+                            @bottom="$emit('scroll-bottom')"
+                        />
+                    </div>
                 </div>
-            </div>
-        </mode-switcher>
+            </mode-switcher>
+        </div>
     </div>
 </template>
 
@@ -119,9 +118,9 @@ export default class DisplayLayout extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
 
-.ayim-mode-container {
-    padding-right: 25px;
-}
+// .ayim-mode-container {
+//     padding-right: 25px;
+// }
 
 .ayim-record-nav {
     @extend %flex-box;
@@ -132,8 +131,15 @@ export default class DisplayLayout extends Vue {
     font-size: $font-lg;
     flex-wrap: wrap;
 
+    @include breakpoint(mobile) {
+        flex-direction: column;
+    }
+
     &__title {
         flex: 2;
+        @include breakpoint(mobile) {
+            display: none;
+        }
     }
 
     &__item {

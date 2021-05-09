@@ -23,7 +23,7 @@
             <p>Select your preferred mode with the icons below to get started</p>
         </div>
         
-        <div class="ayim-nav">
+        <div class="ayim-nav__front">
             <nuxt-link
                 :to="`/${mca.year}/mapsets/records`"
                 class="ayim-nav__item button"

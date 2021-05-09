@@ -93,8 +93,13 @@ $border-margin: 5px;
 .mode-title-container {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     width: 100%;
+
+    margin-bottom: $mode-title-padding-y;
+    @include breakpoint(mobile) {
+        margin-bottom: $mode-title-padding-y + 18px;
+    }
 }
 
 .mode-title {
@@ -105,15 +110,15 @@ $border-margin: 5px;
 
     white-space: nowrap;
 
-    margin: #{$mode-title-padding-y + 25px} 25px #{$mode-title-padding-y} auto;
+    margin: #{$mode-title-padding-y + 25px} 25px 0 auto;
     @include breakpoint(mobile) {
         font-size: $font-base;
         height: 0;
-        margin: #{$mode-title-padding-y} 25px 28px auto;
+        margin: #{$mode-title-padding-y} 25px 0 auto;
     }
     @include breakpoint(laptop) {
         font-size: 2.25rem;
-        margin: #{$mode-title-padding-y} 25px #{$mode-title-padding-y} auto;
+        margin: #{$mode-title-padding-y} 25px 0 auto;
     }
 }
 
