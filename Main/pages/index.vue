@@ -241,10 +241,10 @@ $pink: #e98792;
 
 @keyframes leftscroll {
     from {
-        left: 0%;
+        left: 0px;
     }
     to {
-        left: 18%;
+        left: 206.297px;
     }
 }
 
