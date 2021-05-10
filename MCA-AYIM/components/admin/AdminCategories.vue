@@ -9,7 +9,7 @@
 
         <data-table
             :fields="fields"
-            :items="categories"
+            :items="activeCategories"
         >
             <template #actions="{ item }">
                 <button
@@ -38,6 +38,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { State } from "vuex-class";
 
 import AdminModalCategory from "./AdminModalCategory.vue";
 import DataTable, { Field } from "./DataTable.vue";
@@ -53,6 +54,8 @@ import { CategoryInfo } from "../../../Interfaces/category";
 })
 export default class AdminCategories extends Vue {
 
+    @State selectedMode!: string;
+    
     showModal = false;
     categories: CategoryInfo[] = [];
     selectedCategory: CategoryInfo | null = null;
@@ -67,6 +70,10 @@ export default class AdminCategories extends Vue {
         { key: "mode", label: "Mode" },
         { key: "isFiltered", label: "Has Filters" },
     ];
+
+    get activeCategories (): CategoryInfo[] {
+        return this.categories.filter(x => x.mode === this.selectedMode);
+    }
 
     async mounted () {
         await this.getCategories();
