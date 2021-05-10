@@ -21,7 +21,7 @@
                 {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
             </nuxt-link>
             <a
-                v-else-if="phase"
+                v-else-if="phase && loggedInUser"
                 class="vote-now vote-now--inactive"
                 :class="[
                     `vote-now--${selectedMode}`,
@@ -31,6 +31,7 @@
             >
                 {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
             </a>
+            <div v-else />
         </div>
 
         <div class="categories">
@@ -39,12 +40,16 @@
                 :title="$t('mca.main.categories.map')"
                 :list="beatmapCategories"
                 :active="true"
+                :categoryName="true"
+                :clickable="false"
             />
             <collapsible
                 class="categories__list"
                 :title="$t('mca.main.categories.user')"
                 :list="userCategories"
                 :active="true"
+                :categoryName="true"
+                :clickable="false"
             />
         </div>
             
@@ -63,10 +68,11 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, State } from "vuex-class";
 
-import Collapsible from "./Collapsible.vue";
+import Collapsible from "../../MCA-AYIM/components/Collapsible.vue";
 
 import { MCA, Phase } from "../../Interfaces/mca";
 import { CategoryInfo } from "../../Interfaces/category";
+import { UserMCAInfo } from "../../Interfaces/user";
 
 interface FullFrontInfo {
     standard: FrontInfo;
@@ -91,6 +97,7 @@ export default class IndexContent extends Vue {
 
     @State mca!: MCA;
     @State selectedMode!: string;
+    @State loggedInUser!: UserMCAInfo;
     @Getter phase!: Phase | null;
     @Getter isEligibleFor!: (mode: string) => boolean;
     @Mutation toggleGuestDifficultyModal!: boolean;
@@ -188,6 +195,7 @@ export default class IndexContent extends Vue {
 
 .ranked-sets {
     @extend %flex-box;
+    flex: 1 1 auto;
     align-items: center;
     justify-content: space-between;
 
@@ -224,6 +232,7 @@ export default class IndexContent extends Vue {
 
 .vote-now {
     @extend %flex-box;
+    flex: 1 1 auto;
     justify-content: flex-end;
     align-items: center;
 

@@ -13,7 +13,7 @@
             >
                 <div class="ayim-mapset-record__info">
                     <div class="ayim-text ayim-text--italic">
-                        number of
+                        {{ $t('ayim.statistics.numberOf') }}
                     </div>
                             
                     <div class="ayim-text ayim-text--xl">

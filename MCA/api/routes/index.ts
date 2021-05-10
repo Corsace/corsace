@@ -3,11 +3,10 @@ import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { discordGuild } from "../../../Server/discord";
-import { Config } from "../../../config";
+import { config } from "node-config-ts";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 
 const indexRouter = new Router();
-const config = new Config;
 const modeStaff = config.discord.roles.mca;
 
 indexRouter.get("/front", async (ctx) => {

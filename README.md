@@ -12,20 +12,32 @@ npm i
 
 ## Getting Started
 
-Duplicate `config.example.ts` and call the duplicate `config.ts`. Edit all parts as necessary. 
-The values in the constructor of `config.ts` will be referred to as `config` from now on.
+Duplicate `config/default.json` to `config/user/$USER.json`, `$USER` being your system username. Edit all parts as necessary. 
+The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
 
-### osu! API V1
+### osu! API
 
-`config.osuV1`
+`config.osu.v1.apiKey`
 
-You can obtain your osu! API V1 key at https://osu.ppy.sh/p/api/
+You can obtain your osu! API V1 key at https://osu.ppy.sh/p/api/]
+
+`config.osu.v2.clientId`
+`config.osu.v2.clientSecret`
+
+You will need to create a "New OAuth Application" at the bottom of https://osu.ppy.sh/home/account/edit.
+
+The callback URL should be set to:
+```
+config.corsace.publicUrl + /api/login/osu/callback
+```
 
 ### Database
 
 #### Setup
 
 `config.database`
+
+##### Manual MariaDB Setup
 
 You will need to install [MariaDB](https://mariadb.org/) and create an empty database, named whatever you like. 
 
@@ -37,22 +49,15 @@ MySQL> create database <new_db_name>;
 
 Make sure to update `config.database` to reflect your choice of database name and credentials.
 
-#### Initial Data
+##### Via Docker
 
-To have something in the database from the beginning (esp. for MCA/AYIM), it is a good idea to run 
-```
-npm run fetchMaps -- <year>
-``` 
-so that you have a list of beatmaps(ets) and users from the get go after setting up your config.
-Note: This can take a while! 2020 has over 100,000 maps to run through, and may take a few hours 
-depending on your machine and internet connection. 
-There is no shame in dipping out early with `Ctrl-C`.
+We are shipping a production-like `docker-compose.yml` file. You can start only the database service using: `docker-compose up -d database`
 
-Alternatively, after you create the database, run the command 
-```
-mysql -u <username> -p <new_database> < corsaceInit.sql
-``` 
-where `<username>` is your MariaDB username (such as `root` for example), and `<new_database>` is the name of the db you created. `corsaceInit.sql` is a pre-made DB which includes nothing but beatmaps from 2006 to 2020.
+The database will listen on `127.0.0.1:3306`, with `corsace` being the database name, username and password.
+
+#### Seeding the database
+
+Create and seed the whole Corsace database using: `npm run typeorm migration:run`
 
 ### Discord
 
@@ -92,9 +97,9 @@ Go to https://discord.com/developers/applications and create a "New Application"
 ###### Client
 You will need to add the "Client ID" and "Client Secret" to the config as follows:
 ```
-this.discord {
+discord: {
     ...,
-    clientID: "<Client ID>",
+    clientId: "<Client ID>",
     clientSecret: "<Client Secret>",
 }
 ```
@@ -126,38 +131,6 @@ This might also change based on which app you are working on.
 Head to the Bot section of the bot and copy your bot token. 
 Paste it into `config.discord.token`
 
-### osu! API V2
-
-#### Setup
-
-`config.ayim`
-`config.corsace`
-`config.invitational`
-`config.mca`
-`config.open`
-`config.<any other app>`
-
-You will need to create a "New OAuth Application" at the bottom of https://osu.ppy.sh/home/account/edit.
-
-For default local development, the callback URL should be set to:
-```
-http://localhost:8000/api/login/osu/callback
-```
-Note: You might need to change the port from 8000 to whatever your current app is using.
-
-Copy your Client ID and Client Secret to update the app configs as follows:
-```
-this.<app> = {
-    host: "localhost",
-    ...,
-    osuID: "<CLIENT ID>",
-    osuSecret: "<CLIENT SECRET>",
-};
-```
-
 #### Development
 
 Run `npm run dev`, if you only want to run one of the projects, refer to the scripts in `package.json`.
-
-Note: `npm run dev` can run into some concurrency issues. 
-Either try rerunning it or running the individual project scripts.

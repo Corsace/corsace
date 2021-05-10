@@ -15,6 +15,12 @@
             "@nuxt/types",
             "@nuxtjs/axios",
             "nuxt-i18n"
-        ]
-    }
+        ],
+        "lib": [
+            "esnext",
+            "esnext.asynciterable",
+            "dom"
+        ],
+        "sourceMap": true,
+    },
 }

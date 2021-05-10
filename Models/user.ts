@@ -8,7 +8,7 @@ import { UsernameChange } from "./usernameChange";
 import { Nomination } from "./MCA_AYIM/nomination";
 import { Vote } from "./MCA_AYIM/vote";
 import { Beatmapset } from "./beatmapset";
-import { Config } from "../config";
+import { config } from "node-config-ts";
 import { GuildMember } from "discord.js";
 import { discordGuild } from "../Server/discord";
 import { UserCondensedInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
@@ -17,7 +17,6 @@ import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 
 // General middlewares
-const config = new Config();
 
 export class OAuth {
 
@@ -134,12 +133,29 @@ export class User extends BaseEntity {
                 }))
                 .setParameter("criteria", `%${query.text}%`);
         }
+
+        // Check for search text
+        if (query.text) {
+            queryBuilder
+                .andWhere(new Brackets(qb => {
+                    qb.where("user.osuUsername LIKE :criteria")
+                        .orWhere("user.osuUserid LIKE :criteria")
+                        .orWhere("otherName.name LIKE :criteria");
+                }))
+                .setParameter("criteria", `%${query.text}%`);
+        }
+        
+        // Ordering
+        const ascDesc = query.order || "ASC";
+        let orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
+        if (query.option?.toLowerCase().includes("alph"))
+            orderMethod = "user_osuUsername";
             
         // Search
         return queryBuilder
             .skip(parseInt(query.skip))
             .take(50)
-            .orderBy("user_osuUsername", "DESC")
+            .orderBy(orderMethod, ascDesc)
             .getMany();
     }
 
@@ -208,7 +224,7 @@ export class User extends BaseEntity {
     public getCondensedInfo = function(this: User, chosen = false): UserCondensedInfo {
         return {
             corsaceID: this.ID,
-            avatar: this.osu.avatar + "?" + Math.round(Math.random() * 1000000),
+            avatar: this.osu.avatar,
             userID: this.osu.userID,
             username: this.osu.username,
             otherNames: this.otherNames.map(otherName => otherName.name),
@@ -228,7 +244,7 @@ export class User extends BaseEntity {
                 username: this.discord.username,
             },
             osu: {
-                avatar: this.osu.avatar + "?" + Math.round(Math.random() * 1000000),
+                avatar: this.osu.avatar,
                 userID: this.osu.userID,
                 username: this.osu.username,
                 otherNames: this.otherNames.map(otherName => otherName.name),

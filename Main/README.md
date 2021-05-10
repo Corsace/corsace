@@ -1,1 +1,1 @@
-Placeholder
+The repository for the main website of Corsace.

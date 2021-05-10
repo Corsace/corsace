@@ -5,31 +5,30 @@ import BodyParser from "koa-bodyparser";
 import Mount from "koa-mount";
 import passport from "koa-passport";
 import Session from "koa-session";
-import { Config } from "../config";
+import { config } from "node-config-ts";
 import OAuth2Strategy from "passport-oauth2";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import { User } from "../Models/user";
-import discordRouter from "./login/discord";
 import { discordPassport, osuPassport } from "./passportFunctions";
-import osuRouter from "./login/osu";
 import logoutRouter from "./logout";
 
 export class App {
 
     public koa = new Koa;
-    private config = new Config;
-    private subConfig = new Config;
     private hasCreatedConnection = false;
 
-    constructor (project: string) {
-        this.subConfig = this.config[project];
-
+    constructor () {
         // Cant use promise here cuz passport stops working... Errors inc
         this.initializeDb();
         this.setupPassport();
 
-        this.koa.keys = this.subConfig.keys;
-        this.koa.use(Session(this.koa));
+        this.koa.keys = config.koaKeys;
+        this.koa.proxy = true;
+        this.koa.use(Session({
+            domain: config.cookiesDomain,
+            secure: true,
+            httpOnly: true,
+        }, this.koa));
         this.koa.use(BodyParser());
         this.koa.use(passport.initialize());
         this.koa.use(passport.session());
@@ -50,8 +49,6 @@ export class App {
             }
         });
 
-        this.koa.use(Mount("/login/discord", discordRouter.routes()));
-        this.koa.use(Mount("/login/osu", osuRouter.routes()));
         this.koa.use(Mount("/logout", logoutRouter.routes()));
     }
 
@@ -83,23 +80,7 @@ export class App {
             this.hasCreatedConnection = true;
     
             // Connect to DB
-            const connection = await createConnection({
-                "name": "default",
-                "type": "mariadb",
-                "host": "localhost",
-                "username": this.config.database.username,
-                "password": this.config.database.password,
-                "database": this.config.database.name,
-                "timezone": "Z",
-                "synchronize": true,
-                "logging": ["error"],
-                "entities": [
-                    "../Models/**/*.ts",
-                ],
-                "cache": {
-                    duration: 60000,
-                },
-            });
+            const connection = await createConnection();
 
             console.log(`Connected to the ${connection.options.database} (${connection.options.name}) database!`);
         } catch (error) {
@@ -129,17 +110,17 @@ export class App {
         });
 
         passport.use(new DiscordStrategy({
-            clientID: this.config.discord.clientID,
-            clientSecret: this.config.discord.clientSecret,
-            callbackURL: this.subConfig.publicURL + "/api/login/discord/callback",
+            clientID: config.discord.clientId,
+            clientSecret: config.discord.clientSecret,
+            callbackURL: config.corsace.publicUrl + "/api/login/discord/callback",
         }, discordPassport));
 
         passport.use(new OAuth2Strategy({
             authorizationURL: "https://osu.ppy.sh/oauth/authorize",
             tokenURL: "https://osu.ppy.sh/oauth/token",
-            clientID: this.subConfig.osuID,
-            clientSecret: this.subConfig.osuSecret,
-            callbackURL: this.subConfig.publicURL + "/api/login/osu/callback",
+            clientID: config.osu.v2.clientId,
+            clientSecret: config.osu.v2.clientSecret,
+            callbackURL: config.corsace.publicUrl + "/api/login/osu/callback",
         }, osuPassport));
     }
 }

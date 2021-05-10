@@ -1,0 +1,20 @@
+{
+    "database": {
+        "host": "database"
+    },
+    "ayim": {
+        "host": "0.0.0.0"
+    },
+    "corsace": {
+        "host": "0.0.0.0"
+    },
+    "invitational": {
+        "host": "0.0.0.0"
+    },
+    "mca": {
+        "host": "0.0.0.0"
+    },
+    "open": {
+        "host": "0.0.0.0"
+    }
+}

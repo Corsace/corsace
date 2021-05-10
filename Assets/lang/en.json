@@ -29,7 +29,11 @@
             "statistics": "STATISTICS",
             "search": "search for a mapper",
             "numberof": "number of",
-            "numberwith": "number of maps with"
+            "numberwith": "number of maps with",
+            "message": {
+                "2019": "<p>Hello 2020.</p><p>A Year in Mapping 2019 has returned to bring you the record-breaks of the year, and the detailed statistics amassed as well!</p><p>With this website, we can now add as much information as we can feasibly retrieve for all years! If you have any suggestions, let VINXIS know in the corsace server (link at the bottom left!)</p><p>WE ARE ALSO CROWDFUNDING COMMENTS! That means YOU can write and submit a comment for as many mappers as you want!</p><p>Select your preferred mode with the icons below to get started!</p>",
+                "2020": "<p>Hello 2021... the correct year this time!</p><p>A Year in Mapping 2020 has come to you back to back to bring you the record-breaks of THIS year, and the detailed statistics amassed as well!</p><p>And as it is once again, comments are definitely crowdfunded! So go ahead and select your preferred mode with the icons below to get started!</p>"
+            }
         },
         "mapsets": {
             "name": "MAPSETS",
@@ -44,7 +48,13 @@
             "approachRate": "APPROACH RATE",
             "overallDifficulty": "OVERALL DIFFICULTY",
             "hpDrain": "HP DRAIN",
-            "circleSize": "CIRCLE SIZE"
+            "circleSize": "CIRCLE SIZE",
+            "sliders": "SLIDERS",
+            "circles": "CIRCLES",
+            "avgSlidersPerSet": "AVG SLIDERS PER SET",
+            "avgCirclesPerSet": "AVG CIRCLES PER SET",
+            "highestSr": "HIGHEST STAR RATING",
+            "lowestSr": "LOWEST STAR RATING"
         },
         "mappers": {
             "name": "MAPPERS",
@@ -56,16 +66,30 @@
             "mapperAges": "MAPPER AGES",
             "mapsPerMapperAges": "MAPS PER MAPPER PER AGE",
             "bng": "BNG",
-            "nat": "NAT"
+            "nat": "NAT",
+            "uniqueMappers": "TOTAL MAPPERS",
+            "newMappers": "NEW MAPPERS",
+            "highestAvgSr": "HIGHEST AVG SR",
+            "leastFavs": "LEAST FAVOURITES",
+            "leastPlayed": "LEAST PLAYED",
+            "lowestAvgSr": "LOWEST AVG SR",
+            "mappers": "MAPPERS"
+        },
+        "statistics": {
+            "numberOf": "number of",
+            "numberOfMapsWith": "number of maps with",
+            "average": "average"
         },
         "comments": {
             "name": "COMMENTS",
             "info": "All comments become public after this MCA's results are out! You can submit your own comments until then.",
+            "search": "search for a mapper",
             "viewSubmit": "view/submit comments",
+            "writeHere": "Write a new comment for this mapper here!",
             "update": "Update",
             "remove": "Remove",
             "create": "Create",
-            "login": "Login to create",
+            "login": "Login to create a comment!",
             "visible": "(not visible yet)"
         }
     },
@@ -90,10 +114,8 @@
             "voteNow": "vote now !",
             "daysLeft": "days left",
             "message": {
-                "1": "Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!",
-                "2": "Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community in comparison to Community Choice!",
-                "3": "This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!",
-                "4": "We hope as many participants as possible take part in this event!"
+                "2019": "<p>Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community in comparison to Community Choice!</p><p>This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!</p><p>We hope as many participants as possible take part in this event!</p>",
+                "2020": "<p>Back to back, mapper's choice awards is again to finish it off at round 5 with 2020! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2020 through the eyes of the mapping community in comparison to Community Choice!</p><p>We've made many changes and hopefully dealt with all the bugs that were found throughout MCA 2019 as well as changing categories as needed so this one should be far smoother!</p><p>We hope as many participants as possible take part in this event!</p>"
             },
             "categories": {
                 "map": "map categories",
@@ -137,6 +159,86 @@
             "throwback": {
                 "name": "Throwback",
                 "description": "The best set with a style of the old."
+            },
+            "mapper": {
+                "name": "Mapper",
+                "description": "The one who created the best beatmaps."
+            },
+            "modder": {
+                "name": "Modder",
+                "description": "The one who created the best mods."
+            },
+            "hitsounder": {
+                "name": "Hitsounder",
+                "description": "The one who created the best hitsounds."
+            },
+            "mostPromising": {
+                "name": "Most Promising",
+                "description": "The best mapper who ranked their first set this year."
+            },
+            "mostInfluential": {
+                "name": "Most Influential",
+                "description": "The one who inspired and influenced other mappers the most."
+            },
+            "outCont": {
+                "name": "Outstanding Contribution",
+                "description": "The one who positively contributed to the health of osu! the most."
+            },
+            "spread": {
+                "name": "Spread",
+                "description": "The set with the best spread of difficulties."
+            },
+            "experimental": {
+                "name": "Experimental",
+                "description": "The best \"tech\"/off meta set."
+            },
+            "stream": {
+                "name": "Stream",
+                "description": "The set with the best continuous streams."
+            },
+            "highBPMTaiko": {
+                "name": "High BPM",
+                "description": "The best set with over 240 BPM."
+            },
+            "lowBPMTaiko": {
+                "name": "Low BPM",
+                "description": "The best set with under 140 BPM."
+            },
+            "simplistic": {
+                "name": "Simplistic",
+                "description": "The best cleanest set out there."
+            },
+            "sliderVelocity": {
+                "name": "Slider Velocity",
+                "description": "The best set with an intense usage of slider velocities."
+            },
+            "longNotes": {
+                "name": "Long Notes",
+                "description": "The best set with an intense usage of LNs."
+            },
+            "antiMeta": {
+                "name": "Anti Meta",
+                "description": "The best set based around 5K/6K/8K/9K."
+            },
+            "7K": {
+                "name": "7K Specific",
+                "description": "The best set based around 7K."
+            },
+            "technical": {
+                "name": "Technical",
+                "description": "The best storyboard in its technical capabilities."
+            },
+            "gameplay": {
+                "name": "Gameplay",
+                "description": "The best storyboard in utilizing gameplay elements."
+            },
+            "minimalistic": {
+                "name": "Minimalistic",
+                "description": "The best storyboard in saying a lot with very little."
+            },
+            "narrative": {
+                "name": "Narrative",
+                "description": "The best storyboard in telling a great story."
             }
         },
         "nom_vote": {
@@ -158,6 +260,18 @@
             },
             "hosted": "HOSTED BY",
             "userID": "USER ID"
+        }
+    },
+    "main": {
+        "header": {
+            "login": "LOG IN",
+            "register": "REGISTER"
+        },
+        "index": {
+            "underConstruction": "under construction",
+            "sorry": "sorry for the inconvenience",
+            "development": "the corsace website is still in early development",
+            "theTeam": "the corsace team"
         }
     }
 }

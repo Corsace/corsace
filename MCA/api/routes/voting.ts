@@ -11,10 +11,8 @@ import { User } from "../../../Models/user";
 const votingRouter = new Router();
 
 votingRouter.use(isLoggedInOsu);
-votingRouter.use(validatePhaseYear);
-votingRouter.use(isPhaseStarted("voting"));
 
-votingRouter.get("/:year?", async (ctx) => {
+votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
     const [votes, categories] = await Promise.all([
         Vote.populate()
             .where("category.mcaYear = :year", { year: ctx.state.year })
@@ -36,23 +34,24 @@ votingRouter.get("/:year?", async (ctx) => {
     };
 });
 
-votingRouter.get("/:year?/search", stageSearch("voting", async (ctx, category) => {
+votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), stageSearch("voting", async (ctx, category) => {
     const votes = await Vote.populate()
         .where("category.mcaYear = :year", { year: ctx.state.year })
         .andWhere("voter.ID = :id", { id: ctx.state.user.ID })
         .andWhere("category.type = :categoryType", { categoryType: category.type })
         .getMany();
 
-    if (!category.isRequired && 
-        !votes.some(v => v.category.name === "Grand Award")
+    if (
+        !category.isRequired && 
+        !votes.some(v => v.category.name === "grandAward" && v.category.type === (category.type === CategoryType.Beatmapsets ? CategoryType.Beatmapsets : CategoryType.Users))
     ) {
-        return ctx.body = { error: "Please vote in the Grand Award categories first!" };
+        throw "Please vote in the Grand Award categories first!";
     }
 
     return votes;
 }));
 
-votingRouter.post("/create", isPhase("voting"), async (ctx) => {
+votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), async (ctx) => {
     const nomineeId = ctx.request.body.nomineeId;
     const categoryId = ctx.request.body.category;
     const choice = ctx.request.body.choice;
@@ -132,7 +131,7 @@ votingRouter.post("/create", isPhase("voting"), async (ctx) => {
     ctx.body = vote;
 });
 
-votingRouter.post("/:id/remove", isPhase("voting"), isEligible, async (ctx) => {
+votingRouter.post("/:id/remove", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const vote = await Vote.findOneOrFail({
         ID: ctx.params.id,
         voter: ctx.state.user.ID,
