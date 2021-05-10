@@ -1,9 +1,9 @@
-import Router from "@koa/router";
+import Router, { Middleware } from "@koa/router";
 import { isLoggedInDiscord, isCorsace } from "../../../../Server/middleware";
 import { Category, CategoryGenerator } from "../../../../Models/MCA_AYIM/category";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { ModeDivision } from "../../../../Models/MCA_AYIM/modeDivision";
-import { CategoryInfo, CategoryType } from "../../../../Interfaces/category";
+import { CategoryFilter, CategoryType } from "../../../../Interfaces/category";
 
 const adminCategoriesRouter = new Router;
 const categoryGenerator = new CategoryGenerator;
@@ -11,15 +11,14 @@ const categoryGenerator = new CategoryGenerator;
 adminCategoriesRouter.use(isLoggedInDiscord);
 adminCategoriesRouter.use(isCorsace);
 
-// Endpoint for creating a category
-adminCategoriesRouter.post("/create", async (ctx) => {
-    const categoryInfo: CategoryInfo = ctx.request.body.categoryInfo;
-    const year: number = ctx.request.body.year;
+const validate: Middleware = async (ctx, next) => {
+    const categoryInfo = ctx.request.body.category;
+    const year: string = ctx.params.year;
     const modeString: string = ctx.request.body.mode;
 
     if (!categoryInfo.name)
         return ctx.body = { error: "Missing category name!" };
-    else if (!categoryInfo.type)
+    else if (categoryInfo.type !== 0 && !categoryInfo.type)
         return ctx.body = { error: "Missing category type!" };
     else if (!categoryInfo.maxNominations || categoryInfo.maxNominations <= 0)
         return ctx.body = { error: "Missing non-zero positive nomination count!" };
@@ -28,10 +27,10 @@ adminCategoriesRouter.post("/create", async (ctx) => {
     else if (!modeString)
         return ctx.body = { error: "Missing mode for category!" };
 
-    if (categoryInfo.type !== "users" && categoryInfo.type !== "beatmapsets")
+    if (categoryInfo.type !== CategoryType.Users && categoryInfo.type !== CategoryType.Beatmapsets)
         return ctx.body = { error: "The category type provided does not exist!"};
 
-    const mca = await MCA.findOne({ year: year });
+    const mca = await MCA.findOne({ year: parseInt(year, 10) });
     if (!mca)
         return ctx.body = { error: "MCA for this year does not exist currently!" };
 
@@ -39,32 +38,77 @@ adminCategoriesRouter.post("/create", async (ctx) => {
     if (!mode)
         return ctx.body = { error: "The mode provided does not exist!" };
 
-    const category = categoryGenerator.create(categoryInfo.name, CategoryType[categoryInfo.type], mca, mode);
-        
-    if (categoryInfo.type === "beatmapsets" && categoryInfo.filter)
-        category.addFilter(categoryInfo.filter);
-    else if (categoryInfo.type === "users" && categoryInfo.filter?.rookie)
-        category.addFilter({ rookie: true });
+    ctx.state.mca = mca;
+    ctx.state.mode = mode;
 
-    if (categoryInfo.maxNominations !== 3)
-        category.maxNominations = categoryInfo.maxNominations;
+    await next();
+};
 
-    if (categoryInfo.isRequired)
-        category.isRequired = categoryInfo.isRequired;
-        
-    if (categoryInfo.requiresVetting)
-        category.requiresVetting = categoryInfo.requiresVetting;
-        
-    await category.save();
+// Endpoint for getting categories from a year
+adminCategoriesRouter.get("/:year/categories", async (ctx) => {
+    let year = ctx.params.year;
+    if (!year || !/20\d\d/.test(year))
+        return ctx.body = { error: "Invalid year given!" };
+    
+    year = parseInt(year);
+
+    const categories = await Category.find({
+        where: {
+            mca: {
+                year,
+            },
+        },
+        order: {
+            mode: "ASC",
+            name: "ASC",
+        },
+    });
 
     ctx.body = { 
+        categories: categories.map(x => x.getInfo()),
+    };
+});
+
+// Endpoint for creating a category
+adminCategoriesRouter.post("/:year/categories", validate, async (ctx) => {
+    const categoryInfo = ctx.request.body.category;
+    const filter: CategoryFilter = ctx.request.body.filter;
+
+    const category = categoryGenerator.createOrUpdate({
+        ...categoryInfo,
+        mca: ctx.state.mca,
+        mode: ctx.state.mode,
+    }, filter);
+    await category.save();
+
+    ctx.body = {
         message: "Success! attached is the new category.",
         category,
     };
 });
 
-// Endpoint for getting information for a category
-adminCategoriesRouter.get("/:id", async (ctx) => {
+// Endpoint for updating a category
+adminCategoriesRouter.put("/:year/categories/:id", validate, async (ctx) => {
+    const categoryInfo = ctx.request.body.category;
+    const filter: CategoryFilter = ctx.request.body.filter;
+
+    const ID = parseInt(ctx.params.id, 10);
+    let category = await Category.findOneOrFail({ ID });
+    category = categoryGenerator.createOrUpdate({
+        ...categoryInfo,
+        mca: ctx.state.mca,
+        mode: ctx.state.mode,
+    }, filter, category);
+    await category.save();
+
+    ctx.body = {
+        message: "Updated",
+        category,
+    };
+});
+
+// Endpoint for deleting a category
+adminCategoriesRouter.delete("/:year/categories/:id", async (ctx) => {
     let categoryID = ctx.params.id;
     if (!categoryID || !/\d+/.test(categoryID))
         return ctx.body = { error: "Invalid category ID given!" };
@@ -72,34 +116,11 @@ adminCategoriesRouter.get("/:id", async (ctx) => {
     categoryID = parseInt(categoryID);
 
     const category = await Category.findOne(categoryID);
-
     if (!category)
-        return ctx.body = { error: "No category found for the given ID!" };
+        return ctx.body = { error: "No category with this ID exists!" };
 
-    console.log(category);
-
-    ctx.body = { error: "Gj" };
-});
-
-// Endpoint for deleting a category
-adminCategoriesRouter.delete("/:id/delete", async (ctx) => {
-    let categoryID = ctx.params.id;
-    if (!categoryID || !/\d+/.test(categoryID))
-        return ctx.body = { error: "Invalid category ID given!" };
-
-    categoryID = parseInt(categoryID);
-
-    try {
-        const category = await Category.findOne(categoryID);
-        if (!category)
-            return ctx.body = { error: "No category with this ID exists!" };
-
-        const categoryRes = await category.remove(); 
-        ctx.body = { message: "Success! attached is the delete result.", categoryRes };
-    } catch (e) {
-        if (e)
-            ctx.body = { error: e };  
-    }
+    const categoryRes = await category.remove(); 
+    ctx.body = { message: "Success! attached is the delete result.", categoryRes };
 });
 
 export default adminCategoriesRouter;

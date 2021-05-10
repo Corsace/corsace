@@ -96,7 +96,7 @@ export class Category extends BaseEntity {
         };
     }
 
-    public addFilter = function(this: Category, params?: CategoryFilter): void {
+    public setFilter = function(this: Category, params?: CategoryFilter): void {
         if (!params)
             return;
 
@@ -135,16 +135,20 @@ export class CategoryGenerator {
     /**
      * Creates a regular award.
      */
-    public create = function(name: string, type: CategoryType, mca: MCA, mode: ModeDivision): Category {
-        const category = new Category;
+    public createOrUpdate = function(categoryInfo: Category, filter: CategoryFilter, category?: Category): Category {
+        if (!category) {
+            category = new Category;
+        }
         
-        category.name = name;
-        category.description = name;
-        category.maxNominations = 3;
-        category.isRequired = false;
-        category.type = type;
-        category.mode = mode;
-        category.mca = mca;
+        category.name = categoryInfo.name;
+        category.description = categoryInfo.description || categoryInfo.name;
+        category.maxNominations = categoryInfo.maxNominations || 3;
+        category.isRequired = categoryInfo.isRequired || false;
+        category.requiresVetting = categoryInfo.requiresVetting || false;
+        category.type = categoryInfo.type;
+        category.mode = categoryInfo.mode;
+        category.mca = categoryInfo.mca;
+        category.setFilter(filter);
 
         return category;
     }

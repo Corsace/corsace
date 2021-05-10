@@ -56,7 +56,7 @@ adminYearsRouter.post("/", validate, async (ctx) => {
     };
 });
 
-// Endpoints for creating a year
+// Endpoints for updating a year
 adminYearsRouter.put("/:year", validate, async (ctx) => {
     const data = ctx.request.body;
 
@@ -69,31 +69,6 @@ adminYearsRouter.put("/:year", validate, async (ctx) => {
     };
 });
 
-// Endpoint for getting information for a year
-adminYearsRouter.get("/:year", async (ctx) => {
-    let year = ctx.params.year;
-    if (!year || !/20\d\d/.test(year))
-        return ctx.body = { error: "Invalid year given!" };
-    
-    year = parseInt(year);
-
-    try {
-        const categories = await Category.find({
-            mca: {
-                year,
-            },
-        });
-
-        if (categories.length === 0)
-            return ctx.body = { error: "No categories found for this year!" };
-
-        ctx.body = { categories: categories.map(x => x.getInfo()) };
-    } catch (e) {
-        if (e)
-            ctx.body = { error: e };  
-    }
-});
-
 // Endpoint for deleting a year
 adminYearsRouter.delete("/:year/delete", async (ctx) => {
     let year = ctx.params.year;
@@ -103,7 +78,9 @@ adminYearsRouter.delete("/:year/delete", async (ctx) => {
     year = parseInt(year);
 
     try {
-        const mca = await MCA.findOne(year);
+        const mca = await MCA.findOne({
+            year,
+        });
         if (!mca)
             return ctx.body = { error: "This year doesn't exist!" };
 

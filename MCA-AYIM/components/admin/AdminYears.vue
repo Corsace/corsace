@@ -24,6 +24,12 @@
                 >
                     Remove
                 </button>
+                <nuxt-link
+                    :to="`/admin/years/${item.name}`"
+                    class="button button--small"
+                >
+                    Categories
+                </nuxt-link>
             </template>
         </data-table>
         
@@ -39,10 +45,6 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import ChoiceBeatmapsetCard from "../ChoiceBeatmapsetCard.vue";
-import Collapsible from "../Collapsible.vue";
-import ScrollBar from "../ScrollBar.vue";
-import AdminModalCategory from "./AdminModalCategory.vue";
 import AdminModalYear from "./AdminModalYear.vue";
 import DataTable, { Field, Format } from "./DataTable.vue";
 
@@ -50,10 +52,6 @@ import { MCAInfo } from "../../../Interfaces/mca";
 
 @Component({
     components: {
-        ChoiceBeatmapsetCard,
-        Collapsible,
-        ScrollBar,
-        AdminModalCategory,
         AdminModalYear,
         DataTable,
     },

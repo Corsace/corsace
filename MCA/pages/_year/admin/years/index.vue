@@ -9,8 +9,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import ModeSwitcher from "../../../../MCA-AYIM/components/ModeSwitcher.vue";
-import AdminYears from "../../../../MCA-AYIM/components/admin/AdminYears.vue";
+import ModeSwitcher from "../../../../../MCA-AYIM/components/ModeSwitcher.vue";
+import AdminYears from "../../../../../MCA-AYIM/components/admin/AdminYears.vue";
 
 @Component({
     components: {
