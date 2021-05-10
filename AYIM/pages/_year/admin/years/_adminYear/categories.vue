@@ -1,7 +1,7 @@
 <template>
     <div>
         <mode-switcher :hide-phase="true">
-            <admin-years />
+            <admin-categories />
         </mode-switcher>
     </div>
 </template>
@@ -9,17 +9,17 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import ModeSwitcher from "../../../../../MCA-AYIM/components/ModeSwitcher.vue";
-import AdminYears from "../../../../../MCA-AYIM/components/admin/AdminYears.vue";
+import ModeSwitcher from "../../../../../../MCA-AYIM/components/ModeSwitcher.vue";
+import AdminCategories from "../../../../../../MCA-AYIM/components/admin/AdminCategories.vue";
 
 @Component({
     components: {
         ModeSwitcher,
-        AdminYears,
+        AdminCategories,
     },
     head () {
         return {
-            title: "Admin - Years | MCA",
+            title: "Admin - Categories | AYIM",
         };
     },
 })

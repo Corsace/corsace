@@ -25,7 +25,7 @@
                     Remove
                 </button>
                 <nuxt-link
-                    :to="`/admin/years/${item.name}`"
+                    :to="`/admin/years/${item.name}/categories`"
                     class="button button--small"
                 >
                     Categories

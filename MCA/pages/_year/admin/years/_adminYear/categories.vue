@@ -9,8 +9,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import ModeSwitcher from "../../../../../MCA-AYIM/components/ModeSwitcher.vue";
-import AdminCategories from "../../../../../MCA-AYIM/components/admin/AdminCategories.vue";
+import ModeSwitcher from "../../../../../../MCA-AYIM/components/ModeSwitcher.vue";
+import AdminCategories from "../../../../../../MCA-AYIM/components/admin/AdminCategories.vue";
 
 @Component({
     components: {
@@ -19,7 +19,7 @@ import AdminCategories from "../../../../../MCA-AYIM/components/admin/AdminCateg
     },
     head () {
         return {
-            title: "Admin | MCA",
+            title: "Admin - Categories | MCA",
         };
     },
 })
