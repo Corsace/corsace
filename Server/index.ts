@@ -26,7 +26,7 @@ export class App {
         this.koa.proxy = true;
         this.koa.use(Session({
             domain: config.cookiesDomain,
-            secure: true,
+            secure: process.env.NODE_ENV !== "development",
             httpOnly: true,
         }, this.koa));
         this.koa.use(BodyParser());
