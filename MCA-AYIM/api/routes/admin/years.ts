@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import Router, { Middleware } from "@koa/router";
 import { isLoggedInDiscord, isCorsace } from "../../../../Server/middleware";
 import { Category, CategoryGenerator } from "../../../../Models/MCA_AYIM/category";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
@@ -11,8 +11,7 @@ const categoryGenerator = new CategoryGenerator;
 adminYearsRouter.use(isLoggedInDiscord);
 adminYearsRouter.use(isCorsace);
 
-// Endpoints for creating a year
-adminYearsRouter.post("/create", async (ctx) => {
+const validate: Middleware = async (ctx, next) => {
     const data = ctx.request.body;
 
     if (!data.year) {
@@ -29,39 +28,45 @@ adminYearsRouter.post("/create", async (ctx) => {
         return ctx.body = { error: "Missing results date!" };
     }
 
-    try {
-        let mca = await MCA.findOne(data.year);
-        if (mca)
-            return ctx.body = { error: "This year already exists!" };
+    await next();
+};
+
+// Endpoints for creating a year
+adminYearsRouter.post("/", validate, async (ctx) => {
+    const data = ctx.request.body;
+
+    let mca = await MCA.findOne(data.year);
+    if (mca)
+        return ctx.body = { error: "This year already exists!" };
         
-        mca = new MCA;
-        mca.year = data.year;
-        mca.nomination = {
-            start: data.nominationStart,
-            end: data.nominationEnd,
-        };
-        mca.voting = {
-            start: data.votingStart,
-            end: data.votingEnd,
-        };
-        mca.results = data.results;
+    mca = await MCA.fillAndSave(data);
 
-        await mca.save();
+    // Create the grand awards
+    const modes = await ModeDivision.find();
+    for (const mode of modes) {
+        const userGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Users);
+        const mapGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Beatmapsets);
 
-        // Create the grand awards
-        const modes = await ModeDivision.find();
-        for (const mode of modes) {
-            const userGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Users);
-            const mapGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Beatmapsets);
-
-            await Promise.all([userGrand.save(), mapGrand.save()]);
-        }
-
-        ctx.body = { message: "Success! attached is the new MCA.", mca };
-    } catch (e) {
-        if (e)
-            ctx.body = { error: e };
+        await Promise.all([userGrand.save(), mapGrand.save()]);
     }
+
+    ctx.body = { 
+        message: "Success! attached is the new MCA.", 
+        mca,
+    };
+});
+
+// Endpoints for creating a year
+adminYearsRouter.put("/:year", validate, async (ctx) => {
+    const data = ctx.request.body;
+
+    let mca = await MCA.findOneOrFail(data.year);    
+    mca = await MCA.fillAndSave(data, mca);
+
+    ctx.body = { 
+        message: "updated",
+        mca,
+    };
 });
 
 // Endpoint for getting information for a year
