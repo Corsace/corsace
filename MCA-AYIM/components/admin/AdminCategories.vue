@@ -1,11 +1,20 @@
 <template>
     <div class="admin">
-        <button 
-            class="admin__button admin__add button"
-            @click="create"
-        >
-            add
-        </button>
+        <div class="admin-actions">
+            <button 
+                class="admin__button admin__add button"
+                @click="create"
+            >
+                add
+            </button>
+
+            <nuxt-link
+                class="admin__button admin__add button"
+                to="../"
+            >
+                years
+            </nuxt-link>
+        </div>
 
         <data-table
             :fields="fields"
@@ -121,3 +130,14 @@ export default class AdminCategories extends Vue {
 
 }
 </script>
+
+<style lang="scss">
+
+.admin-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+</style>

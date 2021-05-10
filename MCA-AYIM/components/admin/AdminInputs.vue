@@ -48,7 +48,7 @@ import BaseModal from "../BaseModal.vue";
 export interface InputField {
     label: string;
     key: string;
-    type: "number" | "checkbox" | "text" | "select";
+    type: "number" | "checkbox" | "datetime-local" | "text" | "select";
     options?: {
         label: string;
         value: string | number;

@@ -1,61 +1,10 @@
 <template>
     <base-modal @close="$emit('cancel')">
         <div class="admin-popout">
-            <div class="admin-popout__section">
-                year
-                <input
-                    v-model.number="mcaInfo.year"
-                    type="number"
-                    class="admin-popout__input"
-                    :disabled="info"
-                >
-            </div>
-            <div class="admin-popout__section"> 
-                <div>
-                    nomination start
-                    <input 
-                        v-model="mcaInfo.nominationStart"
-                        type="datetime-local"
-                        class="admin-popout__input"
-                    >
-                </div>
-                <div>
-                    nomination end
-                    <input 
-                        v-model="mcaInfo.nominationEnd"
-                        type="datetime-local"
-                        class="admin-popout__input"
-                    >
-                </div>
-            </div>
-            <div class="admin-popout__section">
-                <div>
-                    voting start
-                    <input 
-                        v-model="mcaInfo.votingStart"
-                        type="datetime-local"
-                        class="admin-popout__input"
-                    >
-                </div>
-                <div>
-                    voting end
-                    <input 
-                        v-model="mcaInfo.votingEnd"
-                        type="datetime-local"
-                        class="admin-popout__input"
-                    >
-                </div>
-            </div>
-            <div class="admin-popout__section">
-                <div>
-                    results time
-                    <input 
-                        v-model.trim="mcaInfo.results"
-                        type="datetime-local"
-                        class="admin-popout__input"
-                    >
-                </div>
-            </div>
+            <admin-inputs
+                v-model="mcaInfo"
+                :fields="fields"
+            />
         
             <button
                 class="button"
@@ -74,34 +23,46 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 
 import BaseModal from "../BaseModal.vue";
+import AdminInputs, { InputField } from "./AdminInputs.vue";
 
 import { MCAInfo } from "../../../Interfaces/mca";
 
 @Component({
     components: {
         BaseModal,
+        AdminInputs,
     },
 })
 export default class AdminModalYear extends Vue {
 
     @Prop({ type: Object, default: () => null }) readonly info!: MCAInfo | null;
         
-    mcaInfo = {}
-
-    mounted () {
+    @Watch("info", { immediate: true })
+    onInfoChanged (info: MCAInfo | null) {
         let now = new Date;
         this.mcaInfo = {
-            year: this.info?.name || now.getUTCFullYear() - 1,
-            nominationStart: this.formatDate(this.info?.nomination.start || now),
-            nominationEnd: this.formatDate(this.info?.nomination.end || this.addWeeks(now)),
-            votingStart: this.formatDate(this.info?.voting.start || this.addWeeks(now, 2)),
-            votingEnd: this.formatDate(this.info?.voting.end || this.addWeeks(now, 4)),
-            results: this.formatDate(this.info?.results || this.addWeeks(now, 5)),
+            year: info?.name || now.getUTCFullYear() - 1,
+            nominationStart: this.formatDate(info?.nomination.start || now),
+            nominationEnd: this.formatDate(info?.nomination.end || this.addWeeks(now)),
+            votingStart: this.formatDate(info?.voting.start || this.addWeeks(now, 2)),
+            votingEnd: this.formatDate(info?.voting.end || this.addWeeks(now, 4)),
+            results: this.formatDate(info?.results || this.addWeeks(now, 5)),
         };
     }
+
+    mcaInfo = {}
+
+    fields = [
+        { label: "year", key: "year", type: "number" },
+        { label: "nomination start", key: "nominationStart", type: "datetime-local" },
+        { label: "nomination end", key: "nominationEnd", type: "datetime-local" },
+        { label: "voting start", key: "votingStart", type: "datetime-local" },
+        { label: "voting end", key: "votingEnd", type: "datetime-local" },
+        { label: "results time", key: "results", type: "datetime-local" },
+    ] as InputField[];
 
     async save () {
         let request: Promise<any>;
