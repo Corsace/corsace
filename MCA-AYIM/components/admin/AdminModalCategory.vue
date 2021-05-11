@@ -1,222 +1,154 @@
 <template>
-    <div class="adminPopout">
-        <div class="adminPopout__section">
-            name
-            <input 
-                v-model="name"
-                class="adminPopout__input"
+    <base-modal @close="$emit('cancel')">
+        <div class="admin-popout">
+            <admin-inputs
+                v-model="category"
+                :fields="fields"
+            />
+
+            <div 
+                v-if="isBeatmapsetType" 
+                class="admin-popout__section"
             >
-        </div>
-        <div class="adminPopout__section">
-            description
-            <input 
-                v-model="description"
-                class="adminPopout__input"
+                auto filters
+                <input
+                    v-model="category.isFiltered"
+                    type="checkbox"
+                    class="admin-popout__input"
+                >
+            </div>
+            <div 
+                v-else-if="isUsersType"
+                class="admin-popout__section"
             >
-        </div>
-        <div class="adminPopout__section"> 
-            <div>
-                type
-                <select v-model="type">
-                    <option :value="'users'">
-                        users
-                    </option>
-                    <option :value="'beatmapsets'">
-                        beatmaps
-                    </option>
-                </select>
+                rookie
+                <input
+                    v-model="filterParams.rookie"
+                    type="checkbox"
+                    class="admin-popout__input"
+                >
             </div>
-        </div>
-        <div class="adminPopout__section">
-            max nominations
-            <input 
-                v-model.number="maxNominations"
-                class="adminPopout__input"
+
+            <div v-if="category.isFiltered && isBeatmapsetType">
+                <admin-inputs
+                    v-model="filterParams"
+                    :fields="filterFields"
+                />
+            </div>
+            
+            <button
+                class="button"
+                @click="save"
             >
+                save
+            </button>
+            <button
+                class="button"
+                @click="$emit('cancel')"
+            >
+                cancel
+            </button>
         </div>
-        <div class="adminPopout__section">
-            isRequired
-            <select v-model="isRequired">
-                <option :value="true">
-                    yes
-                </option>
-                <option :value="false">
-                    no
-                </option>
-            </select>
-        </div>
-        <div class="adminPopout__section">
-            needs requiresVetting
-            <select v-model="requiresVetting">
-                <option :value="true">
-                    yes
-                </option>
-                <option :value="false">
-                    no
-                </option>
-            </select>
-        </div>
-        <div 
-            v-if="type === 'beatmapsets'"
-            class="adminPopout__section"
-        >
-            auto filters
-            <select v-model="filter">
-                <option :value="true">
-                    yes
-                </option>
-                <option :value="false">
-                    no
-                </option>
-            </select>
-        </div>
-        <div 
-            v-else-if="type === 'users'"
-            class="adminPopout__section"
-        >
-            rookie
-            <select v-model="rookie">
-                <option :value="true">
-                    yes
-                </option>
-                <option :value="false">
-                    no
-                </option>
-            </select>
-        </div>
-        <div v-if="filter && type === 'beatmapsets' && filterParams">
-            <div class="adminPopout__section">
-                min Length (seconds)
-                <input 
-                    v-model="filterParams.minLength"
-                    class="adminPopout__input"
-                >
-            </div>
-            <div class="adminPopout__section">
-                max Length (seconds)
-                <input 
-                    v-model="filterParams.maxLength"
-                    class="adminPopout__input"
-                >
-            </div>
-            <div class="adminPopout__section">
-                min BPM
-                <input 
-                    v-model="filterParams.minBPM"
-                    class="adminPopout__input"
-                >
-            </div>
-            <div class="adminPopout__section">
-                max BPM
-                <input 
-                    v-model="filterParams.maxBPM"
-                    class="adminPopout__input"
-                >
-            </div>
-            <div class="adminPopout__section">
-                min SR
-                <input 
-                    v-model="filterParams.minSR"
-                    class="adminPopout__input"
-                >
-            </div>
-            <div class="adminPopout__section">
-                maxSR
-                <input 
-                    v-model="filterParams.maxSR"
-                    class="adminPopout__input"
-                >
-            </div>
-            <div class="adminPopout__section">
-                min CS
-                <input 
-                    v-model="filterParams.minCS"
-                    class="adminPopout__input"
-                >
-            </div>
-            <div class="adminPopout__section">
-                max CS
-                <input 
-                    v-model="filterParams.maxCS"
-                    class="adminPopout__input"
-                >
-            </div>
-        </div>
-        <button
-            class="button"
-            @click="save"
-        >
-            save
-        </button>
-        <button
-            class="button"
-            @click="$emit('cancel')"
-        >
-            cancel
-        </button>
-    </div>
+    </base-modal>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
 
-import { CategoryFilter, CategoryInfo } from "../../../Interfaces/category";
+import BaseModal from "../BaseModal.vue";
+import AdminInputs from "./AdminInputs.vue";
 
-@Component
+import { Category, CategoryFilter, CategoryInfo, CategoryType } from "../../../Interfaces/category";
+import { InputField } from "./AdminInputs.vue";
+
+@Component({
+    components: {
+        BaseModal,
+        AdminInputs,
+    },
+})
 export default class AdminModalCategory extends Vue {
 
     @Prop({ type: Object, default: () => null }) readonly info!: CategoryInfo | null;
-    @Prop({ type: Number, required: true }) readonly year!: number;
+
+    @Watch("info", { immediate: true })
+    onInfoChanged (info: CategoryInfo | null) {
+        this.category = {
+            name: info?.name || "",
+            description: info?.description || "",
+            type: info?.type !== undefined ? CategoryType[info.type] : CategoryType.Beatmapsets,
+            maxNominations: info?.maxNominations || 3,
+            isRequired: info?.isRequired || false,
+            requiresVetting: info?.requiresVetting || false,
+            isFiltered: info?.isFiltered || false,
+        };
+
+        this.filterParams = {
+            minLength: info?.filter?.minLength,
+            maxLength: info?.filter?.maxLength,
+            minBPM: info?.filter?.minBPM,
+            maxBPM: info?.filter?.maxBPM,
+            minSR: info?.filter?.minSR,
+            maxSR: info?.filter?.maxSR,
+            minCS: info?.filter?.minCS,
+            maxCS: info?.filter?.maxCS,
+        };
+    }
 
     @State selectedMode!: string;
     
-    name = "";
-    description = "";
-    type = "beatmapsets";
-    maxNominations = 3;
-    isRequired = false;
-    requiresVetting = false;
-    rookie = false;
-    filter = false;
+    category: Partial<Category> & { isFiltered: boolean } | null = null;
     filterParams: CategoryFilter | null = null;
 
-    updated () {
-        if (this.info) {
-            this.name = this.info.name;
-            this.description = this.info.description;
-            this.type = this.info.type;
-            this.maxNominations = this.info.maxNominations;
-            this.isRequired = this.info.isRequired;
-            this.requiresVetting = this.info.requiresVetting;
-            this.rookie = this.info.filter?.rookie ? true : false;
-            this.filter = this.info.filter ? true : false;
-            this.filterParams = (this.filter && this.info.filter) ? this.info.filter : null;
-        }
+    fields = [
+        { label: "name", key: "name" },
+        { label: "description", key: "description" },
+        { label: "type", key: "type", type: "select", options: [{ label: "users", value: CategoryType.Users }, { label: "beatmapsets", value: CategoryType.Beatmapsets }] },
+        { label: "max nominations", key: "maxNominations", type: "number" },
+        { label: "Is Required", key: "isRequired", type: "checkbox" },
+        { label: "needs vetting", key: "requiresVetting", type: "checkbox" },
+    ] as InputField[];
+
+    filterFields = [
+        { label: "min Length (seconds)", key: "minLength", type: "number" },
+        { label: "max Length (seconds)", key: "maxLength", type: "number" },
+        { label: "min BPM", key: "minBPM", type: "number" },
+        { label: "max BPM", key: "maxBPM", type: "number" },
+        { label: "min SR", key: "minSR", type: "number" },
+        { label: "max SR", key: "maxSR", type: "number" },
+        { label: "min CS", key: "minCS", type: "number" },
+        { label: "max CS", key: "maxCS", type: "number" },
+    ] as InputField[];
+
+    get isBeatmapsetType () {
+        return this.category?.type === CategoryType.Beatmapsets;
+    }
+
+    get isUsersType () {
+        return this.category?.type === CategoryType.Users;
     }
 
     async save () {
-        const { data } = await this.$axios.post("/api/admin/categories/create", {
-            categoryInfo: {
-                name: this.name,
-                description: this.description,
-                type: this.type,
-                maxNominations: this.maxNominations,
-                isRequired: this.isRequired,
-                requiresVetting: this.requiresVetting,
-                rookie: this.rookie,
-                filter: this.filterParams,
-            },
-            year: this.year,
+        let request: Promise<any>;
+        const postData = {
+            category: this.category,
+            filter: this.filterParams,
             mode: this.selectedMode,
-        });
+        };
+
+        if (this.info) {
+            request = this.$axios.put(`/api/admin/years/${this.$route.params.adminYear}/categories/${this.info.id}`, postData);
+        } else {
+            request = this.$axios.post(`/api/admin/years/${this.$route.params.adminYear}/categories`, postData);
+        }
+
+        const { data } = await request;
 
         if (data.error) {
             alert(data.error);
             return;
         }
-
-        console.log(data);
 
         this.$emit("updateCategory");
     }

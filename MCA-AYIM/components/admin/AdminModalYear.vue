@@ -1,111 +1,79 @@
 <template>
-    <div class="adminPopout">
-        <div class="adminPopout__section">
-            year
-            <input 
-                v-model.number="year"
-                class="adminPopout__input"
+    <base-modal @close="$emit('cancel')">
+        <div class="admin-popout">
+            <admin-inputs
+                v-model="mcaInfo"
+                :fields="fields"
+            />
+        
+            <button
+                class="button"
+                @click="save"
             >
-        </div>
-        <div class="adminPopout__section"> 
-            <div>
-                nomination start
-                <input 
-                    v-model.trim="nominationStart"
-                    class="adminPopout__input"
-                >
-            </div>
-            <div>
-                nomination end
-                <input 
-                    v-model.trim="nominationEnd"
-                    class="adminPopout__input"
-                >
-            </div>
-        </div>
-        <div class="adminPopout__section">
-            <div>
-                voting start
-                <input 
-                    v-model.trim="votingStart"
-                    class="adminPopout__input"
-                >
-            </div>
-            <div>
-                voting end
-                <input 
-                    v-model.trim="votingEnd"
-                    class="adminPopout__input"
-                >
-            </div>
-        </div>
-        <div class="adminPopout__section">
-            results time
-            <input 
-                v-model.trim="results"
-                class="adminPopout__input"
+                save
+            </button>
+            <button
+                class="button"
+                @click="$emit('cancel')"
             >
+                cancel
+            </button>
         </div>
-        <button
-            class="button"
-            @click="save"
-        >
-            save
-        </button>
-        <button
-            class="button"
-            @click="$emit('cancel')"
-        >
-            cancel
-        </button>
-    </div>
+    </base-modal>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+
+import BaseModal from "../BaseModal.vue";
+import AdminInputs, { InputField } from "./AdminInputs.vue";
 
 import { MCAInfo } from "../../../Interfaces/mca";
 
-@Component
+@Component({
+    components: {
+        BaseModal,
+        AdminInputs,
+    },
+})
 export default class AdminModalYear extends Vue {
 
     @Prop({ type: Object, default: () => null }) readonly info!: MCAInfo | null;
         
-    date = new Date;
-    year = this.date.getUTCFullYear() - 1;
-    nominationStart = this.date.toDateString().slice(4);
-    nominationEnd = new Date(this.date.getTime() + 6.048e+8).toDateString().slice(4);
-    votingStart = new Date(this.date.getTime() + 2 * 6.048e+8).toDateString().slice(4);
-    votingEnd = new Date(this.date.getTime() + 4 * 6.048e+8).toDateString().slice(4);
-    results = new Date(this.date.getTime() + 5 * 6.048e+8).toDateString().slice(4);
-
-    mounted () {
-        if (this.info &&
-            this.info.name && 
-            this.info.nomination.start && 
-            this.info.nomination.end && 
-            this.info.voting.start && 
-            this.info.voting.end && 
-            this.info.results
-        ) {
-            this.year = this.info.name;
-            this.nominationStart = this.info.nomination.start.toDateString().slice(4);
-            this.nominationEnd = this.info.nomination.end.toDateString().slice(4);
-            this.votingStart = this.info.voting.start.toDateString().slice(4);
-            this.votingEnd = this.info.voting.end.toDateString().slice(4);
-            this.results = this.info.results.toDateString().slice(4);
-        }
+    @Watch("info", { immediate: true })
+    onInfoChanged (info: MCAInfo | null) {
+        let now = new Date;
+        this.mcaInfo = {
+            year: info?.name || now.getUTCFullYear() - 1,
+            nominationStart: this.formatDate(info?.nomination.start || now),
+            nominationEnd: this.formatDate(info?.nomination.end || this.addWeeks(now)),
+            votingStart: this.formatDate(info?.voting.start || this.addWeeks(now, 2)),
+            votingEnd: this.formatDate(info?.voting.end || this.addWeeks(now, 4)),
+            results: this.formatDate(info?.results || this.addWeeks(now, 5)),
+        };
     }
 
+    mcaInfo = {}
+
+    fields = [
+        { label: "year", key: "year", type: "number" },
+        { label: "nomination start", key: "nominationStart", type: "datetime-local" },
+        { label: "nomination end", key: "nominationEnd", type: "datetime-local" },
+        { label: "voting start", key: "votingStart", type: "datetime-local" },
+        { label: "voting end", key: "votingEnd", type: "datetime-local" },
+        { label: "results time", key: "results", type: "datetime-local" },
+    ] as InputField[];
+
     async save () {
-        const { data } = await this.$axios.post("/api/admin/years/create", {
-            year: this.year,
-            nominationStart: new Date(`${this.nominationStart} UTC`),
-            nominationEnd: new Date(`${this.nominationEnd} UTC`),
-            votingStart: new Date(`${this.votingStart} UTC`),
-            votingEnd: new Date(`${this.votingEnd} UTC`),
-            results: new Date(`${this.results} UTC`), 
-        });
+        let request: Promise<any>;
+
+        if (this.info) {
+            request = this.$axios.put(`/api/admin/years/${this.info.name}`, this.mcaInfo);
+        } else {
+            request = this.$axios.post("/api/admin/years", this.mcaInfo);
+        }
+
+        const { data } = await request;
 
         if (data.error) {
             alert(data.error);
@@ -113,6 +81,30 @@ export default class AdminModalYear extends Vue {
         }
 
         this.$emit("updateYear");
+    }
+
+    addWeeks (date: Date, weeks = 1) {
+        const newDate = date;
+        newDate.setDate(newDate.getDate() + (7 * weeks));
+
+        return newDate;
+    }
+
+    formatDate (originalDate: string | Date): string {
+        const date = new Date(originalDate);
+        const month = this.formatValue(date.getMonth() + 1);
+        const day = this.formatValue(date.getDate());
+        const hours = this.formatValue(date.getHours());
+        const minutes = this.formatValue(date.getMinutes());
+
+        return `${date.getFullYear()}-${month}-${day}T${hours}:${minutes}`;
+    }
+    
+    formatValue (value: number): number | string {
+        if (value < 10)
+            return "0" + value;
+
+        return value;
     }
         
 }

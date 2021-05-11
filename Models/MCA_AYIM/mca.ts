@@ -30,6 +30,25 @@ export class MCA extends BaseEntity {
     @OneToMany(() => Category, category => category.mca)
     categories!: Category[];
 
+    static fillAndSave (data, mca?: MCA): Promise<MCA> {
+        if (!mca) {
+            mca = new MCA;
+            mca.year = data.year;
+        }
+
+        mca.nomination = {
+            start: data.nominationStart,
+            end: data.nominationEnd,
+        };
+        mca.voting = {
+            start: data.votingStart,
+            end: data.votingEnd,
+        };
+        mca.results = data.results;
+
+        return mca.save();
+    }
+
     static current (): Promise<MCA> {
         const date = new Date();
 

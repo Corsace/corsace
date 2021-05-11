@@ -34,7 +34,7 @@ app.koa.use(mount("/staff/requests", staffRequestsRouter.routes()));
 
 app.koa.use(mount("/admin", adminRouter.routes()));
 app.koa.use(mount("/admin/results", adminResultsRouter.routes()));
-app.koa.use(mount("/admin/categories", adminCategoriesRouter.routes()));
+app.koa.use(mount("/admin/years", adminCategoriesRouter.routes()));
 app.koa.use(mount("/admin/years", adminYearsRouter.routes()));
 
 export default {

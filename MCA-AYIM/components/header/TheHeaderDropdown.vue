@@ -11,7 +11,7 @@
         </a>
         <nuxt-link
             v-if="loggedInUser.staff.corsace"
-            :to="`/${mca.year}/admin`"
+            :to="`/${mca.year}/admin/years`"
         >
             ADMIN
         </nuxt-link>
