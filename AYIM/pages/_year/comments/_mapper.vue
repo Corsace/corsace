@@ -65,7 +65,7 @@
             </transition>
         </template>
         
-        <div class="ayim-comment-layout">
+        <list-transition class="ayim-comment-layout">
             <div
                 v-for="comment in comments"
                 :key="comment.ID"
@@ -91,7 +91,7 @@
                     {{ comment.comment }}
                 </div>
             </div>
-        </div>
+        </list-transition>
     </display-layout>
 </template>
 
@@ -100,6 +100,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
+import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
 
 import { Comment } from "../../../../Interfaces/comment";
 import { User, UserMCAInfo } from "../../../../Interfaces/user";
@@ -108,6 +109,7 @@ import { MCA } from "../../../../Interfaces/mca";
 @Component({
     components: {
         DisplayLayout,
+        ListTransition,
     },
     head () {
         return {
@@ -226,7 +228,7 @@ export default class MapperComments extends Vue {
         }
     }
 
-    async removeInfo() {
+    async removeInfo () {
         setTimeout(() => this.info = "", 5000);
     }
 }

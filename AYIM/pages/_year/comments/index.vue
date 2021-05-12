@@ -27,43 +27,47 @@
                 {{ $t('ayim.comments.info') }}
             </div>
         </template>
-
-        <div
-            v-for="mapper in mappers"
-            :key="mapper.ID"
-            class="ayim-user"
-        >
-            <img
-                :src="`https://a.ppy.sh/${mapper.osu.userID}`"
-                class="ayim-user__avatar"
+        
+        <list-transition class="ayim-layout">
+            <div
+                v-for="mapper in mappers"
+                :key="mapper.ID"
+                class="ayim-user"
             >
-            
-            <a
-                :href="`https://osu.ppy.sh/users/${mapper.osu.userID}`" 
-                class="ayim-user__username ayim-text ayim-text--xl"
-            >
-                {{ mapper.osu.username.length > 9 ? mapper.osu.username.slice(0, 9) + "..." : mapper.osu.username }}
-            </a>
-            
-            <div class="ayim-user__links">
-                <nuxt-link
-                    :to="`/${mca.year}/comments/${mapper.ID}`"
-                    class="button button--small"
+                <img
+                    :src="`https://a.ppy.sh/${mapper.osu.userID}`"
+                    class="ayim-user__avatar"
                 >
-                    {{ $t('ayim.comments.viewSubmit') }}
-                </nuxt-link>
+            
+                <a
+                    :href="`https://osu.ppy.sh/users/${mapper.osu.userID}`" 
+                    class="ayim-user__username ayim-text ayim-text--xl"
+                >
+                    {{ mapper.osu.username.length > 9 ? mapper.osu.username.slice(0, 9) + "..." : mapper.osu.username }}
+                </a>
+            
+                <div class="ayim-user__links">
+                    <nuxt-link
+                        :to="`/${mca.year}/comments/${mapper.ID}`"
+                        class="button button--small"
+                    >
+                        {{ $t('ayim.comments.viewSubmit') }}
+                    </nuxt-link>
+                </div>
             </div>
-        </div>
+        </list-transition>
     </display-layout>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
+import { State } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
-import { State } from "vuex-class";
+import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
+
 import { User } from "../../../../Interfaces/user";
 import { MCA } from "../../../../Interfaces/mca";
 
@@ -72,6 +76,7 @@ import { MCA } from "../../../../Interfaces/mca";
         DisplayLayout,
         SearchBar,
         ToggleButton,
+        ListTransition,
     },
     head () {
         return {
