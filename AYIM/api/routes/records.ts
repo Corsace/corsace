@@ -1,6 +1,7 @@
 import Router from "@koa/router";
 import { createQueryBuilder } from "typeorm";
 import { BeatmapsetRecord, MapperRecord } from "../../../Interfaces/records";
+import { Beatmap } from "../../../Models/beatmap";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 
@@ -73,7 +74,15 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
         Beatmapset
             .queryRecord(year, modeId)
             .addSelect("beatmapset.favourites", "value")
-            .andWhere(`not exists (select beatmap.beatmapsetID as ref_ID, beatmap.mode as ref_Mode from beatmap where ref_ID=beatmapset.ID and ref_Mode != ${modeId} )`)
+            .andWhere((qb) => {
+                const subQuery = qb.subQuery()
+                    .from(Beatmap, "refMap")
+                    .where("beatmapsetID = beatmapset.ID")
+                    .andWhere("refMap.mode != :mode", { mode: modeId })
+                    .getQuery();
+
+                return "NOT EXISTS " + subQuery;
+            })
             .groupBy("beatmapset.ID")
             .orderBy("value", "DESC")
             .getRawMany(),

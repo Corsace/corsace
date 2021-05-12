@@ -39,6 +39,7 @@
             "name": "MAPSETS",
             "playcount": "PLAYCOUNT",
             "favourites": "FAVOURITES",
+            "favouritesExclHybrid": "FAVOURITES (EXCL. HYBRIDS)",
             "length": "LENGTH",
             "difficulties": "DIFFICULTIES",
             "totalRanked": "TOTAL RANKED",
