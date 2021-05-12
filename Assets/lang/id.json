@@ -166,7 +166,7 @@
             },           
             "mapper": {
                 "name": "Mapper",
-                "description": "Mereka yang membuat map terbaik."
+                "description": "Mereka yang membuat map-map terbaik."
             },
             "modder": {
                 "name": "Modder",
@@ -178,7 +178,7 @@
             },
             "mostPromising": {
                 "name": "Most Promising",
-                "description": "Mapper terbaik yang baru beatmap Ranked pertamanya di tahun ini."
+                "description": "Mapper terbaik yang baru memiliki beatmap Ranked pertamanya pada tahun ini."
             },
             "mostInfluential": {
                 "name": "Most Influential",
@@ -210,39 +210,39 @@
             },
             "simplistic": {
                 "name": "Simplistic",
-                "description": "The best cleanest set out there."
+                "description": "Mapset terbaik yang mengusung desain yang sederhana."
             },
             "sliderVelocity": {
                 "name": "Slider Velocity",
-                "description": "The best set with an intense usage of slider velocities."
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada manipulasi slider velocity."
             },
             "longNotes": {
                 "name": "Long Notes",
-                "description": "The best set with an intense usage of LNs."
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan LN."
             },
             "antiMeta": {
                 "name": "Anti Meta",
-                "description": "The best set based around 5K/6K/8K/9K."
+                "description": "Mapset 5K/6K/8K/9K terbaik."
             },
             "7K": {
                 "name": "7K Specific",
-                "description": "The best set based around 7K."
+                "description": "Mapset 7K terbaik."
             },
             "technical": {
                 "name": "Technical",
-                "description": "The best storyboard in its technical capabilities."
+                "description": "Storyboard yang secara teknis terbaik."
             },
             "gameplay": {
                 "name": "Gameplay",
-                "description": "The best storyboard in utilizing gameplay elements."
+                "description": "Storyboard terbaik yang memperkaya permainan."
             },
             "minimalistic": {
                 "name": "Minimalistic",
-                "description": "The best storyboard in saying a lot with very little."
+                "description": "Storyboard terbaik yang mengusung elemen-elemen desain minimalis."
             },
             "narrative": {
                 "name": "Narrative",
-                "description": "The best storyboard in telling a great story."
+                "description": "Storyboard terbaik yang menceritakan suatu kisah."
             }
         },
         "nom_vote": {
