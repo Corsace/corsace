@@ -166,47 +166,47 @@
             },           
             "mapper": {
                 "name": "Mapper",
-                "description": "The one who created the best beatmaps."
+                "description": "Mereka yang membuat map terbaik."
             },
             "modder": {
                 "name": "Modder",
-                "description": "The one who created the best mods."
+                "description": "Mereka yang memberikan mod-mod yang paling membantu."
             },
             "hitsounder": {
                 "name": "Hitsounder",
-                "description": "The one who created the best hitsounds."
+                "description": "Mereka yang paling piawai dalam meracik hitsound."
             },
             "mostPromising": {
                 "name": "Most Promising",
-                "description": "The best mapper who ranked their first set this year."
+                "description": "Mapper terbaik yang baru beatmap Ranked pertamanya di tahun ini."
             },
             "mostInfluential": {
                 "name": "Most Influential",
-                "description": "The one who inspired and influenced other mappers the most."
+                "description": "Mereka yang karya dan pemikirannya paling berpengaruh di mata mapper-mapper lain."
             },
             "outCont": {
                 "name": "Outstanding Contribution",
-                "description": "The one who positively contributed to the health of osu! the most."
+                "description": "Mereka yang paling berkontribusi memajukan osu!."
             },
             "spread": {
                 "name": "Spread",
-                "description": "The set with the best spread of difficulties."
+                "description": "Mapset dengan persebaran tingkat kesulitan terbaik."
             },
             "experimental": {
                 "name": "Experimental",
-                "description": "The best \"tech\"/off meta set."
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern yang tergolong \"tech\" atau off-meta."
             },
             "stream": {
                 "name": "Stream",
-                "description": "The set with the best continuous streams."
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern stream."
             },
             "highBPMTaiko": {
                 "name": "High BPM",
-                "description": "The best set with over 240 BPM."
+                "description": "Mapset terbaik dengan tempo lagu di atas 240 BPM."
             },
             "lowBPMTaiko": {
                 "name": "Low BPM",
-                "description": "The best set with under 140 BPM."
+                "description": "Mapset terbaik dengan tempo lagu di bawah 140 BPM."
             },
             "simplistic": {
                 "name": "Simplistic",
