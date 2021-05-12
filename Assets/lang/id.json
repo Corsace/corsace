@@ -82,10 +82,10 @@
         },           
         "comments": {
             "name": "KOMENTAR",
-            "info": "Semua komentar yang diterima akan dipublikasikan segera setelah hasil akhir MCA diumumkan! Anda dibebaskan untuk berkomentar hingga waktu pengumuman hasil MCA tiba.",
+            "info": "Semua komentar yang masuk akan dipublikasikan segera setelah hasil akhir MCA diumumkan! Kamu dibebaskan untuk berkomentar hingga waktu pengumuman hasil MCA tiba.",
             "search": "cari mapper",           
             "viewSubmit": "lihat/kirim komentar",
-            "writeHere": "Berikan komentar Anda untuk mapper ini!",            
+            "writeHere": "Berikan komentarmu untuk mapper ini!",            
             "update": "Perbarui",
             "remove": "Hapus",
             "create": "Tulis",
