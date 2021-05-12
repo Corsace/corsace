@@ -7,86 +7,86 @@
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "MASUK",
             "welcomeBack": "selamat datang kembali",
-            "admin": "",
-            "staff": "",
+            "admin": "ADMIN",
+            "staff": "STAF",
             "logout": "KELUAR"
         },
         "login": {
             "login": "masuk",
             "message": {
-                "1": "Sepertinya Anda belum terhubung masuk!<br>Anda harus masuk terlebih dahulu dengan menggunakan akun osu! Anda untuk dapat mulai menominasikan/memberikan suara kepada beatmap-beatmap yang Anda kehendaki.",
-                "2": ""
+                "1": "Sepertinya Anda belum terhubung masuk!<br>Anda harus masuk terlebih dahulu dengan menggunakan akun osu! Anda untuk dapat mulai menominasikan beatmap dan menyalurkan hak suara Anda.",
+                "2": "Anda juga dapat masuk dengan menggunakan Discord setelahnya, namun hal ini <b>tidak bersifat wajib</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staf yang bertugas.</b></span>"
             },
             "authOsu": "klik di sini untuk menghubungkan akun osu! Anda",
-            "authOsuComp": "akun osu! Anda telah terhubung. Halo!",
+            "authOsuComp": "akun osu! Anda telah terhubung. Halo ",
             "authDiscord": "klik di sini untuk menghubungkan akun Discord Anda",
-            "authDiscordComp": "akun Discord Anda telah terhubung. Halo!"
+            "authDiscordComp": "akun Discord Anda telah terhubung. Halo "
         }
     },
     "ayim": {
         "main": {
-            "records": "",
-            "statistics": "",
-            "search": "",
-            "numberof": "",
-            "numberwith": ""
+            "records": "REKAM JEJAK",
+            "statistics": "STATISTIK",
+            "search": "cari mapper",
+            "numberof": "jumlah",
+            "numberwith": "jumlah map dengan"
         },
         "mapsets": {
-            "name": "",
-            "playcount": "",
-            "favourites": "",
-            "length": "",
-            "difficulties": "",
-            "totalRanked": "",
-            "totalDiff": "",
-            "submitDates": "",
-            "starRatings": "",
-            "approachRate": "",
-            "overallDifficulty": "",
-            "hpDrain": "",
-            "circleSize": ""
+            "name": "MAPSET",
+            "playcount": "JUMLAH PERMAINAN",
+            "favourites": "JUMLAH FAVORIT",
+            "length": "DURASI",
+            "difficulties": "TINGKAT KESULITAN",
+            "totalRanked": "TOTAL RANKED",
+            "totalDiff": "TOTAL TINGKAT KESULITAN",
+            "submitDates": "WAKTU PENGUNGGAHAN",
+            "starRatings": "STAR RATING",
+            "approachRate": "APPROACH RATE",
+            "overallDifficulty": "OVERALL DIFFICULTY",
+            "hpDrain": "HP DRAIN",
+            "circleSize": "CIRCLE SIZE"
         },
         "mappers": {
-            "name": "",
-            "mostRanked": "",
-            "mostFavs": "",
-            "mostPlayed": "",
-            "totalMappers": "",
-            "newMapperAges": "",
-            "mapperAges": "",
-            "mapsPerMapperAges": "",
-            "bng": "",
-            "nat": ""
+            "name": "MAPPER",
+            "mostRanked": "BEATMAP RANKED TERBANYAK",
+            "mostFavs": "PALING DIFAVORITKAN",
+            "mostPlayed": "PALING BANYAK DIMAINKAN",
+            "totalMappers": "TOTAL MAPPER",
+            "newMapperAges": "USIA AKUN MAPPER BARU",
+            "mapperAges": "USIA AKUN MAPPER",
+            "mapsPerMapperAges": "JUMLAH MAP PER MAPPER PER USIA AKUN",
+            "bng": "BNG",
+            "nat": "NAT"
         },
         "comments": {
-            "name": "",
-            "info": "",
-            "viewSubmit": "",
-            "update": "",
-            "remove": "",
-            "create": "",
-            "login": "",
-            "visible": ""
+            "name": "KOMENTAR",
+            "info": "Komentar-komentar yang masuk akan dipublikasikan segera setelah hasil akhir MCA diumumkan! Anda dibebaskan untuk berkomentar hingga hari pengumuman hasil MCA.",
+            "viewSubmit": "lihat/kirim komentar",
+            "update": "Perbarui",
+            "remove": "Hapus",
+            "create": "Tulis",
+            "login": "Harap masuk untuk berkomentar",
+            "visible": "(belum tersedia)"
         }
     },
     "mca": {
         "main": {
             "voting": "voting",
             "nominating": "nominasi",
-            "results": "",
+            "results": "hasil",
             "undefined": "",
-            "mapsetsLabel": "MAPSET",
-            "mappersLabel": "MAPPER",
-            "commentsLabel": "KOMENTAR",
-            "recordsLabel": "REKOR",
-            "statisticsLabel": "STATISTIK",
+                        "mapsetsLabel": "MAPSET",
+                        "mappersLabel": "MAPPER",
+                        "commentsLabel": "KOMENTAR",
+                        "recordsLabel": "REKOR",
+                        "statisticsLabel": "STATISTIK",
             "stage": {
                 "voting": "tahapan voting",
                 "nominating": "tahapan nominasi",
                 "undefined": ""
             },
-            "rankedSets": "TOTAL BEATMAP YANG BERSTATUS RANKED",
-            "nominateNow": "nominasi sekarang !",
+            "rankedSets": "TOTAL BEATMAP RANKED",
+            "nominateNow": "nominasikan sekarang !",
             "voteNow": "vote sekarang !",
             "daysLeft": "hari tersisa",
             "message": {
@@ -96,68 +96,68 @@
                 "4": "Kami berharap Anda semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!"
             },
             "categories": {
-                "map": "",
-                "user": ""
+                "map": "kategori map",
+                "user": "kategori pengguna"
             },
-            "organized": ""
+            "organized": "DIORGANISIR OLEH"
         },
         "categories": {
             "grandAward": {
-                "name": "",
-                "description": ""
+                "name": "Grand Award",
+                "description": "Yang terbaik dari yang terbaik."
             },
             "marathon": {
-                "name": "",
-                "description": ""
+                "name": "Marathon",
+                "description": "Mapset terbaik dengan drain time di atas 5 menit."
             },
             "hitsounding": {
-                "name": "",
-                "description": ""
+                "name": "Hitsounding",
+                "description": "Mapset dengan hitsounding terbaik."
             },
             "collab": {
-                "name": "",
-                "description": ""
+                "name": "Collab",
+                "description": "Mapset terbaik yang tingkat kesulitan tertingginya merupakan hasil kolaborasi antar 2 mapper atau lebih."
             },
             "simple": {
-                "name": "",
-                "description": ""
+                "name": "Simple",
+                "description": "Mapset terbaik dengan tingkat kesulitan tertinggi di bawah Insane."
             },
             "highBPM": {
-                "name": "",
-                "description": ""
+                "name": "High BPM",
+                "description": "Mapset terbaik yang bertitik berat pada spaced stream atau singletap."
             },
             "smallCircles": {
-                "name": "",
-                "description": ""
+                "name": "Small Circles",
+                "description": "Mapset terbaik yang mempergunakan circle size 5 atau lebih kecil."
             },
             "heavy13": {
-                "name": "",
-                "description": ""
+                "name": "1/3 Heavy",
+                "description": "Mapset terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6)."
             },
             "throwback": {
-                "name": "",
-                "description": ""
+                "name": "Throwback",
+                "description": "Mapset terbaik dengan gaya mapping yang membawa nuansa nostalgia."
             }
         },
         "nom_vote": {
-            "search": "",
-            "candidates": "",
+            "search": "cari beatmap/user",
+            "candidates": "kandidat",
             "options": {
-                "date": "",
-                "artist": "",
-                "title": "",
-                "favs": "",
-                "creator": "",
-                "sr": "",
-                "id": "",
-                "alph": "",
-                "asc": "",
-                "desc": "",
-                "incVote": "",
-                "voteChoice": ""
+                "date": "TANGGAL",
+                "artist": "ARTIS",
+                "title": "JUDUL",
+                "favs": "JML. FAVORIT",
+                "creator": "MAPPER",
+                "sr": "SR",
+                "id": "ID",
+                "alph": "ALPH",
+                "asc": "ASC",
+                "desc": "DESC",
+                "incVote": "VOTE INKREMENTAL",
+                "voteChoice": "PILIHAN"
             },
-            "hosted": "",
-            "userID": ""
+            "hosted": "DI-HOST OLEH",
+            "userID": "USER ID"
         }
     }
 }

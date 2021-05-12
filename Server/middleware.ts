@@ -1,9 +1,8 @@
-import { Config } from "../config";
+import { config } from "node-config-ts";
 import { discordGuild } from "./discord";
 import { ParameterizedContext, Next } from "koa";
 
 // General middlewares
-const config = new Config();
 
 async function isLoggedIn (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (!ctx.state.user) {
@@ -59,9 +58,11 @@ function hasRole (section: string, role: string) {
         const member = await (await discordGuild()).members.fetch(ctx.state.user.discord.userID);
         if (
             member && 
-            (member.roles.cache.has(config.discord.roles[section][role]) || 
-            member.roles.cache.has(config.discord.roles.corsace.corsace) || 
-            role === "corsace" ? false : member.roles.cache.has(config.discord.roles.corsace.headStaff))
+            (
+                member.roles.cache.has(config.discord.roles[section][role]) || 
+                member.roles.cache.has(config.discord.roles.corsace.corsace) || 
+                (role === "corsace" ? false : member.roles.cache.has(config.discord.roles.corsace.headStaff))
+            )
         ) {
             await next();
             return;

@@ -48,10 +48,12 @@ export default class SearchBar extends Vue {
 
 <style lang="scss">
 @import '@s-sass/_variables';
+@import '@s-sass/_mixins';
 
 .search {
     display: flex;
     justify-content: space-between;
+    width: 100%;
 
     & > * {
         padding: 5px;
@@ -76,6 +78,9 @@ export default class SearchBar extends Vue {
 
     &-image {
         width: 35px;
+        @include breakpoint(mobile) {
+            width: 17px;
+        }
     }
 
     &::before {
@@ -88,6 +93,9 @@ export default class SearchBar extends Vue {
 .search__input {
     font-family: $font-body;
     font-size: $font-lg;
+    @include breakpoint(mobile) {
+        font-size: $font-base;
+    }
 
     border: 0;
     border-radius: 0 5.5px 5.5px 0;

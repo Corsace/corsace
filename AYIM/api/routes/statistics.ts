@@ -1,5 +1,5 @@
 import Router from "@koa/router";
-import { createQueryBuilder } from "typeorm";
+import { createQueryBuilder, SelectQueryBuilder } from "typeorm";
 import { Statistic } from "../../../Interfaces/records";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
@@ -24,6 +24,25 @@ const yearIDthresholds = [
     15887198, // 2020
     20136967, // 2021
 ]; // IDs where they are the first for each year starting from 2007
+
+function createUserQuery (year, modeId, i) : SelectQueryBuilder<User> {
+    let query = User
+        .createQueryBuilder("user")
+        .innerJoin("user.beatmapsets", "beatmapset","beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+        .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId });
+    if (i === yearIDthresholds.length - 1)
+        query = query
+            .andWhere(`user.osuUserid >= ${yearIDthresholds[i]}`);
+    else
+        query = query
+            .andWhere(`user.osuUserid >= ${yearIDthresholds[i]} and user.osuUserid < ${yearIDthresholds[i + 1]}`);
+    return query;
+}
+
+function valueToFixed (record: any, digits = 2): any {
+    record.value = parseFloat(record.value).toFixed(digits);
+    return record;
+}
 
 statisticsRouter.get("/beatmapsets", async (ctx) => {
     const year = parseInt(ctx.query.year || new Date().getFullYear());
@@ -120,7 +139,7 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
         else
             query = query
                 .andWhere(`user.osuUserid >= ${yearIDthresholds[i]} and user.osuUserid < ${yearIDthresholds[i + 1]}`);
-            
+
         mapsQ.push(query
             .select("count(distinct beatmapset.ID)", "value")
             .addSelect(`'Maps Ranked by ${i + 2007} Users'`, "constraint")
@@ -160,6 +179,20 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
         OD,
         HP,
         SR,
+
+        // Total sliders/circles
+        totalSliders,
+        avgSlidersPerMapset,
+        avgSlidersPerDiff,
+
+        totalCircles,
+        avgCirclesPerMapset,
+        avgCirclesPerDiff,
+
+        setsToDifficulties,
+
+        avgSR,
+
     ] = await Promise.all([
         // Total ranked
         query
@@ -218,21 +251,82 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
             .getRawOne(),
 
         Promise.all(yearQ),
-        
+
         // CS AR OD HP
         Promise.all(CSq),
         Promise.all(ARq),
         Promise.all(ODq),
         Promise.all(HPq),
         Promise.all(SRq),
+
+
+        // Total Sliders
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.sliders)", "value")
+            .addSelect("'Sliders Ranked'", "constraint")
+            .getRawOne(),
+
+        // Avg Sliders per Mapset
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.sliders)/COUNT(DISTINCT beatmap.beatmapsetID)", "value")
+            .addSelect("'Sliders per Set'", "constraint")
+            .getRawOne(),
+
+        // Avg Sliders per Diff
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.sliders)/COUNT(beatmap.ID)", "value")
+            .addSelect("'Sliders per Diff'", "constraint")
+            .getRawOne(),
+
+
+        // Total Circles
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.circles)", "value")
+            .addSelect("'Circles Ranked'", "constraint")
+            .getRawOne(),
+
+        // Avg Circles per Mapset
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.circles)/COUNT(DISTINCT beatmap.beatmapsetID)", "value")
+            .addSelect("'Circles per Set'", "constraint")
+            .getRawOne(),
+
+        // Avg Circles per Diff
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("SUM(beatmap.circles)/COUNT(beatmap.ID)", "value")
+            .addSelect("'Circles per Diff'", "constraint")
+            .getRawOne(),
+
+        // Ratio of Sets to Difficulties
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("COUNT(beatmap.ID)/COUNT(DISTINCT beatmap.beatmapsetID)", "value")
+            .addSelect("'Diffs per Set'", "constraint")
+            .getRawOne(),
+
+        // Average SR
+        Beatmapset
+            .queryStatistic(year, modeId)
+            .select("ROUND(AVG(totalSR), 2)", "value")
+            .addSelect("'SR Ranked'", "constraint")
+            .getRawOne(),
     ]);
 
     const statistics: Record<string, Statistic[]> = {
-        total_ranked: [
+        totalRanked: [
             totalSets,
             totalDiffs,
         ],
-        total_difficulties: [
+        sliders: [totalSliders, valueToFixed(avgSlidersPerMapset), valueToFixed(avgSlidersPerDiff)],
+        circles: [totalCircles, valueToFixed(avgCirclesPerMapset), valueToFixed(avgCirclesPerDiff)],
+        difficulties: [
+            valueToFixed(setsToDifficulties),
             totalEasies,
             totalMediums,
             totalHards,
@@ -240,15 +334,15 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
             totalExtras,
             totalExpertPlus,
         ],
-        submit_dates: years,
-        star_ratings: SR,
-        approach_rate: AR,
-        overall_difficulty: OD,
-        hp_drain: HP,
+        submitDates: years,
+        starRatings: [valueToFixed(avgSR), ...SR],
+        approachRate: AR,
+        overallDifficulty: OD,
+        hpDrain: HP,
     };
 
     if (modeId === ModeDivisionType.fruits || ModeDivisionType.standard)
-        statistics.circle_size = CS;
+        statistics.circleSize = CS;
     else if (modeId === ModeDivisionType.mania)
         statistics.keys = CS;
 
@@ -264,30 +358,17 @@ statisticsRouter.get("/mappers", async (ctx) => {
     for (let i = 0; i < yearIDthresholds.length; i++) {
         if (i + 2007 > year)
             break;
-        let query = User
-            .createQueryBuilder("user")
-            .innerJoin("user.beatmapsets", "beatmapset","beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
-            .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId });
-        if (i === yearIDthresholds.length - 1)
-            query = query
-                .andWhere(`user.osuUserid >= ${yearIDthresholds[i]}`);
-        else
-            query = query
-                .andWhere(`user.osuUserid >= ${yearIDthresholds[i]} and user.osuUserid < ${yearIDthresholds[i + 1]}`);
-        
-        yearQ.push(query
+
+        yearQ.push(createUserQuery(year, modeId, i)
             .select("count(distinct user.osuUserid)", "value")
             .addSelect(`'${i + 2007} Users Ranking Sets'`, "constraint")
             .cache(true)
             .getRawOne()
         );
 
-        newyearQ.push(query
-            .andWhere(qb => {
-                let subQuery = qb
-                    .subQuery()
-                    .from(Beatmapset, "sub");
-                subQuery = Beatmapset
+        newyearQ.push(createUserQuery(year, modeId, i)
+            .andWhere(() => {
+                const subQuery = Beatmapset
                     .createQueryBuilder("beatmapset")
                     .where(`year(beatmapset.approvedDate) < ${year}`)
                     .select("beatmapset.creatorID");
@@ -299,7 +380,8 @@ statisticsRouter.get("/mappers", async (ctx) => {
             .getRawOne()
         );
 
-        mapsQ.push(query
+        // Maps Ranked by <YEAR> Users
+        mapsQ.push(createUserQuery(year, modeId, i)
             .select("count(distinct beatmapset.ID)", "value")
             .addSelect(`'Maps Ranked by ${i + 2007} Users'`, "constraint")
             .cache(true)
@@ -308,7 +390,7 @@ statisticsRouter.get("/mappers", async (ctx) => {
     }
 
     const [
-        uniqueMappers, 
+        uniqueMappers,
         newMappers,
 
         years,
@@ -341,7 +423,7 @@ statisticsRouter.get("/mappers", async (ctx) => {
 
         Promise.all(yearQ),
         Promise.all(newyearQ),
-        
+
         Promise.all(mapsQ),
     ]);
 
@@ -354,10 +436,7 @@ statisticsRouter.get("/mappers", async (ctx) => {
                 value: (newMappers.value / uniqueMappers.value * 100).toFixed(2) + "%",
             },
         ],
-        new_mapper_ages: newYears,
-        mapper_ages: years,
-        maps_per_mapper_ages: mapYears,
-        bns: [
+        bng: [
             getHistoryStat(year, modeString, "bns", "joined"),
             getHistoryStat(year, modeString, "bns", "left"),
         ],
@@ -365,6 +444,9 @@ statisticsRouter.get("/mappers", async (ctx) => {
             getHistoryStat(year, modeString, "nat", "joined"),
             getHistoryStat(year, modeString, "nat", "left"),
         ],
+        newMapperAges: newYears,
+        mapperAges: years,
+        mapsPerMapperAges: mapYears,
     };
 
     ctx.body = statistics;

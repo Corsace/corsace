@@ -4,6 +4,7 @@
             :title="$t('mca.main.categories.map')"
             :list="beatmapCategories"
             :active="toUpdateSection === 'beatmaps'"
+            :categoryName="true"
             :show-extra="true"
             @activate="saveSection('beatmaps')"
             @target="updateCategory($event)"
@@ -12,6 +13,7 @@
             :title="$t('mca.main.categories.user')"
             :list="userCategories"
             :active="toUpdateSection === 'users'"
+            :categoryName="true"
             :show-extra="true"
             @activate="saveSection('users')"
             @target="updateCategory($event)"
@@ -23,7 +25,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import Collapsible from "../Collapsible.vue";
+import Collapsible from "../../../MCA-AYIM/components/Collapsible.vue";
 
 import { CategoryStageInfo } from "../../../Interfaces/category";
 
@@ -41,6 +43,7 @@ export default class StagePageCategories extends Vue {
     @stageModule.Getter categoriesInfo!: CategoryStageInfo[];
     @stageModule.Action updateSelectedCategory;
     @stageModule.Action updateSection;
+    @stageModule.Action reset;
     
     toUpdateSection = "";
 
@@ -59,6 +62,7 @@ export default class StagePageCategories extends Vue {
     // Only change the choices list on category change
     saveSection (section: string): void {
         this.toUpdateSection = section;
+        this.reset();
     }
 
     updateCategory (category: string): void {

@@ -69,9 +69,10 @@ export default class ModeSwitcher extends Vue {
 
 $mode-title-padding-y: 10px;
 $mode-title-height: 40px;
+
 $mode-selection-bottom-space: 31px;
- 
 $mode-selection-padding: 25px;
+
 $icon-size: 45px;
 $icon-margin: 15px;
 $border-margin: 5px;
@@ -85,7 +86,6 @@ $border-margin: 5px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    overflow: hidden;
 
     margin-left: 30px;
 }
@@ -93,26 +93,40 @@ $border-margin: 5px;
 .mode-title-container {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     width: 100%;
+
+    margin-bottom: $mode-title-padding-y;
+    @include breakpoint(mobile) {
+        margin-bottom: $mode-title-padding-y + 18px;
+    }
 }
 
 .mode-title {
     font-family: 'Lexend Peta';
-    font-size: 2.5rem;
+    font-size: 2rem;
     text-shadow: 0 0 4px white;
     height: 40px;
 
     white-space: nowrap;
 
-    margin: #{$mode-title-padding-y} 25px #{$mode-title-padding-y} auto;
+    margin: #{$mode-title-padding-y + 25px} 25px 0 auto;
+    @include breakpoint(mobile) {
+        font-size: $font-base;
+        height: 0;
+        margin: #{$mode-title-padding-y} 25px 0 auto;
+    }
+    @include breakpoint(laptop) {
+        font-size: 2.25rem;
+        margin: #{$mode-title-padding-y} 25px 0 auto;
+    }
 }
 
 .mode-container {
     width: 100%;
     height: 100%;
     padding: 25px 0 0 25px;
-    overflow: hidden;
+    overflow-y: hidden;
 }
 
 .mode-selection {
@@ -143,12 +157,22 @@ $border-margin: 5px;
         display: block;
         position: absolute;
         left: 0px;
-        top: $mode-title-height + $mode-title-padding-y * 2;
+        top: $mode-title-height + $mode-title-padding-y * 2 + 25px;
         width: 100%;
-        height: calc(100% - #{$mode-title-height} - #{$mode-title-padding-y} * 2 - #{$mode-selection-bottom-space});
+        height: calc(100% - #{$mode-title-height} - #{$mode-title-padding-y} * 2 - 25px - #{$mode-selection-bottom-space});
         border-top-left-radius: 25px;
         border-bottom-left-radius: 25px;
         z-index: -1;
+
+        @include breakpoint(mobile) {
+            top: $mode-title-height;
+            height: calc(100% - #{$mode-title-height} - #{$mode-selection-bottom-space});
+        }
+
+        @include breakpoint(laptop) {
+            top: $mode-title-height + $mode-title-padding-y * 2;
+            height: calc(100% - #{$mode-title-height} - #{$mode-title-padding-y} * 2 - #{$mode-selection-bottom-space});
+        }
     }
 
     &__general {

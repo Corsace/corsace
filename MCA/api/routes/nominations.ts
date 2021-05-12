@@ -11,10 +11,8 @@ import stageSearch from "./stageSearch";
 const nominationsRouter = new Router();
 
 nominationsRouter.use(isLoggedInOsu);
-nominationsRouter.use(validatePhaseYear);
-nominationsRouter.use(isPhaseStarted("nomination"));
 
-nominationsRouter.get("/:year?", async (ctx) => {
+nominationsRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"), async (ctx) => {
     const [nominations, categories] = await Promise.all([
         Nomination.find({
             where: {
@@ -41,17 +39,21 @@ nominationsRouter.get("/:year?", async (ctx) => {
     };
 });
 
-nominationsRouter.get("/:year?/search", stageSearch("nominating", async (ctx, category) => {
+nominationsRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), stageSearch("nominating", async (ctx, category) => {
     const nominations = await Nomination.find({
         nominator: ctx.state.user,
     });
-    if (!category.isRequired && !nominations.some(nom => nom.category.name === "Grand Award" && nom.category.type === (category.type === CategoryType.Beatmapsets ? CategoryType.Beatmapsets : CategoryType.Users)))
-        return ctx.body = { error: "Please nominate in the Grand Award categories first!" };
+    if (
+        !category.isRequired && 
+        !nominations.some(nom => nom.category.name === "grandAward" && nom.category.type === (category.type === CategoryType.Beatmapsets ? CategoryType.Beatmapsets : CategoryType.Users))
+    ) {
+        throw "Please nominate in the Grand Award categories first!";
+    }
         
     return nominations;
 }));
 
-nominationsRouter.post("/create", isPhase("nomination"), isEligible, async (ctx) => {
+nominationsRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const category = await Category.findOneOrFail(ctx.request.body.categoryId);
     
     if (!isEligibleFor(ctx.state.user, category.mode.ID, ctx.state.year))
@@ -112,7 +114,7 @@ nominationsRouter.post("/create", isPhase("nomination"), isEligible, async (ctx)
     ctx.body = nomination;
 });
 
-nominationsRouter.delete("/remove/:category/:id", isPhase("nomination"), isEligible, async (ctx) => {
+nominationsRouter.delete("/remove/:category/:id", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const category = await Category.findOneOrFail(ctx.params.category);
     const nominations = await Nomination.find({
         nominator: ctx.state.user,

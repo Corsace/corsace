@@ -1,0 +1,175 @@
+{
+    "flag": "https://osu.ppy.sh/images/flags/FR.png",
+    "login": "CONNEXION",
+    "mca_ayim": {
+        "header": {
+            "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
+            "ayim": "A YEAR <br> IN <br> MAPPING",
+            "login": "CONNEXION",
+            "welcomeBack": "bon retour",
+            "admin": "ADMIN",
+            "staff": "STAFF",
+            "logout": "SE DÉCONNECTER"
+        },
+        "login": {
+            "login": "connexion",
+            "message": {
+                "1": "Il semblerait que vous n'êtes pas connecté !<br>Connectez-vous avec osu! et vous pourrez immédiatement voter ou nominer!",
+                "2": "Vous pourrez également vous connecter avec Discord par la suite, mais cela n'est <b>pas nécessaire</b> pour voter ou nominer.<br>La connexion par Discord <b>est nécessaire</b> pour les membres du staff travaillant sur les MCA ou AYIM.</span>"
+            },
+            "authOsu": "Cliquez ici pour vous identifier via osu!",
+            "authOsuComp": "Vérification par osu! complète. Bonjour ",
+            "authDiscord": "Cliquez ici pour vous identifier via Discord",
+            "authDiscordComp": "Vérification par Discord complète. Bonjour "
+        }
+    },
+    "ayim": {
+        "main": {
+            "records": "RECORDS",
+            "statistics": "STATISTIQUES",
+            "search": "rechercher un mapper",
+            "numberof": "nombre de",
+            "numberwith": "nombre de maps ayant"
+        },
+        "mapsets": {
+            "name": "MAPSETS",
+            "playcount": "NOMBRE DE JOUEURS",
+            "favourites": "FAVORIS",
+            "length": "DURÉE",
+            "difficulties": "DIFFICULTÉS",
+            "totalRanked": "TOTAL DE MAPS CLASSÉES",
+            "totalDiff": "TOTAL DE DIFFICULTÉS",
+            "submitDates": "DATE DE MISE EN LIGNE",
+            "starRatings": "DIFFICULTÉ EN ÉTOILES",
+            "approachRate": "NIVEAU D'APPROCHE",
+            "overallDifficulty": "PRÉCISION",
+            "hpDrain": "DRAIN DE PV",
+            "circleSize": "TAILLE DES CERCLES"
+        },
+        "mappers": {
+            "name": "MAPPERS",
+            "mostRanked": "LE PLUS DE MAPS CLASSÉES",
+            "mostFavs": "LE PLUS DE FAVORIS",
+            "mostPlayed": "LES MAPS LES PLUS JOUÉES",
+            "totalMappers": "NOMBRE DE MAPPERS AU TOTAL",
+            "newMapperAges": "L'ANNÉE D'INSCRIPTION DES NOUVEAUX MAPPERS",
+            "mapperAges": "L'ANNÉE D'INSCRIPTION DES MAPPERS",
+            "mapsPerMapperAges": "MAPS PAR MAPPER PAR ANNÉE D'INSCRIPTION",
+            "bng": "BNG",
+            "nat": "NAT"
+        },
+        "comments": {
+            "name": "COMMENTAIRES",
+            "info": "Tous les commentaires deviendront publiques une fois que les résultats seront annoncés ! D'ici là, vous pouvez soumettre vos propres commentaires.",
+            "viewSubmit": "voir/soumettre des commentaires",
+            "update": "Mettre à jour",
+            "remove": "Supprimer",
+            "create": "Créer",
+            "login": "Se connecter pour créer",
+            "visible": "(pas encore visible)"
+        }
+    },
+    "mca": {
+        "main": {
+            "voting": "votes",
+            "nominating": "nominations",
+            "results": "résultats",
+            "undefined": "",
+			"mapsetsLabel": "MAPSETS",
+			"mappersLabel": "MAPPERS",
+			"commentsLabel": "COMMENTAIRES",
+			"recordsLabel": "RECORDS",
+			"statisticsLabel": "STATISTIQUES",
+            "stage": {
+                "voting": "période de vote",
+                "nominating": "période de nomination",
+                "undefined": ""
+            },
+            "rankedSets": "MAPSETS CLASSÉS",
+            "nominateNow": "nominez maintenant !",
+            "voteNow": "votez maintenant !",
+            "daysLeft": "jours restants",
+            "message": {
+                "1": "Les Mapper's Choice Awards sont de retour pour un 4ème round en 2019 ! C'est un évènement où tous les mappers/modders peuvent nominer et voter pour ce qu'ils pensent être la meilleure map ou le meilleur mapper pour chaque catégorie !",
+                "2": "Notre but est de donner une nouvelle perspective sur les meilleures maps de 2019 à travers les yeux de la communauté mapping, comparé au Community Choice !",
+                "3": "Cette année, on s'est donné à fond avec un site à part entière pour permettre aux voteurs éligibles de nominer et voter pour des maps !",
+                "4": "Nous espérons qu'un maximum de participants pourront se donner au jeu !"
+            },
+            "categories": {
+                "map": "catégories de maps",
+                "user": "catégories d'utilisateurs"
+            },
+            "organized": "ORGANISÉ PAR"
+        },
+        "categories": {
+            "grandAward": {
+                "name": "Grand Prix",
+                "description": "La crème de la crème."
+            },
+            "marathon": {
+                "name": "Marathon",
+                "description": "Le meilleur mapset durant plus de 5 minutes."
+            },
+            "hitsounding": {
+                "name": "Hitsounding",
+                "description": "Les meilleures cloches et sifflets du marché."
+            },
+            "collab": {
+                "name": "Collab",
+                "description": "Le meilleur mapset avec au moins 2 mappers derrière la difficulté la plus élevée."
+            },
+            "simple": {
+                "name": "Simple",
+                "description": "Le meilleur mapset avec une difficulté maximale en dessous d'une insane."
+            },
+            "highBPM": {
+                "name": "Haut BPM",
+                "description": "Le meilleur mapset avec des spaced streams atypiques ou des singletaps très tendus."
+            },
+            "smallCircles": {
+                "name": "Petits Cercles",
+                "description": "Le meilleur mapset où la plus haute difficulté utilise une taille de cercles de 5 ou moins."
+            },
+            "heavy13": {
+                "name": "1/3 à foison",
+                "description": "Le meilleur mapset où les plus hautes difficultés utilisent beaucoup de ticks violets."
+            },
+            "throwback": {
+                "name": "Retour aux Sources",
+                "description": "Le meilleur mapset avec un style plus ancien."
+            }
+        },
+        "nom_vote": {
+            "search": "chercher un mapset/utilisateur",
+            "candidates": "candidats",
+            "options": {
+                "date": "DATE",
+                "artist": "ARTISTE",
+                "title": "TITRE",
+                "favs": "FAVORIS",
+                "creator": "CRÉATEUR",
+                "sr": "SR",
+                "id": "ID",
+                "alph": "ALPH",
+                "asc": "ASC",
+                "desc": "DESC",
+                "incVote": "VOTE SUPPLÉMENTAIRE",
+                "voteChoice": "CHOIX DU VOTE"
+            },
+            "hosted": "ORGANISÉ PAR",
+            "userID": "ID DE L'UTILISATEUR"
+        }
+    },
+    "main": {
+        "header": {
+            "login": "SE CONNECTER",
+            "register": "S'INSCRIRE"
+        },
+        "index": {
+            "underConstruction": "en cours de construction",
+            "sorry": "désolé pour le désagrément",
+            "development": "le site corsace est encore en développement",
+            "theTeam": "l'équipe corsace"
+        }
+    }
+}

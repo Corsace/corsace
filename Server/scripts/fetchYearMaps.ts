@@ -1,21 +1,228 @@
-import { createConnection } from "typeorm";
-import { Config } from "../../config";
-import axios from "axios";
 import { ModeDivisionType, ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
+import { queue } from "async";
+import { createConnection } from "typeorm";
+import memoizee from "memoizee";
+import { Beatmap as APIBeatmap } from "nodesu";
+import { config } from "node-config-ts";
 import { Beatmapset } from "../../Models/beatmapset";
+import axios from "axios";
 import { Beatmap } from "../../Models/beatmap";
-import { User, OAuth } from "../../Models/user";
+import { OAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
 
-const config = new Config();
-const args = process.argv.slice(2); // Year to get the maps for
-const year = parseInt(args[0]);
-if (Number.isNaN(year))
-{
-    console.error("Please provide a valid year!");
-    process.exit(1);
+let bmQueued = 0; // beatmaps inserted in queue
+let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
+let bmsInserted = 0; // beatmapsets inserted in db (no longer in queue)
+
+function sleep (ms: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(), ms);
+    });
 }
+
+function timeFormatter (ms: number): string {
+    if (isNaN(ms) || ms <= 0)
+        return "0:00:00";
+
+    let secs = Math.floor(ms / 1000);
+    let mins = 0;
+    let hrs = 0;
+    while (secs >= 60) {
+        secs -= 60;
+        mins++;
+    }
+    while (mins >= 60) {
+        mins -= 60;
+        hrs++;
+    }
+    return `${hrs}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+}
+
+const getModeDivison = memoizee(async (modeDivisionId: number) => {
+    modeDivisionId += 1;
+    let mode = await ModeDivision.findOne(modeDivisionId + 1);
+    if (!mode) {
+        mode = new ModeDivision;
+        mode.ID = modeDivisionId;
+        mode.name = ModeDivisionType[mode.ID];
+        mode = await mode.save();
+    }
+    return mode;
+});
+
+// Memoized method to create or fetch a BeatmapSet from DB.
+const existingSets: number[] = [];
+const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> => {
+    if(existingSets.includes(beatmap.setId))
+        return await Beatmapset.findOne(beatmap.setId) as Beatmapset;
+    let beatmapSet = new Beatmapset;
+    beatmapSet.ID = beatmap.setId;
+    beatmapSet.approvedDate = beatmap.approvedDate;
+    beatmapSet.submitDate = beatmap.submitDate;
+    beatmapSet.BPM = beatmap.bpm;
+    beatmapSet.artist = beatmap.artist;
+    beatmapSet.title = beatmap.title;
+    beatmapSet.genre = genres[beatmap.genre];
+    beatmapSet.language = langs[beatmap.language];
+    beatmapSet.tags = beatmap.tags.join(" ");
+    beatmapSet.favourites = beatmap.favoriteCount;
+
+    let user: User | undefined = await User.findOne({ osu: { userID: `${beatmap.creatorId}` } });
+    if (user) {
+        if (user.osu.username !== beatmap.creator && !user.otherNames.some(v => v.name === beatmap.creator)) { // Check for username change
+            let nameChange = await UsernameChange.findOne({ name: beatmap.creator, user });
+            if (nameChange)
+                await nameChange.remove();
+
+            const oldName = user.osu.username;
+            user.osu.username = beatmap.creator;
+            await user.save();
+
+            nameChange = new UsernameChange;
+            nameChange.user = user;
+            nameChange.name = oldName;
+            await nameChange.save();
+        }
+    } else {
+        user = new User;
+        user.osu = new OAuth;
+        user.osu.userID = `${beatmap.creatorId}`;
+        user.osu.username = beatmap.creator;
+        user.osu.avatar = "https://a.ppy.sh/" + beatmap.creatorId;
+        user = await user.save();
+    }
+    beatmapSet.creator = user;
+
+    beatmapSet = await beatmapSet.save();
+    bmsInserted++;
+    existingSets.push(beatmap.setId);
+    return beatmapSet;
+}, { max: 200 });
+
+const getMCAEligibility = memoizee(async function(year, user) {
+    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year, user }});
+    if (!eligibility) {
+        eligibility = new MCAEligibility();
+        eligibility.year = year;
+        eligibility.user = user;
+    }
+    return eligibility;
+}, { max: 200 });
+
+async function insertBeatmap (apiBeatmap: APIBeatmap) {
+    let beatmap = new Beatmap;
+    beatmap.ID = apiBeatmap.id;
+    beatmap.mode = await getModeDivison(apiBeatmap.mode as number);
+    beatmap.difficulty = apiBeatmap.version;
+    beatmap.circleSize = apiBeatmap.CS;
+    beatmap.approachRate = apiBeatmap.CS;
+    beatmap.overallDifficulty = apiBeatmap.OD;
+    beatmap.hpDrain = apiBeatmap.HP;
+    beatmap.circles = apiBeatmap.countNormal;
+    beatmap.sliders = apiBeatmap.countSlider;
+    beatmap.spinners = apiBeatmap.countSpinner;
+    beatmap.rating = apiBeatmap.rating;
+    beatmap.passCount = apiBeatmap.passcount;
+    beatmap.hitLength = apiBeatmap.hitLength;
+    beatmap.totalLength = apiBeatmap.totalLength;
+    beatmap.totalSR = apiBeatmap.difficultyRating;
+    beatmap.aimSR = apiBeatmap.diffAim;
+    beatmap.speedSR = apiBeatmap.diffSpeed;
+    beatmap.maxCombo = apiBeatmap.maxCombo;
+    beatmap.playCount = apiBeatmap.playcount;
+    beatmap.packs = apiBeatmap.packs?.join(",");
+    beatmap.storyboard = apiBeatmap.storyboard;
+    beatmap.video = apiBeatmap.video;
+
+    beatmap.beatmapset = await getBeatmapSet(apiBeatmap);
+
+    if (!beatmap.difficulty.includes("'")) {
+        const eligibility = await getMCAEligibility(apiBeatmap.approvedDate.getFullYear(), beatmap.beatmapset.creator);
+        if (!eligibility[modeList[apiBeatmap.mode as number]]) {
+            eligibility[modeList[apiBeatmap.mode as number]] = true;
+            eligibility.storyboard = true;
+            await eligibility.save();
+        }
+    }
+
+    beatmap = await beatmap.save();
+    bmInserted++;
+    return beatmap;
+}
+
+async function script () {
+    if (process.env.NODE_ENV !== "development") {
+        throw new Error("To prevent disasters, you can only run this script using NODE_ENV=development; eg. `NODE_ENV=development npm run fetchMaps 2020`.");
+    }
+
+    const args = process.argv.slice(2);
+    const year = parseInt(args[0]); // Year to get the maps for
+    if (Number.isNaN(year)) {
+        throw new Error("Please provide a valid year in first argument!");
+    }
+    const until = new Date(`${year + 1}-01-01`);
+
+    console.log("This script can damage your database. Make sure to only execute this if you know what you're doing.");
+    console.log("This script will automatically continue in 5 seconds. Cancel using Ctrl+C.");
+    await sleep(5000);
+
+    const conn = await createConnection();
+    // ensure schema is up-to-date
+    await conn.synchronize();
+    console.log("DB schema is now up-to-date!");
+    const start = Date.now();
+
+    const processingQueue = queue(async (beatmap: APIBeatmap, cb: () => void) => {
+        await insertBeatmap(beatmap);
+        cb();
+    }, 1);
+
+    const printStatus = () => {
+        const eta = ((Date.now() - start) / bmInserted) * (bmQueued - bmInserted);
+        console.log(new Date(), `Queued beatmaps: ${bmQueued} / Imported beatmaps: ${bmInserted} / Imported beatmapsets: ${bmsInserted} / ETA: ${timeFormatter(eta)}`);
+    };
+    const progressInterval = setInterval(printStatus, 1000);
+
+    let since = new Date((await Beatmapset.findOne({ order: { approvedDate: "DESC" } }))?.approvedDate || new Date("2006-01-01"));
+    console.log(`Fetching all beatmaps starting from ${since.toJSON()}...`);
+    printStatus();
+    const queuedBeatmapIds: number[] = [];
+    while (since.getTime() < until.getTime()) {
+        const newBeatmapsApi = (await axios.get(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${since.toJSON().slice(0,19).replace("T", " ")}`)).data as any[];
+        for(const newBeatmapApi of newBeatmapsApi) {
+            const newBeatmap = new APIBeatmap(newBeatmapApi);
+            if(queuedBeatmapIds.includes(newBeatmap.id))
+                continue;
+            since = newBeatmap.approvedDate;
+            if(newBeatmap.approvedDate.getTime() > until.getTime())
+                break;
+            if(![1, 2].includes(Number(newBeatmap.approved)))
+                continue;
+            queuedBeatmapIds.push(newBeatmap.id);
+            processingQueue.push(newBeatmap);
+            bmQueued++;
+        }
+    }
+    if(queuedBeatmapIds.length !== 0)
+        await processingQueue.drain();
+    clearInterval(progressInterval);
+    printStatus();
+
+    console.log("All beatmaps have been successfully processed!");
+}
+
+script()
+    .then(() => {
+        console.log("Script completed successfully!");
+        process.exit(0);
+    })
+    .catch((err: Error) => {
+        console.error("Script encountered an error!");
+        console.error(err.stack);
+        process.exit(1);
+    });
+
 
 const genres = [
     "any",
@@ -59,226 +266,3 @@ const modeList = [
     "fruits",
     "mania",
 ];
-
-function createSet (map: any): Beatmapset {
-    
-    const dbSet = new Beatmapset;
-    dbSet.ID = parseInt(map.beatmapset_id);
-
-    dbSet.approvedDate = new Date(map.approved_date);
-    dbSet.submitDate = new Date(map.submit_date);
-
-    dbSet.BPM = parseFloat(map.bpm);
-
-    dbSet.artist = map.artist;
-    dbSet.title = map.title;
-
-    dbSet.genre = genres[map.genre_id];
-    dbSet.language = langs[map.language_id];
-
-    dbSet.tags = map.tags;
-
-    dbSet.favourites = parseInt(map.favourite_count);
-
-    return dbSet;
-}
-
-async function createMap (map: any): Promise<Beatmap> {
-    const dbMap = new Beatmap;
-    dbMap.ID = parseInt(map.beatmap_id);
-    
-    // see if mode exists already, if it doesn't then add it
-    let mode = await ModeDivision.findOne(parseInt(map.mode) + 1);
-    if (!mode) {
-        mode = new ModeDivision;
-        mode.ID = parseInt(map.mode) + 1;
-        mode.name = ModeDivisionType[mode.ID];
-        await mode.save();
-    }
-    dbMap.mode = mode;
-
-    dbMap.difficulty = map.version;
-
-    dbMap.circleSize = parseFloat(map.diff_size);
-    dbMap.approachRate = parseFloat(map.diff_approach);
-    dbMap.overallDifficulty = parseFloat(map.diff_overall);
-    dbMap.hpDrain = parseFloat(map.diff_drain);
-
-    dbMap.circles = parseInt(map.count_normal);
-    dbMap.sliders = parseInt(map.count_slider);
-    dbMap.spinners = parseInt(map.count_spinner);
-
-    dbMap.rating = parseFloat(map.rating);
-    dbMap.passCount = parseInt(map.passcount);
-    dbMap.playCount = parseInt(map.playcount);
-
-    dbMap.hitLength = parseInt(map.hit_length);
-    dbMap.totalLength = parseInt(map.total_length);
-
-    dbMap.totalSR = parseFloat(map.difficultyrating);
-
-    if (map.diff_aim)
-        dbMap.aimSR = parseFloat(map.diff_aim);
-    if (map.diff_speed)
-        dbMap.speedSR = parseFloat(map.diff_speed);
-    if (map.max_combo)
-        dbMap.maxCombo = parseInt(map.max_combo);
-    if (map.packs)
-        dbMap.packs = map.packs;
-    if (map.storyboard == 1)
-        dbMap.storyboard = true;
-    if (map.video == 1)
-        dbMap.video = true;
-    
-    return dbMap;
-}
-
-async function fetchYearMaps (): Promise<void> {
-    // Connect
-    const start = new Date;
-    console.log("Connecting to the DB...");
-    try {
-        const connection = await createConnection({
-            "type": "mariadb",
-            "host": "localhost",
-            "username": config.database.username,
-            "password": config.database.password,
-            "database": config.database.name,
-            "timezone": "Z",
-            "synchronize": true,
-            "logging": ["error"],
-            "entities": [
-                __dirname + "/../../Models/**/*{.ts,.js}",
-            ],
-        });
-
-        console.log("Connected to the " + connection.options.database + " database!");
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
-
-    // In case storyboard mode doesn't exist
-    let mode = await ModeDivision.findOne(5);
-    if (!mode)
-    {
-        mode = new ModeDivision;
-        mode.ID = 5;
-        mode.name = ModeDivisionType[5];
-        await mode.save();
-    }
-
-    // Start a loop in obtaining the beatmaps, use latest date if there is any
-    let date = "2006-01-01";
-    const map = await Beatmapset.findOne({
-        order: {
-            approvedDate: "DESC",
-        },
-    });
-    if (map)
-        date = map.approvedDate.toJSON().slice(0, 10);
-
-    let mapNum = 0;
-    for (;;) {
-        try {
-            const maps = (await axios.get("https://osu.ppy.sh/api/get_beatmaps?k=" + config.osuV1 + "&since=" + date)).data;
-            for (const map of maps) {
-                // Check if this map's date year is the same as the year that was given
-                const mapYear = new Date(map.approved_date).getFullYear();
-                if (mapYear > year) {
-                    console.log("Final " + year + " map was found.");
-                    const finish = new Date;
-                    const duration = new Date(finish.valueOf() - start.valueOf());
-                    console.log("Operation lasted for " + duration.getUTCHours() + " hours, " + duration.getUTCMinutes() + " minutes, and " + duration.getUTCSeconds() + " seconds.");
-                    process.exit(0);
-                }
-    
-                // Check if ranked / approved
-                if (map.approved == 1 || map.approved == 2) { 
-
-                    // see if set exists already, if it doesn't then add it
-                    let dbSet = await Beatmapset.findOne(map.beatmapset_id);
-                    if (!dbSet) {
-                        dbSet = createSet(map);
-                        await dbSet.save();
-                    }
-
-                    // see if beatmap exists, if it doesn't then add it
-                    if (!dbSet.beatmaps?.some(b => b.ID === parseInt(map.beatmap_id))) {
-                        const dbMap = await createMap(map);
-                        dbMap.beatmapset = dbSet;
-                        dbMap.beatmapsetID = dbSet.ID;
-                        await dbMap.save();
-                    }
-
-                    // see if user exists, if they don't then add them
-                    let dbUser = await User.findOne({ 
-                        osu: {
-                            userID: map.creator_id,
-                        },
-                    }, {
-                        relations: ["beatmapsets"],
-                    });
-                    if (!dbUser) {
-                        dbUser = new User;
-                        dbUser.osu = new OAuth;
-                        dbUser.osu.userID = map.creator_id;
-                        dbUser.osu.username = map.creator;
-                        dbUser.osu.avatar = "https://a.ppy.sh/" + map.creator_id;
-                        dbUser.beatmapsets = [dbSet];
-                        await dbUser.save();
-
-                        if (!map.version.includes("'")) {
-                            const eligibility = new MCAEligibility();
-                            eligibility.year = mapYear;
-                            eligibility.user = dbUser;
-                            eligibility[modeList[map.mode]] = true;
-                            eligibility.storyboard = true;
-                            await eligibility.save();
-                        }
-                    } else {
-                        dbUser.beatmapsets.push(dbSet);
-                        if (dbUser.osu.username !== map.creator && !dbUser.otherNames.some(v => v.name === map.creator)) { // Check for username change
-                            let nameChange = await UsernameChange.findOne({ name: map.creator, user: dbUser });
-                            if (nameChange)
-                                await nameChange.remove();
-
-                            const oldName = dbUser.osu.username;
-                            dbUser.osu.username = map.creator;
-                            await dbUser.save();
-
-                            nameChange = new UsernameChange;
-                            nameChange.user = dbUser;
-                            nameChange.name = oldName;
-                            await nameChange.save();
-                        } else
-                            await dbUser.save();
-                        
-                        if (!map.version.includes("'")) {
-                            let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: mapYear, user: dbUser }});
-                            if (!eligibility) {
-                                eligibility = new MCAEligibility();
-                                eligibility.year = mapYear;
-                                eligibility.user = dbUser;
-                            }
-                            
-                            if (!eligibility[modeList[map.mode]]) {
-                                eligibility[modeList[map.mode]] = true;
-                                eligibility.storyboard = true;
-                                await eligibility.save();
-                            }
-                        }
-                    }
-
-                    date = map.approved_date;
-                }
-                mapNum++;
-                console.log("Checked map number " + mapNum);
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-}
-
-fetchYearMaps();

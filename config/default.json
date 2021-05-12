@@ -1,0 +1,99 @@
+{
+    "database": {
+        "host": "localhost",
+        "port": 3306,
+        "database": "corsace",
+        "username": "corsace",
+        "password": "corsace"
+    },
+    "discord": {
+        "roles": {
+            "corsace": {
+                "corsace": "role ID",
+                "headStaff": "role ID",
+                "staff": "role ID",
+                "writer": "role ID",
+                "verified": "role ID"
+            },
+            "open": {
+                "participants": "role ID",
+                "captains": "role ID",
+                "staff": "role ID",
+                "mappooler": "role ID",
+                "testplayer": "role ID",
+                "scheduler": "role ID",
+                "streamManager": "role ID",
+                "streamer": "role ID",
+                "commentator": "role ID",
+                "referee": "role ID"
+            },
+            "invitational": {
+                "participants": "role ID",
+                "captains": "role ID",
+                "staff": "role ID",
+                "mappooler": "role ID",
+                "scheduler": "role ID",
+                "streamManager": "role ID",
+                "streamer": "role ID",
+                "commentator": "role ID",
+                "referee": "role ID"
+            },
+            "mca": {
+                "staff": "role ID",
+                "standard": "role ID",
+                "taiko": "role ID",
+                "fruits": "role ID",
+                "mania": "role ID",
+                "storyboard": "role ID",
+                "arg": "role ID"
+            }
+        },
+        "token": "bot token",
+        "guild": "guild ID",
+        "clientId": "bot ID",
+        "clientSecret": "bot secret",
+        "invite": "invite link",
+        "logChannel": "channel ID"
+    },
+    "osu": {
+        "v1": {
+            "apiKey": "obtain from https://osu.ppy.sh/p/api/"
+        },
+        "v2": {
+            "clientId": "obtain from https://osu.ppy.sh/home/account/edit",
+            "clientSecret": "obtain from https://osu.ppy.sh/home/account/edit"
+        }
+    },
+    "koaKeys": [""],
+    "cookiesDomain": "localhost",
+    "ayim": {
+        "host": "localhost",
+        "port": 3000,
+        "publicUrl": "http://localhost:3000",
+        "spa": true
+    },
+    "corsace": {
+        "host": "localhost",
+        "port": 4000,
+        "publicUrl": "http://localhost:4000",
+        "spa": true
+    },
+    "invitational": {
+        "host": "localhost",
+        "port": 5000,
+        "publicUrl": "http://localhost:5000",
+        "spa": true
+    },
+    "mca": {
+        "host": "localhost",
+        "port": 8000,
+        "publicUrl": "http://localhost:8000",
+        "spa": true
+    },
+    "open": {
+        "host": "localhost",
+        "port": 7000,
+        "publicUrl": "http://localhost:7000",
+        "spa": true
+    }
+}

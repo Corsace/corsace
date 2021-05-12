@@ -136,6 +136,10 @@ export default class MappersRecords extends Vue {
         border-radius: 100%;
         box-shadow: $gray-shadow;
         margin: 10px 0;
+        @include breakpoint(mobile) {
+            height: 55px;
+            width: 55px;
+        }
     }
 
     &__info {
@@ -155,8 +159,15 @@ export default class MappersRecords extends Vue {
         font-family: $font-scoreboard;
         font-size: 4rem;
 
+        @include breakpoint(mobile) {
+            font-size: 2rem;
+        }
+
         &--small {
             font-size: 2rem;
+            @include breakpoint(mobile) {
+                font-size: 1rem;
+            }
         }
     }
 

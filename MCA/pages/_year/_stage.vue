@@ -37,6 +37,7 @@ import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import StagePage from "../../components/stage/StagePage.vue";
 
 import { Phase } from "../../../Interfaces/mca";
+import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component({
     components: {
@@ -58,8 +59,14 @@ import { Phase } from "../../../Interfaces/mca";
 export default class Stage extends Vue {
 
     @State selectedMode!: string;
+    @State loggedInUser!: UserMCAInfo;
     @Getter phase!: Phase;
     @Mutation toggleGuestDifficultyModal;
+    
+    mounted () {
+        if (!this.loggedInUser || !this.loggedInUser.eligibility.some(eligibility => eligibility.year == parseInt(this.$route.params.year)))
+            this.$router.push("/");
+    }
 
     get remainingDays (): string {
         if (this.phase) {
@@ -103,12 +110,18 @@ export default class Stage extends Vue {
 .stage__remainingDaysNumber {
     font-size: 6rem;
     font-weight: bold;
+    @include breakpoint(mobile) { 
+        font-size: 4rem;
+    }
 }
 
 .stage__remainingDaysLeft {
     font-size: 1.5rem;
     padding: 0 4px;
     letter-spacing: 1px;
+    @include breakpoint(mobile) { 
+        font-size: 1rem;
+    }
 }
 
 .stage_remainingDaysExclamation {
@@ -116,5 +129,8 @@ export default class Stage extends Vue {
     font-weight: 900;
     transform: rotate(30deg);
     margin-bottom: 10%;
+    @include breakpoint(mobile) { 
+        font-size: 8rem;
+    }
 }
 </style>

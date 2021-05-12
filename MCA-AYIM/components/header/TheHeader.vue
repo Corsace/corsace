@@ -85,6 +85,7 @@
 
         <login-modal
             v-if="showLoginModal"
+            :site="site"
             @close="toogleLoginModal"
         />
     </div>

@@ -1,0 +1,163 @@
+{
+    "flag": "https://osu.ppy.sh/images/flags/JP.png",
+    "login": "ログイン",
+    "mca_ayim": {
+        "header": {
+            "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
+            "ayim": "A YEAR <br> IN <br> MAPPING",
+            "login": "ログイン",
+            "welcomeBack": "おかえりなさい",
+            "admin": "アドミン",
+            "staff": "スタッフ",
+            "logout": "ログアウト"
+        },
+        "login": {
+            "login": "ログイン",
+            "message": {
+                "1": "ログインしていません<br>osu!でログインしていますぐ投票とノミネートをしましょう！",
+                "2": "さらにDiscordでログインすることもできますが、投票とノミネートには必須ではありません<br>MCA/AYIMのスタッフのみログインが<b>必須</b>です。</span>"
+            },
+            "authOsu": "osu!で認証するにはここを押してください",
+            "authOsuComp": "osu!での認証が完了しました。ようこそ ",
+            "authDiscord": "Discordで認証するにはここを押してください",
+            "authDiscordComp": "Discordでの認証が完了しました。ようこそ "
+        }
+    },
+    "ayim": {
+        "main": {
+            "records": "記録",
+            "statistics": "統計",
+            "search": "マッパー検索",
+            "numberof": "数",
+            "numberwith": "譜面数"
+        },
+        "mapsets": {
+            "name": "マップセット",
+            "playcount": "プレイ回数",
+            "favourites": "お気に入り",
+            "length": "長さ",
+            "difficulties": "難易度",
+            "totalRanked": "全てのRanked譜面",
+            "totalDiff": "全ての難易度",
+            "submitDates": "投稿日",
+            "starRatings": "SR",
+            "approachRate": "AR",
+            "overallDifficulty": "OD",
+            "hpDrain": "HP",
+            "circleSize": "CS"
+        },
+        "mappers": {
+            "name": "マッパー",
+            "mostRanked": "Ranked数",
+            "mostFavs": "お気に入り",
+            "mostPlayed": "プレイ回数",
+            "totalMappers": "全てのマッパー",
+            "newMapperAges": "新規マッパーのアカウントの年数",
+            "mapperAges": "アカウントの年数",
+            "mapsPerMapperAges": "アカウントの年数別の譜面数",
+            "bng": "BNG",
+            "nat": "NAT"
+        },
+        "comments": {
+            "name": "コメント",
+            "info": "すべてのコメントはMCAの結果が出た後に公表されます。それまではコメントを投稿できます。",
+            "viewSubmit": "コメント閲覧・投稿",
+            "update": "更新",
+            "remove": "削除",
+            "create": "作成",
+            "login": "ログインして作成",
+            "visible": "(まだ見えません)"
+        }
+    },
+    "mca": {
+        "main": {
+            "voting": "投票",
+            "nominating": "ノミネート",
+            "results": "結果",
+            "undefined": "",
+			"mapsetsLabel": "マップセット",
+			"mappersLabel": "マッパー",
+			"commentsLabel": "コメント",
+			"recordsLabel": "記録",
+			"statisticsLabel": "統計",
+            "stage": {
+                "voting": "投票期間",
+                "nominating": "ノミネート期間",
+                "undefined": ""
+            },
+            "rankedSets": "Ranked譜面",
+            "nominateNow": "いますぐノミネートしよう！",
+            "voteNow": "いますぐ投票しよう！",
+            "daysLeft": "日の余裕",
+            "message": {
+                "1": "Mapper's Choice Awardsが帰ってきました！これはすべてのマッパー・モッダーが各部門で最高の譜面・マッパーだと思うものに投票するイベントです。",
+                "2": "Community Choiceとの違いは、マッピングコミュニティーの目線からで2019年を代表する譜面を決めることが目的です。",
+                "3": "今年はできる限り簡単に参加できるように、ウェブサイトの開発を本格的に行いました。",
+                "4": "一人でも多くの人に投票してもらえることを期待しています！"
+            },
+            "categories": {
+                "map": "譜面の部門",
+                "user": "マッパーの部門"
+            },
+            "organized": "主催"
+        },
+        "categories": {
+            "grandAward": {
+                "name": "グランプリ",
+                "description": "2019年を代表するのにふさわしい譜面"
+            },
+            "marathon": {
+                "name": "マラソン",
+                "description": "ドレインタイムが5分以上の譜面"
+            },
+            "hitsounding": {
+                "name": "ヒットサウンド",
+                "description": "耳を楽しませてくれる最高のヒットサウンド"
+            },
+            "collab": {
+                "name": "コラボ",
+                "description": "2人以上の手でトップ難易度が作られた譜面"
+            },
+            "simple": {
+                "name": "シンプル",
+                "description": "トップ難易度がInsaneより易しい譜面"
+            },
+            "highBPM": {
+                "name": "高BPM",
+                "description": "息をのむような速度と密度を誇る譜面"
+            },
+            "smallCircles": {
+                "name": "小さいサークル",
+                "description": "トップ難易度のCSが5以上である譜面"
+            },
+            "heavy13": {
+                "name": "三拍子",
+                "description": "トップ難易度が「紫線」を大量に使用している譜面"
+            },
+            "throwback": {
+                "name": "懐古",
+                "description": "古き良きスタイルで作られた譜面"
+            }
+        },
+        "nom_vote": {
+            "search": "譜面・マッパー検索",
+            "candidates": "候補",
+            "options": {
+                "date": "日付",
+                "artist": "アーティスト",
+                "title": "タイトル",
+                "favs": "お気に入り",
+                "creator": "作成者",
+                "sr": "SR",
+                "id": "ID",
+                "alph": "アルファベット順",
+                "asc": "昇順",
+                "desc": "降順",
+                "incVote": "追加投票",
+                "voteChoice": "投票先の選択"
+            },
+            "hosted": "作成者",
+            "userID": "ユーザーID"
+        }
+    }
+}

@@ -32,14 +32,7 @@
                 <p v-if="phase.startDate && phase.endDate">
                     {{ timeRange }}
                 </p>
-
-                <p>{{ $t('mca.main.message.1') }}</p>
-
-                <p>{{ $t('mca.main.message.2') }}</p>
-                                
-                <p>{{ $t('mca.main.message.3') }}</p>
-                                
-                <p>{{ $t('mca.main.message.4') }}</p>
+                <div v-html="$t(`mca.main.message.${$route.params.year}`)" />
             </div>
         </div>
 
@@ -121,6 +114,10 @@ export default class Index extends Vue {
     align-items: flex-end;
     flex: 0 0 100%;
     width: 100%;
+
+    @include breakpoint(mobile) {
+        margin-bottom: 0;
+    }
 }
 
 .voting-date {
@@ -209,9 +206,13 @@ export default class Index extends Vue {
     display: flex;
     flex-direction: column;
     padding-top: 30px;
+
+    @include breakpoint(mobile) {
+        padding-top: 0;
+    }
 }
 
-@include breakpoint(desktop) {
+@include breakpoint(laptop) {
     .left-side, .right-side {
         flex: 0 0 50%;
         max-width: 50%;

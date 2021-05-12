@@ -51,7 +51,7 @@ import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 import { UserCondensedInfo } from "../../../Interfaces/user";
 
 import { Vote } from "../../../Interfaces/vote";
-import { SectionCategory } from "../../store/stage";
+import { SectionCategory } from "../../../MCA-AYIM/store/stage";
 
 const stageModule = namespace("stage");
 

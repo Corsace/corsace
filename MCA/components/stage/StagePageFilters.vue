@@ -14,6 +14,7 @@
         />
 
         <toggle-button
+            v-if="$route.params.stage === 'voting'"
             :options="votingOptions"
             @change="changeVotingType"
         />
@@ -25,7 +26,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import _ from "lodash";
 
-import ToggleButton from "../ToggleButton.vue";
+import ToggleButton from "../../../MCA-AYIM/components/ToggleButton.vue";
 import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
 
 import { StageQuery } from "../../../Interfaces/queries";
@@ -64,7 +65,7 @@ export default class StagePageFilters extends Vue {
     }
 
     changeOrder (order: string) {
-        this.debounce({ order });
+        this.debounce({ order: order.toUpperCase() });
     }
     
     // Vue doesnt allow using debounce inside methods, so no idea how this stuff below works, but works Ok

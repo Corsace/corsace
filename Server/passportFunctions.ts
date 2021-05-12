@@ -4,10 +4,11 @@ import { User, OAuth } from "../Models/user";
 import Axios from "axios";
 import { discordClient } from "./discord";
 
+// If you are looking for osu and discord auth login endpoints info then go to Main > api > routes > login
 
 async function discordPassport (accessToken: string, refreshToken: string, profile: DiscordStrategy.Profile, done: OAuth2Strategy.VerifyCallback): Promise<void> {
     try {
-        let user = await User.findOne({ 
+        let user = await User.findOne({
             discord: {
                 userID: profile.id,
             },
@@ -42,7 +43,7 @@ async function osuPassport (accessToken: string, refreshToken: string, profile: 
             },
         });
         const userProfile = res.data;
-        let user = await User.findOne({ 
+        let user = await User.findOne({
             osu: {
                 userID: userProfile.id,
             },
@@ -56,13 +57,14 @@ async function osuPassport (accessToken: string, refreshToken: string, profile: 
 
         user.osu.userID = userProfile.id;
         user.osu.username = userProfile.username;
-        user.osu.avatar = "https://a.ppy.sh/" + userProfile.id;
+        user.osu.avatar = userProfile.avatar_url;
         user.osu.accessToken = accessToken;
         user.osu.refreshToken = refreshToken;
         user.osu.lastVerified = user.lastLogin = new Date;
 
         done(null, user);
     } catch (error) {
+        console.log("Error while authenticating user via osu!", error);
         done(error, undefined);
     }
 }
