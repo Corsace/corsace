@@ -44,12 +44,13 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
     const [
         playcount,
         favourites,
+        favouritesExclHybrid,
         length,
         difficulties,
-        sliders,
-        avgSliders,
         circles,
+        sliders,
         avgCircles,
+        avgSliders,
         highestSr,
         lowestSr] = await Promise.all([
         // Playcount
@@ -64,6 +65,15 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
         Beatmapset
             .queryRecord(year, modeId)
             .addSelect("beatmapset.favourites", "value")
+            .groupBy("beatmapset.ID")
+            .orderBy("value", "DESC")
+            .getRawMany(),
+        
+        // Favourites (non-hybrid)
+        Beatmapset
+            .queryRecord(year, modeId)
+            .addSelect("beatmapset.favourites", "value")
+            .andWhere(`not exists (select beatmap.beatmapsetID as ref_ID, beatmap.mode as ref_Mode from beatmap where ref_ID=beatmapset.ID and ref_Mode != ${modeId} )`)
             .groupBy("beatmapset.ID")
             .orderBy("value", "DESC")
             .getRawMany(),
@@ -85,22 +95,6 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
             .orderBy("value", "DESC")
             .getRawMany(),
 
-        // Total Sliders Per Set
-        Beatmapset
-            .queryRecord(year, modeId)
-            .addSelect("SUM(beatmap.sliders)", "value")
-            .groupBy("beatmapset.ID")
-            .orderBy("value", "DESC")
-            .getRawMany(),
-
-        // Average Sliders per Set
-        Beatmapset
-            .queryRecord(year, modeId)
-            .addSelect("AVG(beatmap.sliders)", "value")
-            .groupBy("beatmapset.ID")
-            .orderBy("value", "DESC")
-            .getRawMany(),
-
         // Total Circles Per Set
         Beatmapset
             .queryRecord(year, modeId)
@@ -109,10 +103,26 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
             .orderBy("value", "DESC")
             .getRawMany(),
 
+        // Total Sliders Per Set
+        Beatmapset
+            .queryRecord(year, modeId)
+            .addSelect("SUM(beatmap.sliders)", "value")
+            .groupBy("beatmapset.ID")
+            .orderBy("value", "DESC")
+            .getRawMany(),
+
         // Average Circles Per Set
         Beatmapset
             .queryRecord(year, modeId)
             .addSelect("AVG(beatmap.circles)", "value")
+            .groupBy("beatmapset.ID")
+            .orderBy("value", "DESC")
+            .getRawMany(),
+
+        // Average Sliders per Set
+        Beatmapset
+            .queryRecord(year, modeId)
+            .addSelect("AVG(beatmap.sliders)", "value")
             .groupBy("beatmapset.ID")
             .orderBy("value", "DESC")
             .getRawMany(),
@@ -139,12 +149,13 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
     const records: Record<string, BeatmapsetRecord[]> = {
         playcount: mapBeatmapsetRecord(playcount),
         favourites: mapBeatmapsetRecord(favourites),
+        favouritesExclHybrid: mapBeatmapsetRecord(favouritesExclHybrid),
         length: mapBeatmapsetRecord(length.map(l => padLengthWithZero(l))),
         difficulties: mapBeatmapsetRecord(difficulties),
-        sliders: mapBeatmapsetRecord(sliders),
-        avgSlidersPerSet: mapBeatmapsetRecord(avgSliders).map(o => valueToFixed(o, 0)),
         circles: mapBeatmapsetRecord(circles),
+        sliders: mapBeatmapsetRecord(sliders),
         avgCirclesPerSet: mapBeatmapsetRecord(avgCircles).map(o => valueToFixed(o, 0)),
+        avgSlidersPerSet: mapBeatmapsetRecord(avgSliders).map(o => valueToFixed(o, 0)),
         highestSr: mapBeatmapsetRecord(highestSr).map(o => valueToFixed(o)),
         lowestSr: mapBeatmapsetRecord(lowestSr).map(o => valueToFixed(o)),
     };
