@@ -44,9 +44,6 @@ export class Category extends BaseEntity {
 
     @Column()
     name!: string;
-
-    @Column()
-    description!: string;
     
     @Column()
     maxNominations!: number;
@@ -85,7 +82,6 @@ export class Category extends BaseEntity {
         return {
             id: this.ID,
             name: this.name,
-            description: this.description,
             maxNominations: this.maxNominations,
             isRequired: this.isRequired,
             requiresVetting: this.requiresVetting,
@@ -122,7 +118,6 @@ export class CategoryGenerator {
         const category = new Category;
         
         category.name = "grandAward";
-        category.description = "grandAward";
         category.maxNominations = 1;
         category.isRequired = true;
         category.type = type;
@@ -141,7 +136,6 @@ export class CategoryGenerator {
         }
         
         category.name = categoryInfo.name;
-        category.description = categoryInfo.description || categoryInfo.name;
         category.maxNominations = categoryInfo.maxNominations || 3;
         category.isRequired = categoryInfo.isRequired || false;
         category.requiresVetting = categoryInfo.requiresVetting || false;

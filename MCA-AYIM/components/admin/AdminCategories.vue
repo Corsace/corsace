@@ -71,7 +71,6 @@ export default class AdminCategories extends Vue {
     
     fields: Field[] = [
         { key: "name", label: "Name" },
-        { key: "description", label: "Description" },
         { key: "maxNominations", label: "Max nominations" },
         { key: "isRequired", label: "Required" },
         { key: "requiresVetting", label: "Has Vetting" },
