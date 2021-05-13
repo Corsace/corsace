@@ -58,14 +58,14 @@
 
                     <div class="staff-comment__actions">
                         <button
-                            class="button button--small staff-comment__action"
+                            class="button button--small button__add staff-comment__action"
                             @click="update(comment.ID)"
                         >
                             validate
                         </button>
 
                         <button
-                            class="button button--small staff-comment__action"
+                            class="button button--small button__remove staff-comment__action"
                             @click="remove(comment.ID)"
                         >
                             delete
@@ -73,7 +73,7 @@
 
                         <button
                             v-if="isHeadStaff"
-                            class="button button--small staff-comment__action"
+                            class="button button--small button__remove staff-comment__action"
                             @click="ban(comment.commenter.ID)"
                         >
                             ban
