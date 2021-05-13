@@ -1,5 +1,6 @@
 <template>
     <search-bar
+        class="category-filters"
         :placeholder="$t('mca.nom_vote.search')"
         @update:search="updateText($event)"
     >
@@ -83,3 +84,11 @@ export default class StagePageFilters extends Vue {
 
 }
 </script>
+
+<style lang="scss">
+
+.category-filters {
+    padding: 15px 0;
+}
+
+</style>

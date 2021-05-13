@@ -37,7 +37,7 @@
         </div>
 
         <div class="right-side">
-            <mode-switcher :hide-phase="true">
+            <mode-switcher hide-phase>
                 <index-page />
             </mode-switcher>
         </div>
@@ -91,7 +91,7 @@ export default class Index extends Vue {
 
     get timeRange (): string {
         const dateInfo = Intl.DateTimeFormat().resolvedOptions();
-        const options = { timeZone: dateInfo.timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
+        const options: Intl.DateTimeFormatOptions = { timeZone: dateInfo.timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
 
         return this.phase?.startDate.toLocaleString(dateInfo.locale, options) + " - " + this.phase?.endDate.toLocaleString(dateInfo.locale, options);
     }
@@ -105,7 +105,7 @@ export default class Index extends Vue {
 
 .left-side {
     overflow: hidden;
-    padding-right: 35px;
+    padding-right: 0;
     padding-top: 7%;
     margin-bottom: 15px;
     display: flex;
@@ -117,6 +117,10 @@ export default class Index extends Vue {
 
     @include breakpoint(mobile) {
         margin-bottom: 0;
+    }
+
+    @include breakpoint(laptop) {
+        padding-right: 35px;
     }
 }
 
@@ -203,13 +207,7 @@ export default class Index extends Vue {
 .right-side {
     flex: 0 0 100%;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    padding-top: 30px;
-
-    @include breakpoint(mobile) {
-        padding-top: 0;
-    }
+    padding-top: 50px;
 }
 
 @include breakpoint(laptop) {

@@ -4,30 +4,13 @@
 .ayim-nav {
     display: flex;
     justify-content: space-around;
-    position: absolute;
-    z-index: 99;
-
-    margin-top: 10px;
-    margin-left: 30px;
-    @include breakpoint(laptop) {
-        margin-top: 25px;
-    }
+    gap: 15px;
+    
     @include breakpoint(mobile) {
         width: 100%;
-        margin-left: 0;
-    }
-    
-    &__item {
-        margin: 0 15px;
-        @include breakpoint(mobile) {
-            margin: 15px 0;
-        }
     }
 
-    &__front {
-        display: flex;
-        justify-content: space-around;
-        position: relative;
+    &--front {
         @include breakpoint(mobile) {
             flex-direction: column;
         }
@@ -35,10 +18,11 @@
 }
 
 .ayim-wrapper {
-    height: 100%;
     width: 100%;
+    max-height: 200%;
     padding-top: 15px;
-    @include breakpoint(mobile) {
-        padding-top: 45px;
+
+    @include breakpoint(laptop) {
+        height: 100%;
     }
 }

@@ -36,19 +36,17 @@
 
         <div class="categories">
             <collapsible
-                class="categories__list"
                 :title="$t('mca.main.categories.map')"
                 :list="beatmapCategories"
                 :active="true"
-                :categoryName="true"
+                :category-name="true"
                 :clickable="false"
             />
             <collapsible
-                class="categories__list"
                 :title="$t('mca.main.categories.user')"
                 :list="userCategories"
                 :active="true"
-                :categoryName="true"
+                :category-name="true"
                 :clickable="false"
             />
         </div>
@@ -166,16 +164,19 @@ export default class IndexContent extends Vue {
 @import '@s-sass/_partials';
 
 .index {
-    padding-right: 25px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .general {
     @extend %spaced-container;
-    margin: 0 -5px;
+    margin: 0;
 }
 
 .categories {
     @extend %spaced-container;
+    flex: 1;
 
     &__category-title {
         border-bottom: 2px solid #fff;
@@ -187,10 +188,6 @@ export default class IndexContent extends Vue {
     &__category-award {
         margin-bottom: 8px;
     }
-}
-
-.categories__list {
-    min-height: 320px;
 }
 
 .ranked-sets {

@@ -1,11 +1,11 @@
 <template>
     <div class="general-info">
         <div
-            v-html="$t(`ayim.main.message.${mca.year}`)" 
             class="general-info__text" 
+            v-html="$t(`ayim.main.message.${mca.year}`)" 
         />
         
-        <div class="ayim-nav__front">
+        <div class="ayim-nav ayim-nav--front">
             <nuxt-link
                 :to="`/${mca.year}/mapsets/records`"
                 class="ayim-nav__item button"
@@ -63,8 +63,9 @@ export default class IndexPage extends Vue {
 
     &__text {
         font-size: $font-lg;
+        
         @include breakpoint(mobile) {
-            font-size: $font-sm;
+            font-size: $font-base;
         }
     }
 }

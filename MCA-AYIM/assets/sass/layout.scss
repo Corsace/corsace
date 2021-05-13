@@ -1,7 +1,7 @@
 @import '_mixins';
 
 .layout {
-    height: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     
@@ -12,4 +12,6 @@
     display: flex;
     flex-wrap: wrap;
     flex: 1;
+
+    overflow: auto;
 }

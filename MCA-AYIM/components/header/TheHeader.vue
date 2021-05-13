@@ -143,7 +143,6 @@ export default class TheHeader extends Vue {
 .header {
     width: 100%;
 	display: flex;
-    flex: 0 0 auto;
     align-items: center;
 	background-color: #000;
 	border-bottom-style: solid;
