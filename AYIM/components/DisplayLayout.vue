@@ -55,9 +55,7 @@
                     />
 
                     <div class="ayim-layout-scroller">
-                        <div class="ayim-layout">
-                            <slot />
-                        </div>
+                        <slot />
                         <scroll-bar
                             selector=".ayim-layout"
                             @bottom="$emit('scroll-bottom')"
