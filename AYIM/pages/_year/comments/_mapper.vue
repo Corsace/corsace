@@ -65,32 +65,34 @@
             </transition>
         </template>
         
-        <div class="ayim-comment-layout">
-            <div
-                v-for="comment in comments"
-                :key="comment.ID"
-                class="ayim-comment"
-            >
-                <div class="ayim-comment__commenter">
-                    <div
-                        class="ayim-comment__image"
-                        :style="`background-image: url('https://a.ppy.sh/${comment.commenter.osu.userID}')`"
-                    />
-                    <div class="ayim-text ayim-text--xl">
-                        {{ comment.commenter.osu.username }}
+        <div class="ayim-layout">
+            <list-transition class="ayim-comment-layout">
+                <div
+                    v-for="comment in comments"
+                    :key="comment.ID"
+                    class="ayim-comment"
+                >
+                    <div class="ayim-comment__commenter">
+                        <div
+                            class="ayim-comment__image"
+                            :style="`background-image: url('https://a.ppy.sh/${comment.commenter.osu.userID}')`"
+                        />
+                        <div class="ayim-text ayim-text--xl">
+                            {{ comment.commenter.osu.username }}
+                        </div>
+                        <div
+                            v-if="!comment.isValid"
+                            class="ayim-text"
+                        >
+                            {{ $t('ayim.comments.visible') }}
+                        </div>
                     </div>
-                    <div
-                        v-if="!comment.isValid"
-                        class="ayim-text"
-                    >
-                        {{ $t('ayim.comments.visible') }}
-                    </div>
-                </div>
 
-                <div class="ayim-comment__comment">
-                    {{ comment.comment }}
+                    <div class="ayim-comment__comment">
+                        {{ comment.comment }}
+                    </div>
                 </div>
-            </div>
+            </list-transition>
         </div>
     </display-layout>
 </template>
@@ -100,6 +102,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
+import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
 
 import { Comment } from "../../../../Interfaces/comment";
 import { User, UserMCAInfo } from "../../../../Interfaces/user";
@@ -108,6 +111,7 @@ import { MCA } from "../../../../Interfaces/mca";
 @Component({
     components: {
         DisplayLayout,
+        ListTransition,
     },
     head () {
         return {
@@ -226,7 +230,7 @@ export default class MapperComments extends Vue {
         }
     }
 
-    async removeInfo() {
+    async removeInfo () {
         setTimeout(() => this.info = "", 5000);
     }
 }

@@ -1,63 +1,65 @@
 <template>
     <display-layout nav-title="mapsets">
-        <record-item
-            v-for="(recordsItems, recordName) in records"
-            :key="recordName"
-            :title="recordName"
-            :type="'mapsets'"
-        >
-            <template v-for="(record, i) in recordsItems">
-                <a
-                    v-if="i == 0"
-                    :key="i + '-record'"
-                    class="ayim-mapset-record"
-                    :href="`https://osu.ppy.sh/beatmapsets/${record.beatmapset.id}`"
-                    target="_blank"
-                >
-                    <div
-                        class="ayim-mapset-record__image"
-                        :style="`background-image: url('https://assets.ppy.sh/beatmaps/${record.beatmapset.id}/covers/cover.jpg')`"
-                    />
-                    <div class="ayim-mapset-record__info">
-                        <div class="ayim-text ayim-text--xl">
+        <list-transition class="ayim-layout">
+            <record-item
+                v-for="(recordsItems, recordName) in records"
+                :key="recordName + '-record'"
+                :title="recordName"
+                :type="'mapsets'"
+            >
+                <template v-for="(record, i) in recordsItems">
+                    <a
+                        v-if="i == 0"
+                        :key="i + '-record'"
+                        class="ayim-mapset-record"
+                        :href="`https://osu.ppy.sh/beatmapsets/${record.beatmapset.id}`"
+                        target="_blank"
+                    >
+                        <div
+                            class="ayim-mapset-record__image"
+                            :style="`background-image: url('https://assets.ppy.sh/beatmaps/${record.beatmapset.id}/covers/cover.jpg')`"
+                        />
+                        <div class="ayim-mapset-record__info">
+                            <div class="ayim-text ayim-text--xl">
+                                {{ record.beatmapset.title }}
+                            </div>
+                                
+                            <div class="ayim-text">
+                                {{ record.beatmapset.artist }}
+                            </div>
+                            <div class="ayim-mapset-record__description">
+                                {{ $t('mca.nom_vote.hosted') }} | 
+                                <span class="ayim-text ayim-text--italic">
+                                    {{ record.creator.username }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ayim-mapset-record__total">
+                            {{ record.value }}
+                        </div>
+                    </a>
+                        
+                    <a
+                        v-else
+                        :key="i + '-record'"
+                        class="ayim-mapset-record ayim-mapset-record--small"
+                        :href="`https://osu.ppy.sh/beatmapsets/${record.beatmapset.id}`"
+                        target="_blank"
+                    >
+                        <div
+                            class="ayim-mapset-record__image"
+                            :style="`background-image: url('https://assets.ppy.sh/beatmaps/${record.beatmapset.id}/covers/cover.jpg')`"
+                        />
+                        <div class="ayim-text">
                             {{ record.beatmapset.title }}
                         </div>
-                                
-                        <div class="ayim-text">
-                            {{ record.beatmapset.artist }}
+                        <div class="ayim-mapset-record__total ayim-mapset-record__total--small">
+                            {{ record.value }}
                         </div>
-                        <div class="ayim-mapset-record__description">
-                            {{ $t('mca.nom_vote.hosted') }} | 
-                            <span class="ayim-text ayim-text--italic">
-                                {{ record.creator.username }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="ayim-mapset-record__total">
-                        {{ record.value }}
-                    </div>
-                </a>
-                        
-                <a
-                    v-else
-                    :key="i + '-record'"
-                    class="ayim-mapset-record ayim-mapset-record--small"
-                    :href="`https://osu.ppy.sh/beatmapsets/${record.beatmapset.id}`"
-                    target="_blank"
-                >
-                    <div
-                        class="ayim-mapset-record__image"
-                        :style="`background-image: url('https://assets.ppy.sh/beatmaps/${record.beatmapset.id}/covers/cover.jpg')`"
-                    />
-                    <div class="ayim-text">
-                        {{ record.beatmapset.title }}
-                    </div>
-                    <div class="ayim-mapset-record__total ayim-mapset-record__total--small">
-                        {{ record.value }}
-                    </div>
-                </a>
-            </template>
-        </record-item>
+                    </a>
+                </template>
+            </record-item>
+        </list-transition>
     </display-layout>
 </template>
 
@@ -67,6 +69,7 @@ import { State } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
+import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
 
 import { BeatmapsetRecord } from "../../../../Interfaces/records";
 import { MCA } from "../../../../Interfaces/mca";
@@ -75,6 +78,7 @@ import { MCA } from "../../../../Interfaces/mca";
     components: {
         DisplayLayout,
         RecordItem,
+        ListTransition,
     },
     head () {
         return {
