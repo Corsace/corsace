@@ -199,10 +199,12 @@ export default class StaffComments extends Vue {
     &__info {
         display:flex;
         flex-direction: column;
+        flex: 1;
     }
 
     &__input {
         width: 50%;
+        flex: 4;
     }
 
     &__actions {
