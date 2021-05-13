@@ -39,8 +39,10 @@
             "name": "",
             "playcount": "",
             "favourites": "",
+            "favouritesExclHybrid": "",
             "length": "",
             "difficulties": "",
+            "playTime": "",
             "totalRanked": "",
             "totalDiff": "",
             "submitDates": "",
@@ -49,17 +51,21 @@
             "overallDifficulty": "",
             "hpDrain": "",
             "circleSize": "",
+            "spinners": "",
             "sliders": "",
             "circles": "",
-            "avgSlidersPerSet": "",
-            "avgCirclesPerSet": "",
+            "avgSpinnersPerDiff": "",
+            "avgSlidersPerDiff": "",
+            "avgCirclesPerDiff": "",
             "highestSr": "",
             "lowestSr": ""
         },
         "mappers": {
             "name": "",
             "mostRanked": "",
+            "mostDiffs": "",
             "mostFavs": "",
+            "mostFavsExclHybrid": "",
             "mostPlayed": "",
             "totalMappers": "",
             "newMapperAges": "",
@@ -70,15 +76,13 @@
             "uniqueMappers": "",
             "newMappers": "",
             "highestAvgSr": "",
-            "leastFavs": "",
-            "leastPlayed": "",
             "lowestAvgSr": "",
             "mappers": ""
         },
         "statistics": {
-            "numberOf": "number of",
-            "numberOfMapsWith": "number of maps with",
-            "average": "average"
+            "numberOf": "",
+            "numberOfMapsWith": "",
+            "average": ""
         },
         "comments": {
             "name": "",
