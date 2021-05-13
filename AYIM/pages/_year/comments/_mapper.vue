@@ -65,33 +65,35 @@
             </transition>
         </template>
         
-        <list-transition class="ayim-comment-layout">
-            <div
-                v-for="comment in comments"
-                :key="comment.ID"
-                class="ayim-comment"
-            >
-                <div class="ayim-comment__commenter">
-                    <div
-                        class="ayim-comment__image"
-                        :style="`background-image: url('https://a.ppy.sh/${comment.commenter.osu.userID}')`"
-                    />
-                    <div class="ayim-text ayim-text--xl">
-                        {{ comment.commenter.osu.username }}
+        <div class="ayim-layout">
+            <list-transition class="ayim-comment-layout">
+                <div
+                    v-for="comment in comments"
+                    :key="comment.ID"
+                    class="ayim-comment"
+                >
+                    <div class="ayim-comment__commenter">
+                        <div
+                            class="ayim-comment__image"
+                            :style="`background-image: url('https://a.ppy.sh/${comment.commenter.osu.userID}')`"
+                        />
+                        <div class="ayim-text ayim-text--xl">
+                            {{ comment.commenter.osu.username }}
+                        </div>
+                        <div
+                            v-if="!comment.isValid"
+                            class="ayim-text"
+                        >
+                            {{ $t('ayim.comments.visible') }}
+                        </div>
                     </div>
-                    <div
-                        v-if="!comment.isValid"
-                        class="ayim-text"
-                    >
-                        {{ $t('ayim.comments.visible') }}
-                    </div>
-                </div>
 
-                <div class="ayim-comment__comment">
-                    {{ comment.comment }}
+                    <div class="ayim-comment__comment">
+                        {{ comment.comment }}
+                    </div>
                 </div>
-            </div>
-        </list-transition>
+            </list-transition>
+        </div>
     </display-layout>
 </template>
 
