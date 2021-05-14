@@ -50,12 +50,10 @@ export default class BaseChoiceCard extends Vue {
 
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
     
-    @stageModule.State votingFor!: null | number;
     @stageModule.State stage!: StageType;
-    @stageModule.State incrementalVoting!: boolean;
-    @stageModule.Mutation updateVotingFor;
     @stageModule.Getter relatedVotes!: Vote[];
     @stageModule.Action createVote;
+    @stageModule.Action removeVote;
 
     get currentVote (): Vote | undefined {
         return this.relatedVotes.find(v => {
@@ -65,26 +63,22 @@ export default class BaseChoiceCard extends Vue {
     }
 
     async choose () {
-        const id = this.choice.id || this.choice.corsaceID;
-
-        if (this.incrementalVoting) {
-            let vote = 1;
-
-            if (this.relatedVotes.length) {
-                vote = this.relatedVotes.sort((a, b) => b.choice - a.choice)[0].choice + 1;
-            }
-
-            await this.createVote({ 
-                nomineeId: id,
-                vote,
-            });
-        } else {
-            if (id === this.votingFor) {
-                this.updateVotingFor(null);
-            } else {
-                this.updateVotingFor(id);
-            }
+        if (this.currentVote && confirm("Do you want to remove this vote? Note this will move your votes up by 1")) {
+            await this.removeVote(this.currentVote.ID);
+            return;
         }
+        
+        const id = this.choice.id || this.choice.corsaceID;
+        let vote = 1;
+
+        if (this.relatedVotes.length) {
+            vote = this.relatedVotes.sort((a, b) => b.choice - a.choice)[0].choice + 1;
+        }
+
+        await this.createVote({ 
+            nomineeId: id,
+            vote,
+        });
     }
 
 }

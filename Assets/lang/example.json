@@ -259,8 +259,7 @@
                 "alph": "",
                 "asc": "",
                 "desc": "",
-                "incVote": "",
-                "voteChoice": ""
+                "voteOrder": ""
             },
             "hosted": "",
             "userID": ""

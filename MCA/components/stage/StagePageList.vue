@@ -1,7 +1,7 @@
 <template>
     <div class="category-selection">
         <transition name="fade">
-            <voting-box v-if="votingFor && !incrementalVoting" />
+            <voting-box v-if="showVoteChoiceBox" />
         </transition>
 
         <div class="category-selection__area">
@@ -64,8 +64,7 @@ export default class StagePageList extends Vue {
     @stageModule.State section!: SectionCategory;
     @stageModule.State users!: UserCondensedInfo[];
     @stageModule.State beatmaps!: BeatmapsetInfo[];
-    @stageModule.State votingFor!: null | number;
-    @stageModule.State incrementalVoting!: boolean;
+    @stageModule.State showVoteChoiceBox!: boolean;
     @stageModule.Action updateBeatmapState;
     @stageModule.Action updateUserState;
     @stageModule.Action search;

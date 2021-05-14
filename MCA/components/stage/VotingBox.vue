@@ -7,39 +7,34 @@
             class="voting__title"
             :class="`voting__title--${selectedMode}`"
         >
-            voting for {{ title }} -
-            remaining votes
+            drag and drop to swap vote position
         </div>
-        <div class="voting__list">
-            <div
-                v-for="i in maxChoices"
-                :key="i"
-                class="vote-choice"
-            >
-                <div
-                    v-if="chosenVote(i)"
-                    class="vote-choice__number vote-choice__number--inactive"
+        <div>
+            <ul>
+                <li
+                    v-for="vote in sortedVotes"
+                    :key="vote.ID"
                 >
-                    {{ i }}
-                </div>
-                <a
-                    v-else
-                    href="#"
-                    class="vote-choice__number"
-                    @click.stop="vote(i)"
-                >
-                    {{ i }}
-                </a>
+                    <div 
+                        style="padding: 10px; margin: 5px; background-color: gray;"
+                        draggable
+                        @dragstart="dragData($event, vote)"
+                        @dragenter.prevent
+                        @dragover.prevent
+                        @drop="swapVotes($event, vote)"
+                    >
+                        {{ formatTitle(vote) }}
+                    </div>
 
-                <a
-                    v-if="chosenVote(i)"
-                    href="#"
-                    class="vote-choice__remove"
-                    @click.stop="remove(i)"
-                >
-                    X
-                </a>
-            </div>
+                    <a
+                        href="#"
+                        class="vote-choice__remove"
+                        @click.stop="remove(vote.ID)"
+                    >
+                        X
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -60,7 +55,6 @@ export default class VotingBox extends Vue {
     
     @State selectedMode!: string;
     @stageModule.State section!: SectionCategory;
-    @stageModule.State votingFor!: number;
     @stageModule.State beatmaps!: BeatmapsetInfo[];
     @stageModule.State users!: UserCondensedInfo[];
     @stageModule.Getter relatedVotes!: Vote[];
@@ -69,39 +63,36 @@ export default class VotingBox extends Vue {
 
     maxChoices = 10;
 
-    get votingObject (): UserCondensedInfo | BeatmapsetInfo | undefined {
-        if (this.section === "beatmaps") {
-            return this.beatmaps.find(b => b.id === this.votingFor);
-        } else if (this.section === "users") {
-            return this.users.find(u => u.corsaceID === this.votingFor);
-        }
-        
-        return undefined;
-    }
-
-    get title (): string {
-        if (!this.votingObject) return "";
-
-        if (this.section === "beatmaps") return (this.votingObject as BeatmapsetInfo).title;
-        else return (this.votingObject as UserCondensedInfo).username;
-    }
-
-    chosenVote (i: number): Vote | undefined {
-        return this.relatedVotes.find(v => v.choice === i);
-    }
-
-    async vote (vote: number) {
-        await this.createVote({ 
-            nomineeId: this.votingFor,
-            vote,
-        });
+    get sortedVotes () {
+        return this.relatedVotes.sort((a, b) => a.choice - b.choice);
     }
     
-    async remove (voteChoice: number) {
-        const vote = this.chosenVote(voteChoice);
+    async remove (voteId: number) {
+        await this.removeVote(voteId);
+    }
 
-        if (vote) {
-            await this.removeVote(vote.ID);
+    formatTitle (vote: Vote) {
+        let target = "";
+        if (this.section === "beatmaps") target = vote.beatmapset?.title || "";
+        else target = vote.user?.osu.username || "";
+        
+        return vote.choice + " - " + target;
+    }
+
+    dragData (e, vote: Vote) {
+        e.dataTransfer.dropEffect = "move";
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("voteId", vote.ID);
+    }
+
+    swapVotes (e, vote: Vote) {
+        const id = e.dataTransfer.getData("voteId");
+        const enterVote = this.relatedVotes.find(v => v.ID == id);
+        
+        if (enterVote && vote) {
+            const enterChoice = enterVote.choice;
+            enterVote.choice = vote.choice;
+            vote.choice = enterChoice;
         }
     }
 
@@ -114,12 +105,15 @@ export default class VotingBox extends Vue {
 @import '@s-sass/_partials';
 
 .voting {
+    position: absolute;
     margin-top: 15px;
     background: black;
     border-radius: $border-radius;
     box-shadow: 0 0 8px 2px rgb($standard, .55);
     padding: 5px;
-    cursor: default;
+    // cursor: default;
+    min-width: 300px;
+    z-index: 1;
 
     @include mode-border;
 

@@ -21,8 +21,7 @@ interface StageState {
     beatmaps: BeatmapsetInfo[];
     users: UserCondensedInfo[];
     query: StageQuery;
-    incrementalVoting: boolean;
-    votingFor: null | number;
+    showVoteChoiceBox: boolean;
 }
 
 export const state = (): StageState => ({
@@ -42,8 +41,7 @@ export const state = (): StageState => ({
         text: "",
         skip: 0,
     },
-    incrementalVoting: true,
-    votingFor: null,
+    showVoteChoiceBox: false,
 });
 
 export const mutations: MutationTree<StageState> = {
@@ -116,11 +114,8 @@ export const mutations: MutationTree<StageState> = {
         state.users = [];
         state.count = 0;
     },
-    updateVotingFor (state, voteId) {
-        state.votingFor = voteId;
-    },
-    changeVotingType (state) {
-        state.incrementalVoting = !state.incrementalVoting;
+    toggleVoteChoiceBox (state) {
+        state.showVoteChoiceBox = !state.showVoteChoiceBox;
     },
 };
 
