@@ -98,9 +98,9 @@ export default class Stage extends Vue {
 }
 
 .remaining-days {
-    position: absolute;
     background-color: white;
-    left: 5%;
+    margin-right: auto;
+    margin-left: auto;
     border-radius: 0 0 10px 10px;
     padding-left: 0.7%;
     padding-top: 0.5%;
@@ -109,6 +109,11 @@ export default class Stage extends Vue {
     line-height: calc(1/6);
     overflow: hidden;
     z-index: -100;
+
+    @include breakpoint(laptop) { 
+        position: absolute;
+        left: 5%;
+    }
 
     @include mode-text-color;
     @include transition;
