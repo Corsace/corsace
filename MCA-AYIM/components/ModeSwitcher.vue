@@ -13,7 +13,7 @@
             class="mode-wrapper-v2"
             :class="[
                 'mode-wrapper-v2--' + selectedMode, 
-                { 'mode-wrapper-v2--stretch' : stretch }
+                tablet ? 'mode-wrapper-v2--tablet' : 'mode-wrapper-v2--laptop'
             ]"
         >
             <div class="mode-content">
@@ -49,6 +49,7 @@ import { Phase } from "../../Interfaces/mca";
 @Component
 export default class ModeSwitcher extends Vue {
 
+    @Prop(Boolean) readonly tablet!: boolean;
     @Prop(Boolean) readonly stretch!: boolean;
     @Prop(Boolean) readonly hidePhase!: boolean;
     @Prop({ type: String, default: "" }) readonly title!: string;
@@ -131,14 +132,24 @@ $icon-margin: 15px;
     }
 }
 
+$max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // Consider mode selection space 85px~
+
 .mode-wrapper-v2 {
     display: flex;
     flex-direction: column;
     flex: 1;
     height: 100%;
 
+    @include breakpoint(tablet) {
+        &--tablet {
+            max-height: $max-height-container;
+        }
+    }
+
     @include breakpoint(laptop) {
-        max-height: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // Consider mode selection space 85px~
+        &--laptop {
+            max-height: $max-height-container;
+        }
     }
 
     @include breakpoint(tablet) {

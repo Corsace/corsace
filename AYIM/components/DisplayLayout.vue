@@ -1,6 +1,9 @@
 <template>
     <div class="ayim-wrapper">
-        <mode-switcher :hide-phase="true">
+        <mode-switcher
+            hide-phase
+            tablet
+        >
             <template #title>
                 <div class="ayim-nav">
                     <nuxt-link
