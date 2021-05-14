@@ -46,7 +46,7 @@
                             class="collapsible__count"
                             :class="{'collapsible__count--active': isSelected(item)}"
                         >
-                            {{ item.count }}/{{ item.maxNominations }}
+                            {{ item.maxNominations !== 100 ? item.count + " / " +  item.maxNominations : item.count}}
                         </div>
                         <div
                             v-else-if="'type' in item"

@@ -128,7 +128,7 @@ export const getters: GetterTree<StageState, RootState> = {
                     ...c,
                     count: state.votes.filter(v => v.category.ID === c.id).length,
                 };
-                info.maxNominations = 10;
+                info.maxNominations = 100;
                 return info;
             });
         } else {
