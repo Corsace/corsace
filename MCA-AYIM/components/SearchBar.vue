@@ -1,17 +1,19 @@
 <template>
-    <div class="search">
-        <div class="search__pre">
-            <img 
-                class="search__pre-image"
-                src="../../Assets/img/ayim-mca/site/magnifying glass.png"
+    <div class="search-bar">
+        <div class="search">
+            <div class="search__pre">
+                <img 
+                    class="search__pre-image"
+                    src="../../Assets/img/ayim-mca/site/magnifying glass.png"
+                >
+            </div>
+            <input
+                class="search__input"
+                :placeholder="placeholder"
+                maxlength="50"
+                @input="updateText($event)"
             >
         </div>
-        <input
-            class="search__input"
-            :placeholder="placeholder"
-            maxlength="50"
-            @input="updateText($event)"
-        >
 
         <slot />
     </div>    
@@ -50,12 +52,19 @@ export default class SearchBar extends Vue {
 @import '@s-sass/_variables';
 @import '@s-sass/_mixins';
 
-.search {
+.search-bar {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
     width: 100%;
+}
 
-    & > * {
+.search {
+    display: flex;
+    flex: 1;
+    min-width: 200px;
+
+    & > *, & ~ * {
         padding: 5px;
         margin: 5px;
     }

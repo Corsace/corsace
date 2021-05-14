@@ -66,7 +66,7 @@ export default class AdminPage extends Vue {
         { key: "name", label: "Year" },
         { key: "nomination.start", label: "Nominations Start", formatter: Format.DateTimeString },
         { key: "nomination.end", label: "Nominations End", formatter: Format.DateTimeString },
-        { key: "voting.start", label: "Voting End", formatter: Format.DateTimeString },
+        { key: "voting.start", label: "Voting Start", formatter: Format.DateTimeString },
         { key: "voting.end", label: "Voting End", formatter: Format.DateTimeString },
         { key: "results", label: "Results", formatter: Format.DateTimeString },
     ];

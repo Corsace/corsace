@@ -1,26 +1,26 @@
 <template>
-    <div v-if="phase">
+    <div v-if="onTime">
         <div
-            v-if="phase.phase && (phase.phase === 'nominating' || phase.phase === 'voting')"
-            class="stage__remainingDays" 
-            :class="`stage__remainingDays--${selectedMode}`"
+            class="remaining-days" 
+            :class="`remaining-days--${selectedMode}`"
         >
-            <div class="stage__remainingDaysNumber">
+            <div class="remaining-days__number">
                 {{ remainingDays }}
             </div> 
-            <div class="stage__remainingDaysLeft">
+            <div class="remaining-days__left">
                 {{ $t(`mca.main.daysLeft`) }}
             </div>
-            <div class="stage_remainingDaysExclamation">
+            <div class="remaining-days__exclamation">
                 !
             </div>
-            <div class="stage_remainingDaysExclamation">
+            <div class="remaining-days__exclamation">
                 !
             </div>
         </div>
         <div class="stage-wrapper">
             <mode-switcher
-                :enable-mode-eligibility="true"
+                stretch
+                enable-mode-eligibility
                 @inactiveModeClicked="toggleGuestDifficultyModal"
             >
                 <stage-page />
@@ -60,7 +60,7 @@ export default class Stage extends Vue {
 
     @State selectedMode!: string;
     @State loggedInUser!: UserMCAInfo;
-    @Getter phase!: Phase;
+    @Getter phase!: Phase | null;
     @Mutation toggleGuestDifficultyModal;
     
     mounted () {
@@ -77,6 +77,9 @@ export default class Stage extends Vue {
         return "0";
     }
 
+    get onTime () {
+        return this.phase?.phase && (this.phase.phase === "nominating" || this.phase.phase === "voting");
+    }
 }
 </script>
 
@@ -85,12 +88,16 @@ export default class Stage extends Vue {
 @import '@s-sass/_mixins';
 
 .stage-wrapper {
-    padding-top: 35px;
-    height: 100%;
     width: 100%;
+    max-height: 200%;
+    padding-top: 50px;
+
+    @include breakpoint(laptop) {
+        height: 100%;
+    }
 }
 
-.stage__remainingDays {
+.remaining-days {
     position: absolute;
     background-color: white;
     left: 5%;
@@ -105,32 +112,32 @@ export default class Stage extends Vue {
 
     @include mode-text-color;
     @include transition;
-}
 
-.stage__remainingDaysNumber {
-    font-size: 6rem;
-    font-weight: bold;
-    @include breakpoint(mobile) { 
+    &__number {
         font-size: 4rem;
+        font-weight: bold;
+        @include breakpoint(desktop) { 
+            font-size: 6rem;
+        }
     }
-}
 
-.stage__remainingDaysLeft {
-    font-size: 1.5rem;
-    padding: 0 4px;
-    letter-spacing: 1px;
-    @include breakpoint(mobile) { 
+    &__left {
         font-size: 1rem;
+        padding: 0 4px;
+        letter-spacing: 1px;
+        @include breakpoint(desktop) { 
+            font-size: 1.5rem;
+        }
     }
-}
 
-.stage_remainingDaysExclamation {
-    font-size: 12rem;
-    font-weight: 900;
-    transform: rotate(30deg);
-    margin-bottom: 10%;
-    @include breakpoint(mobile) { 
+    &__exclamation {
         font-size: 8rem;
+        font-weight: 900;
+        transform: rotate(30deg);
+        margin-bottom: 10%;
+        @include breakpoint(desktop) { 
+            font-size: 12rem;
+        }
     }
 }
 </style>

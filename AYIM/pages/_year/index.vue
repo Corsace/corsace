@@ -3,7 +3,7 @@
         <div class="ayim-bg" />
         <div class="left-side" />
         <div class="right-side">
-            <mode-switcher>
+            <mode-switcher stretch>
                 <index-page />
             </mode-switcher>
         </div>
@@ -34,6 +34,9 @@ export default class Index extends Vue {
 </script>
 
 <style lang="scss">
+@import '@s-sass/_mixins';
+@import '@s-sass/_variables';
+
 .ayim-bg {
     position: absolute;
     bottom: 0px;
@@ -52,20 +55,26 @@ export default class Index extends Vue {
 	animation: fade-in 0.7s ease-in both;
 }
 
-.right-side {
-    display: flex;
-    height: 100%;
-    align-items: flex-end;
+.left-side {
+    display: none;
 }
 
-@media (min-width: 992px) {    
+.right-side {
+    display: flex;
+    align-items: flex-end;
+    padding-top: 10px;
+}
+
+@include breakpoint(laptop) {    
     .left-side {
+        display: block;
         flex: 0 0 40%;
         max-width: 40%;
     }
     .right-side {
         flex: 0 0 60%;
         max-width: 60%;
+        padding-top: 50px;
     }
 }
 

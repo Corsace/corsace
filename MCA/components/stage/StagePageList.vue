@@ -1,21 +1,17 @@
 <template>
-    <div class="category__selection">
+    <div class="category-selection">
         <transition name="fade">
             <voting-box v-if="votingFor && !incrementalVoting" />
         </transition>
 
-        <div class="category__selection-search">
-            <stage-page-filters />
-        </div>
-
-        <div class="category__selection-area">
-            <div class="category__selection-maps">
+        <div class="category-selection__area">
+            <div class="category-selection__maps">
                 <template v-if="section === 'users'">
                     <choice-user-card
                         v-for="(item, i) in users"
                         :key="i"
                         :choice="item"
-                        class="category__beatmap"
+                        class="category-selection__beatmap"
                         @choose="nominate(item)"
                     />
                 </template>
@@ -25,13 +21,13 @@
                         v-for="(item, i) in beatmaps"
                         :key="i"
                         :choice="item"
-                        class="category__beatmap"
+                        class="category-selection__beatmap"
                         @choose="nominate(item)"
                     />
                 </template>
             </div>
             <scroll-bar
-                selector=".category__selection-maps"
+                selector=".category-selection__maps"
                 @bottom="search(true)"
             />
         </div>
@@ -42,7 +38,6 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import StagePageFilters from "./StagePageFilters.vue";
 import ChoiceBeatmapsetCard from "../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
 import ChoiceUserCard from "../ChoiceUserCard.vue";
 import ScrollBar from "../../../MCA-AYIM/components/ScrollBar.vue";
@@ -57,7 +52,6 @@ const stageModule = namespace("stage");
 
 @Component({
     components: {
-        StagePageFilters,
         ChoiceBeatmapsetCard,
         ChoiceUserCard,
         ScrollBar,
@@ -101,3 +95,45 @@ export default class StagePageList extends Vue {
 
 }
 </script>
+
+<style lang="scss">
+@import '@s-sass/_variables';
+@import '@s-sass/_mixins';
+@import '@s-sass/_partials';
+
+.category-selection {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: auto;
+
+    &__area {
+        height: 100%;
+        position: relative;
+        display: flex;
+        flex: 1;
+    }
+
+    &__maps {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        
+        overflow-y: scroll;
+        margin-right: 50px; // Space for scrollbar
+        position: relative;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        
+        mask-image: linear-gradient(to top, transparent 10%, black 25%);
+
+        @include breakpoint(tablet) {
+            mask-image: linear-gradient(to top, transparent 0%, black 25%);
+        }
+    }
+}
+
+</style>

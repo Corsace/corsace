@@ -1,34 +1,36 @@
 <template>
-    <div class="choice">
-        <slot />
+    <div class="choice-container">
+        <div class="choice">
+            <slot />
         
-        <div 
-            v-if="stage === 'nominating'"
-            class="choice__selection"
-            @click="$emit('choose')"
-        >
-            <div
-                class="choice__selection-box" 
-                :class="{ 'choice__selection-box--chosen': choice.chosen }"
+            <div 
+                v-if="stage === 'nominating'"
+                class="choice__selection"
+                @click="$emit('choose')"
             >
-                <img
-                    class="choice__selection-check"
-                    :class="{ 'choice__selection-check--chosen': choice.chosen }"
-                    src="../../Assets/img/ayim-mca/site/checkmark.png"
+                <div
+                    class="choice__selection-box" 
+                    :class="{ 'choice__selection-box--chosen': choice.chosen }"
                 >
+                    <img
+                        class="choice__selection-check"
+                        :class="{ 'choice__selection-check--chosen': choice.chosen }"
+                        src="../../Assets/img/ayim-mca/site/checkmark.png"
+                    >
+                </div>
             </div>
-        </div>
 
-        <div
-            v-else-if="stage === 'voting'"
-            class="choice__voting"
-            @click="choose()"
-        >
-            <div class="choice__voting-title">
-                vote
-            </div>
-            <div class="choice__voting-vote">
-                {{ currentVote && currentVote.choice || '!' }}
+            <div
+                v-else-if="stage === 'voting'"
+                class="choice__voting"
+                @click="choose()"
+            >
+                <div class="choice__voting-title">
+                    vote
+                </div>
+                <div class="choice__voting-vote">
+                    {{ currentVote && currentVote.choice || '!' }}
+                </div>
             </div>
         </div>
     </div>
@@ -94,6 +96,24 @@ export default class BaseChoiceCard extends Vue {
 @import '@s-sass/_partials';
 
 .choice {
+    &-container {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 100%;
+
+        @include breakpoint(tablet) {
+            width: calc(100% / 2);
+        }
+
+        @include breakpoint(laptop) {
+            width: calc(100% / 2);
+        }
+
+        @include breakpoint(desktop) {
+            width: calc(100% / 3);
+        }
+    }
+
     @extend %flex-box;
     padding: 0;
     box-shadow: 0 0 8px rgba(255,255,255,0.25);
@@ -103,14 +123,6 @@ export default class BaseChoiceCard extends Vue {
 
     &:hover {
         box-shadow: 0 0 12px rgba(255,255,255,0.75);
-    }
-
-    width: calc(100vw - 113px);
-    @include breakpoint(tablet) {
-        width: 48.1%;
-    }
-    @include breakpoint(desktop) {
-        width: 31.9%;
     }
 
 }

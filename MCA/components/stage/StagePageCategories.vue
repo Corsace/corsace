@@ -1,10 +1,10 @@
 <template>
-    <div class="stage__categories">
+    <div class="stage-categories">
         <collapsible
             :title="$t('mca.main.categories.map')"
             :list="beatmapCategories"
             :active="toUpdateSection === 'beatmaps'"
-            :categoryName="true"
+            :category-name="true"
             :show-extra="true"
             @activate="saveSection('beatmaps')"
             @target="updateCategory($event)"
@@ -13,7 +13,7 @@
             :title="$t('mca.main.categories.user')"
             :list="userCategories"
             :active="toUpdateSection === 'users'"
-            :categoryName="true"
+            :category-name="true"
             :show-extra="true"
             @activate="saveSection('users')"
             @target="updateCategory($event)"
@@ -72,3 +72,11 @@ export default class StagePageCategories extends Vue {
 
 }
 </script>
+
+<style lang="scss">
+
+.stage-categories {
+    flex: 1 1 15%;
+}
+
+</style>
