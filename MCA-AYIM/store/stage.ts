@@ -59,10 +59,6 @@ export const mutations: MutationTree<StageState> = {
             state.votes.push(vote);
         }
     },
-    removeVote (state, voteId: number) {
-        const i = state.votes.findIndex(v => v.ID === voteId);
-        if (i !== -1) state.votes.splice(i, 1);
-    },
     updateNominations (state, nominations) {
         state.nominations = nominations || [];
     },
@@ -235,7 +231,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
         commit("addVote", data);
     },
-    async removeVote ({ commit }, voteId: number) {
+    async removeVote ({ dispatch }, voteId: number) {
         const { data } = await this.$axios.post(`/api/voting/${voteId}/remove`);
 
         if (data.error) {
@@ -244,7 +240,7 @@ export const actions: ActionTree<StageState, RootState> = {
         }
 
         if (data.success) {
-            commit("removeVote", voteId);
+            await dispatch("setInitialData");
         }
     },
 };
