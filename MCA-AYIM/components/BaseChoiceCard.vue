@@ -64,10 +64,7 @@ export default class BaseChoiceCard extends Vue {
 
     async choose () {
         if (this.currentVote) {
-            if (confirm("Do you want to remove this vote? Note this will move your votes up by 1")) {
-                await this.removeVote(this.currentVote.ID);
-            }
-            
+            await this.removeVote(this.currentVote.ID);
             return;
         }
         

@@ -232,6 +232,10 @@ export const actions: ActionTree<StageState, RootState> = {
         commit("addVote", data);
     },
     async removeVote ({ dispatch }, voteId: number) {
+        if (!confirm("Do you want to remove this vote? This will move your votes up by 1")) {
+            return;
+        }
+
         const { data } = await this.$axios.post(`/api/voting/${voteId}/remove`);
 
         if (data.error) {

@@ -1,6 +1,6 @@
 <template>
     <div class="category-selection">
-        <transition name="fade">
+        <transition name="simple-fade">
             <voting-box v-if="showVoteChoiceBox" />
         </transition>
 
