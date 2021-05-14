@@ -10,10 +10,10 @@
         </div>
         
         <div
-            class="mode-wrapper-v2"
+            class="mode-wrapper"
             :class="[
-                'mode-wrapper-v2--' + selectedMode, 
-                tablet ? 'mode-wrapper-v2--tablet' : 'mode-wrapper-v2--laptop'
+                'mode-wrapper--' + selectedMode, 
+                tablet ? 'mode-wrapper--tablet' : 'mode-wrapper--laptop'
             ]"
         >
             <div class="mode-content">
@@ -21,17 +21,17 @@
             </div>
 
             <div
-                class="mode-selection-v2"
-                :class="'mode-selection-v2--' + selectedMode"
+                class="mode-selection"
+                :class="'mode-selection--' + selectedMode"
             >
                 <div
                     v-for="mode in modes"
                     :key="mode"
-                    class="mode-selection-v2__mode"
+                    class="mode-selection__mode"
                     :class="[
-                        `mode-selection-v2__mode--${mode}`,
-                        selectedMode === mode ? `mode-selection-v2__mode--${mode}-selected` : '',
-                        { 'mode-selection-v2__mode--inactive': enableModeEligibility && !isEligibleFor(mode) },
+                        `mode-selection__mode--${mode}`,
+                        selectedMode === mode ? `mode-selection__mode--${mode}-selected` : '',
+                        { 'mode-selection__mode--inactive': enableModeEligibility && !isEligibleFor(mode) },
                     ]"
                     @click="setMode(mode)"
                 />
@@ -134,7 +134,7 @@ $icon-margin: 15px;
 
 $max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // Consider mode selection space 85px~
 
-.mode-wrapper-v2 {
+.mode-wrapper {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -194,7 +194,7 @@ $max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // 
     }
 }
 
-.mode-selection-v2 {
+.mode-selection {
     @include transition;
     
     display: flex;
