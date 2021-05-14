@@ -7,6 +7,7 @@ import { CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
+import { MoreThan, Not } from "typeorm";
 
 const votingRouter = new Router();
 
@@ -58,9 +59,9 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), async 
 
     const category = await Category.findOneOrFail(categoryId);
     
-    if (choice < 1 || choice > 10) {
+    if (choice < 1 || choice > 100) {
         return ctx.body = {
-            error: "Not valid choice",
+            error: "Invalid choice",
         };
     }
 
@@ -133,14 +134,63 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), async 
 
 votingRouter.post("/:id/remove", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const vote = await Vote.findOneOrFail({
-        ID: ctx.params.id,
+        where: {
+            ID: ctx.params.id,
+            voter: ctx.state.user.ID,
+        },
+        relations: [
+            "category",
+        ],
+    });
+
+    const otherVotes = await Vote.find({
+        ID: Not(ctx.params.id),
         voter: ctx.state.user.ID,
+        category: vote.category,
+        choice: MoreThan(vote.choice),
     });
 
     await vote.remove();
+    await Promise.all([
+        otherVotes.map(v => {
+            v.choice--;
+            return v.save();
+        }),
+    ]);
 
     ctx.body = {
         success: "removed",
+    };
+});
+
+votingRouter.post("/:id/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+    const vote = await Vote.findOneOrFail({
+        where: {
+            ID: ctx.params.id,
+            voter: ctx.state.user.ID,
+        },
+        relations: [
+            "category",
+        ],
+    });
+    
+    const swapVote = await Vote.findOneOrFail({
+        ID: ctx.request.body.swapId,
+        voter: ctx.state.user.ID,
+        category: vote.category,
+    });
+
+    const voteChoice = vote.choice;
+    vote.choice = swapVote.choice;
+    swapVote.choice = voteChoice;
+    
+    await Promise.all([
+        vote.save(),
+        swapVote.save(),
+    ]);
+
+    ctx.body = {
+        success: "swapped",
     };
 });
 

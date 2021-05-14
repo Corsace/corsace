@@ -8,7 +8,7 @@
 }
 
 .fade-enter-active, .fade-leave-active {
-    transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
 }
 
 .fade-enter, .fade-leave-to {
@@ -21,4 +21,12 @@
   overflow: hidden;
   max-height: 100px;
   opacity: 1;
+}
+
+.simple-fade-enter-active, .simple-fade-leave-active {
+  transition: all 0.2s ease-out;
+}
+
+.simple-fade-enter, .simple-fade-leave-to {
+  opacity: 0;
 }

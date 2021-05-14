@@ -21,8 +21,7 @@ interface StageState {
     beatmaps: BeatmapsetInfo[];
     users: UserCondensedInfo[];
     query: StageQuery;
-    incrementalVoting: boolean;
-    votingFor: null | number;
+    showVoteChoiceBox: boolean;
 }
 
 export const state = (): StageState => ({
@@ -42,8 +41,7 @@ export const state = (): StageState => ({
         text: "",
         skip: 0,
     },
-    incrementalVoting: true,
-    votingFor: null,
+    showVoteChoiceBox: false,
 });
 
 export const mutations: MutationTree<StageState> = {
@@ -60,10 +58,6 @@ export const mutations: MutationTree<StageState> = {
         if (vote) {
             state.votes.push(vote);
         }
-    },
-    removeVote (state, voteId: number) {
-        const i = state.votes.findIndex(v => v.ID === voteId);
-        if (i !== -1) state.votes.splice(i, 1);
     },
     updateNominations (state, nominations) {
         state.nominations = nominations || [];
@@ -116,11 +110,8 @@ export const mutations: MutationTree<StageState> = {
         state.users = [];
         state.count = 0;
     },
-    updateVotingFor (state, voteId) {
-        state.votingFor = voteId;
-    },
-    changeVotingType (state) {
-        state.incrementalVoting = !state.incrementalVoting;
+    toggleVoteChoiceBox (state) {
+        state.showVoteChoiceBox = !state.showVoteChoiceBox;
     },
 };
 
@@ -137,7 +128,7 @@ export const getters: GetterTree<StageState, RootState> = {
                     ...c,
                     count: state.votes.filter(v => v.category.ID === c.id).length,
                 };
-                info.maxNominations = 10;
+                info.maxNominations = 100;
                 return info;
             });
         } else {
@@ -240,7 +231,11 @@ export const actions: ActionTree<StageState, RootState> = {
 
         commit("addVote", data);
     },
-    async removeVote ({ commit }, voteId: number) {
+    async removeVote ({ dispatch }, voteId: number) {
+        if (!confirm("Do you want to remove this vote? This will move your votes up by 1")) {
+            return;
+        }
+
         const { data } = await this.$axios.post(`/api/voting/${voteId}/remove`);
 
         if (data.error) {
@@ -249,7 +244,21 @@ export const actions: ActionTree<StageState, RootState> = {
         }
 
         if (data.success) {
-            commit("removeVote", voteId);
+            await dispatch("setInitialData");
+        }
+    },
+    async swapVote ({ dispatch }, payload: { voteId: number, swapId: number }) {
+        const { data } = await this.$axios.post(`/api/voting/${payload.voteId}/swap`, {
+            swapId: payload.swapId,
+        });
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        if (data.success) {
+            await dispatch("setInitialData");
         }
     },
 };

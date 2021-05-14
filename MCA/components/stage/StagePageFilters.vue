@@ -14,11 +14,14 @@
             @change="changeOrder"
         />
 
-        <toggle-button
+        <button
             v-if="$route.params.stage === 'voting'"
-            :options="votingOptions"
-            @change="changeVotingType"
-        />
+            class="button"
+            :class="{ 'button--active': showVoteChoiceBox }"
+            @click="toggleVoteChoiceBox"
+        >
+            {{ $t(`mca.nom_vote.options.voteOrder`) }}
+        </button>
     </search-bar>
 </template>
 
@@ -44,8 +47,9 @@ export default class StagePageFilters extends Vue {
 
     @stageModule.State section!: string;
     @stageModule.State query!: StageQuery;
+    @stageModule.State showVoteChoiceBox!: boolean;
     @stageModule.Action updateQuery;
-    @stageModule.Mutation changeVotingType;
+    @stageModule.Mutation toggleVoteChoiceBox;
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
     userOptions = ["id", "alph"];
