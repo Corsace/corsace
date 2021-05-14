@@ -21,7 +21,7 @@
                         @dragstart="dragData($event, vote)"
                         @dragenter.prevent
                         @dragover.prevent
-                        @drop="swapVotes($event, vote)"
+                        @drop="dropData($event, vote)"
                     >
                         {{ formatTitle(vote) }}
                     </div>
@@ -60,6 +60,7 @@ export default class VotingBox extends Vue {
     @stageModule.Getter relatedVotes!: Vote[];
     @stageModule.Action createVote;
     @stageModule.Action removeVote;
+    @stageModule.Action swapVote;
 
     maxChoices = 10;
 
@@ -85,14 +86,15 @@ export default class VotingBox extends Vue {
         e.dataTransfer.setData("voteId", vote.ID);
     }
 
-    swapVotes (e, vote: Vote) {
+    async dropData (e, vote: Vote) {
         const id = e.dataTransfer.getData("voteId");
         const enterVote = this.relatedVotes.find(v => v.ID == id);
         
         if (enterVote && vote) {
-            const enterChoice = enterVote.choice;
-            enterVote.choice = vote.choice;
-            vote.choice = enterChoice;
+            await this.swapVote({
+                voteId: vote.ID,
+                swapId: enterVote.ID,
+            });
         }
     }
 

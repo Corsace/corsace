@@ -163,4 +163,35 @@ votingRouter.post("/:id/remove", validatePhaseYear, isPhase("voting"), isEligibl
     };
 });
 
+votingRouter.post("/:id/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+    const vote = await Vote.findOneOrFail({
+        where: {
+            ID: ctx.params.id,
+            voter: ctx.state.user.ID,
+        },
+        relations: [
+            "category",
+        ],
+    });
+    
+    const swapVote = await Vote.findOneOrFail({
+        ID: ctx.request.body.swapId,
+        voter: ctx.state.user.ID,
+        category: vote.category,
+    });
+
+    const voteChoice = vote.choice;
+    vote.choice = swapVote.choice;
+    swapVote.choice = voteChoice;
+    
+    await Promise.all([
+        vote.save(),
+        swapVote.save(),
+    ]);
+
+    ctx.body = {
+        success: "swapped",
+    };
+});
+
 export default votingRouter;
