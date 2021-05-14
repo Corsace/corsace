@@ -114,29 +114,29 @@ export default class Stage extends Vue {
     @include transition;
 
     &__number {
-        font-size: 6rem;
+        font-size: 4rem;
         font-weight: bold;
-        @include breakpoint(mobile) { 
-            font-size: 4rem;
+        @include breakpoint(desktop) { 
+            font-size: 6rem;
         }
     }
 
     &__left {
-        font-size: 1.5rem;
+        font-size: 1rem;
         padding: 0 4px;
         letter-spacing: 1px;
-        @include breakpoint(mobile) { 
-            font-size: 1rem;
+        @include breakpoint(desktop) { 
+            font-size: 1.5rem;
         }
     }
 
     &__exclamation {
-        font-size: 12rem;
+        font-size: 8rem;
         font-weight: 900;
         transform: rotate(30deg);
         margin-bottom: 10%;
-        @include breakpoint(mobile) { 
-            font-size: 8rem;
+        @include breakpoint(desktop) { 
+            font-size: 12rem;
         }
     }
 }
