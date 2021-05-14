@@ -118,6 +118,7 @@ export default class StagePageList extends Vue {
         align-content: flex-start;
         
         overflow-y: scroll;
+        scrollbar-width: none;
         margin-right: 50px; // Space for scrollbar
         position: relative;
 

@@ -181,6 +181,7 @@ export default class DisplayLayout extends Vue {
     position: relative;
     overflow-y: scroll;
     gap: 5px;
+    scrollbar-width: none;
 
     mask-image: linear-gradient(to top, transparent 0%, black 25%);
     
