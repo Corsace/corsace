@@ -111,7 +111,6 @@ export default class VotingBox extends Vue {
     border-radius: $border-radius;
     box-shadow: 0 0 8px 2px rgb($standard, .55);
     padding: 5px;
-    // cursor: default;
     min-width: 300px;
     z-index: 1;
 
