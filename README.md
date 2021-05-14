@@ -51,7 +51,7 @@ Make sure to update `config.database` to reflect your choice of database name an
 
 ##### Via Docker
 
-We are shipping a production-like `docker-compose.yml` file. You can start only the database service using: `docker-compose up -d database`
+We are shipping a production-like `docker-compose.yml` file. You can start only the database service using: `docker-compose up -d database` or `npm run database`.
 
 The database will listen on `127.0.0.1:3306`, with `corsace` being the database name, username and password.
 
