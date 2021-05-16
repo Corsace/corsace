@@ -65,7 +65,7 @@ export default class Stage extends Vue {
     
     mounted () {
         if (!this.loggedInUser || !this.loggedInUser.eligibility.some(eligibility => eligibility.year == parseInt(this.$route.params.year)))
-            this.$router.push("/");
+            this.$router.push("/"+this.$route.params.year);
     }
 
     get remainingDays (): string {
