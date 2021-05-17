@@ -14,7 +14,8 @@
             :class="[
                 'mode-wrapper--' + selectedMode, 
                 tablet ? 'mode-wrapper--tablet' : 'mode-wrapper--laptop',
-                { 'mode-wrapper--stretch': stretch }
+                { 'mode-wrapper--stretch': stretch },
+                'mode-wrapper--skip-' + ignoreModes.length,
             ]"
         >
             <div class="mode-content">
@@ -26,7 +27,7 @@
                 :class="'mode-selection--' + selectedMode"
             >
                 <div
-                    v-for="mode in modes"
+                    v-for="mode in availableModes"
                     :key="mode"
                     class="mode-selection__mode"
                     :class="[
@@ -53,13 +54,18 @@ export default class ModeSwitcher extends Vue {
     @Prop(Boolean) readonly tablet!: boolean;
     @Prop(Boolean) readonly stretch!: boolean;
     @Prop(Boolean) readonly hidePhase!: boolean;
-    @Prop({ type: String, default: "" }) readonly title!: string;
     @Prop(Boolean) readonly enableModeEligibility!: boolean;
+    @Prop({ type: String, default: "" }) readonly title!: string;
+    @Prop({ type: Array, default: () => [] }) readonly ignoreModes!: string[];
 
     @State selectedMode!: string;
     @State modes!: string[];
     @Getter phase!: Phase;
     @Getter isEligibleFor!: (mode: string) => boolean;
+
+    get availableModes () {
+        return this.modes.filter(m => !this.ignoreModes.includes(m));
+    }
 
     setMode (mode): void {
         if (!this.enableModeEligibility || this.isEligibleFor(mode)) {
@@ -140,6 +146,13 @@ $max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // 
     flex-direction: column;
     flex: 1;
     height: 100%;
+    --skip-modes: 0;
+
+    @for $i from 1 through 5 {
+        &--skip-#{$i} {
+            --skip-modes: #{$i};
+        }
+    }
 
     @include breakpoint(tablet) {
         &--tablet {
@@ -183,7 +196,7 @@ $max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // 
             &--#{$mode}::before {
                 content: '';
                 height: 100%;
-                width: calc(100% - #{$mode-selection-padding} - #{$icon-size} * #{$i} + 28px - #{$icon-margin} * #{$i - 1});
+                width: calc(100% - #{$mode-selection-padding} - #{$icon-size} * (#{$i} - var(--skip-modes)) + 28px - #{$icon-margin} * (#{$i - 1} - var(--skip-modes)));
                 position: absolute;
                 bottom: 0;
                 left: -3px;

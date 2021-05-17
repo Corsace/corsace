@@ -4,6 +4,7 @@
             hide-phase
             tablet
             stretch
+            :ignore-modes="['storyboard']"
         >
             <template #title>
                 <div class="ayim-nav">
