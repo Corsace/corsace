@@ -95,6 +95,41 @@ nominationsRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination"
                 error: "You have already nominated this beatmap!", 
             };
         }
+        // Check if the category has filters since this is a beatmap search
+        if (category.filter) {
+            if (category.filter.minLength && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter.minLength))
+                return ctx.body = {
+                    error: "Beatmapset does not exceed minimum length requirement!", 
+                };
+            if (category.filter.maxLength && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter.maxLength))
+                return ctx.body = {
+                    error: "Beatmapset exceeds maximum length requirement!", 
+                };
+            if (category.filter.minBPM && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter.minBPM))
+                return ctx.body = {
+                    error: "Beatmapset does not exceed minimum BPM requirement!", 
+                };
+            if (category.filter.maxBPM && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter.maxBPM))
+                return ctx.body = {
+                    error: "Beatmapset exceeds maximum BPM requirement!", 
+                };
+            if (category.filter.minSR && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter.minSR))
+                return ctx.body = {
+                    error: "Beatmapset does not exceed minimum SR requirement!", 
+                };
+            if (category.filter.maxSR && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter.maxSR))
+                return ctx.body = {
+                    error: "Beatmapset exceeds maximum SR requirement!", 
+                };
+            if (category.filter.minCS && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter.minCS))
+                return ctx.body = {
+                    error: "Beatmapset does not exceed minimum CS requirement!", 
+                };
+            if (category.filter.maxCS && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter.maxCS))
+                return ctx.body = {
+                    error: "Beatmapset exceeds maximum CS requirement!", 
+                };
+        }
 
         nomination.beatmapset = beatmapset;
     } else if (category.type == CategoryType.Users) {
