@@ -66,6 +66,7 @@ export default class StagePageCategories extends Vue {
     }
 
     updateCategory (category: string): void {
+        this.reset();
         this.updateSection(this.toUpdateSection);
         this.updateSelectedCategory(category);
     }
