@@ -14,13 +14,8 @@ const votingRouter = new Router();
 votingRouter.use(isLoggedInOsu);
 
 votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
-    const [votes, categories] = await Promise.all([
+    let [votes, categories] = await Promise.all([
         Vote.find({
-            category: {
-                mca: {
-                    year: ctx.state.year,
-                }
-            },
             voter: ctx.state.user,
         }),
             
@@ -30,6 +25,8 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
             },
         }),
     ]);
+
+    votes = votes.filter(vote => vote.category.mca.year === ctx.state.year);
 
     const categoryInfos = categories.map(c => c.getInfo());
 
