@@ -113,6 +113,7 @@ export default class StagePageList extends Vue {
     }
 
     &__maps {
+        width: 100%;
         display: flex;
         flex-wrap: wrap;
         align-content: flex-start;
