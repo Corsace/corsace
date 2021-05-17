@@ -3,7 +3,10 @@
         <div class="ayim-bg" />
         <div class="left-side" />
         <div class="right-side">
-            <mode-switcher stretch>
+            <mode-switcher
+                stretch
+                :ignore-modes="['storyboard']"
+            >
                 <index-page />
             </mode-switcher>
         </div>
