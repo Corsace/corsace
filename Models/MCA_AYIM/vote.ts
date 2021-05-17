@@ -16,19 +16,18 @@ export class Vote extends BaseEntity {
     
     @ManyToOne(() => Category, category => category.votes, {
         nullable: false,
+        eager: true,
     })
     category!: Category;
 
-    @Column({ nullable: true })
-    userID?: number;
-
-    @ManyToOne(() => User, user => user.votesReceived)
+    @ManyToOne(() => User, user => user.votesReceived, {
+        eager: true,
+    })
     user?: User;
 
-    @Column({ nullable: true })
-    beatmapsetID?: number;
-
-    @ManyToOne(() => Beatmapset, Beatmapset => Beatmapset.votesReceived)
+    @ManyToOne(() => Beatmapset, Beatmapset => Beatmapset.votesReceived, {
+        eager: true,
+    })
     beatmapset?: Beatmapset;
 
     @Column()

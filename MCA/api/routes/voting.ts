@@ -36,15 +36,18 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
 });
 
 votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), stageSearch("voting", async (ctx, category) => {
-    const votes = await Vote.populate()
-        .where("category.mcaYear = :year", { year: ctx.state.year })
-        .andWhere("voter.ID = :id", { id: ctx.state.user.ID })
-        .andWhere("category.type = :categoryType", { categoryType: category.type })
-        .getMany();
+    const votes = await Vote.find({
+        voter: ctx.state.user,
+        category: {
+            mca: {
+                year: category.mca.year,
+            },
+        }
+    });
 
     if (
         !category.isRequired && 
-        !votes.some(v => v.category.name === "grandAward" && v.category.type === (category.type === CategoryType.Beatmapsets ? CategoryType.Beatmapsets : CategoryType.Users))
+        !votes.some(v => v.category.isRequired && v.category.type === category.type)
     ) {
         throw "Please vote in the Grand Award categories first!";
     }
@@ -143,16 +146,35 @@ votingRouter.post("/:id/remove", validatePhaseYear, isPhase("voting"), isEligibl
         ],
     });
 
-    const otherVotes = await Vote.find({
+    const allUserVotes = await Vote.find({
+        where: {
+            voter: ctx.state.user.ID,
+        },
+        relations: [
+            "category",
+        ],
+    });
+    const otherUserVotes = await Vote.find({
         ID: Not(ctx.params.id),
-        voter: ctx.state.user.ID,
+        voter: ctx.state.user,
         category: vote.category,
         choice: MoreThan(vote.choice),
     });
 
+    
+    if (
+        vote.category.isRequired && 
+        allUserVotes.filter(userVote => userVote.category.ID === userVote.category.ID).length === 1 && 
+        allUserVotes.some(userVote => !userVote.category.isRequired && userVote.category.type === vote.category.type)
+    ) {
+        return ctx.body = {
+            error: "You cannot have 0 votes in required categories if you have votes in non-required categories!",
+        };
+    }
+
     await vote.remove();
     await Promise.all([
-        otherVotes.map(v => {
+        otherUserVotes.map(v => {
             v.choice--;
             return v.save();
         }),

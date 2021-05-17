@@ -42,10 +42,15 @@ nominationsRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination")
 nominationsRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), stageSearch("nominating", async (ctx, category) => {
     const nominations = await Nomination.find({
         nominator: ctx.state.user,
+        category: {
+            mca: {
+                year: category.mca.year,
+            },
+        }
     });
     if (
         !category.isRequired && 
-        !nominations.some(nom => nom.category.name === "grandAward" && nom.category.type === (category.type === CategoryType.Beatmapsets ? CategoryType.Beatmapsets : CategoryType.Users))
+        !nominations.some(nom => nom.category.isRequired && nom.category.type === category.type)
     ) {
         throw "Please nominate in the Grand Award categories first!";
     }
@@ -63,10 +68,18 @@ nominationsRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination"
     
     const nominations = await Nomination.find({
         nominator: ctx.state.user,
-        category,
     });
+    if (
+        !category.isRequired &&
+        !nominations.some(nom => nom.category.isRequired && nom.category.type === category.type)
+    )
+        return ctx.body = { 
+            error: "Please nominate in the Grand Award categories first!",
+        };
 
-    if (nominations.length >= category.maxNominations) {
+    const categoryNominations = nominations.filter(nom => nom.category.ID === category.ID);
+
+    if (categoryNominations.length >= category.maxNominations) {
         return ctx.body = { 
             error: "You have already reached the max amount of nominations for this category! Please remove any current nomination(s) you may have in order to nominate anything else!", 
         };
@@ -90,7 +103,7 @@ nominationsRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination"
                 error: "Mapset is ineligible for the given MCA year!",
             };
 
-        if (nominations.some(n => n.beatmapset?.ID === beatmapset.ID)) {
+        if (categoryNominations.some(n => n.beatmapset?.ID === beatmapset.ID)) {
             return ctx.body = {
                 error: "You have already nominated this beatmap!", 
             };
@@ -135,7 +148,7 @@ nominationsRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination"
     } else if (category.type == CategoryType.Users) {
         user = await User.findOneOrFail(ctx.request.body.nomineeId);
 
-        if (nominations.some(n => n.user?.ID === user.ID)) {
+        if (categoryNominations.some(n => n.user?.ID === user.ID)) {
             return ctx.body = {
                 error: "You have already nominated this user!", 
             };
@@ -154,13 +167,13 @@ nominationsRouter.delete("/remove/:category/:id", validatePhaseYear, isPhase("no
     const nominations = await Nomination.find({
         nominator: ctx.state.user,
     });
-    const nomination = nominations.find(nom => category.type == CategoryType.Beatmapsets ? nom.beatmapset?.ID == ctx.params.id : nom.user?.ID == ctx.params.id);
+    const nomination = nominations.find(nom => nom.category.ID === category.ID && category.type == CategoryType.Beatmapsets ? nom.beatmapset?.ID == ctx.params.id : nom.user?.ID == ctx.params.id);
     if (!nomination)
         return ctx.body = {
             error: "Could not find specified nomination!",
         };
 
-    if (nomination.category.isRequired && nominations.some(nom => !nom.category.isRequired))
+    if (nomination.category.isRequired && nominations.some(nom => !nom.category.isRequired && nom.category.type === nomination.category.type))
         return ctx.body = {
             error: "You cannot remove nominations in required categories if you have nominations in non-required categories!",
         };
