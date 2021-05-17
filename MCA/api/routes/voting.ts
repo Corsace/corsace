@@ -15,10 +15,14 @@ votingRouter.use(isLoggedInOsu);
 
 votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
     const [votes, categories] = await Promise.all([
-        Vote.populate()
-            .where("category.mcaYear = :year", { year: ctx.state.year })
-            .andWhere("voter.ID = :id", { id: ctx.state.user.ID })
-            .getMany(),
+        Vote.find({
+            category: {
+                mca: {
+                    year: ctx.state.year,
+                }
+            },
+            voter: ctx.state.user,
+        }),
             
         Category.find({
             mca: {
@@ -36,14 +40,10 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
 });
 
 votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), stageSearch("voting", async (ctx, category) => {
-    const votes = await Vote.find({
+    let votes = await Vote.find({
         voter: ctx.state.user,
-        category: {
-            mca: {
-                year: category.mca.year,
-            },
-        }
     });
+    votes = votes.filter(vote => vote.category.mca.year === category.mca.year);
 
     if (
         !category.isRequired && 
@@ -112,13 +112,13 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), async 
     if (category.type === CategoryType.Beatmapsets) {
         vote.beatmapset = nominee as Beatmapset;
 
-        if (categoryVotes.some(v => v.beatmapsetID == nominee.ID)) {
+        if (categoryVotes.some(v => v.beatmapset?.ID == nominee.ID)) {
             alreadyVoted = true;
         }
     } else if (category.type === CategoryType.Users) {
         vote.user = nominee as User;
         
-        if (categoryVotes.some(v => v.userID == nominee.ID)) {
+        if (categoryVotes.some(v => v.user?.ID == nominee.ID)) {
             alreadyVoted = true;
         }
     }

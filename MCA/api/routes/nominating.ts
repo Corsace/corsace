@@ -8,11 +8,11 @@ import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear }
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
 
-const nominationsRouter = new Router();
+const nominatingRouter = new Router();
 
-nominationsRouter.use(isLoggedInOsu);
+nominatingRouter.use(isLoggedInOsu);
 
-nominationsRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"), async (ctx) => {
+nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"), async (ctx) => {
     const [nominations, categories] = await Promise.all([
         Nomination.find({
             where: {
@@ -39,15 +39,11 @@ nominationsRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination")
     };
 });
 
-nominationsRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), stageSearch("nominating", async (ctx, category) => {
-    const nominations = await Nomination.find({
+nominatingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), stageSearch("nominating", async (ctx, category) => {
+    let nominations = await Nomination.find({
         nominator: ctx.state.user,
-        category: {
-            mca: {
-                year: category.mca.year,
-            },
-        }
     });
+    nominations = nominations.filter(nom => nom.category.mca.year === category.mca.year);
     if (
         !category.isRequired && 
         !nominations.some(nom => nom.category.isRequired && nom.category.type === category.type)
@@ -58,7 +54,7 @@ nominationsRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomin
     return nominations;
 }));
 
-nominationsRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
+nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const category = await Category.findOneOrFail(ctx.request.body.categoryId);
     
     if (!isEligibleFor(ctx.state.user, category.mode.ID, ctx.state.year))
@@ -162,7 +158,7 @@ nominationsRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination"
     ctx.body = nomination;
 });
 
-nominationsRouter.delete("/remove/:category/:id", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
+nominatingRouter.delete("/remove/:category/:id", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const category = await Category.findOneOrFail(ctx.params.category);
     const nominations = await Nomination.find({
         nominator: ctx.state.user,
@@ -185,4 +181,4 @@ nominationsRouter.delete("/remove/:category/:id", validatePhaseYear, isPhase("no
     };
 });
 
-export default nominationsRouter;
+export default nominatingRouter;

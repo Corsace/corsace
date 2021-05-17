@@ -32,14 +32,4 @@ export class Vote extends BaseEntity {
 
     @Column()
     choice!: number;
-
-    static populate (): SelectQueryBuilder<Vote> {
-        return this
-            .createQueryBuilder("vote")
-            .leftJoinAndSelect("vote.category", "category")
-            .leftJoinAndSelect("vote.beatmapset", "beatmapset")
-            .leftJoinAndSelect("vote.user", "user")
-            .leftJoinAndSelect("vote.voter", "voter");
-    }
-    
 }
