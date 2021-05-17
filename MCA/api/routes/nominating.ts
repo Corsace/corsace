@@ -4,7 +4,7 @@ import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
-import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear } from "../middleware";
+import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear, categoryRequirementCheck } from "../middleware";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
 
@@ -44,10 +44,7 @@ nominatingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomina
         nominator: ctx.state.user,
     });
     nominations = nominations.filter(nom => nom.category.mca.year === category.mca.year);
-    if (
-        !category.isRequired && 
-        !nominations.some(nom => nom.category.isRequired && nom.category.type === category.type)
-    ) {
+    if (!categoryRequirementCheck(nominations, category)) {
         throw "Please nominate in the Grand Award categories first!";
     }
         
@@ -65,10 +62,7 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
     const nominations = await Nomination.find({
         nominator: ctx.state.user,
     });
-    if (
-        !category.isRequired &&
-        !nominations.some(nom => nom.category.isRequired && nom.category.type === category.type)
-    )
+    if (!categoryRequirementCheck(nominations, category))
         return ctx.body = { 
             error: "Please nominate in the Grand Award categories first!",
         };

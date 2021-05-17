@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import { isLoggedInOsu } from "../../../Server/middleware";
-import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase } from "../middleware";
+import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase, categoryRequirementCheck } from "../middleware";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { CategoryType } from "../../../Interfaces/category";
@@ -42,17 +42,14 @@ votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), 
     });
     votes = votes.filter(vote => vote.category.mca.year === category.mca.year);
 
-    if (
-        !category.isRequired && 
-        !votes.some(v => v.category.isRequired && v.category.type === category.type)
-    ) {
+    if (!categoryRequirementCheck(votes, category)) {
         throw "Please vote in the Grand Award categories first!";
     }
 
     return votes;
 }));
 
-votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), async (ctx) => {
+votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const nomineeId = ctx.request.body.nomineeId;
     const categoryId = ctx.request.body.category;
     const choice = ctx.request.body.choice;
@@ -89,10 +86,17 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), async 
         };
     }
 
-    const categoryVotes = await Vote.find({
+    let votes = await Vote.find({
         voter: ctx.state.user,
-        category,
     });
+    votes = votes.filter(vote => vote.category.mca.year === category.mca.year);
+
+    if (!categoryRequirementCheck(votes, category))
+        return ctx.body = { 
+            error: "Please nominate in the Grand Award categories first!",
+        };
+
+    const categoryVotes = votes.filter(vote => vote.category.ID === category.ID);
 
     if (categoryVotes.some(v => v.choice === choice)) {
         return ctx.body = {
