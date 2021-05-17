@@ -13,7 +13,8 @@
             class="mode-wrapper"
             :class="[
                 'mode-wrapper--' + selectedMode, 
-                tablet ? 'mode-wrapper--tablet' : 'mode-wrapper--laptop'
+                tablet ? 'mode-wrapper--tablet' : 'mode-wrapper--laptop',
+                { 'mode-wrapper--stretch': stretch }
             ]"
         >
             <div class="mode-content">

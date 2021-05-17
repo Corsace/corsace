@@ -3,6 +3,7 @@
         <mode-switcher
             hide-phase
             tablet
+            stretch
         >
             <template #title>
                 <div class="ayim-nav">
