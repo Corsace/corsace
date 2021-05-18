@@ -68,7 +68,10 @@ export default class TheFooter extends Vue {
     justify-content: space-between;
     flex-wrap: nowrap;
     align-items: stretch;
-    height: 60px;
+    height: 30px;
+    @include breakpoint(tablet) {
+        height: 60px;
+    }
 }
 
 .footer__left {
@@ -86,19 +89,32 @@ export default class TheFooter extends Vue {
 }
 
 .footer__logo {
-    height: 60px;
+    height: 30px;
+    @include breakpoint(tablet) {
+        height: 60px;
+    }
 }
 
 .footer__logo-text {
-    height: 35px;
+    height: 17px;
+    @include breakpoint(tablet) {
+        height: 35px;
+    }
 }
 
 .footer__kaetwo {
-    height: 30px;
+    height: 10px;
+    @include breakpoint(tablet) {
+        height: 25px;
+    }
 }
 
 .footer__dot {
-    height: 5px;
+    height: 1px;
+    @include breakpoint(tablet) {
+        height: 5px;
+    }
+
     padding: 0 20px;
 }
 
@@ -106,7 +122,10 @@ export default class TheFooter extends Vue {
     display: flex;
     
     img {
-        height: 55px;
+        height: 20px;
+        @include breakpoint(tablet) {
+            height: 55px;
+        }
     }
 }
 </style>
