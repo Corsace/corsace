@@ -185,11 +185,11 @@ async function script () {
     const progressInterval = setInterval(printStatus, 1000);
 
     let since = new Date((await Beatmapset.findOne({ order: { approvedDate: "DESC" } }))?.approvedDate || new Date("2006-01-01"));
-    console.log(`Fetching all beatmaps starting from ${since.toJSON()}...`);
+    console.log(`Fetching all beatmaps starting from ${since.toJSON()} until ${year}-12-31...`);
     printStatus();
     const queuedBeatmapIds: number[] = [];
     while (since.getTime() < until.getTime()) {
-        const newBeatmapsApi = (await axios.get(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${since.toJSON().slice(0,19).replace("T", " ")}`)).data as any[];
+        const newBeatmapsApi = (await axios.get(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${(new Date(since.getTime() - 1000)).toJSON().slice(0,19).replace("T", " ")}`)).data as any[];
         for(const newBeatmapApi of newBeatmapsApi) {
             const newBeatmap = new APIBeatmap(newBeatmapApi);
             if(queuedBeatmapIds.includes(newBeatmap.id))
