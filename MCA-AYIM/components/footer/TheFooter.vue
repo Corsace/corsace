@@ -17,6 +17,18 @@
                 src="../../../Assets/img/ayim-mca/site/d.png"
             >
 
+            <a class="footer__corsace" href="https://twitter.com/kkaetwo">
+                <img
+                    class="footer__kaetwo" 
+                    src="../../../Assets/img/partners/kaetwo.png"
+                >
+            </a>
+
+            <img 
+                class="footer__dot" 
+                src="../../../Assets/img/ayim-mca/site/d.png"
+            >
+
             <div class="footer__socials">
                 <a href="https://twitter.com/corsace_"> <img src="../../../Assets/img/social/twitter.png"> </a>
                 <a href="https://discord.gg/Z6vEMsr"><img src="../../../Assets/img/social/discord.png"></a>
@@ -79,6 +91,10 @@ export default class TheFooter extends Vue {
 
 .footer__logo-text {
     height: 35px;
+}
+
+.footer__kaetwo {
+    height: 30px;
 }
 
 .footer__dot {
