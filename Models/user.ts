@@ -146,7 +146,7 @@ export class User extends BaseEntity {
         }
         
         // Ordering
-        const ascDesc = query.order || "ASC";
+        const order = query.order || "ASC";
         let orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
         if (query.option?.toLowerCase().includes("alph"))
             orderMethod = "user_osuUsername";
@@ -155,7 +155,7 @@ export class User extends BaseEntity {
         return queryBuilder
             .skip(parseInt(query.skip))
             .take(50)
-            .orderBy(orderMethod, ascDesc)
+            .orderBy(orderMethod, order)
             .getMany();
     }
 
@@ -176,7 +176,7 @@ export class User extends BaseEntity {
         queryBuilder
             .leftJoinAndSelect("user.otherNames", "otherName")
             .leftJoinAndSelect("user.mcaEligibility", "mca")
-            .where(`mca.year = :q AND mca.${modeString} = 1`, { q: year });
+            .where(`mca.${modeString} = 1`);
 
         if (category.filter?.rookie) {
             queryBuilder
@@ -204,17 +204,17 @@ export class User extends BaseEntity {
         }
         
         // Ordering
-        const ascDesc = query.order || "ASC";
-        let orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
-        if (query.option.toLowerCase().includes("alph"))
-            orderMethod = "user_osuUsername";
+        const order = query.order || "ASC";
+        let orderMethod = "user_osuUsername";
+        if (query.option.toLowerCase().includes("id"))
+            orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
             
         // Search
         return Promise.all([
             queryBuilder
                 .skip(query.skip)
                 .take(50)
-                .orderBy(orderMethod, ascDesc)
+                .orderBy(orderMethod, order)
                 .getMany(),
 
             queryBuilder.getCount(),

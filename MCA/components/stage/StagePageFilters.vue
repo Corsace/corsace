@@ -52,7 +52,7 @@ export default class StagePageFilters extends Vue {
     @stageModule.Mutation toggleVoteChoiceBox;
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
-    userOptions = ["id", "alph"];
+    userOptions = ["alph", "id"];
     orderOptions = ["asc", "desc"];
     votingOptions = ["incVote", "voteChoice"];
 

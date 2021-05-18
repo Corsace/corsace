@@ -90,10 +90,10 @@ export default class Comments extends Vue {
     @State selectedMode!: string;
 
     text = "";
-    userOption = "id";
+    userOption = "alph";
     orderOption = "asc";
     mappers: User[] = [];
-    userOptions = ["id", "alph"];
+    userOptions = ["alph", "id"];
     orderOptions = ["asc", "desc"];
     
     get showInfo (): boolean {

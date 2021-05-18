@@ -162,8 +162,8 @@ export default class BaseChoiceCard extends Vue {
         border-radius: 5px;
 
         @include transition;
-        
-        &--chosen {
+
+        &--chosen, &:hover {
             border-color: white;
             box-shadow: 0 0 4px white, inset 0 0 4px white;
         }
