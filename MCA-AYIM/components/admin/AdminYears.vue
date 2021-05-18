@@ -76,7 +76,7 @@ export default class AdminPage extends Vue {
     }
 
     async getMcaInfo () {
-        const res = (await this.$axios.get("/api/admin/")).data;
+        const res = (await this.$axios.get("/api/mca/all")).data;
 
         if (res.error)
             this.$router.replace("/");

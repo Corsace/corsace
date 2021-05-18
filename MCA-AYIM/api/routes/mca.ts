@@ -12,4 +12,11 @@ mcaRouter.get("/", async (ctx) => {
         ctx.body = {error: "No MCA for this year exists!"};
 });
 
+mcaRouter.get("/all", async (ctx) => {
+    const mca = await MCA.find(ctx.query.year);
+    const mcaInfo = mca.map(x => x.getInfo());
+
+    ctx.body = { mca: mcaInfo };
+});
+
 export default mcaRouter;
