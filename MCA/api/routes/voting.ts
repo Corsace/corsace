@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import { isLoggedInOsu } from "../../../Server/middleware";
-import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase } from "../middleware";
+import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase, categoryRequirementCheck } from "../middleware";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { CategoryType } from "../../../Interfaces/category";
@@ -14,11 +14,10 @@ const votingRouter = new Router();
 votingRouter.use(isLoggedInOsu);
 
 votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
-    const [votes, categories] = await Promise.all([
-        Vote.populate()
-            .where("category.mcaYear = :year", { year: ctx.state.year })
-            .andWhere("voter.ID = :id", { id: ctx.state.user.ID })
-            .getMany(),
+    let [votes, categories] = await Promise.all([
+        Vote.find({
+            voter: ctx.state.user,
+        }),
             
         Category.find({
             mca: {
@@ -26,6 +25,8 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
             },
         }),
     ]);
+
+    votes = votes.filter(vote => vote.category.mca.year === ctx.state.year);
 
     const categoryInfos = categories.map(c => c.getInfo());
 
@@ -36,23 +37,19 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
 });
 
 votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), stageSearch("voting", async (ctx, category) => {
-    const votes = await Vote.populate()
-        .where("category.mcaYear = :year", { year: ctx.state.year })
-        .andWhere("voter.ID = :id", { id: ctx.state.user.ID })
-        .andWhere("category.type = :categoryType", { categoryType: category.type })
-        .getMany();
+    let votes = await Vote.find({
+        voter: ctx.state.user,
+    });
+    votes = votes.filter(vote => vote.category.mca.year === category.mca.year);
 
-    if (
-        !category.isRequired && 
-        !votes.some(v => v.category.name === "grandAward" && v.category.type === (category.type === CategoryType.Beatmapsets ? CategoryType.Beatmapsets : CategoryType.Users))
-    ) {
+    if (!categoryRequirementCheck(votes, category)) {
         throw "Please vote in the Grand Award categories first!";
     }
 
     return votes;
 }));
 
-votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), async (ctx) => {
+votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const nomineeId = ctx.request.body.nomineeId;
     const categoryId = ctx.request.body.category;
     const choice = ctx.request.body.choice;
@@ -89,10 +86,17 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), async 
         };
     }
 
-    const categoryVotes = await Vote.find({
+    let votes = await Vote.find({
         voter: ctx.state.user,
-        category,
     });
+    votes = votes.filter(vote => vote.category.mca.year === category.mca.year);
+
+    if (!categoryRequirementCheck(votes, category))
+        return ctx.body = { 
+            error: "Please nominate in the Grand Award categories first!",
+        };
+
+    const categoryVotes = votes.filter(vote => vote.category.ID === category.ID);
 
     if (categoryVotes.some(v => v.choice === choice)) {
         return ctx.body = {
@@ -109,13 +113,13 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), async 
     if (category.type === CategoryType.Beatmapsets) {
         vote.beatmapset = nominee as Beatmapset;
 
-        if (categoryVotes.some(v => v.beatmapsetID == nominee.ID)) {
+        if (categoryVotes.some(v => v.beatmapset?.ID == nominee.ID)) {
             alreadyVoted = true;
         }
     } else if (category.type === CategoryType.Users) {
         vote.user = nominee as User;
         
-        if (categoryVotes.some(v => v.userID == nominee.ID)) {
+        if (categoryVotes.some(v => v.user?.ID == nominee.ID)) {
             alreadyVoted = true;
         }
     }
@@ -143,16 +147,35 @@ votingRouter.post("/:id/remove", validatePhaseYear, isPhase("voting"), isEligibl
         ],
     });
 
-    const otherVotes = await Vote.find({
+    const allUserVotes = await Vote.find({
+        where: {
+            voter: ctx.state.user.ID,
+        },
+        relations: [
+            "category",
+        ],
+    });
+    const otherUserVotes = await Vote.find({
         ID: Not(ctx.params.id),
-        voter: ctx.state.user.ID,
+        voter: ctx.state.user,
         category: vote.category,
         choice: MoreThan(vote.choice),
     });
 
+    
+    if (
+        vote.category.isRequired && 
+        allUserVotes.filter(userVote => userVote.category.ID === userVote.category.ID).length === 1 && 
+        allUserVotes.some(userVote => !userVote.category.isRequired && userVote.category.type === vote.category.type)
+    ) {
+        return ctx.body = {
+            error: "You cannot have 0 votes in required categories if you have votes in non-required categories!",
+        };
+    }
+
     await vote.remove();
     await Promise.all([
-        otherVotes.map(v => {
+        otherUserVotes.map(v => {
             v.choice--;
             return v.save();
         }),
