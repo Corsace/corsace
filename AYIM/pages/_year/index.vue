@@ -1,8 +1,11 @@
 <template>
     <div>
-        <div class="ayim-bg" />
+        <div
+            v-if="mca" 
+            class="ayim-bg" 
+        />
         <div class="left-side" />
-        <div class="right-side">
+        <div :class="{'right-side': mca, 'full-side': !mca}">
             <mode-switcher
                 stretch
                 :ignore-modes="['storyboard']"
@@ -15,6 +18,8 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { State } from "vuex-class";
+import { MCA } from "../../../Interfaces/mca";
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import IndexPage from "../../components/IndexPage.vue";
@@ -31,8 +36,7 @@ import IndexPage from "../../components/IndexPage.vue";
     },
 })
 export default class Index extends Vue {
-
-
+    @State mca!: MCA;
 }
 </script>
 
@@ -44,7 +48,7 @@ export default class Index extends Vue {
     position: absolute;
     bottom: 0px;
     left: 0px;
-    z-index: -6;
+    z-index: -100;
 
     height: 100%;
     width: 100%;
@@ -55,7 +59,7 @@ export default class Index extends Vue {
     background-repeat: no-repeat;
     background-position: center left;
 
-	animation: fade-in 0.7s ease-in both;
+	animation: fade-in 1s ease-in both;
 }
 
 .left-side {
@@ -66,6 +70,11 @@ export default class Index extends Vue {
     display: flex;
     align-items: flex-end;
     padding-top: 10px;
+}
+
+.full-side {
+    height: 100%;
+    width: 100%;
 }
 
 @include breakpoint(laptop) {    

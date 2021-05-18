@@ -36,7 +36,7 @@
             </div>
         </div>
 
-        <div class="right-side">
+        <div :class="{'right-side': phase, 'full-side': !phase}">
             <mode-switcher hide-phase>
                 <index-page />
             </mode-switcher>
@@ -208,6 +208,10 @@ export default class Index extends Vue {
     flex: 0 0 100%;
     width: 100%;
     padding-top: 50px;
+}
+
+.full-side {
+    width: 100%;
 }
 
 @include breakpoint(laptop) {

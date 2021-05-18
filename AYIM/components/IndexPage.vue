@@ -2,10 +2,14 @@
     <div class="general-info">
         <div
             class="general-info__text" 
+            v-if="mca"
             v-html="$t(`ayim.main.message.${mca.year}`)" 
         />
         
-        <div class="ayim-nav ayim-nav--front">
+        <div 
+            v-if="mca"
+            class="ayim-nav ayim-nav--front"
+        >
             <nuxt-link
                 :to="`/${mca.year}/mapsets/records`"
                 class="ayim-nav__item button"
@@ -24,6 +28,12 @@
             >
                 {{ $t('ayim.comments.name') }}
             </nuxt-link>
+        </div>
+        <div 
+            v-else
+            class="noMCA"
+        >
+            There is no MCA/AYIM for {{ $route.params.year }} currently! Check back later!
         </div>
     </div>
 </template>
@@ -45,6 +55,7 @@ export default class IndexPage extends Vue {
 
 <style lang="scss">
 @import '@s-sass/_variables';
+@import '@s-sass/_partials';
 @import '@s-sass/_mixins';
 
 .general-info {
@@ -68,6 +79,14 @@ export default class IndexPage extends Vue {
             font-size: $font-base;
         }
     }
+}
+
+.noMCA {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
 }
 
 </style>

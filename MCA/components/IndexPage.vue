@@ -1,6 +1,9 @@
 <template>
     <div class="index">
-        <div class="general">
+        <div 
+            v-if="mca" 
+            class="general"
+        >
             <div class="ranked-sets">
                 <small>{{ $t('mca.main.rankedSets') }}</small>
                 <div class="ranked-sets__divider" />
@@ -34,7 +37,10 @@
             <div v-else />
         </div>
 
-        <div class="categories">
+        <div 
+            v-if="mca" 
+            class="categories"
+        >
             <collapsible
                 :title="$t('mca.main.categories.map')"
                 :list="beatmapCategories"
@@ -51,13 +57,22 @@
             />
         </div>
             
-        <div class="organizers">
+        <div 
+            v-if="mca" 
+            class="organizers"
+        >
             <div class="organizers__title">
                 <small>{{ $t('mca.main.organized') }}</small>
             </div>
             <div class="organizers__content">
                 {{ organizers }}
             </div>
+        </div>
+        <div 
+            v-else
+            class="noMCA"
+        >
+            There is no MCA for {{ $route.params.year }} currently! Check back later!
         </div>
     </div>
 </template>
@@ -146,13 +161,15 @@ export default class IndexContent extends Vue {
     }
 
     async mounted () {
-        const res = (await this.$axios.get(`/api/front?year=${this.mca.year}`)).data;
-        if (res.error) {
-            alert(res.error);
-            return;
-        }
+        if (this.mca) {
+            const res = (await this.$axios.get(`/api/front?year=${this.mca.year}`)).data;
+            if (res.error) {
+                alert(res.error);
+                return;
+            }
 
-        this.info = res.frontData;
+            this.info = res.frontData;
+        }
     }
     
 }
@@ -267,6 +284,14 @@ export default class IndexContent extends Vue {
     &__content {
         padding: 25px;
     }
+}
+
+.noMCA {
+    @extend %flex-box;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
 }
 
 </style>
