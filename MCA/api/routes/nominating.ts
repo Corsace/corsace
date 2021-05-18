@@ -18,7 +18,6 @@ nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"),
             where: {
                 nominator: ctx.state.user,
             },
-            relations: ["beatmapset", "user", "category", "nominator"],
         }),
         Category.find({
             mca: {
