@@ -70,19 +70,17 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
 
     let user: User | undefined = await User.findOne({ osu: { userID: `${beatmap.creatorId}` } });
     if (user) {
-        if (user.osu.username !== beatmap.creator && !user.otherNames.some(v => v.name === beatmap.creator)) { // Check for username change
-            let nameChange = await UsernameChange.findOne({ name: beatmap.creator, user });
-            if (nameChange)
-                await nameChange.remove();
+        if (user.osu.username !== beatmap.creator) {
+            if(!user.otherNames.some(v => v.name === user!.osu.username)) {
+                let nameChange = await UsernameChange.findOne({ name: user.osu.username, user });
+                nameChange = new UsernameChange;
+                nameChange.user = user;
+                nameChange.name = user.osu.username;
+                await nameChange.save();
+            }
 
-            const oldName = user.osu.username;
             user.osu.username = beatmap.creator;
             await user.save();
-
-            nameChange = new UsernameChange;
-            nameChange.user = user;
-            nameChange.name = oldName;
-            await nameChange.save();
         }
     } else {
         user = new User;
