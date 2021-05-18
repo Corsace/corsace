@@ -96,9 +96,12 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     bmsInserted++;
     existingSets.push(beatmap.setId);
     return beatmapSet;
-}, { max: 200 });
+}, {
+    max: 200,
+    normalizer: ([beatmap]) => `${beatmap.setId}`,
+});
 
-const getMCAEligibility = memoizee(async function(year, user) {
+const getMCAEligibility = memoizee(async function(year: number, user: User) {
     let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year, user }});
     if (!eligibility) {
         eligibility = new MCAEligibility();
@@ -106,7 +109,12 @@ const getMCAEligibility = memoizee(async function(year, user) {
         eligibility.user = user;
     }
     return eligibility;
-}, { max: 200 });
+}, {
+    max: 200,
+    normalizer: ([year, user]) => {
+        return `${year}-${user.ID}`;
+    },
+});
 
 async function insertBeatmap (apiBeatmap: APIBeatmap) {
     let beatmap = new Beatmap;
