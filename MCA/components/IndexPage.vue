@@ -247,8 +247,7 @@ export default class IndexContent extends Vue {
     @include mode-vote-color;
 
     &--inactive {
-        opacity: 0.3;
-        filter: blur(7px);
+        opacity: 0.5;
     }
     
     span {
