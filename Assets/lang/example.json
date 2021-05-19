@@ -247,6 +247,7 @@
         },
         "nom_vote": {
             "search": "",
+            "select": "",
             "candidates": "",
             "options": {
                 "date": "",
