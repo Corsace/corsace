@@ -33,12 +33,12 @@
             v-else
             class="noMCA"
         >
-            There is no MCA for {{ $route.params.year }} currently! Check back later!
+            There is no AYIM for {{ $route.params.year }} currently! Check back later!
             <div
                 v-if="allMCA.length >= 1" 
                 class="otherMCA"
             >
-                Other MCAs:
+                Other AYIM:
                 <div>
                     <nuxt-link 
                         v-for="mca in allMCA"
@@ -46,7 +46,7 @@
                         :to="`/${mca.name}`"
                         :class="mca.phase"
                     >
-                        MCA {{ mca.name }} ({{ mca.phase }}) 
+                        AYIM {{ mca.name }} ({{ mca.phase }}) 
                     </nuxt-link>
                 </div>
             </div>

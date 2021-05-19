@@ -7,9 +7,16 @@
         <div class="stage-general">
             <stage-page-header />
             
-            <stage-page-filters />
+            <stage-page-filters v-if="selectedCategory" />
 
-            <stage-page-list />
+            <stage-page-list v-if="selectedCategory" />
+
+            <div 
+                v-else
+                class="stage-select"
+            >
+                {{ $t('mca.nom_vote.select') }}
+            </div>
         </div>
     </div>
 </template>
@@ -23,6 +30,7 @@ import StagePageCount from "./StagePageCount.vue";
 import StagePageHeader from "./StagePageHeader.vue";
 import StagePageFilters from "./StagePageFilters.vue";
 import StagePageList from "./StagePageList.vue";
+import { CategoryStageInfo } from "../../../Interfaces/category";
 
 const stageModule = namespace("stage");
 
@@ -39,6 +47,7 @@ export default class StateContent extends Vue {
 
     @State selectedMode!: string;
     @stageModule.State count!: number;
+    @stageModule.State selectedCategory!: CategoryStageInfo;
     @stageModule.Action updateStage;
     @stageModule.Action setInitialData;
     @stageModule.Action reset;
@@ -86,4 +95,24 @@ export default class StateContent extends Vue {
     }
 }
 
+
+.stage-select {
+    @extend %flex-box;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1rem;
+    @include breakpoint(tablet) {
+        font-size: 2rem;
+    }
+    @include breakpoint(laptop) {
+        font-size: 3rem;
+    }
+    @include breakpoint(desktop) {
+        font-size: 4rem;
+    }
+}
 </style>
