@@ -83,8 +83,9 @@
                         v-for="mca in allMCA"
                         :key="mca.name"
                         :to="`/${mca.name}`"
+                        :class="mca.phase"
                     >
-                        {{ mca.name }} - (Phase: {{ mca.phase }}) 
+                        MCA {{ mca.name }} ({{ mca.phase }}) 
                     </nuxt-link>
                 </div>
             </div>
@@ -313,9 +314,12 @@ export default class IndexContent extends Vue {
     font-size: 2rem;
 }
 
-
 .otherMCA {
     font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
     &__list {
         display: flex;
@@ -323,5 +327,21 @@ export default class IndexContent extends Vue {
         align-items: center;
         justify-content: center;
     }
+}
+
+.nominating {
+    color: $yellow;
+}
+
+.voting {
+    color: $yellow;
+}
+
+.preparation {
+    color: $red;
+}
+
+.results {
+    color: $green;
 }
 </style>

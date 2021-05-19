@@ -33,7 +33,23 @@
             v-else
             class="noMCA"
         >
-            There is no MCA/AYIM for {{ $route.params.year }} currently! Check back later!
+            There is no MCA for {{ $route.params.year }} currently! Check back later!
+            <div
+                v-if="allMCA.length >= 1" 
+                class="otherMCA"
+            >
+                Other MCAs:
+                <div>
+                    <nuxt-link 
+                        v-for="mca in allMCA"
+                        :key="mca.name"
+                        :to="`/${mca.name}`"
+                        :class="mca.phase"
+                    >
+                        MCA {{ mca.name }} ({{ mca.phase }}) 
+                    </nuxt-link>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -42,13 +58,14 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
-import { MCA } from "../../Interfaces/mca";
+import { MCA, MCAInfo } from "../../Interfaces/mca";
 
 @Component
 export default class IndexPage extends Vue {
 
     @State selectedMode!: string;
     @State mca!: MCA;
+    @State allMCA!: MCAInfo[];
 
 }
 </script>
@@ -82,11 +99,44 @@ export default class IndexPage extends Vue {
 }
 
 .noMCA {
-    height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    height: 100%;
+
     font-size: 2rem;
 }
 
+.otherMCA {
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.nominating {
+    color: $yellow;
+}
+
+.voting {
+    color: $yellow;
+}
+
+.preparation {
+    color: $red;
+}
+
+.results {
+    color: $green;
+}
 </style>
