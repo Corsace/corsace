@@ -4,6 +4,8 @@ import { Category, CategoryGenerator } from "../../../../Models/MCA_AYIM/categor
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { ModeDivision } from "../../../../Models/MCA_AYIM/modeDivision";
 import { CategoryType } from "../../../../Interfaces/category";
+import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
+import { Vote } from "../../../../Models/MCA_AYIM/vote";
 
 const adminYearsRouter = new Router;
 const categoryGenerator = new CategoryGenerator;
@@ -90,6 +92,20 @@ adminYearsRouter.delete("/:year/delete", async (ctx) => {
             },
         });
         for (const category of categories) {
+            const [nominations, votes] = await Promise.all([
+                Nomination.find({
+                    category,
+                }),
+                Vote.find({
+                    category,
+                })
+            ]);
+            for (const nom of nominations) {
+                await nom.remove()
+            }
+            for (const vote of votes) {
+                await vote.remove()
+            }
             await category.remove();
         }
 

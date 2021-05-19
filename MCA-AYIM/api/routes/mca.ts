@@ -13,10 +13,10 @@ mcaRouter.get("/", async (ctx) => {
 });
 
 mcaRouter.get("/all", async (ctx) => {
-    const mca = await MCA.find(ctx.query.year);
+    const mca = await MCA.find();
     const mcaInfo = mca.map(x => x.getInfo());
 
-    ctx.body = { mca: mcaInfo };
+    ctx.body = mcaInfo;
 });
 
 export default mcaRouter;

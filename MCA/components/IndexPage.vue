@@ -73,6 +73,21 @@
             class="noMCA"
         >
             There is no MCA for {{ $route.params.year }} currently! Check back later!
+            <div
+                v-if="allMCA.length >= 1" 
+                class="otherMCA"
+            >
+                Other MCAs:
+                <div>
+                    <nuxt-link 
+                        v-for="mca in allMCA"
+                        :key="mca.name"
+                        :to="`/${mca.name}`"
+                    >
+                        {{ mca.name }} - (Phase: {{ mca.phase }}) 
+                    </nuxt-link>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -83,7 +98,7 @@ import { Getter, Mutation, State } from "vuex-class";
 
 import Collapsible from "../../MCA-AYIM/components/Collapsible.vue";
 
-import { MCA, Phase } from "../../Interfaces/mca";
+import { MCA, MCAInfo, Phase } from "../../Interfaces/mca";
 import { CategoryInfo } from "../../Interfaces/category";
 import { UserMCAInfo } from "../../Interfaces/user";
 
@@ -109,6 +124,7 @@ interface FrontInfo {
 export default class IndexContent extends Vue {
 
     @State mca!: MCA;
+    @State allMCA!: MCAInfo[];
     @State selectedMode!: string;
     @State loggedInUser!: UserMCAInfo;
     @Getter phase!: Phase | null;
@@ -288,10 +304,24 @@ export default class IndexContent extends Vue {
 
 .noMCA {
     @extend %flex-box;
-    height: 100%;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    height: 100%;
+
     font-size: 2rem;
 }
 
+
+.otherMCA {
+    font-size: 1rem;
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+}
 </style>

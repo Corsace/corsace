@@ -1,5 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, OneToMany, MoreThanOrEqual, LessThanOrEqual } from "typeorm";
-import { MCAInfo } from "../../Interfaces/mca";
+import { MCAInfo, PhaseType } from "../../Interfaces/mca";
 import { Category } from "./category";
 
 export class Phase {
@@ -84,11 +84,27 @@ export class MCA extends BaseEntity {
     public getInfo = function(this: MCA): MCAInfo {
         return {
             name: this.year,
+            phase: this.currentPhase(),
             nomination: this.nomination,
             voting: this.voting,
             results: this.results,
             categories: this.categories,
         };
+    }
+
+    public currentPhase (this: MCA): PhaseType {
+        let phase: PhaseType = "preparation";
+        const newDate = new Date;
+        
+        if (newDate > this.nomination.start && newDate < this.nomination.end) {
+            phase = "nominating";
+        } else if (newDate > this.voting.start && newDate < this.voting.end) {
+            phase = "voting";
+        } else if (newDate > this.results) {
+            phase = "results";
+        }
+
+        return phase;
     }
 
     public isNominationPhase (): boolean {
