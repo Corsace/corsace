@@ -44,10 +44,12 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { State } from "vuex-class";
 
 import AdminModalYear from "./AdminModalYear.vue";
 import DataTable, { Field, Format } from "./DataTable.vue";
 
+import { UserMCAInfo } from "../../../Interfaces/user";
 import { MCAInfo } from "../../../Interfaces/mca";
 
 @Component({
@@ -57,6 +59,8 @@ import { MCAInfo } from "../../../Interfaces/mca";
     },
 })
 export default class AdminPage extends Vue {
+
+    @State loggedInUser!: UserMCAInfo;
 
     showYearModal = false;
     years: MCAInfo[] = [];
@@ -72,17 +76,19 @@ export default class AdminPage extends Vue {
     ];
 
     async mounted () {
-        await this.getMcaInfo();
+        if (!(this.loggedInUser?.staff?.corsace || this.loggedInUser?.staff?.headStaff))
+            this.$router.replace("/");
+        else
+            await this.getMcaInfo();
     }
 
     async getMcaInfo () {
-        const res = (await this.$axios.get("/api/admin/")).data;
+        const res = (await this.$axios.get("/api/mca/all")).data;
 
         if (res.error)
-            this.$router.replace("/");
-
-        if (res.mca) {
-            this.years = res.mca;
+            console.error(res.error);
+        else {
+            this.years = res;
             this.years.sort((a, b) => b.name - a.name);
         }
     }

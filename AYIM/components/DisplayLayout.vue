@@ -1,6 +1,7 @@
 <template>
     <div class="ayim-wrapper">
         <mode-switcher
+            v-if="mca"
             hide-phase
             tablet
             stretch

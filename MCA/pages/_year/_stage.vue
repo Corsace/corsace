@@ -1,6 +1,7 @@
 <template>
-    <div v-if="onTime">
+    <div>
         <div
+            v-if="onTime"
             class="remaining-days" 
             :class="`remaining-days--${selectedMode}`"
         >
@@ -17,7 +18,10 @@
                 !
             </div>
         </div>
-        <div class="stage-wrapper">
+        <div 
+            v-if="onTime"
+            class="stage-wrapper"
+        >
             <mode-switcher
                 stretch
                 enable-mode-eligibility
@@ -25,6 +29,17 @@
             >
                 <stage-page />
             </mode-switcher>
+        </div>
+        <div 
+            v-else
+            class="wrongPlace"
+        >
+            <p>
+                Ummm... are you in the wrong place?
+            </p>
+            <a @click="goBack">
+                Let's get you to the front page.
+            </a>
         </div>
     </div>
 </template>
@@ -80,12 +95,17 @@ export default class Stage extends Vue {
     get onTime () {
         return this.phase?.phase && (this.phase.phase === "nominating" || this.phase.phase === "voting");
     }
+
+    goBack () {
+        this.$router.push("/");
+    }
 }
 </script>
 
 <style lang="scss">
 @import '@s-sass/_variables';
 @import '@s-sass/_mixins';
+@import '@s-sass/_partials';
 
 .stage-wrapper {
     width: 100%;
@@ -144,5 +164,14 @@ export default class Stage extends Vue {
             font-size: 12rem;
         }
     }
+}
+
+.wrongPlace {
+    @extend %flex-box;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
 }
 </style>

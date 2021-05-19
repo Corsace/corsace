@@ -47,6 +47,9 @@ export default class Error extends Vue {
         this.$router.go(-1);
     }
 
+    async mounted() {
+        if (this.error) console.error(this.error);
+    }
 }
 </script>
 
