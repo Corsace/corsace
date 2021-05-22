@@ -14,7 +14,7 @@ const votingRouter = new Router();
 votingRouter.use(isLoggedInOsu);
 
 votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
-    let [votes, categories] = await Promise.all([
+    const [votes, categories] = await Promise.all([
         Vote.find({
             voter: ctx.state.user,
         }),
@@ -26,12 +26,11 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
         }),
     ]);
 
-    votes = votes.filter(vote => vote.category.mca.year === ctx.state.year);
-
+    const filteredVotes = votes.filter(vote => vote.category.mca.year === ctx.state.year);
     const categoryInfos = categories.map(c => c.getInfo());
 
     ctx.body = {
-        votes,
+        votes: filteredVotes,
         categories: categoryInfos,
     };
 });
@@ -186,31 +185,30 @@ votingRouter.post("/:id/remove", validatePhaseYear, isPhase("voting"), isEligibl
     };
 });
 
-votingRouter.post("/:id/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
-    const vote = await Vote.findOneOrFail({
-        where: {
-            ID: ctx.params.id,
-            voter: ctx.state.user.ID,
-        },
-        relations: [
-            "category",
-        ],
-    });
+votingRouter.post("/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+    const votesInput: Vote[] = ctx.request.body;
+    const year: number = ctx.state.year;
     
-    const swapVote = await Vote.findOneOrFail({
-        ID: ctx.request.body.swapId,
-        voter: ctx.state.user.ID,
-        category: vote.category,
-    });
+    const votes = await Vote.createQueryBuilder("vote")
+        .leftJoinAndSelect("vote.voter", "voter")
+        .leftJoinAndSelect("vote.category", "category")
+        .where("vote.id IN (:ids)", { ids: votesInput.map(v => v.ID) })
+        .andWhere("voter.ID = :voterId", { voterId: ctx.state.user.ID })
+        .andWhere("category.mcaYear = :year", { year })
+        .getMany();
 
-    const voteChoice = vote.choice;
-    vote.choice = swapVote.choice;
-    swapVote.choice = voteChoice;
+    const updates: Promise<Vote>[] = [];
+
+    for (const vote of votes) {
+        const newVote = votesInput.find(v => v.ID === vote.ID);
+
+        if (newVote) {
+            vote.choice  = newVote.choice;
+            updates.push(vote.save());
+        }
+    }
     
-    await Promise.all([
-        vote.save(),
-        swapVote.save(),
-    ]);
+    await Promise.all(updates);
 
     ctx.body = {
         success: "swapped",

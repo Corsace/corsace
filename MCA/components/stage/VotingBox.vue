@@ -1,7 +1,7 @@
 <template>
     <base-modal
         title="votes order"
-        @close="toggleVoteChoiceBox"
+        @close="close"
     >
         <div
             class="voting-title"
@@ -37,11 +37,26 @@
                 </a>
             </div>
         </div>
+
+        <div class="voting-actions">
+            <button
+                class="button button--small"
+                @click="save"
+            >
+                Save
+            </button>
+            <button
+                class="button button--small"
+                @click="reset"
+            >
+                Reset
+            </button>
+        </div>
     </base-modal>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 import { UserCondensedInfo } from "../../../Interfaces/user";
@@ -67,14 +82,19 @@ export default class VotingBox extends Vue {
     @stageModule.Mutation toggleVoteChoiceBox;
     @stageModule.Action createVote;
     @stageModule.Action removeVote;
-    @stageModule.Action swapVote;
+    @stageModule.Action swapVotes;
 
-    maxChoices = 10;
+    @Watch("relatedCandidacies", { immediate: true })
+    async onChanged () {
+        this.reset();
+    }
+
+    newOrder: Vote[] = [];
 
     get sortedVotes () {
-        return this.relatedCandidacies.sort((a, b) => a.choice - b.choice);
+        return this.newOrder.sort((a, b) => a.choice - b.choice);
     }
-    
+
     async remove (voteId: number) {
         await this.removeVote(voteId);
     }
@@ -108,14 +128,27 @@ export default class VotingBox extends Vue {
     async dropData (e, vote: Vote) {
         this.toggleClass(e);
         const id = e.dataTransfer.getData("voteId");
-        const enterVote = this.relatedCandidacies.find(v => v.ID == id);
+        const draggedIndex = this.newOrder.findIndex(v => v.ID == id);
+        const droppedIndex = this.newOrder.findIndex(v => v.ID == vote.ID);
         
-        if (enterVote && vote && enterVote.ID !== vote.ID) {
-            await this.swapVote({
-                voteId: vote.ID,
-                swapId: enterVote.ID,
-            });
+        if (draggedIndex !== -1 && vote && this.newOrder[draggedIndex].ID !== vote.ID) {
+            const oldChoice = this.newOrder[draggedIndex].choice;
+            this.newOrder[draggedIndex].choice = vote.choice;
+            this.newOrder[droppedIndex].choice = oldChoice;
         }
+    }
+
+    async save () {
+        await this.swapVotes(this.newOrder);
+    }
+
+    reset () {
+        this.newOrder = JSON.parse(JSON.stringify(this.relatedCandidacies));
+    }
+
+    close () {
+        this.toggleVoteChoiceBox();
+        this.reset();
     }
 
 }
@@ -136,6 +169,8 @@ export default class VotingBox extends Vue {
 
 .voting-items {
     padding: 5px;
+    overflow-y: auto;
+    max-height: 60vh;
 }
 
 .voting-item {
@@ -169,6 +204,11 @@ export default class VotingBox extends Vue {
             font-weight: bold;
         }
     }
+}
+
+.voting-actions {
+    @extend %spaced-container;
+    gap: 10px;
 }
 
 </style>
