@@ -63,7 +63,7 @@ export default class VotingBox extends Vue {
     @stageModule.State section!: SectionCategory;
     @stageModule.State beatmaps!: BeatmapsetInfo[];
     @stageModule.State users!: UserCondensedInfo[];
-    @stageModule.Getter relatedVotes!: Vote[];
+    @stageModule.Getter relatedCandidacies!: Vote[];
     @stageModule.Mutation toggleVoteChoiceBox;
     @stageModule.Action createVote;
     @stageModule.Action removeVote;
@@ -72,7 +72,7 @@ export default class VotingBox extends Vue {
     maxChoices = 10;
 
     get sortedVotes () {
-        return this.relatedVotes.sort((a, b) => a.choice - b.choice);
+        return this.relatedCandidacies.sort((a, b) => a.choice - b.choice);
     }
     
     async remove (voteId: number) {
@@ -108,7 +108,7 @@ export default class VotingBox extends Vue {
     async dropData (e, vote: Vote) {
         this.toggleClass(e);
         const id = e.dataTransfer.getData("voteId");
-        const enterVote = this.relatedVotes.find(v => v.ID == id);
+        const enterVote = this.relatedCandidacies.find(v => v.ID == id);
         
         if (enterVote && vote && enterVote.ID !== vote.ID) {
             await this.swapVote({

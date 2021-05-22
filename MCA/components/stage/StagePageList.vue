@@ -10,7 +10,6 @@
                         :key="i"
                         :choice="item"
                         class="category-selection__beatmap"
-                        @choose="nominate(item)"
                     />
                 </template>
 
@@ -20,7 +19,6 @@
                         :key="i"
                         :choice="item"
                         class="category-selection__beatmap"
-                        @choose="nominate(item)"
                     />
                 </template>
             </div>
@@ -41,7 +39,6 @@ import ChoiceUserCard from "../ChoiceUserCard.vue";
 import ScrollBar from "../../../MCA-AYIM/components/ScrollBar.vue";
 import VotingBox from "./VotingBox.vue";
 
-import { CategoryStageInfo } from "../../../Interfaces/category";
 import { SectionCategory } from "../../../MCA-AYIM/store/stage";
 import { UserCondensedInfo } from "../../../Interfaces/user";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
@@ -58,38 +55,12 @@ const stageModule = namespace("stage");
 })
 export default class StagePageList extends Vue {
 
-    @stageModule.State selectedCategory!: CategoryStageInfo;
     @stageModule.State section!: SectionCategory;
     @stageModule.State users!: UserCondensedInfo[];
     @stageModule.State beatmaps!: BeatmapsetInfo[];
     @stageModule.State showVoteChoiceBox!: boolean;
-    @stageModule.Action updateBeatmapState;
-    @stageModule.Action updateUserState;
     @stageModule.Action search;
     
-    async nominate (choice) {
-        if (!this.selectedCategory) return;
-
-        let res: { error?: string };
-        
-        if (!choice.chosen) {
-            res = (await this.$axios.post(`/api/nominating/create`, {
-                categoryId: this.selectedCategory.id,
-                nomineeId: this.section === "beatmaps" ? choice.id : choice.corsaceID,
-            })).data;
-        } else
-            res = (await this.$axios.delete(`/api/nominating/remove/${this.selectedCategory.id}/${this.section === "beatmaps" ? choice.id : choice.corsaceID}`)).data;
-
-        if (res.error)
-            return alert(res.error);
-        
-        if (this.section === "beatmaps") {
-            this.updateBeatmapState(choice.id);
-        } else if (this.section === "users") {
-            this.updateUserState(choice.corsaceID);
-        }
-    }
-
 }
 </script>
 
