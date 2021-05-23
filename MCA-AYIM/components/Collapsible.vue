@@ -1,7 +1,7 @@
 <template>
     <div 
         class="collapsible"
-        :class="{ 'collapsible--scrollable': scroll }"
+        :class="{ 'collapsible--scrollable': scroll && list.length > 9 }"
     >
         <div
             class="collapsible__title"
@@ -151,10 +151,15 @@ export default class Collapsible extends Vue {
 
     &--scrollable {
         overflow-y: visible;
-        scrollbar-width: none;
+        scrollbar-width: thin;
+        border-radius: 15px 0 0 15px;;
 
         &::-webkit-scrollbar {
-            display: none;
+            width: 7px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #5f5f5f;
         }
     }
 

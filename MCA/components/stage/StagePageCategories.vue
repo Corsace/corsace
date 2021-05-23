@@ -4,10 +4,10 @@
             :title="$t('mca.main.categories.map')"
             :list="beatmapCategories"
             :active="toUpdateSection === 'beatmaps'"
+            :scroll="toUpdateSection === 'beatmaps'"
             category-name
             show-extra
             clickable
-            scroll
             @activate="saveSection('beatmaps')"
             @target="updateCategory($event)"
         />
@@ -15,10 +15,10 @@
             :title="$t('mca.main.categories.user')"
             :list="userCategories"
             :active="toUpdateSection === 'users'"
+            :scroll="toUpdateSection === 'users'"
             category-name
             show-extra
             clickable
-            scroll
             @activate="saveSection('users')"
             @target="updateCategory($event)"
         />
