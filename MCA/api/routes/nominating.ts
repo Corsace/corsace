@@ -149,12 +149,22 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
 
 nominatingRouter.delete("/:id", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const nominations = await Nomination.find({
-        nominator: ctx.state.user,
+        where: {
+            nominator: ctx.state.user,
+        },
+        relations: [
+            "reviewer",
+        ],
     });
     const nomination = nominations.find(nom => nom.ID == ctx.params.id);
     if (!nomination)
         return ctx.body = {
             error: "Could not find specified nomination!",
+        };
+
+    if (nomination.reviewer)
+        return ctx.body = {
+            error: "Cannot remove reviewed nominations, contact a member of the staff!",
         };
 
     if (nomination.category.isRequired && nominations.some(nom => !nom.category.isRequired && nom.category.type === nomination.category.type))

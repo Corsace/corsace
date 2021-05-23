@@ -138,14 +138,20 @@ export const getters: GetterTree<StageState, RootState> = {
     },
 };
 
+interface InitialData {
+    categories: CategoryStageInfo[];
+    nominations: Nomination[];
+    votes: Vote[];
+}
+
 export const actions: ActionTree<StageState, RootState> = {
     updateStage ({ commit }, stage) {
         commit("updateStage", stage);
     },
     async setInitialData ({ state, commit, rootState }) {
-        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}`);
+        const { data } = await this.$axios.get<InitialData | { error: string }>(`/api/${state.stage}/${rootState.mca?.year}`);
 
-        if (data.error) {
+        if ("error" in data) {
             console.error(data.error);
             this.$router.push("/" + rootState.mca?.year);
             return;
@@ -154,6 +160,10 @@ export const actions: ActionTree<StageState, RootState> = {
         commit("updateCategories", data.categories);
         commit("updateNominations", data.nominations);
         commit("updateVotes", data.votes);
+
+        if (state.stage === "nominating" && data.nominations?.length && data.nominations.some(n => !n.isValid)) {
+            alert(`Some nominations were denied, contact a staff member if you haven't!`);
+        }
     },
     async updateSelectedCategory ({ commit, dispatch }, category) {
         commit("updateSelectedCategory", category);
