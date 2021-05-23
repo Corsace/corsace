@@ -7,6 +7,7 @@
             category-name
             show-extra
             clickable
+            scroll
             @activate="saveSection('beatmaps')"
             @target="updateCategory($event)"
         />
@@ -17,6 +18,7 @@
             category-name
             show-extra
             clickable
+            scroll
             @activate="saveSection('users')"
             @target="updateCategory($event)"
         />
