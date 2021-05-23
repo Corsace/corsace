@@ -147,6 +147,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
         if (data.error) {
             console.error(data.error);
+            this.$router.push("/" + rootState.mca?.year);
             return;
         }
 
