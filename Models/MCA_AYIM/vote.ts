@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column, SelectQueryBuilder } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column } from "typeorm";
 import { User } from "../user";
 import { Beatmapset } from "../beatmapset";
 import { Category } from "./category";

@@ -258,10 +258,8 @@ export const actions: ActionTree<StageState, RootState> = {
             await dispatch("setInitialData");
         }
     },
-    async swapVote ({ dispatch }, payload: { voteId: number, swapId: number }) {
-        const { data } = await this.$axios.post(`/api/voting/${payload.voteId}/swap`, {
-            swapId: payload.swapId,
-        });
+    async swapVotes ({ dispatch }, newOrder: Vote[]) {
+        const { data } = await this.$axios.post(`/api/voting/swap`, newOrder);
 
         if (data.error) {
             alert(data.error);
@@ -269,6 +267,7 @@ export const actions: ActionTree<StageState, RootState> = {
         }
 
         if (data.success) {
+            alert(data.success);
             await dispatch("setInitialData");
         }
     },
