@@ -129,12 +129,24 @@ export default class VotingBox extends Vue {
         this.toggleClass(e);
         const id = e.dataTransfer.getData("voteId");
         const draggedIndex = this.newOrder.findIndex(v => v.ID == id);
-        const droppedIndex = this.newOrder.findIndex(v => v.ID == vote.ID);
         
         if (draggedIndex !== -1 && vote && this.newOrder[draggedIndex].ID !== vote.ID) {
-            const oldChoice = this.newOrder[draggedIndex].choice;
-            this.newOrder[draggedIndex].choice = vote.choice;
-            this.newOrder[droppedIndex].choice = oldChoice;
+            const replacedChoice = vote.choice;
+            const draggedChoice = this.newOrder[draggedIndex].choice;
+            let minVote = Math.min(replacedChoice, draggedChoice);
+            let maxVote = Math.max(replacedChoice, draggedChoice);
+            
+            const votesToMove = this.newOrder.filter(v => 
+                v.choice >= minVote && 
+                v.choice <= maxVote
+            );
+
+            for (const voteToMove of votesToMove) {
+                if (draggedChoice > replacedChoice) voteToMove.choice++;
+                else voteToMove.choice--;
+            }
+
+            this.newOrder[draggedIndex].choice = replacedChoice;
         }
     }
 
