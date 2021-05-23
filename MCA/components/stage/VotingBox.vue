@@ -7,7 +7,7 @@
             class="voting-title"
             :class="`voting-title--${selectedMode}`"
         >
-            drag and drop to swap vote position
+            drag and drop to move vote position
         </div>
 
         <div class="voting-items">
@@ -15,22 +15,39 @@
                 v-for="vote in sortedVotes"
                 :key="vote.ID"
                 class="voting-item"
+                :class="{ 'voting-item--dragged': dragging === vote.ID }"
+                draggable
+                @dragstart="dragStart($event, vote)"
+                @dragenter.prevent="toggleHighlightClass($event, vote.ID)"
+                @dragleave.prevent="toggleHighlightClass($event, vote.ID)"
+                @dragover.prevent
+                @dragend.prevent="dragEnd"
+                @drop="dropData($event, vote)"
             >
                 <div
-                    class="voting-item__title"
-                    draggable
-                    @dragstart="dragData($event, vote)"
-                    @dragenter.prevent="dragEnter($event, vote.ID)"
-                    @dragleave.prevent="toggleClass($event)"
-                    @dragover.prevent
-                    @drop="dropData($event, vote)"
+                    class="voting-item__drag"
+                    :class="{ 'voting-item__drag--hidden': dragging }"
                 >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-grip-vertical"
+                        viewBox="0 0 16 16"
+                    >
+                        <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                    </svg>
+                </div>
+                    
+                <div class="voting-item__title">
                     {{ formatTitle(vote) }}
                 </div>
 
                 <a
                     href="#"
                     class="voting-item__remove"
+                    :class="{ 'voting-item__drag--hidden': dragging }"
                     @click.stop="remove(vote.ID)"
                 >
                     ✕
@@ -90,6 +107,7 @@ export default class VotingBox extends Vue {
     }
 
     newOrder: Vote[] = [];
+    dragging: null | number = null;
 
     get sortedVotes () {
         return this.newOrder.sort((a, b) => a.choice - b.choice);
@@ -106,27 +124,29 @@ export default class VotingBox extends Vue {
         
         return vote.choice + " - " + target;
     }
-
-    toggleClass (e) {
-        e?.target.classList.toggle("voting-item__title--" + this.selectedMode);
-    }
-
-    dragEnter (e, voteId: number) {
-        const id = e.dataTransfer.getData("voteId");
-
-        if (id != voteId) {
-            this.toggleClass(e);
-        }
-    }
-
-    dragData (e, vote: Vote) {
+    
+    dragStart (e, vote: Vote) {
+        this.dragging = vote.ID;
         e.dataTransfer.dropEffect = "move";
         e.dataTransfer.effectAllowed = "move";
         e.dataTransfer.setData("voteId", vote.ID);
     }
 
+    toggleHighlightClass (e, voteId: number) {
+        const id = e.dataTransfer.getData("voteId");
+
+        if (id != voteId) {
+            e.target.classList.toggle("voting-item__title--" + this.selectedMode);
+        }
+    }
+
+    dragEnd () {
+        this.dragging = null;
+    }
+
     async dropData (e, vote: Vote) {
-        this.toggleClass(e);
+        this.dragging = null;
+        this.toggleHighlightClass(e, vote.ID);
         const id = e.dataTransfer.getData("voteId");
         const draggedIndex = this.newOrder.findIndex(v => v.ID == id);
         
@@ -190,19 +210,33 @@ export default class VotingBox extends Vue {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    cursor: pointer;
+
+    &--dragged {
+        background-color: $gray-dark;
+        opacity: .5;
+    }
+    
+    &__drag {
+        cursor: grab;
+        padding: 15px;
+
+        &--hidden {
+            opacity: 0;
+        }
+        
+        &:hover {
+            background-color: $gray-dark;
+        }
+    }
 
     &__title {
         text-align: left;
         width: 100%;
-        padding: 10px 15px;
-        margin: 5px;
-        background-color: $gray-dark;
-        border-radius: 20px;
+        padding: 15px;
         
         @each $mode in $modes {
-            &--#{$mode} {
-                background-color: var(--#{standard});
+            .voting-item &--#{$mode} {
+                border-left: 3px solid var(--#{standard});
             }
         }
     }
