@@ -136,7 +136,7 @@ export default class VotingBox extends Vue {
         const id = e.dataTransfer.getData("voteId");
 
         if (id != voteId) {
-            e.target.classList.toggle("voting-item__title--" + this.selectedMode);
+            e.target.classList.toggle("voting-item__" + this.selectedMode);
         }
     }
 
@@ -218,7 +218,8 @@ export default class VotingBox extends Vue {
     
     &__drag {
         cursor: grab;
-        padding: 15px;
+        margin: 5px;
+        padding: 10px;
 
         &--hidden {
             opacity: 0;
@@ -229,16 +230,17 @@ export default class VotingBox extends Vue {
         }
     }
 
+    @each $mode in $modes {
+        &__#{$mode} {
+            border: 3px solid var(--#{standard});
+        }
+    }
+
     &__title {
         text-align: left;
         width: 100%;
-        padding: 15px;
-        
-        @each $mode in $modes {
-            .voting-item &--#{$mode} {
-                border-left: 3px solid var(--#{standard});
-            }
-        }
+        margin: 5px;
+        padding: 10px;
     }
 
     &__remove {
