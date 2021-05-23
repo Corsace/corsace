@@ -4,8 +4,9 @@
             :title="$t('mca.main.categories.map')"
             :list="beatmapCategories"
             :active="toUpdateSection === 'beatmaps'"
-            :category-name="true"
-            :show-extra="true"
+            category-name
+            show-extra
+            clickable
             @activate="saveSection('beatmaps')"
             @target="updateCategory($event)"
         />
@@ -13,8 +14,9 @@
             :title="$t('mca.main.categories.user')"
             :list="userCategories"
             :active="toUpdateSection === 'users'"
-            :category-name="true"
-            :show-extra="true"
+            category-name
+            show-extra
+            clickable
             @activate="saveSection('users')"
             @target="updateCategory($event)"
         />
@@ -27,7 +29,10 @@ import { namespace, State } from "vuex-class";
 
 import Collapsible from "../../../MCA-AYIM/components/Collapsible.vue";
 
-import { CategoryStageInfo } from "../../../Interfaces/category";
+import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
+import { Vote } from "../../../Interfaces/vote";
+import { Nomination } from "../../../Interfaces/nomination";
+import { StageType } from "../../../MCA-AYIM/store/stage";
 
 const stageModule = namespace("stage");
 
@@ -39,7 +44,10 @@ const stageModule = namespace("stage");
 export default class StagePageCategories extends Vue {
 
     @State selectedMode!: string;
+    @stageModule.State votes!: Vote[];
+    @stageModule.State nominations!: Nomination[];
     @stageModule.State section!: string;
+    @stageModule.State stage!: StageType;
     @stageModule.Getter categoriesInfo!: CategoryStageInfo[];
     @stageModule.Action updateSelectedCategory;
     @stageModule.Action updateSection;
@@ -52,11 +60,11 @@ export default class StagePageCategories extends Vue {
     }
     
     get userCategories (): CategoryStageInfo[] {
-        return this.categoriesInfo.filter(c => c.type === "Users" && c.mode === this.selectedMode);
+        return this.filterCategories(CategoryType.Users);
     }
 
     get beatmapCategories (): CategoryStageInfo[] {
-        return this.categoriesInfo.filter(c => c.type === "Beatmapsets" && c.mode === this.selectedMode);
+        return this.filterCategories(CategoryType.Beatmapsets);
     }
 
     // Only change the choices list on category change
@@ -69,6 +77,27 @@ export default class StagePageCategories extends Vue {
         this.reset();
         this.updateSection(this.toUpdateSection);
         this.updateSelectedCategory(category);
+    }
+
+    hasVotedGrand (type: CategoryType): boolean {
+        const arr = this.stage === "nominating" ? this.nominations : this.votes;
+
+        return arr.some(v => 
+            v.category.isRequired && 
+            v.category.mode.name === this.selectedMode &&
+            v.category.type === type
+        );
+    }
+
+    filterCategories (type: CategoryType): CategoryStageInfo[] {
+        const hasVotedGrand = this.hasVotedGrand(type);
+
+        return this.categoriesInfo
+            .filter(c => c.type === CategoryType[type] && c.mode === this.selectedMode)
+            .map(c => ({
+                ...c,
+                inactive: !c.isRequired && !hasVotedGrand,
+            }));
     }
 
 }

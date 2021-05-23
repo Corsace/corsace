@@ -26,11 +26,7 @@ nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"),
         }),
     ]);
 
-    const categoryInfos: CategoryStageInfo[] = categories.map(x => {
-        const infos = x.getInfo() as CategoryStageInfo;
-        infos.count = nominations.filter(y => y.category.ID === x.ID).length;
-        return infos;
-    });
+    const categoryInfos: CategoryStageInfo[] = categories.map(x => x.getInfo() as CategoryStageInfo);
 
     ctx.body = {
         nominations,
@@ -99,35 +95,35 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
         }
         // Check if the category has filters since this is a beatmap search
         if (category.filter) {
-            if (category.filter.minLength && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter.minLength))
+            if (category.filter.minLength && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter!.minLength!))
                 return ctx.body = {
                     error: "Beatmapset does not exceed minimum length requirement!", 
                 };
-            if (category.filter.maxLength && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter.maxLength))
+            if (category.filter.maxLength && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter!.maxLength!))
                 return ctx.body = {
                     error: "Beatmapset exceeds maximum length requirement!", 
                 };
-            if (category.filter.minBPM && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter.minBPM))
+            if (category.filter.minBPM && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter!.minBPM!))
                 return ctx.body = {
                     error: "Beatmapset does not exceed minimum BPM requirement!", 
                 };
-            if (category.filter.maxBPM && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter.maxBPM))
+            if (category.filter.maxBPM && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter!.maxBPM!))
                 return ctx.body = {
                     error: "Beatmapset exceeds maximum BPM requirement!", 
                 };
-            if (category.filter.minSR && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter.minSR))
+            if (category.filter.minSR && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter!.minSR!))
                 return ctx.body = {
                     error: "Beatmapset does not exceed minimum SR requirement!", 
                 };
-            if (category.filter.maxSR && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter.maxSR))
+            if (category.filter.maxSR && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter!.maxSR!))
                 return ctx.body = {
                     error: "Beatmapset exceeds maximum SR requirement!", 
                 };
-            if (category.filter.minCS && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter.minCS))
+            if (category.filter.minCS && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter!.minCS!))
                 return ctx.body = {
                     error: "Beatmapset does not exceed minimum CS requirement!", 
                 };
-            if (category.filter.maxCS && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter.maxCS))
+            if (category.filter.maxCS && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter!.maxCS!))
                 return ctx.body = {
                     error: "Beatmapset exceeds maximum CS requirement!", 
                 };
@@ -151,12 +147,11 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
     ctx.body = nomination;
 });
 
-nominatingRouter.delete("/remove/:category/:id", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
-    const category = await Category.findOneOrFail(ctx.params.category);
+nominatingRouter.delete("/:id", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const nominations = await Nomination.find({
         nominator: ctx.state.user,
     });
-    const nomination = nominations.find(nom => nom.category.ID === category.ID && category.type == CategoryType.Beatmapsets ? nom.beatmapset?.ID == ctx.params.id : nom.user?.ID == ctx.params.id);
+    const nomination = nominations.find(nom => nom.ID == ctx.params.id);
     if (!nomination)
         return ctx.body = {
             error: "Could not find specified nomination!",

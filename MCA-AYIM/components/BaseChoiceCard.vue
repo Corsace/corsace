@@ -6,15 +6,15 @@
             <div 
                 v-if="stage === 'nominating'"
                 class="choice__selection"
-                @click="$emit('choose')"
+                @click="nominate"
             >
                 <div
                     class="choice__selection-box" 
-                    :class="{ 'choice__selection-box--chosen': choice.chosen }"
+                    :class="{ 'choice__selection-box--chosen': currentNomination }"
                 >
                     <img
                         class="choice__selection-check"
-                        :class="{ 'choice__selection-check--chosen': choice.chosen }"
+                        :class="{ 'choice__selection-check--chosen': currentNomination }"
                         src="../../Assets/img/ayim-mca/site/checkmark.png"
                     >
                 </div>
@@ -23,7 +23,7 @@
             <div
                 v-else-if="stage === 'voting'"
                 class="choice__voting"
-                @click="choose()"
+                @click="vote"
             >
                 <div class="choice__voting-title">
                     vote
@@ -42,6 +42,7 @@ import { namespace } from "vuex-class";
 
 import { StageType } from "../../MCA-AYIM/store/stage";
 import { Vote } from "../../Interfaces/vote";
+import { Nomination } from "../../Interfaces/nomination";
 
 const stageModule = namespace("stage");
 
@@ -49,20 +50,33 @@ const stageModule = namespace("stage");
 export default class BaseChoiceCard extends Vue {
 
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
-    
+
     @stageModule.State stage!: StageType;
-    @stageModule.Getter relatedVotes!: Vote[];
+    @stageModule.Getter relatedCandidacies!: Vote[] | Nomination[];
     @stageModule.Action createVote;
     @stageModule.Action removeVote;
+    @stageModule.Action createNomination;
+    @stageModule.Action removeNomination;
 
     get currentVote (): Vote | undefined {
-        return this.relatedVotes.find(v => {
+        if (this.stage === "nominating") return undefined;
+
+        return (this.relatedCandidacies as Vote[]).find(v => {
             if (this.choice.id) return v.beatmapset?.ID === this.choice.id;
             else return v.user?.ID === this.choice.corsaceID;
         });
     }
 
-    async choose () {
+    get currentNomination (): Nomination | undefined {
+        if (this.stage === "voting") return undefined;
+
+        return (this.relatedCandidacies as Nomination[]).find(v => {
+            if (this.choice.id) return v.beatmapset?.ID === this.choice.id;
+            else return v.user?.ID === this.choice.corsaceID;
+        });
+    }
+
+    async vote () {
         if (this.currentVote) {
             await this.removeVote(this.currentVote.ID);
             return;
@@ -71,14 +85,24 @@ export default class BaseChoiceCard extends Vue {
         const id = this.choice.id || this.choice.corsaceID;
         let vote = 1;
 
-        if (this.relatedVotes.length) {
-            vote = this.relatedVotes.sort((a, b) => b.choice - a.choice)[0].choice + 1;
+        if (this.relatedCandidacies.length) {
+            vote = (this.relatedCandidacies as Vote[]).sort((a, b) => b.choice - a.choice)[0].choice + 1;
         }
 
         await this.createVote({ 
             nomineeId: id,
             vote,
         });
+    }
+
+    async nominate () {
+        if (this.currentNomination) {
+            await this.removeNomination(this.currentNomination.ID);
+            return;
+        }
+        
+        const id = this.choice.id || this.choice.corsaceID;
+        await this.createNomination(id);
     }
 
 }

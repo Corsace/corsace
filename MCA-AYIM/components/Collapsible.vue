@@ -27,10 +27,15 @@
                     class="collapsible__info"
                     @click="setTarget(item)"
                 >
-                    <div 
-                        :class="{'collapsible__name': clickable, 'collapsible__name--active': showExtra && isSelected(item)}"
+                    <div
+                        :class="{
+                            'collapsible__name': clickable && !item.inactive,
+                            'collapsible__name--inactive': clickable && item.inactive,
+                            'collapsible__name--active': showExtra && isSelected(item),
+                        }"
                     >
-                        {{ categoryName ? $t(`mca.categories.${item.name}.name`) : item.name }} {{ showExtra ? item.maxNominations && !('count' in item) ? "- " + item.maxNominations: "" : "" }}
+                        {{ categoryName ? $t(`mca.categories.${item.name}.name`) : item.name }} 
+                        {{ extraTitle(item) }}
                     </div>
                     <hr
                         class="collapsible__info-bar"
@@ -46,7 +51,7 @@
                             class="collapsible__count"
                             :class="{'collapsible__count--active': isSelected(item)}"
                         >
-                            {{ item.maxNominations !== 100 ? item.count + " / " +  item.maxNominations : item.count}}
+                            {{ item.maxNominations !== 100 ? item.count + " / " + item.maxNominations : item.count }}
                         </div>
                         <div
                             v-else-if="'type' in item"
@@ -80,15 +85,21 @@ export default class Collapsible extends Vue {
     
     @Prop({ type: String, default: "" }) readonly title!: string;
     @Prop({ type: Array, default: () => [] }) readonly list!: SubItem[];
-    @Prop({ type: Boolean, default: true}) readonly clickable!: boolean[];
-    @Prop(Boolean) readonly active!: boolean[];
-    @Prop(Boolean) readonly showExtra!: boolean[];
-    @Prop(Boolean) readonly categoryName!: boolean[];
-    @Prop(Boolean) readonly scroll!: boolean[];
+    @Prop(Boolean) readonly active!: boolean;
+    @Prop(Boolean) readonly showExtra!: boolean;
+    @Prop(Boolean) readonly categoryName!: boolean;
+    @Prop(Boolean) readonly scroll!: boolean;
+    @Prop(Boolean) readonly clickable!: boolean;
 
     @State selectedMode!: string;
 
     target: SubItem | null = null;
+
+    extraTitle (item: SubItem): string {
+        if (!this.showExtra || !item.maxNominations || "count" in item) return "";
+        
+        return "- " + item.maxNominations;
+    }
     
     mounted () {
         if (this.list.length > 0 && this.active && !this.target) {
@@ -105,6 +116,8 @@ export default class Collapsible extends Vue {
     }
 
     setTarget (item: SubItem) {
+        if (item.inactive) return;
+
         this.$emit("target", item);
 
         if (!this.isSelected(item)) {
@@ -226,6 +239,10 @@ export default class Collapsible extends Vue {
         @include breakpoint(desktop) { 
             font-size: 1.3rem;
         }
+    }
+
+    &--inactive {
+        opacity: .5;
     }
 }
 

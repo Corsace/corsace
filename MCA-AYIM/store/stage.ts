@@ -59,6 +59,18 @@ export const mutations: MutationTree<StageState> = {
             state.votes.push(vote);
         }
     },
+    addNomination (state, nomination) {
+        if (nomination) {
+            state.nominations.push(nomination);
+        }
+    },
+    removeNomination (state, nominationId: number) {
+        const i = state.nominations.findIndex(n => n.ID === nominationId);
+
+        if (i !== -1) {
+            state.nominations.splice(i, 1);
+        }
+    },
     updateNominations (state, nominations) {
         state.nominations = nominations || [];
     },
@@ -85,24 +97,6 @@ export const mutations: MutationTree<StageState> = {
             ...query,
         };
     },
-    updateBeatmapState (state, beatmapId) {
-        const i = state.beatmaps.findIndex(b => b.id === beatmapId);
-        if (i !== -1) state.beatmaps[i].chosen = !state.beatmaps[i].chosen;
-    },
-    updateUserState (state, userId) {
-        const i = state.users.findIndex(u => u.corsaceID === userId);
-        if (i !== -1) state.users[i].chosen = !state.users[i].chosen;
-    },
-    updateCategoryCount (state, payload) {
-        const i = state.categories.findIndex(category => category.id === payload.categoryId);
-
-        if (i === -1) return;
-            
-        if (payload.chosen)
-            state.categories[i].count++;
-        else
-            state.categories[i].count--;
-    },
     reset (state) {
         state.section = "beatmaps";
         state.selectedCategory = null;
@@ -116,11 +110,15 @@ export const mutations: MutationTree<StageState> = {
 };
 
 export const getters: GetterTree<StageState, RootState> = {
-    relatedVotes (state): Vote[] {
+    relatedCandidacies (state): Vote[] | Nomination[] {
         if (!state.selectedCategory) return [];
 
-        return state.votes.filter(v => v.category.ID === state.selectedCategory?.id);
+        const arr = state.stage === "nominating" ? state.nominations : state.votes;
+
+        // Type doesnt here
+        return (arr as Vote[]).filter(v => v.category.ID === state.selectedCategory?.id);
     },
+
     categoriesInfo (state): CategoryStageInfo[] {
         if (state.stage === "voting") {
             return state.categories.map(c => {
@@ -131,9 +129,12 @@ export const getters: GetterTree<StageState, RootState> = {
                 info.maxNominations = 100;
                 return info;
             });
-        } else {
-            return state.categories;
         }
+
+        return state.categories.map(c => ({
+            ...c,
+            count: state.nominations.filter(n => n.category.ID === c.id).length,
+        }));
     },
 };
 
@@ -146,6 +147,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
         if (data.error) {
             console.error(data.error);
+            this.$router.push("/" + rootState.mca?.year);
             return;
         }
 
@@ -192,28 +194,37 @@ export const actions: ActionTree<StageState, RootState> = {
             commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
         }
     },
-    updateBeatmapState ({ commit, state }, beatmapId) {
-        commit("updateBeatmapState", beatmapId);
-        const beatmap = state.beatmaps.find(b => b.id === beatmapId);
-        if (beatmap) {
-            commit("updateCategoryCount", {
-                categoryId: state.selectedCategory?.id,
-                chosen: beatmap.chosen,
-            });
-        }
-    },
-    updateUserState ({ commit, state }, userId) {
-        commit("updateUserState", userId);
-        const user = state.users.find(u => u.corsaceID === userId);
-        if (user) {
-            commit("updateCategoryCount", {
-                categoryId: state.selectedCategory?.id,
-                chosen: user.chosen,
-            });
-        }
-    },
     reset ({ commit }) {
         commit("reset");
+    },
+    async createNomination ({ commit, state }, nomineeId: number) {
+        if (!state.selectedCategory) return;
+        
+        const { data } = await this.$axios.post(`/api/nominating/create`, {
+            categoryId: state.selectedCategory.id,
+            nomineeId,
+        });
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        commit("addNomination", data);
+    },
+    async removeNomination ({ commit, state }, nominationId: number) {
+        if (!state.selectedCategory) return;
+
+        const { data } = await this.$axios.delete(`/api/nominating/${nominationId}`);
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        if (data.success) {
+            commit("removeNomination", nominationId);
+        }
     },
     async createVote ({ commit, state }, payload: { nomineeId: number, vote: number }) {
         if (!state.selectedCategory) return;

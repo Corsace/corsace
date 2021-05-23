@@ -1,8 +1,5 @@
 <template>
-    <base-choice-card
-        :choice="choice"
-        @choose="$emit('choose')"
-    >
+    <base-choice-card :choice="choice">
         <a
             class="choice__info"
             :style="bgImg"

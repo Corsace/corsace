@@ -15,7 +15,12 @@
                 v-else
                 class="stage-select"
             >
-                {{ $t('mca.nom_vote.select') }}
+                <div class="stage-select__title">
+                    {{ $t('mca.nom_vote.select') }}
+                </div>
+                <div class="stage-select__subtitle">
+                    {{ $t('mca.nom_vote.selectGrand') }}
+                </div>
             </div>
         </div>
     </div>
@@ -100,19 +105,29 @@ export default class StateContent extends Vue {
     @extend %flex-box;
     height: 100%;
 
-    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
 
     font-size: 1rem;
-    @include breakpoint(tablet) {
-        font-size: 2rem;
+
+    &__title {
+        @include breakpoint(tablet) {
+            font-size: 2rem;
+        }
+        @include breakpoint(laptop) {
+            font-size: 3rem;
+        }
+        @include breakpoint(desktop) {
+            font-size: 4rem;
+        }
     }
-    @include breakpoint(laptop) {
-        font-size: 3rem;
-    }
-    @include breakpoint(desktop) {
-        font-size: 4rem;
+
+    &__subtitle {
+        @include breakpoint(tablet) {
+            font-size: 2rem;
+        }
     }
 }
 </style>
