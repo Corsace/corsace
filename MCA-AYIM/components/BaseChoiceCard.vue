@@ -12,11 +12,20 @@
                     class="choice__selection-box" 
                     :class="{ 'choice__selection-box--chosen': currentNomination }"
                 >
-                    <img
-                        class="choice__selection-check"
-                        :class="{ 'choice__selection-check--chosen': currentNomination }"
-                        src="../../Assets/img/ayim-mca/site/checkmark.png"
-                    >
+                    <template v-if="currentNomination">
+                        <img
+                            v-if="currentNomination.isValid"
+                            class="choice__selection-check"
+                            :class="{ 'choice__selection-check--chosen': currentNomination }"
+                            src="../../Assets/img/ayim-mca/site/checkmark.png"
+                        >
+                        <div
+                            v-else
+                            class="choice__selection-invalid"
+                        >
+                            ✕
+                        </div>
+                    </template>
                 </div>
             </div>
 
@@ -204,6 +213,12 @@ export default class BaseChoiceCard extends Vue {
         &--chosen {
             opacity: 1
         }
+    }
+    
+    &-invalid {
+        color: $red;
+        text-align: center;
+        text-shadow: 0 0 4px white;
     }
 }
 
