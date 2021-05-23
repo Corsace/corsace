@@ -10,7 +10,10 @@
             >
                 <div
                     class="choice__selection-box" 
-                    :class="{ 'choice__selection-box--chosen': currentNomination }"
+                    :class="{ 
+                        'choice__selection-box--chosen': currentNomination,
+                        'choice__selection-box--denied': currentNomination && !currentNomination.isValid
+                    }"
                 >
                     <template v-if="currentNomination">
                         <img
@@ -200,6 +203,16 @@ export default class BaseChoiceCard extends Vue {
             border-color: white;
             box-shadow: 0 0 4px white, inset 0 0 4px white;
         }
+
+        &--denied {
+            border-color: $red;
+            box-shadow: 0 0 4px $red, inset 0 0 4px $red;
+
+            &:hover {
+                border-color: $red;
+                box-shadow: 0 0 4px $red, inset 0 0 4px $red;
+            }
+        }
     }
 
     &-check {
@@ -218,7 +231,7 @@ export default class BaseChoiceCard extends Vue {
     &-invalid {
         color: $red;
         text-align: center;
-        text-shadow: 0 0 4px white;
+        text-shadow: 0 0 4px $red;
     }
 }
 
