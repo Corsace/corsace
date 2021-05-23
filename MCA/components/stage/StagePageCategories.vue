@@ -106,9 +106,15 @@ export default class StagePageCategories extends Vue {
 </script>
 
 <style lang="scss">
+@import '@s-sass/_mixins';
 
 .stage-categories {
     flex: 1 1 15%;
+    height: 50%;
+
+    @include breakpoint(laptop) { 
+        height: auto;
+    }
 }
 
 </style>

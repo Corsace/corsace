@@ -154,8 +154,8 @@ export default class Collapsible extends Vue {
         scrollbar-width: none;
 
         &::-webkit-scrollbar {
-        display: none;
-    }
+            display: none;
+        }
     }
 
     &__title {
