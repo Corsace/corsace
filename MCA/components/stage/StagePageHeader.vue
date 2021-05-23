@@ -22,7 +22,7 @@
                 {{ ($t(`mca.categories.${selectedCategory.name}.name`)) }}
             </div>
             <div class="category-header__desc">
-                {{ $t(`mca.categories.${selectedCategory.name}.description`) + (selectedCategory.isFiltered ? " (auto filter enabled)" : "") }}
+                {{ $t(`mca.categories.${selectedCategory.name}.description`) + (selectedCategory.isFiltered ? " (auto filter enabled)" : selectedCategory.requiresVetting ? " (staff vetting enabled)" : "") }}
             </div>
         </template>
     </div>

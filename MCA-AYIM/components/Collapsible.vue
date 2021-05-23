@@ -145,11 +145,17 @@ export default class Collapsible extends Vue {
     white-space: nowrap;
     overflow: hidden;
     padding: 15px;
+    max-height: 87%;
 
     @include transition;
 
     &--scrollable {
         overflow-y: visible;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
 
     &__title {

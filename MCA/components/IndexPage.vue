@@ -46,12 +46,14 @@
                 :list="beatmapCategories"
                 active
                 category-name
+                scroll
             />
             <collapsible
                 :title="$t('mca.main.categories.user')"
                 :list="userCategories"
                 active
                 category-name
+                scroll
             />
         </div>
             
