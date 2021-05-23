@@ -78,7 +78,9 @@ export default class GuestDifficultyModal extends Vue {
     }
 
     generateUrl (request: GuestRequest) {
-        return `https://osu.ppy.sh/beatmapsets/${request.beatmap.beatmapsetID}#${request.beatmap.mode.name}/${request.beatmap.ID}`;
+        const mode = request.beatmap.mode.name === "standard" ? "osu" : request.beatmap.mode.name;
+
+        return `https://osu.ppy.sh/beatmapsets/${request.beatmap.beatmapsetID}#${mode}/${request.beatmap.ID}`;
     }
 
     getStatusName (status: RequestStatus) {
