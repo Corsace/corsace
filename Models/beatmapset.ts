@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne, SelectQueryBuilder } from "typeorm";
+import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne, SelectQueryBuilder, Index } from "typeorm";
 import { BeatmapsetInfo } from "../Interfaces/beatmap";
 import { Category } from "../Interfaces/category";
 import { StageQuery } from "../Interfaces/queries";
@@ -23,6 +23,7 @@ export class Beatmapset extends BaseEntity {
     @Column()
     submitDate!: Date;
 
+    @Index()
     @Column()
     approvedDate!: Date;
 
