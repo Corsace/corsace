@@ -85,7 +85,7 @@ adminResultsRouter.get("/", async (ctx) => {
         },
     });
 
-    const categories = await Category.find({});
+    const categories = await Category.find();
     const winners: CategoryWinners[] = [];
     
     for (const category of categories) {

@@ -38,6 +38,9 @@ function padLengthWithZero (lengthRecord: Record<string, any>): Record<string, a
 const recordsRouter = new Router();
 
 recordsRouter.get("/beatmapsets", async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     const year = parseInt(ctx.query.year || new Date().getFullYear());
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
@@ -204,6 +207,9 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
 });
 
 recordsRouter.get("/mappers", async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     const year = parseInt(ctx.query.year || new Date().getFullYear());
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
@@ -239,7 +245,6 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "DESC")
             .limit(3)
-            .cache(true)
             .getRawMany(),
         
         // Most Total Difficulties Ranked
@@ -264,7 +269,6 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "DESC")
             .limit(3)
-            .cache(true)
             .getRawMany(),
 
         // Most Favourited
@@ -291,7 +295,6 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "DESC")
             .limit(3)
-            .cache(true)
             .getRawMany(),
 
         // Most Favourited (excl. Hybrids)
@@ -327,7 +330,6 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "DESC")
             .limit(3)
-            .cache(true)
             .getRawMany(),
 
         // Most Played
@@ -354,7 +356,6 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "DESC")
             .limit(3)
-            .cache(true)
             .getRawMany(),
 
         // Highest Avg SR
@@ -381,7 +382,6 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "DESC")
             .limit(3)
-            .cache(true)
             .getRawMany(),
 
         // Lowest Avg SR
@@ -408,7 +408,6 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "ASC")
             .limit(3)
-            .cache(true)
             .getRawMany(),
     ]);
 

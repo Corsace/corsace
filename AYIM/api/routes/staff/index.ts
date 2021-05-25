@@ -12,10 +12,10 @@ staffRouter.use(currentMCA);
 
 // Endpoint to obtain current MCA and its info
 staffRouter.get("/", async (ctx) => {
-    const mca: MCA = ctx.state.mca;
-    const mcaInfo = mca.getInfo();
+    if (await ctx.cashed())
+        return;
 
-    ctx.body = mcaInfo;
+    ctx.body = ctx.state.mca.getInfo();
 });
 
 export default staffRouter;

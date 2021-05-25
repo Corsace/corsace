@@ -126,7 +126,7 @@ export class Beatmapset extends BaseEntity {
         }
                    
         // Ordering
-        const optionQuery = query.option.toLowerCase();
+        const optionQuery = query.option ? query.option.toLowerCase() : "";
         const order = query.order || "ASC";
         let option = "beatmapset.approvedDate";
         if (/(artist|title|favs|creator|sr)/i.test(optionQuery)) {
@@ -162,8 +162,7 @@ export class Beatmapset extends BaseEntity {
             .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
             .select(["beatmapset.ID", "beatmapset.title", "beatmapset.artist"])
             .addSelect(["creator.ID", "creator.osu.username", "creator.osu.userID"])
-            .limit(3)
-            .cache(true);
+            .limit(3);
     }
 
     static queryStatistic (year: number, modeId: number): SelectQueryBuilder<Beatmapset> {
@@ -172,8 +171,7 @@ export class Beatmapset extends BaseEntity {
             .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
             .innerJoin("beatmapset.creator", "creator")
             .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
-            .limit(1)
-            .cache(true);
+            .limit(1);
     }
 
     public getInfo (chosen = false): BeatmapsetInfo {

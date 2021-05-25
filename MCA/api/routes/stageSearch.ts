@@ -13,6 +13,11 @@ import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 
 export default function stageSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
     return async (ctx: ParameterizedContext) => {
+        if (!ctx.query.category)
+            return ctx.body = {
+                error: "Missing category ID!",
+            }
+
         let list: BeatmapsetInfo[] | UserCondensedInfo[] = [];
         let setList: BeatmapsetInfo[] = [];
         let userList: UserCondensedInfo[] = [];

@@ -16,13 +16,18 @@ votingRouter.use(isLoggedInOsu);
 votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
     const [votes, categories] = await Promise.all([
         Vote.find({
-            voter: ctx.state.user,
+            where: {
+                voter: ctx.state.user,
+            },
         }),
             
         Category.find({
-            mca: {
-                year: ctx.state.year,
+            where: {
+                mca: {
+                    year: ctx.state.year,
+                },
             },
+            cache: true,
         }),
     ]);
 

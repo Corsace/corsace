@@ -10,8 +10,11 @@ const indexRouter = new Router();
 const modeStaff = config.discord.roles.mca;
 
 indexRouter.get("/front", async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     const mca = await MCA.findOne(ctx.query.year);
-    
+
     if (!mca)
         return ctx.body = { error: "There is no MCA for this year currently!" };
 

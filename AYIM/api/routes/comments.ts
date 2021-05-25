@@ -39,6 +39,11 @@ async function isCommentOwner (ctx: ParameterizedContext, next: Next): Promise<a
 const commentsRouter = new Router();
 
 commentsRouter.get("/", async (ctx) => {
+    if (!ctx.query.user)
+        return ctx.body = {
+            error: "No user ID provided!",
+        }
+
     const userId = parseInt(ctx.query.user);
     const year = parseInt(ctx.query.year || new Date().getFullYear());
     const modeString: string = ctx.query.mode || "standard";
