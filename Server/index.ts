@@ -11,6 +11,8 @@ import { Strategy as DiscordStrategy } from "passport-discord";
 import { User } from "../Models/user";
 import { discordPassport, osuPassport } from "./passportFunctions";
 import logoutRouter from "./logout";
+import koaCash from "koa-cash";
+import LRU from "lru-cache";
 
 export class App {
 
@@ -32,6 +34,18 @@ export class App {
         this.koa.use(BodyParser());
         this.koa.use(passport.initialize());
         this.koa.use(passport.session());
+
+        const cache = new LRU();
+        this.koa.use(koaCash({
+            maxAge: 60 * 60 * 1000,
+            get (key) {
+                return Promise.resolve(cache.get(key));
+            },
+            set (key, value, maxAge) {
+                cache.set(key, value, maxAge);
+                return Promise.resolve();
+            },
+        }));
 
         // Error handler
         this.koa.use(async (ctx, next) => {
