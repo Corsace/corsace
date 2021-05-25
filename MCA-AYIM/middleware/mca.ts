@@ -17,7 +17,7 @@ export default async function ({ redirect, error, route, store }: Context) {
     if (!store.state.mca || store.state.mca.year !== year) {
         await store.dispatch("setInitialData", year);
 
-        if (store.hasModule("staff") && store.getters.isMCAStaff) {
+        if (route.path.includes("staff") && store.getters.isMCAStaff && !store.state.staff?.mca && store.hasModule("staff")) {
             await store.dispatch("staff/setInitialData");
         }
     }

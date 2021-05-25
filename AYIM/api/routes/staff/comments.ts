@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import { hasRole, isLoggedInDiscord } from "../../../../Server/middleware";
 import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
-import { currentMCA } from "../../../../MCA/api/middleware";
+import { currentMCA } from "../../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 
 const commentsReviewRouter = new Router();

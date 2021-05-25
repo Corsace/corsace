@@ -9,7 +9,7 @@ import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { User } from "../../../Models/user";
-import { isEligibleFor } from "../middleware";
+import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 
 export default function stageSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
     return async (ctx: ParameterizedContext) => {

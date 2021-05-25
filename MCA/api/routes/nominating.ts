@@ -4,7 +4,7 @@ import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
-import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear, categoryRequirementCheck } from "../middleware";
+import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear, categoryRequirementCheck } from "../../../MCA-AYIM/api/middleware";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
 
