@@ -133,22 +133,11 @@ export class User extends BaseEntity {
                 }))
                 .setParameter("criteria", `%${query.text}%`);
         }
-
-        // Check for search text
-        if (query.text) {
-            queryBuilder
-                .andWhere(new Brackets(qb => {
-                    qb.where("user.osuUsername LIKE :criteria")
-                        .orWhere("user.osuUserid LIKE :criteria")
-                        .orWhere("otherName.name LIKE :criteria");
-                }))
-                .setParameter("criteria", `%${query.text}%`);
-        }
         
         // Ordering
         const order = query.order || "ASC";
         let orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
-        if (query.option?.toLowerCase().includes("alph"))
+        if (query.option && query.option.toLowerCase().includes("alph"))
             orderMethod = "user_osuUsername";
             
         // Search
@@ -206,7 +195,7 @@ export class User extends BaseEntity {
         // Ordering
         const order = query.order || "ASC";
         let orderMethod = "user_osuUsername";
-        if (query.option.toLowerCase().includes("id"))
+        if (query.option && query.option.toLowerCase().includes("id"))
             orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
             
         // Search

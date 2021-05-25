@@ -126,7 +126,7 @@ export class Beatmapset extends BaseEntity {
         }
                    
         // Ordering
-        const optionQuery = query.option.toLowerCase();
+        const optionQuery = query.option ? query.option.toLowerCase() : "";
         const order = query.order || "ASC";
         let option = "beatmapset.approvedDate";
         if (/(artist|title|favs|creator|sr)/i.test(optionQuery)) {
