@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import { isLoggedInOsu } from "../../../Server/middleware";
-import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase, categoryRequirementCheck } from "../middleware";
+import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase, categoryRequirementCheck } from "../../../MCA-AYIM/api/middleware";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { CategoryType } from "../../../Interfaces/category";

@@ -2,7 +2,7 @@ import Router from "@koa/router";
 import { Beatmap } from "../../../Models/beatmap";
 import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
-import { isEligibleFor, currentMCA } from "../middleware";
+import { isEligibleFor, currentMCA } from "../../../MCA-AYIM/api/middleware";
 import { config } from "node-config-ts";
 import axios from "axios";
 import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";

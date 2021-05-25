@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
-import { currentMCA } from "../../middleware";
+import { currentMCA } from "../../../../MCA-AYIM/api/middleware";
 import { GuestRequest } from "../../../../Models/MCA_AYIM/guestRequest";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";

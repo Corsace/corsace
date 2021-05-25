@@ -4,7 +4,7 @@ import { isLoggedInOsu } from "../../../Server/middleware";
 import { User } from "../../../Models/user";
 import { UserComment } from "../../../Models/MCA_AYIM/userComments";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
-import { isEligibleFor } from "../../../MCA/api/middleware";
+import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { FindConditions } from "typeorm";
 

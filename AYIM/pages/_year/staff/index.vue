@@ -1,11 +1,14 @@
 <template>
-    <div class="staff-page">
+    <div
+        v-if="mca"
+        class="staff-page"
+    >
         <div class="staff-page__title">
-            MCA - {{ mca.year }}
+            MCA - {{ mca.name }}
         </div>
 
         <nuxt-link
-            :to="`/${mca.year}/staff/comments`"
+            :to="`/${mca.name}/staff/comments`"
             class="staff-page__link"
         >
             Comments pending >
@@ -15,9 +18,11 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { namespace } from "vuex-class";
 
-import { MCA } from "../../../../Interfaces/mca";
+import { MCAInfo } from "../../../../Interfaces/mca";
+
+const staffModule = namespace("staff");
 
 @Component({
     head () {
@@ -28,7 +33,7 @@ import { MCA } from "../../../../Interfaces/mca";
 })
 export default class Staff extends Vue {
 
-    @State mca!: MCA;
+    @staffModule.State mca!: MCAInfo | null;
 
 }
 </script>
