@@ -20,9 +20,12 @@ nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"),
             },
         }),
         Category.find({
-            mca: {
-                year: ctx.state.year,
+            where: {
+                mca: {
+                    year: ctx.state.year,
+                },
             },
+            cache: true,
         }),
     ]);
 

@@ -45,6 +45,9 @@ function valueToFixed (record: any, digits = 2): any {
 }
 
 statisticsRouter.get("/beatmapsets", async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     const year = parseInt(ctx.query.year || new Date().getFullYear());
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
@@ -143,7 +146,6 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
         mapsQ.push(query
             .select("count(distinct beatmapset.ID)", "value")
             .addSelect(`'Maps Ranked by ${i + 2007} Users'`, "constraint")
-            .cache(true)
             .getRawOne()
         );
     }
@@ -198,12 +200,10 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
         query
             .select("COUNT(distinct sub.beatmapsetID)", "value")
             .addSelect("'Ranked Sets'", "constraint")
-            .cache(true)
             .getRawOne(),
         query
             .select("COUNT(distinct sub.beatmapID)", "value")
             .addSelect("'Ranked Difficulties'", "constraint")
-            .cache(true)
             .getRawOne(),
 
         // Difficulties
@@ -350,6 +350,9 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
 });
 
 statisticsRouter.get("/mappers", async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     const year = parseInt(ctx.query.year || new Date().getFullYear());
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
@@ -362,7 +365,6 @@ statisticsRouter.get("/mappers", async (ctx) => {
         yearQ.push(createUserQuery(year, modeId, i)
             .select("count(distinct user.osuUserid)", "value")
             .addSelect(`'${i + 2007} Users Ranking Sets'`, "constraint")
-            .cache(true)
             .getRawOne()
         );
 
@@ -376,7 +378,6 @@ statisticsRouter.get("/mappers", async (ctx) => {
             })
             .select("count(distinct user.osuUserid)", "value")
             .addSelect(`'${i + 2007} Users Ranking First Set'`, "constraint")
-            .cache(true)
             .getRawOne()
         );
 
@@ -384,7 +385,6 @@ statisticsRouter.get("/mappers", async (ctx) => {
         mapsQ.push(createUserQuery(year, modeId, i)
             .select("count(distinct beatmapset.ID)", "value")
             .addSelect(`'Maps Ranked by ${i + 2007} Users'`, "constraint")
-            .cache(true)
             .getRawOne()
         );
     }
@@ -418,7 +418,6 @@ statisticsRouter.get("/mappers", async (ctx) => {
             })
             .select("count(distinct creator.id)", "value")
             .addSelect("'Total Mappers Ranking First Set'", "constraint")
-            .cache(true)
             .getRawOne(),
 
         Promise.all(yearQ),
