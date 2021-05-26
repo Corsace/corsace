@@ -12,7 +12,7 @@ import { User } from "../Models/user";
 import { discordPassport, osuPassport } from "./passportFunctions";
 import logoutRouter from "./logout";
 import koaCash from "koa-cash";
-import LRU from "lru-cache";
+import { cache } from "./cache";
 
 export class App {
 
@@ -35,9 +35,11 @@ export class App {
         this.koa.use(passport.initialize());
         this.koa.use(passport.session());
 
-        const cache = new LRU();
         this.koa.use(koaCash({
             maxAge: 60 * 60 * 1000,
+            hash (ctx) {
+                return ctx.originalUrl;
+            },
             get (key) {
                 return Promise.resolve(cache.get(key));
             },
