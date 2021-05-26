@@ -143,9 +143,9 @@ export default class Collapsible extends Vue {
     flex-direction: column;
     color: $gray;
     white-space: nowrap;
-    overflow: hidden;
     padding: 15px;
-    max-height: 87%;
+    max-height: 400px;
+    overflow: hidden;
 
     @include transition;
 
