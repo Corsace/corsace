@@ -103,6 +103,7 @@ export const mutations: MutationTree<StageState> = {
         state.beatmaps = [];
         state.users = [];
         state.count = 0;
+        state.query.text = "";
     },
     toggleVoteChoiceBox (state) {
         state.showVoteChoiceBox = !state.showVoteChoiceBox;
