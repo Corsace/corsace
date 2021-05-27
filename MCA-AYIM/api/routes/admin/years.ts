@@ -6,6 +6,7 @@ import { ModeDivision } from "../../../../Models/MCA_AYIM/modeDivision";
 import { CategoryType } from "../../../../Interfaces/category";
 import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
 import { Vote } from "../../../../Models/MCA_AYIM/vote";
+import { cache } from "../../../../Server/cache";
 
 const adminYearsRouter = new Router;
 const categoryGenerator = new CategoryGenerator;
@@ -52,6 +53,10 @@ adminYearsRouter.post("/", validate, async (ctx) => {
         await Promise.all([userGrand.save(), mapGrand.save()]);
     }
 
+    cache.del("/front?year=" + data.year);
+    cache.del("/mca?year=" + data.year);
+    cache.del("/staff");
+
     ctx.body = { 
         message: "Success! attached is the new MCA.", 
         mca,
@@ -64,6 +69,10 @@ adminYearsRouter.put("/:year", validate, async (ctx) => {
 
     let mca = await MCA.findOneOrFail(data.year);    
     mca = await MCA.fillAndSave(data, mca);
+
+    cache.del("/front?year=" + data.year);
+    cache.del("/mca?year=" + data.year);
+    cache.del("/staff");
 
     ctx.body = { 
         message: "updated",
