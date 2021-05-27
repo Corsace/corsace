@@ -27,7 +27,6 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
                     year: ctx.state.year,
                 },
             },
-            cache: true,
         }),
     ]);
 

@@ -25,7 +25,6 @@ nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"),
                     year: ctx.state.year,
                 },
             },
-            cache: true,
         }),
     ]);
 

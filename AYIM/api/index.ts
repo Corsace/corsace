@@ -4,6 +4,7 @@ import mount from "koa-mount";
 import loginRouter from "../../MCA-AYIM/api/routes/login";
 import mcaRouter from "../../MCA-AYIM/api/routes/mca";
 import userRouter from "../../MCA-AYIM/api/routes/user";
+import adminRouter from "../../MCA-AYIM/api/routes/admin";
 import adminCategoriesRouter from "../../MCA-AYIM/api/routes/admin/categories";
 import adminYearsRouter from "../../MCA-AYIM/api/routes/admin/years";
 import adminResultsRouter from "../../MCA-AYIM/api/routes/admin/results";
@@ -30,6 +31,7 @@ app.koa.use(mount("/staff", staffRouter.routes()));
 app.koa.use(mount("/staff/comments", commentsReviewRouter.routes()));
 app.koa.use(mount("/staff/users", usersRouter.routes()));
 
+app.koa.use(mount("/admin", adminRouter.routes()));
 app.koa.use(mount("/admin/results", adminResultsRouter.routes()));
 app.koa.use(mount("/admin/years", adminCategoriesRouter.routes()));
 app.koa.use(mount("/admin/years", adminYearsRouter.routes()));
