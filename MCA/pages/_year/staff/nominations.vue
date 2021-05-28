@@ -55,7 +55,7 @@
                                             <div v-if="nomination.reviewer">
                                                 Last reviewed by:
                                                 {{ nomination.reviewer.osu.username }}
-                                                at {{ new Date(nomination.lastReviewedAt).toDateString() }}
+                                                at {{ new Date(nomination.lastReviewedAt).toString() }}
                                             </div>
                                         </div>
 
@@ -192,9 +192,12 @@ export default class Nominations extends Vue {
         return `${nomination.user?.osu.username}`;
     }
 
-    updateLocalNomination (id: number, isValid) {
+    updateLocalNomination (id: number, data: Nomination) {
         const i = this.nominations.findIndex(n => n.ID === id);
-        if (i !== -1) this.nominations[i].isValid = isValid;
+        if (i !== -1) {
+            this.nominations[i].isValid = data.isValid;
+            this.nominations[i].lastReviewedAt = data.lastReviewedAt;
+        }
     }
 
     async updateNomination (id: number, isValid) {
@@ -203,7 +206,10 @@ export default class Nominations extends Vue {
         });
 
         if (!data.error) {
-            this.updateLocalNomination(id, isValid);
+            this.updateLocalNomination(id, data);
+        } else {
+            alert("Hellooo peep console (Ctrl + Shift + I, console tab at top)")
+            console.error(data.error);
         }
     }
 
