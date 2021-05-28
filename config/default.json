@@ -18,7 +18,6 @@
             "open": {
                 "participants": "role ID",
                 "captains": "role ID",
-                "staff": "role ID",
                 "mappooler": "role ID",
                 "testplayer": "role ID",
                 "scheduler": "role ID",
@@ -27,10 +26,9 @@
                 "commentator": "role ID",
                 "referee": "role ID"
             },
-            "invitational": {
+            "closed": {
                 "participants": "role ID",
                 "captains": "role ID",
-                "staff": "role ID",
                 "mappooler": "role ID",
                 "scheduler": "role ID",
                 "streamManager": "role ID",
@@ -39,7 +37,6 @@
                 "referee": "role ID"
             },
             "mca": {
-                "staff": "role ID",
                 "standard": "role ID",
                 "taiko": "role ID",
                 "fruits": "role ID",
@@ -78,7 +75,7 @@
         "publicUrl": "http://localhost:4000",
         "spa": true
     },
-    "invitational": {
+    "closed": {
         "host": "localhost",
         "port": 5000,
         "publicUrl": "http://localhost:5000",
