@@ -45,7 +45,6 @@
                     </div>
 
                     <div
-                        v-if="isPending(request.status)"
                         class="staff-request__actions"
                     >
                         <button
