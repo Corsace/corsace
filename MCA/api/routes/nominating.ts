@@ -28,10 +28,11 @@ nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"),
         }),
     ]);
 
+    const filteredNominations = nominations.filter(nom => nom.category.mca.year === ctx.state.year);
     const categoryInfos: CategoryStageInfo[] = categories.map(x => x.getInfo() as CategoryStageInfo);
 
     ctx.body = {
-        nominations: nominations.filter(nom => nom.category.mca.year === ctx.state.year),
+        nominations: filteredNominations,
         categories: categoryInfos,
     };
 });
