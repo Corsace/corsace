@@ -11,7 +11,7 @@ import { Beatmapset } from "./beatmapset";
 import { config } from "node-config-ts";
 import { GuildMember } from "discord.js";
 import { discordGuild } from "../Server/discord";
-import { UserCondensedInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
+import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
@@ -210,7 +210,7 @@ export class User extends BaseEntity {
         ]);
     }
 
-    public getCondensedInfo = function(this: User, chosen = false): UserCondensedInfo {
+    public getCondensedInfo = function(this: User, chosen = false): UserChoiceInfo {
         return {
             corsaceID: this.ID,
             avatar: this.osu.avatar,
