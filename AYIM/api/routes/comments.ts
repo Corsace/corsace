@@ -1,12 +1,12 @@
 import Router from "@koa/router";
 import { ParameterizedContext, Next } from "koa";
-import { isLoggedInOsu } from "../../../Server/middleware";
 import { User } from "../../../Models/user";
 import { UserComment } from "../../../Models/MCA_AYIM/userComments";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { FindConditions } from "typeorm";
+import { isLoggedIn } from "../../../Server/middleware";
 
 async function canComment (ctx: ParameterizedContext, next: Next): Promise<any> {
     if (!ctx.state.user.canComment) {
@@ -91,7 +91,7 @@ commentsRouter.get("/", async (ctx) => {
     };
 });
 
-commentsRouter.post("/create", isLoggedInOsu, canComment, async (ctx) => {
+commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
     const newComment: string = ctx.request.body.comment.trim();
     const year: number = ctx.request.body.year;
     const targetID: number = ctx.request.body.targetID;
@@ -157,7 +157,7 @@ commentsRouter.post("/create", isLoggedInOsu, canComment, async (ctx) => {
     ctx.body = comment;
 });
 
-commentsRouter.post("/:id/update", isLoggedInOsu, canComment, isCommentOwner, async (ctx) => {
+commentsRouter.post("/:id/update", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
     const newComment: string = ctx.request.body.comment.trim();
 
     if (!newComment) {
@@ -184,7 +184,7 @@ commentsRouter.post("/:id/update", isLoggedInOsu, canComment, isCommentOwner, as
     ctx.body = comment;
 });
 
-commentsRouter.post("/:id/remove", isLoggedInOsu, canComment, isCommentOwner, async (ctx) => {
+commentsRouter.post("/:id/remove", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
     const comment: UserComment = ctx.state.comment;
     const mca = await MCA.findOneOrFail({
         year: comment.year,

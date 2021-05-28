@@ -29,10 +29,10 @@ export class OAuth {
     @Column({ default: "" })
     avatar!: string;
 
-    @Column({ type: "longtext", nullable: true })
+    @Column({ type: "longtext", nullable: true, select: false })
     accessToken?: string;
 
-    @Column({ type: "longtext", nullable: true })
+    @Column({ type: "longtext", nullable: true, select: false })
     refreshToken?: string;
 
     @CreateDateColumn()
