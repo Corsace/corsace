@@ -31,7 +31,7 @@ nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"),
     const categoryInfos: CategoryStageInfo[] = categories.map(x => x.getInfo() as CategoryStageInfo);
 
     ctx.body = {
-        nominations,
+        nominations: nominations.filter(nom => nom.category.mca.year === ctx.state.year),
         categories: categoryInfos,
     };
 });
