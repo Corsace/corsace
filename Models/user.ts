@@ -172,12 +172,12 @@ export class User extends BaseEntity {
                 .andWhere((qb) => {
                     const subQuery = qb.subQuery()
                         .from(MCAEligibility, "mcaEligibility")
-                        .where("year < :year", { year: year })
+                        .select("min(year)")
                         .andWhere("userID = user.ID")
                         .andWhere(`mca.${modeString} = 1`)
                         .getQuery();
 
-                    return "NOT EXISTS " + subQuery;
+                    return subQuery + " = " + year;
                 });
         }
         
