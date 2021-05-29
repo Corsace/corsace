@@ -29,7 +29,11 @@
             "statistics": "",
             "search": "",
             "numberof": "",
-            "numberwith": ""
+            "numberwith": "",
+            "message": {
+                "2019": "",
+                "2020": ""
+            }
         },
         "mapsets": {
             "name": "",
@@ -44,7 +48,17 @@
             "approachRate": "",
             "overallDifficulty": "",
             "hpDrain": "",
-            "circleSize": ""
+            "circleSize": "",
+            "favouritesExclHybrid": "",
+            "playTime": "",
+            "spinners": "",
+            "sliders": "",
+            "circles": "",
+            "avgSpinnersPerDiff": "",
+            "avgSlidersPerDiff": "",
+            "avgCirclesPerDiff": "",
+            "highestSr": "",
+            "lowestSr": ""
         },
         "mappers": {
             "name": "",
@@ -56,7 +70,14 @@
             "mapperAges": "",
             "mapsPerMapperAges": "",
             "bng": "",
-            "nat": ""
+            "nat": "",
+            "mostDiffs": "",
+            "mostFavsExclHybrid": "",
+            "uniqueMappers": "",
+            "newMappers": "",
+            "highestAvgSr": "",
+            "lowestAvgSr": "",
+            "mappers": ""
         },
         "comments": {
             "name": "",
@@ -66,7 +87,14 @@
             "remove": "",
             "create": "",
             "login": "",
-            "visible": ""
+            "visible": "",
+            "search": "",
+            "writeHere": ""
+        },
+        "statistics": {
+            "numberOf": "",
+            "numberOfMapsWith": "",
+            "average": ""
         }
     },
     "mca": {
@@ -75,11 +103,11 @@
             "nominating": "nominieren",
             "results": "",
             "undefined": "",
-			"mapsetsLabel": "MAPSETS",
-			"mappersLabel": "MAPPER",
-			"commentsLabel": "KOMMENTARE",
-			"recordsLabel": "REKORDE",
-			"statisticsLabel": "STATISTIKEN",
+            "mapsetsLabel": "MAPSETS",
+            "mappersLabel": "MAPPER",
+            "commentsLabel": "KOMMENTARE",
+            "recordsLabel": "REKORDE",
+            "statisticsLabel": "STATISTIKEN",
             "stage": {
                 "voting": "Abstimmungsphase",
                 "nominating": "Nominierungsphase",
@@ -90,10 +118,8 @@
             "voteNow": "jetzt abstimmen !",
             "daysLeft": "tage übrig",
             "message": {
-                "1": "Die Mapper's Choice Awards sind in 2019 zurück für Runde 4! Dies ist ein Abstimmungsevent, bei welchem alle Mapper/Modder dafür nominieren und abstimmen können, wer/was der/die beste Mapper*in/Map in jeder Kategorie ist!",
-                "2": "Unsere Absicht ist es, eine neue Perspektive auf die besten Maps von 2019 in den Augen der Mapping-Community im Vergleich zur Community Choice zu liefern!",
-                "3": "Dieses Jahr haben wir sogar eine Website, um es für Abstimmungsberechtigte so einfach wie möglich zu machen, zu nominieren und abzustimmen!",
-                "4": "Wir hoffen, dass so viele Leute wie möglich an diesem Event teilnehmen!"
+                "2019": "",
+                "2020": ""
             },
             "categories": {
                 "map": "",
@@ -137,6 +163,86 @@
             "throwback": {
                 "name": "",
                 "description": ""
+            },
+            "mapper": {
+                "name": "",
+                "description": ""
+            },
+            "modder": {
+                "name": "",
+                "description": ""
+            },
+            "hitsounder": {
+                "name": "",
+                "description": ""
+            },
+            "mostPromising": {
+                "name": "",
+                "description": ""
+            },
+            "mostInfluential": {
+                "name": "",
+                "description": ""
+            },
+            "outCont": {
+                "name": "",
+                "description": ""
+            },
+            "spread": {
+                "name": "",
+                "description": ""
+            },
+            "experimental": {
+                "name": "",
+                "description": ""
+            },
+            "stream": {
+                "name": "",
+                "description": ""
+            },
+            "highBPMTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "lowBPMTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "simplistic": {
+                "name": "",
+                "description": ""
+            },
+            "sliderVelocity": {
+                "name": "",
+                "description": ""
+            },
+            "longNotes": {
+                "name": "",
+                "description": ""
+            },
+            "antiMeta": {
+                "name": "",
+                "description": ""
+            },
+            "7K": {
+                "name": "",
+                "description": ""
+            },
+            "technical": {
+                "name": "",
+                "description": ""
+            },
+            "gameplay": {
+                "name": "",
+                "description": ""
+            },
+            "minimalistic": {
+                "name": "",
+                "description": ""
+            },
+            "narrative": {
+                "name": "",
+                "description": ""
             }
         },
         "nom_vote": {
@@ -153,11 +259,24 @@
                 "alph": "",
                 "asc": "",
                 "desc": "",
-                "incVote": "",
-                "voteChoice": ""
+                "voteOrder": ""
             },
             "hosted": "",
-            "userID": ""
+            "userID": "",
+            "select": "",
+            "selectGrand": ""
+        }
+    },
+    "main": {
+        "header": {
+            "login": "",
+            "register": ""
+        },
+        "index": {
+            "underConstruction": "",
+            "sorry": "",
+            "development": "",
+            "theTeam": ""
         }
     }
 }

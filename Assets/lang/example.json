@@ -103,11 +103,11 @@
             "nominating": "",
             "results": "",
             "undefined": "",
-			"mapsetsLabel": "",
-			"mappersLabel": "",
-			"commentsLabel": "",
-			"recordsLabel": "",
-			"statisticsLabel": "",
+            "mapsetsLabel": "",
+            "mappersLabel": "",
+            "commentsLabel": "",
+            "recordsLabel": "",
+            "statisticsLabel": "",
             "stage": {
                 "voting": "",
                 "nominating": "",
@@ -263,7 +263,8 @@
                 "voteOrder": ""
             },
             "hosted": "",
-            "userID": ""
+            "userID": "",
+            "selectGrand": ""
         }
     },
     "main": {
