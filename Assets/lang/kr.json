@@ -29,14 +29,20 @@
             "statistics": "통계",
             "search": "매퍼 검색",
             "numberof": "개수",
-            "numberwith": "맵 개수"
+            "numberwith": "맵 개수,
+	    "message": {
+                "2019": "<p>2020</p><p>A Year in Mapping 2019가 2019년 한 해의 기록들과 통계를 들고 돌아왔습니다!</p><p>이 웹사이트를 통해, 지금까지 기록된 모든 통계 및 정보들을 검색할 수 있습니다! 기타 의견 또는 제안사항이 있다면, corsace 서버의 VINXIS에게 연락주세요. (좌하단 링크 참조)</p><p>또한 이제 크라우드펀딩식 코멘트를 지원합니다! 즉, 아무나 원하는 만큼 원하는 매퍼에게 코멘트를 쓸 수 있다는 말이죠!</p><p>하단에 있는 게임모드 중 자신의 주 모드를 선택하여 시작하세요!</p>",
+                "2020": "<p>2021... 작년이 아닌 올해입니다!</p><p>A Year in Mapping 2020가 2020년 한 해의 기록들과 통계를 들고 드디어 제 시간에 찾아왔습니다!</p><p>작년과 마찬가지로, 코멘트는 크라우드펀딩식으로 진행됩니다! 하단에 있는 게임모드 중 자신의 주 모드를 선택하여 시작하세요!</p>"
+            }
         },
         "mapsets": {
             "name": "맵셋",
             "playcount": "플레이 횟수",
             "favourites": "즐겨찾기 수",
+	    "favouritesExclHybrid": "즐겨찾기 수 (하이브리드 맵셋 제외)",
             "length": "길이",
             "difficulties": "난이도 개수",
+	    "playTime": "길이 (전체 난이도 총합)",
             "totalRanked": "전체 랭크",
             "totalDiff": "전체 난이도",
             "submitDates": "업로드 날짜",
@@ -44,28 +50,50 @@
             "approachRate": "AR",
             "overallDifficulty": "OD",
             "hpDrain": "HP",
-            "circleSize": "CS"
+            "circleSize": "CS",
+	    "spinners": "스피너 개수",
+	    "sliders": "슬라이더 개수",
+            "circles": "서클 개수",
+            "avgSpinnersPerDiff": "난이도 당 평균 스피너 개수",
+            "avgSlidersPerDiff": "난이도 당 평균 슬라이더 개수",
+            "avgCirclesPerDiff": "난이도 당 평균 서클 개수",
+            "highestSr": "최고 스타레이팅",
+            "lowestSr": "최저 스타레이팅"
         },
         "mappers": {
             "name": "매퍼",
-            "mostRanked": "랭크 수",
-            "mostFavs": "즐겨찾기 수",
-            "mostPlayed": "플레이 횟수",
+            "mostRanked": "최다 랭크 수",
+	    "mostDiffs": "최다 난이도 수",
+            "mostFavs": "최다 즐겨찾기 수",
+	    "mostFavsExclHybrid": "최다 즐겨찾기 수 (하이브리드 제외)",
+            "mostPlayed": "최다 플레이 횟수",
             "totalMappers": "전체 매퍼",
             "newMapperAges": "새 매퍼 계정 나이",
             "mapperAges": "매퍼 계정 나이",
             "mapsPerMapperAges": "매퍼 계정 나이 별 맵 개수",
             "bng": "BNG",
-            "nat": "NAT"
+            "nat": "NAT",
+	    "uniqueMappers": "전체 매퍼 수",
+            "newMappers": "신인 매퍼 수",
+            "highestAvgSr": "최고 평균 스타레이팅",
+            "lowestAvgSr": "최저 평균 스타레이팅",
+            "mappers": "매퍼"
+        },
+	"statistics": {
+            "numberOf": "수",
+            "numberOfMapsWith": "맵 개수",
+            "average": "평균"
         },
         "comments": {
             "name": "코멘트",
             "info": "모든 코멘트는 MCA의 결과가 나온 후 공개할 예정입니다! 그때까지 자유롭게 코멘트를 적으실 수 있습니다.",
+	    "search": "매퍼 검색",
             "viewSubmit": "코멘트 조회/작성",
+	    "writeHere": "이 매퍼를 위해 코멘트를 작성해주세요!",
             "update": "수정",
             "remove": "삭제",
             "create": "생성",
-            "login": "먼저 로그인하세요",
+            "login": "코멘트를 작성하기 전에 먼저 로그인하세요",
             "visible": "(아직 비공개)"
         }
     },
@@ -90,10 +118,8 @@
             "voteNow": "지금 투표하세요 !",
             "daysLeft": "일 남음",
             "message": {
-                "1": "2019년, 네 번째 Mapper's Choice Awards가 시작합니다! MCA는 매퍼/모더들이 자신이 생각하기에 각 카테고리에서 최고인 맵/매퍼를 추천, 투표할 수 있는 이벤트입니다.",
-                "2": "Community Choice와 달리, 매핑 커뮤니티의 눈을 통해 2019년 최고의 맵에 새로운 관점을 제시하고자 합니다!",
-                "3": "올해는 추천 및 투표를 용이하게 하기 위해, 모든 과정이 웹사이트에서 이루어지도록 개편했습니다!",
-                "4": "최대한 많은 분이 이 이벤트에 참여해주셨으면 좋겠습니다!"
+                "2019": "<p>Mapper's Choice Awards가 2019년 4회차로 돌아왔습니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2019년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>올해는 저희가 새로 완성한 홈페이지를 통해 투표가 더욱 쉬워졌습니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨으면 좋겠습니다!</p>",
+                "2020": "<p>바로 이어서, MCA가 2020년 제 5회차를 맞이합니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2020년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>MCA 2019가 진행되는 동안 받은 제안과 피드백을 바탕으로 올해는 더 매끄러운 진행이 될거라 예상됩니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨!</p>"
             },
             "categories": {
                 "map": "맵 카테고리",
