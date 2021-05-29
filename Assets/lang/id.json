@@ -33,7 +33,7 @@
             "message": {
                 "2019": "<p>Halo, 2020!</p>A Year in Mapping 2019 kembali hadir ke hadapan kalian semua guys! Seperti tahun-tahun sebelumnya, A Year in Mapping merupakan suatu bentuk napak tilas atas apa-apa saja yang telah terjadi di dalam dunia mapping dan modding selama satu tahun ke belakang.</p><p>Pada situs web ini, kamu dapat menemukan berbagai informasi menarik seputar mapping yang disajikan secara terperinci. Apabila kamu memiliki kritik atau saran, jangan sungkan untuk menghubungi VINXIS melalui server Corsace (yang link-nya dapat Anda jumpai pada pojok kiri bawah layar) ya guys!</p><p>Oh ya, pada tahun ini kami juga MENERIMA KOMENTAR SECARA TERBUKA lho guys! Kamu dapat memberikan komentar sebanyak-banyaknya kepada mapper-mapper yang kamu kehendaki sesuka hatimu!</p><p>Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>",
                 "2020": "<p>Halo, 2021… akhirnya kita berjumpa lagi!</p>Setelah pada tahun lalu kami harus membatalkan penyelenggaraan A Year in Mapping karena satu dan lain hal, A Year in Mapping 2020 kali ini (benar-benar) kembali hadir ke hadapan kalian semua guys!</p><p>Tidak hanya itu, pada tahun ini kami kembali menerima komentar secara terbuka lho guys! Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>"
-            }            
+            }
         },
         "mapsets": {
             "name": "MAPSET",
@@ -51,10 +51,14 @@
             "circleSize": "CIRCLE SIZE",
             "sliders": "TOTAL SLIDER",
             "circles": "TOTAL CIRCLE",
-            "avgSlidersPerSet": "RATA-RATA SLIDER PER SET",
-            "avgCirclesPerSet": "RATA-RATA CIRCLE PER SET",
             "highestSr": "STAR RATING TERTINGGI",
-            "lowestSr": "STAR RATING TERENDAH"            
+            "lowestSr": "STAR RATING TERENDAH",
+            "favouritesExclHybrid": "",
+            "playTime": "",
+            "spinners": "",
+            "avgSpinnersPerDiff": "",
+            "avgSlidersPerDiff": "",
+            "avgCirclesPerDiff": ""
         },
         "mappers": {
             "name": "MAPPER",
@@ -70,22 +74,22 @@
             "uniqueMappers": "TOTAL MAPPER KESELURUHAN",
             "newMappers": "TOTAL MAPPER PENDATANG BARU",
             "highestAvgSr": "RATA-RATA SR TERTINGGI",
-            "leastFavs": "PALING SEDIKIT DIFAVORITKAN",
-            "leastPlayed": "PALING SEDIKIT DIMAINKAN",
             "lowestAvgSr": "RATA-RATA SR TERENDAH",
-            "mappers": "MAPPER"            
+            "mappers": "MAPPER",
+            "mostDiffs": "",
+            "mostFavsExclHybrid": ""
         },
         "statistics": {
             "numberOf": "jumlah",
             "numberOfMapsWith": "jumlah map dengan",
             "average": "rata-rata"
-        },           
+        },
         "comments": {
             "name": "KOMENTAR",
             "info": "Semua komentar yang masuk akan dipublikasikan segera setelah hasil akhir MCA diumumkan! Kamu dibebaskan untuk berkomentar hingga waktu pengumuman hasil MCA tiba.",
-            "search": "cari mapper",           
+            "search": "cari mapper",
             "viewSubmit": "lihat/kirim komentar",
-            "writeHere": "Berikan komentarmu untuk mapper ini!",            
+            "writeHere": "Berikan komentarmu untuk mapper ini!",
             "update": "Perbarui",
             "remove": "Hapus",
             "create": "Tulis",
@@ -99,11 +103,11 @@
             "nominating": "nominasi",
             "results": "hasil",
             "undefined": "",
-                        "mapsetsLabel": "MAPSET",
-                        "mappersLabel": "MAPPER",
-                        "commentsLabel": "KOMENTAR",
-                        "recordsLabel": "REKOR",
-                        "statisticsLabel": "STATISTIK",
+            "mapsetsLabel": "MAPSET",
+            "mappersLabel": "MAPPER",
+            "commentsLabel": "KOMENTAR",
+            "recordsLabel": "REKOR",
+            "statisticsLabel": "STATISTIK",
             "stage": {
                 "voting": "tahapan voting",
                 "nominating": "tahapan nominasi",
@@ -159,7 +163,7 @@
             "throwback": {
                 "name": "Throwback",
                 "description": "Mapset terbaik dengan gaya mapping yang membawa nuansa nostalgia."
-            },           
+            },
             "mapper": {
                 "name": "Mapper",
                 "description": "Mereka yang membuat map-map terbaik."
@@ -255,11 +259,12 @@
                 "alph": "ALPH",
                 "asc": "ASC",
                 "desc": "DESC",
-                "incVote": "VOTE INKREMENTAL",
-                "voteChoice": "PILIHAN"
+                "voteOrder": ""
             },
             "hosted": "DI-HOST OLEH",
-            "userID": "USER ID"
+            "userID": "USER ID",
+            "select": "",
+            "selectGrand": ""
         }
     },
     "main": {
