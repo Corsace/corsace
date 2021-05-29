@@ -29,14 +29,20 @@
             "statistics": "統計",
             "search": "マッパー検索",
             "numberof": "数",
-            "numberwith": "譜面数"
+            "numberwith": "譜面数",
+            "message": {
+                "2019": "<p>やぁ2020年。</p><p>A Year in Mapping 2019が当年に叩き出された記録と、蓄積された詳細な統計データをお届けしに帰ってきました！</p><p>このウェブサイトを使って、全ての年について検索できるだけの情報を含めることができました。何か提案があればcorsaceのサーバー内でVINXISの元へ教えてください（リンクは左下にあります）。</p><p>また、コメントの募集も行っています。これを読んでいるあなたも、マッパーに対して好きなだけコメントを書いて送ることができます。</p><p>まずは下にあるアイコンからお好きなモードを選んで始めましょう！</p>",
+                "2020": "<p>やぁ2021年... 今度は間違いのない年です！</p><p>A Year in Mapping 2020が本年に叩き出された記録と、蓄積された詳細な統計データをお届けしに帰ってきました！</p><p>そして改めてにはなりますが、コメントは絶賛募集中です。早速下にあるアイコンからお好きなモードを選んで始めましょう！</p>"
+            }
         },
         "mapsets": {
             "name": "マップセット",
             "playcount": "プレイ回数",
             "favourites": "お気に入り",
             "length": "長さ",
+            "favouritesExclHybrid": "お気に入り（ハイブリッドを除く）",
             "difficulties": "難易度",
+            "playTime": "長さ（全難易度合計）",
             "totalRanked": "全てのRanked譜面",
             "totalDiff": "全ての難易度",
             "submitDates": "投稿日",
@@ -44,29 +50,51 @@
             "approachRate": "AR",
             "overallDifficulty": "OD",
             "hpDrain": "HP",
-            "circleSize": "CS"
+            "circleSize": "CS",
+            "spinners": "スピナー",
+            "sliders": "スライダー",
+            "circles": "サークル",
+            "avgSpinnersPerDiff": "1譜面あたりの平均スピナー",
+            "avgSlidersPerDiff": "1譜面あたりの平均スライダー",
+            "avgCirclesPerDiff": "1譜面あたりの平均サークル",
+            "highestSr": "最高難易度",
+            "lowestSr": "最低難易度"
         },
         "mappers": {
             "name": "マッパー",
             "mostRanked": "Ranked数",
+            "mostDiffs": "難易度数",
             "mostFavs": "お気に入り",
+            "mostFavsExclHybrid": "お気に入り（ハイブリッドを除く）",
             "mostPlayed": "プレイ回数",
             "totalMappers": "全てのマッパー",
             "newMapperAges": "新規マッパーのアカウントの年数",
             "mapperAges": "アカウントの年数",
             "mapsPerMapperAges": "アカウントの年数別の譜面数",
             "bng": "BNG",
-            "nat": "NAT"
+            "nat": "NAT",
+            "uniqueMappers": "全てのマッパー",
+            "newMappers": "新規マッパー",
+            "highestAvgSr": "最高平均難易度",
+            "lowestAvgSr": "最低平均難易度",
+            "mappers": "マッパー"
+        },
+	"statistics": {
+            "numberOf": "数",
+            "numberOfMapsWith": "譜面数",
+            "average": "平均"
         },
         "comments": {
             "name": "コメント",
             "info": "すべてのコメントはMCAの結果が出た後に公表されます。それまではコメントを投稿できます。",
+            "search": "マッパー検索",
             "viewSubmit": "コメント閲覧・投稿",
+            "writeHere": "ここにマッパーへのコメントを入力してください",
             "update": "更新",
             "remove": "削除",
             "create": "作成",
             "login": "ログインして作成",
-            "visible": "(まだ見えません)"
+            "visible": "(まだ閲覧できません)"
         }
     },
     "mca": {
@@ -90,10 +118,8 @@
             "voteNow": "いますぐ投票しよう！",
             "daysLeft": "日の余裕",
             "message": {
-                "1": "Mapper's Choice Awardsが帰ってきました！これはすべてのマッパー・モッダーが各部門で最高の譜面・マッパーだと思うものに投票するイベントです。",
-                "2": "Community Choiceとの違いは、マッピングコミュニティーの目線からで2019年を代表する譜面を決めることが目的です。",
-                "3": "今年はできる限り簡単に参加できるように、ウェブサイトの開発を本格的に行いました。",
-                "4": "一人でも多くの人に投票してもらえることを期待しています！"
+		"2019": "<p>Mapper's Choice Awardsが帰ってきました！これはすべてのマッパー・モッダーが各部門で最高の譜面・マッパーだと思うものに投票するイベントです。</p><p>Community Choiceとの違いは、マッピングコミュニティーの目線からで2019年を代表する譜面を決めることが目的だという点です。</p><p>今年はできる限り簡単に参加できるように、ウェブサイトの開発を本格的に行いました。</p><p>一人でも多くの人に投票してもらえることを期待しています！</p>",
+		"2020": "<p>2020年の仕上げに、Mapper's Choice Awardsがまたまた帰ってきました！これはすべてのマッパー・モッダーが各部門で最高の譜面・マッパーだと思うものに投票するイベントです。</p><p>Community Choiceとの違いは、マッピングコミュニティーの目線からで2020年を代表する譜面を決めることが目的だという点です。</p><p>様々な変更を加え、MCA2019で見つかったすべてのバグへの対処とともに、必要に応じて部門を修正したため、今回ははるかにスムーズなはずです。</p><p>一人でも多くの人に投票してもらえることを期待しています！</p>"
             },
             "categories": {
                 "map": "譜面の部門",
@@ -137,6 +163,86 @@
             "throwback": {
                 "name": "懐古",
                 "description": "古き良きスタイルで作られた譜面"
+            },
+            "mapper": {
+                "name": "マッパー",
+                "description": "2019年を代表するのにふさわしいマッパー"
+            },
+            "modder": {
+                "name": "モッダー",
+                "description": "2019年を代表するのにふさわしいモッダー"
+            },
+            "hitsounder": {
+                "name": "音付け職人",
+                "description": "質の高いヒットサウンドをつけた人物"
+            },
+            "mostPromising": {
+                "name": "新人賞",
+                "description": "2019年に初Rankedを達成したマッパー"
+            },
+            "mostInfluential": {
+                "name": "インフルエンサー",
+                "description": "多くのマッパーに影響を与え、感化させた偉大なマッパー"
+            },
+            "outCont": {
+                "name": "貢献者",
+                "description": "osu!のために献身的に尽くした人物"
+            },
+            "spread": {
+                "name": "スプレッド",
+                "description": "難易度間のスプレッドがきれいな譜面"
+            },
+            "experimental": {
+                "name": "斬新性",
+                "description": "既存の枠組みから外れた面白い試みをした譜面"
+            },
+            "stream": {
+                "name": "連打",
+                "description": "魅力的な連打を置いた譜面"
+            },
+            "highBPMTaiko": {
+                "name": "高BPM",
+                "description": "240BPMより速い譜面"
+            },
+            "lowBPMTaiko": {
+                "name": "低BPM",
+                "description": "140BPMより遅い譜面"
+            },
+            "simplistic": {
+                "name": "シンプル",
+                "description": "シンプルイズベストを体現した譜面"
+            },
+            "sliderVelocity": {
+                "name": "SV変化",
+                "description": "SV変化を多用した譜面"
+            },
+            "longNotes": {
+                "name": "LN",
+                "description": "LNを多用した譜面"
+            },
+            "antiMeta": {
+                "name": "反主流",
+                "description": "5K/6K/8K/9Kで作られた譜面"
+            },
+            "7K": {
+                "name": "7K",
+                "description": "7Kで作られた譜面"
+            },
+            "technical": {
+                "name": "技術力",
+                "description": "高度な技術を使用したストーリーボード"
+            },
+            "gameplay": {
+                "name": "プレイング",
+                "description": "プレイにかかわる要素を使用したストーリーボード"
+            },
+            "minimalistic": {
+                "name": "ミニマリズム",
+                "description": "簡潔なコードで作られたストーリーボード"
+            },
+            "narrative": {
+                "name": "物語性",
+                "description": "ストーリー展開を含んだストーリーボード"
             }
         },
         "nom_vote": {
@@ -153,11 +259,23 @@
                 "alph": "アルファベット順",
                 "asc": "昇順",
                 "desc": "降順",
-                "incVote": "追加投票",
+                "incVote": "選好投票",
                 "voteChoice": "投票先の選択"
             },
             "hosted": "作成者",
             "userID": "ユーザーID"
+        }
+    },
+    "main": {
+        "header": {
+            "login": "ログイン",
+            "register": "登録"
+        },
+        "index": {
+            "underConstruction": "現在実装中",
+            "sorry": "ご不便をおかけして申し訳ございません",
+            "development": "corsaceのウェブサイトはまだ開発中です",
+            "theTeam": "the corsace team"
         }
     }
 }
