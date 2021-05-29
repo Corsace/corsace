@@ -1,5 +1,5 @@
 import Router from "@koa/router";
-import { isLoggedInOsu } from "../../../Server/middleware";
+import { isLoggedIn } from "../../../Server/middleware";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { Beatmapset } from "../../../Models/beatmapset";
@@ -10,7 +10,7 @@ import stageSearch from "./stageSearch";
 
 const nominatingRouter = new Router();
 
-nominatingRouter.use(isLoggedInOsu);
+nominatingRouter.use(isLoggedIn);
 
 nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"), async (ctx) => {
     const [nominations, categories] = await Promise.all([

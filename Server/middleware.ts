@@ -10,7 +10,7 @@ interface discordRoleInfo {
 // General middlewares
 async function isLoggedIn (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (!ctx.state.user) {
-        ctx.body = { error: "No user found!" };
+        ctx.body = { error: "User is not logged in via osu!" };
         return;
     }
 
@@ -18,17 +18,8 @@ async function isLoggedIn (ctx: ParameterizedContext, next: Next): Promise<void>
 }
 
 async function isLoggedInDiscord (ctx: ParameterizedContext, next: Next): Promise<void> {
-    if (!ctx.state.user?.discord?.accessToken) {
+    if (!ctx.state.user?.discord?.userID) {
         ctx.body = { error: "User is not logged in via discord!" };
-        return; 
-    }
-
-    await next();
-}
-
-async function isLoggedInOsu (ctx: ParameterizedContext, next: Next): Promise<void> {
-    if (!ctx.state.user?.osu?.accessToken) {
-        ctx.body = { error: "User is not logged in via osu!" };
         return; 
     }
 
@@ -121,4 +112,4 @@ const isMCAStaff = hasRoles([{
 const isHeadStaff = hasRole("corsace", "headStaff");
 const isCorsace = hasRole("corsace", "corsace");
 
-export { isLoggedIn, isLoggedInDiscord, isLoggedInOsu, isStaff, isMCAStaff, isHeadStaff, isCorsace, hasRole, hasRoles };
+export { isLoggedIn, isLoggedInDiscord, isStaff, isMCAStaff, isHeadStaff, isCorsace, hasRole, hasRoles };

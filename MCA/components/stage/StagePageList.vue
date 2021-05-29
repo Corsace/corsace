@@ -40,7 +40,7 @@ import ScrollBar from "../../../MCA-AYIM/components/ScrollBar.vue";
 import VotingBox from "./VotingBox.vue";
 
 import { SectionCategory } from "../../../MCA-AYIM/store/stage";
-import { UserCondensedInfo } from "../../../Interfaces/user";
+import { UserChoiceInfo } from "../../../Interfaces/user";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 
 const stageModule = namespace("stage");
@@ -56,7 +56,7 @@ const stageModule = namespace("stage");
 export default class StagePageList extends Vue {
 
     @stageModule.State section!: SectionCategory;
-    @stageModule.State users!: UserCondensedInfo[];
+    @stageModule.State users!: UserChoiceInfo[];
     @stageModule.State beatmaps!: BeatmapsetInfo[];
     @stageModule.State showVoteChoiceBox!: boolean;
     @stageModule.Action search;

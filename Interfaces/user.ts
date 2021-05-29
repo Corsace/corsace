@@ -37,7 +37,7 @@ export interface UserInfo {
     canComment: boolean;
 }
 
-export interface UserCondensedInfo {
+export interface UserChoiceInfo {
     corsaceID: number;
     username: string;
     avatar: string;

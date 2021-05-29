@@ -1,5 +1,5 @@
 import Router from "@koa/router";
-import { isLoggedInOsu } from "../../../Server/middleware";
+import { isLoggedIn } from "../../../Server/middleware";
 import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase, categoryRequirementCheck } from "../../../MCA-AYIM/api/middleware";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../Models/MCA_AYIM/category";
@@ -11,7 +11,7 @@ import { MoreThan, Not } from "typeorm";
 
 const votingRouter = new Router();
 
-votingRouter.use(isLoggedInOsu);
+votingRouter.use(isLoggedIn);
 
 votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
     const [votes, categories] = await Promise.all([

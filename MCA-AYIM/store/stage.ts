@@ -1,6 +1,6 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { RootState } from "./index";
-import { UserCondensedInfo } from "../../Interfaces/user";
+import { UserChoiceInfo } from "../../Interfaces/user";
 import { CategoryStageInfo } from "../../Interfaces/category";
 import { BeatmapsetInfo } from "../../Interfaces/beatmap";
 import { Vote } from "../../Interfaces/vote";
@@ -19,7 +19,7 @@ interface StageState {
     stage: StageType;
     count: number;
     beatmaps: BeatmapsetInfo[];
-    users: UserCondensedInfo[];
+    users: UserChoiceInfo[];
     query: StageQuery;
     showVoteChoiceBox: boolean;
 }

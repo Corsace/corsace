@@ -76,7 +76,7 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
-import { UserCondensedInfo } from "../../../Interfaces/user";
+import { UserChoiceInfo } from "../../../Interfaces/user";
 
 import { Vote } from "../../../Interfaces/vote";
 import { SectionCategory } from "../../../MCA-AYIM/store/stage";
@@ -94,7 +94,7 @@ export default class VotingBox extends Vue {
     @State selectedMode!: string;
     @stageModule.State section!: SectionCategory;
     @stageModule.State beatmaps!: BeatmapsetInfo[];
-    @stageModule.State users!: UserCondensedInfo[];
+    @stageModule.State users!: UserChoiceInfo[];
     @stageModule.Getter relatedCandidacies!: Vote[];
     @stageModule.Mutation toggleVoteChoiceBox;
     @stageModule.Action createVote;
