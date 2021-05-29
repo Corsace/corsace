@@ -165,7 +165,7 @@ nominatingRouter.delete("/:id", validatePhaseYear, isPhase("nomination"), isElig
             error: "Could not find specified nomination!",
         };
 
-    if (nomination.reviewer)
+    if (!nomination.isValid)
         return ctx.body = {
             error: "Cannot remove reviewed nominations, contact a member of the staff!",
         };
