@@ -170,7 +170,10 @@ nominatingRouter.delete("/:id", validatePhaseYear, isPhase("nomination"), isElig
             error: "Cannot remove reviewed nominations, contact a member of the staff!",
         };
 
-    if (nomination.category.isRequired && nominations.some(nom => !nom.category.isRequired && nom.category.type === nomination.category.type))
+    if (
+        nomination.category.isRequired && 
+        nominations.some(nom => !nom.category.isRequired && nom.category.type === nomination.category.type && nom.category.mode === nomination.category.mode)
+    )
         return ctx.body = {
             error: "You cannot remove nominations in required categories if you have nominations in non-required categories!",
         };

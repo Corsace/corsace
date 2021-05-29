@@ -139,7 +139,7 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
     ctx.body = vote;
 });
 
-votingRouter.post("/:id/remove", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+votingRouter.delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const vote = await Vote.findOneOrFail({
         where: {
             ID: ctx.params.id,
@@ -169,7 +169,7 @@ votingRouter.post("/:id/remove", validatePhaseYear, isPhase("voting"), isEligibl
     if (
         vote.category.isRequired && 
         allUserVotes.filter(userVote => userVote.category.ID === userVote.category.ID).length === 1 && 
-        allUserVotes.some(userVote => !userVote.category.isRequired && userVote.category.type === vote.category.type)
+        allUserVotes.some(userVote => !userVote.category.isRequired && userVote.category.type === vote.category.type && userVote.category.mode === vote.category.mode)
     ) {
         return ctx.body = {
             error: "You cannot have 0 votes in required categories if you have votes in non-required categories!",

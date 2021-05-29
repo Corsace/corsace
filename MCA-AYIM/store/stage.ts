@@ -258,7 +258,7 @@ export const actions: ActionTree<StageState, RootState> = {
             return;
         }
 
-        const { data } = await this.$axios.post(`/api/voting/${voteId}/remove`);
+        const { data } = await this.$axios.delete(`/api/voting/${voteId}`);
 
         if (data.error) {
             alert(data.error);
