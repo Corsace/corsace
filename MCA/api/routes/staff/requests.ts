@@ -60,6 +60,19 @@ staffRequestsRouter.post("/:id/update", async (ctx) => {
 
         eligibility[request.mode.name] = true;
         await eligibility.save();
+    } else if (request.status === RequestStatus.Rejected) {
+        let eligibility = await MCAEligibility.findOne({
+            where: {
+                year: request.mca.year,
+                user: request.user,
+            },
+            relations: ["user"],
+        });
+
+        if (eligibility) {
+            eligibility[request.mode.name] = false;
+            await eligibility.save();
+        }
     }
 
     await request.save();
