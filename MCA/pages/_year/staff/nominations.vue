@@ -196,6 +196,8 @@ export default class Nominations extends Vue {
         const i = this.nominations.findIndex(n => n.ID === id);
         if (i !== -1) {
             this.nominations[i].isValid = data.isValid;
+            this.nominations[i].reviewer = data.reviewer;
+            this.nominations[i].reviewer.osu.username = data.reviewer.osu.username;
             this.nominations[i].lastReviewedAt = data.lastReviewedAt;
         }
     }
