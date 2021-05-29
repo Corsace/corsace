@@ -74,6 +74,7 @@
       "dev": "concurrently --names \"MCA,AYIM,MAIN\" -c \"bgBlue.bold,bgGreen.bold,bgRed.bold\" \"npm run mca-dev\" \"npm run ayim-dev\" \"npm run main-dev\"",
       "lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",
       "lintfix": "eslint --fix --ext .ts,.vue --ignore-path .gitignore .",
+      "updateLanguages": "ts-node ./Server/scripts/updateLanguages.ts",
       "fetchMaps": "ts-node ./Server/scripts/fetchYearMaps.ts",
       "mariadb": "docker-compose exec database mariadb -u corsace -p",
       "database": "docker-compose up -d database",
