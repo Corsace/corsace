@@ -147,7 +147,16 @@ export default class StaffRequests extends Vue {
     justify-content: space-between;
     margin-bottom: 10px;
 
+    &__info {
+        flex: 1;
+        display: flex;
+        justify-content: space-evenly;
+    }
+
     &__status {
+        flex: 1;
+        display: flex;
+        justify-content: center;
         &--pending {
             color: violet;
         }
@@ -162,7 +171,9 @@ export default class StaffRequests extends Vue {
     }
 
     &__actions {
+        flex: 1;
         display: flex;
+        justify-content: center;
     }
 
     &__action {
