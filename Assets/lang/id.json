@@ -29,7 +29,7 @@
             "statistics": "STATISTIK",
             "search": "cari mapper",
             "numberof": "jumlah",
-            "numberwith": "jumlah map dengan"
+            "numberwith": "jumlah map dengan",
             "message": {
                 "2019": "<p>Halo, 2020!</p>A Year in Mapping 2019 kembali hadir ke hadapan kalian semua guys! Seperti tahun-tahun sebelumnya, A Year in Mapping merupakan suatu bentuk napak tilas atas apa-apa saja yang telah terjadi di dalam dunia mapping dan modding selama satu tahun ke belakang.</p><p>Pada situs web ini, kamu dapat menemukan berbagai informasi menarik seputar mapping yang disajikan secara terperinci. Apabila kamu memiliki kritik atau saran, jangan sungkan untuk menghubungi VINXIS melalui server Corsace (yang link-nya dapat Anda jumpai pada pojok kiri bawah layar) ya guys!</p><p>Oh ya, pada tahun ini kami juga MENERIMA KOMENTAR SECARA TERBUKA lho guys! Kamu dapat memberikan komentar sebanyak-banyaknya kepada mapper-mapper yang kamu kehendaki sesuka hatimu!</p><p>Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>",
                 "2020": "<p>Halo, 2021… akhirnya kita berjumpa lagi!</p>Setelah pada tahun lalu kami harus membatalkan penyelenggaraan A Year in Mapping karena satu dan lain hal, A Year in Mapping 2020 kali ini (benar-benar) kembali hadir ke hadapan kalian semua guys!</p><p>Tidak hanya itu, pada tahun ini kami kembali menerima komentar secara terbuka lho guys! Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>"
@@ -48,7 +48,7 @@
             "approachRate": "APPROACH RATE",
             "overallDifficulty": "OVERALL DIFFICULTY",
             "hpDrain": "HP DRAIN",
-            "circleSize": "CIRCLE SIZE"
+            "circleSize": "CIRCLE SIZE",
             "sliders": "TOTAL SLIDER",
             "circles": "TOTAL CIRCLE",
             "avgSlidersPerSet": "RATA-RATA SLIDER PER SET",
@@ -66,7 +66,7 @@
             "mapperAges": "USIA AKUN MAPPER",
             "mapsPerMapperAges": "JUMLAH MAP PER MAPPER PER USIA AKUN",
             "bng": "BNG",
-            "nat": "NAT"
+            "nat": "NAT",
             "uniqueMappers": "TOTAL MAPPER KESELURUHAN",
             "newMappers": "TOTAL MAPPER PENDATANG BARU",
             "highestAvgSr": "RATA-RATA SR TERTINGGI",
