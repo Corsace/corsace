@@ -49,6 +49,16 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                 await nameChange.save();
             }
         }
+
+        // Check if current username is a previous username or not
+        const currentName = await UsernameChange.findOne({
+            name: ctx.state.user.osu.username,
+            user: ctx.state.user,
+        })
+        
+        if (currentName)
+            await currentName.remove();
+
         await next();
     } catch (e) {
         if (e) {
