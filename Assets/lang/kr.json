@@ -149,7 +149,7 @@
                 "description": "인세인 미만의 난이도들로 구성된 최고의 비트맵"
             },
             "highBPM": {
-                "name": "고BPM",
+                "name": "고 BPM",
                 "description": "숨막히는 속도와 노트 밀도를 자랑하는 최고의 비트맵"
             },
             "smallCircles": {
@@ -165,84 +165,84 @@
                 "description": "옛날 스타일의 추억을 불러일으키는 최고의 비트맵"
             },
             "mapper": {
-                "name": "",
-                "description": ""
+                "name": "매퍼",
+                "description": "최고의 비트맵들을 제작한 매퍼"
             },
             "modder": {
-                "name": "",
-                "description": ""
+                "name": "모더",
+                "description": "최고의 모딩을 한 모더"
             },
             "hitsounder": {
-                "name": "",
-                "description": ""
+                "name": "히트사운더",
+                "description": "최고의 히트사운드를 제작한 매퍼"
             },
             "mostPromising": {
-                "name": "",
-                "description": ""
+                "name": "유망주",
+                "description": "올해 첫 랭크맵이 생긴 매퍼"
             },
             "mostInfluential": {
-                "name": "",
-                "description": ""
+                "name": "선구자",
+                "description": "매핑 전반적으로 가장 영향력을 끼친 매퍼"
             },
             "outCont": {
-                "name": "",
-                "description": ""
+                "name": "뛰어난 공헌",
+                "description": "osu! 커뮤니티 전반에 가장 많이 공헌한 유저"
             },
             "spread": {
-                "name": "",
-                "description": ""
+                "name": "스프레드",
+                "description": "최고의 스프레드 구성을 가진 비트맵셋"
             },
             "experimental": {
-                "name": "",
-                "description": ""
+                "name": "힙스터",
+                "description": "보통의 메타에서 벗어난 특이한 비트맵셋"
             },
             "stream": {
-                "name": "",
-                "description": ""
+                "name": "연타",
+                "description": "최고의 연타 패턴으로 구성된 비트맵셋"
             },
             "highBPMTaiko": {
-                "name": "",
-                "description": ""
+                "name": "고 BPM",
+                "description": "240bpm 이상의 최고의 비트맵셋"
             },
             "lowBPMTaiko": {
-                "name": "",
-                "description": ""
+                "name": "저 BPM",
+                "description": "140bpm 이하의 최고의 비트맵셋"
             },
             "simplistic": {
-                "name": "",
-                "description": ""
+                "name": "간소화",
+                "description": "가장 깔끔한 구성의 비트맵셋"
             },
             "sliderVelocity": {
-                "name": "",
-                "description": ""
+                "name": "SV",
+                "description": "슬라이더 SV를 가장 잘 활용한 비트맵셋"
             },
             "longNotes": {
-                "name": "",
-                "description": ""
+                "name": "롱 노트",
+                "description": "롱 노트를 가장 잘 활용한 비트맵셋"
             },
             "antiMeta": {
-                "name": "",
-                "description": ""
+                "name": "안티 메타",
+                "description": "5K/6K/8K/9K 위주의 최고의 비트맵셋"
             },
             "7K": {
-                "name": "",
-                "description": ""
+                "name": "7K",
+                "description": "7K 최고의 비트맵셋"
             },
             "technical": {
-                "name": "",
-                "description": ""
+                "name": "테크니컬",
+                "description": "가장 복잡하고 화려한 스토리보드"
             },
             "gameplay": {
-                "name": "",
-                "description": ""
+                "name": "게임플레이",
+                "description": "게임플레이 요소를 잘 녹여낸 최고의 스토리보드"
             },
             "minimalistic": {
-                "name": "",
-                "description": ""
+                "name": "심플",
+                "description": "최소한으로 최대한을 표현하는 최고의 스토리보드"
             },
             "narrative": {
-                "name": "",
-                "description": ""
+                "name": "동화책",
+                "description": "최고의 이야기를 선사하는 스토리보드"
             }
         },
         "nom_vote": {
@@ -259,24 +259,22 @@
                 "alph": "알파벳순",
                 "asc": "오름차순",
                 "desc": "내림차순",
-                "voteOrder": ""
+                "voteOrder": "투표 순서"
             },
             "hosted": "매퍼",
-            "userID": "매퍼 ID",
-            "select": "",
-            "selectGrand": ""
+            "userID": "유저 ID"
         }
     },
     "main": {
         "header": {
-            "login": "",
-            "register": ""
+            "login": "로그인",
+            "register": "회원가입"
         },
         "index": {
-            "underConstruction": "",
-            "sorry": "",
-            "development": "",
-            "theTeam": ""
+            "underConstruction": "공사중",
+            "sorry": "불편을 드려 죄송합니다",
+            "development": "Corsace 웹사이트는 아직 개발중에 있습니다",
+            "theTeam": "Corsace 팀 올림"
         }
     }
 }
