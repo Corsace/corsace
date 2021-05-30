@@ -54,8 +54,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         const currentName = await UsernameChange.findOne({
             name: ctx.state.user.osu.username,
             user: ctx.state.user,
-        })
-        
+        });
         if (currentName)
             await currentName.remove();
 

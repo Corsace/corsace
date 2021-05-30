@@ -3,6 +3,7 @@ import OAuth2Strategy from "passport-oauth2";
 import { User, OAuth } from "../Models/user";
 import Axios from "axios";
 import { discordClient } from "./discord";
+import { UsernameChange } from "../Models/usernameChange";
 
 // If you are looking for osu and discord auth login endpoints info then go to Main > api > routes > login
 
@@ -53,6 +54,17 @@ async function osuPassport (accessToken: string, refreshToken: string, profile: 
             user = new User;
             user.osu = new OAuth;
             user.osu.dateAdded = user.registered = new Date;
+        } else if (user.osu.username !== userProfile.username) {
+            let nameChange = await UsernameChange.findOne({ 
+                name: user.osu.username, 
+                user, 
+            });
+            if (!nameChange) {
+                nameChange = new UsernameChange;
+                nameChange.name = user.osu.username;
+                nameChange.user = user;
+                await nameChange.save();
+            }
         }
 
         user.osu.userID = userProfile.id;
