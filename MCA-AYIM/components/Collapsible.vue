@@ -56,8 +56,10 @@
                         <div
                             v-if="'count' in item && 'maxNominations' in item"
                             class="collapsible__count"
-                            :class="[
-                                { 'collapsible__count--active': isSelected(item) },
+                            :class="[{
+                                    'collapsible__count--inactive': clickable && item.inactive,
+                                    'collapsible__count--active': isSelected(item)
+                                },
                                 item.maxNominations !== 100 && item.count === item.maxNominations ? `collapsible__count--${selectedMode}` : '',
                                 item.maxNominations !== 100 && item.count === item.maxNominations && isSelected(item) ? `collapsible__count--active--${selectedMode}` : '',
                             ]"
@@ -302,6 +304,10 @@ export default class Collapsible extends Vue {
         background-color: white;
         color: rgba(0, 0, 0, 0.6);
         box-shadow: 0 0 10px white;
+    }
+
+    &--inactive {
+        opacity: .5;
     }
 
     @include mode-border;
