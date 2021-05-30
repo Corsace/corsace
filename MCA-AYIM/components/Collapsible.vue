@@ -5,7 +5,10 @@
     >
         <div
             class="collapsible__title"
-            :class="{ 'collapsible__title--active': active }"
+            :class="{ 
+                'collapsible__title--active': active,
+                'collapsible__title--hoverable': clickable && !active
+            }"
             @click="activate"
         >
             {{ title }}
@@ -28,11 +31,15 @@
                     @click="setTarget(item)"
                 >
                     <div
-                        :class="{
-                            'collapsible__name': clickable && !item.inactive,
-                            'collapsible__name--inactive': clickable && item.inactive,
-                            'collapsible__name--active': showExtra && isSelected(item),
-                        }"
+                        :class="[{
+                                'collapsible__name': clickable && !item.inactive,
+                                'collapsible__name--inactive': clickable && item.inactive,
+                                'collapsible__name--active': showExtra && isSelected(item),
+                            }, 
+                            'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count === item.maxNominations ? `collapsible__name--${selectedMode}` : '',
+                            'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count === item.maxNominations && showExtra && isSelected(item) ? `collapsible__name--active--${selectedMode}` : '',
+
+                        ]"
                     >
                         {{ categoryName ? $t(`mca.categories.${item.name}.name`) : item.name }} 
                         {{ extraTitle(item) }}
@@ -49,7 +56,11 @@
                         <div
                             v-if="'count' in item && 'maxNominations' in item"
                             class="collapsible__count"
-                            :class="{'collapsible__count--active': isSelected(item)}"
+                            :class="[
+                                { 'collapsible__count--active': isSelected(item) },
+                                item.maxNominations !== 100 && item.count === item.maxNominations ? `collapsible__count--${selectedMode}` : '',
+                                item.maxNominations !== 100 && item.count === item.maxNominations && isSelected(item) ? `collapsible__count--active--${selectedMode}` : '',
+                            ]"
                         >
                             {{ item.maxNominations !== 100 ? item.count + " / " + item.maxNominations : item.count }}
                         </div>
@@ -181,6 +192,10 @@ export default class Collapsible extends Vue {
 
         &--active {
             cursor: default;
+        }
+
+        &--active, &--hoverable:hover {
+            @include transition;
             color: white;
             text-shadow: 0 0 8px white;
         }
@@ -242,7 +257,7 @@ export default class Collapsible extends Vue {
     cursor: pointer;
     @include transition;
 
-    &:hover, &--active {
+    &--active, &:hover {
         text-shadow: 0 0 8px white;
         font-size: 1.088rem;
         font-weight: 500;
@@ -252,9 +267,17 @@ export default class Collapsible extends Vue {
         }
     }
 
+    @each $mode in $modes {
+        &--active--#{$mode}, &--#{$mode}:hover {
+            text-shadow: 0 0 8px var(--#{$mode});
+        }
+    }
+
     &--inactive {
         opacity: .5;
     }
+
+    @include mode-text-color;
 }
 
 .collapsible__count {
@@ -279,6 +302,17 @@ export default class Collapsible extends Vue {
         background-color: white;
         color: rgba(0, 0, 0, 0.6);
         box-shadow: 0 0 10px white;
+    }
+
+    @include mode-border;
+    @include mode-text-color;
+
+    @each $mode in $modes {
+        &--active--#{$mode}, &--#{$mode}:hover {
+            background-color: var(--#{$mode});
+            color: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 16px var(--#{$mode});
+        }
     }
 }
 
