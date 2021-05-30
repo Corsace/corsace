@@ -21,6 +21,13 @@
                         class="category-selection__beatmap"
                     />
                 </template>
+
+                <div
+                    v-if="loading"
+                    class="category-selection__loading"
+                >
+                    Loading...
+                </div>
             </div>
             <scroll-bar
                 selector=".category-selection__maps"
@@ -58,6 +65,7 @@ export default class StagePageList extends Vue {
     @stageModule.State section!: SectionCategory;
     @stageModule.State users!: UserChoiceInfo[];
     @stageModule.State beatmaps!: BeatmapsetInfo[];
+    @stageModule.State loading!: boolean;
     @stageModule.State showVoteChoiceBox!: boolean;
     @stageModule.Action search;
     
@@ -103,6 +111,14 @@ export default class StagePageList extends Vue {
         @include breakpoint(tablet) {
             mask-image: linear-gradient(to top, transparent 0%, black 25%);
         }
+    }
+
+    &__loading {
+        @extend %flex-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
     }
 }
 

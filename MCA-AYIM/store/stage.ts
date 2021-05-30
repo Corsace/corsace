@@ -21,6 +21,7 @@ interface StageState {
     beatmaps: BeatmapsetInfo[];
     users: UserChoiceInfo[];
     query: StageQuery;
+    loading: boolean,
     showVoteChoiceBox: boolean;
 }
 
@@ -41,6 +42,7 @@ export const state = (): StageState => ({
         text: "",
         skip: 0,
     },
+    loading: true,
     showVoteChoiceBox: false,
 });
 
@@ -183,6 +185,7 @@ export const actions: ActionTree<StageState, RootState> = {
         let skip = 0;
 
         if (skipping) {
+            state.loading = true;
             if (state.selectedCategory.type === "Users") skip = state.users.length;
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
@@ -190,6 +193,8 @@ export const actions: ActionTree<StageState, RootState> = {
         const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&text=${state.query.text}&skip=${skip}`);
         if (data.error)
             return alert(data.error);
+
+        state.loading = false;
 
         commit("updateCount", data.count);
 

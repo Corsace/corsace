@@ -56,6 +56,12 @@
                 </div>
             </div>
         </list-transition>
+        <div
+            v-if="loading"
+            class="ayim-comments__loading"
+        >
+            Loading...
+        </div>
     </display-layout>
 </template>
 
@@ -89,6 +95,7 @@ export default class Comments extends Vue {
     @State mca!: MCA;
     @State selectedMode!: string;
 
+    loading = false;
     text = "";
     userOption = "alph";
     orderOption = "asc";
@@ -125,6 +132,7 @@ export default class Comments extends Vue {
     }
 
     async getMappers (replace = true) {
+        this.loading = true;
         const { data } = await this.$axios.get(`/api/mappers/search?skip=${replace ? 0 : this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&option=${this.userOption}&order=${this.orderOption.toUpperCase()}&text=${this.text}`);
 
         if (data.error)
@@ -133,6 +141,8 @@ export default class Comments extends Vue {
             this.mappers = data;
         else
             this.mappers.push(...data);
+
+        this.loading = false;
     }
 
 }
@@ -167,8 +177,20 @@ export default class Comments extends Vue {
     }
 }
 
-.ayim-comments__filter {
-    display: flex;
-    width: 100%;
+.ayim-comments {
+    
+    &__loading {
+        @extend %flex-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        width: 100%;
+    }
+
+    &__filter {
+        display: flex;
+        width: 100%;
+    }
 }
 </style>
