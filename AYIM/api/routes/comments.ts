@@ -179,6 +179,7 @@ commentsRouter.post("/:id/update", isLoggedIn, canComment, isCommentOwner, async
 
     comment.comment = newComment;
     comment.isValid = false;
+    comment.reviewer = comment.lastReviewedAt = undefined;
     await comment.save();
 
     ctx.body = comment;

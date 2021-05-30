@@ -15,7 +15,6 @@ commentsReviewRouter.get("/", async (ctx) => {
     const comments = await UserComment.find({
         where: {
             year: mca.year,
-            isValid: false,
         },
         relations: ["target", "reviewer", "commenter"],
     });

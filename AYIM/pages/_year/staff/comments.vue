@@ -47,6 +47,12 @@
                                 {{ comment.target.osu.username }}
                             </a>
                         </div>
+                        <div 
+                            v-if="comment.isValid"
+                            class="button__add"
+                        >
+                            Validated by {{ comment.reviewer.osu.username }} at {{ new Date(comment.lastReviewedAt).toString() }}
+                        </div>
                     </div>
 
                     <textarea 
@@ -90,6 +96,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
 import { Comment } from "../../../../Interfaces/comment";
+import { User } from "../../../../Interfaces/user";
 
 interface GroupedComment {
     mode: string;
@@ -145,6 +152,11 @@ export default class StaffComments extends Vue {
             this.info = res.data.error;
         } else if (res.data) {
             this.info = "ok";
+            const resComment = res.data;
+            this.comments[i].isValid = resComment.isValid;
+            this.comments[i].reviewer = resComment.reviewer;
+            (this.comments[i].reviewer as User).osu.username = resComment.reviewer.osu.username;
+            this.comments[i].lastReviewedAt = resComment.lastReviewedAt;
         }
     }
 
@@ -179,7 +191,7 @@ export default class StaffComments extends Vue {
             this.info = data.error;
         } else if (data.success) {
             this.info = data.success;
-            this.comments = this.comments.filter(c => c.commenter.ID !== id);
+            this.comments = this.comments.filter(c => !(c.commenter.ID === id && !c.isValid));
         }
     }
 
