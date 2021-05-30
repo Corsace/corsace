@@ -68,27 +68,32 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     beatmapSet.tags = beatmap.tags.join(" ");
     beatmapSet.favourites = beatmap.favoriteCount;
 
-    let user: User | undefined = await User.findOne({ osu: { userID: `${beatmap.creatorId}` } });
-    if (user) {
-        if (user.osu.username !== beatmap.creator) {
-            if(!user.otherNames.some(v => v.name === user!.osu.username)) {
-                let nameChange = await UsernameChange.findOne({ name: user.osu.username, user });
-                nameChange = new UsernameChange;
-                nameChange.user = user;
-                nameChange.name = user.osu.username;
-                await nameChange.save();
-            }
-
-            user.osu.username = beatmap.creator;
-            await user.save();
-        }
-    } else {
+    let user = await User.findOne({ osu: { userID: `${beatmap.creatorId}` } });
+    
+    if (!user) {
         user = new User;
         user.osu = new OAuth;
         user.osu.userID = `${beatmap.creatorId}`;
         user.osu.username = beatmap.creator;
         user.osu.avatar = "https://a.ppy.sh/" + beatmap.creatorId;
         user = await user.save();
+    } else if (user.osu.username !== beatmap.creator) {
+        // Check if old exists (add if it doesn't)
+        if (!user.otherNames.some(v => v.name === user!.osu.username)) {
+            let nameChange = new UsernameChange;
+            nameChange.name = user.osu.username;
+            nameChange.user = user;
+            await nameChange.save();
+            user.otherNames.push(nameChange);
+        }
+
+        // Check if new exists (remove if it does)
+        if (user.otherNames.some(v => v.name === beatmap.creator)) {
+            await user.otherNames.find(v => v.name === beatmap.creator)!.remove();
+            user.otherNames = user.otherNames.filter(v => v.name !== beatmap.creator)
+        }
+        user.osu.username = beatmap.creator;
+        await user.save();
     }
     beatmapSet.creator = user;
 
