@@ -68,29 +68,32 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     beatmapSet.tags = beatmap.tags.join(" ");
     beatmapSet.favourites = beatmap.favoriteCount;
 
-    let user: User | undefined = await User.findOne({ osu: { userID: `${beatmap.creatorId}` } });
-    if (user) {
-        if (user.osu.username !== beatmap.creator && !user.otherNames.some(v => v.name === beatmap.creator)) { // Check for username change
-            let nameChange = await UsernameChange.findOne({ name: beatmap.creator, user });
-            if (nameChange)
-                await nameChange.remove();
-
-            const oldName = user.osu.username;
-            user.osu.username = beatmap.creator;
-            await user.save();
-
-            nameChange = new UsernameChange;
-            nameChange.user = user;
-            nameChange.name = oldName;
-            await nameChange.save();
-        }
-    } else {
+    let user = await User.findOne({ osu: { userID: `${beatmap.creatorId}` } });
+    
+    if (!user) {
         user = new User;
         user.osu = new OAuth;
         user.osu.userID = `${beatmap.creatorId}`;
         user.osu.username = beatmap.creator;
         user.osu.avatar = "https://a.ppy.sh/" + beatmap.creatorId;
         user = await user.save();
+    } else if (user.osu.username !== beatmap.creator) {
+        // Check if old exists (add if it doesn't)
+        if (!user.otherNames.some(v => v.name === user!.osu.username)) {
+            let nameChange = new UsernameChange;
+            nameChange.name = user.osu.username;
+            nameChange.user = user;
+            await nameChange.save();
+            user.otherNames.push(nameChange);
+        }
+
+        // Check if new exists (remove if it does)
+        if (user.otherNames.some(v => v.name === beatmap.creator)) {
+            await user.otherNames.find(v => v.name === beatmap.creator)!.remove();
+            user.otherNames = user.otherNames.filter(v => v.name !== beatmap.creator)
+        }
+        user.osu.username = beatmap.creator;
+        await user.save();
     }
     beatmapSet.creator = user;
 
@@ -98,9 +101,12 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     bmsInserted++;
     existingSets.push(beatmap.setId);
     return beatmapSet;
-}, { max: 200 });
+}, {
+    max: 200,
+    normalizer: ([beatmap]) => `${beatmap.setId}`,
+});
 
-const getMCAEligibility = memoizee(async function(year, user) {
+const getMCAEligibility = memoizee(async function(year: number, user: User) {
     let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year, user }});
     if (!eligibility) {
         eligibility = new MCAEligibility();
@@ -108,7 +114,12 @@ const getMCAEligibility = memoizee(async function(year, user) {
         eligibility.user = user;
     }
     return eligibility;
-}, { max: 200 });
+}, {
+    max: 200,
+    normalizer: ([year, user]) => {
+        return `${year}-${user.ID}`;
+    },
+});
 
 async function insertBeatmap (apiBeatmap: APIBeatmap) {
     let beatmap = new Beatmap;
@@ -138,7 +149,7 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
     beatmap.beatmapset = await getBeatmapSet(apiBeatmap);
 
     if (!beatmap.difficulty.includes("'")) {
-        const eligibility = await getMCAEligibility(apiBeatmap.approvedDate.getFullYear(), beatmap.beatmapset.creator);
+        const eligibility = await getMCAEligibility(apiBeatmap.approvedDate.getUTCFullYear(), beatmap.beatmapset.creator);
         if (!eligibility[modeList[apiBeatmap.mode as number]]) {
             eligibility[modeList[apiBeatmap.mode as number]] = true;
             eligibility.storyboard = true;
@@ -185,11 +196,11 @@ async function script () {
     const progressInterval = setInterval(printStatus, 1000);
 
     let since = new Date((await Beatmapset.findOne({ order: { approvedDate: "DESC" } }))?.approvedDate || new Date("2006-01-01"));
-    console.log(`Fetching all beatmaps starting from ${since.toJSON()}...`);
+    console.log(`Fetching all beatmaps starting from ${since.toJSON()} until ${year}-12-31...`);
     printStatus();
     const queuedBeatmapIds: number[] = [];
     while (since.getTime() < until.getTime()) {
-        const newBeatmapsApi = (await axios.get(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${since.toJSON().slice(0,19).replace("T", " ")}`)).data as any[];
+        const newBeatmapsApi = (await axios.get(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${(new Date(since.getTime() - 1000)).toJSON().slice(0,19).replace("T", " ")}`)).data as any[];
         for(const newBeatmapApi of newBeatmapsApi) {
             const newBeatmap = new APIBeatmap(newBeatmapApi);
             if(queuedBeatmapIds.includes(newBeatmap.id))
