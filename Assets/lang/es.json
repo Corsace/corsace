@@ -89,7 +89,7 @@
             "remove": "Eliminar",
             "create": "Crear",
             "login": "Iniciar sesión para comentar",
-            "visible": "(todavia no visible)",
+            "visible": "(todavia no visible)"
         },
         "statistics": {
             "numberOf": "",
@@ -119,7 +119,7 @@
             "daysLeft": "días restantes",
             "message": {
                 "2019": "<p>Mappers Choice Awards está de vuelta por el round 4 en 2019! Éste es un evento de votación en el que todos los mappers/modders pueden nominar y votar a quien crean que sea el mejor mapa/mapper para cada categoría!</p><p>Nuestra intención es otorgar una nueva perspectiva hacia los mejores mapas del 2019 a través de los ojos de la comunidad de mapping en comparación al Community Choice!</p><p>Este año, hemos trabajado a fondo en este nuevo sitio para facilitarle lo máximo posible a los votantes para que voten y nominen ahora!</p><p>Todos los premios de osu! supporter serán proporcionados por el staff de osu! directamente. 2 meses de supporter para </p><p>Esperamos que participen en este evento tantos participantes como sea posible!</p>",
-                "2020": "<p>Una vez más, Mapper's Choice Awards está de vuelta para finalizar el round 5 con 2020! Éste es un evento de votación en el que todos los mappers/modders pueden nominar y votar a quien crean que sea el mejor mapa/mapper para cada categoría!</p><p>Nuestra intención es otorgar una nueva perspectiva hacia los mejores mapas del 2020 a través de los ojos de la comunidad de mapping en comparación al Community Choice!</p><p>Hemos realizado bastantes cambios y ojalá reparado todos los bugs que fueron encontrados a raiz del MCA 2019 además de cambiar las categorías en base a lo necesario así que esta vez todo debería ir mejor!</p><p>Esperamos que participen en este evento tantos participantes como sea posible!</p>",
+                "2020": "<p>Una vez más, Mapper's Choice Awards está de vuelta para finalizar el round 5 con 2020! Éste es un evento de votación en el que todos los mappers/modders pueden nominar y votar a quien crean que sea el mejor mapa/mapper para cada categoría!</p><p>Nuestra intención es otorgar una nueva perspectiva hacia los mejores mapas del 2020 a través de los ojos de la comunidad de mapping en comparación al Community Choice!</p><p>Hemos realizado bastantes cambios y ojalá reparado todos los bugs que fueron encontrados a raiz del MCA 2019 además de cambiar las categorías en base a lo necesario así que esta vez todo debería ir mejor!</p><p>Esperamos que participen en este evento tantos participantes como sea posible!</p>"
             },
             "categories": {
                 "map": "categoría de mapas",
@@ -264,7 +264,7 @@
                 "voteOrder": "ÓRDEN DE VOTO"
             },
             "hosted": "ORGANIZADO POR",
-            "userID": "ID DE USUARIO",
+            "userID": "ID DE USUARIO"
         }
     },
     "main": {
