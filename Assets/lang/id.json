@@ -14,13 +14,13 @@
         "login": {
             "login": "masuk",
             "message": {
-                "1": "Sepertinya Anda belum terhubung masuk!<br>Anda harus masuk terlebih dahulu dengan menggunakan akun osu! Anda untuk dapat mulai menominasikan beatmap dan menyalurkan hak suara Anda.",
-                "2": "Anda juga dapat masuk dengan menggunakan Discord setelahnya, namun hal ini <b>tidak bersifat wajib</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staf yang bertugas.</b></span>"
+                "1": "Sepertinya kamu belum terhubung masuk!<br>Kamu harus masuk terlebih dahulu dengan menggunakan akun osu! yang kamu miliki untuk dapat mulai menominasikan beatmap dan menyalurkan hak suaramu.",
+                "2": "Kamu juga dapat masuk dengan menggunakan Discord, namun hal ini <b>tidak diwajibkan</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staf yang bertugas.</b></span>"
             },
-            "authOsu": "klik di sini untuk menghubungkan akun osu! Anda",
-            "authOsuComp": "akun osu! Anda telah terhubung. Halo ",
-            "authDiscord": "klik di sini untuk menghubungkan akun Discord Anda",
-            "authDiscordComp": "akun Discord Anda telah terhubung. Halo "
+            "authOsu": "klik di sini untuk menghubungkan akun osu! milikmu",
+            "authOsuComp": "akun osu! milikmu telah terhubung. Halo ",
+            "authDiscord": "klik di sini untuk menghubungkan akun Discord milikmu",
+            "authDiscordComp": "akun Discord milikmu telah terhubung. Halo "
         }
     },
     "ayim": {
@@ -230,7 +230,7 @@
             },
             "technical": {
                 "name": "Technical",
-                "description": "Storyboard yang secara teknis terbaik."
+                "description": "Storyboard yang paling memukau secara teknis."
             },
             "gameplay": {
                 "name": "Gameplay",
