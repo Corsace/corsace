@@ -127,7 +127,7 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
     beatmap.mode = await getModeDivison(apiBeatmap.mode as number);
     beatmap.difficulty = apiBeatmap.version;
     beatmap.circleSize = apiBeatmap.CS;
-    beatmap.approachRate = apiBeatmap.CS;
+    beatmap.approachRate = apiBeatmap.AR;
     beatmap.overallDifficulty = apiBeatmap.OD;
     beatmap.hpDrain = apiBeatmap.HP;
     beatmap.circles = apiBeatmap.countNormal;
