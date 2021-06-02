@@ -56,15 +56,15 @@
             "spinners": "TOTAL SPINNER", 
             "avgSpinnersPerDiff": "RATA-RATA SPINNER PER TINGKAT KESULITAN",
             "avgSlidersPerDiff": "RATA-RATA SLIDER PER TINGKAT KESULITAN",
-            "avgCirclesPerDiff": "RATA-RATA CIRCLE PER TINGKAT KESULITAN"            
+            "avgCirclesPerDiff": "RATA-RATA CIRCLE PER TINGKAT KESULITAN",          
             "highestSr": "STAR RATING TERTINGGI",
-            "lowestSr": "STAR RATING TERENDAH",
+            "lowestSr": "STAR RATING TERENDAH"
         },
         "mappers": {
             "name": "MAPPER",
             "mostRanked": "TOTAL BEATMAP RANKED TERBANYAK",
             "mostFavs": "TOTAL FAVORIT TERBANYAK",
-            "mostFavsExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID)"            
+            "mostFavsExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID)",          
             "mostPlayed": "TOTAL PLAYCOUNT TERBANYAK",
             "mostDiffs": "TOTAL TINGKAT KESULITAN TERBANYAK",            
             "totalMappers": "TOTAL MAPPER",
@@ -77,7 +77,7 @@
             "newMappers": "TOTAL MAPPER PENDATANG BARU",
             "highestAvgSr": "RATA-RATA SR TERTINGGI",
             "lowestAvgSr": "RATA-RATA SR TERENDAH",
-            "mappers": "MAPPER",
+            "mappers": "MAPPER"
         },
         "statistics": {
             "numberOf": "total",
@@ -86,7 +86,7 @@
         },
         "comments": {
             "name": "KOMENTAR",
-            "info": "Semua komentar yang masuk akan dipublikasikan segera setelah hasil akhir MCA diumumkan! Kamu dibebaskan untuk berkomentar hingga waktu pengumuman hasil MCA tiba.",
+            "info": "Semua komentar yang masuk akan dipublikasikan segera setelah hasil akhir MCA diumumkan! Kamu dibebaskan untuk berkomentar hingga hari pengumuman hasil MCA.",
             "search": "cari mapper",
             "viewSubmit": "lihat/kirim komentar",
             "writeHere": "Berikan komentarmu untuk mapper ini!",
