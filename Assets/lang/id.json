@@ -28,8 +28,8 @@
             "records": "REKAM JEJAK",
             "statistics": "STATISTIK",
             "search": "cari mapper",
-            "numberof": "jumlah",
-            "numberwith": "jumlah map dengan",
+            "numberof": "total",
+            "numberwith": "total map dengan",
             "message": {
                 "2019": "<p>Halo, 2020!</p>A Year in Mapping 2019 kembali hadir ke hadapan kalian semua guys! Seperti tahun-tahun sebelumnya, A Year in Mapping merupakan suatu bentuk napak tilas atas apa-apa saja yang telah terjadi di dalam dunia mapping dan modding selama satu tahun ke belakang.</p><p>Pada situs web ini, kamu dapat menemukan berbagai informasi menarik seputar mapping yang disajikan secara terperinci. Apabila kamu memiliki kritik atau saran, jangan sungkan untuk menghubungi VINXIS melalui server Corsace (yang link-nya dapat Anda jumpai pada pojok kiri bawah layar) ya guys!</p><p>Oh ya, pada tahun ini kami juga MENERIMA KOMENTAR SECARA TERBUKA lho guys! Kamu dapat memberikan komentar sebanyak-banyaknya kepada mapper-mapper yang kamu kehendaki sesuka hatimu!</p><p>Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>",
                 "2020": "<p>Halo, 2021… akhirnya kita berjumpa lagi!</p>Setelah pada tahun lalu kami harus membatalkan penyelenggaraan A Year in Mapping karena satu dan lain hal, A Year in Mapping 2020 kali ini (benar-benar) kembali hadir ke hadapan kalian semua guys!</p><p>Tidak hanya itu, pada tahun ini kami kembali menerima komentar secara terbuka lho guys! Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>"
@@ -37,10 +37,12 @@
         },
         "mapsets": {
             "name": "MAPSET",
-            "playcount": "JUMLAH PERMAINAN",
-            "favourites": "JUMLAH FAVORIT",
-            "length": "DURASI",
+            "playcount": "TOTAL PLAYCOUNT TERBANYAK",
+            "favourites": "TOTAL FAVORIT TERBANYAK",
+            "favouritesExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID)",            
+            "length": "DURASI LAGU TERPANJANG",
             "difficulties": "TINGKAT KESULITAN",
+            "playTime": "TOTAL DURASI SELURUH TINGKAT KESULITAN",            
             "totalRanked": "TOTAL RANKED",
             "totalDiff": "TOTAL TINGKAT KESULITAN",
             "submitDates": "WAKTU PENGUNGGAHAN",
@@ -51,24 +53,24 @@
             "circleSize": "CIRCLE SIZE",
             "sliders": "TOTAL SLIDER",
             "circles": "TOTAL CIRCLE",
+            "spinners": "TOTAL SPINNER", 
+            "avgSpinnersPerDiff": "RATA-RATA SPINNER PER TINGKAT KESULITAN",
+            "avgSlidersPerDiff": "RATA-RATA SLIDER PER TINGKAT KESULITAN",
+            "avgCirclesPerDiff": "RATA-RATA CIRCLE PER TINGKAT KESULITAN"            
             "highestSr": "STAR RATING TERTINGGI",
             "lowestSr": "STAR RATING TERENDAH",
-            "favouritesExclHybrid": "",
-            "playTime": "",
-            "spinners": "",
-            "avgSpinnersPerDiff": "",
-            "avgSlidersPerDiff": "",
-            "avgCirclesPerDiff": ""
         },
         "mappers": {
             "name": "MAPPER",
-            "mostRanked": "BEATMAP RANKED TERBANYAK",
-            "mostFavs": "PALING DIFAVORITKAN",
-            "mostPlayed": "PALING BANYAK DIMAINKAN",
+            "mostRanked": "TOTAL BEATMAP RANKED TERBANYAK",
+            "mostFavs": "TOTAL FAVORIT TERBANYAK",
+            "mostFavsExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID)"            
+            "mostPlayed": "TOTAL PLAYCOUNT TERBANYAK",
+            "mostDiffs": "TOTAL TINGKAT KESULITAN TERBANYAK",            
             "totalMappers": "TOTAL MAPPER",
             "newMapperAges": "USIA AKUN MAPPER BARU",
             "mapperAges": "USIA AKUN MAPPER",
-            "mapsPerMapperAges": "JUMLAH MAP PER MAPPER PER USIA AKUN",
+            "mapsPerMapperAges": "TOTAL MAP PER MAPPER PER USIA AKUN",
             "bng": "BNG",
             "nat": "NAT",
             "uniqueMappers": "TOTAL MAPPER KESELURUHAN",
@@ -76,12 +78,10 @@
             "highestAvgSr": "RATA-RATA SR TERTINGGI",
             "lowestAvgSr": "RATA-RATA SR TERENDAH",
             "mappers": "MAPPER",
-            "mostDiffs": "",
-            "mostFavsExclHybrid": ""
         },
         "statistics": {
-            "numberOf": "jumlah",
-            "numberOfMapsWith": "jumlah map dengan",
+            "numberOf": "total",
+            "numberOfMapsWith": "total map dengan",
             "average": "rata-rata"
         },
         "comments": {
