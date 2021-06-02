@@ -118,8 +118,8 @@
             "voteNow": "vote sekarang !",
             "daysLeft": "hari tersisa",
             "message": {
-                "2019": "<p>Mapper's Choice Awards hadir kembali untuk keempat kalinya di tahun 2019 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Oh ya, pada tahun ini kami juga telah secara khusus menyediakan situs web bagi Mapper's Choice Awards agar para mapper/modder yang memiliki hak suara dapat menyalurkan suaranya dengan lebih mudah lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>",
-                "2020": "<p>Langsung tanpa jeda, Mapper's Choice Awards hadir kembali untuk kelima kalinya di tahun 2020 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Tidak hanya itu, pada tahun kami ini telah banyak berbenah untuk dapat menyajikan Mapper’s Choice Awards yang lebih baik dari tahun-tahun sebelumnya lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>"
+                "2019": "<p>Mapper's Choice Awards hadir kembali untuk keempat kalinya di tahun 2019 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Oh ya, pada tahun ini kami juga telah secara khusus menyediakan situs web bagi Mapper's Choice Awards agar para mapper/modder yang memiliki hak suara dapat menyalurkan suaranya dengan lebih mudah lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>",
+                "2020": "<p>Tanpa harus menunggu lama, Mapper's Choice Awards hadir kembali untuk kelima kalinya di tahun 2020 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Tidak hanya itu, pada tahun kami ini telah banyak berbenah untuk dapat menyajikan Mapper’s Choice Awards yang lebih baik dari tahun-tahun sebelumnya lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>"
             },
             "categories": {
                 "map": "kategori map",
@@ -247,7 +247,9 @@
         },
         "nom_vote": {
             "search": "cari beatmap/user",
-            "candidates": "kandidat",
+            "select": "Harap pilih kategori!",
+            "selectGrand": "Kamu diwajibkan untuk memulai dari kategori Grand Award"
+            "candidates": "kandidat",           
             "options": {
                 "date": "TANGGAL",
                 "artist": "ARTIS",
@@ -263,8 +265,6 @@
             },
             "hosted": "DI-HOST OLEH",
             "userID": "USER ID",
-            "select": "",
-            "selectGrand": ""
         }
     },
     "main": {
