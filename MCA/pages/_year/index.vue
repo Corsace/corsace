@@ -139,8 +139,8 @@ export default class Index extends Vue {
 
     &__wheel-img {
         display: none;
-        width: 960px;
-        height: 960px;
+        width: 965px;
+        height: 965px;
         background: url("../../../Assets/img/ayim-mca/site/wheel.png") no-repeat center;
         background-size: cover;
         left: -730px;
