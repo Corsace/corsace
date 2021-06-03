@@ -95,6 +95,12 @@
             </list-transition>
         </div>
     </display-layout>
+    <div
+        v-else
+        class="ayim-comments__loading"
+    >
+        Loading...
+    </div>
 </template>
 
 <script lang="ts">
