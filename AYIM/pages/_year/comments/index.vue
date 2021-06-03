@@ -11,11 +11,13 @@
                 >
                     <toggle-button
                         :options="userOptions"
+                        :arrow="orderOption"
                         @change="changeOption"
                     />
                     
                     <toggle-button
                         :options="orderOptions"
+                        :arrow="orderOption"
                         @change="changeOrder"
                     />
                 </search-bar>

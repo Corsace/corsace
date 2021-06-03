@@ -4,16 +4,6 @@
         :placeholder="$t('mca.nom_vote.search')"
         @update:search="updateText($event)"
     >
-        <toggle-button
-            :options="sectionOptions"
-            @change="changeOption"
-        />
-        
-        <toggle-button
-            :options="orderOptions"
-            @change="changeOrder"
-        />
-
         <button
             v-if="$route.params.stage === 'voting'"
             class="button"
@@ -22,6 +12,18 @@
         >
             {{ $t(`mca.nom_vote.options.voteOrder`) }}
         </button>
+
+        <toggle-button
+            :options="sectionOptions"
+            :arrow="orderOption"
+            @change="changeOption"
+        />
+        
+        <toggle-button
+            :options="orderOptions"
+            :arrow="orderOption"
+            @change="changeOrder"
+        />
     </search-bar>
 </template>
 
@@ -55,6 +57,7 @@ export default class StagePageFilters extends Vue {
     userOptions = ["alph", "id"];
     orderOptions = ["asc", "desc"];
     votingOptions = ["incVote", "voteChoice"];
+    orderOption = "asc";
 
     get sectionOptions () {
         if (this.section === "beatmaps") return this.beatmapOptions;
@@ -70,6 +73,7 @@ export default class StagePageFilters extends Vue {
     }
 
     changeOrder (order: string) {
+        this.orderOption = order;
         this.debounce({ order: order.toUpperCase() });
     }
     
