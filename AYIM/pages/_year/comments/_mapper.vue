@@ -97,7 +97,7 @@
     </display-layout>
     <div
         v-else
-        class="ayim-comments__loading"
+        class="ayim-comment__loading"
     >
         Loading...
     </div>
@@ -171,6 +171,7 @@ export default class MapperComments extends Vue {
 
         if (data.error) {
             alert(data.error);
+            this.$router.push(`/${this.mca.year}/comments`);
         } else {
             this.comments = data.comments;
             this.user = data.user;
@@ -265,6 +266,14 @@ export default class MapperComments extends Vue {
     @include breakpoint(laptop) {
         flex-wrap: nowrap;
         justify-content: start;
+    }
+
+    &__loading {
+        @extend %flex-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
     }
 
     &__image {
