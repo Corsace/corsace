@@ -1,6 +1,6 @@
 Please use this repository when you are changing any of the code for Corsace projects.
 
-To get started:
+Before getting started:
 ```
 git clone https://github.com/Corsace/Corsace
 ```
@@ -12,7 +12,7 @@ npm i
 
 ## Getting Started
 
-Duplicate `config/default.json` to `config/user/$USER.json`, `$USER` being your system username. Edit all parts as necessary. 
+Duplicate `config/default.json` to `config/user/$USER.json`, `$USER` being your system username [(accessible via node's process.env.USER or USERNAME)](https://github.com/tusharmath/node-config-ts#using-files).
 The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
 
 ### osu! API
