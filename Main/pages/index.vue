@@ -248,6 +248,7 @@ $dark: #0f0f0f;
 $dark-dark-gray: #141414;
 $dark-gray: #242424;
 $gray: #343434;
+$light-gray: #cccccc;
 $pink: #e98792;
 
 @keyframes leftscroll {
@@ -341,6 +342,7 @@ $pink: #e98792;
 }
 
 .subfooter {
+    color: $light-gray;
     background-color: $dark-dark-gray;
     display: flex;
     align-items: center;
