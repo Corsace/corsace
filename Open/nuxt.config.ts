@@ -14,8 +14,8 @@ fs.readdirSync("../Assets/lang").forEach(file => {
 
 export default {
     server: {
-        host: config.corsace.host,
-        port: config.corsace.port,
+        host: config.open.host,
+        port: config.open.port,
     },
     head: {
         link: [
