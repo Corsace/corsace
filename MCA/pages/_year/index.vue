@@ -29,8 +29,15 @@
             </div>
 
             <div class="general-info">
-                <p v-if="phase.startDate && phase.endDate">
-                    {{ timeRange }}
+                <p
+                    :class="`general-info--${selectedMode}`"
+                    v-if="phase.startDate && phase.endDate"
+                >
+                    {{ $t(`mca.main.stage.${phase.phase}`).toUpperCase() }}
+                    <br>
+                    {{ this.phase.startDate.toLocaleString(dateInfo.locale, options) }}
+                    <br>
+                    {{ this.phase.endDate.toLocaleString(dateInfo.locale, options) }}
                 </p>
                 <div v-html="$t(`mca.main.message.${$route.params.year}`)" />
             </div>
@@ -46,7 +53,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter } from "vuex-class";
+import { Getter, State } from "vuex-class";
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import IndexPage from "../../components/IndexPage.vue";
@@ -66,7 +73,12 @@ import { Phase } from "../../../Interfaces/mca";
 })
 export default class Index extends Vue {
 
+    @State selectedMode!: string;
+
     @Getter phase!: Phase;
+
+    dateInfo = Intl.DateTimeFormat().resolvedOptions();
+    options: Intl.DateTimeFormatOptions = { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
 
     mounted () {
         let days = 0;
@@ -87,13 +99,6 @@ export default class Index extends Vue {
 
     get remainingDays (): number {
         return Math.floor((this.phase?.endDate?.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-    }
-
-    get timeRange (): string {
-        const dateInfo = Intl.DateTimeFormat().resolvedOptions();
-        const options: Intl.DateTimeFormatOptions = { timeZone: dateInfo.timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
-
-        return this.phase?.startDate.toLocaleString(dateInfo.locale, options) + " - " + this.phase?.endDate.toLocaleString(dateInfo.locale, options);
     }
 
 }
@@ -202,6 +207,16 @@ export default class Index extends Vue {
     border-radius: 0 15px 15px 0; 
     background-color: rgba(0, 0, 0, 0.8); 
     padding: 45px 30px;
+
+    @each $mode in $modes {
+        &--#{$mode} {
+            color: var(--#{$mode});
+            font-weight: bold;
+            text-shadow: 0 0 8px var(--#{$mode});
+            text-align: center;
+            @include transition;
+        }
+    }
 }
 
 .right-side {

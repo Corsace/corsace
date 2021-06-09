@@ -171,6 +171,16 @@
                         alt=""
                     >
                 </a>
+                <a
+                    href="https://github.com/corsace/corsace"
+                    target="_blank"
+                >
+                    <img
+                        class="socials__icon"
+                        src="../../Assets/img/social/github.png"
+                        alt=""
+                    >
+                </a>
             </div>
             
             <language-switcher />

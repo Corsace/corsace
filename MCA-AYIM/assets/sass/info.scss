@@ -2,6 +2,11 @@
 
 .info {
     @extend %box;
-    color: $red;
+
     background-color: $bg-dark;
+
+    
+    color: $red;
+    font-size: 2rem;
+    font-weight: bold;
 }
