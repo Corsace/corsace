@@ -14,7 +14,7 @@
             </div>
 
             <a
-                v-if="phase && (isEligibleFor(selectedMode) || loggedInUser)"
+                v-if="phase && phase.phase !== 'preparation' && (isEligibleFor(selectedMode) || loggedInUser)"
                 class="vote-now"
                 :class="[
                     `vote-now--${selectedMode}`,

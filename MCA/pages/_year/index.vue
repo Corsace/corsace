@@ -31,7 +31,7 @@
             <div class="general-info">
                 <p
                     :class="`general-info--${selectedMode}`"
-                    v-if="phase.startDate && phase.endDate"
+                    v-if="phase.phase !== 'preparation' && phase.startDate && phase.endDate"
                 >
                     {{ $t(`mca.main.stage.${phase.phase}`).toUpperCase() }}
                     <br>
