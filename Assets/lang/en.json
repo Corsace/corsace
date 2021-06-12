@@ -94,7 +94,8 @@
             "remove": "Remove",
             "create": "Create",
             "login": "Login to create a comment!",
-            "visible": "(not visible yet)"
+            "visible": "(not visible yet)",
+            "notice": "Hello! This may be the first time you have navigated to (one of) the comments page! <br> Please note that comments are crowdfunded! <br> Anyone (including you) can write comments for anyone until this year's MCA is done! <br> Write about what they did or their achievements in [YEAR] to show appreciation to the mappers participating in the community!"
         }
     },
     "mca": {

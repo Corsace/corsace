@@ -89,7 +89,8 @@
             "remove": "Eliminar",
             "create": "Crear",
             "login": "Iniciar sesión para comentar",
-            "visible": "(todavia no visible)"
+            "visible": "(todavia no visible)",
+            "notice": ""
         },
         "statistics": {
             "numberOf": "",

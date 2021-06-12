@@ -94,7 +94,8 @@
             "remove": "削除",
             "create": "作成",
             "login": "ログインして作成",
-            "visible": "(まだ閲覧できません)"
+            "visible": "(まだ閲覧できません)",
+            "notice": ""
         }
     },
     "mca": {

@@ -39,10 +39,10 @@
             "name": "MAPSET",
             "playcount": "TOTAL PLAYCOUNT TERBANYAK",
             "favourites": "TOTAL FAVORIT TERBANYAK",
-            "favouritesExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID)",            
+            "favouritesExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID)",
             "length": "DURASI LAGU TERPANJANG",
             "difficulties": "TINGKAT KESULITAN",
-            "playTime": "TOTAL DURASI SELURUH TINGKAT KESULITAN",            
+            "playTime": "TOTAL DURASI SELURUH TINGKAT KESULITAN",
             "totalRanked": "TOTAL RANKED",
             "totalDiff": "TOTAL TINGKAT KESULITAN",
             "submitDates": "WAKTU PENGUNGGAHAN",
@@ -53,10 +53,10 @@
             "circleSize": "CIRCLE SIZE",
             "sliders": "TOTAL SLIDER",
             "circles": "TOTAL CIRCLE",
-            "spinners": "TOTAL SPINNER", 
+            "spinners": "TOTAL SPINNER",
             "avgSpinnersPerDiff": "RATA-RATA SPINNER PER TINGKAT KESULITAN",
             "avgSlidersPerDiff": "RATA-RATA SLIDER PER TINGKAT KESULITAN",
-            "avgCirclesPerDiff": "RATA-RATA CIRCLE PER TINGKAT KESULITAN",          
+            "avgCirclesPerDiff": "RATA-RATA CIRCLE PER TINGKAT KESULITAN",
             "highestSr": "STAR RATING TERTINGGI",
             "lowestSr": "STAR RATING TERENDAH"
         },
@@ -64,9 +64,9 @@
             "name": "MAPPER",
             "mostRanked": "TOTAL BEATMAP RANKED TERBANYAK",
             "mostFavs": "TOTAL FAVORIT TERBANYAK",
-            "mostFavsExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID)",          
+            "mostFavsExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID)",
             "mostPlayed": "TOTAL PLAYCOUNT TERBANYAK",
-            "mostDiffs": "TOTAL TINGKAT KESULITAN TERBANYAK",            
+            "mostDiffs": "TOTAL TINGKAT KESULITAN TERBANYAK",
             "totalMappers": "TOTAL MAPPER",
             "newMapperAges": "USIA AKUN MAPPER BARU",
             "mapperAges": "USIA AKUN MAPPER",
@@ -94,7 +94,8 @@
             "remove": "Hapus",
             "create": "Tulis",
             "login": "Harap masuk terlebih dahulu untuk dapat berkomentar!",
-            "visible": "(belum tersedia)"
+            "visible": "(belum tersedia)",
+            "notice": ""
         }
     },
     "mca": {
@@ -249,7 +250,7 @@
             "search": "cari beatmap/user",
             "select": "Harap pilih kategori!",
             "selectGrand": "Kamu diwajibkan untuk memulai dari kategori Grand Award",
-            "candidates": "kandidat",           
+            "candidates": "kandidat",
             "options": {
                 "date": "TANGGAL",
                 "artist": "ARTIS",

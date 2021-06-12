@@ -89,7 +89,8 @@
             "login": "Logge dich ein um einem Kommentar zu erstellen!",
             "visible": "(noch nicht sichtbar)",
             "search": "Suche nach einem Mapper",
-            "writeHere": "Schreibe einen neuen Kommentar für diesen Mapper hier!"
+            "writeHere": "Schreibe einen neuen Kommentar für diesen Mapper hier!",
+            "notice": ""
         },
         "statistics": {
             "numberOf": "Anzahl von",

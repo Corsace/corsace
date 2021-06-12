@@ -89,7 +89,8 @@
             "login": "登录以发表评论",
             "visible": "（暂不可见）",
             "search": "",
-            "writeHere": ""
+            "writeHere": "",
+            "notice": ""
         },
         "statistics": {
             "numberOf": "",

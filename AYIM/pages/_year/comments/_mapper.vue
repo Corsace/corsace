@@ -94,6 +94,7 @@
                 </div>
             </list-transition>
         </div>
+        <comments-modal />
     </display-layout>
     <div
         v-else
@@ -107,6 +108,7 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
 
+import CommentsModal from "../../../components/CommentsModal.vue";
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
 
@@ -116,6 +118,7 @@ import { MCA } from "../../../../Interfaces/mca";
 
 @Component({
     components: {
+        CommentsModal,
         DisplayLayout,
         ListTransition,
     },

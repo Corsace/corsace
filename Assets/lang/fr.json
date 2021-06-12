@@ -89,7 +89,8 @@
             "login": "Se connecter pour créer",
             "visible": "(pas encore visible)",
             "search": "",
-            "writeHere": ""
+            "writeHere": "",
+            "notice": ""
         },
         "statistics": {
             "numberOf": "",

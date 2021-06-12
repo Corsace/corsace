@@ -94,7 +94,8 @@
             "remove": "삭제",
             "create": "생성",
             "login": "코멘트를 작성하기 전에 먼저 로그인하세요",
-            "visible": "(아직 비공개)"
+            "visible": "(아직 비공개)",
+            "notice": ""
         }
     },
     "mca": {
@@ -262,7 +263,9 @@
                 "voteOrder": "투표 순서"
             },
             "hosted": "매퍼",
-            "userID": "유저 ID"
+            "userID": "유저 ID",
+            "select": "",
+            "selectGrand": ""
         }
     },
     "main": {
