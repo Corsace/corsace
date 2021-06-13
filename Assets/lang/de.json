@@ -14,8 +14,7 @@
         "login": {
             "login": "einloggen",
             "message": {
-                "1": "Scheinbar bist du nicht eingeloggt!<br>Logge dich einfach über deinen osu!-Account ein und du kannst sofort anfangen, abzustimmen / zu nominieren!",
-                "2": ""
+                "1": "Scheinbar bist du nicht eingeloggt!<br>Logge dich einfach über deinen osu!-Account ein und du kannst sofort anfangen, abzustimmen / zu nominieren!"
             },
             "authOsu": "Klicke hier, um dich über osu! zu authentifizieren",
             "authOsuComp": "osu! Verifizierung abgeschlossen. Hallo ",
@@ -73,7 +72,6 @@
             "nat": "NAT",
             "mostDiffs": "DIE MEISTEN DIFFS",
             "mostFavsExclHybrid": "DIE MEISTEN FAVORITEN (OHNE HYBRID-SETS)",
-            "uniqueMappers": "",
             "newMappers": "NEUE MAPPER",
             "highestAvgSr": "HÖCHSTES DURCHSCHNITTLICHES SR",
             "lowestAvgSr": "NIEDRIGSTES DURCHSCHNITTLICHES SR",
@@ -89,8 +87,7 @@
             "login": "Logge dich ein um einem Kommentar zu erstellen!",
             "visible": "(noch nicht sichtbar)",
             "search": "Suche nach einem Mapper",
-            "writeHere": "Schreibe einen neuen Kommentar für diesen Mapper hier!",
-            "notice": ""
+            "writeHere": "Schreibe einen neuen Kommentar für diesen Mapper hier!"
         },
         "statistics": {
             "numberOf": "Anzahl von",
@@ -111,22 +108,12 @@
             "statisticsLabel": "STATISTIKEN",
             "stage": {
                 "voting": "Abstimmungsphase",
-                "nominating": "Nominierungsphase",
-                "undefined": ""
+                "nominating": "Nominierungsphase"
             },
             "rankedSets": "RANKED SETS",
             "nominateNow": "jetzt nominieren !",
             "voteNow": "jetzt abstimmen !",
-            "daysLeft": "tage übrig",
-            "message": {
-                "2019": "",
-                "2020": ""
-            },
-            "categories": {
-                "map": "",
-                "user": ""
-            },
-            "organized": ""
+            "daysLeft": "tage übrig"
         },
         "categories": {
             "grandAward": {
@@ -178,7 +165,7 @@
                 "description": "Die Person, die die am besten hitsoundet."
             },
             "mostPromising": {
-                "name": "",
+                "name": "Most Promising",
                 "description": "Der beste Mapper, der dieses Jahr sein erstes Set gerankt hat."
             },
             "mostInfluential": {
@@ -213,14 +200,6 @@
                 "name": "Simpel",
                 "description": "Das beste simple Set."
             },
-            "sliderVelocity": {
-                "name": "",
-                "description": ""
-            },
-            "longNotes": {
-                "name": "",
-                "description": ""
-            },
             "antiMeta": {
                 "name": "Anti-Meta",
                 "description": "Das beste auf 5K/6K/8K/9K basierende Set."
@@ -228,22 +207,6 @@
             "7K": {
                 "name": "7K spezifisch",
                 "description": "Das beste auf 7K basierende Set."
-            },
-            "technical": {
-                "name": "",
-                "description": ""
-            },
-            "gameplay": {
-                "name": "",
-                "description": ""
-            },
-            "minimalistic": {
-                "name": "",
-                "description": ""
-            },
-            "narrative": {
-                "name": "",
-                "description": ""
             }
         },
         "nom_vote": {

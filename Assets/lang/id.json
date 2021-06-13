@@ -94,8 +94,7 @@
             "remove": "Hapus",
             "create": "Tulis",
             "login": "Harap masuk terlebih dahulu untuk dapat berkomentar!",
-            "visible": "(belum tersedia)",
-            "notice": ""
+            "visible": "(belum tersedia)"
         }
     },
     "mca": {
@@ -103,7 +102,6 @@
             "voting": "voting",
             "nominating": "nominasi",
             "results": "hasil",
-            "undefined": "",
             "mapsetsLabel": "MAPSET",
             "mappersLabel": "MAPPER",
             "commentsLabel": "KOMENTAR",
@@ -111,8 +109,7 @@
             "statisticsLabel": "STATISTIK",
             "stage": {
                 "voting": "tahapan voting",
-                "nominating": "tahapan nominasi",
-                "undefined": ""
+                "nominating": "tahapan nominasi"
             },
             "rankedSets": "TOTAL BEATMAP RANKED",
             "nominateNow": "nominasikan sekarang !",
@@ -261,8 +258,7 @@
                 "id": "ID",
                 "alph": "ALPH",
                 "asc": "ASC",
-                "desc": "DESC",
-                "voteOrder": ""
+                "desc": "DESC"
             },
             "hosted": "DI-HOST OLEH",
             "userID": "USER ID"

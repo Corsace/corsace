@@ -89,13 +89,7 @@
             "remove": "Eliminar",
             "create": "Crear",
             "login": "Iniciar sesión para comentar",
-            "visible": "(todavia no visible)",
-            "notice": ""
-        },
-        "statistics": {
-            "numberOf": "",
-            "numberOfMapsWith": "",
-            "average": ""
+            "visible": "(todavia no visible)"
         }
     },
     "mca": {
@@ -111,8 +105,7 @@
             "statisticsLabel": "ESTADÍSTICAS",
             "stage": {
                 "voting": "etapa de votación",
-                "nominating": "etapa de nominación",
-                "undefined": ""
+                "nominating": "etapa de nominación"
             },
             "rankedSets": "SETS CLASIFICADOS",
             "nominateNow": "nomina ahora !",
