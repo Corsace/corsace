@@ -1,13 +1,13 @@
 import Router from "@koa/router";
-import { hasRole, isLoggedInDiscord } from "../../../../Server/middleware";
+import { isLoggedInDiscord, isMCAStaff } from "../../../../Server/middleware";
 import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
-import { currentMCA } from "../../../../MCA/api/middleware";
+import { currentMCA } from "../../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 
 const commentsReviewRouter = new Router();
 
 commentsReviewRouter.use(isLoggedInDiscord);
-commentsReviewRouter.use(hasRole("mca", "staff"));
+commentsReviewRouter.use(isMCAStaff);
 commentsReviewRouter.use(currentMCA);
 
 commentsReviewRouter.get("/", async (ctx) => {
@@ -15,7 +15,6 @@ commentsReviewRouter.get("/", async (ctx) => {
     const comments = await UserComment.find({
         where: {
             year: mca.year,
-            isValid: false,
         },
         relations: ["target", "reviewer", "commenter"],
     });

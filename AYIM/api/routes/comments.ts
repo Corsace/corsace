@@ -1,12 +1,12 @@
 import Router from "@koa/router";
 import { ParameterizedContext, Next } from "koa";
-import { isLoggedInOsu } from "../../../Server/middleware";
 import { User } from "../../../Models/user";
 import { UserComment } from "../../../Models/MCA_AYIM/userComments";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
-import { isEligibleFor } from "../../../MCA/api/middleware";
+import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { FindConditions } from "typeorm";
+import { isLoggedIn } from "../../../Server/middleware";
 
 async function canComment (ctx: ParameterizedContext, next: Next): Promise<any> {
     if (!ctx.state.user.canComment) {
@@ -39,10 +39,15 @@ async function isCommentOwner (ctx: ParameterizedContext, next: Next): Promise<a
 const commentsRouter = new Router();
 
 commentsRouter.get("/", async (ctx) => {
+    if (!ctx.query.user)
+        return ctx.body = {
+            error: "No user ID provided!",
+        }
+
     const userId = parseInt(ctx.query.user);
     const year = parseInt(ctx.query.year || new Date().getFullYear());
     const modeString: string = ctx.query.mode || "standard";
-    const modeId = ModeDivisionType[modeString];
+    const modeID = ModeDivisionType[modeString];
 
     const mca = await MCA.findOneOrFail({
         year,
@@ -51,7 +56,7 @@ commentsRouter.get("/", async (ctx) => {
     let query: FindConditions<UserComment> | FindConditions<UserComment>[] = {
         targetID: userId,
         year: year,
-        mode: modeId,
+        mode: modeID,
         commenter: ctx.state.user,
     };
 
@@ -62,13 +67,13 @@ commentsRouter.get("/", async (ctx) => {
             {
                 targetID: userId,
                 year: year,
-                mode: modeId,
+                mode: modeID,
                 isValid: true,
             },
         ];
     }
 
-    const [user, comments] = await Promise.all([
+    const [target, comments] = await Promise.all([
         User.findOneOrFail(userId),
 
         UserComment.find({
@@ -80,13 +85,19 @@ commentsRouter.get("/", async (ctx) => {
         }),
     ]);
 
+    if (!isEligibleFor(target, modeID, year)) {
+        return ctx.body = {
+            error: `User wasn't active for the selected mode`,
+        };
+    }
+
     ctx.body = {
-        user,
+        user: target,
         comments,
     };
 });
 
-commentsRouter.post("/create", isLoggedInOsu, canComment, async (ctx) => {
+commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
     const newComment: string = ctx.request.body.comment.trim();
     const year: number = ctx.request.body.year;
     const targetID: number = ctx.request.body.targetID;
@@ -152,7 +163,7 @@ commentsRouter.post("/create", isLoggedInOsu, canComment, async (ctx) => {
     ctx.body = comment;
 });
 
-commentsRouter.post("/:id/update", isLoggedInOsu, canComment, isCommentOwner, async (ctx) => {
+commentsRouter.post("/:id/update", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
     const newComment: string = ctx.request.body.comment.trim();
 
     if (!newComment) {
@@ -174,12 +185,13 @@ commentsRouter.post("/:id/update", isLoggedInOsu, canComment, isCommentOwner, as
 
     comment.comment = newComment;
     comment.isValid = false;
+    comment.reviewer = comment.lastReviewedAt = undefined;
     await comment.save();
 
     ctx.body = comment;
 });
 
-commentsRouter.post("/:id/remove", isLoggedInOsu, canComment, isCommentOwner, async (ctx) => {
+commentsRouter.post("/:id/remove", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
     const comment: UserComment = ctx.state.comment;
     const mca = await MCA.findOneOrFail({
         year: comment.year,

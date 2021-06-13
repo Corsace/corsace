@@ -39,8 +39,10 @@
             "name": "MAPSETS",
             "playcount": "PLAYCOUNT",
             "favourites": "FAVOURITES",
+            "favouritesExclHybrid": "FAVOURITES (EXCL. HYBRIDS)",
             "length": "LENGTH",
             "difficulties": "DIFFICULTIES",
+            "playTime": "LENGTH (SUM OF ALL DIFFICULTIES)",
             "totalRanked": "TOTAL RANKED",
             "totalDiff": "TOTAL DIFFICULTIES",
             "submitDates": "SUBMIT DATES",
@@ -49,17 +51,21 @@
             "overallDifficulty": "OVERALL DIFFICULTY",
             "hpDrain": "HP DRAIN",
             "circleSize": "CIRCLE SIZE",
+            "spinners": "SPINNERS",
             "sliders": "SLIDERS",
             "circles": "CIRCLES",
-            "avgSlidersPerSet": "AVG SLIDERS PER SET",
-            "avgCirclesPerSet": "AVG CIRCLES PER SET",
+            "avgSpinnersPerDiff": "AVG SPINNERS PER DIFF",
+            "avgSlidersPerDiff": "AVG SLIDERS PER DIFF",
+            "avgCirclesPerDiff": "AVG CIRCLES PER DIFF",
             "highestSr": "HIGHEST STAR RATING",
             "lowestSr": "LOWEST STAR RATING"
         },
         "mappers": {
             "name": "MAPPERS",
             "mostRanked": "MOST RANKED",
+            "mostDiffs": "MOST DIFFICULTIES",
             "mostFavs": "MOST FAVOURITES",
+            "mostFavsExclHybrid": "MOST FAVOURITES (EXCL. HYBRIDS)",
             "mostPlayed": "MOST PLAYED",
             "totalMappers": "TOTAL MAPPERS",
             "newMapperAges": "NEW MAPPER AGES",
@@ -70,8 +76,6 @@
             "uniqueMappers": "TOTAL MAPPERS",
             "newMappers": "NEW MAPPERS",
             "highestAvgSr": "HIGHEST AVG SR",
-            "leastFavs": "LEAST FAVOURITES",
-            "leastPlayed": "LEAST PLAYED",
             "lowestAvgSr": "LOWEST AVG SR",
             "mappers": "MAPPERS"
         },
@@ -90,7 +94,8 @@
             "remove": "Remove",
             "create": "Create",
             "login": "Login to create a comment!",
-            "visible": "(not visible yet)"
+            "visible": "(not visible yet)",
+            "notice": "Hello! This may be the first time you have navigated to (one of) the comments page! <br> Please note that comments are crowdfunded! <br> Anyone (including you) can write comments for anyone until this year's MCA is done! <br> Write about what they did or their achievements in [YEAR] to show appreciation to the mappers participating in the community!"
         }
     },
     "mca": {
@@ -99,11 +104,11 @@
             "nominating": "nominating",
             "results": "results",
             "undefined": "",
-			"mapsetsLabel": "MAPSETS",
-			"mappersLabel": "MAPPERS",
-			"commentsLabel": "COMMENTS",
-			"recordsLabel": "RECORDS",
-			"statisticsLabel": "STATISTICS",
+            "mapsetsLabel": "MAPSETS",
+            "mappersLabel": "MAPPERS",
+            "commentsLabel": "COMMENTS",
+            "recordsLabel": "RECORDS",
+            "statisticsLabel": "STATISTICS",
             "stage": {
                 "voting": "voting stage",
                 "nominating": "nomination stage",
@@ -114,7 +119,7 @@
             "voteNow": "vote now !",
             "daysLeft": "days left",
             "message": {
-                "2019": "<p>Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community in comparison to Community Choice!</p><p>This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!</p><p>We hope as many participants as possible take part in this event!</p>",
+                "2019": "<p>Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community in comparison to Community Choice!</p><p>This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for </p><p>We hope as many participants as possible take part in this event!</p>",
                 "2020": "<p>Back to back, mapper's choice awards is again to finish it off at round 5 with 2020! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2020 through the eyes of the mapping community in comparison to Community Choice!</p><p>We've made many changes and hopefully dealt with all the bugs that were found throughout MCA 2019 as well as changing categories as needed so this one should be far smoother!</p><p>We hope as many participants as possible take part in this event!</p>"
             },
             "categories": {
@@ -243,6 +248,8 @@
         },
         "nom_vote": {
             "search": "search for a beatmap / user",
+            "select": "Please select a category!",
+            "selectGrand": "You MUST start with the Grand Award categories",
             "candidates": "candidates",
             "options": {
                 "date": "DATE",
@@ -255,8 +262,7 @@
                 "alph": "ALPH",
                 "asc": "ASC",
                 "desc": "DESC",
-                "incVote": "INCREMENTAL VOTE",
-                "voteChoice": "VOTE CHOICE"
+                "voteOrder": "VOTE ORDER"
             },
             "hosted": "HOSTED BY",
             "userID": "USER ID"

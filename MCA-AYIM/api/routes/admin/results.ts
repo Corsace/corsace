@@ -31,8 +31,8 @@ function getTotalFirstChoicesInCategory (votes: Vote[], categoryID: number): Cat
         // check if already in categorySum
         const i = categorySum.findIndex(s => 
             (vote.category.type == CategoryType.Beatmapsets ? 
-                (s.beatmapsetID == vote.beatmapsetID) : 
-                (s.userID == vote.userID)
+                (s.beatmapsetID == vote.beatmapset?.ID) : 
+                (s.userID == vote.user?.ID)
             )
         );
 
@@ -40,8 +40,8 @@ function getTotalFirstChoicesInCategory (votes: Vote[], categoryID: number): Cat
             categorySum[i].totalChoices ++;
         else {
             categorySum.push({
-                beatmapsetID: vote.beatmapsetID,
-                userID: vote.userID,
+                beatmapsetID: vote.beatmapset ? vote.beatmapset.ID : 0,
+                userID: vote.user ? vote.user.ID : 0,
                 totalChoices: 1,
             });
         }
@@ -85,7 +85,7 @@ adminResultsRouter.get("/", async (ctx) => {
         },
     });
 
-    const categories = await Category.find({});
+    const categories = await Category.find();
     const winners: CategoryWinners[] = [];
     
     for (const category of categories) {
@@ -126,8 +126,8 @@ adminResultsRouter.get("/", async (ctx) => {
     
                     if (category.ID == vote.category.ID &&
                         (vote.category.type == CategoryType.Beatmapsets ? 
-                            (vote.beatmapsetID == lowCategoryResult.beatmapsetID) : 
-                            (vote.userID == lowCategoryResult.userID)
+                            (vote.beatmapset?.ID == lowCategoryResult.beatmapsetID) : 
+                            (vote.user?.ID == lowCategoryResult.userID)
                         )
                     ) {
     

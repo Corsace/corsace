@@ -2,20 +2,25 @@ import { ParameterizedContext } from "koa";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 import { CategoryType } from "../../../Interfaces/category";
 import { StageQuery } from "../../../Interfaces/queries";
-import { UserCondensedInfo } from "../../../Interfaces/user";
+import { UserChoiceInfo } from "../../../Interfaces/user";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { User } from "../../../Models/user";
-import { isEligibleFor } from "../middleware";
+import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 
 export default function stageSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
     return async (ctx: ParameterizedContext) => {
-        let list: BeatmapsetInfo[] | UserCondensedInfo[] = [];
+        if (!ctx.query.category)
+            return ctx.body = {
+                error: "Missing category ID!",
+            }
+
+        let list: BeatmapsetInfo[] | UserChoiceInfo[] = [];
         let setList: BeatmapsetInfo[] = [];
-        let userList: UserCondensedInfo[] = [];
+        let userList: UserChoiceInfo[] = [];
         const category = await Category
             .createQueryBuilder("category")
             .innerJoinAndSelect("category.mca", "mca")
@@ -40,7 +45,7 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
                 if (category.type == CategoryType.Beatmapsets)
                     setList = objects.map(o => o.beatmapset?.getInfo(true) as BeatmapsetInfo);  
                 else if (category.type == CategoryType.Users)
-                    userList = objects.map(o => o.user?.getCondensedInfo(true) as UserCondensedInfo);
+                    userList = objects.map(o => o.user?.getCondensedInfo(true) as UserChoiceInfo);
             } catch (e) {
                 if (e) return ctx.body = { error: e };
             }

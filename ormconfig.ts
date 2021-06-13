@@ -13,6 +13,7 @@ export default {
     timezone: "Z",
     synchronize: false,
     logging: ["error"],
+    maxQueryExecutionTime: 50,
     entities: [
         `${resolve(__dirname, "Models")}/**/*.ts`,
         `${resolve(__dirname, "Models")}/**/*.js`,

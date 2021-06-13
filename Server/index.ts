@@ -11,6 +11,8 @@ import { Strategy as DiscordStrategy } from "passport-discord";
 import { User } from "../Models/user";
 import { discordPassport, osuPassport } from "./passportFunctions";
 import logoutRouter from "./logout";
+import koaCash from "koa-cash";
+import { cache } from "./cache";
 
 export class App {
 
@@ -26,17 +28,31 @@ export class App {
         this.koa.proxy = true;
         this.koa.use(Session({
             domain: config.cookiesDomain,
-            secure: true,
+            secure: process.env.NODE_ENV !== "development",
             httpOnly: true,
         }, this.koa));
         this.koa.use(BodyParser());
         this.koa.use(passport.initialize());
         this.koa.use(passport.session());
 
+        this.koa.use(koaCash({
+            maxAge: 60 * 60 * 1000,
+            hash (ctx) {
+                return ctx.originalUrl;
+            },
+            get (key) {
+                return Promise.resolve(cache.get(key));
+            },
+            set (key, value, maxAge) {
+                cache.set(key, value, maxAge);
+                return Promise.resolve();
+            },
+        }));
+
         // Error handler
         this.koa.use(async (ctx, next) => {
             try {
-                if (ctx.originalUrl !== "/favicon.ico") {
+                if (ctx.originalUrl !== "/favicon.ico" && process.env.NODE_ENV === "development") {
                     console.log("\x1b[33m%s\x1b[0m", ctx.originalUrl);
                 }
 

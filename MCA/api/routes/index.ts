@@ -10,14 +10,18 @@ const indexRouter = new Router();
 const modeStaff = config.discord.roles.mca;
 
 indexRouter.get("/front", async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     const mca = await MCA.findOne(ctx.query.year);
-    
+
     if (!mca)
         return ctx.body = { error: "There is no MCA for this year currently!" };
 
     const frontData = {};
 
-    for (const mode of await ModeDivision.find()) {
+    const modes = await ModeDivision.find();
+    await Promise.all(modes.map(mode => (async () => {
         const beatmapCounter = Beatmapset
             .createQueryBuilder("beatmapset")
             .innerJoinAndSelect("beatmapset.beatmaps", "beatmap", mode.ID === 5 ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: mode.ID === 5 ? true : mode.ID })
@@ -37,7 +41,7 @@ indexRouter.get("/front", async (ctx) => {
             beatmapCount,
             organizers,
         };
-    }
+    })()));
 
     ctx.body = { frontData };
 });

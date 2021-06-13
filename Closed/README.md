@@ -1,2 +1,2 @@
-# CorsaceInvitational
-The repository for Corsace Invitational
+# Closed
+The repository for Corsace Closed

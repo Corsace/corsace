@@ -129,6 +129,16 @@
             </div>
         </div>
 
+        <div class="subfooter">
+            Powered by
+            <a class="subfooter__powered" href="https://twitter.com/kkaetwo">
+                <img
+                    class="subfooter__kaetwo" 
+                    src="../../Assets/img/partners/kaetwo.png"
+                >
+            </a>
+        </div>
+
         <div class="footer">
             <div class="socials">
                 <a
@@ -158,6 +168,16 @@
                     <img
                         class="socials__icon"
                         src="../../Assets/img/social/ttv.png"
+                        alt=""
+                    >
+                </a>
+                <a
+                    href="https://github.com/corsace/corsace"
+                    target="_blank"
+                >
+                    <img
+                        class="socials__icon"
+                        src="../../Assets/img/social/github.png"
                         alt=""
                     >
                 </a>
@@ -235,8 +255,10 @@ export default class Default extends Vue {
 
 <style lang="scss">
 $dark: #0f0f0f;
+$dark-dark-gray: #141414;
 $dark-gray: #242424;
 $gray: #343434;
+$light-gray: #cccccc;
 $pink: #e98792;
 
 @keyframes leftscroll {
@@ -326,6 +348,26 @@ $pink: #e98792;
 
     &__username {
         text-transform: uppercase;
+    }
+}
+
+.subfooter {
+    color: $light-gray;
+    background-color: $dark-dark-gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+
+    &__powered {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__kaetwo {
+        height: 15px;
+        padding: 0 5px;
     }
 }
 

@@ -14,6 +14,7 @@ export interface MCA {
 
 export interface MCAInfo {
     name: number;
+    phase: PhaseType;
     nomination: InternalPhase;
     voting: InternalPhase;
     results: Date;

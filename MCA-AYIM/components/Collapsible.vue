@@ -1,11 +1,14 @@
 <template>
     <div 
         class="collapsible"
-        :class="{ 'collapsible--scrollable': scroll }"
+        :class="{ 'collapsible--scrollable': scroll && list.length > 9 }"
     >
         <div
             class="collapsible__title"
-            :class="{ 'collapsible__title--active': active }"
+            :class="{ 
+                'collapsible__title--active': active,
+                'collapsible__title--hoverable': clickable && !active
+            }"
             @click="activate"
         >
             {{ title }}
@@ -27,10 +30,19 @@
                     class="collapsible__info"
                     @click="setTarget(item)"
                 >
-                    <div 
-                        :class="{'collapsible__name': clickable, 'collapsible__name--active': showExtra && isSelected(item)}"
+                    <div
+                        :class="[{
+                                'collapsible__name': clickable && !item.inactive,
+                                'collapsible__name--inactive': clickable && item.inactive,
+                                'collapsible__name--active': showExtra && isSelected(item),
+                            }, 
+                            'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count === item.maxNominations ? `collapsible__name--${selectedMode}` : '',
+                            'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count === item.maxNominations && showExtra && isSelected(item) ? `collapsible__name--active--${selectedMode}` : '',
+
+                        ]"
                     >
-                        {{ categoryName ? $t(`mca.categories.${item.name}.name`) : item.name }} {{ showExtra ? item.maxNominations && !('count' in item) ? "- " + item.maxNominations: "" : "" }}
+                        {{ categoryName ? $t(`mca.categories.${item.name}.name`) : item.name }} 
+                        {{ extraTitle(item) }}
                     </div>
                     <hr
                         class="collapsible__info-bar"
@@ -44,9 +56,15 @@
                         <div
                             v-if="'count' in item && 'maxNominations' in item"
                             class="collapsible__count"
-                            :class="{'collapsible__count--active': isSelected(item)}"
+                            :class="[{
+                                    'collapsible__count--inactive': clickable && item.inactive,
+                                    'collapsible__count--active': isSelected(item)
+                                },
+                                item.maxNominations !== 100 && item.count === item.maxNominations ? `collapsible__count--${selectedMode}` : '',
+                                item.maxNominations !== 100 && item.count === item.maxNominations && isSelected(item) ? `collapsible__count--active--${selectedMode}` : '',
+                            ]"
                         >
-                            {{ item.count }}/{{ item.maxNominations }}
+                            {{ item.maxNominations !== 100 ? item.count + " / " + item.maxNominations : item.count }}
                         </div>
                         <div
                             v-else-if="'type' in item"
@@ -80,15 +98,21 @@ export default class Collapsible extends Vue {
     
     @Prop({ type: String, default: "" }) readonly title!: string;
     @Prop({ type: Array, default: () => [] }) readonly list!: SubItem[];
-    @Prop({ type: Boolean, default: true}) readonly clickable!: boolean[];
-    @Prop(Boolean) readonly active!: boolean[];
-    @Prop(Boolean) readonly showExtra!: boolean[];
-    @Prop(Boolean) readonly categoryName!: boolean[];
-    @Prop(Boolean) readonly scroll!: boolean[];
+    @Prop(Boolean) readonly active!: boolean;
+    @Prop(Boolean) readonly showExtra!: boolean;
+    @Prop(Boolean) readonly categoryName!: boolean;
+    @Prop(Boolean) readonly scroll!: boolean;
+    @Prop(Boolean) readonly clickable!: boolean;
 
     @State selectedMode!: string;
 
     target: SubItem | null = null;
+
+    extraTitle (item: SubItem): string {
+        if (!this.showExtra || !item.maxNominations || "count" in item) return "";
+        
+        return "- " + item.maxNominations;
+    }
     
     mounted () {
         if (this.list.length > 0 && this.active && !this.target) {
@@ -105,6 +129,8 @@ export default class Collapsible extends Vue {
     }
 
     setTarget (item: SubItem) {
+        if (item.inactive) return;
+
         this.$emit("target", item);
 
         if (!this.isSelected(item)) {
@@ -130,13 +156,24 @@ export default class Collapsible extends Vue {
     flex-direction: column;
     color: $gray;
     white-space: nowrap;
-    overflow: hidden;
     padding: 15px;
+    max-height: 400px;
+    overflow: hidden;
 
     @include transition;
 
     &--scrollable {
         overflow-y: visible;
+        scrollbar-width: thin;
+        border-radius: 15px 0 0 15px;;
+
+        &::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #5f5f5f;
+        }
     }
 
     &__title {
@@ -157,6 +194,10 @@ export default class Collapsible extends Vue {
 
         &--active {
             cursor: default;
+        }
+
+        &--active, &--hoverable:hover {
+            @include transition;
             color: white;
             text-shadow: 0 0 8px white;
         }
@@ -218,7 +259,7 @@ export default class Collapsible extends Vue {
     cursor: pointer;
     @include transition;
 
-    &:hover, &--active {
+    &--active, &:hover {
         text-shadow: 0 0 8px white;
         font-size: 1.088rem;
         font-weight: 500;
@@ -227,6 +268,18 @@ export default class Collapsible extends Vue {
             font-size: 1.3rem;
         }
     }
+
+    @each $mode in $modes {
+        &--active--#{$mode}, &--#{$mode}:hover {
+            text-shadow: 0 0 8px var(--#{$mode});
+        }
+    }
+
+    &--inactive {
+        opacity: .5;
+    }
+
+    @include mode-text-color;
 }
 
 .collapsible__count {
@@ -251,6 +304,21 @@ export default class Collapsible extends Vue {
         background-color: white;
         color: rgba(0, 0, 0, 0.6);
         box-shadow: 0 0 10px white;
+    }
+
+    &--inactive {
+        opacity: .5;
+    }
+
+    @include mode-border;
+    @include mode-text-color;
+
+    @each $mode in $modes {
+        &--active--#{$mode}, &--#{$mode}:hover {
+            background-color: var(--#{$mode});
+            color: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 16px var(--#{$mode});
+        }
     }
 }
 

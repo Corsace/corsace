@@ -1,18 +1,17 @@
 import Router from "@koa/router";
-import { isLoggedInDiscord, isHeadStaff } from "../../../../Server/middleware";
-import { MCA } from "../../../../Models/MCA_AYIM/mca";
+import { cache } from "../../../../Server/cache";
+import { isCorsace, isLoggedInDiscord } from "../../../../Server/middleware";
 
 const adminRouter = new Router;
 
 adminRouter.use(isLoggedInDiscord);
-adminRouter.use(isHeadStaff);
+adminRouter.use(isCorsace);
 
-// Endpoint to obtain all MCAs and their info
-adminRouter.get("/", async (ctx) => {
-    const mca = await MCA.find();
-    const mcaInfo = mca.map(x => x.getInfo());
-
-    ctx.body = { mca: mcaInfo };
+adminRouter.get("/reset", async (ctx) => {
+    cache.reset();
+    ctx.body = {
+        success: "Success"
+    }
 });
 
 export default adminRouter;
