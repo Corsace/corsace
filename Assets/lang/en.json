@@ -102,6 +102,7 @@
         "main": {
             "voting": "voting",
             "nominating": "nominating",
+            "preparation": "preparation",
             "results": "results",
             "undefined": "",
             "mapsetsLabel": "MAPSETS",
@@ -216,6 +217,10 @@
             "sliderVelocity": {
                 "name": "Slider Velocity",
                 "description": "The best set with an intense usage of slider velocities."
+            },
+            "featuredArtist": {
+                "name": "Featured Artist",
+                "description": "The best set for a featured artist song."
             },
             "longNotes": {
                 "name": "Long Notes",
