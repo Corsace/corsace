@@ -47,6 +47,9 @@ export const state = (): StageState => ({
 });
 
 export const mutations: MutationTree<StageState> = {
+    loading (state, bool) {
+        state.loading = bool;
+    },
     updateStage (state, stage) {
         state.stage = stage;
     },
@@ -185,7 +188,7 @@ export const actions: ActionTree<StageState, RootState> = {
         let skip = 0;
 
         if (skipping) {
-            state.loading = true;
+            commit("loading", true);
             if (state.selectedCategory.type === "Users") skip = state.users.length;
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
@@ -194,7 +197,7 @@ export const actions: ActionTree<StageState, RootState> = {
         if (data.error)
             return alert(data.error);
 
-        state.loading = false;
+            commit("loading", false);
 
         commit("updateCount", data.count);
 
