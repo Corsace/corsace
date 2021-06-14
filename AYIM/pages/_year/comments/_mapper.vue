@@ -143,7 +143,7 @@ export default class MapperComments extends Vue {
     info = "";
 
     get canComment (): boolean {
-        return (this.loggedInUser?.canComment && new Date(this.mca.results) > new Date()) || false;
+        return ((!this.loggedInUser || this.loggedInUser.canComment) && new Date(this.mca.results) > new Date()) || false;
     }
 
     get ownCommentIndex (): number {

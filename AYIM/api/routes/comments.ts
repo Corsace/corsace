@@ -5,7 +5,6 @@ import { UserComment } from "../../../Models/MCA_AYIM/userComments";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
-import { PhaseType } from "../../../Interfaces/mca";
 import { FindConditions } from "typeorm";
 import { isLoggedIn } from "../../../Server/middleware";
 
