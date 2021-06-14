@@ -4,6 +4,21 @@
             Comments Review
         </div>
 
+        <button
+            v-if="!showValidated"
+            @click="showValidated = true"
+            class="button"
+        >
+            Show Validated
+        </button>
+        <button
+            v-else
+            @click="showValidated = false"
+            class="button"
+        >
+            Hide Validated
+        </button>
+
         <div
             v-if="info"
             class="info"
@@ -115,6 +130,7 @@ export default class StaffComments extends Vue {
     @Getter isHeadStaff!: boolean;
 
     info = "";
+    showValidated = true;
     comments: Comment[] = [];
 
     get groupedComments (): GroupedComment[] {
@@ -122,6 +138,8 @@ export default class StaffComments extends Vue {
 
         for (const comment of this.comments) {
             const i = groups.findIndex(g => g.mode === comment.mode.name);
+            
+            if (!this.showValidated && comment.isValid) continue;
 
             if (i !== -1) groups[i].comments.push(comment);
             else groups.push({

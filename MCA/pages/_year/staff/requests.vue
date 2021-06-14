@@ -4,6 +4,21 @@
             Requests
         </div>
 
+        <button
+            v-if="!showValidated"
+            @click="showValidated = true"
+            class="button"
+        >
+            Show Validated
+        </button>
+        <button
+            v-else
+            @click="showValidated = false"
+            class="button"
+        >
+            Hide Validated
+        </button>
+
         <div class="staff-container">
             <div
                 v-for="group in groupedRequests"
@@ -19,7 +34,10 @@
                     :key="request.ID"
                     class="staff-request"
                 >
-                    <div class="staff-request__info">
+                    <div 
+                        v-if="showValidated || (!showValidated && isPending(request.status))"
+                        class="staff-request__info"
+                    >
                         <a
                             :href="`https://osu.ppy.sh/users/${request.user.osu.userID}`"
                             target="_blank"
@@ -38,6 +56,7 @@
                     </div>
 
                     <div
+                        v-if="showValidated || (!showValidated && isPending(request.status))"
                         class="staff-request__status"
                         :class="`staff-request__status--${getStatusName(request.status).toLowerCase()}`"
                     >
@@ -45,6 +64,7 @@
                     </div>
 
                     <div
+                        v-if="showValidated || (!showValidated && isPending(request.status))"
                         class="staff-request__actions"
                     >
                         <button
@@ -97,6 +117,8 @@ export default class StaffRequests extends Vue {
     @State modes!: string[];
     @staffModule.State requests!: GuestRequest[];
     @staffModule.Action updateRequest!: (data: UpdateRequestData) => Promise<void>;
+
+    showValidated = true;
 
     get groupedRequests (): GroupedRequest[] {
         const groups: GroupedRequest[] = [];

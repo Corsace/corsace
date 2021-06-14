@@ -4,6 +4,20 @@
             :hide-phase="true"
             title="nominations"
         >
+            <button
+                v-if="!showValidated"
+                @click="showValidated = true"
+                class="button"
+            >
+                Show Validated
+            </button>
+            <button
+                v-else
+                @click="showValidated = false"
+                class="button"
+            >
+                Hide Validated
+            </button>
             <div class="staff-container">
                 <div
                     v-for="category in relatedCategories"
@@ -122,6 +136,7 @@ export default class Nominations extends Vue {
     @staffModule.State categories!: CategoryInfo[];
 
     nominations: Nomination[] = [];
+    showValidated = true;
     selectedCategoryId: null | number = null;
 
     get relatedCategories (): CategoryInfo[] {
@@ -132,6 +147,8 @@ export default class Nominations extends Vue {
         const groups: NominationsByCategory[] = [];
 
         for (const nomination of this.nominations) {
+            if (nomination.reviewer && !this.showValidated) continue;
+
             const groupIndex = groups.findIndex(g => g.category.ID === nomination.category.ID);
 
             if (groupIndex !== -1) {
