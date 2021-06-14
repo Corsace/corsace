@@ -99,10 +99,26 @@ export class Beatmapset extends BaseEntity {
                     .andWhere(`beatmapset.BPM<=${category.filter.maxBPM}`);
             if (category.filter.minSR)
                 queryBuilder
-                    .andWhere(`beatmap.totalSR>=${category.filter.minSR}`);
+                    .andWhere((qb) => {
+                        const subQuery = qb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .where("beatmapsetID = beatmapset.ID")
+                            .andWhere(`refMap.totalSR<${category.filter!.minSR}`)
+                            .getQuery();
+        
+                        return "NOT EXISTS " + subQuery;
+                    })
             if (category.filter.maxSR)
                 queryBuilder
-                    .andWhere(`beatmap.totalSR<=${category.filter.maxSR}`);
+                    .andWhere((qb) => {
+                        const subQuery = qb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .where("beatmapsetID = beatmapset.ID")
+                            .andWhere(`refMap.totalSR>${category.filter!.maxSR}`)
+                            .getQuery();
+        
+                        return "NOT EXISTS " + subQuery;
+                    })
             if (category.filter.minCS)
                 queryBuilder
                     .andWhere(`beatmap.circleSize>=${category.filter.minCS}`);
