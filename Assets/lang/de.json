@@ -31,8 +31,8 @@
             "numberof": "Anzahl von",
             "numberwith": "Anzahl von Maps mit",
             "message": {
-                "2019": "Hallo 2020. A Year in Mapping 2019 ist zurück um euch die Rekordbrüche des Jahres und detailierte Statistiken zu bringen! Mit dieser Website können wir jetzt so viel Informationen für alle Jahre sammeln wie wir wollen! Wenn ihr Vorschläge habt könnt ihre diese VINXIS im Corsace Server mitteilen (Link links unten)</p><p>WIR CROWDFUNDEN AUCH KOMMENTARE! Das heißt, dass DU einem Kommentar für so viele Mapper wie du willst schreiben und einreichen kannst! </p><p> Wähle deinen bevorzugten Mode mit den Icons unten aus um loszulegen!</p>",
-                "2020": "Hallo 2021... dieses Mal das korrekte Jahr!</p><p>A Year in Mapping 2020 ist direkt nochmal da um euch die Rekordbrüche und Statistiken DIESES Jahres auch noch zu bringen!</p><p>Und auch diese mal sind die Kommentare wieder crowdfundet! Also, wählt euren bevorzugen Mode mit den Icons unten aus um loszulegen!"
+                "2019": "Hallo 2020. A Year in Mapping 2019 ist zurück um euch die Rekordbrüche des Jahres und detailierte Statistiken zu bringen! Mit dieser Website können wir jetzt so viel Informationen für alle Jahre sammeln wie wir wollen! Wenn ihr Vorschläge habt könnt ihre diese VINXIS im Corsace Server mitteilen (Link links unten)</p><p>ZUSÄTZLICH KANN JEDER KOMMENTARE SCHREIBEN! Das heißt, dass DU einem Kommentar für so viele Mapper wie du willst schreiben und einreichen kannst! </p><p> Wähle deinen bevorzugten Mode mit den Icons unten aus um loszulegen!</p>",
+                "2020": "Hallo 2021... dieses Mal das korrekte Jahr!</p><p>A Year in Mapping 2020 ist direkt nochmal da, um euch die Rekordbrüche und Statistiken DIESES Jahres auch noch zu bringen!</p><p>Und auch diese mal sind die Kommentare wieder für jeden frei verfügbar! Also, wählt euren bevorzugen Mode mit den Icons unten aus um loszulegen!"
             }
         },
         "mapsets": {
@@ -40,9 +40,9 @@
             "playcount": "PLAYS",
             "favourites": "FAVORITEN",
             "length": "LÄNGE",
-            "difficulties": "DIFFS",
+            "difficulties": "SCHWIERIGKEITEN",
             "totalRanked": "RANKED GESAMT",
-            "totalDiff": "DIFFS GESAMT",
+            "totalDiff": "SCHWIERIGKEITEN GESAMT",
             "submitDates": "DATUM DER ERSTELLUNG",
             "starRatings": "SR",
             "approachRate": "AR",
@@ -54,9 +54,9 @@
             "spinners": "SPINNERS",
             "sliders": "SLIDERS",
             "circles": "CIRCLES",
-            "avgSpinnersPerDiff": "DURCHSCHNITTLICHE ANZAHL VON SPINNERN PRO DIFF",
-            "avgSlidersPerDiff": "DURCHSCHNITTLICHE ANZAHL VON SLIDERN PRO DIFF",
-            "avgCirclesPerDiff": "DURCHSCHNITTLICHE ANZAHL VON CIRCLES PRO DIFF",
+            "avgSpinnersPerDiff": "DURCHSCHNITTLICHE ANZAHL VON SPINNERN PRO SCHWIERIGKEIT",
+            "avgSlidersPerDiff": "DURCHSCHNITTLICHE ANZAHL VON SLIDERN PRO SCHWIERIGKEIT",
+            "avgCirclesPerDiff": "DURCHSCHNITTLICHE ANZAHL VON CIRCLES PRO SCHWIERIGKEIT",
             "highestSr": "HÖCHSTES SR",
             "lowestSr": "NIEDRIGSTES SR"
         },
@@ -65,15 +65,15 @@
             "mostRanked": "DIE MEISTEN RANKED MAPS",
             "mostFavs": "DIE MEISTEN FAVORITEN",
             "mostPlayed": "AM MEISTEN GESPIELT",
-            "totalMappers": "",
+            "totalMappers": "MAPPER INSGESAMT",
             "newMapperAges": "ALTER VON NEUEN MAPPERN",
             "mapperAges": "ALTER VON MAPPERN",
             "mapsPerMapperAges": "MAPS PRO MAPPER PRO ALTER",
             "bng": "BNG",
             "nat": "NAT",
-            "mostDiffs": "DIE MEISTEN DIFFS",
+            "mostDiffs": "DIE MEISTEN SCHWIERIGKEITEN",
             "mostFavsExclHybrid": "DIE MEISTEN FAVORITEN (OHNE HYBRID-SETS)",
-            "uniqueMappers": "",
+            "uniqueMappers": "MAPPER INSGESAMT",
             "newMappers": "NEUE MAPPER",
             "highestAvgSr": "HÖCHSTES DURCHSCHNITTLICHES SR",
             "lowestAvgSr": "NIEDRIGSTES DURCHSCHNITTLICHES SR",
@@ -81,7 +81,7 @@
         },
         "comments": {
             "name": "KOMMENTARE",
-            "info": "Alle Kommentare werden nach Bekanntgabe der MCA Ergebnisse veröffentlicht! Du kannst bis dahin deine eigen Kommentare einreichen.",
+            "info": "Alle Kommentare werden nach Bekanntgabe der MCA Ergebnisse veröffentlicht! Du kannst bis dahin deine eigenen Kommentare einreichen.",
             "viewSubmit": "Kommentare anschauen/einreichen",
             "update": "Updaten",
             "remove": "Entfernen",
@@ -116,16 +116,16 @@
             "rankedSets": "RANKED SETS",
             "nominateNow": "jetzt nominieren !",
             "voteNow": "jetzt abstimmen !",
-            "daysLeft": "tage übrig",
+            "daysLeft": "Tage übrig",
             "message": {
-                "2019": "",
-                "2020": ""
+                "2019": "Mapper's Choice Awards ist zurück für Runde 4 in 2019! Hierbei handelt es sich um eine Abstimmung, bei der jeder Mapper/Modder seine Favoriten nominieren bzw. für sie stimmen kann!</p><p>Unser Ziel ist es, durch die Augen der Mapping Community eine neue Perspektive auf die besten Maps von 2019 zu bringen!</p><p>Dieses Jahr haben wir sogar eine komplett neue Website, um das Nominieren und Abstimmen so einfach wie möglich zu machen!</p><p>Alle osu!supporter Preise werden von osu! selbst bereitgestellt. 2 Monate für die Gewinner von individuellen Kategorien, und 6 Monate für die Gewinner der Hauptpreise!</p><p>Wir hoffen, dass so viele wie möglich an diesem Event teilnehmen! Falls du irgenwelche Bugs oder Probleme mit der Website findest, teile es VINXIS im corsace Discord Server mit!</p>",
+                "2020": "Und direkt nochmal, Mapper's Choice Awards ist zurück um es mit Runde 5 in 2020 abzuschließen! Hierbei handelt es sich um eine Abstimmung, bei der jeder Mapper/Modder seine Favoriten nominieren bzw. für sie stimmen kann!</p><p>Unser Ziel ist es, durch die Augen der Mapping Community eine neue Perspektive auf die besten Maps von 2019 zu bringen!</p><p>Wir haben viele Änderungen vorgenommen und hoffentlich alle Bugs, die währen MCA 2019 gefunden worden, behoben. Zusätzlich haben wir Kategorien wie nötig geändert, was bedeutet dass es dieses mal viel glatter gehen sollte!</p><p>Wir hoffen, dass so viele wie möglich an diesem Event teilnehmen!"
             },
             "categories": {
-                "map": "",
-                "user": ""
+                "map": "Map Kategorien",
+                "user": "User Kategorien"
             },
-            "organized": ""
+            "organized": "ORGANISIERT VON"
         },
         "categories": {
             "grandAward": {
@@ -138,15 +138,15 @@
             },
             "hitsounding": {
                 "name": "Hitsounding",
-                "description": "not possible to translate literally without sounding retarded"
+                "description": "Die besten Hitsounds."
             },
             "collab": {
                 "name": "Collab",
-                "description": "Das beste Set mit 2+ an der Top Diff beteiligten Mappern."
+                "description": "Das beste Set mit 2+ an der höchsten Schwierigkeit beteiligten Mappern."
             },
             "simple": {
                 "name": "Simpel",
-                "description": "Das beste Set mit einer Insane Top Diff"
+                "description": "Das beste Set mit einem Insane als höchste Schwierigkeit."
             },
             "highBPM": {
                 "name": "Hohe BPM",
@@ -154,7 +154,7 @@
             },
             "smallCircles": {
                 "name": "Kleine Circles",
-                "description": "Das beste Set mit einer CS5 oder kleiner Top Diff."
+                "description": "Das beste Set mit einer höchsten Schwierigkeit mit CS5 oder kleiner."
             },
             "heavy13": {
                 "name": "Viel 1/3",
@@ -202,23 +202,23 @@
             },
             "highBPMTaiko": {
                 "name": "Hohe BPM",
-                "description": "Das beste Set über 240 BPM"
+                "description": "Das beste Set über 240 BPM."
             },
             "lowBPMTaiko": {
                 "name": "Niedrige BPM",
-                "description": "Das beste set unter 140 BPM"
+                "description": "Das beste set unter 140 BPM."
             },
             "simplistic": {
                 "name": "Simpel",
                 "description": "Das beste simple Set."
             },
             "sliderVelocity": {
-                "name": "",
-                "description": ""
+                "name": "SV",
+                "description": "Das beste Set mit häufiger Verwendung von SV Änderungen."
             },
             "longNotes": {
-                "name": "",
-                "description": ""
+                "name": "LNs",
+                "description": "Das beste Set mit häufiger Verwendung von LNs."
             },
             "antiMeta": {
                 "name": "Anti-Meta",
@@ -229,20 +229,20 @@
                 "description": "Das beste auf 7K basierende Set."
             },
             "technical": {
-                "name": "",
-                "description": ""
+                "name": "Technisch",
+                "description": "Das technisch beeindruckenste Storyboard."
             },
             "gameplay": {
-                "name": "",
-                "description": ""
+                "name": "Gameplay",
+                "description": "Das beste Gameplay-Elemente verwendende Storyboard."
             },
             "minimalistic": {
-                "name": "",
-                "description": ""
+                "name": "Minimalistisch",
+                "description": "Das beste Storyboard, das mit ganz wenig ganz viel aussagt."
             },
             "narrative": {
-                "name": "",
-                "description": ""
+                "name": "Erzählung",
+                "description": "Das beste Storyboard, das eine Geschichte erzählt."
             }
         },
         "nom_vote": {
