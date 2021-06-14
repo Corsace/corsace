@@ -47,6 +47,9 @@ export const state = (): StageState => ({
 });
 
 export const mutations: MutationTree<StageState> = {
+    loading (state, bool) {
+        state.loading = bool;
+    },
     updateStage (state, stage) {
         state.stage = stage;
     },
@@ -105,7 +108,6 @@ export const mutations: MutationTree<StageState> = {
         state.beatmaps = [];
         state.users = [];
         state.count = 0;
-        state.query.text = "";
     },
     toggleVoteChoiceBox (state) {
         state.showVoteChoiceBox = !state.showVoteChoiceBox;
@@ -185,16 +187,18 @@ export const actions: ActionTree<StageState, RootState> = {
         let skip = 0;
 
         if (skipping) {
-            state.loading = true;
+            commit("loading", true);
             if (state.selectedCategory.type === "Users") skip = state.users.length;
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
+
+        console.log(state.query);
 
         const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&text=${state.query.text}&skip=${skip}`);
         if (data.error)
             return alert(data.error);
 
-        state.loading = false;
+            commit("loading", false);
 
         commit("updateCount", data.count);
 

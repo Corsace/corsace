@@ -52,7 +52,7 @@ export class App {
         // Error handler
         this.koa.use(async (ctx, next) => {
             try {
-                if (ctx.originalUrl !== "/favicon.ico") {
+                if (ctx.originalUrl !== "/favicon.ico" && process.env.NODE_ENV === "development") {
                     console.log("\x1b[33m%s\x1b[0m", ctx.originalUrl);
                 }
 

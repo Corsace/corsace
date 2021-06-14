@@ -94,13 +94,21 @@
                 </div>
             </list-transition>
         </div>
+        <comments-modal />
     </display-layout>
+    <div
+        v-else
+        class="ayim-comment__loading"
+    >
+        Loading...
+    </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
 
+import CommentsModal from "../../../components/CommentsModal.vue";
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
 
@@ -110,6 +118,7 @@ import { MCA } from "../../../../Interfaces/mca";
 
 @Component({
     components: {
+        CommentsModal,
         DisplayLayout,
         ListTransition,
     },
@@ -165,6 +174,7 @@ export default class MapperComments extends Vue {
 
         if (data.error) {
             alert(data.error);
+            this.$router.push(`/${this.mca.year}/comments`);
         } else {
             this.comments = data.comments;
             this.user = data.user;
@@ -259,6 +269,14 @@ export default class MapperComments extends Vue {
     @include breakpoint(laptop) {
         flex-wrap: nowrap;
         justify-content: start;
+    }
+
+    &__loading {
+        @extend %flex-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
     }
 
     &__image {

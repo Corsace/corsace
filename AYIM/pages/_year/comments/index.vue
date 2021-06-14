@@ -11,11 +11,13 @@
                 >
                     <toggle-button
                         :options="userOptions"
+                        :arrow="orderOption"
                         @change="changeOption"
                     />
                     
                     <toggle-button
                         :options="orderOptions"
+                        :arrow="orderOption"
                         @change="changeOrder"
                     />
                 </search-bar>
@@ -62,6 +64,7 @@
         >
             Loading...
         </div>
+        <comments-modal />
     </display-layout>
 </template>
 
@@ -69,6 +72,7 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
 
+import CommentsModal from "../../../components/CommentsModal.vue";
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
@@ -79,6 +83,7 @@ import { MCA } from "../../../../Interfaces/mca";
 
 @Component({
     components: {
+        CommentsModal,
         DisplayLayout,
         SearchBar,
         ToggleButton,

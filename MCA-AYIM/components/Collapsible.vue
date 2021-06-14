@@ -1,7 +1,7 @@
 <template>
     <div 
         class="collapsible"
-        :class="{ 'collapsible--scrollable': scroll && list.length > 9 }"
+        :class="{ 'collapsible--scrollable': scroll && list.length >= 9 }"
     >
         <div
             class="collapsible__title"

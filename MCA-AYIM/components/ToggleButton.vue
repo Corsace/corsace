@@ -4,6 +4,12 @@
         @click="changeIndex"
     >
         {{ $t(`mca.nom_vote.options.${currentOption}`) }}
+
+        <div
+            v-if="arrow" 
+            class="triangle triangle-button"
+            :class="{ 'triangle-active': arrow === 'asc' }"
+        />
     </button>
 </template>
 
@@ -14,6 +20,7 @@ import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 export default class ToggleButton extends Vue {
     
     @Prop({ type: Array, required: true }) readonly options!: string[];
+    @Prop({ type: String }) readonly arrow!: string | undefined;
 
     @Watch("options")
     onOptionsChange () {

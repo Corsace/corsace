@@ -38,18 +38,21 @@ export const mutations: MutationTree<RootState> = {
         state.loggedInUser = user;
     },
     setMCA (state, mca: MCA) {
-        state.mca = {
-            year: mca.year,
-            nomination: {
-                start: new Date(mca.nomination.start),
-                end: new Date(mca.nomination.end),
-            },
-            voting: {
-                start: new Date(mca.voting.start),
-                end: new Date(mca.voting.end),
-            },
-            results: new Date(mca.results),
-        };
+        if (mca.year)
+            state.mca = {
+                year: mca.year,
+                nomination: {
+                    start: new Date(mca.nomination.start),
+                    end: new Date(mca.nomination.end),
+                },
+                voting: {
+                    start: new Date(mca.voting.start),
+                    end: new Date(mca.voting.end),
+                },
+                results: new Date(mca.results),
+            };
+        else
+            state.mca = null;
     },
 
     setAllMCA (state, mcas: MCAInfo[]) {
@@ -172,6 +175,7 @@ export const actions: ActionTree<RootState, RootState> = {
             commit("setMCA", data);
         } else {
             const { data } = await this.$axios.get(`/api/mca/all`);
+            commit("setMCA", {});
             commit("setAllMCA", data);
         }
     },

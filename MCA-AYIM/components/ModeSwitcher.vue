@@ -191,6 +191,7 @@ $max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // 
 
             &--#{$mode} {
                 border-color: var(--#{$mode});
+                @include transition;
             }
 
             &--#{$mode}::before {
@@ -203,6 +204,8 @@ $max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // 
                 border-bottom: 3px solid var(--#{$mode});
                 border-bottom-left-radius: $border-radius;
                 z-index: -1;
+
+                @include transition;
             }
         }
     }
@@ -220,6 +223,7 @@ $max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // 
     @each $mode in $modes {
         &--#{$mode} {
             border-bottom: 3px solid var(--#{$mode});
+            @include transition;
             
             @include breakpoint(tablet) {
                 border-bottom: none;

@@ -13,27 +13,22 @@
                 </div>
             </div>
 
-            <nuxt-link
-                v-if="phase && isEligibleFor(selectedMode)"
-                class="vote-now"
-                :class="[
-                    `vote-now--${selectedMode}`,
-                ]"
-                :to="`/${phase.year}/${phase.phase}`"
-            >
-                {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
-            </nuxt-link>
             <a
-                v-else-if="phase && loggedInUser"
-                class="vote-now vote-now--inactive"
-                :class="[
-                    `vote-now--${selectedMode}`,
-                ]"
-                href="#"
-                @click.prevent="toggleGuestDifficultyModal"
+                v-if="phase && phase.phase !== 'preparation' && isEligibleFor(selectedMode)"
+                class="vote-now"
+                :class="`vote-now--${selectedMode}`"
+                :href="`/${phase.year}/${phase.phase}`"
             >
                 {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
             </a>
+            <div
+                v-else-if="phase && phase.phase !== 'preparation' && !isEligibleFor(selectedMode)"
+                class="vote-now vote-now--inactive"
+                :class="`vote-now--${selectedMode}`"
+                @click="toggleGuestDifficultyModal"
+            >
+                {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
+            </div>
             <div v-else />
         </div>
 
