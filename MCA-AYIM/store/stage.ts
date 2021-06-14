@@ -108,7 +108,6 @@ export const mutations: MutationTree<StageState> = {
         state.beatmaps = [];
         state.users = [];
         state.count = 0;
-        state.query.text = "";
     },
     toggleVoteChoiceBox (state) {
         state.showVoteChoiceBox = !state.showVoteChoiceBox;
@@ -192,6 +191,8 @@ export const actions: ActionTree<StageState, RootState> = {
             if (state.selectedCategory.type === "Users") skip = state.users.length;
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
+
+        console.log(state.query);
 
         const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&text=${state.query.text}&skip=${skip}`);
         if (data.error)
