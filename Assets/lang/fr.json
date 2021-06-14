@@ -39,10 +39,10 @@
             "name": "MAPSETS",
             "playcount": "NOMBRE DE JOUEURS",
             "favourites": "FAVORIS",
-	          "favouritesExclHybrid": "FAVORIS (SAUF. MAPSETS HYBRIDES)",
+	        "favouritesExclHybrid": "FAVORIS (SAUF. MAPSETS HYBRIDES)",
             "length": "DURÉE",
             "difficulties": "DIFFICULTÉS",
-	          "playTime": "LONGUEUR (TOUTES DIFFICULTÉS COMPRISES)",
+	        "playTime": "LONGUEUR (TOUTES DIFFICULTÉS COMPRISES)",
             "totalRanked": "TOTAL DE MAPS CLASSÉES",
             "totalDiff": "TOTAL DE DIFFICULTÉS",
             "submitDates": "DATE DE MISE EN LIGNE",
@@ -50,8 +50,8 @@
             "approachRate": "NIVEAU D'APPROCHE",
             "overallDifficulty": "PRÉCISION",
             "hpDrain": "DRAIN DE PV",
-            "circleSize": "TAILLE DES CERCLES"
-	          "spinners": "SPINNERS",
+            "circleSize": "TAILLE DES CERCLES",
+	        "spinners": "SPINNERS",
             "sliders": "SLIDERS",
             "circles": "CERCLES",
             "avgSpinnersPerDiff": "MOYENNE DE SPINNERS PAR DIFFICULTÉ",
@@ -63,17 +63,17 @@
         "mappers": {
             "name": "MAPPERS",
             "mostRanked": "LE PLUS DE MAPS CLASSÉES",
-	          "mostDiffs": "LE PLUS DE DIFFICULTÉS",
+	        "mostDiffs": "LE PLUS DE DIFFICULTÉS",
             "mostFavs": "LE PLUS DE FAVORIS",
-	          "mostFavsExclHybrid": "LE PLUS DE FAVORIS (SAUF. MAPSETS HYBRIDES)",
+	        "mostFavsExclHybrid": "LE PLUS DE FAVORIS (SAUF. MAPSETS HYBRIDES)",
             "mostPlayed": "LES MAPS LES PLUS JOUÉES",
             "totalMappers": "NOMBRE DE MAPPERS AU TOTAL",
             "newMapperAges": "L'ANNÉE D'INSCRIPTION DES NOUVEAUX MAPPERS",
             "mapperAges": "L'ANNÉE D'INSCRIPTION DES MAPPERS",
             "mapsPerMapperAges": "MAPS PAR MAPPER PAR ANNÉE D'INSCRIPTION",
             "bng": "BNG",
-            "nat": "NAT"
-	          "uniqueMappers": "MAPPERS AU TOTAL",
+            "nat": "NAT",
+	        "uniqueMappers": "MAPPERS AU TOTAL",
             "newMappers": "NOUVEAUX MAPPERS",
             "highestAvgSr": "MOYENNE DE STAR RATING LE PLUS ÉLEVÉ",
             "lowestAvgSr": "MOYENNE DE STAR RATING LE PLUS BAS",
@@ -119,8 +119,8 @@
             "voteNow": "votez maintenant !",
             "daysLeft": "jours restants",
             "message": {
-                "2019": "<p>Les Mapper's Choice Awards sont de retour pour un 4ème round en 2019 ! C'est un évènement où tous les mappers/modders peuvent nominer et voter pour ce qu'ils pensent être la meilleure map ou le meilleur mapper pour chaque catégorie !</p><p> Notre but est de donner une nouvelle perspective sur les meilleures maps de 2019 à travers les yeux de la communauté mapping !</p><p> Cette année, on s'est donné à fond avec un site à part entière pour permettre dès maintenant aux voteurs éligibles de nominer et voter pour des maps !</p><p>Tous les prix en osu! supporter sont fournis par le staff directement. 2 mois de supporter pour les vainqueurs de chaque catégorie, et 6 mois pour les gagnants des Grands Prix !</p><p> Nous espérons qu'un maximum de participants pourront se donner au jeu ! Veuillez contacter VINXIS sur le serveur discord corsace à propos de tous bugs/problèmes rencontrés sur le site !</p>"
-	        "2020": "<p>Back to back, Les Mapper's Choice Awards sont de retour pour en finir avec un 5ème round en 2020! C'est un évènement où tous les mappers/modders peuvent nominer et voter pour ce qu'ils pensent être la meilleure map ou le meilleur mapper pour chaque catégorie !</p><p>Notre but est de donner une nouvelle perspective sur les meilleures maps de 2019 à travers les yeux de la communauté mapping !</p><p>Nous avons fait beaucoup de changements et corrigé tous les bugs présents au MCA 2019, ainsi que changer les catégories si besoin pour que cette édition soit beaucoup plus fluide ! </p><p>Nous espérons qu'un maximum de participants pourront se donner au jeu !</p>"
+                "2019": "<p>Les Mapper's Choice Awards sont de retour pour un 4ème round en 2019 ! C'est un évènement où tous les mappers/modders peuvent nominer et voter pour ce qu'ils pensent être la meilleure map ou le meilleur mapper pour chaque catégorie !</p><p> Notre but est de donner une nouvelle perspective sur les meilleures maps de 2019 à travers les yeux de la communauté mapping !</p><p> Cette année, on s'est donné à fond avec un site à part entière pour permettre dès maintenant aux voteurs éligibles de nominer et voter pour des maps !</p><p>Tous les prix en osu! supporter sont fournis par le staff directement. 2 mois de supporter pour les vainqueurs de chaque catégorie, et 6 mois pour les gagnants des Grands Prix !</p><p> Nous espérons qu'un maximum de participants pourront se donner au jeu ! Veuillez contacter VINXIS sur le serveur discord corsace à propos de tous bugs/problèmes rencontrés sur le site !</p>",
+	            "2020": "<p>Back to back, Les Mapper's Choice Awards sont de retour pour en finir avec un 5ème round en 2020! C'est un évènement où tous les mappers/modders peuvent nominer et voter pour ce qu'ils pensent être la meilleure map ou le meilleur mapper pour chaque catégorie !</p><p>Notre but est de donner une nouvelle perspective sur les meilleures maps de 2019 à travers les yeux de la communauté mapping !</p><p>Nous avons fait beaucoup de changements et corrigé tous les bugs présents au MCA 2019, ainsi que changer les catégories si besoin pour que cette édition soit beaucoup plus fluide ! </p><p>Nous espérons qu'un maximum de participants pourront se donner au jeu !</p>"
             },
             "categories": {
                 "map": "catégories de maps",
