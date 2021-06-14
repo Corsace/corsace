@@ -14,17 +14,21 @@
             </div>
 
             <a
-                v-if="phase && phase.phase !== 'preparation' && (isEligibleFor(selectedMode) || loggedInUser)"
+                v-if="phase && phase.phase !== 'preparation' && isEligibleFor(selectedMode)"
                 class="vote-now"
-                :class="[
-                    `vote-now--${selectedMode}`,
-                    {'vote-now--inactive': !isEligibleFor(selectedMode)}
-                ]"
-                :href="isEligibleFor(selectedMode) ? `/${phase.year}/${phase.phase}` : '#'"
-                @click="!isEligibleFor(selectedMode) ? toggleGuestDifficultyModal : null"
+                :class="`vote-now--${selectedMode}`"
+                :href="`/${phase.year}/${phase.phase}`"
             >
                 {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
             </a>
+            <div
+                v-else-if="phase && phase.phase !== 'preparation' && !isEligibleFor(selectedMode)"
+                class="vote-now vote-now--inactive"
+                :class="`vote-now--${selectedMode}`"
+                @click="toggleGuestDifficultyModal"
+            >
+                {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
+            </div>
             <div v-else />
         </div>
 
