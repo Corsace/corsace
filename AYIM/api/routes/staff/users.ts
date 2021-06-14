@@ -25,7 +25,7 @@ usersRouter.post("/:id/ban", async (ctx) => {
     };
 });
 
-usersRouter.post("/:id/unban", async (ctx) => {
+usersRouter.get("/:id/unban", async (ctx) => {
     const user = await User.findOneOrFail(ctx.params.id);
     user.canComment = true;
     await user.save();

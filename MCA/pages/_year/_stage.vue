@@ -1,30 +1,45 @@
 <template>
-    <div v-if="phase">
+    <div>
         <div
-            v-if="phase.phase && (phase.phase === 'nominating' || phase.phase === 'voting')"
-            class="stage__remainingDays" 
-            :class="`stage__remainingDays--${selectedMode}`"
+            v-if="onTime"
+            class="remaining-days" 
+            :class="`remaining-days--${selectedMode}`"
         >
-            <div class="stage__remainingDaysNumber">
+            <div class="remaining-days__number">
                 {{ remainingDays }}
             </div> 
-            <div class="stage__remainingDaysLeft">
+            <div class="remaining-days__left">
                 {{ $t(`mca.main.daysLeft`) }}
             </div>
-            <div class="stage_remainingDaysExclamation">
+            <div class="remaining-days__exclamation">
                 !
             </div>
-            <div class="stage_remainingDaysExclamation">
+            <div class="remaining-days__exclamation">
                 !
             </div>
         </div>
-        <div class="stage-wrapper">
+        <div 
+            v-if="onTime"
+            class="stage-wrapper"
+        >
             <mode-switcher
-                :enable-mode-eligibility="true"
+                stretch
+                enable-mode-eligibility
                 @inactiveModeClicked="toggleGuestDifficultyModal"
             >
                 <stage-page />
             </mode-switcher>
+        </div>
+        <div 
+            v-else
+            class="wrongPlace"
+        >
+            <p>
+                Ummm... are you in the wrong place?
+            </p>
+            <a @click="goBack">
+                Let's get you to the front page.
+            </a>
         </div>
     </div>
 </template>
@@ -37,6 +52,7 @@ import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import StagePage from "../../components/stage/StagePage.vue";
 
 import { Phase } from "../../../Interfaces/mca";
+import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component({
     components: {
@@ -58,8 +74,14 @@ import { Phase } from "../../../Interfaces/mca";
 export default class Stage extends Vue {
 
     @State selectedMode!: string;
-    @Getter phase!: Phase;
+    @State loggedInUser!: UserMCAInfo;
+    @Getter phase!: Phase | null;
     @Mutation toggleGuestDifficultyModal;
+    
+    mounted () {
+        if (!this.loggedInUser || !this.loggedInUser.eligibility.some(eligibility => eligibility.year == parseInt(this.$route.params.year)))
+            this.$router.push("/"+this.$route.params.year);
+    }
 
     get remainingDays (): string {
         if (this.phase) {
@@ -70,23 +92,35 @@ export default class Stage extends Vue {
         return "0";
     }
 
+    get onTime () {
+        return this.phase?.phase && (this.phase.phase === "nominating" || this.phase.phase === "voting");
+    }
+
+    goBack () {
+        this.$router.push("/");
+    }
 }
 </script>
 
 <style lang="scss">
 @import '@s-sass/_variables';
 @import '@s-sass/_mixins';
+@import '@s-sass/_partials';
 
 .stage-wrapper {
-    padding-top: 35px;
-    height: 100%;
     width: 100%;
+    max-height: 200%;
+    padding-top: 50px;
+
+    @include breakpoint(laptop) {
+        height: 100%;
+    }
 }
 
-.stage__remainingDays {
-    position: absolute;
+.remaining-days {
     background-color: white;
-    left: 5%;
+    margin-right: auto;
+    margin-left: auto;
     border-radius: 0 0 10px 10px;
     padding-left: 0.7%;
     padding-top: 0.5%;
@@ -96,25 +130,48 @@ export default class Stage extends Vue {
     overflow: hidden;
     z-index: -100;
 
+    @include breakpoint(laptop) { 
+        position: absolute;
+        left: 5%;
+    }
+
     @include mode-text-color;
     @include transition;
+
+    &__number {
+        font-size: 4rem;
+        font-weight: bold;
+        @include breakpoint(desktop) { 
+            font-size: 6rem;
+        }
+    }
+
+    &__left {
+        font-size: 1rem;
+        padding: 0 4px;
+        letter-spacing: 1px;
+        @include breakpoint(desktop) { 
+            font-size: 1.5rem;
+        }
+    }
+
+    &__exclamation {
+        font-size: 8rem;
+        font-weight: 900;
+        transform: rotate(30deg);
+        margin-bottom: 10%;
+        @include breakpoint(desktop) { 
+            font-size: 12rem;
+        }
+    }
 }
 
-.stage__remainingDaysNumber {
-    font-size: 6rem;
-    font-weight: bold;
-}
-
-.stage__remainingDaysLeft {
-    font-size: 1.5rem;
-    padding: 0 4px;
-    letter-spacing: 1px;
-}
-
-.stage_remainingDaysExclamation {
-    font-size: 12rem;
-    font-weight: 900;
-    transform: rotate(30deg);
-    margin-bottom: 10%;
+.wrongPlace {
+    @extend %flex-box;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
 }
 </style>

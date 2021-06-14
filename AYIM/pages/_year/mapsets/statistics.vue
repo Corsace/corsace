@@ -1,30 +1,36 @@
 <template>
     <display-layout nav-title="mapsets">
-        <record-item
-            v-for="(statisticItems, statisticName) in statistics"
-            :key="statisticName"
-            :title="statisticName"
-            :type="'mapsets'"
-        >
-            <div
-                v-for="statistic in statisticItems"
-                :key="statistic.constraint + '-stat'"
-                class="ayim-mapset-record"
+        <list-transition class="ayim-layout">
+            <record-item
+                v-for="(statisticItems, statisticName) in statistics"
+                :key="statisticName + '-stat'"
+                :title="statisticName"
+                :type="'mapsets'"
             >
-                <div class="ayim-mapset-record__info">
-                    <div class="ayim-text ayim-text--italic">
-                        number of {{ /CS|AR|OD|HP|SR|Keys/.test(statistic.constraint) ? "maps with" : "" }}
+                <div
+                    v-for="statistic in statisticItems"
+                    :key="statistic.constraint + '-stat'"
+                    class="ayim-mapset-record"
+                >
+                    <div class="ayim-mapset-record__info">
+                        <div class="ayim-text ayim-text--italic">
+                            {{
+                                /per|SR Ranked/.test(statistic.constraint) ? $t('ayim.statistics.average') :
+                                /CS|AR|OD|HP|SR|Keys/.test(statistic.constraint) ? $t('ayim.statistics.numberOfMapsWith') :
+                                $t('ayim.statistics.numberOf')
+                            }}
+                        </div>
+
+                        <div class="ayim-text ayim-text--xl">
+                            {{ statistic.constraint }}
+                        </div>
                     </div>
-                            
-                    <div class="ayim-text ayim-text--xl">
-                        {{ statistic.constraint }}
+                    <div class="ayim-mapset-record__total">
+                        {{ statistic.value }}
                     </div>
                 </div>
-                <div class="ayim-mapset-record__total">
-                    {{ statistic.value }}
-                </div>
-            </div>
-        </record-item>
+            </record-item>
+        </list-transition>
     </display-layout>
 </template>
 
@@ -34,6 +40,7 @@ import { State } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
+import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
 
 import { Statistic } from "../../../../Interfaces/records";
 import { MCA } from "../../../../Interfaces/mca";
@@ -42,6 +49,7 @@ import { MCA } from "../../../../Interfaces/mca";
     components: {
         DisplayLayout,
         RecordItem,
+        ListTransition,
     },
     head () {
         return {
@@ -53,7 +61,7 @@ export default class MapsetStatistics extends Vue {
 
     @State selectedMode!: string;
     @State mca!: MCA;
-    
+
     statistics: Record<string, Statistic[]> = {};
 
     @Watch("selectedMode")
@@ -72,7 +80,7 @@ export default class MapsetStatistics extends Vue {
             this.statistics = data;
         }
     }
-    
+
 }
 </script>
 

@@ -1,7 +1,7 @@
 <template>
     <div class="footer">
         <div class="footer__left">
-            <div class="footer__corsace">
+            <a class="footer__corsace" href="https://corsace.io">
                 <img
                     class="footer__logo" 
                     src="../../../Assets/img/ayim-mca/site/corsace_logo.png"
@@ -10,7 +10,19 @@
                     class="footer__logo-text" 
                     src="../../../Assets/img/ayim-mca/site/corsace_text.png"
                 >
-            </div>
+            </a>
+
+            <img 
+                class="footer__dot" 
+                src="../../../Assets/img/ayim-mca/site/d.png"
+            >
+
+            <a class="footer__corsace" href="https://twitter.com/kkaetwo">
+                <img
+                    class="footer__kaetwo" 
+                    src="../../../Assets/img/partners/kaetwo.png"
+                >
+            </a>
 
             <img 
                 class="footer__dot" 
@@ -21,6 +33,7 @@
                 <a href="https://twitter.com/corsace_"> <img src="../../../Assets/img/social/twitter.png"> </a>
                 <a href="https://discord.gg/Z6vEMsr"><img src="../../../Assets/img/social/discord.png"></a>
                 <a href="https://www.twitch.tv/corsace"><img src="../../../Assets/img/social/ttv.png"></a>
+                <a href="https://github.com/corsace/corsace"><img src="../../../Assets/img/social/github.png"></a>
             </div>
         </div>
 
@@ -56,7 +69,10 @@ export default class TheFooter extends Vue {
     justify-content: space-between;
     flex-wrap: nowrap;
     align-items: stretch;
-    height: 60px;
+    height: 30px;
+    @include breakpoint(tablet) {
+        height: 60px;
+    }
 }
 
 .footer__left {
@@ -74,15 +90,32 @@ export default class TheFooter extends Vue {
 }
 
 .footer__logo {
-    height: 60px;
+    height: 30px;
+    @include breakpoint(tablet) {
+        height: 60px;
+    }
 }
 
 .footer__logo-text {
-    height: 35px;
+    height: 17px;
+    @include breakpoint(tablet) {
+        height: 35px;
+    }
+}
+
+.footer__kaetwo {
+    height: 10px;
+    @include breakpoint(tablet) {
+        height: 25px;
+    }
 }
 
 .footer__dot {
-    height: 5px;
+    height: 1px;
+    @include breakpoint(tablet) {
+        height: 5px;
+    }
+
     padding: 0 20px;
 }
 
@@ -90,7 +123,10 @@ export default class TheFooter extends Vue {
     display: flex;
     
     img {
-        height: 55px;
+        height: 20px;
+        @include breakpoint(tablet) {
+            height: 55px;
+        }
     }
 }
 </style>

@@ -2,17 +2,30 @@
 @import '_mixins';
 
 .button {
-    color: white;
     padding: 5px;
     margin: 0;
+
     background: black;
     box-shadow: $black-shadow;
     border-radius: 5.5px;
+
     font-size: $font-lg;
     font-family: $font-body;
     text-shadow: 0 0 4px white;
     text-transform: uppercase;
-    min-width: 165px;
+    color: white;
+    @include breakpoint(mobile) {
+        font-size: $font-base;
+    }
+
+    min-width: 80px;
+    @include breakpoint(tablet) {
+        min-width: 165px;
+    }
+    @include breakpoint(mobile) {
+        min-width: 50px;
+    }
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -40,7 +53,18 @@
 
     &--active {
         background-color: white;
+        color: black;
         font-weight: 500;
+    }
+
+    &__add {
+        color: rgba(0, 255, 0, 0.6);
+        text-shadow: 0 0 4px rgba(0, 255, 0, 0.6);
+    }
+    
+    &__remove {
+        color: rgba(255, 0, 0, 0.6);
+        text-shadow: 0 0 4px rgba(255, 0, 0, 0.6);
     }
 
     @include mode-text-color;

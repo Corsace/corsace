@@ -1,29 +1,15 @@
 <template>
     <div class="general-info">
-        <div class="general-info__text">
-            <p>Hello 2020.</p>
-
-            <p>A Year in Mapping has returned for 2019 to bring you etc etc etc</p>
-
-            <p>
-                sdasdsadasd<br>
-                asdsadsad
-            </p>
-
-            <p>
-                asdasdsadasdsad<br>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute 
-                irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia 
-                deserunt mollit anim id est laborum
-            </p>
-
-            <p>Select your preferred mode with the icons below to get started</p>
-        </div>
+        <div
+            class="general-info__text" 
+            v-if="mca"
+            v-html="$t(`ayim.main.message.${mca.year}`)" 
+        />
         
-        <div class="ayim-nav">
+        <div 
+            v-if="mca"
+            class="ayim-nav ayim-nav--front"
+        >
             <nuxt-link
                 :to="`/${mca.year}/mapsets/records`"
                 class="ayim-nav__item button"
@@ -43,6 +29,28 @@
                 {{ $t('ayim.comments.name') }}
             </nuxt-link>
         </div>
+        <div 
+            v-else
+            class="noMCA"
+        >
+            There is no AYIM for {{ $route.params.year }} currently! Check back later!
+            <div
+                v-if="allMCA.length >= 1" 
+                class="otherMCA"
+            >
+                Other AYIM:
+                <div>
+                    <nuxt-link 
+                        v-for="mca in allMCA"
+                        :key="mca.name"
+                        :to="`/${mca.name}`"
+                        :class="mca.phase"
+                    >
+                        AYIM {{ mca.name }} ({{ mca.phase }}) 
+                    </nuxt-link>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -50,19 +58,22 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
-import { MCA } from "../../Interfaces/mca";
+import { MCA, MCAInfo } from "../../Interfaces/mca";
 
 @Component
 export default class IndexPage extends Vue {
 
     @State selectedMode!: string;
     @State mca!: MCA;
+    @State allMCA!: MCAInfo[];
 
 }
 </script>
 
 <style lang="scss">
 @import '@s-sass/_variables';
+@import '@s-sass/_partials';
+@import '@s-sass/_mixins';
 
 .general-info {
     display: flex;
@@ -70,9 +81,62 @@ export default class IndexPage extends Vue {
     justify-content: space-between;
     border-radius: 15px 0 0 15px; 
     background-color: $bg-dark; 
-    padding: 30px 70px;
+    padding: 30px;
     margin-bottom: 30px;
     height: 100%;
+    
+    @include breakpoint(laptop) {
+        padding: 30px 70px;
+    }
+
+    &__text {
+        font-size: $font-lg;
+        
+        @include breakpoint(mobile) {
+            font-size: $font-base;
+        }
+    }
 }
 
+.noMCA {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+
+    font-size: 2rem;
+}
+
+.otherMCA {
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.nominating {
+    color: $yellow;
+}
+
+.voting {
+    color: $yellow;
+}
+
+.preparation {
+    color: $red;
+}
+
+.results {
+    color: $green;
+}
 </style>

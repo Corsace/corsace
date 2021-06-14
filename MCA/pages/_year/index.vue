@@ -29,22 +29,22 @@
             </div>
 
             <div class="general-info">
-                <p v-if="phase.startDate && phase.endDate">
-                    {{ timeRange }}
+                <p
+                    :class="`general-info--${selectedMode}`"
+                    v-if="phase.phase !== 'preparation' && phase.startDate && phase.endDate"
+                >
+                    {{ $t(`mca.main.stage.${phase.phase}`).toUpperCase() }}
+                    <br>
+                    {{ this.phase.startDate.toLocaleString(dateInfo.locale, options) }}
+                    <br>
+                    {{ this.phase.endDate.toLocaleString(dateInfo.locale, options) }}
                 </p>
-
-                <p>{{ $t('mca.main.message.1') }}</p>
-
-                <p>{{ $t('mca.main.message.2') }}</p>
-                                
-                <p>{{ $t('mca.main.message.3') }}</p>
-                                
-                <p>{{ $t('mca.main.message.4') }}</p>
+                <div v-html="$t(`mca.main.message.${$route.params.year}`)" />
             </div>
         </div>
 
-        <div class="right-side">
-            <mode-switcher :hide-phase="true">
+        <div :class="{'right-side': phase, 'full-side': !phase}">
+            <mode-switcher hide-phase>
                 <index-page />
             </mode-switcher>
         </div>
@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter } from "vuex-class";
+import { Getter, State } from "vuex-class";
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import IndexPage from "../../components/IndexPage.vue";
@@ -73,7 +73,12 @@ import { Phase } from "../../../Interfaces/mca";
 })
 export default class Index extends Vue {
 
+    @State selectedMode!: string;
+
     @Getter phase!: Phase;
+
+    dateInfo = Intl.DateTimeFormat().resolvedOptions();
+    options: Intl.DateTimeFormatOptions = { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
 
     mounted () {
         let days = 0;
@@ -96,13 +101,6 @@ export default class Index extends Vue {
         return Math.floor((this.phase?.endDate?.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
     }
 
-    get timeRange (): string {
-        const dateInfo = Intl.DateTimeFormat().resolvedOptions();
-        const options = { timeZone: dateInfo.timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
-
-        return this.phase?.startDate.toLocaleString(dateInfo.locale, options) + " - " + this.phase?.endDate.toLocaleString(dateInfo.locale, options);
-    }
-
 }
 </script>
 
@@ -112,7 +110,7 @@ export default class Index extends Vue {
 
 .left-side {
     overflow: hidden;
-    padding-right: 35px;
+    padding-right: 0;
     padding-top: 7%;
     margin-bottom: 15px;
     display: flex;
@@ -121,6 +119,14 @@ export default class Index extends Vue {
     align-items: flex-end;
     flex: 0 0 100%;
     width: 100%;
+
+    @include breakpoint(mobile) {
+        margin-bottom: 0;
+    }
+
+    @include breakpoint(laptop) {
+        padding-right: 35px;
+    }
 }
 
 .voting-date {
@@ -138,8 +144,8 @@ export default class Index extends Vue {
 
     &__wheel-img {
         display: none;
-        width: 950px;
-        height: 950px;
+        width: 965px;
+        height: 965px;
         background: url("../../../Assets/img/ayim-mca/site/wheel.png") no-repeat center;
         background-size: cover;
         left: -730px;
@@ -201,17 +207,29 @@ export default class Index extends Vue {
     border-radius: 0 15px 15px 0; 
     background-color: rgba(0, 0, 0, 0.8); 
     padding: 45px 30px;
+
+    @each $mode in $modes {
+        &--#{$mode} {
+            color: var(--#{$mode});
+            font-weight: bold;
+            text-shadow: 0 0 8px var(--#{$mode});
+            text-align: center;
+            @include transition;
+        }
+    }
 }
 
 .right-side {
     flex: 0 0 100%;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    padding-top: 30px;
+    padding-top: 50px;
 }
 
-@include breakpoint(desktop) {
+.full-side {
+    width: 100%;
+}
+
+@include breakpoint(laptop) {
     .left-side, .right-side {
         flex: 0 0 50%;
         max-width: 50%;

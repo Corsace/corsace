@@ -1,5 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, OneToMany, MoreThanOrEqual, LessThanOrEqual } from "typeorm";
-import { MCAInfo } from "../../Interfaces/mca";
+import { MCAInfo, PhaseType } from "../../Interfaces/mca";
 import { Category } from "./category";
 
 export class Phase {
@@ -29,6 +29,25 @@ export class MCA extends BaseEntity {
 
     @OneToMany(() => Category, category => category.mca)
     categories!: Category[];
+
+    static fillAndSave (data, mca?: MCA): Promise<MCA> {
+        if (!mca) {
+            mca = new MCA;
+            mca.year = data.year;
+        }
+
+        mca.nomination = {
+            start: data.nominationStart,
+            end: data.nominationEnd,
+        };
+        mca.voting = {
+            start: data.votingStart,
+            end: data.votingEnd,
+        };
+        mca.results = data.results;
+
+        return mca.save();
+    }
 
     static current (): Promise<MCA> {
         const date = new Date();
@@ -65,11 +84,27 @@ export class MCA extends BaseEntity {
     public getInfo = function(this: MCA): MCAInfo {
         return {
             name: this.year,
+            phase: this.currentPhase(),
             nomination: this.nomination,
             voting: this.voting,
             results: this.results,
             categories: this.categories,
         };
+    }
+
+    public currentPhase (this: MCA): PhaseType {
+        let phase: PhaseType = "preparation";
+        const newDate = new Date;
+        
+        if (newDate > this.nomination.start && newDate < this.nomination.end) {
+            phase = "nominating";
+        } else if (newDate > this.voting.start && newDate < this.voting.end) {
+            phase = "voting";
+        } else if (newDate > this.results) {
+            phase = "results";
+        }
+
+        return phase;
     }
 
     public isNominationPhase (): boolean {

@@ -1,13 +1,16 @@
-import { Config } from "../config";
+import { config } from "node-config-ts";
 import { discordGuild } from "./discord";
 import { ParameterizedContext, Next } from "koa";
 
-// General middlewares
-const config = new Config();
+interface discordRoleInfo {
+    section: string;
+    role: string;
+}
 
+// General middlewares
 async function isLoggedIn (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (!ctx.state.user) {
-        ctx.body = { error: "No user found!" };
+        ctx.body = { error: "User is not logged in via osu!" };
         return;
     }
 
@@ -15,17 +18,8 @@ async function isLoggedIn (ctx: ParameterizedContext, next: Next): Promise<void>
 }
 
 async function isLoggedInDiscord (ctx: ParameterizedContext, next: Next): Promise<void> {
-    if (!ctx.state.user?.discord?.accessToken) {
+    if (!ctx.state.user?.discord?.userID) {
         ctx.body = { error: "User is not logged in via discord!" };
-        return; 
-    }
-
-    await next();
-}
-
-async function isLoggedInOsu (ctx: ParameterizedContext, next: Next): Promise<void> {
-    if (!ctx.state.user?.osu?.accessToken) {
-        ctx.body = { error: "User is not logged in via osu!" };
         return; 
     }
 
@@ -39,9 +33,6 @@ async function isStaff (ctx: ParameterizedContext, next: Next): Promise<void> {
             config.discord.roles.corsace.corsace,
             config.discord.roles.corsace.headStaff,
             config.discord.roles.corsace.staff,
-            config.discord.roles.open.staff,
-            config.discord.roles.invitational.staff,
-            config.discord.roles.mca.staff,
         ];
         for (const role of roles)
             if (member.roles.cache.has(role)) {
@@ -74,8 +65,51 @@ function hasRole (section: string, role: string) {
     };
 }
 
-const isMCAStaff = hasRole("mca", "staff");
+function hasRoles(roles: discordRoleInfo[]) {
+    return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
+        const member = await (await discordGuild()).members.fetch(ctx.state.user.discord.userID);
+        if (!member) {
+            ctx.body = { error: "Could not obtain any discord user!" };
+            return;
+        }
+
+        if (
+            member.roles.cache.has(config.discord.roles.corsace.corsace) || 
+            (roles.some(role => role.section == "corsace" && role.role == "corsace") ? false : member.roles.cache.has(config.discord.roles.corsace.headStaff))
+        ) {
+            await next();
+            return;
+        }
+        for (const role of roles) {
+            if (member.roles.cache.has(config.discord.roles[role.section][role.role]))
+            {
+                await next();
+                return;
+            }
+        }
+        
+        ctx.body = { error: "User does not have any of the required roles!" };
+        return;
+    };
+}
+
+const isMCAStaff = hasRoles([{
+    section: "mca",
+    role: "standard",
+}, {
+    section: "mca",
+    role: "taiko",
+}, {
+    section: "mca",
+    role: "fruits",
+}, {
+    section: "mca",
+    role: "mania",
+}, {
+    section: "mca",
+    role: "storyboard",
+}]);
 const isHeadStaff = hasRole("corsace", "headStaff");
 const isCorsace = hasRole("corsace", "corsace");
 
-export { isLoggedIn, isLoggedInDiscord, isLoggedInOsu, isStaff, isMCAStaff, isHeadStaff, isCorsace, hasRole };
+export { isLoggedIn, isLoggedInDiscord, isStaff, isMCAStaff, isHeadStaff, isCorsace, hasRole, hasRoles };

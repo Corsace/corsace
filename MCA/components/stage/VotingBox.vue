@@ -1,108 +1,186 @@
 <template>
-    <div
-        class="voting"
-        :class="`voting--${selectedMode}`"
+    <base-modal
+        title="votes order"
+        @close="close"
     >
         <div
-            class="voting__title"
-            :class="`voting__title--${selectedMode}`"
+            class="voting-title"
+            :class="`voting-title--${selectedMode}`"
         >
-            voting for {{ title }} -
-            remaining votes
+            drag and drop to move vote position
         </div>
-        <div class="voting__list">
+
+        <div class="voting-items">
             <div
-                v-for="i in maxChoices"
-                :key="i"
-                class="vote-choice"
+                v-for="vote in sortedVotes"
+                :key="vote.ID"
+                class="voting-item"
+                :class="{ 'voting-item--dragged': dragging === vote.ID }"
+                draggable
+                @dragstart="dragStart($event, vote)"
+                @dragenter.prevent="toggleHighlightClass($event, vote.ID)"
+                @dragleave.prevent="toggleHighlightClass($event, vote.ID)"
+                @dragover.prevent
+                @dragend.prevent="dragEnd"
+                @drop="dropData($event, vote)"
             >
                 <div
-                    v-if="chosenVote(i)"
-                    class="vote-choice__number vote-choice__number--inactive"
+                    class="voting-item__drag"
+                    :class="{ 'voting-item__drag--hidden': dragging }"
                 >
-                    {{ i }}
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-grip-vertical"
+                        viewBox="0 0 16 16"
+                    >
+                        <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                    </svg>
                 </div>
-                <a
-                    v-else
-                    href="#"
-                    class="vote-choice__number"
-                    @click.stop="vote(i)"
-                >
-                    {{ i }}
-                </a>
+                    
+                <div class="voting-item__title">
+                    {{ formatTitle(vote) }}
+                </div>
 
                 <a
-                    v-if="chosenVote(i)"
                     href="#"
-                    class="vote-choice__remove"
-                    @click.stop="remove(i)"
+                    class="voting-item__remove"
+                    :class="{ 'voting-item__drag--hidden': dragging }"
+                    @click.stop="remove(vote.ID)"
                 >
-                    X
+                    ✕
                 </a>
             </div>
         </div>
-    </div>
+
+        <div class="voting-actions">
+            <button
+                class="button button--small"
+                @click="save"
+            >
+                Save
+            </button>
+            <button
+                class="button button--small"
+                @click="reset"
+            >
+                Reset
+            </button>
+        </div>
+    </base-modal>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
-import { UserCondensedInfo } from "../../../Interfaces/user";
+import { UserChoiceInfo } from "../../../Interfaces/user";
 
 import { Vote } from "../../../Interfaces/vote";
-import { SectionCategory } from "../../store/stage";
+import { SectionCategory } from "../../../MCA-AYIM/store/stage";
+import BaseModal from "../../../MCA-AYIM/components/BaseModal.vue";
 
 const stageModule = namespace("stage");
 
-@Component
+@Component({
+    components: {
+        BaseModal,
+    },
+})
 export default class VotingBox extends Vue {
     
     @State selectedMode!: string;
     @stageModule.State section!: SectionCategory;
-    @stageModule.State votingFor!: number;
     @stageModule.State beatmaps!: BeatmapsetInfo[];
-    @stageModule.State users!: UserCondensedInfo[];
-    @stageModule.Getter relatedVotes!: Vote[];
+    @stageModule.State users!: UserChoiceInfo[];
+    @stageModule.Getter relatedCandidacies!: Vote[];
+    @stageModule.Mutation toggleVoteChoiceBox;
     @stageModule.Action createVote;
     @stageModule.Action removeVote;
+    @stageModule.Action swapVotes;
 
-    maxChoices = 10;
+    @Watch("relatedCandidacies", { immediate: true })
+    async onChanged () {
+        this.reset();
+    }
 
-    get votingObject (): UserCondensedInfo | BeatmapsetInfo | undefined {
-        if (this.section === "beatmaps") {
-            return this.beatmaps.find(b => b.id === this.votingFor);
-        } else if (this.section === "users") {
-            return this.users.find(u => u.corsaceID === this.votingFor);
-        }
+    newOrder: Vote[] = [];
+    dragging: null | number = null;
+
+    get sortedVotes () {
+        return this.newOrder.sort((a, b) => a.choice - b.choice);
+    }
+
+    async remove (voteId: number) {
+        await this.removeVote(voteId);
+    }
+
+    formatTitle (vote: Vote) {
+        let target = "";
+        if (this.section === "beatmaps") target = vote.beatmapset?.title || "";
+        else target = vote.user?.osu.username || "";
         
-        return undefined;
-    }
-
-    get title (): string {
-        if (!this.votingObject) return "";
-
-        if (this.section === "beatmaps") return (this.votingObject as BeatmapsetInfo).title;
-        else return (this.votingObject as UserCondensedInfo).username;
-    }
-
-    chosenVote (i: number): Vote | undefined {
-        return this.relatedVotes.find(v => v.choice === i);
-    }
-
-    async vote (vote: number) {
-        await this.createVote({ 
-            nomineeId: this.votingFor,
-            vote,
-        });
+        return vote.choice + " - " + target;
     }
     
-    async remove (voteChoice: number) {
-        const vote = this.chosenVote(voteChoice);
+    dragStart (e, vote: Vote) {
+        this.dragging = vote.ID;
+        e.dataTransfer.dropEffect = "move";
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("voteId", vote.ID);
+    }
 
-        if (vote) {
-            await this.removeVote(vote.ID);
+    toggleHighlightClass (e, voteId: number) {
+        const id = e.dataTransfer.getData("voteId");
+
+        if (id != voteId) {
+            e.target.classList.toggle("voting-item__" + this.selectedMode);
         }
+    }
+
+    dragEnd () {
+        this.dragging = null;
+    }
+
+    async dropData (e, vote: Vote) {
+        this.dragging = null;
+        this.toggleHighlightClass(e, vote.ID);
+        const id = e.dataTransfer.getData("voteId");
+        const draggedIndex = this.newOrder.findIndex(v => v.ID == id);
+        
+        if (draggedIndex !== -1 && vote && this.newOrder[draggedIndex].ID !== vote.ID) {
+            const replacedChoice = vote.choice;
+            const draggedChoice = this.newOrder[draggedIndex].choice;
+            let minVote = Math.min(replacedChoice, draggedChoice);
+            let maxVote = Math.max(replacedChoice, draggedChoice);
+            
+            const votesToMove = this.newOrder.filter(v => 
+                v.choice >= minVote && 
+                v.choice <= maxVote
+            );
+
+            for (const voteToMove of votesToMove) {
+                if (draggedChoice > replacedChoice) voteToMove.choice++;
+                else voteToMove.choice--;
+            }
+
+            this.newOrder[draggedIndex].choice = replacedChoice;
+        }
+    }
+
+    async save () {
+        await this.swapVotes(this.newOrder);
+    }
+
+    reset () {
+        this.newOrder = JSON.parse(JSON.stringify(this.relatedCandidacies));
+    }
+
+    close () {
+        this.toggleVoteChoiceBox();
+        this.reset();
     }
 
 }
@@ -113,52 +191,61 @@ export default class VotingBox extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
 
-.voting {
-    margin-top: 15px;
-    background: black;
-    border-radius: $border-radius;
-    box-shadow: 0 0 8px 2px rgb($standard, .55);
-    padding: 5px;
-    cursor: default;
+.voting-title {
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 10px;
 
-    @include mode-border;
-
-    &__title {
-        text-transform: uppercase;
-        text-align: right;
-
-        @include mode-border([bottom]);
-    }
-
-    &__list {
-        display: flex;
-        justify-content: space-around;
-    }
+    @include mode-border([bottom]);
 }
 
-.vote-choice {
+.voting-items {
+    padding: 5px;
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.voting-item {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 
-    &__number {
-        font-size: $font-xl;
-        font-weight: bold;
-        padding: 5px 15px;
+    &--dragged {
+        background-color: $gray-dark;
+        opacity: .5;
+    }
+    
+    &__drag {
+        cursor: grab;
+        margin: 5px;
+        padding: 10px;
 
-        @each $mode in $modes {
-            &--#{$mode}:hover:not(&--inactive) {
-                color: var(--#{standard});
-            }
+        &--hidden {
+            opacity: 0;
         }
         
-        &--inactive {
-            color: $gray-dark;
+        &:hover {
+            background-color: $gray-dark;
         }
+    }
+
+    @each $mode in $modes {
+        &__#{$mode} {
+            border: 3px solid var(--#{standard});
+        }
+    }
+
+    &__title {
+        text-align: left;
+        width: 100%;
+        margin: 5px;
+        padding: 10px;
     }
 
     &__remove {
+        font-size: $font-lg;
+        padding: 0 10px;
         color: $red;
 
         &:hover {
@@ -167,5 +254,9 @@ export default class VotingBox extends Vue {
     }
 }
 
-</style>
+.voting-actions {
+    @extend %spaced-container;
+    gap: 10px;
+}
 
+</style>

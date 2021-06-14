@@ -1,0 +1,283 @@
+{
+    "flag": "https://osu.ppy.sh/images/flags/JP.png",
+    "login": "ログイン",
+    "mca_ayim": {
+        "header": {
+            "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
+            "ayim": "A YEAR <br> IN <br> MAPPING",
+            "login": "ログイン",
+            "welcomeBack": "おかえりなさい",
+            "admin": "アドミン",
+            "staff": "スタッフ",
+            "logout": "ログアウト"
+        },
+        "login": {
+            "login": "ログイン",
+            "message": {
+                "1": "ログインしていません<br>osu!でログインし、いますぐ投票とノミネートをしましょう！",
+                "2": "さらにDiscordでログインすることもできますが、投票とノミネートには必須ではありません<br>MCA/AYIMのスタッフのみログインが<b>必須</b>です</span>"
+            },
+            "authOsu": "osu!で認証するにはここを押してください",
+            "authOsuComp": "osu!での認証が完了しました。ようこそ ",
+            "authDiscord": "Discordで認証するにはここを押してください",
+            "authDiscordComp": "Discordでの認証が完了しました。ようこそ "
+        }
+    },
+    "ayim": {
+        "main": {
+            "records": "記録",
+            "statistics": "統計",
+            "search": "マッパー検索",
+            "numberof": "数",
+            "numberwith": "譜面数",
+            "message": {
+                "2019": "<p>こんにちは、2020年。</p><p>A Year in Mapping 2019が当年に叩き出された記録と、蓄積された詳細な統計データをお届けしに帰ってきました！</p><p>このウェブサイトを使って、全ての年について検索できるだけの情報を含めることができました。何か提案があればcorsaceのサーバー内でVINXISの元へ教えてください（リンクは左下にあります）。</p><p>また、コメントの募集も行っています。これを読んでいるあなたも、マッパーに対して好きなだけコメントを書いて送ることができます。</p><p>まずは下にあるアイコンからお好きなモードを選んで始めましょう！</p>",
+                "2020": "<p>こんにちは、2021年... 今度は間違いのない年です！</p><p>A Year in Mapping 2020が本年に叩き出された記録と、蓄積された詳細な統計データをお届けしに帰ってきました！</p><p>そして改めてにはなりますが、コメントは絶賛募集中です。早速下にあるアイコンからお好きなモードを選んで始めましょう！</p>"
+            }
+        },
+        "mapsets": {
+            "name": "マップセット",
+            "playcount": "プレイ回数",
+            "favourites": "お気に入り",
+            "length": "長さ",
+            "favouritesExclHybrid": "お気に入り（ハイブリッドを除く）",
+            "difficulties": "難易度",
+            "playTime": "長さ（全難易度合計）",
+            "totalRanked": "全てのRanked譜面",
+            "totalDiff": "全ての難易度",
+            "submitDates": "投稿日",
+            "starRatings": "SR",
+            "approachRate": "AR",
+            "overallDifficulty": "OD",
+            "hpDrain": "HP",
+            "circleSize": "CS",
+            "spinners": "スピナー",
+            "sliders": "スライダー",
+            "circles": "サークル",
+            "avgSpinnersPerDiff": "1譜面あたりの平均スピナー",
+            "avgSlidersPerDiff": "1譜面あたりの平均スライダー",
+            "avgCirclesPerDiff": "1譜面あたりの平均サークル",
+            "highestSr": "最高難易度",
+            "lowestSr": "最低難易度"
+        },
+        "mappers": {
+            "name": "マッパー",
+            "mostRanked": "Ranked数",
+            "mostDiffs": "難易度数",
+            "mostFavs": "お気に入り",
+            "mostFavsExclHybrid": "お気に入り（ハイブリッドを除く）",
+            "mostPlayed": "プレイ回数",
+            "totalMappers": "全てのマッパー",
+            "newMapperAges": "新規マッパーのアカウントの年数",
+            "mapperAges": "アカウントの年数",
+            "mapsPerMapperAges": "アカウントの年数別の譜面数",
+            "bng": "BNG",
+            "nat": "NAT",
+            "uniqueMappers": "全てのマッパー",
+            "newMappers": "新規マッパー",
+            "highestAvgSr": "最高平均難易度",
+            "lowestAvgSr": "最低平均難易度",
+            "mappers": "マッパー"
+        },
+        "statistics": {
+            "numberOf": "数",
+            "numberOfMapsWith": "譜面数",
+            "average": "平均"
+        },
+        "comments": {
+            "name": "コメント",
+            "info": "すべてのコメントはMCAの結果が出た後に公表されます。それまではコメントを投稿できます。",
+            "search": "マッパー検索",
+            "viewSubmit": "コメント閲覧・投稿",
+            "writeHere": "ここにマッパーへのコメントを入力してください",
+            "update": "更新",
+            "remove": "削除",
+            "create": "作成",
+            "login": "ログインして作成",
+            "visible": "(まだ閲覧できません)",
+            "notice": "こんにちは。コメントページを訪れるのは初めてのようですね。 <br> コメントは絶賛募集中です！ <br> 今年のMCAが終わるまでは誰でもコメントを書くことができます。 <br> [YEAR]年の彼らの活躍や功績について投稿し、コミュニティで活躍するマッパー達に感謝を示しましょう！"
+        }
+    },
+    "mca": {
+        "main": {
+            "voting": "投票",
+            "nominating": "ノミネート",
+            "results": "結果",
+            "undefined": "",
+            "mapsetsLabel": "マップセット",
+            "mappersLabel": "マッパー",
+            "commentsLabel": "コメント",
+            "recordsLabel": "記録",
+            "statisticsLabel": "統計",
+            "stage": {
+                "voting": "投票期間",
+                "nominating": "ノミネート期間",
+                "undefined": ""
+            },
+            "rankedSets": "Ranked譜面",
+            "nominateNow": "いますぐノミネートしよう！",
+            "voteNow": "いますぐ投票しよう！",
+            "daysLeft": "days left",
+            "message": {
+                "2019": "<p>Mapper's Choice Awardsが帰ってきました！これはすべてのマッパー・モッダーが各部門で最高の譜面・マッパーだと思うものに投票するイベントです。</p><p>Community Choiceとの違いは、マッピングコミュニティーの目線からで2019年を代表する譜面を決めることが目的だという点です。</p><p>今年はできる限り簡単に参加できるように、ウェブサイトの開発を本格的に行いました。</p><p>一人でも多くの人に投票してもらえることを期待しています！</p>",
+                "2020": "<p>2020年の仕上げに、Mapper's Choice Awardsがまたまた帰ってきました！これはすべてのマッパー・モッダーが各部門で最高の譜面・マッパーだと思うものに投票するイベントです。</p><p>Community Choiceとの違いは、マッピングコミュニティーの目線からで2020年を代表する譜面を決めることが目的だという点です。</p><p>様々な変更を加え、MCA2019で見つかったすべてのバグへの対処とともに、必要に応じて部門を修正したため、今回ははるかにスムーズなはずです。</p><p>一人でも多くの人に投票してもらえることを期待しています！</p>"
+            },
+            "categories": {
+                "map": "譜面部門",
+                "user": "マッパー部門"
+            },
+            "organized": "主催"
+        },
+        "categories": {
+            "grandAward": {
+                "name": "グランプリ",
+                "description": "2019年を代表するのにふさわしい譜面"
+            },
+            "marathon": {
+                "name": "マラソン",
+                "description": "ドレインタイムが5分以上の譜面"
+            },
+            "hitsounding": {
+                "name": "ヒットサウンド",
+                "description": "耳を楽しませてくれる最高のヒットサウンド"
+            },
+            "collab": {
+                "name": "コラボ",
+                "description": "2人以上の手でトップ難易度が作られた譜面"
+            },
+            "simple": {
+                "name": "シンプル",
+                "description": "トップ難易度がInsaneより易しい譜面"
+            },
+            "highBPM": {
+                "name": "高BPM",
+                "description": "息をのむような速度と密度を誇る譜面"
+            },
+            "smallCircles": {
+                "name": "小さいサークル",
+                "description": "トップ難易度のCSが5以上である譜面"
+            },
+            "heavy13": {
+                "name": "三拍子",
+                "description": "トップ難易度が「紫線」を大量に使用している譜面"
+            },
+            "throwback": {
+                "name": "懐古",
+                "description": "古き良きスタイルで作られた譜面"
+            },
+            "mapper": {
+                "name": "マッパー",
+                "description": "2019年を代表するのにふさわしいマッパー"
+            },
+            "modder": {
+                "name": "モッダー",
+                "description": "2019年を代表するのにふさわしいモッダー"
+            },
+            "hitsounder": {
+                "name": "音付け職人",
+                "description": "質の高いヒットサウンドをつけた人物"
+            },
+            "mostPromising": {
+                "name": "新人賞",
+                "description": "2019年に初Rankedを達成したマッパー"
+            },
+            "mostInfluential": {
+                "name": "インフルエンサー",
+                "description": "多くのマッパーに影響を与え、感化させた偉大なマッパー"
+            },
+            "outCont": {
+                "name": "貢献者",
+                "description": "osu!のために献身的に尽くした人物"
+            },
+            "spread": {
+                "name": "スプレッド",
+                "description": "難易度間のスプレッドがきれいな譜面"
+            },
+            "experimental": {
+                "name": "斬新性",
+                "description": "既存の枠組みから外れた面白い試みをした譜面"
+            },
+            "stream": {
+                "name": "連打",
+                "description": "魅力的な連打を置いた譜面"
+            },
+            "highBPMTaiko": {
+                "name": "高BPM",
+                "description": "240BPMより速い譜面"
+            },
+            "lowBPMTaiko": {
+                "name": "低BPM",
+                "description": "140BPMより遅い譜面"
+            },
+            "simplistic": {
+                "name": "シンプル",
+                "description": "シンプルイズベストを体現した譜面"
+            },
+            "sliderVelocity": {
+                "name": "SV変化",
+                "description": "SV変化を多用した譜面"
+            },
+            "longNotes": {
+                "name": "LN",
+                "description": "LNを多用した譜面"
+            },
+            "antiMeta": {
+                "name": "反主流",
+                "description": "5K/6K/8K/9Kで作られた譜面"
+            },
+            "7K": {
+                "name": "7K",
+                "description": "7Kで作られた譜面"
+            },
+            "technical": {
+                "name": "技術力",
+                "description": "高度な技術を使用したストーリーボード"
+            },
+            "gameplay": {
+                "name": "プレイング",
+                "description": "プレイにかかわる要素を使用したストーリーボード"
+            },
+            "minimalistic": {
+                "name": "ミニマリズム",
+                "description": "簡潔なコードで作られたストーリーボード"
+            },
+            "narrative": {
+                "name": "物語性",
+                "description": "ストーリー展開を含んだストーリーボード"
+            }
+        },
+        "nom_vote": {
+            "search": "譜面・マッパー検索",
+            "candidates": "候補",
+            "options": {
+                "date": "日付",
+                "artist": "アーティスト",
+                "title": "タイトル",
+                "favs": "お気に入り",
+                "creator": "作成者",
+                "sr": "SR",
+                "id": "ID",
+                "alph": "アルファベット順",
+                "asc": "昇順",
+                "desc": "降順",
+                "voteOrder": "投票順序"
+            },
+            "hosted": "作成者",
+            "userID": "ユーザーID",
+            "select": "選択",
+            "selectGrand": "グランプリを選択"
+        }
+    },
+    "main": {
+        "header": {
+            "login": "ログイン",
+            "register": "登録"
+        },
+        "index": {
+            "underConstruction": "未実装",
+            "sorry": "ご不便をおかけして申し訳ございません",
+            "development": "corsaceのウェブサイトはまだ開発中です",
+            "theTeam": "the corsace team"
+        }
+    }
+}

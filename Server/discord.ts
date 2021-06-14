@@ -1,7 +1,5 @@
 import * as Discord from "discord.js";
-import { Config } from "../config";
-
-const config = new Config();
+import { config } from "node-config-ts";
 
 const discordClient = new Discord.Client;
 

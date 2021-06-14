@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne, SelectQueryBuilder } from "typeorm";
+import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne, SelectQueryBuilder, Index } from "typeorm";
 import { BeatmapsetInfo } from "../Interfaces/beatmap";
 import { Category } from "../Interfaces/category";
 import { StageQuery } from "../Interfaces/queries";
@@ -23,6 +23,7 @@ export class Beatmapset extends BaseEntity {
     @Column()
     submitDate!: Date;
 
+    @Index()
     @Column()
     approvedDate!: Date;
 
@@ -98,10 +99,26 @@ export class Beatmapset extends BaseEntity {
                     .andWhere(`beatmapset.BPM<=${category.filter.maxBPM}`);
             if (category.filter.minSR)
                 queryBuilder
-                    .andWhere(`beatmap.totalSR>=${category.filter.minSR}`);
+                    .andWhere((qb) => {
+                        const subQuery = qb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .where("beatmapsetID = beatmapset.ID")
+                            .andWhere(`refMap.totalSR<${category.filter!.minSR}`)
+                            .getQuery();
+        
+                        return "NOT EXISTS " + subQuery;
+                    })
             if (category.filter.maxSR)
                 queryBuilder
-                    .andWhere(`beatmap.totalSR<=${category.filter.maxSR}`);
+                    .andWhere((qb) => {
+                        const subQuery = qb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .where("beatmapsetID = beatmapset.ID")
+                            .andWhere(`refMap.totalSR>${category.filter!.maxSR}`)
+                            .getQuery();
+        
+                        return "NOT EXISTS " + subQuery;
+                    })
             if (category.filter.minCS)
                 queryBuilder
                     .andWhere(`beatmap.circleSize>=${category.filter.minCS}`);
@@ -125,7 +142,7 @@ export class Beatmapset extends BaseEntity {
         }
                    
         // Ordering
-        const optionQuery = query.option.toLowerCase();
+        const optionQuery = query.option ? query.option.toLowerCase() : "";
         const order = query.order || "ASC";
         let option = "beatmapset.approvedDate";
         if (/(artist|title|favs|creator|sr)/i.test(optionQuery)) {
@@ -161,8 +178,7 @@ export class Beatmapset extends BaseEntity {
             .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
             .select(["beatmapset.ID", "beatmapset.title", "beatmapset.artist"])
             .addSelect(["creator.ID", "creator.osu.username", "creator.osu.userID"])
-            .limit(3)
-            .cache(true);
+            .limit(3);
     }
 
     static queryStatistic (year: number, modeId: number): SelectQueryBuilder<Beatmapset> {
@@ -171,8 +187,7 @@ export class Beatmapset extends BaseEntity {
             .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
             .innerJoin("beatmapset.creator", "creator")
             .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
-            .limit(1)
-            .cache(true);
+            .limit(1);
     }
 
     public getInfo (chosen = false): BeatmapsetInfo {

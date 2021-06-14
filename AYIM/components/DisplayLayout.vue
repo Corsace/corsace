@@ -1,6 +1,12 @@
 <template>
-    <div>
-        <mode-switcher :hide-phase="true">
+    <div class="ayim-wrapper">
+        <mode-switcher
+            v-if="mca"
+            hide-phase
+            tablet
+            stretch
+            :ignore-modes="['storyboard']"
+        >
             <template #title>
                 <div class="ayim-nav">
                     <nuxt-link
@@ -27,7 +33,7 @@
                 </div>
             </template>
 
-            <div class="ayim-mode-container">
+            <div class="ayim-content">
                 <div
                     v-if="includeSubnav"
                     class="ayim-record-nav"
@@ -50,20 +56,19 @@
                         {{ $t('ayim.main.statistics') }}
                     </nuxt-link>
                 </div>
-
                 <slot
                     v-else
                     name="sub-nav"
                 />
-
-                <div class="ayim-layout-scroller">
-                    <div class="ayim-layout">
+            
+                <div class="ayim-layout-container">
+                    <div class="ayim-layout-scroller">
                         <slot />
+                        <scroll-bar
+                            selector=".ayim-layout"
+                            @bottom="$emit('scroll-bottom')"
+                        />
                     </div>
-                    <scroll-bar
-                        selector=".ayim-layout"
-                        @bottom="$emit('scroll-bottom')"
-                    />
                 </div>
             </div>
         </mode-switcher>
@@ -75,7 +80,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
-import ScrollBar from "../../MCA/components/ScrollBar.vue";
+import ScrollBar from "../../MCA-AYIM/components/ScrollBar.vue";
 
 import { MCA } from "../../Interfaces/mca";
 
@@ -119,21 +124,25 @@ export default class DisplayLayout extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
 
-.ayim-mode-container {
-    padding-right: 25px;
-}
-
 .ayim-record-nav {
     @extend %flex-box;
     justify-content: space-between;
+    margin: 0 0 15px 0;
     text-transform: uppercase;
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: $font-lg;
     flex-wrap: wrap;
 
+    @include breakpoint(mobile) {
+        flex-direction: column;
+    }
+
     &__title {
         flex: 2;
+        @include breakpoint(mobile) {
+            display: none;
+        }
     }
 
     &__item {
@@ -151,14 +160,36 @@ export default class DisplayLayout extends Vue {
     }
 }
 
+.ayim-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    position: relative;
+}
+
+.ayim-layout-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: auto;
+}
+
 .ayim-layout {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    height: 100%;
+    margin-right: 50px;
+    position: relative;
+    overflow-y: scroll;
+    gap: 5px;
+    scrollbar-width: none;
+
+    mask-image: linear-gradient(to top, transparent 0%, black 25%);
     
     &__item {
         width: 100%;
-        margin: 5px;
 
         @include breakpoint(tablet) {
             width: calc(33.3% - 10px);
@@ -169,15 +200,8 @@ export default class DisplayLayout extends Vue {
     &-scroller {
         height: 100%;
         position: relative;
-    }
-
-    height: 100vh;
-    padding-right: 40px;
-    position: relative;
-    overflow-y: scroll;
-    
-    @include breakpoint(tablet) {
-        height: 60vh;
+        display: flex;
+        flex: 1;
     }
 
     &::-webkit-scrollbar {
@@ -192,18 +216,27 @@ export default class DisplayLayout extends Vue {
     &--lg {
         font-size: $font-lg;
         text-shadow: $text-shadow;
+        @include breakpoint(mobile) {
+            font-size: $font-base;
+        }
     }
 
     &--xl {
         font-size: $font-xl;
         text-shadow: $text-shadow-lg;
         font-weight: 500;
+        @include breakpoint(mobile) {
+            font-size: $font-lg;
+        }
     }
 
     &--xxl {
         font-size: $font-xxl;
         text-shadow: $text-shadow-lg;
         font-weight: 500;
+        @include breakpoint(mobile) {
+            font-size: $font-xl;
+        }
     }
 
     &--italic {

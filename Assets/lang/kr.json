@@ -7,15 +7,15 @@
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "로그인",
             "welcomeBack": "환영합니다",
-            "admin": "",
-            "staff": "",
+            "admin": "어드민",
+            "staff": "스태프",
             "logout": "로그아웃"
         },
         "login": {
             "login": "로그인",
             "message": {
                 "1": "아직 로그인하지 않으셨습니다!<br>osu! 계정으로 로그인하시면 추천과 투표를 바로 하실 수 있습니다!",
-                "2": ""
+                "2": "이후 디스코드로도 로그인하실 수 있지만, 추천/투표하는 데에는 <b>필요하지 않습니다.</b><br>MCA/AYIM 관련 스태프분들은 디스코드로 로그인을 <b>반드시</b> 하셔야 합니다."
             },
             "authOsu": "여기를 클릭하여 osu!로 로그인하세요",
             "authOsuComp": "osu!로 로그인되었습니다. 안녕하세요 ",
@@ -25,61 +25,90 @@
     },
     "ayim": {
         "main": {
-            "records": "",
-            "statistics": "",
-            "search": "",
-            "numberof": "",
-            "numberwith": ""
+            "records": "기록",
+            "statistics": "통계",
+            "search": "매퍼 검색",
+            "numberof": "개수",
+            "numberwith": "맵 개수",
+            "message": {
+                "2019": "<p>2020</p><p>A Year in Mapping 2019가 2019년 한 해의 기록들과 통계를 들고 돌아왔습니다!</p><p>이 웹사이트를 통해, 지금까지 기록된 모든 통계 및 정보들을 검색할 수 있습니다! 기타 의견 또는 제안사항이 있다면, corsace 서버의 VINXIS에게 연락주세요. (좌하단 링크 참조)</p><p>또한 이제 크라우드펀딩식 코멘트를 지원합니다! 즉, 아무나 원하는 만큼 원하는 매퍼에게 코멘트를 쓸 수 있다는 말이죠!</p><p>하단에 있는 게임모드 중 자신의 주 모드를 선택하여 시작하세요!</p>",
+                "2020": "<p>2021... 작년이 아닌 올해입니다!</p><p>A Year in Mapping 2020가 2020년 한 해의 기록들과 통계를 들고 드디어 제 시간에 찾아왔습니다!</p><p>작년과 마찬가지로, 코멘트는 크라우드펀딩식으로 진행됩니다! 하단에 있는 게임모드 중 자신의 주 모드를 선택하여 시작하세요!</p>"
+            }
         },
         "mapsets": {
-            "name": "",
-            "playcount": "",
-            "favourites": "",
-            "length": "",
-            "difficulties": "",
-            "totalRanked": "",
-            "totalDiff": "",
-            "submitDates": "",
-            "starRatings": "",
-            "approachRate": "",
-            "overallDifficulty": "",
-            "hpDrain": "",
-            "circleSize": ""
+            "name": "맵셋",
+            "playcount": "플레이 횟수",
+            "favourites": "즐겨찾기 수",
+            "favouritesExclHybrid": "즐겨찾기 수 (하이브리드 맵셋 제외)",
+            "length": "길이",
+            "difficulties": "난이도 개수",
+            "playTime": "길이 (전체 난이도 총합)",
+            "totalRanked": "전체 랭크",
+            "totalDiff": "전체 난이도",
+            "submitDates": "업로드 날짜",
+            "starRatings": "별 개수",
+            "approachRate": "AR",
+            "overallDifficulty": "OD",
+            "hpDrain": "HP",
+            "circleSize": "CS",
+            "spinners": "스피너 개수",
+            "sliders": "슬라이더 개수",
+            "circles": "서클 개수",
+            "avgSpinnersPerDiff": "난이도 당 평균 스피너 개수",
+            "avgSlidersPerDiff": "난이도 당 평균 슬라이더 개수",
+            "avgCirclesPerDiff": "난이도 당 평균 서클 개수",
+            "highestSr": "최고 스타레이팅",
+            "lowestSr": "최저 스타레이팅"
         },
         "mappers": {
-            "name": "",
-            "mostRanked": "",
-            "mostFavs": "",
-            "mostPlayed": "",
-            "totalMappers": "",
-            "newMapperAges": "",
-            "mapperAges": "",
-            "mapsPerMapperAges": "",
-            "bng": "",
-            "nat": ""
+            "name": "매퍼",
+            "mostRanked": "최다 랭크 수",
+            "mostDiffs": "최다 난이도 수",
+            "mostFavs": "최다 즐겨찾기 수",
+            "mostFavsExclHybrid": "최다 즐겨찾기 수 (하이브리드 제외)",
+            "mostPlayed": "최다 플레이 횟수",
+            "totalMappers": "전체 매퍼",
+            "newMapperAges": "새 매퍼 계정 나이",
+            "mapperAges": "매퍼 계정 나이",
+            "mapsPerMapperAges": "매퍼 계정 나이 별 맵 개수",
+            "bng": "BNG",
+            "nat": "NAT",
+            "uniqueMappers": "전체 매퍼 수",
+            "newMappers": "신인 매퍼 수",
+            "highestAvgSr": "최고 평균 스타레이팅",
+            "lowestAvgSr": "최저 평균 스타레이팅",
+            "mappers": "매퍼"
+        },
+            "statistics": {
+            "numberOf": "수",
+            "numberOfMapsWith": "맵 개수",
+            "average": "평균"
         },
         "comments": {
-            "name": "",
-            "info": "",
-            "viewSubmit": "",
-            "update": "",
-            "remove": "",
-            "create": "",
-            "login": "",
-            "visible": ""
+            "name": "코멘트",
+            "info": "모든 코멘트는 MCA의 결과가 나온 후 공개할 예정입니다! 그때까지 자유롭게 코멘트를 적으실 수 있습니다.",
+            "search": "매퍼 검색",
+            "viewSubmit": "코멘트 조회/작성",
+            "writeHere": "이 매퍼를 위해 코멘트를 작성해주세요!",
+            "update": "수정",
+            "remove": "삭제",
+            "create": "생성",
+            "login": "코멘트를 작성하기 전에 먼저 로그인하세요",
+            "visible": "(아직 비공개)",
+	          "notice": "안녕하세요, 코멘트 페이지에는 처음 방문하시는거 같네요! <br> 코멘트는 크라우드 펀딩식으로 진행됩니다! <br> 누구나, 누구에게든지 코멘트를 작성할 수 있다는 말이죠. <br> [YEAR]년에 해당 매퍼가 어떤 일을 했고 커뮤니티에는 어떤 기여를 했는지, 감사를 전하기 위해 이곳에 코멘트를 작성해주세요!"
         }
     },
     "mca": {
         "main": {
             "voting": "투표",
             "nominating": "추천",
-            "results": "",
+            "results": "결과",
             "undefined": "",
-			"mapsetsLabel": "맵셋",
-			"mappersLabel": "매퍼",
-			"commentsLabel": "댓글",
-			"recordsLabel": "기록",
-			"statisticsLabel": "통계",
+            "mapsetsLabel": "맵셋",
+            "mappersLabel": "매퍼",
+            "commentsLabel": "코멘트",
+            "recordsLabel": "기록",
+            "statisticsLabel": "통계",
             "stage": {
                 "voting": "투표 기간",
                 "nominating": "추천 기간",
@@ -90,74 +119,163 @@
             "voteNow": "지금 투표하세요 !",
             "daysLeft": "일 남음",
             "message": {
-                "1": "2019년, 네 번째 Mapper's Choice Awards가 시작합니다! MCA는 매퍼/모더들이 자신이 생각하기에 각 카테고리에서 최고인 맵/매퍼를 추천, 투표할 수 있는 이벤트입니다.",
-                "2": "Community Choice와 달리, 매핑 커뮤니티의 눈을 통해 2019년 최고의 맵에 새로운 관점을 제시하고자 합니다!",
-                "3": "올해는 추천 및 투표를 용이하게 하기 위해, 모든 과정이 웹사이트에서 이루어지도록 개편했습니다!",
-                "4": "최대한 많은 분이 이 이벤트에 참여해주셨으면 좋겠습니다!"
+                "2019": "<p>Mapper's Choice Awards가 2019년 4회차로 돌아왔습니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2019년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>올해는 저희가 새로 완성한 홈페이지를 통해 투표가 더욱 쉬워졌습니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨으면 좋겠습니다!</p>",
+                "2020": "<p>바로 이어서, MCA가 2020년 제 5회차를 맞이합니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2020년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>MCA 2019가 진행되는 동안 받은 제안과 피드백을 바탕으로 올해는 더 매끄러운 진행이 될거라 예상됩니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨!</p>"
             },
             "categories": {
-                "map": "",
-                "user": ""
+                "map": "맵 카테고리",
+                "user": "매퍼 카테고리"
             },
-            "organized": ""
+            "organized": "주최자"
         },
         "categories": {
             "grandAward": {
-                "name": "",
-                "description": ""
+                "name": "그랜드 어워드",
+                "description": "한 해를 빛낸 최고의 비트맵"
             },
             "marathon": {
-                "name": "",
-                "description": ""
+                "name": "마라톤",
+                "description": "5분 이상의 장곡 중 최고의 비트맵"
             },
             "hitsounding": {
-                "name": "",
-                "description": ""
+                "name": "히트사운딩",
+                "description": "당신의 귀를 즐겁게 해줄 최고의 히트사운드"
             },
             "collab": {
-                "name": "",
-                "description": ""
+                "name": "콜라보레이션",
+                "description": "2명 이상의 매퍼들이 공동 제작한 최고의 비트맵"
             },
             "simple": {
-                "name": "",
-                "description": ""
+                "name": "심플",
+                "description": "인세인 미만의 난이도들로 구성된 최고의 비트맵"
             },
             "highBPM": {
-                "name": "",
-                "description": ""
+                "name": "고 BPM",
+                "description": "숨막히는 속도와 노트 밀도를 자랑하는 최고의 비트맵"
             },
             "smallCircles": {
-                "name": "",
-                "description": ""
+                "name": "작은 CS",
+                "description": "최상위 난이도가 CS5 이상(작은 서클)인 맵셋 중 최고의 비트맵"
             },
             "heavy13": {
-                "name": "",
-                "description": ""
+                "name": "1/3 위주",
+                "description": "최상위 난이도가 1/3 계열의 리듬 위주로 구성된 맵셋 중 최고의 비트맵"
             },
             "throwback": {
-                "name": "",
-                "description": ""
+                "name": "그때 그 시절",
+                "description": "옛날 스타일의 추억을 불러일으키는 최고의 비트맵"
+            },
+            "mapper": {
+                "name": "매퍼",
+                "description": "최고의 비트맵들을 제작한 매퍼"
+            },
+            "modder": {
+                "name": "모더",
+                "description": "최고의 모딩을 한 모더"
+            },
+            "hitsounder": {
+                "name": "히트사운더",
+                "description": "최고의 히트사운드를 제작한 매퍼"
+            },
+            "mostPromising": {
+                "name": "유망주",
+                "description": "올해 첫 랭크맵이 생긴 매퍼"
+            },
+            "mostInfluential": {
+                "name": "선구자",
+                "description": "매핑 전반적으로 가장 영향력을 끼친 매퍼"
+            },
+            "outCont": {
+                "name": "뛰어난 공헌",
+                "description": "osu! 커뮤니티 전반에 가장 많이 공헌한 유저"
+            },
+            "spread": {
+                "name": "스프레드",
+                "description": "최고의 스프레드 구성을 가진 비트맵셋"
+            },
+            "experimental": {
+                "name": "힙스터",
+                "description": "보통의 메타에서 벗어난 특이한 비트맵셋"
+            },
+            "stream": {
+                "name": "연타",
+                "description": "최고의 연타 패턴으로 구성된 비트맵셋"
+            },
+            "highBPMTaiko": {
+                "name": "고 BPM",
+                "description": "240bpm 이상의 최고의 비트맵셋"
+            },
+            "lowBPMTaiko": {
+                "name": "저 BPM",
+                "description": "140bpm 이하의 최고의 비트맵셋"
+            },
+            "simplistic": {
+                "name": "간소화",
+                "description": "가장 깔끔한 구성의 비트맵셋"
+            },
+            "sliderVelocity": {
+                "name": "SV",
+                "description": "슬라이더 SV를 가장 잘 활용한 비트맵셋"
+            },
+            "longNotes": {
+                "name": "롱 노트",
+                "description": "롱 노트를 가장 잘 활용한 비트맵셋"
+            },
+            "antiMeta": {
+                "name": "안티 메타",
+                "description": "5K/6K/8K/9K 위주의 최고의 비트맵셋"
+            },
+            "7K": {
+                "name": "7K",
+                "description": "7K 최고의 비트맵셋"
+            },
+            "technical": {
+                "name": "테크니컬",
+                "description": "가장 복잡하고 화려한 스토리보드"
+            },
+            "gameplay": {
+                "name": "게임플레이",
+                "description": "게임플레이 요소를 잘 녹여낸 최고의 스토리보드"
+            },
+            "minimalistic": {
+                "name": "심플",
+                "description": "최소한으로 최대한을 표현하는 최고의 스토리보드"
+            },
+            "narrative": {
+                "name": "동화책",
+                "description": "최고의 이야기를 선사하는 스토리보드"
             }
         },
         "nom_vote": {
-            "search": "",
-            "candidates": "",
+            "search": "맵/매퍼 검색",
+            "candidates": "후보",
             "options": {
-                "date": "",
-                "artist": "",
-                "title": "",
-                "favs": "",
-                "creator": "",
-                "sr": "",
-                "id": "",
-                "alph": "",
-                "asc": "",
-                "desc": "",
-                "incVote": "",
-                "voteChoice": ""
+                "date": "날짜",
+                "artist": "아티스트",
+                "title": "제목",
+                "favs": "즐겨찾기 수",
+                "creator": "매퍼",
+                "sr": "별 개수",
+                "id": "ID",
+                "alph": "알파벳순",
+                "asc": "오름차순",
+                "desc": "내림차순",
+                "voteOrder": "투표 순서"
             },
-            "hosted": "",
-            "userID": ""
+            "hosted": "매퍼",
+            "userID": "유저 ID"
+        }
+    },
+    "main": {
+        "header": {
+            "login": "로그인",
+            "register": "회원가입"
+        },
+        "index": {
+            "underConstruction": "공사중",
+            "sorry": "불편을 드려 죄송합니다",
+            "development": "Corsace 웹사이트는 아직 개발중에 있습니다",
+            "theTeam": "Corsace 팀 올림"
         }
     }
 }

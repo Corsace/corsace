@@ -45,7 +45,6 @@
                     </div>
 
                     <div
-                        v-if="isPending(request.status)"
                         class="staff-request__actions"
                     >
                         <button
@@ -71,7 +70,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import ChoiceBeatmapsetCard from "../../../components/ChoiceBeatmapsetCard.vue";
+import ChoiceBeatmapsetCard from "../../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
 
 import { GuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
 import { UpdateRequestData } from "../../../store/staff";
@@ -148,7 +147,16 @@ export default class StaffRequests extends Vue {
     justify-content: space-between;
     margin-bottom: 10px;
 
+    &__info {
+        flex: 1;
+        display: flex;
+        justify-content: space-evenly;
+    }
+
     &__status {
+        flex: 1;
+        display: flex;
+        justify-content: center;
         &--pending {
             color: violet;
         }
@@ -163,7 +171,9 @@ export default class StaffRequests extends Vue {
     }
 
     &__actions {
+        flex: 1;
         display: flex;
+        justify-content: center;
     }
 
     &__action {

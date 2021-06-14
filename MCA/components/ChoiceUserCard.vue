@@ -13,7 +13,7 @@
                 {{ choice.username }}
             </div>
             <div class="choice__info-artist">
-                {{ choice.otherNames.length ? choice.otherNames.join(", ") : '--' }}
+                {{ choice.otherNames.length ? choice.otherNames.join(", ") : "&#x2800;" }}
             </div>
             <span class="choice__info-host">
                 {{ $t('mca.nom_vote.userID') }} | <span class="choice__infoHoster">{{ choice.userID }}</span>
@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import BaseChoiceCard from "./BaseChoiceCard.vue";
+import BaseChoiceCard from "../../MCA-AYIM/components/BaseChoiceCard.vue";
 
 @Component({
     components: {

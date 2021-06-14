@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { ActionTree, MutationTree, GetterTree } from "vuex";
-import { MCA, Phase, PhaseType } from "../../Interfaces/mca";
+import { MCA, MCAInfo, Phase, PhaseType } from "../../Interfaces/mca";
 import { UserMCAInfo } from "../../Interfaces/user";
 import { GuestRequest } from "../../Interfaces/guestRequests";
 
@@ -18,6 +18,7 @@ export interface UpdateGuestRequestPayload extends GuestRequestPayload {
 export interface RootState {
     loggedInUser: null | UserMCAInfo;
     mca: MCA | null;
+    allMCA: MCAInfo[];
     selectedMode: string;
     modes: string[];
     showGuestDifficultyModal: boolean,
@@ -26,6 +27,7 @@ export interface RootState {
 export const state = (): RootState => ({
     loggedInUser: null,
     mca: null,
+    allMCA: [],
     selectedMode: "standard",
     modes: ["standard", "taiko", "fruits", "mania", "storyboard"],
     showGuestDifficultyModal: false,
@@ -36,18 +38,25 @@ export const mutations: MutationTree<RootState> = {
         state.loggedInUser = user;
     },
     setMCA (state, mca: MCA) {
-        state.mca = {
-            year: mca.year,
-            nomination: {
-                start: new Date(mca.nomination.start),
-                end: new Date(mca.nomination.end),
-            },
-            voting: {
-                start: new Date(mca.voting.start),
-                end: new Date(mca.voting.end),
-            },
-            results: new Date(mca.results),
-        };
+        if (mca.year)
+            state.mca = {
+                year: mca.year,
+                nomination: {
+                    start: new Date(mca.nomination.start),
+                    end: new Date(mca.nomination.end),
+                },
+                voting: {
+                    start: new Date(mca.voting.start),
+                    end: new Date(mca.voting.end),
+                },
+                results: new Date(mca.results),
+            };
+        else
+            state.mca = null;
+    },
+
+    setAllMCA (state, mcas: MCAInfo[]) {
+        state.allMCA = mcas;
     },
 
     setSelectedMode (state) {
@@ -164,6 +173,10 @@ export const actions: ActionTree<RootState, RootState> = {
 
         if (!data.error) {
             commit("setMCA", data);
+        } else {
+            const { data } = await this.$axios.get(`/api/mca/all`);
+            commit("setMCA", {});
+            commit("setAllMCA", data);
         }
     },
     async setInitialData ({ dispatch }, year: number) {

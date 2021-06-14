@@ -79,8 +79,8 @@ $end-margin: 10px;
 .locale {
     display: flex;
     position: relative;
-    width: 90px;
     margin-right: $end-margin;
+    padding: 0 5px;
 
     color: #cccccc;   
 }
@@ -93,13 +93,20 @@ $end-margin: 10px;
 }
 
 .locale__flag {
-    height: 25px;
+    height: 12px;
+    @include breakpoint(tablet) {
+        height: 25px;
+    }
+
     margin-right: 10px;
     user-select: none;
 }
 
 .locale__text {
-    font-size: 20px;
+    font-size: 10px;
+    @include breakpoint(tablet) {
+        font-size: 20px;
+    }
     user-select: none;
     text-transform: uppercase;
 }
@@ -113,6 +120,7 @@ $selector-backdrop: #363636;
     display: flex;
     flex-direction: column;
     bottom: calc(100% + 3px); // + footer border
+    right: 0;
     padding: 5px 0;
     border-radius: 7px 0 0 0;
 

@@ -2,8 +2,8 @@ import Router from "@koa/router";
 import { Beatmap } from "../../../Models/beatmap";
 import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
-import { isEligibleFor, currentMCA } from "../middleware";
-import { Config } from "../../../config";
+import { isEligibleFor, currentMCA } from "../../../MCA-AYIM/api/middleware";
+import { config } from "node-config-ts";
 import axios from "axios";
 import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
@@ -11,7 +11,6 @@ import { RequestStatus } from "../../../Interfaces/guestRequests";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 
 const guestRequestRouter = new Router();
-const config = new Config();
 
 interface BodyData {
     mode: string;
@@ -55,7 +54,7 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     }
 
     // Get beatmap information
-    const beatmaps = (await axios.get(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osuV1}&b=${beatmapID}`)).data;
+    const beatmaps = (await axios.get(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osu.v1.apiKey}&b=${beatmapID}`)).data;
     if (beatmaps.length !== 1) {
         return { error: "Error in obtaining beatmap info!"};
     }

@@ -16,16 +16,9 @@ export default async function ({ redirect, error, route, store }: Context) {
 
     if (!store.state.mca || store.state.mca.year !== year) {
         await store.dispatch("setInitialData", year);
+    }
 
-        if (!store.state.mca && !store.getters.isHeadStaff) {
-            return error({
-                statusCode: 404,
-                message: `MCA doesn't exist for this year`,
-            });
-        }
-
-        if (store.hasModule("staff") && store.getters.isMCAStaff) {
-            await store.dispatch("staff/setInitialData");
-        }
+    if (route.path.includes("staff") && store.getters.isMCAStaff && !store.state.staff?.mca && store.hasModule("staff")) {
+        await store.dispatch("staff/setInitialData");
     }
 }

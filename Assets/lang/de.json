@@ -7,15 +7,14 @@
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "EINLOGGEN",
             "welcomeBack": "Willkommen zurück",
-            "admin": "",
-            "staff": "",
+            "admin": "Administrator",
+            "staff": "Organisation",
             "logout": "AUSLOGGEN"
         },
         "login": {
             "login": "einloggen",
             "message": {
-                "1": "Scheinbar bist du nicht eingeloggt!<br>Logge dich einfach über deinen osu!-Account ein und du kannst sofort anfangen, abzustimmen/zu nominieren!",
-                "2": ""
+                "1": "Scheinbar bist du nicht eingeloggt!<br>Logge dich einfach über deinen osu!-Account ein und du kannst sofort anfangen, abzustimmen / zu nominieren!"
             },
             "authOsu": "Klicke hier, um dich über osu! zu authentifizieren",
             "authOsuComp": "osu! Verifizierung abgeschlossen. Hallo ",
@@ -25,139 +24,223 @@
     },
     "ayim": {
         "main": {
-            "records": "",
-            "statistics": "",
-            "search": "",
-            "numberof": "",
-            "numberwith": ""
+            "records": "Rekorde",
+            "statistics": "Statistiken",
+            "search": "Such nach einem Mapper",
+            "numberof": "Anzahl von",
+            "numberwith": "Anzahl von Maps mit",
+            "message": {
+                "2019": "Hallo 2020. A Year in Mapping 2019 ist zurück um euch die Rekordbrüche des Jahres und detailierte Statistiken zu bringen! Mit dieser Website können wir jetzt so viel Informationen für alle Jahre sammeln wie wir wollen! Wenn ihr Vorschläge habt könnt ihre diese VINXIS im Corsace Server mitteilen (Link links unten)</p><p>WIR CROWDFUNDEN AUCH KOMMENTARE! Das heißt, dass DU einem Kommentar für so viele Mapper wie du willst schreiben und einreichen kannst! </p><p> Wähle deinen bevorzugten Mode mit den Icons unten aus um loszulegen!</p>",
+                "2020": "Hallo 2021... dieses Mal das korrekte Jahr!</p><p>A Year in Mapping 2020 ist direkt nochmal da um euch die Rekordbrüche und Statistiken DIESES Jahres auch noch zu bringen!</p><p>Und auch diese mal sind die Kommentare wieder crowdfundet! Also, wählt euren bevorzugen Mode mit den Icons unten aus um loszulegen!"
+            }
         },
         "mapsets": {
-            "name": "",
-            "playcount": "",
-            "favourites": "",
-            "length": "",
-            "difficulties": "",
-            "totalRanked": "",
-            "totalDiff": "",
-            "submitDates": "",
-            "starRatings": "",
-            "approachRate": "",
-            "overallDifficulty": "",
-            "hpDrain": "",
-            "circleSize": ""
+            "name": "MAPS",
+            "playcount": "PLAYS",
+            "favourites": "FAVORITEN",
+            "length": "LÄNGE",
+            "difficulties": "DIFFS",
+            "totalRanked": "RANKED GESAMT",
+            "totalDiff": "DIFFS GESAMT",
+            "submitDates": "DATUM DER ERSTELLUNG",
+            "starRatings": "SR",
+            "approachRate": "AR",
+            "overallDifficulty": "OD",
+            "hpDrain": "HP",
+            "circleSize": "CS",
+            "favouritesExclHybrid": "FAVORITEN (OHNE HYBRID-SETS)",
+            "playTime": "LÄNGE (SUMME ALLER DIFFS)",
+            "spinners": "SPINNERS",
+            "sliders": "SLIDERS",
+            "circles": "CIRCLES",
+            "avgSpinnersPerDiff": "DURCHSCHNITTLICHE ANZAHL VON SPINNERN PRO DIFF",
+            "avgSlidersPerDiff": "DURCHSCHNITTLICHE ANZAHL VON SLIDERN PRO DIFF",
+            "avgCirclesPerDiff": "DURCHSCHNITTLICHE ANZAHL VON CIRCLES PRO DIFF",
+            "highestSr": "HÖCHSTES SR",
+            "lowestSr": "NIEDRIGSTES SR"
         },
         "mappers": {
-            "name": "",
-            "mostRanked": "",
-            "mostFavs": "",
-            "mostPlayed": "",
+            "name": "MAPPERS",
+            "mostRanked": "DIE MEISTEN RANKED MAPS",
+            "mostFavs": "DIE MEISTEN FAVORITEN",
+            "mostPlayed": "AM MEISTEN GESPIELT",
             "totalMappers": "",
-            "newMapperAges": "",
-            "mapperAges": "",
-            "mapsPerMapperAges": "",
-            "bng": "",
-            "nat": ""
+            "newMapperAges": "ALTER VON NEUEN MAPPERN",
+            "mapperAges": "ALTER VON MAPPERN",
+            "mapsPerMapperAges": "MAPS PRO MAPPER PRO ALTER",
+            "bng": "BNG",
+            "nat": "NAT",
+            "mostDiffs": "DIE MEISTEN DIFFS",
+            "mostFavsExclHybrid": "DIE MEISTEN FAVORITEN (OHNE HYBRID-SETS)",
+            "newMappers": "NEUE MAPPER",
+            "highestAvgSr": "HÖCHSTES DURCHSCHNITTLICHES SR",
+            "lowestAvgSr": "NIEDRIGSTES DURCHSCHNITTLICHES SR",
+            "mappers": "MAPPER"
         },
         "comments": {
-            "name": "",
-            "info": "",
-            "viewSubmit": "",
-            "update": "",
-            "remove": "",
-            "create": "",
-            "login": "",
-            "visible": ""
+            "name": "KOMMENTARE",
+            "info": "Alle Kommentare werden nach Bekanntgabe der MCA Ergebnisse veröffentlicht! Du kannst bis dahin deine eigen Kommentare einreichen.",
+            "viewSubmit": "Kommentare anschauen/einreichen",
+            "update": "Updaten",
+            "remove": "Entfernen",
+            "create": "Erstellen",
+            "login": "Logge dich ein um einem Kommentar zu erstellen!",
+            "visible": "(noch nicht sichtbar)",
+            "search": "Suche nach einem Mapper",
+            "writeHere": "Schreibe einen neuen Kommentar für diesen Mapper hier!"
+        },
+        "statistics": {
+            "numberOf": "Anzahl von",
+            "numberOfMapsWith": "Anzahl von Maps mit",
+            "average": "Durchschnitt"
         }
     },
     "mca": {
         "main": {
             "voting": "abstimmen",
             "nominating": "nominieren",
-            "results": "",
+            "results": "ergebnisse",
             "undefined": "",
-			"mapsetsLabel": "MAPSETS",
-			"mappersLabel": "MAPPER",
-			"commentsLabel": "KOMMENTARE",
-			"recordsLabel": "REKORDE",
-			"statisticsLabel": "STATISTIKEN",
+            "mapsetsLabel": "MAPSETS",
+            "mappersLabel": "MAPPER",
+            "commentsLabel": "KOMMENTARE",
+            "recordsLabel": "REKORDE",
+            "statisticsLabel": "STATISTIKEN",
             "stage": {
                 "voting": "Abstimmungsphase",
-                "nominating": "Nominierungsphase",
-                "undefined": ""
+                "nominating": "Nominierungsphase"
             },
             "rankedSets": "RANKED SETS",
             "nominateNow": "jetzt nominieren !",
             "voteNow": "jetzt abstimmen !",
-            "daysLeft": "tage übrig",
-            "message": {
-                "1": "Die Mapper's Choice Awards sind in 2019 zurück für Runde 4! Dies ist ein Abstimmungsevent, bei welchem alle Mapper/Modder dafür nominieren und abstimmen können, wer/was der/die beste Mapper*in/Map in jeder Kategorie ist!",
-                "2": "Unsere Absicht ist es, eine neue Perspektive auf die besten Maps von 2019 in den Augen der Mapping-Community im Vergleich zur Community Choice zu liefern!",
-                "3": "Dieses Jahr haben wir sogar eine Website, um es für Abstimmungsberechtigte so einfach wie möglich zu machen, zu nominieren und abzustimmen!",
-                "4": "Wir hoffen, dass so viele Leute wie möglich an diesem Event teilnehmen!"
-            },
-            "categories": {
-                "map": "",
-                "user": ""
-            },
-            "organized": ""
+            "daysLeft": "tage übrig"
         },
         "categories": {
             "grandAward": {
-                "name": "",
-                "description": ""
+                "name": "Hauptgewinn",
+                "description": "Das Beste des Besten."
             },
             "marathon": {
-                "name": "",
-                "description": ""
+                "name": "Marathon",
+                "description": "Das beste Set mit 5+ Minuten Drain."
             },
             "hitsounding": {
-                "name": "",
-                "description": ""
+                "name": "Hitsounding",
+                "description": "not possible to translate literally without sounding retarded"
             },
             "collab": {
-                "name": "",
-                "description": ""
+                "name": "Collab",
+                "description": "Das beste Set mit 2+ an der Top Diff beteiligten Mappern."
             },
             "simple": {
-                "name": "",
-                "description": ""
+                "name": "Simpel",
+                "description": "Das beste Set mit einer Insane Top Diff"
             },
             "highBPM": {
-                "name": "",
-                "description": ""
+                "name": "Hohe BPM",
+                "description": "Das beste Set mit untypischen spaced Streams oder hoher Singletap Anforderung."
             },
             "smallCircles": {
-                "name": "",
-                "description": ""
+                "name": "Kleine Circles",
+                "description": "Das beste Set mit einer CS5 oder kleiner Top Diff."
             },
             "heavy13": {
-                "name": "",
-                "description": ""
+                "name": "Viel 1/3",
+                "description": "Das Beste Set mit vielen lilanen Ticks."
             },
             "throwback": {
-                "name": "",
-                "description": ""
+                "name": "Nostalgie",
+                "description": "Das beste altmodische Set."
+            },
+            "mapper": {
+                "name": "Mapper",
+                "description": "Die Person, die die meisten Sets erstellt hat."
+            },
+            "modder": {
+                "name": "Modder",
+                "description": "Die Person, die die am besten moddet."
+            },
+            "hitsounder": {
+                "name": "Hitsounder",
+                "description": "Die Person, die die am besten hitsoundet."
+            },
+            "mostPromising": {
+                "name": "Most Promising",
+                "description": "Der beste Mapper, der dieses Jahr sein erstes Set gerankt hat."
+            },
+            "mostInfluential": {
+                "name": "Am einflussreichsten",
+                "description": "Die Person, die die meisten anderen Mapper inspiriert und beeinflusst hat."
+            },
+            "outCont": {
+                "name": "Hervorragende Beteiligung",
+                "description": "Die Person, die am meisten zum Wohl von osu! beigetragen hat."
+            },
+            "spread": {
+                "name": "Spread",
+                "description": "Das Set mit dem besten Spread."
+            },
+            "experimental": {
+                "name": "Experimentell",
+                "description": "Das beste \"tech\"/off meta set."
+            },
+            "stream": {
+                "name": "Streams",
+                "description": "Das Set mit den besten Streams."
+            },
+            "highBPMTaiko": {
+                "name": "Hohe BPM",
+                "description": "Das beste Set über 240 BPM"
+            },
+            "lowBPMTaiko": {
+                "name": "Niedrige BPM",
+                "description": "Das beste set unter 140 BPM"
+            },
+            "simplistic": {
+                "name": "Simpel",
+                "description": "Das beste simple Set."
+            },
+            "antiMeta": {
+                "name": "Anti-Meta",
+                "description": "Das beste auf 5K/6K/8K/9K basierende Set."
+            },
+            "7K": {
+                "name": "7K spezifisch",
+                "description": "Das beste auf 7K basierende Set."
             }
         },
         "nom_vote": {
-            "search": "",
-            "candidates": "",
+            "search": "Suche nach einer Map / einer Person",
+            "candidates": "Kanditaten",
             "options": {
-                "date": "",
-                "artist": "",
-                "title": "",
-                "favs": "",
-                "creator": "",
-                "sr": "",
-                "id": "",
-                "alph": "",
-                "asc": "",
-                "desc": "",
-                "incVote": "",
-                "voteChoice": ""
+                "date": "DATUM",
+                "artist": "KÜNSTLER",
+                "title": "TITEL",
+                "favs": "FAVORITEN",
+                "creator": "ERSTELLER",
+                "sr": "SR",
+                "id": "ID",
+                "alph": "ALPH",
+                "asc": "ASC",
+                "desc": "DESC",
+                "voteOrder": "Stimmenreihenfolge"
             },
-            "hosted": "",
-            "userID": ""
+            "hosted": "HOSTED BY",
+            "userID": "USER ID",
+            "select": "Bitte wähle eine Kategorie aus!",
+            "selectGrand": "Du MUSST mit den Hauptgewinn Kategorien anfangen"
+        }
+    },
+    "main": {
+        "header": {
+            "login": "EINLOGGEN",
+            "register": "REGISTRIEREN"
+        },
+        "index": {
+            "underConstruction": "Wird entwickelt",
+            "sorry": "Wir bitten um Entschuldigung für die Unangenehmlichkeiten",
+            "development": "die Corsace Website ist noch in der Entwicklung",
+            "theTeam": "das Corsace Team"
         }
     }
 }

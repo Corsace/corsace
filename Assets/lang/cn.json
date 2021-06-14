@@ -75,26 +75,19 @@
             "nominating": "提名",
             "results": "结果",
             "undefined": "",
-			"mapsetsLabel": "谱面",
-			"mappersLabel": "谱师",
-			"commentsLabel": "评论",
-			"recordsLabel": "纪录",
-			"statisticsLabel": "统计",
+            "mapsetsLabel": "谱面",
+            "mappersLabel": "谱师",
+            "commentsLabel": "评论",
+            "recordsLabel": "纪录",
+            "statisticsLabel": "统计",
             "stage": {
                 "voting": "投票阶段",
-                "nominating": "提名阶段",
-                "undefined": ""
+                "nominating": "提名阶段"
             },
             "rankedSets": "Ranked谱面",
             "nominateNow": "现在提名！",
             "voteNow": "现在投票！",
             "daysLeft": "天剩余",
-            "message": {
-                "1": "2019年，第四届谱师之选奖（Mapper's Choice Awards），归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面和谱师进行提名、投票！ ",
-                "2": "我们的目标是为“2019年度最佳谱面”提供一个与群众之选（Community Choice）不同的、基于制谱（Mapping）社群的全新视角！",
-                "3": "今年，我们尽全力制作了一个网站，以便符合要求的你能够尽可能轻松地立刻开始提名和投票！",
-                "4": "我们希望更多的人能够参与到这次评选当中来！"
-            },
             "categories": {
                 "map": "谱面分类",
                 "user": "谱师分类"
@@ -152,9 +145,7 @@
                 "id": "ID",
                 "alph": "首字母",
                 "asc": "升序",
-                "desc": "降序",
-                "incVote": "剩余可选",
-                "voteChoice": "投票选项"
+                "desc": "降序"
             },
             "hosted": "谱面持有者",
             "userID": "用户ID"

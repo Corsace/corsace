@@ -1,21 +1,28 @@
 <template>
     <search-bar
+        class="category-filters"
         :placeholder="$t('mca.nom_vote.search')"
         @update:search="updateText($event)"
     >
+        <button
+            v-if="$route.params.stage === 'voting'"
+            class="button"
+            :class="{ 'button--active': showVoteChoiceBox }"
+            @click="toggleVoteChoiceBox"
+        >
+            {{ $t(`mca.nom_vote.options.voteOrder`) }}
+        </button>
+
         <toggle-button
             :options="sectionOptions"
+            :arrow="orderOption"
             @change="changeOption"
         />
         
         <toggle-button
             :options="orderOptions"
+            :arrow="orderOption"
             @change="changeOrder"
-        />
-
-        <toggle-button
-            :options="votingOptions"
-            @change="changeVotingType"
         />
     </search-bar>
 </template>
@@ -25,7 +32,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import _ from "lodash";
 
-import ToggleButton from "../ToggleButton.vue";
+import ToggleButton from "../../../MCA-AYIM/components/ToggleButton.vue";
 import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
 
 import { StageQuery } from "../../../Interfaces/queries";
@@ -42,13 +49,15 @@ export default class StagePageFilters extends Vue {
 
     @stageModule.State section!: string;
     @stageModule.State query!: StageQuery;
+    @stageModule.State showVoteChoiceBox!: boolean;
     @stageModule.Action updateQuery;
-    @stageModule.Mutation changeVotingType;
+    @stageModule.Mutation toggleVoteChoiceBox;
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
-    userOptions = ["id", "alph"];
+    userOptions = ["alph", "id"];
     orderOptions = ["asc", "desc"];
     votingOptions = ["incVote", "voteChoice"];
+    orderOption = "asc";
 
     get sectionOptions () {
         if (this.section === "beatmaps") return this.beatmapOptions;
@@ -64,7 +73,8 @@ export default class StagePageFilters extends Vue {
     }
 
     changeOrder (order: string) {
-        this.debounce({ order });
+        this.orderOption = order;
+        this.debounce({ order: order.toUpperCase() });
     }
     
     // Vue doesnt allow using debounce inside methods, so no idea how this stuff below works, but works Ok
@@ -82,3 +92,11 @@ export default class StagePageFilters extends Vue {
 
 }
 </script>
+
+<style lang="scss">
+
+.category-filters {
+    padding: 15px 0;
+}
+
+</style>

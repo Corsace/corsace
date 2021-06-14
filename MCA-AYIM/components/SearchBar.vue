@@ -1,17 +1,19 @@
 <template>
-    <div class="search">
-        <div class="search__pre">
-            <img 
-                class="search__pre-image"
-                src="../../Assets/img/ayim-mca/site/magnifying glass.png"
+    <div class="search-bar">
+        <div class="search">
+            <div class="search__pre">
+                <img 
+                    class="search__pre-image"
+                    src="../../Assets/img/ayim-mca/site/magnifying glass.png"
+                >
+            </div>
+            <input
+                class="search__input"
+                :placeholder="placeholder"
+                maxlength="50"
+                @input="updateText($event)"
             >
         </div>
-        <input
-            class="search__input"
-            :placeholder="placeholder"
-            maxlength="50"
-            @input="updateText($event)"
-        >
 
         <slot />
     </div>    
@@ -48,12 +50,21 @@ export default class SearchBar extends Vue {
 
 <style lang="scss">
 @import '@s-sass/_variables';
+@import '@s-sass/_mixins';
+
+.search-bar {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+}
 
 .search {
     display: flex;
-    justify-content: space-between;
+    flex: 1;
+    min-width: 200px;
 
-    & > * {
+    & > *, & ~ * {
         padding: 5px;
         margin: 5px;
     }
@@ -76,6 +87,9 @@ export default class SearchBar extends Vue {
 
     &-image {
         width: 35px;
+        @include breakpoint(mobile) {
+            width: 17px;
+        }
     }
 
     &::before {
@@ -88,6 +102,9 @@ export default class SearchBar extends Vue {
 .search__input {
     font-family: $font-body;
     font-size: $font-lg;
+    @include breakpoint(mobile) {
+        font-size: $font-base;
+    }
 
     border: 0;
     border-radius: 0 5.5px 5.5px 0;
