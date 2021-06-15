@@ -28,7 +28,7 @@ async function isLoggedInDiscord (ctx: ParameterizedContext, next: Next): Promis
 }
 
 async function isStaff (ctx: ParameterizedContext, next: Next): Promise<void> {
-    const member = await getMember(ctx.state.discord.userID);
+    const member = await getMember(ctx.state.user.discord.userID);
     if (member) {
         const roles = [
             config.discord.roles.corsace.corsace,
@@ -48,7 +48,7 @@ async function isStaff (ctx: ParameterizedContext, next: Next): Promise<void> {
 
 function hasRole (section: string, role: string) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
-        const member = await getMember(ctx.state.discord.userID);
+        const member = await getMember(ctx.state.user.discord.userID);
         if (
             member && 
             (
@@ -68,7 +68,7 @@ function hasRole (section: string, role: string) {
 
 function hasRoles(roles: discordRoleInfo[]) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
-        const member = await getMember(ctx.state.discord.userID);
+        const member = await getMember(ctx.state.user.discord.userID);
         if (!member) {
             ctx.body = { error: "Could not obtain any discord user!" };
             return;

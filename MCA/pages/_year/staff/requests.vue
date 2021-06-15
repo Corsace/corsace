@@ -32,53 +32,50 @@
                 <div
                     v-for="request in group.requests"
                     :key="request.ID"
-                    class="staff-request"
                 >
                     <div 
                         v-if="showValidated || (!showValidated && isPending(request.status))"
-                        class="staff-request__info"
+                        class="staff-request"
                     >
-                        <a
-                            :href="`https://osu.ppy.sh/users/${request.user.osu.userID}`"
-                            target="_blank"
-                            class="staff-page__link"
-                        >
-                            {{ request.user.osu.username }}
-                        </a>
+                        <div class="staff-request__info">
+                            <a
+                                :href="`https://osu.ppy.sh/users/${request.user.osu.userID}`"
+                                target="_blank"
+                                class="staff-page__link"
+                            >
+                                {{ request.user.osu.username }}
+                            </a>
 
-                        <a
-                            :href="generateUrl(request)"
-                            target="_blank"
-                            class="staff-page__link"
-                        >
-                            beatmap link
-                        </a>
-                    </div>
+                            <a
+                                :href="generateUrl(request)"
+                                target="_blank"
+                                class="staff-page__link"
+                            >
+                                beatmap link
+                            </a>
+                        </div>
 
-                    <div
-                        v-if="showValidated || (!showValidated && isPending(request.status))"
-                        class="staff-request__status"
-                        :class="`staff-request__status--${getStatusName(request.status).toLowerCase()}`"
-                    >
-                        {{ getStatusName(request.status) }}
-                    </div>
+                        <div
+                            class="staff-request__status"
+                            :class="`staff-request__status--${getStatusName(request.status).toLowerCase()}`"
+                        >
+                            {{ getStatusName(request.status) }}
+                        </div>
 
-                    <div
-                        v-if="showValidated || (!showValidated && isPending(request.status))"
-                        class="staff-request__actions"
-                    >
-                        <button
-                            class="button button--small staff-request__action"
-                            @click="accept(request.ID)"
-                        >
-                            accept
-                        </button>
-                        <button
-                            class="button button--small staff-request__action"
-                            @click="reject(request.ID)"
-                        >
-                            reject
-                        </button>
+                        <div class="staff-request__actions">
+                            <button
+                                class="button button--small staff-request__action"
+                                @click="accept(request.ID)"
+                            >
+                                accept
+                            </button>
+                            <button
+                                class="button button--small staff-request__action"
+                                @click="reject(request.ID)"
+                            >
+                                reject
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
