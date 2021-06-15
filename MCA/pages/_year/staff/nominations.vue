@@ -4,20 +4,36 @@
             :hide-phase="true"
             title="nominations"
         >
-            <button
-                v-if="!showValidated"
-                @click="showValidated = true"
-                class="button"
-            >
-                Show Validated
-            </button>
-            <button
-                v-else
-                @click="showValidated = false"
-                class="button"
-            >
-                Hide Validated
-            </button>
+            <div class="staff-container">
+                <button
+                    v-if="!showInvalidated"
+                    @click="showInvalidated = true"
+                    class="button"
+                >
+                    Show Invalidated
+                </button>
+                <button
+                    v-else
+                    @click="showInvalidated = false"
+                    class="button"
+                >
+                    Hide Invalidated
+                </button>
+                <button
+                    v-if="!showReviewed"
+                    @click="showReviewed = true"
+                    class="button"
+                >
+                    Show Reviewed
+                </button>
+                <button
+                    v-else
+                    @click="showReviewed = false"
+                    class="button"
+                >
+                    Hide Reviewed
+                </button>
+            </div>
             <div class="staff-container">
                 <div
                     v-for="category in relatedCategories"
@@ -136,7 +152,8 @@ export default class Nominations extends Vue {
     @staffModule.State categories!: CategoryInfo[];
 
     nominations: Nomination[] = [];
-    showValidated = true;
+    showInvalidated = true;
+    showReviewed = true;
     selectedCategoryId: null | number = null;
 
     get relatedCategories (): CategoryInfo[] {
@@ -147,7 +164,8 @@ export default class Nominations extends Vue {
         const groups: NominationsByCategory[] = [];
 
         for (const nomination of this.nominations) {
-            if (nomination.reviewer && !this.showValidated) continue;
+            if (nomination.reviewer && !this.showReviewed) continue;
+            else if (!nomination.isValid && !this.showInvalidated) continue;
 
             const groupIndex = groups.findIndex(g => g.category.ID === nomination.category.ID);
 
