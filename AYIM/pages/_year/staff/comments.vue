@@ -101,6 +101,10 @@
                         </button>
                     </div>
                 </div>
+                <scroll-bar
+                    selector=".staff-container__box"
+                    @bottom="paginate"
+                />
             </div>
         </div>
     </div>
@@ -109,6 +113,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Getter } from "vuex-class";
+
+import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 
 import { Comment } from "../../../../Interfaces/comment";
 import { User } from "../../../../Interfaces/user";
@@ -124,6 +130,9 @@ interface GroupedComment {
             title: "Comments | Staff | AYIM",
         };
     },
+    components: {
+        ScrollBar,
+    }
 })
 export default class StaffComments extends Vue {
             
@@ -154,9 +163,19 @@ export default class StaffComments extends Vue {
     async mounted () {
         const { data } = await this.$axios.get(`/api/staff/comments`);
 
-        if (!data.error) {
-            this.comments = data;
-        }
+        if (data.error)
+            return alert(data.error);
+        
+        this.comments = data;
+    }
+
+    async paginate () {
+        const { data } = await this.$axios.get(`/api/staff/comments?skip=${this.comments.length}`);
+
+        if (data.error)
+            return alert(data.error);
+        
+        this.comments.push(...data);
     }
 
     async update (id: number) {

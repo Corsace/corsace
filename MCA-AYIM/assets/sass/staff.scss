@@ -25,6 +25,8 @@
 .staff-container {
     @extend %spaced-container;
     flex-direction: column;
+    overflow: hidden;
+    position: relative;
 
     &__title {
         border-bottom: 1px solid white;
@@ -36,5 +38,12 @@
     &__box {
         @extend %flex-box;
         flex-direction: column;
+        height: 100%;
+        overflow-y: scroll;
+    
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
 }
