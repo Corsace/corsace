@@ -4,6 +4,21 @@
             Comments Review
         </div>
 
+        <button
+            v-if="!showValidated"
+            @click="showValidated = true"
+            class="button"
+        >
+            Show Validated
+        </button>
+        <button
+            v-else
+            @click="showValidated = false"
+            class="button"
+        >
+            Hide Validated
+        </button>
+
         <div
             v-if="info"
             class="info"
@@ -47,6 +62,12 @@
                                 {{ comment.target.osu.username }}
                             </a>
                         </div>
+                        <div 
+                            v-if="comment.isValid"
+                            class="button__add"
+                        >
+                            Validated by {{ comment.reviewer.osu.username }} at {{ new Date(comment.lastReviewedAt).toString() }}
+                        </div>
                     </div>
 
                     <textarea 
@@ -58,14 +79,14 @@
 
                     <div class="staff-comment__actions">
                         <button
-                            class="button button--small staff-comment__action"
+                            class="button button--small button__add staff-comment__action"
                             @click="update(comment.ID)"
                         >
                             validate
                         </button>
 
                         <button
-                            class="button button--small staff-comment__action"
+                            class="button button--small button__remove staff-comment__action"
                             @click="remove(comment.ID)"
                         >
                             delete
@@ -73,7 +94,7 @@
 
                         <button
                             v-if="isHeadStaff"
-                            class="button button--small staff-comment__action"
+                            class="button button--small button__remove staff-comment__action"
                             @click="ban(comment.commenter.ID)"
                         >
                             ban
@@ -90,6 +111,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
 import { Comment } from "../../../../Interfaces/comment";
+import { User } from "../../../../Interfaces/user";
 
 interface GroupedComment {
     mode: string;
@@ -108,6 +130,7 @@ export default class StaffComments extends Vue {
     @Getter isHeadStaff!: boolean;
 
     info = "";
+    showValidated = true;
     comments: Comment[] = [];
 
     get groupedComments (): GroupedComment[] {
@@ -115,6 +138,8 @@ export default class StaffComments extends Vue {
 
         for (const comment of this.comments) {
             const i = groups.findIndex(g => g.mode === comment.mode.name);
+            
+            if (!this.showValidated && comment.isValid) continue;
 
             if (i !== -1) groups[i].comments.push(comment);
             else groups.push({
@@ -145,6 +170,11 @@ export default class StaffComments extends Vue {
             this.info = res.data.error;
         } else if (res.data) {
             this.info = "ok";
+            const resComment = res.data;
+            this.comments[i].isValid = resComment.isValid;
+            this.comments[i].reviewer = resComment.reviewer;
+            (this.comments[i].reviewer as User).osu.username = resComment.reviewer.osu.username;
+            this.comments[i].lastReviewedAt = resComment.lastReviewedAt;
         }
     }
 
@@ -179,7 +209,7 @@ export default class StaffComments extends Vue {
             this.info = data.error;
         } else if (data.success) {
             this.info = data.success;
-            this.comments = this.comments.filter(c => c.commenter.ID !== id);
+            this.comments = this.comments.filter(c => !(c.commenter.ID === id && !c.isValid));
         }
     }
 
@@ -199,10 +229,12 @@ export default class StaffComments extends Vue {
     &__info {
         display:flex;
         flex-direction: column;
+        flex: 1;
     }
 
     &__input {
         width: 50%;
+        flex: 4;
     }
 
     &__actions {

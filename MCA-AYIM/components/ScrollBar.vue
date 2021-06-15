@@ -41,7 +41,7 @@ export default class ScrollBar extends Vue {
             currentlyBottom = true;
         this.emit(currentlyBottom);
             
-        return percent - 2 + "%";
+        return percent - 1 + "%";
     }
 
     handleScroll (event) {

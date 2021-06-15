@@ -4,6 +4,20 @@
             :hide-phase="true"
             title="nominations"
         >
+            <button
+                v-if="!showValidated"
+                @click="showValidated = true"
+                class="button"
+            >
+                Show Validated
+            </button>
+            <button
+                v-else
+                @click="showValidated = false"
+                class="button"
+            >
+                Hide Validated
+            </button>
             <div class="staff-container">
                 <div
                     v-for="category in relatedCategories"
@@ -55,7 +69,7 @@
                                             <div v-if="nomination.reviewer">
                                                 Last reviewed by:
                                                 {{ nomination.reviewer.osu.username }}
-                                                at {{ new Date(nomination.lastReviewedAt).toDateString() }}
+                                                at {{ new Date(nomination.lastReviewedAt).toString() }}
                                             </div>
                                         </div>
 
@@ -122,6 +136,7 @@ export default class Nominations extends Vue {
     @staffModule.State categories!: CategoryInfo[];
 
     nominations: Nomination[] = [];
+    showValidated = true;
     selectedCategoryId: null | number = null;
 
     get relatedCategories (): CategoryInfo[] {
@@ -132,6 +147,8 @@ export default class Nominations extends Vue {
         const groups: NominationsByCategory[] = [];
 
         for (const nomination of this.nominations) {
+            if (nomination.reviewer && !this.showValidated) continue;
+
             const groupIndex = groups.findIndex(g => g.category.ID === nomination.category.ID);
 
             if (groupIndex !== -1) {
@@ -192,9 +209,14 @@ export default class Nominations extends Vue {
         return `${nomination.user?.osu.username}`;
     }
 
-    updateLocalNomination (id: number, isValid) {
+    updateLocalNomination (id: number, data: Nomination) {
         const i = this.nominations.findIndex(n => n.ID === id);
-        if (i !== -1) this.nominations[i].isValid = isValid;
+        if (i !== -1) {
+            this.nominations[i].isValid = data.isValid;
+            this.nominations[i].reviewer = data.reviewer;
+            this.nominations[i].reviewer.osu.username = data.reviewer.osu.username;
+            this.nominations[i].lastReviewedAt = data.lastReviewedAt;
+        }
     }
 
     async updateNomination (id: number, isValid) {
@@ -203,7 +225,10 @@ export default class Nominations extends Vue {
         });
 
         if (!data.error) {
-            this.updateLocalNomination(id, isValid);
+            this.updateLocalNomination(id, data);
+        } else {
+            alert("Hellooo peep console (Ctrl + Shift + I, console tab at top)")
+            console.error(data.error);
         }
     }
 

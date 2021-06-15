@@ -39,8 +39,10 @@
             "name": "",
             "playcount": "",
             "favourites": "",
+            "favouritesExclHybrid": "",
             "length": "",
             "difficulties": "",
+            "playTime": "",
             "totalRanked": "",
             "totalDiff": "",
             "submitDates": "",
@@ -49,17 +51,21 @@
             "overallDifficulty": "",
             "hpDrain": "",
             "circleSize": "",
+            "spinners": "",
             "sliders": "",
             "circles": "",
-            "avgSlidersPerSet": "",
-            "avgCirclesPerSet": "",
+            "avgSpinnersPerDiff": "",
+            "avgSlidersPerDiff": "",
+            "avgCirclesPerDiff": "",
             "highestSr": "",
             "lowestSr": ""
         },
         "mappers": {
             "name": "",
             "mostRanked": "",
+            "mostDiffs": "",
             "mostFavs": "",
+            "mostFavsExclHybrid": "",
             "mostPlayed": "",
             "totalMappers": "",
             "newMapperAges": "",
@@ -70,15 +76,13 @@
             "uniqueMappers": "",
             "newMappers": "",
             "highestAvgSr": "",
-            "leastFavs": "",
-            "leastPlayed": "",
             "lowestAvgSr": "",
             "mappers": ""
         },
         "statistics": {
-            "numberOf": "number of",
-            "numberOfMapsWith": "number of maps with",
-            "average": "average"
+            "numberOf": "",
+            "numberOfMapsWith": "",
+            "average": ""
         },
         "comments": {
             "name": "",
@@ -90,7 +94,8 @@
             "remove": "",
             "create": "",
             "login": "",
-            "visible": ""
+            "visible": "",
+            "notice": ""
         }
     },
     "mca": {
@@ -99,11 +104,11 @@
             "nominating": "",
             "results": "",
             "undefined": "",
-			"mapsetsLabel": "",
-			"mappersLabel": "",
-			"commentsLabel": "",
-			"recordsLabel": "",
-			"statisticsLabel": "",
+            "mapsetsLabel": "",
+            "mappersLabel": "",
+            "commentsLabel": "",
+            "recordsLabel": "",
+            "statisticsLabel": "",
             "stage": {
                 "voting": "",
                 "nominating": "",
@@ -243,6 +248,7 @@
         },
         "nom_vote": {
             "search": "",
+            "select": "",
             "candidates": "",
             "options": {
                 "date": "",
@@ -255,11 +261,11 @@
                 "alph": "",
                 "asc": "",
                 "desc": "",
-                "incVote": "",
-                "voteChoice": ""
+                "voteOrder": ""
             },
             "hosted": "",
-            "userID": ""
+            "userID": "",
+            "selectGrand": ""
         }
     },
     "main": {

@@ -3,6 +3,9 @@ import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
 import { MCA } from "../../Models/MCA_AYIM/mca";
 import { User } from "../../Models/user";
+import { Vote } from "../../Models/MCA_AYIM/vote";
+import { Nomination } from "../../Models/MCA_AYIM/nomination";
+import { Category } from "../../Models/MCA_AYIM/category";
 
 async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
     const mca: MCA = ctx.state.mca;
@@ -39,6 +42,15 @@ function isEligibleFor (user: User, modeID: number, year: number): boolean {
     }
 }
 
+function categoryRequirementCheck(list: Vote[] | Nomination[], category: Category): boolean {
+    if (
+        !category.isRequired && 
+        !list.some(x => x.category.isRequired && x.category.type === category.type)
+    )
+        return false;
+    return true;
+}
+
 async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> {
     const mca = await MCA.findOne({
         results: MoreThanOrEqual(new Date()),
@@ -49,7 +61,7 @@ async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> 
 
     if (!mca) {
         return ctx.body = {
-            error: "Not MCA found for this year",
+            error: "No MCA found for this year",
         };
     }
 
@@ -104,4 +116,4 @@ function isPhaseStarted (phase: string) {
     };
 }
 
-export { isEligible, isEligibleFor, currentMCA, validatePhaseYear, isPhase, isPhaseStarted };
+export { isEligible, isEligibleFor, categoryRequirementCheck, currentMCA, validatePhaseYear, isPhase, isPhaseStarted };

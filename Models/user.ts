@@ -11,7 +11,7 @@ import { Beatmapset } from "./beatmapset";
 import { config } from "node-config-ts";
 import { GuildMember } from "discord.js";
 import { discordGuild } from "../Server/discord";
-import { UserCondensedInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
+import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
@@ -29,10 +29,10 @@ export class OAuth {
     @Column({ default: "" })
     avatar!: string;
 
-    @Column({ type: "longtext", nullable: true })
+    @Column({ type: "longtext", nullable: true, select: false })
     accessToken?: string;
 
-    @Column({ type: "longtext", nullable: true })
+    @Column({ type: "longtext", nullable: true, select: false })
     refreshToken?: string;
 
     @CreateDateColumn()
@@ -133,29 +133,18 @@ export class User extends BaseEntity {
                 }))
                 .setParameter("criteria", `%${query.text}%`);
         }
-
-        // Check for search text
-        if (query.text) {
-            queryBuilder
-                .andWhere(new Brackets(qb => {
-                    qb.where("user.osuUsername LIKE :criteria")
-                        .orWhere("user.osuUserid LIKE :criteria")
-                        .orWhere("otherName.name LIKE :criteria");
-                }))
-                .setParameter("criteria", `%${query.text}%`);
-        }
         
         // Ordering
-        const ascDesc = query.order || "ASC";
+        const order = query.order || "ASC";
         let orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
-        if (query.option?.toLowerCase().includes("alph"))
+        if (query.option && query.option.toLowerCase().includes("alph"))
             orderMethod = "user_osuUsername";
             
         // Search
         return queryBuilder
             .skip(parseInt(query.skip))
             .take(50)
-            .orderBy(orderMethod, ascDesc)
+            .orderBy(orderMethod, order)
             .getMany();
     }
 
@@ -176,19 +165,19 @@ export class User extends BaseEntity {
         queryBuilder
             .leftJoinAndSelect("user.otherNames", "otherName")
             .leftJoinAndSelect("user.mcaEligibility", "mca")
-            .where(`mca.year = :q AND mca.${modeString} = 1`, { q: year });
+            .where(`mca.${modeString} = 1`);
 
         if (category.filter?.rookie) {
             queryBuilder
                 .andWhere((qb) => {
                     const subQuery = qb.subQuery()
                         .from(MCAEligibility, "mcaEligibility")
-                        .where("year < :year", { year: year })
+                        .select("min(year)")
                         .andWhere("userID = user.ID")
                         .andWhere(`mca.${modeString} = 1`)
                         .getQuery();
 
-                    return "NOT EXISTS " + subQuery;
+                    return subQuery + " = " + year;
                 });
         }
         
@@ -204,24 +193,24 @@ export class User extends BaseEntity {
         }
         
         // Ordering
-        const ascDesc = query.order || "ASC";
-        let orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
-        if (query.option.toLowerCase().includes("alph"))
-            orderMethod = "user_osuUsername";
+        const order = query.order || "ASC";
+        let orderMethod = "user_osuUsername";
+        if (query.option && query.option.toLowerCase().includes("id"))
+            orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
             
         // Search
         return Promise.all([
             queryBuilder
                 .skip(query.skip)
                 .take(50)
-                .orderBy(orderMethod, ascDesc)
+                .orderBy(orderMethod, order)
                 .getMany(),
 
             queryBuilder.getCount(),
         ]);
     }
 
-    public getCondensedInfo = function(this: User, chosen = false): UserCondensedInfo {
+    public getCondensedInfo = function(this: User, chosen = false): UserChoiceInfo {
         return {
             corsaceID: this.ID,
             avatar: this.osu.avatar,

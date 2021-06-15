@@ -1,22 +1,15 @@
 <template>
-    <div class="category__selection">
-        <transition name="fade">
-            <voting-box v-if="votingFor && !incrementalVoting" />
-        </transition>
+    <div class="category-selection">
+        <voting-box v-if="showVoteChoiceBox" />
 
-        <div class="category__selection-search">
-            <stage-page-filters />
-        </div>
-
-        <div class="category__selection-area">
-            <div class="category__selection-maps">
+        <div class="category-selection__area">
+            <div class="category-selection__maps">
                 <template v-if="section === 'users'">
                     <choice-user-card
                         v-for="(item, i) in users"
                         :key="i"
                         :choice="item"
-                        class="category__beatmap"
-                        @choose="nominate(item)"
+                        class="category-selection__beatmap"
                     />
                 </template>
 
@@ -25,13 +18,19 @@
                         v-for="(item, i) in beatmaps"
                         :key="i"
                         :choice="item"
-                        class="category__beatmap"
-                        @choose="nominate(item)"
+                        class="category-selection__beatmap"
                     />
                 </template>
+
+                <div
+                    v-if="loading"
+                    class="category-selection__loading"
+                >
+                    Loading...
+                </div>
             </div>
             <scroll-bar
-                selector=".category__selection-maps"
+                selector=".category-selection__maps"
                 @bottom="search(true)"
             />
         </div>
@@ -42,22 +41,19 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import StagePageFilters from "./StagePageFilters.vue";
 import ChoiceBeatmapsetCard from "../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
 import ChoiceUserCard from "../ChoiceUserCard.vue";
 import ScrollBar from "../../../MCA-AYIM/components/ScrollBar.vue";
 import VotingBox from "./VotingBox.vue";
 
-import { CategoryStageInfo } from "../../../Interfaces/category";
 import { SectionCategory } from "../../../MCA-AYIM/store/stage";
-import { UserCondensedInfo } from "../../../Interfaces/user";
+import { UserChoiceInfo } from "../../../Interfaces/user";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 
 const stageModule = namespace("stage");
 
 @Component({
     components: {
-        StagePageFilters,
         ChoiceBeatmapsetCard,
         ChoiceUserCard,
         ScrollBar,
@@ -66,38 +62,64 @@ const stageModule = namespace("stage");
 })
 export default class StagePageList extends Vue {
 
-    @stageModule.State selectedCategory!: CategoryStageInfo;
     @stageModule.State section!: SectionCategory;
-    @stageModule.State users!: UserCondensedInfo[];
+    @stageModule.State users!: UserChoiceInfo[];
     @stageModule.State beatmaps!: BeatmapsetInfo[];
-    @stageModule.State votingFor!: null | number;
-    @stageModule.State incrementalVoting!: boolean;
-    @stageModule.Action updateBeatmapState;
-    @stageModule.Action updateUserState;
+    @stageModule.State loading!: boolean;
+    @stageModule.State showVoteChoiceBox!: boolean;
     @stageModule.Action search;
     
-    async nominate (choice) {
-        if (!this.selectedCategory) return;
+}
+</script>
 
-        let res: { error?: string };
-        
-        if (!choice.chosen) {
-            res = (await this.$axios.post(`/api/nominating/create`, {
-                categoryId: this.selectedCategory.id,
-                nomineeId: this.section === "beatmaps" ? choice.id : choice.corsaceID,
-            })).data;
-        } else
-            res = (await this.$axios.delete(`/api/nominating/remove/${this.selectedCategory.id}/${this.section === "beatmaps" ? choice.id : choice.corsaceID}`)).data;
+<style lang="scss">
+@import '@s-sass/_variables';
+@import '@s-sass/_mixins';
+@import '@s-sass/_partials';
 
-        if (res.error)
-            return alert(res.error);
+.category-selection {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: auto;
+
+    &__area {
+        height: 100%;
+        position: relative;
+        display: flex;
+        flex: 1;
+    }
+
+    &__maps {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
         
-        if (this.section === "beatmaps") {
-            this.updateBeatmapState(choice.id);
-        } else if (this.section === "users") {
-            this.updateUserState(choice.corsaceID);
+        overflow-y: scroll;
+        scrollbar-width: none;
+        margin-right: 50px; // Space for scrollbar
+        position: relative;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        
+        mask-image: linear-gradient(to top, transparent 10%, black 25%);
+
+        @include breakpoint(tablet) {
+            mask-image: linear-gradient(to top, transparent 0%, black 25%);
         }
     }
 
+    &__loading {
+        @extend %flex-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+    }
 }
-</script>
+
+</style>

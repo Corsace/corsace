@@ -27,7 +27,6 @@ declare module "node-config-ts" {
                 open: {
                     participants: string;
                     captains: string;
-                    staff: string;
                     mappooler: string;
                     testplayer: string;
                     scheduler: string;
@@ -36,10 +35,9 @@ declare module "node-config-ts" {
                     commentator: string;
                     referee: string;
                 };
-                invitational: {
+                closed: {
                     participants: string;
                     captains: string;
-                    staff: string;
                     mappooler: string;
                     scheduler: string;
                     streamManager: string;
@@ -48,7 +46,6 @@ declare module "node-config-ts" {
                     referee: string;
                 };
                 mca: {
-                    staff: string;
                     standard: string;
                     taiko: string;
                     fruits: string;
@@ -80,7 +77,7 @@ declare module "node-config-ts" {
 
         ayim: ISubSiteConfig;
         corsace: ISubSiteConfig;
-        invitational: ISubSiteConfig;
+        closed: ISubSiteConfig;
         mca: ISubSiteConfig;
         open: ISubSiteConfig;
     }

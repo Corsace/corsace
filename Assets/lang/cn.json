@@ -28,7 +28,7 @@
             "statistics": "统计数据",
             "search": "搜索",
             "numberof": "总计",
-            "numberwith": "包含下述属性的难度个数"
+            "numberwith": "包含下述属性的难度个数",
             "message": {
                 "2019": "<p>时间来到2020年。</p><p>做谱又一年：2019，回归！这里有当年做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>通过本网站，只要是我们能够获得的信息，我们想加多少就加多少！如果你有任何建议（或者发现了任何网站bugs），请在corsace discord群联系VINXIS（链接见左下方）！</p><p><b>我们目前还在公开征集评论！</b>这意味着只要你愿意，<b>你本人</b>可以为任意多的谱师撰写并发表评论！</p><p>在下方的图标中选择你关心的游戏模式以开始！</p>",
                 "2020": "<p>时间来到2021年...这下对了吧！</p><p>做谱又一年：2020，再次回归！这里有<b>今年</b>做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>并且同样地，我们依旧在公开征集评论！在下方的图标中选择你关心的游戏模式以开始！</p>"
@@ -49,7 +49,7 @@
             "approachRate": "缩圈速度（AR）",
             "overallDifficulty": "整体难度（OD）",
             "hpDrain": "掉血快慢（HP）",
-            "circleSize": "圆圈大小（CS）"
+            "circleSize": "圆圈大小（CS）",
             "spinners": "转盘个数",
             "sliders": "滑条个数",
             "circles": "圆圈个数",
@@ -105,14 +105,13 @@
             "results": "结果",
             "undefined": "",
             "mapsetsLabel": "谱面",
-	    "mappersLabel": "谱师",
-	    "commentsLabel": "评论",
-	    "recordsLabel": "纪录",
-	    "statisticsLabel": "统计",
+            "mappersLabel": "谱师",
+            "commentsLabel": "评论",
+            "recordsLabel": "纪录",
+            "statisticsLabel": "统计",
             "stage": {
                 "voting": "投票阶段",
-                "nominating": "提名阶段",
-                "undefined": ""
+                "nominating": "提名阶段"
             },
             "rankedSets": "Ranked谱面",
             "nominateNow": "现在提名！",

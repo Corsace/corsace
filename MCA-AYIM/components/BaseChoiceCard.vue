@@ -1,34 +1,48 @@
 <template>
-    <div class="choice">
-        <slot />
+    <div class="choice-container">
+        <div class="choice">
+            <slot />
         
-        <div 
-            v-if="stage === 'nominating'"
-            class="choice__selection"
-            @click="$emit('choose')"
-        >
-            <div
-                class="choice__selection-box" 
-                :class="{ 'choice__selection-box--chosen': choice.chosen }"
+            <div 
+                v-if="stage === 'nominating'"
+                class="choice__selection"
+                @click="nominate"
             >
-                <img
-                    class="choice__selection-check"
-                    :class="{ 'choice__selection-check--chosen': choice.chosen }"
-                    src="../../Assets/img/ayim-mca/site/checkmark.png"
+                <div
+                    class="choice__selection-box" 
+                    :class="{ 
+                        'choice__selection-box--chosen': currentNomination,
+                        'choice__selection-box--denied': currentNomination && !currentNomination.isValid
+                    }"
                 >
+                    <template v-if="currentNomination">
+                        <img
+                            v-if="currentNomination.isValid"
+                            class="choice__selection-check"
+                            :class="{ 'choice__selection-check--chosen': currentNomination }"
+                            src="../../Assets/img/ayim-mca/site/checkmark.png"
+                        >
+                        <div
+                            v-else
+                            class="choice__selection-invalid"
+                        >
+                            ✕
+                        </div>
+                    </template>
+                </div>
             </div>
-        </div>
 
-        <div
-            v-else-if="stage === 'voting'"
-            class="choice__voting"
-            @click="choose()"
-        >
-            <div class="choice__voting-title">
-                vote
-            </div>
-            <div class="choice__voting-vote">
-                {{ currentVote && currentVote.choice || '!' }}
+            <div
+                v-else-if="stage === 'voting'"
+                class="choice__voting"
+                @click="vote"
+            >
+                <div class="choice__voting-title">
+                    vote
+                </div>
+                <div class="choice__voting-vote">
+                    {{ currentVote && currentVote.choice || '!' }}
+                </div>
             </div>
         </div>
     </div>
@@ -40,6 +54,7 @@ import { namespace } from "vuex-class";
 
 import { StageType } from "../../MCA-AYIM/store/stage";
 import { Vote } from "../../Interfaces/vote";
+import { Nomination } from "../../Interfaces/nomination";
 
 const stageModule = namespace("stage");
 
@@ -47,42 +62,59 @@ const stageModule = namespace("stage");
 export default class BaseChoiceCard extends Vue {
 
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
-    
-    @stageModule.State votingFor!: null | number;
+
     @stageModule.State stage!: StageType;
-    @stageModule.State incrementalVoting!: boolean;
-    @stageModule.Mutation updateVotingFor;
-    @stageModule.Getter relatedVotes!: Vote[];
+    @stageModule.Getter relatedCandidacies!: Vote[] | Nomination[];
     @stageModule.Action createVote;
+    @stageModule.Action removeVote;
+    @stageModule.Action createNomination;
+    @stageModule.Action removeNomination;
 
     get currentVote (): Vote | undefined {
-        return this.relatedVotes.find(v => {
+        if (this.stage === "nominating") return undefined;
+
+        return (this.relatedCandidacies as Vote[]).find(v => {
             if (this.choice.id) return v.beatmapset?.ID === this.choice.id;
             else return v.user?.ID === this.choice.corsaceID;
         });
     }
 
-    async choose () {
-        const id = this.choice.id || this.choice.corsaceID;
+    get currentNomination (): Nomination | undefined {
+        if (this.stage === "voting") return undefined;
 
-        if (this.incrementalVoting) {
-            let vote = 1;
+        return (this.relatedCandidacies as Nomination[]).find(v => {
+            if (this.choice.id) return v.beatmapset?.ID === this.choice.id;
+            else return v.user?.ID === this.choice.corsaceID;
+        });
+    }
 
-            if (this.relatedVotes.length) {
-                vote = this.relatedVotes.sort((a, b) => b.choice - a.choice)[0].choice + 1;
-            }
-
-            await this.createVote({ 
-                nomineeId: id,
-                vote,
-            });
-        } else {
-            if (id === this.votingFor) {
-                this.updateVotingFor(null);
-            } else {
-                this.updateVotingFor(id);
-            }
+    async vote () {
+        if (this.currentVote) {
+            await this.removeVote(this.currentVote.ID);
+            return;
         }
+        
+        const id = this.choice.id || this.choice.corsaceID;
+        let vote = 1;
+
+        if (this.relatedCandidacies.length) {
+            vote = (this.relatedCandidacies as Vote[]).sort((a, b) => b.choice - a.choice)[0].choice + 1;
+        }
+
+        await this.createVote({ 
+            nomineeId: id,
+            vote,
+        });
+    }
+
+    async nominate () {
+        if (this.currentNomination) {
+            await this.removeNomination(this.currentNomination.ID);
+            return;
+        }
+        
+        const id = this.choice.id || this.choice.corsaceID;
+        await this.createNomination(id);
     }
 
 }
@@ -94,6 +126,24 @@ export default class BaseChoiceCard extends Vue {
 @import '@s-sass/_partials';
 
 .choice {
+    &-container {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 100%;
+
+        @include breakpoint(tablet) {
+            width: calc(100% / 2);
+        }
+
+        @include breakpoint(laptop) {
+            width: calc(100% / 2);
+        }
+
+        @include breakpoint(desktop) {
+            width: calc(100% / 3);
+        }
+    }
+
     @extend %flex-box;
     padding: 0;
     box-shadow: 0 0 8px rgba(255,255,255,0.25);
@@ -103,14 +153,6 @@ export default class BaseChoiceCard extends Vue {
 
     &:hover {
         box-shadow: 0 0 12px rgba(255,255,255,0.75);
-    }
-
-    width: calc(100vw - 113px);
-    @include breakpoint(tablet) {
-        width: 48.1%;
-    }
-    @include breakpoint(desktop) {
-        width: 31.9%;
     }
 
 }
@@ -156,10 +198,20 @@ export default class BaseChoiceCard extends Vue {
         border-radius: 5px;
 
         @include transition;
-        
-        &--chosen {
+
+        &--chosen, &:hover {
             border-color: white;
             box-shadow: 0 0 4px white, inset 0 0 4px white;
+        }
+
+        &--denied {
+            border-color: $red;
+            box-shadow: 0 0 4px $red, inset 0 0 4px $red;
+
+            &:hover {
+                border-color: $red;
+                box-shadow: 0 0 4px $red, inset 0 0 4px $red;
+            }
         }
     }
 
@@ -174,6 +226,12 @@ export default class BaseChoiceCard extends Vue {
         &--chosen {
             opacity: 1
         }
+    }
+    
+    &-invalid {
+        color: $red;
+        text-align: center;
+        text-shadow: 0 0 4px $red;
     }
 }
 

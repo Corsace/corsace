@@ -1,61 +1,63 @@
 <template>
     <display-layout nav-title="mappers">
-        <record-item
-            v-for="(recordsItems, recordName) in records"
-            :key="recordName"
-            :title="recordName"
-            :type="'mappers'"
-        >
-            <template v-for="(record, i) in recordsItems">
-                <a
-                    v-if="i == 0"
-                    :key="i + '-record'"
-                    class="ayim-mapper-record"
-                    :href="`https://osu.ppy.sh/users/${record.osuId}`"
-                    target="_blank"
-                >
-                    <div
-                        class="ayim-mapper-record__image"
-                        :style="`background-image: url('https://a.ppy.sh/${record.osuId}')`"
-                    />
-
-                    <img
-                        :src="`https://a.ppy.sh/${record.osuId}`"
-                        class="ayim-mapper-record__avatar"
+        <list-transition class="ayim-layout">
+            <record-item
+                v-for="(recordsItems, recordName) in records"
+                :key="recordName + '-record'"
+                :title="recordName"
+                :type="'mappers'"
+            >
+                <template v-for="(record, i) in recordsItems">
+                    <a
+                        v-if="i == 0"
+                        :key="i + '-record'"
+                        class="ayim-mapper-record"
+                        :href="`https://osu.ppy.sh/users/${record.osuId}`"
+                        target="_blank"
                     >
+                        <div
+                            class="ayim-mapper-record__image"
+                            :style="`background-image: url('https://a.ppy.sh/${record.osuId}')`"
+                        />
 
-                    <div class="ayim-mapper-record__info">
-                        <div class="ayim-text ayim-text--xxl">
-                            {{ record.username }}
+                        <img
+                            :src="`https://a.ppy.sh/${record.osuId}`"
+                            class="ayim-mapper-record__avatar"
+                        >
+
+                        <div class="ayim-mapper-record__info">
+                            <div class="ayim-text ayim-text--xxl">
+                                {{ record.username }}
+                            </div>
+                            <div class="ayim-mapper-record__total">
+                                {{ record.value }}
+                            </div>
                         </div>
-                        <div class="ayim-mapper-record__total">
-                            {{ record.value }}
-                        </div>
-                    </div>
-                </a>
+                    </a>
                         
-                <a
-                    v-else
-                    :key="i + '-record'"
-                    class="ayim-mapper-record ayim-mapper-record--small"
-                    :href="`https://osu.ppy.sh/users/${record.osuId}`"
-                    target="_blank"
-                >
-                    <div
-                        class="ayim-mapper-record__image ayim-mapper-record__image--small"
-                        :style="`background-image: url('https://a.ppy.sh/${record.osuId}')`"
-                    />
-                    <div class="ayim-mapper-record__info ayim-mapper-record__info--small">
-                        <div class="ayim-text ayim-text--lg">
-                            {{ record.username }}
+                    <a
+                        v-else
+                        :key="i + '-record'"
+                        class="ayim-mapper-record ayim-mapper-record--small"
+                        :href="`https://osu.ppy.sh/users/${record.osuId}`"
+                        target="_blank"
+                    >
+                        <div
+                            class="ayim-mapper-record__image ayim-mapper-record__image--small"
+                            :style="`background-image: url('https://a.ppy.sh/${record.osuId}')`"
+                        />
+                        <div class="ayim-mapper-record__info ayim-mapper-record__info--small">
+                            <div class="ayim-text ayim-text--lg">
+                                {{ record.username }}
+                            </div>
+                            <div class="ayim-mapper-record__total ayim-mapper-record__total--small">
+                                {{ record.value }}
+                            </div>
                         </div>
-                        <div class="ayim-mapper-record__total ayim-mapper-record__total--small">
-                            {{ record.value }}
-                        </div>
-                    </div>
-                </a>
-            </template>
-        </record-item>
+                    </a>
+                </template>
+            </record-item>
+        </list-transition>
     </display-layout>
 </template>
 
@@ -65,6 +67,7 @@ import { State } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
+import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
 
 import { MapperRecord } from "../../../../Interfaces/records";
 import { MCA } from "../../../../Interfaces/mca";
@@ -73,6 +76,7 @@ import { MCA } from "../../../../Interfaces/mca";
     components: {
         DisplayLayout,
         RecordItem,
+        ListTransition,
     },
     head () {
         return {

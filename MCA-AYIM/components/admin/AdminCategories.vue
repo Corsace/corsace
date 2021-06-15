@@ -91,7 +91,7 @@ export default class AdminCategories extends Vue {
         const { data } = await this.$axios.get(`/api/admin/years/${this.$route.params.adminYear}/categories`);
 
         if (data.error) {
-            alert(data.error);
+            console.error(data.error);
             return;
         }
 

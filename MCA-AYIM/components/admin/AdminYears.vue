@@ -44,10 +44,12 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { State } from "vuex-class";
 
 import AdminModalYear from "./AdminModalYear.vue";
 import DataTable, { Field, Format } from "./DataTable.vue";
 
+import { UserMCAInfo } from "../../../Interfaces/user";
 import { MCAInfo } from "../../../Interfaces/mca";
 
 @Component({
@@ -58,6 +60,8 @@ import { MCAInfo } from "../../../Interfaces/mca";
 })
 export default class AdminPage extends Vue {
 
+    @State loggedInUser!: UserMCAInfo;
+
     showYearModal = false;
     years: MCAInfo[] = [];
     selectedYear: MCAInfo | null = null;
@@ -66,23 +70,25 @@ export default class AdminPage extends Vue {
         { key: "name", label: "Year" },
         { key: "nomination.start", label: "Nominations Start", formatter: Format.DateTimeString },
         { key: "nomination.end", label: "Nominations End", formatter: Format.DateTimeString },
-        { key: "voting.start", label: "Voting End", formatter: Format.DateTimeString },
+        { key: "voting.start", label: "Voting Start", formatter: Format.DateTimeString },
         { key: "voting.end", label: "Voting End", formatter: Format.DateTimeString },
         { key: "results", label: "Results", formatter: Format.DateTimeString },
     ];
 
     async mounted () {
-        await this.getMcaInfo();
+        if (!(this.loggedInUser?.staff?.corsace || this.loggedInUser?.staff?.headStaff))
+            this.$router.replace("/");
+        else
+            await this.getMcaInfo();
     }
 
     async getMcaInfo () {
-        const res = (await this.$axios.get("/api/admin/")).data;
+        const res = (await this.$axios.get("/api/mca/all")).data;
 
         if (res.error)
-            this.$router.replace("/");
-
-        if (res.mca) {
-            this.years = res.mca;
+            console.error(res.error);
+        else {
+            this.years = res;
             this.years.sort((a, b) => b.name - a.name);
         }
     }

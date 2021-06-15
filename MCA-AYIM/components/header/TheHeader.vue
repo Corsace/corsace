@@ -1,25 +1,25 @@
 <template>
     <div class="header">
-        <template v-if="mca">
+        <template>
             <nuxt-link
                 class="header__year-container"
-                :to="`/${mca.year}`"
+                :to="`/${$route.params.year}`"
             >
                 <div class="header__year">
-                    {{ mca.year }}
+                    {{ $route.params.year }}
                 </div>
                 <div class="header__year header__year--coloured">
                     <span class="header__year--standard">
-                        {{ ('' + mca.year)[0] }}
+                        {{ ('' + $route.params.year)[0] }}
                     </span>
                     <span class="header__year--taiko">
-                        {{ ('' + mca.year)[1] }}
+                        {{ ('' + $route.params.year)[1] }}
                     </span>
                     <span class="header__year--fruits">
-                        {{ ('' + mca.year)[2] }}
+                        {{ ('' + $route.params.year)[2] }}
                     </span>
                     <span class="header__year--mania">
-                        {{ ('' + mca.year)[3] }}
+                        {{ ('' + $route.params.year)[3] }}
                     </span>
                 </div>
             </nuxt-link>
@@ -99,7 +99,6 @@ import LoginModal from "./LoginModal.vue";
 import TheHeaderDropdown from "./TheHeaderDropdown.vue";
 
 import { UserMCAInfo } from "../../../Interfaces/user";
-import { MCA } from "../../../Interfaces/mca";
 
 @Component({
     components: {
@@ -113,7 +112,6 @@ export default class TheHeader extends Vue {
 
     @State loggedInUser!: UserMCAInfo;
     @State selectedMode!: string;
-    @State mca!: MCA;
 
     showLoginModal = false;
     showDropdown = false;
@@ -143,7 +141,6 @@ export default class TheHeader extends Vue {
 .header {
     width: 100%;
 	display: flex;
-    flex: 0 0 auto;
     align-items: center;
 	background-color: #000;
 	border-bottom-style: solid;

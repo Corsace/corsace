@@ -1,14 +1,14 @@
 import "reflect-metadata";
 import { App } from "../../Server";
 import mount from "koa-mount";
-import loginRouter from "../../MCA-AYIM/api/routes/login";
+import loginRouter from "../../Server/login";
 import mcaRouter from "../../MCA-AYIM/api/routes/mca";
 import userRouter from "../../MCA-AYIM/api/routes/user";
-import adminRouter from "../../MCA-AYIM/api/routes/admin/index";
+import adminRouter from "../../MCA-AYIM/api/routes/admin";
 import adminCategoriesRouter from "../../MCA-AYIM/api/routes/admin/categories";
 import adminYearsRouter from "../../MCA-AYIM/api/routes/admin/years";
 import adminResultsRouter from "../../MCA-AYIM/api/routes/admin/results";
-import nominationsRouter from "./routes/nominations";
+import nominatingRouter from "./routes/nominating";
 import votingRouter from "./routes/voting";
 import indexRouter from "./routes";
 import guestRequestRouter from "./routes/guestRequests";
@@ -25,7 +25,7 @@ app.koa.use(mount("/mca", mcaRouter.routes()));
 app.koa.use(mount("/user", userRouter.routes()));
 app.koa.use(mount("/guestRequests", guestRequestRouter.routes()));
 
-app.koa.use(mount("/nominating", nominationsRouter.routes()));
+app.koa.use(mount("/nominating", nominatingRouter.routes()));
 app.koa.use(mount("/voting", votingRouter.routes()));
 
 app.koa.use(mount("/staff", staffRouter.routes()));

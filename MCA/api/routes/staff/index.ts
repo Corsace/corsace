@@ -2,7 +2,7 @@ import Router from "@koa/router";
 import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { Category } from "../../../../Models/MCA_AYIM/category";
-import { currentMCA } from "../../middleware";
+import { currentMCA } from "../../../../MCA-AYIM/api/middleware";
 
 const staffRouter = new Router;
 
@@ -12,10 +12,10 @@ staffRouter.use(currentMCA);
 
 // Endpoint to obtain current MCA and its info
 staffRouter.get("/", async (ctx) => {
-    const mca: MCA = ctx.state.mca;
-    const mcaInfo = mca.getInfo();
+    if (await ctx.cashed())
+        return;
 
-    ctx.body = mcaInfo;
+    ctx.body = ctx.state.mca.getInfo();
 });
 
 // Endpoint for getting information for a year

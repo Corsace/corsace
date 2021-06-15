@@ -11,13 +11,13 @@
         </a>
         <nuxt-link
             v-if="loggedInUser.staff.corsace"
-            :to="`/${mca.year}/admin/years`"
+            :to="`/${$route.params.year}/admin/years`"
         >
             ADMIN
         </nuxt-link>
         <nuxt-link
             v-if="isMCAStaff"
-            :to="`/${mca.year}/staff`"
+            :to="`/${$route.params.year}/staff`"
         >
             STAFF
         </nuxt-link>
@@ -31,14 +31,12 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Getter, State } from "vuex-class";
 
-import { MCA } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component
 export default class TheHeaderDropdown extends Vue {
 
     @State loggedInUser!: UserMCAInfo;
-    @State mca!: MCA;
     @Getter isMCAStaff!: boolean;
     
 }

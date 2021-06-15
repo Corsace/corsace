@@ -1,6 +1,7 @@
 import Router from "@koa/router";
 import { createQueryBuilder } from "typeorm";
 import { BeatmapsetRecord, MapperRecord } from "../../../Interfaces/records";
+import { Beatmap } from "../../../Models/beatmap";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 
@@ -37,6 +38,9 @@ function padLengthWithZero (lengthRecord: Record<string, any>): Record<string, a
 const recordsRouter = new Router();
 
 recordsRouter.get("/beatmapsets", async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     const year = parseInt(ctx.query.year || new Date().getFullYear());
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
@@ -44,12 +48,16 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
     const [
         playcount,
         favourites,
+        favouritesExclHybrid,
         length,
         difficulties,
-        sliders,
-        avgSliders,
+        playTime,
         circles,
+        sliders,
+        spinners,
         avgCircles,
+        avgSliders,
+        avgSpinners,
         highestSr,
         lowestSr] = await Promise.all([
         // Playcount
@@ -64,6 +72,23 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
         Beatmapset
             .queryRecord(year, modeId)
             .addSelect("beatmapset.favourites", "value")
+            .groupBy("beatmapset.ID")
+            .orderBy("value", "DESC")
+            .getRawMany(),
+        
+        // Favourites (non-hybrid)
+        Beatmapset
+            .queryRecord(year, modeId)
+            .addSelect("beatmapset.favourites", "value")
+            .andWhere((qb) => {
+                const subQuery = qb.subQuery()
+                    .from(Beatmap, "refMap")
+                    .where("beatmapsetID = beatmapset.ID")
+                    .andWhere("refMap.mode != :mode", { mode: modeId })
+                    .getQuery();
+
+                return "NOT EXISTS " + subQuery;
+            })
             .groupBy("beatmapset.ID")
             .orderBy("value", "DESC")
             .getRawMany(),
@@ -84,21 +109,14 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
             .groupBy("beatmapset.ID")
             .orderBy("value", "DESC")
             .getRawMany(),
-
-        // Total Sliders Per Set
+        
+        // Play Time
         Beatmapset
             .queryRecord(year, modeId)
-            .addSelect("SUM(beatmap.sliders)", "value")
+            .addSelect("SUM(beatmap.hitLength)", "length")
+            .addSelect("concat(floor(SUM(beatmap.hitLength)/60),':',SUM(beatmap.hitLength) - floor(SUM(beatmap.hitLength)/60)*60)", "value")
             .groupBy("beatmapset.ID")
-            .orderBy("value", "DESC")
-            .getRawMany(),
-
-        // Average Sliders per Set
-        Beatmapset
-            .queryRecord(year, modeId)
-            .addSelect("AVG(beatmap.sliders)", "value")
-            .groupBy("beatmapset.ID")
-            .orderBy("value", "DESC")
+            .orderBy("length", "DESC")
             .getRawMany(),
 
         // Total Circles Per Set
@@ -109,10 +127,42 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
             .orderBy("value", "DESC")
             .getRawMany(),
 
-        // Average Circles Per Set
+        // Total Sliders Per Set
+        Beatmapset
+            .queryRecord(year, modeId)
+            .addSelect("SUM(beatmap.sliders)", "value")
+            .groupBy("beatmapset.ID")
+            .orderBy("value", "DESC")
+            .getRawMany(),
+
+        // Total Spinners Per Set
+        Beatmapset
+            .queryRecord(year, modeId)
+            .addSelect("SUM(beatmap.spinners)", "value")
+            .groupBy("beatmapset.ID")
+            .orderBy("value", "DESC")
+            .getRawMany(),
+
+        // Average Circles Per Diff
         Beatmapset
             .queryRecord(year, modeId)
             .addSelect("AVG(beatmap.circles)", "value")
+            .groupBy("beatmapset.ID")
+            .orderBy("value", "DESC")
+            .getRawMany(),
+
+        // Average Sliders per Diff
+        Beatmapset
+            .queryRecord(year, modeId)
+            .addSelect("AVG(beatmap.sliders)", "value")
+            .groupBy("beatmapset.ID")
+            .orderBy("value", "DESC")
+            .getRawMany(),
+
+        // Average Spinners per Diff
+        Beatmapset
+            .queryRecord(year, modeId)
+            .addSelect("AVG(beatmap.spinners)", "value")
             .groupBy("beatmapset.ID")
             .orderBy("value", "DESC")
             .getRawMany(),
@@ -139,12 +189,16 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
     const records: Record<string, BeatmapsetRecord[]> = {
         playcount: mapBeatmapsetRecord(playcount),
         favourites: mapBeatmapsetRecord(favourites),
+        favouritesExclHybrid: mapBeatmapsetRecord(favouritesExclHybrid),
         length: mapBeatmapsetRecord(length.map(l => padLengthWithZero(l))),
         difficulties: mapBeatmapsetRecord(difficulties),
-        sliders: mapBeatmapsetRecord(sliders),
-        avgSlidersPerSet: mapBeatmapsetRecord(avgSliders).map(o => valueToFixed(o, 0)),
+        playTime: mapBeatmapsetRecord(playTime.map(p => padLengthWithZero(p))),
         circles: mapBeatmapsetRecord(circles),
-        avgCirclesPerSet: mapBeatmapsetRecord(avgCircles).map(o => valueToFixed(o, 0)),
+        sliders: mapBeatmapsetRecord(sliders),
+        spinners: mapBeatmapsetRecord(spinners),
+        avgCirclesPerDiff: mapBeatmapsetRecord(avgCircles).map(o => valueToFixed(o, 0)),
+        avgSlidersPerDiff: mapBeatmapsetRecord(avgSliders).map(o => valueToFixed(o, 0)),
+        avgSpinnersPerDiff: mapBeatmapsetRecord(avgSpinners).map(o => valueToFixed(o, 0)),
         highestSr: mapBeatmapsetRecord(highestSr).map(o => valueToFixed(o)),
         lowestSr: mapBeatmapsetRecord(lowestSr).map(o => valueToFixed(o)),
     };
@@ -153,17 +207,22 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
 });
 
 recordsRouter.get("/mappers", async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     const year = parseInt(ctx.query.year || new Date().getFullYear());
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
 
-    const [mostRanked,
+    const [
+        mostRanked,
+        mostDiffs,
         mostFavs,
-        leastFavs,
+        mostFavsExclHybrid,
         mostPlayed,
-        leastPlayed,
         highestAvgSr,
-        lowestAvgSr] = await Promise.all([
+        lowestAvgSr
+    ] = await Promise.all([
         // Most Ranked
         createQueryBuilder()
             .from(sub => {
@@ -186,7 +245,30 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "DESC")
             .limit(3)
-            .cache(true)
+            .getRawMany(),
+        
+        // Most Total Difficulties Ranked
+        createQueryBuilder()
+            .from(sub => {
+                return sub
+                    .from("beatmapset", "beatmapset")
+                    .innerJoin("beatmapset.creator", "creator")
+                    .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
+                    .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+                    .select("creator.osuUsername", "username")
+                    .addSelect("creator.osuUserid", "osuId")
+                    .addSelect("beatmap.ID", "beatmapId")
+                    .groupBy("creator.osuUsername")
+                    .addGroupBy("creator.osuUserid")
+                    .addGroupBy("beatmapId");
+            }, "sub")
+            .select("sub.username", "username")
+            .addSelect("sub.osuId", "osuId")
+            .addSelect("COUNT(sub.beatmapId)", "value")
+            .groupBy("sub.username")
+            .addGroupBy("sub.osuId")
+            .orderBy("value", "DESC")
+            .limit(3)
             .getRawMany(),
 
         // Most Favourited
@@ -213,10 +295,9 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "DESC")
             .limit(3)
-            .cache(true)
             .getRawMany(),
 
-        // Least Favourited
+        // Most Favourited (excl. Hybrids)
         createQueryBuilder()
             .from(sub => {
                 return sub
@@ -224,6 +305,15 @@ recordsRouter.get("/mappers", async (ctx) => {
                     .innerJoin("beatmapset.creator", "creator")
                     .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
                     .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+                    .andWhere((qb) => {
+                        const subQuery = qb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .where("refMap.beatmapsetID = beatmapset.ID")
+                            .andWhere("refMap.mode != :mode", { mode: modeId })
+                            .getQuery();
+        
+                        return "NOT EXISTS " + subQuery;
+                    })
                     .select("creator.osuUsername", "username")
                     .addSelect("creator.osuUserid", "osuId")
                     .addSelect("beatmapset.ID", "beatmapsetId")
@@ -238,9 +328,8 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addSelect("SUM(sub.favourites)", "value")
             .groupBy("sub.username")
             .addGroupBy("sub.osuId")
-            .orderBy("value", "ASC")
+            .orderBy("value", "DESC")
             .limit(3)
-            .cache(true)
             .getRawMany(),
 
         // Most Played
@@ -267,34 +356,6 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "DESC")
             .limit(3)
-            .cache(true)
-            .getRawMany(),
-
-        // Least Played
-        createQueryBuilder()
-            .from(sub => {
-                return sub
-                    .from("beatmapset", "beatmapset")
-                    .innerJoin("beatmapset.creator", "creator")
-                    .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
-                    .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
-                    .select("creator.osuUsername", "username")
-                    .addSelect("creator.osuUserid", "osuId")
-                    .addSelect("beatmapset.ID", "beatmapsetId")
-                    .addSelect("beatmap.playCount", "playCount")
-                    .groupBy("creator.osuUsername")
-                    .addGroupBy("creator.osuUserid")
-                    .addGroupBy("beatmapset.ID")
-                    .addGroupBy("beatmap.playCount");
-            }, "sub")
-            .select("sub.username", "username")
-            .addSelect("sub.osuId", "osuId")
-            .addSelect("SUM(sub.playCount)", "value")
-            .groupBy("sub.username")
-            .addGroupBy("sub.osuId")
-            .orderBy("value", "ASC")
-            .limit(3)
-            .cache(true)
             .getRawMany(),
 
         // Highest Avg SR
@@ -321,7 +382,6 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "DESC")
             .limit(3)
-            .cache(true)
             .getRawMany(),
 
         // Lowest Avg SR
@@ -348,17 +408,16 @@ recordsRouter.get("/mappers", async (ctx) => {
             .addGroupBy("sub.osuId")
             .orderBy("value", "ASC")
             .limit(3)
-            .cache(true)
             .getRawMany(),
     ]);
 
     const records: Record<string, MapperRecord[]> = {
         mostRanked,
-        mostFavs,
+        mostDiffs,
         mostPlayed,
+        mostFavs,
+        mostFavsExclHybrid,
         highestAvgSr: highestAvgSr.map(o => valueToFixed(o)),
-        leastFavs,
-        leastPlayed,
         lowestAvgSr: lowestAvgSr.map(o => valueToFixed(o)),
     };
 

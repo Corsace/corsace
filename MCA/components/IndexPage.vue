@@ -1,6 +1,9 @@
 <template>
     <div class="index">
-        <div class="general">
+        <div 
+            v-if="mca" 
+            class="general"
+        >
             <div class="ranked-sets">
                 <small>{{ $t('mca.main.rankedSets') }}</small>
                 <div class="ranked-sets__divider" />
@@ -10,55 +13,76 @@
                 </div>
             </div>
 
-            <nuxt-link
-                v-if="phase && isEligibleFor(selectedMode)"
-                class="vote-now"
-                :class="[
-                    `vote-now--${selectedMode}`,
-                ]"
-                :to="`/${phase.year}/${phase.phase}`"
-            >
-                {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
-            </nuxt-link>
             <a
-                v-else-if="phase && loggedInUser"
-                class="vote-now vote-now--inactive"
-                :class="[
-                    `vote-now--${selectedMode}`,
-                ]"
-                href="#"
-                @click.prevent="toggleGuestDifficultyModal"
+                v-if="phase && phase.phase !== 'preparation' && isEligibleFor(selectedMode)"
+                class="vote-now"
+                :class="`vote-now--${selectedMode}`"
+                :href="`/${phase.year}/${phase.phase}`"
             >
                 {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
             </a>
+            <div
+                v-else-if="phase && phase.phase !== 'preparation' && !isEligibleFor(selectedMode)"
+                class="vote-now vote-now--inactive"
+                :class="`vote-now--${selectedMode}`"
+                @click="toggleGuestDifficultyModal"
+            >
+                {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
+            </div>
             <div v-else />
         </div>
 
-        <div class="categories">
+        <div 
+            v-if="mca" 
+            class="categories"
+        >
             <collapsible
-                class="categories__list"
                 :title="$t('mca.main.categories.map')"
                 :list="beatmapCategories"
-                :active="true"
-                :categoryName="true"
-                :clickable="false"
+                active
+                category-name
+                scroll
             />
             <collapsible
-                class="categories__list"
                 :title="$t('mca.main.categories.user')"
                 :list="userCategories"
-                :active="true"
-                :categoryName="true"
-                :clickable="false"
+                active
+                category-name
+                scroll
             />
         </div>
             
-        <div class="organizers">
+        <div 
+            v-if="mca" 
+            class="organizers"
+        >
             <div class="organizers__title">
                 <small>{{ $t('mca.main.organized') }}</small>
             </div>
             <div class="organizers__content">
                 {{ organizers }}
+            </div>
+        </div>
+        <div 
+            v-else
+            class="noMCA"
+        >
+            There is no MCA for {{ $route.params.year }} currently! Check back later!
+            <div
+                v-if="allMCA.length >= 1" 
+                class="otherMCA"
+            >
+                Other MCAs:
+                <div>
+                    <nuxt-link 
+                        v-for="mca in allMCA"
+                        :key="mca.name"
+                        :to="`/${mca.name}`"
+                        :class="mca.phase"
+                    >
+                        MCA {{ mca.name }} ({{ mca.phase }}) 
+                    </nuxt-link>
+                </div>
             </div>
         </div>
     </div>
@@ -70,7 +94,7 @@ import { Getter, Mutation, State } from "vuex-class";
 
 import Collapsible from "../../MCA-AYIM/components/Collapsible.vue";
 
-import { MCA, Phase } from "../../Interfaces/mca";
+import { MCA, MCAInfo, Phase } from "../../Interfaces/mca";
 import { CategoryInfo } from "../../Interfaces/category";
 import { UserMCAInfo } from "../../Interfaces/user";
 
@@ -96,6 +120,7 @@ interface FrontInfo {
 export default class IndexContent extends Vue {
 
     @State mca!: MCA;
+    @State allMCA!: MCAInfo[];
     @State selectedMode!: string;
     @State loggedInUser!: UserMCAInfo;
     @Getter phase!: Phase | null;
@@ -148,13 +173,15 @@ export default class IndexContent extends Vue {
     }
 
     async mounted () {
-        const res = (await this.$axios.get(`/api/front?year=${this.mca.year}`)).data;
-        if (res.error) {
-            alert(res.error);
-            return;
-        }
+        if (this.mca) {
+            const res = (await this.$axios.get(`/api/front?year=${this.mca.year}`)).data;
+            if (res.error) {
+                alert(res.error);
+                return;
+            }
 
-        this.info = res.frontData;
+            this.info = res.frontData;
+        }
     }
     
 }
@@ -166,16 +193,19 @@ export default class IndexContent extends Vue {
 @import '@s-sass/_partials';
 
 .index {
-    padding-right: 25px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .general {
     @extend %spaced-container;
-    margin: 0 -5px;
+    margin: 0;
 }
 
 .categories {
     @extend %spaced-container;
+    flex: 1;
 
     &__category-title {
         border-bottom: 2px solid #fff;
@@ -187,10 +217,6 @@ export default class IndexContent extends Vue {
     &__category-award {
         margin-bottom: 8px;
     }
-}
-
-.categories__list {
-    min-height: 320px;
 }
 
 .ranked-sets {
@@ -250,8 +276,7 @@ export default class IndexContent extends Vue {
     @include mode-vote-color;
 
     &--inactive {
-        opacity: 0.3;
-        filter: blur(7px);
+        opacity: 0.5;
     }
     
     span {
@@ -273,4 +298,45 @@ export default class IndexContent extends Vue {
     }
 }
 
+.noMCA {
+    @extend %flex-box;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+
+    font-size: 2rem;
+}
+
+.otherMCA {
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.nominating {
+    color: $yellow;
+}
+
+.voting {
+    color: $yellow;
+}
+
+.preparation {
+    color: $red;
+}
+
+.results {
+    color: $green;
+}
 </style>

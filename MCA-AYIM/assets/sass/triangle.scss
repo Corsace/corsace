@@ -13,13 +13,20 @@
 .triangle {
     width: 0;
     height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
     border-top: 10px solid;
     border-bottom: none;
     @include transition();
 
+    &-button {
+        margin-left: 10px;
+    }
+
     &-active {
+        border-top: none;
+        border-bottom: 10px solid;
+
         @include mode-triangle;
     }
 }

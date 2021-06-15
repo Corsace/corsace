@@ -1,5 +1,5 @@
 <template>
-    <div class="mode-wrapper">
+    <div class="main-container">
         <div class="mode-title-container">
             <slot name="title" />
             <div class="mode-title">
@@ -8,28 +8,36 @@
                 <span v-if="title">| {{ title }}</span>
             </div>
         </div>
+        
+        <div
+            class="mode-wrapper"
+            :class="[
+                'mode-wrapper--' + selectedMode, 
+                tablet ? 'mode-wrapper--tablet' : 'mode-wrapper--laptop',
+                { 'mode-wrapper--stretch': stretch },
+                'mode-wrapper--skip-' + ignoreModes.length,
+            ]"
+        >
+            <div class="mode-content">
+                <slot />
+            </div>
 
-        <div
-            class="mode-container"
-            :class="`mode-container--${selectedMode}`"
-        >
-            <slot />
-        </div>
-        <div
-            class="mode-selection" 
-            :class="`mode-selection--${selectedMode}`"
-        >
             <div
-                v-for="mode in modes"
-                :key="mode"
-                class="mode-selection__mode"
-                :class="[
-                    `mode-selection__mode--${mode}`,
-                    (selectedMode === mode) ? `mode-selection__mode--${mode}-selected` : '',
-                    (!enableModeEligibility || isEligibleFor(mode)) ? '' : 'mode-selection__mode--inactive',
-                ]"
-                @click="setMode(mode)"
-            />
+                class="mode-selection"
+                :class="'mode-selection--' + selectedMode"
+            >
+                <div
+                    v-for="mode in availableModes"
+                    :key="mode"
+                    class="mode-selection__mode"
+                    :class="[
+                        `mode-selection__mode--${mode}`,
+                        selectedMode === mode ? `mode-selection__mode--${mode}-selected` : '',
+                        { 'mode-selection__mode--inactive': enableModeEligibility && !isEligibleFor(mode) },
+                    ]"
+                    @click="setMode(mode)"
+                />
+            </div>
         </div>
     </div>
 </template>
@@ -43,14 +51,21 @@ import { Phase } from "../../Interfaces/mca";
 @Component
 export default class ModeSwitcher extends Vue {
 
+    @Prop(Boolean) readonly tablet!: boolean;
+    @Prop(Boolean) readonly stretch!: boolean;
     @Prop(Boolean) readonly hidePhase!: boolean;
-    @Prop({ type: String, default: "" }) readonly title!: string;
     @Prop(Boolean) readonly enableModeEligibility!: boolean;
+    @Prop({ type: String, default: "" }) readonly title!: string;
+    @Prop({ type: Array, default: () => [] }) readonly ignoreModes!: string[];
 
     @State selectedMode!: string;
     @State modes!: string[];
     @Getter phase!: Phase;
     @Getter isEligibleFor!: (mode: string) => boolean;
+
+    get availableModes () {
+        return this.modes.filter(m => !this.ignoreModes.includes(m));
+    }
 
     setMode (mode): void {
         if (!this.enableModeEligibility || this.isEligibleFor(mode)) {
@@ -68,175 +83,168 @@ export default class ModeSwitcher extends Vue {
 @import '@s-sass/_mixins';
 
 $mode-title-padding-y: 10px;
-$mode-title-height: 40px;
-
-$mode-selection-bottom-space: 31px;
 $mode-selection-padding: 25px;
+$base-bottom-padding: 34px;
+$border-radius: 25px;
 
 $icon-size: 45px;
 $icon-margin: 15px;
-$border-margin: 5px;
 
-.mode-wrapper {
-    position: relative;
-
-    height: 100%;
-    width: calc(100% - 30px);
-
+.main-container {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-
-    margin-left: 30px;
-}
-
-.mode-title-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    flex: 1;
+    height: 100%;
     width: 100%;
-
-    margin-bottom: $mode-title-padding-y;
-    @include breakpoint(mobile) {
-        margin-bottom: $mode-title-padding-y + 18px;
+    padding-bottom: 10px;
+    padding-left: 0;
+    
+    @include breakpoint(laptop) {
+        padding-left: 35px;
     }
 }
 
 .mode-title {
-    font-family: 'Lexend Peta';
-    font-size: 2rem;
-    text-shadow: 0 0 4px white;
-    height: 40px;
-
-    white-space: nowrap;
-
-    margin: #{$mode-title-padding-y + 25px} 25px 0 auto;
-    @include breakpoint(mobile) {
-        font-size: $font-base;
-        height: 0;
-        margin: #{$mode-title-padding-y} 25px 0 auto;
+    &-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: flex-end;
+        width: 100%;
+        padding-left: $mode-selection-padding;
+        padding-right: $mode-selection-padding;
+        padding-bottom: $mode-title-padding-y;
+        gap: 10px;
     }
+
+    font-family: $font-display;
+    font-size: $font-base;
+    text-shadow: 0 0 4px white;
+    text-align: center;
+    width: 100%;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    @include breakpoint(tablet) {
+        margin-left: auto;
+        text-align: right;
+        width: min-content;
+        font-size: 2rem;
+    }
+
     @include breakpoint(laptop) {
         font-size: 2.25rem;
-        margin: #{$mode-title-padding-y} 25px 0 auto;
     }
 }
 
-.mode-container {
-    width: 100%;
-    height: 100%;
-    padding: 25px 0 0 25px;
-    overflow-y: hidden;
-}
+$max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // Consider mode selection space 85px~
 
-.mode-selection {
+.mode-wrapper {
     display: flex;
-    align-items: center;
-    padding: 10px $mode-selection-padding;
-}
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    --skip-modes: 0;
 
-
-@mixin mode-container {
-    @each $mode in $modes {
-        &--#{$mode} {
-            border-top: 3px solid var(--#{$mode});
-            &::before {
-                border-left: 3px solid var(--#{$mode});
-            }
-        }
-    }
-}
-
-.mode-container {
-    @include mode-container;
-    @include transition;
-
-    border-top-left-radius: 25px;
-    &::before {
-        content: "";
-        display: block;
-        position: absolute;
-        left: 0px;
-        top: $mode-title-height + $mode-title-padding-y * 2 + 25px;
-        width: 100%;
-        height: calc(100% - #{$mode-title-height} - #{$mode-title-padding-y} * 2 - 25px - #{$mode-selection-bottom-space});
-        border-top-left-radius: 25px;
-        border-bottom-left-radius: 25px;
-        z-index: -1;
-
-        @include breakpoint(mobile) {
-            top: $mode-title-height;
-            height: calc(100% - #{$mode-title-height} - #{$mode-selection-bottom-space});
-        }
-
-        @include breakpoint(laptop) {
-            top: $mode-title-height + $mode-title-padding-y * 2;
-            height: calc(100% - #{$mode-title-height} - #{$mode-title-padding-y} * 2 - #{$mode-selection-bottom-space});
+    @for $i from 1 through 5 {
+        &--skip-#{$i} {
+            --skip-modes: #{$i};
         }
     }
 
-    &__general {
-        flex-wrap: wrap;
-
-        @media (min-width: 1200px) {
-            flex-wrap: nowrap;
+    @include breakpoint(tablet) {
+        &--tablet {
+            max-height: $max-height-container;
         }
     }
 
-    &__stats {
-        margin-bottom: 20px;
-
-        @media (min-width: 1200px) {
-            flex-wrap: nowrap;
+    @include breakpoint(laptop) {
+        &--laptop {
+            max-height: $max-height-container;
         }
     }
-}
 
-@mixin mode-vote-color {
-    @each $mode in $modes {
-        &--#{$mode} {
-            color: var(--#{$mode});
-            background: linear-gradient(135deg,#222 0%, #222 20%, white 20%, white 22%, #222 22%, #222 24%, white 24%, white 26%, var(--#{$mode}) 26%, var(--#{$mode}) 28%, white 28%);
-        }
-    }
-}
-
-@mixin mode-selection-border {
-    @each $mode in $modes {
-        $i: index($modes, $mode);
-
-        &--#{$mode} {
-            &::before {
-                border-bottom: 3px solid var(--#{$mode});
-                // $i + border margin
-                width: calc(100% - #{$mode-selection-padding} - #{$icon-size} * #{$i} + 28px - #{$icon-margin} * #{$i - 1});
-            }
+    @include breakpoint(tablet) {
+        border-top: {
+            width: 3px;
+            style: solid;
         }
 
-        &__mode {
+        border-left: {
+            width: 3px;
+            style: solid;
+        }
+
+        border-radius: #{$border-radius} 0 0 #{$border-radius};
+
+        padding: 25px 25px $base-bottom-padding 25px;
+        position: relative;
+        
+        &--stretch {
+            padding-right: 0;
+        }
+
+        @each $mode in $modes {
+            $i: index($modes, $mode);
+
             &--#{$mode} {
-                background-image: url("../../Assets/img/ayim-mca/#{$mode}.png");
-
-                &::before {
-                    border-bottom: 3px solid var(--#{$mode});
-                }
+                border-color: var(--#{$mode});
+                @include transition;
             }
 
-            &--#{$mode}-selected {
-                background-color: var(--#{$mode});
+            &--#{$mode}::before {
+                content: '';
+                height: 100%;
+                width: calc(100% - #{$mode-selection-padding} - #{$icon-size} * (#{$i} - var(--skip-modes)) + 28px - #{$icon-margin} * (#{$i - 1} - var(--skip-modes)));
+                position: absolute;
+                bottom: 0;
+                left: -3px;
+                border-bottom: 3px solid var(--#{$mode});
+                border-bottom-left-radius: $border-radius;
+                z-index: -1;
+
+                @include transition;
             }
         }
     }
 }
 
 .mode-selection {
-    @include mode-selection-border;
     @include transition;
+    
+    display: flex;
+    justify-content: center;
+    order: 1;
+    padding-bottom: 10px;
+    padding-right: $mode-selection-padding;
+
+    @each $mode in $modes {
+        &--#{$mode} {
+            border-bottom: 3px solid var(--#{$mode});
+            @include transition;
+            
+            @include breakpoint(tablet) {
+                border-bottom: none;
+            }
+        }
+    }
+    
+    @include breakpoint(tablet) {
+        order: 2;
+        position: absolute;
+        right: 0;
+        bottom: calc(-#{$base-bottom-padding} / 2);
+        justify-content: flex-end;
+        width: 100%;
+        padding-bottom: 0;
+    }
 
     &__mode {
         cursor: pointer;
-        width: $icon-size;
-        height: $icon-size;
+        width: $icon-size / 1.2;
+        height: $icon-size / 1.2;
         background-repeat: no-repeat;
         background-size: cover;
         border-radius: 100%;
@@ -245,21 +253,38 @@ $border-margin: 5px;
 
         @include transition;
 
+        @each $mode in $modes {
+            &--#{$mode} {
+                background-image: url("../../Assets/img/ayim-mca/#{$mode}.png");
+            }
+
+            &--#{$mode}-selected {
+                background-color: var(--#{$mode});
+            }
+        }
+
         &--inactive {
             opacity: 0.3;
         }
-    }
 
-    &::before {
-        content: "";
-        position: absolute;
-        height: 100%;
-        z-index: -1;
-        left: 0;
-        bottom: $mode-selection-bottom-space;
-        border-bottom-left-radius: 25px;
-        @include transition;
+        
+        @include breakpoint(tablet) {
+            width: $icon-size;
+            height: $icon-size;
+        }
     }
-
 }
+
+.mode-content {
+    @include transition;
+
+    flex: 1;
+    height: 100%;
+    order: 2;
+
+    @include breakpoint(tablet) {
+        order: 1;
+    }
+}
+
 </style>

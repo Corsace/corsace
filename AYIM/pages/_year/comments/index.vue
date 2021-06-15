@@ -11,11 +11,13 @@
                 >
                     <toggle-button
                         :options="userOptions"
+                        :arrow="orderOption"
                         @change="changeOption"
                     />
                     
                     <toggle-button
                         :options="orderOptions"
+                        :arrow="orderOption"
                         @change="changeOrder"
                     />
                 </search-bar>
@@ -27,51 +29,65 @@
                 {{ $t('ayim.comments.info') }}
             </div>
         </template>
-
-        <div
-            v-for="mapper in mappers"
-            :key="mapper.ID"
-            class="ayim-user"
-        >
-            <img
-                :src="`https://a.ppy.sh/${mapper.osu.userID}`"
-                class="ayim-user__avatar"
+        
+        <list-transition class="ayim-layout">
+            <div
+                v-for="mapper in mappers"
+                :key="mapper.ID"
+                class="ayim-user"
             >
-            
-            <a
-                :href="`https://osu.ppy.sh/users/${mapper.osu.userID}`" 
-                class="ayim-user__username ayim-text ayim-text--xl"
-            >
-                {{ mapper.osu.username.length > 9 ? mapper.osu.username.slice(0, 9) + "..." : mapper.osu.username }}
-            </a>
-            
-            <div class="ayim-user__links">
-                <nuxt-link
-                    :to="`/${mca.year}/comments/${mapper.ID}`"
-                    class="button button--small"
+                <img
+                    :src="`https://a.ppy.sh/${mapper.osu.userID}`"
+                    class="ayim-user__avatar"
                 >
-                    {{ $t('ayim.comments.viewSubmit') }}
-                </nuxt-link>
+            
+                <a
+                    :href="`https://osu.ppy.sh/users/${mapper.osu.userID}`" 
+                    class="ayim-user__username ayim-text ayim-text--xl"
+                >
+                    {{ mapper.osu.username.length > 9 ? mapper.osu.username.slice(0, 9) + "..." : mapper.osu.username }}
+                </a>
+            
+                <div class="ayim-user__links">
+                    <nuxt-link
+                        :to="`/${mca.year}/comments/${mapper.ID}`"
+                        class="button button--small"
+                    >
+                        {{ $t('ayim.comments.viewSubmit') }}
+                    </nuxt-link>
+                </div>
             </div>
+        </list-transition>
+        <div
+            v-if="loading"
+            class="ayim-comments__loading"
+        >
+            Loading...
         </div>
+        <comments-modal />
     </display-layout>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
+import { State } from "vuex-class";
 
+import CommentsModal from "../../../components/CommentsModal.vue";
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
-import { State } from "vuex-class";
+import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
+
 import { User } from "../../../../Interfaces/user";
 import { MCA } from "../../../../Interfaces/mca";
 
 @Component({
     components: {
+        CommentsModal,
         DisplayLayout,
         SearchBar,
         ToggleButton,
+        ListTransition,
     },
     head () {
         return {
@@ -84,11 +100,12 @@ export default class Comments extends Vue {
     @State mca!: MCA;
     @State selectedMode!: string;
 
+    loading = false;
     text = "";
-    userOption = "id";
+    userOption = "alph";
     orderOption = "asc";
     mappers: User[] = [];
-    userOptions = ["id", "alph"];
+    userOptions = ["alph", "id"];
     orderOptions = ["asc", "desc"];
     
     get showInfo (): boolean {
@@ -120,6 +137,7 @@ export default class Comments extends Vue {
     }
 
     async getMappers (replace = true) {
+        this.loading = true;
         const { data } = await this.$axios.get(`/api/mappers/search?skip=${replace ? 0 : this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&option=${this.userOption}&order=${this.orderOption.toUpperCase()}&text=${this.text}`);
 
         if (data.error)
@@ -128,6 +146,8 @@ export default class Comments extends Vue {
             this.mappers = data;
         else
             this.mappers.push(...data);
+
+        this.loading = false;
     }
 
 }
@@ -162,8 +182,20 @@ export default class Comments extends Vue {
     }
 }
 
-.ayim-comments__filter {
-    display: flex;
-    width: 100%;
+.ayim-comments {
+    
+    &__loading {
+        @extend %flex-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        width: 100%;
+    }
+
+    &__filter {
+        display: flex;
+        width: 100%;
+    }
 }
 </style>
