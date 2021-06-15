@@ -89,7 +89,13 @@
             "remove": "Eliminar",
             "create": "Crear",
             "login": "Iniciar sesión para comentar",
-            "visible": "(todavia no visible)"
+            "visible": "(todavia no visible)",
+            "notice": "¡Saludos! Esta podria ser la primera vez que usted navega a una de las paginas de comentarios. <br> Por favor note que todos los comentarios son crowdfunded. <br> Todos, incluyendolo, pueden escribir comentarios para cualquiera hasta que termine el proceso de MCA para este año. <br> ¡Escriba sobre lo que hicieron o sus logros en [YEAR] para mostrar apreciación a los mappers participando en la comunidad!"
+        },
+        "statistics": {
+            "numberOf": "Número de",
+            "numberOfMapsWith": "Número de mapas con",
+            "average": "Promedio"
         }
     },
     "mca": {
@@ -105,7 +111,8 @@
             "statisticsLabel": "ESTADÍSTICAS",
             "stage": {
                 "voting": "etapa de votación",
-                "nominating": "etapa de nominación"
+                "nominating": "etapa de nominación",
+                "undefined": ""
             },
             "rankedSets": "SETS CLASIFICADOS",
             "nominateNow": "nomina ahora !",
@@ -119,7 +126,8 @@
                 "map": "categoría de mapas",
                 "user": "categoría de usuarios"
             },
-            "organized": "ORGANIZADO POR"
+            "organized": "ORGANIZADO POR",
+            "preparation": "preparación"
         },
         "categories": {
             "grandAward": {
@@ -144,7 +152,7 @@
             },
             "highBPM": {
                 "name": "BPM Alto",
-                "description": "El mejor set con streams atípicos o alto estrés de singletap."
+                "description": "El mejor set con streams atípicamente rapidos o con alto estrés de singletap."
             },
             "smallCircles": {
                 "name": "Círculos Pequeños",
@@ -237,6 +245,10 @@
             "narrative": {
                 "name": "Narrativa",
                 "description": "El mejor Storyboard en contar una gran historia."
+            },
+            "featuredArtist": {
+                "name": "Featured Artist",
+                "description": "El mejor set para una canción de un Featured Artist."
             }
         },
         "nom_vote": {
