@@ -10,7 +10,7 @@ import { Vote } from "./MCA_AYIM/vote";
 import { Beatmapset } from "./beatmapset";
 import { config } from "node-config-ts";
 import { DiscordAPIError, GuildMember } from "discord.js";
-import { discordGuild } from "../Server/discord";
+import { discordGuild, getMember } from "../Server/discord";
 import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
@@ -224,14 +224,7 @@ export class User extends BaseEntity {
     
     public getInfo = async function(this: User, member?: GuildMember | undefined): Promise<UserInfo> {
         if (this.discord?.userID && !member)
-            try {
-                member = await (await discordGuild()).members.fetch(this.discord.userID);
-            } catch (e) {
-                if (e.code === 10007 || e.code === 404)
-                    member = undefined;
-                else
-                    throw e;
-            }
+            member = await getMember(this.discord.userID);
         const info: UserInfo = {
             corsaceID: this.ID,
             discord: {
@@ -260,14 +253,7 @@ export class User extends BaseEntity {
     public getMCAInfo = async function(this: User): Promise<UserMCAInfo> {
         let member: GuildMember | undefined;
         if (this.discord?.userID)
-            try {
-                member = await (await discordGuild()).members.fetch(this.discord.userID);
-            } catch (e) {
-                if (e.code === 10007 || e.code === 404)
-                    member = undefined;
-                else
-                    throw e;
-            }
+            member = await getMember(this.discord.userID);
         const mcaInfo: UserMCAInfo = await this.getInfo(member) as UserMCAInfo;
         mcaInfo.guestRequests = this.guestRequests,
         mcaInfo.eligibility = this.mcaEligibility,
