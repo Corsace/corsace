@@ -152,7 +152,7 @@
             },
             "highBPM": {
                 "name": "High BPM",
-                "description": "The best set with atypical spaced streams or high singletap strain."
+                "description": "The best set with atypically fast streaming or high singletap strain."
             },
             "smallCircles": {
                 "name": "Small Circles",
