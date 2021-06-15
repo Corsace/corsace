@@ -94,8 +94,8 @@
             "remove": "Hapus",
             "create": "Tulis",
             "login": "Harap masuk terlebih dahulu untuk dapat berkomentar!",
-            "visible": "(belum tersedia)"
-            "notice": "Hello! This may be the first time you have navigated to (one of) the comments page! <br> Please note that comments are crowdfunded! <br> Anyone (including you) can write comments for anyone until this year's MCA is done! <br> Write about what they did or their achievements in [YEAR] to show appreciation to the mappers participating in the community!"            
+            "visible": "(belum tersedia)",
+            “Notice”: "Notice”: “Halo! Mungkin kamu merasa bingung dengan sistem pemberian komentar yang kami berlakukan pada AYIM kali ini. <br> Tahun ini, kami menerima komentar secara terbuka. Dengan kata lain, siapapun kini dapat memberikan komentar apapun kepada siapa saja yang mereka kehendaki, termasuk dirimu! <br> Silakan gunakan laman ini untuk mengutarakan apresiasimu akan hasil jerih payah para mapper di tahun [YEAR] sebagaimana yang kamu kehendaki."        
         }
     },
     "mca": {
