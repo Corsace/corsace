@@ -221,9 +221,8 @@ export class User extends BaseEntity {
         };
     }
     
-    public getInfo = async function(this: User): Promise<UserInfo> {
-        let member: GuildMember | undefined;
-        if (this.discord?.userID)
+    public getInfo = async function(this: User, member?: GuildMember | undefined): Promise<UserInfo> {
+        if (this.discord?.userID && !member)
             member = await (await discordGuild()).members.fetch(this.discord.userID);
         const info: UserInfo = {
             corsaceID: this.ID,
@@ -254,7 +253,7 @@ export class User extends BaseEntity {
         let member: GuildMember | undefined;
         if (this.discord?.userID)
             member = await (await discordGuild()).members.fetch(this.discord.userID);
-        const mcaInfo: UserMCAInfo = await this.getInfo() as UserMCAInfo;
+        const mcaInfo: UserMCAInfo = await this.getInfo(member) as UserMCAInfo;
         mcaInfo.guestRequests = this.guestRequests,
         mcaInfo.eligibility = this.mcaEligibility,
         mcaInfo.mcaStaff = {
