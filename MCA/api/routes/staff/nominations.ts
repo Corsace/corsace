@@ -22,6 +22,7 @@ staffNominationsRouter.get("/", async (ctx) => {
         .innerJoinAndSelect("nomination.category", "category")
         .leftJoinAndSelect("nomination.user", "user")
         .leftJoinAndSelect("nomination.beatmapset", "beatmapset")
+        .leftJoinAndSelect("beatmapset.creator", "creator")
         .leftJoinAndSelect("nomination.reviewer", "reviewer")
         .where("category.requiresVetting = true")
         .andWhere("category.ID = :id", { id: categoryID })

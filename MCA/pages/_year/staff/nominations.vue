@@ -203,7 +203,7 @@ export default class Nominations extends Vue {
 
     getNomineeName (nomination: Nomination) {
         if (nomination.beatmapset) {
-            return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title}`;
+            return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title} by ${nomination.beatmapset.creator!.osu.username}`;
         }
 
         return `${nomination.user?.osu.username}`;
