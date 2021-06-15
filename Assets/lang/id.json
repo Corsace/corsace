@@ -39,7 +39,7 @@
             "name": "MAPSET",
             "playcount": "TOTAL PLAYCOUNT TERBANYAK",
             "favourites": "TOTAL FAVORIT TERBANYAK",
-            "favouritesExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID)",
+            "favouritesExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID) TERBANYAK",
             "length": "DURASI LAGU TERPANJANG",
             "difficulties": "TINGKAT KESULITAN",
             "playTime": "TOTAL DURASI SELURUH TINGKAT KESULITAN",
@@ -64,7 +64,7 @@
             "name": "MAPPER",
             "mostRanked": "TOTAL BEATMAP RANKED TERBANYAK",
             "mostFavs": "TOTAL FAVORIT TERBANYAK",
-            "mostFavsExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID)",
+            "mostFavsExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID) TERBANYAK",
             "mostPlayed": "TOTAL PLAYCOUNT TERBANYAK",
             "mostDiffs": "TOTAL TINGKAT KESULITAN TERBANYAK",
             "totalMappers": "TOTAL MAPPER",
@@ -95,21 +95,25 @@
             "create": "Tulis",
             "login": "Harap masuk terlebih dahulu untuk dapat berkomentar!",
             "visible": "(belum tersedia)"
+            "notice": "Hello! This may be the first time you have navigated to (one of) the comments page! <br> Please note that comments are crowdfunded! <br> Anyone (including you) can write comments for anyone until this year's MCA is done! <br> Write about what they did or their achievements in [YEAR] to show appreciation to the mappers participating in the community!"            
         }
     },
     "mca": {
         "main": {
             "voting": "voting",
             "nominating": "nominasi",
+            "preparation": "persiapan",            
             "results": "hasil",
             "mapsetsLabel": "MAPSET",
+            "undefined": "",    
             "mappersLabel": "MAPPER",
             "commentsLabel": "KOMENTAR",
             "recordsLabel": "REKOR",
             "statisticsLabel": "STATISTIK",
             "stage": {
                 "voting": "tahapan voting",
-                "nominating": "tahapan nominasi"
+                "nominating": "tahapan nominasi",
+                "undefined": ""  
             },
             "rankedSets": "TOTAL BEATMAP RANKED",
             "nominateNow": "berikan nominasimu sekarang !",
@@ -188,7 +192,7 @@
             },
             "spread": {
                 "name": "Spread",
-                "description": "Mapset dengan persebaran tingkat kesulitan terbaik."
+                "description": "Mapset dengan persebaran tingkat kesulitan (diffficulty spread) terbaik."
             },
             "experimental": {
                 "name": "Experimental",
@@ -214,6 +218,10 @@
                 "name": "Slider Velocity",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada manipulasi slider velocity."
             },
+            "featuredArtist": {
+                "name": "Featured Artist",
+                "description": "Mapset terbaik yang mengusung lagu Featured Artist."
+            },                
             "longNotes": {
                 "name": "Long Notes",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan LN."
@@ -259,6 +267,7 @@
                 "alph": "ALPH",
                 "asc": "ASC",
                 "desc": "DESC"
+                "voteOrder": "URUTAN VOTE"                
             },
             "hosted": "DI-HOST OLEH",
             "userID": "USER ID"
