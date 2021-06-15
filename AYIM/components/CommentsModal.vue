@@ -48,8 +48,18 @@ export default class CommentsModal extends Vue {
 </script>
 
 <style lang="scss">
+@import '@s-sass/_mixins';
+
 .comments-modal {
-    font-size: 1.5rem;
-    line-height: 5rem;
+    font-size: 1rem;
+    line-height: 2rem;
+    @include breakpoint(tablet) {
+        font-size: 1.25rem;
+        line-height: 3.5rem;
+    }
+    @include breakpoint(desktop) { 
+        font-size: 1.5rem;
+        line-height: 5rem;
+    }
 }
 </style>
