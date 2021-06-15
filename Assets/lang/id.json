@@ -266,8 +266,8 @@
                 "id": "ID",
                 "alph": "ALPH",
                 "asc": "ASC",
-                "desc": "DESC"
-                "voteOrder": "URUTAN VOTE"                
+                "desc": "DESC",
+                "voteOrder": "URUTAN VOTING"                
             },
             "hosted": "DI-HOST OLEH",
             "userID": "USER ID"
