@@ -21,7 +21,8 @@
             "authOsuComp": "osu!认证通过。你好，",
             "authDiscord": "点击这里通过Discord登录",
             "authDiscordComp": "Discord认证通过。你好，"
-        },
+        }
+    },
 	"ayim": {
         "main": {
             "records": "纪录",
@@ -279,7 +280,7 @@
         "index": {
             "underConstruction": "施工中",
             "sorry": "抱歉给你带来不便",
-	    "development": "corsace网站目前依旧处于早期开发阶段",
+	        "development": "corsace网站目前依旧处于早期开发阶段",
             "theTeam": "corsace团队"
         }
     }
