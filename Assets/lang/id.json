@@ -14,13 +14,13 @@
         "login": {
             "login": "masuk",
             "message": {
-                "1": "Sepertinya kamu belum terhubung masuk!<br>Kamu harus masuk terlebih dahulu dengan menggunakan akun osu! yang kamu miliki untuk dapat mulai menominasikan beatmap dan menyalurkan hak suaramu.",
+                "1": "Sepertinya kamu belum terhubung masuk!<br>Kamu harus masuk terlebih dahulu masuk dengan menggunakan akun osu! yang kamu miliki untuk dapat mulai menominasikan beatmap dan menyalurkan hak suaramu.",
                 "2": "Kamu juga dapat masuk dengan menggunakan Discord, namun hal ini <b>tidak diwajibkan</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staf yang bertugas.</b></span>"
             },
-            "authOsu": "klik di sini untuk menghubungkan akun osu! milikmu",
-            "authOsuComp": "akun osu! milikmu telah terhubung. Halo ",
-            "authDiscord": "klik di sini untuk menghubungkan akun Discord milikmu",
-            "authDiscordComp": "akun Discord milikmu telah terhubung. Halo "
+            "authOsu": "klik di sini untuk masuk dengan akun osu! milikmu",
+            "authOsuComp": "verifikasi akun osu! berhasil. Halo ",
+            "authDiscord": "klik di sini untuk masuk dengan akun Discord milikmu",
+            "authDiscordComp": "verifikasi akun Discord berhasil. Halo "
         }
     },
     "ayim": {
@@ -86,7 +86,7 @@
         },
         "comments": {
             "name": "KOMENTAR",
-            "info": "Semua komentar yang masuk akan dipublikasikan segera setelah hasil akhir MCA diumumkan! Kamu dibebaskan untuk berkomentar hingga hari pengumuman hasil MCA.",
+            "info": "Berikanlah apresiasimu kepada mapper-mapper di bawah ini! Semua komentar yang masuk akan ditampilkan setelah hasil MCA diumumkan.",
             "search": "cari mapper",
             "viewSubmit": "lihat/kirim komentar",
             "writeHere": "Berikan komentarmu untuk mapper ini!",
@@ -112,8 +112,8 @@
                 "nominating": "tahapan nominasi"
             },
             "rankedSets": "TOTAL BEATMAP RANKED",
-            "nominateNow": "nominasikan sekarang !",
-            "voteNow": "vote sekarang !",
+            "nominateNow": "berikan nominasimu sekarang !",
+            "voteNow": "gunakan hak suaramu sekarang !",
             "daysLeft": "hari tersisa",
             "message": {
                 "2019": "<p>Mapper's Choice Awards hadir kembali untuk keempat kalinya di tahun 2019 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Oh ya, pada tahun ini kami juga telah secara khusus menyediakan situs web bagi Mapper's Choice Awards agar para mapper/modder yang memiliki hak suara dapat menyalurkan suaranya dengan lebih mudah lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>",
