@@ -12,16 +12,29 @@ commentsReviewRouter.use(currentMCA);
 
 commentsReviewRouter.get("/", async (ctx) => {
     const mca: MCA = ctx.state.mca;
+    const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(ctx.query.skip) : 0;
-    const comments = await UserComment.find({
-        where: {
-            year: mca.year,
-        },
-        relations: ["target", "reviewer", "commenter"],
-        take: 10,
-        skip: isNaN(skip) ? 0 : skip,
-    });
-
+    let comments: UserComment[];
+    if (filter)
+        comments = await UserComment.find({
+            where: {
+                year: mca.year,
+                isValid: false,
+            },
+            relations: ["target", "reviewer", "commenter"],
+            skip: isNaN(skip) ? 0 : skip,
+            take: 5,
+        });
+    else
+        comments = await UserComment.find({
+            where: {
+                year: mca.year,
+            },
+            relations: ["target", "reviewer", "commenter"],
+            skip: isNaN(skip) ? 0 : skip,
+            take: 5,
+        });
+    
     ctx.body = comments;
 });
 

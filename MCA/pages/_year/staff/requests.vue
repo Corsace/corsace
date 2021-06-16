@@ -20,17 +20,9 @@
         </button>
 
         <div class="staff-container">
-            <div
-                v-for="group in groupedRequests"
-                :key="group.mode"
-                class="staff-container__box"
-            >
-                <div class="staff-container__title">
-                    {{ group.mode }}
-                </div>
-
+            <div class="staff-container__box">
                 <div
-                    v-for="request in group.requests"
+                    v-for="request in requests"
                     :key="request.ID"
                 >
                     <div 
@@ -42,14 +34,16 @@
                                 :href="`https://osu.ppy.sh/users/${request.user.osu.userID}`"
                                 target="_blank"
                                 class="staff-page__link"
+                                :class="`staff-page__link--${request.beatmap.mode.name}`"
                             >
-                                {{ request.user.osu.username }}
+                                {{ request.user.osu.username }} - {{ request.beatmap.mode.name }}
                             </a>
 
                             <a
                                 :href="generateUrl(request)"
                                 target="_blank"
                                 class="staff-page__link"
+                                :class="`staff-page__link--${request.beatmap.mode.name}`"
                             >
                                 beatmap link
                             </a>
@@ -92,11 +86,6 @@ import ChoiceBeatmapsetCard from "../../../../MCA-AYIM/components/ChoiceBeatmaps
 import { GuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
 import { UpdateRequestData } from "../../../store/staff";
 
-interface GroupedRequest {
-    mode: string;
-    requests: GuestRequest[];
-}
-
 const staffModule = namespace("staff");
 
 @Component({
@@ -116,22 +105,6 @@ export default class StaffRequests extends Vue {
     @staffModule.Action updateRequest!: (data: UpdateRequestData) => Promise<void>;
 
     showValidated = true;
-
-    get groupedRequests (): GroupedRequest[] {
-        const groups: GroupedRequest[] = [];
-
-        for (const request of this.requests) {
-            const i = groups.findIndex(g => g.mode === request.mode.name);
-
-            if (i !== -1) groups[i].requests.push(request);
-            else groups.push({
-                mode: request.mode.name,
-                requests: [request],
-            });
-        }
-
-        return groups;
-    }
 
     isPending (status: number): boolean {
         return status === RequestStatus.Pending;

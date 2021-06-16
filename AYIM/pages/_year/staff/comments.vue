@@ -1,53 +1,46 @@
 <template>
     <div class="staff-page">
         <div class="staff-page__title">
-            Comments Review
+            Comments
         </div>
-
         <button
             v-if="!showValidated"
-            @click="showValidated = true"
+            @click="showValidated = true; getData()"
             class="button"
         >
             Show Validated
         </button>
         <button
             v-else
-            @click="showValidated = false"
+            @click="showValidated = false; getData()"
             class="button"
         >
             Hide Validated
         </button>
-
         <div
             v-if="info"
             class="info"
         >
             {{ info }}
         </div>
-
         <div class="staff-container">
-            <div
-                v-for="group in groupedComments"
-                :key="group.mode"
-                class="staff-container__box"
-            >
-                <div class="staff-container__title">
-                    {{ group.mode }}
-                </div>
-
+            <div class="staff-container__box">
                 <div
-                    v-for="comment in group.comments"
+                    v-for="comment in comments"
                     :key="comment.ID"
                     class="staff-comment"
                 >
-                    <div class="staff-comment__info">
+                    <div 
+                        class="staff-comment__info"
+                        :class="`staff-page__link--${comment.mode.name}`"
+                    >
                         <div>
                             from
                             <a
                                 :href="`https://osu.ppy.sh/users/${comment.commenter.osu.userID}`"
                                 target="_blank"
                                 class="staff-page__link"
+                                :class="`staff-page__link--${comment.mode.name}`"
                             >
                                 {{ comment.commenter.osu.username }}
                             </a>
@@ -58,14 +51,12 @@
                                 :href="`https://osu.ppy.sh/users/${comment.target.osu.userID}`"
                                 target="_blank"
                                 class="staff-page__link"
+                                :class="`staff-page__link--${comment.mode.name}`"
                             >
                                 {{ comment.target.osu.username }}
                             </a>
                         </div>
-                        <div 
-                            v-if="comment.isValid"
-                            class="button__add"
-                        >
+                        <div v-if="comment.isValid">
                             Validated by {{ comment.reviewer.osu.username }} at {{ new Date(comment.lastReviewedAt).toString() }}
                         </div>
                     </div>
@@ -101,11 +92,17 @@
                         </button>
                     </div>
                 </div>
-                <scroll-bar
-                    selector=".staff-container__box"
-                    @bottom="paginate"
-                />
+                <div
+                    v-if="loading"
+                    class="staff-comment__loading"
+                >
+                    Loading...
+                </div>
             </div>
+            <scroll-bar
+                selector=".staff-container__box"
+                @bottom="paginate"
+            />
         </div>
     </div>
 </template>
@@ -119,11 +116,6 @@ import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 import { Comment } from "../../../../Interfaces/comment";
 import { User } from "../../../../Interfaces/user";
 
-interface GroupedComment {
-    mode: string;
-    comments: Comment[];
-}
-
 @Component({
     head () {
         return {
@@ -135,47 +127,60 @@ interface GroupedComment {
     }
 })
 export default class StaffComments extends Vue {
-            
     @Getter isHeadStaff!: boolean;
 
     info = "";
+    loading = false;
     showValidated = true;
+    end = false;
     comments: Comment[] = [];
 
-    get groupedComments (): GroupedComment[] {
-        const groups: GroupedComment[] = [];
-
-        for (const comment of this.comments) {
-            const i = groups.findIndex(g => g.mode === comment.mode.name);
-            
-            if (!this.showValidated && comment.isValid) continue;
-
-            if (i !== -1) groups[i].comments.push(comment);
-            else groups.push({
-                mode: comment.mode.name,
-                comments: [comment],
-            });
-        }
-
-        return groups;
+    async mounted() {
+        await this.getData();
     }
-    
-    async mounted () {
-        const { data } = await this.$axios.get(`/api/staff/comments`);
+
+    async getData () {
+        this.end = false;
+        this.loading = true;
+        let url = `/api/staff/comments`;
+        if (!this.showValidated) url += "?filter=true";
+
+        const { data } = await this.$axios.get(url);
+
+        this.loading = false;
 
         if (data.error)
             return alert(data.error);
         
         this.comments = data;
+    
+        for (;;) {
+            const box = document.querySelector(".staff-container__box")
+            if (!box) break;
+            if (box.clientHeight >= box.scrollHeight && !this.end) await this.paginate();
+            else break;
+        }
     }
 
     async paginate () {
-        const { data } = await this.$axios.get(`/api/staff/comments?skip=${this.comments.length}`);
+        if (this.end) return;
+
+        this.loading = true;
+        let url = `/api/staff/comments?skip=${this.comments.length}`;
+        if (!this.showValidated) url += "&filter=true";
+
+        const { data } = await this.$axios.get(url);
+
+        this.loading = false;
 
         if (data.error)
             return alert(data.error);
-        
-        this.comments.push(...data);
+        else if (data.length === 0)
+            this.end = true;
+        else {
+            this.comments.push(...data);
+            this.comments = this.comments.filter((val, i, self) => self.findIndex(v => v.ID === val.ID) === i);
+        }
     }
 
     async update (id: number) {
@@ -188,7 +193,6 @@ export default class StaffComments extends Vue {
         if (res.data.error) {
             this.info = res.data.error;
         } else if (res.data) {
-            this.info = "ok";
             const resComment = res.data;
             this.comments[i].isValid = resComment.isValid;
             this.comments[i].reviewer = resComment.reviewer;
@@ -219,7 +223,7 @@ export default class StaffComments extends Vue {
     async ban (id: number) {
         this.info = "";
 
-        if (!confirm(`User will not be able to submit new comments and not validated comments will be removed`)) 
+        if (!confirm(`User will not be able to submit new comments and not validated comments will be removed. Are you sure?`)) 
             return;
         
         const { data } = await this.$axios.post(`/api/staff/users/${id}/ban`);
@@ -246,7 +250,7 @@ export default class StaffComments extends Vue {
     margin-bottom: 10px;
 
     &__info {
-        display:flex;
+        display: flex;
         flex-direction: column;
         flex: 1;
     }
@@ -262,6 +266,15 @@ export default class StaffComments extends Vue {
 
     &__action {
         margin: 5px;
+    }
+
+    &__loading {
+        @extend %flex-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        width: 100%;
     }
 }
 

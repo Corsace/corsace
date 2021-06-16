@@ -72,7 +72,7 @@ export default class GuestDifficultySubmission extends Vue {
 @import '@s-sass/_variables';
 
 .request {
-    @extend %spaced-container;
+    @extend %wrapped-spaced-container;
 
     &__mode {
         display: flex;

@@ -199,12 +199,12 @@ export default class IndexContent extends Vue {
 }
 
 .general {
-    @extend %spaced-container;
+    @extend %wrapped-spaced-container;
     margin: 0;
 }
 
 .categories {
-    @extend %spaced-container;
+    @extend %wrapped-spaced-container;
     flex: 1;
 
     &__category-title {

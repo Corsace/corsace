@@ -4,8 +4,12 @@
     margin-top: 15px;
     margin-bottom: 15px;
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-around;
+}
+
+%wrapped-spaced-container {
+    @extend %spaced-container;
+    flex-wrap: wrap;
 }
 
 %box {

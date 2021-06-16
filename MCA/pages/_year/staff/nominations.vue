@@ -1,39 +1,37 @@
 <template>
     <div class="staff-page">
+        <button
+            v-if="!showInvalidated"
+            @click="showInvalidated = true"
+            class="button"
+        >
+            Show Invalidated
+        </button>
+        <button
+            v-else
+            @click="showInvalidated = false"
+            class="button"
+        >
+            Hide Invalidated
+        </button>
+        <button
+            v-if="!showReviewed"
+            @click="showReviewed = true"
+            class="button"
+        >
+            Show Reviewed
+        </button>
+        <button
+            v-else
+            @click="showReviewed = false"
+            class="button"
+        >
+            Hide Reviewed
+        </button>
         <mode-switcher
             :hide-phase="true"
             title="nominations"
         >
-            <div class="staff-container">
-                <button
-                    v-if="!showInvalidated"
-                    @click="showInvalidated = true"
-                    class="button"
-                >
-                    Show Invalidated
-                </button>
-                <button
-                    v-else
-                    @click="showInvalidated = false"
-                    class="button"
-                >
-                    Hide Invalidated
-                </button>
-                <button
-                    v-if="!showReviewed"
-                    @click="showReviewed = true"
-                    class="button"
-                >
-                    Show Reviewed
-                </button>
-                <button
-                    v-else
-                    @click="showReviewed = false"
-                    class="button"
-                >
-                    Hide Reviewed
-                </button>
-            </div>
             <div class="staff-container">
                 <div
                     v-for="category in relatedCategories"

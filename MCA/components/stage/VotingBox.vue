@@ -255,7 +255,7 @@ export default class VotingBox extends Vue {
 }
 
 .voting-actions {
-    @extend %spaced-container;
+    @extend %wrapped-spaced-container;
     gap: 10px;
 }
 

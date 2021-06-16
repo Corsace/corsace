@@ -5,6 +5,7 @@
     display: flex;
     flex-flow: column;
     padding: 30px;
+    overflow: hidden;
 
     &__title {
         font-family: $font-display;
@@ -16,6 +17,12 @@
         font-weight: bold;
         flex: 1;
 
+        @each $mode in $modes {
+            &--#{$mode} {
+                color: var(--#{$mode});
+            }
+        }
+
         &:hover {
             text-decoration: underline;
         }
@@ -24,6 +31,7 @@
 
 .staff-container {
     @extend %spaced-container;
+    height: 100%;
     flex-direction: column;
     overflow: hidden;
     position: relative;
@@ -37,8 +45,8 @@
 
     &__box {
         @extend %flex-box;
+        position: relative;
         flex-direction: column;
-        height: 100%;
         overflow-y: scroll;
     
         scrollbar-width: none;
