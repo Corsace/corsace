@@ -7,6 +7,7 @@ import { User } from "../../../Models/user";
 import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear, categoryRequirementCheck } from "../../../MCA-AYIM/api/middleware";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
+import { MCAEligibility } from "../../../Models/MCA_AYIM/mcaEligibility";
 
 const nominatingRouter = new Router();
 
@@ -135,6 +136,16 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
         nomination.beatmapset = beatmapset;
     } else if (category.type == CategoryType.Users) {
         user = await User.findOneOrFail(ctx.request.body.nomineeId);
+
+        if (category.filter?.rookie) {
+            const eligibilities = await MCAEligibility.find({
+                user,
+            });
+            if (Math.min(...eligibilities.map(e => e.year)) !== ctx.state.year)
+                return ctx.body = {
+                    error: "User is not eligible for this category!", 
+                }
+        }
 
         if (categoryNominations.some(n => n.user?.ID === user.ID)) {
             return ctx.body = {
