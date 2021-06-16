@@ -86,7 +86,7 @@
                         <button
                             v-if="isHeadStaff"
                             class="button button--small button__remove staff-comment__action"
-                            @click="ban(comment.commenter.ID)"
+                            @click="ban(comment.commenterID)"
                         >
                             ban
                         </button>
