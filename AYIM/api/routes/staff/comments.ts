@@ -14,28 +14,29 @@ commentsReviewRouter.get("/", async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(ctx.query.skip) : 0;
-    let comments: UserComment[];
+    let query = UserComment
+                    .createQueryBuilder("userComment")
+                    .innerJoin("userComment.target", "target")
+                    .innerJoin("userComment.reviewer", "reviewer")
+                    .innerJoin("userComment.commenter", "commenter")
+                    .innerJoin("userComment.mode", "mode")
+                    .select([
+                        "userComment.ID", 
+                        "userComment.comment", 
+                        "userComment.isValid",
+                        "userComment.lastReviewedAt",
+                        "mode.name",
+                        "commenter.osuUserid",
+                        "commenter.osuUsername",
+                        "target.osuUserid",
+                        "target.osuUsername",
+                        "reviewer.osuUsername"
+                    ])
+                    .where(`year = ${mca.year}`)
     if (filter)
-        comments = await UserComment.find({
-            where: {
-                year: mca.year,
-                isValid: false,
-            },
-            relations: ["target", "reviewer", "commenter"],
-            skip: isNaN(skip) ? 0 : skip,
-            take: 5,
-        });
-    else
-        comments = await UserComment.find({
-            where: {
-                year: mca.year,
-            },
-            relations: ["target", "reviewer", "commenter"],
-            skip: isNaN(skip) ? 0 : skip,
-            take: 5,
-        });
+        query.andWhere(`isValid = 0`)
     
-    ctx.body = comments;
+    ctx.body = await query.skip(isNaN(skip) ? 0 : skip).take(5).getMany();
 });
 
 commentsReviewRouter.post("/:id/review", async (ctx) => {
