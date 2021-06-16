@@ -110,11 +110,6 @@ export default class StagePageCategories extends Vue {
 
 .stage-categories {
     flex: 1 1 15%;
-    height: 50%;
-
-    @include breakpoint(laptop) { 
-        height: auto;
-    }
 }
 
 </style>
