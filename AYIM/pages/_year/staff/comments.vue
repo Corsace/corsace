@@ -98,6 +98,12 @@
                 >
                     Loading...
                 </div>
+                <div
+                    v-else-if="end"
+                    class="staff-comment__loading"
+                >
+                    No more comments!~
+                </div>
             </div>
             <scroll-bar
                 selector=".staff-container__box"
@@ -142,6 +148,8 @@ export default class StaffComments extends Vue {
     async getData () {
         this.end = false;
         this.loading = true;
+        this.comments = [];
+
         let url = `/api/staff/comments`;
         if (!this.showValidated) url += "?filter=true";
 
