@@ -34,16 +34,16 @@
                                 :href="`https://osu.ppy.sh/users/${request.user.osu.userID}`"
                                 target="_blank"
                                 class="staff-page__link"
-                                :class="`staff-page__link--${request.beatmap.mode.name}`"
+                                :class="`staff-page__link--${request.mode.name}`"
                             >
-                                {{ request.user.osu.username }} - {{ request.beatmap.mode.name }}
+                                {{ request.user.osu.username }} - {{ request.mode.name }}
                             </a>
 
                             <a
                                 :href="generateUrl(request)"
                                 target="_blank"
                                 class="staff-page__link"
-                                :class="`staff-page__link--${request.beatmap.mode.name}`"
+                                :class="`staff-page__link--${request.mode.name}`"
                             >
                                 beatmap link
                             </a>
