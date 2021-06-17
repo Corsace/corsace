@@ -15,23 +15,22 @@ commentsReviewRouter.get("/", async (ctx) => {
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(ctx.query.skip) : 0;
     let query = UserComment
-                    .createQueryBuilder("userComment")
-                    .innerJoin("userComment.target", "target")
-                    .innerJoin("userComment.reviewer", "reviewer")
-                    .innerJoin("userComment.commenter", "commenter")
-                    .innerJoin("userComment.mode", "mode")
-                    .select([
-                        "userComment.ID", 
-                        "userComment.comment", 
-                        "userComment.isValid",
-                        "userComment.lastReviewedAt",
-                        "mode.name",
-                        "commenter.osuUserid",
-                        "commenter.osuUsername",
-                        "target.osuUserid",
-                        "target.osuUsername",
-                        "reviewer.osuUsername"
-                    ])
+                    .createQueryBuilder("UserComment")
+                    .leftJoin("UserComment.target", "UserComment__target")
+                    .leftJoin("UserComment.reviewer", "UserComment__reviewer")
+                    .leftJoin("UserComment.commenter", "UserComment__commenter")
+                    .leftJoin("UserComment.mode", "UserComment_mode")
+                    .select("UserComment.ID", "UserComment_ID")
+                    .addSelect("UserComment.comment", "UserComment_comment")
+                    .addSelect("UserComment.commenterID", "UserComment_commenterID")
+                    .addSelect("UserComment.isValid", "UserComment_isValid")
+                    .addSelect("UserComment.lastReviewedAt", "UserComment_lastReviewedAt")
+                    .addSelect("UserComment_mode.name", "UserComment_mode_name")
+                    .addSelect("UserComment__commenter.osuUserid", "UserComment__commenter_osuUserid")
+                    .addSelect("UserComment__commenter.osuUsername", "UserComment__commenter_osuUsername")
+                    .addSelect("UserComment__target.osuUserid", "UserComment__target_osuUserid")
+                    .addSelect("UserComment__target.osuUsername", "UserComment__target_osuUsername")
+                    .addSelect("UserComment__reviewer.osuUsername", "UserComment__reviewer_osuUsername")
                     .where(`year = ${mca.year}`)
     if (filter)
         query.andWhere(`isValid = 0`)
