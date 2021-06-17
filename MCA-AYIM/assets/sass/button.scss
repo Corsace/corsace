@@ -19,11 +19,14 @@
     }
 
     min-width: 80px;
-    @include breakpoint(tablet) {
-        min-width: 165px;
-    }
     @include breakpoint(mobile) {
         min-width: 50px;
+    }
+    @include breakpoint(tablet) {
+        min-width: 120px;
+    }
+    @include breakpoint(laptop) {
+        min-width: 165px;
     }
 
     display: flex;
@@ -35,14 +38,9 @@
     -webkit-appearance: none;
     -moz-appearance: none;
 
-    &:hover, &:focus {
-        background: white;
-        color: black;
-    }
-
-    &:focus {
-        outline: 1px solid #fff;
-        outline-offset: -4px;
+    &:hover {
+        filter: invert(100%);
+        text-shadow: none;
     }
 
     &--small {
@@ -55,6 +53,10 @@
         background-color: white;
         color: black;
         font-weight: 500;
+    }
+
+    &--image > img {
+        height: 35px;
     }
 
     &__add {

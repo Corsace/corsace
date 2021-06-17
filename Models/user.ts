@@ -123,6 +123,17 @@ export class User extends BaseEntity {
         if (query.mode in ModeDivisionType) {
             queryBuilder.andWhere(`mca.${query.mode} = true`);
         }
+        
+        if (query.notCommented === "true") {
+            queryBuilder.andWhere((qb) => {
+                const subQuery = qb.subQuery()
+                    .from(UserComment, "userComment")
+                    .where("userComment.targetID = user.ID")
+                    .getQuery();
+
+                return "NOT EXISTS " + subQuery;
+            });
+        }
 
         // Check for search text
         if (query.text) {

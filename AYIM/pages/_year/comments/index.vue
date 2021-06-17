@@ -20,6 +20,27 @@
                         :arrow="orderOption"
                         @change="changeOrder"
                     />
+
+                    <button
+                        v-if="phase && phase.phase !== 'results' && !notCommented"
+                        @click="changeFilter(true)"
+                        class="button button--image"
+                    >
+                        <img
+                            alt="All users shown"
+                            src="../../../../Assets/img/ayim-mca/site/comments.png"
+                        >
+                    </button>
+                    <button
+                        v-else-if="phase && phase.phase !== 'results' && notCommented"
+                        @click="changeFilter(false)"
+                        class="button button--image"
+                    >
+                        <img
+                            alt="Users without comments shown only"
+                            src="../../../../Assets/img/ayim-mca/site/comments_hidden.png"
+                        >
+                    </button>
                 </search-bar>
             </div>
             <div
@@ -70,7 +91,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { Getter, State } from "vuex-class";
 
 import CommentsModal from "../../../components/CommentsModal.vue";
 import DisplayLayout from "../../../components/DisplayLayout.vue";
@@ -79,7 +100,7 @@ import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
 
 import { User } from "../../../../Interfaces/user";
-import { MCA } from "../../../../Interfaces/mca";
+import { MCA, Phase } from "../../../../Interfaces/mca";
 
 @Component({
     components: {
@@ -99,9 +120,11 @@ export default class Comments extends Vue {
 
     @State mca!: MCA;
     @State selectedMode!: string;
+    @Getter phase!: Phase | null;
 
     loading = false;
     text = "";
+    notCommented = false;
     userOption = "alph";
     orderOption = "asc";
     mappers: User[] = [];
@@ -136,9 +159,14 @@ export default class Comments extends Vue {
         await this.getMappers();
     }
 
+    async changeFilter (filter: boolean) {
+        this.notCommented = filter;
+        await this.getMappers();
+    }
+
     async getMappers (replace = true) {
         this.loading = true;
-        const { data } = await this.$axios.get(`/api/mappers/search?skip=${replace ? 0 : this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&option=${this.userOption}&order=${this.orderOption.toUpperCase()}&text=${this.text}`);
+        const { data } = await this.$axios.get(`/api/mappers/search?skip=${replace ? 0 : this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&option=${this.userOption}&order=${this.orderOption.toUpperCase()}&text=${this.text}&notCommented=${this.notCommented}`);
 
         if (data.error)
             alert(data.error);
