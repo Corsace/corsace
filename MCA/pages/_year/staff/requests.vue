@@ -20,59 +20,62 @@
         </button>
 
         <div class="staff-container">
-            <div class="staff-container__box">
-                <div
-                    v-for="request in requests"
-                    :key="request.ID"
-                >
-                    <div 
-                        v-if="showValidated || (!showValidated && isPending(request.status))"
-                        class="staff-request"
+            <div class="staff-container staff-scrollTrack">
+                <div class="staff-container__box">
+                    <div
+                        v-for="request in requests"
+                        :key="request.ID"
                     >
-                        <div class="staff-request__info">
-                            <a
-                                :href="`https://osu.ppy.sh/users/${request.user.osu.userID}`"
-                                target="_blank"
-                                class="staff-page__link"
-                                :class="`staff-page__link--${request.mode.name}`"
-                            >
-                                {{ request.user.osu.username }} - {{ request.mode.name }}
-                            </a>
-
-                            <a
-                                :href="generateUrl(request)"
-                                target="_blank"
-                                class="staff-page__link"
-                                :class="`staff-page__link--${request.mode.name}`"
-                            >
-                                beatmap link
-                            </a>
-                        </div>
-
-                        <div
-                            class="staff-request__status"
-                            :class="`staff-request__status--${getStatusName(request.status).toLowerCase()}`"
+                        <div 
+                            v-if="showValidated || (!showValidated && isPending(request.status))"
+                            class="staff-request"
                         >
-                            {{ getStatusName(request.status) }}
-                        </div>
+                            <div class="staff-request__info">
+                                <a
+                                    :href="`https://osu.ppy.sh/users/${request.user.osu.userID}`"
+                                    target="_blank"
+                                    class="staff-page__link"
+                                    :class="`staff-page__link--${request.mode.name}`"
+                                >
+                                    {{ request.user.osu.username }} - {{ request.mode.name }}
+                                </a>
 
-                        <div class="staff-request__actions">
-                            <button
-                                class="button button--small staff-request__action"
-                                @click="accept(request.ID)"
+                                <a
+                                    :href="generateUrl(request)"
+                                    target="_blank"
+                                    class="staff-page__link"
+                                    :class="`staff-page__link--${request.mode.name}`"
+                                >
+                                    beatmap link
+                                </a>
+                            </div>
+
+                            <div
+                                class="staff-request__status"
+                                :class="`staff-request__status--${getStatusName(request.status).toLowerCase()}`"
                             >
-                                accept
-                            </button>
-                            <button
-                                class="button button--small staff-request__action"
-                                @click="reject(request.ID)"
-                            >
-                                reject
-                            </button>
+                                {{ getStatusName(request.status) }}
+                            </div>
+
+                            <div class="staff-request__actions">
+                                <button
+                                    class="button button--small staff-request__action"
+                                    @click="accept(request.ID)"
+                                >
+                                    accept
+                                </button>
+                                <button
+                                    class="button button--small staff-request__action"
+                                    @click="reject(request.ID)"
+                                >
+                                    reject
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <scroll-bar selector=".staff-scrollTrack" />
         </div>
     </div>
 </template>
@@ -82,6 +85,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
 import ChoiceBeatmapsetCard from "../../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
+import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 
 import { GuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
 import { UpdateRequestData } from "../../../store/staff";
@@ -91,6 +95,7 @@ const staffModule = namespace("staff");
 @Component({
     components: {
         ChoiceBeatmapsetCard,
+        ScrollBar,
     },
     head () {
         return {

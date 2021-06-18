@@ -1,6 +1,8 @@
 <template>
     <div class="request">
-        <div class="request__mode">
+        <div 
+            v-if="!wasAccepted"
+            class="request__mode">
             <div
                 v-for="mode in inactiveModes"
                 :key="mode"
@@ -72,7 +74,7 @@ export default class GuestDifficultySubmission extends Vue {
 @import '@s-sass/_variables';
 
 .request {
-    @extend %wrapped-spaced-container;
+    @extend %spaced-container;
 
     &__mode {
         display: flex;
@@ -95,8 +97,9 @@ export default class GuestDifficultySubmission extends Vue {
         border-bottom-right-radius: 0px;
         border-top-right-radius: 0px;
 
-        margin-right: 10px;
-        margin-right: 10px;
+        width: 60%;
+        padding: 5px;
+        margin: 10px;
 
         outline: 0;
         border: 0;

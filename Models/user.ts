@@ -190,10 +190,9 @@ export class User extends BaseEntity {
             queryBuilder
                 .andWhere((qb) => {
                     const subQuery = qb.subQuery()
-                        .from(MCAEligibility, "mcaEligibility")
-                        .select("min(year)")
-                        .andWhere("userID = user.ID")
-                        .andWhere(`mca.${modeString} = 1`)
+                        .from(Beatmapset, "beatmapset")
+                        .select("min(year(approvedDate))")
+                        .andWhere("creatorID = user.ID")
                         .getQuery();
 
                     return subQuery + " = " + year;
@@ -206,6 +205,8 @@ export class User extends BaseEntity {
                 .andWhere(new Brackets(qb => {
                     qb.where("user.osuUsername LIKE :criteria")
                         .orWhere("user.osuUserid LIKE :criteria")
+                        .orWhere("user.discordUsername LIKE :criteria")
+                        .orWhere("user.discordUserid LIKE :criteria")
                         .orWhere("otherName.name LIKE :criteria");
                 }))
                 .setParameter("criteria", `%${query.text}%`);

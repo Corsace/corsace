@@ -267,7 +267,10 @@
                 "alph": "ALPH",
                 "asc": "ASC",
                 "desc": "DESC",
-                "voteOrder": "VOTE ORDER"
+                "voteOrder": "VOTE ORDER",
+                "valid": "valid",
+                "invalid": "invalid",
+                "both": "both"
             },
             "hosted": "HOSTED BY",
             "userID": "USER ID"
