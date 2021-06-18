@@ -24,89 +24,91 @@
             {{ info }}
         </div>
         <div class="staff-container">
-            <div class="staff-container__box">
-                <div
-                    v-for="comment in comments"
-                    :key="comment.ID"
-                    class="staff-comment"
-                >
-                    <div 
-                        class="staff-comment__info"
-                        :class="`staff-page__link--${comment.mode.name}`"
+            <div class="staff-container staff-scrollTrack">
+                <div class="staff-container__box">
+                    <div
+                        v-for="comment in comments"
+                        :key="comment.ID"
+                        class="staff-comment"
                     >
-                        <div>
-                            from
-                            <a
-                                :href="`https://osu.ppy.sh/users/${comment.commenter.osu.userID}`"
-                                target="_blank"
-                                class="staff-page__link"
-                                :class="`staff-page__link--${comment.mode.name}`"
-                            >
-                                {{ comment.commenter.osu.username }}
-                            </a>
+                        <div 
+                            class="staff-comment__info"
+                            :class="`staff-page__link--${comment.mode.name}`"
+                        >
+                            <div>
+                                from
+                                <a
+                                    :href="`https://osu.ppy.sh/users/${comment.commenter.osu.userID}`"
+                                    target="_blank"
+                                    class="staff-page__link"
+                                    :class="`staff-page__link--${comment.mode.name}`"
+                                >
+                                    {{ comment.commenter.osu.username }}
+                                </a>
+                            </div>
+                            <div>
+                                to
+                                <a
+                                    :href="`https://osu.ppy.sh/users/${comment.target.osu.userID}`"
+                                    target="_blank"
+                                    class="staff-page__link"
+                                    :class="`staff-page__link--${comment.mode.name}`"
+                                >
+                                    {{ comment.target.osu.username }}
+                                </a>
+                            </div>
+                            <div v-if="comment.isValid">
+                                Validated by {{ comment.reviewer.osu.username }} at {{ new Date(comment.lastReviewedAt).toString() }}
+                            </div>
                         </div>
-                        <div>
-                            to
-                            <a
-                                :href="`https://osu.ppy.sh/users/${comment.target.osu.userID}`"
-                                target="_blank"
-                                class="staff-page__link"
-                                :class="`staff-page__link--${comment.mode.name}`"
+
+                        <textarea 
+                            v-model="comment.comment"
+                            type="text"
+                            class="staff-comment__input textarea"
+                            rows="2"
+                        />
+
+                        <div class="staff-comment__actions">
+                            <button
+                                class="button button--small button__add staff-comment__action"
+                                @click="update(comment.ID)"
                             >
-                                {{ comment.target.osu.username }}
-                            </a>
-                        </div>
-                        <div v-if="comment.isValid">
-                            Validated by {{ comment.reviewer.osu.username }} at {{ new Date(comment.lastReviewedAt).toString() }}
+                                validate
+                            </button>
+
+                            <button
+                                class="button button--small button__remove staff-comment__action"
+                                @click="remove(comment.ID)"
+                            >
+                                delete
+                            </button>
+
+                            <button
+                                v-if="isHeadStaff"
+                                class="button button--small button__remove staff-comment__action"
+                                @click="ban(comment.commenter.ID)"
+                            >
+                                ban
+                            </button>
                         </div>
                     </div>
-
-                    <textarea 
-                        v-model="comment.comment"
-                        type="text"
-                        class="staff-comment__input textarea"
-                        rows="2"
-                    />
-
-                    <div class="staff-comment__actions">
-                        <button
-                            class="button button--small button__add staff-comment__action"
-                            @click="update(comment.ID)"
-                        >
-                            validate
-                        </button>
-
-                        <button
-                            class="button button--small button__remove staff-comment__action"
-                            @click="remove(comment.ID)"
-                        >
-                            delete
-                        </button>
-
-                        <button
-                            v-if="isHeadStaff"
-                            class="button button--small button__remove staff-comment__action"
-                            @click="ban(comment.commenter.ID)"
-                        >
-                            ban
-                        </button>
+                    <div
+                        v-if="loading"
+                        class="staff-comment__loading"
+                    >
+                        Loading...
                     </div>
-                </div>
-                <div
-                    v-if="loading"
-                    class="staff-comment__loading"
-                >
-                    Loading...
-                </div>
-                <div
-                    v-else-if="end"
-                    class="staff-comment__loading"
-                >
-                    No more comments!~
+                    <div
+                        v-else-if="end"
+                        class="staff-comment__loading"
+                    >
+                        No more comments!~
+                    </div>
                 </div>
             </div>
             <scroll-bar
-                selector=".staff-container__box"
+                selector=".staff-scrollTrack"
                 @bottom="paginate"
             />
         </div>
@@ -163,7 +165,7 @@ export default class StaffComments extends Vue {
         this.comments = data;
     
         for (;;) {
-            const box = document.querySelector(".staff-container__box")
+            const box = document.querySelector(".staff-scrollTrack")
             if (!box) break;
             if (box.clientHeight >= box.scrollHeight && !this.end) await this.paginate();
             else break;

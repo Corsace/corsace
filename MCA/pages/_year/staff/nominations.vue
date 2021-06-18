@@ -1,28 +1,18 @@
 <template>
     <div class="staff-page">
+        <toggle-button
+            :options="viewOptions"
+            @change="changeView"
+        />
         <button
-            v-if="!showInvalidated"
-            @click="showInvalidated = true"
-            class="button"
-        >
-            Show Invalidated
-        </button>
-        <button
-            v-else
-            @click="showInvalidated = false"
-            class="button"
-        >
-            Hide Invalidated
-        </button>
-        <button
-            v-if="!showReviewed"
+            v-if="!showReviewed && viewOption !== 'invalid'"
             @click="showReviewed = true"
             class="button"
         >
             Show Reviewed
         </button>
         <button
-            v-else
+            v-else-if="showReviewed && viewOption !== 'invalid'"
             @click="showReviewed = false"
             class="button"
         >
@@ -33,80 +23,83 @@
             title="nominations"
         >
             <div class="staff-container">
-                <div
-                    v-for="category in relatedCategories"
-                    :key="category.id + '-category'"
-                    class="staff-container__box"
-                >
-                    <a
-                        class="staff-container__title"
-                        href="#"
-                        @click.prevent="selectCategory(category.id)"
+                <div class="staff-container staff-scrollTrack">
+                    <div
+                        v-for="category in relatedCategories"
+                        :key="category.id + '-category'"
+                        class="staff-container__box"
                     >
-                        {{ category.name }}
-                    </a>
-
-                    <template v-if="category.id === selectedCategoryId">
-                        <div
-                            v-for="userNominations in selectedCategoryInfo"
-                            :key="userNominations.nominator.ID + '-nominator'"
-                            class="staff-nomination-container"
+                        <a
+                            class="staff-container__title"
+                            href="#"
+                            @click.prevent="selectCategory(category.id)"
                         >
-                            <a
-                                :href="`https://osu.ppy.sh/users/${userNominations.nominator.osu.userID}`"
-                                target="_blank"
-                                class="staff-page__link"
-                            >
-                                {{ userNominations.nominator.osu.username }}
-                            </a>
+                            {{ category.name }}
+                        </a>
 
-                            <ul>
-                                <li
-                                    v-for="nomination in userNominations.nominations"
-                                    :key="nomination.ID + '-nomination'"
+                        <template v-if="category.id === selectedCategoryId">
+                            <div
+                                v-for="userNominations in selectedCategoryInfo"
+                                :key="userNominations.nominator.ID + '-nominator'"
+                                class="staff-nomination-container"
+                            >
+                                <a
+                                    :href="`https://osu.ppy.sh/users/${userNominations.nominator.osu.userID}`"
+                                    target="_blank"
+                                    class="staff-page__link"
                                 >
-                                    <div class="staff-nomination">
-                                        <div class="staff-nomination__info">
-                                            <a
-                                                class="staff-page__link"
-                                                :href="generateUrl(nomination)"
-                                                target="_blank"
-                                            >
-                                                {{ getNomineeName(nomination) }}
-                                            </a>
-                                            <span
-                                                class="staff-nomination__status"
-                                                :class="`staff-nomination__status--${nomination.isValid ? 'valid' : 'invalid'}`"
-                                            >
-                                                {{ nomination.isValid ? 'valid' : 'invalid' }}
-                                            </span>
-                                            <div v-if="nomination.reviewer">
-                                                Last reviewed by:
-                                                {{ nomination.reviewer.osu.username }}
-                                                at {{ new Date(nomination.lastReviewedAt).toString() }}
+                                    {{ userNominations.nominator.osu.username }}
+                                </a>
+
+                                <ul>
+                                    <li
+                                        v-for="nomination in userNominations.nominations"
+                                        :key="nomination.ID + '-nomination'"
+                                    >
+                                        <div class="staff-nomination">
+                                            <div class="staff-nomination__info">
+                                                <a
+                                                    class="staff-page__link"
+                                                    :href="generateUrl(nomination)"
+                                                    target="_blank"
+                                                >
+                                                    {{ getNomineeName(nomination) }}
+                                                </a>
+                                                <span
+                                                    class="staff-nomination__status"
+                                                    :class="`staff-nomination__status--${nomination.isValid ? 'valid' : 'invalid'}`"
+                                                >
+                                                    {{ nomination.isValid ? 'valid' : 'invalid' }}
+                                                </span>
+                                                <div v-if="nomination.reviewer">
+                                                    Last reviewed by:
+                                                    {{ nomination.reviewer.osu.username }}
+                                                    at {{ new Date(nomination.lastReviewedAt).toString() }}
+                                                </div>
+                                            </div>
+
+                                            <div class="staff-nomination__actions">
+                                                <button
+                                                    class="button button--small staff-nomination__action"
+                                                    @click="updateNomination(nomination.ID, true)"
+                                                >
+                                                    accept
+                                                </button>
+                                                <button
+                                                    class="button button--small staff-nomination__action"
+                                                    @click="updateNomination(nomination.ID, false)"
+                                                >
+                                                    reject
+                                                </button>
                                             </div>
                                         </div>
-
-                                        <div class="staff-nomination__actions">
-                                            <button
-                                                class="button button--small staff-nomination__action"
-                                                @click="updateNomination(nomination.ID, true)"
-                                            >
-                                                accept
-                                            </button>
-                                            <button
-                                                class="button button--small staff-nomination__action"
-                                                @click="updateNomination(nomination.ID, false)"
-                                            >
-                                                reject
-                                            </button>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </template>
+                                    </li>
+                                </ul>
+                            </div>
+                        </template>
+                    </div>
                 </div>
+                <scroll-bar selector=".staff-scrollTrack" />
             </div>
         </mode-switcher>
     </div>
@@ -117,6 +110,8 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
 import ModeSwitcher from "../../../../MCA-AYIM/components/ModeSwitcher.vue";
+import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
+import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 
 import { Category, CategoryInfo } from "../../../../Interfaces/category";
 import { Nomination } from "../../../../Interfaces/nomination";
@@ -137,6 +132,8 @@ interface NominationsByCategory {
 @Component({
     components: {
         ModeSwitcher,
+        ScrollBar,
+        ToggleButton,
     },
     head () {
         return {
@@ -150,7 +147,8 @@ export default class Nominations extends Vue {
     @staffModule.State categories!: CategoryInfo[];
 
     nominations: Nomination[] = [];
-    showInvalidated = true;
+    viewOptions = ["both", "valid", "invalid"];
+    viewOption = "both";
     showReviewed = true;
     selectedCategoryId: null | number = null;
 
@@ -163,7 +161,8 @@ export default class Nominations extends Vue {
 
         for (const nomination of this.nominations) {
             if (nomination.reviewer && !this.showReviewed) continue;
-            else if (!nomination.isValid && !this.showInvalidated) continue;
+            if (!nomination.isValid && this.viewOption === "valid") continue;
+            else if (nomination.isValid && this.viewOption === "invalid") continue;
 
             const groupIndex = groups.findIndex(g => g.category.ID === nomination.category.ID);
 
@@ -195,6 +194,12 @@ export default class Nominations extends Vue {
     get selectedCategoryInfo (): UserNomination[] {
         const group = this.nominationsByCategory.find(group => group.category.ID === this.selectedCategoryId);
         return group?.userNominations || [];
+    }
+
+    async changeView (option: string) {
+        this.viewOption = option;
+        if (this.viewOption === "invalid")
+            this.showReviewed = true;
     }
 
     async selectCategory (id: number) {

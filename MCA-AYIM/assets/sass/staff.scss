@@ -30,11 +30,14 @@
 }
 
 .staff-container {
-    @extend %spaced-container;
-    height: 100%;
-    flex-direction: column;
-    overflow: hidden;
     position: relative;
+    height: 100%;
+    overflow-y: scroll;
+
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 
     &__title {
         border-bottom: 1px solid white;
@@ -47,11 +50,5 @@
         @extend %flex-box;
         position: relative;
         flex-direction: column;
-        overflow-y: scroll;
-    
-        scrollbar-width: none;
-        &::-webkit-scrollbar {
-            display: none;
-        }
     }
 }

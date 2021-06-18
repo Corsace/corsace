@@ -31,7 +31,7 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     // Check if there's already a guest difficulty request sent
     if (user.guestRequests.some(r => r.mca.year === year && r.mode.ID === mode.ID && (!currentRequestId || r.ID !== currentRequestId))) {
         return {
-            error: "A guest request already exists!",
+            error: "A guest request for this year + mode already exists!",
         };
     }
 
