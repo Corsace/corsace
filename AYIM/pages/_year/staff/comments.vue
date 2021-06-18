@@ -3,19 +3,16 @@
         <div class="staff-page__title">
             Comments
         </div>
+        <search-bar
+            :placeholder="$t('ayim.comments.search')"
+            @update:search="updateQuery($event)"
+        />
         <button
-            v-if="!showValidated"
-            @click="showValidated = true; getData()"
+            @click="updateFilter()"
             class="button"
+            style="margin: 0 5px;"
         >
-            Show Validated
-        </button>
-        <button
-            v-else
-            @click="showValidated = false; getData()"
-            class="button"
-        >
-            Hide Validated
+            {{ showValidated ? "Hide Validated" : "Show Validated" }}
         </button>
         <div
             v-if="info"
@@ -33,32 +30,32 @@
                     >
                         <div 
                             class="staff-comment__info"
-                            :class="`staff-page__link--${comment.mode.name}`"
+                            :class="`staff-page__link--${comment.mode}`"
                         >
                             <div>
                                 from
                                 <a
-                                    :href="`https://osu.ppy.sh/users/${comment.commenter.osu.userID}`"
+                                    :href="`https://osu.ppy.sh/users/${comment.commenter.osuID}`"
                                     target="_blank"
                                     class="staff-page__link"
-                                    :class="`staff-page__link--${comment.mode.name}`"
+                                    :class="`staff-page__link--${comment.mode}`"
                                 >
-                                    {{ comment.commenter.osu.username }}
+                                    {{ comment.commenter.osuUsername }}
                                 </a>
                             </div>
                             <div>
                                 to
                                 <a
-                                    :href="`https://osu.ppy.sh/users/${comment.target.osu.userID}`"
+                                    :href="`https://osu.ppy.sh/users/${comment.target.osuID}`"
                                     target="_blank"
                                     class="staff-page__link"
-                                    :class="`staff-page__link--${comment.mode.name}`"
+                                    :class="`staff-page__link--${comment.mode}`"
                                 >
-                                    {{ comment.target.osu.username }}
+                                    {{ comment.target.osuUsername }}
                                 </a>
                             </div>
                             <div v-if="comment.isValid">
-                                Validated by {{ comment.reviewer.osu.username }} at {{ new Date(comment.lastReviewedAt).toString() }}
+                                Validated by {{ comment.reviewer }} at {{ new Date(comment.lastReviewedAt).toString() }}
                             </div>
                         </div>
 
@@ -119,10 +116,10 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
+import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 
-import { Comment } from "../../../../Interfaces/comment";
-import { User } from "../../../../Interfaces/user";
+import { StaffComment } from "../../../../Interfaces/comment";
 
 @Component({
     head () {
@@ -131,6 +128,7 @@ import { User } from "../../../../Interfaces/user";
         };
     },
     components: {
+        SearchBar,
         ScrollBar,
     }
 })
@@ -138,12 +136,23 @@ export default class StaffComments extends Vue {
     @Getter isHeadStaff!: boolean;
 
     info = "";
+    text = "";
     loading = false;
     showValidated = true;
     end = false;
-    comments: Comment[] = [];
+    comments: StaffComment[] = [];
 
     async mounted() {
+        await this.getData();
+    }
+
+    async updateQuery (query: string) {
+        this.text = query;
+        await this.getData();
+    }
+
+    async updateFilter () {
+        this.showValidated = !this.showValidated;
         await this.getData();
     }
 
@@ -154,6 +163,7 @@ export default class StaffComments extends Vue {
 
         let url = `/api/staff/comments`;
         if (!this.showValidated) url += "?filter=true";
+        if (this.text) url += (url.includes("?") ? "&" : "?") + `text=${this.text}`
 
         const { data } = await this.$axios.get(url);
 
@@ -178,6 +188,7 @@ export default class StaffComments extends Vue {
         this.loading = true;
         let url = `/api/staff/comments?skip=${this.comments.length}`;
         if (!this.showValidated) url += "&filter=true";
+        if (this.text) url += `&text=${this.text}`
 
         const { data } = await this.$axios.get(url);
 
@@ -205,8 +216,7 @@ export default class StaffComments extends Vue {
         } else if (res.data) {
             const resComment = res.data;
             this.comments[i].isValid = resComment.isValid;
-            this.comments[i].reviewer = resComment.reviewer;
-            (this.comments[i].reviewer as User).osu.username = resComment.reviewer.osu.username;
+            this.comments[i].reviewer = resComment.reviewer.osu.username;
             this.comments[i].lastReviewedAt = resComment.lastReviewedAt;
         }
     }
