@@ -102,7 +102,8 @@ export const mutations: MutationTree<StageState> = {
             ...query,
         };
     },
-    reset (state) {
+    reset (state, removeText: boolean) {
+        if (removeText) state.query.text = "";
         state.section = "beatmaps";
         state.selectedCategory = null;
         state.beatmaps = [];
@@ -212,8 +213,8 @@ export const actions: ActionTree<StageState, RootState> = {
             commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
         }
     },
-    reset ({ commit }) {
-        commit("reset");
+    reset ({ commit }, removeText = false) {
+        commit("reset", removeText);
     },
     async createNomination ({ commit, state }, nomineeId: number) {
         if (!state.selectedCategory) return;

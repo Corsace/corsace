@@ -72,7 +72,7 @@ export default class StagePageCategories extends Vue {
     // Only change the choices list on category change
     saveSection (section: string): void {
         this.toUpdateSection = section;
-        this.reset();
+        this.reset(true);
     }
 
     updateCategory (category: string): void {
