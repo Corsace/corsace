@@ -29,7 +29,7 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     }
 
     // Check if there's already a guest difficulty request sent
-    if (user.guestRequests.some(r => r.mca.year === year && r.mode.ID === mode.ID && r.ID !== currentRequestId)) {
+    if (user.guestRequests.some(r => r.mca.year === year && r.mode.ID === mode.ID && (!currentRequestId || r.ID !== currentRequestId))) {
         return {
             error: "A guest request already exists!",
         };
@@ -71,6 +71,7 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
         return { error: "Map is not in our database! If this map was ranked this year, please let VINXIS know." };
     }
 
+    // Check mode consistency
     if (dbMap.mode.ID !== mode.ID) {
         return { error: "Map is not the correct mode! This beatmap's mode is " + dbMap.mode.name + " while the mode you are applying to is for " + mode.name};
     }
