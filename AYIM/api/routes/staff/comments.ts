@@ -4,6 +4,7 @@ import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
 import { currentMCA } from "../../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { StaffComment } from "../../../../Interfaces/comment";
+import { Brackets } from "typeorm";
 
 const commentsReviewRouter = new Router();
 
@@ -15,6 +16,7 @@ commentsReviewRouter.get("/", async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(ctx.query.skip) : 0;
+    const text = ctx.query.text ?? undefined;
     let query = UserComment
                     .createQueryBuilder("userComment")
                     .leftJoin("userComment.commenter", "commenter")
@@ -35,6 +37,18 @@ commentsReviewRouter.get("/", async (ctx) => {
                     .where(`year = ${mca.year}`)
     if (filter)
         query.andWhere(`isValid = 0`)
+    if (text) {
+        query
+            .andWhere(new Brackets(qb => {
+                qb.where("commenter.osuUsername LIKE :criteria")
+                    .orWhere("commenter.osuUserid LIKE :criteria")
+                    .orWhere("target.osuUsername LIKE :criteria")
+                    .orWhere("target.osuUserid LIKE :criteria")
+                    .orWhere("reviewer.osuUsername LIKE :criteria")
+                    .orWhere("reviewer.osuUserid LIKE :criteria");
+            }))
+            .setParameter("criteria", `%${text}%`);
+    }
     
     const comments = await query.offset(isNaN(skip) ? 0 : skip).limit(10).getRawMany();
     const staffComments = comments.map(comment => {

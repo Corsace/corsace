@@ -3,19 +3,16 @@
         <div class="staff-page__title">
             Comments
         </div>
+        <search-bar
+            :placeholder="$t('ayim.comments.search')"
+            @update:search="updateQuery($event)"
+        />
         <button
-            v-if="!showValidated"
-            @click="showValidated = true; getData()"
+            @click="updateFilter()"
             class="button"
+            style="margin: 0 5px;"
         >
-            Show Validated
-        </button>
-        <button
-            v-else
-            @click="showValidated = false; getData()"
-            class="button"
-        >
-            Hide Validated
+            {{ showValidated ? "Hide Validated" : "Show Validated" }}
         </button>
         <div
             v-if="info"
@@ -119,10 +116,10 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
+import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 
 import { StaffComment } from "../../../../Interfaces/comment";
-import { User } from "../../../../Interfaces/user";
 
 @Component({
     head () {
@@ -131,6 +128,7 @@ import { User } from "../../../../Interfaces/user";
         };
     },
     components: {
+        SearchBar,
         ScrollBar,
     }
 })
@@ -138,12 +136,23 @@ export default class StaffComments extends Vue {
     @Getter isHeadStaff!: boolean;
 
     info = "";
+    text = "";
     loading = false;
     showValidated = true;
     end = false;
     comments: StaffComment[] = [];
 
     async mounted() {
+        await this.getData();
+    }
+
+    async updateQuery (query: string) {
+        this.text = query;
+        await this.getData();
+    }
+
+    async updateFilter () {
+        this.showValidated = !this.showValidated;
         await this.getData();
     }
 
@@ -154,6 +163,7 @@ export default class StaffComments extends Vue {
 
         let url = `/api/staff/comments`;
         if (!this.showValidated) url += "?filter=true";
+        if (this.text) url += (url.includes("?") ? "&" : "?") + `text=${this.text}`
 
         const { data } = await this.$axios.get(url);
 
@@ -178,6 +188,7 @@ export default class StaffComments extends Vue {
         this.loading = true;
         let url = `/api/staff/comments?skip=${this.comments.length}`;
         if (!this.showValidated) url += "&filter=true";
+        if (this.text) url += `&text=${this.text}`
 
         const { data } = await this.$axios.get(url);
 
