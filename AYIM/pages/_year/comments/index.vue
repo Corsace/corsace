@@ -27,7 +27,16 @@
                         class="button button--image"
                         :class="{ 'button--friends': filterFriends }"
                     >
-                        {{ filterFriends ? "friends" : "all" }}
+                        <img
+                            v-if="!filterFriends"
+                            alt="All users shown"
+                            src="../../../../Assets/img/ayim-mca/site/all.png"
+                        >
+                        <img
+                            v-else
+                            alt="Friends shown only"
+                            src="../../../../Assets/img/ayim-mca/site/friends.png"
+                        >
                     </button>
 
                     <button
