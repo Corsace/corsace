@@ -120,10 +120,12 @@ export class User extends BaseEntity {
             .leftJoinAndSelect("user.mcaEligibility", "mca")
             .where(`mca.year = :q`, { q: parseInt(query.year) });
 
+        // Check mode
         if (query.mode in ModeDivisionType) {
             queryBuilder.andWhere(`mca.${query.mode} = true`);
         }
         
+        // Remove users with comments already
         if (query.notCommented === "true") {
             queryBuilder.andWhere((qb) => {
                 const subQuery = qb.subQuery()
@@ -133,6 +135,11 @@ export class User extends BaseEntity {
 
                 return "NOT EXISTS " + subQuery;
             });
+        }
+
+        // osu! friends list
+        if (query.friends?.length > 0) {
+            queryBuilder.andWhere("user.osuUserid IN (" + query.friends.join(",") + ")");
         }
 
         // Check for search text

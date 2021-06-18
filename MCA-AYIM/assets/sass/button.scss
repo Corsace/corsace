@@ -55,6 +55,13 @@
         font-weight: 500;
     }
 
+    &--friends {
+        background: rgb(255,102,170);
+        &:hover {
+            background: black;
+        }
+    }
+
     &--image > img {
         height: 35px;
     }

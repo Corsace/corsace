@@ -13,5 +13,6 @@ export interface MapperQuery {
     mode: string;
     option: string;
     notCommented: string;
+    friends: number[];
     order: "ASC" | "DESC" | undefined;
 }

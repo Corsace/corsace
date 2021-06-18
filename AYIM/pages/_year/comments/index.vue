@@ -22,21 +22,26 @@
                     />
 
                     <button
-                        v-if="phase && phase.phase !== 'results' && !notCommented"
-                        @click="changeFilter(true)"
+                        v-if="loggedInUser"
+                        @click="changeFilterFriends()"
+                        class="button button--image"
+                        :class="{ 'button--friends': filterFriends }"
+                    >
+                        {{ filterFriends ? "friends" : "all" }}
+                    </button>
+
+                    <button
+                        v-if="loggedInUser && phase && phase.phase !== 'results'"
+                        @click="changeFilterCommented()"
                         class="button button--image"
                     >
                         <img
+                            v-if="!notCommented"
                             alt="All users shown"
                             src="../../../../Assets/img/ayim-mca/site/comments.png"
                         >
-                    </button>
-                    <button
-                        v-else-if="phase && phase.phase !== 'results' && notCommented"
-                        @click="changeFilter(false)"
-                        class="button button--image"
-                    >
                         <img
+                            v-else
                             alt="Users without comments shown only"
                             src="../../../../Assets/img/ayim-mca/site/comments_hidden.png"
                         >
@@ -99,7 +104,7 @@ import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
 
-import { User } from "../../../../Interfaces/user";
+import { User, UserMCAInfo } from "../../../../Interfaces/user";
 import { MCA, Phase } from "../../../../Interfaces/mca";
 
 @Component({
@@ -118,6 +123,7 @@ import { MCA, Phase } from "../../../../Interfaces/mca";
 })
 export default class Comments extends Vue {
 
+    @State loggedInUser!: UserMCAInfo;
     @State mca!: MCA;
     @State selectedMode!: string;
     @Getter phase!: Phase | null;
@@ -125,6 +131,7 @@ export default class Comments extends Vue {
     loading = false;
     text = "";
     notCommented = false;
+    filterFriends = false;
     userOption = "alph";
     orderOption = "asc";
     mappers: User[] = [];
@@ -159,14 +166,19 @@ export default class Comments extends Vue {
         await this.getMappers();
     }
 
-    async changeFilter (filter: boolean) {
-        this.notCommented = filter;
+    async changeFilterCommented () {
+        this.notCommented = !this.notCommented;
+        await this.getMappers();
+    }
+
+    async changeFilterFriends () {
+        this.filterFriends = !this.filterFriends;
         await this.getMappers();
     }
 
     async getMappers (replace = true) {
         this.loading = true;
-        const { data } = await this.$axios.get(`/api/mappers/search?skip=${replace ? 0 : this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&option=${this.userOption}&order=${this.orderOption.toUpperCase()}&text=${this.text}&notCommented=${this.notCommented}`);
+        const { data } = await this.$axios.get(`/api/mappers/search?skip=${replace ? 0 : this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&option=${this.userOption}&order=${this.orderOption.toUpperCase()}&text=${this.text}&notCommented=${this.notCommented}&friendFilter=${this.filterFriends}`);
 
         if (data.error)
             alert(data.error);
