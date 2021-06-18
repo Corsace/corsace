@@ -3,6 +3,7 @@ import { isLoggedInDiscord, isMCAStaff } from "../../../../Server/middleware";
 import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
 import { currentMCA } from "../../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
+import { StaffComment } from "../../../../Interfaces/comment";
 
 const commentsReviewRouter = new Router();
 
@@ -15,27 +16,56 @@ commentsReviewRouter.get("/", async (ctx) => {
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(ctx.query.skip) : 0;
     let query = UserComment
-                    .createQueryBuilder("UserComment")
-                    .leftJoin("UserComment.target", "UserComment__target")
-                    .leftJoin("UserComment.reviewer", "UserComment__reviewer")
-                    .leftJoin("UserComment.commenter", "UserComment__commenter")
-                    .leftJoin("UserComment.mode", "UserComment_mode")
-                    .select("UserComment.ID", "UserComment_ID")
-                    .addSelect("UserComment.comment", "UserComment_comment")
-                    .addSelect("UserComment.commenterID", "UserComment_commenterID")
-                    .addSelect("UserComment.isValid", "UserComment_isValid")
-                    .addSelect("UserComment.lastReviewedAt", "UserComment_lastReviewedAt")
-                    .addSelect("UserComment_mode.name", "UserComment_mode_name")
-                    .addSelect("UserComment__commenter.osuUserid", "UserComment__commenter_osuUserid")
-                    .addSelect("UserComment__commenter.osuUsername", "UserComment__commenter_osuUsername")
-                    .addSelect("UserComment__target.osuUserid", "UserComment__target_osuUserid")
-                    .addSelect("UserComment__target.osuUsername", "UserComment__target_osuUsername")
-                    .addSelect("UserComment__reviewer.osuUsername", "UserComment__reviewer_osuUsername")
+                    .createQueryBuilder("userComment")
+                    .leftJoin("userComment.commenter", "commenter")
+                    .leftJoin("userComment.target", "target")
+                    .leftJoin("userComment.reviewer", "reviewer")
+                    .leftJoin("userComment.mode", "mode")
+                    .select("userComment.ID", "ID")
+                    .addSelect("userComment.comment", "comment")
+                    .addSelect("userComment.commenterID", "commenterID")
+                    .addSelect("userComment.isValid", "isValid")
+                    .addSelect("userComment.lastReviewedAt", "lastReviewedAt")
+                    .addSelect("mode.name", "modeName")
+                    .addSelect("commenter.osuUserid", "commenterosuID")
+                    .addSelect("commenter.osuUsername", "commenterosuUsername")
+                    .addSelect("target.osuUserid", "targetosuID")
+                    .addSelect("target.osuUsername", "targetosuUsername")
+                    .addSelect("reviewer.osuUsername", "reviewer")
                     .where(`year = ${mca.year}`)
     if (filter)
         query.andWhere(`isValid = 0`)
     
-    ctx.body = await query.skip(isNaN(skip) ? 0 : skip).take(5).getMany();
+    const comments = await query.offset(isNaN(skip) ? 0 : skip).limit(10).getRawMany();
+    const staffComments = comments.map(comment => {
+        const keys = Object.keys(comment);
+        const staffComment: StaffComment = {
+            ID: comment.ID,
+            comment: comment.comment,
+            isValid: comment.isValid === 1,
+            mode: comment.modeName,
+            commenter: {
+                ID: 0,
+                osuID: "",
+                osuUsername: "",
+            },
+            target: {
+                osuID: "",
+                osuUsername: "",
+            },
+            lastReviewedAt: comment.lastReviewedAt ?? undefined,
+            reviewer: comment.reviewer ?? undefined,
+        };
+        for (const key of keys) {
+            if (key.includes("commenter"))
+                staffComment.commenter[key.replace("commenter", "")] = comment[key];
+            else if (key.includes("target"))
+                staffComment.target[key.replace("target", "")] = comment[key];
+        }
+
+        return staffComment;
+    })
+    ctx.body = staffComments;
 });
 
 commentsReviewRouter.post("/:id/review", async (ctx) => {

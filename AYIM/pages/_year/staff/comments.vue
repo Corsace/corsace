@@ -32,32 +32,32 @@
                 >
                     <div 
                         class="staff-comment__info"
-                        :class="`staff-page__link--${comment.mode.name}`"
+                        :class="`staff-page__link--${comment.mode}`"
                     >
                         <div>
                             from
                             <a
-                                :href="`https://osu.ppy.sh/users/${comment.commenter.osu.userID}`"
+                                :href="`https://osu.ppy.sh/users/${comment.commenter.osuID}`"
                                 target="_blank"
                                 class="staff-page__link"
-                                :class="`staff-page__link--${comment.mode.name}`"
+                                :class="`staff-page__link--${comment.mode}`"
                             >
-                                {{ comment.commenter.osu.username }}
+                                {{ comment.commenter.osuUsername }}
                             </a>
                         </div>
                         <div>
                             to
                             <a
-                                :href="`https://osu.ppy.sh/users/${comment.target.osu.userID}`"
+                                :href="`https://osu.ppy.sh/users/${comment.target.osuID}`"
                                 target="_blank"
                                 class="staff-page__link"
-                                :class="`staff-page__link--${comment.mode.name}`"
+                                :class="`staff-page__link--${comment.mode}`"
                             >
-                                {{ comment.target.osu.username }}
+                                {{ comment.target.osuUsername }}
                             </a>
                         </div>
                         <div v-if="comment.isValid">
-                            Validated by {{ comment.reviewer.osu.username }} at {{ new Date(comment.lastReviewedAt).toString() }}
+                            Validated by {{ comment.reviewer }} at {{ new Date(comment.lastReviewedAt).toString() }}
                         </div>
                     </div>
 
@@ -86,7 +86,7 @@
                         <button
                             v-if="isHeadStaff"
                             class="button button--small button__remove staff-comment__action"
-                            @click="ban(comment.commenterID)"
+                            @click="ban(comment.commenter.ID)"
                         >
                             ban
                         </button>
@@ -119,7 +119,7 @@ import { Getter } from "vuex-class";
 
 import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 
-import { Comment } from "../../../../Interfaces/comment";
+import { StaffComment } from "../../../../Interfaces/comment";
 import { User } from "../../../../Interfaces/user";
 
 @Component({
@@ -139,7 +139,7 @@ export default class StaffComments extends Vue {
     loading = false;
     showValidated = true;
     end = false;
-    comments: Comment[] = [];
+    comments: StaffComment[] = [];
 
     async mounted() {
         await this.getData();
@@ -203,8 +203,7 @@ export default class StaffComments extends Vue {
         } else if (res.data) {
             const resComment = res.data;
             this.comments[i].isValid = resComment.isValid;
-            this.comments[i].reviewer = resComment.reviewer;
-            (this.comments[i].reviewer as User).osu.username = resComment.reviewer.osu.username;
+            this.comments[i].reviewer = resComment.reviewer.osu.username;
             this.comments[i].lastReviewedAt = resComment.lastReviewedAt;
         }
     }
