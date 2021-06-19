@@ -268,9 +268,11 @@
                 "asc": "ASC",
                 "desc": "DESC",
                 "voteOrder": "VOTE ORDER",
-                "valid": "valid",
-                "invalid": "invalid",
-                "both": "both"
+                "valid": "VALID",
+                "invalid": "INVALID",
+                "both": "BOTH",
+                "all": "ALL",
+                "played": "PLAYED"
             },
             "hosted": "HOSTED BY",
             "userID": "USER ID"

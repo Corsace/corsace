@@ -22,6 +22,7 @@ interface StageState {
     users: UserChoiceInfo[];
     query: StageQuery;
     favourites: boolean;
+    played: boolean;
     loading: boolean;
     showVoteChoiceBox: boolean;
 }
@@ -42,9 +43,11 @@ export const state = (): StageState => ({
         order: "ASC",
         text: "",
         skip: 0,
+        played: [],
         favourites: [],
     },
     favourites: false,
+    played: false,
     loading: true,
     showVoteChoiceBox: false,
 });
@@ -107,6 +110,9 @@ export const mutations: MutationTree<StageState> = {
     },
     updateFavourites (state, favourites) {
         state.favourites = favourites;
+    },
+    updatePlayed (state, played) {
+        state.played = played;
     },
     reset (state, removeText: boolean) {
         if (removeText) state.query.text = "";
@@ -192,6 +198,10 @@ export const actions: ActionTree<StageState, RootState> = {
         commit("updateFavourites", favourites);
         dispatch("search");
     },
+    async updatePlayed ({ commit, dispatch }, played) {
+        commit("updatePlayed", played);
+        dispatch("search");
+    },
     async search ({ state, commit, rootState }, skipping = false) {
         if (!state.selectedCategory) return;
 
@@ -203,7 +213,7 @@ export const actions: ActionTree<StageState, RootState> = {
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
 
-        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&favourites=${state.favourites}&text=${state.query.text}&skip=${skip}`);
+        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&favourites=${state.favourites}&played=${state.played}&text=${state.query.text}&skip=${skip}`);
         if (data.error)
             return alert(data.error);
 

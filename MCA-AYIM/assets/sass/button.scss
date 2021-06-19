@@ -46,12 +46,6 @@
         text-shadow: none;
     }
 
-    &--small {
-        min-width: 100px;
-        text-transform: none;
-        font-size: $font-base;
-    }
-
     &--active {
         background-color: white;
         color: black;
@@ -70,6 +64,32 @@
         @include breakpoint(mobile) {
             height: 15px;
         }
+    }
+
+    &--small {
+        min-width: 50px;
+        @include breakpoint(mobile) {
+            min-width: 30px;
+        }
+        @include breakpoint(tablet) {
+            min-width: 70px;
+        }
+        @include breakpoint(laptop) {
+            min-width: 90px;
+        }
+        @include breakpoint(desktop) {
+            min-width: 120px;
+        }
+
+        & > img {
+            height: 15px;
+            @include breakpoint(mobile) {
+                height: 7px;
+            }
+        }
+
+        text-transform: none;
+        font-size: $font-base;
     }
 
     &__add {

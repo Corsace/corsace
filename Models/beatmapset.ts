@@ -180,6 +180,10 @@ export class Beatmapset extends BaseEntity {
         // Check for favourites
         if (query.favourites?.length > 0)
             queryBuilder.andWhere("beatmapset.ID IN (" + query.favourites.join(",") + ")");
+
+        // Check for played
+        if (query.played?.length > 0)
+            queryBuilder.andWhere("beatmapset.ID IN (" + query.played.join(",") + ")");
                    
         // Ordering
         const optionQuery = query.option ? query.option.toLowerCase() : "";

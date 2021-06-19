@@ -5,34 +5,45 @@
         @update:search="updateText($event)"
     >
         <button
-            v-if="$route.params.stage === 'voting'"
-            class="button"
-            :class="{ 'button--active': showVoteChoiceBox }"
-            @click="toggleVoteChoiceBox"
-        >
-            {{ $t(`mca.nom_vote.options.voteOrder`) }}
-        </button>
-
-        <button
             v-if="section === 'beatmaps'"
             @click="updateFavourite"
             class="button button--image"
-            :class="{ 'button--friends': favourites }"
+            :class="{ 
+                'button--friends': favourites,
+                'button--small': $route.params.stage === 'voting'
+            }"
         >
             <img src="../../../Assets/img/ayim-mca/site/heart.png">
         </button>
 
         <toggle-button
+            :class="{ 'button--small': $route.params.stage === 'voting' }"
+            :options="playedFilters"
+            @change="changePlayed"
+        />
+
+        <toggle-button
+            :class="{ 'button--small': $route.params.stage === 'voting' }"
             :options="sectionOptions"
             :arrow="orderOption"
             @change="changeOption"
         />
         
         <toggle-button
+            :class="{ 'button--small': $route.params.stage === 'voting' }"
             :options="orderOptions"
             :arrow="orderOption"
             @change="changeOrder"
         />
+        
+        <button
+            v-if="$route.params.stage === 'voting'"
+            class="button button--small"
+            :class="{ 'button--active': showVoteChoiceBox }"
+            @click="toggleVoteChoiceBox"
+        >
+            {{ $t(`mca.nom_vote.options.voteOrder`) }}
+        </button>
     </search-bar>
 </template>
 
@@ -59,13 +70,16 @@ export default class StagePageFilters extends Vue {
     @stageModule.State section!: string;
     @stageModule.State query!: StageQuery;
     @stageModule.State favourites!: boolean;
+    @stageModule.State played!: boolean;
     @stageModule.State showVoteChoiceBox!: boolean;
     @stageModule.Action updateQuery;
     @stageModule.Action updateFavourites;
+    @stageModule.Action updatePlayed;
     @stageModule.Mutation toggleVoteChoiceBox;
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
     userOptions = ["alph", "id"];
+    playedFilters = ["all", "played"]
     orderOptions = ["asc", "desc"];
     votingOptions = ["incVote", "voteChoice"];
     orderOption = "asc";
@@ -81,6 +95,10 @@ export default class StagePageFilters extends Vue {
 
     updateFavourite () {
         this.updateFavourites(!this.favourites);
+    }
+
+    changePlayed () {
+        this.updatePlayed(!this.played);
     }
 
     changeOption (option: string) {
