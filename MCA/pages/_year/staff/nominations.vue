@@ -176,6 +176,9 @@ export default class Nominations extends Vue {
                 const lowerText = this.text.toLowerCase();
                 if (nomination.user) {
                     if (
+                        !nomination.nominator.osu.username.toLowerCase().includes(lowerText) &&
+                        !nomination.nominator.osu.userID.includes(lowerText) &&
+                        !nomination.nominator.discord.username.includes(lowerText) &&
                         !nomination.user.osu.username.toLowerCase().includes(lowerText) && 
                         !nomination.user.osu.userID.includes(lowerText) &&
                         !nomination.user.discord.username.toLowerCase().includes(lowerText)
@@ -183,6 +186,9 @@ export default class Nominations extends Vue {
                         continue;
                 } else if (nomination.beatmapset) {
                     if (
+                        !nomination.nominator.osu.username.toLowerCase().includes(lowerText) &&
+                        !nomination.nominator.osu.userID.includes(lowerText) &&
+                        !nomination.nominator.discord.username.includes(lowerText) &&
                         !nomination.beatmapset.ID.toString().includes(lowerText) &&
                         !nomination.beatmapset.artist.toLowerCase().includes(lowerText) &&
                         !nomination.beatmapset.title.toLowerCase().includes(lowerText) &&
