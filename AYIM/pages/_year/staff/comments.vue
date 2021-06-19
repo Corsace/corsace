@@ -6,14 +6,15 @@
         <search-bar
             :placeholder="$t('ayim.comments.search')"
             @update:search="updateQuery($event)"
-        />
-        <button
-            @click="updateFilter()"
-            class="button"
-            style="margin: 0 5px;"
         >
-            {{ showValidated ? "Hide Validated" : "Show Validated" }}
-        </button>
+            <button
+                @click="updateFilter()"
+                class="button"
+                style="margin: 0 5px;"
+            >
+                {{ showValidated ? "Hide Validated" : "Show Validated" }}
+            </button>
+        </search-bar>
         <div
             v-if="info"
             class="info"
