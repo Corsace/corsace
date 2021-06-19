@@ -13,6 +13,14 @@
             {{ $t(`mca.nom_vote.options.voteOrder`) }}
         </button>
 
+        <button
+            @click="updateFavourite"
+            class="button button--image"
+            :class="{ 'button--friends': favourites }"
+        >
+            <img src="../../../Assets/img/ayim-mca/site/heart.png">
+        </button>
+
         <toggle-button
             :options="sectionOptions"
             :arrow="orderOption"
@@ -49,8 +57,10 @@ export default class StagePageFilters extends Vue {
 
     @stageModule.State section!: string;
     @stageModule.State query!: StageQuery;
+    @stageModule.State favourites!: boolean;
     @stageModule.State showVoteChoiceBox!: boolean;
     @stageModule.Action updateQuery;
+    @stageModule.Action updateFavourites;
     @stageModule.Mutation toggleVoteChoiceBox;
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
@@ -66,6 +76,10 @@ export default class StagePageFilters extends Vue {
 
     updateText (text: string) {
         this.updateQuery({ text });
+    }
+
+    updateFavourite () {
+        this.updateFavourites(!this.favourites);
     }
 
     changeOption (option: string) {

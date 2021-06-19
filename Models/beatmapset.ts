@@ -142,6 +142,10 @@ export class Beatmapset extends BaseEntity {
                     "user.discordUsername LIKE :criteria OR " +
                     "otherName.name LIKE :criteria)", { criteria: `%${query.text}%` });
         }
+        
+        // Check for favourites
+        if (query.favourites?.length > 0)
+            queryBuilder.andWhere("beatmapset.ID IN (" + query.favourites.join(",") + ")");
                    
         // Ordering
         const optionQuery = query.option ? query.option.toLowerCase() : "";

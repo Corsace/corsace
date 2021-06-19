@@ -4,6 +4,7 @@ export interface StageQuery {
     order: "ASC" | "DESC" | undefined;
     text: string;
     skip: number;
+    favourites: number[];
 }
 
 export interface MapperQuery {

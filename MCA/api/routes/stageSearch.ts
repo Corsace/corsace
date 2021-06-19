@@ -1,3 +1,4 @@
+import Axios from "axios";
 import { ParameterizedContext } from "koa";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 import { CategoryType } from "../../../Interfaces/category";
@@ -21,6 +22,8 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
         let list: BeatmapsetInfo[] | UserChoiceInfo[] = [];
         let setList: BeatmapsetInfo[] = [];
         let userList: UserChoiceInfo[] = [];
+        let favIDs: number[] = [];
+
         const category = await Category
             .createQueryBuilder("category")
             .innerJoinAndSelect("category.mca", "mca")
@@ -55,6 +58,29 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
         if (!isEligibleFor(ctx.state.user, modeId, ctx.state.year))
             return ctx.body = { error: "Not eligible for this mode!" };
         
+        if (ctx.query.favourites === "true" && category.type == CategoryType.Beatmapsets) {
+            let offset = 0;
+            const accessToken: string = (await User
+                                    .createQueryBuilder("user")
+                                    .select("osuAccesstoken")
+                                    .where(`ID = ${ctx.state.user.ID}`)
+                                    .getRawOne()).osuAccesstoken;
+            for (;;) {
+                const res = await Axios.get(`https://osu.ppy.sh/api/v2/users/${ctx.state.user.osu.userID}/beatmapsets/favourite?limit=51&offset=${offset}`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+                const sets = res.data.map(set => set.id);
+
+                favIDs.push(...sets);
+
+                if (sets.length < 51) break;
+
+                offset+=sets.length;
+            }
+        }
+
         let count = 0;
         const query: StageQuery = {
             category: category.ID,
@@ -62,6 +88,7 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             option: ctx.query.option,
             order: ctx.query.order,
             text: ctx.query.text,
+            favourites: favIDs,
         };
     
         if (category.type == CategoryType.Beatmapsets) { // Search for beatmaps

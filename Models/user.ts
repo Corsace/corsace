@@ -138,9 +138,8 @@ export class User extends BaseEntity {
         }
 
         // osu! friends list
-        if (query.friends?.length > 0) {
+        if (query.friends?.length > 0)
             queryBuilder.andWhere("user.osuUserid IN (" + query.friends.join(",") + ")");
-        }
 
         // Check for search text
         if (query.text) {
