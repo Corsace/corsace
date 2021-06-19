@@ -60,11 +60,7 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
         
         if (ctx.query.favourites === "true" && category.type == CategoryType.Beatmapsets) {
             let offset = 0;
-            const accessToken: string = (await User
-                                    .createQueryBuilder("user")
-                                    .select("osuAccesstoken")
-                                    .where(`ID = ${ctx.state.user.ID}`)
-                                    .getRawOne()).osuAccesstoken;
+            const accessToken: string = await ctx.state.user.getAccessToken("osu");
             for (;;) {
                 const res = await Axios.get(`https://osu.ppy.sh/api/v2/users/${ctx.state.user.osu.userID}/beatmapsets/favourite?limit=51&offset=${offset}`, {
                     headers: {

@@ -229,6 +229,15 @@ export class User extends BaseEntity {
         ]);
     }
 
+    public getAccessToken = async function(this: User, tokenType: "osu" | "discord" = "osu"): Promise<string> {
+        const res = await User
+        .createQueryBuilder("user")
+        .select(tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken")
+        .where(`ID = ${this.ID}`)
+        .getRawOne();
+        return res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"]
+    }
+
     public getCondensedInfo = function(this: User, chosen = false): UserChoiceInfo {
         return {
             corsaceID: this.ID,

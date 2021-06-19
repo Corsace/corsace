@@ -19,11 +19,7 @@ mappersRouter.get("/search", async (ctx) => {
         if (!ctx.state.user)
             return ctx.body = { error: "Please login via osu! to use the friends filter!" };
         try {
-            const accessToken: string = (await User
-                                    .createQueryBuilder("user")
-                                    .select("osuAccesstoken")
-                                    .where(`ID = ${ctx.state.user.ID}`)
-                                    .getRawOne()).osuAccesstoken;
+            const accessToken: string = await ctx.state.user.getAccessToken("osu");
             const res = await Axios.get("https://osu.ppy.sh/api/v2/friends", {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
