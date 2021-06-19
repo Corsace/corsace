@@ -125,7 +125,7 @@
                         <div class="event__image-container">
                             <img
                                 class="event__image"
-                                :src="require(`../../Assets/img/main/${key}.png`)"
+                                :src="require(`../../Assets/img/main/${key}.jpg`)"
                                 alt=""
                             >
                         </div>
