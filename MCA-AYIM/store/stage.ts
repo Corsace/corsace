@@ -7,7 +7,7 @@ import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
 import { StageQuery } from "../../Interfaces/queries";
 
-export type SectionCategory = "beatmaps" | "users";
+export type SectionCategory = "beatmaps" | "users" | "";
 export type StageType = "nominating" | "voting";
 
 interface StageState {
@@ -27,7 +27,7 @@ interface StageState {
 }
 
 export const state = (): StageState => ({
-    section: "beatmaps",
+    section: "",
     selectedCategory: null,
     categories: [],
     nominations: [],

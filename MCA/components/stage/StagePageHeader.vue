@@ -88,13 +88,13 @@ export default class StateContent extends Vue {
         text-transform: uppercase;
 
         @include breakpoint(tablet) {
-            font-size: 3.6rem;
+            font-size: 1.9rem;
         }
         @include breakpoint(laptop) {
-            font-size: 2.5rem;
+            font-size: 1.46rem;
         }
         @include breakpoint(desktop) {
-            font-size: 4.1rem;
+            font-size: 2.16rem;
         }
 
         grid-column: 2;
@@ -111,9 +111,9 @@ export default class StateContent extends Vue {
     }
 
     &__desc {
-        font-size: $font-base;
+        font-size: $font-sm;
         @include breakpoint(tablet) {
-            font-size: $font-lg;
+            font-size: $font-base;
         }
         font-style: italic;
 

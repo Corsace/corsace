@@ -201,11 +201,12 @@ export default class IndexContent extends Vue {
 .general {
     @extend %spaced-container;
     margin: 0;
+    flex: 1;
 }
 
 .categories {
     @extend %spaced-container;
-    flex: 1;
+    flex: 6;
 
     &__category-title {
         border-bottom: 2px solid #fff;
@@ -288,6 +289,7 @@ export default class IndexContent extends Vue {
     @extend %flex-box;
     flex-direction: column;
     padding: 8px;
+    flex: 1;
 
     &__title {
         border-bottom: 1px solid white;

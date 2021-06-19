@@ -8,6 +8,7 @@
             category-name
             show-extra
             clickable
+            expand
             @activate="saveSection('beatmaps')"
             @target="updateCategory($event)"
         />
@@ -19,6 +20,7 @@
             category-name
             show-extra
             clickable
+            expand
             @activate="saveSection('users')"
             @target="updateCategory($event)"
         />
@@ -110,6 +112,15 @@ export default class StagePageCategories extends Vue {
 
 .stage-categories {
     flex: 1 1 15%;
+
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    &::-webkit-scrollbar {
+        width: 7px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #5f5f5f;
+    }
 }
 
 </style>
