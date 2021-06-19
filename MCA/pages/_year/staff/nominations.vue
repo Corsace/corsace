@@ -1,23 +1,29 @@
 <template>
     <div class="staff-page">
-        <toggle-button
-            :options="viewOptions"
-            @change="changeView"
-        />
-        <button
-            v-if="!showReviewed && viewOption !== 'invalid'"
-            @click="showReviewed = true"
-            class="button"
+        <search-bar
+            class="category-filters"
+            :placeholder="$t('mca.nom_vote.search')"
+            @update:search="text = $event"
         >
-            Show Reviewed
-        </button>
-        <button
-            v-else-if="showReviewed && viewOption !== 'invalid'"
-            @click="showReviewed = false"
-            class="button"
-        >
-            Hide Reviewed
-        </button>
+            <toggle-button
+                :options="viewOptions"
+                @change="changeView"
+            />
+            <button
+                v-if="!showReviewed && viewOption !== 'invalid'"
+                @click="showReviewed = true"
+                class="button"
+            >
+                Show Reviewed
+            </button>
+            <button
+                v-else-if="showReviewed && viewOption !== 'invalid'"
+                @click="showReviewed = false"
+                class="button"
+            >
+                Hide Reviewed
+            </button>
+        </search-bar>
         <mode-switcher
             :hide-phase="true"
             title="nominations"
@@ -111,6 +117,7 @@ import { namespace, State } from "vuex-class";
 
 import ModeSwitcher from "../../../../MCA-AYIM/components/ModeSwitcher.vue";
 import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
+import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 
 import { Category, CategoryInfo } from "../../../../Interfaces/category";
@@ -133,6 +140,7 @@ interface NominationsByCategory {
     components: {
         ModeSwitcher,
         ScrollBar,
+        SearchBar,
         ToggleButton,
     },
     head () {
@@ -149,6 +157,7 @@ export default class Nominations extends Vue {
     nominations: Nomination[] = [];
     viewOptions = ["both", "valid", "invalid"];
     viewOption = "both";
+    text = "";
     showReviewed = true;
     selectedCategoryId: null | number = null;
 
@@ -163,6 +172,28 @@ export default class Nominations extends Vue {
             if (nomination.reviewer && !this.showReviewed) continue;
             if (!nomination.isValid && this.viewOption === "valid") continue;
             else if (nomination.isValid && this.viewOption === "invalid") continue;
+            if (this.text) {
+                const lowerText = this.text.toLowerCase();
+                if (nomination.user) {
+                    if (
+                        !nomination.user.osu.username.toLowerCase().includes(lowerText) && 
+                        !nomination.user.osu.userID.includes(lowerText) &&
+                        !nomination.user.discord.username.toLowerCase().includes(lowerText)
+                    )
+                        continue;
+                } else if (nomination.beatmapset) {
+                    if (
+                        !nomination.beatmapset.ID.toString().includes(lowerText) &&
+                        !nomination.beatmapset.artist.toLowerCase().includes(lowerText) &&
+                        !nomination.beatmapset.title.toLowerCase().includes(lowerText) &&
+                        !nomination.beatmapset.tags.toLowerCase().includes(lowerText) &&
+                        !nomination.beatmapset.creator!.osu.username.toLowerCase().includes(lowerText) && 
+                        !nomination.beatmapset.creator!.osu.userID.includes(lowerText) &&
+                        !nomination.beatmapset.creator!.discord.username.toLowerCase().includes(lowerText)
+                    )
+                        continue;
+                }
+            }
 
             const groupIndex = groups.findIndex(g => g.category.ID === nomination.category.ID);
 
