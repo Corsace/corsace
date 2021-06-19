@@ -123,11 +123,11 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
                 return ctx.body = {
                     error: "Beatmapset exceeds maximum SR requirement!", 
                 };
-            if (category.filter.minCS && !beatmapset.beatmaps.some(beatmap => beatmap.circleSize >= category.filter!.minCS!))
+            if (category.filter.minCS && beatmapset.beatmaps.find(beatmap => beatmap.totalSR === beatmapset.beatmaps.reduce((prev, current) => (prev.totalSR > current.totalSR) ? prev : current).totalSR)!.circleSize < category.filter.minCS)
                 return ctx.body = {
                     error: "Beatmapset does not exceed minimum CS requirement!", 
                 };
-            if (category.filter.maxCS && !beatmapset.beatmaps.some(beatmap => beatmap.circleSize <= category.filter!.maxCS!))
+            if (category.filter.maxCS && beatmapset.beatmaps.find(beatmap => beatmap.totalSR === beatmapset.beatmaps.reduce((prev, current) => (prev.totalSR > current.totalSR) ? prev : current).totalSR)!.circleSize > category.filter.maxCS)
                 return ctx.body = {
                     error: "Beatmapset exceeds maximum CS requirement!", 
                 };

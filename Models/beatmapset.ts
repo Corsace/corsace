@@ -121,10 +121,44 @@ export class Beatmapset extends BaseEntity {
                     })
             if (category.filter.minCS)
                 queryBuilder
-                    .andWhere(`beatmap.circleSize>=${category.filter.minCS}`);
+                    .andWhere((qb) => {
+                        const subQuery = qb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .select("refMap.circleSize")
+                            .where("beatmapsetID = beatmapset.ID")
+                            .andWhere((sqb) => {
+                                const subSubQuery = sqb.subQuery()
+                                    .from(Beatmap, "refMap2")
+                                    .select("max(refMap2.totalSR)")
+                                    .where("beatmapsetID = beatmapset.ID")
+                                    .limit(1)
+                                    .getQuery();
+                                return "refMap.totalSR = " + subSubQuery
+                            })
+                            .getQuery();
+        
+                        return `${subQuery} >= ${category.filter!.minCS}`;
+                    });
             if (category.filter.maxCS)
                 queryBuilder
-                    .andWhere(`beatmap.circleSize<=${category.filter.maxCS}`);
+                    .andWhere((qb) => {
+                        const subQuery = qb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .select("refMap.circleSize")
+                            .where("beatmapsetID = beatmapset.ID")
+                            .andWhere((sqb) => {
+                                const subSubQuery = sqb.subQuery()
+                                    .from(Beatmap, "refMap2")
+                                    .select("max(refMap2.totalSR)")
+                                    .where("beatmapsetID = beatmapset.ID")
+                                    .limit(1)
+                                    .getQuery();
+                                return "refMap.totalSR = " + subSubQuery
+                            })
+                            .getQuery();
+
+                        return `${subQuery} >= ${category.filter!.minCS}`;
+                    });
         }
 
         // Check for search text
