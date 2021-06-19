@@ -14,6 +14,7 @@
         </button>
 
         <button
+            v-if="section === 'beatmaps'"
             @click="updateFavourite"
             class="button button--image"
             :class="{ 'button--friends': favourites }"
