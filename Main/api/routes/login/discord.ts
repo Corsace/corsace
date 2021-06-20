@@ -31,7 +31,10 @@ discordRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
                 const guild = await discordGuild();
                 try {
                     let discordUser = await guild.members.fetch(user.discord.userID);
-                    await discordUser.setNickname(user.osu.username);
+                    await Promise.all([
+                        discordUser.setNickname(user.osu.username),
+                        discordUser.roles.add(config.discord.roles.corsace.verified)
+                    ]);
                 } catch (e) {
                     await guild.addMember(user.discord.userID, {
                         accessToken: user.discord.accessToken,
