@@ -46,15 +46,15 @@
                         <template v-if="category.id === selectedCategoryId">
                             <div
                                 v-for="userNominations in selectedCategoryInfo"
-                                :key="userNominations.nominator.ID + '-nominator'"
+                                :key="userNominations.nominator.osuID + '-nominator'"
                                 class="staff-nomination-container"
                             >
                                 <a
-                                    :href="`https://osu.ppy.sh/users/${userNominations.nominator.osu.userID}`"
+                                    :href="`https://osu.ppy.sh/users/${userNominations.nominator.osuID}`"
                                     target="_blank"
                                     class="staff-page__link"
                                 >
-                                    {{ userNominations.nominator.osu.username }}
+                                    {{ userNominations.nominator.osuUsername }}
                                 </a>
 
                                 <ul>
@@ -71,15 +71,25 @@
                                                 >
                                                     {{ getNomineeName(nomination) }}
                                                 </a>
-                                                <span
-                                                    class="staff-nomination__status"
-                                                    :class="`staff-nomination__status--${nomination.isValid ? 'valid' : 'invalid'}`"
-                                                >
-                                                    {{ nomination.isValid ? 'valid' : 'invalid' }}
-                                                </span>
+                                                <div>
+                                                    <a
+                                                        v-if="nomination.beatmapset && nomination.beatmapset.ID"
+                                                        class="staff-page__link"
+                                                        :href="generateUrl(nomination)"
+                                                        target="_blank"
+                                                    >
+                                                        {{ getSpecs(nomination) }}
+                                                    </a>
+                                                    <span
+                                                        class="staff-nomination__status"
+                                                        :class="`staff-nomination__status--${nomination.isValid ? 'valid' : 'invalid'}`"
+                                                    >
+                                                        {{ nomination.isValid ? 'valid' : 'invalid' }}
+                                                    </span>
+                                                </div>
                                                 <div v-if="nomination.reviewer">
                                                     Last reviewed by:
-                                                    {{ nomination.reviewer.osu.username }}
+                                                    {{ nomination.reviewer }}
                                                     at {{ new Date(nomination.lastReviewedAt).toString() }}
                                                 </div>
                                             </div>
@@ -121,18 +131,22 @@ import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 
 import { Category, CategoryInfo } from "../../../../Interfaces/category";
-import { Nomination } from "../../../../Interfaces/nomination";
+import { Nomination, StaffNomination } from "../../../../Interfaces/nomination";
 import { User } from "../../../../Interfaces/user";
 
 const staffModule = namespace("staff");
 
 interface UserNomination {
-    nominator: User,
-    nominations: Nomination[]
+    nominator: {
+        osuID: string;
+        osuUsername: string;
+        discordUsername: string;
+    },
+    nominations: StaffNomination[]
 }
 
 interface NominationsByCategory {
-    category: Category;
+    category: number;
     userNominations: UserNomination[];
 }
 
@@ -154,7 +168,7 @@ export default class Nominations extends Vue {
     @State selectedMode!: string;
     @staffModule.State categories!: CategoryInfo[];
 
-    nominations: Nomination[] = [];
+    nominations: StaffNomination[] = [];
     viewOptions = ["both", "valid", "invalid"];
     viewOption = "both";
     text = "";
@@ -174,37 +188,37 @@ export default class Nominations extends Vue {
             else if (nomination.isValid && this.viewOption === "invalid") continue;
             if (this.text) {
                 const lowerText = this.text.toLowerCase();
-                if (nomination.user) {
+                if (nomination.user?.osuID) {
                     if (
-                        !nomination.nominator.osu.username.toLowerCase().includes(lowerText) &&
-                        !nomination.nominator.osu.userID.includes(lowerText) &&
-                        !nomination.nominator.discord.username.includes(lowerText) &&
-                        !nomination.user.osu.username.toLowerCase().includes(lowerText) && 
-                        !nomination.user.osu.userID.includes(lowerText) &&
-                        !nomination.user.discord.username.toLowerCase().includes(lowerText)
+                        !nomination.nominator.osuUsername.toLowerCase().includes(lowerText) &&
+                        !nomination.nominator.osuID.includes(lowerText) &&
+                        !nomination.nominator.discordUsername.includes(lowerText) &&
+                        !nomination.user.osuUsername.toLowerCase().includes(lowerText) && 
+                        !nomination.user.osuID.includes(lowerText) &&
+                        !nomination.user.discordUsername.toLowerCase().includes(lowerText)
                     )
                         continue;
-                } else if (nomination.beatmapset) {
+                } else if (nomination.beatmapset?.ID) {
                     if (
-                        !nomination.nominator.osu.username.toLowerCase().includes(lowerText) &&
-                        !nomination.nominator.osu.userID.includes(lowerText) &&
-                        !nomination.nominator.discord.username.includes(lowerText) &&
+                        !nomination.nominator.osuUsername.toLowerCase().includes(lowerText) &&
+                        !nomination.nominator.osuID.includes(lowerText) &&
+                        !nomination.nominator.discordUsername.includes(lowerText) &&
                         !nomination.beatmapset.ID.toString().includes(lowerText) &&
                         !nomination.beatmapset.artist.toLowerCase().includes(lowerText) &&
                         !nomination.beatmapset.title.toLowerCase().includes(lowerText) &&
                         !nomination.beatmapset.tags.toLowerCase().includes(lowerText) &&
-                        !nomination.beatmapset.creator!.osu.username.toLowerCase().includes(lowerText) && 
-                        !nomination.beatmapset.creator!.osu.userID.includes(lowerText) &&
-                        !nomination.beatmapset.creator!.discord.username.toLowerCase().includes(lowerText)
+                        !nomination.beatmapset.creator!.osuUsername.toLowerCase().includes(lowerText) && 
+                        !nomination.beatmapset.creator!.osuID.includes(lowerText) &&
+                        !nomination.beatmapset.creator!.discordUsername.toLowerCase().includes(lowerText)
                     )
                         continue;
                 }
             }
 
-            const groupIndex = groups.findIndex(g => g.category.ID === nomination.category.ID);
+            const groupIndex = groups.findIndex(g => g.category === nomination.category);
 
             if (groupIndex !== -1) {
-                const nominatorIndex = groups[groupIndex].userNominations.findIndex(n => n.nominator.ID === nomination.nominator.ID);
+                const nominatorIndex = groups[groupIndex].userNominations.findIndex(n => n.nominator.osuID === nomination.nominator.osuID);
 
                 if (nominatorIndex !== -1) {
                     groups[groupIndex].userNominations[nominatorIndex].nominations.push(nomination);
@@ -229,7 +243,7 @@ export default class Nominations extends Vue {
     }
 
     get selectedCategoryInfo (): UserNomination[] {
-        const group = this.nominationsByCategory.find(group => group.category.ID === this.selectedCategoryId);
+        const group = this.nominationsByCategory.find(group => group.category === this.selectedCategoryId);
         return group?.userNominations || [];
     }
 
@@ -251,28 +265,35 @@ export default class Nominations extends Vue {
         this.selectedCategoryId = id;
     }
 
-    generateUrl (nomination: Nomination): string {
+    generateUrl (nomination: StaffNomination): string {
         if (nomination.beatmapset) {
             return `https://osu.ppy.sh/beatmapsets/${nomination.beatmapset.ID}`;
         }
         
-        return `https://osu.ppy.sh/users/${nomination.user?.osu.userID}`;
+        return `https://osu.ppy.sh/users/${nomination.user?.osuID}`;
     }
 
-    getNomineeName (nomination: Nomination) {
+    getNomineeName (nomination: StaffNomination) {
         if (nomination.beatmapset) {
-            return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title} by ${nomination.beatmapset.creator!.osu.username}`;
+            return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title} by ${nomination.beatmapset.creator!.osuUsername}`;
         }
 
-        return `${nomination.user?.osu.username}`;
+        return `${nomination.user?.osuUsername}`;
+    }
+
+    getSpecs (nomination: StaffNomination): string {
+        if (!nomination.beatmapset) return "";
+        
+        const minutes = Math.floor(nomination.beatmapset.length / 60);
+        const seconds = nomination.beatmapset.length - minutes * 60;
+        return `(BPM = ${nomination.beatmapset.BPM} | Length = ${minutes}:${seconds} | SR = ${nomination.beatmapset.maxSR.toFixed(2)})`;
     }
 
     updateLocalNomination (id: number, data: Nomination) {
         const i = this.nominations.findIndex(n => n.ID === id);
         if (i !== -1) {
             this.nominations[i].isValid = data.isValid;
-            this.nominations[i].reviewer = data.reviewer;
-            this.nominations[i].reviewer.osu.username = data.reviewer.osu.username;
+            this.nominations[i].reviewer = data.reviewer.osu.username;
             this.nominations[i].lastReviewedAt = data.lastReviewedAt;
         }
     }
@@ -308,6 +329,10 @@ export default class Nominations extends Vue {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    min-height: 65px;
+
+    border-bottom: 1px solid white;
 
     &__status {
         margin-left: 5px;
