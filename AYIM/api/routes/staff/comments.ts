@@ -19,10 +19,10 @@ commentsReviewRouter.get("/", async (ctx) => {
     const text = ctx.query.text ?? undefined;
     let query = UserComment
                     .createQueryBuilder("userComment")
-                    .leftJoin("userComment.commenter", "commenter")
-                    .leftJoin("userComment.target", "target")
+                    .innerJoin("userComment.commenter", "commenter")
+                    .innerJoin("userComment.target", "target")
+                    .innerJoin("userComment.mode", "mode")
                     .leftJoin("userComment.reviewer", "reviewer")
-                    .leftJoin("userComment.mode", "mode")
                     .select("userComment.ID", "ID")
                     .addSelect("userComment.comment", "comment")
                     .addSelect("userComment.commenterID", "commenterID")
