@@ -64,7 +64,7 @@ staffNominationsRouter.get("/", async (ctx) => {
             ID: nom.ID,
             category: nom.categoryID,
             isValid: nom.isValid === 1,
-            reviewer: nom.reviewerOsu ?? undefined,
+            reviewer: nom.reviewerOsu ?? "",
             lastReviewedAt: nom.lastReviewedAt,
             nominator: {
                 osuID: nom.nominatorID,

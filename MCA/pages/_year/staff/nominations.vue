@@ -183,8 +183,10 @@ export default class Nominations extends Vue {
 
         for (const nomination of this.nominations) {
             if (nomination.reviewer && !this.showReviewed) continue;
+            
             if (!nomination.isValid && this.viewOption === "valid") continue;
             else if (nomination.isValid && this.viewOption === "invalid") continue;
+
             if (this.text) {
                 const lowerText = this.text.toLowerCase();
                 if (nomination.user?.osuID) {
@@ -295,9 +297,9 @@ export default class Nominations extends Vue {
     updateLocalNomination (id: number, data: Nomination) {
         const i = this.nominations.findIndex(n => n.ID === id);
         if (i !== -1) {
-            this.nominations[i].isValid = data.isValid;
             this.nominations[i].reviewer = data.reviewer.osu.username;
             this.nominations[i].lastReviewedAt = data.lastReviewedAt;
+            this.nominations[i].isValid = data.isValid;
         }
     }
 
@@ -309,7 +311,7 @@ export default class Nominations extends Vue {
         if (!data.error) {
             this.updateLocalNomination(id, data);
         } else {
-            alert("Hellooo peep console (Ctrl + Shift + I, console tab at top)")
+            alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)")
             console.error(data.error);
         }
     }
