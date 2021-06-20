@@ -72,7 +72,7 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     }
 
     // Check mode consistency
-    if (dbMap.mode.ID !== mode.ID) {
+    if (dbMap.mode.ID !== mode.ID && mode.name !== "storyboard") {
         return { error: "Map is not the correct mode! This beatmap's mode is " + dbMap.mode.name + " while the mode you are applying to is for " + mode.name};
     }
 
