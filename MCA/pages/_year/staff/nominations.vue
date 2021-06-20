@@ -130,9 +130,8 @@ import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 
-import { Category, CategoryInfo } from "../../../../Interfaces/category";
+import { CategoryInfo } from "../../../../Interfaces/category";
 import { Nomination, StaffNomination } from "../../../../Interfaces/nomination";
-import { User } from "../../../../Interfaces/user";
 
 const staffModule = namespace("staff");
 
