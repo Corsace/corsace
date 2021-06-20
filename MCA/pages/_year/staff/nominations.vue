@@ -285,7 +285,11 @@ export default class Nominations extends Vue {
         
         const minutes = Math.floor(nomination.beatmapset.length / 60);
         const seconds = nomination.beatmapset.length - minutes * 60;
-        return `(BPM = ${nomination.beatmapset.BPM} | Length = ${minutes}:${seconds} | SR = ${nomination.beatmapset.maxSR.toFixed(2)})`;
+        let time = `${minutes}:${seconds}`
+        if (time.slice(-2, -1) === ":") {
+            time =  time.slice(0, -1) + "0" + time.slice(-1);
+        }
+        return `(BPM = ${nomination.beatmapset.BPM} | Length = ${time} | SR = ${nomination.beatmapset.maxSR.toFixed(2)})`;
     }
 
     updateLocalNomination (id: number, data: Nomination) {
