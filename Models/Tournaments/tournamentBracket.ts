@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Mappool } from "./mappool";
 import { Tournament } from "./tournament";
 
 @Entity()
@@ -13,5 +14,7 @@ export class TournamentBracket extends BaseEntity {
     @Column({ type: "timestamp" })
     weekend!: Date;
 
-    
+    @OneToOne(() => Mappool)
+    @JoinColumn()
+    mappool!: Mappool;
 }
