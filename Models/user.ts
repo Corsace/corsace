@@ -16,7 +16,7 @@ import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 
-// General middlewares
+export const BWSFilter: RegExp = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|community|moderation|moderating|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
 
 export class OAuth {
 
@@ -54,6 +54,12 @@ export class User extends BaseEntity {
     
     @Column(() => OAuth)
     osu!: OAuth;
+
+    @Column()
+    pp!: number;
+
+    @Column()
+    rank!: number;
 
     @CreateDateColumn()
     registered!: Date;
