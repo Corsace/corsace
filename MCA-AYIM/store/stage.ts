@@ -11,6 +11,7 @@ export type SectionCategory = "beatmaps" | "users" | "";
 export type StageType = "nominating" | "voting";
 
 interface StageState {
+    selected: boolean;
     section: SectionCategory,
     categories: CategoryStageInfo[];
     selectedCategory: CategoryStageInfo | null;
@@ -28,6 +29,7 @@ interface StageState {
 }
 
 export const state = (): StageState => ({
+    selected: false,
     section: "",
     selectedCategory: null,
     categories: [],
@@ -55,6 +57,9 @@ export const state = (): StageState => ({
 export const mutations: MutationTree<StageState> = {
     loading (state, bool) {
         state.loading = bool;
+    },
+    selected (state, bool) {
+        state.selected = bool;
     },
     updateStage (state, stage) {
         state.stage = stage;
@@ -238,11 +243,15 @@ export const actions: ActionTree<StageState, RootState> = {
     },
     async createNomination ({ commit, state }, nomineeId: number) {
         if (!state.selectedCategory) return;
+
+        commit("selected", true);
         
         const { data } = await this.$axios.post(`/api/nominating/create`, {
             categoryId: state.selectedCategory.id,
             nomineeId,
         });
+
+        commit("selected", false);
 
         if (data.error) {
             alert(data.error);
@@ -254,7 +263,11 @@ export const actions: ActionTree<StageState, RootState> = {
     async removeNomination ({ commit, state }, nominationId: number) {
         if (!state.selectedCategory) return;
 
+        commit("selected", true);
+
         const { data } = await this.$axios.delete(`/api/nominating/${nominationId}`);
+
+        commit("selected", false);
 
         if (data.error) {
             alert(data.error);
@@ -267,12 +280,16 @@ export const actions: ActionTree<StageState, RootState> = {
     },
     async createVote ({ commit, state }, payload: { nomineeId: number, vote: number }) {
         if (!state.selectedCategory) return;
-        
+
+        commit("selected", true);
+
         const { data } = await this.$axios.post(`/api/voting/create`, {
             category: state.selectedCategory.id,
             nomineeId: payload.nomineeId,
             choice: payload.vote,
         });
+
+        commit("selected", false);
 
         if (data.error) {
             alert(data.error);
@@ -281,12 +298,16 @@ export const actions: ActionTree<StageState, RootState> = {
 
         commit("addVote", data);
     },
-    async removeVote ({ dispatch }, voteId: number) {
+    async removeVote ({ commit, dispatch }, voteId: number) {
         if (!confirm("Do you want to remove this vote? This will move your votes up by 1")) {
             return;
         }
 
+        commit("selected", true);
+
         const { data } = await this.$axios.delete(`/api/voting/${voteId}`);
+
+        commit("selected", false);
 
         if (data.error) {
             alert(data.error);

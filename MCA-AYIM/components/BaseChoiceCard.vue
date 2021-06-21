@@ -63,6 +63,7 @@ export default class BaseChoiceCard extends Vue {
 
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
 
+    @stageModule.State selected!: boolean;
     @stageModule.State stage!: StageType;
     @stageModule.Getter relatedCandidacies!: Vote[] | Nomination[];
     @stageModule.Action createVote;
@@ -89,6 +90,8 @@ export default class BaseChoiceCard extends Vue {
     }
 
     async vote () {
+        if (this.selected) return;
+
         if (this.currentVote) {
             await this.removeVote(this.currentVote.ID);
             return;
@@ -108,6 +111,8 @@ export default class BaseChoiceCard extends Vue {
     }
 
     async nominate () {
+        if (this.selected) return;
+
         if (this.currentNomination) {
             await this.removeNomination(this.currentNomination.ID);
             return;
