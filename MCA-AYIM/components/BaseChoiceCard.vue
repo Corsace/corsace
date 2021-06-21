@@ -15,15 +15,15 @@
                         'choice__selection-box--denied': currentNomination && !currentNomination.isValid
                     }"
                 >
-                    <template v-if="currentNomination">
-                        <div
-                            v-if="currentSelected"
-                            class="choice__selection-check choice__selection-check--chosen"
-                        >
-                            ...
-                        </div>
+                    <div
+                        v-if="currentSelected"
+                        class="choice__selection-check choice__selection-check--chosen"
+                    >
+                        ...
+                    </div>
+                    <template v-else-if="currentNomination">
                         <img
-                            v-else-if="currentNomination.isValid"
+                            v-if="currentNomination.isValid"
                             class="choice__selection-check choice__selection-check--chosen"
                             src="../../Assets/img/ayim-mca/site/checkmark.png"
                         >
@@ -103,6 +103,7 @@ export default class BaseChoiceCard extends Vue {
 
         if (this.currentVote) {
             await this.removeVote(this.currentVote.ID);
+            this.currentSelected = false;
             return;
         }
         
@@ -128,6 +129,7 @@ export default class BaseChoiceCard extends Vue {
 
         if (this.currentNomination) {
             await this.removeNomination(this.currentNomination.ID);
+            this.currentSelected = false;
             return;
         }
         
