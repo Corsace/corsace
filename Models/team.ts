@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Tournament } from "./Tournaments/tournament";
-import { TournamentTeam } from "./Tournaments/tournamentTeam";
+import { Tournament } from "./tournaments/tournament";
+import { TournamentTeam } from "./tournaments/tournamentTeam";
 import { User } from "./user";
 
 @Entity()

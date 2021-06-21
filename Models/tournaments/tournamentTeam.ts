@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Team } from "../team";
 import { Match } from "./match";
 import { Tournament } from "./tournament";
@@ -22,4 +22,7 @@ export class TournamentTeam extends BaseEntity {
 
     @ManyToMany(() => Match, match => match.teams)
     matches!: Match[];
+
+    @OneToMany(() => Match, match => match.winner)
+    matchesWon!: Match[]
 }
