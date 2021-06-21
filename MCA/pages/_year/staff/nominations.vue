@@ -131,7 +131,7 @@ import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 
 import { CategoryInfo } from "../../../../Interfaces/category";
-import { Nomination, StaffNomination } from "../../../../Interfaces/nomination";
+import { StaffNomination } from "../../../../Interfaces/nomination";
 
 const staffModule = namespace("staff");
 
@@ -294,10 +294,10 @@ export default class Nominations extends Vue {
         return `(BPM = ${nomination.beatmapset.BPM} | Length = ${time} | SR = ${nomination.beatmapset.maxSR.toFixed(2)})`;
     }
 
-    updateLocalNomination (id: number, data: Nomination) {
+    updateLocalNomination (id: number, data) {
         const i = this.nominations.findIndex(n => n.ID === id);
         if (i !== -1) {
-            this.nominations[i].reviewer = data.reviewer.osu.username;
+            this.nominations[i].reviewer = data.reviewer;
             this.nominations[i].lastReviewedAt = data.lastReviewedAt;
             this.nominations[i].isValid = data.isValid;
         }

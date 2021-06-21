@@ -108,16 +108,21 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
         return ctx.body = { error: "Invalid nomination ID given!" };
 
     nominationID = parseInt(nominationID);
-    const nomination = await Nomination.findOneOrFail(nominationID);
+    try {
+        await Nomination.update(nominationID, {
+            isValid: ctx.request.body.isValid,
+            reviewer: ctx.state.user,
+            lastReviewedAt: new Date,
+        });
+    } catch (e) {
+        throw e;
+    }
 
-    if (!nomination)
-        return ctx.body = { error: "No nomination found for the given ID!" };
-
-    nomination.isValid = ctx.request.body.isValid;
-    nomination.reviewer = ctx.state.user;
-    nomination.lastReviewedAt = new Date;
-    await nomination.save();
-    ctx.body = nomination;
+    ctx.body = {
+        isValid: ctx.request.body.isValid,
+        reviewer: ctx.state.user.osu.username,
+        lastReviewedAt: new Date,
+    };
 });
 
 export default staffNominationsRouter;
