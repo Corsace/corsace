@@ -16,10 +16,15 @@
                     }"
                 >
                     <template v-if="currentNomination">
+                        <div
+                            v-if="currentSelected"
+                            class="choice__selection-check choice__selection-check--chosen"
+                        >
+                            ...
+                        </div>
                         <img
-                            v-if="currentNomination.isValid"
-                            class="choice__selection-check"
-                            :class="{ 'choice__selection-check--chosen': currentNomination }"
+                            v-else-if="currentNomination.isValid"
+                            class="choice__selection-check choice__selection-check--chosen"
                             src="../../Assets/img/ayim-mca/site/checkmark.png"
                         >
                         <div
@@ -71,6 +76,8 @@ export default class BaseChoiceCard extends Vue {
     @stageModule.Action createNomination;
     @stageModule.Action removeNomination;
 
+    currentSelected = false;
+
     get currentVote (): Vote | undefined {
         if (this.stage === "nominating") return undefined;
 
@@ -92,6 +99,8 @@ export default class BaseChoiceCard extends Vue {
     async vote () {
         if (this.selected) return;
 
+        this.currentSelected = true;
+
         if (this.currentVote) {
             await this.removeVote(this.currentVote.ID);
             return;
@@ -108,10 +117,14 @@ export default class BaseChoiceCard extends Vue {
             nomineeId: id,
             vote,
         });
+
+        this.currentSelected = false;
     }
 
     async nominate () {
         if (this.selected) return;
+
+        this.currentSelected = true;
 
         if (this.currentNomination) {
             await this.removeNomination(this.currentNomination.ID);
@@ -120,6 +133,8 @@ export default class BaseChoiceCard extends Vue {
         
         const id = this.choice.id || this.choice.corsaceID;
         await this.createNomination(id);
+
+        this.currentSelected = false;
     }
 
 }
@@ -223,6 +238,9 @@ export default class BaseChoiceCard extends Vue {
     &-check {
         width: 100%;
         height: 100%;
+
+        font-weight: bold;
+        text-align: center;
 
         opacity: 0;
 
