@@ -1,5 +1,5 @@
 
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, Index } from "typeorm";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, ManyToOne, OneToOne, JoinColumn, Index } from "typeorm";
 import { DemeritReport } from "./demerits";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
@@ -15,6 +15,7 @@ import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
+import { Team } from "./team";
 
 export const BWSFilter: RegExp = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|community|moderation|moderating|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
 
@@ -61,6 +62,13 @@ export class User extends BaseEntity {
 
     @Column()
     rank!: number;
+
+    @ManyToOne(() => Team, team => team.players, { eager: true })
+    team!: Team;
+
+    @OneToOne(() => Team, team => team.captain, { eager: true })
+    @JoinColumn()
+    teamHost!: Team;
 
     @CreateDateColumn()
     registered!: Date;
