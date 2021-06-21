@@ -1,6 +1,7 @@
-import { BaseEntity, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Beatmap } from "../beatmap";
+import { BaseEntity, Entity, JoinTable, OneToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Tournament } from "./tournament";
+import { Bracket } from "./bracket";
+import { MappoolBeatmap } from "./mappoolBeatmap";
 
 @Entity()
 export class Mappool extends BaseEntity {
@@ -11,8 +12,10 @@ export class Mappool extends BaseEntity {
     @ManyToOne(() => Tournament, tournament => tournament.mappools)
     tournament!: Tournament;
 
-    @ManyToMany(() => Beatmap, beatmap => beatmap.mappools)
-    @JoinTable()
-    beatmaps!: Beatmap;
+    @OneToMany(() => MappoolBeatmap, beatmap => beatmap.mappool)
+    beatmaps!: MappoolBeatmap[];
+
+    @OneToOne(() => Bracket, bracket => bracket.mappool)
+    bracket!: Bracket;
 
 }
