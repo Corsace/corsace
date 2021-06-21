@@ -29,15 +29,18 @@
             </div>
 
             <div class="general-info">
-                <p
-                    :class="`general-info--${selectedMode}`"
-                    v-if="phase.phase !== 'preparation' && phase.startDate && phase.endDate"
-                >
-                    {{ $t(`mca.main.stage.${phase.phase}`).toUpperCase() }}
+                <p v-if="phase.phase">
+                    <span :class="phase.phase === 'nominating' ? `general-info--${selectedMode}` : ''">
+                        {{ $t(`mca.main.nominating`).toUpperCase() + " | " + mca.nomination.start.toLocaleString(dateInfo.locale, options) + " - " + mca.nomination.end.toLocaleString(dateInfo.locale, options) }}
+                    </span>
                     <br>
-                    {{ this.phase.startDate.toLocaleString(dateInfo.locale, options) }}
+                    <span :class="phase.phase === 'voting' ? `general-info--${selectedMode}` : ''">
+                        {{ $t(`mca.main.voting`).toUpperCase() + " | " + mca.voting.start.toLocaleString(dateInfo.locale, options) + " - " + mca.voting.end.toLocaleString(dateInfo.locale, options) }}
+                    </span>
                     <br>
-                    {{ this.phase.endDate.toLocaleString(dateInfo.locale, options) }}
+                    <span :class="phase.phase === 'results' ? `general-info--${selectedMode}` : ''">
+                        {{ $t(`mca.main.results`).toUpperCase() + " | " + mca.results.toLocaleString(dateInfo.locale, options)}}
+                    </span>
                 </p>
                 <div v-html="$t(`mca.main.message.${$route.params.year}`)" />
             </div>
@@ -58,7 +61,7 @@ import { Getter, State } from "vuex-class";
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import IndexPage from "../../components/IndexPage.vue";
 
-import { Phase } from "../../../Interfaces/mca";
+import { MCA, Phase } from "../../../Interfaces/mca";
 
 @Component({
     components: {
@@ -73,6 +76,7 @@ import { Phase } from "../../../Interfaces/mca";
 })
 export default class Index extends Vue {
 
+    @State mca!: MCA;
     @State selectedMode!: string;
 
     @Getter phase!: Phase;
@@ -208,12 +212,23 @@ export default class Index extends Vue {
     background-color: rgba(0, 0, 0, 0.8); 
     padding: 45px 30px;
 
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    & > p, &--header {
+        text-align: center;
+    }
+
+    &--header {
+        font-size: 2rem;
+    }
+
     @each $mode in $modes {
         &--#{$mode} {
             color: var(--#{$mode});
             font-weight: bold;
             text-shadow: 0 0 8px var(--#{$mode});
-            text-align: center;
             @include transition;
         }
     }
