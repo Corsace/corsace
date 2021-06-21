@@ -177,9 +177,9 @@ commentsRouter.post("/:id/update", isLoggedIn, canComment, isCommentOwner, async
         year: comment.year,
     });
 
-    if (!mca.isNominationPhase()) {
+    if (mca.currentPhase() === "results") {
         return ctx.body = {
-            error: "Can only update during MCA nomination phase",
+            error: "Can only remove before MCA results",
         };
     }
 
@@ -197,7 +197,7 @@ commentsRouter.post("/:id/remove", isLoggedIn, canComment, isCommentOwner, async
         year: comment.year,
     });
 
-    if (new Date() >= mca?.results) {
+    if (mca.currentPhase() === "results") {
         return ctx.body = {
             error: "Can only remove before MCA results",
         };
