@@ -27,24 +27,24 @@
                         :key="request.ID"
                     >
                         <div 
-                            v-if="showValidated || (!showValidated && isPending(request.status))"
+                            v-if="showValidated || (!showValidated && getStatusName(request.status) === 'Pending')"
                             class="staff-request"
                         >
                             <div class="staff-request__info">
                                 <a
-                                    :href="`https://osu.ppy.sh/users/${request.user.osu.userID}`"
+                                    :href="`https://osu.ppy.sh/users/${request.userID}`"
                                     target="_blank"
                                     class="staff-page__link"
-                                    :class="`staff-page__link--${request.mode.name}`"
+                                    :class="`staff-page__link--${request.modeName}`"
                                 >
-                                    {{ request.user.osu.username }} - {{ request.mode.name }}
+                                    {{ request.username }} - {{ request.modeName }}
                                 </a>
 
                                 <a
                                     :href="generateUrl(request)"
                                     target="_blank"
                                     class="staff-page__link"
-                                    :class="`staff-page__link--${request.mode.name}`"
+                                    :class="`staff-page__link--${request.modeName}`"
                                 >
                                     beatmap link
                                 </a>
@@ -87,7 +87,7 @@ import { namespace, State } from "vuex-class";
 import ChoiceBeatmapsetCard from "../../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
 import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 
-import { GuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
+import { StaffGuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
 import { UpdateRequestData } from "../../../store/staff";
 
 const staffModule = namespace("staff");
@@ -106,21 +106,17 @@ const staffModule = namespace("staff");
 export default class StaffRequests extends Vue {
 
     @State modes!: string[];
-    @staffModule.State requests!: GuestRequest[];
+    @staffModule.State requests!: StaffGuestRequest[];
     @staffModule.Action updateRequest!: (data: UpdateRequestData) => Promise<void>;
 
     showValidated = true;
-
-    isPending (status: number): boolean {
-        return status === RequestStatus.Pending;
-    }
 
     getStatusName (status: number): string {
         return RequestStatus[status];
     }
 
-    generateUrl (request: GuestRequest) {
-        return `https://osu.ppy.sh/beatmapsets/${request.beatmap.beatmapsetID}#${request.beatmap.mode.name}/${request.beatmap.ID}`;
+    generateUrl (request: StaffGuestRequest) {
+        return `https://osu.ppy.sh/b/${request.beatmapID}`;
     }
 
     async accept (id: number) {
