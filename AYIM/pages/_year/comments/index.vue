@@ -99,7 +99,11 @@
         >
             Loading...
         </div>
-        <comments-modal />
+        <notice-modal 
+            :title="$t('ayim.comments.name')"
+            :text="$t('ayim.comments.notice')"
+            :localKey="'overlay'"
+        />
     </display-layout>
 </template>
 
@@ -107,10 +111,10 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { Getter, State } from "vuex-class";
 
-import CommentsModal from "../../../components/CommentsModal.vue";
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
+import NoticeModal from "../../../../MCA-AYIM/components/NoticeModal.vue";
 import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
 
 import { User, UserMCAInfo } from "../../../../Interfaces/user";
@@ -118,10 +122,10 @@ import { MCA, Phase } from "../../../../Interfaces/mca";
 
 @Component({
     components: {
-        CommentsModal,
         DisplayLayout,
-        SearchBar,
         ToggleButton,
+        SearchBar,
+        NoticeModal,
         ListTransition,
     },
     head () {

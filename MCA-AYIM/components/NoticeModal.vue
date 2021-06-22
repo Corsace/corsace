@@ -1,18 +1,18 @@
 <template>
     <base-modal
-        :title="$t('ayim.comments.name')"
+        :title="title"
         v-if="overlay"
         @close="closeOverlay"
     >
         <div
-            v-html="$t('ayim.comments.notice').replace('[YEAR]', $route.params.year)" 
-            class="comments-modal" 
+            v-html="text.replace('[YEAR]', $route.params.year)" 
+            class="notice-modal" 
         />
     </base-modal>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 import BaseModal from "../../MCA-AYIM/components/BaseModal.vue";
@@ -24,9 +24,13 @@ import { MCA } from "../../Interfaces/mca";
         BaseModal,
     },
 })
-export default class CommentsModal extends Vue {
+export default class NoticeModal extends Vue {
 
     @State mca!: MCA;
+
+    @Prop({ type: String, required: true }) readonly title!: string;
+    @Prop({ type: String, required: true }) readonly text!: string;
+    @Prop({ type: String, required: true }) readonly localKey!: string;
 
     overlay = false;
 
@@ -35,14 +39,14 @@ export default class CommentsModal extends Vue {
     }
 
     async toggleOverlay () {
-        if (!localStorage.getItem("overlay" + this.$route.params.year)) {
+        if (!localStorage.getItem(this.localKey + this.$route.params.year)) {
             this.overlay = true;
         }
     }
 
     async closeOverlay () {
         this.overlay = false;
-        localStorage.setItem("overlay" + this.$route.params.year, "true");
+        localStorage.setItem(this.localKey + this.$route.params.year, "true");
     }
 }
 </script>
@@ -50,7 +54,7 @@ export default class CommentsModal extends Vue {
 <style lang="scss">
 @import '@s-sass/_mixins';
 
-.comments-modal {
+.notice-modal {
     font-size: 1rem;
     line-height: 2rem;
     @include breakpoint(tablet) {
@@ -60,6 +64,14 @@ export default class CommentsModal extends Vue {
     @include breakpoint(desktop) { 
         font-size: 1.5rem;
         line-height: 5rem;
+    }
+
+    & > a, &--bold {
+        font-weight: bold;
+    }
+
+    & > a {
+        text-decoration: underline;
     }
 }
 </style>
