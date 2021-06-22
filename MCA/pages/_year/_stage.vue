@@ -101,11 +101,11 @@ export default class Stage extends Vue {
     }
 
     get onTime () {
-        return this.phase?.phase && (this.phase.phase === "nominating" || this.phase.phase === "voting");
+        return this.phase?.phase && this.phase.phase === this.$route.params.stage && (this.phase.phase === "nominating" || this.phase.phase === "voting");
     }
 
     goBack () {
-        this.$router.push("/");
+        this.$router.push("/"+this.$route.params.year);
     }
 }
 </script>

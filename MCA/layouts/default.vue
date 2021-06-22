@@ -33,6 +33,10 @@ import { UserMCAInfo } from "../../Interfaces/user";
 export default class Default extends Vue {
 
     @State loggedInUser!: UserMCAInfo;
+
+    async mounted() {
+        await this.$store.dispatch("setSelectedMode");
+    }
     
 }
 </script>
