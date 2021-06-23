@@ -7,10 +7,11 @@ import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
 import { StageQuery } from "../../Interfaces/queries";
 
-export type SectionCategory = "beatmaps" | "users";
+export type SectionCategory = "beatmaps" | "users" | "";
 export type StageType = "nominating" | "voting";
 
 interface StageState {
+    selected: boolean;
     section: SectionCategory,
     categories: CategoryStageInfo[];
     selectedCategory: CategoryStageInfo | null;
@@ -21,12 +22,15 @@ interface StageState {
     beatmaps: BeatmapsetInfo[];
     users: UserChoiceInfo[];
     query: StageQuery;
-    loading: boolean,
+    favourites: boolean;
+    played: boolean;
+    loading: boolean;
     showVoteChoiceBox: boolean;
 }
 
 export const state = (): StageState => ({
-    section: "beatmaps",
+    selected: false,
+    section: "",
     selectedCategory: null,
     categories: [],
     nominations: [],
@@ -41,12 +45,22 @@ export const state = (): StageState => ({
         order: "ASC",
         text: "",
         skip: 0,
+        played: [],
+        favourites: [],
     },
+    favourites: false,
+    played: false,
     loading: true,
     showVoteChoiceBox: false,
 });
 
 export const mutations: MutationTree<StageState> = {
+    loading (state, bool) {
+        state.loading = bool;
+    },
+    selected (state, bool) {
+        state.selected = bool;
+    },
     updateStage (state, stage) {
         state.stage = stage;
     },
@@ -99,13 +113,19 @@ export const mutations: MutationTree<StageState> = {
             ...query,
         };
     },
-    reset (state) {
+    updateFavourites (state, favourites) {
+        state.favourites = favourites;
+    },
+    updatePlayed (state, played) {
+        state.played = played;
+    },
+    reset (state, removeText: boolean) {
+        if (removeText) state.query.text = "";
         state.section = "beatmaps";
         state.selectedCategory = null;
         state.beatmaps = [];
         state.users = [];
         state.count = 0;
-        state.query.text = "";
     },
     toggleVoteChoiceBox (state) {
         state.showVoteChoiceBox = !state.showVoteChoiceBox;
@@ -179,22 +199,30 @@ export const actions: ActionTree<StageState, RootState> = {
         commit("updateQuery", query);
         dispatch("search");
     },
+    async updateFavourites ({ commit, dispatch }, favourites) {
+        commit("updateFavourites", favourites);
+        dispatch("search");
+    },
+    async updatePlayed ({ commit, dispatch }, played) {
+        commit("updatePlayed", played);
+        dispatch("search");
+    },
     async search ({ state, commit, rootState }, skipping = false) {
         if (!state.selectedCategory) return;
 
         let skip = 0;
 
         if (skipping) {
-            state.loading = true;
+            commit("loading", true);
             if (state.selectedCategory.type === "Users") skip = state.users.length;
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
 
-        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&text=${state.query.text}&skip=${skip}`);
+        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&favourites=${state.favourites}&played=${state.played}&text=${state.query.text}&skip=${skip}`);
         if (data.error)
             return alert(data.error);
 
-        state.loading = false;
+            commit("loading", false);
 
         commit("updateCount", data.count);
 
@@ -210,16 +238,20 @@ export const actions: ActionTree<StageState, RootState> = {
             commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
         }
     },
-    reset ({ commit }) {
-        commit("reset");
+    reset ({ commit }, removeText = false) {
+        commit("reset", removeText);
     },
     async createNomination ({ commit, state }, nomineeId: number) {
         if (!state.selectedCategory) return;
+
+        commit("selected", true);
         
         const { data } = await this.$axios.post(`/api/nominating/create`, {
             categoryId: state.selectedCategory.id,
             nomineeId,
         });
+
+        commit("selected", false);
 
         if (data.error) {
             alert(data.error);
@@ -231,7 +263,11 @@ export const actions: ActionTree<StageState, RootState> = {
     async removeNomination ({ commit, state }, nominationId: number) {
         if (!state.selectedCategory) return;
 
+        commit("selected", true);
+
         const { data } = await this.$axios.delete(`/api/nominating/${nominationId}`);
+
+        commit("selected", false);
 
         if (data.error) {
             alert(data.error);
@@ -244,12 +280,16 @@ export const actions: ActionTree<StageState, RootState> = {
     },
     async createVote ({ commit, state }, payload: { nomineeId: number, vote: number }) {
         if (!state.selectedCategory) return;
-        
+
+        commit("selected", true);
+
         const { data } = await this.$axios.post(`/api/voting/create`, {
             category: state.selectedCategory.id,
             nomineeId: payload.nomineeId,
             choice: payload.vote,
         });
+
+        commit("selected", false);
 
         if (data.error) {
             alert(data.error);
@@ -258,12 +298,16 @@ export const actions: ActionTree<StageState, RootState> = {
 
         commit("addVote", data);
     },
-    async removeVote ({ dispatch }, voteId: number) {
+    async removeVote ({ commit, dispatch }, voteId: number) {
         if (!confirm("Do you want to remove this vote? This will move your votes up by 1")) {
             return;
         }
 
+        commit("selected", true);
+
         const { data } = await this.$axios.delete(`/api/voting/${voteId}`);
+
+        commit("selected", false);
 
         if (data.error) {
             alert(data.error);

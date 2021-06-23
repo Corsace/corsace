@@ -19,9 +19,9 @@ const modes = [
 osuRouter.get("/", async (ctx: ParameterizedContext<any>, next) => {
     ctx.cookies.set("redirect", ctx.query.redirect ?? "back", { overwrite: true });
     await next();
-}, passport.authenticate("oauth2", { scope: ["identify", "public"] }));
+}, passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"] }));
 osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
-    return await passport.authenticate("oauth2", { scope: ["identify", "public"], failureRedirect: "/" }, async (err, user) => {
+    return await passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
             await user.save();
             ctx.login(user);

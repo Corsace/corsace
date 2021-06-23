@@ -8,6 +8,7 @@
         <div :class="{'right-side': mca, 'full-side': !mca}">
             <mode-switcher
                 stretch
+                hide-phase
                 :ignore-modes="['storyboard']"
             >
                 <index-page />

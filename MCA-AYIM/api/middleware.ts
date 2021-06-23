@@ -61,7 +61,7 @@ async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> 
 
     if (!mca) {
         return ctx.body = {
-            error: "Not MCA found for this year",
+            error: "No MCA found for this year",
         };
     }
 

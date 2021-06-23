@@ -263,9 +263,7 @@
                 "voteOrder": "투표 순서"
             },
             "hosted": "매퍼",
-            "userID": "유저 ID",
-            "select": "",
-            "selectGrand": ""
+            "userID": "유저 ID"
         }
     },
     "main": {

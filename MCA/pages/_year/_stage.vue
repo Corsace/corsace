@@ -41,6 +41,12 @@
                 Let's get you to the front page.
             </a>
         </div>
+        <notice-modal
+            v-if="phase && phase.phase === 'voting' && $route.params.stage === 'voting'"
+            :title="$t('mca.main.voting')"
+            :text="$t('mca.nom_vote.votingOverlay')"
+            :localKey="'votingOverlay'"
+        />
     </div>
 </template>
 
@@ -49,6 +55,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, State } from "vuex-class";
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
+import NoticeModal from "../../../MCA-AYIM/components/NoticeModal.vue";
 import StagePage from "../../components/stage/StagePage.vue";
 
 import { Phase } from "../../../Interfaces/mca";
@@ -57,6 +64,7 @@ import { UserMCAInfo } from "../../../Interfaces/user";
 @Component({
     components: {
         ModeSwitcher,
+        NoticeModal,
         StagePage,
     },
     validate ({ params }): boolean {
@@ -93,11 +101,11 @@ export default class Stage extends Vue {
     }
 
     get onTime () {
-        return this.phase?.phase && (this.phase.phase === "nominating" || this.phase.phase === "voting");
+        return this.phase?.phase && this.phase.phase === this.$route.params.stage && (this.phase.phase === "nominating" || this.phase.phase === "voting");
     }
 
     goBack () {
-        this.$router.push("/");
+        this.$router.push("/"+this.$route.params.year);
     }
 }
 </script>

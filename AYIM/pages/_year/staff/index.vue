@@ -4,7 +4,7 @@
         class="staff-page"
     >
         <div class="staff-page__title">
-            MCA - {{ mca.name }}
+            AYIM - {{ mca.name }}
         </div>
 
         <nuxt-link

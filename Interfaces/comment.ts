@@ -15,3 +15,22 @@ export interface Comment {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface StaffComment {
+    ID: number;
+    comment: string;
+    isValid: boolean;
+    mode: string;
+    commenter: {
+        ID: number;
+        osuID: string;
+        osuUsername: string;
+    }
+    target: {
+        osuID: string;
+        osuUsername: string;
+    }
+    reviewer?: string;
+    lastReviewedAt?: Date;
+
+}

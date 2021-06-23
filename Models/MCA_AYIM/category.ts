@@ -118,7 +118,7 @@ export class CategoryGenerator {
         const category = new Category;
         
         category.name = "grandAward";
-        category.maxNominations = 1;
+        category.maxNominations = 3;
         category.isRequired = true;
         category.type = type;
         category.mode = mode;

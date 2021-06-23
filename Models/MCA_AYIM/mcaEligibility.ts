@@ -1,13 +1,15 @@
-import { Entity, Column, BaseEntity, ManyToOne, PrimaryGeneratedColumn, SelectQueryBuilder } from "typeorm";
+import { Entity, Column, BaseEntity, ManyToOne, PrimaryGeneratedColumn, SelectQueryBuilder, Index } from "typeorm";
 import { User } from "../user";
 import { ModeDivisionType } from "./modeDivision";
 
 @Entity()
+@Index(["year", "standard", "taiko", "fruits", "mania", "storyboard"])
 export class MCAEligibility extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     ID!: number;
 
+    @Index()
     @Column({ type: "year" })
     year!: number;
 
