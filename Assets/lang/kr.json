@@ -262,6 +262,7 @@
                 "desc": "내림차순",
                 "voteOrder": "투표 순서"
             },
+	    "votingOverlay": "안녕하세요! 투표 페이지에는 처음이신 것 같네요. <br> MCA 투표는 <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>선호투표제</a>를 채용합니다! <br> 이는 즉 투표 개수에 제한 없이 여러분이 원하는 만큼 투표할 수 있다는 뜻이죠! <br> 모든 투표는 순위를 가지게 되며, <span class='notice-modal--bold'>첫 투표가 가장 높은 순위를 차지합니다!</span> <br> 투표에 신중한 선택 부탁드리며 MCA [YEAR] 결과를 기대해 봅니다!",
             "hosted": "매퍼",
             "userID": "유저 ID"
         }
