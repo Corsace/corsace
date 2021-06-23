@@ -45,7 +45,16 @@
                 <div class="choice__voting-title">
                     vote
                 </div>
-                <div class="choice__voting-vote">
+                <div
+                    v-if="currentSelected"
+                    class="choice__voting-vote"
+                >
+                    ...
+                </div>
+                <div
+                    v-else
+                    class="choice__voting-vote"
+                >
                     {{ currentVote && currentVote.choice || '!' }}
                 </div>
             </div>
