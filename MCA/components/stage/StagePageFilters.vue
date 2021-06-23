@@ -10,27 +10,28 @@
             class="button button--image"
             :class="{ 
                 'button--friends': favourites,
-                'button--small': $route.params.stage === 'voting'
+                'button--small': $route.params.stage === 'voting' && section === 'beatmaps'
             }"
         >
             <img src="../../../Assets/img/ayim-mca/site/heart.png">
         </button>
 
         <toggle-button
-            :class="{ 'button--small': $route.params.stage === 'voting' }"
+            v-if="section === 'beatmaps'"
+            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="playedFilters"
             @change="changePlayed"
         />
 
         <toggle-button
-            :class="{ 'button--small': $route.params.stage === 'voting' }"
+            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="sectionOptions"
             :arrow="orderOption"
             @change="changeOption"
         />
         
         <toggle-button
-            :class="{ 'button--small': $route.params.stage === 'voting' }"
+            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="orderOptions"
             :arrow="orderOption"
             @change="changeOrder"
@@ -38,8 +39,11 @@
         
         <button
             v-if="$route.params.stage === 'voting'"
-            class="button button--small"
-            :class="{ 'button--active': showVoteChoiceBox }"
+            class="button"
+            :class="{ 
+                'button--active': showVoteChoiceBox,
+                'button--small': section === 'beatmaps'
+            }"
             @click="toggleVoteChoiceBox"
         >
             {{ $t(`mca.nom_vote.options.voteOrder`) }}
