@@ -44,8 +44,6 @@ commentsReviewRouter.get("/", async (ctx) => {
                     .orWhere("commenter.osuUserid LIKE :criteria")
                     .orWhere("target.osuUsername LIKE :criteria")
                     .orWhere("target.osuUserid LIKE :criteria")
-                    .orWhere("reviewer.osuUsername LIKE :criteria")
-                    .orWhere("reviewer.osuUserid LIKE :criteria");
             }))
             .setParameter("criteria", `%${text}%`);
     }
