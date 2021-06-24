@@ -8,6 +8,7 @@ import stageSearch from "./stageSearch";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
 import { MoreThan, Not } from "typeorm";
+import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 
 const votingRouter = new Router();
 
@@ -65,19 +66,18 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
         };
     }
 
-    let nominee: Beatmapset | User;
+    let nomQ = Nomination
+                .createQueryBuilder("nomination")
+                .where(`categoryID = ${category.ID}`);
 
     if (category.type === CategoryType.Beatmapsets) {
-        nominee = await Beatmapset.findOneOrFail(nomineeId, {
-            relations: ["nominationsReceived"],
-        });
+        nomQ.andWhere(`beatmapsetID = ${nomineeId}`);
     } else {
-        nominee = await User.findOneOrFail(nomineeId, {
-            relations: ["nominationsReceived"],
-        });
+        nomQ.andWhere(`userID = ${nomineeId}`);
     }
 
-    if (!nominee.nominationsReceived.length || !nominee.nominationsReceived.some(n => n.category.ID === category.ID)) {
+    const exists = await nomQ.getRawOne();
+    if (!exists) {
         return ctx.body = {
             error: `It wasn't nominated :(`,
         };
@@ -114,13 +114,15 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
     vote.category = category;
     
     if (category.type === CategoryType.Beatmapsets) {
-        vote.beatmapset = nominee as Beatmapset;
+        const nominee = await Beatmapset.findOneOrFail(nomineeId);
+        vote.beatmapset = nominee;
 
         if (categoryVotes.some(v => v.beatmapset?.ID == nominee.ID)) {
             alreadyVoted = true;
         }
     } else if (category.type === CategoryType.Users) {
-        vote.user = nominee as User;
+        const nominee = await User.findOneOrFail(nomineeId);
+        vote.user = nominee;
         
         if (categoryVotes.some(v => v.user?.ID == nominee.ID)) {
             alreadyVoted = true;
