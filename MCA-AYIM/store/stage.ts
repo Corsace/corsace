@@ -246,58 +246,70 @@ export const actions: ActionTree<StageState, RootState> = {
         if (!state.selectedCategory) return;
 
         commit("selected", true);
-        
-        const { data } = await this.$axios.post(`/api/nominating/create`, {
-            categoryId: state.selectedCategory.id,
-            nomineeId,
-        });
+        try {
+            const { data } = await this.$axios.post(`/api/nominating/create`, {
+                categoryId: state.selectedCategory.id,
+                nomineeId,
+            });
 
-        commit("selected", false);
+            commit("selected", false);
 
-        if (data.error) {
-            alert(data.error);
-            return;
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            commit("addNomination", data);
+        } catch (e) {
+            commit("selected", false);
+            alert(e);
         }
-
-        commit("addNomination", data);
     },
     async removeNomination ({ commit, state }, nominationId: number) {
         if (!state.selectedCategory) return;
 
         commit("selected", true);
+        try {
+            const { data } = await this.$axios.delete(`/api/nominating/${nominationId}`);
 
-        const { data } = await this.$axios.delete(`/api/nominating/${nominationId}`);
+            commit("selected", false);
 
-        commit("selected", false);
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
 
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
-
-        if (data.success) {
-            commit("removeNomination", nominationId);
+            if (data.success) {
+                commit("removeNomination", nominationId);
+            }
+        } catch (e) {
+            commit("selected", false);
+            alert(e);
         }
     },
     async createVote ({ commit, state }, payload: { nomineeId: number, vote: number }) {
         if (!state.selectedCategory) return;
 
         commit("selected", true);
+        try {
+            const { data } = await this.$axios.post(`/api/voting/create`, {
+                category: state.selectedCategory.id,
+                nomineeId: payload.nomineeId,
+                choice: payload.vote,
+            });
 
-        const { data } = await this.$axios.post(`/api/voting/create`, {
-            category: state.selectedCategory.id,
-            nomineeId: payload.nomineeId,
-            choice: payload.vote,
-        });
+            commit("selected", false);
 
-        commit("selected", false);
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
 
-        if (data.error) {
-            alert(data.error);
-            return;
+            commit("addVote", data);
+        } catch (e) {
+            commit("selected", false);
+            alert(e);
         }
-
-        commit("addVote", data);
     },
     async removeVote ({ commit, dispatch }, voteId: number) {
         if (!confirm("Do you want to remove this vote? This will move your votes up by 1")) {
@@ -305,18 +317,22 @@ export const actions: ActionTree<StageState, RootState> = {
         }
 
         commit("selected", true);
+        try {
+            const { data } = await this.$axios.delete(`/api/voting/${voteId}`);
 
-        const { data } = await this.$axios.delete(`/api/voting/${voteId}`);
+            commit("selected", false);
 
-        commit("selected", false);
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
 
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
-
-        if (data.success) {
-            await dispatch("setInitialData");
+            if (data.success) {
+                await dispatch("setInitialData");
+            }
+        } catch (e) {
+            commit("selected", false);
+            alert(e);
         }
     },
     async swapVotes ({ dispatch }, newOrder: Vote[]) {
