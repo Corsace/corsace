@@ -211,9 +211,10 @@ export const actions: ActionTree<StageState, RootState> = {
         if (!state.selectedCategory) return;
 
         let skip = 0;
+    
+        commit("loading", true);
 
         if (skipping) {
-            commit("loading", true);
             if (state.selectedCategory.type === "Users") skip = state.users.length;
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
@@ -222,7 +223,7 @@ export const actions: ActionTree<StageState, RootState> = {
         if (data.error)
             return alert(data.error);
 
-            commit("loading", false);
+        commit("loading", false);
 
         commit("updateCount", data.count);
 
