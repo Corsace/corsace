@@ -45,7 +45,7 @@
             v-if="phase && phase.phase === 'voting' && $route.params.stage === 'voting'"
             :title="$t('mca.main.voting')"
             :text="$t('mca.nom_vote.votingOverlay')"
-            :localKey="'votingOverlayNew'"
+            :localKey="'voting'"
         />
     </div>
 </template>
