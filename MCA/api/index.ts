@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { App } from "../../Server";
 import mount from "koa-mount";
-import loginRouter from "../../MCA-AYIM/api/routes/login";
+import loginRouter from "../../Server/login";
 import mcaRouter from "../../MCA-AYIM/api/routes/mca";
 import userRouter from "../../MCA-AYIM/api/routes/user";
 import adminRouter from "../../MCA-AYIM/api/routes/admin";

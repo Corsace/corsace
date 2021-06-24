@@ -90,11 +90,12 @@
             "create": "Crear",
             "login": "Iniciar sesión para comentar",
             "visible": "(todavia no visible)",
+            "notice": "¡Saludos! Esta podria ser la primera vez que usted navega a una de las paginas de comentarios. <br> Por favor note que todos los comentarios son crowdfunded. <br> Todos, incluyendolo, pueden escribir comentarios para cualquiera hasta que termine el proceso de MCA para este año. <br> ¡Escriba sobre lo que hicieron o sus logros en [YEAR] para mostrar apreciación a los mappers participando en la comunidad!"
         },
         "statistics": {
-            "numberOf": "",
-            "numberOfMapsWith": "",
-            "average": ""
+            "numberOf": "Número de",
+            "numberOfMapsWith": "Número de mapas con",
+            "average": "Promedio"
         }
     },
     "mca": {
@@ -119,13 +120,14 @@
             "daysLeft": "días restantes",
             "message": {
                 "2019": "<p>Mappers Choice Awards está de vuelta por el round 4 en 2019! Éste es un evento de votación en el que todos los mappers/modders pueden nominar y votar a quien crean que sea el mejor mapa/mapper para cada categoría!</p><p>Nuestra intención es otorgar una nueva perspectiva hacia los mejores mapas del 2019 a través de los ojos de la comunidad de mapping en comparación al Community Choice!</p><p>Este año, hemos trabajado a fondo en este nuevo sitio para facilitarle lo máximo posible a los votantes para que voten y nominen ahora!</p><p>Todos los premios de osu! supporter serán proporcionados por el staff de osu! directamente. 2 meses de supporter para </p><p>Esperamos que participen en este evento tantos participantes como sea posible!</p>",
-                "2020": "<p>Una vez más, Mapper's Choice Awards está de vuelta para finalizar el round 5 con 2020! Éste es un evento de votación en el que todos los mappers/modders pueden nominar y votar a quien crean que sea el mejor mapa/mapper para cada categoría!</p><p>Nuestra intención es otorgar una nueva perspectiva hacia los mejores mapas del 2020 a través de los ojos de la comunidad de mapping en comparación al Community Choice!</p><p>Hemos realizado bastantes cambios y ojalá reparado todos los bugs que fueron encontrados a raiz del MCA 2019 además de cambiar las categorías en base a lo necesario así que esta vez todo debería ir mejor!</p><p>Esperamos que participen en este evento tantos participantes como sea posible!</p>",
+                "2020": "<p>Una vez más, Mapper's Choice Awards está de vuelta para finalizar el round 5 con 2020! Éste es un evento de votación en el que todos los mappers/modders pueden nominar y votar a quien crean que sea el mejor mapa/mapper para cada categoría!</p><p>Nuestra intención es otorgar una nueva perspectiva hacia los mejores mapas del 2020 a través de los ojos de la comunidad de mapping en comparación al Community Choice!</p><p>Hemos realizado bastantes cambios y ojalá reparado todos los bugs que fueron encontrados a raiz del MCA 2019 además de cambiar las categorías en base a lo necesario así que esta vez todo debería ir mejor!</p><p>Esperamos que participen en este evento tantos participantes como sea posible!</p>"
             },
             "categories": {
                 "map": "categoría de mapas",
                 "user": "categoría de usuarios"
             },
-            "organized": "ORGANIZADO POR"
+            "organized": "ORGANIZADO POR",
+            "preparation": "preparación"
         },
         "categories": {
             "grandAward": {
@@ -150,7 +152,7 @@
             },
             "highBPM": {
                 "name": "BPM Alto",
-                "description": "El mejor set con streams atípicos o alto estrés de singletap."
+                "description": "El mejor set con streams atípicamente rapidos o con alto estrés de singletap."
             },
             "smallCircles": {
                 "name": "Círculos Pequeños",
@@ -243,6 +245,10 @@
             "narrative": {
                 "name": "Narrativa",
                 "description": "El mejor Storyboard en contar una gran historia."
+            },
+            "featuredArtist": {
+                "name": "Featured Artist",
+                "description": "El mejor set para una canción de un Featured Artist."
             }
         },
         "nom_vote": {
@@ -265,7 +271,7 @@
             },
             "votingOverlay": "Hola! Esta debe ser la primera vez que has navegado por la página de votación! <br> La votación de MCA utiliza <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>un sistema de votacion por orden de preferencia!</a> <br> Esto significa que podrás seleccionar cualquier cantidad de mapas/usuarios para votar! <br> Todos los votos están ordenados por orden de elección, así que <span class='notice-modal--bold'>la primera elección tendrá la mayor prioridad!</span> <br> Tu primera elección contará hasta que pierda la carrera. Luego tu segunda, y tu tercera, la cuarta, e.t.c. <br>  Buena suerte! Esperamos con ansias ver los resultados para MCA [YEAR]",
             "hosted": "ORGANIZADO POR",
-            "userID": "ID DE USUARIO",
+            "userID": "ID DE USUARIO"
         }
     },
     "main": {

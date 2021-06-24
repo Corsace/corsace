@@ -47,7 +47,7 @@ commentsRouter.get("/", async (ctx) => {
     const userId = parseInt(ctx.query.user);
     const year = parseInt(ctx.query.year || new Date().getFullYear());
     const modeString: string = ctx.query.mode || "standard";
-    const modeId = ModeDivisionType[modeString];
+    const modeID = ModeDivisionType[modeString];
 
     const mca = await MCA.findOneOrFail({
         year,
@@ -56,7 +56,7 @@ commentsRouter.get("/", async (ctx) => {
     let query: FindConditions<UserComment> | FindConditions<UserComment>[] = {
         targetID: userId,
         year: year,
-        mode: modeId,
+        mode: modeID,
         commenter: ctx.state.user,
     };
 
@@ -67,13 +67,13 @@ commentsRouter.get("/", async (ctx) => {
             {
                 targetID: userId,
                 year: year,
-                mode: modeId,
+                mode: modeID,
                 isValid: true,
             },
         ];
     }
 
-    const [user, comments] = await Promise.all([
+    const [target, comments] = await Promise.all([
         User.findOneOrFail(userId),
 
         UserComment.find({
@@ -85,8 +85,14 @@ commentsRouter.get("/", async (ctx) => {
         }),
     ]);
 
+    if (!isEligibleFor(target, modeID, year)) {
+        return ctx.body = {
+            error: `User wasn't active for the selected mode`,
+        };
+    }
+
     ctx.body = {
-        user,
+        user: target,
         comments,
     };
 });
@@ -109,9 +115,9 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
         year,
     });
 
-    if (!mca.isNominationPhase()) {
+    if (mca.currentPhase() === "results") {
         return ctx.body = {
-            error: "Can only create during MCA nomination phase",
+            error: "You can only create before MCA results are out!",
         };
     }
 
@@ -171,9 +177,9 @@ commentsRouter.post("/:id/update", isLoggedIn, canComment, isCommentOwner, async
         year: comment.year,
     });
 
-    if (!mca.isNominationPhase()) {
+    if (mca.currentPhase() === "results") {
         return ctx.body = {
-            error: "Can only update during MCA nomination phase",
+            error: "Can only remove before MCA results",
         };
     }
 
@@ -191,7 +197,7 @@ commentsRouter.post("/:id/remove", isLoggedIn, canComment, isCommentOwner, async
         year: comment.year,
     });
 
-    if (new Date() >= mca?.results) {
+    if (mca.currentPhase() === "results") {
         return ctx.body = {
             error: "Can only remove before MCA results",
         };

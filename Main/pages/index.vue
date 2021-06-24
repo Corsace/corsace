@@ -63,7 +63,11 @@
             <div class="section-info">
                 <div class="info-container">
                     <div class="info-warning">
-                        <template v-for="i in 10">
+                        <div
+                            class="info-warning__group"
+                            v-for="i in 20"
+                            :key="i"
+                        >
                             <img
                                 :key="i"
                                 class="info-warning__lines"
@@ -75,7 +79,7 @@
                             >
                                 {{ $t('main.index.underConstruction') }}
                             </div>
-                        </template>
+                        </div>
                     </div>
                     <h2 class="info-message">
                         <div>{{ $t('main.index.sorry') }}</div>
@@ -84,7 +88,11 @@
                         {{ $t('main.index.theTeam') }}
                     </h2>
                     <div class="info-warning">
-                        <template v-for="i in 10">
+                        <div
+                            class="info-warning__group"
+                            v-for="i in 20"
+                            :key="i"
+                        >
                             <img
                                 :key="i"
                                 class="info-warning__lines"
@@ -96,7 +104,7 @@
                             >
                                 {{ $t('main.index.underConstruction') }}
                             </div>
-                        </template>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -117,7 +125,7 @@
                         <div class="event__image-container">
                             <img
                                 class="event__image"
-                                :src="require(`../../Assets/img/main/${key}.png`)"
+                                :src="require(`../../Assets/img/main/${key}.jpg`)"
                                 alt=""
                             >
                         </div>
@@ -168,6 +176,16 @@
                     <img
                         class="socials__icon"
                         src="../../Assets/img/social/ttv.png"
+                        alt=""
+                    >
+                </a>
+                <a
+                    href="https://github.com/corsace/corsace"
+                    target="_blank"
+                >
+                    <img
+                        class="socials__icon"
+                        src="../../Assets/img/social/github.png"
                         alt=""
                     >
                 </a>
@@ -248,14 +266,15 @@ $dark: #0f0f0f;
 $dark-dark-gray: #141414;
 $dark-gray: #242424;
 $gray: #343434;
+$light-gray: #cccccc;
 $pink: #e98792;
 
 @keyframes leftscroll {
     from {
-        left: 0px;
+        transform: translateX(0%);
     }
     to {
-        left: 206.297px;
+        transform: translateX(100%);
     }
 }
 
@@ -341,6 +360,7 @@ $pink: #e98792;
 }
 
 .subfooter {
+    color: $light-gray;
     background-color: $dark-dark-gray;
     display: flex;
     align-items: center;
@@ -420,9 +440,14 @@ $pink: #e98792;
         margin: 0 10px;
     }
 
-    &__lines, &__text {
+    &__group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
         position: relative;
-        animation: leftscroll 4s infinite linear;
+
+        animation: leftscroll 8s infinite linear;
     }
 }
 

@@ -4,20 +4,46 @@
         :placeholder="$t('mca.nom_vote.search')"
         @update:search="updateText($event)"
     >
+        <button
+            v-if="section === 'beatmaps'"
+            @click="updateFavourite"
+            class="button button--image"
+            :class="{ 
+                'button--friends': favourites,
+                'button--small': $route.params.stage === 'voting' && section === 'beatmaps'
+            }"
+        >
+            <img src="../../../Assets/img/ayim-mca/site/heart.png">
+        </button>
+
         <toggle-button
+            v-if="section === 'beatmaps'"
+            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
+            :options="playedFilters"
+            @change="changePlayed"
+        />
+
+        <toggle-button
+            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="sectionOptions"
+            :arrow="orderOption"
             @change="changeOption"
         />
         
         <toggle-button
+            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="orderOptions"
+            :arrow="orderOption"
             @change="changeOrder"
         />
-
+        
         <button
             v-if="$route.params.stage === 'voting'"
             class="button"
-            :class="{ 'button--active': showVoteChoiceBox }"
+            :class="{ 
+                'button--active': showVoteChoiceBox,
+                'button--small': section === 'beatmaps'
+            }"
             @click="toggleVoteChoiceBox"
         >
             {{ $t(`mca.nom_vote.options.voteOrder`) }}
@@ -47,14 +73,20 @@ export default class StagePageFilters extends Vue {
 
     @stageModule.State section!: string;
     @stageModule.State query!: StageQuery;
+    @stageModule.State favourites!: boolean;
+    @stageModule.State played!: boolean;
     @stageModule.State showVoteChoiceBox!: boolean;
     @stageModule.Action updateQuery;
+    @stageModule.Action updateFavourites;
+    @stageModule.Action updatePlayed;
     @stageModule.Mutation toggleVoteChoiceBox;
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
     userOptions = ["alph", "id"];
+    playedFilters = ["all", "played"]
     orderOptions = ["asc", "desc"];
     votingOptions = ["incVote", "voteChoice"];
+    orderOption = "asc";
 
     get sectionOptions () {
         if (this.section === "beatmaps") return this.beatmapOptions;
@@ -65,11 +97,20 @@ export default class StagePageFilters extends Vue {
         this.updateQuery({ text });
     }
 
+    updateFavourite () {
+        this.updateFavourites(!this.favourites);
+    }
+
+    changePlayed () {
+        this.updatePlayed(!this.played);
+    }
+
     changeOption (option: string) {
         this.debounce({ option });
     }
 
     changeOrder (order: string) {
+        this.orderOption = order;
         this.debounce({ order: order.toUpperCase() });
     }
     

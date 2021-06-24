@@ -6,7 +6,7 @@
     >
         <div class="column-box">
             <div class="request__title">
-                Submit a beatmap where you did a guest difficulty here
+                Select mode + submit your guest difficulty here (or storyboard for storyboard mode)
             </div>
             <guest-difficulty-submission @submit="submit($event)" />
         </div>
@@ -37,6 +37,7 @@
                 <span v-else-if="wasRejected(request.status)">
                     - Updating makes the request go back to pending state
                 </span>
+                <div style="border-bottom: 1px solid white"/>
             </div>
         </div>
     </base-modal>

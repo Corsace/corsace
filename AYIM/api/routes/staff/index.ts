@@ -1,7 +1,5 @@
 import Router from "@koa/router";
 import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
-import { MCA } from "../../../../Models/MCA_AYIM/mca";
-import { Category } from "../../../../Models/MCA_AYIM/category";
 import { currentMCA } from "../../../../MCA-AYIM/api/middleware";
 
 const staffRouter = new Router;

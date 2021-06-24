@@ -1,12 +1,12 @@
 import Router from "@koa/router";
-import { hasRole, isLoggedInDiscord } from "../../../../Server/middleware";
+import {isHeadStaff, isLoggedInDiscord } from "../../../../Server/middleware";
 import { User } from "../../../../Models/user";
 import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
 
 const usersRouter = new Router();
 
 usersRouter.use(isLoggedInDiscord);
-usersRouter.use(hasRole("corsace", "headStaff"));
+usersRouter.use(isHeadStaff);
 
 usersRouter.post("/:id/ban", async (ctx) => {
     const user = await User.findOneOrFail(ctx.params.id, {
