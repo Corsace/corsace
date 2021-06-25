@@ -51,7 +51,6 @@ staffNominationsRouter.get("/", async (ctx) => {
                                 .addSelect("creator.osuUsername", "creatorOsu")
                                 .addSelect("creator.discordUsername", "creatorDiscord")
                                 // wheres + groups + orders
-                                .where("category.requiresVetting = true")
                                 .andWhere("category.ID = :id", { id: categoryID })
                                 .groupBy("nomination.ID")
                                 .orderBy("nomination.nominatorID", "DESC")

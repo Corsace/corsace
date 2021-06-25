@@ -3,7 +3,7 @@ import { isLoggedIn } from "../../../Server/middleware";
 import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase, categoryRequirementCheck } from "../../../MCA-AYIM/api/middleware";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../Models/MCA_AYIM/category";
-import { CategoryType } from "../../../Interfaces/category";
+import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
@@ -32,7 +32,7 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
     ]);
 
     const filteredVotes = votes.filter(vote => vote.category.mca.year === ctx.state.year);
-    const categoryInfos = categories.map(c => c.getInfo());
+    const categoryInfos: CategoryStageInfo[] = categories.map(c => c.getInfo() as CategoryStageInfo);
 
     ctx.body = {
         votes: filteredVotes,
