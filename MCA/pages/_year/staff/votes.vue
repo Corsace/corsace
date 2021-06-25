@@ -45,8 +45,16 @@
                                                 {{ getVoteName(result) }}
                                             </a>
                                         </div>
-                                        <div class="staff-vote__choice">
-                                            Count: {{ result.count }}
+                                        <div class="staff-vote__count">
+                                            <div
+                                                v-for="(round, i) in result.rounds"
+                                                :key="i" 
+                                            >
+                                                Round #{{i}}: {{ round }}
+                                            </div>
+                                            <div>
+                                                Count: {{ result.count }}
+                                            </div>
                                         </div>
                                     </div>
                                 </li>
@@ -115,6 +123,7 @@ interface ResultVote extends StaffVote {
     used: boolean;
     inRace: boolean;
     count: number;
+    rounds: number[];
 }
 
 interface UserVote {
@@ -201,8 +210,7 @@ export default class Votes extends Vue {
                 ...vote,
                 inRace: true,
                 used: false,
-                count: 0,
-            };
+            } as ResultVote;
 
             const groupIndex = groups.findIndex(g => g.category === vote.category);
 
@@ -248,6 +256,7 @@ export default class Votes extends Vue {
                 for (const vote of voter.votes) {
                     if (!candidates.some(candidate => vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID)) {
                         candidates.push({
+                            rounds: [] as number[],
                             count: 0,
                             inRace: true,
                             beatmapset: vote.beatmapset ?? undefined,
@@ -298,6 +307,12 @@ export default class Votes extends Vue {
                     if (candidates[i].count > min) break;
 
                     candidates[i].inRace = false;
+                }
+
+                for (let i = 0; i < candidates.length; i++) {
+                    if (!candidates[i].rounds) candidates[i].rounds = [];
+
+                    candidates[i].rounds.push(candidates[i].count);
                 }
             }
 
@@ -387,6 +402,14 @@ export default class Votes extends Vue {
 
     &__choice {
         margin-right: 20px;
+    }
+
+    &__count {
+        display: flex;
+
+        & > div {
+            margin-right: 20px;
+        }
     }
 
     &__action {
