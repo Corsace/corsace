@@ -242,7 +242,19 @@ export default class Votes extends Vue {
         return this.votesByCategory.map(category => {
             const votes = category.userVotes
             let candidates: ResultVote[] = [];
-            votes.forEach(vote => candidates.push(...vote.votes));
+            for (const voter of votes) {
+                for (const vote of voter.votes) {
+                    if (!candidates.some(candidate => vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID)) {
+                        candidates.push({
+                            count: 0,
+                            inRace: true,
+                            beatmapset: vote.beatmapset ?? undefined,
+                            user: vote.user ?? undefined,
+                        } as ResultVote);
+                    }
+                }
+            }
+            candidates = candidates.filter((val, i, self) => self.findIndex(v => v.beatmapset?.ID ? v.beatmapset?.ID === val.beatmapset?.ID : v.user?.osuID === val.user?.osuID) === i);
 
             for (;;) {
                 for (let i = 0; i < votes.length; i++) {
@@ -251,33 +263,27 @@ export default class Votes extends Vue {
                         const vote = voter.votes[j];
                         if (!vote.inRace) continue;
 
-                        const nomineeID = vote.beatmapset?.ID ?? vote.user?.osuID;
-
-                        if (candidates.some(candidate => !candidate.inRace && (nomineeID === candidate.beatmapset?.ID ?? candidate.user?.osuID))) {
+                        const k = candidates.findIndex(candidate => vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID);
+                        if (!candidates[k].inRace) {
                             votes[i].votes[j].inRace = false;
                             continue;
                         }
-
-                        const k = candidates.findIndex(candidate => nomineeID === candidate.beatmapset?.ID ?? candidate.user?.osuID);
                         candidates[k].count += 1;
                         break;
                     }
                 }
                 candidates = candidates.sort((a, b) => b.count - a.count);
+                const inRace = candidates.filter(candidate => candidate.inRace);
                 let sum = 0;
-                candidates.forEach(candidate => sum += candidate.inRace ? candidate.count : 0);
-                if (candidates[0].count > sum / 2.0) {
+                let min = inRace[inRace.length - 1].count;
+                inRace.forEach(candidate => sum += candidate.count);
+                if (candidates[0].count > sum / 2.0 || candidates[0].count === min)
                     break;
-                }
 
-                if (candidates[0].count !== candidates[candidates.length - 1].count) {
-                    candidates[candidates.length - 1].inRace = false;
-                    for (let i = candidates.length - 2; i > 0; i--) {
-                        if (candidates[i].count !== candidates[candidates.length-1].count && candidates[i].count !== candidates[0].count)
-                            break;
-                        
-                        candidates[i].inRace = false;
-                    }
+                for (let i = candidates.length - 1; i > 0; i--) {
+                    if (candidates[i].count > min) break;
+
+                    candidates[i].inRace = false;
                 }
             }
 
