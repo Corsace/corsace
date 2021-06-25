@@ -269,6 +269,7 @@
                 "desc": "DESC",
                 "voteOrder": "ÓRDEN DE VOTO"
             },
+            "votingOverlay": "Hola! Esta debe ser la primera vez que has navegado por la página de votación! <br> La votación de MCA utiliza <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>un sistema de votacion por orden de preferencia!</a> <br> Esto significa que podrás seleccionar cualquier cantidad de mapas/usuarios para votar! <br> Todos los votos están ordenados por orden de elección, así que <span class='notice-modal--bold'>la primera elección tendrá la mayor prioridad!</span> <br> Tu primera elección contará hasta que pierda la carrera. Luego tu segunda, y tu tercera, la cuarta, e.t.c. <br>  Buena suerte! Esperamos con ansias ver los resultados para MCA [YEAR]",
             "hosted": "ORGANIZADO POR",
             "userID": "ID DE USUARIO"
         }
