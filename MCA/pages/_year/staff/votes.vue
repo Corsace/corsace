@@ -9,6 +9,10 @@
                 :placeholder="$t('mca.nom_vote.search')"
                 @update:search="text = $event"
             >
+                <toggle-button
+                    :options="viewOptions"
+                    @change="changeView"
+                />
             </search-bar>
             <div class="staff-container staff-searchContainer">
                 <div class="staff-container staff-scrollTrack">
@@ -25,7 +29,30 @@
                             {{ category.name }}
                         </a>
 
-                        <template v-if="category.id === selectedCategoryId">
+                        <template v-if="category.id === selectedCategoryId && viewOption === 'results'">
+                            <ul>
+                                <li
+                                    v-for="result in selectedCategoryInfo"
+                                    :key="result.ID"
+                                >
+                                    <div class="staff-vote">
+                                        <div class="staff-vote__info">
+                                            <a
+                                                class="staff-page__link"
+                                                :href="generateUrl(result)"
+                                                target="_blank"
+                                            >
+                                                {{ getVoteName(result) }}
+                                            </a>
+                                        </div>
+                                        <div class="staff-vote__choice">
+                                            Count: {{ result.count }}
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else-if="category.id === selectedCategoryId && viewOption === 'voters'">
                             <div
                                 v-for="userVotes in selectedCategoryInfo"
                                 :key="userVotes.voter.osuID + '-voter'"
@@ -84,18 +111,28 @@ import { StaffVote } from "../../../../Interfaces/vote";
 
 const staffModule = namespace("staff");
 
+interface ResultVote extends StaffVote {
+    inRace: boolean;
+    count: number;
+}
+
 interface UserVote {
     voter: {
         osuID: string;
         osuUsername: string;
         discordUsername: string;
     },
-    votes: StaffVote[]
+    votes: ResultVote[]
 }
 
 interface VotesByCategory {
     category: number;
     userVotes: UserVote[];
+}
+
+interface ResultsByCategory {
+    category: number;
+    results: ResultVote[];
 }
 
 @Component({
@@ -117,6 +154,8 @@ export default class Votes extends Vue {
     @staffModule.State categories!: CategoryInfo[];
 
     votes: StaffVote[] = [];
+    viewOptions = ["results", "voters"];
+    viewOption = "results";
     text = "";
     selectedCategoryId: null | number = null;
 
@@ -157,17 +196,23 @@ export default class Votes extends Vue {
                 }
             }
 
+            const resultVote: ResultVote = {
+                ...vote,
+                inRace: true,
+                count: 0,
+            };
+
             const groupIndex = groups.findIndex(g => g.category === vote.category);
 
             if (groupIndex !== -1) {
                 const voterIndex = groups[groupIndex].userVotes.findIndex(v => v.voter.osuID === vote.voter.osuID);
 
                 if (voterIndex !== -1) {
-                    groups[groupIndex].userVotes[voterIndex].votes.push(vote);
+                    groups[groupIndex].userVotes[voterIndex].votes.push(resultVote);
                 } else {
                     groups[groupIndex].userVotes.push({
                         voter: vote.voter,
-                        votes: [vote],
+                        votes: [resultVote],
                     });
                 }
             } else {
@@ -175,7 +220,7 @@ export default class Votes extends Vue {
                     category: vote.category,
                     userVotes: [{
                         voter: vote.voter,
-                        votes: [vote],
+                        votes: [resultVote],
                     }],
                 });
             }
@@ -193,9 +238,56 @@ export default class Votes extends Vue {
         return groups;
     }
 
-    get selectedCategoryInfo (): UserVote[] {
-        const group = this.votesByCategory.find(group => group.category === this.selectedCategoryId);
-        return group?.userVotes || [];
+    get resultsByCategory (): ResultsByCategory[] {
+        return this.votesByCategory.map(category => {
+            const votes = category.userVotes
+            let candidates: ResultVote[] = [];
+            votes.forEach(vote => candidates.push(...vote.votes));
+
+            for (;;) {
+                for (let i = 0; i < votes.length; i++) {
+                    const voter = votes[i];
+                    for (let j = 0; j < voter.votes.length; j++) {
+                        const vote = voter.votes[j];
+                        if (!vote.inRace) continue;
+
+                        const nomineeID = vote.beatmapset?.ID ?? vote.user?.osuID;
+
+                        if (candidates.some(candidate => !candidate.inRace && (nomineeID === candidate.beatmapset?.ID ?? candidate.user?.osuID))) {
+                            votes[i].votes[j].inRace = false;
+                            continue;
+                        }
+
+                        const k = candidates.findIndex(candidate => nomineeID === candidate.beatmapset?.ID ?? candidate.user?.osuID);
+                        candidates[k].count += 1;
+                        break;
+                    }
+                }
+                candidates = candidates.sort((a, b) => b.count - a.count);
+                let sum = 0;
+                candidates.forEach(candidate => sum += candidate.inRace ? candidate.count : 0);
+                if (candidates[0].count > sum / 2.0) {
+                    break;
+                }
+
+                candidates[candidates.length - 1].inRace = false;
+            }
+
+            return {
+                category: category.category,
+                results: candidates
+            };
+        })
+    }
+
+    get selectedCategoryInfo (): UserVote[] | ResultVote[] {
+        if (this.viewOption === "voters") {
+            const group = this.votesByCategory.find(group => group.category === this.selectedCategoryId);
+            return group?.userVotes || [];
+        }
+
+        const group = this.resultsByCategory.find(group => group.category === this.selectedCategoryId);
+        return group?.results || [];
     }
 
     async selectCategory (id: number) {
@@ -208,6 +300,10 @@ export default class Votes extends Vue {
 
         this.votes = data;
         this.selectedCategoryId = id;
+    }
+
+    async changeView (option: string) {
+        this.viewOption = option;
     }
 
     generateUrl (vote: StaffVote): string {
