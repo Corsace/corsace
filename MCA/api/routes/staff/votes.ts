@@ -41,9 +41,6 @@ staffVotesRouter.get("/", async (ctx) => {
                                 .addSelect("beatmapset.artist", "artist")
                                 .addSelect("beatmapset.title", "title")
                                 .addSelect("beatmapset.tags", "tags")
-                                .addSelect("beatmapset.BPM", "BPM")
-                                .addSelect("MAX(beatmap.hitLength)", "length")
-                                .addSelect("MAX(beatmap.totalSR)", "maxSR")
                                 .addSelect("creator.osuUserid", "creatorID")
                                 .addSelect("creator.osuUsername", "creatorOsu")
                                 .addSelect("creator.discordUsername", "creatorDiscord")
@@ -77,9 +74,6 @@ staffVotesRouter.get("/", async (ctx) => {
                 artist: vote.artist,
                 title: vote.title,
                 tags: vote.tags,
-                BPM: vote.BPM,
-                length: vote.length,
-                maxSR: vote.maxSR,
                 creator: {
                     osuID: vote.creatorID,
                     osuUsername: vote.creatorOsu,

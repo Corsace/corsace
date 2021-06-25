@@ -32,9 +32,6 @@ export interface StaffVote {
         artist: string;
         title: string;
         tags: string;
-        BPM: number;
-        length: number;
-        maxSR: number;
         creator: {
             osuID: string;
             osuUsername: string;
