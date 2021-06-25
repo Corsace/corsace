@@ -2,18 +2,18 @@
     <div class="staff-page">
         <mode-switcher
             :hide-phase="true"
-            title="nominations"
+            title="voting"
         >
             <search-bar
+                v-if="viewOption==='voters'"
                 class="category-filters"
                 :placeholder="$t('mca.nom_vote.search')"
                 @update:search="text = $event"
-            >
-                <toggle-button
-                    :options="viewOptions"
-                    @change="changeView"
-                />
-            </search-bar>
+            />
+            <toggle-button
+                :options="viewOptions"
+                @change="changeView"
+            />
             <div class="staff-container staff-searchContainer">
                 <div class="staff-container staff-scrollTrack">
                     <div
@@ -168,7 +168,7 @@ export default class Votes extends Vue {
         let groups: VotesByCategory[] = [];
 
         for (const vote of this.votes) {
-            if (this.text) {
+            if (this.text && this.viewOption === "voters") {
                 const lowerText = this.text.toLowerCase();
                 if (vote.user?.osuID) {
                     if (
@@ -332,6 +332,7 @@ export default class Votes extends Vue {
 
     async changeView (option: string) {
         this.viewOption = option;
+        this.text = "";
     }
 
     generateUrl (vote: StaffVote): string {
