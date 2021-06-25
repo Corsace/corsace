@@ -1,34 +1,34 @@
 <template>
     <div class="staff-page">
-        <search-bar
-            class="category-filters"
-            :placeholder="$t('mca.nom_vote.search')"
-            @update:search="text = $event"
-        >
-            <toggle-button
-                :options="viewOptions"
-                @change="changeView"
-            />
-            <button
-                v-if="!showReviewed && viewOption !== 'invalid'"
-                @click="showReviewed = true"
-                class="button"
-            >
-                Show Reviewed
-            </button>
-            <button
-                v-else-if="showReviewed && viewOption !== 'invalid'"
-                @click="showReviewed = false"
-                class="button"
-            >
-                Hide Reviewed
-            </button>
-        </search-bar>
         <mode-switcher
             :hide-phase="true"
             title="nominations"
         >
-            <div class="staff-container">
+            <search-bar
+                class="category-filters"
+                :placeholder="$t('mca.nom_vote.search')"
+                @update:search="text = $event"
+            >
+                <toggle-button
+                    :options="viewOptions"
+                    @change="changeView"
+                />
+                <button
+                    v-if="!showReviewed && viewOption !== 'invalid'"
+                    @click="showReviewed = true"
+                    class="button"
+                >
+                    Show Reviewed
+                </button>
+                <button
+                    v-else-if="showReviewed && viewOption !== 'invalid'"
+                    @click="showReviewed = false"
+                    class="button"
+                >
+                    Hide Reviewed
+                </button>
+            </search-bar>
+            <div class="staff-container staff-searchContainer">
                 <div class="staff-container staff-scrollTrack">
                     <div
                         v-for="category in relatedCategories"
