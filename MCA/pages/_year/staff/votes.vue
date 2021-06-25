@@ -270,7 +270,15 @@ export default class Votes extends Vue {
                     break;
                 }
 
-                candidates[candidates.length - 1].inRace = false;
+                if (candidates[0].count !== candidates[candidates.length - 1].count) {
+                    candidates[candidates.length - 1].inRace = false;
+                    for (let i = candidates.length - 2; i > 0; i--) {
+                        if (candidates[i].count !== candidates[candidates.length-1].count && candidates[i].count !== candidates[0].count)
+                            break;
+                        
+                        candidates[i].inRace = false;
+                    }
+                }
             }
 
             return {
