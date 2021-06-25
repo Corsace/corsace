@@ -273,6 +273,14 @@ export default class Votes extends Vue {
                     }
                 }
                 candidates = candidates.sort((a, b) => b.count - a.count);
+                if (candidates[candidates.length - 1].inRace && candidates[candidates.length - 1].count === 0) {
+                    for (let i = candidates.length - 1; i > 0; i--) {
+                        if (candidates[i].count > 0) break;
+            
+                        candidates[i].inRace = false;
+                    }
+                }
+
                 const inRace = candidates.filter(candidate => candidate.inRace);
                 let sum = 0;
                 let min = inRace[inRace.length - 1].count;
