@@ -112,6 +112,7 @@ import { StaffVote } from "../../../../Interfaces/vote";
 const staffModule = namespace("staff");
 
 interface ResultVote extends StaffVote {
+    used: boolean;
     inRace: boolean;
     count: number;
 }
@@ -199,6 +200,7 @@ export default class Votes extends Vue {
             const resultVote: ResultVote = {
                 ...vote,
                 inRace: true,
+                used: false,
                 count: 0,
             };
 
@@ -268,7 +270,11 @@ export default class Votes extends Vue {
                             votes[i].votes[j].inRace = false;
                             continue;
                         }
+                        if (vote.used)
+                            break;
+
                         candidates[k].count += 1;
+                        votes[i].votes[j].used = true;
                         break;
                     }
                 }
