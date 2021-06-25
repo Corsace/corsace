@@ -45,9 +45,7 @@ export const state = (): StageState => ({
         order: "ASC",
         text: "",
         skip: 0,
-        played: [],
-        favourites: [],
-    },
+    } as StageQuery,
     favourites: false,
     played: false,
     loading: true,
@@ -119,8 +117,18 @@ export const mutations: MutationTree<StageState> = {
     updatePlayed (state, played) {
         state.played = played;
     },
-    reset (state, removeText: boolean) {
-        if (removeText) state.query.text = "";
+    reset (state, sectionReset: boolean) {
+        if (sectionReset) {
+            state.query = {
+                category: 0,
+                option: "",
+                order: "ASC",
+                text: "",
+                skip: 0,
+            } as StageQuery;
+            state.favourites = false;
+            state.played = false;
+        }
         state.section = "beatmaps";
         state.selectedCategory = null;
         state.beatmaps = [];
@@ -239,8 +247,8 @@ export const actions: ActionTree<StageState, RootState> = {
             commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
         }
     },
-    reset ({ commit }, removeText = false) {
-        commit("reset", removeText);
+    reset ({ commit }, sectionReset = false) {
+        commit("reset", sectionReset);
     },
     async createNomination ({ commit, state }, nomineeId: number) {
         if (!state.selectedCategory) return;
