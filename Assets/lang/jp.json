@@ -253,6 +253,8 @@
         },
         "nom_vote": {
             "search": "譜面・マッパー検索",
+            "select": "部門を選択してください。",
+            "selectGrand": "最初にグランプリを選択してください。",
             "candidates": "候補",
             "options": {
                 "date": "日付",
@@ -265,12 +267,18 @@
                 "alph": "アルファベット順",
                 "asc": "昇順",
                 "desc": "降順",
-                "voteOrder": "投票順序"
+                "voteOrder": "投票順序",
+                "valid": "有効",
+                "invalid": "無効",
+                "both": "どちらも",
+                "all": "すべて",
+                "played": "プレイした",
+                "results": "結果",
+                "voters": "投票者"
             },
+            "votingOverlay": "こんにちは。投票ページを訪れるのは初めてのようですね。 <br> MCAの投票では<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>優先順位付投票制</a>を使用します。 <br> そのため、投票では好きな数の譜面とマッパーを選ぶことが出来ます。 <br> すべての投票には優先順位が付けられるため、<span class='notice-modal--bold'>最初に選んだものが最重要視される仕組みになっています。</span> <br> MCA [YEAR]の結果が出るのを楽しみにしています！",
             "hosted": "作成者",
             "userID": "ユーザーID",
-            "select": "選択",
-            "selectGrand": "グランプリを選択"
         }
     },
     "main": {
