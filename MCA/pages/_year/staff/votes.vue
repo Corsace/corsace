@@ -439,8 +439,11 @@ export default class Votes extends Vue {
         margin-right: 20px;
     }
 
-    &__count > div {
-        margin-right: 20px;
+    &__count {
+        display: flex;
+        & > div {
+            margin-right: 20px;
+        }
     }
 
     &__actions {
