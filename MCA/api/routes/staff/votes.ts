@@ -2,6 +2,8 @@ import Router from "@koa/router";
 import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
 import { Vote } from "../../../../Models/MCA_AYIM/vote";
 import { StaffVote } from "../../../../Interfaces/vote";
+import { validatePhaseYear } from "../../../../MCA-AYIM/api/middleware";
+import { MoreThan, Not } from "typeorm";
 
 const staffVotesRouter = new Router;
 
@@ -29,7 +31,8 @@ staffVotesRouter.get("/", async (ctx) => {
                                 .addSelect("category.ID", "categoryID")
                                 .addSelect("vote.choice", "choice")
                                 // voter selects
-                                .addSelect("voter.osuUserid", "voterID")
+                                .addSelect("voter.ID", "voterID")
+                                .addSelect("voter.osuUserid", "voterOsuID")
                                 .addSelect("voter.osuUsername", "voterOsu")
                                 .addSelect("voter.discordUsername", "voterDiscord")
                                 // user selects
@@ -56,7 +59,8 @@ staffVotesRouter.get("/", async (ctx) => {
             category: vote.categoryID,
             choice: vote.choice,
             voter: {
-                osuID: vote.voterID,
+                ID: vote.voterID, 
+                osuID: vote.voterOsuID,
                 osuUsername: vote.voterOsu,
                 discordUsername: vote.voterDiscord,
             },
@@ -85,6 +89,37 @@ staffVotesRouter.get("/", async (ctx) => {
     });
 
     ctx.body = staffVotes;
+});
+
+staffVotesRouter.delete("/:id/:user", validatePhaseYear, async (ctx) => {
+    const vote = await Vote.findOneOrFail({
+        where: {
+            ID: ctx.params.id,
+            voter: ctx.params.user,
+        },
+        relations: [
+            "category",
+        ],
+    });
+
+    const otherUserVotes = await Vote.find({
+        ID: Not(ctx.params.id),
+        voter: ctx.params.user,
+        category: vote.category,
+        choice: MoreThan(vote.choice),
+    });
+
+    await vote.remove();
+    await Promise.all([
+        otherUserVotes.map(v => {
+            v.choice--;
+            return v.save();
+        }),
+    ]);
+
+    ctx.body = {
+        success: "removed",
+    };
 });
 
 export default staffVotesRouter;

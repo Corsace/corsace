@@ -9,9 +9,15 @@
                 class="category-filters"
                 :placeholder="$t('mca.nom_vote.search')"
                 @update:search="text = $event"
-            />
+            >
+                <toggle-button
+                    :options="['voters', 'results']"
+                    @change="changeView"
+                />
+            </search-bar>
             <toggle-button
-                :options="viewOptions"
+                v-else
+                :options="['results', 'voters']"
                 @change="changeView"
             />
             <div class="staff-container staff-searchContainer">
@@ -89,8 +95,16 @@
                                                     {{ getVoteName(vote) }}
                                                 </a>
                                             </div>
-                                            <div class="staff-vote__choice">
+                                            <div class="staff-vote__actions">
                                                 Choice: {{ vote.choice }}
+                                            </div>
+                                            <div class="staff-vote__actions">
+                                                <button
+                                                    class="button button--small staff-nomination__action"
+                                                    @click="removeVote(vote.ID, userVotes.voter.ID)"
+                                                >
+                                                    remove vote
+                                                </button>
                                             </div>
                                         </div>
                                     </li>
@@ -164,7 +178,6 @@ export default class Votes extends Vue {
     @staffModule.State categories!: CategoryInfo[];
 
     votes: StaffVote[] = [];
-    viewOptions = ["results", "voters"];
     viewOption = "results";
     text = "";
     selectedCategoryId: null | number = null;
@@ -333,7 +346,10 @@ export default class Votes extends Vue {
         return group?.results || [];
     }
 
-    async selectCategory (id: number) {
+    async selectCategory (id: number | null) {
+        if (!id)
+            return;
+
         const { data } = await this.$axios.get(`/api/staff/votes?category=${id}`);
 
         if (data.error) {
@@ -343,6 +359,25 @@ export default class Votes extends Vue {
 
         this.votes = data;
         this.selectedCategoryId = id;
+    }
+
+    async removeVote (id: number, userID: number) {
+        if (!confirm("ARE YOU SURE YOU WANT TO DELETE THIS VOTE? IT'S IN CAPS FOR L'EMPHASIS."))
+            return;
+
+        try {
+            const { data } = await this.$axios.delete(`/api/staff/votes/${id}/${userID}`);
+
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            await this.selectCategory(this.selectedCategoryId);
+        } catch (e) {
+            console.error(e);
+            alert("LOOK AT CONSOLE AND ALERT VINXIS IMMEDIATELY!!!!!!!");
+        }
     }
 
     async changeView (option: string) {
@@ -404,12 +439,12 @@ export default class Votes extends Vue {
         margin-right: 20px;
     }
 
-    &__count {
-        display: flex;
+    &__count > div {
+        margin-right: 20px;
+    }
 
-        & > div {
-            margin-right: 20px;
-        }
+    &__actions {
+        display: flex;
     }
 
     &__action {

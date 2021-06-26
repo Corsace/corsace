@@ -18,6 +18,7 @@ export interface StaffVote {
     category: number;
     choice: number;
     voter: {
+        ID: number;
         osuID: string;
         osuUsername: string;
         discordUsername: string;
