@@ -1,6 +1,6 @@
 
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, ManyToOne, OneToOne, JoinColumn } from "typeorm";
-import { DemeritReport } from "./demerits";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, ManyToOne, OneToOne, JoinColumn, ManyToMany } from "typeorm";
+import { DemeritReport } from "./demeritReport";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
 import { UserComment } from "./MCA_AYIM/userComments";
@@ -16,6 +16,7 @@ import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Team } from "./team";
+import { Match } from "./tournaments/match";
 
 export const BWSFilter: RegExp = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|community|moderation|moderating|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
 
@@ -125,6 +126,15 @@ export class User extends BaseEntity {
     
     @OneToMany(() => Vote, vote => vote.user)
     votesReceived!: Vote[];
+
+    @OneToMany(() => Match, match => match.referee)
+    matchesReffed!: Match[];
+
+    @ManyToMany(() => Match, match => match.commentators)
+    matchesCommentated!: Match[];
+
+    @OneToMany(() => Match, match => match.streamer)
+    matchesStreamed!: Match[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User
