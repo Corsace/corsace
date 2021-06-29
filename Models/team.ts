@@ -9,7 +9,7 @@ export class Team extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
 
-    @Column()
+    @Column("varchar", { length: 30 })
     name!: string;
 
     @ManyToMany(() => Tournament, tournament => tournament.teams)

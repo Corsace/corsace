@@ -1,6 +1,6 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Bracket } from "./bracket";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Match } from "./match";
+import { MatchBeatmap } from "./matchBeatmap";
 import { TournamentTeam } from "./tournamentTeam";
 
 @Entity()
@@ -16,10 +16,19 @@ export class MatchSet extends BaseEntity {
     match!: Match;
 
     @Column()
-    winnerID!: number;
+    winnerID?: number;
 
-    @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.matchesWon)
-    winner!: TournamentTeam;
+    @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.setsWon)
+    winner?: TournamentTeam;
+
+    @OneToMany(() => MatchBeatmap, matchBeatmap => matchBeatmap.set)
+    beatmaps?: MatchBeatmap[];
+
+    @Column({ default: 0 })
+    teamAScore!: number;
+    
+    @Column({ default: 0 })
+    teamBScore!: number;
 
     // TODO: FINISH THIS
 }
