@@ -44,7 +44,7 @@ votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), 
     let votes = await Vote.find({
         voter: ctx.state.user,
     });
-    votes = votes.filter(vote => vote.category.mca.year === category.mca.year);
+    votes = votes.filter(vote => vote.category.mca.year === category.mca.year).sort((a, b) => a.choice - b.choice);
 
     if (!categoryRequirementCheck(votes, category)) {
         throw "Please vote in the Grand Award categories first!";
