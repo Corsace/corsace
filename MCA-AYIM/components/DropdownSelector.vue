@@ -1,7 +1,11 @@
 <template>
     <div class="dropdown-container">
         <div 
+<<<<<<< HEAD
             class="label-section"
+=======
+            class="label-section button"
+>>>>>>> preliminary commit for results page
             @click="showDropdown = !showDropdown"
             :style="styleLabel"
         >
@@ -99,6 +103,7 @@ export default class DropdownSelector extends Vue{
 
     z-index: 1;
 
+<<<<<<< HEAD
     padding: 5px;
     margin: 0;
 
@@ -143,6 +148,9 @@ export default class DropdownSelector extends Vue{
         background: white;
         color: black;
         text-shadow: none;
+=======
+    &:hover {
+>>>>>>> preliminary commit for results page
         z-index: 100;
     }
 
@@ -163,10 +171,13 @@ export default class DropdownSelector extends Vue{
     text-align: center;
     z-index: 100;
 
+<<<<<<< HEAD
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
 
+=======
+>>>>>>> preliminary commit for results page
     min-width: 80px;
     @include breakpoint(tablet) {
         min-width: 165px;

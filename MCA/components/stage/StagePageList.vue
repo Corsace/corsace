@@ -102,9 +102,43 @@ export default class StagePageList extends Vue {
     @stageModule.State showVoteChoiceBox!: boolean;
 
     @stageModule.Action search;
+<<<<<<< HEAD
 
     @Prop({ type: Boolean, default: false }) results!: boolean;
 
+=======
+    @Prop({ type: Boolean, default: false }) results!: boolean;
+
+    get userResults(): UserResult[] {
+        return [
+            {
+                corsaceID: 1,
+                username: "ImpurePug",
+                avatar: "https://a.ppy.sh/3124248",
+                userID: "3124248",
+                otherNames: ["KineticDog"],
+                chosen: false,
+                placement: 1,
+                votes: 123
+            }
+        ]
+    } 
+
+    get beatmapResults(): BeatmapResult[] {
+        const sennen = {
+            id: 926846,
+            artist: "sasakure.UK",
+            title: "Sennen to Rasen, Chiru Mono o feat. Sui",
+            hoster: "Kalibe",
+            chosen: false,
+            placement: 1,
+            votes: 67
+        }
+
+        return [sennen]
+    }
+
+>>>>>>> preliminary commit for results page
 }
 </script>
 
