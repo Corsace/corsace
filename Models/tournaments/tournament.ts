@@ -14,6 +14,9 @@ export class Tournament extends BaseEntity {
     @Column()
     name!: string;
 
+    @Column({ default: false })
+    isCorsace!: boolean;
+
     @Column(() => Phase)
     registration!: Phase;
     

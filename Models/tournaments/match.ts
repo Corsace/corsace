@@ -1,7 +1,6 @@
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 import { Bracket } from "./bracket";
-import { MappoolBeatmap } from "./mappoolBeatmap";
 import { MatchBeatmap } from "./matchBeatmap";
 import { MatchSet } from "./matchSet";
 import { TournamentTeam } from "./tournamentTeam";
@@ -72,10 +71,10 @@ export class Match extends BaseEntity {
     @ManyToOne(() => User, user => user.matchesStreamed)
     streamer?: User;
 
-    @Column()
-    twitch!: string;
+    @Column({ nullable: true })
+    twitch?: string;
 
-    @Column()
-    mp!: number;
+    @Column({ nullable: true })
+    mp?: number;
 
 }
