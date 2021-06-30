@@ -1,9 +1,13 @@
 <template>    
 <<<<<<< HEAD
+<<<<<<< HEAD
     <div class="results-filters">
 =======
     <div class="results-filter">
 >>>>>>> preliminary commit for results page
+=======
+    <div class="results-filters">
+>>>>>>> fix results filter css overflow and results table height
         <div class="category-selector">
             <dropdown-selector
                 :options="localCatTypes" 
@@ -30,6 +34,7 @@
                 @relayOption="changeCategory"
             />
 <<<<<<< HEAD
+<<<<<<< HEAD
         </div> 
         <stage-page-filters 
             class="stage-page-filters"
@@ -41,6 +46,10 @@
             <stage-page-filters />
         </div>
 >>>>>>> preliminary commit for results page
+=======
+        </div> 
+        <stage-page-filters class="stage-page-filters" />
+>>>>>>> fix results filter css overflow and results table height
     </div>
 </template>
 
@@ -161,7 +170,7 @@ export default class ResultsFilters extends Vue {
 >>>>>>> preliminary commit for results page
         return {
             'border-radius': '5.5px 0 0 5.5px',
-            'width': `${Math.max(85 + Math.max(...this.localCatTypes.map(lct => lct.toString().length)) * 10, 165)}px`,
+            'min-width': `${Math.max(85 + Math.max(...this.localCatTypes.map(lct => lct.toString().length)) * 10, 165)}px`,
             'margin-left': '5px'
         }
     }
@@ -173,7 +182,7 @@ export default class ResultsFilters extends Vue {
 >>>>>>> preliminary commit for results page
         return {
             'border-radius': '0 5.5px 5.5px 0',
-            'width': `${Math.max(85 + Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length)) * 10, 165)}px`,
+            'min-width': `${Math.max(85 + Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length)) * 10, 165)}px`,
             // formula to estimate box width from character count
             // flat factor (85) and scaling factor (10) are pretty arbitrary  
             'clip-path': 'inset(-8px -8px -8px 0)'
@@ -210,6 +219,7 @@ export default class ResultsFilters extends Vue {
 @import '@s-sass/_partials';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .results-filters {
     top: 30%;
     flex: initial;
@@ -226,19 +236,37 @@ export default class ResultsFilters extends Vue {
 =======
 .results-filter {
     display: flex;
+=======
+.results-filters {
+>>>>>>> fix results filter css overflow and results table height
     top: 30%;
+    flex: initial;
+
+    display: flex;
     justify-content: flex-start;
     align-content: center;
     flex-wrap: wrap;
+<<<<<<< HEAD
 >>>>>>> preliminary commit for results page
+=======
+    flex-direction: column;
+
+    @include breakpoint(laptop) {
+        flex-direction: row;
+    }
+>>>>>>> fix results filter css overflow and results table height
 }
 
 .category-selector {
     display: flex;
 <<<<<<< HEAD
+<<<<<<< HEAD
     flex: 1;
 =======
 >>>>>>> preliminary commit for results page
+=======
+    flex: 1;
+>>>>>>> fix results filter css overflow and results table height
     justify-content: center;
 
     padding: 20px 0 0 0;
@@ -255,13 +283,19 @@ export default class ResultsFilters extends Vue {
 .stage-page-filters {
     flex: 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fix results filter css overflow and results table height
 
     @include breakpoint(laptop) {
         flex: 10;
         max-height: 85px;
         min-width: 56rem;
     }
+<<<<<<< HEAD
 =======
 >>>>>>> preliminary commit for results page
+=======
+>>>>>>> fix results filter css overflow and results table height
 }
 </style>
