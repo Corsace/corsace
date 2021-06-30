@@ -1,7 +1,7 @@
 <template>
     <div class="dropdown-container">
         <div 
-            class="label-section button"
+            class="label-section"
             @click="showDropdown = !showDropdown"
             :style="styleLabel"
         >
@@ -99,7 +99,50 @@ export default class DropdownSelector extends Vue{
 
     z-index: 1;
 
+    padding: 5px;
+    margin: 0;
+
+    background: black;
+    box-shadow: $black-shadow;
+    border-radius: 5.5px;
+
+    font-size: $font-lg;
+    font-family: $font-body;
+    text-shadow: 0 0 4px white;
+    text-transform: uppercase;
+    color: white;
+    
+    @include breakpoint(mobile) {
+        font-size: $font-base;
+    }
+
+    min-width: 70px;
+    @include breakpoint(mobile) {
+        min-width: 50px;
+    }
+    @include breakpoint(tablet) {
+        min-width: 90px;
+    }
+    @include breakpoint(laptop) {
+        min-width: 120px;
+    }
+    @include breakpoint(desktop) {
+        min-width: 165px;
+    }
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include transition;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
     &:hover {
+        background: white;
+        color: black;
+        text-shadow: none;
         z-index: 100;
     }
 
@@ -119,6 +162,10 @@ export default class DropdownSelector extends Vue{
     text-decoration: none;
     text-align: center;
     z-index: 100;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 
     min-width: 80px;
     @include breakpoint(tablet) {
