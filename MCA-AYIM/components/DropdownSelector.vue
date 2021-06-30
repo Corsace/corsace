@@ -2,10 +2,14 @@
     <div class="dropdown-container">
         <div 
 <<<<<<< HEAD
+<<<<<<< HEAD
             class="label-section"
 =======
             class="label-section button"
 >>>>>>> preliminary commit for results page
+=======
+            class="label-section"
+>>>>>>> revert dropdown behaviour to that of old button
             @click="showDropdown = !showDropdown"
             :style="styleLabel"
         >
@@ -104,6 +108,9 @@ export default class DropdownSelector extends Vue{
     z-index: 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> revert dropdown behaviour to that of old button
     padding: 5px;
     margin: 0;
 
@@ -144,6 +151,7 @@ export default class DropdownSelector extends Vue{
     -webkit-appearance: none;
     -moz-appearance: none;
 
+<<<<<<< HEAD
     &:hover {
         background: white;
         color: black;
@@ -151,6 +159,12 @@ export default class DropdownSelector extends Vue{
 =======
     &:hover {
 >>>>>>> preliminary commit for results page
+=======
+    &:hover {
+        background: white;
+        color: black;
+        text-shadow: none;
+>>>>>>> revert dropdown behaviour to that of old button
         z-index: 100;
     }
 
@@ -172,12 +186,18 @@ export default class DropdownSelector extends Vue{
     z-index: 100;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> revert dropdown behaviour to that of old button
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
 
+<<<<<<< HEAD
 =======
 >>>>>>> preliminary commit for results page
+=======
+>>>>>>> revert dropdown behaviour to that of old button
     min-width: 80px;
     @include breakpoint(tablet) {
         min-width: 165px;
