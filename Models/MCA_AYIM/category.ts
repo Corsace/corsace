@@ -47,9 +47,6 @@ export class Category extends BaseEntity {
     
     @Column()
     maxNominations!: number;
-    
-    @Column({ default: false })
-    isRequired!: boolean;
 
     @Column({ default: false })
     requiresVetting!: boolean;
@@ -83,7 +80,6 @@ export class Category extends BaseEntity {
             id: this.ID,
             name: this.name,
             maxNominations: this.maxNominations,
-            isRequired: this.isRequired,
             requiresVetting: this.requiresVetting,
             type: CategoryType[this.type],
             mode: this.mode.name,
@@ -119,7 +115,6 @@ export class CategoryGenerator {
         
         category.name = "grandAward";
         category.maxNominations = 3;
-        category.isRequired = true;
         category.type = type;
         category.mode = mode;
         category.mca = mca;
@@ -137,7 +132,6 @@ export class CategoryGenerator {
         
         category.name = categoryInfo.name;
         category.maxNominations = categoryInfo.maxNominations || 3;
-        category.isRequired = categoryInfo.isRequired || false;
         category.requiresVetting = categoryInfo.requiresVetting || false;
         category.type = categoryInfo.type;
         category.mode = categoryInfo.mode;

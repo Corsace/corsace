@@ -4,7 +4,7 @@ import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
-import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear, categoryRequirementCheck } from "../../../MCA-AYIM/api/middleware";
+import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear } from "../../../MCA-AYIM/api/middleware";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
 import { MCAEligibility } from "../../../Models/MCA_AYIM/mcaEligibility";
@@ -43,9 +43,6 @@ nominatingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomina
         nominator: ctx.state.user,
     });
     nominations = nominations.filter(nom => nom.category.mca.year === category.mca.year);
-    if (!categoryRequirementCheck(nominations, category)) {
-        throw "Please nominate in the Grand Award categories first!";
-    }
         
     return nominations;
 }));
@@ -61,10 +58,6 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
     const nominations = await Nomination.find({
         nominator: ctx.state.user,
     });
-    if (!categoryRequirementCheck(nominations, category))
-        return ctx.body = { 
-            error: "Please nominate in the Grand Award categories first!",
-        };
 
     const categoryNominations = nominations.filter(nom => nom.category.ID === category.ID);
 
@@ -144,7 +137,7 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
             if (Math.min(...eligibilities.map(e => e.year)) !== ctx.state.year)
                 return ctx.body = {
                     error: "User is not eligible for this category!", 
-                }
+                };
         }
 
         if (categoryNominations.some(n => n.user?.ID === user.ID)) {
@@ -179,14 +172,6 @@ nominatingRouter.delete("/:id", validatePhaseYear, isPhase("nomination"), isElig
     if (!nomination.isValid)
         return ctx.body = {
             error: "Cannot remove reviewed nominations, contact a member of the staff!",
-        };
-
-    if (
-        nomination.category.isRequired && 
-        nominations.some(nom => !nom.category.isRequired && nom.category.type === nomination.category.type && nom.category.mode === nomination.category.mode)
-    )
-        return ctx.body = {
-            error: "You cannot remove nominations in required categories if you have nominations in non-required categories!",
         };
     
     await nomination.remove();
