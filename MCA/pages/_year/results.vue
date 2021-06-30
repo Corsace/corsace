@@ -16,12 +16,12 @@
                     v-if="section === 'beatmaps'"
                     class="table-headings"
                 >
-                    <span class="table-headings__mapplace">PLACE</span>
-                    <span class="table-headings__map">MAP</span>
-                    <span class="table-headings__title">TITLE</span>
-                    <span class="table-headings__artist">ARTIST</span>
-                    <span class="table-headings__host">HOST</span>
-                    <span class="table-headings__votes">VOTES</span>
+                    <span class="table-headings__mapplace">{{ $t('mca.results.place') }}</span>
+                    <span class="table-headings__map">{{ $t('mca.results.map') }}</span>
+                    <span class="table-headings__title">{{ $t('mca.results.title') }}</span>
+                    <span class="table-headings__artist">{{ $t('mca.results.artist') }}</span>
+                    <span class="table-headings__host">{{ $t('mca.results.host') }}</span>
+                    <span class="table-headings__votes">{{ $t('mca.results.votes') }}</span>
                     <span class="table-headings__vote-right" />
                 </span>
                 
@@ -29,9 +29,9 @@
                     v-else
                     class="table-headings"
                 >
-                    <span class="table-headings__userplace">PLACE</span>
-                    <span class="table-headings__user">USER</span>
-                    <span class="table-headings__votes">VOTES</span>
+                    <span class="table-headings__userplace">{{ $t('mca.results.place') }}</span>
+                    <span class="table-headings__user">{{ $t('mca.results.user') }}</span>
+                    <span class="table-headings__votes">{{ $t('mca.results.votes') }}</span>
                     <span class="table-headings__vote-right" />
                 </span>
 
