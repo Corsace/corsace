@@ -72,7 +72,7 @@ import { namespace, State } from "vuex-class";
 
 import ChoiceBeatmapsetCard from "../../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
 
-import { GuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
+import { GuestRequest, RequestStatus } from "../../../../Interfaces/requests";
 import { UpdateRequestData } from "../../../store/staff";
 
 interface GroupedRequest {

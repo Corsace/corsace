@@ -31,7 +31,7 @@ import { namespace } from "vuex-class";
 
 import { MCAInfo } from "../../../../Interfaces/mca";
 import { CategoryInfo } from "../../../../Interfaces/category";
-import { GuestRequest } from "../../../../Interfaces/guestRequests";
+import { GuestRequest } from "../../../../Interfaces/requests";
 
 const staffModule = namespace("staff");
 

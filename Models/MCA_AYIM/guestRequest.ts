@@ -2,7 +2,7 @@ import { Entity, Column, BaseEntity, ManyToOne, JoinTable, PrimaryGeneratedColum
 import { User } from "../user";
 import { Beatmap } from "../beatmap";
 import { ModeDivision } from "./modeDivision";
-import { RequestStatus } from "../../Interfaces/guestRequests";
+import { RequestStatus } from "../../Interfaces/requests";
 import { MCA } from "./mca";
 
 @Entity()

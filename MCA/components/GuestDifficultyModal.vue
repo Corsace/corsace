@@ -49,7 +49,7 @@ import { Action, Mutation, State } from "vuex-class";
 import BaseModal from "../../MCA-AYIM/components/BaseModal.vue";
 import GuestDifficultySubmission from "./GuestDifficultySubmission.vue";
 
-import { GuestRequest, RequestStatus } from "../../Interfaces/guestRequests";
+import { GuestRequest, RequestStatus } from "../../Interfaces/requests";
 import { UserMCAInfo } from "../../Interfaces/user";
 import { GuestRequestPayload, UpdateGuestRequestPayload } from "../../MCA-AYIM/store";
 

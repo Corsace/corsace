@@ -31,7 +31,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
-import { RequestStatus } from "../../Interfaces/guestRequests";
+import { RequestStatus } from "../../Interfaces/requests";
 
 @Component
 export default class GuestDifficultySubmission extends Vue {
