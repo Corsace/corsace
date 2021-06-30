@@ -2,7 +2,7 @@ import Vue from "vue";
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { MCA, MCAInfo, Phase, PhaseType } from "../../Interfaces/mca";
 import { UserMCAInfo } from "../../Interfaces/user";
-import { GuestRequest } from "../../Interfaces/guestRequests";
+import { GuestRequest } from "../../Interfaces/requests";
 
 const modeRegex = /^(standard|taiko|fruits|mania|storyboard)$/;
 
