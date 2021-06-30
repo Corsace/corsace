@@ -15,9 +15,6 @@ export class Bracket extends BaseEntity {
     @Column()
     size!: number;
 
-    @Column({ type: "timestamp" })
-    weekend!: Date;
-
     @ManyToOne(() => Tournament, tournament => tournament.brackets)
     tournament!: Tournament
 

@@ -20,7 +20,7 @@ export class TournamentTeam extends BaseEntity {
     })
     team!: Team;
 
-    @ManyToMany(() => Match, match => match.teams)
+    @ManyToMany(() => Match, match => match.teamA || match.teamB)
     matches!: Match[];
 
     @OneToMany(() => Match, match => match.winner)
