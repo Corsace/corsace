@@ -53,6 +53,9 @@
                                         </div>
                                         <div class="staff-vote__count">
                                             <div>
+                                                Placement: {{ result.placement }}
+                                            </div>
+                                            <div>
                                                 Count: {{ result.count }}
                                             </div>
                                         </div>
@@ -131,6 +134,7 @@ interface ResultVote extends StaffVote {
     used: boolean;
     inRace: boolean;
     count: number;
+    placement: number;
 }
 
 interface UserVote {
@@ -272,7 +276,7 @@ export default class Votes extends Vue {
                 }
             }
             candidates = candidates.filter((val, i, self) => self.findIndex(v => v.beatmapset?.ID ? v.beatmapset?.ID === val.beatmapset?.ID : v.user?.osuID === val.user?.osuID) === i);
-            
+            let run = 1;
             for (;;) {
                 // Run for each placement
                 for (;;) {
@@ -332,16 +336,22 @@ export default class Votes extends Vue {
                 // Remove top ones this run
                 let max = candidates[0].count;
                 for (let i = 0; i < candidates.length; i++) {
-                    if (candidates[i].count !== max)
+                    if (candidates[i].count !== max) {
                         candidates[i].inRace = true;
-                    else
-                        results.push(candidates[i]);
+                        candidates[i].count = 0;
+                    } else
+                        results.push({
+                            ...candidates[i],
+                            placement: run,
+                        });
                 }
                 candidates = candidates.filter(candidate => candidate.count !== max);
 
-                // Reset candidate counts + vote uses
-                for (let i = 0; i < candidates.length; i++)
-                    candidates[i].count = 0;
+                // Continue until 0 candidates are left
+                if (candidates.length === 0)
+                    break;
+
+                // Reset vote uses
                 for (let i = 0; i < votes.length; i++) {
                     for (let j = 0; j < votes[i].votes.length; j++) {
                         votes[i].votes[j].used = false;
@@ -349,9 +359,7 @@ export default class Votes extends Vue {
                     }
                 }
 
-                // Continue until 0 candidates are left
-                if (candidates.length === 0)
-                    break;
+                run++;
             }
 
             return {
