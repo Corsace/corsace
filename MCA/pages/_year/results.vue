@@ -6,7 +6,10 @@
             :title="phase.phase === 'results' ? 'results' : ''"
             @inactiveModeClicked="toggleGuestDifficultyModal"
         >
-            <template v-if="phase.phase === 'results'"> 
+            <div
+                v-if="phase.phase === 'results'"
+                class="results-general"
+            > 
                 <results-filters />
 
                 <span 
@@ -34,10 +37,11 @@
 
                 <hr class="table-border">
                 
-                <div class="results-table">
-                    <stage-page-list :results="true" />
-                </div>
-            </template>
+                <stage-page-list 
+                    :results="true"
+                    class="results-table"
+                />
+            </div>
 
             <div
                 v-else
@@ -100,6 +104,13 @@ export default class Results extends Vue {
     }
 }
 
+.results-general {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
 .table-headings {
     padding: 0 5px 0 5px;
 
@@ -107,6 +118,7 @@ export default class Results extends Vue {
     font-family: $font-body;
     text-transform: uppercase;
 
+    flex: initial;
     display: flex;
 
     &__mapplace {
@@ -177,21 +189,14 @@ export default class Results extends Vue {
 }
 
 .table-border {
+    flex: initial;
     margin: 0 5px 15px 5px;
     border-top: 1px white;        
 }
 
 .results-table {
     padding: 0 5px 0 5px;
-    height: calc(100% - 11rem);
-
-    @include breakpoint(laptop) {
-        height: calc(100% - 9rem);
-    }
-
-    @include breakpoint(desktop) {
-        height: calc(100% - 6rem);
-    }
+    overflow: hidden;
 }
 
 .no-results {

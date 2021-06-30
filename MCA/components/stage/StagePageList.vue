@@ -123,7 +123,7 @@ export default class StagePageList extends Vue {
             votes: 67
         }
 
-        return [sennen]
+        return [sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, ]
     }
 
 }

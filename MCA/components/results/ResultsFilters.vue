@@ -1,5 +1,5 @@
 <template>    
-    <div class="results-filter">
+    <div class="results-filters">
         <div class="category-selector">
             <dropdown-selector
                 :options="localCatTypes" 
@@ -17,10 +17,8 @@
                 class="award-category"
                 @relayOption="changeCategory"
             />
-        </div>
-        <div class="stage-page-filters"> 
-            <stage-page-filters />
-        </div>
+        </div> 
+        <stage-page-filters class="stage-page-filters" />
     </div>
 </template>
 
@@ -115,7 +113,7 @@ export default class ResultsFilters extends Vue {
     get categoryTypeStyle () {
         return {
             'border-radius': '5.5px 0 0 5.5px',
-            'width': `${Math.max(85 + Math.max(...this.localCatTypes.map(lct => lct.toString().length)) * 10, 165)}px`,
+            'min-width': `${Math.max(85 + Math.max(...this.localCatTypes.map(lct => lct.toString().length)) * 10, 165)}px`,
             'margin-left': '5px'
         }
     }
@@ -123,7 +121,7 @@ export default class ResultsFilters extends Vue {
     get categoryStyle () {
         return {
             'border-radius': '0 5.5px 5.5px 0',
-            'width': `${Math.max(85 + Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length)) * 10, 165)}px`,
+            'min-width': `${Math.max(85 + Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length)) * 10, 165)}px`,
             // formula to estimate box width from character count
             // flat factor (85) and scaling factor (10) are pretty arbitrary  
             'clip-path': 'inset(-8px -8px -8px 0)'
@@ -150,16 +148,24 @@ export default class ResultsFilters extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
 
-.results-filter {
-    display: flex;
+.results-filters {
     top: 30%;
+    flex: initial;
+
+    display: flex;
     justify-content: flex-start;
     align-content: center;
     flex-wrap: wrap;
+    flex-direction: column;
+
+    @include breakpoint(laptop) {
+        flex-direction: row;
+    }
 }
 
 .category-selector {
     display: flex;
+    flex: 1;
     justify-content: center;
 
     padding: 20px 0 0 0;
@@ -175,5 +181,11 @@ export default class ResultsFilters extends Vue {
 
 .stage-page-filters {
     flex: 1;
+
+    @include breakpoint(laptop) {
+        flex: 10;
+        max-height: 85px;
+        min-width: 56rem;
+    }
 }
 </style>
