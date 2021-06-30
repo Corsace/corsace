@@ -170,7 +170,7 @@ export default class ResultsFilters extends Vue {
 >>>>>>> preliminary commit for results page
         return {
             'border-radius': '5.5px 0 0 5.5px',
-            'min-width': `${Math.max(85 + Math.max(...this.localCatTypes.map(lct => lct.toString().length)) * 10, 165)}px`,
+            'width': `${Math.max(85 + Math.max(...this.localCatTypes.map(lct => lct.toString().length)) * 10, 165)}px`,
             'margin-left': '5px'
         }
     }
@@ -182,7 +182,7 @@ export default class ResultsFilters extends Vue {
 >>>>>>> preliminary commit for results page
         return {
             'border-radius': '0 5.5px 5.5px 0',
-            'min-width': `${Math.max(85 + Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length)) * 10, 165)}px`,
+            'width': `${Math.max(85 + Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length)) * 10, 165)}px`,
             // formula to estimate box width from character count
             // flat factor (85) and scaling factor (10) are pretty arbitrary  
             'clip-path': 'inset(-8px -8px -8px 0)'
