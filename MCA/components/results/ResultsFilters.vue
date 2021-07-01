@@ -52,10 +52,13 @@ export default class ResultsFilters extends Vue {
     @stageModule.Action reset;
     @stageModule.Action updateSelectedCategory;
     @stageModule.Action updateSection;
+    @stageModule.Action setInitialData;
 
     @Watch("selectedMode")
     onSelectedModeChange () {
         this.reset();
+        this.updateSection("beatmaps");
+        this.setInitialData();
     }
 
     filterCategories (type: CategoryType): CategoryStageInfo[] {
