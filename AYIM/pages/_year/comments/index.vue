@@ -136,7 +136,7 @@ import { MCA, Phase } from "../../../../Interfaces/mca";
 })
 export default class Comments extends Vue {
 
-    @State loggedInUser!: UserMCAInfo;
+    @State loggedInUser!: UserMCAInfo | null;
     @State mca!: MCA;
     @State selectedMode!: string;
     @Getter phase!: Phase | null;

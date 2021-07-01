@@ -109,7 +109,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
     });
     const resultVotes = voteCounter(groupVotesByVoters(staffVotes));
     let results = votesToResults(resultVotes, category.type);
-    if ((ctx.query.favourites === "true" || ctx.query.played === "true") && category.type == CategoryType.Beatmapsets) {
+    if ((ctx.query.favourites === "true" || ctx.query.played === "true") && category.type == CategoryType.Beatmapsets && ctx.state.user) {
         const accessToken: string = await ctx.state.user.getAccessToken("osu");
         let ids: number[] = [];
         if (ctx.query.favourites === "true") { // Fav filter

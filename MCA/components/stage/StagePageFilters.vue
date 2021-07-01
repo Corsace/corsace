@@ -5,7 +5,7 @@
         @update:search="updateText($event)"
     >
         <button
-            v-if="section === 'beatmaps'"
+            v-if="section === 'beatmaps' && loggedInUser"
             @click="updateFavourite"
             class="button"
             :class="{ 
@@ -17,7 +17,7 @@
         </button>
 
         <toggle-button
-            v-if="section === 'beatmaps'"
+            v-if="section === 'beatmaps' && loggedInUser"
             :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="playedFilters"
             @change="changePlayed"
@@ -55,13 +55,14 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { namespace, State } from "vuex-class";
 import _ from "lodash";
 
 import ToggleButton from "../../../MCA-AYIM/components/ToggleButton.vue";
 import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
 
 import { StageQuery } from "../../../Interfaces/queries";
+import { UserMCAInfo } from "../../../Interfaces/user";
 
 const stageModule = namespace("stage");
 
@@ -87,6 +88,8 @@ export default class StagePageFilters extends Vue {
     @stageModule.Action updatePlayed;
 
     @stageModule.Mutation toggleVoteChoiceBox;
+
+    @State loggedInUser!: UserMCAInfo | null;
 
     @Prop({ type: Boolean, default: false }) results!: boolean;
 
