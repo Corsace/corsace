@@ -109,7 +109,7 @@ export default class StagePageList extends Vue {
         mask-image: linear-gradient(to top, transparent 10%, black 25%);
 
         @include breakpoint(tablet) {
-            mask-image: linear-gradient(to top, transparent 0%, black 25%);
+            mask-image: linear-gradient(to top, transparent 0%, black 10%);
         }
     }
 

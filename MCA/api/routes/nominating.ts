@@ -7,6 +7,7 @@ import { User } from "../../../Models/user";
 import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear, categoryRequirementCheck } from "../../../MCA-AYIM/api/middleware";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
+import { MCAEligibility } from "../../../Models/MCA_AYIM/mcaEligibility";
 
 const nominatingRouter = new Router();
 
@@ -106,27 +107,27 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
                 return ctx.body = {
                     error: "Beatmapset exceeds maximum length requirement!", 
                 };
-            if (category.filter.minBPM && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter!.minBPM!))
+            if (category.filter.minBPM && !(beatmapset.BPM >= category.filter!.minBPM!))
                 return ctx.body = {
                     error: "Beatmapset does not exceed minimum BPM requirement!", 
                 };
-            if (category.filter.maxBPM && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter!.maxBPM!))
+            if (category.filter.maxBPM && !(beatmapset.BPM <= category.filter!.maxBPM!))
                 return ctx.body = {
                     error: "Beatmapset exceeds maximum BPM requirement!", 
                 };
-            if (category.filter.minSR && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter!.minSR!))
+            if (category.filter.minSR && !beatmapset.beatmaps.some(beatmap => beatmap.totalSR >= category.filter!.minSR!))
                 return ctx.body = {
                     error: "Beatmapset does not exceed minimum SR requirement!", 
                 };
-            if (category.filter.maxSR && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter!.maxSR!))
+            if (category.filter.maxSR && beatmapset.beatmaps.some(beatmap => beatmap.totalSR >= category.filter!.maxSR!))
                 return ctx.body = {
                     error: "Beatmapset exceeds maximum SR requirement!", 
                 };
-            if (category.filter.minCS && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter!.minCS!))
+            if (category.filter.minCS && beatmapset.beatmaps.find(beatmap => beatmap.totalSR === beatmapset.beatmaps.reduce((prev, current) => (prev.totalSR > current.totalSR) ? prev : current).totalSR)!.circleSize < category.filter.minCS)
                 return ctx.body = {
                     error: "Beatmapset does not exceed minimum CS requirement!", 
                 };
-            if (category.filter.maxCS && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter!.maxCS!))
+            if (category.filter.maxCS && beatmapset.beatmaps.find(beatmap => beatmap.totalSR === beatmapset.beatmaps.reduce((prev, current) => (prev.totalSR > current.totalSR) ? prev : current).totalSR)!.circleSize > category.filter.maxCS)
                 return ctx.body = {
                     error: "Beatmapset exceeds maximum CS requirement!", 
                 };
@@ -135,6 +136,16 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
         nomination.beatmapset = beatmapset;
     } else if (category.type == CategoryType.Users) {
         user = await User.findOneOrFail(ctx.request.body.nomineeId);
+
+        if (category.filter?.rookie) {
+            const eligibilities = await MCAEligibility.find({
+                user,
+            });
+            if (Math.min(...eligibilities.map(e => e.year)) !== ctx.state.year)
+                return ctx.body = {
+                    error: "User is not eligible for this category!", 
+                }
+        }
 
         if (categoryNominations.some(n => n.user?.ID === user.ID)) {
             return ctx.body = {

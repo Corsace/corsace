@@ -99,16 +99,66 @@ export class Beatmapset extends BaseEntity {
                     .andWhere(`beatmapset.BPM<=${category.filter.maxBPM}`);
             if (category.filter.minSR)
                 queryBuilder
-                    .andWhere(`beatmap.totalSR>=${category.filter.minSR}`);
+                    .andWhere((qb) => {
+                        const subQuery = qb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .where("beatmapsetID = beatmapset.ID")
+                            .andWhere(`refMap.totalSR<${category.filter!.minSR}`)
+                            .getQuery();
+        
+                        return "NOT EXISTS " + subQuery;
+                    })
             if (category.filter.maxSR)
                 queryBuilder
-                    .andWhere(`beatmap.totalSR<=${category.filter.maxSR}`);
+                    .andWhere((qb) => {
+                        const subQuery = qb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .where("beatmapsetID = beatmapset.ID")
+                            .andWhere(`refMap.totalSR>${category.filter!.maxSR}`)
+                            .getQuery();
+        
+                        return "NOT EXISTS " + subQuery;
+                    })
             if (category.filter.minCS)
                 queryBuilder
-                    .andWhere(`beatmap.circleSize>=${category.filter.minCS}`);
+                    .andWhere((qb) => {
+                        const subQuery = qb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .select("refMap.circleSize")
+                            .where("beatmapsetID = beatmapset.ID")
+                            .andWhere((sqb) => {
+                                const subSubQuery = sqb.subQuery()
+                                    .from(Beatmap, "refMap2")
+                                    .select("max(refMap2.totalSR)")
+                                    .where("beatmapsetID = beatmapset.ID")
+                                    .limit(1)
+                                    .getQuery();
+                                return "refMap.totalSR = " + subSubQuery
+                            })
+                            .getQuery();
+        
+                        return `${subQuery} >= ${category.filter!.minCS}`;
+                    });
             if (category.filter.maxCS)
                 queryBuilder
-                    .andWhere(`beatmap.circleSize<=${category.filter.maxCS}`);
+                    .andWhere((qb) => {
+                        const subQuery = qb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .select("refMap.circleSize")
+                            .where("beatmapsetID = beatmapset.ID")
+                            .andWhere((sqb) => {
+                                const subSubQuery = sqb.subQuery()
+                                    .from(Beatmap, "refMap2")
+                                    .select("max(refMap2.totalSR)")
+                                    .where("beatmapsetID = beatmapset.ID")
+                                    .limit(1)
+                                    .getQuery();
+                                return "refMap.totalSR = " + subSubQuery
+                            })
+                            .getQuery();
+
+                        return `${subQuery} >= ${category.filter!.minCS}`;
+                    });
         }
 
         // Check for search text
@@ -122,8 +172,18 @@ export class Beatmapset extends BaseEntity {
                     "beatmap.difficulty LIKE :criteria OR " +
                     "user.osuUsername LIKE :criteria OR " +
                     "user.osuUserid LIKE :criteria OR " +
+                    "user.discordUserid LIKE :criteria OR " +
+                    "user.discordUsername LIKE :criteria OR " +
                     "otherName.name LIKE :criteria)", { criteria: `%${query.text}%` });
         }
+        
+        // Check for favourites
+        if (query.favourites?.length > 0)
+            queryBuilder.andWhere("beatmapset.ID IN (" + query.favourites.join(",") + ")");
+
+        // Check for played
+        if (query.played?.length > 0)
+            queryBuilder.andWhere("beatmapset.ID IN (" + query.played.join(",") + ")");
                    
         // Ordering
         const optionQuery = query.option ? query.option.toLowerCase() : "";

@@ -31,7 +31,7 @@ indexRouter.get("/front", async (ctx) => {
         const [categories, beatmapCount, organizers] = await Promise.all([
             Category.find({ mca, mode }), 
             beatmapCounter,
-            (await discordGuild()).members.cache.filter(x => x.roles.cache.has(modeStaff[mode.name])).map(x => x.user.username),
+            (await discordGuild()).members.cache.filter(x => x.roles.cache.has(modeStaff[mode.name])).map(x => x.nickname ?? x.user.username),
         ]);
 
         const categoryInfos = categories.map(x => x.getInfo());

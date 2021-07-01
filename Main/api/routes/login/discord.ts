@@ -28,15 +28,19 @@ discordRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
 
             try {
                 // Add user to server if they aren't there yet
-                let discordUser = await (await discordGuild()).members.fetch(user.discord.userID);
-                if (!discordUser) {
-                    discordUser = await (await discordGuild()).addMember(user.discord.userID, {
+                const guild = await discordGuild();
+                try {
+                    let discordUser = await guild.members.fetch(user.discord.userID);
+                    await Promise.all([
+                        discordUser.setNickname(user.osu.username),
+                        discordUser.roles.add(config.discord.roles.corsace.verified)
+                    ]);
+                } catch (e) {
+                    await guild.addMember(user.discord.userID, {
                         accessToken: user.discord.accessToken,
                         nick: user.osu.username,
                         roles: [config.discord.roles.corsace.verified],
                     });
-                } else {
-                    await discordUser.setNickname(user.osu.username);
                 }
             } catch (err) {
                 console.log("An error occurred in adding a user to the server / changing their nickname: " + err);

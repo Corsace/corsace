@@ -3,11 +3,12 @@ import { isLoggedIn } from "../../../Server/middleware";
 import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase, categoryRequirementCheck } from "../../../MCA-AYIM/api/middleware";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../Models/MCA_AYIM/category";
-import { CategoryType } from "../../../Interfaces/category";
+import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
 import { MoreThan, Not } from "typeorm";
+import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 
 const votingRouter = new Router();
 
@@ -31,7 +32,7 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
     ]);
 
     const filteredVotes = votes.filter(vote => vote.category.mca.year === ctx.state.year);
-    const categoryInfos = categories.map(c => c.getInfo());
+    const categoryInfos: CategoryStageInfo[] = categories.map(c => c.getInfo() as CategoryStageInfo);
 
     ctx.body = {
         votes: filteredVotes,
@@ -43,7 +44,7 @@ votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), 
     let votes = await Vote.find({
         voter: ctx.state.user,
     });
-    votes = votes.filter(vote => vote.category.mca.year === category.mca.year);
+    votes = votes.filter(vote => vote.category.mca.year === category.mca.year).sort((a, b) => a.choice - b.choice);
 
     if (!categoryRequirementCheck(votes, category)) {
         throw "Please vote in the Grand Award categories first!";
@@ -65,19 +66,18 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
         };
     }
 
-    let nominee: Beatmapset | User;
+    let nomQ = Nomination
+                .createQueryBuilder("nomination")
+                .where(`categoryID = ${category.ID}`);
 
     if (category.type === CategoryType.Beatmapsets) {
-        nominee = await Beatmapset.findOneOrFail(nomineeId, {
-            relations: ["nominationsReceived"],
-        });
+        nomQ.andWhere(`beatmapsetID = ${nomineeId}`);
     } else {
-        nominee = await User.findOneOrFail(nomineeId, {
-            relations: ["nominationsReceived"],
-        });
+        nomQ.andWhere(`userID = ${nomineeId}`);
     }
 
-    if (!nominee.nominationsReceived.length || !nominee.nominationsReceived.some(n => n.category.ID === category.ID)) {
+    const exists = await nomQ.getRawOne();
+    if (!exists) {
         return ctx.body = {
             error: `It wasn't nominated :(`,
         };
@@ -114,13 +114,15 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
     vote.category = category;
     
     if (category.type === CategoryType.Beatmapsets) {
-        vote.beatmapset = nominee as Beatmapset;
+        const nominee = await Beatmapset.findOneOrFail(nomineeId);
+        vote.beatmapset = nominee;
 
         if (categoryVotes.some(v => v.beatmapset?.ID == nominee.ID)) {
             alreadyVoted = true;
         }
     } else if (category.type === CategoryType.Users) {
-        vote.user = nominee as User;
+        const nominee = await User.findOneOrFail(nomineeId);
+        vote.user = nominee;
         
         if (categoryVotes.some(v => v.user?.ID == nominee.ID)) {
             alreadyVoted = true;

@@ -1,3 +1,4 @@
+import Axios from "axios";
 import { ParameterizedContext } from "koa";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 import { CategoryType } from "../../../Interfaces/category";
@@ -21,6 +22,9 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
         let list: BeatmapsetInfo[] | UserChoiceInfo[] = [];
         let setList: BeatmapsetInfo[] = [];
         let userList: UserChoiceInfo[] = [];
+        let favIDs: number[] = [];
+        let playedIDs: number[] = [];
+
         const category = await Category
             .createQueryBuilder("category")
             .innerJoinAndSelect("category.mca", "mca")
@@ -55,6 +59,53 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
         if (!isEligibleFor(ctx.state.user, modeId, ctx.state.year))
             return ctx.body = { error: "Not eligible for this mode!" };
         
+        if ((ctx.query.favourites === "true" || ctx.query.played === "true") && category.type == CategoryType.Beatmapsets) {
+            const accessToken: string = await ctx.state.user.getAccessToken("osu");
+            if (ctx.query.favourites === "true") { // Fav filter
+                let offset = 0;
+                for (;;) {
+                    const res = await Axios.get(`https://osu.ppy.sh/api/v2/users/${ctx.state.user.osu.userID}/beatmapsets/favourite?limit=51&offset=${offset}`, {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    });
+                    const sets = res.data.map(set => set.id);
+
+                    favIDs.push(...sets);
+
+                    if (sets.length < 51) break;
+
+                    offset+=sets.length;
+                }
+            }
+
+            if (ctx.query.played === "true") { // Played filter
+                let approvedDate = "";
+                let _id = "";
+                for (;;) {
+                    let url = `https://osu.ppy.sh/api/v2/beatmapsets/search?played=played&q=ranked%3D${ctx.state.year}`;
+                    if (approvedDate) url += `&cursor%5Bapproved_date%5D=${approvedDate}&cursor%5B_id%5D=${_id}`
+                    const res = await Axios.get(url, {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    });
+
+                    if (!approvedDate && res.data.beatmapsets.length === 0) break;
+
+                    const sets = res.data.beatmapsets.map(set => set.id);
+
+                    playedIDs.push(...sets);
+
+                    if (sets.length < 50) break;
+
+                    approvedDate = res.data.cursor.approved_date;
+                    _id = res.data.cursor._id;
+                }
+            }
+
+        }
+
         let count = 0;
         const query: StageQuery = {
             category: category.ID,
@@ -62,6 +113,8 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             option: ctx.query.option,
             order: ctx.query.order,
             text: ctx.query.text,
+            favourites: favIDs,
+            played: playedIDs,
         };
     
         if (category.type == CategoryType.Beatmapsets) { // Search for beatmaps

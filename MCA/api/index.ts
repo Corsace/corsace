@@ -15,6 +15,7 @@ import guestRequestRouter from "./routes/guestRequests";
 import staffRouter from "./routes/staff/index";
 import staffNominationsRouter from "./routes/staff/nominations";
 import staffRequestsRouter from "./routes/staff/requests";
+import staffVotesRouter from "./routes/staff/votes";
 
 const app = new App();
 
@@ -30,6 +31,7 @@ app.koa.use(mount("/voting", votingRouter.routes()));
 
 app.koa.use(mount("/staff", staffRouter.routes()));
 app.koa.use(mount("/staff/nominations", staffNominationsRouter.routes()));
+app.koa.use(mount("/staff/votes", staffVotesRouter.routes()));
 app.koa.use(mount("/staff/requests", staffRequestsRouter.routes()));
 
 app.koa.use(mount("/admin", adminRouter.routes()));

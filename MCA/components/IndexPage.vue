@@ -13,27 +13,22 @@
                 </div>
             </div>
 
-            <nuxt-link
-                v-if="phase && isEligibleFor(selectedMode)"
-                class="vote-now"
-                :class="[
-                    `vote-now--${selectedMode}`,
-                ]"
-                :to="`/${phase.year}/${phase.phase}`"
-            >
-                {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
-            </nuxt-link>
             <a
-                v-else-if="phase && loggedInUser"
-                class="vote-now vote-now--inactive"
-                :class="[
-                    `vote-now--${selectedMode}`,
-                ]"
-                href="#"
-                @click.prevent="toggleGuestDifficultyModal"
+                v-if="phase && phase.phase !== 'preparation' && isEligibleFor(selectedMode)"
+                class="vote-now"
+                :class="`vote-now--${selectedMode}`"
+                :href="`/${phase.year}/${phase.phase}`"
             >
                 {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
             </a>
+            <div
+                v-else-if="phase && phase.phase !== 'preparation' && !isEligibleFor(selectedMode)"
+                class="vote-now vote-now--inactive"
+                :class="`vote-now--${selectedMode}`"
+                @click="toggleGuestDifficultyModal"
+            >
+                {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
+            </div>
             <div v-else />
         </div>
 
@@ -206,11 +201,12 @@ export default class IndexContent extends Vue {
 .general {
     @extend %spaced-container;
     margin: 0;
+    flex: 1;
 }
 
 .categories {
     @extend %spaced-container;
-    flex: 1;
+    flex: 6;
 
     &__category-title {
         border-bottom: 2px solid #fff;
@@ -293,6 +289,7 @@ export default class IndexContent extends Vue {
     @extend %flex-box;
     flex-direction: column;
     padding: 8px;
+    flex: 1;
 
     &__title {
         border-bottom: 1px solid white;

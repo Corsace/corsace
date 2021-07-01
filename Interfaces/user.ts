@@ -61,8 +61,6 @@ export interface OAuth {
     userID: string;
     username: string;
     avatar: string;
-    accessToken?: string;
-    refreshToken?: string;
     dateAdded: Date;
     lastVerified: Date;
 }

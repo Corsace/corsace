@@ -154,7 +154,7 @@ export const getters: GetterTree<RootState, RootState> = {
 
         const eligibility = state.loggedInUser.eligibility.find(e => e.year === state.mca?.year);
 
-        if (!eligibility) return [];
+        if (!eligibility) return state.modes;
 
         return state.modes.filter(m => !eligibility[m]);
     },

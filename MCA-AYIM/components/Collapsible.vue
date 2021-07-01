@@ -1,7 +1,7 @@
 <template>
     <div 
-        class="collapsible"
-        :class="{ 'collapsible--scrollable': scroll && list.length > 9 }"
+        class="collapsible collapsible--scrollable"
+        :class="{ 'collapsible--expandable': expand }"
     >
         <div
             class="collapsible__title"
@@ -102,6 +102,7 @@ export default class Collapsible extends Vue {
     @Prop(Boolean) readonly showExtra!: boolean;
     @Prop(Boolean) readonly categoryName!: boolean;
     @Prop(Boolean) readonly scroll!: boolean;
+    @Prop(Boolean) readonly expand!: boolean;
     @Prop(Boolean) readonly clickable!: boolean;
 
     @State selectedMode!: string;
@@ -174,6 +175,10 @@ export default class Collapsible extends Vue {
         &::-webkit-scrollbar-thumb {
             background: #5f5f5f;
         }
+    }
+
+    &--expandable {
+        max-height: initial;
     }
 
     &__title {

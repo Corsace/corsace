@@ -13,4 +13,17 @@ discordClient.on("error", err => {
 
 const discordGuild = (): Promise<Discord.Guild> => discordClient.guilds.fetch(config.discord.guild);
 
-export { discordClient, discordGuild };
+async function getMember(ID: string): Promise<Discord.GuildMember | undefined> {
+    let member: Discord.GuildMember | undefined;
+    try {
+        member = await (await discordGuild()).members.fetch(ID);
+    } catch (e) {
+        if (e.code === 10007 || e.code === 404)
+            member = undefined;
+        else
+            throw e;
+    }
+    return member;
+}
+
+export { discordClient, discordGuild, getMember };
