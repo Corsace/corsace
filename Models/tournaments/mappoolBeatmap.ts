@@ -1,8 +1,7 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ModSlots } from "../../Interfaces/mappool";
 import { Beatmap } from "../beatmap";
 import { Mappool } from "./mappool";
-import { Match } from "./match";
 import { MatchBeatmap } from "./matchBeatmap";
 
 @Entity()

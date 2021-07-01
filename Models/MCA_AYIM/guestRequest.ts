@@ -24,7 +24,7 @@ export class GuestRequest extends BaseEntity {
     mode!: ModeDivision;
 
     @Column({ type: "enum", enum: RequestStatus, default: RequestStatus.Pending })
-    status!: RequestStatus
+    status!: RequestStatus;
 
     @ManyToOne(() => User, user => user.guestRequests, {
         nullable: false,

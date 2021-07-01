@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { TeamInvitation } from "./teamInvitation";
 import { Tournament } from "./tournaments/tournament";
 import { TournamentTeam } from "./tournaments/tournamentTeam";
 import { User } from "./user";
@@ -19,9 +20,21 @@ export class Team extends BaseEntity {
     @OneToMany(() => TournamentTeam, tournamentTeam => tournamentTeam.team)
     tournamentTeams!: TournamentTeam[];
 
-    @OneToOne(() => User, user => user.teamHost)
+    @Column()
+    captainID!: number;
+
+    @ManyToOne(() => User, user => user.teamHosts)
     captain!: User;
 
-    @OneToMany(() => User, user => user.team)
-    players!: User[];
+    @ManyToMany(() => User, user => user.teams)
+    players?: User[];
+
+    @OneToMany(() => TeamInvitation, invitation => invitation.team)
+    invitations?: TeamInvitation[];
+
+    @Column({ default: 0 })
+    wins!: number;
+
+    @Column({ default: 0 })
+    losses!: number;
 }
