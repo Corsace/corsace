@@ -1,11 +1,7 @@
 import { BeatmapsetInfo } from "./beatmap";
-<<<<<<< HEAD
 import { CategoryType } from "./category";
 import { UserChoiceInfo } from "./user";
 import { ResultVote } from "./vote";
-=======
-import { UserChoiceInfo } from "./user";
->>>>>>> preliminary commit for results page
 
 export interface BeatmapResult extends BeatmapsetInfo {
     placement: number,
@@ -15,7 +11,6 @@ export interface BeatmapResult extends BeatmapsetInfo {
 export interface UserResult extends UserChoiceInfo {
     placement: number,
     votes: number
-<<<<<<< HEAD
 }
 
 export function votesToResults(votes: ResultVote[], categoryType: CategoryType): BeatmapResult[] | UserResult[] {
@@ -47,6 +42,4 @@ export function votesToResults(votes: ResultVote[], categoryType: CategoryType):
         return beatmapResults;
 
     return userResults;
-=======
->>>>>>> preliminary commit for results page
 }
