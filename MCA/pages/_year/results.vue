@@ -1,15 +1,10 @@
 <template>
     <div class="results-wrapper">
         <mode-switcher
-            enable-mode-eligibility
-            :hidePhase="true"
-            :title="phase.phase === 'results' ? 'results' : ''"
-            @inactiveModeClicked="toggleGuestDifficultyModal"
+            hidePhase
+            :title="$t(`mca.main.results`)"
         >
-            <div
-                v-if="phase.phase === 'results'"
-                class="results-general"
-            > 
+            <div class="results-general"> 
                 <results-filters />
 
                 <span 
@@ -38,16 +33,9 @@
                 <hr class="table-border">
                 
                 <stage-page-list 
-                    :results="true"
+                    results
                     class="results-table"
                 />
-            </div>
-
-            <div
-                v-else
-                class="no-results"
-            >
-                There are no MCA results for {{ $route.params.year }}. Check back later!
             </div>
         </mode-switcher>
     </div>
@@ -64,8 +52,6 @@ import StagePageList from "../../components/stage/StagePageList.vue";
 import { MCAInfo, Phase } from "../../../Interfaces/mca";
 import { SectionCategory, StageType } from "../../../MCA-AYIM/store/stage";
 
-import _ from "lodash";
-
 const stageModule = namespace("stage");
 
 @Component({
@@ -76,16 +62,31 @@ const stageModule = namespace("stage");
     },
     head () {
         return {
-            title: `results ${this.$route.params.year} | MCA`,
+            title: `${this.$route.params.year} results | MCA`,
         };
     }
 })
 export default class Results extends Vue {
-    @Getter phase!: Phase | null;
     @State allMCA!: MCAInfo[];
-    @stageModule.State stage!: StageType;
+
+    @Getter phase!: Phase | undefined;
+    @Getter isMCAStaff!: boolean;
+
     @Mutation toggleGuestDifficultyModal;
+
     @stageModule.State section!: SectionCategory;
+    @stageModule.State stage!: StageType;
+    @stageModule.Action updateStage;
+
+    mounted () {
+        if (!(this.phase?.phase === 'results' || this.isMCAStaff)) {
+            this.$router.push("/"+this.$route.params.year);
+            return;
+        }
+        
+        this.updateStage("results")
+    }
+
 }
 </script>
 

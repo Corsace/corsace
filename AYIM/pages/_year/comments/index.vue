@@ -24,7 +24,7 @@
                     <button
                         v-if="loggedInUser"
                         @click="changeFilterFriends()"
-                        class="button button--image"
+                        class="button"
                         :class="{ 'button--friends': filterFriends }"
                     >
                         <img
@@ -42,7 +42,7 @@
                     <button
                         v-if="loggedInUser && phase && phase.phase !== 'results'"
                         @click="changeFilterCommented()"
-                        class="button button--image"
+                        class="button"
                     >
                         <img
                             v-if="!notCommented"

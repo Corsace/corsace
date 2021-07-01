@@ -7,7 +7,7 @@
         <button
             v-if="section === 'beatmaps'"
             @click="updateFavourite"
-            class="button button--image"
+            class="button"
             :class="{ 
                 'button--friends': favourites,
                 'button--small': $route.params.stage === 'voting' && section === 'beatmaps'

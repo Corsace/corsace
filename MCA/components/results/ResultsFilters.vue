@@ -42,11 +42,6 @@ const stageModule = namespace("stage");
         DropdownSelector,
         StagePageFilters
     },
-    head () {
-        return {
-            title: `results ${this.$route.params.year} | MCA`,
-        };
-    }
 })
 export default class ResultsFilters extends Vue {
     @Mutation toggleGuestDifficultyModal;
