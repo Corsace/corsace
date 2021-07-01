@@ -1,7 +1,6 @@
 import { config } from "node-config-ts";
-import { discordGuild, getMember } from "./discord";
+import { getMember } from "./discord";
 import { ParameterizedContext, Next } from "koa";
-import { GuildMember } from "discord.js";
 
 interface discordRoleInfo {
     section: string;

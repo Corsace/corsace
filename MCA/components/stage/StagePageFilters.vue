@@ -5,9 +5,9 @@
         @update:search="updateText($event)"
     >
         <button
-            v-if="section === 'beatmaps'"
+            v-if="section === 'beatmaps' && loggedInUser"
             @click="updateFavourite"
-            class="button button--image"
+            class="button"
             :class="{ 
                 'button--friends': favourites,
                 'button--small': $route.params.stage === 'voting' && section === 'beatmaps'
@@ -17,13 +17,14 @@
         </button>
 
         <toggle-button
-            v-if="section === 'beatmaps'"
+            v-if="section === 'beatmaps' && loggedInUser"
             :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="playedFilters"
             @change="changePlayed"
         />
 
         <toggle-button
+            v-if="!results"
             :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="sectionOptions"
             :arrow="orderOption"
@@ -31,6 +32,7 @@
         />
         
         <toggle-button
+            v-if="!results"
             :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="orderOptions"
             :arrow="orderOption"
@@ -52,14 +54,15 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { namespace, State } from "vuex-class";
 import _ from "lodash";
 
 import ToggleButton from "../../../MCA-AYIM/components/ToggleButton.vue";
 import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
 
 import { StageQuery } from "../../../Interfaces/queries";
+import { UserMCAInfo } from "../../../Interfaces/user";
 
 const stageModule = namespace("stage");
 
@@ -72,14 +75,23 @@ const stageModule = namespace("stage");
 export default class StagePageFilters extends Vue {
 
     @stageModule.State section!: string;
+
     @stageModule.State query!: StageQuery;
+
     @stageModule.State favourites!: boolean;
     @stageModule.State played!: boolean;
+
     @stageModule.State showVoteChoiceBox!: boolean;
+
     @stageModule.Action updateQuery;
     @stageModule.Action updateFavourites;
     @stageModule.Action updatePlayed;
+
     @stageModule.Mutation toggleVoteChoiceBox;
+
+    @State loggedInUser!: UserMCAInfo | null;
+
+    @Prop({ type: Boolean, default: false }) results!: boolean;
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
     userOptions = ["alph", "id"];
