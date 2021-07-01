@@ -53,6 +53,9 @@
                                         </div>
                                         <div class="staff-vote__count">
                                             <div>
+                                                Placement: {{ result.placement }}
+                                            </div>
+                                            <div>
                                                 Count: {{ result.count }}
                                             </div>
                                         </div>
@@ -241,7 +244,6 @@ export default class Votes extends Vue {
 
     get resultsByCategory (): ResultsByCategory[] {
         return this.votesByCategory.map(category => {
-
             return {
                 category: category.category,
                 results: voteCounter(category.userVotes),
