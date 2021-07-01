@@ -29,6 +29,4 @@ export class MatchSet extends BaseEntity {
     
     @Column({ default: 0 })
     teamBScore!: number;
-
-    // TODO: FINISH THIS
 }

@@ -17,6 +17,9 @@ import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Team } from "./team";
 import { Match } from "./tournaments/match";
+import { TeamInvitation } from "./teamInvitation";
+import { MatchPlay } from "./tournaments/matchPlay";
+import { Qualifier } from "./tournaments/qualifier";
 
 export const BWSFilter: RegExp = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|community|moderation|moderating|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
 
@@ -57,18 +60,24 @@ export class User extends BaseEntity {
     @Column(() => OAuth)
     osu!: OAuth;
 
-    @Column()
+    @Column({ type: "float" })
     pp!: number;
 
     @Column()
     rank!: number;
 
-    @ManyToOne(() => Team, team => team.players, { eager: true })
-    team!: Team;
+    @OneToMany(() => TeamInvitation, invitation => invitation.target)
+    invitations!: TeamInvitation[];
 
-    @OneToOne(() => Team, team => team.captain, { eager: true })
-    @JoinColumn()
-    teamHost!: Team;
+    @ManyToMany(() => Team, team => team.players)
+    @JoinTable()
+    teams!: Team[];
+
+    @OneToMany(() => Team, team => team.captain)
+    teamHosts?: Team[];
+
+    @OneToMany(() => MatchPlay, play => play.user)
+    scores?: MatchPlay[];
 
     @CreateDateColumn()
     registered!: Date;
@@ -127,6 +136,9 @@ export class User extends BaseEntity {
     @OneToMany(() => Vote, vote => vote.user)
     votesReceived!: Vote[];
 
+    @OneToMany(() => Qualifier, qualifier => qualifier.referee)
+    qualifiersReffed!: Qualifier[];
+    
     @OneToMany(() => Match, match => match.referee)
     matchesReffed!: Match[];
 

@@ -2,7 +2,9 @@ import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColum
 import { PickStatus } from "../../Interfaces/match";
 import { MappoolBeatmap } from "./mappoolBeatmap";
 import { Match } from "./match";
+import { MatchPlay } from "./matchPlay";
 import { MatchSet } from "./matchSet";
+import { TournamentTeam } from "./tournamentTeam";
 
 
 @Entity()
@@ -17,7 +19,9 @@ export class MatchBeatmap extends BaseEntity {
     @Column()
     beatmapID!: number;
     
-    @ManyToOne(() => MappoolBeatmap, beatmap => beatmap.matchBeatmaps, { eager: true })
+    @ManyToOne(() => MappoolBeatmap, beatmap => beatmap.matchBeatmaps, { 
+        eager: true 
+    })
     beatmap!: MappoolBeatmap;
 
     @Column()
@@ -38,6 +42,6 @@ export class MatchBeatmap extends BaseEntity {
     @Column()
     winnerID?: number;
 
-    @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.setsWon)
+    @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.mapsWon)
     winner?: TournamentTeam;
 }

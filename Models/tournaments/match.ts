@@ -1,6 +1,7 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 import { Bracket } from "./bracket";
+import { Group } from "./group";
 import { MatchBeatmap } from "./matchBeatmap";
 import { MatchSet } from "./matchSet";
 import { TournamentTeam } from "./tournamentTeam";
@@ -17,8 +18,17 @@ export class Match extends BaseEntity {
     @Column({ type: "timestamp" })
     time!: Date;
 
+    @Column()
+    bracketID?: number;
+    
     @ManyToOne(() => Bracket, bracket => bracket.matches)
-    bracket!: Bracket;
+    bracket?: Bracket;
+
+    @Column()
+    groupID?: number;
+    
+    @ManyToOne(() => Group, group => group.matches)
+    group?: Group;
 
     @Column()
     teamAID?: number;
@@ -38,6 +48,12 @@ export class Match extends BaseEntity {
     @Column({ default: 0 })
     teamBScore!: number;
 
+    @Column()
+    firstID?: number;
+
+    @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.matchesFirst)
+    first?: TournamentTeam;
+    
     @Column()
     winnerID?: number;
 
