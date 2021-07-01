@@ -4,7 +4,7 @@
             <dropdown-selector
                 :options="localCatTypes" 
                 :currentOption="activeCategoryType"
-                :styleLabel="categoryTypeStyle"
+                :styleLabel="catTypeStyle"
                 :styleDrop="catTypeDropStyle"
                 class="category-type"
                 @relayOption="changeCategoryType"
@@ -12,13 +12,16 @@
             <dropdown-selector 
                 :options="localAppCategories"
                 :currentOption="activeCategory"
-                :styleLabel="categoryStyle"
+                :styleLabel="catStyle"
                 :styleDrop="catDropStyle"
                 class="award-category"
                 @relayOption="changeCategory"
             />
         </div> 
-        <stage-page-filters class="stage-page-filters" />
+        <stage-page-filters 
+            class="stage-page-filters"
+            results
+        />
     </div>
 </template>
 
@@ -30,10 +33,7 @@ import DropdownSelector from "../../../MCA-AYIM/components/DropdownSelector.vue"
 import StagePageFilters from "../stage/StagePageFilters.vue";
 
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
-import { SectionCategory } from "../../../MCA-AYIM/store/stage";
 import { TranslateResult } from "vue-i18n";
-
-import _ from "lodash";
 
 const stageModule = namespace("stage");
 
@@ -47,20 +47,15 @@ export default class ResultsFilters extends Vue {
     @Mutation toggleGuestDifficultyModal;
     @State selectedMode!: string;
 
-    @stageModule.State section!: SectionCategory;
     @stageModule.Getter categoriesInfo!: CategoryStageInfo[];
+
     @stageModule.Action reset;
-    @stageModule.Action setInitialData;
     @stageModule.Action updateSelectedCategory;
     @stageModule.Action updateSection;
 
     @Watch("selectedMode")
     onSelectedModeChange () {
         this.reset();
-    }
-
-    async mounted() {
-        await this.setInitialData();
     }
 
     filterCategories (type: CategoryType): CategoryStageInfo[] {
@@ -105,7 +100,7 @@ export default class ResultsFilters extends Vue {
     }
 
     // dropdown styles
-    get categoryTypeStyle () {
+    get catTypeStyle () {
         return {
             'border-radius': '5.5px 0 0 5.5px',
             'width': `${Math.max(85 + Math.max(...this.localCatTypes.map(lct => lct.toString().length)) * 10, 165)}px`,
@@ -113,7 +108,7 @@ export default class ResultsFilters extends Vue {
         }
     }
 
-    get categoryStyle () {
+    get catStyle () {
         return {
             'border-radius': '0 5.5px 5.5px 0',
             'width': `${Math.max(85 + Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length)) * 10, 165)}px`,
@@ -125,14 +120,14 @@ export default class ResultsFilters extends Vue {
 
     get catTypeDropStyle () {
         return {
-            'margin-left': this.categoryTypeStyle["margin-left"],
-            'width': this.categoryTypeStyle["width"]
+            'margin-left': this.catTypeStyle["margin-left"],
+            'width': this.catTypeStyle["width"]
         }
     }
 
     get catDropStyle () {
         return {
-            'width': this.categoryStyle["width"]
+            'width': this.catStyle["width"]
         }
     }
 }

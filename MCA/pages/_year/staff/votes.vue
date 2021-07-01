@@ -123,24 +123,9 @@ import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 
 import { CategoryInfo } from "../../../../Interfaces/category";
-import { StaffVote } from "../../../../Interfaces/vote";
+import { ResultVote, StaffVote, UserVote, voteCounter } from "../../../../Interfaces/vote";
 
 const staffModule = namespace("staff");
-
-interface ResultVote extends StaffVote {
-    used: boolean;
-    inRace: boolean;
-    count: number;
-}
-
-interface UserVote {
-    voter: {
-        osuID: string;
-        osuUsername: string;
-        discordUsername: string;
-    },
-    votes: ResultVote[]
-}
 
 interface VotesByCategory {
     category: number;
@@ -256,107 +241,10 @@ export default class Votes extends Vue {
 
     get resultsByCategory (): ResultsByCategory[] {
         return this.votesByCategory.map(category => {
-            const votes = category.userVotes
-            let candidates: ResultVote[] = [];
-            let results: ResultVote[] = [];
-            for (const voter of votes) {
-                for (const vote of voter.votes) {
-                    if (!candidates.some(candidate => vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID)) {
-                        candidates.push({
-                            count: 0,
-                            inRace: true,
-                            beatmapset: vote.beatmapset ?? undefined,
-                            user: vote.user ?? undefined,
-                        } as ResultVote);
-                    }
-                }
-            }
-            candidates = candidates.filter((val, i, self) => self.findIndex(v => v.beatmapset?.ID ? v.beatmapset?.ID === val.beatmapset?.ID : v.user?.osuID === val.user?.osuID) === i);
-            
-            for (;;) {
-                // Run for each placement
-                for (;;) {
-                    // Check if last used vote is still in race, add the next best unused vote otherwise
-                    for (let i = 0; i < votes.length; i++) {
-                        const voter = votes[i];
-                        for (let j = 0; j < voter.votes.length; j++) {
-                            const vote = voter.votes[j];
-                            if (!vote.inRace) continue;
-
-                            const k = candidates.findIndex(candidate => vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID);
-                            if (k === -1) { // Placement for this choice is already accounted for in results array
-                                votes[i].votes[j].used = true;
-                                votes[i].votes[j].inRace = false;
-                                continue;
-                            };
-                            
-                            if (!candidates[k].inRace) { // Choice dropped out of the race last round
-                                votes[i].votes[j].inRace = false;
-                                continue;
-                            }
-
-                            if (vote.used) // Choice is still in race and this vote is used so there's nothing to do
-                                break;
-
-                            candidates[k].count++;
-                            votes[i].votes[j].used = true;
-                            break;
-                        }
-                    }
-
-                    // Sort candidates by vote count descending, remove choices with 0 votes from race before removing actually voted things in race
-                    candidates = candidates.sort((a, b) => b.count - a.count);
-                    if (candidates[candidates.length - 1].inRace && candidates[candidates.length - 1].count === 0) {
-                        for (let i = candidates.length - 1; i > 0; i--) {
-                            if (candidates[i].count > 0) break;
-                
-                            candidates[i].inRace = false;
-                        }
-                    }
-
-                    // Check if this run is over, drop bottom votes from race otherwise
-                    const inRace = candidates.filter(candidate => candidate.inRace);
-                    let sum = 0;
-                    let min = inRace[inRace.length - 1].count;
-                    inRace.forEach(candidate => sum += candidate.count);
-                    if (candidates[0].count > sum / 2.0 || candidates[0].count === min)
-                        break;
-
-                    for (let i = candidates.length - 1; i > 0; i--) {
-                        if (candidates[i].count > min) break;
-
-                        candidates[i].inRace = false;
-                    }
-                }
-
-                // Remove top ones this run
-                let max = candidates[0].count;
-                for (let i = 0; i < candidates.length; i++) {
-                    if (candidates[i].count !== max)
-                        candidates[i].inRace = true;
-                    else
-                        results.push(candidates[i]);
-                }
-                candidates = candidates.filter(candidate => candidate.count !== max);
-
-                // Reset candidate counts + vote uses
-                for (let i = 0; i < candidates.length; i++)
-                    candidates[i].count = 0;
-                for (let i = 0; i < votes.length; i++) {
-                    for (let j = 0; j < votes[i].votes.length; j++) {
-                        votes[i].votes[j].used = false;
-                        votes[i].votes[j].inRace = true;
-                    }
-                }
-
-                // Continue until 0 candidates are left
-                if (candidates.length === 0)
-                    break;
-            }
 
             return {
                 category: category.category,
-                results,
+                results: voteCounter(category.userVotes),
             };
         })
     }

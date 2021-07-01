@@ -24,6 +24,7 @@
         />
 
         <toggle-button
+            v-if="!results"
             :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="sectionOptions"
             :arrow="orderOption"
@@ -31,6 +32,7 @@
         />
         
         <toggle-button
+            v-if="!results"
             :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="orderOptions"
             :arrow="orderOption"
@@ -52,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import _ from "lodash";
 
@@ -72,14 +74,21 @@ const stageModule = namespace("stage");
 export default class StagePageFilters extends Vue {
 
     @stageModule.State section!: string;
+
     @stageModule.State query!: StageQuery;
+
     @stageModule.State favourites!: boolean;
     @stageModule.State played!: boolean;
+
     @stageModule.State showVoteChoiceBox!: boolean;
+
     @stageModule.Action updateQuery;
     @stageModule.Action updateFavourites;
     @stageModule.Action updatePlayed;
+
     @stageModule.Mutation toggleVoteChoiceBox;
+
+    @Prop({ type: Boolean, default: false }) results!: boolean;
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
     userOptions = ["alph", "id"];

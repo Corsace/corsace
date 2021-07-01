@@ -76,7 +76,12 @@ export default class Results extends Vue {
 
     @stageModule.State section!: SectionCategory;
     @stageModule.State stage!: StageType;
+
+    @stageModule.Action reset;
+    @stageModule.Action updateSelectedCategory;
+    @stageModule.Action updateSection;
     @stageModule.Action updateStage;
+    @stageModule.Action setInitialData;
 
     mounted () {
         if (!(this.phase?.phase === 'results' || this.isMCAStaff)) {
@@ -85,6 +90,9 @@ export default class Results extends Vue {
         }
         
         this.updateStage("results")
+        this.reset();
+        this.updateSection("beatmaps");
+        this.setInitialData();
     }
 
 }

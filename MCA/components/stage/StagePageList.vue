@@ -45,7 +45,7 @@
                 </template>
 
                 <div
-                    v-if="loading"
+                    v-if="!results && loading"
                     class="category-selection__loading"
                 >
                     Loading...
@@ -53,7 +53,7 @@
             </div>
             <scroll-bar
                 selector=".category-selection__maps"
-                @bottom="search(true)"
+                @bottom="results ? null : search(true)"
             />
         </div>
     </div>
@@ -90,41 +90,20 @@ const stageModule = namespace("stage");
 export default class StagePageList extends Vue {
 
     @stageModule.State section!: SectionCategory;
+    
     @stageModule.State users!: UserChoiceInfo[];
     @stageModule.State beatmaps!: BeatmapsetInfo[];
+
+    @stageModule.State userResults!: UserResult[];
+    @stageModule.State beatmapResults!: BeatmapResult[];
+
     @stageModule.State loading!: boolean;
+
     @stageModule.State showVoteChoiceBox!: boolean;
+
     @stageModule.Action search;
+
     @Prop({ type: Boolean, default: false }) results!: boolean;
-
-    get userResults(): UserResult[] {
-        return [
-            {
-                corsaceID: 1,
-                username: "ImpurePug",
-                avatar: "https://a.ppy.sh/3124248",
-                userID: "3124248",
-                otherNames: ["KineticDog"],
-                chosen: false,
-                placement: 1,
-                votes: 123
-            }
-        ]
-    } 
-
-    get beatmapResults(): BeatmapResult[] {
-        const sennen = {
-            id: 926846,
-            artist: "sasakure.UK",
-            title: "Sennen to Rasen, Chiru Mono o feat. Sui",
-            hoster: "Kalibe",
-            chosen: false,
-            placement: 1,
-            votes: 67
-        }
-
-        return [sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, ]
-    }
 
 }
 </script>
