@@ -211,7 +211,7 @@ export const actions: ActionTree<StageState, RootState> = {
         if (state.stage === "nominating" && data.nominations?.length && data.nominations.some(n => !n.isValid)) {
             alert("Some nominations were denied, contact a staff member if you already haven't!");
         } else if (state.stage === "results")
-            dispatch("updateSelectedCategory", state.categories[0])
+            dispatch("updateSelectedCategory", state.categories.filter(category => category.type === "Beatmapsets")[0])
     },
     async updateSelectedCategory ({ commit, dispatch }, category) {
         commit("updateSelectedCategory", category);
