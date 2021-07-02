@@ -25,6 +25,7 @@ import { Match } from "./tournaments/match";
 import { TeamInvitation } from "./teamInvitation";
 import { MatchPlay } from "./tournaments/matchPlay";
 import { Qualifier } from "./tournaments/qualifier";
+import { Badge } from "./badge";
 
 export const BWSFilter: RegExp = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|community|moderation|moderating|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
 
@@ -66,10 +67,10 @@ export class User extends BaseEntity {
     @Column(() => OAuth)
     osu!: OAuth;
 
-    @Column({ type: "float" })
+    @Column({ nullable: true, type: "float" })
     pp!: number;
 
-    @Column()
+    @Column({ nullable: true })
     rank!: number;
 
     @OneToMany(() => TeamInvitation, invitation => invitation.target)
@@ -95,6 +96,11 @@ export class User extends BaseEntity {
         eager: true,
     })
     otherNames!: UsernameChange[];
+
+    @OneToMany(() => Badge, badge => badge.user, {
+        eager: true,
+    })
+    badges!: Badge[];
 
     @OneToMany(() => DemeritReport, demerit => demerit.user, {
         eager: true,
@@ -268,6 +274,10 @@ export class User extends BaseEntity {
 
             queryBuilder.getCount(),
         ]);
+    }
+
+    public getFilteredBadges = function(this: User): Badge[] {
+        return this.badges.filter(badge => !BWSFilter.test(badge.description));
     }
 
     public getAccessToken = async function(this: User, tokenType: "osu" | "discord" = "osu"): Promise<string> {
