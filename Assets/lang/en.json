@@ -118,6 +118,7 @@
             "rankedSets": "RANKED SETS",
             "nominateNow": "nominate now !",
             "voteNow": "vote now !",
+            "viewResults": "view results !",
             "daysLeft": "days left",
             "message": {
                 "2019": "<p>Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community!</p><p>This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 6 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event! Let VINXIS know in the corsace discord server for any bugs or issues with the website!</p>",
@@ -279,6 +280,15 @@
             "votingOverlay": "Hello! this may be the first time you have navigated to the voting page! <br> MCA Voting utilizes <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting!</a> <br> This means you can select any number of beatmaps/users to vote for! <br> All votes are ordered by choice, so <span class='notice-modal--bold'>the first choice will have the highest priority!</span> <br> Your first choice will count until it loses the race. Then your second, then your third, then 4th, e.t.c. <br> Good luck and can't wait to see the results for MCA [YEAR]",
             "hosted": "HOSTED BY",
             "userID": "USER ID"
+        },
+        "results": {
+            "place": "PLACE",
+            "map": "MAP",
+            "title": "TITLE",
+            "artist": "ARTIST",
+            "host": "HOST",
+            "votes": "VOTES",
+            "user": "USER"
         }
     },
     "main": {

@@ -6,9 +6,10 @@ import { BeatmapsetInfo } from "../../Interfaces/beatmap";
 import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
 import { StageQuery } from "../../Interfaces/queries";
+import { BeatmapResult, UserResult } from "../../Interfaces/result";
 
 export type SectionCategory = "beatmaps" | "users" | "";
-export type StageType = "nominating" | "voting";
+export type StageType = "nominating" | "voting" | "results";
 
 interface StageState {
     selected: boolean;
@@ -17,6 +18,8 @@ interface StageState {
     selectedCategory: CategoryStageInfo | null;
     nominations: Nomination[];
     votes: Vote[];
+    beatmapResults: BeatmapResult[];
+    userResults: UserResult[];
     stage: StageType;
     count: number;
     beatmaps: BeatmapsetInfo[];
@@ -35,6 +38,8 @@ export const state = (): StageState => ({
     categories: [],
     nominations: [],
     votes: [],
+    beatmapResults: [],
+    userResults: [],
     stage: "nominating",
     count: 0,
     beatmaps: [],
@@ -96,6 +101,12 @@ export const mutations: MutationTree<StageState> = {
     },
     updateUsers (state, users) {
         state.users = users || [];
+    },
+    updateBeatmapResults (state, beatmaps) {
+        state.beatmapResults = beatmaps || [];
+    },
+    updateUserResults (state, users) {
+        state.userResults = users || [];
     },
     updateSelectedCategory (state, category) {
         state.selectedCategory = category;
@@ -179,7 +190,12 @@ export const actions: ActionTree<StageState, RootState> = {
     updateStage ({ commit }, stage) {
         commit("updateStage", stage);
     },
-    async setInitialData ({ state, commit, rootState }) {
+    async setInitialData ({ state, commit, dispatch, rootState }) {
+        if (!rootState.mca?.year) {
+            this.$router.push("/");
+            return;
+        }
+
         const { data } = await this.$axios.get<InitialData | { error: string }>(`/api/${state.stage}/${rootState.mca?.year}`);
 
         if ("error" in data) {
@@ -194,7 +210,8 @@ export const actions: ActionTree<StageState, RootState> = {
 
         if (state.stage === "nominating" && data.nominations?.length && data.nominations.some(n => !n.isValid)) {
             alert("Some nominations were denied, contact a staff member if you already haven't!");
-        }
+        } else if (state.stage === "results")
+            dispatch("updateSelectedCategory", state.categories.filter(category => category.type === "Beatmapsets" && category.mode === rootState.selectedMode)[0])
     },
     async updateSelectedCategory ({ commit, dispatch }, category) {
         commit("updateSelectedCategory", category);
@@ -237,14 +254,21 @@ export const actions: ActionTree<StageState, RootState> = {
 
         if (!data.list) return;
 
-        if (state.selectedCategory.type === "Users") {
-            let users = data.list;
-            if (skipping) users = [...state.users, ...data.list];
-            commit("updateUsers", users.filter((val, i, self) => self.findIndex(v => v.corsaceID === val.corsaceID) === i));
-        } else if (state.selectedCategory.type === "Beatmapsets") {
-            let beatmaps = data.list;
-            if (skipping) beatmaps = [...state.beatmaps, ...data.list];
-            commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
+        if (state.stage === "results") {
+            if (state.selectedCategory.type === "Users")
+                commit("updateUserResults", data.list);
+            else if (state.selectedCategory.type === "Beatmapsets")
+                commit("updateBeatmapResults", data.list);
+        } else {
+            if (state.selectedCategory.type === "Users") {
+                let users = data.list;
+                if (skipping) users = [...state.users, ...data.list];
+                commit("updateUsers", users.filter((val, i, self) => self.findIndex(v => v.corsaceID === val.corsaceID) === i));
+            } else if (state.selectedCategory.type === "Beatmapsets") {
+                let beatmaps = data.list;
+                if (skipping) beatmaps = [...state.beatmaps, ...data.list];
+                commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
+            }
         }
     },
     reset ({ commit }, sectionReset = false) {

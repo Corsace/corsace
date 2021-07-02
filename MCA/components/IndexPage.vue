@@ -161,7 +161,8 @@ export default class IndexContent extends Vue {
 
         const text = {
             nominating: "nominateNow",
-            voting: "voteNow", 
+            voting: "voteNow",
+            results: "viewResults",
         };
         return text[this.phase.phase];
     }
