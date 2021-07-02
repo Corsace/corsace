@@ -2,7 +2,6 @@ import { Entity, BaseEntity, PrimaryColumn, Column, ManyToOne, OneToMany, ManyTo
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
 import { ModeDivision } from "./MCA_AYIM/modeDivision";
 import { Beatmapset } from "./beatmapset";
-import { Mappool } from "./tournaments/mappool";
 import { MappoolBeatmap } from "./tournaments/mappoolBeatmap";
 
 @Entity()

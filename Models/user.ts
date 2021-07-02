@@ -1,11 +1,5 @@
-
-<<<<<<< HEAD
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, ManyToOne, OneToOne, JoinColumn, Index } from "typeorm";
-import { DemeritReport } from "./demerits";
-=======
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, ManyToOne, OneToOne, JoinColumn, Index, ManyToMany } from "typeorm";
 import { DemeritReport } from "./demeritReport";
->>>>>>> commit so i can update master branch
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
 import { UserComment } from "./MCA_AYIM/userComments";
