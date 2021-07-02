@@ -133,4 +133,4 @@ async function isResults (ctx: ParameterizedContext, next: Next): Promise<any> {
     }
 }
 
-export { isEligible, isEligibleFor, categoryRequirementCheck, currentMCA, validatePhaseYear, isPhase, isPhaseStarted, isResults };
+export { isEligible, isEligibleFor, currentMCA, validatePhaseYear, isPhase, isPhaseStarted, isResults };
