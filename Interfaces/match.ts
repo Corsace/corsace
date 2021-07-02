@@ -45,7 +45,7 @@ export enum Mods {
 }
 
 const modStrings: string[] = [
-    "NF",
+	"NF",
 	"EZ",
 	"NV",
 	"HD",
