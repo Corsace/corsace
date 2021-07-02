@@ -4,9 +4,12 @@
             <a
                 class="user-info"
                 :href="`https://osu.ppy.sh/users/${choice.userID}`"
-                :style="userAva"
                 target="_blank"
             >
+                <div 
+                    class="user-info__avatar"
+                    :style="userAva"
+                />
                 <span class="user-info__place">{{ choice.placement }}</span>
                 <span class="user-info__username">{{ choice.username }}</span>
                 <span class="user-info__votes">{{ choice.votes }}</span>
@@ -25,7 +28,9 @@ export default class ResultsUserCard extends Vue {
 
     get userAva (): any {
         if (this.choice)
-            return { "background-image": `linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.2) 10%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,1) 95%), url(${this.choice.avatar})` };
+            return {
+                "background-image": `url(${this.choice.avatar})` 
+            };
 
         return { "background-image": "" };
     }
@@ -58,19 +63,13 @@ export default class ResultsUserCard extends Vue {
 }
 
 .user-info {
+    position: relative;
+
     display: flex;
 
-    padding: 15px;
+    padding: 0 15px;
     border-radius: 10px;
     width: 100%;
-
-    background-size: 28%;
-    background-position: 10% 52%;
-
-    @include breakpoint(tablet) {
-        background-size: 20%;
-        background-position: 5% 52%;
-    }
 
     background-repeat: no-repeat;
 
@@ -78,6 +77,28 @@ export default class ResultsUserCard extends Vue {
 
     color: white;
     text-decoration: none;
+
+    & > span {
+        margin: 15px 0;
+    }
+
+    &__avatar {
+        position: absolute;
+
+        width: 100%;
+        height: 100%;
+
+        z-index: -100;
+
+        background-size: 28%;
+        background-position: 8% 52%;
+        mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0) 6%,  rgba(0, 0, 0, 0.7) 10.5%, rgba(0, 0, 0, 0.7) 23%, rgba(0, 0, 0, 0) 33%);
+        @include breakpoint(tablet) {
+            background-size: 23%;
+            background-position: 3% 52%;
+            mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0) 4%,  rgba(0, 0, 0, 0.7) 7.5%, rgba(0, 0, 0, 0.7) 18%, rgba(0, 0, 0, 0) 21%);
+        }
+    }
 
     &__place {
         flex: 4;
