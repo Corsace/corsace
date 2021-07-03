@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Mappool } from "./mappool";
 import { Match } from "./match";
 import { Tournament } from "./tournament";
@@ -9,17 +9,10 @@ export class Group extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
 
-    @Column()
-    tournamentID!: number;
-
     @ManyToOne(() => Tournament, tournament => tournament.groups)
     tournament!: Tournament;
 
-    @Column()
-    mappoolID!: number;
-
-    @OneToOne(() => Mappool, mappool => mappool.group)
-    @JoinColumn()
+    @ManyToOne(() => Mappool, mappool => mappool.groups)
     mappool!: Mappool;
 
     @OneToMany(() => Match, match => match.group)

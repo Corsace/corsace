@@ -9,14 +9,8 @@ export class MatchSet extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
 
-    @Column()
-    matchID!: number;
-
     @ManyToOne(() => Match, match => match.sets)
     match!: Match;
-
-    @Column()
-    winnerID?: number;
 
     @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.setsWon)
     winner?: TournamentTeam;

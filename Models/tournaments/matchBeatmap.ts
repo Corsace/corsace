@@ -15,32 +15,20 @@ export class MatchBeatmap extends BaseEntity {
 
     @Column({ type: "enum", enum: PickStatus, default: PickStatus.picked })
     status!: PickStatus;
-
-    @Column()
-    beatmapID!: number;
     
     @ManyToOne(() => MappoolBeatmap, beatmap => beatmap.matchBeatmaps, { 
         eager: true 
     })
     beatmap!: MappoolBeatmap;
 
-    @Column()
-    matchID?: number;
-
     @ManyToOne(() => Match, match => match.beatmaps)
     match?: Match;
-
-    @Column()
-    setID?: number;
 
     @ManyToOne(() => MatchSet, matchSet => matchSet.beatmaps)
     set?: MatchSet;
 
     @OneToMany(() => MatchPlay, matchPlay => matchPlay.beatmap)
     scores?: MatchPlay[];
-
-    @Column()
-    winnerID?: number;
 
     @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.mapsWon)
     winner?: TournamentTeam;

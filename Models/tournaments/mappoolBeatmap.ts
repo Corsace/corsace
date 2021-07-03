@@ -16,14 +16,8 @@ export class MappoolBeatmap extends BaseEntity {
     @Column()
     slot!: number;
 
-    @Column()
-    mappoolID!: number;
-
     @ManyToOne(() => Mappool, mappool => mappool.beatmaps)
     mappool!: Mappool;
-
-    @Column()
-    beatmapID!: number;
     
     @ManyToOne(() => Beatmap, beatmap => beatmap.mappoolBeatmaps, { eager: true })
     beatmap!: Beatmap;

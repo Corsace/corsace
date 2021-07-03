@@ -18,6 +18,12 @@ export class Tournament extends BaseEntity {
 
     @Column(() => Phase)
     registration!: Phase;
+
+    @Column()
+    size!: number;
+
+    @Column({ default: true })
+    doubleElim!: boolean;
     
     @OneToMany(() => Bracket, bracket => bracket.tournament)
     brackets!: Bracket[];

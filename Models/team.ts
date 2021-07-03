@@ -20,9 +20,6 @@ export class Team extends BaseEntity {
     @OneToMany(() => TournamentTeam, tournamentTeam => tournamentTeam.team)
     tournamentTeams!: TournamentTeam[];
 
-    @Column()
-    captainID!: number;
-
     @ManyToOne(() => User, user => user.teamHosts)
     captain!: User;
 

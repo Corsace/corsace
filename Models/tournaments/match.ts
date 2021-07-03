@@ -17,27 +17,15 @@ export class Match extends BaseEntity {
 
     @Column({ type: "timestamp" })
     time!: Date;
-
-    @Column()
-    bracketID?: number;
     
     @ManyToOne(() => Bracket, bracket => bracket.matches)
     bracket?: Bracket;
-
-    @Column()
-    groupID?: number;
     
     @ManyToOne(() => Group, group => group.matches)
     group?: Group;
-
-    @Column()
-    teamAID?: number;
     
     @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.matches)
     teamA?: TournamentTeam;
-
-    @Column()
-    teamBID?: number;
     
     @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.matches)
     teamB?: TournamentTeam;
@@ -48,14 +36,8 @@ export class Match extends BaseEntity {
     @Column({ default: 0 })
     teamBScore!: number;
 
-    @Column()
-    firstID?: number;
-
     @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.matchesFirst)
     first?: TournamentTeam;
-    
-    @Column()
-    winnerID?: number;
 
     @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.matchesWon)
     winner?: TournamentTeam;
@@ -71,18 +53,12 @@ export class Match extends BaseEntity {
 
     @Column({ default: false })
     potential!: boolean;
-
-    @Column()
-    refereeID?: number;
     
     @ManyToOne(() => User, user => user.matchesReffed)
     referee?: User;
 
     @ManyToMany(() => User, user => user.matchesCommentated)
     commentators?: User[];
-
-    @Column()
-    streamerID?: number;
     
     @ManyToOne(() => User, user => user.matchesStreamed)
     streamer?: User;

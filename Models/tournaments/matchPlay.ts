@@ -9,20 +9,11 @@ export class MatchPlay extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
 
-    @Column()
-    userID!: number;
-
     @ManyToOne(() => User, user => user.scores)
     user!: User;
 
-    @Column()
-    beatmapID!: number;
-
     @ManyToOne(() => MatchBeatmap, beatmap => beatmap.scores)
     beatmap!: MatchBeatmap;
-
-    @Column()
-    qualifierID?: number;
 
     @ManyToOne(() => Qualifier, qualifier => qualifier.scores)
     qualifier!: Qualifier;

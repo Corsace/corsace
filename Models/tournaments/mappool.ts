@@ -3,6 +3,7 @@ import { Tournament } from "./tournament";
 import { Bracket } from "./bracket";
 import { MappoolBeatmap } from "./mappoolBeatmap";
 import { Group } from "./group";
+import { Qualifier } from "./qualifier";
 
 @Entity()
 export class Mappool extends BaseEntity {
@@ -11,7 +12,7 @@ export class Mappool extends BaseEntity {
     ID!: number;
 
     @Column()
-    tournamentID!: number;
+    name!: string;
 
     @ManyToOne(() => Tournament, tournament => tournament.mappools)
     tournament!: Tournament;
@@ -22,9 +23,9 @@ export class Mappool extends BaseEntity {
     @OneToOne(() => Bracket, bracket => bracket.mappool)
     bracket?: Bracket;
 
-    @OneToOne(() => Group, group => group.mappool)
-    group?: Group;
+    @OneToMany(() => Group, group => group.mappool)
+    groups?: Group[];
 
-    @OneToOne(() => Group, group => group.mappool)
-    qualifier?: Group;
+    @OneToMany(() => Qualifier, qualifier => qualifier.mappool)
+    qualifiers?: Qualifier[];
 }

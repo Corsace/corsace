@@ -12,17 +12,8 @@ export class Bracket extends BaseEntity {
     @Column()
     name!: string;
 
-    @Column()
-    size!: number;
-
-    @Column()
-    tournamentID!: number;
-
     @ManyToOne(() => Tournament, tournament => tournament.brackets)
-    tournament!: Tournament
-
-    @Column()
-    mappoolID!: number;
+    tournament!: Tournament;
 
     @OneToOne(() => Mappool, mappool => mappool.bracket)
     @JoinColumn()

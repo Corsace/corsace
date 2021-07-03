@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 import { Mappool } from "./mappool";
 import { MatchPlay } from "./matchPlay";
@@ -13,17 +13,10 @@ export class Qualifier extends BaseEntity {
     @Column({ type: "timestamp" })
     time!: Date;
 
-    @Column()
-    tournamentID!: number;
-
     @ManyToOne(() => Tournament, tournament => tournament.qualifiers)
     tournament!: Tournament;
 
-    @Column()
-    mappoolID!: number;
-
-    @OneToOne(() => Mappool, mappool => mappool.qualifier)
-    @JoinColumn()
+    @ManyToOne(() => Mappool, mappool => mappool.qualifiers)
     mappool!: Mappool;
 
     @OneToMany(() => MatchPlay, score => score.qualifier)
