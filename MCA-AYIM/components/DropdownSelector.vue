@@ -1,7 +1,7 @@
 <template>
     <div class="dropdown-container">
         <div 
-            class="label-section"
+            class="label-section button"
             @click="showDropdown = !showDropdown"
             :style="styleLabel"
         >
@@ -11,23 +11,20 @@
                 :class="triangleClass"
             />
         </div>
-        <div 
-            v-if="showDropdown"
-            class="options-section"
-        >
+        <template v-if="showDropdown">
             <div
                 v-for="(option, i) in options"
                 :key="'option-' + i"
                 class="dropdown-option"
-                :style="{...{'top': `${26*i}px`}, ...styleDrop}"
+                :style="{...{'top': `calc(${1.5*i}em + 100%)`}, ...styleDrop}"
                 @click="() => {
                     showDropdown = false;
                     optionToParent(i);
                 }"
             >
-                {{ option }}
+                <span class="option-text">{{ option }}</span>
             </div>
-        </div>
+        </template>
     </div>
 </template>
 
@@ -46,8 +43,6 @@ export default class DropdownSelector extends Vue{
     //   every time a new option is selected VIA the dropdown
     // it is recommended to use styleDrop to specify the width CSS attribute according to
     //   the longest text that will enter the DropdownSelector on a page 
-    // an example styling is given below: 
-    //   'width': `${Math.max(85 + Math.max(...textArray.map(t => t.length)) * 10, 165)}px`
 
     @State selectedMode!: string;
     @Prop({ type: Array, required: true }) readonly options!: TranslateResult[];
@@ -79,79 +74,32 @@ export default class DropdownSelector extends Vue{
 @import '@s-sass/_variables';
 
 .dropdown-container {
+    display: flex;
     position: relative;
-}
-
-.label-section {
-    padding: 10px;
-    height: 45px;
-    cursor: pointer;
-
-    overflow: hidden;
-    white-space: nowrap;
-
-    -webkit-appearance: none;
-    -moz-appearance: none;
-
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-
-    z-index: 1;
-
-    padding: 5px;
-    margin: 0;
-
-    background: black;
-    box-shadow: $black-shadow;
-    border-radius: 5.5px;
 
     font-size: $font-lg;
-    font-family: $font-body;
-    text-shadow: 0 0 4px white;
-    text-transform: uppercase;
-    color: white;
-    
     @include breakpoint(mobile) {
         font-size: $font-base;
     }
-
-    min-width: 70px;
-    @include breakpoint(mobile) {
-        min-width: 50px;
-    }
-    @include breakpoint(tablet) {
-        min-width: 90px;
-    }
-    @include breakpoint(laptop) {
-        min-width: 120px;
-    }
     @include breakpoint(desktop) {
-        min-width: 165px;
+        max-height: 45px;
     }
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    @include transition;
-
-    -webkit-appearance: none;
-    -moz-appearance: none;
-
-    &:hover {
-        background: white;
-        color: black;
-        text-shadow: none;
-        z-index: 100;
-    }
-
 }
 
-.options-section {
-    display: flex;
-    flex-direction: column;
-    position: relative;
+.label-section {
+    line-height: normal;
+    z-index: 1;
+    flex: 1;
+    border-radius: inherit;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+
+    height: 2.25em;
+    @include breakpoint(mobile) {
+        height: 2em;
+    }
 }
 
 .dropdown-option {
@@ -162,18 +110,14 @@ export default class DropdownSelector extends Vue{
     text-decoration: none;
     text-align: center;
     z-index: 100;
+    left: 50%;
+    right: 50%;
 
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
 
-    min-width: 80px;
-    @include breakpoint(tablet) {
-        min-width: 165px;
-    }
-    @include breakpoint(mobile) {
-        min-width: 50px;
-    }
+    transform: translate(-50%, 0);
     
     @include transition('background-color, color');
 
@@ -185,6 +129,10 @@ export default class DropdownSelector extends Vue{
         background-color: white;
         color: #0f0f0f;
     }
+}
+
+.option-text {
+    font-size: $font-base;
 }
 
 </style>

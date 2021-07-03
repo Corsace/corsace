@@ -94,13 +94,19 @@ $icon-margin: 15px;
     display: flex;
     flex-direction: column;
     flex: 1;
-    height: 100%;
     width: 100%;
     padding-bottom: 10px;
     padding-left: 0;
     
+    @include breakpoint(mobile) {
+        height: calc(100% - 30px);
+    }
+    @include breakpoint(tablet) {
+        height: calc(100% - 5rem);
+    }
     @include breakpoint(laptop) {
         padding-left: 35px;
+        height: 100%;
     }
 }
 
