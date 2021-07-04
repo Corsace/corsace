@@ -61,7 +61,7 @@ export interface UserVote {
 export function groupVotesByVoters (staffVotes: StaffVote[]): UserVote[] {
     if (staffVotes.length === 0) return [];
 
-    const userVotes: UserVote[] = [];
+    let userVotes: UserVote[] = [];
     for (const staffVote of staffVotes) {
         const resultVote = {
             ...staffVote,
@@ -77,6 +77,12 @@ export function groupVotesByVoters (staffVotes: StaffVote[]): UserVote[] {
         } else
             userVotes[i].votes.push(resultVote);
     };
+
+    userVotes = userVotes.map(userVote => {
+        userVote.votes = userVote.votes.sort((a, b) => a.choice - b.choice);
+        return userVote;
+    });
+
     return userVotes;
 }
 

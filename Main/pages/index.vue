@@ -238,7 +238,7 @@ export default class Default extends Vue {
         },
         "open": {
             title: "CORSACE OPEN",
-            url: "#",
+            url: "https://open.corsace.io",
         },
         "closed": {
             title: "CORSACE CLOSED",
