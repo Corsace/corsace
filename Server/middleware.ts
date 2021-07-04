@@ -133,7 +133,7 @@ async function notOpenStaff (ctx: ParameterizedContext, next: Next): Promise<voi
         member.roles.cache.has(config.discord.roles.open.scrim) ||
         member.roles.cache.has(config.discord.roles.open.advisor) ||
         member.roles.cache.has(config.discord.roles.open.streamer) ||
-        member.roles.cache.has(config.discord.roles.open.referee) ||
+        member.roles.cache.has(config.discord.roles.open.referee)
     ) {
         ctx.body = { error: "You are a staff member and cannot play for Corsace Open."}
         return;
