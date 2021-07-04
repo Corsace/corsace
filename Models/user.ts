@@ -70,12 +70,12 @@ export class User extends BaseEntity {
     @OneToMany(() => TeamInvitation, invitation => invitation.target)
     invitations!: TeamInvitation[];
 
-    @ManyToMany(() => Team, team => team.players)
-    @JoinTable()
-    teams!: Team[];
+    @ManyToOne(() => Team, team => team.players)
+    team!: Team;
 
-    @OneToMany(() => Team, team => team.captain)
-    teamHosts?: Team[];
+    @OneToOne(() => Team, team => team.captain)
+    @JoinColumn()
+    teamCaptain?: Team;
 
     @OneToMany(() => MatchPlay, play => play.user)
     scores?: MatchPlay[];
@@ -277,10 +277,10 @@ export class User extends BaseEntity {
     public getAccessToken = async function(this: User, tokenType: "osu" | "discord" = "osu"): Promise<string> {
         const res = await User
         .createQueryBuilder("user")
-        .select(tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken")
+        .select(tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken", "token")
         .where(`ID = ${this.ID}`)
         .getRawOne();
-        return res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"]
+        return res.token;
     }
 
     public getCondensedInfo = function(this: User, chosen = false): UserChoiceInfo {

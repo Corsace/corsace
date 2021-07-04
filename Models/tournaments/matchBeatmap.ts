@@ -1,10 +1,10 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { PickStatus } from "../../Interfaces/match";
+import { Team } from "../team";
 import { MappoolBeatmap } from "./mappoolBeatmap";
 import { Match } from "./match";
 import { MatchPlay } from "./matchPlay";
 import { MatchSet } from "./matchSet";
-import { TournamentTeam } from "./tournamentTeam";
 
 
 @Entity()
@@ -30,6 +30,6 @@ export class MatchBeatmap extends BaseEntity {
     @OneToMany(() => MatchPlay, matchPlay => matchPlay.beatmap)
     scores?: MatchPlay[];
 
-    @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.mapsWon)
-    winner?: TournamentTeam;
+    @ManyToOne(() => Team, team => team.mapsWon)
+    winner?: Team;
 }

@@ -1,7 +1,9 @@
-import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { TeamInvitation } from "./teamInvitation";
+import { Match } from "./tournaments/match";
+import { MatchBeatmap } from "./tournaments/matchBeatmap";
+import { MatchSet } from "./tournaments/matchSet";
 import { Tournament } from "./tournaments/tournament";
-import { TournamentTeam } from "./tournaments/tournamentTeam";
 import { User } from "./user";
 
 @Entity()
@@ -13,17 +15,38 @@ export class Team extends BaseEntity {
     @Column("varchar", { length: 30 })
     name!: string;
 
-    @ManyToMany(() => Tournament, tournament => tournament.teams)
-    @JoinTable()
-    tournaments!: Tournament[];
+    @CreateDateColumn()
+    created!: Date;
 
-    @OneToMany(() => TournamentTeam, tournamentTeam => tournamentTeam.team)
-    tournamentTeams!: TournamentTeam[];
+    @Column({ nullable: true })
+    avatar?: string;
 
-    @ManyToOne(() => User, user => user.teamHosts)
+    @Column()
+    role!: string;
+
+    @ManyToOne(() => Tournament, tournament => tournament.teams)
+    tournament!: Tournament;
+    
+    @ManyToMany(() => Match, match => match.teamA || match.teamB)
+    matches?: Match[];
+
+    @OneToMany(() => MatchBeatmap, map => map.winner)
+    mapsWon?: MatchBeatmap[]
+    
+    @OneToMany(() => MatchSet, set => set.winner)
+    setsWon?: MatchSet[]
+    
+    @OneToMany(() => Match, match => match.winner)
+    matchesWon?: Match[]
+    
+    @OneToMany(() => Match, match => match.first)
+    matchesFirst?: Match[]
+
+    @OneToOne(() => User, user => user.teamCaptain)
+    @JoinColumn()
     captain!: User;
 
-    @ManyToMany(() => User, user => user.teams)
+    @OneToMany(() => User, user => user.team)
     players?: User[];
 
     @OneToMany(() => TeamInvitation, invitation => invitation.team)

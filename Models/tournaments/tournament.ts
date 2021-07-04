@@ -3,7 +3,6 @@ import { Phase } from "../phase";
 import { Team } from "../team";
 import { Mappool } from "./mappool";
 import { Bracket } from "./bracket";
-import { TournamentTeam } from "./tournamentTeam";
 import { Group } from "./group";
 import { Qualifier } from "./qualifier";
 
@@ -37,9 +36,6 @@ export class Tournament extends BaseEntity {
     @OneToMany(() => Mappool, mappool => mappool.tournament)
     mappools!: Mappool[];
 
-    @ManyToMany(() => Team, team => team.tournaments)
+    @OneToMany(() => Team, team => team.tournament)
     teams!: Team[];
-
-    @OneToMany(() => Team, team => team.tournaments)
-    tournamentTeams!: TournamentTeam[];
 }

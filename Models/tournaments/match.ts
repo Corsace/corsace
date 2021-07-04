@@ -1,10 +1,10 @@
 import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Team } from "../team";
 import { User } from "../user";
 import { Bracket } from "./bracket";
 import { Group } from "./group";
 import { MatchBeatmap } from "./matchBeatmap";
 import { MatchSet } from "./matchSet";
-import { TournamentTeam } from "./tournamentTeam";
 
 @Entity()
 export class Match extends BaseEntity {
@@ -24,11 +24,11 @@ export class Match extends BaseEntity {
     @ManyToOne(() => Group, group => group.matches)
     group?: Group;
     
-    @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.matches)
-    teamA?: TournamentTeam;
+    @ManyToOne(() => Team, team => team.matches)
+    teamA?: Team;
     
-    @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.matches)
-    teamB?: TournamentTeam;
+    @ManyToOne(() => Team, team => team.matches)
+    teamB?: Team;
 
     @Column({ default: 0 })
     teamAScore!: number;
@@ -36,11 +36,11 @@ export class Match extends BaseEntity {
     @Column({ default: 0 })
     teamBScore!: number;
 
-    @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.matchesFirst)
-    first?: TournamentTeam;
+    @ManyToOne(() => Team, team => team.matchesFirst)
+    first?: Team;
 
-    @ManyToOne(() => TournamentTeam, tournamentTeam => tournamentTeam.matchesWon)
-    winner?: TournamentTeam;
+    @ManyToOne(() => Team, team => team.matchesWon)
+    winner?: Team;
 
     @OneToMany(() => MatchSet, set => set.match)
     sets?: MatchSet[];
