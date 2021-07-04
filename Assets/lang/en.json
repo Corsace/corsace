@@ -278,5 +278,194 @@
             "development": "the corsace website is still in early development",
             "theTeam": "the corsace team"
         }
+    },
+    "open": {
+        "flag": "https://osu.ppy.sh/images/flags/GB.png",
+        "construction": {
+            "under": "UNDER CONSTRUCTION",
+            "check": "PLEASE CHECK BACK SOON!"
+        },
+        "error": {
+            "404": "Oops! Something went wrong! Let's get you back to the <a href='/' class='ErrLink'>main page</a> instead!"
+        },
+        "header" : {
+            "home": "HOME",
+            "info": "INFO",
+            "qualifiers": "QUALIFIERS",
+            "scores": "SCORES",
+            "schedule": "SCHEDULE",
+            "groups": "GROUPS",
+            "brackets": "BRACKETS",
+            "teams": "TEAMS",
+            "players": "PLAYERS",
+            "mappool": "MAPPOOL",
+            "talent": "TALENT",
+            "login": "LOGIN",
+            "register": "REGISTER",
+            "pending": "PENDING INVITE FROM",
+            "noInv": "No pending invites.",
+            "unlinkPopup": "This will delink your osu! and Discord accounts from the Corsace website, removing you from any teams and deleting those you are the captain of. Are you sure you want to do this?",
+            "noTeam": "NO TEAM",
+            "viewTeam": "VIEW TEAM",
+            "demerits": "DEMERIT <br> POINTS",
+            "unlink": "UNLINK",
+            "logout": "LOGOUT"
+        },
+        "home": {
+            "from": "FROM THE ORGANIZERS OF <span class='tournamentName'>OHC</span> &amp; <span class='tournamentName'>MAP DRAFT</span>",
+            "present": "WE PRESENT YOU",
+            "dates": "12 SEPTEMBER TO 18 OCTOBER",
+            "teams": "32 TEAMS",
+            "registerNow": "REGISTER NOW",
+            "watchNow": "WATCH NOW"
+        },
+        "info": {
+            "newHeader1": "WHAT'S NEW",
+            "newHeader2": "THE FORMAT",
+            "donate": "Donate to the prizepool here!",
+            "important": "DUE TO TIME CONSTRAINTS, RESCHEDULES FOR MATCHES TO LATER WEEKENDS WILL NOT BE ALLOWED. YOU MUST PLAY THE ROUND'S MATCHES IN THE WEEKEND STATED BELOW.",
+            "new1": "This year, <span class='highlight'>Corsace Open</span> is going to run under full community funds, and will be running as a 32 team tournament instead of 64.",
+            "new2": "The map draft is staying though! We have updated rules regarding best of sets and best of maps, as well as updating time limits for certain aspects of the matches, and tweak the format itself to reduce the feeling of \"redundancy\" when playing multiple sets. Please make sure to read the rules carefully!",
+            "new3": "Furthermore, we have taken the initiative of having all the maps for the mappools exclusively mapped for <span class='highlight'>Corsace Open</span>! Any map you will see here was mapped for the tournament!",
+            "format1": "Similar to <span class='highlight'>Map Draft</span>, every set is a best of 7. This means that the first team to reach 4 points will win a set. Depending on the stage, more than one set may be played.",
+            "format2": "Teams will roll, and the winner of the roll will decide if they are Team 1 or Team 2 <span class='highlight'>(refer to graphic on left)</span>. If the match is more than 1 set, the teams will switch places for the next set being played. The graphic on the left also displays the pick and ban order.",
+            "format3": "Bans are split into 2 categories: <span class='highlight'>Match Bans</span> and <span class='highlight'>Set Bans</span>. Set bans are the 2 bans each team makes when drafting their picks and bans for the set. Match bans are bans from previous sets carried over to the current set.",
+            "format4": "Teams will choose 1 of their 2 bans from their previous set to carry over to the current set, and they will accumulate. These are what we call match bans. The <span class='highlight'>final set</span> (set 3 in BO3 sets, set 5 in BO5 sets) will reset all match bans, and only the 2 set bans will remain.",
+            "format5": "The picks and bans are done before any maps are played.",
+            "header1": "ABOUT",
+            "header2": "TOURNAMENT INFO",
+            "header3": "TOURNAMENT DATES",
+            "header4": "TOURNAMENT RULES",
+            "header5": "PRIZES",
+            "header6": "MATCH RULES",
+            "header7": "ROUND RULES",
+            "header8": "BLACKLIST",
+            "header9": "TEAM VERIFICATION",
+            "header10": "SEEDING RULES",
+            "about": "<span class='highlight'>Corsace Open</span> is an osu!standard 4v4 tournament featuring 32 teams. It is one of the 2 yearly tournaments run under the Corsace project, with inspiration on match setup taken from Bubbleman’s Map Draft Tournament.",
+            "tournamentInfo": "<li>This is an open osu!std 4v4 tournament.</li> <li>Game mode is <span class='bold'>Team VS</span> and <span class='bold'>Score v2.</span></li> <li>Max amount of teams is <span class='bold'>32.</span></li> <li>Seeding will be done by using the <span class='bold'>qualifiers system</span> (see <a href='#seedRules'>seeding rules</a> below).</li> <li>Organizers, hosts, mappool selectors, referees, schedulers, and those blacklisted from Corsace tournaments are <span class='bold'>barred</span> from participation as a player.</li> <li>Maps are drafted <span class='bold'>preemptively</span> (similar to how popular mobas handle hero lineup drafts) rather than reactively (as almost all tournaments do it currently).</li> <li><span class='bold'>Group Stage does not exist.</span></li> <li>The full tournament will be in a <span class='bold'>double elimination</span> format.</li> <li>There are <span class='bold'>no</span> warmups.</li> <li>All match times are in UTC unless specified otherwise.</li> <li>Matches are decided in x amount sets with each set being Best Of 7. (see <a href='#roundRules'>ROUND RULES</a> section)</li> <li>There will be no bracket reset in the Grand Finals; rather, the team in the Winner's Bracket will have a 1 set advantage going into the Grand Finals.</li> <li>Teams may contain 6 to 8 players.</li>",
+            "tournamentDates": "<li><span class='bold'>REGISTRATIONS</span> ASAP - 23 August</li> <li><span class='bold'>SCREENING / PLAYER SWAPPING</span> 23 August - 2 September</li> <li><span class='bold'>QUALIFIERS</span> 5 September - 6 September</li> <li><span class='bold'>ROUND OF 32</span> 12 September - 13 September</li> <li><span class='bold'>ROUND OF 16</span> 19 September - 20 September</li> <li><span class='bold'>QUARTER FINALS</span> 26 September - 27 September</li> <li><span class='bold'>SEMI FINALS</span> 3 October - 4 October</li> <li><span class='bold'>FINALS</span> 10 October - 11 October</li> <li><span class='bold'>GRAND FINALS</span> 17 October - 18 October</li>",
+            "tournamentRules": "<li>If a team is unable to play on a certain date/time for whatever reason, they must discuss with the other team to agree on a new date and time and notify the staff <span class='bold'>before Thursday 23:59 UTC.</span> If the team(s) need(s) a reschedule after that, they will be going into the match with a set disadvantage.</li> <li><span class='bold'>RESCHEDULES TO LATER WEEKENDS WILL NOT BE ALLOWED.</span></li> <li>In the case of excess registrants, teams with active players and higher ranks using BWS are prioritized. Date of registration is <span class='bold'>irrelevant</span> as long as they register before the deadline.</li> <li>In the event that a player from a team is blacklisted by the official osu! support staff, then the player will be <span class='bold'>disqualified</span> from playing the tournament, while the rest of the team may still play. If a team ends up with less than 4 players after registration due to bans and such, then the <span class='bold'>whole team</span> will be disqualified.</li> <li>Every new schedule will be posted on the website, and team captains will be notified through the discord server & osu! PM.</li> <li>No cheating!</li>",
+            "prizes": {
+                "followed": "Prizes are as follows:",
+                "list": "<li><span class='bold'>1st Place</span></li> <ul class='infoList'> <li>50% of prize pool spread evenly to players</li> <li>Corsace Open 1st place badge on osu! profile</li> </ul> <li><span class='bold'>2nd Place</span></li> <ul class='infoList'> <li>30% of prize pool spread evenly to players</li> <li>Corsace Open 2nd place badge on osu! profile</li> </ul> <li><span class='bold'>3rd Place</span></li> <ul class='infoList'> <li>20% of prize pool spread evenly to players</li> <li>Corsace Open 3rd place badge on osu! profile</li> </ul>"
+            },
+            "seedRules": "<li>If there are more than 32 full teams, qualifiers will be used to <span class='bold'>determine the top 32 teams</span> to play in the tournament. For Round of 32, they will be seeded as 1st vs 32nd, 2nd vs 31st, e.t.c. </li> <li>If there are more than 64 teams as well, a cap of 64 teams based on <span class='bold'>middle 4 BWS rating average</span> will be used before the qualifiers.</li> <li>The mappool will consist of <span class='bold'>4 NM, and 2 HD/HR/DT.</span> As this part is not being considered as part of the actual tournament and moreso as a seeding method, this pool will not have the special 'mapped for Corsace' treatment as the others.</li> <li>Maps will be played in order, <span class='bold'>the full mappool must be played by your team.</span></li> <li>Teams need 4 players in the lobby, and can swap out at anytime with their teammates for different maps.</li> <li>Not having 4 players for a map will give all players a score of 0 for the respective map.</li> <li>Teams will be seeded based on their <span class='bold'>average placement</span> based on their <span class='bold'>average map scores</span> from their 4 players in all 10 maps.</li>",
+            "matchRules": "<li>If a team fails to yield a full roster of at least 4 players within 10 minutes of their scheduled match time, <span class='bold'>they will be automatically forfeited.</span> No rescheduling will be allowed.</li> <li>Captains (or a relevant representative) will be invited to their matches around 15 minutes before the scheduled time by a referee.</li> <li>Captains (or a relevant representative) will !roll to determine the order of picks and bans; the higher roll gets to choose whether they want to be Team 1 or Team 2. Teams will then swap each set.</li> <li>Refer to <a href='#format'>the format section above</a> for info on pick/ban order as well as match ban carryovers.</li> <li>Maps will be played <span class='bold'>after<span> the picking and banning is done, and will be played in the order they were picked.</li> <li>During the match, the referee will hold the host. Teams will state their picks/bans in the mp lobby chat, and the referee will select the maps themselves.</li> <li>NF will be <span class='bold'>forced on</span> to count all scores.</li> <li>If a player has a <span class='bold'>genuine</span> disconnection (under the ref's discretion) mid-map from Bancho, then a rematch of that map will be enforced. Disconnection for any other reason will have that player's score automatically counted as whatever amount they ended with.</li> <li>In a freemod pick, at least two players from each team must take at least one mod, and there must be at least two unique mods taken per team. HT, DT, NC, and special mods are not allowed. Taking a combination of multiple eligible mods (such as HDHR) is allowed.</li> <li>You <span class='bold'>are allowed</span> to use mods on the tiebreaker.</li> <li>There is <span class='bold'>no limit</span> to the amount of players you can switch out between each song/match.</li> <li><span class='bold'>There will be a 90 second timer for bans, picks, and for readying up each map.</span> If this time is depleted for picks/bans, it will result in a random map being picked/banned. If the time is depleted when readying up, the match will automatically start with the players in lobby.</li> <li><span class='bold'>Between the last pick and the first map to be readied up,</span> teams will be given <span class='bold'>2-3 min prep time (at most)</span> to decide on any final changes to their rosters for the chosen maps. Teams may choose to not use this time and go directly into the first map if they so wish.</li> <li><span class='bold'>Between sets,</span> teams will be given a <span class='bold'>10 minute break (at most)</span> before the next set if they so wish. Afterwards, they will state <span class='bold'>which ban they wish to carry over from the previous set.</span></li>",
+            "roundRules": "<li>Each <span class='bold'>Set</span> is Best of 7 maps.</li> <li><span class='bold'>There are no warmups!</span> Please do your warmups on your own time!</li> <li>For all rounds, each team will have <span class='bold'>two bans.</span></li> <li><span class='bold'>ROUND OF 32 TO SEMI FINALS</span></li> <ul class='infoList'> <li>It will be <span class='bold'>Best of 3 Sets;</span> winning 2 sets wins the match.</li> <li>Each round will last 1 week.</li> </ul> <li><span class='bold'>FINALS & GRAND FINALS</span></li> <ul class='infoList'> <li>It will be <span class='bold'>Best of 5 Sets;</span> winning 3 sets wins the match.</li> <li>Grand Finals will last 1 week.</li> <li>The team from the Winner's Bracket will start the match with a one set advantage.</li> </ul> <li><span class='bold'>MAPPOOLS</span></li> <ul class='infoList'> <li>All rounds will have <span class='bold'>6 NM, 3 HD/HR/FM, 4 DT, and 1 TB.</span></li> <li>All matches each weekend will use the same pool</li></ul>",
+            "blacklist": {
+                "intro": "The blacklist system is based on a demerit point system. The demerit points are retained between both Corsace tournaments. You will receive demerit points by:",
+                "list1": "<li><span class='bold'>1 point:</span></li> <ul class='infoList'> <li>Any form of excessive misbehaviour after being given an official warning by Corsace staff during match. (The staff will be reasonably strict)</li> <li>Rescheduling a match to a weekday (UTC-wise).</li> <li>Point/pick/ban forfeit in any match. (Given to a player/team depending on case)</li> <li>Failing to ready up in the proper amount of time given. (Given to the player/players in question)</li> </ul> <li><span class='bold'>2 points:</span></li> <ul class='infoList'> <li>Match forfeit in <span class='bold'>any</span> stage.</li> <li>Rage Quitting on a map. (Given to the player).</li> </ul> <li><span class='bold'>3 points:</span></li> <ul class='infoList'> <li>No-show in <span class='bold'>Group Stages.</span> (Given to the whole team)</li> <li>Penalty for rescheduling a match late. Reschedules <span class='bold'>MUST</span> be sent to staff <span class='bold'>BEFORE</span> deadline. (Given to 1 team or both depending on the case)</li> </ul> <li><span class='bold'>5 points:</span></li> <ul class='infoList'> <li>No-show <span class='bold'>after</span> Group Stages. (Given to the whole team)</li> </ul> <li><span class='bold'>7 points:</span></li> <ul class='infoList'> <li>Refusal of any/all attempts to cooperate with the team that asks for a reschedule throughout the week. Multiple screenshots which contain the rescheduling team contacting multiple players of the other team throughout the days in question must be provided. This will be considered as an act of sabotage towards the whole tournament and will not be tolerated at all. (Given to the players involved).</li> </ul>",
+                "mid": "If you accumulate 7 demerit points, you will be kicked from the current tournament. If you have 6 or more demerit points, you will not be allowed to participate in future Corsace tournaments until you have 5 or less. <span class='bold'>If you feel that any of the demerit points you were given were unjustified, then please contact <a href='https://osu.ppy.sh/u/4323406'>VINXIS</a> or <a href='https://osu.ppy.sh/u/2123087'>handsome.</a></span>",
+                "followed": "Demerit points are decreased by:",
+                "list2": "<li>All accumulated demerit points are reduced by 1 at the end of each Corsace tournament.</li> <li>You staff(ed) for one of these tourneys and report to us that you staffed in them (after OHC 2017, staffing for them before OHC 2017 does not count) and reduce 0-2 demerit points depending on activity level:</li> <ul class='infoList'> <li>Any of the HappyStick tournaments (including OWC).</li> <li>Any of the this1neguy/DigitalHypno tournaments.</li> <li>Any of Corsace’s tournaments.</li> <li>YSC.</li> <li>Map Draft.</li> </ul> <li>Have your team become verified and reduce 2 demerit points (see <a href='#verify'>TEAM VERIFICATION</a> section).</li>"
+            },
+            "verified": {
+                "intro1": "If your team this year:",
+                "list1": "<li>has at least 5 members that participated in the same team last year’s OHC, OR played in 3 recent tournaments in the same team (with proof)</li> <li>does not have a significant history of <span class='bold'>team reshuffling and name revisions</span></li> <li>has a generally clean record from demerit points and an unquestionable name/avatar</li>",
+                "intro2": "Then you are eligible to become a verified team! Currently, the perks are:",
+                "list2": "<li>eligible for a reserved spot in the tournament</li> <li>given -2 demerit points each Corsace tournament the team registers in if you are a recurring member of the team</li>",
+                "mid": "You are allowed to rename your team <span class='bold'>once;</span> however, it will be your last chance. Any further name revisions and team reshuffling in future tournaments will need to be reviewed by a topdog in order to be considered a repeat team again. The possibility is much less, and the standards/expectations will be much higher.",
+                "end1": "<span class='bold'>Apply for Team Verification through the <a href='/team'>team page.</a></span>",
+                "end2": "<span class='bold'>Are you a tournament host and would want to use our demerits system/data as well? Contact <a href='https://osu.ppy.sh/u/4323406'>VINXIS</a> or <a href='https://osu.ppy.sh/u/2123087'>handsome!</a></span>"
+            }
+        },
+        "registration": {
+            "title": "REGISTER",
+            "step1": "STEP 1",
+            "authenticate": "AUTHENTICATE",
+            "step2": "STEP 2",
+            "placeholder": "osu! username",
+            "popup": "Make sure you are logged into osu!"
+        },
+        "teams": {
+            "team": {
+                "verified": "VERIFIED",
+                "unverified": "UNVERIFIED",
+                "applyPop": {
+                    "desc": "Does your team play in many tourneys together? <br> Are you an established team? <br> You may be eligible for team verification under Corsace!",
+                    "read": "READ MORE HERE",
+                    "apply": "APPLY"
+                },
+                "edit": "EDIT TEAM INFO",
+                "save": "SAVE CHANGES",
+                "invPend": "INVITE <br> PENDING",
+                "inv": "INVITE!",
+                "pp": "BWS RATING",
+                "rank": "TEAM RANK",
+                "ppAvg": "TEAM BWS AVERAGE",
+                "demerits": "DEMERIT POINTS",
+                "teamnameLength": "Team name must be between 3-20 characters!",
+                "playerRemove": "Are you sure you want to kick %%member%%?",
+                "playerCaptain": "Are you sure you want to transfer captain to %%member%%?",
+                "playerInvite": "%%member%% is already in a team or has already been invited!",
+                "deleteTeam": "Are you sure you want to delete this whole team?",
+                "playerRemoveSelf": "Are you sure you want to leave this team?"
+            },
+            "list": "TEAM LIST",
+            "create": "CREATE A TEAM",
+            "your": "YOUR TEAM"
+        },
+        "login": {
+            "online": "We couldn't send this message to %%osuusername%%. Please make sure you're online on osu!",
+            "friend": "It appears that you're blocking PMs from non-friends. Please friend %%osuusername%% on osu! or unblock PMs from non-friends!"
+        },
+        "verification": {
+            "sure": "Are you sure? Please tell us how you’re eligible for team verification using this form.",
+            "prevCorsace": "Did your team play in the previous Corsace tournament (OHC 2017)?",
+            "Yes": "Yes",
+            "No": "No",
+            "prevTourneys": "Please list upto 3 tournaments your team has participated in within the past year. Put links (forum post, website, e.t.c) to 3 latest tournaments participated in.",
+            "firstTourney": "First tournament link",
+            "secondTourney": "Second tournament link",
+            "thirdTourney": "Third tournament link",
+            "prevNames": "If your team has had any renaming done in the past year, please input your previous changes.",
+            "firstName": "First name",
+            "secondName": "Second name",
+            "thirdName": "Third name",
+            "extraInfo": "If you have any other information that may be beneficial for us in deciding your verification status, please put it here.",
+            "extraInfoInput": "Extra Info Here",
+            "submit": "SUBMIT APPLICATION",
+            "edit": "SUBMIT EDIT",
+            "alert": "Your team does not have enough members to be eligible yet!"
+        },
+        "schedule": {
+            "currStage": "CURRENT STAGE",
+            "search": "SEARCH",
+            "placehold": "enter a player or team",
+            "filter": "FILTER",
+            "myTeam": "MY TEAM",
+            "view": "VIEW",
+            "upcoming": "UPCOMING",
+            "current": "CURRENT",
+            "past": "PAST",
+            "match": "MATCH",
+            "until": "TILL MATCH",
+            "days": "DAYS"
+        },
+        "rounds": {
+            "qualifiers": "QUALIFIERS",
+            "round-of-32": "ROUND OF 32",
+            "round-of-16": "ROUND OF 16",
+            "quarter-finals": "QUARTER FINALS",
+            "semi-finals": "SEMI FINALS",
+            "finals": "FINALS",
+            "grand-finals": "GRAND FINALS"
+        },
+        "match": {
+            "info": "MATCH INFO",
+            "banned": "BANNED BY",
+            "picked": "PICKED BY",
+            "referees": "REFEREES",
+            "commentators": "COMMENTATORS",
+            "streamers": "STREAMERS",
+            "empty": "EMPTY SLOT",
+            "bottom": "JUMP TO BOTTOM",
+            "wins": "wins!",
+            "reveal": "REVEAL MATCH RESULTS",
+            "expand": "EXPAND MATCH DETAILS",
+            "collapse": "COLLAPSE MATCH DETAILS"
+        }        
+
     }
 }
