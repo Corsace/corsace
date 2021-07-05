@@ -7,8 +7,10 @@
             <li class="headerListPoint"><img src="../../../Assets/img/open/bullet.png"></li>
             <li class="headerListPoint"><router-link to="/info">{{ $t('open.header.info') }}</router-link></li>
             <li class="headerListPoint"><img src="../../../Assets/img/open/bullet.png"></li>
+            <!-- 
+                temporarily disabled
             <li v-if="user.isReferee" class="headerListPoint"><router-link to="/referee">REFEREE</router-link></li>
-            <li v-if="user.isReferee" class="headerListPoint"><img src="../../../Assets/img/open/bullet.png"></li>
+            <li v-if="user.isReferee" class="headerListPoint"><img src="../../../Assets/img/open/bullet.png"></li> -->
             <li class="headerListPoint"><router-link to="/qualifiers">{{ $t('open.header.qualifiers') }}</router-link></li>
             <li class="headerListPoint"><img src="../../../Assets/img/open/bullet.png"></li>
             <li class="headerListPoint"><router-link to="/pickems">PICKEMS</router-link></li>
@@ -24,22 +26,25 @@
         </ul>
         <div class="headerRight">
 
-            <div class="registration" v-if="!registered">
-                <a class="login" href="/api/auth/discord">{{ $t('open.header.login') }}</a>
-                <div class="register" @click="registering = !registering">
+            <div class="registration" v-if="!registered" @click="showLoginModal = !showLoginModal">
+                <div class="login">
+                    {{ $t('open.header.login') }}
+                </div>
+                <div class="register">
                     {{ $t('open.header.register') }}
                 </div>
-                <Registration v-if="registering || discordReg" :discord-reg="discordReg" :user="user" :registered="registered" @refresh="refresh"></Registration>
+
             </div>
             <div class="userInfo" v-if="registered">
                 <div class="userDesc">
-                    <a :href="'https://osu.ppy.sh/u/' + user.username"><div class="username">{{ user.username }}</div></a>
+                    <a :href="'https://osu.ppy.sh/u/' + loggedInUser.osu.username"><div class="username">{{ loggedInUser.osu.username }}</div></a>
+                    <!--
                     <div v-if="!inTeam" @click="teamRegisteringToggle" class="userTeamName"><router-link to="/team">{{ $t('open.header.noTeam') }}</router-link></div>
-                    <div v-if="inTeam" class="userTeamName"><router-link to="/team">{{ user.team.name }}</router-link></div>
+                    <div v-if="inTeam" class="userTeamName"><router-link to="/team">{{ user.team.name }}</router-link></div> -->
                 </div>
             </div>
             <div v-if="registered" class="avatarWrapper" @click="openNotifications">
-                <img class="avatar" v-if="user.avatarUrl && user.avatarUrl !== null" v-bind:src="user.avatarUrl">
+                <img class="avatar" v-if="loggedInUser.osu.avatar && loggedInUser.osu.avatar !== null" v-bind:src="loggedInUser.osu.avatar">
                 <img class="avatar" v-else src="../../../Assets/img/open/defaultDiscordAvatar.png">
                 <div class="notification" v-if="!noNotifications"></div>
             </div>
@@ -47,27 +52,65 @@
             <LocaleChanger></LocaleChanger>
             <img v-if="registered" class="settings" src="../../../Assets/img/open/settings.png" @click="openNotifications">
         </div>
+        <login-modal
+            v-if="showLoginModal"
+            :site="site"
+            @close="toogleLoginModal"
+        />
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { State } from "vuex-class";
+
 import axios from "axios";
-import Registration from "./Registration"
-import LocaleChanger from "./LocaleChanger"
-import Notifications from "./Notifications"
+import Registration from "./Registration.vue"
+import LocaleChanger from "./LocaleChanger.vue"
+import Notifications from "./Notifications.vue"
+import LoginModal from "../../../MCA-AYIM/components/header/LoginModal.vue";
 import ClickOutside from 'vue-click-outside';
 
-export default {
+import { UserInfo } from "../../../Interfaces/user";
+
+@Component({
     components: {
-        Registration,
         LocaleChanger,
         Notifications,
+        LoginModal,
     },
+})
 
-    data: () => ({
-        registering: false,
-        notificationPanel: false,
-    }),
+export default class Header extends Vue {
+
+    @Prop({ type: String, required: true }) readonly site!: string;
+
+    @State loggedInUser!: UserInfo;
+
+    showLoginModal = false;
+    notificationPanel = false;  
+    registered = false;
+
+    get avatarURL (): string  {
+        return this.loggedInUser?.osu?.avatar || "";
+    }
+
+    toogleLoginModal (): void {
+        this.showLoginModal = !this.showLoginModal;
+    }
+    
+    openNotifications (): void {
+            this.notificationPanel = !this.notificationPanel
+    }
+    
+    notificationPanelClose (): void {
+            this.notificationPanel = false
+    }
+    
+
+}
+
+/*
     props: {
         discordReg: Boolean,
         registered: Boolean,
@@ -95,7 +138,7 @@ export default {
     directives: {
         ClickOutside,
     },
-}
+} */
 </script>
 
 <style>
@@ -149,6 +192,10 @@ a:focus {
 .login {
     color: #b64c4c;
     font-weight: bold;
+}
+
+.login:hover { 
+    cursor: pointer;
 }
 
 .register:hover {

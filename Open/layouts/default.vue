@@ -1,6 +1,6 @@
 <template>
     <div class="app">
-        <Header v-if="$route.path !== '/404' && !$route.path.includes('/streamer')" :registered="registered" :team="team" :user="user" :user-invitations="userInvitations" :discord-reg="discordReg" :in-team="inTeam" :no-notifications="noNotifications" @refresh="refresh" @team-registering="teamRegistering = true"></Header>
+        <Header v-if="$route.path !== '/404' && !$route.path.includes('/streamer')" :registered="registered" :team="team" :user="user" :user-invitations="userInvitations" :discord-reg="discordReg" :in-team="inTeam" :no-notifications="noNotifications" @refresh="refresh" @team-registering="teamRegistering = true" :site="site"></Header>
         <router-view :key="$route.fullPath" :app="this" :registered="registered" :in-team="inTeam" :team="team" :user="user" :team-registering="teamRegistering" @team-registering="teamRegistering = !teamRegistering" @team-edited="refresh"></router-view>
     </div>
 </template>
@@ -11,10 +11,12 @@ import _ from "lodash";
 import regeneratorRuntime from "regenerator-runtime";
 import Header from "../components/header/Header";
 
-export default {
+export default {  
+
     components: {
         Header,
     },
+    
     data: () => ({
         discordReg: false,
         inTeam: false,
@@ -24,6 +26,7 @@ export default {
         teamRegistering: false,
         user: {},
         userInvitations: [],
+        site: "open",
     }),
     created: function() {
         this.refresh();
