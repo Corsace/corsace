@@ -84,6 +84,7 @@ export default class ResultsBeatmapsetCard extends Vue {
     text-decoration: none;
 
     &__place {
+        min-width: 3rem;
         flex: 2;
         display: flex;
         align-items: center;
@@ -123,6 +124,9 @@ export default class ResultsBeatmapsetCard extends Vue {
 
     &__map {
         flex: 11;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
 
         &-title {
             display: inline;
@@ -185,6 +189,7 @@ export default class ResultsBeatmapsetCard extends Vue {
     }
 
     &__votes {
+        min-width: 3rem;
         display: flex;
         align-items: center;
         justify-content: center;

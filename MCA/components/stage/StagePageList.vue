@@ -94,9 +94,6 @@ export default class StagePageList extends Vue {
     @stageModule.State users!: UserChoiceInfo[];
     @stageModule.State beatmaps!: BeatmapsetInfo[];
 
-    @stageModule.State userResults!: UserResult[];
-    @stageModule.State beatmapResults!: BeatmapResult[];
-
     @stageModule.State loading!: boolean;
 
     @stageModule.State showVoteChoiceBox!: boolean;
@@ -104,6 +101,33 @@ export default class StagePageList extends Vue {
     @stageModule.Action search;
 
     @Prop({ type: Boolean, default: false }) results!: boolean;
+
+    get userResults(): UserResult[] {
+        const pug = {
+            corsaceID: 2456,
+            username: "ImpurePug",
+            avatar: "https://a.ppy.sh/3124248",
+            userID: "3124248",
+            otherNames: ["KineticDog"],
+            chosen: true,
+            placement: 346,
+            votes: 123,
+        }
+        return [pug, pug, pug, pug, pug, pug, pug, pug, pug, pug, pug, pug, pug, pug, pug, pug, ]
+    }
+    
+    get beatmapResults(): BeatmapResult[] {
+        const sennen = {
+            id: 926846,
+            artist: "sasakure.UK",
+            title: "Sennen to Rasen, Chiru Mono o feat. Sui",
+            hoster: "Kalibe",
+            chosen: true,
+            placement: 742,
+            votes: 835,
+        }
+        return [sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, sennen, ]
+    }
 
 }
 </script>

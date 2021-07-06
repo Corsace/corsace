@@ -101,6 +101,7 @@ export default class ResultsUserCard extends Vue {
     }
 
     &__place {
+        min-width: 3rem;
         flex: 4;
         text-shadow: 0 0 4px white;
         font-size: $font-lg;
@@ -119,6 +120,7 @@ export default class ResultsUserCard extends Vue {
     }
 
     &__votes {
+        min-width: 3rem;
         display: flex;
         align-content: center;
         justify-content: center;

@@ -105,15 +105,12 @@ export default class ResultsFilters extends Vue {
     // dropdown styles
     get catTypeStyle () {
         return {
-            'border-radius': '5.5px 0 0 5.5px',
             'width': `${Math.max(85 + Math.max(...this.localCatTypes.map(lct => lct.toString().length)) * 10, 165)}px`,
-            'margin-left': '5px'
         }
     }
 
     get catStyle () {
         return {
-            'border-radius': '0 5.5px 5.5px 0',
             'width': `${Math.max(85 + Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length)) * 10, 165)}px`,
             // formula to estimate box width from character count
             // flat factor (85) and scaling factor (10) are pretty arbitrary  
@@ -158,17 +155,51 @@ export default class ResultsFilters extends Vue {
 
 .category-selector {
     display: flex;
-    flex: 1;
     justify-content: center;
+    flex-direction: column;
 
-    padding: 20px 0 0 0;
+    flex: 1;
+
+    padding: 0;
 
     @include breakpoint(tablet) {
-        padding: 0;
+        flex-direction: row;
     }
 
     @include breakpoint(desktop) {
         padding: 20px 0 0 0;
+    }
+
+    >div {
+        flex: 1;
+    }
+}
+
+.category-type {
+    margin: 15px 5px 7.5px 5px;
+    border-radius: 5.5px;
+
+    @include breakpoint(tablet) {
+        margin: 0;
+        border-radius: 5.5px 0 0 5.5px;
+    }
+
+    @include breakpoint(laptop) {
+        margin: 0 0 0 5px;
+    }
+}
+
+.award-category {
+    margin: 7.5px 5px 0 5px;
+    border-radius: 5.5px;
+
+    @include breakpoint(tablet) {
+        margin: 0;
+        border-radius: 0 5.5px 5.5px 0;
+    }
+
+    @include breakpoint(laptop) {
+        margin: 0 5px 0 0;
     }
 }
 

@@ -106,9 +106,10 @@ export default class Results extends Vue {
 .results-wrapper {
     width: 100%;
     max-height: 100%;
-    padding-top: 50px;
+    padding-top: 10px;
 
     @include breakpoint(laptop) {
+        padding-top: 50px;
         height: 100%;
     }
 }
@@ -131,11 +132,13 @@ export default class Results extends Vue {
     display: flex;
 
     &__mapplace {
+        min-width: 3rem;
         flex: 2;
         margin-right: 15px;
     }
 
     &__userplace {
+        min-width: 3rem;
         flex: 4;
         margin-right: 15px;
     }
