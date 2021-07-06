@@ -56,6 +56,12 @@
                                                 Placement: {{ result.placement }}
                                             </div>
                                             <div>
+                                                1st Choice Count: {{ result.firstPlaceCount }}
+                                            </div>
+                                            <div>
+                                                Total Count: {{ result.totalCount }}
+                                            </div>
+                                            <div>
                                                 Count: {{ result.count }}
                                             </div>
                                         </div>
