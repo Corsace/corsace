@@ -45,6 +45,8 @@ export interface ResultVote extends StaffVote {
     used: boolean;
     inRace: boolean;
     count: number;
+    firstPlaceCount: number;
+    totalCount: number;
     placement: number;
 }
 
@@ -97,6 +99,8 @@ export function voteCounter (votes: UserVote[]): ResultVote[] {
             if (!candidates.some(candidate => vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID)) {
                 candidates.push({
                     count: 0,
+                    firstPlaceCount: 0,
+                    totalCount: 0,
                     inRace: true,
                     beatmapset: vote.beatmapset ?? undefined,
                     user: vote.user ?? undefined,
@@ -106,6 +110,16 @@ export function voteCounter (votes: UserVote[]): ResultVote[] {
     }
     candidates = candidates.filter((val, i, self) => self.findIndex(v => v.beatmapset?.ID ? v.beatmapset?.ID === val.beatmapset?.ID : v.user?.osuID === val.user?.osuID) === i);
     
+    // Get the first choice and total appearance counts in
+    for (const voter of votes) {
+        for (const vote of voter.votes) {
+            const k = candidates.findIndex(candidate => vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID);
+            if (vote.choice === 1)
+                candidates[k].firstPlaceCount++
+            candidates[k].totalCount++; 
+        }
+    }
+
     // Run for each placement
     for (;;) {
         // Check if last used vote is still in race, add the next best unused vote otherwise

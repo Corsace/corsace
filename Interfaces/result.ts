@@ -5,12 +5,16 @@ import { ResultVote } from "./vote";
 
 export interface BeatmapResult extends BeatmapsetInfo {
     placement: number,
-    votes: number
+    firstChoice: number,
+    votes: number,
+    totalVotes: number,
 }
 
 export interface UserResult extends UserChoiceInfo {
     placement: number,
-    votes: number
+    firstChoice: number,
+    votes: number,
+    totalVotes: number,
 }
 
 export function votesToResults(votes: ResultVote[], categoryType: CategoryType): BeatmapResult[] | UserResult[] {
@@ -26,7 +30,9 @@ export function votesToResults(votes: ResultVote[], categoryType: CategoryType):
                 title: vote.beatmapset.title,
                 hoster: vote.beatmapset.creator.osuUsername,
                 placement: vote.placement,
+                firstChoice: vote.firstPlaceCount,
                 votes: vote.count,
+                totalVotes: vote.totalCount,
             } as BeatmapResult);
         } else if (categoryType === CategoryType.Users && vote.user) {
             userResults.push({
@@ -34,7 +40,9 @@ export function votesToResults(votes: ResultVote[], categoryType: CategoryType):
                 userID: vote.user.osuID,
                 avatar: `https://a.ppy.sh/${vote.user.osuID}`,
                 placement: vote.placement,
+                firstChoice: vote.firstPlaceCount,
                 votes: vote.count,
+                totalVotes: vote.totalCount,
             } as UserResult);
         }
     }
