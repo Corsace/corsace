@@ -288,7 +288,8 @@
             "artist": "ARTIST",
             "host": "HOST",
             "votes": "VOTES",
-            "user": "USER"
+            "user": "USER",
+            "firsts": "FIRSTS"
         }
     },
     "main": {

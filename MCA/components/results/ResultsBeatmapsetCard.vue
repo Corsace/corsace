@@ -22,7 +22,8 @@
                 <span class="map-info__title">{{ choice.title }}</span>
                 <span class="map-info__artist">{{ choice.artist }}</span>
                 <span class="map-info__host">{{ choice.hoster }}</span>
-                <span class="map-info__votes">{{ choice.votes }}</span>
+                <span class="map-info__firsts">{{ choice.firstChoice }}</span>
+                <span class="map-info__votes">{{ choice.totalVotes }}</span>
                 <span class="map-info__vote-right" />
             </a>
         </div>
@@ -31,10 +32,11 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { BeatmapResult } from "../../../Interfaces/result";
 
 @Component
 export default class ResultsBeatmapsetCard extends Vue {
-    @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
+    @Prop({ type: Object, default: () => ({}) }) readonly choice!: BeatmapResult;
 
     get bgImg (): any {
         if (this.choice)
@@ -83,16 +85,6 @@ export default class ResultsBeatmapsetCard extends Vue {
     color: white;
     text-decoration: none;
 
-    &__place {
-        min-width: 3rem;
-        flex: 2;
-        display: flex;
-        align-items: center;
-        text-shadow: 0 0 4px white;
-        font-size: $font-lg;
-        @extend %text-wrap;
-    }
-
     &__title {
         display: none;
         @extend %text-wrap;
@@ -123,7 +115,7 @@ export default class ResultsBeatmapsetCard extends Vue {
     }
 
     &__map {
-        flex: 11;
+        flex: 6;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -179,12 +171,39 @@ export default class ResultsBeatmapsetCard extends Vue {
 
         @include breakpoint(tablet) {
             display: inline;
-            flex: 4;
+            flex: 2.25;
             margin-right: auto;
             text-shadow: 0 0 4px rgba(255,255,255,0.6);
             font-size: $font-lg;
             box-sizing: border-box;
             padding-right: 8px;
+        }
+    }
+
+    &__place {
+        min-width: 3rem;
+        flex: 1.5;
+        display: flex;
+        align-items: center;
+        text-shadow: 0 0 4px white;
+        font-size: $font-lg;
+        @extend %text-wrap;
+    }
+
+    &__firsts {
+        display: none;
+        @extend %text-wrap;
+
+        @include breakpoint(tablet) {
+            min-width: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-shadow: 0 0 4px white;
+            font-size: $font-lg;
+            
+            flex: 1.5;
         }
     }
 

@@ -12,6 +12,7 @@
                 />
                 <span class="user-info__place">{{ choice.placement }}</span>
                 <span class="user-info__username">{{ choice.username }}</span>
+                <span class="user-info__firsts">{{ choice.firstChoice }}</span>
                 <span class="user-info__votes">{{ choice.votes }}</span>
                 <span class="user-info__vote-right" />
             </a>
@@ -21,10 +22,11 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { UserResult } from "../../../Interfaces/result";
 
 @Component
 export default class ResultsUserCard extends Vue {
-    @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
+    @Prop({ type: Object, default: () => ({}) }) readonly choice!: UserResult;
 
     get userAva (): any {
         if (this.choice)
@@ -115,7 +117,24 @@ export default class ResultsUserCard extends Vue {
         @extend %text-wrap;
 
         @include breakpoint(tablet) {
-            flex: 12;
+            flex: 10.25;
+        }
+    }
+
+    &__firsts {
+        display: none;
+        @extend %text-wrap;
+
+        @include breakpoint(tablet) {
+            min-width: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-shadow: 0 0 4px white;
+            font-size: $font-lg;
+            
+            flex: 1.5;
         }
     }
 
