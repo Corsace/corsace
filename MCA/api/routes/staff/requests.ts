@@ -59,6 +59,7 @@ staffRequestsRouter.post("/:id/update", async (ctx) => {
         }
 
         eligibility[request.mode.name] = true;
+        eligibility.storyboard = true;
         await eligibility.save();
     } else if (request.status === RequestStatus.Rejected) {
         let eligibility = await MCAEligibility.findOne({
@@ -71,6 +72,8 @@ staffRequestsRouter.post("/:id/update", async (ctx) => {
 
         if (eligibility) {
             eligibility[request.mode.name] = false;
+            if (!eligibility.standard && !eligibility.taiko && !eligibility.fruits && !eligibility.mania)
+                eligibility.storyboard = false;
             await eligibility.save();
         }
     }
