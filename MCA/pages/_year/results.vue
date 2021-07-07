@@ -8,11 +8,15 @@
                 <results-filters />
                 <results-table-headings 
                     :section="section"
+                    :columns="columns"
+                    :mobile="mobile"
                 />
                 <hr class="table-border">
                 <stage-page-list 
                     results
                     class="results-table"
+                    :columns="columns"
+                    :mobile="mobile"
                 />
             </div>
         </mode-switcher>
@@ -22,6 +26,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, State, namespace } from "vuex-class";
+import { vueWindowSizeMixin } from 'vue-window-size';
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import ResultsFilters from "../../components/results/ResultsFilters.vue";
@@ -30,6 +35,7 @@ import StagePageList from "../../components/stage/StagePageList.vue";
 
 import { MCAInfo, Phase } from "../../../Interfaces/mca";
 import { SectionCategory, StageType } from "../../../MCA-AYIM/store/stage";
+import { ResultColumn } from "../../../Interfaces/result";
 
 const stageModule = namespace("stage");
 
@@ -46,6 +52,7 @@ const stageModule = namespace("stage");
         };
     }
 })
+
 export default class Results extends Vue {
     @State allMCA!: MCAInfo[];
 
@@ -62,6 +69,25 @@ export default class Results extends Vue {
     @stageModule.Action updateSection;
     @stageModule.Action updateStage;
     @stageModule.Action setInitialData;
+
+    // label must match a field in BOTH assets/lang/{lang}/mca.results.*
+    //   AND a property of either BeatmapResults or UserResults 
+    columns: ResultColumn[] = [
+        {label: "placement", size: 1.5, category: "beatmaps", prio: true}, 
+        {label: "placement", size: 4, category: "users", prio: true},
+        {label: "map", size: 6, category: "beatmaps", mobileOnly: true},
+        {label: "title", size: 6, category: "beatmaps", desktopOnly: true},
+        {label: "artist", size: 4, category: "beatmaps", desktopOnly: true},
+        {label: "hoster", size: 2.25, category: "beatmaps", desktopOnly: true},
+        {label: "username", size: 10.25, msize: 6, category: "users"},
+        {label: "firstChoice", size: 1.5, desktopOnly: true, centred: true},
+        {label: "totalVotes", size: 1.5, centred: true, prio: true},
+        {name: "vr", size: 0.5},
+    ]
+
+    get mobile(): Boolean {
+        return vueWindowSizeMixin.computed.windowWidth() < 768;
+    }
 
     mounted () {
         if (!(this.phase?.phase === 'results' || this.isMCAStaff)) {

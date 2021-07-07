@@ -1,35 +1,36 @@
-<template>    
-    <span 
-        v-if="section === 'beatmaps'"
-        class="table-headings"
-    >
-        <span class="table-headings__mapplace">{{ $t('mca.results.place') }}</span>
-        <span class="table-headings__map">{{ $t('mca.results.map') }}</span>
-        <span class="table-headings__title">{{ $t('mca.results.title') }}</span>
-        <span class="table-headings__artist">{{ $t('mca.results.artist') }}</span>
-        <span class="table-headings__host">{{ $t('mca.results.host') }}</span>
-        <span class="table-headings__firsts">{{ $t('mca.results.firsts') }}</span>
-        <span class="table-headings__votes">{{ $t('mca.results.votes') }}</span>
-        <span class="table-headings__vote-right" />
-    </span>
-    <span
-        v-else
-        class="table-headings"
-    >
-        <span class="table-headings__userplace">{{ $t('mca.results.place') }}</span>
-        <span class="table-headings__user">{{ $t('mca.results.user') }}</span>
-        <span class="table-headings__firsts">{{ $t('mca.results.firsts') }}</span>
-        <span class="table-headings__votes">{{ $t('mca.results.votes') }}</span>
-        <span class="table-headings__vote-right" />
+<template>
+    <span class="table-headings">
+        <span
+            v-for="(col, i) in filtCol"
+            :key="i"
+            :class="((col.name) ? `heading-${col.name}` : `heading-${col.label}`) +
+                    ((col.centred) ? ' heading-centred' : '') + 
+                    ((col.prio) ? ' heading-prio' : '')"
+            :style="{'flex': `${mobile && col.msize ? col.msize : col.size}`}"
+        >
+            {{ (col.label) ? $t(`mca.results.${col.label}`) : '' }}
+        </span>
     </span>
 </template>
 
 <script lang="ts">
 import { Vue, Prop, Component } from "vue-property-decorator";
+import { ResultColumn } from "../../../Interfaces/result";
 
 @Component({})
 export default class ResultsFilters extends Vue {
     @Prop({ type: String, default: ""}) readonly section!: string;
+    @Prop({ type: Array, required: true}) readonly columns!: ResultColumn[];
+    @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
+    
+    get filtCol() {
+        return this.columns.filter(
+            c => (!c.category || c.category === this.section) &&
+            ((c.mobileOnly && this.mobile) || 
+             (c.desktopOnly && !this.mobile) ||
+             (!c.mobileOnly && !c.desktopOnly))
+        );
+    }
 }
 </script>
 
@@ -48,88 +49,23 @@ export default class ResultsFilters extends Vue {
     flex: initial;
     display: flex;
 
-    &__mapplace {
-        min-width: 3rem;
-        flex: 1.5;
+    >:first-child {
         margin-right: 15px;
-
-        display: flex;
     }
 
-    &__userplace {
-        min-width: 3rem;
-        flex: 4;
-        margin-right: 15px;
-
-        display: flex;
+    >:last-child {
+        margin-right: 68px;
     }
+}
 
-    &__map {
-        display: inline;
-        flex: 6;
-
-        @include breakpoint(tablet) {
-            display: none;
-        }
-    }
-
-    &__title {
-        display: none;
-
-        @include breakpoint(tablet) {
-            display: inline;
-            flex: 6;
-        }
-    }
-
-    &__artist {
-        display: none;
-
-        @include breakpoint(tablet) {
-            display: inline;
-            flex: 4;
-        }
-    }
-
-    &__host {
-        display: none;
-
-        @include breakpoint(tablet) {
-            display: inline;
-            flex: 2.25;
-        }
-    }
-
-    &__user {
-        flex: 6;
-        
-        @include breakpoint(tablet) {
-            flex: 10.25;
-        }
-    }
-
-    &__firsts {
-        display: none;
-
-        @include breakpoint(tablet) {
-            min-width: 3rem;
-            flex: 1.5;
-
-            display: flex;
-            justify-content: center;
-        }
-    }
-
-    &__votes {
-        flex: 1.5;
-
+.heading {
+    &-centred {
         display: flex;
         justify-content: center;
     }
 
-    &__vote-right {
-        flex: 0.5;
-        margin-right: 65px;
+    &-prio {
+        min-width: 3rem;
     }
 }
 </style>

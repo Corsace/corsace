@@ -138,6 +138,10 @@ export default class ResultsFilters extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
 
+// this determines the width of stage-page-filters at which it wraps below
+//   the dropdowns
+$two-row-breakpoint: 56rem;
+
 .results-filters {
     top: 30%;
     flex: initial;
@@ -209,7 +213,7 @@ export default class ResultsFilters extends Vue {
     @include breakpoint(laptop) {
         flex: 10;
         max-height: 85px;
-        min-width: 56rem;
+        min-width: $two-row-breakpoint;
     }
 }
 </style>

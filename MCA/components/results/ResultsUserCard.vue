@@ -10,11 +10,16 @@
                     class="user-info__avatar"
                     :style="userAva"
                 />
-                <span class="user-info__place">{{ choice.placement }}</span>
-                <span class="user-info__username">{{ choice.username }}</span>
-                <span class="user-info__firsts">{{ choice.firstChoice }}</span>
-                <span class="user-info__votes">{{ choice.votes }}</span>
-                <span class="user-info__vote-right" />
+                <span
+                    v-for="(col, i) in filtCol"
+                    :key="i"
+                    :class="((col.name) ? `user-info__${col.name}` : `user-info__${col.label}`) +
+                            ((col.centred) ? ' user-info__centred' : '') + 
+                            ((col.prio) ? ' user-info__prio' : '')"
+                    :style="{'flex': `${mobile && col.msize ? col.msize : col.size}`}"
+                >
+                    {{ col.label ? choice[col.label] : "" }}
+                </span>
             </a>
         </div>
     </div>
@@ -22,11 +27,23 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { UserResult } from "../../../Interfaces/result";
+import { UserResult, ResultColumn } from "../../../Interfaces/result";
 
 @Component
 export default class ResultsUserCard extends Vue {
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: UserResult;
+    @Prop({ type: Array, required: false }) columns!: ResultColumn[];
+    @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
+
+    // filter columns prop by breakpoint and category
+    get filtCol() {
+        return this.columns.filter(
+            c => (!c.category || c.category === "users") &&
+            ((c.mobileOnly && this.mobile) || 
+             (c.desktopOnly && !this.mobile) ||
+             (!c.mobileOnly && !c.desktopOnly))
+        );
+    }
 
     get userAva (): any {
         if (this.choice)
@@ -68,6 +85,7 @@ export default class ResultsUserCard extends Vue {
     position: relative;
 
     display: flex;
+    align-content: center;
 
     padding: 0 15px;
     border-radius: 10px;
@@ -75,12 +93,18 @@ export default class ResultsUserCard extends Vue {
 
     background-repeat: no-repeat;
 
-    overflow: hidden;
-
     color: white;
+    text-shadow: 0 0 4px rgba(255,255,255,0.6);
+    font-size: $font-lg;
     text-decoration: none;
 
+    @extend %text-wrap;
+
     & > span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        
         margin: 15px 0;
     }
 
@@ -102,57 +126,17 @@ export default class ResultsUserCard extends Vue {
         }
     }
 
-    &__place {
-        min-width: 3rem;
-        flex: 4;
-        text-shadow: 0 0 4px white;
-        font-size: $font-lg;
-        @extend %text-wrap;
-    }
-
     &__username {
-        flex: 6;
-        text-shadow: 0 0 4px rgba(255,255,255,0.6);
-        font-size: $font-lg;
-        @extend %text-wrap;
-
-        @include breakpoint(tablet) {
-            flex: 10.25;
-        }
+        font-weight: 500;
     }
 
-    &__firsts {
-        display: none;
-        @extend %text-wrap;
-
-        @include breakpoint(tablet) {
-            min-width: 3rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            text-shadow: 0 0 4px white;
-            font-size: $font-lg;
-            
-            flex: 1.5;
-        }
-    }
-
-    &__votes {
-        min-width: 3rem;
+    &__centred {
         display: flex;
-        align-content: center;
         justify-content: center;
-
-        text-shadow: 0 0 4px white;
-        font-size: $font-lg;
-
-        flex: 1.5;
-        @extend %text-wrap;
     }
 
-    &__vote-right {
-        flex: 0.5;
+    &__prio {
+        min-width: 3rem;
     }
 }
 </style>

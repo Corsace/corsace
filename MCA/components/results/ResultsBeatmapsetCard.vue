@@ -7,24 +7,40 @@
                 :href="`https://osu.ppy.sh/beatmapsets/${choice.id}`"
                 target="_blank"
             >
-                <span class="map-info__place">{{ choice.placement }}</span>
-                <div class="map-info__map">
-                    <div class="map-info__map-title">
-                        {{ choice.title }}
+                <template
+                    v-for="(col, i) in filtCol"
+                >   
+                    <!-- special output for aggregation of map info on mobile -->
+                    <div
+                        v-if="col.label && col.label === 'map'"
+                        class="map-info__map"
+                        :style="flexFromCol('map')"
+                        :key="i"
+                    >
+                        <div class="map-info__map-title">
+                            {{ choice.title }}
+                        </div>
+                        <div class="map-info__map-artist">
+                            {{ choice.artist }}
+                        </div>
+                        <span class="map-info__map-host">
+                            {{ $t('mca.nom_vote.hosted') }} | 
+                            <span class="map-info__map-hoster">{{ choice.hoster }}</span>
+                        </span>
                     </div>
-                    <div class="map-info__map-artist">
-                        {{ choice.artist }}
-                    </div>
-                    <span class="map-info__map-host">
-                        {{ $t('mca.nom_vote.hosted') }} | <span class="map-info__map-hoster">{{ choice.hoster }}</span>
+
+                    <!-- regular output for non-mobile view -->
+                    <span
+                        v-else
+                        :key="i"
+                        :class="((col.name) ? `map-info__${col.name}` : `map-info__${col.label}`) +
+                                 ((col.centred) ? ' map-info__centred' : '') + 
+                                 ((col.prio) ? ' map-info__prio' : '')"
+                        :style="{'flex': `${mobile && col.msize ? col.msize : col.size}`}"
+                    >
+                        {{ col.label ? choice[col.label] : "" }}
                     </span>
-                </div>
-                <span class="map-info__title">{{ choice.title }}</span>
-                <span class="map-info__artist">{{ choice.artist }}</span>
-                <span class="map-info__host">{{ choice.hoster }}</span>
-                <span class="map-info__firsts">{{ choice.firstChoice }}</span>
-                <span class="map-info__votes">{{ choice.totalVotes }}</span>
-                <span class="map-info__vote-right" />
+                </template>
             </a>
         </div>
     </div>
@@ -32,11 +48,38 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { BeatmapResult } from "../../../Interfaces/result";
+import { BeatmapResult, ResultColumn } from "../../../Interfaces/result";
 
 @Component
 export default class ResultsBeatmapsetCard extends Vue {
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: BeatmapResult;
+    @Prop({ type: Array, required: false }) columns!: ResultColumn[];
+    @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
+
+
+    // takes a label, matches it with the correct column from the columns prop,
+    //   and returns a style object {flex: column.size}, adjusted for current breakpoint
+    flexFromCol(label: String) {
+        const col = this.columns.filter(
+            c => ((c.label === label) || (c.name && c.name === label))
+            && (c.category === "beatmaps" || !c.category)
+        )[0];
+        console.log(col, label);
+        if (this.mobile && col.msize) {
+            return {'flex': col.msize};
+        }
+        return {'flex': col.size};
+    }
+
+    // filter columns prop by breakpoint and category
+    get filtCol() {
+        return this.columns.filter(
+            c => (!c.category || c.category === "beatmaps") &&
+            ((c.mobileOnly && this.mobile) || 
+             (c.desktopOnly && !this.mobile) ||
+             (!c.mobileOnly && !c.desktopOnly))
+        );
+    }
 
     get bgImg (): any {
         if (this.choice)
@@ -73,6 +116,8 @@ export default class ResultsBeatmapsetCard extends Vue {
 
 .map-info {
     display: flex;
+    align-items: center;
+    box-sizing: border-box;
 
     border-radius: 10px;
     padding: 15px;
@@ -80,148 +125,63 @@ export default class ResultsBeatmapsetCard extends Vue {
 
     background-size: cover;
     background-position: 34% 30%;
-    overflow: hidden;
 
     color: white;
+    text-shadow: 0 0 4px rgba(255,255,255,0.6);
+    font-size: $font-lg;
     text-decoration: none;
 
-    &__title {
-        display: none;
-        @extend %text-wrap;
-
-        @include breakpoint(tablet) {
-            display: inline;
-            flex: 6;
-            text-shadow: 0 0 4px rgba(255,255,255,0.6);
-            font-weight: 500;
-            font-size: $font-lg;
-            box-sizing: border-box;
-            padding-right: 8px;
-        }
-    }
-
-    &__artist {
-        display: none;
-        @extend %text-wrap;
-
-        @include breakpoint(tablet) {
-            display: inline;
-            flex: 4;
-            text-shadow: 0 0 4px rgba(255,255,255,0.6);
-            font-size: $font-lg;
-            box-sizing: border-box;
-            padding-right: 8px;
-        }
-    }
-
-    &__map {
-        flex: 6;
+    >* {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+
+    @extend %text-wrap;
+
+    &__title {
+        font-weight: 500;
+        padding-right: 8px;
+    }
+
+    &__artist {
+        padding-right: 8px;
+    }
+
+    &__map {
+        box-sizing: content-box;
 
         &-title {
-            display: inline;
-            text-shadow: 0 0 2px white;
+            text-shadow: 0 0 2px rgba(255,255,255,0.6);
             font-weight: 500;
-            font-size: $font-lg;
-            @extend %text-wrap;
-
-            @include breakpoint(tablet) {
-                display: none;
-            }
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         &-artist {
-            text-shadow: 0 0 4px white;
             font-size: $font-base;
-            @extend %text-wrap;
-
-            @include breakpoint(tablet) {
-                display: none;
-            }
-        }
-
-        &-host {
-            @extend %text-wrap;
-
-            @include breakpoint(tablet) {
-                display: none;
-            }
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         &-hoster {
-            text-shadow: 0 0 4px white;
             font-style: italic;
-            @extend %text-wrap;
-
-            @include breakpoint(tablet) {
-                display: none;
-            }
-        }
-
-        @include breakpoint(tablet) {
-                display: none;
-            }
-    }
-
-    &__host {
-        display: none;
-        @extend %text-wrap;
-
-        @include breakpoint(tablet) {
-            display: inline;
-            flex: 2.25;
-            margin-right: auto;
-            text-shadow: 0 0 4px rgba(255,255,255,0.6);
-            font-size: $font-lg;
-            box-sizing: border-box;
-            padding-right: 8px;
         }
     }
 
-    &__place {
-        min-width: 3rem;
-        flex: 1.5;
+    &__hoster {
+        padding-right: 8px;
+    }
+
+    &__centred {
         display: flex;
-        align-items: center;
-        text-shadow: 0 0 4px white;
-        font-size: $font-lg;
-        @extend %text-wrap;
-    }
-
-    &__firsts {
-        display: none;
-        @extend %text-wrap;
-
-        @include breakpoint(tablet) {
-            min-width: 3rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            text-shadow: 0 0 4px white;
-            font-size: $font-lg;
-            
-            flex: 1.5;
-        }
-    }
-
-    &__votes {
-        min-width: 3rem;
-        display: flex;
-        align-items: center;
         justify-content: center;
-
-        text-shadow: 0 0 4px white;
-        font-size: $font-lg;
-        
-        flex: 1.5;
-        @extend %text-wrap;
     }
 
-    &__vote-right {
-        flex: 0.5;
+    &__prio {
+        min-width: 3rem;
     }
 }
 </style>

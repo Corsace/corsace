@@ -29,8 +29,10 @@
                         <results-user-card
                             v-for="(item, i) in userResults"
                             :key="i"
+                            :columns="columns"
                             :choice="item"
                             :class="`results-display__user`"
+                            :mobile="mobile"
                         />
                     </template>
 
@@ -38,8 +40,10 @@
                         <results-beatmapset-card
                             v-for="(item, i) in beatmapResults"
                             :key="i"
+                            :columns="columns"
                             :choice="item"
                             :class="`results-display__beatmap`"
+                            :mobile="mobile"
                         />
                     </template>
                 </template>
@@ -73,7 +77,7 @@ import VotingBox from "./VotingBox.vue";
 import { SectionCategory } from "../../../MCA-AYIM/store/stage";
 import { UserChoiceInfo } from "../../../Interfaces/user";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
-import { BeatmapResult, UserResult } from "../../../Interfaces/result";
+import { BeatmapResult, UserResult, ResultColumn } from "../../../Interfaces/result";
 
 const stageModule = namespace("stage");
 
@@ -104,6 +108,8 @@ export default class StagePageList extends Vue {
     @stageModule.Action search;
 
     @Prop({ type: Boolean, default: false }) results!: boolean;
+    @Prop({ type: Array, required: false }) columns!: ResultColumn[];
+    @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
 
 }
 </script>

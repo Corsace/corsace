@@ -282,14 +282,14 @@
             "userID": "USER ID"
         },
         "results": {
-            "place": "PLACE",
+            "placement": "PLACE",
             "map": "MAP",
             "title": "TITLE",
             "artist": "ARTIST",
-            "host": "HOST",
-            "votes": "VOTES",
-            "user": "USER",
-            "firsts": "FIRSTS"
+            "hoster": "HOST",
+            "totalVotes": "VOTES",
+            "username": "USER",
+            "firstChoice": "FIRSTS"
         }
     },
     "main": {
