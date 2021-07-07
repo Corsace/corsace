@@ -16,7 +16,6 @@ export interface CategoryInfo {
     id: number;
     name: string;
     maxNominations: number;
-    isRequired: boolean;
     requiresVetting: boolean;
     type: string;
     mode: string;
@@ -33,7 +32,6 @@ export interface Category {
     ID: number;
     name: string;
     maxNominations: number;
-    isRequired: boolean;
     requiresVetting: boolean;
     filter?: CategoryFilter;
     type: CategoryType;

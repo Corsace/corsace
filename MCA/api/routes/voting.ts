@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import { isLoggedIn } from "../../../Server/middleware";
-import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase, categoryRequirementCheck } from "../../../MCA-AYIM/api/middleware";
+import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase } from "../../../MCA-AYIM/api/middleware";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
@@ -46,10 +46,6 @@ votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), 
     });
     votes = votes.filter(vote => vote.category.mca.year === category.mca.year).sort((a, b) => a.choice - b.choice);
 
-    if (!categoryRequirementCheck(votes, category)) {
-        throw "Please vote in the Grand Award categories first!";
-    }
-
     return votes;
 }));
 
@@ -93,11 +89,6 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
         voter: ctx.state.user,
     });
     votes = votes.filter(vote => vote.category.mca.year === category.mca.year);
-
-    if (!categoryRequirementCheck(votes, category))
-        return ctx.body = { 
-            error: "Please nominate in the Grand Award categories first!",
-        };
 
     const categoryVotes = votes.filter(vote => vote.category.ID === category.ID);
 
@@ -166,17 +157,6 @@ votingRouter.delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, as
         category: vote.category,
         choice: MoreThan(vote.choice),
     });
-
-    
-    if (
-        vote.category.isRequired && 
-        allUserVotes.filter(userVote => userVote.category.ID === userVote.category.ID).length === 1 && 
-        allUserVotes.some(userVote => !userVote.category.isRequired && userVote.category.type === vote.category.type && userVote.category.mode === vote.category.mode)
-    ) {
-        return ctx.body = {
-            error: "You cannot have 0 votes in required categories if you have votes in non-required categories!",
-        };
-    }
 
     await vote.remove();
     await Promise.all([

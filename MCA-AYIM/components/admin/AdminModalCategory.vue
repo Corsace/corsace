@@ -78,7 +78,6 @@ export default class AdminModalCategory extends Vue {
             name: info?.name || "",
             type: info?.type !== undefined ? CategoryType[info.type] : CategoryType.Beatmapsets,
             maxNominations: info?.maxNominations || 3,
-            isRequired: info?.isRequired || false,
             requiresVetting: info?.requiresVetting || false,
             isFiltered: info?.isFiltered || false,
         };
@@ -104,7 +103,6 @@ export default class AdminModalCategory extends Vue {
         { label: "name", key: "name" },
         { label: "type", key: "type", type: "select", options: [{ label: "users", value: CategoryType.Users }, { label: "beatmapsets", value: CategoryType.Beatmapsets }] },
         { label: "max nominations", key: "maxNominations", type: "number" },
-        { label: "Is Required", key: "isRequired", type: "checkbox" },
         { label: "needs vetting", key: "requiresVetting", type: "checkbox" },
     ] as InputField[];
 
