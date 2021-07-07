@@ -11,7 +11,7 @@
                     :style="userAva"
                 />
                 <span
-                    v-for="(col, i) in filtCol"
+                    v-for="(col, i) in columns"
                     :key="i"
                     :class="((col.name) ? `user-info__${col.name}` : `user-info__${col.label}`) +
                             ((col.centred) ? ' user-info__centred' : '') + 
@@ -34,16 +34,6 @@ export default class ResultsUserCard extends Vue {
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: UserResult;
     @Prop({ type: Array, required: false }) columns!: ResultColumn[];
     @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
-
-    // filter columns prop by breakpoint and category
-    get filtCol() {
-        return this.columns.filter(
-            c => (!c.category || c.category === "users") &&
-            ((c.mobileOnly && this.mobile) || 
-             (c.desktopOnly && !this.mobile) ||
-             (!c.mobileOnly && !c.desktopOnly))
-        );
-    }
 
     get userAva (): any {
         if (this.choice)

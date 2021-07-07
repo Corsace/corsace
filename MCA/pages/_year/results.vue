@@ -8,14 +8,14 @@
                 <results-filters />
                 <results-table-headings 
                     :section="section"
-                    :columns="columns"
+                    :columns="filtCol"
                     :mobile="mobile"
                 />
                 <hr class="table-border">
                 <stage-page-list 
                     results
                     class="results-table"
-                    :columns="columns"
+                    :columns="filtCol"
                     :mobile="mobile"
                 />
             </div>
@@ -84,6 +84,16 @@ export default class Results extends Vue {
         {label: "totalVotes", size: 1.5, centred: true, prio: true},
         {name: "vr", size: 0.5},
     ]
+
+    // filter columns by breakpoint and category
+    get filtCol() {
+        return this.columns.filter(
+            c => (!c.category || c.category === this.section) &&
+            ((c.mobileOnly && this.mobile) || 
+             (c.desktopOnly && !this.mobile) ||
+             (!c.mobileOnly && !c.desktopOnly))
+        );
+    }
 
     get mobile(): Boolean {
         return vueWindowSizeMixin.computed.windowWidth() < 768;

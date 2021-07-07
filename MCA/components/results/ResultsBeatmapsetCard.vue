@@ -8,7 +8,7 @@
                 target="_blank"
             >
                 <template
-                    v-for="(col, i) in filtCol"
+                    v-for="(col, i) in columns"
                 >   
                     <!-- special output for aggregation of map info on mobile -->
                     <div
@@ -69,16 +69,6 @@ export default class ResultsBeatmapsetCard extends Vue {
             return {'flex': col.msize};
         }
         return {'flex': col.size};
-    }
-
-    // filter columns prop by breakpoint and category
-    get filtCol() {
-        return this.columns.filter(
-            c => (!c.category || c.category === "beatmaps") &&
-            ((c.mobileOnly && this.mobile) || 
-             (c.desktopOnly && !this.mobile) ||
-             (!c.mobileOnly && !c.desktopOnly))
-        );
     }
 
     get bgImg (): any {
