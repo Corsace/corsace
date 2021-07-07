@@ -8,7 +8,7 @@
                     ((col.prio) ? ' heading-prio' : '')"
             :style="{'flex': `${mobile && col.msize ? col.msize : col.size}`}"
         >
-            {{ (col.label) ? $t(`mca.results.${col.label}`) : '' }}
+            {{ (col.label) ? $t(`mca.results.headings.${col.label}`) : '' }}
         </span>
     </span>
 </template>

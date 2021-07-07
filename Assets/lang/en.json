@@ -282,14 +282,17 @@
             "userID": "USER ID"
         },
         "results": {
-            "placement": "PLACE",
-            "map": "MAP",
-            "title": "TITLE",
-            "artist": "ARTIST",
-            "hoster": "HOST",
-            "totalVotes": "VOTES",
-            "username": "USER",
-            "firstChoice": "FIRSTS"
+            "headings": {
+                "placement": "PLACE",
+                "map": "MAP",
+                "title": "TITLE",
+                "artist": "ARTIST",
+                "hoster": "HOST",
+                "totalVotes": "VOTES",
+                "username": "USER",
+                "firstChoice": "FIRSTS"
+            },
+            "resultsOverlay": "Hello! This is possibly the first time you have navigated to the results page! <br> These results show the final placements of the beatmaps/users using <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> alongside the amount of times the beatmap/user was a first choice, and the total number of appearances!<br> Hopefully these results for MCA [YEAR] are to your liking! Can't wait to see you all for next MCA!"
         }
     },
     "main": {

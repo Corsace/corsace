@@ -1,25 +1,34 @@
 <template>
-    <div class="results-wrapper">
-        <mode-switcher
-            hidePhase
-            :title="$t(`mca.main.results`)"
-        >
-            <div class="results-general"> 
-                <results-filters />
-                <results-table-headings 
-                    :section="section"
-                    :columns="filtCol"
-                    :mobile="mobile"
-                />
-                <hr class="table-border">
-                <stage-page-list 
-                    results
-                    class="results-table"
-                    :columns="filtCol"
-                    :mobile="mobile"
-                />
-            </div>
-        </mode-switcher>
+    <div>
+        <div class="results-wrapper">
+            <mode-switcher
+                hidePhase
+                :title="$t(`mca.main.results`)"
+            >
+                <div class="results-general"> 
+                    <results-filters />
+                    <results-table-headings 
+                        :section="section"
+                        :columns="filtCol"
+                        :mobile="mobile"
+                    />
+                    <hr class="table-border">
+                    <stage-page-list 
+                        results
+                        class="results-table"
+                        :columns="filtCol"
+                        :mobile="mobile"
+                    />
+                </div>
+            </mode-switcher>
+        </div>
+
+        <notice-modal
+            v-if="phase && phase.phase === 'results'"
+            :title="$t('mca.main.results')"
+            :text="$t('mca.results.resultsOverlay')"
+            :localKey="'results'"
+        />
     </div>
 </template>
 
@@ -29,6 +38,7 @@ import { Getter, Mutation, State, namespace } from "vuex-class";
 import { vueWindowSizeMixin } from 'vue-window-size';
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
+import NoticeModal from "../../../MCA-AYIM/components/NoticeModal.vue"
 import ResultsFilters from "../../components/results/ResultsFilters.vue";
 import ResultsTableHeadings from "../../components/results/ResultsTableHeadings.vue";
 import StagePageList from "../../components/stage/StagePageList.vue";
@@ -42,6 +52,7 @@ const stageModule = namespace("stage");
 @Component({
     components: {
         ModeSwitcher,
+        NoticeModal,
         ResultsFilters,
         ResultsTableHeadings,
         StagePageList
