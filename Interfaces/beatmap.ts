@@ -1,4 +1,5 @@
 import { ModeDivision } from "./modes";
+import { User } from "./user";
 
 export interface Beatmapset {
     ID: number;
@@ -11,6 +12,7 @@ export interface Beatmapset {
     language: string;
     favourites: number;
     tags: string;
+    creator?: User;
 }
 
 export interface Beatmap {

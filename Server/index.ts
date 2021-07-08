@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { createConnection, getConnectionManager } from "typeorm";
 import Koa from "koa";
 import BodyParser from "koa-bodyparser";
+import formidable from "koa2-formidable";
 import Mount from "koa-mount";
 import passport from "koa-passport";
 import Session from "koa-session";
@@ -31,6 +32,7 @@ export class App {
             secure: process.env.NODE_ENV !== "development",
             httpOnly: true,
         }, this.koa));
+        this.koa.use(formidable());
         this.koa.use(BodyParser());
         this.koa.use(passport.initialize());
         this.koa.use(passport.session());
@@ -52,7 +54,7 @@ export class App {
         // Error handler
         this.koa.use(async (ctx, next) => {
             try {
-                if (ctx.originalUrl !== "/favicon.ico") {
+                if (ctx.originalUrl !== "/favicon.ico" && process.env.NODE_ENV === "development") {
                     console.log("\x1b[33m%s\x1b[0m", ctx.originalUrl);
                 }
 

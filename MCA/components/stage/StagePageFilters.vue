@@ -5,37 +5,64 @@
         @update:search="updateText($event)"
     >
         <button
-            v-if="$route.params.stage === 'voting'"
+            v-if="section === 'beatmaps' && loggedInUser"
+            @click="updateFavourite"
             class="button"
-            :class="{ 'button--active': showVoteChoiceBox }"
-            @click="toggleVoteChoiceBox"
+            :class="{ 
+                'button--friends': favourites,
+                'button--small': $route.params.stage === 'voting' && section === 'beatmaps'
+            }"
         >
-            {{ $t(`mca.nom_vote.options.voteOrder`) }}
+            <img src="../../../Assets/img/ayim-mca/site/heart.png">
         </button>
 
         <toggle-button
+            v-if="section === 'beatmaps' && loggedInUser"
+            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
+            :options="playedFilters"
+            @change="changePlayed"
+        />
+
+        <toggle-button
+            v-if="!results"
+            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="sectionOptions"
             :arrow="orderOption"
             @change="changeOption"
         />
         
         <toggle-button
+            v-if="!results"
+            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="orderOptions"
             :arrow="orderOption"
             @change="changeOrder"
         />
+        
+        <button
+            v-if="$route.params.stage === 'voting'"
+            class="button"
+            :class="{ 
+                'button--active': showVoteChoiceBox,
+                'button--small': section === 'beatmaps'
+            }"
+            @click="toggleVoteChoiceBox"
+        >
+            {{ $t(`mca.nom_vote.options.voteOrder`) }}
+        </button>
     </search-bar>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { namespace, State } from "vuex-class";
 import _ from "lodash";
 
 import ToggleButton from "../../../MCA-AYIM/components/ToggleButton.vue";
 import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
 
 import { StageQuery } from "../../../Interfaces/queries";
+import { UserMCAInfo } from "../../../Interfaces/user";
 
 const stageModule = namespace("stage");
 
@@ -48,13 +75,27 @@ const stageModule = namespace("stage");
 export default class StagePageFilters extends Vue {
 
     @stageModule.State section!: string;
+
     @stageModule.State query!: StageQuery;
+
+    @stageModule.State favourites!: boolean;
+    @stageModule.State played!: boolean;
+
     @stageModule.State showVoteChoiceBox!: boolean;
+
     @stageModule.Action updateQuery;
+    @stageModule.Action updateFavourites;
+    @stageModule.Action updatePlayed;
+
     @stageModule.Mutation toggleVoteChoiceBox;
+
+    @State loggedInUser!: UserMCAInfo | null;
+
+    @Prop({ type: Boolean, default: false }) results!: boolean;
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
     userOptions = ["alph", "id"];
+    playedFilters = ["all", "played"]
     orderOptions = ["asc", "desc"];
     votingOptions = ["incVote", "voteChoice"];
     orderOption = "asc";
@@ -66,6 +107,14 @@ export default class StagePageFilters extends Vue {
 
     updateText (text: string) {
         this.updateQuery({ text });
+    }
+
+    updateFavourite () {
+        this.updateFavourites(!this.favourites);
+    }
+
+    changePlayed () {
+        this.updatePlayed(!this.played);
     }
 
     changeOption (option: string) {

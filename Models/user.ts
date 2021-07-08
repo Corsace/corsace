@@ -1,6 +1,5 @@
-
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, ManyToOne, OneToOne, JoinColumn } from "typeorm";
-import { DemeritReport } from "./demerits";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, ManyToOne, OneToOne, JoinColumn, Index, ManyToMany } from "typeorm";
+import { DemeritReport } from "./demeritReport";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
 import { UserComment } from "./MCA_AYIM/userComments";
@@ -10,12 +9,17 @@ import { Vote } from "./MCA_AYIM/vote";
 import { Beatmapset } from "./beatmapset";
 import { config } from "node-config-ts";
 import { GuildMember } from "discord.js";
-import { discordGuild } from "../Server/discord";
+import { getMember } from "../Server/discord";
 import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Team } from "./team";
+import { Match } from "./tournaments/match";
+import { TeamInvitation } from "./teamInvitation";
+import { MatchPlay } from "./tournaments/matchPlay";
+import { Qualifier } from "./tournaments/qualifier";
+import { Badge } from "./badge";
 
 export const BWSFilter: RegExp = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|community|moderation|moderating|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
 
@@ -24,6 +28,7 @@ export class OAuth {
     @Column({ default: null })
     userID!: string;
 
+    @Index()
     @Column({ default: "" })
     username!: string;
     
@@ -56,18 +61,24 @@ export class User extends BaseEntity {
     @Column(() => OAuth)
     osu!: OAuth;
 
-    @Column()
+    @Column({ nullable: true, type: "float" })
     pp!: number;
 
-    @Column()
+    @Column({ nullable: true })
     rank!: number;
 
-    @ManyToOne(() => Team, team => team.players, { eager: true })
+    @OneToMany(() => TeamInvitation, invitation => invitation.target)
+    invitations!: TeamInvitation[];
+
+    @ManyToOne(() => Team, team => team.players)
     team!: Team;
 
-    @OneToOne(() => Team, team => team.captain, { eager: true })
+    @OneToOne(() => Team, team => team.captain)
     @JoinColumn()
-    teamHost!: Team;
+    teamCaptain?: Team;
+
+    @OneToMany(() => MatchPlay, play => play.user)
+    scores?: MatchPlay[];
 
     @CreateDateColumn()
     registered!: Date;
@@ -79,6 +90,11 @@ export class User extends BaseEntity {
         eager: true,
     })
     otherNames!: UsernameChange[];
+
+    @OneToMany(() => Badge, badge => badge.user, {
+        eager: true,
+    })
+    badges!: Badge[];
 
     @OneToMany(() => DemeritReport, demerit => demerit.user, {
         eager: true,
@@ -126,6 +142,18 @@ export class User extends BaseEntity {
     @OneToMany(() => Vote, vote => vote.user)
     votesReceived!: Vote[];
 
+    @OneToMany(() => Qualifier, qualifier => qualifier.referee)
+    qualifiersReffed!: Qualifier[];
+    
+    @OneToMany(() => Match, match => match.referee)
+    matchesReffed!: Match[];
+
+    @ManyToMany(() => Match, match => match.commentators)
+    matchesCommentated!: Match[];
+
+    @OneToMany(() => Match, match => match.streamer)
+    matchesStreamed!: Match[];
+
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User
             .createQueryBuilder("user")
@@ -133,9 +161,26 @@ export class User extends BaseEntity {
             .leftJoinAndSelect("user.mcaEligibility", "mca")
             .where(`mca.year = :q`, { q: parseInt(query.year) });
 
+        // Check mode
         if (query.mode in ModeDivisionType) {
             queryBuilder.andWhere(`mca.${query.mode} = true`);
         }
+        
+        // Remove users with comments already
+        if (query.notCommented === "true") {
+            queryBuilder.andWhere((qb) => {
+                const subQuery = qb.subQuery()
+                    .from(UserComment, "userComment")
+                    .where("userComment.targetID = user.ID")
+                    .getQuery();
+
+                return "NOT EXISTS " + subQuery;
+            });
+        }
+
+        // osu! friends list
+        if (query.friends?.length > 0)
+            queryBuilder.andWhere("user.osuUserid IN (" + query.friends.join(",") + ")");
 
         // Check for search text
         if (query.text) {
@@ -185,10 +230,9 @@ export class User extends BaseEntity {
             queryBuilder
                 .andWhere((qb) => {
                     const subQuery = qb.subQuery()
-                        .from(MCAEligibility, "mcaEligibility")
-                        .select("min(year)")
-                        .andWhere("userID = user.ID")
-                        .andWhere(`mca.${modeString} = 1`)
+                        .from(Beatmapset, "beatmapset")
+                        .select("min(year(approvedDate))")
+                        .andWhere("creatorID = user.ID")
                         .getQuery();
 
                     return subQuery + " = " + year;
@@ -201,6 +245,8 @@ export class User extends BaseEntity {
                 .andWhere(new Brackets(qb => {
                     qb.where("user.osuUsername LIKE :criteria")
                         .orWhere("user.osuUserid LIKE :criteria")
+                        .orWhere("user.discordUsername LIKE :criteria")
+                        .orWhere("user.discordUserid LIKE :criteria")
                         .orWhere("otherName.name LIKE :criteria");
                 }))
                 .setParameter("criteria", `%${query.text}%`);
@@ -224,6 +270,19 @@ export class User extends BaseEntity {
         ]);
     }
 
+    public getFilteredBadges = function(this: User): Badge[] {
+        return this.badges.filter(badge => !BWSFilter.test(badge.description));
+    }
+
+    public getAccessToken = async function(this: User, tokenType: "osu" | "discord" = "osu"): Promise<string> {
+        const res = await User
+        .createQueryBuilder("user")
+        .select(tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken", "token")
+        .where(`ID = ${this.ID}`)
+        .getRawOne();
+        return res.token;
+    }
+
     public getCondensedInfo = function(this: User, chosen = false): UserChoiceInfo {
         return {
             corsaceID: this.ID,
@@ -235,10 +294,9 @@ export class User extends BaseEntity {
         };
     }
     
-    public getInfo = async function(this: User): Promise<UserInfo> {
-        let member: GuildMember | undefined;
-        if (this.discord?.userID)
-            member = await (await discordGuild()).members.fetch(this.discord.userID);
+    public getInfo = async function(this: User, member?: GuildMember | undefined): Promise<UserInfo> {
+        if (this.discord?.userID && !member)
+            member = await getMember(this.discord.userID);
         const info: UserInfo = {
             corsaceID: this.ID,
             discord: {
@@ -267,8 +325,8 @@ export class User extends BaseEntity {
     public getMCAInfo = async function(this: User): Promise<UserMCAInfo> {
         let member: GuildMember | undefined;
         if (this.discord?.userID)
-            member = await (await discordGuild()).members.fetch(this.discord.userID);
-        const mcaInfo: UserMCAInfo = await this.getInfo() as UserMCAInfo;
+            member = await getMember(this.discord.userID);
+        const mcaInfo: UserMCAInfo = await this.getInfo(member) as UserMCAInfo;
         mcaInfo.guestRequests = this.guestRequests,
         mcaInfo.eligibility = this.mcaEligibility,
         mcaInfo.mcaStaff = {

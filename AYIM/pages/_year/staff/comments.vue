@@ -1,92 +1,114 @@
 <template>
     <div class="staff-page">
         <div class="staff-page__title">
-            Comments Review
+            Comments
         </div>
-
+        <search-bar
+            :placeholder="$t('ayim.comments.search')"
+            @update:search="updateQuery($event)"
+        >
+            <button
+                @click="updateFilter()"
+                class="button"
+                style="margin: 0 5px;"
+            >
+                {{ showValidated ? "Hide Validated" : "Show Validated" }}
+            </button>
+        </search-bar>
         <div
             v-if="info"
             class="info"
         >
             {{ info }}
         </div>
-
         <div class="staff-container">
-            <div
-                v-for="group in groupedComments"
-                :key="group.mode"
-                class="staff-container__box"
-            >
-                <div class="staff-container__title">
-                    {{ group.mode }}
-                </div>
-
-                <div
-                    v-for="comment in group.comments"
-                    :key="comment.ID"
-                    class="staff-comment"
-                >
-                    <div class="staff-comment__info">
-                        <div>
-                            from
-                            <a
-                                :href="`https://osu.ppy.sh/users/${comment.commenter.osu.userID}`"
-                                target="_blank"
-                                class="staff-page__link"
-                            >
-                                {{ comment.commenter.osu.username }}
-                            </a>
-                        </div>
-                        <div>
-                            to
-                            <a
-                                :href="`https://osu.ppy.sh/users/${comment.target.osu.userID}`"
-                                target="_blank"
-                                class="staff-page__link"
-                            >
-                                {{ comment.target.osu.username }}
-                            </a>
-                        </div>
+            <div class="staff-container staff-scrollTrack">
+                <div class="staff-container__box">
+                    <div
+                        v-for="comment in comments"
+                        :key="comment.ID"
+                        class="staff-comment"
+                    >
                         <div 
-                            v-if="comment.isValid"
-                            class="button__add"
+                            class="staff-comment__info"
+                            :class="`staff-page__link--${comment.mode}`"
                         >
-                            Validated by {{ comment.reviewer.osu.username }} at {{ new Date(comment.lastReviewedAt).toString() }}
+                            <div>
+                                from
+                                <a
+                                    :href="`https://osu.ppy.sh/users/${comment.commenter.osuID}`"
+                                    target="_blank"
+                                    class="staff-page__link"
+                                    :class="`staff-page__link--${comment.mode}`"
+                                >
+                                    {{ comment.commenter.osuUsername }}
+                                </a>
+                            </div>
+                            <div>
+                                to
+                                <a
+                                    :href="`https://osu.ppy.sh/users/${comment.target.osuID}`"
+                                    target="_blank"
+                                    class="staff-page__link"
+                                    :class="`staff-page__link--${comment.mode}`"
+                                >
+                                    {{ comment.target.osuUsername }}
+                                </a>
+                            </div>
+                            <div v-if="comment.isValid">
+                                Validated by {{ comment.reviewer }} at {{ new Date(comment.lastReviewedAt).toString() }}
+                            </div>
+                        </div>
+
+                        <textarea 
+                            v-model="comment.comment"
+                            type="text"
+                            class="staff-comment__input textarea"
+                            rows="2"
+                        />
+
+                        <div class="staff-comment__actions">
+                            <button
+                                class="button button--small button__add staff-comment__action"
+                                @click="update(comment.ID)"
+                            >
+                                validate
+                            </button>
+
+                            <button
+                                class="button button--small button__remove staff-comment__action"
+                                @click="remove(comment.ID)"
+                            >
+                                delete
+                            </button>
+
+                            <button
+                                v-if="isHeadStaff"
+                                class="button button--small button__remove staff-comment__action"
+                                @click="ban(comment.commenter.ID)"
+                            >
+                                ban
+                            </button>
                         </div>
                     </div>
-
-                    <textarea 
-                        v-model="comment.comment"
-                        type="text"
-                        class="staff-comment__input textarea"
-                        rows="2"
-                    />
-
-                    <div class="staff-comment__actions">
-                        <button
-                            class="button button--small button__add staff-comment__action"
-                            @click="update(comment.ID)"
-                        >
-                            validate
-                        </button>
-
-                        <button
-                            class="button button--small button__remove staff-comment__action"
-                            @click="remove(comment.ID)"
-                        >
-                            delete
-                        </button>
-
-                        <button
-                            v-if="isHeadStaff"
-                            class="button button--small button__remove staff-comment__action"
-                            @click="ban(comment.commenter.ID)"
-                        >
-                            ban
-                        </button>
+                    <div
+                        v-if="loading"
+                        class="staff-comment__loading"
+                    >
+                        Loading...
+                    </div>
+                    <div
+                        v-else-if="end"
+                        class="staff-comment__loading"
+                    >
+                        No more comments!~
                     </div>
                 </div>
             </div>
+            <scroll-bar
+                selector=".staff-scrollTrack"
+                @bottom="paginate"
+            />
         </div>
     </div>
 </template>
@@ -95,13 +117,10 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
-import { Comment } from "../../../../Interfaces/comment";
-import { User } from "../../../../Interfaces/user";
+import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
+import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 
-interface GroupedComment {
-    mode: string;
-    comments: Comment[];
-}
+import { StaffComment } from "../../../../Interfaces/comment";
 
 @Component({
     head () {
@@ -109,35 +128,80 @@ interface GroupedComment {
             title: "Comments | Staff | AYIM",
         };
     },
+    components: {
+        SearchBar,
+        ScrollBar,
+    }
 })
 export default class StaffComments extends Vue {
-            
     @Getter isHeadStaff!: boolean;
 
     info = "";
-    comments: Comment[] = [];
+    text = "";
+    loading = false;
+    showValidated = true;
+    end = false;
+    comments: StaffComment[] = [];
 
-    get groupedComments (): GroupedComment[] {
-        const groups: GroupedComment[] = [];
-
-        for (const comment of this.comments) {
-            const i = groups.findIndex(g => g.mode === comment.mode.name);
-
-            if (i !== -1) groups[i].comments.push(comment);
-            else groups.push({
-                mode: comment.mode.name,
-                comments: [comment],
-            });
-        }
-
-        return groups;
+    async mounted() {
+        await this.getData();
     }
-    
-    async mounted () {
-        const { data } = await this.$axios.get(`/api/staff/comments`);
 
-        if (!data.error) {
-            this.comments = data;
+    async updateQuery (query: string) {
+        this.text = query;
+        await this.getData();
+    }
+
+    async updateFilter () {
+        this.showValidated = !this.showValidated;
+        await this.getData();
+    }
+
+    async getData () {
+        this.end = false;
+        this.loading = true;
+        this.comments = [];
+
+        let url = `/api/staff/comments`;
+        if (!this.showValidated) url += "?filter=true";
+        if (this.text) url += (url.includes("?") ? "&" : "?") + `text=${this.text}`
+
+        const { data } = await this.$axios.get(url);
+
+        this.loading = false;
+
+        if (data.error)
+            return alert(data.error);
+        
+        this.comments = data;
+    
+        for (;;) {
+            const box = document.querySelector(".staff-scrollTrack")
+            if (!box) break;
+            if (box.clientHeight >= box.scrollHeight && !this.end) await this.paginate();
+            else break;
+        }
+    }
+
+    async paginate () {
+        if (this.end) return;
+
+        this.loading = true;
+        let url = `/api/staff/comments?skip=${this.comments.length}`;
+        if (!this.showValidated) url += "&filter=true";
+        if (this.text) url += `&text=${this.text}`
+
+        const { data } = await this.$axios.get(url);
+
+        this.loading = false;
+
+        if (data.error)
+            return alert(data.error);
+        else if (data.length === 0)
+            this.end = true;
+        else {
+            this.comments.push(...data);
+            this.comments = this.comments.filter((val, i, self) => self.findIndex(v => v.ID === val.ID) === i);
         }
     }
 
@@ -151,11 +215,9 @@ export default class StaffComments extends Vue {
         if (res.data.error) {
             this.info = res.data.error;
         } else if (res.data) {
-            this.info = "ok";
             const resComment = res.data;
             this.comments[i].isValid = resComment.isValid;
-            this.comments[i].reviewer = resComment.reviewer;
-            (this.comments[i].reviewer as User).osu.username = resComment.reviewer.osu.username;
+            this.comments[i].reviewer = resComment.reviewer.osu.username;
             this.comments[i].lastReviewedAt = resComment.lastReviewedAt;
         }
     }
@@ -182,7 +244,7 @@ export default class StaffComments extends Vue {
     async ban (id: number) {
         this.info = "";
 
-        if (!confirm(`User will not be able to submit new comments and not validated comments will be removed`)) 
+        if (!confirm(`User will not be able to submit new comments and not validated comments will be removed. Are you sure?`)) 
             return;
         
         const { data } = await this.$axios.post(`/api/staff/users/${id}/ban`);
@@ -209,7 +271,7 @@ export default class StaffComments extends Vue {
     margin-bottom: 10px;
 
     &__info {
-        display:flex;
+        display: flex;
         flex-direction: column;
         flex: 1;
     }
@@ -225,6 +287,15 @@ export default class StaffComments extends Vue {
 
     &__action {
         margin: 5px;
+    }
+
+    &__loading {
+        @extend %flex-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        width: 100%;
     }
 }
 

@@ -18,12 +18,18 @@
         font-size: $font-base;
     }
 
-    min-width: 80px;
-    @include breakpoint(tablet) {
-        min-width: 165px;
-    }
+    min-width: 70px;
     @include breakpoint(mobile) {
         min-width: 50px;
+    }
+    @include breakpoint(tablet) {
+        min-width: 90px;
+    }
+    @include breakpoint(laptop) {
+        min-width: 120px;
+    }
+    @include breakpoint(desktop) {
+        min-width: 165px;
     }
 
     display: flex;
@@ -35,26 +41,58 @@
     -webkit-appearance: none;
     -moz-appearance: none;
 
-    &:hover, &:focus {
-        background: white;
+    &:hover {
         color: black;
-    }
+        text-shadow: none;
+        background: white;
 
-    &:focus {
-        outline: 1px solid #fff;
-        outline-offset: -4px;
-    }
-
-    &--small {
-        min-width: 100px;
-        text-transform: none;
-        font-size: $font-base;
+        & > img {
+            filter: invert(100%);
+        }
     }
 
     &--active {
         background-color: white;
         color: black;
         font-weight: 500;
+    }
+
+    &--friends {
+        background: rgb(255,102,170);
+    }
+
+    & > img {
+        height: 25px;
+        @include transition;
+        @include breakpoint(mobile) {
+            height: 15px;
+        }
+    }
+
+    &--small {
+        min-width: 50px;
+        @include breakpoint(mobile) {
+            min-width: 30px;
+        }
+        @include breakpoint(tablet) {
+            min-width: 70px;
+        }
+        @include breakpoint(laptop) {
+            min-width: 90px;
+        }
+        @include breakpoint(desktop) {
+            min-width: 120px;
+        }
+
+        & > img {
+            height: 15px;
+            @include breakpoint(mobile) {
+                height: 7px;
+            }
+        }
+
+        text-transform: none;
+        font-size: $font-base;
     }
 
     &__add {

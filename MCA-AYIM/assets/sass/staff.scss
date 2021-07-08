@@ -3,8 +3,9 @@
 
 .staff-page {
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column;
     padding: 30px;
+    overflow: hidden;
 
     &__title {
         font-family: $font-display;
@@ -16,6 +17,12 @@
         font-weight: bold;
         flex: 1;
 
+        @each $mode in $modes {
+            &--#{$mode} {
+                color: var(--#{$mode});
+            }
+        }
+
         &:hover {
             text-decoration: underline;
         }
@@ -23,8 +30,14 @@
 }
 
 .staff-container {
-    @extend %spaced-container;
-    flex-direction: column;
+    position: relative;
+    height: 100%;
+    overflow-y: scroll;
+
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 
     &__title {
         border-bottom: 1px solid white;
@@ -35,6 +48,11 @@
 
     &__box {
         @extend %flex-box;
+        position: relative;
         flex-direction: column;
     }
+}
+
+.staff-searchContainer {
+    height: 90%;
 }

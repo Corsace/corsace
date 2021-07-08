@@ -51,8 +51,10 @@ const stageModule = namespace("stage");
 export default class StateContent extends Vue {
 
     @State selectedMode!: string;
+
     @stageModule.State count!: number;
     @stageModule.State selectedCategory!: CategoryStageInfo;
+
     @stageModule.Action updateStage;
     @stageModule.Action setInitialData;
     @stageModule.Action reset;

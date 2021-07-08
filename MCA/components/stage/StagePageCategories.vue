@@ -8,6 +8,7 @@
             category-name
             show-extra
             clickable
+            expand
             @activate="saveSection('beatmaps')"
             @target="updateCategory($event)"
         />
@@ -19,6 +20,7 @@
             category-name
             show-extra
             clickable
+            expand
             @activate="saveSection('users')"
             @target="updateCategory($event)"
         />
@@ -72,7 +74,7 @@ export default class StagePageCategories extends Vue {
     // Only change the choices list on category change
     saveSection (section: string): void {
         this.toUpdateSection = section;
-        this.reset();
+        this.reset(true);
     }
 
     updateCategory (category: string): void {
@@ -106,14 +108,24 @@ export default class StagePageCategories extends Vue {
 </script>
 
 <style lang="scss">
+@import '@s-sass/_variables';
 @import '@s-sass/_mixins';
 
 .stage-categories {
     flex: 1 1 15%;
-    height: 50%;
 
-    @include breakpoint(laptop) { 
-        height: auto;
+    min-height: 265px;
+    @include breakpoint(tablet) {
+        min-height: initial;
+    }
+
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    &::-webkit-scrollbar {
+        width: 7px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #5f5f5f;
     }
 }
 

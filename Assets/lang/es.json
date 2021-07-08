@@ -89,12 +89,13 @@
             "remove": "Eliminar",
             "create": "Crear",
             "login": "Iniciar sesión para comentar",
-            "visible": "(todavia no visible)"
+            "visible": "(todavia no visible)",
+            "notice": "¡Saludos! Esta podria ser la primera vez que usted navega a una de las paginas de comentarios. <br> Por favor note que todos los comentarios son crowdfunded. <br> Todos, incluyendolo, pueden escribir comentarios para cualquiera hasta que termine el proceso de MCA para este año. <br> ¡Escriba sobre lo que hicieron o sus logros en [YEAR] para mostrar apreciación a los mappers participando en la comunidad!"
         },
         "statistics": {
-            "numberOf": "",
-            "numberOfMapsWith": "",
-            "average": ""
+            "numberOf": "Número de",
+            "numberOfMapsWith": "Número de mapas con",
+            "average": "Promedio"
         }
     },
     "mca": {
@@ -125,7 +126,8 @@
                 "map": "categoría de mapas",
                 "user": "categoría de usuarios"
             },
-            "organized": "ORGANIZADO POR"
+            "organized": "ORGANIZADO POR",
+            "preparation": "preparación"
         },
         "categories": {
             "grandAward": {
@@ -150,7 +152,7 @@
             },
             "highBPM": {
                 "name": "BPM Alto",
-                "description": "El mejor set con streams atípicos o alto estrés de singletap."
+                "description": "El mejor set con streams atípicamente rapidos o con alto estrés de singletap."
             },
             "smallCircles": {
                 "name": "Círculos Pequeños",
@@ -243,6 +245,10 @@
             "narrative": {
                 "name": "Narrativa",
                 "description": "El mejor Storyboard en contar una gran historia."
+            },
+            "featuredArtist": {
+                "name": "Featured Artist",
+                "description": "El mejor set para una canción de un Featured Artist."
             }
         },
         "nom_vote": {
@@ -263,6 +269,7 @@
                 "desc": "DESC",
                 "voteOrder": "ÓRDEN DE VOTO"
             },
+            "votingOverlay": "Hola! Esta debe ser la primera vez que has navegado por la página de votación! <br> La votación de MCA utiliza <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>un sistema de votacion por orden de preferencia!</a> <br> Esto significa que podrás seleccionar cualquier cantidad de mapas/usuarios para votar! <br> Todos los votos están ordenados por orden de elección, así que <span class='notice-modal--bold'>la primera elección tendrá la mayor prioridad!</span> <br> Tu primera elección contará hasta que pierda la carrera. Luego tu segunda, y tu tercera, la cuarta, e.t.c. <br>  Buena suerte! Esperamos con ansias ver los resultados para MCA [YEAR]",
             "hosted": "ORGANIZADO POR",
             "userID": "ID DE USUARIO"
         }

@@ -1,13 +1,18 @@
-import { BaseEntity, Entity, JoinTable, OneToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Entity, JoinTable, OneToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, Column } from "typeorm";
 import { Tournament } from "./tournament";
 import { Bracket } from "./bracket";
 import { MappoolBeatmap } from "./mappoolBeatmap";
+import { Group } from "./group";
+import { Qualifier } from "./qualifier";
 
 @Entity()
 export class Mappool extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     ID!: number;
+
+    @Column()
+    name!: string;
 
     @ManyToOne(() => Tournament, tournament => tournament.mappools)
     tournament!: Tournament;
@@ -16,6 +21,11 @@ export class Mappool extends BaseEntity {
     beatmaps!: MappoolBeatmap[];
 
     @OneToOne(() => Bracket, bracket => bracket.mappool)
-    bracket!: Bracket;
+    bracket?: Bracket;
 
+    @OneToMany(() => Group, group => group.mappool)
+    groups?: Group[];
+
+    @OneToMany(() => Qualifier, qualifier => qualifier.mappool)
+    qualifiers?: Qualifier[];
 }

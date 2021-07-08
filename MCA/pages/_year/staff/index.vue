@@ -22,6 +22,14 @@
         >
             Nominations review >
         </nuxt-link>
+
+        <nuxt-link
+            v-if="categories.length"
+            :to="`/${mca.name}/staff/votes`"
+            class="staff-page__link"
+        >
+            Vote Lists >
+        </nuxt-link>
     </div>
 </template>
 
@@ -31,7 +39,7 @@ import { namespace } from "vuex-class";
 
 import { MCAInfo } from "../../../../Interfaces/mca";
 import { CategoryInfo } from "../../../../Interfaces/category";
-import { GuestRequest } from "../../../../Interfaces/guestRequests";
+import { GuestRequest } from "../../../../Interfaces/requests";
 
 const staffModule = namespace("staff");
 

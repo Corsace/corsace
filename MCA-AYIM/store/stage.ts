@@ -6,31 +6,40 @@ import { BeatmapsetInfo } from "../../Interfaces/beatmap";
 import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
 import { StageQuery } from "../../Interfaces/queries";
+import { BeatmapResult, UserResult } from "../../Interfaces/result";
 
-export type SectionCategory = "beatmaps" | "users";
-export type StageType = "nominating" | "voting";
+export type SectionCategory = "beatmaps" | "users" | "";
+export type StageType = "nominating" | "voting" | "results";
 
 interface StageState {
+    selected: boolean;
     section: SectionCategory,
     categories: CategoryStageInfo[];
     selectedCategory: CategoryStageInfo | null;
     nominations: Nomination[];
     votes: Vote[];
+    beatmapResults: BeatmapResult[];
+    userResults: UserResult[];
     stage: StageType;
     count: number;
     beatmaps: BeatmapsetInfo[];
     users: UserChoiceInfo[];
     query: StageQuery;
-    loading: boolean,
+    favourites: boolean;
+    played: boolean;
+    loading: boolean;
     showVoteChoiceBox: boolean;
 }
 
 export const state = (): StageState => ({
-    section: "beatmaps",
+    selected: false,
+    section: "",
     selectedCategory: null,
     categories: [],
     nominations: [],
     votes: [],
+    beatmapResults: [],
+    userResults: [],
     stage: "nominating",
     count: 0,
     beatmaps: [],
@@ -41,12 +50,20 @@ export const state = (): StageState => ({
         order: "ASC",
         text: "",
         skip: 0,
-    },
+    } as StageQuery,
+    favourites: false,
+    played: false,
     loading: true,
     showVoteChoiceBox: false,
 });
 
 export const mutations: MutationTree<StageState> = {
+    loading (state, bool) {
+        state.loading = bool;
+    },
+    selected (state, bool) {
+        state.selected = bool;
+    },
     updateStage (state, stage) {
         state.stage = stage;
     },
@@ -85,6 +102,12 @@ export const mutations: MutationTree<StageState> = {
     updateUsers (state, users) {
         state.users = users || [];
     },
+    updateBeatmapResults (state, beatmaps) {
+        state.beatmapResults = beatmaps || [];
+    },
+    updateUserResults (state, users) {
+        state.userResults = users || [];
+    },
     updateSelectedCategory (state, category) {
         state.selectedCategory = category;
     },
@@ -99,13 +122,29 @@ export const mutations: MutationTree<StageState> = {
             ...query,
         };
     },
-    reset (state) {
+    updateFavourites (state, favourites) {
+        state.favourites = favourites;
+    },
+    updatePlayed (state, played) {
+        state.played = played;
+    },
+    reset (state, sectionReset: boolean) {
+        if (sectionReset) {
+            state.query = {
+                category: 0,
+                option: "",
+                order: "ASC",
+                text: "",
+                skip: 0,
+            } as StageQuery;
+            state.favourites = false;
+            state.played = false;
+        }
         state.section = "beatmaps";
         state.selectedCategory = null;
         state.beatmaps = [];
         state.users = [];
         state.count = 0;
-        state.query.text = "";
     },
     toggleVoteChoiceBox (state) {
         state.showVoteChoiceBox = !state.showVoteChoiceBox;
@@ -151,7 +190,12 @@ export const actions: ActionTree<StageState, RootState> = {
     updateStage ({ commit }, stage) {
         commit("updateStage", stage);
     },
-    async setInitialData ({ state, commit, rootState }) {
+    async setInitialData ({ state, commit, dispatch, rootState }) {
+        if (!rootState.mca?.year) {
+            this.$router.push("/");
+            return;
+        }
+
         const { data } = await this.$axios.get<InitialData | { error: string }>(`/api/${state.stage}/${rootState.mca?.year}`);
 
         if ("error" in data) {
@@ -166,7 +210,8 @@ export const actions: ActionTree<StageState, RootState> = {
 
         if (state.stage === "nominating" && data.nominations?.length && data.nominations.some(n => !n.isValid)) {
             alert("Some nominations were denied, contact a staff member if you already haven't!");
-        }
+        } else if (state.stage === "results")
+            dispatch("updateSelectedCategory", state.categories.filter(category => category.type === "Beatmapsets" && category.mode === rootState.selectedMode)[0])
     },
     async updateSelectedCategory ({ commit, dispatch }, category) {
         commit("updateSelectedCategory", category);
@@ -179,99 +224,147 @@ export const actions: ActionTree<StageState, RootState> = {
         commit("updateQuery", query);
         dispatch("search");
     },
+    async updateFavourites ({ commit, dispatch }, favourites) {
+        commit("updateFavourites", favourites);
+        dispatch("search");
+    },
+    async updatePlayed ({ commit, dispatch }, played) {
+        commit("updatePlayed", played);
+        dispatch("search");
+    },
     async search ({ state, commit, rootState }, skipping = false) {
         if (!state.selectedCategory) return;
 
         let skip = 0;
+    
+        commit("loading", true);
 
         if (skipping) {
-            state.loading = true;
             if (state.selectedCategory.type === "Users") skip = state.users.length;
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
 
-        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&text=${state.query.text}&skip=${skip}`);
+        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&favourites=${state.favourites}&played=${state.played}&text=${state.query.text}&skip=${skip}`);
         if (data.error)
             return alert(data.error);
 
-        state.loading = false;
+        commit("loading", false);
 
         commit("updateCount", data.count);
 
         if (!data.list) return;
 
-        if (state.selectedCategory.type === "Users") {
-            let users = data.list;
-            if (skipping) users = [...state.users, ...data.list];
-            commit("updateUsers", users.filter((val, i, self) => self.findIndex(v => v.corsaceID === val.corsaceID) === i));
-        } else if (state.selectedCategory.type === "Beatmapsets") {
-            let beatmaps = data.list;
-            if (skipping) beatmaps = [...state.beatmaps, ...data.list];
-            commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
+        if (state.stage === "results") {
+            if (state.selectedCategory.type === "Users")
+                commit("updateUserResults", data.list);
+            else if (state.selectedCategory.type === "Beatmapsets")
+                commit("updateBeatmapResults", data.list);
+        } else {
+            if (state.selectedCategory.type === "Users") {
+                let users = data.list;
+                if (skipping) users = [...state.users, ...data.list];
+                commit("updateUsers", users.filter((val, i, self) => self.findIndex(v => v.corsaceID === val.corsaceID) === i));
+            } else if (state.selectedCategory.type === "Beatmapsets") {
+                let beatmaps = data.list;
+                if (skipping) beatmaps = [...state.beatmaps, ...data.list];
+                commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
+            }
         }
     },
-    reset ({ commit }) {
-        commit("reset");
+    reset ({ commit }, sectionReset = false) {
+        commit("reset", sectionReset);
     },
     async createNomination ({ commit, state }, nomineeId: number) {
         if (!state.selectedCategory) return;
-        
-        const { data } = await this.$axios.post(`/api/nominating/create`, {
-            categoryId: state.selectedCategory.id,
-            nomineeId,
-        });
 
-        if (data.error) {
-            alert(data.error);
-            return;
+        commit("selected", true);
+        try {
+            const { data } = await this.$axios.post(`/api/nominating/create`, {
+                categoryId: state.selectedCategory.id,
+                nomineeId,
+            });
+
+            commit("selected", false);
+
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            commit("addNomination", data);
+        } catch (e) {
+            commit("selected", false);
+            alert(e);
         }
-
-        commit("addNomination", data);
     },
     async removeNomination ({ commit, state }, nominationId: number) {
         if (!state.selectedCategory) return;
 
-        const { data } = await this.$axios.delete(`/api/nominating/${nominationId}`);
+        commit("selected", true);
+        try {
+            const { data } = await this.$axios.delete(`/api/nominating/${nominationId}`);
 
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
+            commit("selected", false);
 
-        if (data.success) {
-            commit("removeNomination", nominationId);
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            if (data.success) {
+                commit("removeNomination", nominationId);
+            }
+        } catch (e) {
+            commit("selected", false);
+            alert(e);
         }
     },
     async createVote ({ commit, state }, payload: { nomineeId: number, vote: number }) {
         if (!state.selectedCategory) return;
-        
-        const { data } = await this.$axios.post(`/api/voting/create`, {
-            category: state.selectedCategory.id,
-            nomineeId: payload.nomineeId,
-            choice: payload.vote,
-        });
 
-        if (data.error) {
-            alert(data.error);
-            return;
+        commit("selected", true);
+        try {
+            const { data } = await this.$axios.post(`/api/voting/create`, {
+                category: state.selectedCategory.id,
+                nomineeId: payload.nomineeId,
+                choice: payload.vote,
+            });
+
+            commit("selected", false);
+
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            commit("addVote", data);
+        } catch (e) {
+            commit("selected", false);
+            alert(e);
         }
-
-        commit("addVote", data);
     },
-    async removeVote ({ dispatch }, voteId: number) {
+    async removeVote ({ commit, dispatch }, voteId: number) {
         if (!confirm("Do you want to remove this vote? This will move your votes up by 1")) {
             return;
         }
 
-        const { data } = await this.$axios.delete(`/api/voting/${voteId}`);
+        commit("selected", true);
+        try {
+            const { data } = await this.$axios.delete(`/api/voting/${voteId}`);
 
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
+            commit("selected", false);
 
-        if (data.success) {
-            await dispatch("setInitialData");
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            if (data.success) {
+                await dispatch("setInitialData");
+            }
+        } catch (e) {
+            commit("selected", false);
+            alert(e);
         }
     },
     async swapVotes ({ dispatch }, newOrder: Vote[]) {

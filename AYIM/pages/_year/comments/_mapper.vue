@@ -94,6 +94,11 @@
                 </div>
             </list-transition>
         </div>
+        <notice-modal 
+            :title="$t('ayim.comments.name')"
+            :text="$t('ayim.comments.notice')"
+            :localKey="'overlay'"
+        />
     </display-layout>
     <div
         v-else
@@ -109,6 +114,7 @@ import { State } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
+import NoticeModal from "../../../../MCA-AYIM/components/NoticeModal.vue";
 
 import { Comment } from "../../../../Interfaces/comment";
 import { User, UserMCAInfo } from "../../../../Interfaces/user";
@@ -118,6 +124,7 @@ import { MCA } from "../../../../Interfaces/mca";
     components: {
         DisplayLayout,
         ListTransition,
+        NoticeModal,
     },
     head () {
         return {
@@ -140,7 +147,7 @@ export default class MapperComments extends Vue {
     info = "";
 
     get canComment (): boolean {
-        return (this.loggedInUser?.canComment && new Date(this.mca.results) > new Date()) || false;
+        return ((!this.loggedInUser || this.loggedInUser.canComment) && new Date(this.mca.results) > new Date()) || false;
     }
 
     get ownCommentIndex (): number {

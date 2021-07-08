@@ -23,11 +23,10 @@ staffRouter.get("/categories", async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const categories = await Category.find({
         mca,
-        requiresVetting: true,
     });
 
     if (categories.length === 0)
-        return ctx.body = { error: "No categories found for this year that require vetting!" };
+        return ctx.body = { error: "No categories found for this year!" };
 
     ctx.body = categories.map(x => x.getInfo());
 });

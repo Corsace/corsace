@@ -1,6 +1,6 @@
 import { Beatmapset } from "./beatmap";
 import { Eligibility } from "./eligibility";
-import { GuestRequest } from "./guestRequests";
+import { GuestRequest } from "./requests";
 
 export interface UserMCAInfo extends UserInfo {
     guestRequests: GuestRequest[];
@@ -61,8 +61,6 @@ export interface OAuth {
     userID: string;
     username: string;
     avatar: string;
-    accessToken?: string;
-    refreshToken?: string;
     dateAdded: Date;
     lastVerified: Date;
 }

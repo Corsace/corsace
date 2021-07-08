@@ -7,7 +7,7 @@ import { config } from "node-config-ts";
 import axios from "axios";
 import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
-import { RequestStatus } from "../../../Interfaces/guestRequests";
+import { RequestStatus } from "../../../Interfaces/requests";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 
 const guestRequestRouter = new Router();
@@ -29,9 +29,9 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     }
 
     // Check if there's already a guest difficulty request sent
-    if (user.guestRequests.some(r => r.mca.year === year && r.mode.ID === mode.ID && r.ID !== currentRequestId)) {
+    if (user.guestRequests.some(r => r.mca.year === year && r.mode.ID === mode.ID && (!currentRequestId || r.ID !== currentRequestId))) {
         return {
-            error: "A guest request already exists!",
+            error: "A guest request for this year + mode already exists!",
         };
     }
 
@@ -69,6 +69,11 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     const dbMap = await Beatmap.findOne(beatmap.beatmap_id);
     if (!dbMap) {
         return { error: "Map is not in our database! If this map was ranked this year, please let VINXIS know." };
+    }
+
+    // Check mode consistency
+    if (dbMap.mode.ID !== mode.ID && mode.name !== "storyboard") {
+        return { error: "Map is not the correct mode! This beatmap's mode is " + dbMap.mode.name + " while the mode you are applying to is for " + mode.name};
     }
 
     return { 
