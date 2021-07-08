@@ -254,7 +254,6 @@
         "nom_vote": {
             "search": "cari beatmap/user",
             "select": "Harap pilih kategori!",
-            "selectGrand": "Kamu diwajibkan untuk memulai dari kategori Grand Award",
             "candidates": "kandidat",
             "options": {
                 "date": "TANGGAL",

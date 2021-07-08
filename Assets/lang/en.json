@@ -255,7 +255,6 @@
         "nom_vote": {
             "search": "search for a beatmap / user",
             "select": "Please select a category!",
-            "selectGrand": "You MUST start with the Grand Award categories",
             "candidates": "candidates",
             "options": {
                 "date": "DATE",

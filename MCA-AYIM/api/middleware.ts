@@ -44,15 +44,6 @@ function isEligibleFor (user: User, modeID: number, year: number): boolean {
     }
 }
 
-function categoryRequirementCheck(list: Vote[] | Nomination[], category: Category): boolean {
-    if (
-        !category.isRequired && 
-        !list.some(x => x.category.isRequired && x.category.type === category.type)
-    )
-        return false;
-    return true;
-}
-
 async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> {
     const mca = await MCA.findOne({
         results: MoreThanOrEqual(new Date()),
@@ -142,4 +133,4 @@ async function isResults (ctx: ParameterizedContext, next: Next): Promise<any> {
     }
 }
 
-export { isEligible, isEligibleFor, categoryRequirementCheck, currentMCA, validatePhaseYear, isPhase, isPhaseStarted, isResults };
+export { isEligible, isEligibleFor, currentMCA, validatePhaseYear, isPhase, isPhaseStarted, isResults };

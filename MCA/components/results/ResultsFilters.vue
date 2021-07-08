@@ -63,11 +63,7 @@ export default class ResultsFilters extends Vue {
 
     filterCategories (type: CategoryType): CategoryStageInfo[] {
         return this.categoriesInfo
-            .filter(c => c.type === CategoryType[type] && c.mode === this.selectedMode)
-            .map(c => ({
-                ...c,
-                inactive: !c.isRequired
-            }));
+            .filter(c => c.type === CategoryType[type] && c.mode === this.selectedMode);
     }
 
     // track current index of arrays selected by dropdowns
