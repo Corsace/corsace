@@ -1,63 +1,60 @@
 <template>
-    <div class="results-wrapper">
-        <mode-switcher
-            hidePhase
-            :title="$t(`mca.main.results`)"
-        >
-            <div class="results-general"> 
-                <results-filters />
+    <div>
+        <div class="results-wrapper">
+            <mode-switcher
+                hidePhase
+                :title="$t(`mca.main.results`)"
+            >
+                <div class="results-general"> 
+                    <results-filters />
+                    <results-table-headings 
+                        :section="section"
+                        :columns="filtCol"
+                        :mobile="mobile"
+                    />
+                    <hr class="table-border">
+                    <stage-page-list 
+                        results
+                        class="results-table"
+                        :columns="filtCol"
+                        :mobile="mobile"
+                    />
+                </div>
+            </mode-switcher>
+        </div>
 
-                <span 
-                    v-if="section === 'beatmaps'"
-                    class="table-headings"
-                >
-                    <span class="table-headings__mapplace">{{ $t('mca.results.place') }}</span>
-                    <span class="table-headings__map">{{ $t('mca.results.map') }}</span>
-                    <span class="table-headings__title">{{ $t('mca.results.title') }}</span>
-                    <span class="table-headings__artist">{{ $t('mca.results.artist') }}</span>
-                    <span class="table-headings__host">{{ $t('mca.results.host') }}</span>
-                    <span class="table-headings__votes">{{ $t('mca.results.votes') }}</span>
-                    <span class="table-headings__vote-right" />
-                </span>
-                
-                <span
-                    v-else
-                    class="table-headings"
-                >
-                    <span class="table-headings__userplace">{{ $t('mca.results.place') }}</span>
-                    <span class="table-headings__user">{{ $t('mca.results.user') }}</span>
-                    <span class="table-headings__votes">{{ $t('mca.results.votes') }}</span>
-                    <span class="table-headings__vote-right" />
-                </span>
-
-                <hr class="table-border">
-                
-                <stage-page-list 
-                    results
-                    class="results-table"
-                />
-            </div>
-        </mode-switcher>
+        <notice-modal
+            v-if="phase && phase.phase === 'results'"
+            :title="$t('mca.main.results')"
+            :text="$t('mca.results.resultsOverlay')"
+            :localKey="'results'"
+        />
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, State, namespace } from "vuex-class";
+import { vueWindowSizeMixin } from 'vue-window-size';
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
+import NoticeModal from "../../../MCA-AYIM/components/NoticeModal.vue"
 import ResultsFilters from "../../components/results/ResultsFilters.vue";
+import ResultsTableHeadings from "../../components/results/ResultsTableHeadings.vue";
 import StagePageList from "../../components/stage/StagePageList.vue";
 
 import { MCAInfo, Phase } from "../../../Interfaces/mca";
 import { SectionCategory, StageType } from "../../../MCA-AYIM/store/stage";
+import { ResultColumn } from "../../../Interfaces/result";
 
 const stageModule = namespace("stage");
 
 @Component({
     components: {
         ModeSwitcher,
+        NoticeModal,
         ResultsFilters,
+        ResultsTableHeadings,
         StagePageList
     },
     head () {
@@ -66,6 +63,7 @@ const stageModule = namespace("stage");
         };
     }
 })
+
 export default class Results extends Vue {
     @State allMCA!: MCAInfo[];
 
@@ -82,6 +80,35 @@ export default class Results extends Vue {
     @stageModule.Action updateSection;
     @stageModule.Action updateStage;
     @stageModule.Action setInitialData;
+
+    // label must match a field in BOTH assets/lang/{lang}/mca.results.*
+    //   AND a property of either BeatmapResults or UserResults 
+    columns: ResultColumn[] = [
+        {label: "placement", size: 1.5, category: "beatmaps", prio: true}, 
+        {label: "placement", size: 4, category: "users", prio: true},
+        {label: "map", size: 6, category: "beatmaps", mobileOnly: true},
+        {label: "title", size: 6, category: "beatmaps", desktopOnly: true},
+        {label: "artist", size: 4, category: "beatmaps", desktopOnly: true},
+        {label: "hoster", size: 2.25, category: "beatmaps", desktopOnly: true},
+        {label: "username", size: 10.25, msize: 6, category: "users"},
+        {label: "firstChoice", size: 1.5, desktopOnly: true, centred: true},
+        {label: "totalVotes", size: 1.5, centred: true, prio: true},
+        {name: "vr", size: 0.5},
+    ]
+
+    // filter columns by breakpoint and category
+    get filtCol() {
+        return this.columns.filter(
+            c => (!c.category || c.category === this.section) &&
+            ((c.mobileOnly && this.mobile) || 
+             (c.desktopOnly && !this.mobile) ||
+             (!c.mobileOnly && !c.desktopOnly))
+        );
+    }
+
+    get mobile(): Boolean {
+        return vueWindowSizeMixin.computed.windowWidth() < 768;
+    }
 
     mounted () {
         if (!(this.phase?.phase === 'results' || this.isMCAStaff)) {
@@ -119,85 +146,6 @@ export default class Results extends Vue {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-}
-
-.table-headings {
-    padding: 0 5px 0 5px;
-
-    font-size: 0.9rem;
-    font-family: $font-body;
-    text-transform: uppercase;
-
-    flex: initial;
-    display: flex;
-
-    &__mapplace {
-        min-width: 3rem;
-        flex: 2;
-        margin-right: 15px;
-    }
-
-    &__userplace {
-        min-width: 3rem;
-        flex: 4;
-        margin-right: 15px;
-    }
-
-    &__map {
-        display: inline;
-        flex: 11;
-
-        @include breakpoint(tablet) {
-            display: none;
-        }
-    }
-
-    &__title {
-        display: none;
-
-        @include breakpoint(tablet) {
-            display: inline;
-            flex: 6;
-        }
-    }
-
-    &__artist {
-        display: none;
-
-        @include breakpoint(tablet) {
-            display: inline;
-            flex: 4;
-        }
-    }
-
-    &__host {
-        display: none;
-
-        @include breakpoint(tablet) {
-            display: inline;
-            flex: 4;
-        }
-    }
-
-    &__user {
-        flex: 6;
-        
-        @include breakpoint(tablet) {
-            flex: 12;
-        }
-    }
-
-    &__votes {
-        flex: 1.5;
-
-        display: flex;
-        justify-content: center;
-    }
-
-    &__vote-right {
-        flex: 0.5;
-        margin-right: 65px;
-    }
 }
 
 .table-border {

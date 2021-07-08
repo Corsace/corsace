@@ -2,6 +2,7 @@ import { BeatmapsetInfo } from "./beatmap";
 import { CategoryType } from "./category";
 import { UserChoiceInfo } from "./user";
 import { ResultVote } from "./vote";
+import { SectionCategory } from "../MCA-AYIM/store/stage";
 
 export interface BeatmapResult extends BeatmapsetInfo {
     placement: number,
@@ -15,6 +16,18 @@ export interface UserResult extends UserChoiceInfo {
     firstChoice: number,
     votes: number,
     totalVotes: number,
+}
+
+export interface ResultColumn {
+    label?: string,
+    name?: string,
+    size: number,
+    msize?: number,
+    category?: SectionCategory,
+    mobileOnly?: boolean,
+    desktopOnly?: boolean,
+    centred?: boolean,
+    prio?: boolean
 }
 
 export function votesToResults(votes: ResultVote[], categoryType: CategoryType): BeatmapResult[] | UserResult[] {

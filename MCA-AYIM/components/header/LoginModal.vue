@@ -66,7 +66,6 @@ export default class LoginModal extends Vue {
     @Prop({ type: String, required: true }) readonly site!: string;
 
     close () {
-        console.log(this.$router);
         this.$emit("close");
     }
 

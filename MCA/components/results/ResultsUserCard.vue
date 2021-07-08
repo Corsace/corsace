@@ -10,10 +10,18 @@
                     class="user-info__avatar"
                     :style="userAva"
                 />
-                <span class="user-info__place">{{ choice.placement }}</span>
-                <span class="user-info__username">{{ choice.username }}</span>
-                <span class="user-info__votes">{{ choice.votes }}</span>
-                <span class="user-info__vote-right" />
+                <span
+                    v-for="(col, i) in columns"
+                    :key="i"
+                    :class="[
+                        col.name ? `user-info__${col.name}` : `user-info__${col.label}`,
+                        { 'user-info__centred': col.centred }, 
+                        { 'user-info__prio': col.prio }
+                    ]"
+                    :style="{'flex': `${mobile && col.msize ? col.msize : col.size}`}"
+                >
+                    {{ col.label ? choice[col.label] : "" }}
+                </span>
             </a>
         </div>
     </div>
@@ -21,10 +29,13 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { UserResult, ResultColumn } from "../../../Interfaces/result";
 
 @Component
 export default class ResultsUserCard extends Vue {
-    @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
+    @Prop({ type: Object, default: () => ({}) }) readonly choice!: UserResult;
+    @Prop({ type: Array, required: false }) columns!: ResultColumn[];
+    @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
 
     get userAva (): any {
         if (this.choice)
@@ -66,6 +77,7 @@ export default class ResultsUserCard extends Vue {
     position: relative;
 
     display: flex;
+    align-content: center;
 
     padding: 0 15px;
     border-radius: 10px;
@@ -73,12 +85,18 @@ export default class ResultsUserCard extends Vue {
 
     background-repeat: no-repeat;
 
-    overflow: hidden;
-
     color: white;
+    text-shadow: 0 0 4px rgba(255,255,255,0.6);
+    font-size: $font-lg;
     text-decoration: none;
 
+    @extend %text-wrap;
+
     & > span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        
         margin: 15px 0;
     }
 
@@ -100,40 +118,17 @@ export default class ResultsUserCard extends Vue {
         }
     }
 
-    &__place {
-        min-width: 3rem;
-        flex: 4;
-        text-shadow: 0 0 4px white;
-        font-size: $font-lg;
-        @extend %text-wrap;
-    }
-
     &__username {
-        flex: 6;
-        text-shadow: 0 0 4px rgba(255,255,255,0.6);
-        font-size: $font-lg;
-        @extend %text-wrap;
-
-        @include breakpoint(tablet) {
-            flex: 12;
-        }
+        font-weight: 500;
     }
 
-    &__votes {
-        min-width: 3rem;
+    &__centred {
         display: flex;
-        align-content: center;
         justify-content: center;
-
-        text-shadow: 0 0 4px white;
-        font-size: $font-lg;
-
-        flex: 1.5;
-        @extend %text-wrap;
     }
 
-    &__vote-right {
-        flex: 0.5;
+    &__prio {
+        min-width: 3rem;
     }
 }
 </style>
