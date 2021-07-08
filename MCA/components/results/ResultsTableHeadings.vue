@@ -48,12 +48,13 @@ export default class ResultsFilters extends Vue {
 
     flex: initial;
     display: flex;
+    align-items: center;
 
-    >:first-child {
+    > :first-child {
         margin-right: 15px;
     }
 
-    >:last-child {
+    > :last-child {
         margin-right: 68px;
     }
 }
