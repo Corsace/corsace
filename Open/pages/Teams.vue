@@ -12,52 +12,44 @@
             </div>
         </div>
         <div v-else-if="loading">
-            <loading></loading>
+            <Loading></Loading>
         </div>
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import axios from "axios";
-import TeamListComponent from "../components/teams/TeamListComponent";
-import Loading from "../components/Loading";
+import TeamListComponent from "../components/teams/TeamListComponent.vue";
+import Loading from "../components/Loading.vue";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { State, Action } from "vuex-class";
+
+
 import regeneratorRuntime from "regenerator-runtime";
 
-export default {
+@Component({
     components: {
         TeamListComponent,
         Loading,
-    },
-    data: () => ({
-        teams: null,
-        active: false,
-        loading: true,
-    }),
-    props: {
-        inTeam: Boolean,
-        registered: Boolean,
-        team: Object,
-    },
-    created: function() {
-        this.fetchAllTeams()
-    },
-    methods: {
-        teamRegisteringToggle: function() {
-            this.$emit('team-registering')
-        },
-        fetchAllTeams: async function() {
-            this.loading = true;
-            try {
-                this.teams = (await axios.get("/api/team/all")).data.teams
-                for (var i=0; i<this.teams.length; i++) {
-                    this.teams[i].averagePp = Math.round(this.teams[i].averagePp);
-                }
-            } catch (e) {
-                alert("The teams list is unavailable right now. Please try again later!")
-            }
-            this.loading = false;
-        }
-    },
+    }
+})
+
+export default class Teams extends Vue {
+
+    @State teams!: Object;
+    @State loading!: Boolean;
+
+    @Prop(Boolean) readonly inTeam!: Boolean;
+    @Prop(Boolean) readonly registered!: Boolean;
+    @Prop(Object) readonly team!: Object;
+    async created () {
+        await this.$store.dispatch("teams/fetchAllTeams");
+    }
+
+    toogleLoginModal (): void {
+        this.$emit('team-registering')
+    }
+
 }
 </script>
 
