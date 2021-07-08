@@ -1,10 +1,16 @@
+import multer from "@koa/multer";
 import Router, { Middleware } from "@koa/router";
+import { unlink } from "fs/promises";
+import * as Jimp from "jimp";
 import { config } from "node-config-ts";
 import { Team } from "../../../Models/team";
 import { discordGuild, getMember } from "../../../Server/discord";
 import { hasNoTeam, isCaptain, isLoggedInDiscord, isRegistration, notOpenStaff } from "../../../Server/middleware";
 
 const teamRouter = new Router();
+const upload = multer({ 
+    limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 const teamPayloadValidation: Middleware = async (ctx, next) => {
     const data = ctx.request.body;
@@ -62,10 +68,11 @@ teamRouter.post("/", isLoggedInDiscord, notOpenStaff, hasNoTeam, isRegistration,
     team.tournament = ctx.state.tournament;
     const role = await guild.roles.create({
         data: {
-            name,
+            name: `CO TEAM ${team.name}`,
             hoist: false,
             mentionable: false,
-        }
+        },
+        reason: `Team ${name} has been created by ${ctx.state.user.osu.username}`
     });
     team.role = role.id;
     await team.save();
@@ -75,12 +82,12 @@ teamRouter.post("/", isLoggedInDiscord, notOpenStaff, hasNoTeam, isRegistration,
         await guild.addMember(ctx.state.user.discord.userID, {
             accessToken: await ctx.state.user.getAccessToken("discord"),
             nick: ctx.state.user.osu.username,
-            roles: [config.discord.roles.corsace.verified, config.discord.roles.open.participants, config.discord.roles.open.captains, team.role],
+            roles: [config.discord.roles.corsace.verified, config.discord.roles.open.participants, config.discord.roles.open.captains as string, team.role],
         });
     } else {
         await Promise.all([
             member.setNickname(ctx.state.user.osu.username),
-            member.roles.add([config.discord.roles.corsace.verified, config.discord.roles.open.participants, config.discord.roles.open.captains, team.role]),
+            member.roles.add([config.discord.roles.corsace.verified, config.discord.roles.open.participants, config.discord.roles.open.captains as string, team.role]),
         ]);
     }
 });
@@ -96,15 +103,41 @@ teamRouter.put("/rename", isLoggedInDiscord, isCaptain, teamPayloadValidation, a
     await team.save();
 
     await guild.roles.resolve(team.role)?.edit(
-        { name: team.name }, 
-        `Captain has changed their team name from ${oldName} to ${team.name}`,
+        { name: `CO TEAM ${team.name}` }, 
+        `${ctx.state.user.osu.username} has changed their team name from ${oldName} to ${team.name}`,
     );
 });
 
 // Add avatar
-teamRouter.post("/avatar", isLoggedInDiscord, isCaptain, async (ctx) => {
-    console.log(ctx.request.body);
-    ctx.body = "Ok Lol Chillll";    
+teamRouter.post("/avatar", isLoggedInDiscord, isCaptain, upload.single("avatar"), async (ctx) => {
+    if(!ctx.request.file) {
+        ctx.body = { error: "No avatar file found" };
+        return;
+    }
+    const team: Team = ctx.state.team;
+    const image = await Jimp.read(ctx.request.file.buffer);
+    let size = Math.min(image.bitmap.height, image.bitmap.width);
+    if(size > 256)
+        size = 256;
+    const filePath = "/teamAvatars/" + team.ID + ".png";
+    image.contain(size, size)
+        .deflateLevel(3)
+        .quality(60);
+
+    if(team.avatar && team.avatar.indexOf(config.corsace.publicUrl) === 0) { // Current avatar is already one from the website. We need to remove it before writing over.
+        const oldUrl = new URL(team.avatar);
+        await unlink("./data" + oldUrl);
+    }
+
+    await new Promise((res, rej) => image.write("./data" + filePath, (err, img) => {
+        if (err)
+            rej(err);
+        res(img);
+    }));
+    
+    team.avatar = `${config.corsace.publicUrl}${filePath}?${Date.now()}`;
+    await team.save();
+    ctx.body = { team };
 });
 
 export default teamRouter;
