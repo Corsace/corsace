@@ -33,9 +33,11 @@
                     <span
                         v-else
                         :key="i"
-                        :class="((col.name) ? `map-info__${col.name}` : `map-info__${col.label}`) +
-                                 ((col.centred) ? ' map-info__centred' : '') + 
-                                 ((col.prio) ? ' map-info__prio' : '')"
+                        :class="[
+                            col.name ? `map-info__${col.name}` : `map-info__${col.label}`,
+                            { 'map-info__centred': col.centred }, 
+                            { 'map-info__prio': col.prio }
+                        ]"
                         :style="{'flex': `${mobile && col.msize ? col.msize : col.size}`}"
                     >
                         {{ col.label ? choice[col.label] : "" }}
@@ -64,7 +66,6 @@ export default class ResultsBeatmapsetCard extends Vue {
             c => ((c.label === label) || (c.name && c.name === label))
             && (c.category === "beatmaps" || !c.category)
         )[0];
-        console.log(col, label);
         if (this.mobile && col.msize) {
             return {'flex': col.msize};
         }

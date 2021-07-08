@@ -13,9 +13,11 @@
                 <span
                     v-for="(col, i) in columns"
                     :key="i"
-                    :class="((col.name) ? `user-info__${col.name}` : `user-info__${col.label}`) +
-                            ((col.centred) ? ' user-info__centred' : '') + 
-                            ((col.prio) ? ' user-info__prio' : '')"
+                    :class="[
+                        col.name ? `user-info__${col.name}` : `user-info__${col.label}`,
+                        { 'user-info__centred': col.centred }, 
+                        { 'user-info__prio': col.prio }
+                    ]"
                     :style="{'flex': `${mobile && col.msize ? col.msize : col.size}`}"
                 >
                     {{ col.label ? choice[col.label] : "" }}
