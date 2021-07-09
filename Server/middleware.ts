@@ -124,8 +124,6 @@ async function notOpenStaff (ctx: ParameterizedContext, next: Next): Promise<voi
     }
 
     if (
-        member.roles.cache.has(config.discord.roles.corsace.corsace) ||
-        member.roles.cache.has(config.discord.roles.corsace.headStaff) ||
         member.roles.cache.has(config.discord.roles.corsace.scheduler) ||
         member.roles.cache.has(config.discord.roles.open.mappooler) ||
         member.roles.cache.has(config.discord.roles.open.mapper) ||
