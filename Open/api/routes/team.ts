@@ -3,6 +3,7 @@ import Router, { Middleware } from "@koa/router";
 import { unlink } from "fs/promises";
 import * as Jimp from "jimp";
 import { config } from "node-config-ts";
+import { nameFilter } from "../../../Interfaces/team";
 import { Team } from "../../../Models/team";
 import { discordGuild, getMember } from "../../../Server/discord";
 import { hasNoTeam, isCaptain, isLoggedInDiscord, isRegistration, notOpenStaff } from "../../../Server/middleware";
@@ -15,9 +16,14 @@ const upload = multer({
 const teamPayloadValidation: Middleware = async (ctx, next) => {
     const data = ctx.request.body;
 
-    if (!data.name) {
-        ctx.body = { error: "Missing team name!"};
-    } 
+    if (!data.name)
+        return ctx.body = { error: "Missing team name!" };
+
+    if (data.name.length > 20 || data.name.length < 3)
+        return ctx.body = { error: "Invalid team name!" }; 
+
+    if (nameFilter.test(data.name))
+        return ctx.body = { error: "Inappropriate team name!" };
 
     await next();
 }
@@ -59,11 +65,23 @@ teamRouter.get("/:id", async (ctx) => {
 
 // Create team
 teamRouter.post("/", isLoggedInDiscord, notOpenStaff, hasNoTeam, isRegistration, teamPayloadValidation, async (ctx) => {
-    const name = ctx.request.body.name;
+    let name = ctx.request.body.name;
+    if (/^team /i.test(name))
+        name = name.replace(/^team /i, "");
+
+    const slug = name.replace(/ /g, "-").toLowerCase();
+    if (await Team.findOne({ slug })) {
+        ctx.body = {
+            error: `Team ${slug} already exists!`,
+        }
+        return;
+    }
+
     const guild = await discordGuild();
     const team = new Team;
 
     team.name = name;
+    team.slug = slug;
     team.captain = ctx.state.user;
     team.tournament = ctx.state.tournament;
     const role = await guild.roles.create({
@@ -94,7 +112,18 @@ teamRouter.post("/", isLoggedInDiscord, notOpenStaff, hasNoTeam, isRegistration,
 
 // Rename team
 teamRouter.put("/rename", isLoggedInDiscord, isCaptain, teamPayloadValidation, async (ctx) => {
-    const name = ctx.request.body.name;
+    let name = ctx.request.body.name;
+    if (/^team /i.test(name))
+        name = name.replace(/^team /i, "");
+
+    const slug = name.replace(/ /g, "-").toLowerCase();
+    if (await Team.findOne({ slug })) {
+        ctx.body = {
+            error: `Team ${slug} already exists!`,
+        }
+        return;
+    }
+
     const guild = await discordGuild();
     const team: Team = ctx.state.team;
     const oldName = team.name;
@@ -119,7 +148,7 @@ teamRouter.post("/avatar", isLoggedInDiscord, isCaptain, upload.single("avatar")
     let size = Math.min(image.bitmap.height, image.bitmap.width);
     if(size > 256)
         size = 256;
-    const filePath = "/teamAvatars/" + team.ID + ".png";
+    const filePath = "/teamAvatars/" + team.slug + ".png";
     image.contain(size, size)
         .deflateLevel(3)
         .quality(60);
