@@ -4,6 +4,8 @@ export interface StageQuery {
     order: "ASC" | "DESC" | undefined;
     text: string;
     skip: number;
+    played: number[];
+    favourites: number[];
 }
 
 export interface MapperQuery {
@@ -12,5 +14,7 @@ export interface MapperQuery {
     year: string;
     mode: string;
     option: string;
+    notCommented: string;
+    friends: number[];
     order: "ASC" | "DESC" | undefined;
 }

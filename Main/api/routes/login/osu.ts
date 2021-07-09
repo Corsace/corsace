@@ -5,6 +5,7 @@ import { ParameterizedContext } from "koa";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { config } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
+import { Badge } from "../../../../Models/badge";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
@@ -19,9 +20,9 @@ const modes = [
 osuRouter.get("/", async (ctx: ParameterizedContext<any>, next) => {
     ctx.cookies.set("redirect", ctx.query.redirect ?? "back", { overwrite: true });
     await next();
-}, passport.authenticate("oauth2", { scope: ["identify", "public"] }));
+}, passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"] }));
 osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
-    return await passport.authenticate("oauth2", { scope: ["identify", "public"], failureRedirect: "/" }, async (err, user) => {
+    return await passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
             await user.save();
             ctx.login(user);
@@ -57,6 +58,25 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         });
         if (currentName)
             await currentName.remove();
+
+        // Badges
+        const badges = res.data.badges;
+        for (const osuBadge of badges) {
+            const imageName = /profile-badges\/(.+)/.exec(osuBadge.image_url)
+            if (!imageName)
+                continue;
+            let badge = await Badge.findOne({
+                imageName: imageName[1],
+                user: ctx.state.user,
+            })
+            if (!badge) {
+                badge = new Badge;
+                badge.description = osuBadge.description;
+                badge.imageName = imageName[1];
+                badge.user = ctx.state.user;
+                await badge.save();
+            }
+        }
 
         await next();
     } catch (e) {

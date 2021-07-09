@@ -4,6 +4,7 @@ import { Category, CategoryGenerator } from "../../../../Models/MCA_AYIM/categor
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { ModeDivision } from "../../../../Models/MCA_AYIM/modeDivision";
 import { CategoryFilter, CategoryType } from "../../../../Interfaces/category";
+import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
 
 const adminCategoriesRouter = new Router;
 const categoryGenerator = new CategoryGenerator;
@@ -119,6 +120,9 @@ adminCategoriesRouter.delete("/:year/categories/:id", async (ctx) => {
     if (!category)
         return ctx.body = { error: "No category with this ID exists!" };
 
+    await Promise.all((await Nomination.find({
+        category,
+    })).map(nom => nom.remove()));
     const categoryRes = await category.remove(); 
     ctx.body = { message: "Success! attached is the delete result.", categoryRes };
 });

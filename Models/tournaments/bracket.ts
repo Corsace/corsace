@@ -12,14 +12,8 @@ export class Bracket extends BaseEntity {
     @Column()
     name!: string;
 
-    @Column()
-    size!: number;
-
-    @Column({ type: "timestamp" })
-    weekend!: Date;
-
     @ManyToOne(() => Tournament, tournament => tournament.brackets)
-    tournament!: Tournament
+    tournament!: Tournament;
 
     @OneToOne(() => Mappool, mappool => mappool.bracket)
     @JoinColumn()

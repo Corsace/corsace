@@ -29,8 +29,18 @@
             </div>
 
             <div class="general-info">
-                <p v-if="phase.startDate && phase.endDate">
-                    {{ timeRange }}
+                <p v-if="phase.phase">
+                    <span :class="phase.phase === 'nominating' ? `general-info--${selectedMode}` : ''">
+                        {{ $t(`mca.main.nominating`).toUpperCase() + " | " + mca.nomination.start.toLocaleString(dateInfo.locale, options) + " - " + mca.nomination.end.toLocaleString(dateInfo.locale, options) }}
+                    </span>
+                    <br>
+                    <span :class="phase.phase === 'voting' ? `general-info--${selectedMode}` : ''">
+                        {{ $t(`mca.main.voting`).toUpperCase() + " | " + mca.voting.start.toLocaleString(dateInfo.locale, options) + " - " + mca.voting.end.toLocaleString(dateInfo.locale, options) }}
+                    </span>
+                    <br>
+                    <span :class="phase.phase === 'results' ? `general-info--${selectedMode}` : ''">
+                        {{ $t(`mca.main.results`).toUpperCase() + " | " + mca.results.toLocaleString(dateInfo.locale, options)}}
+                    </span>
                 </p>
                 <div v-html="$t(`mca.main.message.${$route.params.year}`)" />
             </div>
@@ -46,12 +56,12 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter } from "vuex-class";
+import { Getter, State } from "vuex-class";
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import IndexPage from "../../components/IndexPage.vue";
 
-import { Phase } from "../../../Interfaces/mca";
+import { MCA, Phase } from "../../../Interfaces/mca";
 
 @Component({
     components: {
@@ -66,7 +76,13 @@ import { Phase } from "../../../Interfaces/mca";
 })
 export default class Index extends Vue {
 
+    @State mca!: MCA;
+    @State selectedMode!: string;
+
     @Getter phase!: Phase;
+
+    dateInfo = Intl.DateTimeFormat().resolvedOptions();
+    options: Intl.DateTimeFormatOptions = { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
 
     mounted () {
         let days = 0;
@@ -87,13 +103,6 @@ export default class Index extends Vue {
 
     get remainingDays (): number {
         return Math.floor((this.phase?.endDate?.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-    }
-
-    get timeRange (): string {
-        const dateInfo = Intl.DateTimeFormat().resolvedOptions();
-        const options: Intl.DateTimeFormatOptions = { timeZone: dateInfo.timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
-
-        return this.phase?.startDate.toLocaleString(dateInfo.locale, options) + " - " + this.phase?.endDate.toLocaleString(dateInfo.locale, options);
     }
 
 }
@@ -202,6 +211,27 @@ export default class Index extends Vue {
     border-radius: 0 15px 15px 0; 
     background-color: rgba(0, 0, 0, 0.8); 
     padding: 45px 30px;
+
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    & > p, &--header {
+        text-align: center;
+    }
+
+    &--header {
+        font-size: 2rem;
+    }
+
+    @each $mode in $modes {
+        &--#{$mode} {
+            color: var(--#{$mode});
+            font-weight: bold;
+            text-shadow: 0 0 8px var(--#{$mode});
+            @include transition;
+        }
+    }
 }
 
 .right-side {

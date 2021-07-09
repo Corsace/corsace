@@ -1,3 +1,4 @@
+import { config } from "node-config-ts";
 import { ParameterizedContext, Next } from "koa";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
@@ -6,6 +7,7 @@ import { User } from "../../Models/user";
 import { Vote } from "../../Models/MCA_AYIM/vote";
 import { Nomination } from "../../Models/MCA_AYIM/nomination";
 import { Category } from "../../Models/MCA_AYIM/category";
+import { getMember } from "../../Server/discord";
 
 async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
     const mca: MCA = ctx.state.mca;
@@ -61,7 +63,7 @@ async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> 
 
     if (!mca) {
         return ctx.body = {
-            error: "Not MCA found for this year",
+            error: "No MCA found for this year",
         };
     }
 
@@ -72,7 +74,6 @@ async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> 
 
 async function validatePhaseYear (ctx: ParameterizedContext, next: Next): Promise<any> {
     let year = ctx.params.year;
-
     if (!year || !/20\d\d/.test(year)) {
         ctx.state.mca = await MCA.current();
         year = ctx.state.mca.year;
@@ -116,4 +117,29 @@ function isPhaseStarted (phase: string) {
     };
 }
 
-export { isEligible, isEligibleFor, categoryRequirementCheck, currentMCA, validatePhaseYear, isPhase, isPhaseStarted };
+async function isResults (ctx: ParameterizedContext, next: Next): Promise<any> {
+    if (ctx.state.mca.currentPhase() === "results") {
+        await next();
+        return;
+    }
+
+    const member = await getMember(ctx.state.user.discord.userID);
+    if (!member) {
+        ctx.body = { error: "Not the right time" };
+        return;
+    }
+    if (
+        member.roles.cache.has(config.discord.roles.corsace.corsace) ||
+        member.roles.cache.has(config.discord.roles.corsace.headStaff) ||
+        member.roles.cache.has(config.discord.roles.mca.standard) ||
+        member.roles.cache.has(config.discord.roles.mca.taiko) ||
+        member.roles.cache.has(config.discord.roles.mca.fruits) ||
+        member.roles.cache.has(config.discord.roles.mca.mania) ||
+        member.roles.cache.has(config.discord.roles.mca.storyboard)
+    ) {
+        await next();
+        return;
+    }
+}
+
+export { isEligible, isEligibleFor, categoryRequirementCheck, currentMCA, validatePhaseYear, isPhase, isPhaseStarted, isResults };

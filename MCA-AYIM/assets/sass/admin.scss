@@ -3,7 +3,7 @@
 
 .admin-page {
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column;
     padding: 30px;
     height: 100%;
 
@@ -38,8 +38,15 @@
 }
 
 .admin-container {
-    @extend %spaced-container;
-    flex-direction: column;
+
+    position: relative;
+    height: 100%;
+    overflow-y: scroll;
+
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 
     &__title {
         border-bottom: 1px solid white;

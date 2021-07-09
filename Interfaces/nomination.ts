@@ -12,3 +12,35 @@ export interface Nomination {
     reviewer: User;
     lastReviewedAt: Date;
 }
+
+export interface StaffNomination {
+    ID: number;
+    category: number;
+    isValid: boolean;
+    reviewer: string;
+    lastReviewedAt: Date;
+    nominator: {
+        osuID: string;
+        osuUsername: string;
+        discordUsername: string;
+    }
+    user?: {
+        osuID: string;
+        osuUsername: string;
+        discordUsername: string;
+    }
+    beatmapset?: {
+        ID: number;
+        artist: string;
+        title: string;
+        tags: string;
+        BPM: number;
+        length: number;
+        maxSR: number;
+        creator: {
+            osuID: string;
+            osuUsername: string;
+            discordUsername: string;
+        }
+    }
+}
