@@ -93,7 +93,6 @@ export default class Results extends Vue {
         {label: "username", size: 10.25, msize: 6, category: "users"},
         {label: "firstChoice", size: 1.5, desktopOnly: true, centred: true},
         {label: "totalVotes", size: 1.5, centred: true, prio: true},
-        {name: "vr", size: 0.5},
     ]
 
     // filter columns by breakpoint and category
