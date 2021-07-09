@@ -261,6 +261,9 @@ export default class Collapsible extends Vue {
 }
 
 .collapsible__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     cursor: pointer;
     @include transition;
 
