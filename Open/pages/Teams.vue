@@ -18,14 +18,16 @@
 </template>
 
 <script lang='ts'>
-import axios from "axios";
 import TeamListComponent from "../components/teams/TeamListComponent.vue";
 import Loading from "../components/Loading.vue";
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { State, Action } from "vuex-class";
+import { namespace, State, Action } from "vuex-class";
+import { TeamInfo } from "../../Interfaces/team"
 
 
 import regeneratorRuntime from "regenerator-runtime";
+
+const teamsModule = namespace("teams");
 
 @Component({
     components: {
@@ -36,12 +38,12 @@ import regeneratorRuntime from "regenerator-runtime";
 
 export default class Teams extends Vue {
 
-    @State teams!: Object;
-    @State loading!: Boolean;
+    @teamsModule.State teams!: Object;
+    @teamsModule.State loading!: Boolean;
 
-    @Prop(Boolean) readonly inTeam!: Boolean;
-    @Prop(Boolean) readonly registered!: Boolean;
-    @Prop(Object) readonly team!: Object;
+    @State inTeam!: Boolean;
+    @State registered!: Boolean;
+    @State team!: TeamInfo;
     async created () {
         await this.$store.dispatch("teams/fetchAllTeams");
     }

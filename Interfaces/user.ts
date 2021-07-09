@@ -13,6 +13,9 @@ export interface UserMCAInfo extends UserInfo {
         storyboard: boolean;
     }
 }
+export interface UserOpenInfo extends UserInfo {
+    isStaff: boolean;
+}
 
 export interface UserInfo {
     corsaceID: number;

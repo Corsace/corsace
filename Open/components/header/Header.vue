@@ -83,8 +83,7 @@ import { UserInfo } from "../../../Interfaces/user";
 
 export default class Header extends Vue {
 
-    @Prop({ type: String, required: true }) readonly site!: string;
-
+    @State site!: string;
     @State loggedInUser!: UserInfo;
 
     showLoginModal = false;

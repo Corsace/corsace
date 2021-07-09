@@ -90,39 +90,33 @@
 </template>
 
 
-<script>
+<script lang='ts'>
 import axios from "axios";
 import regeneratorRuntime from "regenerator-runtime";
+import { Vue, Component } from "vue-property-decorator"
+import Loading from "../components/Loading.vue";
+import {namespace, State } from "vuex-class"
 
-import Loading from "../components/Loading";
+const talentModule = namespace("talent")
 
-export default {
+@Component({
     components: {
         Loading,
-    },
-    data: () => ({
-        headStaff: [],
-        poolers: [],
-        referees: [],
-        streamcomms: [],
-        schedulers: [],
-        loading: true,
-    }),
-    mounted: async function() {
+    }
+})
+
+export default class Talent extends Vue {
+
+    @talentModule.State headStaff!: []
+    @talentModule.State poolers!: []
+    @talentModule.State referees!: []
+    @talentModule.State streamcomms!: []
+    @talentModule.State schedulers!: []
+    loading = false;
+    
+    async created () {
         this.loading = true;
-        try {
-            const res = await axios.get("/api/user/staff");
-            if (res.error)
-                return alert(res.error);
-            const { headStaff, poolers, referees, streamcomms, schedulers } = res.data;
-            this.headStaff = headStaff;
-            this.poolers = poolers;
-            this.referees = referees;
-            this.streamcomms = streamcomms;
-            this.schedulers = schedulers;
-        } catch (err) {
-            alert(err);
-        }
+        await this.$store.dispatch("talent/fetchStaff")
         this.loading = false;
     }
 }

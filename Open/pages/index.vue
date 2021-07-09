@@ -15,8 +15,15 @@
     </div>
 </template>
 
-<script>
-export default {
+<script lang='ts'>
+
+import { Vue, Component } from "vue-property-decorator";
+import { UserOpenInfo } from "../../Interfaces/user";
+import { TeamInfo } from "../../Interfaces/team";
+import { Invitation } from "../../Interfaces/invitation";
+import {State, Action } from "vuex-class";
+
+export default class Index extends Vue {
 }
 </script>
 
