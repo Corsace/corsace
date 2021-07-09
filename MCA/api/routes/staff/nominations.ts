@@ -10,12 +10,16 @@ staffNominationsRouter.use(isStaff);
 
 // Endpoint for getting information for a category
 staffNominationsRouter.get("/", async (ctx) => {
-    let categoryID = ctx.query.category;
+    let [categoryID, start] = [ctx.query.category, ctx.query.start];
+    const maxTake = 101;
     
     if (!categoryID || !/\d+/.test(categoryID))
         return ctx.body = { error: "Invalid category ID given!" };
 
-    categoryID = parseInt(categoryID);
+    if (!start || !/\d+/.test(start))
+        return ctx.body = { error: "Invalid start index given!" };
+
+    [categoryID, start] = [parseInt(categoryID), parseInt(start)];
 
     const nominations = await Nomination
                                 .createQueryBuilder("nomination")
@@ -56,9 +60,11 @@ staffNominationsRouter.get("/", async (ctx) => {
                                 .orderBy("nomination.nominatorID", "DESC")
                                 .addOrderBy("nomination.isValid", "ASC")
                                 .addOrderBy("nomination.reviewerID", "ASC")
+                                .offset(start)
+                                .limit(maxTake)
                                 .getRawMany();
 
-    const staffNominations = nominations.map(nom => {
+    let staffNominations = nominations.map(nom => {
         let staffNom = {
             ID: nom.ID,
             category: nom.categoryID,
@@ -97,7 +103,17 @@ staffNominationsRouter.get("/", async (ctx) => {
         return staffNom;
     });
 
-    ctx.body = staffNominations;
+    // ensure data doesn't cut off between nominators
+    let end = -1;
+    for (let i = staffNominations.length - 1; i > 0; --i) {
+        if (staffNominations[i].nominator.osuID !== staffNominations[i-1].nominator.osuID) {
+            end = start + i;
+            break;
+        }
+    }
+    staffNominations = staffNominations.slice(0, end);
+
+    ctx.body = { staffNominations, nextStart: end };
 });
 
 // Endpoint for accepting a nomination

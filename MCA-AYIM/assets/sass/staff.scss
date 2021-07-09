@@ -14,7 +14,8 @@
     }
 
     &__link {
-        font-weight: bold;
+        font-size: $font-lg;
+        font-weight: 500;
         flex: 1;
 
         @each $mode in $modes {
@@ -26,6 +27,31 @@
         &:hover {
             text-decoration: underline;
         }
+    }
+
+    &__subject {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    &__small {
+        font-size: 0.85rem;
+        font-weight: normal;
+    }
+    
+    &__banner {
+        background-repeat: no-repeat;
+        position: absolute;
+        top: 0%;
+        left: 27%;                
+        width: 100%;
+        height: 100%;
+
+        z-index: -100;
+
+        background-size: 52%;
+        background-position: 8% 52%;
+        mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0) 10%,  rgba(0, 0, 0, 0.7) 28%, rgba(0, 0, 0, 0.7) 38%, rgba(0, 0, 0, 0) 52%);
     }
 }
 
@@ -39,11 +65,32 @@
         display: none;
     }
 
-    &__title {
-        border-bottom: 1px solid white;
-        margin-bottom: 10px;
+    &__header {
+        @extend %flex-box;
         font-size: $font-lg;
         font-weight: 500;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+
+        &:hover {
+            background-color: black;
+            @include transition;
+        }
+
+        &--active {
+            border-radius: 0 !important;
+            background-color: black !important;
+            @include transition;
+        }
+
+        > * {
+            padding: 3px 0;
+        }
+
+        > span {
+            margin-left: auto;
+        }
     }
 
     &__box {
@@ -53,6 +100,40 @@
     }
 }
 
+.staff-filters {
+    padding: 15px 0;
+}
+
 .staff-searchContainer {
     height: 90%;
+}
+
+.staff-scrollTrack {
+    margin-right: 3rem;
+}
+
+.staff-list {
+    margin-block-start: 0;
+    list-style-type: none;
+
+    >li {
+        position: relative;
+        border-bottom: 1px solid white;
+    }
+}
+
+.staff-user {
+    display: flex;
+    align-content: center;
+
+    &__link {
+        margin: 5px 0;
+        font-weight: bold;
+    }
+
+    &__avatar {
+        border-radius: 100%;
+        max-height: 1.6em;
+        margin: 0 0.5em;
+    }
 }
