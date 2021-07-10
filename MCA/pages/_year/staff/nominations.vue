@@ -1,153 +1,119 @@
 <template>
     <div class="staff-page">
         <mode-switcher
-            hide-phase
+            :hide-phase="true"
             title="nominations"
         >
-            <div class="staff-filters">
-                <search-bar
-                    class="category-filters"
-                    :placeholder="$t('mca.nom_vote.search')"
-                    @update:search="text = $event"
+            <search-bar
+                class="category-filters"
+                :placeholder="$t('mca.nom_vote.search')"
+                @update:search="text = $event"
+            >
+                <toggle-button
+                    :options="viewOptions"
+                    @change="changeView"
+                />
+                <button
+                    v-if="!showReviewed && viewOption !== 'invalid'"
+                    class="button"
+                    @click="showReviewed = true"
                 >
-                    <toggle-button
-                        :options="viewOptions"
-                        @change="changeView"
-                    />
-                    <button
-                        v-if="!showReviewed && viewOption !== 'invalid'"
-                        @click="showReviewed = true"
-                        class="button"
-                    >
-                        Show Reviewed
-                    </button>
-                    <button
-                        v-else-if="showReviewed && viewOption !== 'invalid'"
-                        @click="showReviewed = false"
-                        class="button"
-                    >
-                        Hide Reviewed
-                    </button>
-                </search-bar>
-            </div>
+                    Show Reviewed
+                </button>
+                <button
+                    v-else-if="showReviewed && viewOption !== 'invalid'"
+                    class="button"
+                    @click="showReviewed = false"
+                >
+                    Hide Reviewed
+                </button>
+            </search-bar>
             <div class="staff-container staff-searchContainer">
                 <div class="staff-container staff-scrollTrack">
-                    <template
+                    <div
                         v-for="category in relatedCategories"
+                        :key="category.id + '-category'"
+                        class="staff-container__box"
                     >
-                        <div
-                            :key="category.id + '-cat-header'"
+                        <a
+                            class="staff-container__title"
+                            href="#"
                             @click.prevent="selectCategory(category.id)"
-                            class="staff-container__header"
-                            :class="{ 'staff-container__header--active': category.id === selectedCategoryId }"
                         >
-                            <a
-                                class="staff-container__title"
-                                href="#"
-                                @click.prevent
-                            >
-                                {{ $t(`mca.categories.${category.name}.name`) }}
-                            </a>
-                            <span>{{ category.type }}</span>
-                        </div>
-                        <div
-                            v-if="category.id === selectedCategoryId"
-                            :key="category.id + '-category'"
-                            class="staff-container__box"
-                        >
-                            <div
-                                v-for="userNominations in selectedCategoryInfo"
-                                :key="userNominations.nominator.osuID + '-nominator'"
-                                class="staff-nomination-container"
-                            >
-                                <span class="staff-user">
-                                    <a
-                                        :href="`https://osu.ppy.sh/users/${userNominations.nominator.osuID}`"
-                                        target="_blank"
-                                        class="staff-user__link"
-                                    >
-                                        {{ userNominations.nominator.osuUsername }}
-                                    </a>
-                                    <a
-                                        :href="`https://osu.ppy.sh/users/${userNominations.nominator.osuID}`"
-                                        target="_blank"
-                                    >
-                                        <img
-                                            :src="`https://a.ppy.sh/${userNominations.nominator.osuID}`"
-                                            class="staff-user__avatar"
-                                        >
-                                    </a>
-                                </span>
+                            {{ category.name }}
+                        </a>
 
-                                <ul class="staff-list">
-                                    <li
-                                        v-for="nomination in userNominations.nominations"
-                                        :key="nomination.ID + '-nomination'"
-                                    >
-                                        <div class="staff-nomination">
-                                            <div class="staff-nomination__info">
-                                                <div 
-                                                    class="staff-page__banner"
-                                                    :style="getBanner(nomination)"
-                                                />
+                        <template v-if="category.id === selectedCategoryId">
+                            <ul>
+                                <li
+                                    v-for="nomination in selectedCategoryNominations"
+                                    :key="nomination.ID + '-nomination'"
+                                >
+                                    <div class="staff-nomination">
+                                        <div class="staff-nomination__info">
+                                            <a
+                                                class="staff-page__link"
+                                                :href="generateUrl(nomination)"
+                                                target="_blank"
+                                            >
+                                                {{ getNomineeName(nomination) }}
+                                            </a>
+                                            <div>
                                                 <a
-                                                    class="staff-page__subject"
+                                                    v-if="nomination.beatmapset && nomination.beatmapset.ID"
+                                                    class="staff-page__link"
                                                     :href="generateUrl(nomination)"
                                                     target="_blank"
                                                 >
-                                                    {{ getNomineeName(nomination) }}
+                                                    {{ getSpecs(nomination) }}
                                                 </a>
-                                                <div>
-                                                    <a
-                                                        v-if="nomination.beatmapset && nomination.beatmapset.ID"
-                                                        class="staff-page__small"
-                                                        :href="generateUrl(nomination)"
-                                                        target="_blank"
-                                                    >
-                                                        {{ getSpecs(nomination) }}
-                                                    </a>
-                                                    <span
-                                                        class="staff-nomination__status"
-                                                        :class="`staff-nomination__status--${nomination.isValid ? 'valid' : 'invalid'}`"
-                                                    >
-                                                        {{ nomination.isValid ? 'valid' : 'invalid' }}
-                                                    </span>
-                                                </div>
-                                                <div 
-                                                    v-if="nomination.reviewer"
-                                                    class="staff-page__small"
+                                                <span
+                                                    class="staff-nomination__status"
+                                                    :class="`staff-nomination__status--${nomination.isValid ? 'valid' : 'invalid'}`"
                                                 >
-                                                    Last reviewed by:
-                                                    {{ nomination.reviewer }}
-                                                    on {{ new Date(nomination.lastReviewedAt).toString() }}
-                                                </div>
+                                                    {{ nomination.isValid ? 'valid' : 'invalid' }}
+                                                </span>
                                             </div>
-
-                                            <div class="staff-nomination__actions">
-                                                <button
-                                                    class="button button--small staff-nomination__action"
-                                                    @click="updateNomination(nomination.ID, true)"
+                                            <div v-if="nomination.reviewer">
+                                                Last reviewed by:
+                                                {{ nomination.reviewer }}
+                                                at {{ new Date(nomination.lastReviewedAt).toString() }}
+                                            </div>
+                                            <div>
+                                                Nominators:
+                                                <a
+                                                    v-for="nominator in nomination.nominators"
+                                                    :key="nominator.osuID + '-nominator'"
+                                                    :href="`https://osu.ppy.sh/users/${nominator.osuID}`"
+                                                    target="_blank"
+                                                    class="staff-page__link"
                                                 >
-                                                    accept
-                                                </button>
-                                                <button
-                                                    class="button button--small staff-nomination__action"
-                                                    @click="updateNomination(nomination.ID, false)"
-                                                >
-                                                    reject
-                                                </button>
+                                                    {{ nominator.osuUsername }}
+                                                </a>
                                             </div>
                                         </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </template>
+
+                                        <div class="staff-nomination__actions">
+                                            <button
+                                                class="button button--small staff-nomination__action"
+                                                @click="updateNomination(nomination.ID, true)"
+                                            >
+                                                accept
+                                            </button>
+                                            <button
+                                                class="button button--small staff-nomination__action"
+                                                @click="updateNomination(nomination.ID, false)"
+                                            >
+                                                reject
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                    </div>
                 </div>
-                <scroll-bar
-                    @bottom="selectStart === -1 ? null : appendCategory()"
-                    selector=".staff-scrollTrack"
-                />
+                <scroll-bar selector=".staff-scrollTrack" />
             </div>
         </mode-switcher>
     </div>
@@ -167,18 +133,9 @@ import { StaffNomination } from "../../../../Interfaces/nomination";
 
 const staffModule = namespace("staff");
 
-interface UserNomination {
-    nominator: {
-        osuID: string;
-        osuUsername: string;
-        discordUsername: string;
-    },
-    nominations: StaffNomination[]
-}
-
 interface NominationsByCategory {
-    category: number;
-    userNominations: UserNomination[];
+    categoryId: number;
+    userNominations: StaffNomination[];
 }
 
 @Component({
@@ -205,28 +162,30 @@ export default class Nominations extends Vue {
     text = "";
     showReviewed = true;
     selectedCategoryId: null | number = null;
-    selectStart: number = 0;
 
     get relatedCategories (): CategoryInfo[] {
-        return this.categories.filter(c => c.mode === this.selectedMode || c.mode === "storyboard");
+        return this.categories.filter(c => c.mode === this.selectedMode);
     }
 
     get nominationsByCategory (): NominationsByCategory[] {
-        const groups: NominationsByCategory[] = [];
+        const categories: NominationsByCategory[] = [];
 
         for (const nomination of this.nominations) {
-            if (nomination.reviewer && !this.showReviewed) continue;
-            
-            if (!nomination.isValid && this.viewOption === "valid") continue;
-            else if (nomination.isValid && this.viewOption === "invalid") continue;
+            if (
+                (nomination.reviewer && !this.showReviewed) ||
+                (!nomination.isValid && this.viewOption === "valid") ||
+                (nomination.isValid && this.viewOption === "invalid")
+            ) {
+                continue;
+            }
 
             if (this.text) {
                 const lowerText = this.text.toLowerCase();
                 if (nomination.user?.osuID) {
                     if (
-                        !nomination.nominator.osuUsername.toLowerCase().includes(lowerText) &&
-                        !nomination.nominator.osuID.includes(lowerText) &&
-                        !nomination.nominator.discordUsername.includes(lowerText) &&
+                        !nomination.nominators.some(n => n.osuUsername.toLowerCase().includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.osuID.includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.discordUsername.includes(lowerText)) &&
                         !nomination.user.osuUsername.toLowerCase().includes(lowerText) && 
                         !nomination.user.osuID.includes(lowerText) &&
                         !nomination.user.discordUsername.toLowerCase().includes(lowerText)
@@ -234,9 +193,9 @@ export default class Nominations extends Vue {
                         continue;
                 } else if (nomination.beatmapset?.ID) {
                     if (
-                        !nomination.nominator.osuUsername.toLowerCase().includes(lowerText) &&
-                        !nomination.nominator.osuID.includes(lowerText) &&
-                        !nomination.nominator.discordUsername.includes(lowerText) &&
+                        !nomination.nominators.some(n => n.osuUsername.toLowerCase().includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.osuID.includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.discordUsername.includes(lowerText)) &&
                         !nomination.beatmapset.ID.toString().includes(lowerText) &&
                         !nomination.beatmapset.artist.toLowerCase().includes(lowerText) &&
                         !nomination.beatmapset.title.toLowerCase().includes(lowerText) &&
@@ -249,35 +208,23 @@ export default class Nominations extends Vue {
                 }
             }
 
-            const groupIndex = groups.findIndex(g => g.category === nomination.category);
+            const categoryIndex = categories.findIndex(g => g.categoryId === nomination.categoryId);
 
-            if (groupIndex !== -1) {
-                const nominatorIndex = groups[groupIndex].userNominations.findIndex(n => n.nominator.osuID === nomination.nominator.osuID);
-
-                if (nominatorIndex !== -1) {
-                    groups[groupIndex].userNominations[nominatorIndex].nominations.push(nomination);
-                } else {
-                    groups[groupIndex].userNominations.push({
-                        nominator: nomination.nominator,
-                        nominations: [nomination],
-                    });
-                }
+            if (categoryIndex !== -1) {
+                categories[categoryIndex].userNominations.push(nomination);
             } else {
-                groups.push({
-                    category: nomination.category,
-                    userNominations: [{
-                        nominator: nomination.nominator,
-                        nominations: [nomination],
-                    }],
+                categories.push({
+                    categoryId: nomination.categoryId,
+                    userNominations: [nomination],
                 });
             }
         }
 
-        return groups;
+        return categories;
     }
 
-    get selectedCategoryInfo (): UserNomination[] {
-        const group = this.nominationsByCategory.find(group => group.category === this.selectedCategoryId);
+    get selectedCategoryNominations (): StaffNomination[] {
+        const group = this.nominationsByCategory.find(group => group.categoryId === this.selectedCategoryId);
         return group?.userNominations || [];
     }
 
@@ -288,35 +235,15 @@ export default class Nominations extends Vue {
     }
 
     async selectCategory (id: number) {
-        if (this.selectedCategoryId === id) {
-            this.nominations = [];
-            this.selectedCategoryId = null;
-            return;
-        }
-        this.selectStart = 0;
-        const { data } = await this.$axios.get(`/api/staff/nominations?category=${id}&start=${this.selectStart}`);
+        const { data } = await this.$axios.get(`/api/staff/nominations?category=${id}`);
 
         if (data.error) {
             alert(data.error);
             return;
         }
 
-        this.nominations = data.staffNominations;
-        this.selectStart = data.nextStart;
+        this.nominations = data;
         this.selectedCategoryId = id;
-    }
-
-    async appendCategory () {
-        if (this.selectStart === -1) return;
-
-        const { data } = await this.$axios.get(`/api/staff/nominations?category=${this.selectedCategoryId}&start=${this.selectStart}`);
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
-
-        this.nominations.push(...data.staffNominations);
-        this.selectStart = data.nextStart;
     }
 
     generateUrl (nomination: StaffNomination): string {
@@ -340,20 +267,11 @@ export default class Nominations extends Vue {
         
         const minutes = Math.floor(nomination.beatmapset.length / 60);
         const seconds = nomination.beatmapset.length - minutes * 60;
-        let time = `${minutes}:${seconds}`
+        let time = `${minutes}:${seconds}`;
         if (time.slice(-2, -1) === ":") {
             time =  time.slice(0, -1) + "0" + time.slice(-1);
         }
-        return `${nomination.beatmapset.BPM} BPM | ${time} | ${nomination.beatmapset.maxSR.toFixed(2)} ★`;
-    }
-
-    getBanner (nomination: StaffNomination) {
-        if (nomination.beatmapset) {
-            return { "background-image": `url('https://assets.ppy.sh/beatmaps/${nomination.beatmapset.ID}/covers/cover.jpg?1560315422')` };
-        } else if (nomination.user) {
-            return { "background-image": `url(https://a.ppy.sh/${nomination.user.osuID})` }
-        }
-        return { "background-image": "" };
+        return `(BPM = ${nomination.beatmapset.BPM} | Length = ${time} | SR = ${nomination.beatmapset.maxSR.toFixed(2)})`;
     }
 
     updateLocalNomination (id: number, data) {
@@ -365,7 +283,7 @@ export default class Nominations extends Vue {
         }
     }
 
-    async updateNomination (id: number, isValid) {
+    async updateNomination (id: number, isValid: boolean) {
         const { data } = await this.$axios.post(`/api/staff/nominations/${id}/update`, {
             isValid,
         });
@@ -373,7 +291,7 @@ export default class Nominations extends Vue {
         if (!data.error) {
             this.updateLocalNomination(id, data);
         } else {
-            alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)")
+            alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)");
             console.error(data.error);
         }
     }
@@ -389,19 +307,20 @@ export default class Nominations extends Vue {
     &-container {
         display: flex;
         flex-direction: column;
-        margin: 3px 0 10px 0;
+        margin-bottom: 10px;
         border-bottom: 1px solid white;
     }
     
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 0;
 
     min-height: 65px;
 
+    border-bottom: 1px solid white;
+
     &__status {
-        margin-left: 8px;
+        margin-left: 5px;
 
         &--valid {
             color: $green;
