@@ -101,13 +101,14 @@ staffVotesRouter.get("/", async (ctx) => {
 
     // ensure data doesn't cut off between voters
     let end = -1;
-    for (let i = staffVotes.length - 1; i > 0; --i) {
+    let i = staffVotes.length - 1;
+    for (; i > 0; --i) {
         if (staffVotes[i].voter.osuID !== staffVotes[i-1].voter.osuID) {
             end = start + i;
             break;
         }
     }
-    staffVotes = staffVotes.slice(0, end);
+    staffVotes = staffVotes.slice(0, i === 0 ? undefined : i);
 
     ctx.body = { staffVotes, nextStart: end };
 });

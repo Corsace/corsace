@@ -105,13 +105,14 @@ staffNominationsRouter.get("/", async (ctx) => {
 
     // ensure data doesn't cut off between nominators
     let end = -1;
-    for (let i = staffNominations.length - 1; i > 0; --i) {
+    let i = staffNominations.length - 1;
+    for (; i > 0; --i) {
         if (staffNominations[i].nominator.osuID !== staffNominations[i-1].nominator.osuID) {
             end = start + i;
             break;
         }
     }
-    staffNominations = staffNominations.slice(0, end);
+    staffNominations = staffNominations.slice(0, i === 0 ? undefined : i);
 
     ctx.body = { staffNominations, nextStart: end };
 });
