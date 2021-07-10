@@ -15,15 +15,15 @@ export interface Nomination {
 
 export interface StaffNomination {
     ID: number;
-    category: number;
+    categoryId: number;
     isValid: boolean;
     reviewer: string;
     lastReviewedAt: Date;
-    nominator: {
+    nominators: {
         osuID: string;
         osuUsername: string;
         discordUsername: string;
-    }
+    }[]
     user?: {
         osuID: string;
         osuUsername: string;

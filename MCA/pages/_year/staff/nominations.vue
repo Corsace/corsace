@@ -15,15 +15,15 @@
                 />
                 <button
                     v-if="!showReviewed && viewOption !== 'invalid'"
-                    @click="showReviewed = true"
                     class="button"
+                    @click="showReviewed = true"
                 >
                     Show Reviewed
                 </button>
                 <button
                     v-else-if="showReviewed && viewOption !== 'invalid'"
-                    @click="showReviewed = false"
                     class="button"
+                    @click="showReviewed = false"
                 >
                     Hide Reviewed
                 </button>
@@ -44,74 +44,72 @@
                         </a>
 
                         <template v-if="category.id === selectedCategoryId">
-                            <div
-                                v-for="userNominations in selectedCategoryInfo"
-                                :key="userNominations.nominator.osuID + '-nominator'"
-                                class="staff-nomination-container"
-                            >
-                                <a
-                                    :href="`https://osu.ppy.sh/users/${userNominations.nominator.osuID}`"
-                                    target="_blank"
-                                    class="staff-page__link"
+                            <ul>
+                                <li
+                                    v-for="nomination in selectedCategoryNominations"
+                                    :key="nomination.ID + '-nomination'"
                                 >
-                                    {{ userNominations.nominator.osuUsername }}
-                                </a>
-
-                                <ul>
-                                    <li
-                                        v-for="nomination in userNominations.nominations"
-                                        :key="nomination.ID + '-nomination'"
-                                    >
-                                        <div class="staff-nomination">
-                                            <div class="staff-nomination__info">
+                                    <div class="staff-nomination">
+                                        <div class="staff-nomination__info">
+                                            <a
+                                                class="staff-page__link"
+                                                :href="generateUrl(nomination)"
+                                                target="_blank"
+                                            >
+                                                {{ getNomineeName(nomination) }}
+                                            </a>
+                                            <div>
                                                 <a
+                                                    v-if="nomination.beatmapset && nomination.beatmapset.ID"
                                                     class="staff-page__link"
                                                     :href="generateUrl(nomination)"
                                                     target="_blank"
                                                 >
-                                                    {{ getNomineeName(nomination) }}
+                                                    {{ getSpecs(nomination) }}
                                                 </a>
-                                                <div>
-                                                    <a
-                                                        v-if="nomination.beatmapset && nomination.beatmapset.ID"
-                                                        class="staff-page__link"
-                                                        :href="generateUrl(nomination)"
-                                                        target="_blank"
-                                                    >
-                                                        {{ getSpecs(nomination) }}
-                                                    </a>
-                                                    <span
-                                                        class="staff-nomination__status"
-                                                        :class="`staff-nomination__status--${nomination.isValid ? 'valid' : 'invalid'}`"
-                                                    >
-                                                        {{ nomination.isValid ? 'valid' : 'invalid' }}
-                                                    </span>
-                                                </div>
-                                                <div v-if="nomination.reviewer">
-                                                    Last reviewed by:
-                                                    {{ nomination.reviewer }}
-                                                    at {{ new Date(nomination.lastReviewedAt).toString() }}
-                                                </div>
+                                                <span
+                                                    class="staff-nomination__status"
+                                                    :class="`staff-nomination__status--${nomination.isValid ? 'valid' : 'invalid'}`"
+                                                >
+                                                    {{ nomination.isValid ? 'valid' : 'invalid' }}
+                                                </span>
                                             </div>
-
-                                            <div class="staff-nomination__actions">
-                                                <button
-                                                    class="button button--small staff-nomination__action"
-                                                    @click="updateNomination(nomination.ID, true)"
+                                            <div v-if="nomination.reviewer">
+                                                Last reviewed by:
+                                                {{ nomination.reviewer }}
+                                                at {{ new Date(nomination.lastReviewedAt).toString() }}
+                                            </div>
+                                            <div>
+                                                Nominators:
+                                                <a
+                                                    v-for="nominator in nomination.nominators"
+                                                    :key="nominator.osuID + '-nominator'"
+                                                    :href="`https://osu.ppy.sh/users/${nominator.osuID}`"
+                                                    target="_blank"
+                                                    class="staff-page__link"
                                                 >
-                                                    accept
-                                                </button>
-                                                <button
-                                                    class="button button--small staff-nomination__action"
-                                                    @click="updateNomination(nomination.ID, false)"
-                                                >
-                                                    reject
-                                                </button>
+                                                    {{ nominator.osuUsername }}
+                                                </a>
                                             </div>
                                         </div>
-                                    </li>
-                                </ul>
-                            </div>
+
+                                        <div class="staff-nomination__actions">
+                                            <button
+                                                class="button button--small staff-nomination__action"
+                                                @click="updateNomination(nomination.ID, true)"
+                                            >
+                                                accept
+                                            </button>
+                                            <button
+                                                class="button button--small staff-nomination__action"
+                                                @click="updateNomination(nomination.ID, false)"
+                                            >
+                                                reject
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
                         </template>
                     </div>
                 </div>
@@ -135,18 +133,9 @@ import { StaffNomination } from "../../../../Interfaces/nomination";
 
 const staffModule = namespace("staff");
 
-interface UserNomination {
-    nominator: {
-        osuID: string;
-        osuUsername: string;
-        discordUsername: string;
-    },
-    nominations: StaffNomination[]
-}
-
 interface NominationsByCategory {
-    category: number;
-    userNominations: UserNomination[];
+    categoryId: number;
+    userNominations: StaffNomination[];
 }
 
 @Component({
@@ -179,21 +168,24 @@ export default class Nominations extends Vue {
     }
 
     get nominationsByCategory (): NominationsByCategory[] {
-        const groups: NominationsByCategory[] = [];
+        const categories: NominationsByCategory[] = [];
 
         for (const nomination of this.nominations) {
-            if (nomination.reviewer && !this.showReviewed) continue;
-            
-            if (!nomination.isValid && this.viewOption === "valid") continue;
-            else if (nomination.isValid && this.viewOption === "invalid") continue;
+            if (
+                (nomination.reviewer && !this.showReviewed) ||
+                (!nomination.isValid && this.viewOption === "valid") ||
+                (nomination.isValid && this.viewOption === "invalid")
+            ) {
+                continue;
+            }
 
             if (this.text) {
                 const lowerText = this.text.toLowerCase();
                 if (nomination.user?.osuID) {
                     if (
-                        !nomination.nominator.osuUsername.toLowerCase().includes(lowerText) &&
-                        !nomination.nominator.osuID.includes(lowerText) &&
-                        !nomination.nominator.discordUsername.includes(lowerText) &&
+                        !nomination.nominators.some(n => n.osuUsername.toLowerCase().includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.osuID.includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.discordUsername.includes(lowerText)) &&
                         !nomination.user.osuUsername.toLowerCase().includes(lowerText) && 
                         !nomination.user.osuID.includes(lowerText) &&
                         !nomination.user.discordUsername.toLowerCase().includes(lowerText)
@@ -201,9 +193,9 @@ export default class Nominations extends Vue {
                         continue;
                 } else if (nomination.beatmapset?.ID) {
                     if (
-                        !nomination.nominator.osuUsername.toLowerCase().includes(lowerText) &&
-                        !nomination.nominator.osuID.includes(lowerText) &&
-                        !nomination.nominator.discordUsername.includes(lowerText) &&
+                        !nomination.nominators.some(n => n.osuUsername.toLowerCase().includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.osuID.includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.discordUsername.includes(lowerText)) &&
                         !nomination.beatmapset.ID.toString().includes(lowerText) &&
                         !nomination.beatmapset.artist.toLowerCase().includes(lowerText) &&
                         !nomination.beatmapset.title.toLowerCase().includes(lowerText) &&
@@ -216,35 +208,23 @@ export default class Nominations extends Vue {
                 }
             }
 
-            const groupIndex = groups.findIndex(g => g.category === nomination.category);
+            const categoryIndex = categories.findIndex(g => g.categoryId === nomination.categoryId);
 
-            if (groupIndex !== -1) {
-                const nominatorIndex = groups[groupIndex].userNominations.findIndex(n => n.nominator.osuID === nomination.nominator.osuID);
-
-                if (nominatorIndex !== -1) {
-                    groups[groupIndex].userNominations[nominatorIndex].nominations.push(nomination);
-                } else {
-                    groups[groupIndex].userNominations.push({
-                        nominator: nomination.nominator,
-                        nominations: [nomination],
-                    });
-                }
+            if (categoryIndex !== -1) {
+                categories[categoryIndex].userNominations.push(nomination);
             } else {
-                groups.push({
-                    category: nomination.category,
-                    userNominations: [{
-                        nominator: nomination.nominator,
-                        nominations: [nomination],
-                    }],
+                categories.push({
+                    categoryId: nomination.categoryId,
+                    userNominations: [nomination],
                 });
             }
         }
 
-        return groups;
+        return categories;
     }
 
-    get selectedCategoryInfo (): UserNomination[] {
-        const group = this.nominationsByCategory.find(group => group.category === this.selectedCategoryId);
+    get selectedCategoryNominations (): StaffNomination[] {
+        const group = this.nominationsByCategory.find(group => group.categoryId === this.selectedCategoryId);
         return group?.userNominations || [];
     }
 
@@ -287,7 +267,7 @@ export default class Nominations extends Vue {
         
         const minutes = Math.floor(nomination.beatmapset.length / 60);
         const seconds = nomination.beatmapset.length - minutes * 60;
-        let time = `${minutes}:${seconds}`
+        let time = `${minutes}:${seconds}`;
         if (time.slice(-2, -1) === ":") {
             time =  time.slice(0, -1) + "0" + time.slice(-1);
         }
@@ -303,7 +283,7 @@ export default class Nominations extends Vue {
         }
     }
 
-    async updateNomination (id: number, isValid) {
+    async updateNomination (id: number, isValid: boolean) {
         const { data } = await this.$axios.post(`/api/staff/nominations/${id}/update`, {
             isValid,
         });
@@ -311,7 +291,7 @@ export default class Nominations extends Vue {
         if (!data.error) {
             this.updateLocalNomination(id, data);
         } else {
-            alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)")
+            alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)");
             console.error(data.error);
         }
     }
