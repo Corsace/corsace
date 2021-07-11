@@ -18,7 +18,7 @@ import { Vue, Prop, Component } from "vue-property-decorator";
 import { ResultColumn } from "../../../Interfaces/result";
 
 @Component({})
-export default class ResultsFilters extends Vue {
+export default class ResultsTableHeadings extends Vue {
     @Prop({ type: String, default: ""}) readonly section!: string;
     @Prop({ type: Array, required: true}) readonly columns!: ResultColumn[];
     @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
@@ -63,6 +63,7 @@ export default class ResultsFilters extends Vue {
     &-centred {
         display: flex;
         justify-content: center;
+        text-align: center;
     }
 
     &-prio {

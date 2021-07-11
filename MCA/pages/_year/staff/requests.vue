@@ -4,20 +4,22 @@
             Requests
         </div>
 
-        <button
-            v-if="!showValidated"
-            @click="showValidated = true"
-            class="button"
-        >
-            Show Validated
-        </button>
-        <button
-            v-else
-            @click="showValidated = false"
-            class="button"
-        >
-            Hide Validated
-        </button>
+        <div class="staff-filters">
+            <button
+                v-if="!showValidated"
+                @click="showValidated = true"
+                class="button req-filter-btn"
+            >
+                Show Validated
+            </button>
+            <button
+                v-else
+                @click="showValidated = false"
+                class="button req-filter-btn"
+            >
+                Hide Validated
+            </button>
+        </div>
 
         <div class="staff-container">
             <div class="staff-container staff-scrollTrack">
@@ -31,19 +33,29 @@
                             class="staff-request"
                         >
                             <div class="staff-request__info">
-                                <a
-                                    :href="`https://osu.ppy.sh/users/${request.userID}`"
-                                    target="_blank"
-                                    class="staff-page__link"
-                                    :class="`staff-page__link--${request.modeName}`"
-                                >
-                                    {{ request.username }} - {{ request.modeName }}
-                                </a>
+                                <span class="staff-user">
+                                    <a
+                                        :href="`https://osu.ppy.sh/users/${request.userID}`"
+                                        target="_blank"
+                                    >
+                                        <img
+                                            :src="`https://a.ppy.sh/${request.userID}`"
+                                            class="staff-user__avatar"
+                                        >
+                                    </a>
+                                    <a
+                                        :href="`https://osu.ppy.sh/users/${request.userID}`"
+                                        target="_blank"
+                                        class="staff-user__link"
+                                    >
+                                        {{ request.username }}
+                                    </a>
+                                </span>
 
                                 <a
                                     :href="generateUrl(request)"
                                     target="_blank"
-                                    class="staff-page__link"
+                                    class="staff-page__link staff-request__link"
                                     :class="`staff-page__link--${request.modeName}`"
                                 >
                                     beatmap link
@@ -134,16 +146,28 @@ export default class StaffRequests extends Vue {
 @use '@s-sass/_partials';
 @import '@s-sass/_variables';
 
+$icon-size: 45px;
+$icon-margin: 15px;
+
+.req-filter-btn {
+    flex: 1;
+    padding: 9.5px;
+}
+
 .staff-request {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    font-size: $font-lg;
 
     &__info {
         flex: 1;
         display: flex;
         justify-content: space-evenly;
+    }
+
+    &__link {
+        text-align: right;
     }
 
     &__status {

@@ -12,10 +12,14 @@ staffVotesRouter.use(isStaff);
 
 // Endpoint for getting information for a category
 staffVotesRouter.get("/", async (ctx) => {
-    let categoryID = ctx.query.category;
+    let [categoryID, start] = [ctx.query.category, ctx.query.start];
+    const maxTake = 101;
     
     if (!categoryID || !/\d+/.test(categoryID))
         return ctx.body = { error: "Invalid category ID given!" };
+
+    if (start && !/\d+/.test(start))
+        return ctx.body = { error: "Invalid start index given!" };
 
     categoryID = parseInt(categoryID);
 
@@ -51,9 +55,11 @@ staffVotesRouter.get("/", async (ctx) => {
                                 .where("category.ID = :id", { id: categoryID })
                                 .groupBy("vote.ID")
                                 .orderBy("vote.voterID", "DESC")
+                                .offset(isNaN(start) ? 0 : start)
+                                .limit(isNaN(start) ? 0 : maxTake)
                                 .getRawMany();
 
-    const staffVotes = votes.map(vote => {
+    let staffVotes = votes.map(vote => {
         let staffVote = {
             ID: vote.ID,
             category: vote.categoryID,
@@ -88,7 +94,23 @@ staffVotesRouter.get("/", async (ctx) => {
         return staffVote;
     });
 
-    ctx.body = staffVotes;
+    if (!start) {
+        ctx.body = { staffVotes };
+        return;
+    }
+
+    // ensure data doesn't cut off between voters
+    let end = -1;
+    let i = staffVotes.length - 1;
+    for (; i > 0; --i) {
+        if (staffVotes[i].voter.osuID !== staffVotes[i-1].voter.osuID) {
+            end = start + i;
+            break;
+        }
+    }
+    staffVotes = staffVotes.slice(0, i === 0 ? undefined : i);
+
+    ctx.body = { staffVotes, nextStart: end };
 });
 
 staffVotesRouter.delete("/:id/:user", validatePhaseYear, async (ctx) => {
