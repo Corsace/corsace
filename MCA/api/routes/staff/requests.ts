@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
-import { currentMCA } from "../../../../MCA-AYIM/api/middleware";
+import { validatePhaseYear } from "../../../../MCA-AYIM/api/middleware";
 import { GuestRequest } from "../../../../Models/MCA_AYIM/guestRequest";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
@@ -10,9 +10,8 @@ const staffRequestsRouter = new Router;
 
 staffRequestsRouter.use(isLoggedInDiscord);
 staffRequestsRouter.use(isStaff);
-staffRequestsRouter.use(currentMCA);
 
-staffRequestsRouter.get("/", async (ctx) => {
+staffRequestsRouter.get("/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const requests = await GuestRequest
                             .createQueryBuilder("guestReq")

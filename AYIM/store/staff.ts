@@ -27,16 +27,14 @@ export const getters: GetterTree<StaffState, RootState> = {
 };
 
 export const actions: ActionTree<StaffState, RootState> = {
-    async setMca ({ commit }) {
-        const { data } = await this.$axios.get(`/api/staff`);
+    async setMca ({ commit }, year: number) {
+        const { data } = await this.$axios.get(`/api/staff/${year}`);
 
         if (!data.error) {
             commit("setMca", data);
         }
     },
-    async setInitialData ({ dispatch }) {
-        await Promise.all([
-            dispatch("setMca"),
-        ]);
+    async setInitialData ({ dispatch }, year: number) {
+        await dispatch("setMca", year);
     },
 };

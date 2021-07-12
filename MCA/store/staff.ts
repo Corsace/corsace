@@ -42,32 +42,32 @@ export const getters: GetterTree<StaffState, RootState> = {
 };
 
 export const actions: ActionTree<StaffState, RootState> = {
-    async setMca ({ commit }) {
-        const { data } = await this.$axios.get(`/api/staff`);
+    async setMca ({ commit }, year: number) {
+        const { data } = await this.$axios.get(`/api/staff/${year}`);
 
         if (!data.error) {
             commit("setMca", data);
         }
     },
-    async setCategories ({ commit }) {
-        const { data } = await this.$axios.get(`/api/staff/categories`);
+    async setCategories ({ commit }, year: number) {
+        const { data } = await this.$axios.get(`/api/staff/categories/${year}`);
 
         if (!data.error) {
             commit("setCategories", data);
         }
     },
-    async setRequests ({ commit }) {
-        const { data } = await this.$axios.get(`/api/staff/requests`);
+    async setRequests ({ commit }, year: number) {
+        const { data } = await this.$axios.get(`/api/staff/requests/${year}`);
 
         if (!data.error) {
             commit("setRequests", data);
         }
     },
-    async setInitialData ({ dispatch }) {
+    async setInitialData ({ dispatch }, year: number) {
         await Promise.all([
-            dispatch("setMca"),
-            dispatch("setCategories"),
-            dispatch("setRequests"),
+            dispatch("setMca", year),
+            dispatch("setCategories", year),
+            dispatch("setRequests", year),
         ]);
     },
     async updateRequest ({ commit }, payload: UpdateRequestData) {
