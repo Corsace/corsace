@@ -14,7 +14,15 @@
             </div>
 
             <a
-                v-if="phase && phase.phase !== 'preparation' && isEligibleFor(selectedMode)"
+                v-if="phase && phase.phase === 'results'"
+                class="vote-now"
+                :class="`vote-now--${selectedMode}`"
+                :href="`/${phase.year}/${phase.phase}`"
+            >
+                {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
+            </a>
+            <a
+                v-else-if="phase && phase.phase !== 'preparation' && isEligibleFor(selectedMode)"
                 class="vote-now"
                 :class="`vote-now--${selectedMode}`"
                 :href="`/${phase.year}/${phase.phase}`"
