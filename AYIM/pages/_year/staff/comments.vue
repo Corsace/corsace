@@ -162,7 +162,7 @@ export default class StaffComments extends Vue {
         this.loading = true;
         this.comments = [];
 
-        let url = `/api/staff/comments`;
+        let url = `/api/staff/comments/${this.$route.params.year}`;
         if (!this.showValidated) url += "?filter=true";
         if (this.text) url += (url.includes("?") ? "&" : "?") + `text=${this.text}`
 
@@ -187,7 +187,7 @@ export default class StaffComments extends Vue {
         if (this.end) return;
 
         this.loading = true;
-        let url = `/api/staff/comments?skip=${this.comments.length}`;
+        let url = `/api/staff/comments/${this.$route.params.year}?skip=${this.comments.length}`;
         if (!this.showValidated) url += "&filter=true";
         if (this.text) url += `&text=${this.text}`
 

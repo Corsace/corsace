@@ -20,7 +20,7 @@ export default async function ({ redirect, error, route, store }: Context) {
 
     if (route.path.includes("staff")) {
         if (store.hasModule("staff") && store.getters.isMCAStaff && !store.state.staff?.mca)
-            await store.dispatch("staff/setInitialData");
+            await store.dispatch("staff/setInitialData", year);
         else if (!store.hasModule("staff") || !store.getters.isMCAStaff)
             throw { statusCode: 403 };
     }

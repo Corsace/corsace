@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import { isLoggedInDiscord, isMCAStaff } from "../../../../Server/middleware";
 import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
-import { currentMCA } from "../../../../MCA-AYIM/api/middleware";
+import { validatePhaseYear } from "../../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { StaffComment } from "../../../../Interfaces/comment";
 import { Brackets } from "typeorm";
@@ -10,9 +10,8 @@ const commentsReviewRouter = new Router();
 
 commentsReviewRouter.use(isLoggedInDiscord);
 commentsReviewRouter.use(isMCAStaff);
-commentsReviewRouter.use(currentMCA);
 
-commentsReviewRouter.get("/", async (ctx) => {
+commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(ctx.query.skip) : 0;
