@@ -48,9 +48,6 @@ export class Category extends BaseEntity {
     @Column()
     maxNominations!: number;
 
-    @Column({ default: false })
-    requiresVetting!: boolean;
-
     @Column(() => CategoryFilter)
     filter?: CategoryFilter;
 
@@ -80,7 +77,6 @@ export class Category extends BaseEntity {
             id: this.ID,
             name: this.name,
             maxNominations: this.maxNominations,
-            requiresVetting: this.requiresVetting,
             type: CategoryType[this.type],
             mode: this.mode.name,
             isFiltered: this.filter && (this.filter.minLength || this.filter.maxLength || this.filter.minBPM || this.filter.maxBPM || this.filter.minSR || this.filter.maxSR || this.filter.minCS || this.filter.maxCS) ? true : false,
@@ -135,7 +131,6 @@ export class CategoryGenerator {
         
         category.name = categoryInfo.name;
         category.maxNominations = categoryInfo.maxNominations || 3;
-        category.requiresVetting = categoryInfo.requiresVetting || false;
         category.type = categoryInfo.type;
         category.mode = categoryInfo.mode;
         category.mca = categoryInfo.mca;
