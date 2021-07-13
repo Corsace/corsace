@@ -30,10 +30,10 @@ app.koa.use(mount("/nominating", nominatingRouter.routes()));
 app.koa.use(mount("/voting", votingRouter.routes()));
 app.koa.use(mount("/results", resultsRouter.routes()));
 
-app.koa.use(mount("/staff", staffRouter.routes()));
 app.koa.use(mount("/staff/nominations", staffNominationsRouter.routes()));
 app.koa.use(mount("/staff/votes", staffVotesRouter.routes()));
 app.koa.use(mount("/staff/requests", staffRequestsRouter.routes()));
+app.koa.use(mount("/staff", staffRouter.routes()));
 
 app.koa.use(mount("/admin", adminRouter.routes()));
 app.koa.use(mount("/admin/years", adminCategoriesRouter.routes()));
