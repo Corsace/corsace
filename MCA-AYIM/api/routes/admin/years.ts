@@ -47,8 +47,8 @@ adminYearsRouter.post("/", validate, async (ctx) => {
     // Create the grand awards
     const modes = await ModeDivision.find();
     for (const mode of modes) {
-        const userGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Users);
-        const mapGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Beatmapsets);
+        const userGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Users, mode.name === "storyboard");
+        const mapGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Beatmapsets, mode.name === "storyboard");
 
         await Promise.all([userGrand.save(), mapGrand.save()]);
     }

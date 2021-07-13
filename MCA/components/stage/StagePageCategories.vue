@@ -85,7 +85,7 @@ export default class StagePageCategories extends Vue {
 
     filterCategories (type: CategoryType): CategoryStageInfo[] {
         return this.categoriesInfo
-            .filter(c => c.type === CategoryType[type] && c.mode === this.selectedMode);
+            .filter(c => c.type === CategoryType[type] && (c.mode === this.selectedMode || c.mode === "storyboard"));
     }
 
 }

@@ -110,7 +110,7 @@ export class CategoryGenerator {
     /**
      * Creates a grand award.
      */
-    public createGrandAward = function(mca: MCA, mode: ModeDivision, type: CategoryType): Category {
+    public createGrandAward = function(mca: MCA, mode: ModeDivision, type: CategoryType, isStoryboard: boolean = false): Category {
         const category = new Category;
         
         category.name = "grandAward";
@@ -118,6 +118,9 @@ export class CategoryGenerator {
         category.type = type;
         category.mode = mode;
         category.mca = mca;
+
+        if (isStoryboard)
+            category.name = category.type === CategoryType.Beatmapsets ? "grandStoryboard" : "grandStoryboarder";
 
         return category;
     }

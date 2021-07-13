@@ -1,7 +1,7 @@
 <template>
     <div class="staff-page">
         <mode-switcher
-            :hide-phase="true"
+            hide-phase
             title="voting"
         >
             <div class="staff-filters">
@@ -200,7 +200,7 @@ export default class Votes extends Vue {
     selectStart: number = 0;
 
     get relatedCategories (): CategoryInfo[] {
-        return this.categories.filter(c => c.mode === this.selectedMode);
+        return this.categories.filter(c => c.mode === this.selectedMode || c.mode === "storyboard");
     }
 
     get votesByCategory (): VotesByCategory[] {

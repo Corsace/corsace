@@ -135,6 +135,14 @@
                 "name": "Grand Award",
                 "description": "The best of the best."
             },
+            "grandStoryboard": {
+                "name": "Grand Storyboard",
+                "description": "The best storyboard out there."
+            },
+            "grandStoryboarder": {
+                "name": "Grand Storyboarder",
+                "description": "The best storyboarder out there."
+            },
             "marathon": {
                 "name": "Marathon",
                 "description": "The best set with 5+ minute drain time."
