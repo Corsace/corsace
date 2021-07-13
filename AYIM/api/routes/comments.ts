@@ -49,6 +49,13 @@ commentsRouter.get("/", async (ctx) => {
     const modeString: string = ctx.query.mode || "standard";
     const modeID = ModeDivisionType[modeString];
 
+    if (year === 2020) {
+        ctx.body = {
+            error: "MCA 2020 is not running comments for AYIM. Sorry for the inconvenience.",
+        }
+        return;
+    }
+
     const mca = await MCA.findOneOrFail({
         year,
     });
@@ -109,6 +116,13 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
         return ctx.body = {
             error: "Missing data",
         };
+    }
+
+    if (year === 2020) {
+        ctx.body = {
+            error: "MCA 2020 is not running comments for AYIM. Sorry for the inconvenience.",
+        }
+        return;
     }
 
     const mca = await MCA.findOneOrFail({
