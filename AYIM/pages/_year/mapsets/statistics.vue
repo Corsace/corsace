@@ -54,6 +54,15 @@ import { MCA } from "../../../../Interfaces/mca";
     head () {
         return {
             title: "Mapsets' Statistics | AYIM",
+            meta: [
+                { name: "description", content: "The statistics related to mapsets in A Year in Mapping." },
+                { property: "og:title", content: "Mapsets' Statistics | AYIM" },
+                { property: "og:type", content: "website" },
+                { property: "og:url", content: "https://ayim.corsace.io" },
+                { property: "og:description", content: "The statistics related to mapsets in A Year in Mapping." },
+                { property: "og:site_name", content: "AYIM" },
+                { name: "theme-color", content: "#fb2475" }
+            ]
         };
     },
 })

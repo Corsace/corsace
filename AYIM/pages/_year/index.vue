@@ -33,6 +33,15 @@ import IndexPage from "../../components/IndexPage.vue";
     head () {
         return {
             title: "A Year in Mapping",
+            meta: [
+                { name: "description", content: "A Year in Mapping details the records and statistics from each year for the osu! ranked section." },
+                { property: "og:title", content: "A Year in Mapping" },
+                { property: "og:type", content: "website" },
+                { property: "og:url", content: "https://ayim.corsace.io" },
+                { property: "og:description", content: "A Year in Mapping details the records and statistics from each year for the osu! ranked section." },
+                { property: "og:site_name", content: "AYIM" },
+                { name: "theme-color", content: "#fb2475" }
+            ]
         };
     },
 })

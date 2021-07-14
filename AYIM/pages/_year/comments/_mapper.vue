@@ -128,9 +128,20 @@ import { MCA } from "../../../../Interfaces/mca";
     },
     head () {
         return {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             title: `${this.user?.osu.username} Comments | AYIM`,
+            meta: [
+                // @ts-ignore
+                { name: "description", content: `Comments for ${this.user?.osu.username} A Year in Mapping.` },
+                // @ts-ignore
+                { property: "og:title", content: `${this.user?.osu.username} Comments | AYIM` },
+                { property: "og:type", content: "website" },
+                { property: "og:url", content: "https://ayim.corsace.io" },
+                // @ts-ignore
+                { property: "og:description", content: `Comments for ${this.user?.osu.username} A Year in Mapping.` },
+                { property: "og:site_name", content: "AYIM" },
+                { name: "theme-color", content: "#fb2475" }
+            ]
         };
     },
 })

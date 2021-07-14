@@ -73,6 +73,15 @@ import { MCA, Phase } from "../../../Interfaces/mca";
     head () {
         return {
             title: "Mappers' Choice Awards",
+            meta: [
+                { name: "description", content: "Mappers' Choice Awards is the osu!-related awards event for ranked mappers and members of the mapping community to decide what the beatmaps and who the best users were each year." },
+                { property: "og:title", content: "Mappers' Choice Awards" },
+                { property: "og:type", content: "website" },
+                { property: "og:url", content: "https://mca.corsace.io" },
+                { property: "og:description", content: "Mappers' Choice Awards is the osu!-related awards event for ranked mappers and members of the mapping community to decide what the beatmaps and who the best users were each year." },
+                { property: "og:site_name", content: "MCA" },
+                { name: "theme-color", content: "#fb2475" }
+            ]
         };
     },
 })

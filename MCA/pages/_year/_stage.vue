@@ -77,6 +77,15 @@ import { UserMCAInfo } from "../../../Interfaces/user";
     head () {
         return {
             title: `${this.$route.params.stage} | MCA`,
+            meta: [
+                { name: "description", content: `Mappers' Choice Awards ${this.$route.params.stage} stage is the ${this.$route.params.stage} stage for the osu!-related awards event for mappers for the ${this.$route.params.year ?? (new Date()).getUTCFullYear()} year.` },
+                { property: "og:title", content: `${this.$route.params.stage} | MCA` },
+                { property: "og:type", content: "website" },
+                { property: "og:url", content: "https://mca.corsace.io" },
+                { property: "og:description", content: `Mappers' Choice Awards ${this.$route.params.stage} stage is the ${this.$route.params.stage} stage for the osu!-related awards event for mappers for the ${this.$route.params.year ?? (new Date()).getUTCFullYear()} year.` },
+                { property: "og:site_name", content: "MCA" },
+                { name: "theme-color", content: "#fb2475" }
+            ]
         };
     },
 })

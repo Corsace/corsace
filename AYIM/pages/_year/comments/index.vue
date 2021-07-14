@@ -131,6 +131,15 @@ import { MCA, Phase } from "../../../../Interfaces/mca";
     head () {
         return {
             title: "Users' Comments | AYIM",
+            meta: [
+                { name: "description", content: "The list of users for comments in A Year in Mapping." },
+                { property: "og:title", content: "Users' Comments | AYIM" },
+                { property: "og:type", content: "website" },
+                { property: "og:url", content: "https://ayim.corsace.io" },
+                { property: "og:description", content: "The list of users for comments in A Year in Mapping." },
+                { property: "og:site_name", content: "AYIM" },
+                { name: "theme-color", content: "#fb2475" }
+            ]
         };
     },
 })
