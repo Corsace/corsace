@@ -12,11 +12,13 @@ export default {
         meta: [
             { charset: "utf-8" },
             { name: "viewport", content: "width=device-width, initial-scale=1" },
-            {
-                hid: "description",
-                name: "description",
-                content: "MCA",
-            },
+            { hid: "description", name: "description", content: "Mappers' Choice Awards is the osu!-related awards event for ranked mappers and members of the mapping community to decide what the beatmaps and who the best users were each year." },
+            { hid: "og:title", property: "og:title", content: "Mappers' Choice Awards" },
+            { hid: "og:type", property: "og:type", content: "website" },
+            { hid: "og:url", property: "og:url", content: "https://mca.corsace.io" },
+            { hid: "og:description", property: "og:description", content: "Mappers' Choice Awards is the osu!-related awards event for ranked mappers and members of the mapping community to decide what the beatmaps and who the best users were each year." },
+            { hid: "og:site_name", property: "og:site_name", content: "MCA" },
+            { hid: "theme-color", name: "theme-color", content: "#fb2475" }
         ],
     },
 } as NuxtConfig;
