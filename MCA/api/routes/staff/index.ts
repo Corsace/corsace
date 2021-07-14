@@ -8,10 +8,9 @@ const staffRouter = new Router;
 
 staffRouter.use(isLoggedInDiscord);
 staffRouter.use(isStaff);
-staffRouter.use(validatePhaseYear);
 
 // Endpoint to obtain current MCA and its info
-staffRouter.get("/:year", async (ctx) => {
+staffRouter.get("/:year", validatePhaseYear, async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -19,7 +18,7 @@ staffRouter.get("/:year", async (ctx) => {
 });
 
 // Endpoint for getting information for a year
-staffRouter.get("/categories/:year", async (ctx) => {
+staffRouter.get("/categories/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const categories = await Category.find({
         mca,

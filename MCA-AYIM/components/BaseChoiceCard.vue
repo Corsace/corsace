@@ -64,11 +64,12 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { Getter, namespace } from "vuex-class";
 
 import { StageType } from "../../MCA-AYIM/store/stage";
 import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
+import { Phase } from "../../Interfaces/mca";
 
 const stageModule = namespace("stage");
 
@@ -76,6 +77,9 @@ const stageModule = namespace("stage");
 export default class BaseChoiceCard extends Vue {
 
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
+
+    
+    @Getter phase!: Phase | null;
 
     @stageModule.State selected!: boolean;
     @stageModule.State stage!: StageType;
@@ -107,6 +111,7 @@ export default class BaseChoiceCard extends Vue {
 
     async vote () {
         if (this.selected) return;
+        if (!this.phase || this.phase.phase !== this.stage) return;
 
         this.currentSelected = true;
 
@@ -133,6 +138,7 @@ export default class BaseChoiceCard extends Vue {
 
     async nominate () {
         if (this.selected) return;
+        if (!this.phase || this.phase.phase !== this.stage) return;
 
         this.currentSelected = true;
 

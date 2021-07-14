@@ -47,7 +47,9 @@
         </div>
 
         <div :class="{'right-side': phase, 'full-side': !phase}">
-            <mode-switcher hide-phase>
+            <mode-switcher 
+                hide-phase
+            >
                 <index-page />
             </mode-switcher>
         </div>

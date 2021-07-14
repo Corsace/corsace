@@ -64,17 +64,22 @@ async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> 
 }
 
 async function validatePhaseYear (ctx: ParameterizedContext, next: Next): Promise<any> {
-    let year = ctx.params.year;
-    if (!year || !/20\d\d/.test(year)) {
-        ctx.state.mca = await MCA.current();
-        year = ctx.state.mca.year;
-    } else {
-        year = parseInt(year, 10);
-        ctx.state.mca = await MCA.findOneOrFail(year);
+    try {
+        let year = ctx.params.year;
+        if (!year || !/20\d\d/.test(year)) {
+            ctx.state.mca = await MCA.current();
+            year = ctx.state.mca.year;
+        } else {
+            year = parseInt(year, 10);
+            ctx.state.mca = await MCA.findOneOrFail(year);
+        }
+
+        ctx.state.year = year;
+    } catch (e) {
+        ctx.body = { error: "No Currently running MCA found." }
+        return;
     }
-
-    ctx.state.year = year;
-
+    
     await next();
 }
 

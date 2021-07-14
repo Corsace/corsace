@@ -143,14 +143,6 @@ votingRouter.delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, as
         ],
     });
 
-    const allUserVotes = await Vote.find({
-        where: {
-            voter: ctx.state.user.ID,
-        },
-        relations: [
-            "category",
-        ],
-    });
     const otherUserVotes = await Vote.find({
         ID: Not(ctx.params.id),
         voter: ctx.state.user,

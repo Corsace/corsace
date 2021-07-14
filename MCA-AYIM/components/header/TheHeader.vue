@@ -78,6 +78,7 @@
         <transition name="fade">
             <the-header-dropdown
                 v-if="showDropdown"
+                :site="site"
                 @showLoginModal="toogleLoginModal"
                 @close="showDropdown = false"
             />

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div
-            v-if="onTime"
+            v-if="onTime && !remainingDays.includes('-')"
             class="remaining-days" 
             :class="`remaining-days--${selectedMode}`"
         >
@@ -25,6 +25,7 @@
             <mode-switcher
                 stretch
                 enable-mode-eligibility
+                :hidePhase="phase.phase !== $route.params.stage"
                 @inactiveModeClicked="toggleGuestDifficultyModal"
             >
                 <stage-page />
@@ -58,7 +59,7 @@ import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import NoticeModal from "../../../MCA-AYIM/components/NoticeModal.vue";
 import StagePage from "../../components/stage/StagePage.vue";
 
-import { Phase } from "../../../Interfaces/mca";
+import { MCA, Phase } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component({
@@ -83,6 +84,7 @@ export default class Stage extends Vue {
 
     @State selectedMode!: string;
     @State loggedInUser!: UserMCAInfo;
+    @State mca!: MCA | null;
     @Getter phase!: Phase | null;
     @Mutation toggleGuestDifficultyModal;
     
@@ -101,7 +103,7 @@ export default class Stage extends Vue {
     }
 
     get onTime () {
-        return this.phase?.phase && this.phase.phase === this.$route.params.stage && (this.phase.phase === "nominating" || this.phase.phase === "voting");
+        return this.phase?.phase && (((this.phase.phase === "nominating" || this.phase.phase === "voting") && this.phase.phase === this.$route.params.stage) || (this.mca && this.mca[this.$route.params.stage === 'nominating' ? 'nomination' : this.$route.params.stage].start <= new Date()));
     }
 
     goBack () {

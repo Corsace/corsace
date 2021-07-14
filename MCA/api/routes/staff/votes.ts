@@ -113,7 +113,7 @@ staffVotesRouter.get("/", async (ctx) => {
     ctx.body = { staffVotes, nextStart: end };
 });
 
-staffVotesRouter.delete("/:id/:user", validatePhaseYear, async (ctx) => {
+staffVotesRouter.delete("/:id/:user", async (ctx) => {
     const vote = await Vote.findOneOrFail({
         where: {
             ID: ctx.params.id,

@@ -23,6 +23,7 @@
                 {{ $t('ayim.mappers.name') }}
             </nuxt-link>
             <nuxt-link
+                v-if="mca.year !== 2020"
                 :to="`/${mca.year}/comments`"
                 class="ayim-nav__item button"
             >
