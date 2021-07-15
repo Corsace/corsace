@@ -3,7 +3,7 @@ import { ModeDivision } from "./modeDivision";
 import { Nomination } from "./nomination";
 import { Vote } from "./vote";
 import { MCA } from "./mca";
-import { CategoryInfo, CategoryType } from "../../Interfaces/category";
+import { CategoryCondensedInfo, CategoryInfo, CategoryType } from "../../Interfaces/category";
 
 export class CategoryFilter {
 
@@ -82,6 +82,14 @@ export class Category extends BaseEntity {
             isFiltered: this.filter && (this.filter.minLength || this.filter.maxLength || this.filter.minBPM || this.filter.maxBPM || this.filter.minSR || this.filter.maxSR || this.filter.minCS || this.filter.maxCS) ? true : false,
             filter: this.filter ?? undefined, 
         };
+    }
+
+    public getCondensedInfo = function(this: Category): CategoryCondensedInfo {
+        return {
+            name: this.name,
+            type: CategoryType[this.type],
+            mode: this.mode.name,
+        }
     }
 
     public setFilter = function(this: Category, params?: CategoryFilter): void {
