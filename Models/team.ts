@@ -12,8 +12,11 @@ export class Team extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
 
-    @Column("varchar", { length: 30 })
+    @Column()
     name!: string;
+
+    @Column()
+    slug!: string;
 
     @CreateDateColumn()
     created!: Date;

@@ -4,7 +4,6 @@
    "description": "Everything Corsace",
    "main": "index.ts",
    "dependencies": {
-      "@koa/multer": "^3.0.0",
       "@koa/router": "^10.0.0",
       "@nuxt/typescript-runtime": "^2.0.0",
       "@nuxtjs/axios": "^5.12.5",
@@ -18,7 +17,6 @@
       "koa-session": "^6.1.0",
       "lodash": "^4.17.20",
       "lru-cache": "^4.1.5",
-      "multer": "^1.4.2",
       "mysql": "^2.18.1",
       "node-config-ts": "^3.1.0",
       "nuxt": "^2.14.12",
@@ -40,7 +38,6 @@
       "@nuxt/typescript-build": "^2.0.3",
       "@types/async": "^3.2.5",
       "@types/koa": "^2.11.6",
-      "@types/koa__multer": "^2.0.2",
       "@types/koa__router": "^8.0.3",
       "@types/koa-bodyparser": "^4.3.0",
       "@types/koa-cash": "^4.0.0",

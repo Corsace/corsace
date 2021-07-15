@@ -71,7 +71,7 @@ export class User extends BaseEntity {
     invitations!: TeamInvitation[];
 
     @ManyToOne(() => Team, team => team.players)
-    team!: Team;
+    team?: Team;
 
     @OneToOne(() => Team, team => team.captain)
     @JoinColumn()
