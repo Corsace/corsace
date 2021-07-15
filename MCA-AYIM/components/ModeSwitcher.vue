@@ -1,13 +1,5 @@
 <template>
     <div class="main-container">
-        <div class="mode-title-container">
-            <slot name="title" />
-            <div class="mode-title">
-                {{ selectedMode }} 
-                <span v-if="!hidePhase && phase">| {{ $t(`mca.main.${phase.phase}`) }}</span>
-                <span v-if="title">| {{ title }}</span>
-            </div>
-        </div>
         
         <div
             class="mode-wrapper"
@@ -139,7 +131,7 @@ $icon-margin: 15px;
     }
 }
 
-$max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // Consider mode selection space 85px~
+$max-height-container: calc(100% - #{$icon-size} + 15px); // Consider mode selection space 85px~
 
 .mode-wrapper {
     display: flex;
