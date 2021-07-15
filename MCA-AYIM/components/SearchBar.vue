@@ -127,7 +127,8 @@ export default class SearchBar extends Vue {
     display: flex;
     justify-content: space-between;
     & > * {
-        flex: 1;
+        white-space: nowrap;
+        flex: 1 1 auto;
         padding: 9.5px 5px;
         margin: 5px;
     }

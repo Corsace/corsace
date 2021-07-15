@@ -136,7 +136,7 @@ export default class ResultsFilters extends Vue {
 
 // this determines the width of stage-page-filters at which it wraps below
 //   the dropdowns
-$two-row-breakpoint: 56rem;
+$two-row-breakpoint: 35rem;
 
 .results-filters {
     top: 30%;
