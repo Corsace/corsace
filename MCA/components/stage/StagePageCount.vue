@@ -28,7 +28,7 @@ export default class StateContent extends Vue {
     get remainingDays (): string {
         if (this.phase) {
             const date = Math.floor((this.phase.endDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-            return date > 9 ? date.toString() : "0" + date;
+            return date > 9 ? date.toString() : "0" + Math.max(0, date);
         }
 
         return "0";
