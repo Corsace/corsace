@@ -13,7 +13,9 @@
                 {{ choice.username }}
             </div>
             <div class="choice__info-secondary">
-                {{ choice.otherNames.length ? choice.otherNames.join(", ") : "&#x2800;" }}
+                <span class="choice__info-artist">
+                    {{ choice.otherNames.length ? choice.otherNames.join(", ") : "&#x2800;" }}
+                </span>
             </div>
         </a>
     </base-choice-card>
