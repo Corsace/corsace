@@ -205,7 +205,7 @@
             },
             "experimental": {
                 "name": "Experimental",
-                "description": "The best \"tech\"/off meta set."
+                "description": "The best \"tech\" / off meta set."
             },
             "stream": {
                 "name": "Stream",
@@ -273,7 +273,27 @@
             },
             "hybrid": {
                 "name": "Hybrid",
-                "description": "The best beatmap utilizing both LN and Rice."
+                "description": "The best beatmap which showcases substantial amounts of both LN and rice patterning."
+            },
+            "highBPMAlternator": {
+                "name": "High BPM / Alternator",
+                "description": "The best beatmap which provides fast tapping / aim."
+            },
+            "vanilla": {
+                "name": "Vanilla",
+                "description": "The best beatmap to use simple design and rhythm to outstanding use."
+            },
+            "complex": {
+                "name": "Complex rhythm / Swing",
+                "description": "The best beatmap at implementing of irregular snapping and / or swing elements."
+            },
+            "unorthodox": {
+                "name": "Unorthodox / Gimmick",
+                "description": "The best beatmap in applying mapping techniques and ideas rarely seen."
+            },
+            "sliderTech": {
+                "name": "Slider Tech",
+                "description": "The best beatmap showcasing heavy SV usage and intricate slider patterning / design."
             }
         },
         "nom_vote": {
