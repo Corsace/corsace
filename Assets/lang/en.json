@@ -258,6 +258,22 @@
             "narrative": {
                 "name": "Narrative",
                 "description": "The best storyboard in telling a great story."
+            },
+            "technicalTaiko": {
+                "name": "Technical",
+                "description": "The best beatmap rich in complex patterning and snap combinations."
+            },
+            "fastTaiko": {
+                "name": "Fast",
+                "description": "The best beatmap with fast tapping and high SV."
+            },
+            "slowTaiko": {
+                "name": "Slow",
+                "description": "The best beatmap with slow tapping and low SV."
+            },
+            "hybrid": {
+                "name": "Hybrid",
+                "description": "The best beatmap utilizing both LN and Rice."
             }
         },
         "nom_vote": {
