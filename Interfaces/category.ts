@@ -12,12 +12,15 @@ export interface CategoryFilter {
     rookie?: boolean;
 }
 
-export interface CategoryInfo {
-    id: number;
+export interface CategoryCondensedInfo {
     name: string;
-    maxNominations: number;
     type: string;
     mode: string;
+}
+
+export interface CategoryInfo extends CategoryCondensedInfo {
+    id: number;
+    maxNominations: number;
 
     isFiltered: boolean;
     filter?: CategoryFilter;

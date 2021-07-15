@@ -42,6 +42,7 @@ export default (subSite: string): Partial<NuxtConfig> => ({
         "../MCA-AYIM/assets/sass/main.scss",
     ],
     build: {
+        optimizeCSS: true,
         extend (config) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             config.resolve!.alias!["@s-sass"] = path.join(__dirname, "../MCA-AYIM/assets/sass");
