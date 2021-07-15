@@ -3,6 +3,7 @@
         <div class="results-wrapper">
             <mode-switcher
                 hidePhase
+                hideTitle
                 :title="$t(`mca.main.results`)"
             >
                 <div class="results-general"> 
@@ -144,7 +145,7 @@ export default class Results extends Vue {
     padding-top: 10px;
 
     @include breakpoint(laptop) {
-        padding-top: 50px;
+        padding-top: 25px;
         height: 100%;
     }
 }

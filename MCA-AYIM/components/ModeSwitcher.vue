@@ -16,7 +16,7 @@
             class="mode-wrapper"
             :class="[
                 'mode-wrapper--' + selectedMode, 
-                tablet ? 'mode-wrapper--tablet' : 'mode-wrapper--laptop',
+                { 'mode-wrapper--hideTitle': hideTitle },
                 { 'mode-wrapper--stretch': stretch },
                 'mode-wrapper--skip-' + ignoreModes.length,
             ]"
@@ -143,7 +143,7 @@ $icon-margin: 15px;
     }
 }
 
-$max-height-container: calc(100% - #{$mode-selection-padding});
+$max-height-container: calc(100% - #{$icon-size} - #{$mode-selection-padding});
 
 .mode-wrapper {
     display: flex;
@@ -152,21 +152,17 @@ $max-height-container: calc(100% - #{$mode-selection-padding});
     height: 100%;
     --skip-modes: 0;
 
+    @include breakpoint(tablet) {   
+        max-height: $max-height-container;
+
+        &--hideTitle {
+            max-height: calc(#{$max-height-container} + 55px);
+        }
+    }
+
     @for $i from 1 through 5 {
         &--skip-#{$i} {
             --skip-modes: #{$i};
-        }
-    }
-
-    @include breakpoint(tablet) {
-        &--tablet {
-            max-height: $max-height-container;
-        }
-    }
-
-    @include breakpoint(laptop) {
-        &--laptop {
-            max-height: $max-height-container;
         }
     }
 
