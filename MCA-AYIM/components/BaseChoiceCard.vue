@@ -277,7 +277,7 @@ export default class BaseChoiceCard extends Vue {
 
 .choice__info {
     flex: 5;
-    padding: 8px 12px;
+    padding: 15px;
     border-radius: 10px 0 0 10px;
 
     background-size: cover;
@@ -294,22 +294,20 @@ export default class BaseChoiceCard extends Vue {
         @extend %text-wrap;
     }
 
-    &-secondary {
+    &-artist {
         text-shadow: 0 0 4px white;
         font-size: $font-base;
         @extend %text-wrap;
-        max-height: 1.3rem;
     }
 
     &-host {
-        white-space: normal;
-        text-overflow: ellipsis;
-        overflow: hidden;
+        @extend %text-wrap;
     }
 
     &-hoster {
         text-shadow: 0 0 4px white;
         font-style: italic;
+        @extend %text-wrap;
     }
 }
 </style>
