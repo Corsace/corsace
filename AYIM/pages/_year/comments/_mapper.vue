@@ -128,9 +128,20 @@ import { MCA } from "../../../../Interfaces/mca";
     },
     head () {
         return {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            title: `${this.user?.osu.username} Comments | AYIM`,
+            title: `${this.user?.osu.username} Comments | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}`,
+            meta: [
+                // @ts-ignore
+                { hid: "description", name: "description", content: `Comments for ${this.user?.osu.username} in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
+                // @ts-ignore
+                { hid: "og:title", property: "og:title", content: `${this.user?.osu.username} Comments | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}` },
+                { hid: "og:type", property: "og:type", content: "website" },
+                { hid: "og:url", property: "og:url", content: "https://ayim.corsace.io" },
+                // @ts-ignore
+                { hid: "og:description", property: "og:description", content: `Comments for ${this.user?.osu.username} in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
+                { hid: "og:site_name", property: "og:site_name", content: "AYIM" },
+                { hid: "og:theme-color", name: "theme-color", content: "#fb2475" }
+            ]
         };
     },
 })

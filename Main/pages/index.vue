@@ -219,6 +219,15 @@ import { UserInfo } from "../../Interfaces/user";
     head () {
         return {
             title: "Corsace",
+            meta: [
+                { hid: "description", name: "description", content: "Corsace is a series of projects (primarily osu!-related) led by VINXIS which consits of tournaments, events, projects, and many more!" },
+                { hid: "og:title", property: "og:title", content: "Corsace" },
+                { hid: "og:type", property: "og:type", content: "website" },
+                { hid: "og:url", property: "og:url", content: "https://corsace.io" },
+                { hid: "og:description", property: "og:description", content: "Corsace is a series of projects (primarily osu!-related) led by VINXIS which consits of tournaments, events, projects, and many more!" },
+                { hid: "og:site_name", property: "og:site_name", content: "Corsace" },
+                { hid: "theme-color", name: "theme-color", content: "#e98792" }
+            ],
         };
     },
 })

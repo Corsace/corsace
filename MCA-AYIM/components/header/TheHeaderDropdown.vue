@@ -22,19 +22,19 @@
             STAFF
         </nuxt-link>
         <nuxt-link
-            v-if="site === 'mca' && loggedInUser && mca.nomination.start <= new Date()"
+            v-if="site === 'mca' && mca && loggedInUser && mca.nomination.start <= new Date()"
             :to="`/${$route.params.year}/nominating`"
         >
             {{ $t('mca.main.nominating').toUpperCase() }}
         </nuxt-link>
         <nuxt-link
-            v-if="site === 'mca' && loggedInUser && mca.voting.start <= new Date()"
+            v-if="site === 'mca' && mca && loggedInUser && mca.voting.start <= new Date()"
             :to="`/${$route.params.year}/voting`"
         >
             {{ $t('mca.main.voting').toUpperCase() }}
         </nuxt-link>
         <nuxt-link
-            v-if="site === 'mca' && (mca.results <= new Date() || (isMCAStaff && mca.voting.start <= new Date()))"
+            v-if="site === 'mca' && mca && (mca.results <= new Date() || (isMCAStaff && mca.voting.start <= new Date()))"
             :to="`/${$route.params.year}/results`"
         >
             {{ $t('mca.main.results').toUpperCase() }}
