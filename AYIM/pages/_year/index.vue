@@ -32,15 +32,15 @@ import IndexPage from "../../components/IndexPage.vue";
     },
     head () {
         return {
-            title: "A Year in Mapping",
+            title: `A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}`,
             meta: [
-                { name: "description", content: "A Year in Mapping details the records and statistics from each year for the osu! ranked section." },
-                { property: "og:title", content: "A Year in Mapping" },
-                { property: "og:type", content: "website" },
-                { property: "og:url", content: "https://ayim.corsace.io" },
-                { property: "og:description", content: "A Year in Mapping details the records and statistics from each year for the osu! ranked section." },
-                { property: "og:site_name", content: "AYIM" },
-                { name: "theme-color", content: "#fb2475" }
+                { hid: "description", name: "description", content: "A Year in Mapping details the records and statistics from each year for the osu! ranked section." },
+                { hid: "og:title", property: "og:title", content: `A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}` },
+                { hid: "og:type", property: "og:type", content: "website" },
+                { hid: "og:url", property: "og:url", content: "https://ayim.corsace.io" },
+                { hid: "og:description", property: "og:description", content: "A Year in Mapping details the records and statistics from each year for the osu! ranked section." },
+                { hid: "og:site_name", property: "og:site_name", content: "AYIM" },
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" }
             ]
         };
     },

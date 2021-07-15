@@ -129,18 +129,18 @@ import { MCA } from "../../../../Interfaces/mca";
     head () {
         return {
             // @ts-ignore
-            title: `${this.user?.osu.username} Comments | AYIM`,
+            title: `${this.user?.osu.username} Comments | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}`,
             meta: [
                 // @ts-ignore
-                { name: "description", content: `Comments for ${this.user?.osu.username} A Year in Mapping.` },
+                { hid: "description", name: "description", content: `Comments for ${this.user?.osu.username} in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
                 // @ts-ignore
-                { property: "og:title", content: `${this.user?.osu.username} Comments | AYIM` },
-                { property: "og:type", content: "website" },
-                { property: "og:url", content: "https://ayim.corsace.io" },
+                { hid: "og:title", property: "og:title", content: `${this.user?.osu.username} Comments | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}` },
+                { hid: "og:type", property: "og:type", content: "website" },
+                { hid: "og:url", property: "og:url", content: "https://ayim.corsace.io" },
                 // @ts-ignore
-                { property: "og:description", content: `Comments for ${this.user?.osu.username} A Year in Mapping.` },
-                { property: "og:site_name", content: "AYIM" },
-                { name: "theme-color", content: "#fb2475" }
+                { hid: "og:description", property: "og:description", content: `Comments for ${this.user?.osu.username} in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
+                { hid: "og:site_name", property: "og:site_name", content: "AYIM" },
+                { hid: "og:theme-color", name: "theme-color", content: "#fb2475" }
             ]
         };
     },

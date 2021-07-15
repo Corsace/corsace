@@ -72,15 +72,15 @@ import { MCA, Phase } from "../../../Interfaces/mca";
     },
     head () {
         return {
-            title: "Mappers' Choice Awards",
+            title: `Mappers' Choice Awards ${this.$route.params.year ?? (new Date()).getUTCFullYear()}`,
             meta: [
-                { name: "description", content: "Mappers' Choice Awards is the osu!-related awards event for ranked mappers and members of the mapping community to decide what the beatmaps and who the best users were each year." },
-                { property: "og:title", content: "Mappers' Choice Awards" },
-                { property: "og:type", content: "website" },
-                { property: "og:url", content: "https://mca.corsace.io" },
-                { property: "og:description", content: "Mappers' Choice Awards is the osu!-related awards event for ranked mappers and members of the mapping community to decide what the beatmaps and who the best users were each year." },
-                { property: "og:site_name", content: "MCA" },
-                { name: "theme-color", content: "#fb2475" }
+                { hid: "description", name: "description", content: "Mappers' Choice Awards is the osu!-related awards event for ranked mappers and members of the mapping community to decide what the beatmaps and who the best users were each year." },
+                { hid: "og:title", property: "og:title", content: `Mappers' Choice Awards ${this.$route.params.year ?? (new Date()).getUTCFullYear()}` },
+                { hid: "og:type", property: "og:type", content: "website" },
+                { hid: "og:url", property: "og:url", content: "https://mca.corsace.io" },
+                { hid: "og:description", property: "og:description", content: "Mappers' Choice Awards is the osu!-related awards event for ranked mappers and members of the mapping community to decide what the beatmaps and who the best users were each year." },
+                { hid: "og:site_name", property: "og:site_name", content: "MCA" },
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" }
             ]
         };
     },

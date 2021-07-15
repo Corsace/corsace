@@ -59,15 +59,15 @@ const stageModule = namespace("stage");
     },
     head () {
         return {
-            title: `${this.$route.params.year} results | MCA`,
+            title: `Results | MCA ${this.$route.params.year ?? (new Date()).getUTCFullYear()}`,
             meta: [
-                { name: "description", content: `The results for the osu!-related awards event for mappers for the ${this.$route.params.year ?? (new Date()).getUTCFullYear()} year.` },
-                { property: "og:title", content: `${this.$route.params.stage} results | MCA` },
-                { property: "og:type", content: "website" },
-                { property: "og:url", content: "https://mca.corsace.io" },
-                { property: "og:description", content: `The results for the osu!-related awards event for mappers for the ${this.$route.params.year ?? (new Date()).getUTCFullYear()} year.` },
-                { property: "og:site_name", content: "MCA" },
-                { name: "theme-color", content: "#fb2475" }
+                { hid: "description", name: "description", content: `The results for the osu!-related awards event for mappers for the ${this.$route.params.year ?? (new Date()).getUTCFullYear()} year.` },
+                { hid: "og:title", property: "og:title", content: `Results | MCA ${this.$route.params.year ?? (new Date()).getUTCFullYear()}` },
+                { hid: "og:type", property: "og:type", content: "website" },
+                { hid: "og:url", property: "og:url", content: "https://mca.corsace.io" },
+                { hid: "og:description", property: "og:description", content: `The results for the osu!-related awards event for mappers for the ${this.$route.params.year ?? (new Date()).getUTCFullYear()} year.` },
+                { hid: "og:site_name", property: "og:site_name", content: "MCA" },
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" }
             ]
         };
     }
