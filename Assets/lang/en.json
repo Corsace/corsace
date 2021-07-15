@@ -281,11 +281,11 @@
             },
             "vanilla": {
                 "name": "Vanilla",
-                "description": "The best beatmap to use simple design and rhythm to outstanding use."
+                "description": "The best beatmap to put simple design and rhythm to outstanding use."
             },
             "complex": {
                 "name": "Complex rhythm / Swing",
-                "description": "The best beatmap at implementing of irregular snapping and / or swing elements."
+                "description": "The best beatmap implementing irregular snapping and / or swing elements."
             },
             "unorthodox": {
                 "name": "Unorthodox / Gimmick",
@@ -293,7 +293,27 @@
             },
             "sliderTech": {
                 "name": "Slider Tech",
-                "description": "The best beatmap showcasing heavy SV usage and intricate slider patterning / design."
+                "description": "The best beatmap showcasing heavy SV usage or intricate slider patterning / design."
+            },
+            "mostInspiring": {
+                "name": "Most Inspiring",
+                "description": "The one who influenced and provided inspiration to others the most."
+            },
+            "communityService": {
+                "name": "Community Servant",
+                "description": "The best user in providing outstanding contribution to the community behind-the-scenes."
+            },
+            "simplisticTaiko": {
+                "name": "Simplistic",
+                "description": "The best beatmap in using simple patterning and rhythm."
+            },
+            "technicalCatch": {
+                "name": "Technical",
+                "description": "The best beatmap which utilizes concepts that push the boundaries of catch gameplay."
+            },
+            "antiMetaCatch": {
+                "name": "Anti-Meta",
+                "description": "The best beatmap at using unconventional / gimmicky patterning."
             }
         },
         "nom_vote": {
