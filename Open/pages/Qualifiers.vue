@@ -62,83 +62,52 @@
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import axios from "axios";
 import regeneratorRuntime from "regenerator-runtime";
-import Loading from "../components/Loading";
-import QualifierListComponent from "../components/qualifiers/QualifierListComponent";
-import QualifierScoresTable from "../components/qualifiers/QualifierScoresTable";
-import ModGroupComponent from "../components/mappool/ModGroupComponent";
+import Loading from "../components/Loading.vue";
+import QualifierListComponent from "../components/qualifiers/QualifierListComponent.vue";
+import QualifierScoresTable from "../components/qualifiers/QualifierScoresTable.vue";
+import ModGroupComponent from "../components/mappool/ModGroupComponent.vue";
+import { Vue, Component } from "vue-property-decorator"
+import { namespace, State, Action } from "vuex-class"
+import { TeamInfo } from "../../Interfaces/team"
+import { UserOpenInfo } from "../../Interfaces/user";
 
-export default {
-    components: {
+const qualifierModule = namespace("qualifier")
+
+@Component({
+    components: { 
         ModGroupComponent,
         QualifierListComponent,
         QualifierScoresTable,
         Loading,
-    },
-    data: () => ({
-        qualifiers: null,
-        scores: null,
-        mappool: null,
-        teams: null,
-        loading: true,
-        section: "qualifiers",
-        subSection: "teams",
-        scoringType: "average",
-    }),
-    props: {
-        inTeam: Boolean,
-        team: Object,
-        user: Object,
-    },
-    created: async function() {
-        this.loading = true;
-        await this.refresh();
-        this.loading = false;
-    },
-    methods: {
-        refresh: async function() {
-            try {
-                const { data } = await axios.get("/api/qualifier")
-                if (data.error)
-                    return alert(data.error)
-                
-                this.mappool = data.mappool;
-                this.qualifiers = data.qualifiers;
-                this.scores = [].concat.apply([], this.qualifiers.map((qualifier) => {
-                    qualifier.scores = qualifier.scores.map((score) => {
-                        if (score)
-                            score.qualifier = qualifier.id;
-                            score.time = qualifier.time;
-                        return score;
-                    });
-                    return qualifier.scores;
-                })).filter(x => x != null);
-                const nonUniqueTeams = [].concat.apply([], this.qualifiers.map(qualifier => qualifier.teams))
-                const ids = {};
-                this.teams = [];
-                for (const team of nonUniqueTeams) {
-                    if (ids[team.id]) 
-                        continue;
-
-                    ids[team.id] = true;
-                    this.teams.push(team);
-                }
-            } catch (e) {
-                console.log(e);
-                alert("Qualifiers are currently unavailable right now. Please try again later!");
-            }
-
-        },
-        publicize: async function() {
-            if (confirm(`Are you sure you want to ${this.qualifiers[0].public ? 'private' : 'publish'} scores?`)) {
-                await axios.patch("/api/qualifier/public");
-                alert("Ok done lol");
-                await this.refresh()
-            }
-        }
     }
+})
+
+export default class Qualifiers extends Vue {
+
+    @qualifierModule.State qualifiers!: null
+    @qualifierModule.State scores!: null
+    @qualifierModule.State mappool!: null
+    @qualifierModule.State teams!: null
+    @qualifierModule.State section!: string
+    @qualifierModule.State subSection!: string
+    @qualifierModule.State scoringType!: string
+    @qualifierModule.Action publicize;
+
+    @State inTeam!: Boolean;
+    @State team!: TeamInfo;
+    @State loggedInUser!: UserOpenInfo;
+
+    loading = true
+        
+    async created() {
+        this.loading = true;
+        await this.$store.dispatch("qualifier/refresh");
+        this.loading = false;
+    }
+
 }
 </script>
 

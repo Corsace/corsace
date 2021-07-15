@@ -39,13 +39,16 @@ const teamsModule = namespace("teams");
 export default class Teams extends Vue {
 
     @teamsModule.State teams!: Object;
-    @teamsModule.State loading!: Boolean;
 
     @State inTeam!: Boolean;
     @State registered!: Boolean;
     @State team!: TeamInfo;
+
+    loading = true;
     async created () {
+        this.loading = true
         await this.$store.dispatch("teams/fetchAllTeams");
+        this.loading = false
     }
 
     toogleLoginModal (): void {

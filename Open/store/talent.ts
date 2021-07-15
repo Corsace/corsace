@@ -40,7 +40,7 @@ export const actions: ActionTree<TalentState, any> = {
             commit("setSchedulers", schedulers)
 
         } catch (err) {
-            alert(err)
+            console.log(err) //temp since can't use alert here
         }
     },
 
