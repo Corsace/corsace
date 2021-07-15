@@ -1,23 +1,5 @@
 <template>
     <div>
-        <div
-            v-if="onTime && !remainingDays.includes('-')"
-            class="remaining-days" 
-            :class="`remaining-days--${selectedMode}`"
-        >
-            <div class="remaining-days__number">
-                {{ remainingDays }}
-            </div> 
-            <div class="remaining-days__left">
-                {{ $t(`mca.main.daysLeft`) }}
-            </div>
-            <div class="remaining-days__exclamation">
-                !
-            </div>
-            <div class="remaining-days__exclamation">
-                !
-            </div>
-        </div>
         <div 
             v-if="onTime"
             class="stage-wrapper"
@@ -26,6 +8,7 @@
                 stretch
                 enable-mode-eligibility
                 :hidePhase="phase.phase !== $route.params.stage"
+                :hideTitle="true"
                 @inactiveModeClicked="toggleGuestDifficultyModal"
             >
                 <stage-page />
@@ -129,7 +112,7 @@ export default class Stage extends Vue {
 .stage-wrapper {
     width: 100%;
     max-height: 200%;
-    padding-top: 50px;
+    padding-top: 25px;
 
     @include breakpoint(laptop) {
         height: 100%;

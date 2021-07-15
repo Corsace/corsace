@@ -1,6 +1,9 @@
 <template>
     <div class="main-container">
-        <div class="mode-title-container">
+        <div
+            v-if="!hideTitle" 
+            class="mode-title-container"
+        >
             <slot name="title" />
             <div class="mode-title">
                 {{ selectedMode }} 
@@ -55,6 +58,7 @@ export default class ModeSwitcher extends Vue {
     @Prop(Boolean) readonly stretch!: boolean;
     @Prop(Boolean) readonly hidePhase!: boolean;
     @Prop(Boolean) readonly enableModeEligibility!: boolean;
+    @Prop({ type: Boolean, default: false }) readonly hideTitle!: boolean;
     @Prop({ type: String, default: "" }) readonly title!: string;
     @Prop({ type: Array, default: () => [] }) readonly ignoreModes!: string[];
 
@@ -139,7 +143,7 @@ $icon-margin: 15px;
     }
 }
 
-$max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // Consider mode selection space 85px~
+$max-height-container: calc(100% - #{$mode-selection-padding});
 
 .mode-wrapper {
     display: flex;
