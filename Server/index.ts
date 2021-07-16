@@ -13,9 +13,10 @@ import { setupPassport } from "./passportFunctions";
 
 import discordRouter from "./api/routes/login/discord";
 import osuRouter from "./api/routes/login/osu";
+import userRouter from "./api/routes/user";
 
 import mcaRouter from "../MCA-AYIM/api/routes/mca";
-import userRouter from "../MCA-AYIM/api/routes/user";
+import mcaUserRouter from "../MCA-AYIM/api/routes/user";
 import adminRouter from "../MCA-AYIM/api/routes/admin";
 import adminCategoriesRouter from "../MCA-AYIM/api/routes/admin/categories";
 import adminYearsRouter from "../MCA-AYIM/api/routes/admin/years";
@@ -33,7 +34,6 @@ import resultsRouter from "../MCA/api/routes/results";
 import commentsRouter from "../AYIM/api/routes/comments";
 import commentsReviewRouter from "../AYIM/api/routes/staff/comments";
 import usersRouter from "../AYIM/api/routes/staff/users";
-import ayimStaffRouter from "../AYIM/api/routes/staff";
 import recordsRouter from "../AYIM/api/routes/records";
 import statisticsRouter from "../AYIM/api/routes/statistics";
 import mappersRouter from "../AYIM/api/routes/mappers";
@@ -82,44 +82,43 @@ koa.use(async (ctx, next) => {
 });
 
 // Login
-koa.use(Mount("/login/discord", discordRouter.routes()));
-koa.use(Mount("/login/osu", osuRouter.routes()));
-koa.use(Mount("/logout", logoutRouter.routes()));
+koa.use(Mount("/api/login/discord", discordRouter.routes()));
+koa.use(Mount("/api/login/osu", osuRouter.routes()));
+koa.use(Mount("/api/logout", logoutRouter.routes()));
 
 // Main site info
-// koa.use(Mount("/user", userRouter.routes()));
+koa.use(Mount("/api/user", userRouter.routes()));
 
 // MCA-AYIM
-koa.use(Mount("/user", userRouter.routes()));
-koa.use(Mount("/mca", mcaRouter.routes()));
+koa.use(Mount("/api/mca", mcaRouter.routes()));
+koa.use(Mount("/api/mca/user", mcaUserRouter.routes()));
 
-koa.use(Mount("/admin", adminRouter.routes()));
-koa.use(Mount("/admin/years", adminCategoriesRouter.routes()));
-koa.use(Mount("/admin/years", adminYearsRouter.routes()));
+koa.use(Mount("/api/admin", adminRouter.routes()));
+koa.use(Mount("/api/admin/years", adminCategoriesRouter.routes()));
+koa.use(Mount("/api/admin/years", adminYearsRouter.routes()));
+
+koa.use(Mount("/api/staff", mcaStaffRouter.routes()));
 
 // MCA
-koa.use(Mount("/", indexRouter.routes()));
+koa.use(Mount("/api/mcaInfo", indexRouter.routes()));
+koa.use(Mount("/api/guestRequests", guestRequestRouter.routes()));
 
-koa.use(Mount("/guestRequests", guestRequestRouter.routes()));
+koa.use(Mount("/api/nominating", nominatingRouter.routes()));
+koa.use(Mount("/api/voting", votingRouter.routes()));
+koa.use(Mount("/api/results", resultsRouter.routes()));
 
-koa.use(Mount("/nominating", nominatingRouter.routes()));
-koa.use(Mount("/voting", votingRouter.routes()));
-koa.use(Mount("/results", resultsRouter.routes()));
-
-koa.use(Mount("/staff", mcaStaffRouter.routes()));
-koa.use(Mount("/staff/nominations", staffNominationsRouter.routes()));
-koa.use(Mount("/staff/votes", staffVotesRouter.routes()));
-koa.use(Mount("/staff/requests", staffRequestsRouter.routes()));
+koa.use(Mount("/api/staff/nominations", staffNominationsRouter.routes()));
+koa.use(Mount("/api/staff/votes", staffVotesRouter.routes()));
+koa.use(Mount("/api/staff/requests", staffRequestsRouter.routes()));
 
 // AYIM
-koa.use(Mount("/records", recordsRouter.routes()));
-koa.use(Mount("/statistics", statisticsRouter.routes()));
-koa.use(Mount("/mappers", mappersRouter.routes()));
-koa.use(Mount("/comments", commentsRouter.routes()));
+koa.use(Mount("/api/records", recordsRouter.routes()));
+koa.use(Mount("/api/statistics", statisticsRouter.routes()));
+koa.use(Mount("/api/mappers", mappersRouter.routes()));
+koa.use(Mount("/api/comments", commentsRouter.routes()));
 
-koa.use(Mount("/staff", ayimStaffRouter.routes()));
-koa.use(Mount("/staff/comments", commentsReviewRouter.routes()));
-koa.use(Mount("/staff/users", usersRouter.routes()));
+koa.use(Mount("/api/staff/comments", commentsReviewRouter.routes()));
+koa.use(Mount("/api/staff/users", usersRouter.routes()));
 
 
 createConnection()

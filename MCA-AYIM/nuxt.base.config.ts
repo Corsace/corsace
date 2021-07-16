@@ -52,6 +52,6 @@ export default (subSite: string): Partial<NuxtConfig> => ({
         proxy: true,
     },
     proxy: {
-        "/api/": { target: config.api.publicUrl, pathRewrite: {"^/api/": ""} },
+        "/api/": config.api.publicUrl,
     },
 });

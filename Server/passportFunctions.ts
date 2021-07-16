@@ -31,7 +31,7 @@ export function setupPassport () {
     passport.use(new DiscordStrategy({
         clientID: config.discord.clientId,
         clientSecret: config.discord.clientSecret,
-        callbackURL: `${config.corsace.publicUrl}/api/login/discord/callback`,
+        callbackURL: `${config.api.publicUrl}/api/login/discord/callback`,
     }, discordPassport));
 
     passport.use(new OAuth2Strategy({
@@ -39,7 +39,7 @@ export function setupPassport () {
         tokenURL: "https://osu.ppy.sh/oauth/token",
         clientID: config.osu.v2.clientId,
         clientSecret: config.osu.v2.clientSecret,
-        callbackURL: `${config.corsace.publicUrl}/api/login/osu/callback`,
+        callbackURL: `${config.api.publicUrl}/api/login/osu/callback`,
     }, osuPassport));
 }
 

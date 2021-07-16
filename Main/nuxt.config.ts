@@ -68,6 +68,6 @@ export default {
         proxy: true,
     },
     proxy: {
-        "/api/": { target: config.api.publicUrl, pathRewrite: {"^/api/": ""} },
+        "/api/": config.api.publicUrl,
     },
 };
