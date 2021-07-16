@@ -145,7 +145,7 @@
             },
             "marathon": {
                 "name": "Marathon",
-                "description": "The best set with 5+ minute drain time."
+                "description": "The best beatmap with 5+ minute drain time."
             },
             "hitsounding": {
                 "name": "Hitsounding",
@@ -153,27 +153,27 @@
             },
             "collab": {
                 "name": "Collab",
-                "description": "The best set with 2+ mappers creating the top difficulty."
+                "description": "The best beatmap with 2+ mappers creating the top difficulty."
             },
             "simple": {
                 "name": "Simple",
-                "description": "The best set with the top difficulty lower than an insane."
+                "description": "The best beatmap with the top difficulty lower than an insane."
             },
             "highBPM": {
                 "name": "High BPM",
-                "description": "The best set with atypically fast streaming or high singletap strain."
+                "description": "The best beatmap with atypically fast streaming or high singletap strain."
             },
             "smallCircles": {
                 "name": "Small Circles",
-                "description": "The best set with the top difficulty using circle size 5 or smaller."
+                "description": "The best beatmap with the top difficulty using circle size 5 or smaller."
             },
             "heavy13": {
                 "name": "1/3 Heavy",
-                "description": "The best set with top difficulties using lots of purple ticks."
+                "description": "The best beatmap with top difficulties using lots of purple ticks."
             },
             "throwback": {
                 "name": "Throwback",
-                "description": "The best set with a style of the old."
+                "description": "The best beatmap with a style of the old."
             },
             "mapper": {
                 "name": "Mapper",
@@ -205,43 +205,43 @@
             },
             "experimental": {
                 "name": "Experimental",
-                "description": "The best \"tech\" / off meta set."
+                "description": "The best \"tech\" / off meta beatmap."
             },
             "stream": {
                 "name": "Stream",
-                "description": "The set with the best continuous streams."
+                "description": "The beatmap with the best continuous streams."
             },
             "highBPMTaiko": {
                 "name": "High BPM",
-                "description": "The best set with over 240 BPM."
+                "description": "The best beatmap with over 240 BPM."
             },
             "lowBPMTaiko": {
                 "name": "Low BPM",
-                "description": "The best set with under 140 BPM."
+                "description": "The best beatmap with under 140 BPM."
             },
             "simplistic": {
                 "name": "Simplistic",
-                "description": "The best cleanest set out there."
+                "description": "The best cleanest beatmap out there."
             },
             "sliderVelocity": {
                 "name": "Slider Velocity",
-                "description": "The best set with an intense usage of slider velocities."
+                "description": "The best beatmap with an intense usage of slider velocities."
             },
             "featuredArtist": {
                 "name": "Featured Artist",
-                "description": "The best set for a featured artist song."
+                "description": "The best beatmap for a featured artist song."
             },
             "longNotes": {
                 "name": "Long Notes",
-                "description": "The best set with an intense usage of LNs."
+                "description": "The best beatmap with an intense usage of LNs."
             },
             "antiMeta": {
                 "name": "Anti Meta",
-                "description": "The best set based around 5K/6K/8K/9K."
+                "description": "The best beatmap based around 5K/6K/8K/9K."
             },
             "7K": {
                 "name": "7K Specific",
-                "description": "The best set based around 7K."
+                "description": "The best beatmap based around 7K."
             },
             "technical": {
                 "name": "Technical",
@@ -277,23 +277,23 @@
             },
             "highBPMAlternator": {
                 "name": "High BPM / Alternator",
-                "description": "The best beatmap which provides fast tapping / aim."
+                "description": "The best beatmap with priority on extremely fast tapping and / or aim skills."
             },
             "vanilla": {
                 "name": "Vanilla",
-                "description": "The best beatmap to put simple design and rhythm to outstanding use."
+                "description": "The best beatmap utilizing simple mapping techniques to great effect."
             },
             "complex": {
                 "name": "Complex rhythm / Swing",
-                "description": "The best beatmap implementing irregular snapping and / or swing elements."
+                "description": "The best beatmap with extensive usage of uncommon snappings, including doubles, 1/3, 1/5, 1/7, and more."
             },
             "unorthodox": {
                 "name": "Unorthodox / Gimmick",
-                "description": "The best beatmap in applying mapping techniques and ideas rarely seen."
+                "description": "The best beatmap showcasing mapping techniques or ideas that are not frequently seen."
             },
             "sliderTech": {
                 "name": "Slider Tech",
-                "description": "The best beatmap showcasing heavy SV usage or intricate slider patterning / design."
+                "description": "The best beatmap featuring technical elements, intricate slider design and velocity usage, and complex stream patterns."
             },
             "mostInspiring": {
                 "name": "Most Inspiring",
