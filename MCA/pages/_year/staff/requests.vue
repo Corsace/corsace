@@ -58,7 +58,7 @@
                                     class="staff-page__link staff-request__link"
                                     :class="`staff-page__link--${request.modeName}`"
                                 >
-                                    beatmap link
+                                    {{ request.artist }} - {{ request.title }} ({{ request.difficulty }})
                                 </a>
                             </div>
 
@@ -161,13 +161,14 @@ $icon-margin: 15px;
     font-size: $font-lg;
 
     &__info {
-        flex: 1;
+        flex: 2;
         display: flex;
         justify-content: space-evenly;
     }
 
     &__link {
         text-align: right;
+        font-size: $font-base;
     }
 
     &__status {
