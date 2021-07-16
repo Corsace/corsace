@@ -1,12 +1,13 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import axios from "axios";
+import { StaffOpenInfo } from "../../Interfaces/user"
 
 export interface TalentState {
-    headStaff: [],
-    poolers: [],
-    referees: [],
-    streamcomms: [],
-    schedulers: [],
+    headStaff: StaffOpenInfo[] | StaffOpenInfo[]
+    poolers: StaffOpenInfo[] | StaffOpenInfo[]
+    referees: StaffOpenInfo[] | StaffOpenInfo[]
+    streamcomms: StaffOpenInfo[] | StaffOpenInfo[]
+    schedulers: StaffOpenInfo[] | StaffOpenInfo[]
 }
 
 export const mutations: MutationTree<TalentState> = {
@@ -40,7 +41,7 @@ export const actions: ActionTree<TalentState, any> = {
             commit("setSchedulers", schedulers)
 
         } catch (err) {
-            console.log(err) //temp since can't use alert here
+            alert(err)
         }
     },
 

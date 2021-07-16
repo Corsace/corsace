@@ -19,7 +19,7 @@
                 <div @click="scoringType='seeding'" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='seeding' }" v-if="subSection==='teams'">SEEDING</div>
             </div>
             <div class="qualifiersTop">
-                <div class="qualifiersLeft" v-if="user.isHeadStaff" @click="publicize">
+                <div class="qualifiersLeft" v-if="loggedInUser.isHeadStaff" @click="publicize">
                     <div class="teamPP">SCORES PUBLIC</div>
                     <div class="qualifiersTeamTitle">{{qualifiers[0].public}}</div>
                 </div>
@@ -73,6 +73,9 @@ import { Vue, Component } from "vue-property-decorator"
 import { namespace, State, Action } from "vuex-class"
 import { TeamInfo } from "../../Interfaces/team"
 import { UserOpenInfo } from "../../Interfaces/user";
+import { MappoolInfo } from "../../Interfaces/mappool";
+import { ScoreInfo } from "../../Interfaces/score";
+import { QualifierInfo } from "../../Interfaces/qualifier";
 
 const qualifierModule = namespace("qualifier")
 
@@ -87,10 +90,10 @@ const qualifierModule = namespace("qualifier")
 
 export default class Qualifiers extends Vue {
 
-    @qualifierModule.State qualifiers!: null
-    @qualifierModule.State scores!: null
-    @qualifierModule.State mappool!: null
-    @qualifierModule.State teams!: null
+    @qualifierModule.State qualifiers!: QualifierInfo[]
+    @qualifierModule.State scores!: ScoreInfo[]
+    @qualifierModule.State mappool!: MappoolInfo
+    @qualifierModule.State teams!: TeamInfo[]
     @qualifierModule.State section!: string
     @qualifierModule.State subSection!: string
     @qualifierModule.State scoringType!: string

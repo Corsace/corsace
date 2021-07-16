@@ -67,3 +67,8 @@ export interface OAuth {
     dateAdded: Date;
     lastVerified: Date;
 }
+
+export interface StaffOpenInfo {
+    osuID: Number
+    username: String   
+}

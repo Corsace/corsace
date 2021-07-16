@@ -96,6 +96,7 @@ import regeneratorRuntime from "regenerator-runtime";
 import { Vue, Component } from "vue-property-decorator"
 import Loading from "../components/Loading.vue";
 import {namespace, State } from "vuex-class"
+import { StaffOpenInfo } from "../../Interfaces/user"
 
 const talentModule = namespace("talent")
 
@@ -107,11 +108,11 @@ const talentModule = namespace("talent")
 
 export default class Talent extends Vue {
 
-    @talentModule.State headStaff!: []
-    @talentModule.State poolers!: []
-    @talentModule.State referees!: []
-    @talentModule.State streamcomms!: []
-    @talentModule.State schedulers!: []
+    @talentModule.State headStaff!: StaffOpenInfo[]
+    @talentModule.State poolers!: StaffOpenInfo[]
+    @talentModule.State referees!: StaffOpenInfo[]
+    @talentModule.State streamcomms!: StaffOpenInfo[]
+    @talentModule.State schedulers!: StaffOpenInfo[]
     loading = false;
     
     async created () {
