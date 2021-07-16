@@ -70,7 +70,7 @@ staffNominationsRouter.get("/", async (ctx) => {
         return staffNom;
     });
 
-    ctx.body = { staffNominations };
+    ctx.body = staffNominations;
 });
 
 // Endpoint for accepting a nomination
