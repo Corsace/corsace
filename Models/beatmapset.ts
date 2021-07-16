@@ -75,13 +75,22 @@ export class Beatmapset extends BaseEntity {
                     "nominationReceived.isValid = true AND nominationReceived.categoryID = :categoryId", 
                     { categoryId: category.ID }
                 );
+        } else {
+            queryBuilder
+                .leftJoin(
+                    "beatmapset.nominationsReceived", 
+                    "nominationReceived", 
+                    "nominationReceived.categoryID = :categoryId", 
+                    { categoryId: category.ID }
+                )
+                .where("(nominationReceived.isValid = true OR nominationReceived.isValid IS NULL)");
         }
         
         queryBuilder
             .leftJoinAndSelect("beatmapset.creator", "user")
             .leftJoinAndSelect("user.otherNames", "otherName")
             .innerJoinAndSelect("beatmapset.beatmaps", "beatmap", includeStoryboard ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: includeStoryboard ? true : modeId })
-            .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${year}-01-01`, end: `${year + 1}-01-01` });
+            .andWhere("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${year}-01-01`, end: `${year + 1}-01-01` });
                                 
         // Check if the category has filters since this is a beatmap search
         if (category.filter) {
