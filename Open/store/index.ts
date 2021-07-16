@@ -120,10 +120,7 @@ export const getters: GetterTree<RootState, RootState> = {
 export const actions: ActionTree<RootState, RootState> = {
     async setLoggedInUser ({ commit }) {
         const { data } = await this.$axios.get(`/api/user`);
-        console.log('piss')
-        console.log( data)
         if (!data.error) {
-            console.log("commited setLoggedInUser open")
             commit("setLoggedInUser", data);
         }
     },

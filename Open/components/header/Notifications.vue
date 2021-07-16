@@ -8,7 +8,7 @@
                 </div>
             </router-link>
             <div class="mainButton demerits">
-                <div class="userDemeritsNumber"> {{ user.pickemPoints }} </div>
+                <div class="userDemeritsNumber"> {{ loggedInUser.pickemPoints }} </div>
                 <div class="userDemeritsHeader">PICKEM POINTS</div>
             </div>
             <div class="mainButton" @click="delink">
@@ -21,14 +21,14 @@
             </div>
         </div>
         <img src="../../../Assets/img/open/line.png">
-        <div v-if="notifications.length !== 0">
-            <div v-for="(notification, i) in notifications" :key="i">
+        <div v-if="userInvitations.length !== 0">
+            <div v-for="(userInvitations, i) in userInvitations" :key="i">
                 <div class="inviteWrapper">
                     <div class="inviteHeader">{{ $t('open.header.pending') }}</div>
-                    <div class="inviteTeam">{{ notification.team.name.toUpperCase() }}</div>
+                    <div class="inviteTeam">{{ userInvitations.team.name.toUpperCase() }}</div>
                     <div class="inviteButtons">
-                        <div class="acceptButton" @click="acceptInvite(notification.team.id)"></div>
-                        <div class="rejectButton" @click="declineInvite(notification.team.id)"></div>
+                        <div class="acceptButton" @click="acceptInvite(userInvitations.team.id)"></div>
+                        <div class="rejectButton" @click="declineInvite(userInvitations.team.id)"></div>
                     </div>
                 </div>
             </div>
@@ -39,68 +39,76 @@
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import axios from "axios";
+import { State, Action } from "vuex-class"
+import { Component, Vue } from "vue-property-decorator"
+import { Invitation } from "../../../Interfaces/invitation"
+import { UserOpenInfo } from "../../../Interfaces/user";
+import { TeamInfo } from "../../../Interfaces/team";
 
-export default {
-    props: {
-        notifications: Array,
-        user: Object,
-        team: Object,
-    },
-    methods: {
-        acceptInvite: function(team) {
-            axios.get("/api/user/pendingInvites/accept?team=" + team).then(result => {
-                if (result.data.error !== "false") {
-                    this.$emit("refresh")
-                    this.$emit("notification-toggle")
-                }
-            }, err => {
-                if(err.response.data.error === "TOO_MANY_GUILDS")
-                    alert("Joining our Discord server is mandatory, and you have reached the maximum amount of Discord servers on your account. Please leave one and try again!");
-                else
-                    alert(err.response.data.error +  + " Try joining the discord server first, and then try again. Contact ThePooN or VINXIS if you still can't accept the invite.")
-            });
-        },
-        declineInvite: function(team) {
-            axios.get("/api/user/pendingInvites/decline?team=" + team).then(result => {
-                if (result.data.error !== "false") {
-                    this.$emit("refresh")
-                }
-            });
-        },
-        logout: function() {
-            axios.get("/api/auth/logout").then(result => {
+@Component
+export default class Notifications extends Vue {
+
+    @State userInvitations!: Invitation[];
+    @State loggedInUser!: UserOpenInfo;
+    @State team!: TeamInfo; 
+
+    acceptInvite (team: number) {
+        axios.get("/api/user/pendingInvites/accept?team=" + team).then(result => {
+            if (result.data.error !== "false") {
                 this.$emit("refresh")
                 this.$emit("notification-toggle")
-            });
-        },
-        delink: function() {
-            if(confirm(this.$i18n.messages[this.$i18n.locale].header.unlinkPopup)) {
-                if (this.user.team) {
-                    if (this.user.id === this.user.team.captain) {
-                        axios.get("/api/team/destroy").then(result => {
-                            this.delinker();
-                        });
-                    }
-                    else {
-                        axios.get("/api/team/leave").then(result => {
-                            this.delinker();
-                        });
-                    }
+            }
+        }, err => {
+            if(err.response.data.error === "TOO_MANY_GUILDS")
+                alert("Joining our Discord server is mandatory, and you have reached the maximum amount of Discord servers on your account. Please leave one and try again!");
+            else
+                alert(err.response.data.error +  + " Try joining the discord server first, and then try again. Contact ThePooN or VINXIS if you still can't accept the invite.")
+        });
+    }
+
+    declineInvite (team: number) {
+        axios.get("/api/user/pendingInvites/decline?team=" + team).then(result => {
+            if (result.data.error !== "false") {
+                this.$emit("refresh")
+            }
+        });
+    }
+
+        
+    logout() {
+        axios.get("/api/logout").then(result => {
+            this.$emit("refresh")
+            this.$emit("notification-toggle")
+        });
+    }
+    delink() {
+        if(confirm(this.$i18n.messages[this.$i18n.locale].open.header.unlinkPopup)) {
+            if (this.loggedInUser.team) {
+                if (this.loggedInUser.corsaceID === this.loggedInUser.team.captain) {
+                    axios.get("/api/team/destroy").then(result => {
+                        this.delinker();
+                    });
                 }
                 else {
-                    this.delinker();
+                    axios.get("/api/team/leave").then(result => {
+                        this.delinker();
+                    });
                 }
             }
-        },
-        delinker: function() {
-            axios.get("/api/auth/osu/delink").then(result => {
-                this.$emit("refresh")
-                this.$emit("notification-toggle")
-            });
+            else {
+                this.delinker();
+            }
         }
     }
+    delinker() {
+        axios.get("/api/auth/osu/delink").then(result => {
+            this.$emit("refresh")
+            this.$emit("notification-toggle")
+        });
+    }
+    
 }
 </script>
 
@@ -178,14 +186,24 @@ export default {
     font-style: italic;
 }
 
+.popupBody {
+    background-image: none;
+    background-color: #101010;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 190px;
+    width: 300px;
+    position: absolute;
+    top: 83px;
+    border-radius: 0 0 20px 20px;
+    z-index: 2;
+}
+
 .badgeIntake {
     font-size: 15px;
     display: flex;
 }
 
-@media (max-width: 1322px) {
-    .notificationsBody {
-        right: 0;
-    }       
-}
+
 </style>

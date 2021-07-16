@@ -37,9 +37,10 @@
             </div>
             <div class="userInfo" v-if="loggedInUser">
                 <div class="userDesc">
+                    <!-- reminder to change these divs once I add team field -->
                     <a :href="'https://osu.ppy.sh/u/' + loggedInUser.osu.username"><div class="username">{{ loggedInUser.osu.username }}</div></a>
                     <div v-if="true" @click="teamRegisteringToggle" class="userTeamName"><router-link to="/team">{{ $t('open.header.noTeam') }}</router-link></div>
-                    <div v-if="false" class="userTeamName"><router-link to="/team">{{ user.team.name }}</router-link></div>
+                    <div v-if="false" class="userTeamName"><router-link to="/team">{{ loggedInUser.team.name }}</router-link></div>
                 </div>
             </div>
             <div v-if="loggedInUser" class="avatarWrapper" @click="openNotifications">
@@ -47,7 +48,7 @@
                 <img class="avatar" v-else src="../../../Assets/img/open/defaultDiscordAvatar.png">
                 <div class="notification" v-if="!noNotifications"></div>
             </div>
-            <Notifications v-if="notificationPanel" :notifications="userInvitations" :user="user" :team="team" @refresh="refresh" @notification-toggle="notificationPanel = false"></Notifications>
+            <Notifications v-if="notificationPanel" @refresh="refresh" @notification-toggle="notificationPanel = false"></Notifications>
             <LocaleChanger></LocaleChanger>
             <img v-if="loggedInUser" class="settings" src="../../../Assets/img/open/settings.png" @click="openNotifications">
         </div>
@@ -70,7 +71,7 @@ import Notifications from "./Notifications.vue"
 import LoginModal from "../../../MCA-AYIM/components/header/LoginModal.vue";
 import ClickOutside from 'vue-click-outside';
 
-import { UserInfo } from "../../../Interfaces/user";
+import { UserOpenInfo } from "../../../Interfaces/user";
 
 @Component({
     components: {
@@ -83,7 +84,8 @@ import { UserInfo } from "../../../Interfaces/user";
 export default class Header extends Vue {
 
     @State site!: string;
-    @State loggedInUser!: UserInfo;
+    @State loggedInUser!: UserOpenInfo;
+    @State noNotifications!: Boolean;
     @Action refresh
 
     showLoginModal = false;
@@ -113,38 +115,15 @@ export default class Header extends Vue {
 
 }
 
-/*
-    props: {
-        discordReg: Boolean,
-        registered: Boolean,
-        inTeam: Boolean,
-        noNotifications: Boolean,
-        team: Object,
-        user: Object,
-        userInvitations: Array,
-    },
-
-    methods: {
-        refresh: function() {
-            this.$emit('refresh')
-        },
-        teamRegisteringToggle: function() {
-            this.$emit('team-registering')
-        },
-        openNotifications: function() {
-            this.notificationPanel = !this.notificationPanel
-        },
-        notificationPanelClose: function() {
-            this.notificationPanel = false
-        },
-    },
-    directives: {
-        ClickOutside,
-    },
-} */
 </script>
 
 <style>
+.test {
+    height: 50px;
+    width: 50px;
+    background: white;
+}
+
 .header {
     background-image: url(../../../Assets/img/open/bar.png);
     display: grid;
