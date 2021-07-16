@@ -66,31 +66,31 @@
     "ayim": {
         "host": "localhost",
         "port": 3000,
-        "publicUrl": "http://localhost:3000",
-        "spa": true
+        "publicUrl": "http://localhost:3000"
     },
     "corsace": {
         "host": "localhost",
         "port": 4000,
-        "publicUrl": "http://localhost:4000",
-        "spa": true
+        "publicUrl": "http://localhost:4000"
     },
     "closed": {
         "host": "localhost",
         "port": 5000,
-        "publicUrl": "http://localhost:5000",
-        "spa": true
+        "publicUrl": "http://localhost:5000"
     },
     "mca": {
         "host": "localhost",
         "port": 8000,
-        "publicUrl": "http://localhost:8000",
-        "spa": true
+        "publicUrl": "http://localhost:8000"
     },
     "open": {
         "host": "localhost",
         "port": 7000,
-        "publicUrl": "http://localhost:7000",
-        "spa": true
+        "publicUrl": "http://localhost:7000"
+    },
+    "api": {
+        "host": "localhost",
+        "port": 8080,
+        "publicUrl": "http://localhost:8080"
     }
 }

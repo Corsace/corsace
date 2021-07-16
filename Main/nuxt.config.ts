@@ -36,8 +36,6 @@ export default {
             { hid: "theme-color", name: "theme-color", content: "#e98792" },
         ],
     },
-    watch: ["~/api"],
-    serverMiddleware: ["~/api"],
     buildModules: ["@nuxt/typescript-build"],
     modules: [
         "@nuxtjs/axios",
@@ -67,6 +65,9 @@ export default {
         static: "../Assets/static",
     },
     axios: {
-        browserBaseURL: "/",
+        proxy: true,
+    },
+    proxy: {
+        "/api/": { target: config.api.publicUrl, pathRewrite: {"^/api/": ""} },
     },
 };

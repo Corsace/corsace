@@ -3,7 +3,6 @@ declare module "node-config-ts" {
         host: string;
         port: number;
         publicUrl: string;
-        spa: boolean;
     }
 
     interface IConfig {
@@ -80,6 +79,7 @@ declare module "node-config-ts" {
         closed: ISubSiteConfig;
         mca: ISubSiteConfig;
         open: ISubSiteConfig;
+        api: ISubSiteConfig;
     }
 
     export const config: Config;
