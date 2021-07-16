@@ -1,6 +1,7 @@
 import { Beatmapset } from "./beatmap";
 import { Eligibility } from "./eligibility";
 import { GuestRequest } from "./requests";
+import { TeamInfo } from "./team";
 
 export interface UserMCAInfo extends UserInfo {
     guestRequests: GuestRequest[];
@@ -16,6 +17,8 @@ export interface UserMCAInfo extends UserInfo {
 export interface UserOpenInfo extends UserInfo {
     isStaff: boolean;
     isHeadStaff: boolean;
+    team: TeamInfo;
+    pickemPoints: Number;
 }
 
 export interface UserInfo {

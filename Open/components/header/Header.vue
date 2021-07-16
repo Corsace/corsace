@@ -26,7 +26,7 @@
         </ul>
         <div class="headerRight">
 
-            <div class="registration" v-if="!registered" @click="showLoginModal = !showLoginModal">
+            <div class="registration" v-if="!loggedInUser" @click="showLoginModal = !showLoginModal">
                 <div class="login">
                     {{ $t('open.header.login') }}
                 </div>
@@ -35,22 +35,21 @@
                 </div>
 
             </div>
-            <div class="userInfo" v-if="registered">
+            <div class="userInfo" v-if="loggedInUser">
                 <div class="userDesc">
                     <a :href="'https://osu.ppy.sh/u/' + loggedInUser.osu.username"><div class="username">{{ loggedInUser.osu.username }}</div></a>
-                    <!--
-                    <div v-if="!inTeam" @click="teamRegisteringToggle" class="userTeamName"><router-link to="/team">{{ $t('open.header.noTeam') }}</router-link></div>
-                    <div v-if="inTeam" class="userTeamName"><router-link to="/team">{{ user.team.name }}</router-link></div> -->
+                    <div v-if="true" @click="teamRegisteringToggle" class="userTeamName"><router-link to="/team">{{ $t('open.header.noTeam') }}</router-link></div>
+                    <div v-if="false" class="userTeamName"><router-link to="/team">{{ user.team.name }}</router-link></div>
                 </div>
             </div>
-            <div v-if="registered" class="avatarWrapper" @click="openNotifications">
+            <div v-if="loggedInUser" class="avatarWrapper" @click="openNotifications">
                 <img class="avatar" v-if="loggedInUser.osu.avatar && loggedInUser.osu.avatar !== null" v-bind:src="loggedInUser.osu.avatar">
                 <img class="avatar" v-else src="../../../Assets/img/open/defaultDiscordAvatar.png">
                 <div class="notification" v-if="!noNotifications"></div>
             </div>
             <Notifications v-if="notificationPanel" :notifications="userInvitations" :user="user" :team="team" @refresh="refresh" @notification-toggle="notificationPanel = false"></Notifications>
             <LocaleChanger></LocaleChanger>
-            <img v-if="registered" class="settings" src="../../../Assets/img/open/settings.png" @click="openNotifications">
+            <img v-if="loggedInUser" class="settings" src="../../../Assets/img/open/settings.png" @click="openNotifications">
         </div>
         <login-modal
             v-if="showLoginModal"
@@ -62,7 +61,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { State, Action } from "vuex-class";
 
 import axios from "axios";
 import Registration from "./Registration.vue"
@@ -85,6 +84,7 @@ export default class Header extends Vue {
 
     @State site!: string;
     @State loggedInUser!: UserInfo;
+    @Action refresh
 
     showLoginModal = false;
     notificationPanel = false;  
@@ -96,6 +96,10 @@ export default class Header extends Vue {
 
     toogleLoginModal (): void {
         this.showLoginModal = !this.showLoginModal;
+    }
+
+    teamRegisteringToggle (): void {
+            this.$emit('team-registering')
     }
     
     openNotifications (): void {

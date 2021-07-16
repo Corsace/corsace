@@ -42,6 +42,10 @@ export default class Default extends Vue {
     async created () {
         await this.$store.dispatch("refresh");
     }
+
+    async mounted () {
+        await this.$store.dispatch("setInitialData");
+    }
 }
     
 </script>
