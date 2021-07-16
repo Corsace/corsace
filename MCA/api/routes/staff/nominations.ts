@@ -23,8 +23,8 @@ staffNominationsRouter.get("/", async (ctx) => {
 
     const nominations = await Nomination
         .createQueryBuilder("nomination")
-        .innerJoinAndSelect("nomination.nominators", "nominator")
         .innerJoinAndSelect("nomination.category", "category")
+        .leftJoinAndSelect("nomination.nominators", "nominator")
         .leftJoinAndSelect("nomination.reviewer", "reviewer")
         .leftJoinAndSelect("nomination.user", "user")
         .leftJoinAndSelect("nomination.beatmapset", "beatmapset")
@@ -81,16 +81,18 @@ staffNominationsRouter.get("/", async (ctx) => {
 
 // Endpoint for accepting a nomination
 staffNominationsRouter.post("/:id/update", async (ctx) => {
-    let nominationID = ctx.params.id;
+    const nominationID = ctx.params.id;
     if (!nominationID || !/\d+/.test(nominationID))
         return ctx.body = { error: "Invalid nomination ID given!" };
 
-    nominationID = parseInt(nominationID);
-    await Nomination.update(nominationID, {
-        isValid: ctx.request.body.isValid,
-        reviewer: ctx.state.user,
-        lastReviewedAt: new Date,
+    const nomination = await Nomination.findOneOrFail({
+        ID: parseInt(nominationID),
     });
+    nomination.isValid = ctx.request.body.isValid; 
+    nomination.reviewer = ctx.state.user;
+    nomination.lastReviewedAt = new Date;
+    nomination.nominators = [];
+    await nomination.save();
 
     ctx.body = {
         isValid: ctx.request.body.isValid,
