@@ -30,7 +30,10 @@
                     >
                         {{ loggedInUser.osu.username }}
                     </div>
-                    <a class="header-login__welcome" href="/api/logout">
+                    <a
+                        class="header-login__welcome"
+                        href="/api/logout"
+                    >
                         {{ $t('mca_ayim.header.logout') }}
                     </a>
                 </div>
@@ -64,9 +67,9 @@
                 <div class="info-container">
                     <div class="info-warning">
                         <div
-                            class="info-warning__group"
                             v-for="i in 20"
                             :key="i"
+                            class="info-warning__group"
                         >
                             <img
                                 :key="i"
@@ -89,9 +92,9 @@
                     </h2>
                     <div class="info-warning">
                         <div
-                            class="info-warning__group"
                             v-for="i in 20"
                             :key="i"
+                            class="info-warning__group"
                         >
                             <img
                                 :key="i"
@@ -139,7 +142,10 @@
 
         <div class="subfooter">
             Powered by
-            <a class="subfooter__powered" href="https://twitter.com/kkaetwo">
+            <a
+                class="subfooter__powered"
+                href="https://twitter.com/kkaetwo"
+            >
                 <img
                     class="subfooter__kaetwo" 
                     src="../../Assets/img/partners/kaetwo.png"
@@ -226,7 +232,7 @@ import { UserInfo } from "../../Interfaces/user";
                 { hid: "og:url", property: "og:url", content: "https://corsace.io" },
                 { hid: "og:description", property: "og:description", content: "Corsace is a series of projects (primarily osu!-related) led by VINXIS which consits of tournaments, events, projects, and many more!" },
                 { hid: "og:site_name", property: "og:site_name", content: "Corsace" },
-                { hid: "theme-color", name: "theme-color", content: "#e98792" }
+                { hid: "theme-color", name: "theme-color", content: "#e98792" },
             ],
         };
     },

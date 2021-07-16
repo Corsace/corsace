@@ -97,7 +97,7 @@
         <notice-modal 
             :title="$t('ayim.comments.name')"
             :text="$t('ayim.comments.notice')"
-            :localKey="'overlay'"
+            :local-key="'overlay'"
         />
     </display-layout>
     <div
@@ -109,6 +109,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
 
@@ -140,8 +141,8 @@ import { MCA } from "../../../../Interfaces/mca";
                 // @ts-ignore
                 { hid: "og:description", property: "og:description", content: `Comments for ${this.user?.osu.username} in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
                 { hid: "og:site_name", property: "og:site_name", content: "AYIM" },
-                { hid: "og:theme-color", name: "theme-color", content: "#fb2475" }
-            ]
+                { hid: "og:theme-color", name: "theme-color", content: "#fb2475" },
+            ],
         };
     },
 })

@@ -36,14 +36,14 @@ export default class Years extends Vue {
             this.$router.replace("/");
     }
 
-    async resetCache() {
+    async resetCache () {
         if (!confirm("Are you sure you want to reset the cache for MCA?"))
             return;
         
         const { data } = await this.$axios.get(`/api/admin/reset`);
         
         if (data.error)
-            alert(data.error)
+            alert(data.error);
         else if (data.success)
             alert(data.success);
         else {

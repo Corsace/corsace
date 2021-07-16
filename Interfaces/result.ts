@@ -30,7 +30,7 @@ export interface ResultColumn {
     prio?: boolean
 }
 
-export function votesToResults(votes: ResultVote[], categoryType: CategoryType): BeatmapResult[] | UserResult[] {
+export function votesToResults (votes: ResultVote[], categoryType: CategoryType): BeatmapResult[] | UserResult[] {
     if (votes.length === 0) return [];
 
     const beatmapResults: BeatmapResult[] = [];

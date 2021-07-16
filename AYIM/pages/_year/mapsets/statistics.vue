@@ -61,8 +61,8 @@ import { MCA } from "../../../../Interfaces/mca";
                 { hid: "og:url", property: "og:url", content: "https://ayim.corsace.io" },
                 { hid: "og:description", property: "og:description", content: `The statistics related to mapsets in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
                 { hid: "og:site_name",property: "og:site_name", content: "AYIM" },
-                { hid: "theme-color", name: "theme-color", content: "#fb2475" }
-            ]
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" },
+            ],
         };
     },
 })

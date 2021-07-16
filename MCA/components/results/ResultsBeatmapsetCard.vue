@@ -13,9 +13,9 @@
                     <!-- special output for aggregation of map info on mobile -->
                     <div
                         v-if="col.label && col.label === 'map'"
+                        :key="i"
                         class="map-info__map"
                         :style="flexFromCol('map')"
-                        :key="i"
                     >
                         <div class="map-info__map-title">
                             {{ choice.title }}
@@ -61,15 +61,15 @@ export default class ResultsBeatmapsetCard extends Vue {
 
     // takes a label, matches it with the correct column from the columns prop,
     //   and returns a style object {flex: column.size}, adjusted for current breakpoint
-    flexFromCol(label: String) {
+    flexFromCol (label: string) {
         const col = this.columns.filter(
             c => ((c.label === label) || (c.name && c.name === label))
             && (c.category === "beatmaps" || !c.category)
         )[0];
         if (this.mobile && col.msize) {
-            return {'flex': col.msize};
+            return {"flex": col.msize};
         }
-        return {'flex': col.size};
+        return {"flex": col.size};
     }
 
     get bgImg (): any {

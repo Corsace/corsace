@@ -29,9 +29,9 @@
                     >
                         <div
                             :key="category.id + '-cat-header'"
-                            @click.prevent="selectCategory(category.id)"
                             class="staff-container__header"
                             :class="{ 'staff-container__header--active': category.id === selectedCategoryId }"
+                            @click.prevent="selectCategory(category.id)"
                         >
                             <a
                                 class="staff-container__title"
@@ -48,7 +48,7 @@
                             class="staff-container__box"
                         >
                             <template v-if="viewOption === 'results'">
-                                <ul class="staff-list" >
+                                <ul class="staff-list">
                                     <li
                                         v-for="result in selectedCategoryInfo"
                                         :key="result.ID"
@@ -141,8 +141,9 @@
                     </template>
                 </div>
                 <scroll-bar
+                    selector=".staff-scrollTrack"
                     @bottom="selectStart === -1 && 'voters' ? null : appendCategory()"
-                    selector=".staff-scrollTrack" />
+                />
             </div>
         </mode-switcher>
     </div>
@@ -159,7 +160,6 @@ import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 
 import { CategoryInfo } from "../../../../Interfaces/category";
 import { ResultVote, StaffVote, UserVote, voteCounter } from "../../../../Interfaces/vote";
-import { View } from "typeorm/schema-builder/view/View";
 
 const staffModule = namespace("staff");
 
@@ -197,7 +197,7 @@ export default class Votes extends Vue {
     viewOption: ViewOption = "results";
     text = "";
     selectedCategoryId: null | number = null;
-    selectStart: number = 0;
+    selectStart = 0;
 
     get relatedCategories (): CategoryInfo[] {
         return this.categories.filter(c => c.mode === this.selectedMode || c.mode === "storyboard");
@@ -284,7 +284,7 @@ export default class Votes extends Vue {
                 category: category.category,
                 results: voteCounter(category.userVotes),
             };
-        })
+        });
     }
 
     get selectedCategoryInfo (): UserVote[] | ResultVote[] {
@@ -308,7 +308,7 @@ export default class Votes extends Vue {
         this.selectStart = 0;
 
         const { data } = await this.$axios.get(
-            `/api/staff/votes?category=${id}${this.viewOption === "voters" ? `&start=${this.selectStart}` : ''}`
+            `/api/staff/votes?category=${id}${this.viewOption === "voters" ? `&start=${this.selectStart}` : ""}`
         );
 
         if (data.error) {
@@ -379,7 +379,7 @@ export default class Votes extends Vue {
         if (item.beatmapset) {
             return { "background-image": `url('https://assets.ppy.sh/beatmaps/${item.beatmapset.ID}/covers/cover.jpg?1560315422')` };
         } else if (item.user) {
-            return { "background-image": `url(https://a.ppy.sh/${item.user.osuID})` }
+            return { "background-image": `url(https://a.ppy.sh/${item.user.osuID})` };
         }
         return { "background-image": "" };
     }

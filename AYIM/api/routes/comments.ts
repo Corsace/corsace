@@ -42,7 +42,7 @@ commentsRouter.get("/", async (ctx) => {
     if (!ctx.query.user)
         return ctx.body = {
             error: "No user ID provided!",
-        }
+        };
 
     const userId = parseInt(ctx.query.user);
     const year = parseInt(ctx.query.year || new Date().getFullYear());
@@ -52,7 +52,7 @@ commentsRouter.get("/", async (ctx) => {
     if (year === 2020) {
         ctx.body = {
             error: "MCA 2020 is not running comments for AYIM. Sorry for the inconvenience.",
-        }
+        };
         return;
     }
 
@@ -121,7 +121,7 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
     if (year === 2020) {
         ctx.body = {
             error: "MCA 2020 is not running comments for AYIM. Sorry for the inconvenience.",
-        }
+        };
         return;
     }
 

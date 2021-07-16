@@ -39,7 +39,7 @@
                     </span>
                     <br>
                     <span :class="phase.phase === 'results' ? `general-info--${selectedMode}` : ''">
-                        {{ $t(`mca.main.results`).toUpperCase() + " | " + mca.results.toLocaleString(dateInfo.locale, options)}}
+                        {{ $t(`mca.main.results`).toUpperCase() + " | " + mca.results.toLocaleString(dateInfo.locale, options) }}
                     </span>
                 </p>
                 <div v-html="$t(`mca.main.message.${$route.params.year}`)" />
@@ -80,8 +80,8 @@ import { MCA, Phase } from "../../../Interfaces/mca";
                 { hid: "og:url", property: "og:url", content: "https://mca.corsace.io" },
                 { hid: "og:description", property: "og:description", content: "Mappers' Choice Awards is the osu!-related awards event for ranked mappers and members of the mapping community to decide what the beatmaps and who the best users were each year." },
                 { hid: "og:site_name", property: "og:site_name", content: "MCA" },
-                { hid: "theme-color", name: "theme-color", content: "#fb2475" }
-            ]
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" },
+            ],
         };
     },
 })

@@ -23,9 +23,9 @@
 
                     <button
                         v-if="loggedInUser"
-                        @click="changeFilterFriends()"
                         class="button"
                         :class="{ 'button--friends': filterFriends }"
+                        @click="changeFilterFriends()"
                     >
                         <img
                             v-if="!filterFriends"
@@ -41,8 +41,8 @@
 
                     <button
                         v-if="loggedInUser && phase && phase.phase !== 'results'"
-                        @click="changeFilterCommented()"
                         class="button"
+                        @click="changeFilterCommented()"
                     >
                         <img
                             v-if="!notCommented"
@@ -102,7 +102,7 @@
         <notice-modal 
             :title="$t('ayim.comments.name')"
             :text="$t('ayim.comments.notice')"
-            :localKey="'overlay'"
+            :local-key="'overlay'"
         />
     </display-layout>
 </template>
@@ -138,8 +138,8 @@ import { MCA, Phase } from "../../../../Interfaces/mca";
                 { hid: "og:url", property: "og:url", content: "https://ayim.corsace.io" },
                 { hid: "og:description", property: "og:description", content: `The list of users for comments in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
                 { hid: "og:site_name", property: "og:site_name", content: "AYIM" },
-                { hid: "theme-color", name: "theme-color", content: "#fb2475" }
-            ]
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" },
+            ],
         };
     },
 })

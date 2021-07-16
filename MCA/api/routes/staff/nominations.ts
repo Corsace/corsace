@@ -10,7 +10,8 @@ staffNominationsRouter.use(isStaff);
 
 // Endpoint for getting information for a category
 staffNominationsRouter.get("/", async (ctx) => {
-    let [categoryID, start] = [ctx.query.category, ctx.query.start];
+    let categoryID = ctx.query.category;
+    const start = ctx.query.start;
     const maxTake = 51;
     
     if (!categoryID || !/\d+/.test(categoryID))

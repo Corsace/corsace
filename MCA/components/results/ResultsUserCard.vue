@@ -40,7 +40,7 @@ export default class ResultsUserCard extends Vue {
     get userAva (): any {
         if (this.choice)
             return {
-                "background-image": `url(${this.choice.avatar})` 
+                "background-image": `url(${this.choice.avatar})`, 
             };
 
         return { "background-image": "" };

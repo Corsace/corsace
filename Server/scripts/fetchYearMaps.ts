@@ -80,7 +80,7 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     } else if (user.osu.username !== beatmap.creator) {
         // Check if old exists (add if it doesn't)
         if (!user.otherNames.some(v => v.name === user!.osu.username)) {
-            let nameChange = new UsernameChange;
+            const nameChange = new UsernameChange;
             nameChange.name = user.osu.username;
             nameChange.user = user;
             await nameChange.save();
@@ -90,7 +90,7 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
         // Check if new exists (remove if it does)
         if (user.otherNames.some(v => v.name === beatmap.creator)) {
             await user.otherNames.find(v => v.name === beatmap.creator)!.remove();
-            user.otherNames = user.otherNames.filter(v => v.name !== beatmap.creator)
+            user.otherNames = user.otherNames.filter(v => v.name !== beatmap.creator);
         }
         user.osu.username = beatmap.creator;
         await user.save();

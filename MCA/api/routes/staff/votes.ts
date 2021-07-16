@@ -11,7 +11,8 @@ staffVotesRouter.use(isStaff);
 
 // Endpoint for getting information for a category
 staffVotesRouter.get("/", async (ctx) => {
-    let [categoryID, start] = [ctx.query.category, ctx.query.start];
+    let categoryID = ctx.query.category;
+    const start = ctx.query.start;
     const maxTake = 101;
     
     if (!categoryID || !/\d+/.test(categoryID))
@@ -23,43 +24,43 @@ staffVotesRouter.get("/", async (ctx) => {
     categoryID = parseInt(categoryID);
 
     const votes = await Vote
-                                .createQueryBuilder("vote")
-                                .innerJoin("vote.voter", "voter")
-                                .innerJoin("vote.category", "category")
-                                .leftJoin("vote.user", "user")
-                                .leftJoin("vote.beatmapset", "beatmapset")
-                                .leftJoin("beatmapset.creator", "creator")
-                                .leftJoin("beatmapset.beatmaps", "beatmap")
-                                .select("vote.ID", "ID")
-                                .addSelect("category.ID", "categoryID")
-                                .addSelect("vote.choice", "choice")
-                                // voter selects
-                                .addSelect("voter.ID", "voterID")
-                                .addSelect("voter.osuUserid", "voterOsuID")
-                                .addSelect("voter.osuUsername", "voterOsu")
-                                .addSelect("voter.discordUsername", "voterDiscord")
-                                // user selects
-                                .addSelect("user.osuUserid", "userID")
-                                .addSelect("user.osuUsername", "userOsu")
-                                .addSelect("user.discordUsername", "userDiscord")
-                                // beatmapset selects
-                                .addSelect("beatmapset.ID", "beatmapsetID")
-                                .addSelect("beatmapset.artist", "artist")
-                                .addSelect("beatmapset.title", "title")
-                                .addSelect("beatmapset.tags", "tags")
-                                .addSelect("creator.osuUserid", "creatorID")
-                                .addSelect("creator.osuUsername", "creatorOsu")
-                                .addSelect("creator.discordUsername", "creatorDiscord")
-                                // wheres + groups + orders
-                                .where("category.ID = :id", { id: categoryID })
-                                .groupBy("vote.ID")
-                                .orderBy("vote.voterID", "DESC")
-                                .offset(isNaN(start) ? 0 : start)
-                                .limit(isNaN(start) ? 0 : maxTake)
-                                .getRawMany();
+        .createQueryBuilder("vote")
+        .innerJoin("vote.voter", "voter")
+        .innerJoin("vote.category", "category")
+        .leftJoin("vote.user", "user")
+        .leftJoin("vote.beatmapset", "beatmapset")
+        .leftJoin("beatmapset.creator", "creator")
+        .leftJoin("beatmapset.beatmaps", "beatmap")
+        .select("vote.ID", "ID")
+        .addSelect("category.ID", "categoryID")
+        .addSelect("vote.choice", "choice")
+    // voter selects
+        .addSelect("voter.ID", "voterID")
+        .addSelect("voter.osuUserid", "voterOsuID")
+        .addSelect("voter.osuUsername", "voterOsu")
+        .addSelect("voter.discordUsername", "voterDiscord")
+    // user selects
+        .addSelect("user.osuUserid", "userID")
+        .addSelect("user.osuUsername", "userOsu")
+        .addSelect("user.discordUsername", "userDiscord")
+    // beatmapset selects
+        .addSelect("beatmapset.ID", "beatmapsetID")
+        .addSelect("beatmapset.artist", "artist")
+        .addSelect("beatmapset.title", "title")
+        .addSelect("beatmapset.tags", "tags")
+        .addSelect("creator.osuUserid", "creatorID")
+        .addSelect("creator.osuUsername", "creatorOsu")
+        .addSelect("creator.discordUsername", "creatorDiscord")
+    // wheres + groups + orders
+        .where("category.ID = :id", { id: categoryID })
+        .groupBy("vote.ID")
+        .orderBy("vote.voterID", "DESC")
+        .offset(isNaN(start) ? 0 : start)
+        .limit(isNaN(start) ? 0 : maxTake)
+        .getRawMany();
 
     let staffVotes = votes.map(vote => {
-        let staffVote = {
+        const staffVote = {
             ID: vote.ID,
             category: vote.categoryID,
             choice: vote.choice,
@@ -75,7 +76,7 @@ staffVotesRouter.get("/", async (ctx) => {
                 osuID: vote.userID,
                 osuUsername: vote.userOsu,
                 discordUsername: vote.userDiscord,
-            }
+            };
         }
         if (vote.beatmapsetID) {
             staffVote.beatmapset = {
@@ -88,7 +89,7 @@ staffVotesRouter.get("/", async (ctx) => {
                     osuUsername: vote.creatorOsu,
                     discordUsername: vote.creatorDiscord,
                 },
-            }
+            };
         }
         return staffVote;
     });
@@ -102,7 +103,7 @@ staffVotesRouter.get("/", async (ctx) => {
     let end = -1;
     let i = staffVotes.length - 1;
     for (; i > 0; --i) {
-        if (staffVotes[i].voter.osuID !== staffVotes[i-1].voter.osuID) {
+        if (staffVotes[i].voter.osuID !== staffVotes[i - 1].voter.osuID) {
             end = start + i;
             break;
         }

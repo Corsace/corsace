@@ -4,8 +4,8 @@
             v-for="(col, i) in filtCol"
             :key="i"
             :class="((col.name) ? `heading-${col.name}` : `heading-${col.label}`) +
-                    ((col.centred) ? ' heading-centred' : '') + 
-                    ((col.prio) ? ' heading-prio' : '')"
+                ((col.centred) ? ' heading-centred' : '') + 
+                ((col.prio) ? ' heading-prio' : '')"
             :style="{'flex': `${mobile && col.msize ? col.msize : col.size}`}"
         >
             {{ (col.label) ? $t(`mca.results.headings.${col.label}`) : '' }}
@@ -23,7 +23,7 @@ export default class ResultsTableHeadings extends Vue {
     @Prop({ type: Array, required: true}) readonly columns!: ResultColumn[];
     @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
     
-    get filtCol() {
+    get filtCol () {
         return this.columns.filter(
             c => (!c.category || c.category === this.section) &&
             ((c.mobileOnly && this.mobile) || 

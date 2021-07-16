@@ -7,15 +7,15 @@
         <div class="staff-filters">
             <button
                 v-if="!showValidated"
-                @click="showValidated = true"
                 class="button req-filter-btn"
+                @click="showValidated = true"
             >
                 Show Validated
             </button>
             <button
                 v-else
-                @click="showValidated = false"
                 class="button req-filter-btn"
+                @click="showValidated = false"
             >
                 Hide Validated
             </button>

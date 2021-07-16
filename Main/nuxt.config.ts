@@ -33,7 +33,7 @@ export default {
             { hid: "og:url", property: "og:url", content: "https://corsace.io" },
             { hid: "og:description", property: "og:description", content: "Corsace is a series of projects (primarily osu!-related) led by VINXIS which consits of tournaments, events, projects, and many more!" },
             { hid: "og:site_name", property: "og:site_name", content: "Corsace" },
-            { hid: "theme-color", name: "theme-color", content: "#e98792" }
+            { hid: "theme-color", name: "theme-color", content: "#e98792" },
         ],
     },
     watch: ["~/api"],

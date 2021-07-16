@@ -14,21 +14,21 @@ staffRequestsRouter.use(isStaff);
 staffRequestsRouter.get("/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const requests = await GuestRequest
-                            .createQueryBuilder("guestReq")
-                            .innerJoin("guestReq.beatmap", "beatmap")
-                            .innerJoin("guestReq.mca", "mca")
-                            .innerJoin("guestReq.user", "user")
-                            .innerJoin("guestReq.mode", "mode")
-                            .select("guestReq.ID", "ID")
-                            .addSelect("guestReq.status", "status")
-                            .addSelect("user.osuUserid", "userID")
-                            .addSelect("user.osuUsername", "username")
-                            .addSelect("beatmap.ID", "beatmapID")
-                            .addSelect("mode.name", "modeName")
-                            .where(`mca.year = ${mca.year}`)
-                            .orderBy("mode.ID", "ASC")
-                            .addOrderBy("status", "ASC")
-                            .getRawMany();
+        .createQueryBuilder("guestReq")
+        .innerJoin("guestReq.beatmap", "beatmap")
+        .innerJoin("guestReq.mca", "mca")
+        .innerJoin("guestReq.user", "user")
+        .innerJoin("guestReq.mode", "mode")
+        .select("guestReq.ID", "ID")
+        .addSelect("guestReq.status", "status")
+        .addSelect("user.osuUserid", "userID")
+        .addSelect("user.osuUsername", "username")
+        .addSelect("beatmap.ID", "beatmapID")
+        .addSelect("mode.name", "modeName")
+        .where(`mca.year = ${mca.year}`)
+        .orderBy("mode.ID", "ASC")
+        .addOrderBy("status", "ASC")
+        .getRawMany();
 
     ctx.body = requests;
 });
@@ -61,7 +61,7 @@ staffRequestsRouter.post("/:id/update", async (ctx) => {
         eligibility.storyboard = true;
         await eligibility.save();
     } else if (request.status === RequestStatus.Rejected) {
-        let eligibility = await MCAEligibility.findOne({
+        const eligibility = await MCAEligibility.findOne({
             where: {
                 year: request.mca.year,
                 user: request.user,

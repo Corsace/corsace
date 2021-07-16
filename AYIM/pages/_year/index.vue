@@ -40,8 +40,8 @@ import IndexPage from "../../components/IndexPage.vue";
                 { hid: "og:url", property: "og:url", content: "https://ayim.corsace.io" },
                 { hid: "og:description", property: "og:description", content: "A Year in Mapping details the records and statistics from each year for the osu! ranked section." },
                 { hid: "og:site_name", property: "og:site_name", content: "AYIM" },
-                { hid: "theme-color", name: "theme-color", content: "#fb2475" }
-            ]
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" },
+            ],
         };
     },
 })

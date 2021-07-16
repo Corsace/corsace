@@ -221,7 +221,7 @@ recordsRouter.get("/mappers", async (ctx) => {
         mostFavsExclHybrid,
         mostPlayed,
         highestAvgSr,
-        lowestAvgSr
+        lowestAvgSr,
     ] = await Promise.all([
         // Most Ranked
         createQueryBuilder()

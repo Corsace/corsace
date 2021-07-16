@@ -7,8 +7,8 @@
             <mode-switcher
                 stretch
                 enable-mode-eligibility
-                :hidePhase="phase.phase !== $route.params.stage"
-                :hideTitle="true"
+                :hide-phase="phase.phase !== $route.params.stage"
+                :hide-title="true"
                 @inactiveModeClicked="toggleGuestDifficultyModal"
             >
                 <stage-page />
@@ -29,7 +29,7 @@
             v-if="phase && phase.phase === 'voting' && $route.params.stage === 'voting'"
             :title="$t('mca.main.voting')"
             :text="$t('mca.nom_vote.votingOverlay')"
-            :localKey="'voting'"
+            :local-key="'voting'"
         />
     </div>
 </template>
@@ -67,8 +67,8 @@ import { UserMCAInfo } from "../../../Interfaces/user";
                 { hid: "og:url", property: "og:url", content: "https://mca.corsace.io" },
                 { hid: "og:description", property: "og:description", content: `Mappers' Choice Awards ${this.$route.params.stage} stage is the ${this.$route.params.stage} stage for the osu!-related awards event for mappers for the ${this.$route.params.year ?? (new Date()).getUTCFullYear()} year.` },
                 { hid: "og:site_name", property: "og:site_name", content: "MCA" },
-                { hid: "theme-color", name: "theme-color", content: "#fb2475" }
-            ]
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" },
+            ],
         };
     },
 })
@@ -82,7 +82,7 @@ export default class Stage extends Vue {
     
     mounted () {
         if (!this.loggedInUser || !this.loggedInUser.eligibility.some(eligibility => eligibility.year == parseInt(this.$route.params.year)))
-            this.$router.push("/"+this.$route.params.year);
+            this.$router.push("/" + this.$route.params.year);
     }
 
     get remainingDays (): string {
@@ -95,11 +95,11 @@ export default class Stage extends Vue {
     }
 
     get onTime () {
-        return this.phase?.phase && (((this.phase.phase === "nominating" || this.phase.phase === "voting") && this.phase.phase === this.$route.params.stage) || (this.mca && this.mca[this.$route.params.stage === 'nominating' ? 'nomination' : this.$route.params.stage].start <= new Date()));
+        return this.phase?.phase && (((this.phase.phase === "nominating" || this.phase.phase === "voting") && this.phase.phase === this.$route.params.stage) || (this.mca && this.mca[this.$route.params.stage === "nominating" ? "nomination" : this.$route.params.stage].start <= new Date()));
     }
 
     goBack () {
-        this.$router.push("/"+this.$route.params.year);
+        this.$router.push("/" + this.$route.params.year);
     }
 }
 </script>

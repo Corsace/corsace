@@ -65,7 +65,7 @@ function hasRole (section: string, role: string) {
     };
 }
 
-function hasRoles(roles: discordRoleInfo[]) {
+function hasRoles (roles: discordRoleInfo[]) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
         const member = await getMember(ctx.state.user.discord.userID);
         if (!member) {

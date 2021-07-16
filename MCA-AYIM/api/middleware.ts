@@ -4,9 +4,6 @@ import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
 import { MCA } from "../../Models/MCA_AYIM/mca";
 import { User } from "../../Models/user";
-import { Vote } from "../../Models/MCA_AYIM/vote";
-import { Nomination } from "../../Models/MCA_AYIM/nomination";
-import { Category } from "../../Models/MCA_AYIM/category";
 import { getMember } from "../../Server/discord";
 
 async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
@@ -76,7 +73,7 @@ async function validatePhaseYear (ctx: ParameterizedContext, next: Next): Promis
 
         ctx.state.year = year;
     } catch (e) {
-        ctx.body = { error: "No Currently running MCA found." }
+        ctx.body = { error: "No Currently running MCA found." };
         return;
     }
     

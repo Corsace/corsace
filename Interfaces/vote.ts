@@ -78,7 +78,7 @@ export function groupVotesByVoters (staffVotes: StaffVote[]): UserVote[] {
             });
         } else
             userVotes[i].votes.push(resultVote);
-    };
+    }
 
     userVotes = userVotes.map(userVote => {
         userVote.votes = userVote.votes.sort((a, b) => a.choice - b.choice);
@@ -92,7 +92,7 @@ export function voteCounter (votes: UserVote[]): ResultVote[] {
     if (votes.length === 0) return [];
 
     let candidates: ResultVote[] = [];
-    let results: ResultVote[] = [];
+    const results: ResultVote[] = [];
     // Obtain candidate list
     for (const voter of votes) {
         for (const vote of voter.votes) {
@@ -115,7 +115,7 @@ export function voteCounter (votes: UserVote[]): ResultVote[] {
         for (const vote of voter.votes) {
             const k = candidates.findIndex(candidate => vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID);
             if (vote.choice === 1)
-                candidates[k].firstPlaceCount++
+                candidates[k].firstPlaceCount++;
             candidates[k].totalCount++; 
         }
     }
@@ -135,7 +135,7 @@ export function voteCounter (votes: UserVote[]): ResultVote[] {
                         votes[i].votes[j].used = true;
                         votes[i].votes[j].inRace = false;
                         continue;
-                    };
+                    }
                     
                     if (!candidates[k].inRace) { // Choice dropped out of the race last round
                         votes[i].votes[j].inRace = false;
@@ -164,7 +164,7 @@ export function voteCounter (votes: UserVote[]): ResultVote[] {
             // Check if this run is over, drop bottom votes from race otherwise
             const inRace = candidates.filter(candidate => candidate.inRace);
             let sum = 0;
-            let min = inRace[inRace.length - 1].count;
+            const min = inRace[inRace.length - 1].count;
             inRace.forEach(candidate => sum += candidate.count);
             if (candidates[0].count > sum / 2.0 || candidates[0].count === min)
                 break;
@@ -177,7 +177,7 @@ export function voteCounter (votes: UserVote[]): ResultVote[] {
         }
 
         // Remove top ones this run
-        let max = candidates[0].count;
+        const max = candidates[0].count;
         const placement = results.length + 1;
         for (let i = 0; i < candidates.length; i++) {
             if (candidates[i].count !== max) {

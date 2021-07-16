@@ -24,13 +24,13 @@
             </span>
         </div>
         <span 
-            class="login__text"
             v-if="loggedInUser"
+            class="login__text"
             v-html="$t('mca_ayim.login.message.2')"
         />
         <div 
-            class="login__auth"
             v-if="loggedInUser"
+            class="login__auth"
         >
             <img src="../../../Assets/img/social/discord.png">
             <a 

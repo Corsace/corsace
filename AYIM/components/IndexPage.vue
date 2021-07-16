@@ -1,8 +1,8 @@
 <template>
     <div class="general-info">
         <div
-            class="general-info__text" 
-            v-if="mca"
+            v-if="mca" 
+            class="general-info__text"
             v-html="$t(`ayim.main.message.${mca.year}`)" 
         />
         

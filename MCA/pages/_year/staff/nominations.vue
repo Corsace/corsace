@@ -16,15 +16,15 @@
                     />
                     <button
                         v-if="!showReviewed && viewOption !== 'invalid'"
-                        @click="showReviewed = true"
                         class="button"
+                        @click="showReviewed = true"
                     >
                         Show Reviewed
                     </button>
                     <button
                         v-else-if="showReviewed && viewOption !== 'invalid'"
-                        @click="showReviewed = false"
                         class="button"
+                        @click="showReviewed = false"
                     >
                         Hide Reviewed
                     </button>
@@ -37,9 +37,9 @@
                     >
                         <div
                             :key="category.id + '-cat-header'"
-                            @click.prevent="selectCategory(category.id)"
                             class="staff-container__header"
                             :class="{ 'staff-container__header--active': category.id === selectedCategoryId }"
+                            @click.prevent="selectCategory(category.id)"
                         >
                             <a
                                 class="staff-container__title"
@@ -100,9 +100,9 @@
                                                 </div>
                                                 <div class="staff-user__list">
                                                     <span 
-                                                        class="staff-user"
                                                         v-for="nominator in nomination.nominators"
                                                         :key="nominator.osuID + '-nominator'"
+                                                        class="staff-user"
                                                     >
                                                         <a
                                                             :href="`https://osu.ppy.sh/users/${nominator.osuID}`"
@@ -146,8 +146,8 @@
                     </template>
                 </div>
                 <scroll-bar
-                    @bottom="appendCategory()"
                     selector=".staff-scrollTrack"
+                    @bottom="appendCategory()"
                 />
             </div>
         </mode-switcher>
@@ -325,7 +325,7 @@ export default class Nominations extends Vue {
         if (nomination.beatmapset) {
             return { "background-image": `url('https://assets.ppy.sh/beatmaps/${nomination.beatmapset.ID}/covers/cover.jpg?1560315422')` };
         } else if (nomination.user) {
-            return { "background-image": `url(https://a.ppy.sh/${nomination.user.osuID})` }
+            return { "background-image": `url(https://a.ppy.sh/${nomination.user.osuID})` };
         }
         return { "background-image": "" };
     }

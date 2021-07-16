@@ -116,7 +116,7 @@ export class Beatmapset extends BaseEntity {
                             .getQuery();
         
                         return "NOT EXISTS " + subQuery;
-                    })
+                    });
             if (category.filter.maxSR)
                 queryBuilder
                     .andWhere((qb) => {
@@ -127,7 +127,7 @@ export class Beatmapset extends BaseEntity {
                             .getQuery();
         
                         return "NOT EXISTS " + subQuery;
-                    })
+                    });
             if (category.filter.minCS)
                 queryBuilder
                     .andWhere((qb) => {
@@ -142,7 +142,7 @@ export class Beatmapset extends BaseEntity {
                                     .where("beatmapsetID = beatmapset.ID")
                                     .limit(1)
                                     .getQuery();
-                                return "refMap.totalSR = " + subSubQuery
+                                return "refMap.totalSR = " + subSubQuery;
                             })
                             .getQuery();
         
@@ -162,7 +162,7 @@ export class Beatmapset extends BaseEntity {
                                     .where("beatmapsetID = beatmapset.ID")
                                     .limit(1)
                                     .getQuery();
-                                return "refMap.totalSR = " + subSubQuery
+                                return "refMap.totalSR = " + subSubQuery;
                             })
                             .getQuery();
 

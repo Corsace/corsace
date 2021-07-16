@@ -7,7 +7,7 @@ const dir = "../../Assets/lang/";
 
 fs.readdir(__dirname + "/" + dir, (err, f) => {
     if (err) throw err;
-    for (let filename of f) {
+    for (const filename of f) {
         if (filename === "flagCodes.json" || filename === "en.json")
             continue;
         
@@ -17,7 +17,7 @@ fs.readdir(__dirname + "/" + dir, (err, f) => {
             if (err) throw err;
             // get JSON data of target JSON
             const str = data.toString();
-            let jsonData = JSON.parse(str);
+            const jsonData = JSON.parse(str);
 
             // Delete obsolete keys
             const targetKeys = Object.keys(jsonData);
@@ -30,12 +30,12 @@ fs.readdir(__dirname + "/" + dir, (err, f) => {
 
             fs.writeFile(__dirname + "/" + dir + filename, JSON.stringify(jsonData, null, 4), (err) => {
                 if (err) throw err;
-            })
+            });
         });
     }
 });
 
-function checker(original, key, target) {
+function checker (original, key, target) {
     // if its a string value and target deosnt have it add an empty string val
     if (typeof original[key] === "string" && !target[key])
         return "";
@@ -56,7 +56,7 @@ function checker(original, key, target) {
     return target[key];
 }
 
-function delChecker(target, key, original) {
+function delChecker (target, key, original) {
     // If the original doens't have any value for this key then just return undefined
     if (!original[key]) return undefined;
 
@@ -64,7 +64,7 @@ function delChecker(target, key, original) {
     if (typeof target[key] === "string" && typeof original[key] === "string") return target[key]; 
 
     // If original is a string but target isnt
-    if (typeof original[key] === "string") return ""
+    if (typeof original[key] === "string") return "";
 
     // original is an object for sure now just return an empty object checker will add the stuff anyway
     if (typeof target[key] === "string") return {};

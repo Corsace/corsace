@@ -107,13 +107,13 @@ adminYearsRouter.delete("/:year/delete", async (ctx) => {
                 }),
                 Vote.find({
                     category,
-                })
+                }),
             ]);
             for (const nom of nominations) {
-                await nom.remove()
+                await nom.remove();
             }
             for (const vote of votes) {
-                await vote.remove()
+                await vote.remove();
             }
             await category.remove();
         }

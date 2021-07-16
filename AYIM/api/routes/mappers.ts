@@ -8,7 +8,7 @@ mappersRouter.get("/search", async (ctx) => {
     if (!ctx.query.year)
         return ctx.body = {
             error: "No year given!",
-        }
+        };
 
     if (/\d+/.test(ctx.query.skip))
         ctx.query.skip = parseInt(ctx.query.skip);
@@ -26,7 +26,7 @@ mappersRouter.get("/search", async (ctx) => {
                 },
             });
             ctx.query.friends = res.data.map(friend => friend.id);
-        } catch (e) {''
+        } catch (e) {"";
             if (Axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) 
                 return ctx.body = { error: "Please re-login via osu! again in order to use the friends filter! If you logged in again via osu! and it still isn't working, contact VINXIS!" };
             else 

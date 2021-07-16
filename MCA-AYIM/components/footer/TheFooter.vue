@@ -1,7 +1,10 @@
 <template>
     <div class="footer">
         <div class="footer__left">
-            <a class="footer__corsace" href="https://corsace.io">
+            <a
+                class="footer__corsace"
+                href="https://corsace.io"
+            >
                 <img
                     class="footer__logo" 
                     src="../../../Assets/img/ayim-mca/site/corsace_logo.png"
@@ -17,7 +20,10 @@
                 src="../../../Assets/img/ayim-mca/site/d.png"
             >
 
-            <a class="footer__corsace" href="https://twitter.com/kkaetwo">
+            <a
+                class="footer__corsace"
+                href="https://twitter.com/kkaetwo"
+            >
                 <img
                     class="footer__kaetwo" 
                     src="../../../Assets/img/partners/kaetwo.png"

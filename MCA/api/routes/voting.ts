@@ -62,9 +62,9 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
         };
     }
 
-    let nomQ = Nomination
-                .createQueryBuilder("nomination")
-                .where(`categoryID = ${category.ID}`);
+    const nomQ = Nomination
+        .createQueryBuilder("nomination")
+        .where(`categoryID = ${category.ID}`);
 
     if (category.type === CategoryType.Beatmapsets) {
         nomQ.andWhere(`beatmapsetID = ${nomineeId}`);

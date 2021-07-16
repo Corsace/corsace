@@ -2,8 +2,8 @@
     <div class="dropdown-container">
         <div 
             class="label-section button"
-            @click="showDropdown = !showDropdown"
             :style="styleLabel"
+            @click="showDropdown = !showDropdown"
         >
             {{ options[currentOption] }}
             <span 
@@ -47,17 +47,17 @@ export default class DropdownSelector extends Vue{
     @State selectedMode!: string;
     @Prop({ type: Array, required: true }) readonly options!: TranslateResult[];
     @Prop({ type: Number, required: true }) readonly currentOption!: number;
-    @Prop({ type: Object, required: false}) readonly styleLabel!: object;
-    @Prop({ type: Object, required: false }) readonly styleDrop!: object;
+    @Prop({ type: Object, required: false}) readonly styleLabel!: Record<string, any>;
+    @Prop({ type: Object, required: false }) readonly styleDrop!: Record<string, any>;
 
     showDropdown = false;
 
-    mounted() {
+    mounted () {
         this.optionToParent(0);
     }
 
     optionToParent (newOption: number) {
-        this.$emit('relayOption', newOption);
+        this.$emit("relayOption", newOption);
     }
 
     get triangleClass (): Record<string, any>  {

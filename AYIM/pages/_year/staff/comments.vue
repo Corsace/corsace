@@ -8,9 +8,9 @@
             @update:search="updateQuery($event)"
         >
             <button
-                @click="updateFilter()"
                 class="button"
                 style="margin: 0 5px;"
+                @click="updateFilter()"
             >
                 {{ showValidated ? "Hide Validated" : "Show Validated" }}
             </button>
@@ -131,7 +131,7 @@ import { StaffComment } from "../../../../Interfaces/comment";
     components: {
         SearchBar,
         ScrollBar,
-    }
+    },
 })
 export default class StaffComments extends Vue {
     @Getter isHeadStaff!: boolean;
@@ -143,7 +143,7 @@ export default class StaffComments extends Vue {
     end = false;
     comments: StaffComment[] = [];
 
-    async mounted() {
+    async mounted () {
         await this.getData();
     }
 
@@ -164,7 +164,7 @@ export default class StaffComments extends Vue {
 
         let url = `/api/staff/comments/${this.$route.params.year}`;
         if (!this.showValidated) url += "?filter=true";
-        if (this.text) url += (url.includes("?") ? "&" : "?") + `text=${this.text}`
+        if (this.text) url += (url.includes("?") ? "&" : "?") + `text=${this.text}`;
 
         const { data } = await this.$axios.get(url);
 
@@ -176,7 +176,7 @@ export default class StaffComments extends Vue {
         this.comments = data;
     
         for (;;) {
-            const box = document.querySelector(".staff-scrollTrack")
+            const box = document.querySelector(".staff-scrollTrack");
             if (!box) break;
             if (box.clientHeight >= box.scrollHeight && !this.end) await this.paginate();
             else break;
@@ -189,7 +189,7 @@ export default class StaffComments extends Vue {
         this.loading = true;
         let url = `/api/staff/comments/${this.$route.params.year}?skip=${this.comments.length}`;
         if (!this.showValidated) url += "&filter=true";
-        if (this.text) url += `&text=${this.text}`
+        if (this.text) url += `&text=${this.text}`;
 
         const { data } = await this.$axios.get(url);
 

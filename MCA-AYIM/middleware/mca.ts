@@ -1,6 +1,6 @@
 import { Context } from "@nuxt/types";
 
-export default async function ({ redirect, error, route, store }: Context) {
+export default async function ({ redirect, route, store }: Context) {
     let year: string | number = route.params.year;
     const lastYear = new Date().getFullYear() - 1;
 

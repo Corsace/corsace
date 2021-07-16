@@ -89,7 +89,7 @@ export class Category extends BaseEntity {
             name: this.name,
             type: CategoryType[this.type],
             mode: this.mode.name,
-        }
+        };
     }
 
     public setFilter = function(this: Category, params?: CategoryFilter): void {
@@ -114,7 +114,7 @@ export class CategoryGenerator {
     /**
      * Creates a grand award.
      */
-    public createGrandAward = function(mca: MCA, mode: ModeDivision, type: CategoryType, isStoryboard: boolean = false): Category {
+    public createGrandAward = function(mca: MCA, mode: ModeDivision, type: CategoryType, isStoryboard = false): Category {
         const category = new Category;
         
         category.name = "grandAward";

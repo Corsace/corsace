@@ -37,7 +37,7 @@
                 <span v-else-if="wasRejected(request.status)">
                     - Updating makes the request go back to pending state
                 </span>
-                <div style="border-bottom: 1px solid white"/>
+                <div style="border-bottom: 1px solid white" />
             </div>
         </div>
     </base-modal>

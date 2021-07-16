@@ -2,8 +2,8 @@
     <div>
         <div class="results-wrapper">
             <mode-switcher
-                hidePhase
-                hideTitle
+                hide-phase
+                hide-title
                 :title="$t(`mca.main.results`)"
             >
                 <div class="results-general"> 
@@ -28,7 +28,7 @@
             v-if="phase && phase.phase === 'results'"
             :title="$t('mca.main.results')"
             :text="$t('mca.results.resultsOverlay')"
-            :localKey="'results'"
+            :local-key="'results'"
         />
     </div>
 </template>
@@ -36,10 +36,10 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, State, namespace } from "vuex-class";
-import { vueWindowSizeMixin } from 'vue-window-size';
+import { vueWindowSizeMixin } from "vue-window-size";
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
-import NoticeModal from "../../../MCA-AYIM/components/NoticeModal.vue"
+import NoticeModal from "../../../MCA-AYIM/components/NoticeModal.vue";
 import ResultsFilters from "../../components/results/ResultsFilters.vue";
 import ResultsTableHeadings from "../../components/results/ResultsTableHeadings.vue";
 import StagePageList from "../../components/stage/StagePageList.vue";
@@ -56,7 +56,7 @@ const stageModule = namespace("stage");
         NoticeModal,
         ResultsFilters,
         ResultsTableHeadings,
-        StagePageList
+        StagePageList,
     },
     head () {
         return {
@@ -68,10 +68,10 @@ const stageModule = namespace("stage");
                 { hid: "og:url", property: "og:url", content: "https://mca.corsace.io" },
                 { hid: "og:description", property: "og:description", content: `The results for the osu!-related awards event for mappers for the ${this.$route.params.year ?? (new Date()).getUTCFullYear()} year.` },
                 { hid: "og:site_name", property: "og:site_name", content: "MCA" },
-                { hid: "theme-color", name: "theme-color", content: "#fb2475" }
-            ]
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" },
+            ],
         };
-    }
+    },
 })
 
 export default class Results extends Vue {
@@ -106,7 +106,7 @@ export default class Results extends Vue {
     ]
 
     // filter columns by breakpoint and category
-    get filtCol() {
+    get filtCol () {
         return this.columns.filter(
             c => (!c.category || c.category === this.section) &&
             ((c.mobileOnly && this.mobile) || 
@@ -115,17 +115,17 @@ export default class Results extends Vue {
         );
     }
 
-    get mobile(): Boolean {
+    get mobile (): boolean {
         return vueWindowSizeMixin.computed.windowWidth() < 768;
     }
 
     mounted () {
-        if (!(this.phase?.phase === 'results' || this.isMCAStaff)) {
-            this.$router.push("/"+this.$route.params.year);
+        if (!(this.phase?.phase === "results" || this.isMCAStaff)) {
+            this.$router.push("/" + this.$route.params.year);
             return;
         }
         
-        this.updateStage("results")
+        this.updateStage("results");
         this.reset();
         this.updateSection("beatmaps");
         this.setInitialData();

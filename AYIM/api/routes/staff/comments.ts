@@ -16,33 +16,33 @@ commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(ctx.query.skip) : 0;
     const text = ctx.query.text ?? undefined;
-    let query = UserComment
-                    .createQueryBuilder("userComment")
-                    .innerJoin("userComment.commenter", "commenter")
-                    .innerJoin("userComment.target", "target")
-                    .innerJoin("userComment.mode", "mode")
-                    .leftJoin("userComment.reviewer", "reviewer")
-                    .select("userComment.ID", "ID")
-                    .addSelect("userComment.comment", "comment")
-                    .addSelect("userComment.commenterID", "commenterID")
-                    .addSelect("userComment.isValid", "isValid")
-                    .addSelect("userComment.lastReviewedAt", "lastReviewedAt")
-                    .addSelect("mode.name", "modeName")
-                    .addSelect("commenter.osuUserid", "commenterosuID")
-                    .addSelect("commenter.osuUsername", "commenterosuUsername")
-                    .addSelect("target.osuUserid", "targetosuID")
-                    .addSelect("target.osuUsername", "targetosuUsername")
-                    .addSelect("reviewer.osuUsername", "reviewer")
-                    .where(`year = ${mca.year}`)
+    const query = UserComment
+        .createQueryBuilder("userComment")
+        .innerJoin("userComment.commenter", "commenter")
+        .innerJoin("userComment.target", "target")
+        .innerJoin("userComment.mode", "mode")
+        .leftJoin("userComment.reviewer", "reviewer")
+        .select("userComment.ID", "ID")
+        .addSelect("userComment.comment", "comment")
+        .addSelect("userComment.commenterID", "commenterID")
+        .addSelect("userComment.isValid", "isValid")
+        .addSelect("userComment.lastReviewedAt", "lastReviewedAt")
+        .addSelect("mode.name", "modeName")
+        .addSelect("commenter.osuUserid", "commenterosuID")
+        .addSelect("commenter.osuUsername", "commenterosuUsername")
+        .addSelect("target.osuUserid", "targetosuID")
+        .addSelect("target.osuUsername", "targetosuUsername")
+        .addSelect("reviewer.osuUsername", "reviewer")
+        .where(`year = ${mca.year}`);
     if (filter)
-        query.andWhere(`isValid = 0`)
+        query.andWhere(`isValid = 0`);
     if (text) {
         query
             .andWhere(new Brackets(qb => {
                 qb.where("commenter.osuUsername LIKE :criteria")
                     .orWhere("commenter.osuUserid LIKE :criteria")
                     .orWhere("target.osuUsername LIKE :criteria")
-                    .orWhere("target.osuUserid LIKE :criteria")
+                    .orWhere("target.osuUserid LIKE :criteria");
             }))
             .setParameter("criteria", `%${text}%`);
     }
@@ -75,7 +75,7 @@ commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
         }
 
         return staffComment;
-    })
+    });
     ctx.body = staffComments;
 });
 
