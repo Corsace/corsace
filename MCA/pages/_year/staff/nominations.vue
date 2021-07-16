@@ -98,7 +98,7 @@
                                                     {{ nomination.reviewer }}
                                                     on {{ new Date(nomination.lastReviewedAt).toString() }}
                                                 </div>
-                                                <div class="staff-users">
+                                                <div class="staff-user__list">
                                                     <span 
                                                         class="staff-user"
                                                         v-for="nominator in nomination.nominators"
@@ -146,7 +146,7 @@
                     </template>
                 </div>
                 <scroll-bar
-                    @bottom="selectStart === -1 ? null : appendCategory()"
+                    @bottom="appendCategory()"
                     selector=".staff-scrollTrack"
                 />
             </div>
@@ -199,20 +199,16 @@ export default class Nominations extends Vue {
     selectedCategoryId: null | number = null;
 
     get relatedCategories (): CategoryInfo[] {
-        return this.categories.filter(c => c.mode === this.selectedMode);
+        return this.categories.filter(c => c.mode === this.selectedMode || c.mode === "storyboard");
     }
 
     get nominationsByCategory (): NominationsByCategory[] {
         const categories: NominationsByCategory[] = [];
 
         for (const nomination of this.nominations) {
-            if (
-                (nomination.reviewer && !this.showReviewed) ||
-                (!nomination.isValid && this.viewOption === "valid") ||
-                (nomination.isValid && this.viewOption === "invalid")
-            ) {
-                continue;
-            }
+            if (nomination.reviewer && !this.showReviewed) continue;
+            if (!nomination.isValid && this.viewOption === "valid") continue;	
+            else if (nomination.isValid && this.viewOption === "invalid") continue;
 
             if (this.text) {
                 const lowerText = this.text.toLowerCase();
@@ -270,7 +266,12 @@ export default class Nominations extends Vue {
     }
 
     async selectCategory (id: number) {
-        const { data } = await this.$axios.get(`/api/staff/nominations?category=${id}`);
+        if (this.selectedCategoryId === id) {
+            this.nominations = [];
+            this.selectedCategoryId = null;
+            return;
+        }
+        const { data } = await this.$axios.get(`/api/staff/nominations?category=${id}&start=0`);
 
         if (data.error) {
             alert(data.error);
@@ -279,6 +280,17 @@ export default class Nominations extends Vue {
 
         this.nominations = data;
         this.selectedCategoryId = id;
+    }
+
+    async appendCategory () {
+        if (this.nominations.length === 0) return;
+
+        const { data } = await this.$axios.get(`/api/staff/nominations?category=${this.selectedCategoryId}&start=${this.nominations.length}`);
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        this.nominations.push(...data.staffNominations);
     }
 
     generateUrl (nomination: StaffNomination): string {
@@ -381,10 +393,6 @@ export default class Nominations extends Vue {
     &__action {
         margin: 5px;
     }
-}
-
-.staff-users {
-    display: flex;
 }
 
 </style>
