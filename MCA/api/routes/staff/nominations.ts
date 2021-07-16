@@ -37,7 +37,7 @@ staffNominationsRouter.get("/", async (ctx) => {
         .limit(maxTake)
         .getMany();
 
-    let staffNominations = nominations.map(nom => {
+    const staffNominations = nominations.map(nom => {
         const staffNom: StaffNomination = {
             ID: nom.ID,
             categoryId: nom.category.ID,
