@@ -110,13 +110,13 @@
                                                         >
                                                             <img
                                                                 :src="`https://a.ppy.sh/${nominator.osuID}`"
-                                                                class="staff-user__avatar"
+                                                                class="staff-user__avatar staff-user__avatar--small"
                                                             >
                                                         </a>
                                                         <a
                                                             :href="`https://osu.ppy.sh/users/${nominator.osuID}`"
                                                             target="_blank"
-                                                            class="staff-user__link"
+                                                            class="staff-user__link staff-user__link--small"
                                                         >
                                                             {{ nominator.osuUsername }}
                                                         </a>

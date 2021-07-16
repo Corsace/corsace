@@ -89,6 +89,9 @@ export default class GuestDifficultyModal extends Vue {
     }
 
     async submit (data: RequestData) {
+        if (!confirm("This form is only to request access if you only ranked guest difficulties and no sets.\n This is not a place to nominate a beatmap.\n Do you understand?"))
+            return;
+
         await this.submitGuestRequest({
             mode: data.mode,
             url: data.url,
