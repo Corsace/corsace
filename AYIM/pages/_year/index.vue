@@ -1,8 +1,9 @@
 <template>
     <div>
         <div
-            v-if="mca" 
-            class="ayim-bg" 
+            v-if="mca"
+            :style="{ backgroundImage: 'url(' + require(`../../../Assets/img/ayim-mca/site/goodbye/${this.$route.params.year}.png`) + ')' }"
+            class="ayim-bg"
         />
         <div class="left-side" />
         <div :class="{'right-side': mca, 'full-side': !mca}">
@@ -64,7 +65,6 @@ export default class Index extends Vue {
     width: 100%;
     padding-bottom: 9vh;
 
-    background-image: url("../../../Assets/img/ayim-mca/site/ayim bg.png");
     background-size: auto 80%;
     background-repeat: no-repeat;
     background-position: center left;
