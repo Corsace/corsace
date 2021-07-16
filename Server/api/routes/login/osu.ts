@@ -71,7 +71,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                 for (const group of data.groups) { // BN, NAT groups
                     if (![28, 32, 7].some(num => group.id === num))
                         continue;
-                    eligibleModes.push(...group.playmodes)
+                    eligibleModes.push(...group.playmodes);
                 }
                 eligibleModes = eligibleModes.map(mode => mode === "osu" ? "standard" : mode);
             }

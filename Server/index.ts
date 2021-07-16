@@ -7,10 +7,10 @@ import BodyParser from "koa-bodyparser";
 import Mount from "koa-mount";
 import passport from "koa-passport";
 import Session from "koa-session";
-import logoutRouter from "./api/routes/login/logout";
 import { cache } from "./cache";
 import { setupPassport } from "./passportFunctions";
 
+import logoutRouter from "./api/routes/login/logout";
 import discordRouter from "./api/routes/login/discord";
 import osuRouter from "./api/routes/login/osu";
 import userRouter from "./api/routes/user";
