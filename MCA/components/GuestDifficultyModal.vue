@@ -6,7 +6,7 @@
     >
         <div class="column-box">
             <div class="request__title">
-                Select mode + submit your guest difficulty here (or storyboard for storyboard mode)
+                Didn't rank sets but only guest difficulties in {{ $route.params.year }}? <br> Select mode + submit your guest difficulty here (or storyboard for storyboard mode) <br> to be checked by staff and able to nominate / vote for MCA {{ $route.params.year }}
             </div>
             <guest-difficulty-submission @submit="submit($event)" />
         </div>
