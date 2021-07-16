@@ -107,18 +107,18 @@
                                                         <a
                                                             :href="`https://osu.ppy.sh/users/${nominator.osuID}`"
                                                             target="_blank"
-                                                            class="staff-user__link"
-                                                        >
-                                                            {{ nominator.osuUsername }}
-                                                        </a>
-                                                        <a
-                                                            :href="`https://osu.ppy.sh/users/${nominator.osuID}`"
-                                                            target="_blank"
                                                         >
                                                             <img
                                                                 :src="`https://a.ppy.sh/${nominator.osuID}`"
                                                                 class="staff-user__avatar"
                                                             >
+                                                        </a>
+                                                        <a
+                                                            :href="`https://osu.ppy.sh/users/${nominator.osuID}`"
+                                                            target="_blank"
+                                                            class="staff-user__link"
+                                                        >
+                                                            {{ nominator.osuUsername }}
                                                         </a>
                                                     </span>
                                                 </div>
