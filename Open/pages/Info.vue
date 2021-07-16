@@ -133,6 +133,7 @@ p, .infoList, .infoList li a{
     grid-column: 1/3;
 }
 
+
 .infoSection {
     padding: 10px 0;
 }

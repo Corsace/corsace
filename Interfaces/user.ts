@@ -15,6 +15,7 @@ export interface UserMCAInfo extends UserInfo {
 }
 export interface UserOpenInfo extends UserInfo {
     isStaff: boolean;
+    isHeadStaff: boolean;
 }
 
 export interface UserInfo {

@@ -103,6 +103,7 @@ export default class Qualifiers extends Vue {
     @State team!: TeamInfo;
     @State loggedInUser!: UserOpenInfo;
 
+
     loading = true
         
     async created() {

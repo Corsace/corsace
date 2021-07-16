@@ -114,6 +114,7 @@ export default class Talent extends Vue {
     @talentModule.State streamcomms!: StaffOpenInfo[]
     @talentModule.State schedulers!: StaffOpenInfo[]
     loading = false;
+
     
     async created () {
         this.loading = true;
