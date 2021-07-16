@@ -59,7 +59,8 @@
       "nodemon": "^2.0.7",
       "nodesu": "https://github.com/ThePooN/nodesu/archive/502d65b9f84dd2fbe0a24f4eeaf9359305f8bcc3.tar.gz",
       "sass": "^1.32.2",
-      "sass-loader": "^10.1.0"
+      "sass-loader": "^10.1.0",
+      "vue-window-size": "^0.6.2"
    },
    "scripts": {
       "build:ayim": "cd ./AYIM && nuxt-ts build",

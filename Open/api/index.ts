@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { App } from "../../Server";
 import mount from "koa-mount";
-import loginRouter from "../../Server/login"
+import loginRouter from "../../Server/login";
 import userRouter from "./routes/user";
 
 const app = new App();

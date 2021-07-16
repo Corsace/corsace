@@ -83,35 +83,25 @@ export default class StagePageCategories extends Vue {
         this.updateSelectedCategory(category);
     }
 
-    hasVotedGrand (type: CategoryType): boolean {
-        const arr = this.stage === "nominating" ? this.nominations : this.votes;
-
-        return arr.some(v => 
-            v.category.isRequired && 
-            v.category.mode.name === this.selectedMode &&
-            v.category.type === type
-        );
-    }
-
     filterCategories (type: CategoryType): CategoryStageInfo[] {
-        const hasVotedGrand = this.hasVotedGrand(type);
-
         return this.categoriesInfo
-            .filter(c => c.type === CategoryType[type] && c.mode === this.selectedMode)
-            .map(c => ({
-                ...c,
-                inactive: !c.isRequired && !hasVotedGrand,
-            }));
+            .filter(c => c.type === CategoryType[type] && (c.mode === this.selectedMode || c.mode === "storyboard"));
     }
 
 }
 </script>
 
 <style lang="scss">
+@import '@s-sass/_variables';
 @import '@s-sass/_mixins';
 
 .stage-categories {
     flex: 1 1 15%;
+
+    min-height: 265px;
+    @include breakpoint(tablet) {
+        min-height: initial;
+    }
 
     overflow-y: scroll;
     scrollbar-width: thin;

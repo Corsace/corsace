@@ -1,29 +1,27 @@
 <template>
     <div class="header">
-        <template>
-            <nuxt-link
-                class="header__year-container"
-                :to="`/${$route.params.year}`"
-            >
-                <div class="header__year">
-                    {{ $route.params.year }}
-                </div>
-                <div class="header__year header__year--coloured">
-                    <span class="header__year--standard">
-                        {{ ('' + $route.params.year)[0] }}
-                    </span>
-                    <span class="header__year--taiko">
-                        {{ ('' + $route.params.year)[1] }}
-                    </span>
-                    <span class="header__year--fruits">
-                        {{ ('' + $route.params.year)[2] }}
-                    </span>
-                    <span class="header__year--mania">
-                        {{ ('' + $route.params.year)[3] }}
-                    </span>
-                </div>
-            </nuxt-link>
-        </template>
+        <nuxt-link
+            class="header__year-container"
+            :to="`/${$route.params.year}`"
+        >
+            <div class="header__year">
+                {{ $route.params.year }}
+            </div>
+            <div class="header__year header__year--coloured">
+                <span class="header__year--standard">
+                    {{ ('' + $route.params.year)[0] }}
+                </span>
+                <span class="header__year--taiko">
+                    {{ ('' + $route.params.year)[1] }}
+                </span>
+                <span class="header__year--fruits">
+                    {{ ('' + $route.params.year)[2] }}
+                </span>
+                <span class="header__year--mania">
+                    {{ ('' + $route.params.year)[3] }}
+                </span>
+            </div>
+        </nuxt-link>
         <a
             class="header__title"
             :class="site === 'mca' ? 'header__title--active' : ''"
@@ -78,6 +76,7 @@
         <transition name="fade">
             <the-header-dropdown
                 v-if="showDropdown"
+                :site="site"
                 @showLoginModal="toogleLoginModal"
                 @close="showDropdown = false"
             />

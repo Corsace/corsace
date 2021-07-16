@@ -253,7 +253,6 @@
         "nom_vote": {
             "search": "chercher un mapset/utilisateur",
 	          "select": "Veuillez séléctionner une catégorie !",
-            "selectGrand": "Vous DEVEZ commencer par les catégories Grand Prix",
             "candidates": "candidats",
             "options": {
                 "date": "DATE",

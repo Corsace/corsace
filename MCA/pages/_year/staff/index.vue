@@ -22,6 +22,14 @@
         >
             Nominations review >
         </nuxt-link>
+
+        <nuxt-link
+            v-if="categories.length"
+            :to="`/${mca.name}/staff/votes`"
+            class="staff-page__link"
+        >
+            Vote Lists >
+        </nuxt-link>
     </div>
 </template>
 

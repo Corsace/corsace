@@ -12,12 +12,11 @@
             <div class="choice__info-title">
                 {{ choice.username }}
             </div>
-            <div class="choice__info-artist">
-                {{ choice.otherNames.length ? choice.otherNames.join(", ") : "&#x2800;" }}
+            <div class="choice__info-secondary">
+                <span class="choice__info-artist">
+                    {{ choice.otherNames.length ? choice.otherNames.join(", ") : "&#x2800;" }}
+                </span>
             </div>
-            <span class="choice__info-host">
-                {{ $t('mca.nom_vote.userID') }} | <span class="choice__infoHoster">{{ choice.userID }}</span>
-            </span>
         </a>
     </base-choice-card>
 </template>

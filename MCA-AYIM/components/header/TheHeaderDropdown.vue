@@ -21,6 +21,24 @@
         >
             STAFF
         </nuxt-link>
+        <nuxt-link
+            v-if="site === 'mca' && mca && loggedInUser && mca.nomination.start <= new Date()"
+            :to="`/${$route.params.year}/nominating`"
+        >
+            {{ $t('mca.main.nominating').toUpperCase() }}
+        </nuxt-link>
+        <nuxt-link
+            v-if="site === 'mca' && mca && loggedInUser && mca.voting.start <= new Date()"
+            :to="`/${$route.params.year}/voting`"
+        >
+            {{ $t('mca.main.voting').toUpperCase() }}
+        </nuxt-link>
+        <nuxt-link
+            v-if="site === 'mca' && mca && (mca.results <= new Date() || (isMCAStaff && mca.voting.start <= new Date()))"
+            :to="`/${$route.params.year}/results`"
+        >
+            {{ $t('mca.main.results').toUpperCase() }}
+        </nuxt-link>
         <a href="/api/logout">
             {{ $t('mca_ayim.header.logout') }}
         </a>
@@ -28,15 +46,19 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { Getter, State } from "vuex-class";
+import { MCA } from "../../../Interfaces/mca";
 
 import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component
 export default class TheHeaderDropdown extends Vue {
+    
+    @Prop({ type: String, required: true }) readonly site!: string;
 
     @State loggedInUser!: UserMCAInfo;
+    @State mca!: MCA | null;
     @Getter isMCAStaff!: boolean;
     
 }

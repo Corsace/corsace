@@ -42,8 +42,7 @@ export default class BaseModal extends Vue {
     width: 100%;
     height: 100%;
     
-    background-color: rgba(0,0,0,0.83);
-    backdrop-filter: blur(7px);
+    background-color: rgba(0,0,0,0.95);
     
     z-index: 100;
     outline: 0;

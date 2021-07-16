@@ -18,9 +18,6 @@
                 <div class="stage-select__title">
                     {{ $t('mca.nom_vote.select') }}
                 </div>
-                <div class="stage-select__subtitle">
-                    {{ $t('mca.nom_vote.selectGrand') }}
-                </div>
             </div>
         </div>
     </div>
@@ -51,8 +48,10 @@ const stageModule = namespace("stage");
 export default class StateContent extends Vue {
 
     @State selectedMode!: string;
+
     @stageModule.State count!: number;
     @stageModule.State selectedCategory!: CategoryStageInfo;
+
     @stageModule.Action updateStage;
     @stageModule.Action setInitialData;
     @stageModule.Action reset;

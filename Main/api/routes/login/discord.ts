@@ -30,10 +30,10 @@ discordRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
                 // Add user to server if they aren't there yet
                 const guild = await discordGuild();
                 try {
-                    let discordUser = await guild.members.fetch(user.discord.userID);
+                    const discordUser = await guild.members.fetch(user.discord.userID);
                     await Promise.all([
                         discordUser.setNickname(user.osu.username),
-                        discordUser.roles.add(config.discord.roles.corsace.verified)
+                        discordUser.roles.add(config.discord.roles.corsace.verified),
                     ]);
                 } catch (e) {
                     await guild.addMember(user.discord.userID, {

@@ -253,7 +253,6 @@
         "nom_vote": {
             "search": "搜索谱面/用户",
             "select": "请选择一个分类！",
-            "selectGrand": "你<b>必须</b>通过“大奖”分类开始",
             "candidates": "候选人",
             "options": {
                 "date": "日期",

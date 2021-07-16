@@ -42,8 +42,13 @@
     -moz-appearance: none;
 
     &:hover {
-        filter: invert(100%);
+        color: black;
         text-shadow: none;
+        background: white;
+
+        & > img {
+            filter: invert(100%);
+        }
     }
 
     &--active {
@@ -54,13 +59,11 @@
 
     &--friends {
         background: rgb(255,102,170);
-        &:hover {
-            background: black;
-        }
     }
 
-    &--image > img {
+    & > img {
         height: 25px;
+        @include transition;
         @include breakpoint(mobile) {
             height: 15px;
         }
