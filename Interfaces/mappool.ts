@@ -6,3 +6,7 @@ export enum ModSlots {
     FM,
     TB
 }
+
+export interface MappoolInfo {
+    
+}

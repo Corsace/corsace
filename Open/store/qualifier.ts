@@ -1,15 +1,20 @@
 import { ActionTree, MutationTree } from "vuex";
 import axios from "axios"
 import { Any } from "typeorm";
+import { TeamInfo } from "../../Interfaces/team";
+import { MappoolInfo } from "../../Interfaces/mappool";
+import { ScoreInfo } from "../../Interfaces/score";
+import { QualifierInfo } from "../../Interfaces/qualifier";
 
-export  interface QualifierState {
-    qualifiers: null | any
-    scores: null,
-    mappool: null, 
-    teams: null | any
-    section: "qualifiers" | string,
-    subSection: "teams" | string,
-    scoringType: "average" | string, 
+
+export interface QualifierState {
+    qualifiers: QualifierInfo[] | QualifierInfo[]
+    scores: ScoreInfo[] | ScoreInfo[]
+    mappool: null | MappoolInfo
+    teams: TeamInfo[] | TeamInfo[]
+    section: "qualifiers" | string
+    subSection: "teams" | string
+    scoringType: "average" | string 
 }
 
 export const mutations: MutationTree<QualifierState> = {
@@ -45,7 +50,7 @@ export const actions: ActionTree<QualifierState, any> = {
             
             commit("setMappool", data.mappool)
             commit("setQualifiers", data.qualifiers)
-            commit("setScores", [].concat.apply([], state.qualifiers.map((qualifier) => {
+            commit("setScores", ([] as ScoreInfo[]).concat.apply([], state.qualifiers.map((qualifier) => {
                 qualifier.scores = qualifier.scores.map((score) => {
                     if (score)
                         score.qualifier = qualifier.id;
@@ -55,7 +60,7 @@ export const actions: ActionTree<QualifierState, any> = {
                 return qualifier.scores;
             })).filter(x => x != null))
             
-            const nonUniqueTeams: any = [].concat.apply([], state.qualifiers.map(qualifier => qualifier.teams))
+            const nonUniqueTeams: any = ([] as TeamInfo[]).concat.apply([], state.qualifiers.map(qualifier => qualifier.teams))
             const ids = {};
             commit("setTeams", [])
             for (const team of nonUniqueTeams) {
