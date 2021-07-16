@@ -55,33 +55,10 @@
                             :key="category.id + '-category'"
                             class="staff-container__box"
                         >
-                            <div
-                                v-for="userNominations in selectedCategoryInfo"
-                                :key="userNominations.nominator.osuID + '-nominator'"
-                                class="staff-nomination-container"
-                            >
-                                <span class="staff-user">
-                                    <a
-                                        :href="`https://osu.ppy.sh/users/${userNominations.nominator.osuID}`"
-                                        target="_blank"
-                                        class="staff-user__link"
-                                    >
-                                        {{ userNominations.nominator.osuUsername }}
-                                    </a>
-                                    <a
-                                        :href="`https://osu.ppy.sh/users/${userNominations.nominator.osuID}`"
-                                        target="_blank"
-                                    >
-                                        <img
-                                            :src="`https://a.ppy.sh/${userNominations.nominator.osuID}`"
-                                            class="staff-user__avatar"
-                                        >
-                                    </a>
-                                </span>
-
+                            <div class="staff-nomination-container">
                                 <ul class="staff-list">
                                     <li
-                                        v-for="nomination in userNominations.nominations"
+                                        v-for="nomination in selectedCategoryNominations"
                                         :key="nomination.ID + '-nomination'"
                                     >
                                         <div class="staff-nomination">
@@ -121,6 +98,30 @@
                                                     {{ nomination.reviewer }}
                                                     on {{ new Date(nomination.lastReviewedAt).toString() }}
                                                 </div>
+                                                <div class="staff-user__list">
+                                                    <span 
+                                                        class="staff-user"
+                                                        v-for="nominator in nomination.nominators"
+                                                        :key="nominator.osuID + '-nominator'"
+                                                    >
+                                                        <a
+                                                            :href="`https://osu.ppy.sh/users/${nominator.osuID}`"
+                                                            target="_blank"
+                                                        >
+                                                            <img
+                                                                :src="`https://a.ppy.sh/${nominator.osuID}`"
+                                                                class="staff-user__avatar"
+                                                            >
+                                                        </a>
+                                                        <a
+                                                            :href="`https://osu.ppy.sh/users/${nominator.osuID}`"
+                                                            target="_blank"
+                                                            class="staff-user__link"
+                                                        >
+                                                            {{ nominator.osuUsername }}
+                                                        </a>
+                                                    </span>
+                                                </div>
                                             </div>
 
                                             <div class="staff-nomination__actions">
@@ -145,7 +146,7 @@
                     </template>
                 </div>
                 <scroll-bar
-                    @bottom="selectStart === -1 ? null : appendCategory()"
+                    @bottom="appendCategory()"
                     selector=".staff-scrollTrack"
                 />
             </div>
@@ -167,18 +168,9 @@ import { StaffNomination } from "../../../../Interfaces/nomination";
 
 const staffModule = namespace("staff");
 
-interface UserNomination {
-    nominator: {
-        osuID: string;
-        osuUsername: string;
-        discordUsername: string;
-    },
-    nominations: StaffNomination[]
-}
-
 interface NominationsByCategory {
-    category: number;
-    userNominations: UserNomination[];
+    categoryId: number;
+    userNominations: StaffNomination[];
 }
 
 @Component({
@@ -205,28 +197,26 @@ export default class Nominations extends Vue {
     text = "";
     showReviewed = true;
     selectedCategoryId: null | number = null;
-    selectStart: number = 0;
 
     get relatedCategories (): CategoryInfo[] {
         return this.categories.filter(c => c.mode === this.selectedMode || c.mode === "storyboard");
     }
 
     get nominationsByCategory (): NominationsByCategory[] {
-        const groups: NominationsByCategory[] = [];
+        const categories: NominationsByCategory[] = [];
 
         for (const nomination of this.nominations) {
             if (nomination.reviewer && !this.showReviewed) continue;
-            
-            if (!nomination.isValid && this.viewOption === "valid") continue;
+            if (!nomination.isValid && this.viewOption === "valid") continue;	
             else if (nomination.isValid && this.viewOption === "invalid") continue;
 
             if (this.text) {
                 const lowerText = this.text.toLowerCase();
                 if (nomination.user?.osuID) {
                     if (
-                        !nomination.nominator.osuUsername.toLowerCase().includes(lowerText) &&
-                        !nomination.nominator.osuID.includes(lowerText) &&
-                        !nomination.nominator.discordUsername.includes(lowerText) &&
+                        !nomination.nominators.some(n => n.osuUsername.toLowerCase().includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.osuID.includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.discordUsername.includes(lowerText)) &&
                         !nomination.user.osuUsername.toLowerCase().includes(lowerText) && 
                         !nomination.user.osuID.includes(lowerText) &&
                         !nomination.user.discordUsername.toLowerCase().includes(lowerText)
@@ -234,9 +224,9 @@ export default class Nominations extends Vue {
                         continue;
                 } else if (nomination.beatmapset?.ID) {
                     if (
-                        !nomination.nominator.osuUsername.toLowerCase().includes(lowerText) &&
-                        !nomination.nominator.osuID.includes(lowerText) &&
-                        !nomination.nominator.discordUsername.includes(lowerText) &&
+                        !nomination.nominators.some(n => n.osuUsername.toLowerCase().includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.osuID.includes(lowerText)) &&
+                        !nomination.nominators.some(n => n.discordUsername.includes(lowerText)) &&
                         !nomination.beatmapset.ID.toString().includes(lowerText) &&
                         !nomination.beatmapset.artist.toLowerCase().includes(lowerText) &&
                         !nomination.beatmapset.title.toLowerCase().includes(lowerText) &&
@@ -249,35 +239,23 @@ export default class Nominations extends Vue {
                 }
             }
 
-            const groupIndex = groups.findIndex(g => g.category === nomination.category);
+            const categoryIndex = categories.findIndex(g => g.categoryId === nomination.categoryId);
 
-            if (groupIndex !== -1) {
-                const nominatorIndex = groups[groupIndex].userNominations.findIndex(n => n.nominator.osuID === nomination.nominator.osuID);
-
-                if (nominatorIndex !== -1) {
-                    groups[groupIndex].userNominations[nominatorIndex].nominations.push(nomination);
-                } else {
-                    groups[groupIndex].userNominations.push({
-                        nominator: nomination.nominator,
-                        nominations: [nomination],
-                    });
-                }
+            if (categoryIndex !== -1) {
+                categories[categoryIndex].userNominations.push(nomination);
             } else {
-                groups.push({
-                    category: nomination.category,
-                    userNominations: [{
-                        nominator: nomination.nominator,
-                        nominations: [nomination],
-                    }],
+                categories.push({
+                    categoryId: nomination.categoryId,
+                    userNominations: [nomination],
                 });
             }
         }
 
-        return groups;
+        return categories;
     }
 
-    get selectedCategoryInfo (): UserNomination[] {
-        const group = this.nominationsByCategory.find(group => group.category === this.selectedCategoryId);
+    get selectedCategoryNominations (): StaffNomination[] {
+        const group = this.nominationsByCategory.find(group => group.categoryId === this.selectedCategoryId);
         return group?.userNominations || [];
     }
 
@@ -293,30 +271,26 @@ export default class Nominations extends Vue {
             this.selectedCategoryId = null;
             return;
         }
-        this.selectStart = 0;
-        const { data } = await this.$axios.get(`/api/staff/nominations?category=${id}&start=${this.selectStart}`);
+        const { data } = await this.$axios.get(`/api/staff/nominations?category=${id}&start=0`);
 
         if (data.error) {
             alert(data.error);
             return;
         }
 
-        this.nominations = data.staffNominations;
-        this.selectStart = data.nextStart;
+        this.nominations = data;
         this.selectedCategoryId = id;
     }
 
     async appendCategory () {
-        if (this.selectStart === -1) return;
+        if (this.nominations.length === 0) return;
 
-        const { data } = await this.$axios.get(`/api/staff/nominations?category=${this.selectedCategoryId}&start=${this.selectStart}`);
+        const { data } = await this.$axios.get(`/api/staff/nominations?category=${this.selectedCategoryId}&start=${this.nominations.length}`);
         if (data.error) {
             alert(data.error);
             return;
         }
-
         this.nominations.push(...data.staffNominations);
-        this.selectStart = data.nextStart;
     }
 
     generateUrl (nomination: StaffNomination): string {
@@ -340,7 +314,7 @@ export default class Nominations extends Vue {
         
         const minutes = Math.floor(nomination.beatmapset.length / 60);
         const seconds = nomination.beatmapset.length - minutes * 60;
-        let time = `${minutes}:${seconds}`
+        let time = `${minutes}:${seconds}`;
         if (time.slice(-2, -1) === ":") {
             time =  time.slice(0, -1) + "0" + time.slice(-1);
         }
@@ -365,7 +339,7 @@ export default class Nominations extends Vue {
         }
     }
 
-    async updateNomination (id: number, isValid) {
+    async updateNomination (id: number, isValid: boolean) {
         const { data } = await this.$axios.post(`/api/staff/nominations/${id}/update`, {
             isValid,
         });
@@ -373,7 +347,7 @@ export default class Nominations extends Vue {
         if (!data.error) {
             this.updateLocalNomination(id, data);
         } else {
-            alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)")
+            alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)");
             console.error(data.error);
         }
     }

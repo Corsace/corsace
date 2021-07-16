@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column, ManyToMany, SelectQueryBuilder } from "typeorm";
 import { User } from "../user";
 import { Beatmapset } from "../beatmapset";
 import { Category } from "./category";
@@ -9,10 +9,8 @@ export class Nomination extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
 
-    @ManyToOne(() => User, user => user.nominations, {
-        nullable: false,
-    })
-    nominator!: User;
+    @ManyToMany(() => User, user => user.nominations)
+    nominators!: User[];
     
     @ManyToOne(() => Category, category => category.nominations, {
         nullable: false,
@@ -34,8 +32,33 @@ export class Nomination extends BaseEntity {
     isValid!: boolean;
     
     @ManyToOne(() => User, user => user.nominationReviews)
-    reviewer!: User;
+    reviewer?: User;
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     lastReviewedAt!: Date;
+
+    static populate (): SelectQueryBuilder<Nomination> {
+        return Nomination
+            .createQueryBuilder("nomination")
+            .innerJoinAndSelect("nomination.nominators", "nominator")
+            .innerJoinAndSelect("nomination.category", "category")
+            .innerJoinAndSelect("category.mca", "mca")
+            .leftJoinAndSelect("nomination.user", "user")
+            .leftJoinAndSelect("user.otherNames", "otherNames")
+            .leftJoinAndSelect("nomination.beatmapset", "beatmapset")
+            .leftJoinAndSelect("beatmapset.creator", "creator");
+    }
+
+    static userNominations (options: { userID: number, year?: number }): SelectQueryBuilder<Nomination> {
+        const query = Nomination
+            .populate()
+            .where("nominator.ID = :userID", { userID: options.userID });
+
+        if (options.year) {
+            query.andWhere("mca.year = :year", { year: options.year });
+        }
+
+        return query;
+    }
+
 }

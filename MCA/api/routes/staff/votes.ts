@@ -2,7 +2,6 @@ import Router from "@koa/router";
 import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
 import { Vote } from "../../../../Models/MCA_AYIM/vote";
 import { StaffVote } from "../../../../Interfaces/vote";
-import { validatePhaseYear } from "../../../../MCA-AYIM/api/middleware";
 import { MoreThan, Not } from "typeorm";
 
 const staffVotesRouter = new Router;
