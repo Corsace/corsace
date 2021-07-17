@@ -17,6 +17,7 @@ export default {
         host: config.corsace.host,
         port: config.corsace.port,
     },
+    ssr: config.corsace.ssr,
     head: {
         title: "Corsace",
         link: [
@@ -36,8 +37,6 @@ export default {
             { hid: "theme-color", name: "theme-color", content: "#e98792" },
         ],
     },
-    watch: ["~/api"],
-    serverMiddleware: ["~/api"],
     buildModules: ["@nuxt/typescript-build"],
     modules: [
         "@nuxtjs/axios",
@@ -67,6 +66,9 @@ export default {
         static: "../Assets/static",
     },
     axios: {
-        browserBaseURL: "/",
+        proxy: true,
+    },
+    proxy: {
+        "/api/": config.api.publicUrl,
     },
 };
