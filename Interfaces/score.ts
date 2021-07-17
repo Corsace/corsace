@@ -1,4 +1,4 @@
 export interface ScoreInfo {
-    qualifier: Number
+    qualifier: Number | null
     time: Date
 }

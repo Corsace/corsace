@@ -16,8 +16,8 @@
                 <div class="team overlay" v-show="active === true">
                     <div class="teamPlayerWrapper">
                         <div class="teamPlayer" v-for="(member, index) in team.members" :key="index">
-                            <img class="captain teamListCaptain" v-if="member.id.toString() === team.captain" src="../../../Assets/img/open/captain.png">
-                            <div class="teamPlayerName">{{ member.username }}</div>
+                            <img class="captain teamListCaptain" v-if="member.corsaceID === team.captain" src="../../../Assets/img/open/captain.png">
+                            <div class="teamPlayerName">{{ member.osu.username }}</div>
                             <div class="teamPlayerPP">{{ Math.round(Math.pow(member.rank, Math.pow(0.9937, Math.pow(member.badges, 2)))) }} BWS</div>
                         </div>
                     </div>
@@ -27,16 +27,18 @@
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import axios from "axios";
+import { Vue, Component, Prop } from "vue-property-decorator"
+import { TeamInfo } from "../../../Interfaces/team"
 
-export default {
-    data: () => ({
-        active: false,
-    }),
-    props: {
-        team: Object,
-    },
+
+@Component
+export default class TeamListComponent extends Vue {
+
+    @Prop(Object) readonly team!: TeamInfo;
+    active = false;
+
 }
 </script>
 
@@ -48,4 +50,6 @@ export default {
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
+
+
 </style>

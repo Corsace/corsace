@@ -7,6 +7,13 @@ export enum ModSlots {
     TB
 }
 
+export interface modGroup {
+
+}
+
 export interface MappoolInfo {
-    
+    name: String
+    mappack: String
+    sheet: String
+    modGroups: modGroup[] | null
 }

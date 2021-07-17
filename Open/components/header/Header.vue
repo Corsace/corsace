@@ -37,7 +37,6 @@
             </div>
             <div class="userInfo" v-if="loggedInUser">
                 <div class="userDesc">
-                    <!-- reminder to change these divs once I add team field -->
                     <a :href="'https://osu.ppy.sh/u/' + loggedInUser.osu.username"><div class="username">{{ loggedInUser.osu.username }}</div></a>
                     <div v-if="true" @click="teamRegisteringToggle" class="userTeamName"><router-link to="/team">{{ $t('open.header.noTeam') }}</router-link></div>
                     <div v-if="false" class="userTeamName"><router-link to="/team">{{ loggedInUser.team.name }}</router-link></div>
@@ -65,7 +64,6 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
 
 import axios from "axios";
-import Registration from "./Registration.vue"
 import LocaleChanger from "./LocaleChanger.vue"
 import Notifications from "./Notifications.vue"
 import LoginModal from "../../../MCA-AYIM/components/header/LoginModal.vue";
@@ -91,6 +89,10 @@ export default class Header extends Vue {
     showLoginModal = false;
     notificationPanel = false;  
     registered = false;
+
+    mounted() {
+        console.log(this.loggedInUser)
+    }
 
     get avatarURL (): string  {
         return this.loggedInUser?.osu?.avatar || "";

@@ -122,6 +122,7 @@ export const actions: ActionTree<RootState, RootState> = {
         const { data } = await this.$axios.get(`/api/user`);
         if (!data.error) {
             commit("setLoggedInUser", data);
+            console.log(data)
         }
     },
     async setInitialData ({ dispatch }) {
@@ -174,7 +175,7 @@ export const actions: ActionTree<RootState, RootState> = {
 
     async refreshPendingInvites  ({ commit, state }) {
         console.log('ran refreshInvites')
-        if( !state.team && state.registered && state.loggedInUser && !state.loggedInUser.isStaff) {
+        if( !state.team && state.registered && state.loggedInUser && !state.loggedInUser.staff.staff) {
             const data = (await axios.get("/api/user/pendingInvites")).data.invites;
             if(data) {
                 commit("setUserInvitations", data)

@@ -15,10 +15,10 @@ export interface UserMCAInfo extends UserInfo {
     }
 }
 export interface UserOpenInfo extends UserInfo {
-    isStaff: boolean;
-    isHeadStaff: boolean;
-    team: TeamInfo;
+    team: TeamInfo | null;
     pickemPoints: Number;
+    rank: Number;
+    badges: Number;
 }
 
 export interface UserInfo {

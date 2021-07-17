@@ -5,6 +5,7 @@ import { TeamInfo } from "../../Interfaces/team";
 import { MappoolInfo } from "../../Interfaces/mappool";
 import { ScoreInfo } from "../../Interfaces/score";
 import { QualifierInfo } from "../../Interfaces/qualifier";
+import { UserOpenInfo } from "../../Interfaces/user";
 
 
 export interface QualifierState {
@@ -36,15 +37,116 @@ export const mutations: MutationTree<QualifierState> = {
 
     pushTeam (state, team) {
         state.teams.push(team)
+    },
+
+    setSection (state, section) {
+        state.section = section
+    },
+
+    setSubSection (state, subSection) {
+        state.subSection = subSection
+    },
+
+    setScoringType (state, scoringType) {
+        state.scoringType = scoringType
     }
     
 
+}
+let testUser: UserOpenInfo = {
+    corsaceID: 1,
+    discord: {
+        avatar: "https://a.ppy.sh/4323406?1625541513.gif",
+        userID: "4323406",
+        username: "VINXIS",
+    },
+    osu: {
+        avatar: "https://a.ppy.sh/4323406?1625541513.gif",
+        userID: "4323406",
+        username: "VINXIS",
+        otherNames: [],
+    },
+    staff: {
+        corsace: false,
+        headStaff: false,
+        staff: false,
+    },
+    joinDate: new Date(2011,10,30),
+    lastLogin: new Date(2011,10,30),
+    canComment: false,
+    team: null,
+    pickemPoints: 1,
+    rank: 1,
+    badges: 1,
+}
+let testUser2: UserOpenInfo = {
+    corsaceID: 2,
+    discord: {
+        avatar: "https://a.ppy.sh/4323406?1625541513.gif",
+        userID: "4323406",
+        username: "VINXIS",
+    },
+    osu: {
+        avatar: "https://a.ppy.sh/11489119?1622490975.jpeg",
+        userID: "11489119",
+        username: "crabbapples",
+        otherNames: [],
+    },
+    staff: {
+        corsace: false,
+        headStaff: false,
+        staff: false,
+    },
+    joinDate: new Date(2011,10,30),
+    lastLogin: new Date(2011,10,30),
+    canComment: false,
+    team: null,
+    pickemPoints: 1,
+    rank: 1,
+    badges: 1,
+}
+
+let TestTeam1: TeamInfo = {
+    id: 123,
+    name: "test1",
+    captain: 1,
+    averagePp: 5,
+    teamAvatarUrl: "https://a.ppy.sh/4323406?1625541513.gif",
+    slug: "test",
+    averageBWS: 6,
+    seed: "A",
+    rank: 1,
+    members: [testUser, testUser2, testUser2, testUser2, testUser2, testUser2 ,testUser2, testUser2]
+}
+
+let testteams: TeamInfo[] = [TestTeam1, TestTeam1]
+
+let testScore: ScoreInfo = {
+    qualifier: null,
+    time: new Date(2021,10,30)
+}
+
+let testMappool: MappoolInfo = {
+    name: "test",
+    sheet: "test",
+    mappack: "test",
+    modGroups: null,
+}
+
+let testQualifier: QualifierInfo = {
+    scores: [testScore, testScore],
+    id: 1,
+    time: new Date(2021,10,30),
+    teams: testteams,
+    public: true,
+    referee: testUser2,
+    mappool: testMappool,
 }
 
 export const actions: ActionTree<QualifierState, any> = {
     async refresh ({ commit, state }) {
         try { 
-            const { data } = await axios.get("/api/qualifier")
+            const data = testQualifier //await axios.get("/api/qualifier")
             if (data.error)
                 return alert(data.error)
             
@@ -82,8 +184,6 @@ export const actions: ActionTree<QualifierState, any> = {
             alert("Ok done lol");
             dispatch("refresh")
         }
-    }
-
-
+    },
 
 }
