@@ -53,9 +53,9 @@ adminYearsRouter.post("/", validate, async (ctx) => {
         await Promise.all([userGrand.save(), mapGrand.save()]);
     }
 
-    cache.del("/front?year=" + data.year);
-    cache.del("/mca?year=" + data.year);
-    cache.del("/staff");
+    cache.del("/api/mcaInfo/front?year=" + data.year);
+    cache.del("/api/mca?year=" + data.year);
+    cache.del("/api/staff");
 
     ctx.body = { 
         message: "Success! attached is the new MCA.", 
@@ -70,9 +70,9 @@ adminYearsRouter.put("/:year", validate, async (ctx) => {
     let mca = await MCA.findOneOrFail(data.year);    
     mca = await MCA.fillAndSave(data, mca);
 
-    cache.del("/front?year=" + data.year);
-    cache.del("/mca?year=" + data.year);
-    cache.del("/staff");
+    cache.del("/api/mcaInfo/front?year=" + data.year);
+    cache.del("/api/mca?year=" + data.year);
+    cache.del("/api/staff");
 
     ctx.body = { 
         message: "updated",

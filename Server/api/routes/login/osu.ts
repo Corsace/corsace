@@ -17,9 +17,13 @@ const modes = [
 ];
 
 osuRouter.get("/", async (ctx: ParameterizedContext<any>, next) => {
-    ctx.cookies.set("redirect", ctx.query.redirect ?? "back", { overwrite: true });
+    const baseURL = ctx.query.site ? (config[ctx.query.site] ? config[ctx.query.site].publicUrl : config.corsace.publicUrl) : "";
+    const params = ctx.query.redirect ?? "";
+    const redirectURL = baseURL + params ?? "back";
+    ctx.cookies.set("redirect", redirectURL, { overwrite: true });
     await next();
 }, passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"] }));
+
 osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
     return await passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
