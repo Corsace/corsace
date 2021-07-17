@@ -19,6 +19,7 @@ export default (subSite: string): Partial<NuxtConfig> => ({
         host: config[subSite].host,
         port: config[subSite].port,
     },
+    ssr: config[subSite].ssr,
     modules: [
         "@nuxtjs/axios",
         [

@@ -17,6 +17,7 @@ export default {
         host: config.corsace.host,
         port: config.corsace.port,
     },
+    ssr: config.corsace.ssr,
     head: {
         title: "Corsace",
         link: [
