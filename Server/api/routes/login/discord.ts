@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import passport from "koa-passport";
-import { discordGuild } from "../../../../Server/discord";
+import { discordGuild } from "../../../discord";
 import { config } from "node-config-ts";
 import { ParameterizedContext } from "koa";
 
@@ -9,9 +9,13 @@ import { ParameterizedContext } from "koa";
 const discordRouter = new Router();
 
 discordRouter.get("/", async (ctx: ParameterizedContext<any>, next) => {
-    ctx.cookies.set("redirect", ctx.query.redirect ?? "back", { overwrite: true });
+    const baseURL = ctx.query.site ? (config[ctx.query.site] ? config[ctx.query.site].publicUrl : config.corsace.publicUrl) : "";
+    const params = ctx.query.redirect ?? "";
+    const redirectURL = baseURL + params ?? "back";
+    ctx.cookies.set("redirect", redirectURL, { overwrite: true });
     await next();
 }, passport.authenticate("discord", { scope: ["identify", "guilds.join"] }));
+
 discordRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
     return await passport.authenticate("discord", { scope: ["identify", "guilds.join"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
