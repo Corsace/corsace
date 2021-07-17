@@ -3,11 +3,11 @@ import axios from "axios";
 import { StaffOpenInfo } from "../../Interfaces/user"
 
 export interface TalentState {
-    headStaff: StaffOpenInfo[] | StaffOpenInfo[]
-    poolers: StaffOpenInfo[] | StaffOpenInfo[]
-    referees: StaffOpenInfo[] | StaffOpenInfo[]
-    streamcomms: StaffOpenInfo[] | StaffOpenInfo[]
-    schedulers: StaffOpenInfo[] | StaffOpenInfo[]
+    headStaff: StaffOpenInfo[]
+    poolers: StaffOpenInfo[]
+    referees: StaffOpenInfo[]
+    streamcomms: StaffOpenInfo[]
+    schedulers: StaffOpenInfo[]
 }
 
 export const mutations: MutationTree<TalentState> = {

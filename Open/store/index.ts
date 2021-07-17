@@ -6,14 +6,14 @@ import axios from "axios";
 
 interface RootState {
     loggedInUser: null | UserOpenInfo;
-    discordReg: false | boolean;
-    inTeam: false | boolean;
-    noNotifications: true | boolean;
-    registered: false | boolean; 
+    discordReg: boolean;
+    inTeam: boolean;
+    noNotifications: boolean;
+    registered: boolean; 
     team: null | TeamInfo;
-    teamRegistering: false | boolean;
-    userInvitations:  [] | Invitation[];
-    site: "open" | string;
+    teamRegistering: boolean;
+    userInvitations: Invitation[];
+    site: string;
 }
 
 export const state = (): RootState => ({
@@ -122,7 +122,6 @@ export const actions: ActionTree<RootState, RootState> = {
         const { data } = await this.$axios.get(`/api/user`);
         if (!data.error) {
             commit("setLoggedInUser", data);
-            console.log(data)
         }
     },
     async setInitialData ({ dispatch }) {
@@ -131,7 +130,6 @@ export const actions: ActionTree<RootState, RootState> = {
         ]);
     },
     async refresh ({ commit, dispatch }) {
-        console.log('ran refresh')
         commit("setFalse", "discordReg");
         commit("setFalse", "inTeam");
         commit("setTrue", "noNotifications");
@@ -146,7 +144,6 @@ export const actions: ActionTree<RootState, RootState> = {
     },
 
     async refreshUser ({ commit }) {
-        console.log('ran refreshUser')
         const data = (await axios.get("/api/user")).data.user;
         if(data) {
             commit("setTrue", "discordReg")
@@ -159,7 +156,6 @@ export const actions: ActionTree<RootState, RootState> = {
     },
 
     async refreshTeam ({ commit, state }) {
-        console.log('ran refreshTeam')
         if(state.team) {
             const data = (await axios.get("/api/team")).data.team;
             if(data) {
@@ -174,7 +170,6 @@ export const actions: ActionTree<RootState, RootState> = {
     },
 
     async refreshPendingInvites  ({ commit, state }) {
-        console.log('ran refreshInvites')
         if( !state.team && state.registered && state.loggedInUser && !state.loggedInUser.staff.staff) {
             const data = (await axios.get("/api/user/pendingInvites")).data.invites;
             if(data) {

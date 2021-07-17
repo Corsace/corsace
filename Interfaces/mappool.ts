@@ -12,8 +12,8 @@ export interface modGroup {
 }
 
 export interface MappoolInfo {
-    name: String
-    mappack: String
-    sheet: String
+    name: string
+    mappack: string
+    sheet: string
     modGroups: modGroup[] | null
 }

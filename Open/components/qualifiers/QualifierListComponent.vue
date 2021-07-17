@@ -3,16 +3,16 @@
         <router-link :to="`/qualifier/${qualifier.id}`">
             <div class="qualifiersTime">
                 <div>
-                    {{day}}
+                    {{ day() }}
                     <br>
-                    {{time}} UTC
+                    {{ time() }} UTC
                 </div>
                 <img v-if="qualifier.referee" src="../../../Assets/img/open/ref.png">
             </div>
             <div class="qualifiersTeams">
                 <div v-for="index in 4" :key="index">
                     <div v-if="qualifier.teams[index-1]" class="qualifiersTeam">
-                        <img v-if ="qualifier.teams[index-1].teamAvatarUrl" :src="qualifier.teams[index-1].teamAvatarUrl">
+                        <img v-if="qualifier.teams[index-1].teamAvatarUrl" :src="qualifier.teams[index-1].teamAvatarUrl">
                         <img v-else src="../../../Assets/img/open/defaultTeamAvatar.png">
                         {{ qualifier.teams[index-1].name }}
                     </div>
@@ -26,19 +26,23 @@
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        qualifier: Object,
-    },
-    computed: {
-        day: function() {
-            return "SEP " + this.qualifier.time.split('-')[2].split('T')[0];
-        },
-        time: function() {
-            return this.qualifier.time.split('T')[1].slice(0,5);
-        },
+<script lang="ts">
+
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { QualifierLobby } from "../../../Interfaces/qualifier";
+@Component
+export default class QualifierListComponent extends Vue {
+    @Prop({ type: Object }) readonly qualifier!: QualifierLobby;
+
+    day (): string {
+        return "SEP " + this.qualifier.time.toUTCString().split(" ")[1];
     }
+
+
+    time (): string {
+        return this.qualifier.time.toUTCString().split(" ")[4].slice(0,5);
+    }
+
 }
 </script>
 
