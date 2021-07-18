@@ -45,7 +45,7 @@ commentsRouter.get("/", async (ctx) => {
         };
 
     const userId = parseInt(ctx.query.user);
-    const year = parseInt(ctx.query.year || new Date().getFullYear());
+    const year = parseInt(ctx.query.year || new Date().getUTCFullYear());
     const modeString: string = ctx.query.mode || "standard";
     const modeID = ModeDivisionType[modeString];
 

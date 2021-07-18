@@ -160,10 +160,10 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
             });
 
             if (category.filter?.rookie) {
-                const eligibilities = await MCAEligibility.find({
-                    user,
+                const sets = await Beatmapset.find({
+                    creator: user,
                 });
-                if (Math.min(...eligibilities.map(e => e.year)) !== ctx.state.year)
+                if (Math.min(...sets.map(set => set.approvedDate.getUTCFullYear())) !== ctx.state.year)
                     return ctx.body = {
                         error: "User is not eligible for this category!", 
                     };

@@ -2,7 +2,7 @@ import { Context } from "@nuxt/types";
 
 export default async function ({ redirect, route, store }: Context) {
     let year: string | number = route.params.year;
-    const lastYear = new Date().getFullYear() - 1;
+    const lastYear = new Date().getUTCFullYear() - 1;
 
     // optional really but easier to understand where anyone is...
     // convert /nominating or /staff/nominations to /2020/nominating or /2020/staff/nominations
