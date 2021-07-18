@@ -11,14 +11,9 @@ staffNominationsRouter.use(isStaff);
 // Endpoint for getting information for a category
 staffNominationsRouter.get("/", async (ctx) => {
     let categoryID = ctx.query.category;
-    const start = ctx.query.start;
-    const maxTake = 51;
     
     if (!categoryID || !/\d+/.test(categoryID))
         return ctx.body = { error: "Invalid category ID given!" };
-
-    if (start && !/\d+/.test(start))
-        return ctx.body = { error: "Invalid start index given!" };
 
     categoryID = parseInt(categoryID);
 
@@ -34,8 +29,6 @@ staffNominationsRouter.get("/", async (ctx) => {
         .andWhere("category.ID = :id", { id: categoryID })
         .orderBy("nomination.isValid", "ASC")
         .addOrderBy("nomination.reviewerID", "ASC")
-        .offset(start)
-        .limit(maxTake)
         .getMany();
 
     const staffNominations = nominations.map(nom => {

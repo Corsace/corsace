@@ -153,7 +153,6 @@
                 </div>
                 <scroll-bar
                     selector=".staff-scrollTrack"
-                    @bottom="appendCategory()"
                 />
             </div>
         </mode-switcher>
@@ -277,7 +276,7 @@ export default class Nominations extends Vue {
             this.selectedCategoryId = null;
             return;
         }
-        const { data } = await this.$axios.get(`/api/staff/nominations?category=${id}&start=0`);
+        const { data } = await this.$axios.get(`/api/staff/nominations?category=${id}`);
 
         if (data.error) {
             alert(data.error);
@@ -286,17 +285,6 @@ export default class Nominations extends Vue {
 
         this.nominations = data;
         this.selectedCategoryId = id;
-    }
-
-    async appendCategory () {
-        if (this.nominations.length === 0) return;
-
-        const { data } = await this.$axios.get(`/api/staff/nominations?category=${this.selectedCategoryId}&start=${this.nominations.length}`);
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
-        this.nominations.push(...data);
     }
 
     generateUrl (nomination: StaffNomination): string {
