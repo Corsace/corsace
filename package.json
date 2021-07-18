@@ -9,6 +9,7 @@
       "@nuxtjs/axios": "^5.12.5",
       "@nuxtjs/proxy": "^2.1.0",
       "discord.js": "^12.5.1",
+      "jimp": "^0.16.1",
       "koa": "^2.13.1",
       "koa-bodyparser": "^4.3.0",
       "koa-cash": "^4.0.5",
@@ -34,12 +35,13 @@
       "vuex-class": "^0.3.2"
    },
    "devDependencies": {
+      "@jimp/types": "^0.16.1",
       "@nuxt/types": "^2.14.12",
       "@nuxt/typescript-build": "^2.0.3",
       "@types/async": "^3.2.5",
       "@types/koa": "^2.11.6",
       "@types/koa__router": "^8.0.3",
-      "@types/koa-bodyparser": "^4.3.0",
+      "@types/koa-bodyparser": "^4.3.2",
       "@types/koa-cash": "^4.0.0",
       "@types/koa-mount": "^4.0.0",
       "@types/koa-passport": "^4.0.2",
@@ -70,28 +72,28 @@
       "build:main": "cd ./Main && nuxt-ts build",
       "build:open": "cd ./Open && nuxt-ts build",
       "build:api": "cross-env NODE_ENV=production tsc --project Server/tsconfig.json",
-      
+
       "ayim": "cd ./AYIM && nuxt-ts start",
       "mca": "cd ./MCA && nuxt-ts start",
       "main": "cd ./Main && nuxt-ts start",
       "open": "cd ./Open && nuxt-ts start",
       "api": "cd ./dist && node Server/index.js",
-      
+
       "ayim-dev": "cd ./AYIM && nuxt-ts",
       "mca-dev": "cd ./MCA && nuxt-ts",
       "main-dev": "cd ./Main && nuxt-ts",
       "open-dev": "cd ./Open && nuxt-ts",
       "api-dev": "cross-env NODE_ENV=development ts-node-dev --respawn Server/index.ts",
-      
+
       "dev": "concurrently -n MCA,AYIM,MAIN,OPEN,API -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold,black.bgYellow.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\" \"npm:api-dev\"",
       "dev-client": "concurrently -n MCA,AYIM,MAIN,OPEN -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\"",
       
       "lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",
       "lintfix": "eslint --fix --ext .ts,.vue --ignore-path .gitignore .",
-
+      
       "updateLanguages": "ts-node ./Server/scripts/updateLanguages.ts",
       "fetchMaps": "ts-node ./Server/scripts/fetchYearMaps.ts",
-
+      
       "database": "docker-compose up -d database",
       "mariadb": "docker-compose exec database mariadb -u corsace -p",
       "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
