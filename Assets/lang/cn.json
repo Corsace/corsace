@@ -104,7 +104,6 @@
             "nominating": "提名",
             "preparation": "准备",
             "results": "结果",
-            "undefined": "",
             "mapsetsLabel": "谱面",
             "mappersLabel": "谱师",
             "commentsLabel": "评论",
@@ -117,6 +116,7 @@
             "rankedSets": "Ranked谱面",
             "nominateNow": "现在提名！",
             "voteNow": "现在投票！",
+            "viewResults": "查看结果！",
             "daysLeft": "天剩余",
             "message": {
                 "2019": "<p>2019年，第四届谱师之选奖（Mapper's Choice Awards），归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2019年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>今年，我们尽全力制作了一个网站，以便符合要求的你能够尽可能轻松地立刻开始提名和投票！</p><p>所有osu!支援者（supporter）奖励将直接由osu! 工作人员给出。每个大类下的获奖者将获得2个月的supporter奖励，而大奖获奖者将获得6个月的supporter奖励！2 months of supporter for winners of each category, and 6 months for winners of the Grand Awards!</p><p>我们希望尽量多的人能够参与到这次评选当中来！如果你对本网站有任何建议或发现了本网站的bug，请在corsace discord群内联系VINXIS！</p>",
@@ -126,12 +126,20 @@
                 "map": "谱面分类",
                 "user": "谱师分类"
             },
-            "organized": "<b>组织者：</b>"
+            "organized": "组织者："
         },
         "categories": {
             "grandAward": {
                 "name": "大奖",
-                "description": "独一无二。"
+                "description": "就是你了！"
+            },
+	    "grandStoryboard": {
+                "name": "最佳故事板",
+                "description": "最佳故事板（Storyboard）。"
+            },
+            "grandStoryboarder": {
+                "name": "最佳故事板制作者",
+                "description": "最佳故事板制作者。"
             },
             "marathon": {
                 "name": "马拉松",
@@ -178,11 +186,11 @@
                 "description": "下音效最厉害的那个人。"
             },
             "mostPromising": {
-                "name": "最具潜力",
+                "name": "最具潜力奖",
                 "description": "在今年才ranked图的谱师当中最厉害的那个人。"
             },
             "mostInfluential": {
-                "name": "最具影响力",
+                "name": "最具影响力奖",
                 "description": "给予其他谱师的启发最大、影响最深的那个人。"
             },
             "outCont": {
@@ -211,7 +219,7 @@
             },
             "simplistic": {
                 "name": "简约",
-                "description": "最干净整洁的谱面。The best cleanest set out there."
+                "description": "最干净整洁的谱面。"
             },
             "sliderVelocity": {
                 "name": "SV",
@@ -248,7 +256,62 @@
             "narrative": {
                 "name": "叙事性",
                 "description": "叙事性最强的故事板。"
-            }
+            },
+	    "technicalTaiko": {
+                "name": "Tech",
+                "description": "以使用复杂梗和snap为特色的最佳谱面。"
+            },
+            "fastTaiko": {
+                "name": "快速",
+                "description": "高SV、击打速度快的最佳谱面。"
+            },
+            "slowTaiko": {
+                "name": "慢速",
+                "description": "低SV、击打速度慢的最佳谱面。"
+            },
+            "hybrid": {
+                "name": "混合",
+                "description": "大量使用长条（LN）和乱打（rice）梗的最佳谱面。"
+            },
+            "highBPMAlternator": {
+                "name": "高BPM / Alt",
+                "description": "强调超快击打和 / 或移动水平的最佳谱面。"
+            },
+            "vanilla": {
+                "name": "基本功",
+                "description": "最能够以小见大的谱面。"
+            },
+            "complex": {
+                "name": "复杂节奏 / Swing",
+                "description": "大量使用非传统snapping的最佳谱面（二连，1/3，1/5，1/7等）。"
+            },
+            "unorthodox": {
+                "name": "非主流 / Gimmick",
+                "description": "以使用不常见的制谱技术和理念为特色的最佳谱面。"
+            },
+            "sliderTech": {
+                "name": "滑条谱面",
+                "description": "基于复杂滑条设计、变速及复杂串梗的最佳谱面。"
+            },
+            "mostInspiring": {
+                "name": "最具启发奖",
+                "description": "给予了他人最大影响和启发的人。"
+            },
+            "communityPillar": {
+                "name": "社群栋梁",
+                "description": "在背后为社群作出突出贡献的最佳人物。"
+            },
+            "simplisticTaiko": {
+                "name": "简约",
+                "description": "使用简单梗和节奏的最佳谱面。"
+            },
+            "technicalCatch": {
+                "name": "Tech",
+                "description": "突破接水果游戏玩法极限的最佳谱面。The best beatmap which utilizes concepts that push the boundaries of catch gameplay."
+            },
+            "antiMetaCatch": {
+                "name": "非主流",
+                "description": "使用非传统 / gimmicky梗的最佳谱面。."
         },
         "nom_vote": {
             "search": "搜索谱面/用户",
@@ -265,11 +328,33 @@
                 "alph": "首字母",
                 "asc": "升序",
                 "desc": "降序",
-                "voteOrder": "投票排序"
+                "voteOrder": "投票排序",
+                "valid": "合法",
+                "invalid": "不合法",
+                "both": "全部",
+                "all": "全部",
+                "played": "已游玩过",
+                "results": "结果",
+                "voters": "投票者"
             },
+	    "votingOverlay": "你好！或许这是你第一次来到投票界面！<br>MCA的投票基于<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>排序复选法</a>进行！<br>这意味着，你可以为任意多的谱面/用户进行投票！<br>你的每一个选择都会被排序，因此<span class='notice-modal--bold'>你的第一候选具有最高的优先级！</span><br>直到因为被选为第一候选的人数最少而被淘汰，或因为最终得票超过半数而被判为获得第一为止，你的第一候选都是合法的。当你的第一候选被淘汰时，你投给TA的票将转给在此时你的未淘汰候选者中顺位最高的那一个。<br>祝各位好运，让我们共同期待MCA [YEAR]的最终结果！",
             "hosted": "谱面拥有者",
             "userID": "用户ID"
+        },
+	"results": {
+            "headings": {
+                "placement": "排名",
+                "map": "谱面",
+                "title": "标题",
+                "artist": "艺术家",
+                "hoster": "谱面拥有者",
+                "totalVotes": "总票数",
+                "username": "人物",
+                "firstChoice": "被选为第一候选的次数"
+            },
+            "resultsOverlay": "你好！或许这是你第一次来到结果公布界面！<br>这里公布了通过<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>排序复选法</a>筛选出的最佳谱面/人物及各自的最终排名，以及所有获奖者被选为第一候选和总共被选的次数！<br>希望你中意MCA [YEAR]的最终结果！让我们下届MCA再会"
         }
+    },
     },
     "main": {
         "header": {
@@ -279,7 +364,7 @@
         "index": {
             "underConstruction": "施工中",
             "sorry": "抱歉给你带来不便",
-	        "development": "corsace网站目前依旧处于早期开发阶段",
+            "development": "corsace网站目前依旧处于早期开发阶段",
             "theTeam": "corsace团队"
         }
     }
