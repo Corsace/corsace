@@ -58,7 +58,7 @@
                                     class="staff-page__link staff-request__link"
                                     :class="`staff-page__link--${request.modeName}`"
                                 >
-                                    {{ request.artist }} - {{ request.title }} ({{ request.difficulty }})
+                                    {{ request.artist }} - {{ request.title }} [{{ request.difficulty }}]
                                 </a>
                             </div>
 
