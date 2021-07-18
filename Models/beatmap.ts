@@ -2,6 +2,7 @@ import { Entity, BaseEntity, PrimaryColumn, Column, ManyToOne, OneToMany, Index 
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
 import { ModeDivision } from "./MCA_AYIM/modeDivision";
 import { Beatmapset } from "./beatmapset";
+import { MappoolBeatmap } from "./tournaments/mappoolBeatmap";
 
 @Entity()
 export class Beatmap extends BaseEntity {
@@ -86,5 +87,8 @@ export class Beatmap extends BaseEntity {
 
     @OneToMany(() => GuestRequest, guestRequest => guestRequest.beatmap)
     guestRequests!: GuestRequest[];
+
+    @OneToMany(() => MappoolBeatmap, mappoolBeatmap => mappoolBeatmap.beatmap)
+    mappoolBeatmaps!: MappoolBeatmap[];
 
 }

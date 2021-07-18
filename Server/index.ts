@@ -15,6 +15,8 @@ import discordRouter from "./api/routes/login/discord";
 import osuRouter from "./api/routes/login/osu";
 import userRouter from "./api/routes/user";
 
+import adminTournamentRouter from "./api/routes/admin/tournament";
+
 import mcaRouter from "../MCA-AYIM/api/routes/mca";
 import mcaUserRouter from "../MCA-AYIM/api/routes/user";
 import adminRouter from "../MCA-AYIM/api/routes/admin";
@@ -88,6 +90,8 @@ koa.use(Mount("/api/logout", logoutRouter.routes()));
 
 // Main site info
 koa.use(Mount("/api/user", userRouter.routes()));
+
+koa.use(Mount("/api/admin/tournaments", adminTournamentRouter.routes()));
 
 // MCA-AYIM
 koa.use(Mount("/api/mca", mcaRouter.routes()));
