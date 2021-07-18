@@ -1,15 +1,15 @@
 import { UserOpenInfo } from "./user";
 
 export interface TeamInfo {
-    id: Number
-    name: String
-    captain: Number
+    id: number
+    name: string
+    captain: number
     averagePp: number
-    teamAvatarUrl: String
-    slug: String
-    averageBWS: Number
+    teamAvatarUrl: string
+    slug: string
+    averageBWS: number
     seed: "A" | "B" | "C" | "D" | null;
-    rank: Number
+    rank: number
     members: UserOpenInfo[] 
 }
 

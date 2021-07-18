@@ -1,9 +1,9 @@
 <template>
     <table class="qualifiersScoresTable">
         <tr>
-            <th v-if="list==='players'">User</th>
+            <th v-if="subSection==='players'">User</th>
             <th>Team</th>
-            <th v-if="showQualifiers">Qual</th>
+            <th v-if="subSection==='teams'">Qual</th>
             <th>Best</th>
             <th>Worst</th>
             <th v-if="scoringType === 'costs'">Cost</th>
@@ -11,12 +11,12 @@
             <th v-else>Avg.</th>
             <th v-for="(beatmap, index) in beatmaps" :key="index" :style="beatmap.style ? beatmap.style : null"><a :href="beatmap.mapID ? `https://osu.ppy.sh/beatmaps/${beatmap.mapID}` : null">{{ beatmap.name }}</a></th>
         </tr>
-        <tr v-for="(player, i) in (list==='players' ? userScores : teamScores)" :key="i">
-            <td :style="player.style" v-if="list==='players'"><a :href="`https://osu.ppy.sh/u/${player.osuID}`">{{ player.username }}</a></td>
-            <td :style="player.teamStyle ? player.teamStyle : null" v-if="list==='players'"><router-link :to="`/team/${player.teamSlug}`">{{ player.teamName }}</router-link></td>
+        <tr v-for="(player, i) in (subSection==='players' ? userScores : teamScores)" :key="i">
+            <td :style="player.style" v-if="subSection==='players'"><a :href="`https://osu.ppy.sh/u/${player.osuID}`">{{ player.username }}</a></td>
+            <td :style="player.teamStyle ? player.teamStyle : null" v-if="subSection==='players'"><router-link :to="`/team/${player.teamSlug}`">{{ player.teamName }}</router-link></td>
             <td :style="player.style ? player.style : null" v-else><router-link :to="`/team/${player.slug}`">{{ player.name }}</router-link></td>
-            <td v-if="showQualifiers && player.time"><router-link :to="`/qualifier/${player.qualifier}`">SEP {{player.time.split('-')[2].split('T')[0]}}<br>{{player.time.split('T')[1].slice(0,5)}} UTC</router-link></td>
-            <td v-else-if="showQualifiers"></td>
+            <td v-if="subSection==='teams' && player.time"><router-link :to="`/qualifier/${player.qualifier}`">SEP {{player.time.split('-')[2].split('T')[0]}}<br>{{player.time.split('T')[1].slice(0,5)}} UTC</router-link></td>
+            <td v-else-if="subSection==='teams'"></td>
             <td class="qualifiersScoresBestWorst">{{ player[player.best] ? player.best.toUpperCase() : "" }}</td>
             <td class="qualifiersScoresBestWorst">{{ player[player.worst] ? player.worst.toUpperCase() : "" }}</td>
             <td class="qualifiersScoresAverage">{{ player.average && player.average !== 0 ? player.average.toLocaleString('en-US').replace(/,/gi, ' ') : "" }}{{player.average && (scoringType === 'max' || scoringType === 'avg') ? "%" : ""}}</td>
@@ -34,8 +34,19 @@
     </table>
 </template>
 
-<script>
-const defaultMaps = [
+<script lang='ts'>
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { namespace, State } from "vuex-class";
+import { TeamInfo } from "../../../Interfaces/team";
+import { UserOpenInfo } from "../../../Interfaces/user";
+import { MappoolMap, MappoolInfo } from "../../../Interfaces/mappool";
+import { ScoreInfo } from "../../../Interfaces/score";
+import { QualifierLobby } from "../../../Interfaces/qualifier";
+import { Mappool } from "../../../Models/tournaments/mappool";
+
+const qualifierModule = namespace("qualifiers");
+
+const defaultMaps: MappoolMap[] = [
     {name: "NM1"},
     {name: "NM2"},
     {name: "NM3"},
@@ -48,75 +59,89 @@ const defaultMaps = [
     {name: "DT2"},
 ];
 
-export default {
-    data: () => ({
-        topScores: {},
-        avgScores: {},
-        countScores: {},
-    }),
-    props: {
-        list: String,
-        scoringType: String,
-        scores: Array,
-        teams: Array,
-        mappool: Object,
-        showQualifiers: Boolean,
-    },
-    computed: {
-        beatmaps: function() {
-            if (!this.mappool || this.mappool.length === 0)
-                return defaultMaps;
 
-            let maps = this.mappool.modGroups.map((modGroup) => {
-                return modGroup.beatmaps.map((beatmap, i) => {
-                    const url = `'https://assets.ppy.sh/beatmaps/${beatmap.setID}/covers/cover.jpg'`;
-                    beatmap.mod = modGroup.mod;
-                    beatmap.name = modGroup.mod + (i+1);
-                    beatmap.style = {
-                        background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + url + ')',
-                    }
-                    return beatmap;
-                });
+@Component
+export default class QualifierScoresTable extends Vue {
+
+    @qualifierModule.State scores!: ScoreInfo[]
+    @qualifierModule.State teams!: TeamInfo[]
+    @qualifierModule.State mappool!: MappoolInfo
+
+
+    @Prop(String) readonly subSection!: string
+    @Prop(String) readonly scoringType!: string
+
+
+    topScores = {}
+    avgScores = {}
+    countScores = {}
+
+    created () {
+        console.log('QFST created')
+        this.userScores();
+    }
+
+    
+    beatmaps () {
+        if (!this.mappool || this.mappool.length === 0)
+            return defaultMaps;
+
+        let maps = this.mappool.modGroups.map((modGroup) => {
+            return modGroup.beatmaps.map((beatmap, i) => {
+                const url = `'https://assets.ppy.sh/beatmaps/${beatmap.setID}/covers/cover.jpg'`;
+                beatmap.mod = modGroup.mod;
+                beatmap.name = modGroup.mod + (i+1);
+                beatmap.style = {
+                    background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + url + ')',
+                }
+                return beatmap;
             });
-            maps = [].concat.apply([], maps);
-            if (maps.length === 0)
-                return defaultMaps;
-            return maps;
-        },
-        userScores: function() {
-            if (!this.teams || this.teams.length === 0)
-                return [];
-            
-            let userScores = [].concat.apply([], this.teams.map((team) => {
-                return team.members.map((member) => {
-                    const url = `https://a.ppy.sh/${member.osuID}?${Math.random()*1000000}`
-                    member.teamSlug = team.slug;
-                    member.teamName = team.name;
-                    member.style = {
-                        background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + url + ')',
-                    }
-                    if (team.teamAvatarUrl) {
-                        member.teamStyle = {
-                            background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + team.teamAvatarUrl + ')',
-                        }
-                    }
-                    return member;
-                });
-            }));
-            this.topScores = {};
-            this.avgScores = {};
-            const tempTop = {};
-            if (this.mappool && this.scores) {
-                userScores = userScores.map((user) => {
-                    user.best = "nm1";
-                    user.worst = "nm1";
-                    user.average = 0;
-                    user.count = 0;
-                    for (const score of this.scores) {
-                        if (score.userOsuID === user.osuID) {
-                            user.qualifier = score.qualifier;
-                            user.time = score.time;
-                            const name = this.beatmaps.find((beatmap) => beatmap.mapID === score.mapID).name.toLowerCase();
+        });
+        let flat: MappoolMap[] = ([] as MappoolMap[]).concat.apply([], maps);
+        if (flat.length === 0)
+            return defaultMaps;
+        return flat;
+    }
+
+    userScores () {
+        console.log('userscores')
+        if (!this.teams || this.teams.length === 0)
+            return [];
+        console.log('passed')
+        
+        let userScores: UserOpenInfo[] = ([] as UserOpenInfo[]).concat.apply([], this.teams.map((team) => {
+            return team.members.map((member) => {
+                const url = `https://a.ppy.sh/${member.osu.userID}?${Math.random()*1000000}`;
+                member.teamSlug = team.slug;
+                member.teamName = team.name;
+                member.style = {
+                    background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + url + ')',
+                };
+                if (team.teamAvatarUrl) {
+                    member.teamStyle = {
+                        background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + team.teamAvatarUrl + ')',
+                    };
+                }
+                return member;
+            });
+        }));
+        this.topScores = {};
+        this.avgScores = {};
+        const tempTop = {};
+        console.log("userScores:", userScores)
+    
+        if (this.mappool && this.scores) {
+            userScores = userScores.map((user) => {
+                user.best = "nm1";
+                user.worst = "nm1";
+                user.average = 0;
+                user.count = 0;
+                for (const score of this.scores) {
+                    if (score.user === user.osu.userID) {
+                        user.qualifier = score.qualifier;
+                        user.time = score.time;
+                        const name = this.beatmaps().find((beatmap) => beatmap.mapID === score.mapID)?.name.toLowerCase();
+                        if (name) {
                             user[name] = score.score;
                             user.average += score.score;
                             user.count++;
@@ -131,75 +156,78 @@ export default {
                                 this.countScores[name] = 1;
                             }
                         }
+                        
                     }
-                    if (user.count !== 0)
-                        user.average = Math.round(user.average/user.count);
+                }
+                if (user.count !== 0)
+                    user.average = Math.round(user.average/user.count);
 
-                    return user;
-                });
-                userScores.sort((a, b) => b.average - a.average);
-                switch (this.scoringType) {
-                    case "max":
+                return user;
+            });
+            userScores.sort((a, b) => b.average - a.average);
+            switch (this.scoringType) {
+                case "max":
+                    userScores = userScores.map((user) => {
+                        user.average = user.count = 0;
+                        for (const name of Object.keys(this.topScores)) {
+                            if (user[name]) {
+                                user[name] = 100 * user[name] / this.topScores[name];
+                                tempTop[name] = Math.max(tempTop[name] ? tempTop[name] : 0, user[name]);
+                                user.average += user[name];
+                                user.count++;
+                            }
+                        }
+                        user.average /= user.count;
+                        return user;
+                    });
+                    break;
+                case "avg":
+                    for (const name of Object.keys(this.avgScores))
+                        this.avgScores[name] /= this.countScores[name];
+
+                    userScores = userScores.map((user) => {
+                        user.average = user.count = 0;
+                        for (const name of Object.keys(this.avgScores)) {
+                            if (user[name]) {
+                                user[name] = 100 * user[name] / this.avgScores[name];
+                                tempTop[name] = Math.max(tempTop[name] ? tempTop[name] : 0, user[name]);
+                                user.average += user[name];
+                                user.count++;
+                            }
+                        }
+                        user.average /= user.count;
+                        return user;
+                    });
+                    break;
+                case "costs":
+                    if (this.teamScores) {
                         userScores = userScores.map((user) => {
+                            const participationBonus = 1.0 + 0.3 * (user.count / 10);
                             user.average = user.count = 0;
                             for (const name of Object.keys(this.topScores)) {
                                 if (user[name]) {
-                                    user[name] = 100 * user[name] / this.topScores[name];
+                                    const team = this.teamScores.find((team) => team.members.some((member) => member.id === user.id));
+                                    user[name] /= team[name];
                                     tempTop[name] = Math.max(tempTop[name] ? tempTop[name] : 0, user[name]);
                                     user.average += user[name];
                                     user.count++;
                                 }
                             }
                             user.average /= user.count;
+                            user.average = participationBonus * user.average;
                             return user;
                         });
-                        break;
-                    case "avg":
-                        for (const name of Object.keys(this.avgScores))
-                            this.avgScores[name] /= this.countScores[name];
-
-                        userScores = userScores.map((user) => {
-                            user.average = user.count = 0;
-                            for (const name of Object.keys(this.avgScores)) {
-                                if (user[name]) {
-                                    user[name] = 100 * user[name] / this.avgScores[name];
-                                    tempTop[name] = Math.max(tempTop[name] ? tempTop[name] : 0, user[name]);
-                                    user.average += user[name];
-                                    user.count++;
-                                }
-                            }
-                            user.average /= user.count;
-                            return user;
-                        });
-                        break;
-                    case "costs":
-                        if (this.teamScores) {
-                            userScores = userScores.map((user) => {
-                                const participationBonus = 1.0 + 0.3 * (user.count / 10);
-                                user.average = user.count = 0;
-                                for (const name of Object.keys(this.topScores)) {
-                                    if (user[name]) {
-                                        const team = this.teamScores.find((team) => team.members.some((member) => member.id === user.id));
-                                        user[name] /= team[name];
-                                        tempTop[name] = Math.max(tempTop[name] ? tempTop[name] : 0, user[name]);
-                                        user.average += user[name];
-                                        user.count++;
-                                    }
-                                }
-                                user.average /= user.count;
-                                user.average = participationBonus * user.average;
-                                return user;
-                            });
-                        }
-                        break;
-                }
-                userScores.sort((a, b) => b.average - a.average);
-                if (this.scoringType !== "sum")
-                    this.topScores = tempTop;
+                    }
+                    break;
             }
-            return userScores;
-        },
-        teamScores: function() {
+            userScores.sort((a, b) => b.average - a.average);
+            if (this.scoringType !== "sum")
+                this.topScores = tempTop;
+        }
+        return userScores;
+    }
+    /*
+    teamScores: function() {
             if (!this.teams || this.teams.length === 0)
                 return [];
 
@@ -329,8 +357,8 @@ export default {
             if (this.scoringType !== "sum" && this.scoringType !== "seeding" && this.scoringType !== "costs")
                     this.topScores = tempTop;
             return teamScores;
-        }
-    }
+    }*/
+    
 }
 </script>
 

@@ -1,12 +1,12 @@
 <template>
     <div>
-        <a v-if="map" :href="osuLink" :target="newTab" :onclick="onClick">
-            <div class="map" :style="mapStyle">
+        <a v-if="map" :href="osuLink()" :target="newTab()" :onclick="onClick()">
+            <div class="map" :style="mapStyle()">
                 <div class="mapLeft">
                     <div class="mapArtist">{{ map.artist }}</div>
                     <div class="mapTitle">{{ map.title }}</div>
                 </div>
-                <div class="inputWrapper" v-if="user.isMappooler && edit">
+                <div class="inputWrapper" v-if="false && edit"> <!-- remember to check ifpooler -->
                     <input v-model="mapURL" class="mapUrl" spellcheck="false" @input="changeMap">
                 </div>
                 <div class="mapRight">
@@ -33,7 +33,7 @@
                 <div class="mapArtist">Artist</div>
                 <div class="mapTitle">Title</div>
             </div>
-            <div class="inputWrapper" v-if="user.isMappooler && edit">
+            <div class="inputWrapper" v-if="false && edit"> <!-- remember to check ifpooler -->
                 <input v-model="mapNewURL" class="mapUrl" placeholder="paste url here (no /s/ links)" spellcheck="false" @input="addMap">
             </div>
             <div class="mapRight">
@@ -54,67 +54,76 @@
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import axios from "axios";
 import regeneratorRuntime from "regenerator-runtime";
+import { Component, Vue, Prop } from "vue-property-decorator"
+import { State } from "vuex-class"
+import { MappoolMap } from "../../../Interfaces/mappool";
+import { UserOpenInfo } from "../../../Interfaces/user";
 
-export default {
-    data: () => ({
-        mapURL: "",
-        mapNewURL: "",
-        regex: /^https:\/\/osu\.ppy\.sh\/(b|beatmapsets|beatmaps)\/(\d+)(#osu\/(\d+))?/
-    }),
-    props: {
-        user: Object,
-        map: Object,
-        round: String,
-        mod: String,
-        edit: Boolean,
-    },
-    created: function() {
+@Component
+export default class MapComponent extends Vue {
+
+    @State loggedInUser!: UserOpenInfo
+
+    @Prop({ type: Object }) readonly map!: MappoolMap
+    @Prop({ type: String }) readonly round!: string;
+    @Prop({ type: Boolean }) readonly edit!: boolean;
+    @Prop({ type: String }) readonly mod!: string;
+
+
+    mapURL = ""
+    mapNewURL = ""
+    regex = /^https:\/\/osu\.ppy\.sh\/(b|beatmapsets|beatmaps)\/(\d+)(#osu\/(\d+))?/
+
+    created() {
         if(this.map) {
             this.mapURL = `https://osu.ppy.sh/b/${this.map.mapID}`;
         }
-    },
-    beforeUpdate: function() {
+    }
+
+    beforeUpdate() {
         if(this.map) {
             this.mapURL = `https://osu.ppy.sh/b/${this.map.mapID}`;
         } else {
             this.mapURL = "";
         }
-    },
-    computed: {
-        mapStyle: function() {
-            const url = `'https://assets.ppy.sh/beatmaps/${this.map.setID}/covers/cover.jpg'`;
-            return {
-                background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + url + ')',
-                'background-position': 'bottom',
-                'background-size': 'cover',
-            }
-        },
-        osuLink: function() {
-            const url = `https://osu.ppy.sh/b/${this.map.mapID}`;
-            if(!this.edit) {
-                return url;
-            } else {
-                return "#";
-            }
-        },
-        newTab: function() {
-            if(this.osuLink === "#") {
-                return;
-            } else {
-                return "_blank";
-            }
-        },
-        onClick: function() {
-            if(this.osuLink === "#") {
-                return "return false;";
-            } else {
-                return;
-            }
+    }
+    mapStyle() {
+        const url = `'https://assets.ppy.sh/beatmaps/${this.map.setID}/covers/cover.jpg'`;
+        return {
+            background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + url + ')',
+            'background-position': 'bottom',
+            'background-size': 'cover',
         }
-    },
+    }
+    
+    osuLink() {
+        const url = `https://osu.ppy.sh/b/${this.map.mapID}`;
+        if(!this.edit) {
+            return url;
+        } else {
+            return "#";
+        }
+    }
+
+    newTab() {
+        if(this.osuLink() === "#") {
+            return;
+        } else {
+            return "_blank";
+        }
+    }
+
+    onClick() {
+        if(this.osuLink() === "#") {
+            return "return false;";
+        } else {
+            return;
+        }
+    }
+    /*
     methods: {
         addMap: async function() {
             const result = this.regex.exec(this.mapNewURL);
@@ -154,7 +163,7 @@ export default {
                 }
             }
         }
-    }
+    }*/
 }
 </script>
 

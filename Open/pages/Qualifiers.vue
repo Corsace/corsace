@@ -2,21 +2,21 @@
     <div>
         <div class="qualifiers" v-if="!loading">
             <div class="qualifiersSubHeaders">
-                <div @click="setSection('mappool'); getMappool()" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: section==='mappool' }">{{ $t('open.header.mappool') }}</div>
-                <div @click="setSection('qualifiers'); getList()" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: section==='qualifiers' }">{{ $t('open.header.qualifiers') }}</div>
-                <div @click="setSection('scores'); getScores()" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: section==='scores' }">{{ $t('open.header.scores') }}</div>
+                <div @click="section='mappool'; getMappool();" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: section==='mappool' }">{{ $t('open.header.mappool') }}</div>
+                <div @click="section='qualifiers'; getList();" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: section==='qualifiers' }">{{ $t('open.header.qualifiers') }}</div>
+                <div @click="section='scores'; getScores();" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: section==='scores' }">{{ $t('open.header.scores') }}</div>
             </div>
             <div v-if="section==='scores'" class="qualifiersSubHeaders" style="margin-top:20px;">
-                <div @click="setSubSection('teams'); scoringType === 'costs' ? scoringType='sum' : null" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: subSection==='teams' }">{{ $t('open.header.teams') }}</div>
-                <div @click="setSubSection('players'); scoringType === 'seeding' || scoringType === 'average' ? scoringType='sum' : null" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: subSection==='players' }">{{ $t('open.header.players') }}</div>
+                <div @click="subSection='teams'; scoringType === 'costs' ? scoringType='sum' : null" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: subSection==='teams' }">{{ $t('open.header.teams') }}</div>
+                <div @click="subSection='players'; scoringType === 'seeding' || scoringType === 'average' ? scoringType='sum' : null" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: subSection==='players' }">{{ $t('open.header.players') }}</div>
             </div>
             <div v-if="section==='scores'" class="qualifiersSubHeaders" style="margin-top:20px;">
-                <div @click="setScoringType('average')" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='average' }" v-if="subSection==='teams'">AVERAGE</div>
-                <div @click="setScoringType('sum')" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='sum' }">SUM</div>
-                <div @click="setScoringType('max')" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='max' }">%MAX</div>
-                <div @click="setScoringType('avg')" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='avg' }">%AVG</div>
-                <div @click="setScoringType('costs')" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='costs' }" v-if="subSection==='players'">COSTS</div>
-                <div @click="setScoringType('seeding')" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='seeding' }" v-if="subSection==='teams'">SEEDING</div>
+                <div @click="scoringType='average'" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='average' }" v-if="subSection==='teams'">AVERAGE</div>
+                <div @click="scoringType='sum'" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='sum' }">SUM</div>
+                <div @click="scoringType='max'" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='max' }">%MAX</div>
+                <div @click="scoringType='avg'" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='avg' }">%AVG</div>
+                <div @click="scoringType='costs'" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='costs' }" v-if="subSection==='players'">COSTS</div>
+                <div @click="scoringType='seeding'" class="qualifiersSubHeader" :class="{ qualifiersSubHeaderActive: scoringType==='seeding' }" v-if="subSection==='teams'">SEEDING</div>
             </div>
             <div class="qualifiersTop">
                 <div class="qualifiersLeft" v-if="loggedInUser.staff.headStaff" @click="publicize">
@@ -36,7 +36,7 @@
             </div>
             <div v-else-if="section==='scores' && scores">
                 <span v-if="scoringType==='costs'" style='display: flex; justify-content: center;'>Costs method derived from Megatron is Bad's match costs algorithm</span>
-                <qualifier-scores-table :scores="scores" :mappool="mappool" :teams="teams" :list="subSection" :showQualifiers="subSection==='teams' ? true : false" :scoringType="scoringType"></qualifier-scores-table>
+                <qualifier-scores-table :subSection="subSection" :scoringType="scoringType" />
             </div>
             <div v-else-if="section==='mappool' && mappool" class="qualifierMappoolList">
                 <a class="qualifierLink" v-if="mappool.mappack" :href="mappool.mappack">
@@ -52,7 +52,7 @@
                     </div>
                 </a>
                 <div v-for="(modGroup, index) in mappool.modGroups" :key="index">
-                    <ModGroupComponent :user="user" :mod-group="modGroup" :round="mappool.name" />
+                    <ModGroupComponent :mod-group="modGroup" :round="mappool.name" :edit="false"/>
                 </div>
             </div>
         </div>
@@ -94,30 +94,48 @@ export default class Qualifiers extends Vue {
     @qualifierModule.State scores!: ScoreInfo[]
     @qualifierModule.State mappool!: MappoolInfo
     @qualifierModule.State teams!: TeamInfo[]
-    @qualifierModule.State section!: string
-    @qualifierModule.State subSection!: string
-    @qualifierModule.State scoringType!: string
+    //@qualifierModule.State section!: string
+    //@qualifierModule.State subSection!: string
+    //@qualifierModule.State scoringType!: string
 
     @qualifierModule.Action publicize;
     @qualifierModule.Action setSection;
     @qualifierModule.Action setSubSection;
     @qualifierModule.Action setScoringType;
-    @qualifierModule.Action getList;
-    @qualifierModule.Action getMappool;
+
+    @qualifierModule.Getter getSection!: string
+
     @State inTeam!: boolean;
     @State team!: TeamInfo;
     @State loggedInUser!: UserOpenInfo;
 
     loading = true
-
-
+    section = "qualifiers"
+    subSection = "teams"
+    scoringType = "average"
         
     async created () {
-        this.setSection("qualifiers");
-        this.setSubSection("teams");
-        this.setScoringType("average");
+        console.log("created");
+        //this.setSection("qualifiers");
+        //this.setSubSection("teams");
+        //this.setScoringType("average");
+        this.getList();
+        
+    }
+
+    async getList () {
         this.loading = true;
         await this.$store.dispatch("qualifiers/getList");
+        this.loading = false;
+    }
+    async getMappool () {
+        this.loading = true;
+        await this.$store.dispatch("qualifiers/getMappool");
+        this.loading = false;
+    }
+    async getScores () {
+        this.loading = true;
+        await this.$store.dispatch("qualifiers/getScores");
         this.loading = false;
     }
 

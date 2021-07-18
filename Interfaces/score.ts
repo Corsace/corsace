@@ -1,4 +1,7 @@
 export interface ScoreInfo {
-    qualifier: Number | null
+    qualifier: number | null
     time: Date
+    user: string
+    score: number
+    mapID: string
 }

@@ -83,7 +83,7 @@ export default class Header extends Vue {
 
     @State site!: string;
     @State loggedInUser!: UserOpenInfo;
-    @State noNotifications!: Boolean;
+    @State noNotifications!: boolean;
     @Action refresh
 
     showLoginModal = false;

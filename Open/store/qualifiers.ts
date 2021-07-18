@@ -1,12 +1,11 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import axios from "axios"
-import { Any } from "typeorm";
 import { TeamInfo } from "../../Interfaces/team";
-import { MappoolInfo } from "../../Interfaces/mappool";
+import { MappoolInfo, ModGroup } from "../../Interfaces/mappool";
 import { ScoreInfo } from "../../Interfaces/score";
 import { QualifierInfo, QualifierLobby } from "../../Interfaces/qualifier";
 import { UserOpenInfo } from "../../Interfaces/user";
-import { getMaxListeners } from "process";
+import { MappoolMap } from "../../Models/tournaments/mappoolBeatmap";
 
 
 export interface QualifierState {
@@ -28,18 +27,6 @@ export const mutations: MutationTree<QualifierState> = {
         state.qualifiers = qualifiers;
     },
 
-    setScores (state) {
-        state.scores = ([] as ScoreInfo[]).concat.apply([], state.qualifiers.map((qualifier) => {
-            qualifier.scores = qualifier.scores.map((score) => {
-                if (score)
-                    score.qualifier = qualifier.id;
-                    score.time = qualifier.time;
-                return score;
-            });
-            return qualifier.scores;
-        })).filter(x => x != null)
-    },
-
     setTeams (state, teams) {
         state.teams = teams;
     },
@@ -50,6 +37,7 @@ export const mutations: MutationTree<QualifierState> = {
 
     setSection (state, section) {
         state.section = section
+        console.log("commiting:", state.section)
     },
 
     setSubSection (state, subSection) {
@@ -64,7 +52,10 @@ export const mutations: MutationTree<QualifierState> = {
 }
 
 export const getters: GetterTree<QualifierState, QualifierState> = {
-
+    getSection (state): string {
+        console.log("getter: ", state.section)
+        return state.section
+    }
 }
 
 let testUser: UserOpenInfo = {
@@ -92,6 +83,9 @@ let testUser: UserOpenInfo = {
     pickemPoints: 1,
     rank: 1,
     badges: 1,
+    openStaff: {
+        isMappooler: false
+    }
 }
 let testUser2: UserOpenInfo = {
     corsaceID: 2,
@@ -118,6 +112,9 @@ let testUser2: UserOpenInfo = {
     pickemPoints: 1,
     rank: 1,
     badges: 1,
+    openStaff: {
+        isMappooler: false
+    }
 }
 
 let TestTeam1: TeamInfo = {
@@ -140,15 +137,37 @@ let testScore: ScoreInfo = {
     time: new Date(2021,10,30)
 }
 
+
+
+
+
+let testBeatmap: MappoolMap = {
+    mod: "NM",
+    mapID: "3066907",
+    name: "fuck",
+    setID: "1496040",
+    artist: "asdf",
+    title: "asdf",
+    difficulty: "test",
+    time: 130,
+    bpm: 130,
+    stars: 5.6,
+
+}
+let testModgroup: ModGroup = {
+    mod: "NM",
+    beatmaps: [testBeatmap, testBeatmap]
+
+}
 let testMappool: MappoolInfo = {
     name: "test",
     sheet: "test",
     mappack: "test",
-    modGroups: null,
+    modGroups: [testModgroup, testModgroup],
+    length: 2
 }
 
 let testLobby: QualifierLobby = {
-    scores: [testScore, testScore],
     id: 5,
     time: new Date(Date.UTC(96, 1, 2, 3, 4, 5)),
     teams: testteams,
@@ -161,7 +180,10 @@ let testQualifier: QualifierInfo = {
     public: true,
     referee: testUser2,
     mappool: testMappool,
-    qualifiers: [testLobby, testLobby]
+    qualifiers: [testLobby, testLobby],
+    scores: [testScore, testScore],
+
+
 }
 
 export const actions: ActionTree<QualifierState, QualifierState> = {
@@ -193,35 +215,31 @@ export const actions: ActionTree<QualifierState, QualifierState> = {
 
     },
 
+    async getScores ({ commit, state, dispatch }) {
+        console.log('getScores')
+        if (!state.mappool)
+            await dispatch("getMappool");
+        if (state.scores)
+            return;
+        const data = testQualifier//await axios.get("/api/qualifier/scores")
+        /*if (data.error) {
+            alert(data.error);
+            console.error(data.error);
+            return;
+        }*/
+        state.scores = data.scores;
+        const nonUniqueTeams: TeamInfo[] = ([] as TeamInfo[]).concat.apply([], state.qualifiers.map(qualifier => qualifier.teams))
+        const ids = {};
+        commit("setTeams", []);
+        for (const team of nonUniqueTeams) {
+            if (ids[team.id]) 
+                continue;
 
-    async refresh ({ commit, state }) {
-        console.log("refresh")
-        //try { 
-            const data = testQualifier //await axios.get("/api/qualifier")
-            //if (data.error)
-            //    return alert(data.error)
-            
-            commit("setMappool", data.mappool)
-            commit("setQualifiers", data.qualifiers)
-            commit("setScores")
-            //console.log(state.qualifiers)
-            
-            const nonUniqueTeams: any = ([] as TeamInfo[]).concat.apply([], state.qualifiers.map(qualifier => qualifier.teams))
-            const ids = {};
-            commit("setTeams", [])
-            for (const team of nonUniqueTeams) {
-                if (ids[team.id]) 
-                    continue;
-
-                ids[team.id] = true;
-                commit("pushTeam", team);
-            }
-
-        }, /*catch (e) {
-            console.log(e);
-            alert("Qualifiers are currently unavailable right now. Please try again later!");
+            ids[team.id] = true;
+            commit("pushTeam", team);
         }
-    },*/
+        console.log(state.scores)
+    },
 
     async publicize ({ state, dispatch }) {
         if (confirm(`Are you sure you want to ${state.qualifiers[0].public ? 'private' : 'publish'} scores?`)) {
@@ -232,6 +250,7 @@ export const actions: ActionTree<QualifierState, QualifierState> = {
     },
 
     setSection ({commit}, section) {
+        console.log("called with: ", section)
         commit("setSection", section)
     },
 
@@ -241,6 +260,6 @@ export const actions: ActionTree<QualifierState, QualifierState> = {
 
     setScoringType ({commit}, scoringType) {
         commit("setScoringType", scoringType)
-    }
+    },
 
 }

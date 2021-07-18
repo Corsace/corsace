@@ -4,18 +4,20 @@ import { UserOpenInfo } from "./user"
 import { MappoolInfo } from "./mappool"
 
 export interface QualifierInfo {
-    id: Number
+    id: number
     time: Date
-    public: Boolean
+    public: boolean
     referee: UserOpenInfo
     mappool: MappoolInfo
     qualifiers: QualifierLobby[]
+    scores: ScoreInfo[]
+
 }
 
 export interface QualifierLobby {
-    scores: ScoreInfo[]
-    id: Number
+    id: number
     time: Date
     teams: TeamInfo[]
+    
 
 }

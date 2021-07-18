@@ -2,6 +2,7 @@ import { Beatmapset } from "./beatmap";
 import { Eligibility } from "./eligibility";
 import { GuestRequest } from "./requests";
 import { TeamInfo } from "./team";
+import { Style } from "util";
 
 export interface UserMCAInfo extends UserInfo {
     guestRequests: GuestRequest[];
@@ -16,9 +17,28 @@ export interface UserMCAInfo extends UserInfo {
 }
 export interface UserOpenInfo extends UserInfo {
     team: TeamInfo | null;
-    pickemPoints: Number;
-    rank: Number;
-    badges: Number;
+    pickemPoints: number;
+    rank: number;
+    badges: number;
+
+    openStaff: {
+        isMappooler: boolean;
+    }
+
+    //These fields are only used in QualifierScoresTable
+    //todo: make a local interface for that component and delete these
+    teamSlug?: string;
+    teamName?: string;
+    style?: Record<string, any>;
+    teamStyle?: Record<string, any>;
+    best?: string;
+    worst?: string;
+    average?: number;
+    count?: number;
+    qualifier?: number | null; //check this
+    time?: Date;
+
+    
 }
 
 export interface UserInfo {

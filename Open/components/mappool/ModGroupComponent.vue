@@ -6,35 +6,40 @@
         <div class="maps">
             <div class="mapWrapper" v-for="index in count" :key="index">
                 <transition name="map-show">
-                    <MapComponent v-if="isActive" :map="modGroup.beatmaps[index-1]" :user="user" :round="round" :mod="modGroup.mod" :edit="edit" @refresh="refresh"></MapComponent>
+                    <MapComponent v-if="isActive" :map="modGroup.beatmaps[index-1]" :round="round" :mod="modGroup.mod" :edit="edit" @refresh="refresh"></MapComponent>
                 </transition>
             </div>
         </div>
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import axios from "axios";
 import regeneratorRuntime from "regenerator-runtime";
-import MapComponent from "./MapComponent";
+import MapComponent from "./MapComponent.vue";
+import { Component, Vue, Prop } from "vue-property-decorator"
+import { namespace } from "vuex-class"
+import { MappoolInfo, ModGroup } from "../../../Interfaces/mappool";
 
-export default {
+const qualifierModule = namespace("qualifiers");
+
+
+@Component({
     components: {
         MapComponent,
     },
-    data: () => ({
-        count: 0,
-        modClass: '',
-        modName: '',
-        isActive: false,
-    }),
-    props: {
-        user: Object,
-        modGroup: Object,
-        round: String,
-        edit: Boolean,
-    },
-    created: function() {
+})
+export default class ModGroupComponent extends Vue {
+
+    @Prop({ type: Object }) readonly modGroup!: ModGroup;
+    @Prop({ type: Boolean }) readonly edit!: boolean;
+    @Prop({ type: String }) readonly round!: string;
+    count = 0;
+    modClass = '';
+    modName = '';
+    isActive = false;
+
+    created () {
         this.modClass = `mod ${this.modGroup.mod}`;
         switch(this.modGroup.mod) {
             case 'NM':
@@ -75,12 +80,12 @@ export default {
                 this.count = 3;
             }
         }
-    },
-    methods: {
-        refresh: function() {
-            this.$emit("refresh");
-        }
     }
+
+    refresh () {
+        this.$emit("refresh")
+    }
+
 }
 </script>
 
