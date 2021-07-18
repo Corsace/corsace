@@ -329,7 +329,7 @@
                 "asc": "升序",
                 "desc": "降序",
                 "voteOrder": "投票排序",
-		"valid": "合法",
+                "valid": "合法",
                 "invalid": "不合法",
                 "both": "全部",
                 "all": "全部",
@@ -364,7 +364,7 @@
         "index": {
             "underConstruction": "施工中",
             "sorry": "抱歉给你带来不便",
-	    "development": "corsace网站目前依旧处于早期开发阶段",
+            "development": "corsace网站目前依旧处于早期开发阶段",
             "theTeam": "corsace团队"
         }
     }
