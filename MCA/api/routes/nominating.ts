@@ -198,7 +198,10 @@ nominatingRouter.delete("/:id", validatePhaseYear, isPhase("nomination"), isElig
         };
     
     nomination.nominators = nomination.nominators.filter(n => n.ID !== ctx.state.user.ID);
-    await nomination.save();
+    if (nomination.nominators.length === 0)
+        await nomination.remove();
+    else
+        await nomination.save();
 
     ctx.body = {
         success: "ok",
