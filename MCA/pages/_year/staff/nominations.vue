@@ -296,7 +296,7 @@ export default class Nominations extends Vue {
             alert(data.error);
             return;
         }
-        this.nominations.push(...data.staffNominations);
+        this.nominations.push(...data);
     }
 
     generateUrl (nomination: StaffNomination): string {
