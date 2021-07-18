@@ -7,7 +7,6 @@ import { User } from "../../../Models/user";
 import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear } from "../../../MCA-AYIM/api/middleware";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
-import { MCAEligibility } from "../../../Models/MCA_AYIM/mcaEligibility";
 
 const nominatingRouter = new Router();
 

@@ -126,6 +126,7 @@
 
                                             <div class="staff-nomination__actions">
                                                 <button
+                                                    v-if="nomination.isValid"
                                                     class="button button--small staff-nomination__action"
                                                     @click="updateNomination(nomination.ID, true)"
                                                 >
@@ -283,7 +284,7 @@ export default class Nominations extends Vue {
             return;
         }
 
-        this.nominations = data;
+        this.nominations = data.sort((a, b) => b.nominators.length - a.nominators.length);
         this.selectedCategoryId = id;
     }
 
