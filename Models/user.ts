@@ -1,6 +1,5 @@
-
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, Index, ManyToMany } from "typeorm";
-import { DemeritReport } from "./demerits";
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, ManyToOne, OneToOne, JoinColumn, Index, ManyToMany } from "typeorm";
+import { DemeritReport } from "./demeritReport";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
 import { UserComment } from "./MCA_AYIM/userComments";
@@ -15,8 +14,14 @@ import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
+import { Team } from "./team";
+import { Match } from "./tournaments/match";
+import { TeamInvitation } from "./teamInvitation";
+import { MatchPlay } from "./tournaments/matchPlay";
+import { Qualifier } from "./tournaments/qualifier";
+import { Badge } from "./badge";
 
-// General middlewares
+export const BWSFilter = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|community|moderation|moderating|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
 
 export class OAuth {
 
@@ -56,6 +61,25 @@ export class User extends BaseEntity {
     @Column(() => OAuth)
     osu!: OAuth;
 
+    @Column({ nullable: true, type: "float" })
+    pp?: number;
+
+    @Column({ nullable: true })
+    rank?: number;
+
+    @OneToMany(() => TeamInvitation, invitation => invitation.target)
+    invitations?: TeamInvitation[];
+
+    @ManyToOne(() => Team, team => team.players)
+    team?: Team;
+
+    @OneToOne(() => Team, team => team.captain)
+    @JoinColumn()
+    teamCaptain?: Team;
+
+    @OneToMany(() => MatchPlay, play => play.user)
+    scores?: MatchPlay[];
+
     @CreateDateColumn()
     registered!: Date;
     
@@ -66,6 +90,11 @@ export class User extends BaseEntity {
         eager: true,
     })
     otherNames!: UsernameChange[];
+
+    @OneToMany(() => Badge, badge => badge.user, {
+        eager: true,
+    })
+    badges!: Badge[];
 
     @OneToMany(() => DemeritReport, demerit => demerit.user, {
         eager: true,
@@ -113,6 +142,18 @@ export class User extends BaseEntity {
     
     @OneToMany(() => Vote, vote => vote.user)
     votesReceived!: Vote[];
+
+    @OneToMany(() => Qualifier, qualifier => qualifier.referee)
+    qualifiersReffed!: Qualifier[];
+
+    @OneToMany(() => Match, match => match.referee)
+    matchesReffed!: Match[];
+
+    @ManyToMany(() => Match, match => match.commentators)
+    matchesCommentated!: Match[];
+
+    @OneToMany(() => Match, match => match.streamer)
+    matchesStreamed!: Match[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User
@@ -233,13 +274,17 @@ export class User extends BaseEntity {
         ]);
     }
 
+    public getFilteredBadges = function(this: User): Badge[] {
+        return this.badges.filter(badge => !BWSFilter.test(badge.description));
+    }
+
     public getAccessToken = async function(this: User, tokenType: "osu" | "discord" = "osu"): Promise<string> {
         const res = await User
             .createQueryBuilder("user")
-            .select(tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken")
+            .select(tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken", "token")
             .where(`ID = ${this.ID}`)
             .getRawOne();
-        return res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"];
+        return res.token;
     }
 
     public getCondensedInfo = function(this: User, chosen = false): UserChoiceInfo {

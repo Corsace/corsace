@@ -99,7 +99,7 @@ import { namespace, State } from "vuex-class";
 import ChoiceBeatmapsetCard from "../../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
 import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 
-import { StaffGuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
+import { StaffGuestRequest, RequestStatus } from "../../../../Interfaces/requests";
 import { UpdateRequestData } from "../../../store/staff";
 
 const staffModule = namespace("staff");
