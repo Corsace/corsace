@@ -102,4 +102,20 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
     };
 });
 
+// Endpoint for deleting a nomination
+staffNominationsRouter.delete("/:id", async (ctx) => {
+    const nominationID = ctx.params.id;
+    if (!nominationID || !/\d+/.test(nominationID))
+        return ctx.body = { error: "Invalid nomination ID given!" };
+
+    const nomination = await Nomination.findOneOrFail({
+        ID: parseInt(nominationID),
+    });
+    await nomination.remove();
+
+    ctx.body = {
+        status: "success",
+    };
+});
+
 export default staffNominationsRouter;

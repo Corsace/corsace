@@ -137,6 +137,12 @@
                                                 >
                                                     reject
                                                 </button>
+                                                <button
+                                                    class="button button--small staff-nomination__action"
+                                                    @click="deleteNomination(nomination.ID)"
+                                                >
+                                                    delete
+                                                </button>
                                             </div>
                                         </div>
                                     </li>
@@ -339,13 +345,34 @@ export default class Nominations extends Vue {
         }
     }
 
+    deleteLocalNomination (id: number) {
+        this.nominations = this.nominations.filter(n => n.ID !== id);
+    }
+
     async updateNomination (id: number, isValid: boolean) {
+        if (!confirm("Marking a nomination as invalid will hide the nomination from the list of choices in the nominating page and remove all users from the nomination. Do you understand"))
+            return;
+
         const { data } = await this.$axios.post(`/api/staff/nominations/${id}/update`, {
             isValid,
         });
 
         if (!data.error) {
             this.updateLocalNomination(id, data);
+        } else {
+            alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)");
+            console.error(data.error);
+        }
+    }
+
+    async deleteNomination (id: number) {
+        if (!confirm("Only use this for duplicate nominations and/or nominations with no users nominating. Do you understand"))
+            return;
+
+        const { data } = await this.$axios.delete(`/api/staff/nominations/${id}`);
+
+        if (!data.error) {
+            this.deleteLocalNomination(id);
         } else {
             alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)");
             console.error(data.error);
