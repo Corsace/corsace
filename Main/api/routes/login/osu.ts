@@ -62,15 +62,18 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
             await currentName.remove();
 
         // Check if BN/NAT/DEV/SPT/PPY
-        if (data.groups.some(group => [11, 22, 33, 28, 32, 7].some(num => group.id === num))) {
+        if (data.groups.some(group => [11, 22, 33, 28, 32, 7, 31].some(num => group.id === num))) {
             let eligibleModes: string[] = [];
             if (data.groups.some(group => [11, 22, 33].some(num => group.id === num))) // DEV, SPT, PPY groups
                 eligibleModes = ["standard", "taiko", "fruits", "mania"];
             else {
                 for (const group of data.groups) { // BN, NAT groups
-                    if (![28, 32, 7].some(num => group.id === num))
+                    if (![28, 32, 7, 31].some(num => group.id === num))
                         continue;
-                    eligibleModes.push(...group.playmodes);
+                    if (group.id === 31 && group.playmodes.length === 0) {
+                        eligibleModes.push(data.playmode);
+                    } else 
+                        eligibleModes.push(...group.playmodes);
                 }
                 eligibleModes = eligibleModes.map(mode => mode === "osu" ? "standard" : mode);
             }
