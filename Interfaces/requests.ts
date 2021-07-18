@@ -6,7 +6,8 @@ import { User } from "./user";
 export enum RequestStatus {
     Pending,
     Accepted,
-    Rejected
+    Rejected,
+    Cancelled,
 }
 
 export interface GuestRequest {
@@ -25,4 +26,8 @@ export interface StaffGuestRequest {
     username: string;
     beatmapID: number;
     modeName: string;
+}
+
+export interface TeamRequest {
+    status: RequestStatus;
 }

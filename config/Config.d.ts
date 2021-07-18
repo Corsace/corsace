@@ -6,6 +6,19 @@ declare module "node-config-ts" {
         ssr: boolean;
     }
 
+    interface ITournamentConfig {
+        participants: string;
+        captains?: string;
+        mappooler: string;
+        mapper: string;
+        testplayer: string;
+        scrim: string;
+        advisor: string;
+        streamer: string;
+        commentator: string;
+        referee: string;
+    }
+
     interface IConfig {
         database: {
             host: string;
@@ -21,30 +34,12 @@ declare module "node-config-ts" {
                     corsace: string;
                     headStaff: string;
                     staff: string;
+                    designer: string;
                     writer: string;
                     verified: string;
                 };
-                open: {
-                    participants: string;
-                    captains: string;
-                    mappooler: string;
-                    testplayer: string;
-                    scheduler: string;
-                    streamManager: string;
-                    streamer: string;
-                    commentator: string;
-                    referee: string;
-                };
-                closed: {
-                    participants: string;
-                    captains: string;
-                    mappooler: string;
-                    scheduler: string;
-                    streamManager: string;
-                    streamer: string;
-                    commentator: string;
-                    referee: string;
-                };
+                open: ITournamentConfig;
+                closed: ITournamentConfig;
                 mca: {
                     standard: string;
                     taiko: string;

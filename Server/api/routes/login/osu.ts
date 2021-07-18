@@ -5,6 +5,7 @@ import { ParameterizedContext } from "koa";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { config } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
+import { Badge } from "../../../../Models/badge";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
@@ -99,6 +100,25 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                     ctx.state.user.mcaEligibility.push(eligibility);
                 else
                     ctx.state.user.mcaEligibility[i] = eligibility;
+            }
+        }
+
+        // Badges
+        const badges = res.data.badges;
+        for (const osuBadge of badges) {
+            const imageName = /profile-badges\/(.+)/.exec(osuBadge.image_url);
+            if (!imageName)
+                continue;
+            let badge = await Badge.findOne({
+                imageName: imageName[1],
+                user: ctx.state.user,
+            });
+            if (!badge) {
+                badge = new Badge;
+                badge.description = osuBadge.description;
+                badge.imageName = imageName[1];
+                badge.user = ctx.state.user;
+                await badge.save();
             }
         }
 
