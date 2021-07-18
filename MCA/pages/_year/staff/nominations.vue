@@ -339,7 +339,7 @@ export default class Nominations extends Vue {
     }
 
     async updateNomination (id: number, isValid: boolean) {
-        if (!confirm("Marking a nomination as invalid will hide the nomination from the list of choices in the nominating page and remove all users from the nomination. Do you understand"))
+        if (!isValid && !confirm("Marking a nomination as invalid will hide the nomination from the list of choices in the nominating page and remove all nominators from the nomination. You will require to delete the nomination in order to remove the invalidation. Do you understand"))
             return;
 
         const { data } = await this.$axios.post(`/api/staff/nominations/${id}/update`, {
@@ -355,7 +355,7 @@ export default class Nominations extends Vue {
     }
 
     async deleteNomination (id: number) {
-        if (!confirm("Only use this for duplicate nominations and/or nominations with no users nominating. Do you understand"))
+        if (!confirm("Only use this for duplicate nominations, nominations with no users nominating, and/or nominations wrongly marked as invalid. Do you understand"))
             return;
 
         const { data } = await this.$axios.delete(`/api/staff/nominations/${id}`);
