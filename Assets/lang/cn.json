@@ -104,7 +104,6 @@
             "nominating": "提名",
             "preparation": "准备",
             "results": "结果",
-            "undefined": "",
             "mapsetsLabel": "谱面",
             "mappersLabel": "谱师",
             "commentsLabel": "评论",
@@ -127,7 +126,7 @@
                 "map": "谱面分类",
                 "user": "谱师分类"
             },
-            "organized": "<b>组织者：</b>"
+            "organized": "组织者："
         },
         "categories": {
             "grandAward": {
