@@ -85,7 +85,8 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
     nomination.isValid = ctx.request.body.isValid; 
     nomination.reviewer = ctx.state.user;
     nomination.lastReviewedAt = new Date;
-    nomination.nominators = [];
+    if (!nomination.isValid)
+        nomination.nominators = [];
     await nomination.save();
 
     ctx.body = {
