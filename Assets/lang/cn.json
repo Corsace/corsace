@@ -133,7 +133,7 @@
                 "name": "大奖",
                 "description": "就是你了！"
             },
-	    "grandStoryboard": {
+	        "grandStoryboard": {
                 "name": "最佳故事板",
                 "description": "最佳故事板（Storyboard）。"
             },
@@ -257,7 +257,7 @@
                 "name": "叙事性",
                 "description": "叙事性最强的故事板。"
             },
-	    "technicalTaiko": {
+	        "technicalTaiko": {
                 "name": "Tech",
                 "description": "以使用复杂梗和snap为特色的最佳谱面。"
             },
@@ -312,6 +312,7 @@
             "antiMetaCatch": {
                 "name": "非主流",
                 "description": "使用非传统 / gimmicky梗的最佳谱面。."
+            }
         },
         "nom_vote": {
             "search": "搜索谱面/用户",
@@ -337,11 +338,11 @@
                 "results": "结果",
                 "voters": "投票者"
             },
-	    "votingOverlay": "你好！或许这是你第一次来到投票界面！<br>MCA的投票基于<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>排序复选法</a>进行！<br>这意味着，你可以为任意多的谱面/用户进行投票！<br>你的每一个选择都会被排序，因此<span class='notice-modal--bold'>你的第一候选具有最高的优先级！</span><br>直到因为被选为第一候选的人数最少而被淘汰，或因为最终得票超过半数而被判为获得第一为止，你的第一候选都是合法的。当你的第一候选被淘汰时，你投给TA的票将转给在此时你的未淘汰候选者中顺位最高的那一个。<br>祝各位好运，让我们共同期待MCA [YEAR]的最终结果！",
+	        "votingOverlay": "你好！或许这是你第一次来到投票界面！<br>MCA的投票基于<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>排序复选法</a>进行！<br>这意味着，你可以为任意多的谱面/用户进行投票！<br>你的每一个选择都会被排序，因此<span class='notice-modal--bold'>你的第一候选具有最高的优先级！</span><br>直到因为被选为第一候选的人数最少而被淘汰，或因为最终得票超过半数而被判为获得第一为止，你的第一候选都是合法的。当你的第一候选被淘汰时，你投给TA的票将转给在此时你的未淘汰候选者中顺位最高的那一个。<br>祝各位好运，让我们共同期待MCA [YEAR]的最终结果！",
             "hosted": "谱面拥有者",
             "userID": "用户ID"
         },
-	"results": {
+	    "results": {
             "headings": {
                 "placement": "排名",
                 "map": "谱面",
@@ -354,7 +355,6 @@
             },
             "resultsOverlay": "你好！或许这是你第一次来到结果公布界面！<br>这里公布了通过<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>排序复选法</a>筛选出的最佳谱面/人物及各自的最终排名，以及所有获奖者被选为第一候选和总共被选的次数！<br>希望你中意MCA [YEAR]的最终结果！让我们下届MCA再会"
         }
-    },
     },
     "main": {
         "header": {
