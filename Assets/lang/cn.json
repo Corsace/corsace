@@ -112,8 +112,7 @@
             "statisticsLabel": "统计",
             "stage": {
                 "voting": "投票阶段",
-                "nominating": "提名阶段",
-		"undefined": ""
+                "nominating": "提名阶段"
             },
             "rankedSets": "Ranked谱面",
             "nominateNow": "现在提名！",
@@ -366,7 +365,7 @@
         "index": {
             "underConstruction": "施工中",
             "sorry": "抱歉给你带来不便",
-	        "development": "corsace网站目前依旧处于早期开发阶段",
+	    "development": "corsace网站目前依旧处于早期开发阶段",
             "theTeam": "corsace团队"
         }
     }
