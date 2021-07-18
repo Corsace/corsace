@@ -101,6 +101,8 @@ export default class StateContent extends Vue {
         justify-self: end;
         align-self: end;
 
+        padding-bottom: 5px;
+
         @include breakpoint(mobile) {
             grid-column: 1;
             justify-self: center;
