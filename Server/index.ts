@@ -14,6 +14,7 @@ import logoutRouter from "./api/routes/login/logout";
 import discordRouter from "./api/routes/login/discord";
 import osuRouter from "./api/routes/login/osu";
 import userRouter from "./api/routes/user";
+import helloWorldRouter from "./api/routes/helloWorld";
 
 import mcaRouter from "../MCA-AYIM/api/routes/mca";
 import mcaUserRouter from "../MCA-AYIM/api/routes/user";
@@ -121,6 +122,10 @@ koa.use(Mount("/api/comments", commentsRouter.routes()));
 
 koa.use(Mount("/api/staff/comments", commentsReviewRouter.routes()));
 koa.use(Mount("/api/staff/users", usersRouter.routes()));
+
+// Hello World!
+koa.use(Mount("/", helloWorldRouter.routes()));
+koa.use(Mount("/api", helloWorldRouter.routes()));
 
 
 createConnection(ormConnectionOptions)
