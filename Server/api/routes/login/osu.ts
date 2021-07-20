@@ -21,7 +21,7 @@ const mainHost = new URL(config.corsace.publicUrl).host;
 osuRouter.get("/", async (ctx: ParameterizedContext<any>, next) => {
     // Redirect to the main host (where user gets redirected post-oauth) to apply redirect cookie on the right domain
     if(ctx.host !== mainHost) {
-        ctx.redirect(`${mainHost}${ctx.path}`);
+        ctx.redirect(`${config.corsace.publicUrl}${ctx.req.url}`);
         return;
     }
     const baseURL = ctx.query.site ? (config[ctx.query.site] ? config[ctx.query.site].publicUrl : config.corsace.publicUrl) : "";
