@@ -108,8 +108,11 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         await next();
     } catch (e) {
         if (e) {
-            ctx.state = 500;
+            ctx.status = 500;
+            console.error(e);
             ctx.body = { error: e };
+        } else {
+            throw e;
         }
     }
 }, async ctx => {
@@ -146,8 +149,11 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         ctx.redirect(redirect ?? "back");
     } catch (e) {
         if (e) {
-            ctx.state = 500;
+            ctx.status = 500;
+            console.error(e);
             ctx.body = { error: e };
+        } else {
+            throw e;
         }
     }
 });
