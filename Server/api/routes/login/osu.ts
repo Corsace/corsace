@@ -97,11 +97,14 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                 }
                 
                 await eligibility.save();
-                const i = ctx.state.user.mcaEligibility.findIndex((e: MCAEligibility) => e.year === year);
-                if (i === -1)
-                    ctx.state.user.mcaEligibility.push(eligibility);
-                else
-                    ctx.state.user.mcaEligibility[i] = eligibility;
+                if (ctx.state.user.mcaEligibility) {
+                    const i = ctx.state.user.mcaEligibility.findIndex((e: MCAEligibility) => e.year === year);
+                    if (i === -1)
+                        ctx.state.user.mcaEligibility.push(eligibility);
+                    else
+                        ctx.state.user.mcaEligibility[i] = eligibility;
+                } else
+                    ctx.state.user.mcaEligibility = [ eligibility ];
             }
         }
 
