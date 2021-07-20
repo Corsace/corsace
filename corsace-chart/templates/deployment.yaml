@@ -100,6 +100,8 @@ spec:
             {{- if ne $webServiceName "api" }}
             - name: {{ $webServiceName | upper }}_PUBLICURL
               value: {{ $webService.publicUrl }}
+            - name: {{ $webServiceName | upper }}_SSR
+              value: {{ $webService.ssr }}
             {{- end }}
             {{- end }}
 

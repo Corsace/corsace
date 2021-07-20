@@ -1,8 +1,10 @@
 declare module "node-config-ts" {
-    interface ISubSiteConfig {
+    interface IWebServiceConfig {
         host: string;
         port: number;
         publicUrl: string;
+    }
+    interface ISubSiteConfig extends IWebServiceConfig {
         ssr: boolean;
     }
 
@@ -80,7 +82,7 @@ declare module "node-config-ts" {
         closed: ISubSiteConfig;
         mca: ISubSiteConfig;
         open: ISubSiteConfig;
-        api: ISubSiteConfig;
+        api: IWebServiceConfig;
     }
 
     export const config: Config;
