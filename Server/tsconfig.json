@@ -4,11 +4,10 @@
         "target": "es2020",
         "module": "commonjs",
         "moduleResolution": "node",
-        "outDir": "../dist",
-        "sourceMap": false
+        "outDir": "./dist",
+        "sourceMap": true,
     },
-    "include": [
-        "**/*",
-        "../ormconfig.ts"
+    "files": [
+        "index.ts"
     ]
 }

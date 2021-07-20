@@ -38,6 +38,8 @@ import recordsRouter from "../AYIM/api/routes/records";
 import statisticsRouter from "../AYIM/api/routes/statistics";
 import mappersRouter from "../AYIM/api/routes/mappers";
 
+import ormConnectionOptions from "../ormconfig";
+
 const koa = new Koa;
 
 koa.keys = config.koaKeys;
@@ -121,7 +123,7 @@ koa.use(Mount("/api/staff/comments", commentsReviewRouter.routes()));
 koa.use(Mount("/api/staff/users", usersRouter.routes()));
 
 
-createConnection()
+createConnection(ormConnectionOptions)
     .then((connection) => {
         console.log(`Connected to the ${connection.options.database} (${connection.options.name}) database!`);
         setupPassport();

@@ -46,6 +46,9 @@ webServices:
         - host: corsace.io
           paths:
             - path: /
+        - host: www.corsace.io
+          paths:
+            - path: /
   mca:
     replicaCount: 1
     command: mca
@@ -66,6 +69,11 @@ webServices:
         - host: ayim.corsace.io
           paths:
             - path: /
+  api:
+    replicaCount: 1
+    command: api
+    ingress:
+      enabled: false
 
 podAnnotations: {}
 

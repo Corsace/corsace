@@ -30,7 +30,7 @@ You will need to create a "New OAuth Application" at the bottom of https://osu.p
 
 The callback URL should be set to:
 ```
-config.api.publicUrl + /api/login/osu/callback
+config.main.publicUrl + /api/login/osu/callback
 ```
 
 ### Database
@@ -109,7 +109,7 @@ discord: {
 ###### OAuth2
 Head to the OAuth2 section of the bot and add the following redirect URL:
 ```
-config.api.publicUrl + /api/login/discord/callback
+config.main.publicUrl + /api/login/discord/callback
 ```
 
 Also add a redirect URL with your bot's specific Client ID that looks like:
