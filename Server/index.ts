@@ -92,16 +92,6 @@ koa.use(Mount("/api/logout", logoutRouter.routes()));
 // Main site info
 koa.use(Mount("/api/user", userRouter.routes()));
 
-// MCA-AYIM
-koa.use(Mount("/api/mca", mcaRouter.routes()));
-koa.use(Mount("/api/mca/user", mcaUserRouter.routes()));
-
-koa.use(Mount("/api/admin", adminRouter.routes()));
-koa.use(Mount("/api/admin/years", adminCategoriesRouter.routes()));
-koa.use(Mount("/api/admin/years", adminYearsRouter.routes()));
-
-koa.use(Mount("/api/staff", mcaStaffRouter.routes()));
-
 // MCA
 koa.use(Mount("/api/mcaInfo", indexRouter.routes()));
 koa.use(Mount("/api/guestRequests", guestRequestRouter.routes()));
@@ -122,6 +112,16 @@ koa.use(Mount("/api/comments", commentsRouter.routes()));
 
 koa.use(Mount("/api/staff/comments", commentsReviewRouter.routes()));
 koa.use(Mount("/api/staff/users", usersRouter.routes()));
+
+// MCA-AYIM
+koa.use(Mount("/api/mca", mcaRouter.routes()));
+koa.use(Mount("/api/mca/user", mcaUserRouter.routes()));
+
+koa.use(Mount("/api/admin", adminRouter.routes()));
+koa.use(Mount("/api/admin/years", adminCategoriesRouter.routes()));
+koa.use(Mount("/api/admin/years", adminYearsRouter.routes()));
+
+koa.use(Mount("/api/staff", mcaStaffRouter.routes()));
 
 // Hello World!
 koa.use(Mount("/", helloWorldRouter.routes()));
