@@ -101,7 +101,7 @@ spec:
             - name: {{ $webServiceName | upper }}_PUBLICURL
               value: {{ $webService.publicUrl }}
             - name: {{ $webServiceName | upper }}_SSR
-              value: {{ $webService.ssr }}
+              value: "{{ $webService.ssr }}"
             {{- end }}
             {{- end }}
 
