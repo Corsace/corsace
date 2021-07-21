@@ -191,8 +191,11 @@ export class User extends BaseEntity {
                 .andWhere((qb) => {
                     const subQuery = qb.subQuery()
                         .from(Beatmapset, "beatmapset")
+                        .innerJoin("beatmapset.beatmaps", "beatmap")
                         .select("min(year(approvedDate))")
                         .andWhere("creatorID = user.ID")
+                        .andWhere(`beatmap.modeID = ${ModeDivisionType[modeString]}`)
+                        .andWhere(`beatmap.difficulty NOT LIKE '%\\'%'`)
                         .getQuery();
 
                     return subQuery + " = " + year;
