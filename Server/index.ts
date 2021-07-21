@@ -18,10 +18,6 @@ import helloWorldRouter from "./api/routes/helloWorld";
 
 import adminTournamentRouter from "./api/routes/admin/tournament";
 
-import adminTournamentRouter from "./api/routes/admin/tournament";
-
-import adminTournamentRouter from "./api/routes/admin/tournament";
-
 import mcaRouter from "../MCA-AYIM/api/routes/mca";
 import mcaUserRouter from "../MCA-AYIM/api/routes/user";
 import adminRouter from "../MCA-AYIM/api/routes/admin";
