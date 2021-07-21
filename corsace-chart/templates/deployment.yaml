@@ -94,9 +94,15 @@ spec:
                 secretKeyRef:
                   name: {{ include "corsace-chart.fullname" $ }}
                   key: koaKey
+            - name: API_PUBLICURL
+              value: {{ default (printf "%s%s%s" "http://" (include "corsace-chart.fullname" $) "-api") $.Values.webServices.api.publicUrl }}
             {{- range $webServiceName, $webService := $.Values.webServices }}
+            {{- if ne $webServiceName "api" }}
             - name: {{ $webServiceName | upper }}_PUBLICURL
               value: {{ $webService.publicUrl }}
+            - name: {{ $webServiceName | upper }}_SSR
+              value: "{{ $webService.ssr }}"
+            {{- end }}
             {{- end }}
 
       {{- with $.Values.nodeSelector }}

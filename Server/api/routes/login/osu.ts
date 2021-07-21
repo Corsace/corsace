@@ -5,6 +5,7 @@ import { ParameterizedContext } from "koa";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { config } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
+import { redirectToMainDomain } from "./middleware";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
@@ -16,10 +17,14 @@ const modes = [
     "mania",
 ];
 
-osuRouter.get("/", async (ctx: ParameterizedContext<any>, next) => {
-    ctx.cookies.set("redirect", ctx.query.redirect ?? "back", { overwrite: true });
+osuRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext<any>, next) => {
+    const baseURL = ctx.query.site ? (config[ctx.query.site] ? config[ctx.query.site].publicUrl : config.corsace.publicUrl) : "";
+    const params = ctx.query.redirect ?? "";
+    const redirectURL = baseURL + params ?? "back";
+    ctx.cookies.set("redirect", redirectURL, { overwrite: true });
     await next();
 }, passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"] }));
+
 osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
     return await passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
@@ -93,19 +98,25 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                 }
                 
                 await eligibility.save();
-                const i = ctx.state.user.mcaEligibility.findIndex((e: MCAEligibility) => e.year === year);
-                if (i === -1)
-                    ctx.state.user.mcaEligibility.push(eligibility);
-                else
-                    ctx.state.user.mcaEligibility[i] = eligibility;
+                if (ctx.state.user.mcaEligibility) {
+                    const i = ctx.state.user.mcaEligibility.findIndex((e: MCAEligibility) => e.year === year);
+                    if (i === -1)
+                        ctx.state.user.mcaEligibility.push(eligibility);
+                    else
+                        ctx.state.user.mcaEligibility[i] = eligibility;
+                } else
+                    ctx.state.user.mcaEligibility = [ eligibility ];
             }
         }
 
         await next();
     } catch (e) {
         if (e) {
-            ctx.state = 500;
+            ctx.status = 500;
+            console.error(e);
             ctx.body = { error: e };
+        } else {
+            throw e;
         }
     }
 }, async ctx => {
@@ -142,8 +153,11 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         ctx.redirect(redirect ?? "back");
     } catch (e) {
         if (e) {
-            ctx.state = 500;
+            ctx.status = 500;
+            console.error(e);
             ctx.body = { error: e };
+        } else {
+            throw e;
         }
     }
 });

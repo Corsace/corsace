@@ -1,142 +1,137 @@
 import "reflect-metadata";
-import { createConnection, getConnectionManager } from "typeorm";
+import { config } from "node-config-ts";
+import { createConnection } from "typeorm";
 import Koa from "koa";
+import koaCash from "koa-cash";
 import BodyParser from "koa-bodyparser";
 import Mount from "koa-mount";
 import passport from "koa-passport";
 import Session from "koa-session";
-import { config } from "node-config-ts";
-import OAuth2Strategy from "passport-oauth2";
-import { Strategy as DiscordStrategy } from "passport-discord";
-import { User } from "../Models/user";
-import { discordPassport, osuPassport } from "./passportFunctions";
-import logoutRouter from "./logout";
-import koaCash from "koa-cash";
 import { cache } from "./cache";
+import { setupPassport } from "./passportFunctions";
 
-export class App {
+import logoutRouter from "./api/routes/login/logout";
+import discordRouter from "./api/routes/login/discord";
+import osuRouter from "./api/routes/login/osu";
+import userRouter from "./api/routes/user";
+import helloWorldRouter from "./api/routes/helloWorld";
 
-    public koa = new Koa;
-    private hasCreatedConnection = false;
+import mcaRouter from "../MCA-AYIM/api/routes/mca";
+import mcaUserRouter from "../MCA-AYIM/api/routes/user";
+import adminRouter from "../MCA-AYIM/api/routes/admin";
+import adminCategoriesRouter from "../MCA-AYIM/api/routes/admin/categories";
+import adminYearsRouter from "../MCA-AYIM/api/routes/admin/years";
 
-    constructor () {
-        // Cant use promise here cuz passport stops working... Errors inc
-        this.initializeDb();
-        this.setupPassport();
+import nominatingRouter from "../MCA/api/routes/nominating";
+import votingRouter from "../MCA/api/routes/voting";
+import indexRouter from "../MCA/api/routes";
+import guestRequestRouter from "../MCA/api/routes/guestRequests";
+import mcaStaffRouter from "../MCA/api/routes/staff/index";
+import staffNominationsRouter from "../MCA/api/routes/staff/nominations";
+import staffRequestsRouter from "../MCA/api/routes/staff/requests";
+import staffVotesRouter from "../MCA/api/routes/staff/votes";
+import resultsRouter from "../MCA/api/routes/results";
 
-        this.koa.keys = config.koaKeys;
-        this.koa.proxy = true;
-        this.koa.use(Session({
-            domain: config.cookiesDomain,
-            secure: process.env.NODE_ENV !== "development",
-            httpOnly: true,
-        }, this.koa));
-        this.koa.use(BodyParser());
-        this.koa.use(passport.initialize());
-        this.koa.use(passport.session());
+import commentsRouter from "../AYIM/api/routes/comments";
+import commentsReviewRouter from "../AYIM/api/routes/staff/comments";
+import usersRouter from "../AYIM/api/routes/staff/users";
+import recordsRouter from "../AYIM/api/routes/records";
+import statisticsRouter from "../AYIM/api/routes/statistics";
+import mappersRouter from "../AYIM/api/routes/mappers";
 
-        this.koa.use(koaCash({
-            maxAge: 60 * 60 * 1000,
-            hash (ctx) {
-                return ctx.originalUrl;
-            },
-            get (key) {
-                return Promise.resolve(cache.get(key));
-            },
-            set (key, value, maxAge) {
-                cache.set(key, value, maxAge);
-                return Promise.resolve();
-            },
-        }));
+import ormConnectionOptions from "../ormconfig";
 
-        // Error handler
-        this.koa.use(async (ctx, next) => {
-            try {
-                if (ctx.originalUrl !== "/favicon.ico" && process.env.NODE_ENV === "development") {
-                    console.log("\x1b[33m%s\x1b[0m", ctx.originalUrl);
-                }
+const koa = new Koa;
 
-                await next();
-            } catch (err) {
-                console.log(err);
-                
-                ctx.status = err.status || 500;
-                ctx.body = { error: "Something went wrong!" };
-            }
-        });
+koa.keys = config.koaKeys;
+koa.proxy = true;
+koa.use(Session({
+    domain: config.cookiesDomain,
+    secure: process.env.NODE_ENV !== "development",
+    httpOnly: true,
+}, koa));
+koa.use(BodyParser());
+koa.use(passport.initialize());
+koa.use(passport.session());
 
-        this.koa.use(Mount("/logout", logoutRouter.routes()));
-    }
+koa.use(koaCash({
+    maxAge: 60 * 60 * 1000,
+    hash (ctx) {
+        return ctx.originalUrl;
+    },
+    get (key) {
+        return Promise.resolve(cache.get(key));
+    },
+    set (key, value, maxAge) {
+        cache.set(key, value, maxAge);
+        return Promise.resolve();
+    },
+}));
 
-    async initializeDb () {
-        try {
-            const currentConnection = getConnectionManager().has("default") ? getConnectionManager().get("default") : undefined;
-
-            // Code was reloaded but connection is still open or exists but disconnected idk why
-            if (currentConnection && !this.hasCreatedConnection) {
-                console.log("Recreating connection due to hot reloading");
-                
-                if (currentConnection.isConnected) {
-                    await currentConnection.close();
-                }
-
-                console.log("Done closing");
-            } else if (currentConnection) {
-                console.log("Connection already created");
-
-                if (!currentConnection.isConnected) {
-                    console.log("Reconnecting DB");
-                    await currentConnection.connect();
-                }
-
-                return;
-            }
-
-            console.log("Making new connection...");
-            this.hasCreatedConnection = true;
-    
-            // Connect to DB
-            const connection = await createConnection();
-
-            console.log(`Connected to the ${connection.options.database} (${connection.options.name}) database!`);
-        } catch (error) {
-            console.log("An error has occurred in connecting.", error);
+// Error handler
+koa.use(async (ctx, next) => {
+    try {
+        if (ctx.originalUrl !== "/favicon.ico" && process.env.NODE_ENV === "development") {
+            console.log("\x1b[33m%s\x1b[0m", ctx.originalUrl);
         }
+
+        await next();
+    } catch (err) {
+        console.log(err);
+        
+        ctx.status = err.status || 500;
+        ctx.body = { error: "Something went wrong!" };
     }
+});
 
-    setupPassport () {
-        // Setup passport
-        passport.serializeUser((user: User, done) => {
-            done(null, user.ID);
-        });
+// Login
+koa.use(Mount("/api/login/discord", discordRouter.routes()));
+koa.use(Mount("/api/login/osu", osuRouter.routes()));
+koa.use(Mount("/api/logout", logoutRouter.routes()));
 
-        passport.deserializeUser(async (id: number, done) => {
-            if (!id) return done(null, null);
+// Main site info
+koa.use(Mount("/api/user", userRouter.routes()));
 
-            try {
-                const user = await User.findOne(id);
-                if (user)
-                    done(null, user);
-                else
-                    done(null, null);
-            } catch(err) {
-                console.log("Error while deserializing user", err);
-                done(err, null);
-            }        
-        });
+// MCA
+koa.use(Mount("/api/mcaInfo", indexRouter.routes()));
+koa.use(Mount("/api/guestRequests", guestRequestRouter.routes()));
 
-        passport.use(new DiscordStrategy({
-            clientID: config.discord.clientId,
-            clientSecret: config.discord.clientSecret,
-            callbackURL: config.corsace.publicUrl + "/api/login/discord/callback",
-        }, discordPassport));
+koa.use(Mount("/api/nominating", nominatingRouter.routes()));
+koa.use(Mount("/api/voting", votingRouter.routes()));
+koa.use(Mount("/api/results", resultsRouter.routes()));
 
-        passport.use(new OAuth2Strategy({
-            authorizationURL: "https://osu.ppy.sh/oauth/authorize",
-            tokenURL: "https://osu.ppy.sh/oauth/token",
-            clientID: config.osu.v2.clientId,
-            clientSecret: config.osu.v2.clientSecret,
-            callbackURL: config.corsace.publicUrl + "/api/login/osu/callback",
-        }, osuPassport));
-    }
-}
+koa.use(Mount("/api/staff/nominations", staffNominationsRouter.routes()));
+koa.use(Mount("/api/staff/votes", staffVotesRouter.routes()));
+koa.use(Mount("/api/staff/requests", staffRequestsRouter.routes()));
+
+// AYIM
+koa.use(Mount("/api/records", recordsRouter.routes()));
+koa.use(Mount("/api/statistics", statisticsRouter.routes()));
+koa.use(Mount("/api/mappers", mappersRouter.routes()));
+koa.use(Mount("/api/comments", commentsRouter.routes()));
+
+koa.use(Mount("/api/staff/comments", commentsReviewRouter.routes()));
+koa.use(Mount("/api/staff/users", usersRouter.routes()));
+
+// MCA-AYIM
+koa.use(Mount("/api/mca", mcaRouter.routes()));
+koa.use(Mount("/api/mca/user", mcaUserRouter.routes()));
+
+koa.use(Mount("/api/admin", adminRouter.routes()));
+koa.use(Mount("/api/admin/years", adminCategoriesRouter.routes()));
+koa.use(Mount("/api/admin/years", adminYearsRouter.routes()));
+
+koa.use(Mount("/api/staff", mcaStaffRouter.routes()));
+
+// Hello World!
+koa.use(Mount("/", helloWorldRouter.routes()));
+koa.use(Mount("/api", helloWorldRouter.routes()));
+
+
+createConnection(ormConnectionOptions)
+    .then((connection) => {
+        console.log(`Connected to the ${connection.options.database} (${connection.options.name}) database!`);
+        setupPassport();
+        koa.listen(config.api.port);
+    })
+    .catch((error) => console.log("An error has occurred in connecting.", error));

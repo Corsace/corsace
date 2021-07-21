@@ -58,16 +58,24 @@
     "ayim": {
         "host": "0.0.0.0",
         "port": 80,
-        "publicUrl": "@@AYIM_PUBLICURL"
+        "publicUrl": "@@AYIM_PUBLICURL",
+        "ssr": "@@AYIM_SSR"
     },
     "corsace": {
         "host": "0.0.0.0",
         "port": 80,
-        "publicUrl": "@@CORSACE_PUBLICURL"
+        "publicUrl": "@@CORSACE_PUBLICURL",
+        "ssr": "@@CORSACE_SSR"
     },
     "mca": {
         "host": "0.0.0.0",
         "port": 80,
-        "publicUrl": "@@MCA_PUBLICURL"
+        "publicUrl": "@@MCA_PUBLICURL",
+        "ssr": "@@MCA_SSR"
+    },
+    "api": {
+        "host": "0.0.0.0",
+        "port": 80,
+        "publicUrl": "@@API_PUBLICURL"
     }
 }
