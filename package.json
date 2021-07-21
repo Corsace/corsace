@@ -75,7 +75,7 @@
       "mca": "cd ./MCA && nuxt-ts start",
       "main": "cd ./Main && nuxt-ts start",
       "open": "cd ./Open && nuxt-ts start",
-      "api": "cd ./dist && node Server/index.js",
+      "api": "cd Server && node dist/Server/index.js",
       
       "ayim-dev": "cd ./AYIM && nuxt-ts",
       "mca-dev": "cd ./MCA && nuxt-ts",

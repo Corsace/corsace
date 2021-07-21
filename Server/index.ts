@@ -14,6 +14,7 @@ import logoutRouter from "./api/routes/login/logout";
 import discordRouter from "./api/routes/login/discord";
 import osuRouter from "./api/routes/login/osu";
 import userRouter from "./api/routes/user";
+import helloWorldRouter from "./api/routes/helloWorld";
 
 import mcaRouter from "../MCA-AYIM/api/routes/mca";
 import mcaUserRouter from "../MCA-AYIM/api/routes/user";
@@ -37,6 +38,8 @@ import usersRouter from "../AYIM/api/routes/staff/users";
 import recordsRouter from "../AYIM/api/routes/records";
 import statisticsRouter from "../AYIM/api/routes/statistics";
 import mappersRouter from "../AYIM/api/routes/mappers";
+
+import ormConnectionOptions from "../ormconfig";
 
 const koa = new Koa;
 
@@ -89,16 +92,6 @@ koa.use(Mount("/api/logout", logoutRouter.routes()));
 // Main site info
 koa.use(Mount("/api/user", userRouter.routes()));
 
-// MCA-AYIM
-koa.use(Mount("/api/mca", mcaRouter.routes()));
-koa.use(Mount("/api/mca/user", mcaUserRouter.routes()));
-
-koa.use(Mount("/api/admin", adminRouter.routes()));
-koa.use(Mount("/api/admin/years", adminCategoriesRouter.routes()));
-koa.use(Mount("/api/admin/years", adminYearsRouter.routes()));
-
-koa.use(Mount("/api/staff", mcaStaffRouter.routes()));
-
 // MCA
 koa.use(Mount("/api/mcaInfo", indexRouter.routes()));
 koa.use(Mount("/api/guestRequests", guestRequestRouter.routes()));
@@ -120,8 +113,22 @@ koa.use(Mount("/api/comments", commentsRouter.routes()));
 koa.use(Mount("/api/staff/comments", commentsReviewRouter.routes()));
 koa.use(Mount("/api/staff/users", usersRouter.routes()));
 
+// MCA-AYIM
+koa.use(Mount("/api/mca", mcaRouter.routes()));
+koa.use(Mount("/api/mca/user", mcaUserRouter.routes()));
 
-createConnection()
+koa.use(Mount("/api/admin", adminRouter.routes()));
+koa.use(Mount("/api/admin/years", adminCategoriesRouter.routes()));
+koa.use(Mount("/api/admin/years", adminYearsRouter.routes()));
+
+koa.use(Mount("/api/staff", mcaStaffRouter.routes()));
+
+// Hello World!
+koa.use(Mount("/", helloWorldRouter.routes()));
+koa.use(Mount("/api", helloWorldRouter.routes()));
+
+
+createConnection(ormConnectionOptions)
     .then((connection) => {
         console.log(`Connected to the ${connection.options.database} (${connection.options.name}) database!`);
         setupPassport();

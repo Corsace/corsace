@@ -16,7 +16,14 @@ const modes = [
     "mania",
 ];
 
+const mainHost = new URL(config.corsace.publicUrl).host;
+
 osuRouter.get("/", async (ctx: ParameterizedContext<any>, next) => {
+    // Redirect to the main host (where user gets redirected post-oauth) to apply redirect cookie on the right domain
+    if(ctx.host !== mainHost) {
+        ctx.redirect(`${config.corsace.publicUrl}${ctx.originalUrl}`);
+        return;
+    }
     const baseURL = ctx.query.site ? (config[ctx.query.site] ? config[ctx.query.site].publicUrl : config.corsace.publicUrl) : "";
     const params = ctx.query.redirect ?? "";
     const redirectURL = baseURL + params ?? "back";
@@ -97,19 +104,25 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                 }
                 
                 await eligibility.save();
-                const i = ctx.state.user.mcaEligibility.findIndex((e: MCAEligibility) => e.year === year);
-                if (i === -1)
-                    ctx.state.user.mcaEligibility.push(eligibility);
-                else
-                    ctx.state.user.mcaEligibility[i] = eligibility;
+                if (ctx.state.user.mcaEligibility) {
+                    const i = ctx.state.user.mcaEligibility.findIndex((e: MCAEligibility) => e.year === year);
+                    if (i === -1)
+                        ctx.state.user.mcaEligibility.push(eligibility);
+                    else
+                        ctx.state.user.mcaEligibility[i] = eligibility;
+                } else
+                    ctx.state.user.mcaEligibility = [ eligibility ];
             }
         }
 
         await next();
     } catch (e) {
         if (e) {
-            ctx.state = 500;
+            ctx.status = 500;
+            console.error(e);
             ctx.body = { error: e };
+        } else {
+            throw e;
         }
     }
 }, async ctx => {
@@ -146,8 +159,11 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         ctx.redirect(redirect ?? "back");
     } catch (e) {
         if (e) {
-            ctx.state = 500;
+            ctx.status = 500;
+            console.error(e);
             ctx.body = { error: e };
+        } else {
+            throw e;
         }
     }
 });

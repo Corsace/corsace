@@ -40,16 +40,21 @@ webServices:
     replicaCount: 1
     command: main
     publicUrl: https://corsace.io
+    ssr: true
     ingress:
       enabled: true
       hosts:
         - host: corsace.io
           paths:
             - path: /
+        - host: www.corsace.io
+          paths:
+            - path: /
   mca:
     replicaCount: 1
     command: mca
     publicUrl: https://mca.corsace.io
+    ssr: true
     ingress:
       enabled: true
       hosts:
@@ -60,12 +65,18 @@ webServices:
     replicaCount: 1
     command: ayim
     publicUrl: https://ayim.corsace.io
+    ssr: true
     ingress:
       enabled: true
       hosts:
         - host: ayim.corsace.io
           paths:
             - path: /
+  api:
+    replicaCount: 1
+    command: api
+    ingress:
+      enabled: false
 
 podAnnotations: {}
 

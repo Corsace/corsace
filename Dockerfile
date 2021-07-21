@@ -23,6 +23,7 @@ COPY config/ /src/config/
 RUN npm run build:ayim
 RUN npm run build:mca
 RUN npm run build:main
+RUN npm run build:api
 
 ENV NODE_ENV=production
 RUN npm prune --production
