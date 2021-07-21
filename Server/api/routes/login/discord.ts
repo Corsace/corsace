@@ -3,19 +3,13 @@ import passport from "koa-passport";
 import { discordGuild } from "../../../discord";
 import { config } from "node-config-ts";
 import { ParameterizedContext } from "koa";
+import { redirectToMainDomain } from "./middleware";
 
 // If you are looking for discord passport info then go to Server > passportFunctions.ts
 
 const discordRouter = new Router();
 
-const mainHost = new URL(config.corsace.publicUrl).host;
-
-discordRouter.get("/", async (ctx: ParameterizedContext<any>, next) => {
-    // Redirect to the main host (where user gets redirected post-oauth) to apply redirect cookie on the right domain
-    if(ctx.host !== mainHost) {
-        ctx.redirect(`${config.corsace.publicUrl}${ctx.originalUrl}`);
-        return;
-    }
+discordRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext<any>, next) => {
     const baseURL = ctx.query.site ? (config[ctx.query.site] ? config[ctx.query.site].publicUrl : config.corsace.publicUrl) : "";
     const params = ctx.query.redirect ?? "";
     const redirectURL = baseURL + params ?? "back";
