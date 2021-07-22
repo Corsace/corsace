@@ -21,7 +21,8 @@ import { MatchPlay } from "./tournaments/matchPlay";
 import { Qualifier } from "./tournaments/qualifier";
 import { Badge } from "./badge";
 
-export const BWSFilter: RegExp = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|community|moderation|moderating|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
+
+export const BWSFilter = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|community|moderation|moderating|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
 
 export class OAuth {
 
@@ -62,13 +63,13 @@ export class User extends BaseEntity {
     osu!: OAuth;
 
     @Column({ nullable: true, type: "float" })
-    pp!: number;
+    pp?: number;
 
     @Column({ nullable: true })
-    rank!: number;
+    rank?: number;
 
     @OneToMany(() => TeamInvitation, invitation => invitation.target)
-    invitations!: TeamInvitation[];
+    invitations?: TeamInvitation[];
 
     @ManyToOne(() => Team, team => team.players)
     team?: Team;
@@ -130,7 +131,8 @@ export class User extends BaseEntity {
     @Column({ default: true })
     canComment!: boolean;
     
-    @OneToMany(() => Nomination, nomination => nomination.nominator)
+    @ManyToMany(() => Nomination, nomination => nomination.nominators)
+    @JoinTable()
     nominations!: Nomination[];
     
     @OneToMany(() => Nomination, nomination => nomination.user)
@@ -144,7 +146,7 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Qualifier, qualifier => qualifier.referee)
     qualifiersReffed!: Qualifier[];
-    
+
     @OneToMany(() => Match, match => match.referee)
     matchesReffed!: Match[];
 
@@ -231,8 +233,11 @@ export class User extends BaseEntity {
                 .andWhere((qb) => {
                     const subQuery = qb.subQuery()
                         .from(Beatmapset, "beatmapset")
+                        .innerJoin("beatmapset.beatmaps", "beatmap")
                         .select("min(year(approvedDate))")
                         .andWhere("creatorID = user.ID")
+                        .andWhere(`beatmap.modeID = ${ModeDivisionType[modeString]}`)
+                        .andWhere(`beatmap.difficulty NOT LIKE '%\\'%'`)
                         .getQuery();
 
                     return subQuery + " = " + year;
@@ -276,10 +281,11 @@ export class User extends BaseEntity {
 
     public getAccessToken = async function(this: User, tokenType: "osu" | "discord" = "osu"): Promise<string> {
         const res = await User
-        .createQueryBuilder("user")
-        .select(tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken", "token")
-        .where(`ID = ${this.ID}`)
-        .getRawOne();
+
+            .createQueryBuilder("user")
+            .select(tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken", "token")
+            .where(`ID = ${this.ID}`)
+            .getRawOne();
         return res.token;
     }
 

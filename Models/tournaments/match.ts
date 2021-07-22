@@ -17,16 +17,16 @@ export class Match extends BaseEntity {
 
     @Column({ type: "timestamp" })
     time!: Date;
-    
+
     @ManyToOne(() => Bracket, bracket => bracket.matches)
     bracket?: Bracket;
-    
+
     @ManyToOne(() => Group, group => group.matches)
     group?: Group;
-    
+
     @ManyToOne(() => Team, team => team.matches)
     teamA?: Team;
-    
+
     @ManyToOne(() => Team, team => team.matches)
     teamB?: Team;
 
@@ -44,22 +44,22 @@ export class Match extends BaseEntity {
 
     @OneToMany(() => MatchSet, set => set.match)
     sets?: MatchSet[];
-    
+
     @OneToMany(() => MatchBeatmap, matchBeatmap => matchBeatmap.match)
     beatmaps?: MatchBeatmap[];
-    
+
     @Column({ default: false })
     forfeit!: boolean;
 
     @Column({ default: false })
     potential!: boolean;
-    
+
     @ManyToOne(() => User, user => user.matchesReffed)
     referee?: User;
 
     @ManyToMany(() => User, user => user.matchesCommentated)
     commentators?: User[];
-    
+
     @ManyToOne(() => User, user => user.matchesStreamed)
     streamer?: User;
 

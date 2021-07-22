@@ -9,12 +9,12 @@
             <div class="choice__info-title">
                 {{ choice.title }}
             </div>
-            <div class="choice__info-artist">
-                {{ choice.artist }}
+            <div class="choice__info-secondary">
+                <span class="choice__info-artist">{{ choice.artist }}</span>
+                <span class="choice__info-host">|
+                    <span class="choice__info-hoster">{{ choice.hoster }}</span>
+                </span>
             </div>
-            <span class="choice__info-host">
-                {{ $t('mca.nom_vote.hosted') }} | <span class="choice__info-hoster">{{ choice.hoster }}</span>
-            </span>
         </a>
     </base-choice-card>
 </template>

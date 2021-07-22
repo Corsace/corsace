@@ -254,7 +254,6 @@
         "nom_vote": {
             "search": "譜面・マッパー検索",
             "select": "部門を選択してください。",
-            "selectGrand": "最初にグランプリを選択してください。",
             "candidates": "候補",
             "options": {
                 "date": "日付",

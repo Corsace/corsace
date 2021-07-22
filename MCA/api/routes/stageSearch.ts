@@ -17,13 +17,13 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
         if (!ctx.query.category)
             return ctx.body = {
                 error: "Missing category ID!",
-            }
+            };
 
         let list: BeatmapsetInfo[] | UserChoiceInfo[] = [];
         let setList: BeatmapsetInfo[] = [];
         let userList: UserChoiceInfo[] = [];
-        let favIDs: number[] = [];
-        let playedIDs: number[] = [];
+        const favIDs: number[] = [];
+        const playedIDs: number[] = [];
 
         const category = await Category
             .createQueryBuilder("category")
@@ -42,17 +42,13 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
         
         // Check if this is the initial call, add currently nominated beatmaps/users at the top of the list
         if (skip === 0) {
-            try {
-                let objects = await initialCall(ctx, category) as Vote[]; // doesnt really matter the type in this case
-                objects = objects.filter(o => o.category.ID === category.ID);
+            let objects = await initialCall(ctx, category) as Vote[]; // doesnt really matter the type in this case
+            objects = objects.filter(o => o.category.ID === category.ID);
 
-                if (category.type == CategoryType.Beatmapsets)
-                    setList = objects.map(o => o.beatmapset?.getInfo(true) as BeatmapsetInfo);  
-                else if (category.type == CategoryType.Users)
-                    userList = objects.map(o => o.user?.getCondensedInfo(true) as UserChoiceInfo);
-            } catch (e) {
-                if (e) return ctx.body = { error: e };
-            }
+            if (category.type == CategoryType.Beatmapsets)
+                setList = objects.map(o => o.beatmapset?.getInfo(true) as BeatmapsetInfo);  
+            else if (category.type == CategoryType.Users)
+                userList = objects.map(o => o.user?.getCondensedInfo(true) as UserChoiceInfo);
         }
         
         // Make sure user is eligible to nominate in this mode
@@ -75,7 +71,7 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
 
                     if (sets.length < 51) break;
 
-                    offset+=sets.length;
+                    offset += sets.length;
                 }
             }
 
@@ -84,7 +80,7 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
                 let _id = "";
                 for (;;) {
                     let url = `https://osu.ppy.sh/api/v2/beatmapsets/search?played=played&q=ranked%3D${ctx.state.year}`;
-                    if (approvedDate) url += `&cursor%5Bapproved_date%5D=${approvedDate}&cursor%5B_id%5D=${_id}`
+                    if (approvedDate) url += `&cursor%5Bapproved_date%5D=${approvedDate}&cursor%5B_id%5D=${_id}`;
                     const res = await Axios.get(url, {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,

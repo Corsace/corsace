@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import { isLoggedInDiscord, isMCAStaff } from "../../../../Server/middleware";
 import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
-import { currentMCA } from "../../../../MCA-AYIM/api/middleware";
+import { validatePhaseYear } from "../../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { StaffComment } from "../../../../Interfaces/comment";
 import { Brackets } from "typeorm";
@@ -10,40 +10,39 @@ const commentsReviewRouter = new Router();
 
 commentsReviewRouter.use(isLoggedInDiscord);
 commentsReviewRouter.use(isMCAStaff);
-commentsReviewRouter.use(currentMCA);
 
-commentsReviewRouter.get("/", async (ctx) => {
+commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(ctx.query.skip) : 0;
     const text = ctx.query.text ?? undefined;
-    let query = UserComment
-                    .createQueryBuilder("userComment")
-                    .innerJoin("userComment.commenter", "commenter")
-                    .innerJoin("userComment.target", "target")
-                    .innerJoin("userComment.mode", "mode")
-                    .leftJoin("userComment.reviewer", "reviewer")
-                    .select("userComment.ID", "ID")
-                    .addSelect("userComment.comment", "comment")
-                    .addSelect("userComment.commenterID", "commenterID")
-                    .addSelect("userComment.isValid", "isValid")
-                    .addSelect("userComment.lastReviewedAt", "lastReviewedAt")
-                    .addSelect("mode.name", "modeName")
-                    .addSelect("commenter.osuUserid", "commenterosuID")
-                    .addSelect("commenter.osuUsername", "commenterosuUsername")
-                    .addSelect("target.osuUserid", "targetosuID")
-                    .addSelect("target.osuUsername", "targetosuUsername")
-                    .addSelect("reviewer.osuUsername", "reviewer")
-                    .where(`year = ${mca.year}`)
+    const query = UserComment
+        .createQueryBuilder("userComment")
+        .innerJoin("userComment.commenter", "commenter")
+        .innerJoin("userComment.target", "target")
+        .innerJoin("userComment.mode", "mode")
+        .leftJoin("userComment.reviewer", "reviewer")
+        .select("userComment.ID", "ID")
+        .addSelect("userComment.comment", "comment")
+        .addSelect("userComment.commenterID", "commenterID")
+        .addSelect("userComment.isValid", "isValid")
+        .addSelect("userComment.lastReviewedAt", "lastReviewedAt")
+        .addSelect("mode.name", "modeName")
+        .addSelect("commenter.osuUserid", "commenterosuID")
+        .addSelect("commenter.osuUsername", "commenterosuUsername")
+        .addSelect("target.osuUserid", "targetosuID")
+        .addSelect("target.osuUsername", "targetosuUsername")
+        .addSelect("reviewer.osuUsername", "reviewer")
+        .where(`year = ${mca.year}`);
     if (filter)
-        query.andWhere(`isValid = 0`)
+        query.andWhere(`isValid = 0`);
     if (text) {
         query
             .andWhere(new Brackets(qb => {
                 qb.where("commenter.osuUsername LIKE :criteria")
                     .orWhere("commenter.osuUserid LIKE :criteria")
                     .orWhere("target.osuUsername LIKE :criteria")
-                    .orWhere("target.osuUserid LIKE :criteria")
+                    .orWhere("target.osuUserid LIKE :criteria");
             }))
             .setParameter("criteria", `%${text}%`);
     }
@@ -76,7 +75,7 @@ commentsReviewRouter.get("/", async (ctx) => {
         }
 
         return staffComment;
-    })
+    });
     ctx.body = staffComments;
 });
 

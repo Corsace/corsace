@@ -90,4 +90,5 @@ export class Beatmap extends BaseEntity {
 
     @OneToMany(() => MappoolBeatmap, mappoolBeatmap => mappoolBeatmap.beatmap)
     mappoolBeatmaps!: MappoolBeatmap[];
+
 }

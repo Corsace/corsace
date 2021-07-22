@@ -82,7 +82,16 @@ import { MCA } from "../../../../Interfaces/mca";
     },
     head () {
         return {
-            title: "Mapsets' Records | AYIM",
+            title: `Mapsets' Records | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}`,
+            meta: [
+                { hid: "description", name: "description", content: `The records related to mapsets in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
+                { hid: "og:title", property: "og:title", content: `Mapsets' Records | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}` },
+                { hid: "og:type", property: "og:type", content: "website" },
+                { hid: "og:url", property: "og:url", content: "https://ayim.corsace.io" },
+                { hid: "og:description", property: "og:description", content: `The records related to mapsets in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
+                { hid: "og:site_name",property: "og:site_name", content: "AYIM" },
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" },
+            ],
         };
     },
 })

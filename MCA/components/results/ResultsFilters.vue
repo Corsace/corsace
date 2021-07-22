@@ -3,17 +3,17 @@
         <div class="category-selector">
             <dropdown-selector
                 :options="localCatTypes" 
-                :currentOption="activeCategoryType"
-                :styleLabel="catTypeStyle"
-                :styleDrop="catTypeDropStyle"
+                :current-option="activeCategoryType"
+                :style-label="catTypeStyle"
+                :style-drop="catTypeDropStyle"
                 class="category-type"
                 @relayOption="changeCategoryType"
             />
             <dropdown-selector 
                 :options="localAppCategories"
-                :currentOption="activeCategory"
-                :styleLabel="catStyle"
-                :styleDrop="catDropStyle"
+                :current-option="activeCategory"
+                :style-label="catStyle"
+                :style-drop="catDropStyle"
                 class="award-category"
                 @relayOption="changeCategory"
             />
@@ -40,7 +40,7 @@ const stageModule = namespace("stage");
 @Component({
     components: {
         DropdownSelector,
-        StagePageFilters
+        StagePageFilters,
     },
 })
 export default class ResultsFilters extends Vue {
@@ -63,11 +63,7 @@ export default class ResultsFilters extends Vue {
 
     filterCategories (type: CategoryType): CategoryStageInfo[] {
         return this.categoriesInfo
-            .filter(c => c.type === CategoryType[type] && c.mode === this.selectedMode)
-            .map(c => ({
-                ...c,
-                inactive: !c.isRequired
-            }));
+            .filter(c => c.type === CategoryType[type] && (c.mode === this.selectedMode || c.mode === "storyboard"));
     }
 
     // track current index of arrays selected by dropdowns
@@ -104,34 +100,31 @@ export default class ResultsFilters extends Vue {
 
     // dropdown styles
     get catTypeStyle () {
+        const longestStr = Math.max(...this.localCatTypes.map(lct => lct.toString().length));
         return {
-            'border-radius': '5.5px 0 0 5.5px',
-            'width': `${Math.max(85 + Math.max(...this.localCatTypes.map(lct => lct.toString().length)) * 10, 165)}px`,
-            'margin-left': '5px'
-        }
+            "width": `${longestStr * 0.82}em`,
+        };
     }
 
     get catStyle () {
+        const longestStr = Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length));
         return {
-            'border-radius': '0 5.5px 5.5px 0',
-            'width': `${Math.max(85 + Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length)) * 10, 165)}px`,
-            // formula to estimate box width from character count
-            // flat factor (85) and scaling factor (10) are pretty arbitrary  
-            'clip-path': 'inset(-8px -8px -8px 0)'
-        }
+            "width": `${longestStr * 0.82}em`,
+            "clip-path": "inset(-8px -8px -8px 0)",
+        };
     }
 
     get catTypeDropStyle () {
         return {
-            'margin-left': this.catTypeStyle["margin-left"],
-            'width': this.catTypeStyle["width"]
-        }
+            "margin-left": this.catTypeStyle["margin-left"],
+            "width": this.catTypeStyle["width"],
+        };
     }
 
     get catDropStyle () {
         return {
-            'width': this.catStyle["width"]
-        }
+            "width": this.catStyle["width"],
+        };
     }
 }
 </script>
@@ -140,6 +133,10 @@ export default class ResultsFilters extends Vue {
 @import '@s-sass/_variables';
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
+
+// this determines the width of stage-page-filters at which it wraps below
+//   the dropdowns
+$two-row-breakpoint: 35rem;
 
 .results-filters {
     top: 30%;
@@ -158,17 +155,51 @@ export default class ResultsFilters extends Vue {
 
 .category-selector {
     display: flex;
-    flex: 1;
     justify-content: center;
+    flex-direction: column;
 
-    padding: 20px 0 0 0;
+    flex: 1;
+
+    padding: 0;
 
     @include breakpoint(tablet) {
-        padding: 0;
+        flex-direction: row;
     }
 
     @include breakpoint(desktop) {
         padding: 20px 0 0 0;
+    }
+
+    >div {
+        flex: 1;
+    }
+}
+
+.category-type {
+    margin: 15px 5px 7.5px 5px;
+    border-radius: 5.5px;
+
+    @include breakpoint(tablet) {
+        margin: 0;
+        border-radius: 5.5px 0 0 5.5px;
+    }
+
+    @include breakpoint(laptop) {
+        margin: 0 0 0 5px;
+    }
+}
+
+.award-category {
+    margin: 7.5px 5px 0 5px;
+    border-radius: 5.5px;
+
+    @include breakpoint(tablet) {
+        margin: 0;
+        border-radius: 0 5.5px 5.5px 0;
+    }
+
+    @include breakpoint(laptop) {
+        margin: 0 5px 0 0;
     }
 }
 
@@ -178,7 +209,7 @@ export default class ResultsFilters extends Vue {
     @include breakpoint(laptop) {
         flex: 10;
         max-height: 85px;
-        min-width: 56rem;
+        min-width: $two-row-breakpoint;
     }
 }
 </style>

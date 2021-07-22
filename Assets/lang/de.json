@@ -291,8 +291,7 @@
             },
             "hosted": "HOSTED BY",
             "userID": "USER ID",
-            "select": "Bitte wähle eine Kategorie aus!",
-            "selectGrand": "Du MUSST mit den Hauptgewinn Kategorien anfangen"
+            "select": "Bitte wähle eine Kategorie aus!"
         }
     },
     "main": {

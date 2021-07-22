@@ -1,7 +1,6 @@
-import multer from "@koa/multer";
 import Router, { Middleware } from "@koa/router";
-import { unlink } from "fs/promises";
 import * as Jimp from "jimp";
+import { unlink } from "fs/promises";
 import { config } from "node-config-ts";
 import { nameFilter } from "../../../Interfaces/team";
 import { Team } from "../../../Models/team";
@@ -10,10 +9,7 @@ import { User } from "../../../Models/user";
 import { discordGuild, getMember } from "../../../Server/discord";
 import { hasNoTeam, hasTeam, isCaptain, isHeadStaff, isLoggedInDiscord, isRegistration, notOpenStaff } from "../../../Server/middleware";
 
-const teamRouter = new Router();
-const upload = multer({ 
-    limits: { fileSize: 5 * 1024 * 1024 },
-});
+const teamRouter = new Router;
 
 const teamPayloadValidation: Middleware = async (ctx, next) => {
     const data = ctx.request.body;
@@ -28,7 +24,7 @@ const teamPayloadValidation: Middleware = async (ctx, next) => {
         return ctx.body = { error: "Inappropriate team name!" };
 
     await next();
-}
+};
 
 // Gets user's team
 teamRouter.get("/", async (ctx) => {
@@ -41,14 +37,14 @@ teamRouter.get("/", async (ctx) => {
         team = await Team.findOne({
             where: [
                 {
-                    captain: ctx.state.user
+                    captain: ctx.state.user,
                 },
                 {
                     players: {
                         Any: ctx.state.user,
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         });
 
     ctx.body = {
@@ -89,7 +85,8 @@ teamRouter.post("/", isLoggedInDiscord, notOpenStaff, hasNoTeam, isRegistration,
     if (await Team.findOne({ slug })) {
         ctx.body = {
             error: `Team ${slug} already exists!`,
-        }
+
+        };
         return;
     }
 
@@ -106,11 +103,12 @@ teamRouter.post("/", isLoggedInDiscord, notOpenStaff, hasNoTeam, isRegistration,
             hoist: false,
             mentionable: false,
         },
-        reason: `Team ${name} has been created by ${ctx.state.user.osu.username}`
+
+        reason: `Team ${name} has been created by ${ctx.state.user.osu.username}`,
     });
     team.role = role.id;
     await team.save();
-    
+
     const member = await getMember(ctx.state.user.discord.userID);
     if (!member) {
         await guild.addMember(ctx.state.user.discord.userID, {
@@ -136,7 +134,8 @@ teamRouter.put("/rename", isLoggedInDiscord, isCaptain, teamPayloadValidation, a
     if (await Team.findOne({ slug })) {
         ctx.body = {
             error: `Team ${slug} already exists!`,
-        }
+
+        };
         return;
     }
 
@@ -149,7 +148,8 @@ teamRouter.put("/rename", isLoggedInDiscord, isCaptain, teamPayloadValidation, a
 
     await guild.roles.resolve(team.role)?.edit(
         { name: `CO TEAM ${team.name}` }, 
-        `${ctx.state.user.osu.username} has changed their team name from ${oldName} to ${team.name}`,
+
+        `${ctx.state.user.osu.username} has changed their team name from ${oldName} to ${team.name}`
     );
 });
 
@@ -179,7 +179,8 @@ teamRouter.post("/avatar", isLoggedInDiscord, isCaptain, upload.single("avatar")
             rej(err);
         res(img);
     }));
-    
+
+
     team.avatar = `${config.corsace.publicUrl}${filePath}?${Date.now()}`;
     await team.save();
     ctx.body = { team };
@@ -205,12 +206,12 @@ teamRouter.put("/transferCaptain", isLoggedInDiscord, isCaptain, async (ctx) => 
     const data = ctx.request.body;
     if (!data.target)
         return ctx.body = { error: "No target user provided!" };
-    
+
     const target = await User.findOne(data.target);
     if (!target)
         return ctx.body = { error: "Invalid target user ID provided!" };
     const user: User = ctx.state.user;
-    
+
     target.teamCaptain = target.team;
     user.team = user.teamCaptain;
 
@@ -254,7 +255,7 @@ teamRouter.delete("/delete", isLoggedInDiscord, isCaptain, isRegistration, async
 
     await guild.roles.resolve(team.role)?.delete(`${ctx.state.user.osu.username} has deleted team ${team.name}`);
     await team.remove();
-    
+
     ctx.body = { status: "Success" };
 });
 

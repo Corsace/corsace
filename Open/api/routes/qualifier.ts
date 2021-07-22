@@ -1,5 +1,5 @@
 import Router from "@koa/router";
-import { hasRole, isCaptain, isHeadStaff } from "../../../Server/middleware";
+import { hasRole, isCaptain, isHeadStaff, notQualifierDeadline } from "../../../Server/middleware";
 
 const qualifierRouter = new Router();
 

@@ -41,7 +41,7 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const year = parseInt(ctx.query.year || new Date().getFullYear());
+    const year = parseInt(ctx.query.year || new Date().getUTCFullYear());
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
 
@@ -210,7 +210,7 @@ recordsRouter.get("/mappers", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const year = parseInt(ctx.query.year || new Date().getFullYear());
+    const year = parseInt(ctx.query.year || new Date().getUTCFullYear());
     const modeString: string = ctx.query.mode || "standard";
     const modeId = ModeDivisionType[modeString];
 
@@ -221,7 +221,7 @@ recordsRouter.get("/mappers", async (ctx) => {
         mostFavsExclHybrid,
         mostPlayed,
         highestAvgSr,
-        lowestAvgSr
+        lowestAvgSr,
     ] = await Promise.all([
         // Most Ranked
         createQueryBuilder()

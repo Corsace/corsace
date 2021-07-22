@@ -254,7 +254,6 @@
         "nom_vote": {
             "search": "Busca por un mapa / usuario",
             "select": "Por favor, Seleccione una categoría!",
-            "selectGrand": "Debes comenzar con la categoría del Gran Premio",
             "candidates": "candidatos",
             "options": {
                 "date": "FECHA",

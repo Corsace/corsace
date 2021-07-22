@@ -45,39 +45,39 @@ export enum Mods {
 }
 
 const modStrings: string[] = [
-	"NF",
-	"EZ",
-	"NV",
-	"HD",
-	"HR",
-	"SD",
-	"DT",
-	"RX",
-	"HT",
-	"NC",
-	"FL",
-	"AU",
-	"SO",
-	"AP",
-	"PF",
-	"K4",
-	"K5",
-	"K6",
-	"K7",
-	"K8",
-	"FI",
-	"RN",
-	"CN",
-	"TR",
-	"K9",
-	"KC",
-	"K1",
-	"K3",
-	"K2",
-	"V2",
-]
+    "NF",
+    "EZ",
+    "NV",
+    "HD",
+    "HR",
+    "SD",
+    "DT",
+    "RX",
+    "HT",
+    "NC",
+    "FL",
+    "AU",
+    "SO",
+    "AP",
+    "PF",
+    "K4",
+    "K5",
+    "K6",
+    "K7",
+    "K8",
+    "FI",
+    "RN",
+    "CN",
+    "TR",
+    "K9",
+    "KC",
+    "K1",
+    "K3",
+    "K2",
+    "V2",
+];
 
-export function modsToString(m: Mods): string {
+export function modsToString (m: Mods): string {
     if (m === 0)
         return "NM";
 
@@ -88,9 +88,10 @@ export function modsToString(m: Mods): string {
         m >>= 1;
     }
     if (stringBuilder.includes("NC"))
-        stringBuilder = stringBuilder.replace("DT", "")
+
+        stringBuilder = stringBuilder.replace("DT", "");
     if (stringBuilder.includes("PF"))
-        stringBuilder = stringBuilder.replace("SD", "")
+        stringBuilder = stringBuilder.replace("SD", "");
 
     return stringBuilder;
 }

@@ -211,7 +211,7 @@ export const actions: ActionTree<StageState, RootState> = {
         if (state.stage === "nominating" && data.nominations?.length && data.nominations.some(n => !n.isValid)) {
             alert("Some nominations were denied, contact a staff member if you already haven't!");
         } else if (state.stage === "results")
-            dispatch("updateSelectedCategory", state.categories.filter(category => category.type === "Beatmapsets" && category.mode === rootState.selectedMode)[0])
+            dispatch("updateSelectedCategory", state.categories.filter(category => category.type === "Beatmapsets" && (category.mode === rootState.selectedMode || category.mode === "storyboard"))[0]);
     },
     async updateSelectedCategory ({ commit, dispatch }, category) {
         commit("updateSelectedCategory", category);
@@ -244,7 +244,7 @@ export const actions: ActionTree<StageState, RootState> = {
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
 
-        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${rootState.selectedMode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&favourites=${state.favourites}&played=${state.played}&text=${state.query.text}&skip=${skip}`);
+        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState.mca?.year}/search?mode=${state.selectedCategory.mode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&favourites=${state.favourites}&played=${state.played}&text=${state.query.text}&skip=${skip}`);
         if (data.error)
             return alert(data.error);
 

@@ -1,29 +1,38 @@
 <template>
     <div class="category-count">
         <div class="category-count__number">
-            {{ count }}
+            {{ remainingDays }}
         </div>
         <div class="category-count__divider" />
         <div 
             class="category-count__candidates"
             :class="`category-count__candidates--${selectedMode}`"
         >
-            {{ $t('mca.nom_vote.candidates') }}
+            {{ $t('mca.main.daysLeft') }}
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { namespace, State } from "vuex-class";
+import { State, Getter } from "vuex-class";
 
-const stageModule = namespace("stage");
+import { Phase } from "../../../Interfaces/mca";
 
 @Component
 export default class StateContent extends Vue {
 
     @State selectedMode!: string;
-    @stageModule.State count!: number;
+    @Getter phase!: Phase | null;
+
+    get remainingDays (): string {
+        if (this.phase) {
+            const date = Math.floor((this.phase.endDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+            return date > 9 ? date.toString() : "0" + Math.max(0, date);
+        }
+
+        return "0";
+    }
 
 }
 </script>
@@ -86,9 +95,11 @@ export default class StateContent extends Vue {
         border-radius: 25px;
         
         @include breakpoint(laptop) {
+            padding: 6px 9px 6px 6px;
             border-radius: 0 25px 25px 0;
             position: absolute;
             left: 97%;
+            white-space: nowrap;
         }
 
         font-size: 1.2rem;

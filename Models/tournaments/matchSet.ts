@@ -20,7 +20,11 @@ export class MatchSet extends BaseEntity {
 
     @Column({ default: 0 })
     teamAScore!: number;
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> c98ce50e71a2f58d0f14cd4bb1374330e0715a42
     @Column({ default: 0 })
     teamBScore!: number;
 }

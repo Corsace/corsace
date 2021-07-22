@@ -6,7 +6,6 @@ import { Match } from "./match";
 import { MatchPlay } from "./matchPlay";
 import { MatchSet } from "./matchSet";
 
-
 @Entity()
 export class MatchBeatmap extends BaseEntity {
 
@@ -15,9 +14,9 @@ export class MatchBeatmap extends BaseEntity {
 
     @Column({ type: "enum", enum: PickStatus, default: PickStatus.picked })
     status!: PickStatus;
-    
+
     @ManyToOne(() => MappoolBeatmap, beatmap => beatmap.matchBeatmaps, { 
-        eager: true 
+        eager: true,
     })
     beatmap!: MappoolBeatmap;
 

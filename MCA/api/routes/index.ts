@@ -34,7 +34,7 @@ indexRouter.get("/front", async (ctx) => {
             (await discordGuild()).members.cache.filter(x => x.roles.cache.has(modeStaff[mode.name])).map(x => x.nickname ?? x.user.username),
         ]);
 
-        const categoryInfos = categories.map(x => x.getInfo());
+        const categoryInfos = categories.map(x => x.getCondensedInfo());
 
         frontData[mode.name] = {
             categoryInfos,

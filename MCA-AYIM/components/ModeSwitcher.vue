@@ -1,6 +1,9 @@
 <template>
     <div class="main-container">
-        <div class="mode-title-container">
+        <div
+            v-if="!hideTitle" 
+            class="mode-title-container"
+        >
             <slot name="title" />
             <div class="mode-title">
                 {{ selectedMode }} 
@@ -13,7 +16,7 @@
             class="mode-wrapper"
             :class="[
                 'mode-wrapper--' + selectedMode, 
-                tablet ? 'mode-wrapper--tablet' : 'mode-wrapper--laptop',
+                { 'mode-wrapper--hideTitle': hideTitle },
                 { 'mode-wrapper--stretch': stretch },
                 'mode-wrapper--skip-' + ignoreModes.length,
             ]"
@@ -55,6 +58,7 @@ export default class ModeSwitcher extends Vue {
     @Prop(Boolean) readonly stretch!: boolean;
     @Prop(Boolean) readonly hidePhase!: boolean;
     @Prop(Boolean) readonly enableModeEligibility!: boolean;
+    @Prop({ type: Boolean, default: false }) readonly hideTitle!: boolean;
     @Prop({ type: String, default: "" }) readonly title!: string;
     @Prop({ type: Array, default: () => [] }) readonly ignoreModes!: string[];
 
@@ -139,7 +143,7 @@ $icon-margin: 15px;
     }
 }
 
-$max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // Consider mode selection space 85px~
+$max-height-container: calc(100% - #{$icon-size} - #{$mode-selection-padding});
 
 .mode-wrapper {
     display: flex;
@@ -148,21 +152,17 @@ $max-height-container: calc(100% - #{$icon-size} - #{$base-bottom-padding}); // 
     height: 100%;
     --skip-modes: 0;
 
+    @include breakpoint(tablet) {   
+        max-height: $max-height-container;
+
+        &--hideTitle {
+            max-height: calc(#{$max-height-container} + 55px);
+        }
+    }
+
     @for $i from 1 through 5 {
         &--skip-#{$i} {
             --skip-modes: #{$i};
-        }
-    }
-
-    @include breakpoint(tablet) {
-        &--tablet {
-            max-height: $max-height-container;
-        }
-    }
-
-    @include breakpoint(laptop) {
-        &--laptop {
-            max-height: $max-height-container;
         }
     }
 

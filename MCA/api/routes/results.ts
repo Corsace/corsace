@@ -11,12 +11,12 @@ const resultsRouter = new Router();
 
 resultsRouter.get("/:year?", validatePhaseYear, isResults, async (ctx) => {
     const categories = await Category.find({
-                                            where: {
-                                                mca: {
-                                                    year: ctx.state.year,
-                                                },
-                                            },
-                                        });
+        where: {
+            mca: {
+                year: ctx.state.year,
+            },
+        },
+    });
 
     const categoryInfos: CategoryStageInfo[] = categories.map(c => c.getInfo() as CategoryStageInfo);
 
@@ -37,46 +37,46 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
     categoryID = parseInt(categoryID);
 
     const category = await Category
-            .createQueryBuilder("category")
-            .where("category.ID = :id", { id: categoryID })
-            .andWhere("category.mcaYear = :year", { year: ctx.state.mca.year })
-            .getOneOrFail();
+        .createQueryBuilder("category")
+        .where("category.ID = :id", { id: categoryID })
+        .andWhere("category.mcaYear = :year", { year: ctx.state.mca.year })
+        .getOneOrFail();
 
     const votes = await Vote
-                        .createQueryBuilder("vote")
-                        .innerJoin("vote.voter", "voter")
-                        .innerJoin("vote.category", "category")
-                        .leftJoin("vote.user", "user")
-                        .leftJoin("vote.beatmapset", "beatmapset")
-                        .leftJoin("beatmapset.creator", "creator")
-                        .leftJoin("beatmapset.beatmaps", "beatmap")
-                        .select("vote.ID", "ID")
-                        .addSelect("vote.choice", "choice")
-                        // voter selects
-                        .addSelect("voter.osuUserid", "voterOsuID")
-                        .addSelect("voter.osuUsername", "voterOsu")
-                        .addSelect("voter.discordUsername", "voterDiscord")
-                        // user selects
-                        .addSelect("user.osuUserid", "userID")
-                        .addSelect("user.osuUsername", "userOsu")
-                        .addSelect("user.discordUsername", "userDiscord")
-                        // beatmapset selects
-                        .addSelect("beatmapset.ID", "beatmapsetID")
-                        .addSelect("beatmapset.artist", "artist")
-                        .addSelect("beatmapset.title", "title")
-                        .addSelect("beatmapset.tags", "tags")
-                        .addSelect("creator.osuUserid", "creatorID")
-                        .addSelect("creator.osuUsername", "creatorOsu")
-                        .addSelect("creator.discordUsername", "creatorDiscord")
-                        // wheres + groups + orders
-                        .where("category.ID = :id", { id: categoryID })
-                        .andWhere("category.mcaYear = :year", { year: ctx.state.mca.year })
-                        .groupBy("vote.ID")
-                        .orderBy("vote.voterID", "DESC")
-                        .getRawMany();
+        .createQueryBuilder("vote")
+        .innerJoin("vote.voter", "voter")
+        .innerJoin("vote.category", "category")
+        .leftJoin("vote.user", "user")
+        .leftJoin("vote.beatmapset", "beatmapset")
+        .leftJoin("beatmapset.creator", "creator")
+        .leftJoin("beatmapset.beatmaps", "beatmap")
+        .select("vote.ID", "ID")
+        .addSelect("vote.choice", "choice")
+    // voter selects
+        .addSelect("voter.osuUserid", "voterOsuID")
+        .addSelect("voter.osuUsername", "voterOsu")
+        .addSelect("voter.discordUsername", "voterDiscord")
+    // user selects
+        .addSelect("user.osuUserid", "userID")
+        .addSelect("user.osuUsername", "userOsu")
+        .addSelect("user.discordUsername", "userDiscord")
+    // beatmapset selects
+        .addSelect("beatmapset.ID", "beatmapsetID")
+        .addSelect("beatmapset.artist", "artist")
+        .addSelect("beatmapset.title", "title")
+        .addSelect("beatmapset.tags", "tags")
+        .addSelect("creator.osuUserid", "creatorID")
+        .addSelect("creator.osuUsername", "creatorOsu")
+        .addSelect("creator.discordUsername", "creatorDiscord")
+    // wheres + groups + orders
+        .where("category.ID = :id", { id: categoryID })
+        .andWhere("category.mcaYear = :year", { year: ctx.state.mca.year })
+        .groupBy("vote.ID")
+        .orderBy("vote.voterID", "DESC")
+        .getRawMany();
 
     const staffVotes = votes.map(vote => {
-        let staffVote = {
+        const staffVote = {
             ID: vote.ID,
             choice: vote.choice,
             voter: {
@@ -90,7 +90,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
                 osuID: vote.userID,
                 osuUsername: vote.userOsu,
                 discordUsername: vote.userDiscord,
-            }
+            };
         }
         if (vote.beatmapsetID) {
             staffVote.beatmapset = {
@@ -103,7 +103,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
                     osuUsername: vote.creatorOsu,
                     discordUsername: vote.creatorDiscord,
                 },
-            }
+            };
         }
         return staffVote;
     });
@@ -126,7 +126,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
 
                 if (sets.length < 51) break;
 
-                offset+=sets.length;
+                offset += sets.length;
             }
         }
 
@@ -135,7 +135,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
             let _id = "";
             for (;;) {
                 let url = `https://osu.ppy.sh/api/v2/beatmapsets/search?played=played&q=ranked%3D${ctx.state.year}`;
-                if (approvedDate) url += `&cursor%5Bapproved_date%5D=${approvedDate}&cursor%5B_id%5D=${_id}`
+                if (approvedDate) url += `&cursor%5Bapproved_date%5D=${approvedDate}&cursor%5B_id%5D=${_id}`;
                 const res = await Axios.get(url, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -165,7 +165,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
             results = (results as UserResult[]).filter(result => result.username.toLowerCase().includes(text) || result.userID.toLowerCase().includes(text));
     }
     ctx.body = {
-        list: results
+        list: results,
     };
 });
 

@@ -10,8 +10,8 @@ adminRouter.use(isCorsace);
 adminRouter.get("/reset", async (ctx) => {
     cache.reset();
     ctx.body = {
-        success: "Success"
-    }
+        success: "Success",
+    };
 });
 
 export default adminRouter;

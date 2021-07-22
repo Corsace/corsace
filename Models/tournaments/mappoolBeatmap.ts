@@ -18,7 +18,7 @@ export class MappoolBeatmap extends BaseEntity {
 
     @ManyToOne(() => Mappool, mappool => mappool.beatmaps)
     mappool!: Mappool;
-    
+
     @ManyToOne(() => Beatmap, beatmap => beatmap.mappoolBeatmaps, { eager: true })
     beatmap!: Beatmap;
 

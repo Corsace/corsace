@@ -1,8 +1,8 @@
 import { Context } from "@nuxt/types";
 
-export default async function ({ redirect, error, route, store }: Context) {
+export default async function ({ redirect, route, store }: Context) {
     let year: string | number = route.params.year;
-    const lastYear = 2019;
+    const lastYear = new Date().getUTCFullYear() - 1;
 
     // optional really but easier to understand where anyone is...
     // convert /nominating or /staff/nominations to /2020/nominating or /2020/staff/nominations
@@ -20,7 +20,7 @@ export default async function ({ redirect, error, route, store }: Context) {
 
     if (route.path.includes("staff")) {
         if (store.hasModule("staff") && store.getters.isMCAStaff && !store.state.staff?.mca)
-            await store.dispatch("staff/setInitialData");
+            await store.dispatch("staff/setInitialData", year);
         else if (!store.hasModule("staff") || !store.getters.isMCAStaff)
             throw { statusCode: 403 };
     }

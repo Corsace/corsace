@@ -107,14 +107,9 @@ discord: {
 ```
 
 ###### OAuth2
-Head to the OAuth2 section of the bot and add the following redirect URLs:
+Head to the OAuth2 section of the bot and add the following redirect URL:
 ```
-http://localhost:3000/api/login/discord/callback
-http://localhost:4000/api/login/discord/callback
-http://localhost:5000/api/login/discord/callback
-http://localhost:7000/api/auth/discord/callback
-http://localhost:7000/api/login/discord/callback
-http://localhost:8000/api/login/discord/callback
+config.corsace.publicUrl + /api/login/discord/callback
 ```
 
 Also add a redirect URL with your bot's specific Client ID that looks like:
@@ -123,12 +118,6 @@ https://discordapp.com/oauth2/authorize?&client_id=<CLIENT ID>&scope=bot&permiss
 ```
 Follow this link to add your bot to your server.
 
-Below, in the OAuth2 URL Generator section, set your redirect URL to
-```
-http://localhost:3000/api/login/discord/callback
-```
-This might also change based on which app you are working on.
-
 ###### Bot Token
 Head to the Bot section of the bot and copy your bot token. 
 Paste it into `config.discord.token`
@@ -136,3 +125,4 @@ Paste it into `config.discord.token`
 #### Development
 
 Run `npm run dev`, if you only want to run one of the projects, refer to the scripts in `package.json`.
+To run the project without the api, use `npm run dev-client`.

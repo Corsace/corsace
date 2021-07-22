@@ -12,14 +12,15 @@ export interface CategoryFilter {
     rookie?: boolean;
 }
 
-export interface CategoryInfo {
-    id: number;
+export interface CategoryCondensedInfo {
     name: string;
-    maxNominations: number;
-    isRequired: boolean;
-    requiresVetting: boolean;
     type: string;
     mode: string;
+}
+
+export interface CategoryInfo extends CategoryCondensedInfo {
+    id: number;
+    maxNominations: number;
 
     isFiltered: boolean;
     filter?: CategoryFilter;
@@ -33,8 +34,6 @@ export interface Category {
     ID: number;
     name: string;
     maxNominations: number;
-    isRequired: boolean;
-    requiresVetting: boolean;
     filter?: CategoryFilter;
     type: CategoryType;
     mode: ModeDivision;

@@ -4,9 +4,6 @@ import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
 import { MCA } from "../../Models/MCA_AYIM/mca";
 import { User } from "../../Models/user";
-import { Vote } from "../../Models/MCA_AYIM/vote";
-import { Nomination } from "../../Models/MCA_AYIM/nomination";
-import { Category } from "../../Models/MCA_AYIM/category";
 import { getMember } from "../../Server/discord";
 
 async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
@@ -44,15 +41,6 @@ function isEligibleFor (user: User, modeID: number, year: number): boolean {
     }
 }
 
-function categoryRequirementCheck(list: Vote[] | Nomination[], category: Category): boolean {
-    if (
-        !category.isRequired && 
-        !list.some(x => x.category.isRequired && x.category.type === category.type)
-    )
-        return false;
-    return true;
-}
-
 async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> {
     const mca = await MCA.findOne({
         results: MoreThanOrEqual(new Date()),
@@ -73,17 +61,22 @@ async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> 
 }
 
 async function validatePhaseYear (ctx: ParameterizedContext, next: Next): Promise<any> {
-    let year = ctx.params.year;
-    if (!year || !/20\d\d/.test(year)) {
-        ctx.state.mca = await MCA.current();
-        year = ctx.state.mca.year;
-    } else {
-        year = parseInt(year, 10);
-        ctx.state.mca = await MCA.findOneOrFail(year);
+    try {
+        let year = ctx.params.year;
+        if (!year || !/20\d\d/.test(year)) {
+            ctx.state.mca = await MCA.current();
+            year = ctx.state.mca.year;
+        } else {
+            year = parseInt(year, 10);
+            ctx.state.mca = await MCA.findOneOrFail(year);
+        }
+
+        ctx.state.year = year;
+    } catch (e) {
+        ctx.body = { error: "No Currently running MCA found." };
+        return;
     }
-
-    ctx.state.year = year;
-
+    
     await next();
 }
 
@@ -142,4 +135,4 @@ async function isResults (ctx: ParameterizedContext, next: Next): Promise<any> {
     }
 }
 
-export { isEligible, isEligibleFor, categoryRequirementCheck, currentMCA, validatePhaseYear, isPhase, isPhaseStarted, isResults };
+export { isEligible, isEligibleFor, currentMCA, validatePhaseYear, isPhase, isPhaseStarted, isResults };

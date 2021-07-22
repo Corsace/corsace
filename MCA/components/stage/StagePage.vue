@@ -18,9 +18,6 @@
                 <div class="stage-select__title">
                     {{ $t('mca.nom_vote.select') }}
                 </div>
-                <div class="stage-select__subtitle">
-                    {{ $t('mca.nom_vote.selectGrand') }}
-                </div>
             </div>
         </div>
     </div>
