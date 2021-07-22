@@ -150,13 +150,13 @@ teamRouter.put("/rename", isLoggedInDiscord, isCaptain, teamPayloadValidation, a
 });
 
 // Add avatar
-teamRouter.post("/avatar", isLoggedInDiscord, isCaptain, upload.single("avatar"), async (ctx) => {
-    if(!ctx.request.file) {
+teamRouter.post("/avatar", isLoggedInDiscord, isCaptain, async (ctx) => {
+    if(!ctx.request.files || !ctx.request.files.avatar) {
         ctx.body = { error: "No avatar file found" };
         return;
     }
     const team: Team = ctx.state.team;
-    const image = await Jimp.read(ctx.request.file.buffer);
+    const image = await Jimp.read("test");
     let size = Math.min(image.bitmap.height, image.bitmap.width);
     if(size > 256)
         size = 256;
