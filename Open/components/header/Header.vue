@@ -67,7 +67,6 @@ import axios from "axios";
 import LocaleChanger from "./LocaleChanger.vue"
 import Notifications from "./Notifications.vue"
 import LoginModal from "../../../MCA-AYIM/components/header/LoginModal.vue";
-import ClickOutside from 'vue-click-outside';
 
 import { UserOpenInfo } from "../../../Interfaces/user";
 
