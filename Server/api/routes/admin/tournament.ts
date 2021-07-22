@@ -13,7 +13,7 @@ adminTournamentRouter.use(isLoggedInDiscord);
 adminTournamentRouter.use(isCorsace);
 
 const validate: Middleware = async (ctx, next) => {
-    const data = ctx.request.body as any;
+    const data = ctx.request.body;
 
     if (!data.name) {
         return ctx.body = { error: "Missing tournament name!" };
@@ -44,7 +44,7 @@ adminTournamentRouter.get("/", async (ctx) => {
 });
 
 adminTournamentRouter.post("/", validate, async (ctx) => {
-    const data = ctx.request.body as any;
+    const data = ctx.request.body;
 
     // Create tournament
     const tournament = new Tournament;
