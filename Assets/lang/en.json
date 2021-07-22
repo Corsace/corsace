@@ -32,7 +32,7 @@
             "numberwith": "number of maps with",
             "message": {
                 "2019": "<p>Hello 2020.</p><p>A Year in Mapping 2019 has returned to bring you the record-breaks of the year, and the detailed statistics amassed as well!</p><p>With this website, we can now add as much information as we can feasibly retrieve for all years! If you have any suggestions (as well as any website bugs), let VINXIS know in the corsace server (link at the bottom left!)</p><p>WE ARE ALSO CROWDFUNDING COMMENTS! That means YOU can write and submit a comment for as many mappers as you want!</p><p>Select your preferred mode with the icons below to get started!</p>",
-                "2020": "<p>Hello 2021... the correct year this time!</p><p>A Year in Mapping 2020 has come to you back to back to bring you the record-breaks of THIS year, and the detailed statistics amassed as well!</p><p>And as it is once again, comments are definitely crowdfunded! So go ahead and select your preferred mode with the icons below to get started!</p>"
+                "2020": "<p>Hello 2021... the correct year this time!</p><p>A Year in Mapping 2020 has come to you back to back to bring you the record-breaks of THIS year, and the detailed statistics amassed as well!</p><p>Comments are closed off for 2020. Hopefully we will be able to bring them back in the future! In the meantime, check out all the records and stats!</p>"
             }
         },
         "mapsets": {
@@ -122,7 +122,7 @@
             "daysLeft": "days left",
             "message": {
                 "2019": "<p>Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community!</p><p>This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 6 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event! Let VINXIS know in the corsace discord server for any bugs or issues with the website!</p>",
-                "2020": "<p>Back to back, mapper's choice awards is again to finish it off at round 5 with 2020! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2020 through the eyes of the mapping community!</p><p>We've made many changes and hopefully dealt with all the bugs that were found throughout MCA 2019 as well as changing categories as needed so this one should be far smoother!</p><p>We hope as many participants as possible take part in this event!</p>"
+                "2020": "<p>Back to back, mapper's choice awards is again to finish it off at round 5 with 2020! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2020 through the eyes of the mapping community!</p><p>We've made many changes and hopefully dealt with all the bugs that were found throughout MCA 2019 as well as changing categories as needed so this one should be far smoother!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 6 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event!</p>"
             },
             "categories": {
                 "map": "map categories",
@@ -135,9 +135,17 @@
                 "name": "Grand Award",
                 "description": "The best of the best."
             },
+            "grandStoryboard": {
+                "name": "Grand Storyboard",
+                "description": "The best storyboard out there."
+            },
+            "grandStoryboarder": {
+                "name": "Grand Storyboarder",
+                "description": "The best storyboarder out there."
+            },
             "marathon": {
                 "name": "Marathon",
-                "description": "The best set with 5+ minute drain time."
+                "description": "The best beatmap with 5+ minute drain time."
             },
             "hitsounding": {
                 "name": "Hitsounding",
@@ -145,27 +153,27 @@
             },
             "collab": {
                 "name": "Collab",
-                "description": "The best set with 2+ mappers creating the top difficulty."
+                "description": "The best beatmap with 2+ mappers creating the top difficulty."
             },
             "simple": {
                 "name": "Simple",
-                "description": "The best set with the top difficulty lower than an insane."
+                "description": "The best beatmap with the top difficulty lower than an insane."
             },
             "highBPM": {
                 "name": "High BPM",
-                "description": "The best set with atypically fast streaming or high singletap strain."
+                "description": "The best beatmap with atypically fast streaming or high singletap strain."
             },
             "smallCircles": {
                 "name": "Small Circles",
-                "description": "The best set with the top difficulty using circle size 5 or smaller."
+                "description": "The best beatmap with the top difficulty using circle size 5 or smaller."
             },
             "heavy13": {
                 "name": "1/3 Heavy",
-                "description": "The best set with top difficulties using lots of purple ticks."
+                "description": "The best beatmap with top difficulties using lots of purple ticks."
             },
             "throwback": {
                 "name": "Throwback",
-                "description": "The best set with a style of the old."
+                "description": "The best beatmap with a style of the old."
             },
             "mapper": {
                 "name": "Mapper",
@@ -197,43 +205,43 @@
             },
             "experimental": {
                 "name": "Experimental",
-                "description": "The best \"tech\"/off meta set."
+                "description": "The best \"tech\" / off meta beatmap."
             },
             "stream": {
                 "name": "Stream",
-                "description": "The set with the best continuous streams."
+                "description": "The beatmap with the best continuous streams."
             },
             "highBPMTaiko": {
                 "name": "High BPM",
-                "description": "The best set with over 240 BPM."
+                "description": "The best beatmap with over 240 BPM."
             },
             "lowBPMTaiko": {
                 "name": "Low BPM",
-                "description": "The best set with under 140 BPM."
+                "description": "The best beatmap with under 140 BPM."
             },
             "simplistic": {
                 "name": "Simplistic",
-                "description": "The best cleanest set out there."
+                "description": "The best cleanest beatmap out there."
             },
             "sliderVelocity": {
                 "name": "Slider Velocity",
-                "description": "The best set with an intense usage of slider velocities."
+                "description": "The best beatmap with an intense usage of slider velocities."
             },
             "featuredArtist": {
                 "name": "Featured Artist",
-                "description": "The best set for a featured artist song."
+                "description": "The best beatmap for a featured artist song."
             },
             "longNotes": {
                 "name": "Long Notes",
-                "description": "The best set with an intense usage of LNs."
+                "description": "The best beatmap with an intense usage of LNs."
             },
             "antiMeta": {
                 "name": "Anti Meta",
-                "description": "The best set based around 5K/6K/8K/9K."
+                "description": "The best beatmap based around 5K/6K/8K/9K."
             },
             "7K": {
                 "name": "7K Specific",
-                "description": "The best set based around 7K."
+                "description": "The best beatmap based around 7K."
             },
             "technical": {
                 "name": "Technical",
@@ -250,12 +258,67 @@
             "narrative": {
                 "name": "Narrative",
                 "description": "The best storyboard in telling a great story."
+            },
+            "technicalTaiko": {
+                "name": "Technical",
+                "description": "The best beatmap rich in complex patterning and snap combinations."
+            },
+            "fastTaiko": {
+                "name": "Fast",
+                "description": "The best beatmap with fast tapping and high SV."
+            },
+            "slowTaiko": {
+                "name": "Slow",
+                "description": "The best beatmap with slow tapping and low SV."
+            },
+            "hybrid": {
+                "name": "Hybrid",
+                "description": "The best beatmap which showcases substantial amounts of both LN and rice patterning."
+            },
+            "highBPMAlternator": {
+                "name": "High BPM / Alternator",
+                "description": "The best beatmap with priority on extremely fast tapping and / or aim skills."
+            },
+            "vanilla": {
+                "name": "Vanilla",
+                "description": "The best beatmap utilizing simple mapping techniques to great effect."
+            },
+            "complex": {
+                "name": "Complex Rhythm / Swing",
+                "description": "The best beatmap with extensive usage of uncommon snappings, including doubles, 1/3, 1/5, 1/7, and more."
+            },
+            "unorthodox": {
+                "name": "Unorthodox / Gimmick",
+                "description": "The best beatmap showcasing mapping techniques or ideas that are not frequently seen."
+            },
+            "sliderTech": {
+                "name": "Slider Tech",
+                "description": "The best beatmap featuring technical elements, intricate slider design and velocity usage, and complex stream patterns."
+            },
+            "mostInspiring": {
+                "name": "Most Inspiring",
+                "description": "The one who influenced and provided inspiration to others the most."
+            },
+            "communityPillar": {
+                "name": "Community Pillar",
+                "description": "The best user in providing outstanding contribution to the community behind-the-scenes."
+            },
+            "simplisticTaiko": {
+                "name": "Simplistic",
+                "description": "The best beatmap in using simple patterning and rhythm."
+            },
+            "technicalCatch": {
+                "name": "Technical",
+                "description": "The best beatmap which utilizes concepts that push the boundaries of catch gameplay."
+            },
+            "antiMetaCatch": {
+                "name": "Anti-Meta",
+                "description": "The best beatmap at using unconventional / gimmicky patterning."
             }
         },
         "nom_vote": {
             "search": "search for a beatmap / user",
             "select": "Please select a category!",
-            "selectGrand": "You MUST start with the Grand Award categories",
             "candidates": "candidates",
             "options": {
                 "date": "DATE",
@@ -282,13 +345,17 @@
             "userID": "USER ID"
         },
         "results": {
-            "place": "PLACE",
-            "map": "MAP",
-            "title": "TITLE",
-            "artist": "ARTIST",
-            "host": "HOST",
-            "votes": "VOTES",
-            "user": "USER"
+            "headings": {
+                "placement": "PLACE",
+                "map": "MAP",
+                "title": "TITLE",
+                "artist": "ARTIST",
+                "hoster": "HOST",
+                "totalVotes": "TOTAL VOTES",
+                "username": "USER",
+                "firstChoice": "FIRST CHOICES"
+            },
+            "resultsOverlay": "Hello! This is possibly the first time you have navigated to the results page! <br> These results show the final placements of the beatmaps/users using <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> alongside the amount of times the beatmap/user was a first choice, and the total number of appearances!<br> Hopefully these results for MCA [YEAR] are to your liking! Can't wait to see you all for next MCA!"
         }
     },
     "main": {

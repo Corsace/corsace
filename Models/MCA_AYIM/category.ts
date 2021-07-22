@@ -3,7 +3,7 @@ import { ModeDivision } from "./modeDivision";
 import { Nomination } from "./nomination";
 import { Vote } from "./vote";
 import { MCA } from "./mca";
-import { CategoryInfo, CategoryType } from "../../Interfaces/category";
+import { CategoryCondensedInfo, CategoryInfo, CategoryType } from "../../Interfaces/category";
 
 export class CategoryFilter {
 
@@ -47,12 +47,6 @@ export class Category extends BaseEntity {
     
     @Column()
     maxNominations!: number;
-    
-    @Column({ default: false })
-    isRequired!: boolean;
-
-    @Column({ default: false })
-    requiresVetting!: boolean;
 
     @Column(() => CategoryFilter)
     filter?: CategoryFilter;
@@ -83,12 +77,18 @@ export class Category extends BaseEntity {
             id: this.ID,
             name: this.name,
             maxNominations: this.maxNominations,
-            isRequired: this.isRequired,
-            requiresVetting: this.requiresVetting,
             type: CategoryType[this.type],
             mode: this.mode.name,
             isFiltered: this.filter && (this.filter.minLength || this.filter.maxLength || this.filter.minBPM || this.filter.maxBPM || this.filter.minSR || this.filter.maxSR || this.filter.minCS || this.filter.maxCS) ? true : false,
             filter: this.filter ?? undefined, 
+        };
+    }
+
+    public getCondensedInfo = function(this: Category): CategoryCondensedInfo {
+        return {
+            name: this.name,
+            type: CategoryType[this.type],
+            mode: this.mode.name,
         };
     }
 
@@ -114,15 +114,17 @@ export class CategoryGenerator {
     /**
      * Creates a grand award.
      */
-    public createGrandAward = function(mca: MCA, mode: ModeDivision, type: CategoryType): Category {
+    public createGrandAward = function(mca: MCA, mode: ModeDivision, type: CategoryType, isStoryboard = false): Category {
         const category = new Category;
         
         category.name = "grandAward";
         category.maxNominations = 3;
-        category.isRequired = true;
         category.type = type;
         category.mode = mode;
         category.mca = mca;
+
+        if (isStoryboard)
+            category.name = category.type === CategoryType.Beatmapsets ? "grandStoryboard" : "grandStoryboarder";
 
         return category;
     }
@@ -137,8 +139,6 @@ export class CategoryGenerator {
         
         category.name = categoryInfo.name;
         category.maxNominations = categoryInfo.maxNominations || 3;
-        category.isRequired = categoryInfo.isRequired || false;
-        category.requiresVetting = categoryInfo.requiresVetting || false;
         category.type = categoryInfo.type;
         category.mode = categoryInfo.mode;
         category.mca = categoryInfo.mca;

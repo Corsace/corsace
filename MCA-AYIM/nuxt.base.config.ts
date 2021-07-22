@@ -2,7 +2,6 @@ import { NuxtConfig } from "@nuxt/types";
 import * as fs from "fs";
 import { config } from "node-config-ts";
 import path from "path";
-import setSpa from "./serverMiddlewares/setSpa";
 
 const locales: any[] = [];
 
@@ -15,13 +14,12 @@ fs.readdirSync("../Assets/lang").forEach(file => {
 });
 
 export default (subSite: string): Partial<NuxtConfig> => ({
-    watch: ["~/api"],
-    serverMiddleware: [setSpa(subSite), "~/api"],
     buildModules: ["@nuxt/typescript-build"],
     server: {
         host: config[subSite].host,
         port: config[subSite].port,
     },
+    ssr: config[subSite].ssr,
     modules: [
         "@nuxtjs/axios",
         [
@@ -42,10 +40,9 @@ export default (subSite: string): Partial<NuxtConfig> => ({
         "../MCA-AYIM/assets/sass/main.scss",
     ],
     build: {
+        optimizeCSS: true,
         extend (config) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             config.resolve!.alias!["@s-sass"] = path.join(__dirname, "../MCA-AYIM/assets/sass");
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             config.resolve!.alias!["../../MCA-AYIM/components"] = path.join(__dirname, "../MCA-AYIM/components");
         },
     },
@@ -53,6 +50,9 @@ export default (subSite: string): Partial<NuxtConfig> => ({
         static: "../Assets/static",
     },
     axios: {
-        browserBaseURL: "/",
+        proxy: true,
+    },
+    proxy: {
+        "/api/": config.api.publicUrl,
     },
 });

@@ -34,7 +34,7 @@ export default class Default extends Vue {
 
     @State loggedInUser!: UserMCAInfo;
 
-    async mounted() {
+    async mounted () {
         await this.$store.dispatch("setSelectedMode");
     }
     

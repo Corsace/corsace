@@ -13,7 +13,7 @@ discordClient.on("error", err => {
 
 const discordGuild = (): Promise<Discord.Guild> => discordClient.guilds.fetch(config.discord.guild);
 
-async function getMember(ID: string): Promise<Discord.GuildMember | undefined> {
+async function getMember (ID: string): Promise<Discord.GuildMember | undefined> {
     let member: Discord.GuildMember | undefined;
     try {
         member = await (await discordGuild()).members.fetch(ID);

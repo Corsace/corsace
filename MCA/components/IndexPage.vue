@@ -14,7 +14,15 @@
             </div>
 
             <a
-                v-if="phase && phase.phase !== 'preparation' && isEligibleFor(selectedMode)"
+                v-if="phase && phase.phase === 'results'"
+                class="vote-now"
+                :class="`vote-now--${selectedMode}`"
+                :href="`/${phase.year}/${phase.phase}`"
+            >
+                {{ $t(`mca.main.${buttonText}`) }} <span>>></span>
+            </a>
+            <a
+                v-else-if="phase && phase.phase !== 'preparation' && isEligibleFor(selectedMode)"
                 class="vote-now"
                 :class="`vote-now--${selectedMode}`"
                 :href="`/${phase.year}/${phase.phase}`"
@@ -175,13 +183,13 @@ export default class IndexContent extends Vue {
 
     async mounted () {
         if (this.mca) {
-            const res = (await this.$axios.get(`/api/front?year=${this.mca.year}`)).data;
-            if (res.error) {
-                alert(res.error);
+            const { data } = await this.$axios.get(`/api/mcaInfo/front?year=${this.mca.year}`);
+            if (data.error) {
+                alert(data.error);
                 return;
             }
 
-            this.info = res.frontData;
+            this.info = data.frontData;
         }
     }
     

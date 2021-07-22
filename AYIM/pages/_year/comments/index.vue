@@ -23,9 +23,9 @@
 
                     <button
                         v-if="loggedInUser"
-                        @click="changeFilterFriends()"
                         class="button"
                         :class="{ 'button--friends': filterFriends }"
+                        @click="changeFilterFriends()"
                     >
                         <img
                             v-if="!filterFriends"
@@ -41,8 +41,8 @@
 
                     <button
                         v-if="loggedInUser && phase && phase.phase !== 'results'"
-                        @click="changeFilterCommented()"
                         class="button"
+                        @click="changeFilterCommented()"
                     >
                         <img
                             v-if="!notCommented"
@@ -102,7 +102,7 @@
         <notice-modal 
             :title="$t('ayim.comments.name')"
             :text="$t('ayim.comments.notice')"
-            :localKey="'overlay'"
+            :local-key="'overlay'"
         />
     </display-layout>
 </template>
@@ -130,7 +130,16 @@ import { MCA, Phase } from "../../../../Interfaces/mca";
     },
     head () {
         return {
-            title: "Users' Comments | AYIM",
+            title: `Users' Comments | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}`,
+            meta: [
+                { hid: "description", name: "description", content: `The list of users for comments in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
+                { hid: "og:title", property: "og:title", content: `Users' Comments | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}` },
+                { hid: "og:type", property: "og:type", content: "website" },
+                { hid: "og:url", property: "og:url", content: "https://ayim.corsace.io" },
+                { hid: "og:description", property: "og:description", content: `The list of users for comments in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
+                { hid: "og:site_name", property: "og:site_name", content: "AYIM" },
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" },
+            ],
         };
     },
 })
@@ -161,6 +170,8 @@ export default class Comments extends Vue {
     }
     
     async mounted () {
+        if (this.mca.year === 2020)
+            this.$router.replace("/2020");
         await this.getMappers();
     }
 

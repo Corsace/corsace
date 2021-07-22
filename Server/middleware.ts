@@ -68,7 +68,7 @@ function hasRole (section: string, role: string) {
     };
 }
 
-function hasRoles(roles: discordRoleInfo[]) {
+function hasRoles (roles: discordRoleInfo[]) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
         const member = await getMember(ctx.state.user.discord.userID);
         if (!member) {
@@ -133,7 +133,7 @@ async function notOpenStaff (ctx: ParameterizedContext, next: Next): Promise<voi
         member.roles.cache.has(config.discord.roles.open.streamer) ||
         member.roles.cache.has(config.discord.roles.open.referee)
     ) {
-        ctx.body = { error: "You are a staff member and cannot play for Corsace Open."}
+        ctx.body = { error: "You are a staff member and cannot play for Corsace Open."};
         return;
     }
 }
@@ -144,10 +144,10 @@ async function isRegistration (ctx: ParameterizedContext, next: Next): Promise<v
         registration: {
             start: LessThan(date),
             end: MoreThan(date),
-        }
+        },
     });
     if (!tournament) {
-        ctx.body = { error: "No tournament with registration phase currently!" }
+        ctx.body = { error: "No tournament with registration phase currently!" };
         return;
     }
 
@@ -159,14 +159,15 @@ async function hasTeam (ctx: ParameterizedContext, next: Next): Promise<void> {
     const team = await Team.findOne({
         where: [
             {
-                captain: ctx.state.user
+                captain: ctx.state.user,
             },
             {
                 players: {
                     Any: ctx.state.user,
-                }
-            }
-        ]
+
+                },
+            },
+        ],
     });
     if (!team) {
         ctx.body = { error: "You have no team currently"};
@@ -181,14 +182,15 @@ async function hasNoTeam (ctx: ParameterizedContext, next: Next): Promise<void> 
     const team = await Team.findOne({
         where: [
             {
-                captain: ctx.state.user
+
+                captain: ctx.state.user,
             },
             {
                 players: {
                     Any: ctx.state.user,
-                }
-            }
-        ]
+                },
+            },
+        ],
     });
     if (team) {
         ctx.body = { error: "You have a team currently"};
@@ -200,7 +202,7 @@ async function hasNoTeam (ctx: ParameterizedContext, next: Next): Promise<void> 
 
 async function isCaptain (ctx: ParameterizedContext, next: Next): Promise<void> {
     const team = await Team.findOne({
-        captain: ctx.state.user
+        captain: ctx.state.user,
     });
     if (!team) {
         ctx.body = { error: "You are not captain of a team currently!"};

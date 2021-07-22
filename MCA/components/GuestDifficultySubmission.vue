@@ -2,7 +2,8 @@
     <div class="request">
         <div 
             v-if="!wasAccepted"
-            class="request__mode">
+            class="request__mode"
+        >
             <div
                 v-for="mode in inactiveModes"
                 :key="mode"

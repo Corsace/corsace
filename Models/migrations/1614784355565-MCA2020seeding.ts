@@ -1,4 +1,4 @@
-import { createReadStream, readFileSync } from "fs";
+import { createReadStream } from "fs";
 import {MigrationInterface, QueryRunner} from "typeorm";
 import { createGunzip } from "zlib";
 import streamToString from "stream-to-string";

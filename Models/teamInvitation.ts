@@ -1,4 +1,3 @@
-
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { RequestStatus } from "../Interfaces/requests";
 import { Team } from "./team";

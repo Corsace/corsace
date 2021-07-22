@@ -1,12 +1,12 @@
 <template>
     <base-modal
-        :title="title"
         v-if="overlay"
+        :title="title"
         @close="closeOverlay"
     >
         <div
-            v-html="text.replace('[YEAR]', $route.params.year)" 
             class="notice-modal" 
+            v-html="text.replace('[YEAR]', $route.params.year)" 
         />
     </base-modal>
 </template>

@@ -64,11 +64,12 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { Getter, namespace } from "vuex-class";
 
 import { StageType } from "../../MCA-AYIM/store/stage";
 import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
+import { Phase } from "../../Interfaces/mca";
 
 const stageModule = namespace("stage");
 
@@ -76,6 +77,9 @@ const stageModule = namespace("stage");
 export default class BaseChoiceCard extends Vue {
 
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
+
+    
+    @Getter phase!: Phase | null;
 
     @stageModule.State selected!: boolean;
     @stageModule.State stage!: StageType;
@@ -107,6 +111,7 @@ export default class BaseChoiceCard extends Vue {
 
     async vote () {
         if (this.selected) return;
+        if (!this.phase || this.phase.phase !== this.stage) return;
 
         this.currentSelected = true;
 
@@ -133,6 +138,7 @@ export default class BaseChoiceCard extends Vue {
 
     async nominate () {
         if (this.selected) return;
+        if (!this.phase || this.phase.phase !== this.stage) return;
 
         this.currentSelected = true;
 
@@ -271,7 +277,7 @@ export default class BaseChoiceCard extends Vue {
 
 .choice__info {
     flex: 5;
-    padding: 15px;
+    padding: 8px 12px;
     border-radius: 10px 0 0 10px;
 
     background-size: cover;
@@ -288,20 +294,25 @@ export default class BaseChoiceCard extends Vue {
         @extend %text-wrap;
     }
 
-    &-artist {
-        text-shadow: 0 0 4px white;
+    &-secondary {
+        display: flex;
+        max-height: 1.3rem; 
+        text-shadow: 0 0 2px rgba(255,255,255,0.6);
         font-size: $font-base;
+    }
+
+    &-artist {
+        margin-right: 0.25rem;
         @extend %text-wrap;
     }
 
     &-host {
-        @extend %text-wrap;
+        flex: 0 0 auto;
+        margin-right: auto;
     }
 
     &-hoster {
-        text-shadow: 0 0 4px white;
         font-style: italic;
-        @extend %text-wrap;
     }
 }
 </style>

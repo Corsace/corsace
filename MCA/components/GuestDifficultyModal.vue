@@ -6,7 +6,7 @@
     >
         <div class="column-box">
             <div class="request__title">
-                Select mode + submit your guest difficulty here (or storyboard for storyboard mode)
+                Didn't rank sets but only guest difficulties in {{ $route.params.year }}? <br> Select mode + submit your guest difficulty here (or storyboard for storyboard mode) <br> to be checked by staff and able to nominate / vote for MCA {{ $route.params.year }}
             </div>
             <guest-difficulty-submission @submit="submit($event)" />
         </div>
@@ -37,7 +37,7 @@
                 <span v-else-if="wasRejected(request.status)">
                     - Updating makes the request go back to pending state
                 </span>
-                <div style="border-bottom: 1px solid white"/>
+                <div style="border-bottom: 1px solid white" />
             </div>
         </div>
     </base-modal>
@@ -89,6 +89,9 @@ export default class GuestDifficultyModal extends Vue {
     }
 
     async submit (data: RequestData) {
+        if (!confirm("This form is only to request access if you only ranked guest difficulties and no sets.\n This is not a place to nominate a beatmap.\n Do you understand?"))
+            return;
+
         await this.submitGuestRequest({
             mode: data.mode,
             url: data.url,

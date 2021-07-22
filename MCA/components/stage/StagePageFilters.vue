@@ -6,12 +6,12 @@
     >
         <button
             v-if="section === 'beatmaps' && loggedInUser"
-            @click="updateFavourite"
             class="button"
             :class="{ 
                 'button--friends': favourites,
                 'button--small': $route.params.stage === 'voting' && section === 'beatmaps'
             }"
+            @click="updateFavourite"
         >
             <img src="../../../Assets/img/ayim-mca/site/heart.png">
         </button>

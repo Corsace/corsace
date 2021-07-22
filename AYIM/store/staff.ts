@@ -1,7 +1,6 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { RootState } from "../../MCA-AYIM/store/index";
 import { MCAInfo } from "../../Interfaces/mca";
-import { Comment } from "../../Interfaces/comment";
 
 export interface UpdateRequestData {
     id: number;
@@ -27,16 +26,14 @@ export const getters: GetterTree<StaffState, RootState> = {
 };
 
 export const actions: ActionTree<StaffState, RootState> = {
-    async setMca ({ commit }) {
-        const { data } = await this.$axios.get(`/api/staff`);
+    async setMca ({ commit }, year: number) {
+        const { data } = await this.$axios.get(`/api/staff/${year}`);
 
         if (!data.error) {
             commit("setMca", data);
         }
     },
-    async setInitialData ({ dispatch }) {
-        await Promise.all([
-            dispatch("setMca"),
-        ]);
+    async setInitialData ({ dispatch }, year: number) {
+        await dispatch("setMca", year);
     },
 };

@@ -1,8 +1,9 @@
 <template>
     <div>
         <div
-            v-if="mca" 
-            class="ayim-bg" 
+            v-if="mca"
+            :style="{ backgroundImage: 'url(' + require(`../../../Assets/img/ayim-mca/site/goodbye/${this.$route.params.year}.png`) + ')' }"
+            class="ayim-bg"
         />
         <div class="left-side" />
         <div :class="{'right-side': mca, 'full-side': !mca}">
@@ -32,7 +33,16 @@ import IndexPage from "../../components/IndexPage.vue";
     },
     head () {
         return {
-            title: "A Year in Mapping",
+            title: `A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}`,
+            meta: [
+                { hid: "description", name: "description", content: "A Year in Mapping details the records and statistics from each year for the osu! ranked section." },
+                { hid: "og:title", property: "og:title", content: `A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}` },
+                { hid: "og:type", property: "og:type", content: "website" },
+                { hid: "og:url", property: "og:url", content: "https://ayim.corsace.io" },
+                { hid: "og:description", property: "og:description", content: "A Year in Mapping details the records and statistics from each year for the osu! ranked section." },
+                { hid: "og:site_name", property: "og:site_name", content: "AYIM" },
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" },
+            ],
         };
     },
 })
@@ -55,7 +65,6 @@ export default class Index extends Vue {
     width: 100%;
     padding-bottom: 9vh;
 
-    background-image: url("../../../Assets/img/ayim-mca/site/ayim bg.png");
     background-size: auto 80%;
     background-repeat: no-repeat;
     background-position: center left;

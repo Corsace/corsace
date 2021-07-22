@@ -2,6 +2,8 @@ version: '3.8'
 
 x-node: &x-node
   build: .
+  volumes:
+    - ./config:/src/config
   environment:
     - DEPLOYMENT=docker-compose
     - USER=${USER}
@@ -43,6 +45,11 @@ services:
     ports:
       - 127.0.0.1:8000:8000
     command: "mca"
+  api:
+    <<: *x-node
+    ports:
+      - 127.0.0.1:8080:8080
+    command: "api"
   migrator:
     <<: *x-node
     command: "typeorm migration:run"

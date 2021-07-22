@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, JoinTable, OneToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, Column } from "typeorm";
+import { BaseEntity, Entity, OneToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, Column } from "typeorm";
 import { Tournament } from "./tournament";
 import { Bracket } from "./bracket";
 import { MappoolBeatmap } from "./mappoolBeatmap";

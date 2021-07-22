@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Phase } from "../phase";
 import { Team } from "../team";
 import { Mappool } from "./mappool";
@@ -23,7 +23,7 @@ export class Tournament extends BaseEntity {
 
     @Column({ default: true })
     doubleElim!: boolean;
-    
+
     @OneToMany(() => Bracket, bracket => bracket.tournament)
     brackets!: Bracket[];
 

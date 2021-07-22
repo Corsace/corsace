@@ -32,12 +32,12 @@
                 >
                     <div
                         :class="[{
-                                'collapsible__name': clickable && !item.inactive,
-                                'collapsible__name--inactive': clickable && item.inactive,
-                                'collapsible__name--active': showExtra && isSelected(item),
-                            }, 
-                            'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count === item.maxNominations ? `collapsible__name--${selectedMode}` : '',
-                            'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count === item.maxNominations && showExtra && isSelected(item) ? `collapsible__name--active--${selectedMode}` : '',
+                                     'collapsible__name': clickable && !item.inactive,
+                                     'collapsible__name--inactive': clickable && item.inactive,
+                                     'collapsible__name--active': showExtra && isSelected(item),
+                                 }, 
+                                 'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count === item.maxNominations ? `collapsible__name--${selectedMode}` : '',
+                                 'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count === item.maxNominations && showExtra && isSelected(item) ? `collapsible__name--active--${selectedMode}` : '',
 
                         ]"
                     >
@@ -57,11 +57,11 @@
                             v-if="'count' in item && 'maxNominations' in item"
                             class="collapsible__count"
                             :class="[{
-                                    'collapsible__count--inactive': clickable && item.inactive,
-                                    'collapsible__count--active': isSelected(item)
-                                },
-                                item.maxNominations !== 100 && item.count === item.maxNominations ? `collapsible__count--${selectedMode}` : '',
-                                item.maxNominations !== 100 && item.count === item.maxNominations && isSelected(item) ? `collapsible__count--active--${selectedMode}` : '',
+                                         'collapsible__count--inactive': clickable && item.inactive,
+                                         'collapsible__count--active': isSelected(item)
+                                     },
+                                     item.maxNominations !== 100 && item.count === item.maxNominations ? `collapsible__count--${selectedMode}` : '',
+                                     item.maxNominations !== 100 && item.count === item.maxNominations && isSelected(item) ? `collapsible__count--active--${selectedMode}` : '',
                             ]"
                         >
                             {{ item.maxNominations !== 100 ? item.count + " / " + item.maxNominations : item.count }}
@@ -261,6 +261,9 @@ export default class Collapsible extends Vue {
 }
 
 .collapsible__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     cursor: pointer;
     @include transition;
 

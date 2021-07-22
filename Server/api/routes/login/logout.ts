@@ -1,5 +1,5 @@
 import Router from "@koa/router";
-import { isLoggedIn } from "./middleware";
+import { isLoggedIn } from "../../../middleware";
 
 const logoutRouter = new Router();
 

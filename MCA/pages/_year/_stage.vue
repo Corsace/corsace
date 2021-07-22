@@ -1,23 +1,5 @@
 <template>
     <div>
-        <div
-            v-if="onTime"
-            class="remaining-days" 
-            :class="`remaining-days--${selectedMode}`"
-        >
-            <div class="remaining-days__number">
-                {{ remainingDays }}
-            </div> 
-            <div class="remaining-days__left">
-                {{ $t(`mca.main.daysLeft`) }}
-            </div>
-            <div class="remaining-days__exclamation">
-                !
-            </div>
-            <div class="remaining-days__exclamation">
-                !
-            </div>
-        </div>
         <div 
             v-if="onTime"
             class="stage-wrapper"
@@ -25,6 +7,8 @@
             <mode-switcher
                 stretch
                 enable-mode-eligibility
+                :hide-phase="phase.phase !== $route.params.stage"
+                :hide-title="true"
                 @inactiveModeClicked="toggleGuestDifficultyModal"
             >
                 <stage-page />
@@ -45,7 +29,7 @@
             v-if="phase && phase.phase === 'voting' && $route.params.stage === 'voting'"
             :title="$t('mca.main.voting')"
             :text="$t('mca.nom_vote.votingOverlay')"
-            :localKey="'voting'"
+            :local-key="'voting'"
         />
     </div>
 </template>
@@ -58,7 +42,7 @@ import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import NoticeModal from "../../../MCA-AYIM/components/NoticeModal.vue";
 import StagePage from "../../components/stage/StagePage.vue";
 
-import { Phase } from "../../../Interfaces/mca";
+import { MCA, Phase } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component({
@@ -75,7 +59,16 @@ import { UserMCAInfo } from "../../../Interfaces/user";
     },
     head () {
         return {
-            title: `${this.$route.params.stage} | MCA`,
+            title: `${this.$route.params.stage} | MCA ${this.$route.params.year ?? (new Date()).getUTCFullYear()}`,
+            meta: [
+                { hid: "description", name: "description", content: `Mappers' Choice Awards ${this.$route.params.stage} stage is the ${this.$route.params.stage} stage for the osu!-related awards event for mappers for the ${this.$route.params.year ?? (new Date()).getUTCFullYear()} year.` },
+                { hid: "og:title", property: "og:title", content: `${this.$route.params.stage} | MCA ${this.$route.params.year ?? (new Date()).getUTCFullYear()}` },
+                { hid: "og:type", property: "og:type", content: "website" },
+                { hid: "og:url", property: "og:url", content: "https://mca.corsace.io" },
+                { hid: "og:description", property: "og:description", content: `Mappers' Choice Awards ${this.$route.params.stage} stage is the ${this.$route.params.stage} stage for the osu!-related awards event for mappers for the ${this.$route.params.year ?? (new Date()).getUTCFullYear()} year.` },
+                { hid: "og:site_name", property: "og:site_name", content: "MCA" },
+                { hid: "theme-color", name: "theme-color", content: "#fb2475" },
+            ],
         };
     },
 })
@@ -83,12 +76,13 @@ export default class Stage extends Vue {
 
     @State selectedMode!: string;
     @State loggedInUser!: UserMCAInfo;
+    @State mca!: MCA | null;
     @Getter phase!: Phase | null;
     @Mutation toggleGuestDifficultyModal;
     
     mounted () {
         if (!this.loggedInUser || !this.loggedInUser.eligibility.some(eligibility => eligibility.year == parseInt(this.$route.params.year)))
-            this.$router.push("/"+this.$route.params.year);
+            this.$router.push("/" + this.$route.params.year);
     }
 
     get remainingDays (): string {
@@ -101,11 +95,11 @@ export default class Stage extends Vue {
     }
 
     get onTime () {
-        return this.phase?.phase && this.phase.phase === this.$route.params.stage && (this.phase.phase === "nominating" || this.phase.phase === "voting");
+        return this.phase?.phase && (((this.phase.phase === "nominating" || this.phase.phase === "voting") && this.phase.phase === this.$route.params.stage) || (this.mca && this.mca[this.$route.params.stage === "nominating" ? "nomination" : this.$route.params.stage].start <= new Date()));
     }
 
     goBack () {
-        this.$router.push("/"+this.$route.params.year);
+        this.$router.push("/" + this.$route.params.year);
     }
 }
 </script>
@@ -118,7 +112,7 @@ export default class Stage extends Vue {
 .stage-wrapper {
     width: 100%;
     max-height: 200%;
-    padding-top: 50px;
+    padding-top: 25px;
 
     @include breakpoint(laptop) {
         height: 100%;

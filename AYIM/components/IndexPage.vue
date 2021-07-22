@@ -1,8 +1,8 @@
 <template>
     <div class="general-info">
         <div
-            class="general-info__text" 
-            v-if="mca"
+            v-if="mca" 
+            class="general-info__text"
             v-html="$t(`ayim.main.message.${mca.year}`)" 
         />
         
@@ -23,6 +23,7 @@
                 {{ $t('ayim.mappers.name') }}
             </nuxt-link>
             <nuxt-link
+                v-if="mca.year !== 2020"
                 :to="`/${mca.year}/comments`"
                 class="ayim-nav__item button"
             >

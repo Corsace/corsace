@@ -42,12 +42,19 @@ commentsRouter.get("/", async (ctx) => {
     if (!ctx.query.user)
         return ctx.body = {
             error: "No user ID provided!",
-        }
+        };
 
     const userId = parseInt(ctx.query.user);
-    const year = parseInt(ctx.query.year || new Date().getFullYear());
+    const year = parseInt(ctx.query.year || new Date().getUTCFullYear());
     const modeString: string = ctx.query.mode || "standard";
     const modeID = ModeDivisionType[modeString];
+
+    if (year === 2020) {
+        ctx.body = {
+            error: "MCA 2020 is not running comments for AYIM. Sorry for the inconvenience.",
+        };
+        return;
+    }
 
     const mca = await MCA.findOneOrFail({
         year,
@@ -109,6 +116,13 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
         return ctx.body = {
             error: "Missing data",
         };
+    }
+
+    if (year === 2020) {
+        ctx.body = {
+            error: "MCA 2020 is not running comments for AYIM. Sorry for the inconvenience.",
+        };
+        return;
     }
 
     const mca = await MCA.findOneOrFail({

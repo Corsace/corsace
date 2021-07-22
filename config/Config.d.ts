@@ -1,9 +1,24 @@
 declare module "node-config-ts" {
-    interface ISubSiteConfig {
+    interface IWebServiceConfig {
         host: string;
         port: number;
         publicUrl: string;
-        spa: boolean;
+    }
+    interface ISubSiteConfig extends IWebServiceConfig {
+        ssr: boolean;
+    }
+
+    interface ITournamentConfig {
+        participants: string;
+        captains?: string;
+        mappooler: string;
+        mapper: string;
+        testplayer: string;
+        scrim: string;
+        advisor: string;
+        streamer: string;
+        commentator: string;
+        referee: string;
     }
 
     interface ITournamentConfig {
@@ -36,8 +51,6 @@ declare module "node-config-ts" {
                     staff: string;
                     designer: string;
                     writer: string;
-                    scheduler: string;
-                    streamManager: string;
                     verified: string;
                 };
                 open: ITournamentConfig;
@@ -77,6 +90,7 @@ declare module "node-config-ts" {
         closed: ISubSiteConfig;
         mca: ISubSiteConfig;
         open: ISubSiteConfig;
+        api: IWebServiceConfig;
     }
 
     export const config: Config;

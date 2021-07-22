@@ -22,7 +22,7 @@
                 {{ ($t(`mca.categories.${selectedCategory.name}.name`)) }}
             </div>
             <div class="category-header__desc">
-                {{ $t(`mca.categories.${selectedCategory.name}.description`) + (selectedCategory.isFiltered && selectedCategory.requiresVetting ? " (auto filter + staff vetting enabled)" : selectedCategory.isFiltered ? " (auto filter enabled)" : selectedCategory.requiresVetting ? " (staff vetting enabled)" : "") }}
+                {{ $t(`mca.categories.${selectedCategory.name}.description`) + (selectedCategory.isFiltered ? " (auto filter enabled)" : "") }}
             </div>
         </template>
     </div>
@@ -100,6 +100,8 @@ export default class StateContent extends Vue {
         grid-column: 2;
         justify-self: end;
         align-self: end;
+
+        padding-bottom: 5px;
 
         @include breakpoint(mobile) {
             grid-column: 1;

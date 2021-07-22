@@ -14,8 +14,9 @@
                 @input="updateText($event)"
             >
         </div>
-
-        <slot />
+        <div class="search-adj">
+            <slot />
+        </div>
     </div>    
 </template>
 
@@ -61,10 +62,10 @@ export default class SearchBar extends Vue {
 
 .search {
     display: flex;
-    flex: 1;
-    min-width: 190px;
+    flex: 10;
+    min-width: 9rem; // any less and magnifying glass exits container
 
-    & > *, & ~ * {
+    & > * {
         padding: 5px;
         margin: 5px;
     }
@@ -120,5 +121,17 @@ export default class SearchBar extends Vue {
         color: rgba(255, 255, 255, 0.26);
         font-style: italic;
     }
+}
+
+.search-adj {
+    display: flex;
+    justify-content: space-between;
+    & > * {
+        white-space: nowrap;
+        flex: 1 1 auto;
+        padding: 9.5px 5px;
+        margin: 5px;
+    }
+    flex: 1;
 }
 </style>

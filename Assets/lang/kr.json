@@ -133,6 +133,14 @@
                 "name": "그랜드 어워드",
                 "description": "한 해를 빛낸 최고의 비트맵"
             },
+	    "grandStoryboard": {
+                "name": "그랜드 스토리보드",
+                "description": "한 해를 빛낸 최고의 스토리보드"
+            },
+            "grandStoryboarder": {
+                "name": "그랜드 스토리보더",
+                "description": "한 해를 빛낸 최고의 스토리보드를 만든 유저"
+            },
             "marathon": {
                 "name": "마라톤",
                 "description": "5분 이상의 장곡 중 최고의 비트맵"
@@ -217,6 +225,10 @@
                 "name": "SV",
                 "description": "슬라이더 SV를 가장 잘 활용한 비트맵셋"
             },
+	    "featuredArtist": {
+                "name": "피쳐드 아티스트",
+                "description": "공식 FA 곡으로 제작한 최고의 비트맵셋"
+            },
             "longNotes": {
                 "name": "롱 노트",
                 "description": "롱 노트를 가장 잘 활용한 비트맵셋"
@@ -244,6 +256,62 @@
             "narrative": {
                 "name": "동화책",
                 "description": "최고의 이야기를 선사하는 스토리보드"
+            },
+   	    "technicalTaiko": {
+                "name": "테크니컬",
+                "description": "복잡한 패턴과 스냅 구성으로 이루어진 최고의 비트맵"
+            },
+            "fastTaiko": {
+                "name": "고속",
+                "description": "빠른 연타와 SV로 구성된 최고의 비트맵"
+            },
+            "slowTaiko": {
+                "name": "저속",
+                "description": "느린 연타와 SV로 구성된 최고의 비트맵"
+            },
+            "hybrid": {
+                "name": "하이브리드",
+                "description": "롱놋과  적절한 조화를 이루어낸 최고의 비트맵"
+            },
+            "highBPMAlternator": {
+                "name": "고BPM / 양타",
+                "description": "빠른 연타 및/혹은 에임을 요구로 하는 최고의 비트맵"
+            },
+            "vanilla": {
+                "name": "제너릭",
+                "description": "단순한 매핑 기술만으로 구성된 최고의 비트맵"
+            },
+            "complex": {
+                "name": "리듬 게임",
+                "description": "1/3, 1/5, 1/7 등의 평범하지 않은 리듬으로 구성된 최고의 비트맵"
+            },
+            "unorthodox": {
+                "name": "힙스터",
+                "description": "보통 매핑에서 잘 쓰이지 않는 특이한 기술이나 아이디어로 구성된 최고의 비트맵"
+            },
+            "sliderTech": {
+                "name": "슬라이더 테크",
+                "description": "복잡한 슬라이더, SV 변속, 특이한 연타 패턴 등으로 구성된 최고의 테크니컬 맵"
+            },
+            "mostInspiring": {
+                "name": "선구자",
+                "description": "다른 매퍼들에게 막대한 영향력을 끼치고 영감을 불어넣어준 유저"
+            },
+            "communityServant": {
+                "name": "서포터",
+                "description": "커뮤니티 전반을 위해 일하고 헌신해온 최고의 유저"
+            },
+            "simplisticTaiko": {
+                "name": "심플",
+                "description": "단순한 패턴과 리듬으로 구성된 최고의 비트맵"
+            },
+            "technicalCatch": {
+                "name": "테크니컬",
+                "description": "CTB 게임플레이의 극한을 달리는 컨셉을 보여주는 최고의 비트맵"
+            },
+            "antiMetaCatch": {
+                "name": "안티 메타",
+                "description": "특이하거나 기믹성 패턴을 위주로 구성된 최고의 비트맵"
             }
         },
         "nom_vote": {

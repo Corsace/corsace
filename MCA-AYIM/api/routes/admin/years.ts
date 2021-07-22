@@ -47,15 +47,15 @@ adminYearsRouter.post("/", validate, async (ctx) => {
     // Create the grand awards
     const modes = await ModeDivision.find();
     for (const mode of modes) {
-        const userGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Users);
-        const mapGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Beatmapsets);
+        const userGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Users, mode.name === "storyboard");
+        const mapGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Beatmapsets, mode.name === "storyboard");
 
         await Promise.all([userGrand.save(), mapGrand.save()]);
     }
 
-    cache.del("/front?year=" + data.year);
-    cache.del("/mca?year=" + data.year);
-    cache.del("/staff");
+    cache.del("/api/mcaInfo/front?year=" + data.year);
+    cache.del("/api/mca?year=" + data.year);
+    cache.del("/api/staff");
 
     ctx.body = { 
         message: "Success! attached is the new MCA.", 
@@ -70,9 +70,9 @@ adminYearsRouter.put("/:year", validate, async (ctx) => {
     let mca = await MCA.findOneOrFail(data.year);    
     mca = await MCA.fillAndSave(data, mca);
 
-    cache.del("/front?year=" + data.year);
-    cache.del("/mca?year=" + data.year);
-    cache.del("/staff");
+    cache.del("/api/mcaInfo/front?year=" + data.year);
+    cache.del("/api/mca?year=" + data.year);
+    cache.del("/api/staff");
 
     ctx.body = { 
         message: "updated",
@@ -107,13 +107,13 @@ adminYearsRouter.delete("/:year/delete", async (ctx) => {
                 }),
                 Vote.find({
                     category,
-                })
+                }),
             ]);
             for (const nom of nominations) {
-                await nom.remove()
+                await nom.remove();
             }
             for (const vote of votes) {
-                await vote.remove()
+                await vote.remove();
             }
             await category.remove();
         }
