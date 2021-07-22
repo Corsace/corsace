@@ -3,7 +3,7 @@ import { config } from "node-config-ts";
 import { createConnection } from "typeorm";
 import Koa from "koa";
 import koaCash from "koa-cash";
-import BodyParser from "koa-bodyparser";
+import koabody from "koa-body";
 import Mount from "koa-mount";
 import passport from "koa-passport";
 import Session from "koa-session";
@@ -52,7 +52,7 @@ koa.use(Session({
     secure: process.env.NODE_ENV !== "development",
     httpOnly: true,
 }, koa));
-koa.use(BodyParser());
+koa.use(koabody({ multipart: true }));
 koa.use(passport.initialize());
 koa.use(passport.session());
 
