@@ -17,8 +17,8 @@
                         v-for="(member, i) of headStaff"
                         :key="i"
                     >
-                        <img :src="`https://a.ppy.sh/${member.osuID}?${Math.round(Math.random()*1000000)}.png`">
-                        <a :href="`https://osu.ppy.sh/u/${member.osuID}`">{{ member.username }}</a>
+                        <img :src="`https://a.ppy.sh/${member.osu.userID}?${Math.round(Math.random()*1000000)}.png`">
+                        <a :href="`https://osu.ppy.sh/u/${member.osu.userID}`">{{ member.osu.username }}</a>
                     </div>
                 </div>
             </div>
@@ -32,8 +32,8 @@
                         v-for="(member, i) of schedulers"
                         :key="i"
                     >
-                        <img :src="`https://a.ppy.sh/${member.osuID}?${Math.round(Math.random()*1000000)}.png`">
-                        <a :href="`https://osu.ppy.sh/u/${member.osuID}`">{{ member.username }}</a>
+                        <img :src="`https://a.ppy.sh/${member.osu.userID}?${Math.round(Math.random()*1000000)}.png`">
+                        <a :href="`https://osu.ppy.sh/u/${member.osu.userID}`">{{ member.osu.username }}</a>
                     </div>
                 </div>
             </div>
@@ -47,8 +47,8 @@
                         v-for="(member, i) of referees"
                         :key="i"
                     >
-                        <img :src="`https://a.ppy.sh/${member.osuID}?${Math.round(Math.random()*1000000)}.png`">
-                        <a :href="`https://osu.ppy.sh/u/${member.osuID}`">{{ member.username }}</a>
+                        <img :src="`https://a.ppy.sh/${member.osu.userID}?${Math.round(Math.random()*1000000)}.png`">
+                        <a :href="`https://osu.ppy.sh/u/${member.osu.userID}`">{{ member.osu.username }}</a>
                     </div>
                 </div>
             </div>
@@ -62,8 +62,8 @@
                         v-for="(member, i) of streamcomms"
                         :key="i"
                     >
-                        <img :src="`https://a.ppy.sh/${member.osuID}?${Math.round(Math.random()*1000000)}.png`">
-                        <a :href="`https://osu.ppy.sh/u/${member.osuID}`">{{ member.username }}</a>
+                        <img :src="`https://a.ppy.sh/${member.osu.userID}?${Math.round(Math.random()*1000000)}.png`">
+                        <a :href="`https://osu.ppy.sh/u/${member.osu.userID}`">{{ member.osu.username }}</a>
                     </div>
                 </div>
             </div>
@@ -77,8 +77,8 @@
                         v-for="(member, i) of poolers"
                         :key="i"
                     >
-                        <img :src="`https://a.ppy.sh/${member.osuID}?${Math.round(Math.random()*1000000)}.png`">
-                        <a :href="`https://osu.ppy.sh/u/${member.osuID}`">{{ member.username }}</a>
+                        <img :src="`https://a.ppy.sh/${member.osu.userID}?${Math.round(Math.random()*1000000)}.png`">
+                        <a :href="`https://osu.ppy.sh/u/${member.osu.userID}`">{{ member.osu.username }}</a>
                     </div>
                 </div>
             </div>
@@ -95,10 +95,8 @@ import axios from "axios";
 import regeneratorRuntime from "regenerator-runtime";
 import { Vue, Component } from "vue-property-decorator"
 import Loading from "../components/Loading.vue";
-import {namespace, State } from "vuex-class"
-import { StaffOpenInfo } from "../../Interfaces/user"
+import { UserOpenInfo } from "../../Interfaces/user"
 
-const talentModule = namespace("talent")
 
 @Component({
     components: {
@@ -108,17 +106,27 @@ const talentModule = namespace("talent")
 
 export default class Talent extends Vue {
 
-    @talentModule.State headStaff!: StaffOpenInfo[]
-    @talentModule.State poolers!: StaffOpenInfo[]
-    @talentModule.State referees!: StaffOpenInfo[]
-    @talentModule.State streamcomms!: StaffOpenInfo[]
-    @talentModule.State schedulers!: StaffOpenInfo[]
+    headStaff: UserOpenInfo[] = []
+    poolers: UserOpenInfo[] = []
+    referees: UserOpenInfo[] = []
+    streamcomms: UserOpenInfo[] = []
+    schedulers: UserOpenInfo[] = []
     loading = false;
 
-    
     async created () {
         this.loading = true;
-        await this.$store.dispatch("talent/fetchStaff")
+        try {
+            const res = await axios.get("/api/user/staff");
+            const  { headStaff, poolers, referees, streamcomms, schedulers } = res.data
+            this.headStaff = headStaff
+            this.poolers = poolers
+            this.referees = referees
+            this.streamcomms = streamcomms
+            this.schedulers = schedulers
+
+        } catch (err) {
+            alert(err)
+        }
         this.loading = false;
     }
 }
