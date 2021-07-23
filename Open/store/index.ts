@@ -84,6 +84,13 @@ export const mutations: MutationTree<RootState> = {
 
     setTeam(state, team) {
         state.team = team
+        if(state.team) {
+            for (var i=0; i<state.team.members.length; i++) {
+                state.team.members[i].pp = Math.round(state.team.members[i].pp);
+            }
+            state.team.averagePp = Math.round(state.team.averagePp);
+        }
+        
     },
 
     resetTeam(state) {
@@ -202,10 +209,6 @@ export const actions: ActionTree<RootState, RootState> = {
         const data  = testUser2 //await this.$axios.get(`/api/user`);
         //if (!data.error) {
             commit("setLoggedInUser", data);
-            if(data.team) {
-                commit("setTeam", data.team)
-                commit("setTrue", "registered")
-            }
 
 
         //}
@@ -229,17 +232,14 @@ export const actions: ActionTree<RootState, RootState> = {
     },
 
     async refreshTeam ({ commit, state }) {
-        if(state.team) {
-            const data = TestTeam1 //(await axios.get("/api/team")).data.team;
+        if(state.loggedInUser && state.loggedInUser.team) {
+            const data = TestTeam1//(await axios.get("/api/team")).data.team;
             if(data) {
-                for (var i = 0; i < data.members.length; i++ ) {
-                    data.members[i].pp = Math.round(data.averagePp);
-                }
-                data.averagePp = Math.round(data.averagePp);
-                commit("setTeam", data)
+                commit("setTeam", data);
             }
         }
     },
+
 
     async refreshPendingInvites  ({ commit, state }) {
         if( !state.team && state.registered && state.loggedInUser && !state.loggedInUser.staff.staff) {

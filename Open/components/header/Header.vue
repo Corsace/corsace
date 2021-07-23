@@ -54,7 +54,7 @@
         <login-modal
             v-if="showLoginModal"
             :site="site"
-            @close="toogleLoginModal"
+            @close="toggleLoginModal"
         />
     </div>
 </template>
@@ -89,28 +89,24 @@ export default class Header extends Vue {
     notificationPanel = false;  
     registered = false;
 
-    mounted() {
-        console.log(this.loggedInUser)
-    }
-
     get avatarURL (): string  {
         return this.loggedInUser?.osu?.avatar || "";
     }
 
-    toogleLoginModal (): void {
+    toggleLoginModal () {
         this.showLoginModal = !this.showLoginModal;
     }
 
-    teamRegisteringToggle (): void {
-            this.$emit('team-registering')
+    teamRegisteringToggle () {
+        this.$emit('team-registering')
     }
     
-    openNotifications (): void {
-            this.notificationPanel = !this.notificationPanel
+    openNotifications () {
+        this.notificationPanel = !this.notificationPanel
     }
     
-    notificationPanelClose (): void {
-            this.notificationPanel = false
+    notificationPanelClose () {
+        this.notificationPanel = false
     }
     
 
