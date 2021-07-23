@@ -62,7 +62,7 @@ export default class ScrollBar extends Vue {
             const newScrollPos = event.offsetY / this.$el.clientHeight * this.scrollSize;
             this.scrollPos = newScrollPos;   
             
-            list.scrollTo({top: newScrollPos });
+            list.scrollTo({ top: newScrollPos });
         }
     }
 
