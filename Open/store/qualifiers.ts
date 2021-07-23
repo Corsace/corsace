@@ -5,7 +5,7 @@ import { MappoolInfo, ModGroup } from "../../Interfaces/mappool";
 import { ScoreInfo } from "../../Interfaces/score";
 import { QualifierInfo, QualifierLobby } from "../../Interfaces/qualifier";
 import { UserOpenInfo } from "../../Interfaces/user";
-import { MappoolMap } from "../../Models/tournaments/mappoolBeatmap";
+import { MappoolMap } from "../../Interfaces/mappool";
 
 
 export interface QualifierState {
@@ -13,9 +13,6 @@ export interface QualifierState {
     scores: ScoreInfo[]
     mappool: null | MappoolInfo
     teams: TeamInfo[]
-    section: string
-    subSection: string
-    scoringType: string 
 }
 
 export const mutations: MutationTree<QualifierState> = {
@@ -35,27 +32,9 @@ export const mutations: MutationTree<QualifierState> = {
         state.teams.push(team)
     },
 
-    setSection (state, section) {
-        state.section = section
-        console.log("commiting:", state.section)
-    },
-
-    setSubSection (state, subSection) {
-        state.subSection = subSection
-    },
-
-    setScoringType (state, scoringType) {
-        state.scoringType = scoringType
-    }
-    
-
 }
 
 export const getters: GetterTree<QualifierState, QualifierState> = {
-    getSection (state): string {
-        console.log("getter: ", state.section)
-        return state.section
-    }
 }
 
 let testUser: UserOpenInfo = {
@@ -117,6 +96,19 @@ let testUser2: UserOpenInfo = {
     }
 }
 
+
+let testScore: ScoreInfo = {
+    qualifier: 1,
+    time: new Date(2021,10,30),
+    score: 251281,
+    mapID: "3066907",
+    team: 123,
+    user: "11489119",
+
+}
+
+let testScores: ScoreInfo[] = [testScore, testScore]
+
 let TestTeam1: TeamInfo = {
     id: 123,
     name: "test1",
@@ -127,17 +119,11 @@ let TestTeam1: TeamInfo = {
     averageBWS: 6,
     seed: "A",
     rank: 1,
-    members: [testUser, testUser2, testUser2, testUser2, testUser2, testUser2 ,testUser2, testUser2]
+    members: [testUser, testUser2, testUser2, testUser2, testUser2, testUser2 ,testUser2, testUser2],
+    scores: [testScore, testScore, testScore]
 }
 
 let testteams: TeamInfo[] = [TestTeam1, TestTeam1]
-
-let testScore: ScoreInfo = {
-    qualifier: null,
-    time: new Date(2021,10,30)
-}
-
-
 
 
 
@@ -149,7 +135,7 @@ let testBeatmap: MappoolMap = {
     artist: "asdf",
     title: "asdf",
     difficulty: "test",
-    time: 130,
+    time: "1:30",
     bpm: 130,
     stars: 5.6,
 
@@ -173,18 +159,8 @@ let testLobby: QualifierLobby = {
     teams: testteams,
 }
 
-let testQualifier: QualifierInfo = {
-    
-    id: 1,
-    time: new Date(2021,10,30),
-    public: true,
-    referee: testUser2,
-    mappool: testMappool,
-    qualifiers: [testLobby, testLobby],
-    scores: [testScore, testScore],
+let testQualifier: QualifierLobby[] = [testLobby, testLobby,testLobby,testLobby,testLobby]
 
-
-}
 
 export const actions: ActionTree<QualifierState, QualifierState> = {
 
@@ -198,20 +174,20 @@ export const actions: ActionTree<QualifierState, QualifierState> = {
                 console.error(data.error);
                 return;
             }*/
-        commit("setQualifiers", data.qualifiers);
+        commit("setQualifiers", data);
     },
 
     async getMappool ({ commit, state }) {
         if (state.mappool) {
             return;
         }
-        const data = testQualifier //await axios.get("/api/qualifier/mappool");
+        const data = testMappool //await axios.get("/api/qualifier/mappool");
         /*if (data.error) {
             alert(data.error);
             console.error(data.error);
             return;
         }*/
-        commit("setMappool", data.mappool);
+        commit("setMappool", data);
 
     },
 
@@ -221,13 +197,13 @@ export const actions: ActionTree<QualifierState, QualifierState> = {
             await dispatch("getMappool");
         if (state.scores)
             return;
-        const data = testQualifier//await axios.get("/api/qualifier/scores")
+        const data = testScores//await axios.get("/api/qualifier/scores")
         /*if (data.error) {
             alert(data.error);
             console.error(data.error);
             return;
         }*/
-        state.scores = data.scores;
+        state.scores = data;
         const nonUniqueTeams: TeamInfo[] = ([] as TeamInfo[]).concat.apply([], state.qualifiers.map(qualifier => qualifier.teams))
         const ids = {};
         commit("setTeams", []);
@@ -238,7 +214,6 @@ export const actions: ActionTree<QualifierState, QualifierState> = {
             ids[team.id] = true;
             commit("pushTeam", team);
         }
-        console.log(state.scores)
     },
 
     async publicize ({ state, dispatch }) {

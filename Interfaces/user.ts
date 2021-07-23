@@ -20,9 +20,12 @@ export interface UserOpenInfo extends UserInfo {
     pickemPoints: number;
     rank: number;
     badges: number;
+    pp: number;
 
     openStaff: {
         isMappooler: boolean;
+        isReferee: boolean;
+        isScheduler: boolean;
     }
 
     //These fields are only used in QualifierScoresTable
@@ -92,7 +95,3 @@ export interface OAuth {
     lastVerified: Date;
 }
 
-export interface StaffOpenInfo {
-    osuID: Number
-    username: String   
-}

@@ -12,10 +12,10 @@
             <th v-for="(beatmap, index) in beatmaps" :key="index" :style="beatmap.style ? beatmap.style : null"><a :href="beatmap.mapID ? `https://osu.ppy.sh/beatmaps/${beatmap.mapID}` : null">{{ beatmap.name }}</a></th>
         </tr>
         <tr v-for="(player, i) in (subSection==='players' ? userScores : teamScores)" :key="i">
-            <td :style="player.style" v-if="subSection==='players'"><a :href="`https://osu.ppy.sh/u/${player.osuID}`">{{ player.username }}</a></td>
+            <td :style="player.style" v-if="subSection==='players'"><a :href="`https://osu.ppy.sh/u/${player.osuID}`">{{ player.osu.username }}</a></td>
             <td :style="player.teamStyle ? player.teamStyle : null" v-if="subSection==='players'"><router-link :to="`/team/${player.teamSlug}`">{{ player.teamName }}</router-link></td>
             <td :style="player.style ? player.style : null" v-else><router-link :to="`/team/${player.slug}`">{{ player.name }}</router-link></td>
-            <td v-if="subSection==='teams' && player.time"><router-link :to="`/qualifier/${player.qualifier}`">SEP {{player.time.split('-')[2].split('T')[0]}}<br>{{player.time.split('T')[1].slice(0,5)}} UTC</router-link></td>
+            <td v-if="subSection==='teams' && player.time"><router-link :to="`/qualifier/${player.qualifier}`">SEP {{player.time.toUTCString().split(" ")[1]}}<br>{{player.time.toUTCString().split(" ")[4].slice(0,5)}} UTC</router-link></td>
             <td v-else-if="subSection==='teams'"></td>
             <td class="qualifiersScoresBestWorst">{{ player[player.best] ? player.best.toUpperCase() : "" }}</td>
             <td class="qualifiersScoresBestWorst">{{ player[player.worst] ? player.worst.toUpperCase() : "" }}</td>
@@ -44,8 +44,6 @@ import { ScoreInfo } from "../../../Interfaces/score";
 import { QualifierLobby } from "../../../Interfaces/qualifier";
 import { Mappool } from "../../../Models/tournaments/mappool";
 
-const qualifierModule = namespace("qualifiers");
-
 const defaultMaps: MappoolMap[] = [
     {name: "NM1"},
     {name: "NM2"},
@@ -63,30 +61,33 @@ const defaultMaps: MappoolMap[] = [
 @Component
 export default class QualifierScoresTable extends Vue {
 
-    @qualifierModule.State scores!: ScoreInfo[]
-    @qualifierModule.State teams!: TeamInfo[]
-    @qualifierModule.State mappool!: MappoolInfo
-
-
+    @Prop(Array) readonly scores!: ScoreInfo[]
+    @Prop(Array) readonly teams!: TeamInfo[]
+    @Prop(Object) readonly mappool!: MappoolInfo
     @Prop(String) readonly subSection!: string
     @Prop(String) readonly scoringType!: string
 
 
     topScores = {}
     avgScores = {}
-    countScores = {}
+    countScores = {}    
+    beatmaps: MappoolMap[] = []
+    teamScores: TeamInfo[] = []
+    userScores: UserOpenInfo[] = []
 
-    created () {
-        console.log('QFST created')
-        this.userScores();
+    
+    mounted () {
+        this.beatmaps = this.getBeatmaps();
+        this.teamScores = this.getTeamScores();
+        this.userScores = this.getUserScores();
     }
 
     
-    beatmaps () {
+    getBeatmaps () {
         if (!this.mappool || this.mappool.length === 0)
             return defaultMaps;
-
-        let maps = this.mappool.modGroups.map((modGroup) => {
+        let pool = this.mappool
+        let maps = pool.modGroups.map((modGroup) => {
             return modGroup.beatmaps.map((beatmap, i) => {
                 const url = `'https://assets.ppy.sh/beatmaps/${beatmap.setID}/covers/cover.jpg'`;
                 beatmap.mod = modGroup.mod;
@@ -103,11 +104,9 @@ export default class QualifierScoresTable extends Vue {
         return flat;
     }
 
-    userScores () {
-        console.log('userscores')
+    getUserScores () {
         if (!this.teams || this.teams.length === 0)
             return [];
-        console.log('passed')
         
         let userScores: UserOpenInfo[] = ([] as UserOpenInfo[]).concat.apply([], this.teams.map((team) => {
             return team.members.map((member) => {
@@ -128,7 +127,6 @@ export default class QualifierScoresTable extends Vue {
         this.topScores = {};
         this.avgScores = {};
         const tempTop = {};
-        console.log("userScores:", userScores)
     
         if (this.mappool && this.scores) {
             userScores = userScores.map((user) => {
@@ -140,7 +138,7 @@ export default class QualifierScoresTable extends Vue {
                     if (score.user === user.osu.userID) {
                         user.qualifier = score.qualifier;
                         user.time = score.time;
-                        const name = this.beatmaps().find((beatmap) => beatmap.mapID === score.mapID)?.name.toLowerCase();
+                        const name = this.beatmaps.find((beatmap) => beatmap.mapID === score.mapID)?.name.toLowerCase();
                         if (name) {
                             user[name] = score.score;
                             user.average += score.score;
@@ -164,7 +162,7 @@ export default class QualifierScoresTable extends Vue {
 
                 return user;
             });
-            userScores.sort((a, b) => b.average - a.average);
+            userScores.sort((a, b) => b.average! - a.average!); //forcing this for now until I figure out Wtf is oging on
             switch (this.scoringType) {
                 case "max":
                     userScores = userScores.map((user) => {
@@ -202,12 +200,12 @@ export default class QualifierScoresTable extends Vue {
                 case "costs":
                     if (this.teamScores) {
                         userScores = userScores.map((user) => {
-                            const participationBonus = 1.0 + 0.3 * (user.count / 10);
+                            const participationBonus = 1.0 + 0.3 * (user.count! / 10); //forcing this for now until I figure out Wtf is oging on
                             user.average = user.count = 0;
                             for (const name of Object.keys(this.topScores)) {
                                 if (user[name]) {
                                     const team = this.teamScores.find((team) => team.members.some((member) => member.id === user.id));
-                                    user[name] /= team[name];
+                                    user[name] /= team![name]; //forcing this for now until I figure out Wtf is oging on
                                     tempTop[name] = Math.max(tempTop[name] ? tempTop[name] : 0, user[name]);
                                     user.average += user[name];
                                     user.count++;
@@ -220,14 +218,14 @@ export default class QualifierScoresTable extends Vue {
                     }
                     break;
             }
-            userScores.sort((a, b) => b.average - a.average);
+            userScores.sort((a, b) => b.average! - a.average!); //forcing this for now until I figure out Wtf is oging on
             if (this.scoringType !== "sum")
                 this.topScores = tempTop;
         }
         return userScores;
     }
-    /*
-    teamScores: function() {
+    
+    getTeamScores() {
             if (!this.teams || this.teams.length === 0)
                 return [];
 
@@ -239,7 +237,7 @@ export default class QualifierScoresTable extends Vue {
                         'background-size': 'cover',
                     }
                 }
-                team.scores = {};
+                team.scores = []; //test
                 return team;
             });
             this.topScores = {};
@@ -255,7 +253,7 @@ export default class QualifierScoresTable extends Vue {
                         if (score.team === team.id) {
                             team.qualifier = score.qualifier;
                             team.time = score.time;
-                            const name = this.beatmaps.find((beatmap) => beatmap.mapID === score.mapID).name.toLowerCase();
+                            const name = this.beatmaps.find((beatmap) => beatmap.mapID === score.mapID)!.name.toLowerCase(); // more assuming
                             if (!team.scores[name])
                                 team.scores[name] = [score.score]
                             else
@@ -294,7 +292,7 @@ export default class QualifierScoresTable extends Vue {
                             team.average = Math.round(team.average/team.count);
                             return team;
                         });
-                        teamScores.sort((a, b) => b.average - a.average);
+                        teamScores.sort((a, b) => b.average! - a.average!); //more assuming
                         break;
                     case "max":
                         teamScores.map((team) => {
@@ -310,7 +308,7 @@ export default class QualifierScoresTable extends Vue {
                             team.average /= team.count;
                             return team;
                         });
-                        teamScores.sort((a, b) => b.average - a.average);
+                        teamScores.sort((a, b) => b.average! - a.average!); //more assuming
                         break;
                     case "avg":
                         for (const name of Object.keys(this.avgScores)) {
@@ -327,7 +325,7 @@ export default class QualifierScoresTable extends Vue {
                                 return team;
                             });
                         }
-                        teamScores.sort((a, b) => b.average - a.average);
+                        teamScores.sort((a, b) => b.average! - a.average!); // more assuming
                         break;
                     case "seeding":
                         for (const name of Object.keys(this.topScores)) {
@@ -347,7 +345,7 @@ export default class QualifierScoresTable extends Vue {
                             team.average = avgPlacement;
                             return team;
                         });
-                        teamScores.sort((a, b) => a.average - b.average);
+                        teamScores.sort((a, b) => a.average! - b.average!); //more assuming
                         teamScores = teamScores.map((team, i) => {
                             team.average = i+1;
                             return team;
@@ -357,7 +355,7 @@ export default class QualifierScoresTable extends Vue {
             if (this.scoringType !== "sum" && this.scoringType !== "seeding" && this.scoringType !== "costs")
                     this.topScores = tempTop;
             return teamScores;
-    }*/
+    }
     
 }
 </script>
@@ -400,3 +398,4 @@ export default class QualifierScoresTable extends Vue {
     text-shadow: 0px 0px 10px rgba(255,224,117, 0.75);
 }
 </style>
+

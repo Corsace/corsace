@@ -3,6 +3,7 @@ import { TeamInfo } from "./team"
 import { UserOpenInfo } from "./user"
 import { MappoolInfo } from "./mappool"
 
+/*
 export interface QualifierInfo {
     id: number
     time: Date
@@ -12,12 +13,13 @@ export interface QualifierInfo {
     qualifiers: QualifierLobby[]
     scores: ScoreInfo[]
 
-}
+}*/
 
 export interface QualifierLobby {
     id: number
     time: Date
     teams: TeamInfo[]
+    referee: UserOpenInfo | null
     
 
 }

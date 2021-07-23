@@ -24,7 +24,7 @@
                     <div class="qualifiersTeamTitle">{{qualifiers[0].public}}</div>
                 </div>
                 <div class="qualifiersHeader">{{ $t('open.header.qualifiers') }}</div>
-                <div class="qualifiersTeamInside" v-if="inTeam">
+                <div class="qualifiersTeamInside" v-if="team">
                     <div class="teamPP">{{ $t('open.teams.your') }}</div>
                     <div class="qualifiersTeamTitle"><router-link to="/team">{{ team.name }}</router-link></div>
                 </div>
@@ -36,7 +36,7 @@
             </div>
             <div v-else-if="section==='scores' && scores">
                 <span v-if="scoringType==='costs'" style='display: flex; justify-content: center;'>Costs method derived from Megatron is Bad's match costs algorithm</span>
-                <qualifier-scores-table :subSection="subSection" :scoringType="scoringType" />
+                <qualifier-scores-table :subSection="subSection" :scoringType="scoringType" :scores="scores" :mappool="mappool" :teams="teams" />
             </div>
             <div v-else-if="section==='mappool' && mappool" class="qualifierMappoolList">
                 <a class="qualifierLink" v-if="mappool.mappack" :href="mappool.mappack">
@@ -105,7 +105,6 @@ export default class Qualifiers extends Vue {
 
     @qualifierModule.Getter getSection!: string
 
-    @State inTeam!: boolean;
     @State team!: TeamInfo;
     @State loggedInUser!: UserOpenInfo;
 
@@ -129,6 +128,7 @@ export default class Qualifiers extends Vue {
         this.loading = false;
     }
     async getMappool () {
+        console.log('ran getMappool')
         this.loading = true;
         await this.$store.dispatch("qualifiers/getMappool");
         this.loading = false;

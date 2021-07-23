@@ -84,7 +84,7 @@ export default class Notifications extends Vue {
         });
     }
     delink() {
-        if(confirm(this.$i18n.messages[this.$i18n.locale].open.header.unlinkPopup)) {
+        if(confirm(this.$t('open.header.unlinkPopup') as string)) {
             if (this.loggedInUser.team) {
                 if (this.loggedInUser.corsaceID === this.loggedInUser.team.captain) {
                     axios.get("/api/team/destroy").then(result => {

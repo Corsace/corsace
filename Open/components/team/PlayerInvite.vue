@@ -5,29 +5,29 @@
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import axios from "axios";
+import { Component, Vue } from "vue-property-decorator"
 
-export default {
-    data: () => ({
-        active: false,
-        playerInvite: "",
-    }),
-    methods: {
-        invite: function() {
-            axios.get('/api/team/invite?target=' + this.playerInvite).then(result => {
-                if (result.data.error !== false) {
-                    alert(error)
-                }
-                else {
-                    this.$emit('invited')
-                }
-            }).catch((error) => {
-                console.error(error);
-                alert(this.$i18n.messages[this.$i18n.locale].open.teams.team.playerInvite.replace("%%member%%", this.playerInvite));
-            })
-        }
+@Component
+export default class PlayerInvite extends Vue {
+
+    active = false
+    playerInvite = ""
+    invite () {
+        axios.get('/api/team/invite?target=' + this.playerInvite).then(result => {
+            if (result.data.error !== false) {
+                alert(error)
+            }
+            else {
+                this.$emit('invited')
+            }
+        }).catch((error) => {
+            console.error(error);
+            alert((this.$t('open.teams.team.playerInvite') as string).replace("%%member%%", this.playerInvite));
+        })
     }
+    
 }
 </script>
 

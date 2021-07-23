@@ -4,4 +4,5 @@ export interface ScoreInfo {
     user: string
     score: number
     mapID: string
+    team: number
 }

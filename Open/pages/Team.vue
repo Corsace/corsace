@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="teamPage" v-if="!$route.params.name && !loading">
-            <div class="teamPageBody" v-if="inTeam">
+            <div class="teamPageBody" v-if="team">
                 <div class="teamPageHeader">
                     <div>
                         <div v-if="edit" @mouseover="active = true" @mouseleave="active = false" class="uploadPic">
@@ -20,13 +20,13 @@
                             <div class="teamPageSeed">
                                 <div :class="`team${team.seed ? team.seed : 'Un'}SeedText`">{{ team.seed ? `RANK ${team.rank}` : 'UNRANKED' }}</div>
                             </div>
-                            <div class="teamEdit" v-if="!edit && user.id === team.captain" @click="editMode">
+                            <div class="teamEdit" v-if="!edit && loggedInUser.corsaceID === team.captain" @click="editMode">
                                 <img src="../../Assets/img/open/edit.png">
-                                {{ $t('teams.team.edit') }}
+                                {{ $t('open.teams.team.edit') }}
                             </div>
-                            <div class="teamSave" v-if="edit && user.id === team.captain" @click="editSave">
+                            <div class="teamSave" v-if="edit && loggedInUser.corsaceID === team.captain" @click="editSave">
                                 <img src="../../Assets/img/open/editSave.png">
-                                {{ $t('teams.team.save') }}
+                                {{ $t('open.teams.team.save') }}
                             </div>
                         </div>
                     </div>
@@ -36,34 +36,34 @@
                 </div>
                 <div class="teamPageInfo">
                     <div v-for="index in 8" :key="index">
-                        <PlayerAccepted v-if="team.members[index-1]" :member="team.members[index-1]" :team="team" :user="user" :edit="edit" @update="app.refreshTeam" @transfer="edit=false" @alert="alert"></PlayerAccepted>
-                        <PlayerInvited v-else-if="!team.members[index-1] && invitations[index-team.members.length-1]" :invite="invitations[index-team.members.length-1]" :team="team" :user="user" :edit="edit" @cancelled="updateInvitations"></PlayerInvited>
-                        <PlayerInvite v-else-if="!team.members[index-1] && !invitations[index-team.members.length-1] && user.id === team.captain" @invited="updateInvitations" ></PlayerInvite>
+                        <PlayerAccepted v-if="team.members[index-1]" :member="team.members[index-1]" :team="team" :user="loggedInUser" :edit="edit" @update="refreshTeam()" @transfer="edit=false" @alert="alert"></PlayerAccepted>
+                        <PlayerInvited v-else-if="!team.members[index-1] && invitations[index-team.members.length-1]" :invite="invitations[index-team.members.length-1]" :team="team" :edit="edit" @cancelled="updateInvitations"></PlayerInvited>
+                        <PlayerInvite v-else-if="!team.members[index-1] && !invitations[index-team.members.length-1] && loggedInUser.corsaceID === team.captain" @invited="updateInvitations" ></PlayerInvite>
                         <div v-else class="teamPagePlayer"></div>
                     </div>
                     <div class="teamPageStats">
                         <div class="teamPageStat">
                             <div class="teamPageNumbers">{{ Math.round(team.averageBWS) }}</div>
-                            <div class="teamPageDesc">{{ $t('teams.team.ppAvg') }}</div>
+                            <div class="teamPageDesc">{{ $t('open.teams.team.ppAvg') }}</div>
                         </div>
                         <div class="teamPageStat">
                             <div v-if="team.rank !== null" class="teamPageNumbers">{{ team.rank }}</div>
                             <div v-else class="teamPageNumbers">--</div>
-                            <div class="teamPageDesc">{{ $t('teams.team.rank') }}</div>
+                            <div class="teamPageDesc">{{ $t('open.teams.team.rank') }}</div>
                         </div>
                         <router-link to="/qualifiers" class="teamPageStat">
                             <div v-if="team.qualifier" class="teamPageNumbers">
-                                SEP {{team.qualifier.split('-')[2].split('T')[0]}}
+                                SEP {{team.qualifier.time.toUTCString().split(" ")[1]}}
                                 <br>
-                                {{team.qualifier.split('T')[1].slice(0,5)}} UTC
+                                {{team.qualifier.time.toUTCString().split(" ")[4].slice(0,5)}} UTC
                             </div>
                             <div v-else class="teamPageNumbers">--</div>
-                            <div class="teamPageDesc">{{ $t('header.qualifiers') }}</div>
+                            <div class="teamPageDesc">{{ $t('open.header.qualifiers') }}</div>
                         </router-link>
                     </div>
                 </div>
             </div>
-            <div class="teamPageBody" v-if="!inTeam && registered">
+            <div class="teamPageBody" v-if="!team && loggedInUser">
                 <div class="teamPageHeader createTeamHeader">
                     <div>
                         <div @mouseover="active = true" @mouseleave="active = false" class="uploadPic">
@@ -78,7 +78,7 @@
                         <div class="teamPageHeaderRelevant">
                             <div class="teamSave" @click="createTeam">
                                 <img src="../../Assets/img/open/editSave.png">
-                                {{ $t('teams.team.save') }}
+                                {{ $t('open.teams.team.save') }}
                             </div>
                         </div>
                     </div>
@@ -88,10 +88,10 @@
                         <div class="captainIcons">
                             <img class="captain" src="../../Assets/img/open/captain.png">
                         </div>
-                        <a :href="'https://osu.ppy.sh/u/' + user.username"><div class="teamPagePlayerName">{{ user.username }}</div></a>
+                        <a :href="'https://osu.ppy.sh/u/' + loggedInUser.osu.username"><div class="teamPagePlayerName">{{ loggedInUser.osu.username }}</div></a>
                         <div class="teamPagePlayerPP">
-                            <div class="teamPageNumbers">{{ Math.round(Math.pow(user.rank, Math.pow(0.9937, Math.pow(user.badges, 2)))) }}</div>
-                            <div class="teamPageDesc">{{ $t('teams.team.pp') }}</div>
+                            <div class="teamPageNumbers">{{ Math.round(Math.pow(loggedInUser.rank, Math.pow(0.9937, Math.pow(loggedInUser.badges, 2)))) }}</div>
+                            <div class="teamPageDesc">{{ $t('open.teams.team.pp') }}</div>
                         </div>
                     </div>
                     <div v-for="index in 8" :key="index">
@@ -100,25 +100,25 @@
                     <div class="teamPageStats">
                         <div class="teamPageStat">
                             <div class="teamPageNumbers">{{ team.averageBWS }}</div>
-                            <div class="teamPageDesc">{{ $t('teams.team.ppAvg') }}</div>
+                            <div class="teamPageDesc">{{ $t('open.teams.team.ppAvg') }}</div>
                         </div>
                         <div class="teamPageStat">
                             <div class="teamPageNumbers">{{ team.rank }}</div>
-                            <div class="teamPageDesc">{{ $t('teams.team.rank') }}</div>
+                            <div class="teamPageDesc">{{ $t('open.teams.team.rank') }}</div>
                         </div>
                         <router-link to="/qualifiers" class="teamPageStat">
                             <div v-if="team.qualifier" class="teamPageNumbers">
-                                SEP {{team.qualifier.split('-')[2].split('T')[0]}}
+                                SEP {{team.qualifier.time.toUTCString().split(" ")[1]}}
                                 <br>
-                                {{team.qualifier.split('T')[1].slice(0,5)}} UTC
+                                {{team.qualifier.time.toUTCString().split(" ")[4].slice(0,5)}} UTC
                             </div>
                             <div v-else class="teamPageNumbers">--</div>
-                            <div class="teamPageDesc">{{ $t('header.qualifiers') }}</div>
+                            <div class="teamPageDesc">{{ $t('open.header.qualifiers') }}</div>
                         </router-link>
                     </div>
                 </div>
             </div>
-            <div class="teamPageBody" v-if="!registered">
+            <div class="teamPageBody" v-if="!loggedInUser">
                 <div class="teamPageHeader noTeam">
                     <div class="teamPageTitle"><a href="/api/auth/discord">REGISTER ON THE WEBSITE!</a></div>
                 </div>
@@ -138,33 +138,33 @@
                         </div>
                     </div>
                     <div class="trashCan">
-                        <img v-if="user.isHeadStaff" @click="deleteTeam" src="../../Assets/img/open/delete.png">
+                        <img v-if="loggedInUser.staff.headStaff" @click="deleteTeam" src="../../Assets/img/open/delete.png">
                     </div>
                 </div>
                 <div class="teamPageInfo">
                     <div v-for="index in 8" :key="index">
-                        <PlayerAccepted v-if="otherTeam.members[index-1]" :member="otherTeam.members[index-1]" :team="otherTeam" :user="user" @kicked="app.refreshTeam"></PlayerAccepted>
+                        <PlayerAccepted v-if="otherTeam.members[index-1]" :member="otherTeam.members[index-1]" :team="otherTeam" @kicked="refreshTeam()"></PlayerAccepted>
                         <div class="teamPagePlayer" v-if="!otherTeam.members[index-1]">
                         </div>
                     </div>
                     <div class="teamPageStats">
                         <div class="teamPageStat">
                             <div class="teamPageNumbers">{{ Math.round(otherTeam.averageBWS) }}</div>
-                            <div class="teamPageDesc">{{ $t('teams.team.ppAvg') }}</div>
+                            <div class="teamPageDesc">{{ $t('open.teams.team.ppAvg') }}</div>
                         </div>
                         <div class="teamPageStat">
                             <div v-if="otherTeam.rank !== null" class="teamPageNumbers">{{ otherTeam.rank }}</div>
                             <div v-else class="teamPageNumbers">--</div>
-                            <div class="teamPageDesc">{{ $t('teams.team.rank') }}</div>
+                            <div class="teamPageDesc">{{ $t('open.teams.team.rank') }}</div>
                         </div>
                         <router-link to="/qualifiers" class="teamPageStat">
                             <div class="teamPageNumbers" v-if="otherTeam.qualifier">
-                                SEP {{otherTeam.qualifier.split('-')[2].split('T')[0]}}
+                                SEP {{otherTeam.qualifier.time.toUTCString().split(" ")[1]}}
                                 <br>
-                                {{otherTeam.qualifier.split('T')[1].slice(0,5)}} UTC
+                                {{otherTeam.qualifier.time.toUTCString().split(" ")[4].slice(0,5)}} UTC
                             </div>
                             <div v-else class="teamPageNumbers">--</div>
-                            <div class="teamPageDesc">{{ $t('header.qualifiers') }}</div>
+                            <div class="teamPageDesc">{{ $t('open.header.qualifiers') }}</div>
                         </router-link>
                     </div>
                 </div>
@@ -176,45 +176,61 @@
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import axios from "axios";
 import App from "../layouts/default.vue";
-import Loading from "../components/Loading";
-import PlayerInvite from "../components/team/PlayerInvite";
-import PlayerInvited from "../components/team/PlayerInvited";
-import PlayerAccepted from "../components/team/PlayerAccepted";
+import Loading from "../components/Loading.vue";
+import PlayerInvite from "../components/team/PlayerInvite.vue";
+import PlayerInvited from "../components/team/PlayerInvited.vue";
+import PlayerAccepted from "../components/team/PlayerAccepted.vue";
+import { Vue, Component, } from "vue-property-decorator"
+import { State } from "vuex-class"
 import regeneratorRuntime from "regenerator-runtime";
+import { TeamInfo } from "../../Interfaces/team";
+import { UserOpenInfo } from "../../Interfaces/user";
+import { Invitation } from "../../Interfaces/invitation";
 
-export default {
+@Component({
     components: {
         PlayerInvite,
         PlayerInvited,
         PlayerAccepted,
         Loading,
-    },
-    data: () => ({
-        apply: false,
-        active: false,
-        edit: false,
-        loading: false,
-        teamName: "",
-        teamRename: "",
-        invitations: [],
-        otherTeam: {},
-        image: null,
-        image64: "",
-        regex: /^[a-zA-Z0-9\-\.\_\~\s]{3,20}$/,
-    }),
-    props: {
-        app: App,
-        inTeam: Boolean,
-        registered: Boolean,
-        team: Object,
-        teamRegistering: Boolean,
-        user: Object,
-    },
-    mounted: async function() {
+    }
+})
+
+export default class Team extends Vue {
+
+    @State team!: TeamInfo
+    @State teamRegistering!: boolean;
+    @State loggedInUser!: UserOpenInfo
+
+
+    testInvitation: Invitation = {
+        team: this.team,
+        _id: 123125,
+        osuUsername: 'coolmans'
+    }
+
+    active = false;
+    edit = false;
+    loading = true;
+    teamName = "";
+    teamRename = "";
+    invitations: Invitation[] = [this.testInvitation]
+    otherTeam: TeamInfo | null = null
+    image = null;
+    image64 =  "";
+    regex = /^[a-zA-Z0-9\-\.\_\~\s]{3,20}$/;
+
+    async getTeams () {
+        await this.$store.dispatch("getTeams");
+    }
+    async mounted () {
         this.loading = true;
+        this.otherTeam = this.team
+        console.log('team mounted: ',this.otherTeam.members)
+        
         if (this.$route.params.name) {
             if (this.team && this.$route.params.name === this.team.slug)
                 this.$router.push({ path: '/team' });
@@ -226,106 +242,119 @@ export default {
                 } finally {
                     this.loading = false;
                 }
-            }
-        } else if (this.team.id || (await axios.get("/api/team")).team) {
+            } 
+        } /*else if (this.team.id || (await axios.get("/api/team")).team) {
             this.teamRename = this.team.name;
             this.image64 = this.team.teamAvatarUrl ?? "";
             this.updateInvitations();
-        }
+        } */
         this.loading = false;
-    },
-    methods: {
-        teamRegisteringToggle: function() {
-            this.$emit('team-registering');
-        },
-        createTeam: function() {
-            if (this.regex.test(this.teamName) === false)
-                alert(this.$i18n.messages[this.$i18n.locale].teams.team.teamnameLength + " Allowed characters: a-z, A-Z, 0-9, -, ., _, ~")
-            else if (confirm("Please make sure your team name is not vulgar, or else you may possibly be banned from creating or joining teams on the site! If your team name is not vulgar then please press OK.")) {
-                axios.get('/api/team/create?name=' + this.teamName).then(result => {
-                    if (this.image !== null) {
-                        this.uploadAvatar();
-                        this.$emit('team-edited')
-                    }
-                    else {
-                        this.$emit('team-edited')
-                    }
-                }, err => {
-                    if(err.response.data.error === "TOO_MANY_GUILDS")
-                        alert("Joining our Discord server is mandatory, and you have reached the maximum amount of Discord servers on your account. Please leave one and try again!");
-                    else if (err.response.data.error === "BANNED")
-                        alert(err.response.data.error + " Fuck off. If this may have been a mistake then contact VINXIS#1000 on discord.")
-                    else
-                        alert(err.response.data.error + " Try joining the discord server first, and then try again. Contact ThePooN or VINXIS if you still can't create a team.");
-                });
-            }
-        },
-        alert: function() {
-            this.$emit('team-edited');
-        },
-        updateInvitations: function() {
-            axios.get('/api/team/pendingInvitations').then(result => {
-                this.invitations = result.data.invitations
-                this.loading = false;
-            }).catch(err => alert(err));
-        },
-        editMode: function() {
-            this.edit = !this.edit;
-        },
-        editSave: function() {
-            this.teamRename = this.teamRename.trim()
-            if (this.image !== null) {
-                this.uploadAvatar();
-            }
-            if (this.teamRename !== this.team.name) {
-                this.rename();
-            }
-            this.$emit('team-edited');
-            this.edit = false;
-        },
-        addAvatar: function(e) {
-            var files = e.target.files || e.dataTransfer.files;
-            if (!files.length)
-                return;
-            this.image = e.target.files[0];
+    }
 
-            var reader = new FileReader();
-            reader.onload = (e) => {
-                this.image64 = e.target.result;
-            }
-            reader.readAsDataURL(this.image);
-        },
-        uploadAvatar: function() {
-            const formData = new FormData()
-            formData.append('avatar', this.image, this.image.name)
-            axios.post('/api/team/uploadAvatar', formData).then(() => {
-            }).catch((error) => {
-                alert(error);
+    teamRegisteringToggle () {
+        this.$emit('team-registering');
+    }
+
+    createTeam () {
+        if (this.regex.test(this.teamName) === false)
+            alert((this.$t('open.teams.team.teamnameLength') as string) + " Allowed characters: a-z, A-Z, 0-9, -, ., _, ~")
+        else if (confirm("Please make sure your team name is not vulgar, or else you may possibly be banned from creating or joining teams on the site! If your team name is not vulgar then please press OK.")) {
+            axios.get('/api/team/create?name=' + this.teamName).then(result => {
+                if (this.image !== null) {
+                    this.uploadAvatar();
+                    this.$emit('team-edited')
+                }
+                else {
+                    this.$emit('team-edited')
+                }
+            }, err => {
+                if(err.response.data.error === "TOO_MANY_GUILDS")
+                    alert("Joining our Discord server is mandatory, and you have reached the maximum amount of Discord servers on your account. Please leave one and try again!");
+                else if (err.response.data.error === "BANNED")
+                    alert(err.response.data.error + " Fuck off. If this may have been a mistake then contact VINXIS#1000 on discord.")
+                else
+                    alert(err.response.data.error + " Try joining the discord server first, and then try again. Contact ThePooN or VINXIS if you still can't create a team.");
             });
-        },
-        rename: function() {
-            if (this.regex.test(this.teamRename) === false) {
-                alert(this.$i18n.messages[this.$i18n.locale].teams.team.teamnameLength  + " Allowed characters: a-z, A-Z, 0-9, -, ., _, ~")
-            }
-            else {
-                axios.get('/api/team/rename?name=' + this.teamRename).catch(err => alert(err.response.data.error));
-            }
-        },
-        deleteTeam: function() {
-            if(confirm(this.$i18n.messages[this.$i18n.locale].teams.team.deleteTeam)) {
-                if (this.team && !this.$route.params.name)
-                    axios.get('/api/team/destroy').then(() => {
-                        this.$emit('team-edited')
-                        this.$router.push({ path: '/teams' });
-                    }).catch(err => alert(err));
-                else if (this.otherTeam && this.user.isHeadStaff)
-                    axios.get('/api/team/ban?id=' + this.otherTeam.id).then(() => {
-                        this.$emit('team-edited')
-                        this.$router.push({ path: '/teams' });
-                    }).catch(err => alert(err));
-            }
         }
     }
+
+    alert () {
+        this.$emit('team-edited');
+    }
+
+    updateInvitations () {
+        axios.get('/api/team/pendingInvitations').then(result => {
+            this.invitations = result.data.invitations
+            this.loading = false;
+        }).catch(err => alert(err));
+    }
+
+    editMode () {
+        this.edit = !this.edit;
+    }
+
+    editSave () {
+        this.teamRename = this.teamRename.trim()
+        if (this.image !== null) {
+            this.uploadAvatar();
+        }
+        if (this.teamRename !== this.team.name) {
+            this.rename();
+        }
+        this.$emit('team-edited');
+        this.edit = false;
+    }
+
+    addAvatar (e) {
+        return // todo: figure out how to fix this lol
+        var files = e.target.files || e.dataTransfer.files;
+        if (!files.length)
+            return;
+        this.image = e.target.files[0];
+
+        var reader = new FileReader();
+        reader.onload = (e) => {
+            this.image64 = e.target.result;
+        }
+        reader.readAsDataURL(this.image);
+    }
+
+    uploadAvatar () {
+        return // todo: figure out how to fix this lol
+        const formData = new FormData()
+        formData.append('avatar', this.image, this.image.name)
+        axios.post('/api/team/uploadAvatar', formData).then(() => {
+        }).catch((error) => {
+            alert(error);
+        });
+    }
+
+    rename () {
+        if (this.regex.test(this.teamRename) === false) {
+            alert(this.$t('open.teams.team.teamnameLength') + " Allowed characters: a-z, A-Z, 0-9, -, ., _, ~")
+        }
+        else {
+            axios.get('/api/team/rename?name=' + this.teamRename).catch(err => alert(err.response.data.error));
+        }
+    }
+
+    deleteTeam () {
+        if(confirm(this.$t('open.teams.team.teamnameLength') as string)) {
+            if (this.team && !this.$route.params.name)
+                axios.get('/api/team/destroy').then(() => {
+                    this.$emit('team-edited')
+                    this.$router.push({ path: '/teams' });
+                }).catch(err => alert(err));
+                /*
+            else if (this.otherTeam && this.loggedInUser.staff.headStaff)
+                return // todo: sdfsdfsdf
+                axios.get('/api/team/ban?id=' + this.otherTeam.id).then(() => {
+                    this.$emit('team-edited')
+                    this.$router.push({ path: '/teams' });
+                }).catch(err => alert(err)); */
+        }
+    }
+
 }
 </script>
 

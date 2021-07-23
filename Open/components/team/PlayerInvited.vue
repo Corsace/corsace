@@ -1,6 +1,6 @@
 <template>
     <div class="teamPagePlayer">
-        <img class="notCaptain" v-if="user.id === team.captain && edit" @click="cancel" src="../../../Assets/img/open/x.png">
+        <img class="notCaptain" v-if="loggedInUser.corsaceID === team.captain && edit" @click="cancel" src="../../../Assets/img/open/x.png">
         <a :href="'https://osu.ppy.sh/u/' + invite.osuUsername" target="_blank"><div class="teamPagePlayerName">{{ invite.osuUsername }}</div></a>
         <div class="teamPagePlayerPending">
             <div class="teamPagePlayerPending" v-html="$t('open.teams.team.invPend')"></div>
@@ -8,28 +8,35 @@
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import axios from "axios";
+import { Team } from "discord.js";
+import { Component, Vue, Prop } from "vue-property-decorator"
+import { Invitation } from "../../../Interfaces/invitation";
+import { TeamInfo } from "../../../Interfaces/team";
+import { UserOpenInfo } from "../../../Interfaces/user";
+import { State } from "vuex-class"
 
-export default {
-    props: {
-        edit: Boolean,
-        invite: Object,
-        team: Object,
-        user: Object,
-    },
-    methods: {
-        cancel: function() {
-            axios.get('/api/team/cancel?invite=' + this.invite._id).then(result => {
-                if (result.data.error !== false) {
-                    alert(error)
-                }
-                else {
-                    this.$emit('cancelled')
-                }
-            })
-        }
+@Component
+export default class PlayerInvited extends Vue {
+    
+    @State loggedInUser!: UserOpenInfo
+
+    @Prop(Boolean) readonly edit!: boolean;
+    @Prop(Object) readonly invite!: Invitation
+    @Prop(Object) readonly team!: TeamInfo
+
+    cancel () {
+        axios.get('/api/team/cancel?invite=' + this.invite._id).then(result => {
+            if (result.data.error !== false) {
+                alert(error)
+            }
+            else {
+                this.$emit('cancelled')
+            }
+        })
     }
+    
 }
 </script>
 

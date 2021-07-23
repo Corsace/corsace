@@ -38,8 +38,8 @@
             <div class="userInfo" v-if="loggedInUser">
                 <div class="userDesc">
                     <a :href="'https://osu.ppy.sh/u/' + loggedInUser.osu.username"><div class="username">{{ loggedInUser.osu.username }}</div></a>
-                    <div v-if="true" @click="teamRegisteringToggle" class="userTeamName"><router-link to="/team">{{ $t('open.header.noTeam') }}</router-link></div>
-                    <div v-if="false" class="userTeamName"><router-link to="/team">{{ loggedInUser.team.name }}</router-link></div>
+                    <div v-if="!loggedInUser.team" @click="teamRegisteringToggle" class="userTeamName"><router-link to="/team">{{ $t('open.header.noTeam') }}</router-link></div>
+                    <div v-if="loggedInUser.team" class="userTeamName"><router-link to="/team">{{ loggedInUser.team.name }}</router-link></div>
                 </div>
             </div>
             <div v-if="loggedInUser" class="avatarWrapper" @click="openNotifications">

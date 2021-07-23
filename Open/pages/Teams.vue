@@ -1,11 +1,11 @@
 <template>
     <div class="teams">
         <div class="teamsHeader">{{ $t('open.teams.list') }}</div>
-        <div class="teamInside" v-if="inTeam">
+        <div class="teamInside" v-if="team">
             <div class="teamPP">{{ $t('open.teams.your') }}</div>
             <div class="teamTitle"><router-link to="/team">{{ team.name }}</router-link></div>
         </div>
-        <div v-else-if="!inTeam && registered" @click="teamRegisteringToggle"><router-link to="/team" class="createTeam">{{ $t('open.teams.create') }}</router-link></div>
+        <div v-else-if="!team && loggedInUser" @click="teamRegisteringToggle"><router-link to="/team" class="createTeam">{{ $t('open.teams.create') }}</router-link></div>
         <div class="teamsList" v-if="!loading">
             <div v-for="(team, index) in teams" :key="index">
                 <team-list-component :team="team"></team-list-component>
@@ -26,6 +26,7 @@ import { TeamInfo } from "../../Interfaces/team"
 
 
 import regeneratorRuntime from "regenerator-runtime";
+import { UserOpenInfo } from "../../Interfaces/user";
 
 const teamsModule = namespace("teams");
 
@@ -40,8 +41,7 @@ export default class Teams extends Vue {
 
     @teamsModule.State teams!: Object;
 
-    @State inTeam!: Boolean;
-    @State registered!: Boolean;
+    @State loggedInUser!: UserOpenInfo;
     @State team!: TeamInfo;
 
     loading = true;
@@ -51,7 +51,7 @@ export default class Teams extends Vue {
         this.loading = false
     }
 
-    toogleLoginModal (): void {
+    teamRegisteringToggle () {
         this.$emit('team-registering')
     }
 

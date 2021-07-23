@@ -27,10 +27,10 @@ export interface MappoolMap {
     mod?: "NM" | "HD" | "HR" | "DT" | "FM" | "TB" 
     name: string
     style?: Record<string, any>
-    artist: string
-    title: string
-    difficulty: string
-    time: number
-    bpm: number
-    stars: number
+    artist?: string
+    title?: string
+    difficulty?: string
+    time?: string
+    bpm?: number
+    stars?: number
 }
