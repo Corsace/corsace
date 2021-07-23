@@ -118,6 +118,7 @@
             "rankedSets": "Ranked譜面",
             "nominateNow": "いますぐノミネートしよう！",
             "voteNow": "いますぐ投票しよう！",
+            "viewResults": "結果を見る",
             "daysLeft": "days left",
             "message": {
                 "2019": "<p>Mapper's Choice Awardsが帰ってきました！これはすべてのマッパー・モッダーが各部門で最高の譜面・マッパーだと思うものに投票するイベントです。</p><p>Community Choiceとの違いは、マッピングコミュニティーの目線から2019年を代表する譜面を決めることが目的だという点です。</p><p>今年はできる限り簡単に参加できるように、ウェブサイトの開発を本格的に行いました。</p><p>すべてのosu!サポーターはスタッフが直接送ります。各部門の勝者には2ヶ月分、グランプリには6ヶ月分のサポーターが贈呈されます。</p><p>一人でも多くの人に投票してもらえることを期待しています！</p>",
@@ -132,7 +133,15 @@
         "categories": {
             "grandAward": {
                 "name": "グランプリ",
-                "description": "2019年を代表するのにふさわしい譜面"
+                "description": "2020年を代表するのにふさわしい譜面"
+            },
+            "grandStoryboard": {
+                "name": "ストーリーボードグランプリ",
+                "description": "2020年を代表するのにふさわしいストーリーボード"
+            },
+            "grandStoryboarder": {
+                "name": "ストーリーボーダーグランプリ",
+                "description": "2020年を代表するのにふさわしいストーリーボーダー"
             },
             "marathon": {
                 "name": "マラソン",
@@ -168,11 +177,11 @@
             },
             "mapper": {
                 "name": "マッパー",
-                "description": "2019年を代表するのにふさわしいマッパー"
+                "description": "2020年を代表するのにふさわしいマッパー"
             },
             "modder": {
                 "name": "モッダー",
-                "description": "2019年を代表するのにふさわしいモッダー"
+                "description": "2020年を代表するのにふさわしいモッダー"
             },
             "hitsounder": {
                 "name": "音付け職人",
@@ -180,10 +189,10 @@
             },
             "mostPromising": {
                 "name": "新人賞",
-                "description": "2019年に初Rankedを達成したマッパー"
+                "description": "2020年に初Rankedを達成したマッパー"
             },
             "mostInfluential": {
-                "name": "インフルエンサー",
+                "name": "カリスマ",
                 "description": "多くのマッパーに影響を与え、感化させた偉大なマッパー"
             },
             "outCont": {
@@ -224,7 +233,7 @@
             },
             "longNotes": {
                 "name": "LN",
-                "description": "LNを多用した譜面"
+                "description": "ロングノーツを多用した譜面"
             },
             "antiMeta": {
                 "name": "反主流",
@@ -249,6 +258,62 @@
             "narrative": {
                 "name": "物語性",
                 "description": "ストーリー展開を含んだストーリーボード"
+            },
+            "technicalTaiko": {
+                "name": "Technical",
+                "description": "複雑なスナップとパターンを駆使した譜面"
+            },
+            "fastTaiko": {
+                "name": "高速",
+                "description": "SVが速く巧みな指さばきが要求される譜面"
+            },
+            "slowTaiko": {
+                "name": "低速",
+                "description": "SVが遅くゆったりとした運指が特徴の譜面"
+            },
+            "hybrid": {
+                "name": "ハイブリッド",
+                "description": "ロングノーツとノーツの両方において多様なパターンのアイディアを使用した譜面"
+            },
+            "highBPMAlternator": {
+                "name": "高BPM/交互",
+                "description": "超高速の指さばきとエイムスキルが要求される譜面"
+            },
+            "vanilla": {
+                "name": "バニラ",
+                "description": "シンプルなマッピング技術を非常に効果的に活かした譜面"
+            },
+            "complex": {
+                "name": "リズム難",
+                "description": "2連や1/3、1/5、1/7など一般的でないスナップを多用した譜面"
+            },
+            "unorthodox": {
+                "name": "変わり種",
+                "description": "物珍しいマッピング技術やギミックを使用した譜面"
+            },
+            "sliderTech": {
+                "name": "Slider Tech",
+                "description": "複雑なスライダーデザインやSVの使い方、複雑なストリーム等、Tech系の要素を駆使した譜面"
+            },
+            "mostInspiring": {
+                "name": "インフルエンサー",
+                "description": "多くの人々に影響を与え、感化させた偉大な人物"
+            },
+            "communityPillar": {
+                "name": "コミュニティーの柱",
+                "description": "縁の下でコミュニティーのために献身的に尽くした人物"
+            },
+            "simplisticTaiko": {
+                "name": "シンプル",
+                "description": "パターンと音取りにおいてシンプルイズベストを体現した譜面"
+            },
+            "technicalCatch": {
+                "name": "Technical",
+                "description": "catchのプレイの幅を広げるようなコンセプトを使用した譜面"
+            },
+            "antiMetaCatch": {
+                "name": "反主流",
+                "description": "独創的なパターンやギミックを使用した譜面"
             }
         },
         "nom_vote": {
@@ -278,6 +343,19 @@
             "votingOverlay": "こんにちは。投票ページを訪れるのは初めてのようですね。 <br> MCAの投票では<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>優先順位付投票制</a>を使用します。 <br> そのため、投票では好きな数の譜面とマッパーを選ぶことが出来ます。 <br> すべての投票には優先順位が付けられるため、<span class='notice-modal--bold'>最初に選んだものが最重要視される仕組みになっています。</span> <br> MCA [YEAR]の結果が出るのを楽しみにしています！",
             "hosted": "作成者",
             "userID": "ユーザーID"
+        },
+        "results": {
+            "headings": {
+                "placement": "位",
+                "map": "譜面",
+                "title": "タイトル",
+                "artist": "アーティスト",
+                "hoster": "ホスト",
+                "totalVotes": "票数",
+                "username": "ユーザー",
+                "firstChoice": "第一選択"
+            },
+            "resultsOverlay": "こんにちは。結果ページを訪れるのは初めてのようですね。 <br> 結果は<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>優先順位付投票制</a>を使用した譜面/ユーザーの最終順位と、その譜面/ユーザーが第一選択となった回数、そして総登場回数が確認できます。<br> MCA [YEAR]の結果が皆さんの望むものになることを期待しています。次回のMCAでもお会いできることを楽しみにしています！"
         }
     },
     "main": {
