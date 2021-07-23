@@ -31,7 +31,6 @@ export default class ScrollBar extends Vue {
 
         if (list) {
             list.addEventListener("scroll", this.handleScroll);
-            this.scrollSize = list.scrollHeight - list.clientHeight;
         }
 
         if (scrollTrack) {
@@ -57,14 +56,13 @@ export default class ScrollBar extends Vue {
     }
 
     handleJump (event) {
-        if (event.target) {
+        const list = document.querySelector(this.selector);
+        if (event.target && list) {
+            this.scrollSize = list.scrollHeight - list.clientHeight;
             const newScrollPos = event.offsetY / this.$el.clientHeight * this.scrollSize;
-            const list = document.querySelector(this.selector);
             this.scrollPos = newScrollPos;   
             
-            if (list) {
-                list.scrollTo({top: newScrollPos });
-            }
+            list.scrollTo({top: newScrollPos });
         }
     }
 
