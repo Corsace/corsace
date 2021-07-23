@@ -27,20 +27,6 @@ export interface UserOpenInfo extends UserInfo {
         isReferee: boolean;
         isScheduler: boolean;
     }
-
-    //These fields are only used in QualifierScoresTable
-    //todo: make a local interface for that component and delete these
-    teamSlug?: string;
-    teamName?: string;
-    style?: Record<string, any>;
-    teamStyle?: Record<string, any>;
-    best?: string;
-    worst?: string;
-    average?: number;
-    count?: number;
-    qualifier?: number | null; //check this
-    time?: Date;
-
     
 }
 

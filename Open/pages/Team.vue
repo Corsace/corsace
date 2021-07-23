@@ -205,7 +205,7 @@ export default class Team extends Vue {
     @State teamRegistering!: boolean;
     @State loggedInUser!: UserOpenInfo
 
-
+    //remember to remove
     testInvitation: Invitation = {
         team: this.team,
         _id: 123125,
@@ -243,11 +243,11 @@ export default class Team extends Vue {
                     this.loading = false;
                 }
             } 
-        } /*else if (this.team.id || (await axios.get("/api/team")).team) {
+        } else if (this.team.id || (await axios.get("/api/team")).team) {
             this.teamRename = this.team.name;
             this.image64 = this.team.teamAvatarUrl ?? "";
             this.updateInvitations();
-        } */
+        } 
         this.loading = false;
     }
 
@@ -345,13 +345,11 @@ export default class Team extends Vue {
                     this.$emit('team-edited')
                     this.$router.push({ path: '/teams' });
                 }).catch(err => alert(err));
-                /*
             else if (this.otherTeam && this.loggedInUser.staff.headStaff)
-                return // todo: sdfsdfsdf
                 axios.get('/api/team/ban?id=' + this.otherTeam.id).then(() => {
                     this.$emit('team-edited')
                     this.$router.push({ path: '/teams' });
-                }).catch(err => alert(err)); */
+                }).catch(err => alert(err)); 
         }
     }
 

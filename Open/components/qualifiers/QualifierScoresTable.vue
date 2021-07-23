@@ -12,7 +12,7 @@
             <th v-for="(beatmap, index) in beatmaps" :key="index" :style="beatmap.style ? beatmap.style : null"><a :href="beatmap.mapID ? `https://osu.ppy.sh/beatmaps/${beatmap.mapID}` : null">{{ beatmap.name }}</a></th>
         </tr>
         <tr v-for="(player, i) in (subSection==='players' ? userScores : teamScores)" :key="i">
-            <td :style="player.style" v-if="subSection==='players'"><a :href="`https://osu.ppy.sh/u/${player.osuID}`">{{ player.osu.username }}</a></td>
+            <td :style="player.style" v-if="subSection==='players'"><a :href="`https://osu.ppy.sh/u/${player.osuID}`">{{ player.username }}</a></td>
             <td :style="player.teamStyle ? player.teamStyle : null" v-if="subSection==='players'"><router-link :to="`/team/${player.teamSlug}`">{{ player.teamName }}</router-link></td>
             <td :style="player.style ? player.style : null" v-else><router-link :to="`/team/${player.slug}`">{{ player.name }}</router-link></td>
             <td v-if="subSection==='teams' && player.time"><router-link :to="`/qualifier/${player.qualifier}`">SEP {{player.time.toUTCString().split(" ")[1]}}<br>{{player.time.toUTCString().split(" ")[4].slice(0,5)}} UTC</router-link></td>
@@ -43,6 +43,7 @@ import { MappoolMap, MappoolInfo } from "../../../Interfaces/mappool";
 import { ScoreInfo } from "../../../Interfaces/score";
 import { QualifierLobby } from "../../../Interfaces/qualifier";
 import { Mappool } from "../../../Models/tournaments/mappool";
+import { Score } from "nodesu";
 
 const defaultMaps: MappoolMap[] = [
     {name: "NM1"},
@@ -58,6 +59,35 @@ const defaultMaps: MappoolMap[] = [
 ];
 
 
+export interface QualifierScoreUser {
+    osuID: string;
+    username: string;
+    teamSlug: string;
+    teamName: string;
+    style: Record<string, any>;
+    teamStyle?: Record<string, any>;
+    best: string;
+    worst: string;
+    average: number;
+    count: number;
+    qualifier?: number | null; //check this
+    time?: Date;
+}
+
+export interface QualifierScoreTeam {
+    name: string;
+    slug: string;
+    id: number;
+    style?: Record<string, any>;
+    scores: ScoreInfo[];
+    best: string;
+    worst: string;
+    average: number;
+    count: number;
+    qualifier?: number | null; //check this
+    time?: Date;
+}
+
 @Component
 export default class QualifierScoresTable extends Vue {
 
@@ -72,8 +102,8 @@ export default class QualifierScoresTable extends Vue {
     avgScores = {}
     countScores = {}    
     beatmaps: MappoolMap[] = []
-    teamScores: TeamInfo[] = []
-    userScores: UserOpenInfo[] = []
+    teamScores: QualifierScoreTeam[] = []
+    userScores: QualifierScoreUser[] = []
 
     
     mounted () {
@@ -108,20 +138,28 @@ export default class QualifierScoresTable extends Vue {
         if (!this.teams || this.teams.length === 0)
             return [];
         
-        let userScores: UserOpenInfo[] = ([] as UserOpenInfo[]).concat.apply([], this.teams.map((team) => {
+        let userScores: QualifierScoreUser[] = ([] as QualifierScoreUser[]).concat.apply([], this.teams.map((team) => {
             return team.members.map((member) => {
                 const url = `https://a.ppy.sh/${member.osu.userID}?${Math.random()*1000000}`;
-                member.teamSlug = team.slug;
-                member.teamName = team.name;
-                member.style = {
-                    background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + url + ')',
-                };
+                const userScoreInfo: QualifierScoreUser = {
+                    osuID: member.osu.userID,
+                    username: member.osu.username,
+                    teamSlug: team.slug,
+                    teamName: team.name,
+                    style: {
+                        background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + url + ')',
+                    },
+                    best: "nm1",
+                    worst: "nm1",
+                    average: 0,
+                    count: 0,
+                }
                 if (team.teamAvatarUrl) {
-                    member.teamStyle = {
+                    userScoreInfo.teamStyle = {
                         background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + team.teamAvatarUrl + ')',
                     };
                 }
-                return member;
+                return userScoreInfo;
             });
         }));
         this.topScores = {};
@@ -130,12 +168,8 @@ export default class QualifierScoresTable extends Vue {
     
         if (this.mappool && this.scores) {
             userScores = userScores.map((user) => {
-                user.best = "nm1";
-                user.worst = "nm1";
-                user.average = 0;
-                user.count = 0;
                 for (const score of this.scores) {
-                    if (score.user === user.osu.userID) {
+                    if (score.user === user.osuID) {
                         user.qualifier = score.qualifier;
                         user.time = score.time;
                         const name = this.beatmaps.find((beatmap) => beatmap.mapID === score.mapID)?.name.toLowerCase();
@@ -162,7 +196,7 @@ export default class QualifierScoresTable extends Vue {
 
                 return user;
             });
-            userScores.sort((a, b) => b.average! - a.average!); //forcing this for now until I figure out Wtf is oging on
+            userScores.sort((a, b) => b.average - a.average);
             switch (this.scoringType) {
                 case "max":
                     userScores = userScores.map((user) => {
@@ -200,12 +234,13 @@ export default class QualifierScoresTable extends Vue {
                 case "costs":
                     if (this.teamScores) {
                         userScores = userScores.map((user) => {
-                            const participationBonus = 1.0 + 0.3 * (user.count! / 10); //forcing this for now until I figure out Wtf is oging on
+                            const participationBonus = 1.0 + 0.3 * (user.count / 10);
                             user.average = user.count = 0;
                             for (const name of Object.keys(this.topScores)) {
                                 if (user[name]) {
-                                    const team = this.teamScores.find((team) => team.members.some((member) => member.id === user.id));
-                                    user[name] /= team![name]; //forcing this for now until I figure out Wtf is oging on
+                                    const team = this.teamScores.find((team) => team.members.some((member) => member.osu.userID === user.osuID));
+                                    if(team)
+                                        user[name] /= team[name];
                                     tempTop[name] = Math.max(tempTop[name] ? tempTop[name] : 0, user[name]);
                                     user.average += user[name];
                                     user.count++;
@@ -218,7 +253,7 @@ export default class QualifierScoresTable extends Vue {
                     }
                     break;
             }
-            userScores.sort((a, b) => b.average! - a.average!); //forcing this for now until I figure out Wtf is oging on
+            userScores.sort((a, b) => b.average - a.average);
             if (this.scoringType !== "sum")
                 this.topScores = tempTop;
         }
@@ -230,34 +265,41 @@ export default class QualifierScoresTable extends Vue {
                 return [];
 
             let teamScores = this.teams.map((team) => {
+                const teamScoreInfo: QualifierScoreTeam = {
+                    slug: team.slug,
+                    name: team.name,
+                    id: team.id,
+                    scores: [],
+                    best: "nm1",
+                    worst: "nm1",
+                    average: 0,
+                    count: 0,
+                }
                 if (team.teamAvatarUrl) {
-                    team.style = {
+                    teamScoreInfo.style = {
                         background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + team.teamAvatarUrl + ')',
                         'background-position': 'bottom',
                         'background-size': 'cover',
                     }
                 }
-                team.scores = []; //test
-                return team;
+                return teamScoreInfo;
             });
             this.topScores = {};
             this.avgScores = {};
             const tempTop = {};
             if (this.mappool && this.scores) {
                 teamScores = teamScores.map((team) => {
-                    team.best = "nm1";
-                    team.worst = "nm1";
-                    team.average = 0;
-                    team.count = 0;
                     for (const score of this.scores) {
                         if (score.team === team.id) {
                             team.qualifier = score.qualifier;
                             team.time = score.time;
-                            const name = this.beatmaps.find((beatmap) => beatmap.mapID === score.mapID)!.name.toLowerCase(); // more assuming
-                            if (!team.scores[name])
-                                team.scores[name] = [score.score]
-                            else
-                                team.scores[name].push(score.score);
+                            const name = this.beatmaps.find((beatmap) => beatmap.mapID === score.mapID)?.name.toLowerCase(); // more assuming
+                            if(name) {
+                                if (!team.scores[name])
+                                    team.scores[name] = [score.score]
+                                else
+                                    team.scores[name].push(score.score);
+                            }
                         }
                     }
                     for (const name of Object.keys(team.scores)) {
@@ -292,7 +334,7 @@ export default class QualifierScoresTable extends Vue {
                             team.average = Math.round(team.average/team.count);
                             return team;
                         });
-                        teamScores.sort((a, b) => b.average! - a.average!); //more assuming
+                        teamScores.sort((a, b) => b.average - a.average);
                         break;
                     case "max":
                         teamScores.map((team) => {
@@ -308,7 +350,7 @@ export default class QualifierScoresTable extends Vue {
                             team.average /= team.count;
                             return team;
                         });
-                        teamScores.sort((a, b) => b.average! - a.average!); //more assuming
+                        teamScores.sort((a, b) => b.average - a.average);
                         break;
                     case "avg":
                         for (const name of Object.keys(this.avgScores)) {
@@ -325,8 +367,7 @@ export default class QualifierScoresTable extends Vue {
                                 return team;
                             });
                         }
-                        teamScores.sort((a, b) => b.average! - a.average!); // more assuming
-                        break;
+                        teamScores.sort((a, b) => b.average - a.average);
                     case "seeding":
                         for (const name of Object.keys(this.topScores)) {
                             this.topScores[name] = 1;
@@ -345,7 +386,7 @@ export default class QualifierScoresTable extends Vue {
                             team.average = avgPlacement;
                             return team;
                         });
-                        teamScores.sort((a, b) => a.average! - b.average!); //more assuming
+                        teamScores.sort((a, b) => a.average - b.average);
                         teamScores = teamScores.map((team, i) => {
                             team.average = i+1;
                             return team;

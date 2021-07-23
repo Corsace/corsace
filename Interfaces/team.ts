@@ -12,14 +12,6 @@ export interface TeamInfo {
     seed: "A" | "B" | "C" | "D" | null;
     rank: number
     members: UserOpenInfo[] 
-    style?: Record<string, any>;
-    scores: ScoreInfo[]
-    best?: string
-    worst?: string
-    average?: number
-    count?: number
-    qualifier?: QualifierLobby | null
-    time?: Date
 }
 
 
