@@ -12,6 +12,7 @@ export interface TeamInfo {
     seed: "A" | "B" | "C" | "D" | null;
     rank: number
     members: UserOpenInfo[] 
+    qualifier?: QualifierLobby | null
 }
 
 

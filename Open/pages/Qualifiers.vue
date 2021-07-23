@@ -94,16 +94,7 @@ export default class Qualifiers extends Vue {
     @qualifierModule.State scores!: ScoreInfo[]
     @qualifierModule.State mappool!: MappoolInfo
     @qualifierModule.State teams!: TeamInfo[]
-    //@qualifierModule.State section!: string
-    //@qualifierModule.State subSection!: string
-    //@qualifierModule.State scoringType!: string
-
     @qualifierModule.Action publicize;
-    @qualifierModule.Action setSection;
-    @qualifierModule.Action setSubSection;
-    @qualifierModule.Action setScoringType;
-
-    @qualifierModule.Getter getSection!: string
 
     @State team!: TeamInfo;
     @State loggedInUser!: UserOpenInfo;

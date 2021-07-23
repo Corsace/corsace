@@ -79,6 +79,7 @@ export interface QualifierScoreTeam {
     slug: string;
     id: number;
     style?: Record<string, any>;
+    members: UserOpenInfo[];
     scores: ScoreInfo[];
     best: string;
     worst: string;
@@ -269,6 +270,7 @@ export default class QualifierScoresTable extends Vue {
                     slug: team.slug,
                     name: team.name,
                     id: team.id,
+                    members: team.members,
                     scores: [],
                     best: "nm1",
                     worst: "nm1",

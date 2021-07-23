@@ -32,6 +32,10 @@ export const mutations: MutationTree<QualifierState> = {
         state.teams.push(team)
     },
 
+    setScores (state, scores) {
+        state.scores = scores
+    }
+
 }
 
 export const getters: GetterTree<QualifierState, QualifierState> = {
@@ -107,7 +111,17 @@ let testScore: ScoreInfo = {
 
 }
 
-let testScores: ScoreInfo[] = [testScore, testScore]
+let testScore2: ScoreInfo = {
+    qualifier: 1,
+    time: new Date(2021,10,30),
+    score: 421421,
+    mapID: "3066907",
+    team: 123,
+    user: "4323406",
+
+}
+
+let testScores: ScoreInfo[] = [testScore, testScore2]
 
 let TestTeam1: TeamInfo = {
     id: 123,
@@ -203,7 +217,7 @@ export const actions: ActionTree<QualifierState, QualifierState> = {
             console.error(data.error);
             return;
         }*/
-        state.scores = data;
+        commit("setScores", data);
         const nonUniqueTeams: TeamInfo[] = ([] as TeamInfo[]).concat.apply([], state.qualifiers.map(qualifier => qualifier.teams))
         const ids = {};
         commit("setTeams", []);
@@ -222,19 +236,6 @@ export const actions: ActionTree<QualifierState, QualifierState> = {
             alert("Ok done lol");
             dispatch("refresh")
         }
-    },
-
-    setSection ({commit}, section) {
-        console.log("called with: ", section)
-        commit("setSection", section)
-    },
-
-    setSubSection ({commit}, subSection) {
-        commit("setSubSection", subSection)
-    },
-
-    setScoringType ({commit}, scoringType) {
-        commit("setScoringType", scoringType)
     },
 
 }
