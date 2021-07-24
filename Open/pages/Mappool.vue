@@ -284,7 +284,7 @@ testData: dataPackage = {
             ban: 0,
             matchBan: 0,
         }
-    }//pickBanInfo | null = null
+    }
     mappack = ""
     sheet = ""
     nextPool = ""
@@ -294,18 +294,16 @@ testData: dataPackage = {
     availablePools: string[] = []
     unavailablePools: string[] = []
     currentStagePool = "quarter-finals"        
-    beatmaps: MappoolMap[] = []
 
     async mounted () {
         console.log('ping')
         await this.refresh();
-        this.beatmaps = this.getBeatmaps()
         console.log('pong   ')
 
     }
 
 
-    getBeatmaps () {
+    get beatmaps () {
         if (!this.mappool || this.mappool.length === 0)
             return defaultMaps;
         let pool = this.mappool

@@ -102,19 +102,10 @@ export default class QualifierScoresTable extends Vue {
     topScores = {}
     avgScores = {}
     countScores = {}    
-    beatmaps: MappoolMap[] = []
-    teamScores: QualifierScoreTeam[] = []
-    userScores: QualifierScoreUser[] = []
 
     
-    mounted () {
-        this.beatmaps = this.getBeatmaps();
-        this.teamScores = this.getTeamScores();
-        this.userScores = this.getUserScores();
-    }
-
     
-    getBeatmaps () {
+    get beatmaps () {
         if (!this.mappool || this.mappool.length === 0)
             return defaultMaps;
         let pool = this.mappool
@@ -135,7 +126,7 @@ export default class QualifierScoresTable extends Vue {
         return flat;
     }
 
-    getUserScores () {
+    get userScores () {
         if (!this.teams || this.teams.length === 0)
             return [];
         
@@ -261,7 +252,7 @@ export default class QualifierScoresTable extends Vue {
         return userScores;
     }
     
-    getTeamScores() {
+    get teamScores() {
             if (!this.teams || this.teams.length === 0)
                 return [];
 
