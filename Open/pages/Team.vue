@@ -191,6 +191,7 @@ import { UserOpenInfo } from "../../Interfaces/user";
 import { Invitation } from "../../Interfaces/invitation";
 
 @Component({
+    name: 'team',
     components: {
         PlayerInvite,
         PlayerInvited,

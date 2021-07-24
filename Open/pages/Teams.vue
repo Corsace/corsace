@@ -31,6 +31,7 @@ import { UserOpenInfo } from "../../Interfaces/user";
 const teamsModule = namespace("teams");
 
 @Component({
+    name: 'teams',
     components: {
         TeamListComponent,
         Loading,

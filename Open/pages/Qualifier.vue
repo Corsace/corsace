@@ -60,6 +60,7 @@ import { TeamInfo } from "../../Interfaces/team";
 import { UserComponent } from "nodesu";
 
 @Component({
+    name: 'qualifier',
     components: {
         QualifierScoresTable,
         Loading,

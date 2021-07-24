@@ -106,7 +106,7 @@
 <script lang='ts'>
 import axios from "axios";
 import regeneratorRuntime from "regenerator-runtime";
-import Construction from "./Construction.vue";
+import Construction from "../components/Construction.vue";
 import ModGroupComponent from "../components/mappool/ModGroupComponent.vue";
 import { Component, Vue } from "vue-property-decorator"
 import { State } from "vuex-class"
@@ -180,6 +180,7 @@ export interface dataPackage {
 }
 
 @Component({
+    name: 'mappool',
     components: { 
         ModGroupComponent,
         Construction

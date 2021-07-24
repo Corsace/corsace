@@ -99,6 +99,7 @@ import { UserOpenInfo } from "../../Interfaces/user"
 
 
 @Component({
+    name: 'talent',
     components: {
         Loading,
     }

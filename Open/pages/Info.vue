@@ -75,9 +75,13 @@
     </div>
 </template>
 
-<script>
-export default {
+<script lang='ts'>
+import { Component, Vue } from "vue-property-decorator"
 
+@Component({
+    name: 'info'
+})
+export default class Info extends Vue {
 }
 </script>
 

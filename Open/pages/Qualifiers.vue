@@ -80,6 +80,7 @@ import { QualifierLobby } from "../../Interfaces/qualifier";
 const qualifierModule = namespace("qualifiers");
 
 @Component({
+    name: 'qualifiers',
     components: { 
         ModGroupComponent,
         QualifierListComponent,
@@ -106,9 +107,6 @@ export default class Qualifiers extends Vue {
         
     async created () {
         console.log("created");
-        //this.setSection("qualifiers");
-        //this.setSubSection("teams");
-        //this.setScoringType("average");
         this.getList();
         
     }

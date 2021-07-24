@@ -7,10 +7,8 @@
             <li class="headerListPoint"><img src="../../../Assets/img/open/bullet.png"></li>
             <li class="headerListPoint"><router-link to="/info">{{ $t('open.header.info') }}</router-link></li>
             <li class="headerListPoint"><img src="../../../Assets/img/open/bullet.png"></li>
-            <!-- 
-                temporarily disabled
-            <li v-if="user.isReferee" class="headerListPoint"><router-link to="/referee">REFEREE</router-link></li>
-            <li v-if="user.isReferee" class="headerListPoint"><img src="../../../Assets/img/open/bullet.png"></li> -->
+            <li v-if="loggedInUser && loggedInUser.openStaff.isReferee" class="headerListPoint"><router-link to="/referee">REFEREE</router-link></li>
+            <li v-if="loggedInUser && loggedInUser.openStaff.isReferee" class="headerListPoint"><img src="../../../Assets/img/open/bullet.png"></li>
             <li class="headerListPoint"><router-link to="/qualifiers">{{ $t('open.header.qualifiers') }}</router-link></li>
             <li class="headerListPoint"><img src="../../../Assets/img/open/bullet.png"></li>
             <li class="headerListPoint"><router-link to="/pickems">PICKEMS</router-link></li>

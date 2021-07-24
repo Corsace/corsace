@@ -2,8 +2,12 @@
     <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 </template>
 
-<script>
-export default {
+<script lang='ts'>
+import { Component, Vue } from "vue-property-decorator"
+@Component({
+  name: 'loading'
+})
+export default class Loading extends Vue {
 
 }
 </script>

@@ -20,6 +20,7 @@ import Header from "../components/header/Header.vue";
     components: {
         Header,
     },
+    name: 'default',
     head () {
         return {
             title: "Corsace",

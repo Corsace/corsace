@@ -1,3 +1,5 @@
+import { MappoolMap } from "./mappool";
+
 export enum PickStatus {
     picked,
     banned
@@ -95,3 +97,18 @@ export function modsToString (m: Mods): string {
 
     return stringBuilder;
 }
+
+export interface MatchInfo {
+    bestOf: number
+    mp: string
+    matchID: string
+    id: string
+    sets: MatchSet[]
+    bans: string[]
+}
+
+export interface MatchSet {
+    bans: MappoolMap[]
+    picks: MappoolMap[]
+}
+
