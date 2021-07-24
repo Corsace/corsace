@@ -183,7 +183,7 @@ export default class QualifierScoresTable extends Vue {
                         
                     }
                 }
-                if (user.count !== 0)
+                if (user.count !== 0){}
                     user.average = Math.round(user.average/user.count);
 
                 return user;
@@ -286,7 +286,7 @@ export default class QualifierScoresTable extends Vue {
                         if (score.team === team.id) {
                             team.qualifier = score.qualifier;
                             team.time = score.time;
-                            const name = this.beatmaps.find((beatmap) => beatmap.mapID === score.mapID)?.name.toLowerCase(); // more assuming
+                            const name = this.beatmaps.find((beatmap) => beatmap.mapID === score.mapID)?.name.toLowerCase();
                             if(name) {
                                 if (!team.scores[name])
                                     team.scores[name] = [score.score]
@@ -356,11 +356,12 @@ export default class QualifierScoresTable extends Vue {
                                     team.average += team[name];
                                     team.count++;
                                 }
-                                team.average /= team.count;
+                                team.average /= team.count;       
                                 return team;
                             });
                         }
                         teamScores.sort((a, b) => b.average - a.average);
+                        break;
                     case "seeding":
                         for (const name of Object.keys(this.topScores)) {
                             this.topScores[name] = 1;
@@ -384,6 +385,7 @@ export default class QualifierScoresTable extends Vue {
                             team.average = i+1;
                             return team;
                         });
+                        break;
                 }
             }
             if (this.scoringType !== "sum" && this.scoringType !== "seeding" && this.scoringType !== "costs")
