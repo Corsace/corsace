@@ -10,7 +10,7 @@ import { Beatmapset } from "./beatmapset";
 import { config } from "node-config-ts";
 import { GuildMember } from "discord.js";
 import { getMember } from "../Server/discord";
-import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
+import { UserChoiceInfo, UserInfo, UserMCAInfo, UserOpenInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
@@ -67,7 +67,9 @@ export class User extends BaseEntity {
     @Column({ nullable: true })
     rank?: number;
 
-    @OneToMany(() => TeamInvitation, invitation => invitation.target)
+    @OneToMany(() => TeamInvitation, invitation => invitation.target, {
+        eager: true,
+    })
     invitations?: TeamInvitation[];
 
     @ManyToOne(() => Team, team => team.players)
@@ -342,5 +344,26 @@ export class User extends BaseEntity {
         };
 
         return mcaInfo;
+    }
+
+    public getOpenInfo = async function(this: User): Promise<UserOpenInfo> {
+        let member: GuildMember | undefined;
+        if (this.discord?.userID)
+            member = await getMember(this.discord.userID);
+        const openInfo: UserOpenInfo = await this.getInfo(member) as UserOpenInfo;
+        openInfo.invites = this.invitations;
+        openInfo.team = this.team;
+        if (member)
+            openInfo.openStaff = {
+                scheduler: member.roles.cache.has(config.discord.roles.corsace.scheduler),
+                mappooler: member.roles.cache.has(config.discord.roles.open.mappooler),
+                mapper: member.roles.cache.has(config.discord.roles.open.mapper),
+                testplayer: member.roles.cache.has(config.discord.roles.open.testplayer),
+                scrim: member.roles.cache.has(config.discord.roles.open.scrim),
+                advisor: member.roles.cache.has(config.discord.roles.open.advisor),
+                streamer: member.roles.cache.has(config.discord.roles.open.streamer),
+                referee: member.roles.cache.has(config.discord.roles.open.referee),
+            };
+        return openInfo;
     }
 }

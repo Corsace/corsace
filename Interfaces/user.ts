@@ -14,6 +14,21 @@ export interface UserMCAInfo extends UserInfo {
     }
 }
 
+export interface UserOpenInfo extends UserInfo {
+    invites: Invitation[];
+    team: Team;
+    openStaff: {
+        scheduler: boolean;
+        mappooler: boolean;
+        mapper: boolean;
+        testplayer: boolean;
+        scrim: boolean;
+        advisor: boolean;
+        streamer: boolean;
+        referee: boolean;
+    }
+}
+
 export interface UserInfo {
     corsaceID: number;
     discord: {

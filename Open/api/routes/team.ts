@@ -1,13 +1,16 @@
 import Router, { Middleware } from "@koa/router";
 import * as Jimp from "jimp";
+import axios from "axios";
 import { unlink } from "fs/promises";
 import { config } from "node-config-ts";
+import { User as APIUser } from "nodesu";
 import { nameFilter } from "../../../Interfaces/team";
 import { Team } from "../../../Models/team";
 import { TeamInvitation } from "../../../Models/teamInvitation";
-import { User } from "../../../Models/user";
+import { OAuth, User } from "../../../Models/user";
 import { discordGuild, getMember } from "../../../Server/discord";
 import { hasNoTeam, hasTeam, isCaptain, isHeadStaff, isLoggedInDiscord, isRegistration, notOpenStaff } from "../../../Server/middleware";
+import { RequestStatus } from "../../../Interfaces/requests";
 
 const teamRouter = new Router;
 
@@ -54,12 +57,22 @@ teamRouter.get("/", async (ctx) => {
 
 // Search for a team
 teamRouter.get("/search", async (ctx) => {
+    let teamQ = Team
+        .createQueryBuilder("team");
+    if (ctx.query.name)
+        teamQ = teamQ.where(`name LIKE :criteria OR slug LIKE :criteria`, { criteria: `%${ctx.query.name}%`});
 
+    const teams = await teamQ.getMany();
+    ctx.body = { teams };
 });
 
 // Get pending invitations for team
 teamRouter.get("/pendingInvitations", hasTeam, async (ctx) => {
-
+    const invitations = await TeamInvitation.find({
+        team: ctx.state.team,
+        status: RequestStatus.Pending,
+    });
+    ctx.body = invitations;
 });
 
 // Gets all teams
@@ -183,7 +196,61 @@ teamRouter.post("/avatar", isLoggedInDiscord, isCaptain, async (ctx) => {
 
 // Invite player to team
 teamRouter.post("/invite", isLoggedInDiscord, isCaptain, isRegistration, async (ctx) => {
+    const osuUsername = ctx.request.body.target as string;
+    if(!osuUsername) {
+        ctx.body = { error: "No username found" };
+        return;
+    }
 
+    // Find user
+    let { data } = await axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${osuUsername}&type=id`);
+    if (data.length === 0)
+        data = (await axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${osuUsername}&type=string`)).data;
+
+    if (!data || data.length === 0) {
+        ctx.body = { error: `No username or user ID ${osuUsername} exists in osu!`};
+        return;
+    }
+
+    const apiUser = new APIUser(data[0]);
+
+    let user = await User.findOne({ osu: { userID: `${apiUser.userId}` } });
+    if (!user) {
+        user = new User;
+        user.osu = new OAuth;
+        user.osu.userID = `${apiUser.userId}`;
+        user.osu.username = apiUser.username;
+        user.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;
+        user = await user.save();
+    } else {
+        // Check if user has a team already
+        if (user.team) {
+            ctx.body = { error: "User is already in a team currently!" };
+            return;
+        } else if (Object.values((await user.getOpenInfo()).openStaff).some(v => v === true)) {
+            ctx.body = { error: "User is Corsace Open staff!" };
+            return;
+        }
+    }
+
+    // Find if an invitation to this user from this team exists already
+    const team: Team = ctx.state.team;
+    let inv = await TeamInvitation.findOne({
+        target: user,
+        team,
+    });
+    if (inv) {
+        ctx.body = { error: "An invitation to this player already exists!" };
+        return;
+    }
+
+    // Actually create the invitation now
+    inv = new TeamInvitation;
+    inv.team = team;
+    inv.target = user;
+    await inv.save();
+
+    ctx.body = inv;
 });
 
 // Cancel player invitation to team
