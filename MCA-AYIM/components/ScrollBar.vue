@@ -37,6 +37,19 @@ export default class ScrollBar extends Vue {
             scrollTrack.addEventListener("mousedown", this.handleJump);
         }
     }
+
+    beforeDestroy () {
+        const list = document.querySelector(this.selector);
+        const scrollTrack = document.querySelector(".scroll__bar");
+
+        if (list) {
+            list.removeEventListener("scroll", this.handleScroll);
+        }
+
+        if (scrollTrack) {
+            scrollTrack.removeEventListener("mousedown", this.handleJump);
+        }
+    }
     
     get relativePos (): string {
         const percent = this.scrollPos / this.scrollSize * 100;

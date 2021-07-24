@@ -69,21 +69,15 @@
 
     &__header {
         @extend %flex-box;
+        position: static;
         font-size: $font-lg;
         font-weight: 500;
-        position: sticky;
         top: 0;
         z-index: 10;
 
         &:hover {
             background-color: black;
             cursor: pointer;
-            @include transition;
-        }
-
-        &--active {
-            border-radius: 0 !important;
-            background-color: black !important;
             @include transition;
         }
 
@@ -101,6 +95,13 @@
         position: relative;
         flex-direction: column;
     }
+}
+
+div.staff-container__header--active {
+    position: sticky;
+    border-radius: 0;
+    background-color: black;
+    @include transition;
 }
 
 .staff-filters {
@@ -155,5 +156,6 @@
 
     &__list {
         display: flex;
+        flex-wrap: wrap;
     }
 }

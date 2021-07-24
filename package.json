@@ -61,8 +61,7 @@
       "nodesu": "https://github.com/ThePooN/nodesu/archive/502d65b9f84dd2fbe0a24f4eeaf9359305f8bcc3.tar.gz",
       "sass": "^1.32.2",
       "sass-loader": "^10.1.0",
-      "ts-node-dev": "^1.1.8",
-      "vue-window-size": "^0.6.2"
+      "ts-node-dev": "^1.1.8"
    },
    "scripts": {
       "build:ayim": "cd ./AYIM && nuxt-ts build",
@@ -70,22 +69,22 @@
       "build:main": "cd ./Main && nuxt-ts build",
       "build:open": "cd ./Open && nuxt-ts build",
       "build:api": "cross-env NODE_ENV=production tsc --project Server/tsconfig.json",
-      
+
       "ayim": "cd ./AYIM && nuxt-ts start",
       "mca": "cd ./MCA && nuxt-ts start",
       "main": "cd ./Main && nuxt-ts start",
       "open": "cd ./Open && nuxt-ts start",
       "api": "cd Server && node dist/Server/index.js",
-      
+
       "ayim-dev": "cd ./AYIM && nuxt-ts",
       "mca-dev": "cd ./MCA && nuxt-ts",
       "main-dev": "cd ./Main && nuxt-ts",
       "open-dev": "cd ./Open && nuxt-ts",
       "api-dev": "cross-env NODE_ENV=development ts-node-dev --respawn Server/index.ts",
-      
+
       "dev": "concurrently -n MCA,AYIM,MAIN,OPEN,API -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold,black.bgYellow.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\" \"npm:api-dev\"",
       "dev-client": "concurrently -n MCA,AYIM,MAIN,OPEN -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\"",
-      
+
       "lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",
       "lintfix": "eslint --fix --ext .ts,.vue --ignore-path .gitignore .",
 

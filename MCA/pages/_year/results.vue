@@ -34,9 +34,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { Getter, Mutation, State, namespace } from "vuex-class";
-import { vueWindowSizeMixin } from "vue-window-size";
 
 import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import NoticeModal from "../../../MCA-AYIM/components/NoticeModal.vue";
@@ -91,6 +90,14 @@ export default class Results extends Vue {
     @stageModule.Action updateStage;
     @stageModule.Action setInitialData;
 
+    windowWidth = -1;
+    mobile = false;
+
+    @Watch("windowWidth")
+    onWindowWidthChanged (newWidth: number) {
+        this.mobile = newWidth < 768;
+    } 
+
     // label must match a field in BOTH assets/lang/{lang}/mca.results.*
     //   AND a property of either BeatmapResults or UserResults 
     columns: ResultColumn[] = [
@@ -115,10 +122,6 @@ export default class Results extends Vue {
         );
     }
 
-    get mobile (): boolean {
-        return vueWindowSizeMixin.computed.windowWidth() < 768;
-    }
-
     mounted () {
         if (!(this.phase?.phase === "results" || this.isMCAStaff)) {
             this.$router.push("/" + this.$route.params.year);
@@ -129,6 +132,22 @@ export default class Results extends Vue {
         this.reset();
         this.updateSection("beatmaps");
         this.setInitialData();
+        if (process.client) {
+            window.addEventListener("resize", this.handleWindowResize);
+            this.handleWindowResize();
+        }
+    }
+
+    beforeDestroy () {
+        if (process.client) {
+            window.removeEventListener("resize", this.handleWindowResize);
+        }
+    }
+
+    handleWindowResize () {
+        if (process.client) {
+            this.windowWidth = window.innerWidth;
+        }
     }
 
 }
