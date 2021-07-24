@@ -209,7 +209,7 @@ export default class BaseChoiceCard extends Vue {
     }
 
     &-vote {
-        font-size: 3rem;
+        font-size: 2rem;
         font-weight: bold;
     }
 
