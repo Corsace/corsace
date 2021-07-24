@@ -19,7 +19,9 @@
 
 import { Vue, Component } from "vue-property-decorator";
 
-
+@Component({
+    name: 'index'
+})
 export default class Index extends Vue {
 }
 </script>
