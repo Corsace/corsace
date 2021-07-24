@@ -206,7 +206,7 @@ TestQualifier: QualifierLobby = {
 
         this.qualifier = this.TestQualifier
         this.mappool = this.testMappool
-        return 
+        return //remember to remove
         const { data } = await axios.get(`/api/qualifier/${this.$route.params.id}`)
         if (data.error)
             return alert(data.error)
@@ -216,12 +216,9 @@ TestQualifier: QualifierLobby = {
     }
 
     async addMP () {
-
-        //todo: fix this
-        return
         if (!this.regex.test(this.mp))
             return alert("Invalid mp link!");
-        const result = this.regex.exec(this.mp)[2];
+        const result = this.regex.exec(this.mp)?[2] : '';
         const data = {
             id: this.qualifier?.id,
             mp: result,
