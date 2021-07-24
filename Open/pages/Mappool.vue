@@ -10,13 +10,13 @@
                         <div class="mappoolSelected" v-if="$route.path == `/mappool/${item}`">
                             <img :src="getSelectedIcon()">
                             <div class="stageNodeText"> 
-                                {{ $i18n.messages[$i18n.locale].rounds[mappool.slug] }} 
+                                {{ $i18n.messages[$i18n.locale].open.rounds[mappool.slug] }} 
                             </div>
                         </div>
                         <div class="mappoolSelected" v-else-if="$route.path == '/mappool' && item == currentStagePool">
                             <img :src="getSelectedIcon()">
                             <div class="stageNodeText"> 
-                                {{ $i18n.messages[$i18n.locale].rounds[mappool.slug] }} 
+                                {{ $i18n.messages[$i18n.locale].open.rounds[mappool.slug] }} 
                             </div>
                         </div>
                         <router-link class="mappoolUnselected" v-else :to="`/mappool/${item}`">
@@ -35,22 +35,22 @@
             </div>
             <div class="mappool">
                 <div class="round">
-                    <div class="roundName">{{ $i18n.messages[$i18n.locale].rounds[mappool.slug] }}</div>
+                    <div class="roundName">{{ $i18n.messages[$i18n.locale].open.rounds[mappool.slug] }}</div>
                 </div>
                 <div class="edit">
-                    <div v-if="user.isMappooler && !mappool.public && !edit" @click="edit = true">
+                    <div v-if="loggedInUser.openStaff.isMappooler && !mappool.public && !edit" @click="edit = true">
                         <img src="../../Assets/img/open/editMappool.png">
                         EDIT
                     </div>
-                    <div class="editActive" v-else-if="user.isMappooler && !mappool.public && edit" @click="edit = false">
+                    <div class="editActive" v-else-if="loggedInUser.openStaff.isMappooler && !mappool.public && edit" @click="edit = false">
                         <img src="../../Assets/img/open/editSave.png">
                         CLOSE EDIT
                     </div>
-                    <div v-if="user.isHeadStaff && !mappool.public" @click="publish">
+                    <div v-if="loggedInUser.staff.headStaff && !mappool.public" @click="publish">
                         <img src="../../Assets/img/open/publish.png">
                         PUBLISH
                     </div>
-                    <div v-else-if="user.isHeadStaff && mappool.public" @click="unpublish">
+                    <div v-else-if="loggedInUser.staff.headStaff && mappool.public" @click="unpublish">
                         <img src="../../Assets/img/open/publish.png">
                         UNPUBLISH
                     </div>
@@ -71,8 +71,8 @@
                 </div>
                 <div class="mappoolList">
                     <div v-for="(modGroup, index) in mappool.modGroups" :key="index">
-                        <ModGroupComponent :user="user" :mod-group="modGroup" :round="mappool.name" :edit="edit" @refresh="refresh"></ModGroupComponent>
-                    </div>
+                        <ModGroupComponent :mod-group="modGroup" :round="mappool.name" :edit="edit" @refresh="refresh"></ModGroupComponent>
+                    </div>  
                 </div>
                 <div class="mappoolSubHeaders" style="margin-top:20px;" v-if="Object.keys(pickBans).length > 2 && beatmaps">
                     <div @click="statType='raw'" class="mappoolSubHeader" :class="{ mappoolSubHeaderActive: statType==='raw' }">RAW</div>
@@ -103,11 +103,16 @@
     </div>
 </template>
 
-<script>
+<script lang='ts'>
 import axios from "axios";
 import regeneratorRuntime from "regenerator-runtime";
-import Construction from "./Construction";
-import ModGroupComponent from "../components/mappool/ModGroupComponent";
+import Construction from "./Construction.vue";
+import ModGroupComponent from "../components/mappool/ModGroupComponent.vue";
+import { Component, Vue } from "vue-property-decorator"
+import { State } from "vuex-class"
+import { UserOpenInfo } from "../../Interfaces/user";
+import { MappoolInfo, MappoolMap, ModGroup } from "../../Interfaces/mappool";
+import { MappoolBeatmap } from "../../Models/tournaments/mappoolBeatmap";
 
 const pools = [
     'qualifiers',
@@ -119,7 +124,7 @@ const pools = [
     'grand-finals',
 ];
 
-const defaultMaps = [
+const defaultMaps: MappoolMap[] = [
     {name: "NM1"},
     {name: "NM2"},
     {name: "NM3"},
@@ -152,172 +157,304 @@ const iconSelected = [
     require('../../Assets/img/open/grand-finals-sel.png'),
 ]
 
-export default {
-    components: {
-        Construction,
+export interface pickBanInfo {
+    total: {
+        pick: number,
+        ban: number,
+        matchBan: number,
+    },
+    max: {
+        pick: number,
+        ban: number,
+        matchBan: number,
+    }
+}
+
+export interface dataPackage {
+    mappool: MappoolInfo,
+    next: boolean,
+    previous: boolean,
+    picks: string[]
+    bans: string[]
+    matchBans: string[]
+}
+
+@Component({
+    components: { 
         ModGroupComponent,
+        Construction
     },
-    data: () => ({
-        mappool: [],
-        pickBans: {},
-        mappack: "",
-        sheet: "",
-        nextPool: "",
-        prevPool: "",
-        statType: "raw",
-        edit: false,
-        availablePools: [],
-        unavailablePools: [],
-        currentStagePool: "",        
-    }),
-    props: {
-        user: Object,
-    },
-    created: async function() {
+})
+export default class Mappool extends Vue {
+    testBeatmap: MappoolMap = {
+    mod: "NM",
+    mapID: "3066907",
+    name: "fuck",
+    setID: "1496040",
+    artist: "asdf",
+    title: "asdf",
+    difficulty: "test",
+    time: "1:30",
+    bpm: 130,
+    stars: 5.6,
+
+}
+
+testBeatmap2: MappoolMap = {
+    mod: "HD",
+    mapID: "2787950",
+    name: "fuck",
+    setID: "1346246",
+    artist: "asdf",
+    title: "asdf",
+    difficulty: "test",
+    time: "1:30",
+    bpm: 130,
+    stars: 5.6,
+
+}
+
+testBeatmap3: MappoolMap = {
+    mod: "HD",
+    mapID: "2944289",
+    name: "fuck",
+    setID: "1430235",
+    artist: "asdf",
+    title: "asdf",
+    difficulty: "test",
+    time: "1:30",
+    bpm: 130,
+    stars: 5.6,
+
+}
+
+testBeatmap4: MappoolMap = {
+    mod: "NM",
+    mapID: "2900406",
+    name: "fuck",
+    setID: "1401591",
+    artist: "asdf",
+    title: "asdf",
+    difficulty: "test",
+    time: "1:30",
+    bpm: 130,
+    stars: 5.6,
+
+}
+
+testModgroup: ModGroup = {
+    mod: "NM",
+    beatmaps: [this.testBeatmap, this.testBeatmap4]
+
+}
+
+testModgroup2: ModGroup = {
+    mod: "HD",
+    beatmaps: [this.testBeatmap2, this.testBeatmap3]
+
+}
+testMappool: MappoolInfo = {
+    name: "test",
+    sheet: "test",
+    mappack: "test",
+    modGroups: [this.testModgroup, this.testModgroup2],
+    length: 2,
+    slug: 'quarter-finals'
+}
+
+testData: dataPackage = {
+    mappool: this.testMappool,
+    next: true,
+    previous: false,
+    picks: ['2900406', '2944289'],
+    bans: ['2944289', '2787950'],
+    matchBans: ['3066907', '3066907'],
+}
+    @State loggedInUser!: UserOpenInfo
+
+    mappool: MappoolInfo | null = null
+    pickBans = {
+        total: {
+            pick: 0,
+            ban: 0,
+            matchBan: 0,
+        },
+        max: {
+            pick: 0,
+            ban: 0,
+            matchBan: 0,
+        }
+    }//pickBanInfo | null = null
+    mappack = ""
+    sheet = ""
+    nextPool = ""
+    prevPool = ""
+    statType = "raw"
+    edit = false
+    availablePools: string[] = []
+    unavailablePools: string[] = []
+    currentStagePool = "quarter-finals"        
+    beatmaps: MappoolMap[] = []
+
+    async mounted () {
+        console.log('ping')
         await this.refresh();
-    },
-    computed: {
-        beatmaps: function() {
-            if (!this.mappool || this.mappool.length === 0)
-                return defaultMaps;
+        this.beatmaps = this.getBeatmaps()
+        console.log('pong   ')
 
-            let maps = this.mappool.modGroups.map((modGroup) => {
-                return modGroup.beatmaps.map((beatmap, i) => {
-                    const url = `'https://assets.ppy.sh/beatmaps/${beatmap.setID}/covers/cover.jpg'`;
-                    beatmap.mod = modGroup.mod;
-                    beatmap.name = modGroup.mod + (i+1);
-                    beatmap.style = {
-                        background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + url + ')',
-                    }
-                    return beatmap;
-                });
+    }
+
+
+    getBeatmaps () {
+        if (!this.mappool || this.mappool.length === 0)
+            return defaultMaps;
+        let pool = this.mappool
+        let maps = pool.modGroups.map((modGroup) => {
+            return modGroup.beatmaps.map((beatmap, i) => {
+                const url = `'https://assets.ppy.sh/beatmaps/${beatmap.setID}/covers/cover.jpg'`;
+                beatmap.mod = modGroup.mod;
+                beatmap.name = modGroup.mod + (i+1);
+                beatmap.style = {
+                    background: 'linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)), url(' + url + ')',
+                }
+                return beatmap;
             });
-            maps = [].concat.apply([], maps);
-            if (maps.length === 0)
-                return defaultMaps;
-            return maps;
-        },  
-    },
-    methods: {
-        refresh: async function() {
-            let data;
-            let currentStageData = (await axios.get("/api/mappool")).data;
-            this.currentStagePool = currentStageData.mappool.slug
-            if(this.$route.params.round)
-                data = (await axios.get("/api/mappool?poolSlug=" + this.$route.params.round)).data;
-            else
-                data = currentStageData
+        });
+        let flat: MappoolMap[] = ([] as MappoolMap[]).concat.apply([], maps);
+        if (flat.length === 0)
+            return defaultMaps;
+        return flat;
+    }
 
-            if (data.mappool) {
-                this.mappool = data.mappool;
+
+    async refresh () {
+        let data;
+        let currentStageData = this.testData//(await axios.get("/api/mappool")).data;
+        this.currentStagePool = currentStageData.mappool.slug
+        
+        if(this.$route.params.round)
+            data = (await axios.get("/api/mappool?poolSlug=" + this.$route.params.round)).data;
+        else
+            data = currentStageData
+
+        if (data.mappool) {
+            this.mappool = data.mappool;
+            if(this.mappool) {
                 const index = pools.indexOf(this.mappool.slug);
                 if (data.next)
                     this.nextPool = pools[index+1];
                 if (data.previous)
                     this.prevPool = pools[index-1];
-            } else
-                this.$router.push({ path: '/404' });
-
-            const index = pools.indexOf(currentStageData.mappool.slug);
-            for (var i = 0; i <= index; i++) {
-                this.availablePools.push(pools[i])
             }
-            for (var i = index + 1; i < pools.length; i++) {
-                this.unavailablePools.push(pools[i])
-            }
+            
+        } else
+            this.$router.push({ path: '/404' });
 
-            this.pickBans.total = {
+        const index = pools.indexOf(currentStageData.mappool.slug);
+        for (var i = 0; i <= index; i++) {
+            this.availablePools.push(pools[i])
+        }
+        for (var i = index + 1; i < pools.length; i++) {
+            this.unavailablePools.push(pools[i])
+        }
+        this.pickBans.total = {
                 pick: data.picks.length,
                 ban: data.bans.length,
                 matchBan: data.matchBans.length,
             }
-            this.pickBans.max = {
-                pick: 0,
-                ban: 0,
-                matchBan: 0,
-            }
-            
-            if (data.picks) {
-                for (const pick of data.picks) {
-                    if (!this.pickBans[pick]) {
-                        this.pickBans[pick] = {
-                            pick: 1,
-                            ban: 0,
-                            matchBan: 0,
-                        }
-                    } else {
-                        this.pickBans[pick].pick++;
-                        this.pickBans.max.pick = Math.max(this.pickBans[pick].pick, this.pickBans.max.pick)
+        
+        if (data.picks) {
+            for (const pick of data.picks) {
+                if (!this.pickBans[pick]) {
+                    this.pickBans[pick] = {
+                        pick: 1,
+                        ban: 0,
+                        matchBan: 0,
                     }
+                } else {
+                    this.pickBans[pick].pick++;
+                    this.pickBans.max.pick = Math.max(this.pickBans[pick].pick, this.pickBans.max.pick)
                 }
             }
+        }
 
-            if (data.bans) {
-                for (const ban of data.bans) {
-                    if (!this.pickBans[ban]) {
-                        this.pickBans[ban] = {
-                            pick: 0,
-                            ban: 1,
-                            matchBan: 0,
-                        }
-                    } else {
-                        this.pickBans[ban].ban++;
-                        this.pickBans.max.ban = Math.max(this.pickBans[ban].ban, this.pickBans.max.ban)
+        if (data.bans) {
+            for (const ban of data.bans) {
+                if (!this.pickBans[ban]) {
+                    this.pickBans[ban] = {
+                        pick: 0,
+                        ban: 1,
+                        matchBan: 0,
                     }
+                } else {
+                    this.pickBans[ban].ban++;
+                    this.pickBans.max.ban = Math.max(this.pickBans[ban].ban, this.pickBans.max.ban)
                 }
             }
+        }
 
-            if (data.matchBans) {
-                for (const ban of data.matchBans) {
-                    if (!this.pickBans[ban]) {
-                        this.pickBans[ban] = {
-                            pick: 0,
-                            ban: 0,
-                            matchBan: 1,
-                        }
-                    } else {
-                        this.pickBans[ban].matchBan++;
-                        this.pickBans.max.matchBan = Math.max(this.pickBans[ban].matchBan, this.pickBans.max.matchBan)
+        if (data.matchBans) {
+            for (const ban of data.matchBans) {
+                if (!this.pickBans[ban]) {
+                    this.pickBans[ban] = {
+                        pick: 0,
+                        ban: 0,
+                        matchBan: 1,
                     }
+                } else {
+                    this.pickBans[ban].matchBan++;
+                    this.pickBans.max.matchBan = Math.max(this.pickBans[ban].matchBan, this.pickBans.max.matchBan)
                 }
             }
+        } 
 
-            if (this.mappool) {
-                this.mappack = this.mappool.mappack ? this.mappool.mappack : this.mappack;
-                this.sheet = this.mappool.sheet ? this.mappool.sheet : this.sheet;
-            }
-        },
-        publish: async function() {
-            if(confirm("Are you sure you want to publish this pool?")) {
-                await axios.patch("/api/mappool/publish?round=" + this.mappool.name.replace(/ /g, "%20"));
-                this.refresh();
-            }
-        },
-        unpublish: async function() {
-            if(confirm("Are you sure you want to unpublish this pool?")) {
-                await axios.patch("/api/mappool/unpublish?round=" + this.mappool.name.replace(/ /g, "%20"));
-                this.refresh();
-            }
-        },
-        addPack: async function() {
+        if (this.mappool) {
+            this.mappack = this.mappool.mappack ? this.mappool.mappack : this.mappack;
+            this.sheet = this.mappool.sheet ? this.mappool.sheet : this.sheet;
+        } 
+    }
+
+    async publish () {
+        if(confirm("Are you sure you want to publish this pool?") && this.mappool) {
+            await axios.patch("/api/mappool/publish?round=" + this.mappool.name.replace(/ /g, "%20"));
+            this.refresh();
+        }
+    }
+
+    async unpublish () {
+        if(confirm("Are you sure you want to unpublish this pool?") && this.mappool) {
+            await axios.patch("/api/mappool/unpublish?round=" + this.mappool.name.replace(/ /g, "%20"));
+            this.refresh();
+        }
+    }
+
+    async addPack () {
+        if (this.mappool) {
             await axios.patch("/api/mappool/mappack?round=" + this.mappool.name.replace(/ /g, "%20") + "&link=" + (this.mappack ? this.mappack : "empty"));
             this.refresh();
-        },
-        addSheet: async function() {
+        }
+    }
+
+    async addSheet () {
+        if (this.mappool)  {
             await axios.patch("/api/mappool/sheet?round=" + this.mappool.name.replace(/ /g, "%20") + "&link=" + (this.sheet ? this.sheet : "empty"));
             this.refresh();
-        },
-        getIcon: function(page) {
-            console.log(page)
-            const index = pools.indexOf(page)
-            return icon[index]
-        },
-        getSelectedIcon: function() {
+        }
+    }
+
+    getIcon (page) {
+        const index = pools.indexOf(page)
+        return icon[index]
+    }
+
+    getSelectedIcon () {
+        if(this.mappool){
             const index = pools.indexOf(this.mappool.slug)
             return iconSelected[index]
         }
-
     }
+
+    
 }
 </script>
 

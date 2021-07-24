@@ -18,6 +18,7 @@ export interface MappoolInfo {
     sheet: string
     modGroups: ModGroup[]
     length: number //check
+    slug: string
 
 }
 

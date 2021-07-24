@@ -53,7 +53,6 @@ import Loading from "../components/Loading.vue";
 import QualifierScoresTable from "../components/qualifiers/QualifierScoresTable.vue";
 import { Component, Vue } from "vue-property-decorator"
 import { State } from "vuex-class"
-import { vueWindowSizeMixin } from "vue-window-size";
 import { QualifierLobby } from "../../Interfaces/qualifier";
 import { MappoolInfo, MappoolMap, ModGroup } from "../../Interfaces/mappool";
 import { UserOpenInfo } from "../../Interfaces/user";
@@ -92,7 +91,8 @@ testMappool: MappoolInfo = {
     sheet: "test",
     mappack: "test",
     modGroups: [this.testModgroup, this.testModgroup],
-    length: 2
+    length: 2,
+    slug: 'qualifiers'
 }
 testUser1: UserOpenInfo = {
     corsaceID: 2,
@@ -167,7 +167,6 @@ testUser2: UserOpenInfo = {
     badges: 1,
     pp: 14000,
 }
-
 TestQualifier: QualifierLobby = {
     id: 2,
     time: new Date(2020,2,11),
