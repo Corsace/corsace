@@ -270,195 +270,6 @@ import { TeamInfo } from '../../Interfaces/team';
 })
 export default class Referee extends Vue {
 
-
-    
-
-
-testUser2: UserOpenInfo = {
-    corsaceID: 3,
-    discord: {
-        avatar: "https://a.ppy.sh/4323406?1625541513.gif",
-        userID: "4323406",
-        username: "VINXIS",
-    },
-    osu: {
-        avatar: "https://a.ppy.sh/12019633?1625400422.jpeg",
-        userID: "12019633",
-        username: "SteepHill",
-        otherNames: [],
-    },
-    staff: {
-        corsace: true,
-        headStaff: true,
-        staff: true,
-    },
-    openStaff: {
-        isMappooler: true,
-        isReferee: true,
-        isScheduler: true,
-    },
-    joinDate: new Date(2011,10,30),
-    lastLogin: new Date(2011,10,30),
-    canComment: false,
-    team: null,
-    pickemPoints: 1,
-    rank: 1,
-    badges: 1,
-    pp: 14000,
-}
-
-TestTeam1: TeamInfo = {
-    id: 123,
-    name: "test1",
-    captain: 3,
-    averagePp: 5,
-    teamAvatarUrl: "https://a.ppy.sh/4323406?1625541513.gif",
-    slug: "test",
-    averageBWS: 6,
-    seed: "A",
-    rank: 1,
-    members: [this.testUser2, this.testUser2],
-
-    
-}
-
-TestTeam2: TeamInfo = {
-    id: 124,
-    name: "test2",
-    captain: 3,
-    averagePp: 5,
-    teamAvatarUrl: "https://a.ppy.sh/4323406?1625541513.gif",
-    slug: "test",
-    averageBWS: 6,
-    seed: "A",
-    rank: 1,
-    members: [this.testUser2, this.testUser2],
-
-    
-}
-
-    testBeatmap: MappoolMap = {
-    mod: "NM",
-    mapID: "3066907",
-    name: "fuck",
-    setID: "1496040",
-    artist: "asdf",
-    title: "asdf",
-    difficulty: "test",
-    time: "1:30",
-    bpm: 130,
-    stars: 5.6,
-
-}
-
-testBeatmap2: MappoolMap = {
-    mod: "HD",
-    mapID: "2787950",
-    name: "fuck",
-    setID: "1346246",
-    artist: "asdf",
-    title: "asdf",
-    difficulty: "test",
-    time: "1:30",
-    bpm: 130,
-    stars: 5.6,
-
-}
-
-testBeatmap3: MappoolMap = {
-    mod: "HD",
-    mapID: "2944289",
-    name: "fuck",
-    setID: "1430235",
-    artist: "asdf",
-    title: "asdf",
-    difficulty: "test",
-    time: "1:30",
-    bpm: 130,
-    stars: 5.6,
-
-}
-
-testBeatmap4: MappoolMap = {
-    mod: "NM",
-    mapID: "2900406",
-    name: "fuck",
-    setID: "1401591",
-    artist: "asdf",
-    title: "asdf",
-    difficulty: "test",
-    time: "1:30",
-    bpm: 130,
-    stars: 5.6,
-
-}
-
-testModgroup: ModGroup = {
-    mod: "NM",
-    beatmaps: [this.testBeatmap, this.testBeatmap4]
-
-}
-
-testModgroup2: ModGroup = {
-    mod: "HD",
-    beatmaps: [this.testBeatmap2, this.testBeatmap3]
-
-}
-testMappool: MappoolInfo = {
-    name: "test",
-    sheet: "test",
-    mappack: "test",
-    modGroups: [this.testModgroup, this.testModgroup2],
-    length: 2,
-    slug: 'quarter-finals'
-}
-
-
-testMap1: MatchMap = {
-    map: this.testBeatmap,
-    mapMod: "NM",
-    mapPosition: 0
-
-}
-
-testMap2: MatchMap = {
-    map: this.testBeatmap2,
-    mapMod: "HD",
-    mapPosition: 0
-
-}
-testMap3: MatchMap = {
-    map: this.testBeatmap3,
-    mapMod: "HD",
-    mapPosition: 1
-
-}
-testMatchSet: MatchSet = {
-    bans: [],//[this.testMap1],
-    picks: []//[this.testMap2]
-}
-
-testMatch: MatchInfo = {
-    bestOf: 3,
-    matchID: "1249012",
-    id: "125125",
-    sets: [this.testMatchSet, this.testMatchSet],
-    bans: [],//[this.testMap3],
-    time: new Date(2020,2,11),
-    teamA: this.TestTeam1,
-    teamB: this.TestTeam2,
-    first: this.TestTeam1,
-}
-
-testMatches: MatchInfo[] = [this.testMatch, this.testMatch]
-
-
-
-
-
-
-
-
     @State loggedInUser!: UserOpenInfo
     stages = ["QUALIFIERS", "ROUND OF 32", "ROUND OF 16", "QUARTER FINALS", "SEMI FINALS", "FINALS", "GRAND FINALS"]
     selectedStage = ""
@@ -498,10 +309,11 @@ testMatches: MatchInfo[] = [this.testMatch, this.testMatch]
     async mounted () {
         this.loading = true;
         try {
-            //await axios.get("api/referee")
+            await axios.get("api/referee")
             this.loading = false;
         } catch (e) {
-            if (e) return //this.$router.push({ path: '/404' });
+            if (e) 
+                this.$router.push({ path: '/404' });
         }
     }
     
@@ -514,7 +326,6 @@ testMatches: MatchInfo[] = [this.testMatch, this.testMatch]
     }
 
     get remainingMaps () {
-        console.log('???')
         if(this.mappool) {
             let poolMaps: MappoolMap[] = ([] as MappoolMap[]).concat.apply([], this.mappool.modGroups.map(modGroup => modGroup.beatmaps));
             if (this.bannedMaps)
@@ -523,7 +334,6 @@ testMatches: MatchInfo[] = [this.testMatch, this.testMatch]
                 poolMaps = poolMaps.filter((map) => !this.selectedMatch?.sets[this.set-1].picks.some((picked) => picked.map.mapID === map.mapID));
             return poolMaps;
         }
-        console.log('!!!')
     }
 
     async toggleStage (stage) {
@@ -531,9 +341,9 @@ testMatches: MatchInfo[] = [this.testMatch, this.testMatch]
             return;
 
         try {
-            //const data = (await axios.get(`/api/referee/${stage}`)).data;
-            this.matches = this.testMatches//data.matches;
-            this.mappool = this.testMappool//data.mappool;
+            const data = (await axios.get(`/api/referee/${stage}`)).data;
+            this.matches = data.matches;
+            this.mappool = data.mappool;
             if(this.mappool) {
                 this.mappool.modGroups = this.mappool.modGroups.map((modGroup) => {
                 modGroup.beatmaps = modGroup.beatmaps.map((map, i) => {
@@ -589,8 +399,7 @@ testMatches: MatchInfo[] = [this.testMatch, this.testMatch]
                 map.name = pickBan.mapMod + (pickBan.mapPosition + 1);
                 return map;
             });
-            this.selectedMaps.push(maparr); //check
-            console.log(this.selectedMaps)
+            this.selectedMaps.push(maparr);
             }
         }
         

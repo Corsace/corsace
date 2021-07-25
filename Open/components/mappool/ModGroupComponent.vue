@@ -14,8 +14,6 @@
 </template>
 
 <script lang='ts'>
-import axios from "axios";
-import regeneratorRuntime from "regenerator-runtime";
 import MapComponent from "./MapComponent.vue";
 import { Component, Vue, Prop } from "vue-property-decorator"
 import { namespace } from "vuex-class"

@@ -92,7 +92,6 @@
 
 <script lang='ts'>
 import axios from "axios";
-import regeneratorRuntime from "regenerator-runtime";
 import { Vue, Component } from "vue-property-decorator"
 import Loading from "../components/Loading.vue";
 import { UserOpenInfo } from "../../Interfaces/user"

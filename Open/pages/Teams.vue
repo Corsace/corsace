@@ -23,9 +23,6 @@ import Loading from "../components/Loading.vue";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace, State, Action } from "vuex-class";
 import { TeamInfo } from "../../Interfaces/team"
-
-
-import regeneratorRuntime from "regenerator-runtime";
 import { UserOpenInfo } from "../../Interfaces/user";
 
 const teamsModule = namespace("teams");

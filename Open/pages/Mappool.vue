@@ -105,14 +105,12 @@
 
 <script lang='ts'>
 import axios from "axios";
-import regeneratorRuntime from "regenerator-runtime";
 import Construction from "../components/Construction.vue";
 import ModGroupComponent from "../components/mappool/ModGroupComponent.vue";
 import { Component, Vue } from "vue-property-decorator"
 import { State } from "vuex-class"
 import { UserOpenInfo } from "../../Interfaces/user";
-import { MappoolInfo, MappoolMap, ModGroup } from "../../Interfaces/mappool";
-import { MappoolBeatmap } from "../../Models/tournaments/mappoolBeatmap";
+import { MappoolInfo, MappoolMap } from "../../Interfaces/mappool";
 
 const pools = [
     'qualifiers',
@@ -187,90 +185,7 @@ export interface dataPackage {
     },
 })
 export default class Mappool extends Vue {
-    testBeatmap: MappoolMap = {
-    mod: "NM",
-    mapID: "3066907",
-    name: "fuck",
-    setID: "1496040",
-    artist: "asdf",
-    title: "asdf",
-    difficulty: "test",
-    time: "1:30",
-    bpm: 130,
-    stars: 5.6,
-
-}
-
-testBeatmap2: MappoolMap = {
-    mod: "HD",
-    mapID: "2787950",
-    name: "fuck",
-    setID: "1346246",
-    artist: "asdf",
-    title: "asdf",
-    difficulty: "test",
-    time: "1:30",
-    bpm: 130,
-    stars: 5.6,
-
-}
-
-testBeatmap3: MappoolMap = {
-    mod: "HD",
-    mapID: "2944289",
-    name: "fuck",
-    setID: "1430235",
-    artist: "asdf",
-    title: "asdf",
-    difficulty: "test",
-    time: "1:30",
-    bpm: 130,
-    stars: 5.6,
-
-}
-
-testBeatmap4: MappoolMap = {
-    mod: "NM",
-    mapID: "2900406",
-    name: "fuck",
-    setID: "1401591",
-    artist: "asdf",
-    title: "asdf",
-    difficulty: "test",
-    time: "1:30",
-    bpm: 130,
-    stars: 5.6,
-
-}
-
-testModgroup: ModGroup = {
-    mod: "NM",
-    beatmaps: [this.testBeatmap, this.testBeatmap4]
-
-}
-
-testModgroup2: ModGroup = {
-    mod: "HD",
-    beatmaps: [this.testBeatmap2, this.testBeatmap3]
-
-}
-testMappool: MappoolInfo = {
-    name: "test",
-    sheet: "test",
-    mappack: "test",
-    modGroups: [this.testModgroup, this.testModgroup2],
-    length: 2,
-    slug: 'quarter-finals'
-}
-
-testData: dataPackage = {
-    mappool: this.testMappool,
-    next: true,
-    previous: false,
-    picks: ['2900406', '2944289'],
-    bans: ['2944289', '2787950'],
-    matchBans: ['3066907', '3066907'],
-}
+    
     @State loggedInUser!: UserOpenInfo
 
     mappool: MappoolInfo | null = null
@@ -297,10 +212,7 @@ testData: dataPackage = {
     currentStagePool = "quarter-finals"        
 
     async mounted () {
-        console.log('ping')
         await this.refresh();
-        console.log('pong   ')
-
     }
 
 
@@ -328,7 +240,7 @@ testData: dataPackage = {
 
     async refresh () {
         let data;
-        let currentStageData = this.testData//(await axios.get("/api/mappool")).data;
+        let currentStageData = (await axios.get("/api/mappool")).data;
         this.currentStagePool = currentStageData.mappool.slug
         
         if(this.$route.params.round)

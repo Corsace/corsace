@@ -41,7 +41,7 @@
 
 <script lang='ts'>
 import axios from "axios";
-import { State, Action } from "vuex-class"
+import { State } from "vuex-class"
 import { Component, Vue } from "vue-property-decorator"
 import { Invitation } from "../../../Interfaces/invitation"
 import { UserOpenInfo } from "../../../Interfaces/user";

@@ -36,14 +36,11 @@
 
 <script lang='ts'>
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { namespace, State } from "vuex-class";
 import { TeamInfo } from "../../../Interfaces/team";
 import { UserOpenInfo } from "../../../Interfaces/user";
 import { MappoolMap, MappoolInfo } from "../../../Interfaces/mappool";
 import { ScoreInfo } from "../../../Interfaces/score";
-import { QualifierLobby } from "../../../Interfaces/qualifier";
-import { Mappool } from "../../../Models/tournaments/mappool";
-import { Score } from "nodesu";
+
 
 const defaultMaps: MappoolMap[] = [
     {name: "NM1"},

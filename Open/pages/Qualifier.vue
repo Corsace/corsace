@@ -56,8 +56,6 @@ import { State } from "vuex-class"
 import { QualifierLobby } from "../../Interfaces/qualifier";
 import { MappoolInfo, MappoolMap, ModGroup } from "../../Interfaces/mappool";
 import { UserOpenInfo } from "../../Interfaces/user";
-import { TeamInfo } from "../../Interfaces/team";
-import { UserComponent } from "nodesu";
 
 @Component({
     name: 'qualifier',
@@ -68,117 +66,6 @@ import { UserComponent } from "nodesu";
 })
 
 export default class Qualfier extends Vue {
-
-testBeatmap: MappoolMap = {
-    mod: "NM",
-    mapID: "3066907",
-    name: "fuck",
-    setID: "1496040",
-    artist: "asdf",
-    title: "asdf",
-    difficulty: "test",
-    time: "1:30",
-    bpm: 130,
-    stars: 5.6,
-
-}
-testModgroup: ModGroup = {
-    mod: "NM",
-    beatmaps: [this.testBeatmap, this.testBeatmap]
-
-}
-testMappool: MappoolInfo = {
-    name: "test",
-    sheet: "test",
-    mappack: "test",
-    modGroups: [this.testModgroup, this.testModgroup],
-    length: 2,
-    slug: 'qualifiers'
-}
-testUser1: UserOpenInfo = {
-    corsaceID: 2,
-    discord: {
-        avatar: "https://a.ppy.sh/4323406?1625541513.gif",
-        userID: "4323406",
-        username: "VINXIS",
-    },
-    osu: {
-        avatar: "https://a.ppy.sh/11489119?1622490975.jpeg",
-        userID: "11489119",
-        username: "crabbapples",
-        otherNames: [],
-    },
-    staff: {
-        corsace: false,
-        headStaff: false,
-        staff: false,
-    },
-    joinDate: new Date(2011,10,30),
-    lastLogin: new Date(2011,10,30),
-    canComment: false,
-    team: null,
-    pickemPoints: 1,
-    rank: 1,
-    badges: 1,
-    pp: 14000,
-    openStaff: {
-        isMappooler: false
-    }
-}
-TestTeam1: TeamInfo = {
-    id: 123,
-    name: "test1",
-    captain: 3,
-    averagePp: 5,
-    teamAvatarUrl: "https://a.ppy.sh/4323406?1625541513.gif",
-    slug: "test",
-    averageBWS: 6,
-    seed: "A",
-    rank: 1,
-    members: [this.testUser1, this.testUser1],
-    scores: []
-}
-testUser2: UserOpenInfo = {
-    corsaceID: 3,
-    discord: {
-        avatar: "https://a.ppy.sh/4323406?1625541513.gif",
-        userID: "4323406",
-        username: "VINXIS",
-    },
-    osu: {
-        avatar: "https://a.ppy.sh/12019633?1625400422.jpeg",
-        userID: "12019633",
-        username: "SteepHill",
-        otherNames: [],
-    },
-    staff: {
-        corsace: false,
-        headStaff: false,
-        staff: false,
-    },
-    openStaff: {
-        isMappooler: false,
-    },
-    joinDate: new Date(2011,10,30),
-    lastLogin: new Date(2011,10,30),
-    canComment: false,
-    team: this.TestTeam1,
-    pickemPoints: 1,
-    rank: 1,
-    badges: 1,
-    pp: 14000,
-}
-TestQualifier: QualifierLobby = {
-    id: 2,
-    time: new Date(2020,2,11),
-    teams: [this.TestTeam1],
-    referee: this.testUser1
-
-}
-
-
-
-
 
     @State loggedInUser!: UserOpenInfo
 
@@ -204,10 +91,6 @@ TestQualifier: QualifierLobby = {
     }
 
     async refresh () {
-
-        this.qualifier = this.TestQualifier
-        this.mappool = this.testMappool
-        return //remember to remove
         const { data } = await axios.get(`/api/qualifier/${this.$route.params.id}`)
         if (data.error)
             return alert(data.error)

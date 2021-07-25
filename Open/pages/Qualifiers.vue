@@ -106,9 +106,7 @@ export default class Qualifiers extends Vue {
     scoringType = "average"
         
     async created () {
-        console.log("created");
         this.getList();
-        
     }
 
     async getList () {
@@ -117,7 +115,6 @@ export default class Qualifiers extends Vue {
         this.loading = false;
     }
     async getMappool () {
-        console.log('ran getMappool')
         this.loading = true;
         await this.$store.dispatch("qualifiers/getMappool");
         this.loading = false;

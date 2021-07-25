@@ -6,14 +6,8 @@
 </template>
 
 <script lang='ts'>
-import axios from "axios";
 import { Vue, Component } from "vue-property-decorator";
-import { UserOpenInfo } from "../../Interfaces/user";
-import { TeamInfo } from "../../Interfaces/team";
-import { Invitation } from "../../Interfaces/invitation";
-import {State, Action } from "vuex-class";
 import _ from "lodash";
-import regeneratorRuntime from "regenerator-runtime";
 import Header from "../components/header/Header.vue";
 
 @Component({

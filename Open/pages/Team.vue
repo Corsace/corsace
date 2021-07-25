@@ -178,14 +178,12 @@
 
 <script lang='ts'>
 import axios from "axios";
-import App from "../layouts/default.vue";
 import Loading from "../components/Loading.vue";
 import PlayerInvite from "../components/team/PlayerInvite.vue";
 import PlayerInvited from "../components/team/PlayerInvited.vue";
 import PlayerAccepted from "../components/team/PlayerAccepted.vue";
 import { Vue, Component, } from "vue-property-decorator"
 import { State } from "vuex-class"
-import regeneratorRuntime from "regenerator-runtime";
 import { TeamInfo } from "../../Interfaces/team";
 import { UserOpenInfo } from "../../Interfaces/user";
 import { Invitation } from "../../Interfaces/invitation";
@@ -206,19 +204,12 @@ export default class Team extends Vue {
     @State teamRegistering!: boolean;
     @State loggedInUser!: UserOpenInfo
 
-    //remember to remove
-    testInvitation: Invitation = {
-        team: this.team,
-        _id: 123125,
-        osuUsername: 'coolmans'
-    }
-
     active = false;
     edit = false;
     loading = true;
     teamName = "";
     teamRename = "";
-    invitations: Invitation[] = [this.testInvitation]
+    invitations: Invitation[] = []
     otherTeam: TeamInfo | null = null
     image = null;
     image64 =  "";
@@ -230,7 +221,6 @@ export default class Team extends Vue {
     async mounted () {
         this.loading = true;
         this.otherTeam = this.team
-        console.log('team mounted: ',this.otherTeam.members)
         
         if (this.$route.params.name) {
             if (this.team && this.$route.params.name === this.team.slug)

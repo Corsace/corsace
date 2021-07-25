@@ -3,9 +3,6 @@ import { UserOpenInfo } from "../../Interfaces/user";
 import { TeamInfo } from "../../Interfaces/team";
 import { Invitation } from "../../Interfaces/invitation";
 import axios from "axios";
-import { QualifierInfo, QualifierLobby } from "../../Interfaces/qualifier";
-import { MappoolInfo, MappoolMap, ModGroup } from "../../Interfaces/mappool";
-
 interface RootState {
     loggedInUser: null | UserOpenInfo;
     discordReg: boolean;
@@ -113,105 +110,21 @@ export const mutations: MutationTree<RootState> = {
 
 };
 
-
-
-let TestTeam1: TeamInfo = {
-    id: 123,
-    name: "test1",
-    captain: 3,
-    averagePp: 5,
-    teamAvatarUrl: "https://a.ppy.sh/4323406?1625541513.gif",
-    slug: "test",
-    averageBWS: 6,
-    seed: "A",
-    rank: 1,
-    members: [],
-    scores: []
-}
-
-let testUser2: UserOpenInfo = {
-    corsaceID: 3,
-    discord: {
-        avatar: "https://a.ppy.sh/4323406?1625541513.gif",
-        userID: "4323406",
-        username: "VINXIS",
-    },
-    osu: {
-        avatar: "https://a.ppy.sh/12019633?1625400422.jpeg",
-        userID: "12019633",
-        username: "SteepHill",
-        otherNames: [],
-    },
-    staff: {
-        corsace: false,
-        headStaff: false,
-        staff: false,
-    },
-    openStaff: {
-        isMappooler: false,
-        isReferee: false,
-        isScheduler: false,
-    },
-    joinDate: new Date(2011,10,30),
-    lastLogin: new Date(2011,10,30),
-    canComment: false,
-    team: TestTeam1,
-    pickemPoints: 1,
-    rank: 1,
-    badges: 1,
-    pp: 14000,
-}
-
-
-let testBeatmap: MappoolMap = {
-    mod: "NM",
-    mapID: "3066907",
-    name: "fuck",
-    setID: "1496040",
-    artist: "asdf",
-    title: "asdf",
-    difficulty: "test",
-    time: "1:30",
-    bpm: 130,
-    stars: 5.6,
-
-}
-let testModgroup: ModGroup = {
-    mod: "NM",
-    beatmaps: [testBeatmap, testBeatmap]
-
-}
-let testMappool: MappoolInfo = {
-    name: "test",
-    sheet: "test",
-    mappack: "test",
-    modGroups: [testModgroup, testModgroup],
-    length: 2
-}
-
-let TestQualifier: QualifierLobby = {
-    id: 2,
-    time: new Date(2020,2,11),
-    teams: [TestTeam1]
-
-}
-
-TestTeam1.members = [testUser2,testUser2,testUser2]
-TestTeam1.qualifier = TestQualifier
-
-
-
 export const getters: GetterTree<RootState, RootState> = {
 };
 
 export const actions: ActionTree<RootState, RootState> = {
     async setLoggedInUser ({ commit }) {
-        const data  = testUser2 //await this.$axios.get(`/api/user`);
-        //if (!data.error) {
-            commit("setLoggedInUser", data);
+        try {
+            const data  = await this.$axios.get(`/api/user`);
+            if (data) {
+                commit("setLoggedInUser", data);
+            }
+        }
+        catch {
+            commit("setLoggedInUser", null)
+        }
 
-
-        //}
     },
     async setInitialData ({ dispatch }) {
         await Promise.all([
@@ -233,7 +146,7 @@ export const actions: ActionTree<RootState, RootState> = {
 
     async refreshTeam ({ commit, state }) {
         if(state.loggedInUser && state.loggedInUser.team) {
-            const data = TestTeam1//(await axios.get("/api/team")).data.team;
+            const data = (await axios.get("/api/team")).data.team;
             if(data) {
                 commit("setTeam", data);
             }
