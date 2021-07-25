@@ -12,9 +12,9 @@
                 <div class="refereeMatches" v-for="(match, i) in matches" :key="i" :class="{refereeActive: !selectedMatch ? false : selectedStage === 'QUALIFIERS' ? selectedMatch.id === match.id : selectedMatch.matchID === match.matchID}">
                     <div class="refereeMatch" v-if="selectedStage === 'QUALIFIERS'" @click="toggleMatch(match)">
                         <div class="refereeMatchTime">
-                            {{month[match.time.split('-')[1]] + " " + match.time.split('-')[2].split('T')[0]}}
+                            {{match.time.toUTCString().split(" ")[2] + " " + match.time.toUTCString().split(" ")[1]}}
                             <br>
-                            {{match.time.split('T')[1].slice(0,5)}}
+                            {{match.time.toUTCString().split(" ")[4].slice(0,5)}}
                         </div>
                         <div v-if="selectedStage === 'QUALIFIERS' ? matchloader === match.id : matchloader === match.matchID" style="position: relative; left: -10%;">
                             <loading></loading>
@@ -29,9 +29,9 @@
                     <div class="refereeMatch" v-else @click="toggleMatch(match)">
                         {{match.matchID}}
                         <div class="refereeMatchTime">
-                            {{month[match.date.split('-')[1]] + " " + match.date.split('-')[2].split('T')[0]}}
+                            {{match.time.toUTCString().split(" ")[2] + " " + match.time.toUTCString().split(" ")[1]}}
                             <br>
-                            {{match.date.split('T')[1].slice(0,5)}}
+                            {{match.time.toUTCString().split(" ")[4].slice(0,5)}}
                         </div>
                         <div v-if="match.mp">
                             <img src="../../Assets/img/open/captain.png">
@@ -51,8 +51,8 @@
                     <div class="refereeCommandsSubsection">
                         Before match
                         <div class="refereeCommands">
-                            <div class="refereeCommand" @click="clipboard(`!mp make CO: (${selectedStage === 'QUALIFIERS' ? 'Qualifiers' : selectedMatch.teamA ? selectedMatch.teamA.name : ''}) vs (${selectedStage === 'QUALIFIERS' ? selectedMatch.time.split('-')[1] + '/' + selectedMatch.time.split('-')[2].split('T')[0] + ' ' + selectedMatch.time.split('T')[1].slice(0,5) : selectedMatch.teamB ? selectedMatch.teamB.name : ''})`)">
-                                !mp make CO: ({{selectedStage === 'QUALIFIERS' ? 'Qualifiers' : selectedMatch.teamA ? selectedMatch.teamA.name : ''}}) vs ({{selectedStage === 'QUALIFIERS' ? selectedMatch.time.split('-')[1] + '/' + selectedMatch.time.split('-')[2].split('T')[0] + ' ' + selectedMatch.time.split('T')[1].slice(0,5) : selectedMatch.teamB ? selectedMatch.teamB.name : ''}})
+                            <div class="refereeCommand" @click="clipboard(`!mp make CO: (${selectedStage === 'QUALIFIERS' ? 'Qualifiers' : selectedMatch.teamA ? selectedMatch.teamA.name : ''}) vs (${selectedStage === 'QUALIFIERS' ? selectedMatch.time.toUTCString().split(' ')[2] + '/' + selectedMatch.time.toUTCString().split(' ')[1] + ' ' + selectedMatch.time.toUTCString().split(' ')[4].slice(0,5) : selectedMatch.teamB ? selectedMatch.teamB.name : ''})`)">
+                                !mp make CO: ({{selectedStage === 'QUALIFIERS' ? 'Qualifiers' : selectedMatch.teamA ? selectedMatch.teamA.name : ''}}) vs ({{selectedStage === 'QUALIFIERS' ? selectedMatch.time.toUTCString().split(" ")[2] + '/' + selectedMatch.time.toUTCString().split(" ")[1] + ' ' + selectedMatch.time.toUTCString().split(" ")[4].slice(0,5) : selectedMatch.teamB ? selectedMatch.teamB.name : ''}})
                             </div>
                             <div class="refereeCommand" @click="clipboard(`!mp set ${selectedStage === 'QUALIFIERS' ? 0 : 2} 3 ${selectedStage === 'QUALIFIERS' ? 16 : 9}`)">!mp set {{selectedStage === 'QUALIFIERS' ? 0 : 2}} 3 {{selectedStage === 'QUALIFIERS' ? 16 : 9}}</div>
                             <div class="refereeCommand" @click="clipboard('!mp settings')">!mp settings</div>
@@ -119,9 +119,9 @@
                 <div v-if="selectedMatch">
                     <div class="refereeTeam" v-for="(team, i) in selectedMatch.teams" :key="i">
                         {{team.name}}
-                        <div class="refereeMembers" v-for="(member, j) in team.members" :key="j" @click="clipboard(`!mp invite #${member.osuID}`)">
-                            {{member.username}} ({{member.osuID}}) #{{member.rank}}
-                            <img v-if="member.id.toString() === team.captain" src="../../Assets/img/open/captain.png">
+                        <div class="refereeMembers" v-for="(member, j) in team.members" :key="j" @click="clipboard(`!mp invite #${member.osu.userID}`)">
+                            {{member.osu.username}} ({{member.osu.userID}}) #{{member.rank}}
+                            <img v-if="member.corsaceID.toString() === team.captain" src="../../Assets/img/open/captain.png">
                         </div>
                     </div>
                 </div>
@@ -136,15 +136,15 @@
                         <div class="refereeTeam" v-if="selectedMatch && selectedMatch.teamA">
                             {{selectedMatch.teamA.name}}
                             <div class="refereeMembers" v-for="(member, j) in selectedMatch.teamA.members" :key="j" @click="clipboard(`!mp invite #${member.osuID}`)">
-                                {{member.username}} ({{member.osuID}}) #{{member.rank}}
-                                <img v-if="member.id.toString() === selectedMatch.teamA.captain" src="../../Assets/img/open/captain.png">
+                                {{member.osu.username}} ({{member.osu.userID}}) #{{member.rank}}
+                                <img v-if="member.corsaceID.toString() === selectedMatch.teamA.captain" src="../../Assets/img/open/captain.png">
                             </div>
                         </div>
                         <div class="refereeTeam" v-if="selectedMatch && selectedMatch.teamB">
                             {{selectedMatch.teamB.name}}
-                            <div class="refereeMembers" v-for="(member, j) in selectedMatch.teamB.members" :key="j" @click="clipboard(`!mp invite #${member.osuID}`)">
-                                {{member.username}} ({{member.osuID}}) #{{member.rank}}
-                                <img v-if="member.id.toString() === selectedMatch.teamB.captain" src="../../Assets/img/open/captain.png">
+                            <div class="refereeMembers" v-for="(member, j) in selectedMatch.teamB.members" :key="j" @click="clipboard(`!mp invite #${member.osu.userID}`)">
+                                {{member.osu.username}} ({{member.osu.userID}}) #{{member.rank}}
+                                <img v-if="member.corsaceID.toString() === selectedMatch.teamB.captain" src="../../Assets/img/open/captain.png">
                             </div>
                         </div>
                     </div>
@@ -255,9 +255,10 @@ import Popup from "../components/Popup.vue";
 import { Component, Vue } from "vue-property-decorator"
 import { State } from "vuex-class"
 import { UserOpenInfo } from '../../Interfaces/user';
-import { MappoolInfo } from '../../Interfaces/mappool';
-import { MatchInfo } from '../../Interfaces/match';
+import { MappoolInfo, ModGroup } from '../../Interfaces/mappool';
+import { MatchInfo, MatchMap, MatchSet } from '../../Interfaces/match';
 import { MappoolMap } from '../../Interfaces/mappool';
+import { TeamInfo } from '../../Interfaces/team';
 
 
 @Component({
@@ -269,12 +270,201 @@ import { MappoolMap } from '../../Interfaces/mappool';
 })
 export default class Referee extends Vue {
 
+
+    
+
+
+testUser2: UserOpenInfo = {
+    corsaceID: 3,
+    discord: {
+        avatar: "https://a.ppy.sh/4323406?1625541513.gif",
+        userID: "4323406",
+        username: "VINXIS",
+    },
+    osu: {
+        avatar: "https://a.ppy.sh/12019633?1625400422.jpeg",
+        userID: "12019633",
+        username: "SteepHill",
+        otherNames: [],
+    },
+    staff: {
+        corsace: true,
+        headStaff: true,
+        staff: true,
+    },
+    openStaff: {
+        isMappooler: true,
+        isReferee: true,
+        isScheduler: true,
+    },
+    joinDate: new Date(2011,10,30),
+    lastLogin: new Date(2011,10,30),
+    canComment: false,
+    team: null,
+    pickemPoints: 1,
+    rank: 1,
+    badges: 1,
+    pp: 14000,
+}
+
+TestTeam1: TeamInfo = {
+    id: 123,
+    name: "test1",
+    captain: 3,
+    averagePp: 5,
+    teamAvatarUrl: "https://a.ppy.sh/4323406?1625541513.gif",
+    slug: "test",
+    averageBWS: 6,
+    seed: "A",
+    rank: 1,
+    members: [this.testUser2, this.testUser2],
+
+    
+}
+
+TestTeam2: TeamInfo = {
+    id: 124,
+    name: "test2",
+    captain: 3,
+    averagePp: 5,
+    teamAvatarUrl: "https://a.ppy.sh/4323406?1625541513.gif",
+    slug: "test",
+    averageBWS: 6,
+    seed: "A",
+    rank: 1,
+    members: [this.testUser2, this.testUser2],
+
+    
+}
+
+    testBeatmap: MappoolMap = {
+    mod: "NM",
+    mapID: "3066907",
+    name: "fuck",
+    setID: "1496040",
+    artist: "asdf",
+    title: "asdf",
+    difficulty: "test",
+    time: "1:30",
+    bpm: 130,
+    stars: 5.6,
+
+}
+
+testBeatmap2: MappoolMap = {
+    mod: "HD",
+    mapID: "2787950",
+    name: "fuck",
+    setID: "1346246",
+    artist: "asdf",
+    title: "asdf",
+    difficulty: "test",
+    time: "1:30",
+    bpm: 130,
+    stars: 5.6,
+
+}
+
+testBeatmap3: MappoolMap = {
+    mod: "HD",
+    mapID: "2944289",
+    name: "fuck",
+    setID: "1430235",
+    artist: "asdf",
+    title: "asdf",
+    difficulty: "test",
+    time: "1:30",
+    bpm: 130,
+    stars: 5.6,
+
+}
+
+testBeatmap4: MappoolMap = {
+    mod: "NM",
+    mapID: "2900406",
+    name: "fuck",
+    setID: "1401591",
+    artist: "asdf",
+    title: "asdf",
+    difficulty: "test",
+    time: "1:30",
+    bpm: 130,
+    stars: 5.6,
+
+}
+
+testModgroup: ModGroup = {
+    mod: "NM",
+    beatmaps: [this.testBeatmap, this.testBeatmap4]
+
+}
+
+testModgroup2: ModGroup = {
+    mod: "HD",
+    beatmaps: [this.testBeatmap2, this.testBeatmap3]
+
+}
+testMappool: MappoolInfo = {
+    name: "test",
+    sheet: "test",
+    mappack: "test",
+    modGroups: [this.testModgroup, this.testModgroup2],
+    length: 2,
+    slug: 'quarter-finals'
+}
+
+
+testMap1: MatchMap = {
+    map: this.testBeatmap,
+    mapMod: "NM",
+    mapPosition: 0
+
+}
+
+testMap2: MatchMap = {
+    map: this.testBeatmap2,
+    mapMod: "HD",
+    mapPosition: 0
+
+}
+testMap3: MatchMap = {
+    map: this.testBeatmap3,
+    mapMod: "HD",
+    mapPosition: 1
+
+}
+testMatchSet: MatchSet = {
+    bans: [],//[this.testMap1],
+    picks: []//[this.testMap2]
+}
+
+testMatch: MatchInfo = {
+    bestOf: 3,
+    matchID: "1249012",
+    id: "125125",
+    sets: [this.testMatchSet, this.testMatchSet],
+    bans: [],//[this.testMap3],
+    time: new Date(2020,2,11),
+    teamA: this.TestTeam1,
+    teamB: this.TestTeam2,
+    first: this.TestTeam1,
+}
+
+testMatches: MatchInfo[] = [this.testMatch, this.testMatch]
+
+
+
+
+
+
+
+
     @State loggedInUser!: UserOpenInfo
     stages = ["QUALIFIERS", "ROUND OF 32", "ROUND OF 16", "QUARTER FINALS", "SEMI FINALS", "FINALS", "GRAND FINALS"]
     selectedStage = ""
     selectedMatch: MatchInfo | null = null
-    selectedMaps: MappoolMap[] = []
-    matchBans = []
+    selectedMaps: MappoolMap[][] = []
+    matchBans: MappoolMap[] = [] 
     month = {
         '08': 'AUG',
         '09': 'SEP',
@@ -295,7 +485,7 @@ export default class Referee extends Vue {
         9: 5,
     }
     matches: MatchInfo[] = []
-    teams = []
+    teams: TeamInfo[] = []
     mappool: MappoolInfo | null = null
     loading = true
     popupText = ""
@@ -308,10 +498,10 @@ export default class Referee extends Vue {
     async mounted () {
         this.loading = true;
         try {
-            await axios.get("api/referee")
+            //await axios.get("api/referee")
             this.loading = false;
         } catch (e) {
-            if (e) return this.$router.push({ path: '/404' });
+            if (e) return //this.$router.push({ path: '/404' });
         }
     }
     
@@ -324,6 +514,7 @@ export default class Referee extends Vue {
     }
 
     get remainingMaps () {
+        console.log('???')
         if(this.mappool) {
             let poolMaps: MappoolMap[] = ([] as MappoolMap[]).concat.apply([], this.mappool.modGroups.map(modGroup => modGroup.beatmaps));
             if (this.bannedMaps)
@@ -332,7 +523,7 @@ export default class Referee extends Vue {
                 poolMaps = poolMaps.filter((map) => !this.selectedMatch?.sets[this.set-1].picks.some((picked) => picked.map.mapID === map.mapID));
             return poolMaps;
         }
-        
+        console.log('!!!')
     }
 
     async toggleStage (stage) {
@@ -340,9 +531,9 @@ export default class Referee extends Vue {
             return;
 
         try {
-            const data = (await axios.get(`/api/referee/${stage}`)).data;
-            this.matches = data.matches;
-            this.mappool = data.mappool;
+            //const data = (await axios.get(`/api/referee/${stage}`)).data;
+            this.matches = this.testMatches//data.matches;
+            this.mappool = this.testMappool//data.mappool;
             if(this.mappool) {
                 this.mappool.modGroups = this.mappool.modGroups.map((modGroup) => {
                 modGroup.beatmaps = modGroup.beatmaps.map((map, i) => {
@@ -367,14 +558,17 @@ export default class Referee extends Vue {
     }
     addSelected () {
         this.selectedMaps = [];
-        this.matchBans = this.selectedMatch?.bans.map(ban => {
-            const map = ban.map;
-            map.name = ban.mapMod + (ban.mapPosition + 1);
-            return map;
-        });
+        if(this.selectedMatch) {
+            this.matchBans = this.selectedMatch.bans.map(ban => {
+                const map = ban.map;
+                map.name = ban.mapMod + (ban.mapPosition + 1);
+                return map;
+            });
+        }
+        
         if(this.selectedMatch) {
             for (let i = 0; i < this.selectedMatch.bestOf; i++) {
-            let arr = [];
+            let arr: MatchMap[] = [];
             if (this.selectedMatch.sets[i]) {
                 if (this.selectedMatch.sets[i].bans.length < 3)
                     arr = this.selectedMatch.sets[i].bans.concat(this.selectedMatch.sets[i].picks);
@@ -390,14 +584,14 @@ export default class Referee extends Vue {
                         arr.push(this.selectedMatch.sets[i].picks[j])
                 }
             }
-            arr = arr.map((pickBan) => {
+            let maparr = arr.map((pickBan) => {
                 const map = pickBan.map;
                 map.name = pickBan.mapMod + (pickBan.mapPosition + 1);
                 return map;
             });
-            
-            this.selectedMaps.push(arr);
-        }
+            this.selectedMaps.push(maparr); //check
+            console.log(this.selectedMaps)
+            }
         }
         
     }

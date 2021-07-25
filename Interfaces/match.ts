@@ -1,4 +1,5 @@
 import { MappoolMap } from "./mappool";
+import { TeamInfo } from "./team";
 
 export enum PickStatus {
     picked,
@@ -100,15 +101,25 @@ export function modsToString (m: Mods): string {
 
 export interface MatchInfo {
     bestOf: number
-    mp: string
+    mp?: string
     matchID: string
     id: string
     sets: MatchSet[]
-    bans: string[]
+    bans: MatchMap[]
+    time: Date
+    teamA: TeamInfo
+    teamB: TeamInfo
+    first?: TeamInfo
 }
 
 export interface MatchSet {
-    bans: MappoolMap[]
-    picks: MappoolMap[]
+    bans: MatchMap[]
+    picks: MatchMap[]
+}
+
+export interface MatchMap {
+    map: MappoolMap
+    mapMod: "NM" | "HD" | "HR" | "DT" | "FM" | "TB"
+    mapPosition: number
 }
 
