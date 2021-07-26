@@ -367,5 +367,174 @@
             "development": "corsace网站目前依旧处于早期开发阶段",
             "theTeam": "corsace团队"
         }
+    },
+    "open": {
+        "flag": "https://osu.ppy.sh/images/flags/CN.png",
+        "construction": {
+            "under": "施工中！",
+            "check": "请稍后刷新页面！"
+        },
+        "error": {
+            "404": "页面不存在！即将转回 <a href='/' class='ErrLink'>主页</a>。"
+        },
+        "header": {
+            "home": "主页",
+            "info": "咨询",
+            "qualifiers": "资格赛",
+            "scores": "分数",
+            "schedule": "日程",
+            "groups": "组合",
+            "brackets": "阶段",
+            "teams": "队伍",
+            "players": "玩家",
+            "mappool": "图池",
+            "talent": "职员",
+            "login": "登录",
+            "register": "注册",
+            "pending": "未处理的邀请来自",
+            "noInv": "无未处理的队伍邀请",
+            "unlinkPopup": "此行为将会取消你的Corsace账号与osu!及Discord的关联。你所在的队伍以及你所带领的队伍也将会被删除，确认这么做吗？",
+            "noTeam": "未加入队伍",
+            "viewTeam": "查看队伍",
+            "demerits": "惩罚<br>分数",
+            "unlink": "取消关联",
+            "logout": "注销"
+        },
+        "home": {
+            "from": "来自<span class='tournamentName'>OHC</span>及<span class='tournamentName'>MAP DRAFT</span>的主办",
+            "present": "为你呈现",
+            "dates": "9月12日至10月18日",
+            "teams": "32支队伍",
+            "registerNow": "开始注册",
+            "watchNow": "立即观看"
+        },
+        "info": {
+            "newHeader1": "新鲜玩法",
+            "newHeader2": "比赛形式",
+            "donate": "点击这里损赠给奖金池！",
+            "important": "因为时间的限制，不能更改比赛时间到下个周末。请务必在下述的周末参加每回合的比赛。",
+            "new1": "今年, <span class='highlight'>Corsace Open</span>将会全数依靠社群捐款运作，而比赛格式也会由64队改为32队。",
+            "new2": "不过，今年还是会继续使用Map Draft。我们除了把比赛的相关规则都更新了一遍，还把各时限都改了；而且为了确保重复set的时候减少多余的感觉，也改动了一些规则。请确保在比赛之前仔细阅过一遍。",
+            "new3": "除此之外，今年整个图池都是原创的，都是特意为<span class='highlight'>Corsace</span>而定制。",
+            "format1": "参考<span class='highlight'>Map Draft</span>的玩法，每一组为七场四胜制。一场赛事有多少组将会取决于比赛的阶段。",
+            "format2": "两队将会采用Roll法，生成的数字最高的一方将会决定成为Team 1，另一方则为Team 2 <span class='highlight'>（请参考左图）</span>。如果比赛多于一组，那下一组两队将会把Team 1及Team 2对调。左图也有相关的选图跟禁图次序。",
+            "format3": "禁图将会分两个组别：<span class='highlight'>Match Bans</span>跟<span class='highlight'>Set Bans</span>。 Set bans就是两队在开始一个set的时候会选的每队2张。 Match bans就是上一个set的禁图选择过渡到下一个set。",
+            "format4": "各队会选择上一个set两个ban其中一张过渡到下一个set，然后就会不断累积起来。这些就是match bans。 <span class='highlight'>最后一个set</span>就会把全部match bans都移除，该set每队只会有两个set bans。",
+            "format5": "所有选图跟禁图都会在打任何一张图之前全部选完。",
+            "header1": "关于",
+            "header2": "赛事讯息",
+            "header3": "赛事日期",
+            "header4": "赛事规则",
+            "header5": "奖金",
+            "header6": "比赛规则",
+            "header7": "回合规则",
+            "header8": "黑名单",
+            "header9": "队伍审核",
+            "header10": "种子规则",
+            "about": "<span class='highlight'>Corsace Open</span>是osu!Standard以4v4、32支队伍的形式举办的比赛。它是每年在Corsace计划的两个之中的其中一个赛事，比赛体系启发于Bubbleman的Map Draft Tournament。",
+            "tournamentInfo": "<li>这是一个osu!std 4v4的比赛。</li> <li>比赛模式是<span class='bold'>Team VS</span>和<span class='bold'>Score v2。</span></li> <li>最多参赛<span class='bold'>32支队伍。</span></li> <li>种子排名将会使用<span class='bold'>资格赛决定</span>（请参考以下<a href='#seedRules'>种子规则</a> ）。</li> <li>主办，筹办，选图，评判，时间表安排人，以及黑名单里的人<span class='bold'></span>不能报名参加比赛。 </li> <li>所有比赛都会以X数量的组决定，每组都是七场四胜制。 （请参考<a href='#roundRules'>回合规则</a>。）</li> <li>总决赛不会重置Bracket；但胜组那队将会有一个组的优势。 </li> <li>每个队伍可以有6-8人。</li>",
+            "tournamentDates": "<li><span class='bold'>报名</span> 8月 - 8月23日</li> <li><span class='bold'>玩家筛选/更改玩家</span>8月23日- 9月2日</li> <li><span class='bold'>资格赛</span> 9月5日- 9月6日</li> <li><span class='bold'>32强</span> 9月12日- 9月13日</li> <li><span class='bold'>16强</span> 9月19日- 9月20日</li> <li><span class='bold'>半复赛</span> 9月26日- 9月27日</li> <li><span class=' bold'>半决赛</span> 10月3日- 10月4日</li> <li><span class='bold'>决赛</span> 10月10日- 10月11日</li > <li><span class='bold'>总决赛</span> 10月17日- 10月18日</li>",
+            "tournamentRules": "<li>如果任何一队有任何原因不能在安排的时间参赛，他们一定要跟另一队同意新的比赛时间和日期，并在每个星期的<span class='bold'>星期四23:59 UTC</span>或之前通知职员。如果有队伍在上述时间后改时间，另一队将会在比赛开始时有一个组的优势。 </li> <li><span class='bold'>不能把赛事改去下个周末。 </span></li> <li>如果有超过32队报名，将会优先让BWS总数高或有活跃队员的队伍玩。只要在报名截止前报名就可以了，报名日期和时间<span class='bold'>完全没有影响</span>。 </li> <li>如果玩家被osu! 官方人员列入黑名单，将会<span class='bold'>不能参赛</span> ，但他原本所在的队伍可以继续参赛。如果有任何一个队伍在报名截止后没有最少4个队员，<span class='bold'>队伍</span>就会被自动解散。 </li> <li>每星期新的时间表都回上传到网站，而每队的队长都会收到Discord和osu!私信通知。 </li> <li>不能有任何形式的作弊行为。 </li>",
+            "prizes": {
+                "followed": "奖励一览：",
+                "list": "<li><span class='bold'>冠军</span></li> <ul class='infoList'> <li>50% 的奖金数额会平均分给每一位组员</li> <li>Corsace Open 冠军osu!账号徽章</li> </ul> <li><span class='bold'>亚军</span></li> <ul class='infoList'> <li>30% 的奖金数额会平均分给每一位组员</li> <li>Corsace Open 亚军osu!账号徽章</li> </ul> <li><span class='bold'>季军</span></li> <ul class='infoList'> <li>20% 的奖金数额会平均分给每一位组员</li> <li>Corsace Open 季军osu!账号徽章</li> </ul>"
+            },
+            "seedRules": "<li>如果有多于32队完整的队伍，就会用资格赛来<span class='bold'>决定最后能打比赛的32个队伍</span>。在32强，就会根据分数排名第一位的队伍vs第三十二位，第二位vs第三十一位，如似类推。</li> <li>如果有多于64队报名，就会以<span class='bold'>每队BWS排名中间的4位玩家</span>来决定能打资格赛的64队。</li> <li>图池将会有<span class='bold'> 4个NM，和HD/HR/DT各2张。</span>由于资格赛不属于真正Corsace比赛的一部分，图池不会有Corsace独特的图，而会从现成的图选出来。 </li> <li>所有图都会跟顺序来打，<span class='bold'>你的队伍必须打完整个资格赛图池。</span></li> <li>每队需要至少4个玩家，并可以在各图之间的时间更换。</li> <li>如果有任何一张图一队没有4个玩家，该队在该图的分数将会是0。</li > <li>全部队伍每张图的平均分会记录下来，并用来决定正式比赛时的种子排名。</li>", 
+            "matchRules": "<li>如果在比赛开始时间后的10分钟内队伍没有至少4个人加入，<span class='bold'>将会自动被判定为弃权</span>，并且不能在之后更改比赛时间。 </li> <li>在比赛开始前15分钟，两队队长（或是队伍中任何一个人）将会被邀请到比赛房间。 </li> <li>队长（或是队伍中任何一个人）将会使用!roll来决定选图跟禁图的次序；随机数大的一方决定队伍想当Team 1或Team 2。下一组开始的时候将会把Team 1和Team 2互相对调。 </li> <li>选图和禁图的程序请参考<a href='#format'>上面格式</a>。</li> <li>所有谱面将会在<span class='bold'>选跟禁完全部图后<span>才开始比赛，并且会根据选择时的顺序。 </li> <li>比赛进行时，评判将会是房主。各队会把他们的选图和禁图选择在mp对话中打出来，然后评判将会自己选择相应的图。 </li> <li>每一场比赛都会有NF，方便计算全部分数。 </li> <li>如果有任何玩家比赛途中有<span class='bold'>真正的</span>断线（根据评判的判断），那该图就会重新玩过一次。任何其他的断线原因都会不获受理，并以玩家断线前的分数作为最终分数。 </li> <li>在一个FreeMod pick里，队伍里需至少两个玩家开启Mod，并且需要有至少两个独特的Mod。 HT，DT，NC，还有特殊Mod都不能使用。几个Mod共同使用（例如HDHR）是允许的。 </li> <li>你<span class='bold'>可以</span>在Tiebreaker里开启Mod。 </li> <li>比赛进行中<span class='bold'>没有</span>切换队员的限制。 </li> <li><span class='bold'>选和禁每一张图都有一个90秒的倒计时</span>。如果90秒内没能选出一张图，将会随机抽取一张。 </li> <li>选图之后打第一张图之前都会有<span class='bold'>最多2-3分钟</span>的准备时间，各队可以用这段时间更改队员，也可以选择直接开始比赛。 </li> <li><span class='bold'>每一個set完結以後，</span>各隊可以有<span class='bold'>最多10分鐘的休息時間</span>。休息時間後，各隊就會決定<span class='bold'>到底要把什麼ban過渡到下一個set。</span></li>",
+            "roundRules": "<li>每<span class='bold'>组</span>为七场四胜制。</li> <li><span class='bold'>无热身局</span>；请自行在比赛前提前热身。</li> <li>在每回合，每队可以禁<span class='bold'>两张</span>谱面。</li> <li><span class='bold'>32强到准决赛</span></li> <ul class='infoList'> <li>为<span class='bold'>三组二胜制</span></li> <li>每阶段将会持续一个星期。</li> </ul> <li><span class='bold'>决赛和总决赛</span></li> <ul class='infoList'> <li>为<span class='bold'>五组三胜制</span></li> <li>总决赛将会持续一个星期。</li> <li>胜组那队将会有一个组的优势。 </li> </ul> <li><span class='bold'>图池</span></li> <ul class='infoList'> <li>每回合都会有<span class='bold'>6个NM，3个HD/HR/FM，4个DT，和1个TB.</span></li> <li>每一周的比赛都会使用同一个图池。</li></ul>",
+            "blacklist": {
+                "intro": "黑名单系统是根据惩罚制度而制定。惩罚制度的分数将会每个Corsace比赛之间保留。你会因为以下原因收到惩罚分数：",
+                "list1": "<li><span class='bold'>1分：</span></li> <ul class='infoList'> <li>任何比赛途中的不当行为，并在Corsace职员给过一次警告后。</li> <li>把比赛时间改到平日（以UTC作准）。 </li> <li>任何放弃选图/禁图/打任何图的行为。 （根据情况会给整队或以一个人。）</li> <li>没能在时限完结之前准备好。 （根据情况会给整队或以一个人。）</li> </ul> <li><span class='bold'>2分：</span></li> <ul class='infoList'> < li>于<span class='bold'>任何一个阶段</span>放弃比赛。 </li> <li>在一张图进行当中中途放弃。 （给一个玩家）。 </li> </ul> <li><span class='bold'>3分：</span></li> <ul class='infoList'> <li><span class='bold'>小组赛</span>时不准时出现。 （将会给整队）</li> <li>不在每周时限之前改时间。任何改时间的要求<span class='bold'>必须</span>在时限<span class='bold'>之前</span>给职员。 （根据情况给一队或是两队都给）</li> </ul> <li><span class='bold'>5分：</span></li> <ul class='infoList' > <li>在小组赛<span class='bold'>后</span>的阶段不准时出现。 （会给整队）</li> </ul> <li><span class='bold'>7分：</span></li> <ul class='infoList'> <li>一个星期内不跟要求改时间的队伍合作，需要多张截图来证明有多次改时间而且是已经花了几天的。这是一种故意破坏比赛的行为，我们不会绝对不会忍受。 （给所有有关的玩家）。 </li> </ul>",
+                "mid": "如果你有6个或以上的惩罚分，你在减少到5个或以下之前都不能再参加Corsace比赛。<span class ='bold'>如果你觉得你的惩罚分数是不合理的，那么请联络<a href='https://osu.ppy.sh/u/4323406'>VINXIS</a>或<a href ='https：//osu.ppy.sh/u/2123087'>handsome。</a>进行申诉</span>",
+                "followed": "以下情况下能减少惩罚制度分数：",
+                "list2": "<li>每个Corsace比赛后会-1。</li> <li>你在一个或以上的这些比赛担任职员而你跟我们说你担任过（在OHC2017之后；OHC2017之前的不计算在内。）而根据活跃程度减少0-2惩罚制度分数：</li> <ul class='infoList'> <li>任何一个HappyStick比赛（包括OWC）。 </li> <li>任何一个this1neguy/DigitalHypno比赛。</li> <li>任何一个Corsace比赛。</li> <li>YSC。</li> <li>Map Draft。</li> </ul> <li>成为一个验证队伍，并获得-2惩罚分数（请参考<a href='#verify'>队伍验证</a>部分。）</li>"
+            },
+            "verified": {
+                "intro1": "如果你的队伍...",
+                "list1": "<li>有至少5个队员以同一队伍参与了上一个OHC，或是以同一队参与了最近三个比赛（需要证明）</li> <li>队伍没有特别多<span class='bold'>更改队员和队伍名称</span></li> <li>没有很差惩罚制度的历史，有一个合理的队名和队伍头像</li>",
+                "intro2": "那你的队伍符合资格成为验证队伍！并且能获得如下：",
+                "list2": "<li>有比赛预留的位置</li> <li>如果你在同一个队伍多于一次，能获得-2惩罚制度分数</li>",
+                "mid": "你有<span class='bold'>一次</span>更改队名的机会；不过这也会是最后一次。任何再次更改队名的要求都要通过最高层的同意才能被认同为一个现存的队伍。能通过这个验证的机会将会变得更少，标准也会比以往更高。",
+                "end1": "请透过<a href='/team'>队伍页面</a>申请验证。",
+                "end2": "<span class='bold'>想在你的比赛使用我们的惩罚制度吗？请联络<a href='https://osu.ppy.sh/u/4323406'>VINXIS</a>或是<a href='https://osu.ppy.sh/u/2123087'>handsome</a>。</span>"
+            }
+        },
+        "registration": {
+            "title": "注册",
+            "step1": "第一步",
+            "authenticate": "认证",
+            "step2": "第二部",
+            "placeholder": "osu!用户名",
+            "popup": "请确认已经登录osu!的网页"
+        },
+        "teams": {
+            "team": {
+                "verified": "已认证",
+                "unverified": "未认证",
+                "applyPop": {
+                    "desc": "你的队伍一起参加过不同的比赛吗？ <br> 你们是一支成立的队伍吗？ <br> 那你们有机会可以申请成为参与Corsace的队伍！",
+                    "read": "详细阅读",
+                    "apply": "申请"
+                },
+                "edit": "编辑队伍信息",
+                "save": "保存更改",
+                "invPend": "邀请<br>待处理",
+                "inv": "邀请！",
+                "pp": "BWS点数",
+                "rank": "队伍排名",
+                "ppAvg": "队伍BWS平均值",
+                "demerits": "惩罚分数",
+                "teamnameLength": "队伍名需要3-16个半角文字之间！",
+                "playerRemove": "确认移除队员%%member%%？",
+                "playerCaptain": "确认将队长身份交给%%member%%？",
+                "playerInvite": "%%member%%已经加入了一支队伍或者已经被邀请了！",
+                "deleteTeam": "确认删除队伍？",
+                "playerRemoveSelf": "确认退出队伍？"
+            },
+            "list": "队伍列表",
+            "create": "建立队伍",
+            "your": "你的队伍"
+        },
+        "login": {
+            "online": "无法向%%osuusername%%发送信息。请再度确认你已登录osu!。",
+            "friend": "似乎你的账户对非好友的用户拒收信息。请添加%%osuusername%%为好友或者关闭对非好友的信息拒收功能！"
+        },
+        "schedule": {
+            "currStage": "目前阶段",
+            "search": "查询",
+            "placehold": "查询玩家或者队伍",
+            "filter": "筛选条件",
+            "myTeam": "我的队伍",
+            "view": "展示",
+            "upcoming": "即将来临",
+            "current": "目前",
+            "past": "以往",
+            "match": "比赛",
+            "until": "离下一场比赛的剩余时间",
+            "days": "天"
+        },
+        "rounds": {
+            "qualifiers": "资格赛",
+            "round-of-32": "32强",
+            "round-of-16": "16强",
+            "quarter-finals": "半复赛",
+            "semi-finals": "半决赛",
+            "finals": "决赛",
+            "grand-finals": "总决赛"
+        },
+        "match": {
+            "info": "比赛信息",
+            "banned": "谱面禁止来自玩家",
+            "picked": "谱面选择来自玩家",
+            "referees": "裁判员",
+            "commentators": "解说员",
+            "streamers": "直播人",
+            "empty": "有空位",
+            "bottom": "跳到结尾",
+            "wins": "胜利！",
+            "reveal": "查看比赛结果",
+            "expand": "展开详细信息",
+            "collapse": "收起详细信息"
+        }
     }
 }

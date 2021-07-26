@@ -291,5 +291,193 @@
             "development": "corsaceのウェブサイトはまだ開発中です",
             "theTeam": "the corsace team"
         }
+    },
+    "open": {
+        "flag": "https://osu.ppy.sh/images/flags/JP.png",
+        "construction": {
+            "under": "只今準備中",
+            "check": "後で戻ってきてね！"
+        },
+        "error": {
+            "404": "＊おぉっと＊ なにか問題が起きたようです。 <a href='/' class='ErrLink'>メインページ</a> へ戻りましょう！"
+        },
+        "header" : {
+            "home": "ホーム",
+            "info": "インフォ",
+            "qualifiers": "予選",
+            "scores": "スコア",
+            "schedule": "スケジュール",
+            "groups": "グループ",
+            "brackets": "トーナメント表",
+            "teams": "チーム",
+            "players": "プレイヤー",
+            "mappool": "マッププール",
+            "talent": "スタッフ",
+            "login": "ログイン",
+            "register": "登録",
+            "pending": "招待が届いてます",
+            "noInv": "保留中の招待はありません",
+            "unlinkPopup": "続行すればosu!とDiscordアカウントのCorsaceとの連携が解除されます。同時に参加しているチームから外され、貴方がキャプテンのチームは削除されます。それでもよろしいですか？",
+            "noTeam": "チーム無し",
+            "viewTeam": "チームを見る",
+            "demerits": "デメリット <br> ポイント",
+            "unlink": "連携解除",
+            "logout": "ログアウト"
+        },
+        "home": {
+            "from": "FROM THE ORGANIZERS OF <span class='tournamentName'>OHC</span> &amp; <span class='tournamentName'>MAP DRAFT</span>",
+            "present": "お送りします",
+            "dates": "９月１２日から１０月１８日",
+            "teams": "３２チーム",
+            "registerNow": "今すぐ登録！",
+            "watchNow": "今すぐ視聴！"
+        },
+        "info": {
+            "newHeader1": "変更点",
+            "newHeader2": "形式",
+            "donate": "賞金への寄付はこちらから！",
+            "important": "予定などが厳しいので次週末へのリスケジュールは禁止しています！！！リスケジュールする場合は必ず下記の通り同じ週にプレイしてください！！！",
+            "new1": "今年の <span class='highlight'>Corsace Open</span> はコミュニティからの寄付金のみで開催されます。そしてチーム数は６４から３２チームへと変更されました。",
+            "new2": "しかしお馴染みの map draft 形式は続行します！Best of setsやBest of mapsなどに若干の変更があり、マッチ中の時間制限にも少し変更が加わります、さらに複数セットプレイする事に起こる試合に対する\"飽き\"を減らすためにフォーマットも多少変更しています。参加前にルールをしっかりと確認しておいてください！",
+            "new3": "さらにさらに！このトーナメントに出てくる譜面は全てこの大会の為だけに作られたマップで構成されています！",
+            "format1": "<span class='highlight'>Map Draft</span>のように、全てのセットはBO7で決まります。BO7とは４点先取したチームがセットに勝利するという事です。しかし大会のステージによっては複数セットプレイするかもしれません。",
+            "format2": "チームはまず Roll を行い、勝利したチームがチーム１かチーム２かを選べます <span class='highlight'>（左の図を参照）</span>。もしマッチが複数セットの場合セット毎にTeam１とTeam２は入れ替わります。左の図を見ていただければマップピックはマップBanの順番なども描かれています。",
+            "format3": "今大会にてBanは<span class='highlight'>マッチBan</span> と <span class='highlight'>セットBan</span>の2種類があります。セットBanとはセット開始前のマップドラフト中に行う譜面を各チーム2個Banするときの物です。マッチBanは以前のセットでBanした譜面を次のセットへと持ち越す制度です。",
+            "format4": "各セット後にBanした譜面の中から次のセットに持ち越したいBanを１～２つ選べます。 <span class='highlight'>最終セット</span> （BO3では3セット目、BO5では5セット目）では全てのマッチBanはリセットされ、セットBan制度しか使用しません。",
+            "format5": "マップピックとBanは全てマッププレイの前に行われます。",
+            "header1": "これってなに？",
+            "header2": "トーナメント情報",
+            "header3": "日程",
+            "header4": "トーナメントルール",
+            "header5": "賞品",
+            "header6": "マッチルール",
+            "header7": "ラウンド毎のルール",
+            "header8": "ブラックリスト",
+            "header9": "チーム認証",
+            "header10": "シード権に関するルール",
+            "about": "<span class='highlight'>Corsace Open</span>とはosu!スタンダードで３２チームによって行われる４v４形式の大会です。この大会はCorsaceプロジェクトによって毎年開催されている二つのトーナメントのうちの一つです。マッチの進行方法などはBubbleman氏によるMap Draftトーナメントにインスパイアされたものです。",
+            "tournamentInfo": "<li>これはランク制限なしのosu!スタンダード４v４形式の大会です。</li> <li>ゲームモードは <span class='bold'>Team VS</span> と <span class='bold'>Score v2。</span></li> <li>最大チーム数は <span class='bold'>３２組。</span></li> <li>各チームのシードは <span class='bold'>予選システム</span>を使用します（下記の<a href='#seedRules'>シード権ルール</a>を参照）。</li> <li>主催、マッププール選択者、審判、スケジュール管理人、そしてブラックリスト入りしている方による参加は<span class='bold'>禁止</span>されています。</li> <li>マップのピックなどは普通のトーナメントと違いマッチ中ではなく <span class='bold'>対戦開始前</span>に行われます (有名な某MOBAゲーのヒーロー選択みたいな感じです）。 </li> <li><span class='bold'>グループステージは存在しません。</span></li> <li>このトーナメントは完全に<span class='bold'>ダブルイリミネーション方式</span>で行われます。</li> <li>ウォームアップも <span class='bold'>存在しません。</span></li> <li>試合時間はなにか特別に記載されていない限り全てUTC時間で表示されます。</li> <li>各試合はｘセットで決まります。各セットはBO7形式（４点先取）で行われます。 (<a href='#roundRules'>ラウンド毎のルール</a>を参照)</li> <li>Grand Finalにおいてのブラケットリセットはありません（１敗しているチームが２連勝しなければいけないルール）。代わりにまだ敗北していない方のチームは１セット先取している状態からのスタートとなります。</li> <li>各チームは６人から８人までで構成します。</li>",
+            "tournamentDates": "<li><span class='bold'>登録</span> 今すぐ ～ ８月２３日</li> <li><span class='bold'>公式による審査/プレイヤー交換</span> ８月２３日～９月２日</li> <li><span class='bold'>予選</span> ９月５日～９月６日</li> <li><span class='bold'>ROUND OF 32</span> ９月１２日～９月１３日</li> <li><span class='bold'>ROUND OF 16</span> ９月１９日～９月２０日</li> <li><span class='bold'>QUARTER FINALS</span> ９月２６日～９月２７日</li> <li><span class='bold'>SEMI FINALS</span> １０月３日～１０月４日</li> <li><span class='bold'>FINALS</span> １０月１０日～１０月１１日</li> <li><span class='bold'>GRAND FINALS</span> １０月１７日～１０月１８日</li>",
+            "tournamentRules": "<li>もしチームがスケジュールされた時間にプレイできない場合、相手チームと話し合いお互いに合う新しい日時を決めてください。決定後 <span class='bold'>必ず木曜日 23:59 UTC</span>前にスタッフに新しい時間を伝えてください。 もし木曜日 23:59UTC以降にリスケジュールが必要となった場合、そのチームは１セットのハンデを背負うこととなります。</li> <li><span class='bold'>次週末へのリスケジュールは一切受け付けません！！！！</span></li> <li>もしチーム登録数があまりにも多い場合はよりアクティブなプレイヤー（最近ちゃんとプレイしている人）がいるチームやBWSシステムでのランクが高い人が居るチームが優先されます。参加表明した日程はこの優先度システムに <span class='bold'>全く関係ありません</span>（もちろん締め切り前に登録した場合のみ）。</li> <li>もしチームのメンバーがosu!公式スタッフによりブラックリストされた場合、そのプレイヤーは<span class='bold'>参加の権利を完全に失います。</span> もちろんそのチームの他のプレイヤー達は参加出来ますがもしBanされるなどでメンバーが４人未満になった場合は<span class='bold'>チームの全員が参加の権利を失います。</span></li> <li>新しいスケジュールは必ずこのサイトで更新され、さらにキャプテンはDiscordサーバー内とosu!のメッセージにて連絡させていただきます。</li> <li>チートダメ。ゼッタイ。</li>",
+            "prizes": {
+                "followed": "賞品は以下の通りになります。",
+                "list": "<li><span class='bold'>優勝</span></li> <ul class='infoList'> <li>賞金の５０％をプレイヤーに均等に分配</li> <li>Corsace Open 優勝のosu!プロフィールバッジ</li> </ul> <li><span class='bold'>準優勝</span></li> <ul class='infoList'> <li>賞金の３０％をプレイヤーに均等に分配</li> <li>Corsace Corsace Open 準優勝のosu!プロフィールバッジ</li> </ul> <li><span class='bold'>3位</span></li> <ul class='infoList'> <li>賞金の２０％をプレイヤーに均等に分配</li> <li>Corsace Corsace Open 3位のosu!プロフィールバッジ</li> </ul>"
+            },
+            "seedRules": "<li>もしチーム数が３２チームを超えた場合、予選を行いトーナメント進出する<span class='bold'>トップ３２チームを決定します。</span>その後RO32において第１シードは第３２シードと、第２シードは第３１シード（以下略）と試合を行います。</li> <li>もし６４チームを超えた場合、トップ６４チームは<span class='bold'>チーム内のBWSレーティング真ん中４人の平均値</span>で出た数値を使用します。</li> <li>予選のマッププールは<span class='bold'> ４NM と ２HD/HR/DT</span>で構成されます。これはトーナメントの一部ではなくシード決定のために行われるものですのでCorsace専用のマップは使用されません。</li> <li>予選でのマップは順番にプレイされます。<span class='bold'>マッププール内の全ての譜面を必ずプレイしてください。</span></li> <li>ロビー内に各チームから４人集まってもらいます。譜面間のどのタイミングに置いても交代をしてもらって構いません。</li> <li>もし４人集まらなかった場合、その譜面において全てのプレイヤーのスコアを０点として平均を計算させていただきます。</li> <li>チームのシードは１０個のマップにおいての<span class='bold'>平均順位</span>によって決まります。この平均順位は各マップにおいてチーム４人の<span class='bold'>平均スコア</span>で計算されます。</li>",
+            "matchRules": "<li>もしスケジュールの時間から１０分以内にメンバーが４人集まらなかった場合は<span class='bold'>不戦敗とみなされます。</span> リスケジュールは一切受け付けません。</li> <li>キャプテン（もしくはその時にキャプテンの代わりになっている方）はマッチへの招待を約開始１５分前に審判から受け取ります。</li> <li>キャプテン（もしくはその時にキャプテンの代わりになっている方）はまず !roll を行いピックやBanの順番を決めます。!roll でより高い数字を引いたチームがTeam1かTeam2になるかを選べます。チームはセットごとに入れ替わります。</li> <li>ピックやBanの順番、そしてマッチBanの制度の詳細などは<a href='#format'>上記の形式の項を参照</a>してください。</li> <li>試合自体はピックとBanの<span class='bold'>後に開始<span> され、ピックされた譜面順にプレイします。</li> <li>試合中は常に審判がホストになります。#multiplayerチャットで各チームはピックとBanを伝え、審判がマップを入れ替えます。</li> <li>NoFailはスコア計算の為<span class='bold'>強制的に付けます。</span></li> <li>もし仮にプレイヤーの接続がプレイ中Banchoから<span class='bold'>どうしようもなく</span>（審判の判断）切れてしまった場合、そのマップの再試合を行います。他の原因での切断が起きた場合には、接続が切れた時点でのそのプレイヤーのスコアを最終スコアとさせていただきます。</li> <li>FreeModのピックが行われた際、各チーム最低でも二人のプレイヤーが最低一つのModを選び、さらに各チームにつき最低でも二種類のModを使用しなければいけません。HT、DT、NC、及びSpecial Modsの使用は禁じます。Modはルールに従ってさえいれば複数選択してもらっても構いません（例：HDHR、HRFLなど）。</li> <li>タイブレイクでは <span class='bold'>Modを使用してもらって構いません。</span></li> <li>マッチ中において交代出来るプレイヤー数に制限は<span class='bold'>ありません。</span></li> <li><span class='bold'>各Ban、ピック、そしてプレイ直前の準備においての時間制限は全て９０秒とさせていただきます。</span>仮に制限時間を超えてしまった場合においてはBanとピック中であればランダムなマップが選択されます。準備が間に合わなかった場合においては強制スタートさせていただきます。</li> <li>最終Banもしくはピックが行われたあと、最初の譜面の準備までにおいてのみ<span class='bold'>２分から最大３分</span>ほどの準備期間を与えます。これはマップをプレイする人をファイナライズするために時間です。もし既にメンバーが決まっていた場合はこの時間を飛ばしてもらって構いません。</li> <li>もしチームが望む場合、<span class='bold'>セットの間</span>に<span class='bold'>最大１０分間の休憩時間を取る事が出来ます。</span> 休憩後、前セットから<span class='bold'>どのセットBanを次に持ち越すのかを選択します。</span>",
+            "roundRules": "<li>各<span class='bold'>セット</span>はBO７形式で行われます。</li> <li><span class='bold'>ウォームアップはありません！！！</span>自分の時間で自分で行ってください！</li> <li>全てのラウンドにおいて各チームは<span class='bold'>Banする譜面を二つ選べます。</span></li> <li><span class='bold'>ROUND OF 32 から SEMI FINALS</span></li> <ul class='infoList'> <li><span class='bold'>BO３セット;</span>２セット先取したチームの勝利となります。</li> <li>各ラウンドの期間は１週間です</li> </ul> <li><span class='bold'>FINALS と GRAND FINALS</span></li> <ul class='infoList'> <li><span class='bold'>BO５セット;</span> ３セット先取したチームの勝利となります。</li> <li>Grand Finalsの期間も１週間です。</li> <li>未だに敗北していないチームはGrand Finalsにおいて１セット先取した状態での試合開始となります。</li> </ul> <li><span class='bold'>マッププール</span></li> <ul class='infoList'> <li>全てのラウンドは<span class='bold'>6 NM, 3 HD/HR/FreeMod, 4 DT、そして 1 TieBreak.</span>で構成されています。</li> <li>同じ週末に行われる全ての試合において同じマッププールが使用されます。</li></ul>",
+            "blacklist": {
+                "intro": "ブラックリストシステムにはデメリットポイントシステムが使用されています。このデメリットポイントは両Corsaceトーナメントで共有されています。デメリットポイントは以下の時に付与されます：",
+                "list1": "<li><span class='bold'>１ポイント：</span></li> <ul class='infoList'> <li>スタッフから注意が言い渡されたにも関わらず妨害などの行為を試合中に行った場合。（スタッフは常識的な範囲で厳しいです。）</li> <li>UTC時間に基づいて週末ではない日程にリスケジュールを行った場合。</li> <li>ピックはBanを行わなかった場合。（プレイヤー一人かチーム全員に渡されるかはケースバイケース。）</li> <li>制限時間以内に準備完了できなかった場合（プレイヤーもしくは複数のプレイヤーに。）</li> </ul> <li><span class='bold'>２ポイント：</span></li> <ul class='infoList'> <li> <span class='bold'>いかなるラウンドにおいての</span>放棄試合。</li> <li>ミスなどの後にキレて譜面をやめた場合（プレイヤー個人に）。</li> </ul> <li><span class='bold'>３ポイント：</span></li> <ul class='infoList'> <li><span class='bold'>グループステージ</span>においてチームが揃わなかった場合（チーム全体に）</li> <li>リスケジュールが遅れてしまった場合。リスケジュールは<span class='bold'>必ず期間内に</span>送ってください （１チーム、場合によっては両チームに）。</li> </ul> <li><span class='bold'>５ポイント：</span></li> <ul class='infoList'> <li>グループステージ<span class='bold'>以降</span>での放棄試合（チーム全員に）。</li> </ul> <li><span class='bold'>７ポイント：</span></li> <ul class='infoList'> <li>もし相手チームのリスケジュールのリクエストに全く応えようとしなかった場合。このポイントが渡されるには証拠として連絡を相手チームのメンバー複数人に入れているのを写す複数のスクリーンショットを提出しなければいけません。この行為はトーナメント全体への妨害行為とみなされます。（全く協力的ではなかったプレイヤーに付与）。</li> </ul>",
+                "mid": "もし貴方が７ポイント以上のデメリットポイントを受け取った場合は進行中のトーナメントからキックされます。もし６ポイント以上ある場合、今後開催されるCorsaceトーナメントへの参加を５ポイント以下に減るまで禁じます。<span class='bold'>もし不公平にポイントを受け取ったと感じた場合<a href='https://osu.ppy.sh/u/4323406'>VINXIS</a>さんもしくは<a href='https://osu.ppy.sh/u/2123087'>handsome</a>さんに連絡してください。</span>",
+                "followed": "デメリットポイントの減らし方：",
+                "list2": "<li>各Corsaceトーナメント後に１ポイント減ります。</li> <li>これらのトーナメントにおいてスタッフとして活動した場合、活動の度合いによって０～２ポイント減らします。（OHC２０１７年以前のものはカウントしないものとします）。対応トーナメントリスト：</li> <ul class='infoList'> <li>いかなるHappyStickさん主催のトーナメント（OWCを含む）。</li> <li>いかなるthis1neguyさんもしくはDigitalHypnoさん主催のトーナメント</li> <li>いかなるCorsaceのトーナメント</li> <li>YSC。</li> <li>Map Draft。</li> </ul> <li>貴方のチームが認証チームになった場合は２ポイント減らします。(<a href='#verify'>チーム認証</a>を参照).</li>"
+            },
+            "verified": {
+                "intro1": "もし貴方のチームが今年：",
+                "list1": "<li>去年のOHCにて同じチームで参加したプレイヤーが５人以上いる場合もしくは最近のトーナメント３つ以上において同じチームで参加した場合（証拠提出必須）。</li> <li>もしここ最近あまり<span class='bold'>チームメンバーの入れ替えとチーム名変更</span>を行ってない場合</li> <li>あまりデメリットポイントを受け取っておらずちゃんとした名前とアバターを使用している場合。</li>",
+                "intro2": "これらの条件を満たして入れば認証チームになれるかもしれません！認証チームの特典としては現在：",
+                "list2": "<li>トーナメントへの優先的参加。</li> <li>各Corsaceトーナメント参加の度にデメリットポイントを２ポイント減少。</li>",
+                "mid": "チーム名の変更は<span class='bold'>一度だけ</span>許可されています。それ以上の変更はトップスタッフによる再審によって行われます。もちろん変更が許可される可能性は低くなっているのでご注意ください。",
+                "end1": "<span class='bold'>チーム認証の申請は<a href='/team'>チームページを</a>ご覧ください。</span>",
+                "end2": "<span class='bold'>もしトーナメントを主催したく、私たちのデメリットポイント制度を使用したい場合は<a href='https://osu.ppy.sh/u/4323406'>VINXIS</a>か<a href='https://osu.ppy.sh/u/2123087'>handsome</a>さんに是非連絡を！</span>"
+            }
+        },
+        "registration": {
+            "title": "登録",
+            "step1": "ステップ１",
+            "authenticate": "ユーザー認証",
+            "step2": "ステップ２",
+            "placeholder": "osu!ユーザーネーム",
+            "popup": "osu!にログインしている事を確認してください！"
+        },
+        "teams": {
+            "team": {
+                "verified": "認証済み",
+                "unverified": "認証",
+                "applyPop": {
+                    "desc": "よく同じメンバーと共にトーナメントに参加しますか？<br> 名前の知れているチームですか？ <br> もしかしたらCorsace認証チームになれるかもしれません！",
+                    "read": "詳細はこちら",
+                    "apply": "申請！"
+                },
+                "edit": "チーム情報を編集",
+                "save": "変更を保存",
+                "invPend": "招待 <br> 保留中",
+                "inv": "招待する！",
+                "pp": "BWSレーティング",
+                "rank": "チームランク",
+                "ppAvg": "チーム平均ランク（BWS)",
+                "demerits": "デメリットポイント",
+                "teamnameLength": "チーム名は３文字から２０文字以内に収めてください！",
+                "playerRemove": "本当に %%member%% をキックしてもよろしいですか？",
+                "playerCaptain": "本当に %%member%% をキャプテンにしますか？",
+                "playerInvite": "%%member%% はもうチームに参加しているか招待が送られています！",
+                "deleteTeam": "本当にチームを解散させますか？",
+                "playerRemoveSelf": "本当にチームを抜けますか？"
+            },
+            "list": "チームリスト",
+            "create": "チーム作成",
+            "your": "貴方のチーム"
+        },
+        "login": {
+            "online": "%%osuusername%% へメッセージを送信できませんでした。貴方がosu!でオンラインになっている事を確認してください！",
+            "friend": "貴方はフレンド以外からのメッセージを無効にしているようです。%%osuusername%% をフレンドに追加するかフレンド以外からのメッセージを有効にしてください。"
+        },
+        "verification": {
+            "sure": "本当に申請しますか？こちらのフォームを使って条件をどう満たしているのか教えてください。",
+            "prevCorsace": "過去のCorsaceトーナメントに参加しましたか（OHC２０１７）？",
+            "Yes": "はい",
+            "No": "いいえ",
+            "prevTourneys": "ここ１年でチームとして参加した大会を３つ教えてください。その３つの大会のForumやウェブサイトのリンクを貼ってください。",
+            "firstTourney": "一つ目の大会へのリンク",
+            "secondTourney": "二つ目の大会へのリンク",
+            "thirdTourney": "三つ目の大会へのリンク",
+            "prevNames": "もし最近チーム名を変更を行った場合過去の名前をここに書いてください。",
+            "firstName": "最初の名前",
+            "secondName": "二個目の名前",
+            "thirdName": "三つ目の名前",
+            "extraInfo": "もし上記以外のもので認証する手助けになる情報などがある場合はここに記入してください。",
+            "extraInfoInput": "その他の情報をここに",
+            "submit": "申請する！",
+            "edit": "編集する！",
+            "alert": "認証する為のチームメンバーが足りていません！"
+        },
+        "schedule": {
+            "currStage": "現ラウンド",
+            "search": "検索",
+            "placehold": "プレイヤーかチームを記入",
+            "filter": "フィルター",
+            "myTeam": "自分のチーム",
+            "view": "観覧",
+            "upcoming": "今後",
+            "current": "現在",
+            "past": "以前",
+            "match": "マッチ",
+            "until": "マッチまで",
+            "days": "日"
+        },
+        "rounds": {
+            "qualifiers": "予選",
+            "round-of-32": "ROUND OF 32",
+            "round-of-16": "ROUND OF 16",
+            "quarter-finals": "QUARTER FINALS",
+            "semi-finals": "SEMI FINALS",
+            "finals": "FINALS",
+            "grand-finals": "GRAND FINALS"
+        },
+        "match": {
+            "info": "マッチ情報",
+            "banned": "BANしたチーム：",
+            "picked": "ピックしたチーム：",
+            "referees": "審判",
+            "commentators": "実況/解説",
+            "streamers": "配信者",
+            "empty": "空きスロット",
+            "bottom": "下まで飛ぶ",
+            "wins": "の勝ち！",
+            "reveal": "マッチ結果を表示",
+            "expand": "マッチの詳細を表示",
+            "collapse": "マッチの詳細を非表示"
+        }
     }
 }

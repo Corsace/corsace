@@ -1,3 +1,6 @@
+import { Team } from "discord.js";
+import { MappoolMap } from "./mappool";
+
 export enum PickStatus {
     picked,
     banned
@@ -94,3 +97,28 @@ export function modsToString (m: Mods): string {
 
     return stringBuilder;
 }
+
+export interface Match {
+    bestOf: number
+    mp?: string
+    matchID: string
+    id: string
+    sets: MatchSet[]
+    bans: MatchMap[]
+    time: Date
+    teamA: Team
+    teamB: Team
+    first?: Team
+}
+
+export interface MatchSet {
+    bans: MatchMap[]
+    picks: MatchMap[]
+}
+
+export interface MatchMap {
+    map: MappoolMap
+    mapMod: "NM" | "HD" | "HR" | "DT" | "FM" | "TB"
+    mapPosition: number
+}
+

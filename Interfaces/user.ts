@@ -1,6 +1,8 @@
 import { Beatmapset } from "./beatmap";
 import { Eligibility } from "./eligibility";
 import { GuestRequest } from "./requests";
+import { TeamInfo } from "./team";
+import { Invitation } from "./invitation";
 
 export interface UserMCAInfo extends UserInfo {
     guestRequests: GuestRequest[];
@@ -16,7 +18,11 @@ export interface UserMCAInfo extends UserInfo {
 
 export interface UserOpenInfo extends UserInfo {
     invites: Invitation[];
-    team: Team;
+    team: TeamInfo | null;
+    pickemPoints: number;
+    rank: number;
+    badges: number;
+    pp: number;
     openStaff: {
         scheduler: boolean;
         mappooler: boolean;
