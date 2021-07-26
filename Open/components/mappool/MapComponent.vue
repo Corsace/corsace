@@ -6,7 +6,7 @@
                     <div class="mapArtist">{{ map.artist }}</div>
                     <div class="mapTitle">{{ map.title }}</div>
                 </div>
-                <div class="inputWrapper" v-if="loggedInUser.openStaff.isMappooler && edit">
+                <div class="inputWrapper" v-if="loggedInUser.openStaff.mappooler && edit">
                     <input v-model="mapURL" class="mapUrl" spellcheck="false" @input="changeMap">
                 </div>
                 <div class="mapRight">
@@ -33,7 +33,7 @@
                 <div class="mapArtist">Artist</div>
                 <div class="mapTitle">Title</div>
             </div>
-            <div class="inputWrapper" v-if="loggedInUser.openStaff.isMappooler && edit">
+            <div class="inputWrapper" v-if="loggedInUser.openStaff.mappooler && edit">
                 <input v-model="mapNewURL" class="mapUrl" placeholder="paste url here (no /s/ links)" spellcheck="false" @input="addMap">
             </div>
             <div class="mapRight">

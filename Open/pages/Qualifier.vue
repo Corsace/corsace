@@ -1,7 +1,7 @@
 <template>
     <div class="qualifierWrapper">
         <div class="qualifier" v-if="!loading">
-            <div class="staffEditMatch" v-if="!edit && (loggedInUser.isScheduler || (qualifier.referee && qualifier.referee.corsaceID === loggedInUser.corsaceID))" @click="edit=true">
+            <div class="staffEditMatch" v-if="!edit && (loggedInUser.openStaff.scheduler || (qualifier.referee && qualifier.referee.corsaceID === loggedInUser.corsaceID))" @click="edit=true">
                 <img src="../../Assets/img/open//editMappool.png"> EDIT QUALIFIER
             </div>
             <div class="staffEditMatch active" v-else-if="edit" @click="edit=false">
@@ -19,8 +19,8 @@
                 </div>
             </div>
             <div class="qualifierList" v-if="qualifier">
-                <div :style="loggedInUser.isReferee ? {cursor: 'pointer'} : null" @click="loggedInUser.isReferee ? staffReg() : null">
-                    <span class="qualifierListed bold" v-if="qualifier.referee && loggedInUser.corsaceID === qualifier.referee.corsaceID">-</span><span class="qualifierListed bold" v-else-if="loggedInUser.isReferee">+</span> {{ $t('open.match.referees') }}: <span class="qualifierListed" v-if="qualifier.referee">{{ qualifier.referee.osu.username }}</span>
+                <div :style="loggedInUser.openStaff.referee ? {cursor: 'pointer'} : null" @click="loggedInUser.openStaff.referee ? staffReg() : null">
+                    <span class="qualifierListed bold" v-if="qualifier.referee && loggedInUser.corsaceID === qualifier.referee.corsaceID">-</span><span class="qualifierListed bold" v-else-if="loggedInUser.openStaff.referee">+</span> {{ $t('open.match.referees') }}: <span class="qualifierListed" v-if="qualifier.referee">{{ qualifier.referee.osu.username }}</span>
                 </div>
                 <div :style="loggedInUser.team && loggedInUser.team.captain === loggedInUser.corsaceID ? {cursor: 'pointer'} : null" @click="loggedInUser.team && loggedInUser.team.captain === loggedInUser.corsaceID ? teamReg() : null">
                     <span class="qualifierListed bold" v-if="inQualifier">-</span><span class="qualifierListed bold" v-else-if="loggedInUser.team && loggedInUser.team.captain === loggedInUser.corsaceID">+</span> {{ $t('open.header.teams') }}: <span class="qualifierListed" v-if="qualifier.teams"><span v-for="(team, index) in qualifier.teams" :key="index">{{ team.name }}<span v-if="index + 1 < qualifier.teams.length">, </span></span></span>

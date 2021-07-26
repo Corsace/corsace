@@ -38,11 +38,11 @@
                     <div class="roundName">{{ $i18n.messages[$i18n.locale].open.rounds[mappool.slug] }}</div>
                 </div>
                 <div class="edit">
-                    <div v-if="loggedInUser.openStaff.isMappooler && !mappool.public && !edit" @click="edit = true">
+                    <div v-if="loggedInUser.openStaff.mappooler && !mappool.public && !edit" @click="edit = true">
                         <img src="../../Assets/img/open/editMappool.png">
                         EDIT
                     </div>
-                    <div class="editActive" v-else-if="loggedInUser.openStaff.isMappooler && !mappool.public && edit" @click="edit = false">
+                    <div class="editActive" v-else-if="loggedInUser.openStaff.mappooler && !mappool.public && edit" @click="edit = false">
                         <img src="../../Assets/img/open/editSave.png">
                         CLOSE EDIT
                     </div>
