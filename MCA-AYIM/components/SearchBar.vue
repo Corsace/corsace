@@ -9,6 +9,8 @@
             </div>
             <input
                 class="search__input"
+                :class="{ 'search__input--disabled': disabled }"
+                :disabled="disabled"
                 :placeholder="placeholder"
                 maxlength="50"
                 @input="updateText($event)"
@@ -28,6 +30,7 @@ import _ from "lodash";
 export default class SearchBar extends Vue {
 
     @Prop({ type: String, required: true }) readonly placeholder!: string;
+    @Prop({ type: Boolean, default: false }) readonly disabled!: boolean;
 
     updateText (e) {
         this.debounce(e.target.value);
@@ -120,6 +123,10 @@ export default class SearchBar extends Vue {
     &::placeholder, &:placeholder-shown {
         color: rgba(255, 255, 255, 0.26);
         font-style: italic;
+    }
+
+    &--disabled {
+        cursor: not-allowed;
     }
 }
 
