@@ -196,7 +196,7 @@ teamRouter.post("/avatar", isLoggedInDiscord, isCaptain, async (ctx) => {
 
 // Invite player to team
 teamRouter.post("/invite", isLoggedInDiscord, isCaptain, isRegistration, async (ctx) => {
-    const osuUsername = ctx.request.body.target as string;
+    const osuUsername = ctx.request.body.target;
     if(!osuUsername) {
         ctx.body = { error: "No username found" };
         return;
@@ -235,32 +235,60 @@ teamRouter.post("/invite", isLoggedInDiscord, isCaptain, isRegistration, async (
 
     // Find if an invitation to this user from this team exists already
     const team: Team = ctx.state.team;
-    let inv = await TeamInvitation.findOne({
+    let invite = await TeamInvitation.findOne({
         target: user,
         team,
     });
-    if (inv) {
+    if (invite) {
         ctx.body = { error: "An invitation to this player already exists!" };
         return;
     }
 
     // Actually create the invitation now
-    inv = new TeamInvitation;
-    inv.team = team;
-    inv.target = user;
-    await inv.save();
+    invite = new TeamInvitation;
+    invite.team = team;
+    invite.target = user;
+    await invite.save();
 
-    ctx.body = inv;
+    ctx.body = invite;
 });
 
 // Cancel player invitation to team
 teamRouter.put("/cancel", isLoggedInDiscord, isCaptain, async (ctx) => {
+    const ID = ctx.request.body.id;
+    if (!ID || !/^\d+$/i.test(ID)) {
+        ctx.body = { error: "Invalid ID given" };
+        return;
+    }
+    const invite = await TeamInvitation.findOne({
+        ID,
+        team: ctx.state.team,
+    });
+    if (!invite) {
+        ctx.body = { error: `No invitation ID #${ID} from your team exists!` };
+        return;
+    }
 
+    invite.status = RequestStatus.Cancelled;
+    await invite.save();
+    ctx.body = invite;
 });
 
 // Kick player from team
 teamRouter.post("/kick", isLoggedInDiscord, isCaptain, isRegistration, async (ctx) => {
-
+    const target = ctx.request.body.id;
+    if (!target || !/^\d+$/i.test(target)) {
+        ctx.body = { error: "Invalid target ID given" };
+        return;
+    }
+    const team: Team = ctx.state.team;
+    if (!team.players) {
+        ctx.body = { error: "Cannot find user in your team! No teammates in your team currently..."};
+        return;
+    }
+    team.players = team.players.filter(p => p.ID !== parseInt(target));
+    await team.save();
+    ctx.body = team;
 });
 
 // Let another user be captain for the team
