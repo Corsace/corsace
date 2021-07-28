@@ -93,7 +93,7 @@ export default class StagePageFilters extends Vue {
     @State loggedInUser!: UserMCAInfo | null;
 
     @Prop({ type: Boolean, default: false }) results!: boolean;
-    @Prop({ type: Number, default: false }) searchKey!: number;
+    @Prop({ type: Number, required: false }) searchKey!: number;
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
     userOptions = ["alph", "id"];
