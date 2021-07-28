@@ -92,7 +92,7 @@ export default class ScrollBar extends Vue {
 
 <style lang="scss">
 .scroll {
-    height: 95%;
+    height: calc(100% - 0.7rem);
 
     position: absolute;
     right: 0;

@@ -6,7 +6,7 @@
                     v-for="nomination in nominations"
                     :key="nomination.ID + '-nomination'"
                 >
-                    <div class="staff-nomination">
+                    <div class="staff-nomVote">
                         <!-- background banner-->
                         <div
                             class="staff-page__banner"
@@ -16,7 +16,7 @@
                         <!-- text on left side -->
                         <div class="staff-nomination__info">
                             <a
-                                class="staff-page__subject"
+                                class="staff-nomination__title"
                                 :href="generateUrl(nomination)"
                                 target="_blank"
                             >
@@ -31,8 +31,8 @@
                                     {{ getSpecs(nomination) }}
                                 </a>
                                 <span
-                                    class="staff-nomination__status"
-                                    :class="`staff-nomination__status--${nomination.isValid ? 'valid' : 'invalid'}`"
+                                    class="staff-nomVote__status"
+                                    :class="`staff-nomVote__status--${nomination.isValid ? 'valid' : 'invalid'}`"
                                 >
                                     {{ nomination.isValid ? 'valid' : 'invalid' }}
                                 </span>
@@ -52,29 +52,30 @@
                                     v-for="nominator in nomination.nominators"
                                     :key="nominator.osuID + '-nominator'"
                                     :avatar-location="'left'"
-                                    :user="nominator"
+                                    :user-id="nominator.osuID"
+                                    :username="nominator.osuUsername"
                                     small
                                 />
                             </div>
                         </div>
 
                         <!-- buttons on right side -->
-                        <div class="staff-nomination__actions">
+                        <div class="staff-list__actions">
                             <button
                                 v-if="nomination.isValid"
-                                class="button button--small staff-nomination__action"
+                                class="button button--small staff-list__action"
                                 @click="$emit('update-nomination', nomination.ID, true)"
                             >
                                 accept
                             </button>
                             <button
-                                class="button button--small staff-nomination__action"
+                                class="button button--small staff-list__action"
                                 @click="$emit('update-nomination', nomination.ID, false)"
                             >
                                 reject
                             </button>
                             <button
-                                class="button button--small staff-nomination__action"
+                                class="button button--small staff-list__action"
                                 @click="$emit('delete-nomination', nomination.ID)"
                             >
                                 delete
@@ -138,3 +139,13 @@ export default class StaffNominationAccordion extends Vue {
     }
 }
 </script>
+
+<style lang="scss">
+@use '@s-sass/_partials';
+@import '@s-sass/_variables';
+
+.staff-nomination__title {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+</style>

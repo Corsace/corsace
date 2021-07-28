@@ -1,49 +1,61 @@
 <template>
-    <staff-page page-type="voting">
-        <template slot="filter">
-            <search-bar
-                class="category-filters"
-                :placeholder="canSearch ?
-                    $t('mca.nom_vote.search') :
-                    'searching is disabled'"
-                :disabled="!canSearch"
-                @update:search="text = $event"
-            >
-                <button-group
-                    :options="viewOptions"
-                    :selected-buttons="[viewOption]"
-                    @group-clicked="changeView"
-                />
-            </search-bar>
-        </template>
-
-        <template
-            v-for="category in relatedCategories"
+    <div class="staff-page">
+        <mode-switcher
+            hide-phase
+            title="voting"
         >
-            <staff-accordion-header
-                :key="category.id + '-acc-header'"
-                :left="$t(`mca.categories.${category.name}.name`)"
-                :right="category.type"
-                :active="category.id === selectedCategoryId"
-                @on-click="selectCategory(category.id)"
-            />
+            <div class="staff-main">
+                <div class="staff-filters">
+                    <search-bar
+                        :placeholder="canSearch ?
+                            $t('mca.nom_vote.search') :
+                            'searching is disabled'"
+                        :disabled="!canSearch"
+                        @update:search="text = $event"
+                    >
+                        <button-group
+                            :options="viewOptions"
+                            :selected-buttons="[viewOption]"
+                            @group-clicked="changeView"
+                        />
+                    </search-bar>
+                </div>
 
-            <staff-vote-accordion
-                v-if="category.id === selectedCategoryId"
-                :key="category.id + '-category'"
-                :view-option="viewOption"
-                :data="selectedCategoryInfo"
-                @remove-vote="removeVote"
-            />
-        </template>
-    </staff-page>
+                <div class="staff-container staff-searchContainer">
+                    <div class="staff-container staff-scrollTrack">
+                        <template
+                            v-for="category in relatedCategories"
+                        >   
+                            <staff-accordion-header
+                                :key="category.id + '-acc-header'"
+                                :left="$t(`mca.categories.${category.name}.name`)"
+                                :right="category.type"
+                                :active="category.id === selectedCategoryId"
+                                @on-click="selectCategory(category.id)"
+                            />
+                            
+                            <staff-vote-accordion
+                                v-if="category.id === selectedCategoryId"
+                                :key="category.id + '-category'"
+                                :view-option="viewOption"
+                                :data="selectedCategoryInfo"
+                                @remove-vote="removeVote"
+                            />
+                        </template>
+                    </div>
+                    <scroll-bar selector=".staff-scrollTrack" />
+                </div>
+            </div>
+        </mode-switcher>
+    </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import StaffPage from "../../../components/staff/StaffPage.vue";
+import ModeSwitcher from "../../../../MCA-AYIM/components/ModeSwitcher.vue";
+import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
 import ButtonGroup from "../../../../MCA-AYIM/components/ButtonGroup.vue";
 import StaffAccordionHeader from "../../../components/staff/StaffAccordionHeader.vue";
@@ -68,7 +80,8 @@ type ViewOption = "results" | "voters";
 
 @Component({
     components: {
-        StaffPage,
+        ModeSwitcher,
+        ScrollBar,
         SearchBar,
         ButtonGroup,
         StaffAccordionHeader,
@@ -243,35 +256,3 @@ export default class Votes extends Vue {
 }
 </script>
 
-<style lang="scss">
-@use '@s-sass/_partials';
-@import '@s-sass/_variables';
-
-.staff-vote {
-    display: flex;
-    align-items: center;
-
-    min-height: 65px;
-
-    &__choice {
-        margin-right: 20px;
-    }
-
-    &__count {
-        display: flex;
-
-        & > div {
-            margin-right: 20px;
-        }
-    }
-
-    &__info {
-        margin-right: auto;
-    }
-
-    &__count {
-        flex: none;
-    }
-}
-
-</style>

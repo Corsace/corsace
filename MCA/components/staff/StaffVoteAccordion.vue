@@ -8,7 +8,7 @@
                         v-for="result in data"
                         :key="result.ID"
                     >
-                        <div class="staff-vote">
+                        <div class="staff-nomVote">
                             <div
                                 class="staff-page__banner"
                                 :style="getBanner(result)"
@@ -45,7 +45,8 @@
             >
                 <user-avatar
                     :avatar-location="'left'"
-                    :user="userVotes.voter"
+                    :user-id="userVotes.voter.osuID"
+                    :username="userVotes.voter.osuUsername"
                     class="staff-accordion-section__heading"
                 />
                 <ul class="staff-list">
@@ -53,7 +54,7 @@
                         v-for="vote in userVotes.votes"
                         :key="vote.ID + '-voter'"
                     >
-                        <div class="staff-vote">
+                        <div class="staff-nomVote">
                             <div
                                 class="staff-page__banner"
                                 :style="getBanner(vote)"
@@ -69,13 +70,13 @@
                                 </a>
                             </div>
 
-                            <div class="staff-vote__actions">
-                                <div class="staff-vote__action">
+                            <div class="staff-list__actions">
+                                <div class="staff-list__action">
                                     Choice: {{ vote.choice }}
                                 </div>
-                                <div class="staff-vote__action">
+                                <div class="staff-list__action">
                                     <button
-                                        class="button button--small staff-nomination__action"
+                                        class="button button--small staff-list__action"
                                         @click="$emit('remove-vote', vote.ID, userVotes.voter.ID)"
                                     >
                                         remove vote
@@ -131,3 +132,18 @@ export default class StaffVoteAccordion extends Vue {
 
 }
 </script>
+
+<style lang="scss">
+@use '@s-sass/_partials';
+@import '@s-sass/_variables';
+
+.staff-vote__count {
+    display: flex;
+    flex: none;
+
+    & > div {
+        margin-right: 20px;
+    }
+}
+
+</style>

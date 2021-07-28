@@ -1,62 +1,74 @@
 <template>
-    <staff-page page-type="nominations">
-        <search-bar
-            slot="filter"
-            class="category-filters"
-            :placeholder="$t('mca.nom_vote.search')"
-            @update:search="text = $event"
+    <div class="staff-page">
+        <mode-switcher
+            hide-phase
+            title="nominations"
         >
-            <button-group 
-                :options="['valid', 'invalid']"
-                :selected-buttons="selectedViewOptions"
-                @group-clicked="changeView"
-            />
-            <button
-                v-if="!showReviewed"
-                class="button"
-                @click="showReviewed = true"
-            >
-                Show Reviewed
-            </button>
-            <button
-                v-else-if="showReviewed"
-                class="button"
-                :class="{ 'button--disabled': !selectedViewOptions.includes('valid') }"
-                @click="!selectedViewOptions.includes('valid') ? undefined : showReviewed = false"
-            >
-                Hide Reviewed
-            </button>
-        </search-bar>
+            <div class="staff-main">
+                <div class="staff-filters">
+                    <search-bar
+                        :placeholder="$t('mca.nom_vote.search')"
+                        @update:search="text = $event"
+                    >
+                        <button-group
+                            :options="['valid', 'invalid']"
+                            :selected-buttons="selectedViewOptions"
+                            @group-clicked="changeView"
+                        />
+                        <button
+                            v-if="!showReviewed"
+                            class="button"
+                            @click="showReviewed = true"
+                        >
+                            Show Reviewed
+                        </button>
+                        <button
+                            v-else-if="showReviewed"
+                            class="button"
+                            :class="{ 'button--disabled': !selectedViewOptions.includes('valid') }"
+                            @click="!selectedViewOptions.includes('valid') ? undefined : showReviewed = false"
+                        >
+                            Hide Reviewed
+                        </button>
+                    </search-bar>
+                </div>
 
-        <template
-            v-for="category in relatedCategories"
-        >   
-            <staff-accordion-header
-                :key="category.id + '-acc-header'"
-                :left="$t(`mca.categories.${category.name}.name`)"
-                :right="category.type"
-                :active="category.id === selectedCategoryId"
-                @on-click="selectCategory(category.id)"
-            />
-            
-            <staff-nomination-accordion
-                v-if="category.id === selectedCategoryId"
-                :key="category.id + '-category'"
-                :nominations="selectedCategoryNominations"
-                @update-nomination="updateNomination"
-                @delete-nomination="deleteNomination"
-            />
-        </template>
-    </staff-page>
+                <div class="staff-container staff-searchContainer">
+                    <div class="staff-container staff-scrollTrack">
+                        <template
+                            v-for="category in relatedCategories"
+                        >   
+                            <staff-accordion-header
+                                :key="category.id + '-acc-header'"
+                                :left="$t(`mca.categories.${category.name}.name`)"
+                                :right="category.type"
+                                :active="category.id === selectedCategoryId"
+                                @on-click="selectCategory(category.id)"
+                            />
+                            
+                            <staff-nomination-accordion
+                                v-if="category.id === selectedCategoryId"
+                                :key="category.id + '-category'"
+                                :nominations="selectedCategoryNominations"
+                                @update-nomination="updateNomination"
+                                @delete-nomination="deleteNomination"
+                            />
+                        </template>
+                    </div>
+                    <scroll-bar selector=".staff-scrollTrack" />
+                </div>
+            </div>
+        </mode-switcher>
+    </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import StaffPage from "../../../components/staff/StaffPage.vue";
+import ModeSwitcher from "../../../../MCA-AYIM/components/ModeSwitcher.vue";
+import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
-import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
 import ButtonGroup from "../../../../MCA-AYIM/components/ButtonGroup.vue";
 import StaffAccordionHeader from "../../../components/staff/StaffAccordionHeader.vue";
 import StaffNominationAccordion from "../../../components/staff/StaffNomAccordion.vue";
@@ -73,9 +85,9 @@ interface NominationsByCategory {
 
 @Component({
     components: {
-        StaffPage,
+        ModeSwitcher,
+        ScrollBar,
         SearchBar,
-        ToggleButton,
         ButtonGroup,
         StaffAccordionHeader,
         StaffNominationAccordion,
@@ -163,7 +175,6 @@ export default class Nominations extends Vue {
         const newSelection = this.selectedViewOptions.filter(o => o !== option);
         const arrayEquality = newSelection.every(e => this.selectedViewOptions.includes(e)) && 
             this.selectedViewOptions.length === newSelection.length;
-
         if (arrayEquality)
             this.selectedViewOptions.push(option);
         else if (newSelection.length === 0)
@@ -171,7 +182,6 @@ export default class Nominations extends Vue {
         else
             this.selectedViewOptions = newSelection;
         
-
         if (!this.selectedViewOptions.includes("valid"))
             this.showReviewed = true;
     }
@@ -237,17 +247,3 @@ export default class Nominations extends Vue {
     }
 }
 </script>
-
-<style lang="scss">
-@use '@s-sass/_partials';
-@import '@s-sass/_variables';
-
-.staff-nomination {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 0;
-
-    min-height: 65px;
-}
-</style>

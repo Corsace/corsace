@@ -48,7 +48,6 @@ export default class SearchBar extends Vue {
     emitUpdate (text) {
         this.$emit("update:search", text);
     }
-
 }
 </script>
 
@@ -139,6 +138,6 @@ export default class SearchBar extends Vue {
         padding: 9.5px 5px;
         margin: 5px;
     }
-    flex: 1;
+    flex: 0 1;
 }
 </style>

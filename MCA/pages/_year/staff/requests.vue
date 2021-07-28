@@ -23,7 +23,7 @@
 
         <div class="staff-container">
             <div class="staff-container staff-scrollTrack">
-                <div class="staff-container__box">
+                <div class="staff-request__box">
                     <div
                         v-for="request in requests"
                         :key="request.ID"
@@ -33,24 +33,11 @@
                             class="staff-request"
                         >
                             <div class="staff-request__info">
-                                <span class="staff-user">
-                                    <a
-                                        :href="`https://osu.ppy.sh/users/${request.userID}`"
-                                        target="_blank"
-                                    >
-                                        <img
-                                            :src="`https://a.ppy.sh/${request.userID}`"
-                                            class="staff-user__avatar"
-                                        >
-                                    </a>
-                                    <a
-                                        :href="`https://osu.ppy.sh/users/${request.userID}`"
-                                        target="_blank"
-                                        class="staff-user__link"
-                                    >
-                                        {{ request.username }}
-                                    </a>
-                                </span>
+                                <user-avatar
+                                    avatar-location="left"
+                                    :user-id="request.userID"
+                                    :username="request.username"
+                                />
 
                                 <a
                                     :href="generateUrl(request)"
@@ -69,9 +56,9 @@
                                 {{ getStatusName(request.status) }}
                             </div>
 
-                            <div class="staff-request__actions">
+                            <div class="staff-list__actions">
                                 <button
-                                    class="button button--small staff-request__action"
+                                    class="button button--small staff-list__action"
                                     @click="accept(request.ID)"
                                 >
                                     accept
@@ -98,6 +85,7 @@ import { namespace, State } from "vuex-class";
 
 import ChoiceBeatmapsetCard from "../../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
 import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
+import UserAvatar from "../../../components/staff/UserAvatar.vue";
 
 import { StaffGuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
 import { UpdateRequestData } from "../../../store/staff";
@@ -108,6 +96,7 @@ const staffModule = namespace("staff");
     components: {
         ChoiceBeatmapsetCard,
         ScrollBar,
+        UserAvatar,
     },
     head () {
         return {
@@ -158,7 +147,12 @@ $icon-margin: 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: $font-lg;
+    font-size: $font-base;
+
+    &__box {
+        @extend %flex-box;
+        flex-direction: column;
+    }
 
     &__info {
         flex: 2;
@@ -175,6 +169,7 @@ $icon-margin: 15px;
         flex: 1;
         display: flex;
         justify-content: center;
+
         &--pending {
             color: violet;
         }
@@ -186,16 +181,6 @@ $icon-margin: 15px;
         &--rejected {
             color: $red;
         }
-    }
-
-    &__actions {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-    }
-
-    &__action {
-        margin: 5px;
     }
 }
 
