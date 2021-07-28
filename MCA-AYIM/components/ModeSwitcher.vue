@@ -21,7 +21,10 @@
                 'mode-wrapper--skip-' + ignoreModes.length,
             ]"
         >
-            <div class="mode-content">
+            <div 
+                class="mode-content"
+                :class="forceNoScroll ? 'mode-content--no-scroll' : ''"
+            >
                 <slot />
             </div>
 
@@ -58,6 +61,7 @@ export default class ModeSwitcher extends Vue {
     @Prop(Boolean) readonly stretch!: boolean;
     @Prop(Boolean) readonly hidePhase!: boolean;
     @Prop(Boolean) readonly enableModeEligibility!: boolean;
+    @Prop(Boolean) readonly forceNoScroll!: boolean;
     @Prop({ type: Boolean, default: false }) readonly hideTitle!: boolean;
     @Prop({ type: String, default: "" }) readonly title!: string;
     @Prop({ type: Array, default: () => [] }) readonly ignoreModes!: string[];
@@ -284,6 +288,14 @@ $max-height-container: calc(100% - #{$icon-size} - #{$mode-selection-padding});
 
     @include breakpoint(tablet) {
         order: 1;
+    }
+
+    &--no-scroll {
+        height: calc(100% - 50.5px); // 50.5px = height of mobile mode selection panel
+
+        @include breakpoint(tablet) {
+            height: 100%;
+        }
     }
 }
 
