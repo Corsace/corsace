@@ -43,14 +43,15 @@
                     >
                         {{ categoryName ? $t(`mca.categories.${item.name}.name`) : item.name }} 
                         {{ extraTitle(item) }}
+
+                        <hr
+                            class="collapsible__info-bar"
+                            :class="[
+                                {'collapsible__info-bar--active': showExtra && isSelected(item)}, 
+                                `collapsible--${selectedMode}`
+                            ]"
+                        >
                     </div>
-                    <hr
-                        class="collapsible__info-bar"
-                        :class="[
-                            {'collapsible__info-bar--active': showExtra && isSelected(item)}, 
-                            `collapsible--${selectedMode}`
-                        ]"
-                    >
 
                     <template v-if="showExtra">
                         <div
@@ -232,7 +233,6 @@ export default class Collapsible extends Vue {
 }
 
 .collapsible__info {
-    position: relative;
     display: flex;
     align-items: center;
     font-size: $font-base;
@@ -254,13 +254,14 @@ export default class Collapsible extends Vue {
         @include transition;
 
         &--active {
-            width: 60%;
+            width: calc(100% - 9px);
             border-width: 1px;
         }
     }
 }
 
 .collapsible__name {
+    position: relative;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -295,6 +296,7 @@ export default class Collapsible extends Vue {
     @include breakpoint(desktop) { 
         min-width: 58px;
     }
+    flex: none;
 
     color: white;
     text-align: center;
