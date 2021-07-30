@@ -1,5 +1,6 @@
 <template>
     <search-bar
+        :key="searchKey"
         class="category-filters"
         :placeholder="$t('mca.nom_vote.search')"
         @update:search="updateText($event)"
@@ -92,6 +93,7 @@ export default class StagePageFilters extends Vue {
     @State loggedInUser!: UserMCAInfo | null;
 
     @Prop({ type: Boolean, default: false }) results!: boolean;
+    @Prop({ type: Number, required: false }) searchKey!: number;
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
     userOptions = ["alph", "id"];

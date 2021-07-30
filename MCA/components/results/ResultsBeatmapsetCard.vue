@@ -23,10 +23,9 @@
                         <div class="map-info__map-artist">
                             {{ choice.artist }}
                         </div>
-                        <span class="map-info__map-host">
-                            {{ $t('mca.nom_vote.hosted') }} | 
-                            <span class="map-info__map-hoster">{{ choice.hoster }}</span>
-                        </span>
+                        <div class="map-info__map-hoster">
+                            {{ choice.hoster }}
+                        </div>
                     </div>
 
                     <!-- regular output for non-mobile view -->
@@ -111,7 +110,7 @@ export default class ResultsBeatmapsetCard extends Vue {
     box-sizing: border-box;
 
     border-radius: 10px;
-    padding: 15px;
+    padding: 10px 15px;
     width: 100%;
 
     background-size: cover;
@@ -159,6 +158,7 @@ export default class ResultsBeatmapsetCard extends Vue {
 
         &-hoster {
             font-style: italic;
+            font-size: $font-base;
         }
     }
 

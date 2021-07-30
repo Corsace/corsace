@@ -20,6 +20,7 @@
         </div> 
         <stage-page-filters 
             class="stage-page-filters"
+            :search-key="activeCategoryType"
             results
         />
     </div>

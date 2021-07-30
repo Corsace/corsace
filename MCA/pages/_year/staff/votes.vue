@@ -4,146 +4,47 @@
             hide-phase
             title="voting"
         >
-            <div class="staff-filters">
-                <search-bar
-                    v-if="viewOption==='voters'"
-                    class="category-filters"
-                    :placeholder="$t('mca.nom_vote.search')"
-                    @update:search="text = $event"
-                >
-                    <toggle-button
-                        :options="['voters', 'results']"
-                        @change="changeView"
-                    />
-                </search-bar>
-                <toggle-button
-                    v-else
-                    :options="['results', 'voters']"
-                    @change="changeView"
-                />
-            </div>
-            <div class="staff-container staff-searchContainer">
-                <div class="staff-container staff-scrollTrack">
-                    <template
-                        v-for="category in relatedCategories"
+            <div class="staff-main">
+                <div class="staff-filters">
+                    <search-bar
+                        :placeholder="canSearch ?
+                            $t('mca.nom_vote.search') :
+                            'searching is disabled'"
+                        :disabled="!canSearch"
+                        @update:search="text = $event"
                     >
-                        <div
-                            :key="category.id + '-cat-header'"
-                            class="staff-container__header"
-                            :class="{ 'staff-container__header--active': category.id === selectedCategoryId }"
-                            @click.prevent="selectCategory(category.id)"
-                        >
-                            <a
-                                class="staff-container__title"
-                                href="#"
-                                @click.prevent
-                            >
-                                {{ $t(`mca.categories.${category.name}.name`) }}
-                            </a>
-                            <span>{{ category.type }}</span>
-                        </div>
-                        <div
-                            v-if="category.id === selectedCategoryId"
-                            :key="category.id + '-category'"
-                            class="staff-container__box"
-                        >
-                            <template v-if="viewOption === 'results'">
-                                <ul class="staff-list">
-                                    <li
-                                        v-for="result in selectedCategoryInfo"
-                                        :key="result.ID"
-                                    >
-                                        <div class="staff-vote">
-                                            <div class="staff-vote__info">
-                                                <div 
-                                                    class="staff-page__banner"
-                                                    :style="getBanner(result)"
-                                                />
-                                                <a
-                                                    class="staff-page__link"
-                                                    :href="generateUrl(result)"
-                                                    target="_blank"
-                                                >
-                                                    {{ getVoteName(result) }}
-                                                </a>
-                                            </div>
-                                            <div class="staff-vote__count">
-                                                <div>Placement: {{ result.placement }}</div>
-                                                <div>1st Choice Count: {{ result.firstPlaceCount }}</div>
-                                                <div>Total Count: {{ result.totalCount }}</div>
-                                                <div>Count: {{ result.count }}</div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </template>
-                            <template v-else-if="viewOption === 'voters'">
-                                <div
-                                    v-for="userVotes in selectedCategoryInfo"
-                                    :key="userVotes.voter.osuID + '-voter'"
-                                    class="staff-vote-container"
-                                >
-                                    <span class="staff-user">
-                                        <a
-                                            :href="`https://osu.ppy.sh/users/${userVotes.voter.osuID}`"
-                                            target="_blank"
-                                            class="staff-user__link"
-                                        >
-                                            {{ userVotes.voter.osuUsername }}
-                                        </a>
-                                        <a
-                                            :href="`https://osu.ppy.sh/users/${userVotes.voter.osuID}`"
-                                            target="_blank"
-                                        >
-                                            <img
-                                                :src="`https://a.ppy.sh/${userVotes.voter.osuID}`"
-                                                class="staff-user__avatar"
-                                            >
-                                        </a>
-                                    </span>
-
-                                    <ul class="staff-list">
-                                        <li
-                                            v-for="vote in userVotes.votes"
-                                            :key="vote.ID + '-voter'"
-                                        >
-                                            <div class="staff-vote">
-                                                <div class="staff-vote__info">
-                                                    <div 
-                                                        class="staff-page__banner"
-                                                        :style="getBanner(vote)"
-                                                    />
-                                                    <a
-                                                        class="staff-page__link"
-                                                        :href="generateUrl(vote)"
-                                                        target="_blank"
-                                                    >
-                                                        {{ getVoteName(vote) }}
-                                                    </a>
-                                                </div>
-                                                <div class="staff-vote__actions">
-                                                    Choice: {{ vote.choice }}
-                                                </div>
-                                                <div class="staff-vote__actions">
-                                                    <button
-                                                        class="button button--small staff-nomination__action"
-                                                        @click="removeVote(vote.ID, userVotes.voter.ID)"
-                                                    >
-                                                        remove vote
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </template>
-                        </div>
-                    </template>
+                        <button-group
+                            :options="viewOptions"
+                            :selected-buttons="[viewOption]"
+                            @group-clicked="changeView"
+                        />
+                    </search-bar>
                 </div>
-                <scroll-bar
-                    selector=".staff-scrollTrack"
-                    @bottom="selectStart === -1 && 'voters' ? null : appendCategory()"
-                />
+
+                <div class="staff-container staff-searchContainer">
+                    <div class="staff-container staff-scrollTrack">
+                        <template
+                            v-for="category in relatedCategories"
+                        >   
+                            <staff-accordion-header
+                                :key="category.id + '-acc-header'"
+                                :left="$t(`mca.categories.${category.name}.name`)"
+                                :right="category.type"
+                                :active="category.id === selectedCategoryId"
+                                @on-click="selectCategory(category.id)"
+                            />
+                            
+                            <staff-vote-accordion
+                                v-if="category.id === selectedCategoryId"
+                                :key="category.id + '-category'"
+                                :view-option="viewOption"
+                                :data="selectedCategoryInfo"
+                                @remove-vote="removeVote"
+                            />
+                        </template>
+                    </div>
+                    <scroll-bar selector=".staff-scrollTrack" />
+                </div>
             </div>
         </mode-switcher>
     </div>
@@ -156,7 +57,9 @@ import { namespace, State } from "vuex-class";
 import ModeSwitcher from "../../../../MCA-AYIM/components/ModeSwitcher.vue";
 import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
 import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
-import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
+import ButtonGroup from "../../../../MCA-AYIM/components/ButtonGroup.vue";
+import StaffAccordionHeader from "../../../components/staff/StaffAccordionHeader.vue";
+import StaffVoteAccordion from "../../../components/staff/StaffVoteAccordion.vue";
 
 import { CategoryInfo } from "../../../../Interfaces/category";
 import { ResultVote, StaffVote, UserVote, voteCounter } from "../../../../Interfaces/vote";
@@ -180,7 +83,9 @@ type ViewOption = "results" | "voters";
         ModeSwitcher,
         ScrollBar,
         SearchBar,
-        ToggleButton,
+        ButtonGroup,
+        StaffAccordionHeader,
+        StaffVoteAccordion,
     },
     head () {
         return {
@@ -194,10 +99,10 @@ export default class Votes extends Vue {
     @staffModule.State categories!: CategoryInfo[];
 
     votes: StaffVote[] = [];
+    viewOptions = ["results", "voters"];
     viewOption: ViewOption = "results";
     text = "";
     selectedCategoryId: null | number = null;
-    selectStart = 0;
 
     get relatedCategories (): CategoryInfo[] {
         return this.categories.filter(c => c.mode === this.selectedMode || c.mode === "storyboard");
@@ -297,6 +202,10 @@ export default class Votes extends Vue {
         return group?.results || [];
     }
 
+    get canSearch (): boolean {
+        return this.viewOption === "voters";
+    }
+
     async selectCategory (id: number | null) {
         if (!id) return;
 
@@ -305,11 +214,8 @@ export default class Votes extends Vue {
             this.selectedCategoryId = null;
             return;
         }
-        this.selectStart = 0;
 
-        const { data } = await this.$axios.get(
-            `/api/staff/votes?category=${id}${this.viewOption === "voters" ? `&start=${this.selectStart}` : ""}`
-        );
+        const { data } = await this.$axios.get(`/api/staff/votes?category=${id}`);
 
         if (data.error) {
             alert(data.error);
@@ -317,23 +223,8 @@ export default class Votes extends Vue {
         }
 
         this.votes = data.staffVotes;
-        this.selectStart = this.viewOption === "voters" ? data.nextStart : -1;
         this.selectedCategoryId = id;
     }
-
-    async appendCategory () {
-        if (this.selectStart === -1) return;
-
-        const { data } = await this.$axios.get(`/api/staff/votes?category=${this.selectedCategoryId}&start=${this.selectStart}`);
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
-
-        this.votes.push(...data.staffVotes);
-        this.selectStart = data.nextStart;
-    }
-
 
     async removeVote (id: number, userID: number) {
         if (!confirm("ARE YOU SURE YOU WANT TO DELETE THIS VOTE? IT'S IN CAPS FOR L'EMPHASIS."))
@@ -355,93 +246,13 @@ export default class Votes extends Vue {
     }
 
     async changeView (option: ViewOption) {
+        if (option !== this.viewOption) {
+            this.votes = [];
+            this.selectedCategoryId = null;
+        }
         this.viewOption = option;
         this.text = "";
-    }
-
-    generateUrl (vote: StaffVote): string {
-        if (vote.beatmapset) {
-            return `https://osu.ppy.sh/beatmapsets/${vote.beatmapset.ID}`;
-        }
-        
-        return `https://osu.ppy.sh/users/${vote.user?.osuID}`;
-    }
-
-    getVoteName (vote: StaffVote) {
-        if (vote.beatmapset) {
-            return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator!.osuUsername}`;
-        }
-
-        return `${vote.user?.osuUsername}`;
-    }
-
-    getBanner (item: ResultVote) {
-        if (item.beatmapset) {
-            return { "background-image": `url('https://assets.ppy.sh/beatmaps/${item.beatmapset.ID}/covers/cover.jpg?1560315422')` };
-        } else if (item.user) {
-            return { "background-image": `url(https://a.ppy.sh/${item.user.osuID})` };
-        }
-        return { "background-image": "" };
     }
 }
 </script>
 
-<style lang="scss">
-@use '@s-sass/_partials';
-@import '@s-sass/_variables';
-
-.staff-vote {
-    &-container {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 10px;
-        border-bottom: 1px solid white;
-    }
-    
-    display: flex;
-    align-items: center;
-
-    min-height: 65px;
-
-    &__status {
-        margin-left: 5px;
-
-        &--valid {
-            color: $green;
-        }
-
-        &--invalid {
-            color: $red;
-        }
-    }
-
-    &__choice {
-        margin-right: 20px;
-    }
-
-    &__count {
-        display: flex;
-        & > div {
-            margin-right: 20px;
-        }
-    }
-
-    &__info {
-        margin-right: auto;
-    }
-
-    &__actions {
-        display: flex;
-        margin-left: 8px;
-    }
-
-    &__action {
-        margin: 5px;
-    }
-
-    &__count {
-        flex: none;
-    }
-}
-
-</style>

@@ -105,5 +105,17 @@
         text-shadow: 0 0 4px rgba(255, 0, 0, 0.6);
     }
 
+    &--disabled {
+        color: $inactive;
+        text-shadow: none;
+
+        &:hover {
+            color: $inactive;
+            text-shadow: none;
+            background: black;
+            cursor: not-allowed;
+        }
+    }
+
     @include mode-text-color;
 }

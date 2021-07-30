@@ -9,12 +9,17 @@
             </div>
             <input
                 class="search__input"
+                :class="{ 'search__input--disabled': disabled }"
+                :disabled="disabled"
                 :placeholder="placeholder"
                 maxlength="50"
                 @input="updateText($event)"
             >
         </div>
-        <div class="search-adj">
+        <div 
+            v-if="showAdj"
+            class="search-adj"
+        >
             <slot />
         </div>
     </div>    
@@ -27,7 +32,13 @@ import _ from "lodash";
 @Component
 export default class SearchBar extends Vue {
 
+    // SearchBar requires a key to reactively render div.search-adj
+    // this is necessary if it is possible for the SearchBar's slot to be empty 
+
     @Prop({ type: String, required: true }) readonly placeholder!: string;
+    @Prop({ type: Boolean, default: false }) readonly disabled!: boolean;
+
+    showAdj = false;
 
     updateText (e) {
         this.debounce(e.target.value);
@@ -36,6 +47,9 @@ export default class SearchBar extends Vue {
     // Vue doesnt allow using debounce inside methods, so no idea how this stuff below works, but works Ok
     mounted () {
         this.emitUpdate = _.debounce(this.emitUpdate, 500);
+        this.$nextTick(() => {
+            this.showAdj = !!this.$slots.default;
+        });
     }
 
     debounce (text){
@@ -45,7 +59,6 @@ export default class SearchBar extends Vue {
     emitUpdate (text) {
         this.$emit("update:search", text);
     }
-
 }
 </script>
 
@@ -120,6 +133,10 @@ export default class SearchBar extends Vue {
     &::placeholder, &:placeholder-shown {
         color: rgba(255, 255, 255, 0.26);
         font-style: italic;
+    }
+
+    &--disabled {
+        cursor: not-allowed;
     }
 }
 

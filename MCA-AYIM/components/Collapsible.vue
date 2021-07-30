@@ -41,16 +41,29 @@
 
                         ]"
                     >
-                        {{ categoryName ? $t(`mca.categories.${item.name}.name`) : item.name }} 
-                        {{ extraTitle(item) }}
+                        <span class="collapsible__text">
+                            {{ categoryName ? $t(`mca.categories.${item.name}.name`) : item.name }}
+                            {{ extraTitle(item) }}
+
+                            <hr
+                                class="collapsible__info-bar"
+                                :class="[
+                                    {'collapsible__info-bar--active': showExtra && isSelected(item)},
+                                    {'collapsible__info-bar--text': showExtra && isSelected(item)}, 
+                                    `collapsible--${selectedMode}`
+                                ]"
+                            >
+                        </span>
+
+                        <hr
+                            class="collapsible__info-bar"
+                            :class="[
+                                {'collapsible__info-bar--active': showExtra && isSelected(item)},
+                                {'collapsible__info-bar--space': showExtra && isSelected(item)}, 
+                                `collapsible--${selectedMode}`
+                            ]"
+                        >
                     </div>
-                    <hr
-                        class="collapsible__info-bar"
-                        :class="[
-                            {'collapsible__info-bar--active': showExtra && isSelected(item)}, 
-                            `collapsible--${selectedMode}`
-                        ]"
-                    >
 
                     <template v-if="showExtra">
                         <div
@@ -232,7 +245,6 @@ export default class Collapsible extends Vue {
 }
 
 .collapsible__info {
-    position: relative;
     display: flex;
     align-items: center;
     font-size: $font-base;
@@ -254,13 +266,22 @@ export default class Collapsible extends Vue {
         @include transition;
 
         &--active {
-            width: 60%;
             border-width: 1px;
+        }
+
+        &--text {
+            width: 100%;
+        }
+
+        &--space {
+            width: 65%;
         }
     }
 }
 
 .collapsible__name {
+    position: relative;
+    flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -290,11 +311,17 @@ export default class Collapsible extends Vue {
     @include mode-text-color;
 }
 
+.collapsible__text {
+    @extend %text-wrap;
+    position: relative;
+}
+
 .collapsible__count {
     min-width: 52px;
     @include breakpoint(desktop) { 
         min-width: 58px;
     }
+    flex: none;
 
     color: white;
     text-align: center;
@@ -302,7 +329,6 @@ export default class Collapsible extends Vue {
     border-radius: 7px;
 
     padding: 5px 9px;
-    margin-left: auto;
 
     letter-spacing: 2px;
     cursor: default;

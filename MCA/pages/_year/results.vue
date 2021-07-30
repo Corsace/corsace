@@ -4,6 +4,7 @@
             <mode-switcher
                 hide-phase
                 hide-title
+                force-no-scroll
                 :title="$t(`mca.main.results`)"
             >
                 <div class="results-general"> 

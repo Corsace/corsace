@@ -97,7 +97,7 @@ export default class ResultsUserCard extends Vue {
         text-overflow: ellipsis;
         white-space: nowrap;
         
-        margin: 15px 0;
+        margin: 10px 0;
     }
 
     &__avatar {
