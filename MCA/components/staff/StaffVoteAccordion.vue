@@ -26,9 +26,9 @@
 
                             <div class="staff-vote__count">
                                 <div>Placement: {{ result.placement }}</div>
-                                <div>1st Choice Count: {{ result.firstPlaceCount }}</div>
-                                <div>Total Count: {{ result.totalCount }}</div>
-                                <div>Count: {{ result.count }}</div>
+                                <div>1st Choices: {{ result.placeCounts[1] || 0 }}</div>
+                                <div>2nd Choices: {{ result.placeCounts[2] || 0 }}</div>
+                                <div>3rd Choices: {{ result.placeCounts[3] || 0 }}</div>
                             </div>
                         </div>
                     </li>

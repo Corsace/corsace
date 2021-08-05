@@ -42,7 +42,7 @@ export default class ResultsTableHeadings extends Vue {
     align-items: center;
 
     > :first-child {
-        margin-right: 15px;
+        margin-right: 17px;
     }
 
     > :last-child {

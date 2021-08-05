@@ -99,7 +99,7 @@ export default class Results extends Vue {
         this.mobile = newWidth < 768;
     } 
 
-    // label must match a field in BOTH assets/lang/{lang}/mca.results.*
+    // label must match a field in BOTH assets/lang/{lang}/mca.results.headings.*
     //   AND a property of either BeatmapResults or UserResults 
     columns: ResultColumn[] = [
         {label: "placement", size: 1.5, category: "beatmaps", prio: true}, 
@@ -108,9 +108,10 @@ export default class Results extends Vue {
         {label: "title", size: 6, category: "beatmaps", desktopOnly: true},
         {label: "artist", size: 4, category: "beatmaps", desktopOnly: true},
         {label: "hoster", size: 2.25, category: "beatmaps", desktopOnly: true},
-        {label: "username", size: 10.25, msize: 6, category: "users"},
-        {label: "firstChoice", size: 1.5, desktopOnly: true, centred: true},
-        {label: "totalVotes", size: 1.5, centred: true, prio: true},
+        {label: "username", size: 9.75, msize: 6, category: "users"},
+        {label: "firstChoice", size: 1.5, centred: true, prio: true},
+        {label: "secondChoice", size: 1.5, desktopOnly: true, centred: true},
+        {label: "thirdChoice", size: 1.5, desktopOnly: true, centred: true},
     ]
 
     // filter columns by breakpoint and category
