@@ -105,7 +105,7 @@ export default class DropdownSelector extends Vue{
 .dropdown-option {
     position: absolute;
     padding: 3px 0 3px 0;
-    background-color: #0f0f0f;
+    background-color: black;
     color: white;
     text-decoration: none;
     text-align: center;

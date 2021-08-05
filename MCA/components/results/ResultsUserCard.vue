@@ -93,10 +93,7 @@ export default class ResultsUserCard extends Vue {
     @extend %text-wrap;
 
     & > span {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        
+        @extend %text-wrap;
         margin: 10px 0;
     }
 

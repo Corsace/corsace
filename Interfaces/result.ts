@@ -7,15 +7,17 @@ import { SectionCategory } from "../MCA-AYIM/store/stage";
 export interface BeatmapResult extends BeatmapsetInfo {
     placement: number,
     firstChoice: number,
+    secondChoice: number,
+    thirdChoice: number,
     votes: number,
-    totalVotes: number,
 }
 
 export interface UserResult extends UserChoiceInfo {
     placement: number,
     firstChoice: number,
+    secondChoice: number,
+    thirdChoice: number,
     votes: number,
-    totalVotes: number,
 }
 
 export interface ResultColumn {
@@ -43,9 +45,10 @@ export function votesToResults (votes: ResultVote[], categoryType: CategoryType)
                 title: vote.beatmapset.title,
                 hoster: vote.beatmapset.creator.osuUsername,
                 placement: vote.placement,
-                firstChoice: vote.firstPlaceCount,
+                firstChoice: vote.placeCounts[1] || 0,
+                secondChoice: vote.placeCounts[2] || 0,
+                thirdChoice: vote.placeCounts[3] || 0,
                 votes: vote.count,
-                totalVotes: vote.totalCount,
             } as BeatmapResult);
         } else if (categoryType === CategoryType.Users && vote.user) {
             userResults.push({
@@ -53,9 +56,10 @@ export function votesToResults (votes: ResultVote[], categoryType: CategoryType)
                 userID: vote.user.osuID,
                 avatar: `https://a.ppy.sh/${vote.user.osuID}`,
                 placement: vote.placement,
-                firstChoice: vote.firstPlaceCount,
+                firstChoice: vote.placeCounts[1] || 0,
+                secondChoice: vote.placeCounts[2] || 0,
+                thirdChoice: vote.placeCounts[3] || 0,
                 votes: vote.count,
-                totalVotes: vote.totalCount,
             } as UserResult);
         }
     }
