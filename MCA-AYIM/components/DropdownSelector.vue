@@ -88,7 +88,6 @@ export default class DropdownSelector extends Vue{
 
 .label-section {
     line-height: normal;
-    z-index: 1;
     flex: 1;
     border-radius: inherit;
 
@@ -109,7 +108,6 @@ export default class DropdownSelector extends Vue{
     color: white;
     text-decoration: none;
     text-align: center;
-    z-index: 100;
     left: 50%;
     right: 50%;
 

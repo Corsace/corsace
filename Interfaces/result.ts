@@ -29,7 +29,8 @@ export interface ResultColumn {
     mobileOnly?: boolean,
     desktopOnly?: boolean,
     centred?: boolean,
-    prio?: boolean
+    prio?: boolean,
+    hasTooltip: boolean,
 }
 
 export function votesToResults (votes: ResultVote[], categoryType: CategoryType): BeatmapResult[] | UserResult[] {

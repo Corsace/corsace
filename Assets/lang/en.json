@@ -356,6 +356,12 @@
                 "secondThirdChoice": "2ND-3RD CHOICES",
                 "restChoice": "4TH+ CHOICES"
             },
+            "tooltips": {
+                "hoster": "The name of the user who hosted the set.",
+                "firstChoice": "The number of users who voted an option as their first choice.",
+                "secondThirdChoice": "The number of users who either voted an option as their second or their third choice.",
+                "restChoice": "The number of users who voted for an option, but did not rank it within their top three choices."
+            },
             "resultsOverlay": "Hello! This is possibly the first time you have navigated to the results page! <br> These results show the final placements of the beatmaps/users using <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> alongside the amount of times the beatmap/user was a first choice, and the total number of appearances!<br> Hopefully these results for MCA [YEAR] are to your liking! Can't wait to see you all for next MCA!"
         }
     },

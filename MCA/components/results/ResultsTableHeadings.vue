@@ -8,7 +8,20 @@
                      ((col.prio) ? ' heading-prio' : '')]"
             :style="{'flex': `${mobile && col.msize ? col.msize : col.size}`}"
         >
-            {{ (col.label) ? $t(`mca.results.headings.${col.label}`) : '' }}
+            <span
+                v-if="col.hasTooltip"
+                v-tooltip="{
+                    content: $t(`mca.results.tooltips.${col.label}`),
+                    class: 'table-tooltip',
+                    placement: 'top',
+                    delay: 0,
+                }"
+                v-html="tableHeading(col)"
+            />
+            <span
+                v-else
+                v-html="tableHeading(col)"
+            />
         </span>
     </span>
 </template>
@@ -16,12 +29,20 @@
 <script lang="ts">
 import { Vue, Prop, Component } from "vue-property-decorator";
 import { ResultColumn } from "../../../Interfaces/result";
+import Tooltip from "vue-directive-tooltip";
+import { TranslateResult } from "vue-i18n";
+
+Vue.use(Tooltip);
 
 @Component({})
 export default class ResultsTableHeadings extends Vue {
     @Prop({ type: String, default: ""}) readonly section!: string;
     @Prop({ type: Array, required: true}) readonly columns!: ResultColumn[];
     @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
+
+    tableHeading (col: ResultColumn): TranslateResult {
+        return col.label ? this.$t(`mca.results.headings.${col.label}`) : "";
+    }
 }
 </script>
 
@@ -29,6 +50,37 @@ export default class ResultsTableHeadings extends Vue {
 @import '@s-sass/_variables';
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
+
+.table-tooltip {
+    padding: 5px 20px;
+    
+    max-width: 40vw;
+    @include breakpoint(tablet) {
+        max-width: 20vw;
+    }
+
+    background: black;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 5.5px;
+
+    font-size: 0.9rem;
+    font-family: $font-body;
+
+    opacity: 0;
+    animation: fadeIn ease-out 0.2s;
+    animation-delay: 300ms;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
 
 .table-headings {
     padding: 0 5px 0 5px;
