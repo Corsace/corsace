@@ -27,8 +27,14 @@
                             <div class="staff-vote__count">
                                 <div>Placement: {{ result.placement }}</div>
                                 <div>1st Choices: {{ result.placeCounts[1] || 0 }}</div>
-                                <div>2nd Choices: {{ result.placeCounts[2] || 0 }}</div>
-                                <div>3rd Choices: {{ result.placeCounts[3] || 0 }}</div>
+                                <div>2nd-3rd Choices: {{ (result.placeCounts[2] || 0) + (result.placeCounts[3] || 0) }}</div>
+                                <div>
+                                    4th+ Choices: {{ () => {
+                                        let res = 0; 
+                                        Object.keys(result.placeCounts).filter(k => parseInt(k) > 3).forEach(k => res += result.placeCounts[k]);
+                                        return res;
+                                    } }}
+                                </div>
                             </div>
                         </div>
                     </li>

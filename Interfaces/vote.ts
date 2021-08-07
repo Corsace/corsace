@@ -162,10 +162,9 @@ export function voteCounter (votes: UserVote[]): ResultVote[] {
 
             // Check if this run is over, drop bottom votes from race otherwise
             const inRace = candidates.filter(candidate => candidate.inRace);
-            let sum = 0;
+            const next = candidates.filter(candidate => candidate.count !== candidates[0].count);
             const min = inRace[inRace.length - 1].count;
-            inRace.forEach(candidate => sum += candidate.count);
-            if (candidates[0].count > sum / 2.0 || candidates[0].count === min)
+            if ((next.length > 0 && candidates[0].count / 2.0 > next[0].count) || candidates[0].count === min)
                 break;
 
             for (let i = candidates.length - 1; i > 0; i--) {
