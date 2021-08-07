@@ -54,7 +54,7 @@ export default class ResultsTableHeadings extends Vue {
 .table-tooltip {
     padding: 5px 20px;
     
-    max-width: 40vw;
+    max-width: 35vw;
     @include breakpoint(tablet) {
         max-width: 20vw;
     }

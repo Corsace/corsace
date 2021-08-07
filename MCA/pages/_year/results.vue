@@ -8,7 +8,9 @@
                 :title="$t(`mca.main.results`)"
             >
                 <div class="results-general"> 
-                    <results-filters />
+                    <results-filters 
+                        :mobile="mobile"
+                    />
                     <results-table-headings 
                         :section="section"
                         :columns="filtCol"

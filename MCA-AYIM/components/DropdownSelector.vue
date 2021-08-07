@@ -110,6 +110,7 @@ export default class DropdownSelector extends Vue{
     text-align: center;
     left: 50%;
     right: 50%;
+    z-index: 1;
 
     user-select: none;
     -webkit-user-select: none;

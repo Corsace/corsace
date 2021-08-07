@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "vue-property-decorator";
+import { Vue, Component, Watch, Prop } from "vue-property-decorator";
 import { Mutation, State, namespace } from "vuex-class";
 
 import DropdownSelector from "../../../MCA-AYIM/components/DropdownSelector.vue";
@@ -45,6 +45,8 @@ const stageModule = namespace("stage");
     },
 })
 export default class ResultsFilters extends Vue {
+    @Prop({ type: Boolean, required: true }) readonly mobile!: boolean;
+    
     @Mutation toggleGuestDifficultyModal;
     @State selectedMode!: string;
 
@@ -109,6 +111,12 @@ export default class ResultsFilters extends Vue {
 
     get catStyle () {
         const longestStr = Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length));
+        if (this.mobile)
+            return {
+                "width": `${longestStr * 0.82}em`,
+                "clip-path": "inset(0 -8px -8px -8px)",
+            };
+
         return {
             "width": `${longestStr * 0.82}em`,
             "clip-path": "inset(-8px -8px -8px 0)",
@@ -177,8 +185,8 @@ $two-row-breakpoint: 35rem;
 }
 
 .category-type {
-    margin: 15px 5px 7.5px 5px;
-    border-radius: 5.5px;
+    margin: 15px 5px 0px 5px;
+    border-radius: 5.5px 5.5px 0 0;
 
     @include breakpoint(tablet) {
         margin: 0;
@@ -191,12 +199,13 @@ $two-row-breakpoint: 35rem;
 }
 
 .award-category {
-    margin: 7.5px 5px 0 5px;
-    border-radius: 5.5px;
+    margin: 0 5px 0 5px;
+    border-radius: 0 0 5.5px 5.5px;
 
     @include breakpoint(tablet) {
         margin: 0;
         border-radius: 0 5.5px 5.5px 0;
+        clip-path: none;
     }
 
     @include breakpoint(laptop) {
