@@ -187,7 +187,7 @@ export default class Votes extends Vue {
         return this.votesByCategory.map(category => {
             return {
                 category: category.category,
-                results: voteCounter(category.userVotes),
+                results: voteCounter(category.userVotes, parseInt(this.$route.params.year)),
             };
         });
     }

@@ -87,7 +87,7 @@ export function groupVotesByVoters (staffVotes: StaffVote[]): UserVote[] {
     return userVotes;
 }
 
-export function voteCounter (votes: UserVote[]): ResultVote[] {
+export function voteCounter (votes: UserVote[], year: number): ResultVote[] {
     if (votes.length === 0) return [];
 
     let candidates: ResultVote[] = [];
@@ -164,7 +164,12 @@ export function voteCounter (votes: UserVote[]): ResultVote[] {
             const inRace = candidates.filter(candidate => candidate.inRace);
             const next = candidates.filter(candidate => candidate.count !== candidates[0].count);
             const min = inRace[inRace.length - 1].count;
-            if ((next.length > 0 && candidates[0].count / 2.0 > next[0].count) || candidates[0].count === min)
+            if (year === 2019) { // Version before voting counting was changed for 2020+
+                let sum = 0;
+                inRace.forEach(candidate => sum += candidate.count);
+                if (candidates[0].count > sum / 2.0 || candidates[0].count === min)
+                    break;
+            } else if ((next.length > 0 && candidates[0].count / 2.0 > next[0].count) || candidates[0].count === min)
                 break;
 
             for (let i = candidates.length - 1; i > 0; i--) {
