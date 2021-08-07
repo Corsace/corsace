@@ -54,7 +54,7 @@ export default class ResultsTableHeadings extends Vue {
     }
 
     background: black;
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid $gray-dark;
     border-radius: 5.5px;
 
     font-size: 0.9rem;
