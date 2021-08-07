@@ -16,12 +16,11 @@
                     placement: 'top',
                     delay: 0,
                 }"
-                v-html="tableHeading(col)"
-            />
-            <span
-                v-else
-                v-html="tableHeading(col)"
-            />
+            >
+                {{ col.label ? $t(`mca.results.headings.${col.label}`) : "" }}
+            </span>
+
+            <span v-else>{{ col.label ? $t(`mca.results.headings.${col.label}`) : "" }}</span>
         </span>
     </span>
 </template>
@@ -30,7 +29,6 @@
 import { Vue, Prop, Component } from "vue-property-decorator";
 import { ResultColumn } from "../../../Interfaces/result";
 import Tooltip from "vue-directive-tooltip";
-import { TranslateResult } from "vue-i18n";
 
 Vue.use(Tooltip);
 
@@ -39,10 +37,6 @@ export default class ResultsTableHeadings extends Vue {
     @Prop({ type: String, default: ""}) readonly section!: string;
     @Prop({ type: Array, required: true}) readonly columns!: ResultColumn[];
     @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
-
-    tableHeading (col: ResultColumn): TranslateResult {
-        return col.label ? this.$t(`mca.results.headings.${col.label}`) : "";
-    }
 }
 </script>
 
