@@ -8,7 +8,9 @@
                 :title="$t(`mca.main.results`)"
             >
                 <div class="results-general"> 
-                    <results-filters />
+                    <results-filters 
+                        :mobile="mobile"
+                    />
                     <results-table-headings 
                         :section="section"
                         :columns="filtCol"
@@ -102,16 +104,16 @@ export default class Results extends Vue {
     // label must match a field in BOTH assets/lang/{lang}/mca.results.headings.*
     //   AND a property of either BeatmapResults or UserResults 
     columns: ResultColumn[] = [
-        {label: "placement", size: 1.5, category: "beatmaps", prio: true}, 
-        {label: "placement", size: 4, category: "users", prio: true},
-        {label: "map", size: 6, category: "beatmaps", mobileOnly: true},
-        {label: "title", size: 6, category: "beatmaps", desktopOnly: true},
-        {label: "artist", size: 4, category: "beatmaps", desktopOnly: true},
-        {label: "hoster", size: 2.25, category: "beatmaps", desktopOnly: true},
-        {label: "username", size: 9.75, msize: 6, category: "users"},
-        {label: "firstChoice", size: 1.5, centred: true, prio: true},
-        {label: "secondThirdChoice", size: 1.5, desktopOnly: true, centred: true},
-        {label: "restChoice", size: 1.5, desktopOnly: true, centred: true},
+        {label: "placement", size: 1, category: "beatmaps", prio: true, hasTooltip: false}, 
+        {label: "placement", size: 4, category: "users", prio: true, hasTooltip: false},
+        {label: "map", size: 6, category: "beatmaps", mobileOnly: true, hasTooltip: false},
+        {label: "title", size: 5.5, category: "beatmaps", desktopOnly: true, hasTooltip: false},
+        {label: "artist", size: 3.75, category: "beatmaps", desktopOnly: true, hasTooltip: false},
+        {label: "hoster", size: 2, category: "beatmaps", desktopOnly: true, hasTooltip: true},
+        {label: "username", size: 8.25, msize: 6, category: "users", hasTooltip: false},
+        {label: "firstChoice", size: 2, centred: true, prio: true, hasTooltip: true},
+        {label: "secondThirdChoice", size: 2, desktopOnly: true, centred: true, hasTooltip: true},
+        {label: "restChoice", size: 2, desktopOnly: true, centred: true, hasTooltip: true},
     ]
 
     // filter columns by breakpoint and category
