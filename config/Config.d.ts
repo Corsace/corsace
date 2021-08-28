@@ -25,6 +25,7 @@ declare module "node-config-ts" {
                     staff: string;
                     writer: string;
                     verified: string;
+                    streamAnnouncements: string;
                 };
                 open: {
                     participants: string;

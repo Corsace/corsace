@@ -1,5 +1,6 @@
 import * as Discord from "discord.js";
 import { config } from "node-config-ts";
+import { User } from "../Models/user";
 
 const discordClient = new Discord.Client;
 
@@ -8,7 +9,20 @@ discordClient.login(config.discord.token).then(() => {
 }).catch(err => {if (err) throw err;});
 
 discordClient.on("error", err => {
-    console.log(err);
+    console.error(err);
+});
+
+discordClient.on("guildMemberAdd", async member => {
+    const roles = [config.discord.roles.streamAnnouncements];
+    const user = await User.findOne({
+        discord: {
+            userID: member.id,
+        },
+    });
+    if (user)
+        roles.push(config.discord.roles.verified);
+
+    await member.roles.add(roles);
 });
 
 const discordGuild = (): Promise<Discord.Guild> => discordClient.guilds.fetch(config.discord.guild);

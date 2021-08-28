@@ -13,7 +13,8 @@
                 "headStaff": "role ID",
                 "staff": "role ID",
                 "writer": "role ID",
-                "verified": "role ID"
+                "verified": "role ID",
+                "streamAnnouncements": "role ID"
             },
             "open": {
                 "participants": "role ID",
