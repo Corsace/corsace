@@ -76,7 +76,7 @@ async function command (m: Message) {
 }
 
 const osu: Command = {
-    name: /osu/i, 
+    name: /osu/i,
     description: "Obtain your username from osu!",
     usage: "!osu", 
     command,

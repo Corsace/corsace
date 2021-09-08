@@ -78,6 +78,9 @@ webServices:
     ingress:
       enabled: false
 
+bot:
+  enabled: true
+
 podAnnotations: {}
 
 podSecurityContext: {}
