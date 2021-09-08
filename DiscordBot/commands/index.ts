@@ -1,19 +1,23 @@
 import { Message } from "discord.js";
+import avatar from "./utility/avatar";
 import osu from "./osu";
 
 interface Command {
-    name: string;
+    name: RegExp;
     description: string;
     usage: string;
 
     command: (message: Message, ...args: any[]) => Promise<void>;
 }
 
-const commands = new Map<string, Command>();
+const commands: Command[] = [];
 
 // List of commands here
 
-// osu! commands (there'll be many more here)
-commands.set(osu.name, osu);
+// general utility commands
+commands.push(avatar);
+
+// osu! commands
+commands.push(osu);
 
 export { commands, Command };

@@ -4,21 +4,21 @@ import { commands } from "../commands";
 
 const prefix = /^!(\S+)/;
 
-export default async function messageCreate (message: Message) {
+export default async function messageCreate (m: Message) {
     // Don't respond to itself or other bots
-    if (message.author.id === discordClient.user?.id || message.author.bot)
+    if (m.author.id === discordClient.user?.id || m.author.bot)
         return;
 
     // First super basic command
-    if (prefix.test(message.content)) {
-        const commandName = prefix.exec(message.content);
+    if (prefix.test(m.content)) {
+        const commandName = prefix.exec(m.content);
         if (!commandName)
             return;
 
-        const command = commands.get(commandName[1].toLowerCase());
+        const command =  commands.find(cmd => cmd.name.test(commandName[1].toLowerCase()));
         if (!command)
             return;
-
-        await command.command(message);
+        
+        await command.command(m);
     }
 }
