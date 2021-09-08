@@ -24,6 +24,7 @@ RUN npm run build:ayim
 RUN npm run build:mca
 RUN npm run build:main
 RUN npm run build:api
+RUN npm run build:discord-bot
 
 ENV NODE_ENV=production
 RUN npm prune --production
