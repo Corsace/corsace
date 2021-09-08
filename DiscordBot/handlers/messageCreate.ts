@@ -18,7 +18,7 @@ export default async function messageCreate (m: Message) {
         const command =  commands.find(cmd => cmd.name.test(commandName[1].toLowerCase()));
         if (!command)
             return;
-        
+
         await command.command(m);
     }
 }

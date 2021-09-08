@@ -1,9 +1,8 @@
 import { Message, MessageEmbed, MessageEmbedOptions } from "discord.js";
 import { OAuth, User } from "../../../Models/user";
 import { Command } from "../index";
-import { config } from "node-config-ts";
 import { User as APIUser } from "nodesu";
-import Axios from "axios";
+import { osuClient } from "../../../Server/osu";
 
 const osuRegex = /osu\s+(.+)/i;
 
@@ -21,12 +20,7 @@ async function command (m: Message) {
             return;
         }
 
-        const { data } = await Axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${userQ.osu.userID}`);
-        apiUser = new APIUser(data[0]);
-        if (!userQ.country) {
-            userQ.country = apiUser.country.toString();
-            await userQ.save();
-        }
+        apiUser = (await osuClient.user.get(userQ.osu.userID)) as APIUser;
         user = userQ;
     } else { // Querying someone else
 
@@ -34,8 +28,7 @@ async function command (m: Message) {
         if (!res) // This is literally impossible
             return;
 
-        const { data } = await Axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${res[1]}`);
-        apiUser = new APIUser(data[0]);
+        apiUser = (await osuClient.user.get(res[1])) as APIUser;
 
         let userQ = await User.findOne({
             where: [
