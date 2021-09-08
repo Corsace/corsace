@@ -105,6 +105,7 @@ export async function osuPassport (accessToken: string, refreshToken: string, pr
             }
         }
 
+        user.country = userProfile.country_code;
         user.osu.userID = userProfile.id;
         user.osu.username = userProfile.username;
         user.osu.avatar = userProfile.avatar_url;

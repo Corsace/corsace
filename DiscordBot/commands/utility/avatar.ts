@@ -48,8 +48,6 @@ async function command (m: Message) {
     // Get avatar for the user themself or someone else
     const regRes = avatarRegex.exec(m.content);
 
-    console.log(regRes);
-
     // Themself
     if (!regRes || !regRes[4]) { 
         if (negateRegex.test(m.content))
