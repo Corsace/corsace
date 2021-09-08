@@ -42,7 +42,6 @@ async function command (m: Message) {
                 { osu: { userID: apiUser.userId }},
             ],
         });
-        console.log(userQ);
 
         if (!userQ) {
             userQ = new User;
