@@ -56,6 +56,9 @@ export class User extends BaseEntity {
     @Column(() => OAuth)
     osu!: OAuth;
 
+    @Column({ type: "tinytext" })
+    country!: string;
+
     @CreateDateColumn()
     registered!: Date;
     
