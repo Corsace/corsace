@@ -11,6 +11,9 @@ interface Command {
 
 const commands = new Map<string, Command>();
 
+// List of commands here
+
+// osu! commands (there'll be many more here)
 commands.set(osu.name, osu);
 
 export { commands, Command };
