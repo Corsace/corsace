@@ -3,11 +3,11 @@ import { discordClient } from "../../Server/discord";
 import { commands } from "../commands";
 import osuTimestamp from "../inexplicitCommands/osuTimestamp";
 
-const prefix = /^!(\S+)/i;
-const timestampRegex = /(\d+):(\d{2}):(\d{3})\s*(\(((\d,?)+)\))?/gmi;
-const emojiRegex = /<a?(:.+:)\d+>/i;
-
 export default async function messageCreate (m: Message) {
+    const prefix = /^!(\S+)/i;
+    const timestampRegex = /(\d+):(\d{2}):(\d{3})\s*(\(((\d,?)+)\))?/gmi;
+    const emojiRegex = /<a?(:.+:)\d+>/i;
+
     // Don't respond to itself or other bots
     if (m.author.id === discordClient.user?.id || m.author.bot)
         return;
@@ -18,7 +18,7 @@ export default async function messageCreate (m: Message) {
         noEmoji = m.content.replaceAll(emojiRegex, "");
 
     if (timestampRegex.test(noEmoji))
-        osuTimestamp(m, timestampRegex);
+        osuTimestamp(m);
 
     // Command checking TODO: Add custom prefix (relies on discord server model)
     if (prefix.test(m.content)) {

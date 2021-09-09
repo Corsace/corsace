@@ -2,10 +2,6 @@ import { ImageURLOptions, Message, User } from "discord.js";
 import { discordClient } from "../../../Server/discord";
 import { Command } from "../index";
 
-const avatarRegex = /(quote)?(a|ava|avatar)(q|quote)?\s+(.+)/i; // General command
-const serverRegex = /(-s\s|-s$)/i; // For obtaining the server's avatar
-const negateRegex = /-(np|noprev(iew)?)/i; // Remove image preview from message
-
 const avatarOptions: ImageURLOptions & { dynamic?: boolean } = { format: "png", size: 2048, dynamic: true };
 
 function getAvatar (user: User) {
@@ -13,6 +9,9 @@ function getAvatar (user: User) {
 }
 
 async function command (m: Message) {
+    const avatarRegex = /(quote)?(a|ava|avatar)(q|quote)?\s+(.+)/i; // General command
+    const serverRegex = /(-s\s|-s$)/i; // For obtaining the server's avatar
+    const negateRegex = /-(np|noprev(iew)?)/i; // Remove image preview from message
 
     // Get server avatar
     if (serverRegex.test(m.content)) {

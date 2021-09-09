@@ -4,9 +4,9 @@ import { Command } from "../index";
 import { User as APIUser } from "nodesu";
 import { osuClient } from "../../../Server/osu";
 
-const osuRegex = /osu\s+(.+)/i;
-
 async function command (m: Message) {
+    const osuRegex = /osu\s+(.+)/i;
+
     let user: User;
     let apiUser: APIUser;
     if (!osuRegex.test(m.content)) { // Querying themself
@@ -23,7 +23,6 @@ async function command (m: Message) {
         apiUser = (await osuClient.user.get(userQ.osu.userID)) as APIUser;
         user = userQ;
     } else { // Querying someone else
-
         const res = osuRegex.exec(m.content);
         if (!res) // This is literally impossible
             return;
