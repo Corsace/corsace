@@ -19,6 +19,7 @@
       "lru-cache": "^4.1.5",
       "mysql": "^2.18.1",
       "node-config-ts": "^3.1.0",
+      "nodesu": "https://github.com/ThePooN/nodesu/archive/502d65b9f84dd2fbe0a24f4eeaf9359305f8bcc3.tar.gz",
       "nuxt": "^2.14.12",
       "nuxt-i18n": "^6.17.0",
       "passport": "^0.4.1",
@@ -58,7 +59,6 @@
       "eslint": "^7.17.0",
       "eslint-plugin-vue": "^7.4.1",
       "memoizee": "^0.4.15",
-      "nodesu": "https://github.com/ThePooN/nodesu/archive/502d65b9f84dd2fbe0a24f4eeaf9359305f8bcc3.tar.gz",
       "sass": "^1.32.2",
       "sass-loader": "^10.1.0",
       "ts-node-dev": "^1.1.8"
