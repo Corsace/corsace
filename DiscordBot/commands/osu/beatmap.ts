@@ -1,9 +1,10 @@
 import { Message, MessageEmbed, MessageEmbedOptions } from "discord.js";
 import { Command } from "../index";
 import { osuClient } from "../../../Server/osu";
-import { Beatmap, Mode, ApprovalStatus } from "nodesu";
+import { Beatmap, Mode, ApprovalStatus, Score } from "nodesu";
 import { applyMods, acronymtoMods } from "../../../Interfaces/mods";
 import modeColour from "../../functions/modeColour";
+import ppCalculator from "../../functions/ppCalculator";
 
 async function obtainBeatmap (res: RegExpExecArray, mods: string): Promise<Beatmap | undefined> {
     let beatmap: Beatmap | undefined = undefined;
@@ -34,6 +35,7 @@ async function obtainBeatmap (res: RegExpExecArray, mods: string): Promise<Beatm
 async function command (m: Message) {
     const beatmapRegex = /(osu|old)\.ppy\.sh\/(s|b|beatmaps|beatmapsets)\/(\d+)(#(osu|taiko|fruits|mania)\/(\d+))?/i;
     const modRegex = /-m\s*(\S+)/i;
+    const missRegex = /-x\s*(\S+)/i;
 
     let reg: RegExpExecArray | null = null; 
     if (beatmapRegex.test(m.content)) { // Beatmap link
@@ -94,6 +96,19 @@ async function command (m: Message) {
     }
     const set = (await osuClient.beatmaps.getBySetId(beatmap.beatmapSetId)) as Beatmap[];
 
+    const totalHits = beatmap.countNormal + beatmap.countSlider + beatmap.countSpinner;
+
+    // Check if misses were specified
+    let misses = 0;
+    if (missRegex.test(m.content)) {
+        const res = missRegex.exec(m.content);
+        if (res) {
+            misses = parseInt(res[1]);
+            if (Number.isNaN(misses) || misses < 0 || misses > totalHits)
+                misses = 0;
+        }
+    }
+
     // Apply mod scalings
     const difficultyScaler = mods.includes("HR") ? "HR" : mods.includes("EZ") ? "EZ" : undefined; 
     const speedScaler = mods.includes("DT") ? "DT" : mods.includes("HT") ? "HT" : undefined;
@@ -135,9 +150,48 @@ async function command (m: Message) {
     if (set.length === 1)
         diffs = "**1** difficulty";
 
-    // Whenever I port pp calculator into corsace this constant name will make sense otherwise it's just an exact copypaste from maquia
+    const score100 = new Score({
+        maxcombo: beatmap.maxCombo,
+        count300: totalHits,
+        count100: 0,
+        count50: 0,
+        countmiss: 0,
+        enabled_mods: acronymtoMods(mods),
+    });
+    const score99 = new Score({
+        maxcombo: beatmap.maxCombo,
+        count300: (0.99 * totalHits * 6 - totalHits + misses) / 5,
+        count100: (0.99 * totalHits * 6 - totalHits + misses) % 5,
+        count50: totalHits - (0.99 * totalHits * 6 - totalHits + misses) / 5 - (0.99 * totalHits * 6 - totalHits + misses) % 5 - misses,
+        countmiss: misses,
+        enabled_mods: acronymtoMods(mods),
+    });
+    const score98 = new Score({
+        maxcombo: beatmap.maxCombo,
+        count300: (0.98 * totalHits * 6 - totalHits + misses) / 5,
+        count100: (0.98 * totalHits * 6 - totalHits + misses) % 5,
+        count50: totalHits - (0.98 * totalHits * 6 - totalHits + misses) / 5 - (0.98 * totalHits * 6 - totalHits + misses) % 5 - misses,
+        countmiss: misses,
+        enabled_mods: acronymtoMods(mods),
+    });
+    const score97 = new Score({
+        maxcombo: beatmap.maxCombo,
+        count300: (0.97 * totalHits * 6 - totalHits + misses) / 5,
+        count100: (0.97 * totalHits * 6 - totalHits + misses) % 5,
+        count50: totalHits - (0.97 * totalHits * 6 - totalHits + misses) / 5 - (0.97 * totalHits * 6 - totalHits + misses) % 5 - misses,
+        countmiss: misses,
+        enabled_mods: acronymtoMods(mods),
+    });
+    const score95 = new Score({
+        maxcombo: beatmap.maxCombo,
+        count300: (0.95 * totalHits * 6 - totalHits + misses) / 5,
+        count100: (0.95 * totalHits * 6 - totalHits + misses) % 5,
+        count50: totalHits - (0.95 * totalHits * 6 - totalHits + misses) / 5 - (0.95 * totalHits * 6 - totalHits + misses) % 5 - misses,
+        countmiss: misses,
+        enabled_mods: acronymtoMods(mods),
+    });
     const ppTextHeader = `**[${beatmap.version}]** with mods: **${mods}**`;
-    const ppText = `**100%:** ???pp | **99%:** ???pp | **98%:** ???pp | **97%:** ???pp | **95%:** ???pp`;
+    const ppText = `**100%:** ${Math.floor(ppCalculator(beatmap, score100))}pp | **99%:** ${Math.floor(ppCalculator(beatmap, score99))}pp | **98%:** ${Math.floor(ppCalculator(beatmap, score98))}pp | **97%:** ${Math.floor(ppCalculator(beatmap, score97))}pp | **95%:** ${Math.floor(ppCalculator(beatmap, score95))}pp`;
 
     const embedMsg: MessageEmbedOptions = {
         author: {
