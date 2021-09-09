@@ -2,27 +2,27 @@ import { Message, MessageEmbed, MessageEmbedOptions } from "discord.js";
 import { Command } from "../index";
 import { osuClient } from "../../../Server/osu";
 import { Beatmap, Mode, ApprovalStatus } from "nodesu";
-import { applyMods, parseMods } from "../../../Interfaces/mods";
+import { applyMods, acronymtoMods } from "../../../Interfaces/mods";
 import modeColour from "../../functions/modeColour";
 
 async function obtainBeatmap (res: RegExpExecArray, mods: string): Promise<Beatmap | undefined> {
     let beatmap: Beatmap | undefined = undefined;
     switch (res[2]) {
         case "s": {
-            const set = (await osuClient.beatmaps.getBySetId(res[3], Mode.all, undefined, undefined, parseMods(mods)) as Beatmap[]);
+            const set = (await osuClient.beatmaps.getBySetId(res[3], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[]);
             beatmap = set.sort((a, b) => b.difficultyRating - a.difficultyRating)[0];
             break;
         } case "b": {
-            beatmap = (await osuClient.beatmaps.getByBeatmapId(res[3], Mode.all, undefined, undefined, parseMods(mods)) as Beatmap[])[0];
+            beatmap = (await osuClient.beatmaps.getByBeatmapId(res[3], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[])[0];
             break;
         } case "beatmaps": {
-            beatmap = (await osuClient.beatmaps.getByBeatmapId(res[3], Mode.all, undefined, undefined, parseMods(mods)) as Beatmap[])[0];
+            beatmap = (await osuClient.beatmaps.getByBeatmapId(res[3], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[])[0];
             break;
         } case "beatmapsets": {
             if (res[6].length > 0) {
-                beatmap = (await osuClient.beatmaps.getByBeatmapId(res[6], Mode.all, undefined, undefined, parseMods(mods)) as Beatmap[])[0];
+                beatmap = (await osuClient.beatmaps.getByBeatmapId(res[6], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[])[0];
             } else {
-                const set = (await osuClient.beatmaps.getBySetId(res[3], Mode.all, undefined, undefined, parseMods(mods)) as Beatmap[]);
+                const set = (await osuClient.beatmaps.getBySetId(res[3], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[]);
                 beatmap = set.sort((a, b) => b.difficultyRating - a.difficultyRating)[0];
             }
             break;

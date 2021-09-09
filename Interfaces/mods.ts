@@ -31,7 +31,12 @@ export const modAcronyms = {
     "K2": Mods.Key2,
 };
 
-export function parseMods (text: string): ModsType | undefined {
+/**
+ * Parses a list of mod acronyms into nodesu ModsType enums
+ * @param text A string consisting of mods as acronyms
+ * @returns Either an enum of the mods or undefined
+ */
+export function acronymtoMods (text: string): ModsType | undefined {
     const modStrings = text.match(/.{1,2}/g);
     if (!modStrings)
         return;
@@ -42,6 +47,11 @@ export function parseMods (text: string): ModsType | undefined {
     return val;
 }
 
+/**
+ * Parses nodesu ModsType enum into a list of mod acronyms
+ * @param mod An enum of the mods
+ * @returns A string consisting of mods as acronyms
+ */
 export function modsToAcronym (mod: ModsType): string {
     if (mod === 0)
         return "NM";
@@ -55,6 +65,13 @@ export function modsToAcronym (mod: ModsType): string {
     return text;
 }
 
+/**
+ * Applies mod affects to different aspects of a beatmap (DOES NOT AFFECT SR!!!)
+ * @param beatmap The beatmap to change aspects of
+ * @param difficultyscaler HR or EZ (undefined if neither)
+ * @param speedScaler DT/NC or HT (undefined if neither)
+ * @returns The beatmap with mods applied
+ */
 export function applyMods (beatmap: Beatmap, difficultyscaler?: "HR"|"EZ", speedScaler?: "DT"|"HT"|"NC"): Beatmap {
     if (difficultyscaler) {
         if (difficultyscaler === "HR") {
@@ -89,6 +106,11 @@ export function applyMods (beatmap: Beatmap, difficultyscaler?: "HR"|"EZ", speed
     return beatmap;
 }
 
+/**
+ * Provides the speed of AR/HP in ms as shown from https://github.com/ppy/osu/blob/0c52b26d2312bd090896bf7c65f790ca83ba0cb2/osu.Game.Rulesets.Osu/Difficulty/OsuDifficultyCalculator.cs#L59
+ * @param value The initial AR/HP value
+ * @returns The ms speed of AR/HP
+ */
 function diffRange (value: number): number {
     let val = 1200;
     if (value > 5)
@@ -98,6 +120,11 @@ function diffRange (value: number): number {
     return val;
 }
 
+/**
+ * Converts the ms speed of AR/HP into the original usual digestable 0-10 values
+ * @param value The ms speed of AR/HP
+ * @returns The AR/HP value 
+ */
 function diffValue (value: number): number {
     if (value > 1200)
         return (1800 - value) / 120;
