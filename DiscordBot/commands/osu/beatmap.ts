@@ -210,7 +210,7 @@ async function command (m: Message) {
             ppText,
         color: modeColour(beatmap.mode),
         footer: {
-            text: `Corsace`,
+            text: `Corsace | https://corsace.io`,
         },
         thumbnail: {
             url: `https://b.ppy.sh/thumb/${beatmap.beatmapSetId}l.jpg`,
