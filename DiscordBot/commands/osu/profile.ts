@@ -4,12 +4,13 @@ import { Command } from "../index";
 import { User as APIUser } from "nodesu";
 import { osuClient } from "../../../Server/osu";
 
-const osuRegex = /osu\s+(.+)/i;
-
 async function command (m: Message) {
+    const osuRegex = /(osu|profile)\s+(.+)/i;
+    const profileRegex = /(osu|old)\.ppy\.sh\/(u|users)\/(\S+)/i;
+
     let user: User;
     let apiUser: APIUser;
-    if (!osuRegex.test(m.content)) { // Querying themself
+    if (!osuRegex.test(m.content) && !profileRegex.test(m.content)) { // Querying themself
         const userQ = await User.findOne({
             discord: {
                 userID: m.author.id,
@@ -24,16 +25,24 @@ async function command (m: Message) {
         user = userQ;
     } else { // Querying someone else
 
-        const res = osuRegex.exec(m.content);
-        if (!res) // This is literally impossible
-            return;
+        if (osuRegex.test(m.content)) { // Command run
+            const res = osuRegex.exec(m.content);
+            if (!res) // This is literally impossible
+                return;
 
-        apiUser = (await osuClient.user.get(res[1])) as APIUser;
+            apiUser = (await osuClient.user.get(res[2])) as APIUser;
+        } else { // Profile linked
+            const res = profileRegex.exec(m.content);
+            if (!res) // This is also literally impossible
+                return;
+
+            apiUser = (await osuClient.user.get(res[3])) as APIUser;
+        }
 
         let userQ = await User.findOne({
-            where: [
-                { osu: { userID: apiUser.userId }},
-            ],
+            osu: { 
+                userID: apiUser.userId.toString(), 
+            },
         });
 
         if (!userQ) {
@@ -63,16 +72,15 @@ async function command (m: Message) {
             url: user.osu.avatar,
         },
     };
-
     const message = new MessageEmbed(embedMsg);
     m.channel.send(message);
 }
 
-const osu: Command = {
-    name: /osu/i, 
-    description: "Obtain your username from osu!",
-    usage: "!osu", 
+const profile: Command = {
+    name: /(osu|profile)/i, 
+    description: "Obtain your osu! profile",
+    usage: "!(osu|profile)", 
     command,
 };
 
-export default osu;
+export default profile;

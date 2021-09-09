@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import avatar from "./utility/avatar";
-import osu from "./osu";
+import beatmap from "./osu/beatmap";
+import profile from "./osu/profile";
 
 interface Command {
     name: RegExp;
@@ -18,6 +19,7 @@ const commands: Command[] = [];
 commands.push(avatar);
 
 // osu! commands
-commands.push(osu);
+commands.push(beatmap);
+commands.push(profile);
 
 export { commands, Command };

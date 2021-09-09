@@ -2,17 +2,16 @@ import { ImageURLOptions, Message, User } from "discord.js";
 import { discordClient } from "../../../Server/discord";
 import { Command } from "../index";
 
-const avatarRegex = /(quote)?(a|ava|avatar)(q|quote)?\s+(.+)/i; // General command
-const serverRegex = /(-s\s|-s$)/i; // For obtaining the server's avatar
-const negateRegex = /-(np|noprev(iew)?)/i; // Remove image preview from message
-
 const avatarOptions: ImageURLOptions & { dynamic?: boolean } = { format: "png", size: 2048, dynamic: true };
 
 function getAvatar (user: User) {
-    return user.avatarURL(avatarOptions) ?? `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png?size=2048`;
+    return user.displayAvatarURL(avatarOptions) ?? `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png?size=2048`;
 }
 
 async function command (m: Message) {
+    const avatarRegex = /(quote)?(a|ava|avatar)(q|quote)?\s+(.+)/i; // General command
+    const serverRegex = /(-s\s|-s$)/i; // For obtaining the server's avatar
+    const negateRegex = /-(np|noprev(iew)?)/i; // Remove image preview from message
 
     // Get server avatar
     if (serverRegex.test(m.content)) {
@@ -90,7 +89,7 @@ async function command (m: Message) {
 }
 
 const avatar: Command = {
-    name: /(quote)?(a|ava|avatar)(q|quote)?/i,
+    name: /(quote)?(^a|a |ava|avatar)(q|quote)?/i,
     description: "Obtains the avatar for a user/server.",
     usage: "!(a|ava|avatar)",
     command,
