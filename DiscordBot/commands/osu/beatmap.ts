@@ -114,7 +114,7 @@ async function command (m: Message) {
     const speedScaler = mods.includes("DT") ? "DT" : mods.includes("HT") ? "HT" : undefined;
     beatmap = applyMods(beatmap, difficultyScaler, speedScaler);
 
-    // Remove NCDT now Lol
+    // Remove DT from NCDT
     if (mods.includes("NC") && mods.includes("DT"))
         mods = mods.replace("DT", "");
 
@@ -150,6 +150,7 @@ async function command (m: Message) {
     if (set.length === 1)
         diffs = "**1** difficulty";
 
+    // Creating scores for pp calc
     const score100 = new Score({
         maxcombo: beatmap.maxCombo,
         count300: totalHits,
