@@ -1,10 +1,14 @@
 import { Message } from "discord.js";
 import { discordClient } from "../../Server/discord";
 import { commands } from "../commands";
-import osuTimestamp from "../inexplicitCommands/osuTimestamp";
+import beatmap from "../commands/osu/beatmap";
+import profile from "../commands/osu/profile";
+import osuTimestamp from "../commandsInexplicit/osuTimestamp";
 
 export default async function messageCreate (m: Message) {
     const prefix = /^!(\S+)/i;
+    const profileRegex = /(osu|old)\.ppy\.sh\/(u|users)\/(\S+)/i;
+    const beatmapRegex = /(osu|old)\.ppy\.sh\/(s|b|beatmaps|beatmapsets)\/(\d+)(#(osu|taiko|fruits|mania)\/(\d+))?/i;
     const timestampRegex = /(\d+):(\d{2}):(\d{3})\s*(\(((\d,?)+)\))?/gmi;
     const emojiRegex = /<a?(:.+:)\d+>/i;
 
@@ -17,6 +21,7 @@ export default async function messageCreate (m: Message) {
     if (emojiRegex.test(m.content))
         noEmoji = m.content.replaceAll(emojiRegex, "");
 
+    // Check for osu! timeestamps
     if (timestampRegex.test(noEmoji))
         osuTimestamp(m);
 
@@ -32,4 +37,12 @@ export default async function messageCreate (m: Message) {
 
         await command.command(m);
     }
+
+    // Check for an osu! profile linked
+    if (profileRegex.test(m.content))
+        profile.command(m);
+
+    // Check for an osu! beatmap linked
+    if (beatmapRegex.test(m.content))
+        beatmap.command(m);
 }

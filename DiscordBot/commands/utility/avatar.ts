@@ -5,7 +5,7 @@ import { Command } from "../index";
 const avatarOptions: ImageURLOptions & { dynamic?: boolean } = { format: "png", size: 2048, dynamic: true };
 
 function getAvatar (user: User) {
-    return user.avatarURL(avatarOptions) ?? `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png?size=2048`;
+    return user.displayAvatarURL(avatarOptions) ?? `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png?size=2048`;
 }
 
 async function command (m: Message) {
@@ -89,7 +89,7 @@ async function command (m: Message) {
 }
 
 const avatar: Command = {
-    name: /(quote)?(a|ava|avatar)(q|quote)?/i,
+    name: /(quote)?(^a|a |ava|avatar)(q|quote)?/i,
     description: "Obtains the avatar for a user/server.",
     usage: "!(a|ava|avatar)",
     command,
