@@ -6,11 +6,12 @@ import { applyMods, acronymtoMods } from "../../../Interfaces/mods";
 import modeColour from "../../functions/modeColour";
 import ppCalculator from "../../functions/ppCalculator";
 
-async function obtainBeatmap (res: RegExpExecArray, mods: string): Promise<Beatmap | undefined> {
+async function obtainBeatmap (res: RegExpExecArray, mods: string): Promise<[Beatmap | undefined, Beatmap[] | undefined]> {
     let beatmap: Beatmap | undefined = undefined;
+    let set: Beatmap[] | undefined = undefined;
     switch (res[2]) {
         case "s": {
-            const set = (await osuClient.beatmaps.getBySetId(res[3], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[]);
+            set = (await osuClient.beatmaps.getBySetId(res[3], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[]);
             beatmap = set.sort((a, b) => b.difficultyRating - a.difficultyRating)[0];
             break;
         } case "b": {
@@ -23,13 +24,13 @@ async function obtainBeatmap (res: RegExpExecArray, mods: string): Promise<Beatm
             if (res[6].length > 0) {
                 beatmap = (await osuClient.beatmaps.getByBeatmapId(res[6], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[])[0];
             } else {
-                const set = (await osuClient.beatmaps.getBySetId(res[3], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[]);
+                set = (await osuClient.beatmaps.getBySetId(res[3], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[]);
                 beatmap = set.sort((a, b) => b.difficultyRating - a.difficultyRating)[0];
             }
             break;
         } 
     }
-    return beatmap;
+    return [beatmap, set];
 }
 
 async function command (m: Message) {
@@ -86,7 +87,7 @@ async function command (m: Message) {
         }
     }
 
-    let beatmap = await obtainBeatmap(reg, mods);
+    let [beatmap, set] = await obtainBeatmap(reg, mods);
     if (!beatmap) {
         if (beatmapRegex.test(m.content))
             return;
@@ -94,7 +95,8 @@ async function command (m: Message) {
         m.channel.send("No previous beatmap found from previous link on osu!");
         return;
     }
-    const set = (await osuClient.beatmaps.getBySetId(beatmap.beatmapSetId)) as Beatmap[];
+    if (!set)
+        set = (await osuClient.beatmaps.getBySetId(beatmap.beatmapSetId)) as Beatmap[];
 
     const totalHits = beatmap.countNormal + beatmap.countSlider + beatmap.countSpinner;
 
