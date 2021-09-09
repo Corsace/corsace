@@ -31,9 +31,9 @@ async function command (m: Message) {
         apiUser = (await osuClient.user.get(res[1])) as APIUser;
 
         let userQ = await User.findOne({
-            where: [
-                { osu: { userID: apiUser.userId }},
-            ],
+            osu: { 
+                userID: apiUser.userId.toString(), 
+            },
         });
 
         if (!userQ) {
