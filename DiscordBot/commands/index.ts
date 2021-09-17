@@ -2,9 +2,10 @@ import { Message } from "discord.js";
 import avatar from "./utility/avatar";
 import beatmap from "./osu/beatmap";
 import profile from "./osu/profile";
+import recent from "./osu/recent";
 
 interface Command {
-    name: RegExp;
+    name: string[];
     description: string;
     usage: string;
 
@@ -21,5 +22,6 @@ commands.push(avatar);
 // osu! commands
 commands.push(beatmap);
 commands.push(profile);
+commands.push(recent);
 
 export { commands, Command };

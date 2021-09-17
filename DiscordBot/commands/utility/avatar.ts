@@ -89,7 +89,7 @@ async function command (m: Message) {
 }
 
 const avatar: Command = {
-    name: /(quote)?(^a|a |ava|avatar)(q|quote)?/i,
+    name: ["a", "ava", "avatar", "qa", "qava", "qavatar", "aq", "avaq", "avatarq", "quotea", "quoteava", "quoteavatar", "aquote", "avaquote", "avatarquote"],
     description: "Obtains the avatar for a user/server.",
     usage: "!(a|ava|avatar)",
     command,

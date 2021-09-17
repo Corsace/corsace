@@ -25,18 +25,24 @@ async function command (m: Message) {
         user = userQ;
     } else { // Querying someone else
 
+        let q = "";
         if (osuRegex.test(m.content)) { // Command run
             const res = osuRegex.exec(m.content);
-            if (!res) // This is literally impossible
+            if (!res)
                 return;
-
+            q = res[2];
             apiUser = (await osuClient.user.get(res[2])) as APIUser;
         } else { // Profile linked
             const res = profileRegex.exec(m.content);
-            if (!res) // This is also literally impossible
+            if (!res)
                 return;
-
+            q = res[3];
             apiUser = (await osuClient.user.get(res[3])) as APIUser;
+        }
+
+        if (!apiUser) {
+            await m.channel.send(`No user found for **${q}**`);
+            return;
         }
 
         let userQ = await User.findOne({
@@ -77,8 +83,8 @@ async function command (m: Message) {
 }
 
 const profile: Command = {
-    name: /(osu|profile)/i, 
-    description: "Obtain your osu! profile",
+    name: ["osu", "profile"], 
+    description: "Obtain your or someone else's osu! profile",
     usage: "!(osu|profile)", 
     command,
 };

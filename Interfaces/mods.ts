@@ -59,7 +59,7 @@ export function modsToAcronym (mod: ModsType): string {
     for (let i = 0; i < Object.keys(modAcronyms).length; i++) {
         const activated = (1 & mod) === 1;
         if (activated)
-            text += modAcronyms[i];
+            text += Object.keys(modAcronyms)[i];
         mod >>= 1;
     }
     return text;
@@ -72,23 +72,21 @@ export function modsToAcronym (mod: ModsType): string {
  * @param speedScaler DT/NC or HT (undefined if neither)
  * @returns The beatmap with mods applied
  */
-export function applyMods (beatmap: Beatmap, difficultyscaler?: "HR"|"EZ", speedScaler?: "DT"|"HT"|"NC"): Beatmap {
-    if (difficultyscaler) {
-        if (difficultyscaler === "HR") {
-            beatmap.diffSize = Math.min(10, beatmap.diffSize * 1.3);
-            beatmap.diffApproach = Math.min(10, beatmap.diffApproach * 1.4);
-            beatmap.diffOverall = Math.min(10, beatmap.diffOverall * 1.4);
-            beatmap.diffDrain = Math.min(10, beatmap.diffDrain * 1.4);
-        } else {
-            beatmap.diffSize /= 2.0;
-            beatmap.diffApproach /= 2.0;
-            beatmap.diffOverall /= 2.0;
-            beatmap.diffDrain /= 2.0;
-        }
+export function applyMods (beatmap: Beatmap, mods: string): Beatmap {
+    if (mods.includes("HR")) {
+        beatmap.diffSize = Math.min(10, beatmap.diffSize * 1.3);
+        beatmap.diffApproach = Math.min(10, beatmap.diffApproach * 1.4);
+        beatmap.diffOverall = Math.min(10, beatmap.diffOverall * 1.4);
+        beatmap.diffDrain = Math.min(10, beatmap.diffDrain * 1.4);
+    } else if (mods.includes("EZ")) {
+        beatmap.diffSize /= 2.0;
+        beatmap.diffApproach /= 2.0;
+        beatmap.diffOverall /= 2.0;
+        beatmap.diffDrain /= 2.0;
     }
 
-    if (speedScaler) {
-        const clock = speedScaler === "HT" ? 0.75 : 1.5;
+    if (mods.includes("DT") || mods.includes("NC") || mods.includes("HT")) {
+        const clock = mods.includes("HT") ? 0.75 : 1.5;
 
         beatmap.bpm *= clock;
         beatmap.totalLength /= clock;
