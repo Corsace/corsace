@@ -5,7 +5,7 @@ import { Beatmap, Mode, User as APIUser, UserScore } from "nodesu";
 import { OAuth, User } from "../../../Models/user";
 import { applyMods, acronymtoMods, modsToAcronym } from "../../../Interfaces/mods";
 import beatmapEmbed from "../../functions/beatmapEmbed";
-import moment from "moment";
+import timeSince from "../../../Server/utils/timeSince";
 
 async function command (m: Message) {
     const recentRegex = /(^r|recent|rs|rb|recentb|recentbest)\s+(.+)/i;
@@ -141,7 +141,7 @@ async function command (m: Message) {
         }
         message.footer =  { text: `Try #${attempt} | ` };
     }
-    message.footer.text += moment(score.date).fromNow();
+    message.footer.text += timeSince(score.date, new Date());
     m.channel.send(warning, {embed: message});
 }
 
