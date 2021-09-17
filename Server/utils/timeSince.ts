@@ -22,9 +22,6 @@ export default function timeSince (date1: Date, date2: Date, removeSuffix?: bool
     const laterDate = date1.getTime() < date2.getTime() ? date2 : date1;
     const ms = laterDate.getTime() - earlierDate.getTime();
 
-    console.log(earlierDate);
-    console.log(laterDate);
-
     let text = "";
     for (let i = 0; i < intervals.length; i++) {
         const val = Math.floor(ms / intervalDivisors[i]);
