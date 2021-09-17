@@ -21,12 +21,11 @@ async function obtainBeatmap (res: RegExpExecArray, mods: string): Promise<[Beat
             beatmap = (await osuClient.beatmaps.getByBeatmapId(res[3], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[])[0];
             break;
         } case "beatmapsets": {
-            if (res[6].length > 0) {
-                beatmap = (await osuClient.beatmaps.getByBeatmapId(res[6], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[])[0];
-            } else {
-                set = (await osuClient.beatmaps.getBySetId(res[3], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[]);
+            set = (await osuClient.beatmaps.getBySetId(res[3], Mode.all, undefined, undefined, acronymtoMods(mods)) as Beatmap[]);
+            if (res[6])
+                beatmap = set.find(map => map.beatmapId.toString() === res[6]);
+            else
                 beatmap = set.sort((a, b) => b.difficultyRating - a.difficultyRating)[0];
-            }
             break;
         } 
     }
