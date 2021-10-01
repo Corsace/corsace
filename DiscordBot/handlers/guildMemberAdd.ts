@@ -4,7 +4,6 @@ import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
 
 export default async function guildMemberAdd (member: GuildMember) {
-    console.log(member);
 
     // If this is a user joining the corsace server, add the streamannouncements and verified role as applicable
     if (member.guild.id === config.discord.guild) {
