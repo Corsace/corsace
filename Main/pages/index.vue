@@ -56,7 +56,7 @@
                     class="header-login__link"
                     :href="'/api/login/osu?site=corsace&redirect=' + $route.fullPath"
                 >
-                    {{ $t('main.header.login') }}
+                    osu! {{ $t('main.header.login') }}
                     <div class="arrow arrow--right" />
                 </a>
             </div>
