@@ -71,13 +71,13 @@
                 <div class="section-info__overlay">
                     <div class="announcement">
                         <div class="announcement__url">shop.corsace.io</div>
-                        <div>official corsace merchandise</div>
-                        <div>now available</div>
+                        <div>{{ $t('main.merch.official') }}</div>
+                        <div>{{ $t('main.merch.avail') }}</div>
                     </div>
                     <div class="announcement__info">
-                        <div class="announcement__info--bold">Corsace Open 2021 Limited Edition Unisex T</div>
-                        <div>Black/White</div>
-                        <div>Available until 11/30/21</div>
+                        <div class="announcement__info--bold">{{ $t('main.merch.name') }}</div>
+                        <div>{{ $t('main.merch.colours') }}</div>
+                        <div>{{ $t('main.merch.until') }}</div>
                         <div class="announcement__info--cost">€24.99</div>
                     </div>
                 </div>

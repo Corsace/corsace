@@ -364,11 +364,18 @@
             "login": "LOG IN",
             "register": "REGISTER"
         },
-        "index": {
+        "construction": {
             "underConstruction": "under construction",
             "sorry": "sorry for the inconvenience",
             "development": "the corsace website is still in early development",
             "theTeam": "the corsace team"
+        },
+        "merch": {
+            "official": "official corsace merchandise",
+            "avail": "now available",
+            "name": "Corsace Open 2021 Limited Edition Unisex T",
+            "colours": "Black/White",
+            "until": "Avbailable until 11/30/21"
         }
     }
 }
