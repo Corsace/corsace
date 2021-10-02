@@ -363,7 +363,7 @@
         "header": {
             "login": "LOG IN",
             "register": "REGISTER",
-            "changeDiscord": "Change?"
+            "changeDiscord": "CHANGE DISCORD"
         },
         "construction": {
             "underConstruction": "under construction",

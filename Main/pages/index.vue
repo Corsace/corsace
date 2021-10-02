@@ -28,7 +28,7 @@
                         v-if="loggedInUser.osu"
                         class="header-login__username"
                     >
-                        {{ loggedInUser.osu.username }}
+                        {{ loggedInUser.osu.username }} <span class="header-login__line">|</span> {{ loggedInUser.discord ? loggedInUser.discord.username : "" }}
                     </div>
                     <div class="header-login__welcome">
                         <a
@@ -48,7 +48,7 @@
                             v-else
                             :href="'/api/login/discord?site=corsace&redirect=' + $route.fullPath"
                         >
-                            {{ loggedInUser.discord.username }} | {{ $t('main.header.changeDiscord') }}
+                            {{ $t('main.header.changeDiscord') }}
                             <div class="arrow arrow--right" />
                         </a>
                     </div>
@@ -350,6 +350,11 @@ $dark-cyan: linear-gradient(#009595, #008080);
     &__link {
         display: flex;
         align-items: center;
+    }
+
+    &__line {
+        color: $pink;
+        padding: 0 5px;
     }
 
     &__welcome {
