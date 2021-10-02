@@ -341,8 +341,10 @@ $dark-cyan: linear-gradient(#009595, #008080);
         flex-basis: 100%;
         padding: 10px 0;
 
-        margin-left: 15px;
-        margin-right: 15px;
+        margin: 0 15px;
+        @include breakpoint(mobile) {
+            margin: 0 5px;
+        }
 	}
     
     &__link {
@@ -353,11 +355,17 @@ $dark-cyan: linear-gradient(#009595, #008080);
     &__welcome {
         color: #6f6f6f;
         display: flex;
+        @include breakpoint(mobile) {
+            font-size: 0.75rem;
+        }
         & > a {
             color: #6f6f6f;
             display: flex;
             align-items: center;
             font-size: 0.75rem;
+            @include breakpoint(mobile) {
+                font-size: 0.6rem;
+            }
 
             & > div {
                 width: 10px;
@@ -369,6 +377,9 @@ $dark-cyan: linear-gradient(#009595, #008080);
 
     &__username {
         text-transform: uppercase;
+        @include breakpoint(mobile) {
+            font-size: 0.75rem;
+        }
     }
 }
 
