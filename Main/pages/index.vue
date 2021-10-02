@@ -30,12 +30,21 @@
                     >
                         {{ loggedInUser.osu.username }}
                     </div>
-                    <a
-                        class="header-login__welcome"
-                        href="/api/logout"
-                    >
-                        {{ $t('mca_ayim.header.logout') }}
-                    </a>
+                    <div class="header-login__welcome">
+                        <a
+                            href="/api/logout"
+                        >
+                            {{ $t('mca_ayim.header.logout') }}
+                            <div class="arrow arrow--right" />
+                        </a>
+                        <a
+                            v-if="!loggedInUser.discord"
+                            :href="'/api/login/discord?site=corsace&redirect=' + $route.fullPath"
+                        >
+                            | DISCORD {{ $t('main.header.login') }}
+                            <div class="arrow arrow--right" />
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -45,72 +54,34 @@
             >
                 <a
                     class="header-login__link"
-                    href="#"
-                    @click="toogleLoginModal"
+                    :href="'/api/login/osu?site=corsace&redirect=' + $route.fullPath"
                 >
                     {{ $t('main.header.login') }}
-                    <div class="arrow arrow--right" />
-                </a>
-                <a
-                    class="header-login__link"
-                    href="#"
-                    @click="toogleLoginModal"
-                >
-                    {{ $t('main.header.register') }}
                     <div class="arrow arrow--right" />
                 </a>
             </div>
         </div>
 
         <div class="main">
-            <div class="section-info">
-                <div class="info-container">
-                    <div class="info-warning">
-                        <div
-                            v-for="i in 20"
-                            :key="i"
-                            class="info-warning__group"
-                        >
-                            <img
-                                :key="i"
-                                class="info-warning__lines"
-                                src="../../Assets/img/main/lines.png"
-                            >
-                            <div 
-                                :key="i + '-text'"
-                                class="info-warning__text"
-                            >
-                                {{ $t('main.index.underConstruction') }}
-                            </div>
-                        </div>
+            <a 
+                class="section-info"
+                href="https://shop.corsace.io"
+                target="_blank"
+            >   
+                <div class="section-info__overlay">
+                    <div class="announcement">
+                        <div class="announcement__url">shop.corsace.io</div>
+                        <div>official corsace merchandise</div>
+                        <div>now available</div>
                     </div>
-                    <h2 class="info-message">
-                        <div>{{ $t('main.index.sorry') }}</div>
-                        <p>{{ $t('main.index.development') }}</p>
-                        
-                        {{ $t('main.index.theTeam') }}
-                    </h2>
-                    <div class="info-warning">
-                        <div
-                            v-for="i in 20"
-                            :key="i"
-                            class="info-warning__group"
-                        >
-                            <img
-                                :key="i"
-                                class="info-warning__lines"
-                                src="../../Assets/img/main/lines.png"
-                            >
-                            <div 
-                                :key="i + '-text'"
-                                class="info-warning__text"
-                            >
-                                {{ $t('main.index.underConstruction') }}
-                            </div>
-                        </div>
+                    <div class="announcement__info">
+                        <div class="announcement__info--bold">Corsace Open 2021 Limited Edition Unisex T</div>
+                        <div>Black/White</div>
+                        <div>Available until 11/30/21</div>
+                        <div class="announcement__info--cost">€24.99</div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <div class="section-events">
                 <h2 class="events-title">
@@ -199,12 +170,6 @@
             
             <language-switcher />
         </div>
-
-        <login-modal
-            v-if="showLoginModal"
-            site="corsace"
-            @close="toogleLoginModal"
-        />
     </div>
 </template>
 
@@ -213,13 +178,11 @@ import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 import LanguageSwitcher from "../components/LanguageSwitcher.vue";
-import LoginModal from "../../MCA-AYIM/components/header/LoginModal.vue";
 
 import { UserInfo } from "../../Interfaces/user";
 
 @Component({
     components: {
-        LoginModal,
         LanguageSwitcher,
     },
     head () {
@@ -241,7 +204,6 @@ export default class Default extends Vue {
 
     @State loggedInUser!: UserInfo;
 
-    showLoginModal = false;
     events = {
         "ayim": {
             title: "A YEAR IN MAPPING",
@@ -257,16 +219,12 @@ export default class Default extends Vue {
         },
         "closed": {
             title: "CORSACE CLOSED",
-            url: "#",
+            url: "https://osu.ppy.sh/community/forums/topics/1324620",
         },
     };
 
     get avatarURL (): string  {
         return this.loggedInUser?.osu?.avatar || "";
-    }
-    
-    toogleLoginModal (): void {
-        this.showLoginModal = !this.showLoginModal;
     }
 
     async mounted () {
@@ -277,12 +235,15 @@ export default class Default extends Vue {
 </script>
 
 <style lang="scss">
+@import '@s-sass/_mixins';
+
 $dark: #0f0f0f;
 $dark-dark-gray: #141414;
 $dark-gray: #242424;
 $gray: #343434;
 $light-gray: #cccccc;
 $pink: #e98792;
+$dark-cyan: linear-gradient(#009595, #008080);
 
 @keyframes leftscroll {
     from {
@@ -355,6 +316,7 @@ $pink: #e98792;
 		border-radius: 100%;
 
 		width: 20%;
+        min-width: 57px;
 
         margin-left: 15px;
         margin-right: 15px;
@@ -367,6 +329,19 @@ $pink: #e98792;
 
     &__welcome {
         color: #6f6f6f;
+        display: flex;
+        & > a {
+            color: #6f6f6f;
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+
+            & > div {
+                width: 10px;
+                height: 10px;
+                margin-left: 5px;
+            }
+        }
     }
 
     &__username {
@@ -417,11 +392,118 @@ $pink: #e98792;
 
 .section-info {
     height: 100%;
-    background-color: $gray;
     display: flex;
+    align-items: flex-end;
     justify-content: center;
-    align-items: center;
-    padding: 50px 10%;
+    flex-direction: column;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('../../Assets/img/main/shirts/combined.png'), $dark-cyan;
+
+    @include breakpoint(desktop) {
+        background-position: -30% 30%;
+    }
+
+    &__overlay {
+        height: 100%;
+        width: 100%;
+
+        padding: 5px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        flex-direction: column;
+        background-color: rgba(0, 0, 0, 0.6);
+
+        & > div {
+            height: 100%;
+            width: 100%;
+            @include breakpoint(laptop) {
+                width: 45%;
+            }      
+        }
+    }
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+.announcement {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: end;
+
+    margin-right: 25px;
+
+    @include breakpoint(desktop) {
+        font-size: 2rem;
+    }
+
+    @include breakpoint(mobile) {
+        font-size: 0.8rem;
+    }
+
+    &__url {
+        font-family: 'CocoGoose Pro', 'sans-serif';
+        font-size: 3rem;
+        line-height: 3rem;
+
+        @include breakpoint(desktop) {
+            font-size: 5rem;
+            line-height: 5rem;
+        }
+
+        @include breakpoint(mobile) {
+            font-size: 2rem;
+            line-height: 2rem;
+        }
+    }
+
+    &__info {
+        margin-left: 30px;
+
+        position: relative;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        font-size: 0.75rem;
+        @include breakpoint(desktop) {
+            font-size: 1.25rem;
+        }
+
+        &--bold {
+            font-weight: bold;
+        }
+
+        &--cost {
+            position: absolute;
+            left: 35%;
+            
+            height: 1rem;
+
+            font-size: 1.25rem;
+            font-weight: bold;
+
+            @include breakpoint(desktop) {
+                font-size: 2.5rem;
+            }
+
+            @include breakpoint(laptop) {
+                left: 40%;
+            }
+
+            @include breakpoint(mobile) {
+                left: 45%;
+            }
+            
+        }
+    }
 }
 
 .info-container {
@@ -474,7 +556,7 @@ $pink: #e98792;
     background-color: $dark-gray;
     display: flex;
     flex-direction: column;
-    padding: 20px 5%;
+    padding: 20px 2%;
 }
 
 .events-title {

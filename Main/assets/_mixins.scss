@@ -1,0 +1,19 @@
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+@mixin breakpoint($device) {
+    @if $device == desktop {
+        @media (min-width: $breakpoint-xl) { @content ; }
+    }
+    @else if $device == laptop {
+        @media (min-width: $breakpoint-lg) { @content ; }
+    }
+    @else if $device == tablet {
+        @media (min-width: $breakpoint-md) { @content ; }
+    }
+    @else if $device == mobile {
+        @media (max-width: $breakpoint-sm)  { @content ; }
+    }
+}
