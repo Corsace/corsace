@@ -271,6 +271,9 @@ $dark-cyan: linear-gradient(#009595, #008080);
     background-color: $dark;
     width: 100%;
     height: 70px;
+    @include breakpoint(mobile) {
+        height: 55px;
+    }
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -284,7 +287,17 @@ $dark-cyan: linear-gradient(#009595, #008080);
         &-container {
             width: 70px;
             height: 70px;
+            @include breakpoint(mobile) {
+                width: 55px;
+                height: 55px;
+            }
             background-image: linear-gradient(to top, rgba(244, 182, 193, 0.82), #e98792);
+        }
+
+        &-name {
+            @include breakpoint(mobile) {
+                width: 100px;
+            }
         }
 
         width: 100%;
@@ -300,6 +313,9 @@ $dark-cyan: linear-gradient(#009595, #008080);
     align-items: flex-end;
     justify-content: center;
     margin-right: 30px;
+    @include breakpoint(mobile) {
+        margin-right: 15px;
+    }
 
     &__welcome-container {
         display: flex;
@@ -315,8 +331,8 @@ $dark-cyan: linear-gradient(#009595, #008080);
     &__avatar {
 		border-radius: 100%;
 
-		width: 20%;
-        min-width: 57px;
+        flex-basis: 100%;
+        padding: 10px 0;
 
         margin-left: 15px;
         margin-right: 15px;
@@ -392,17 +408,25 @@ $dark-cyan: linear-gradient(#009595, #008080);
 
 .section-info {
     height: 100%;
+    max-height: 45vh;
+    @include breakpoint(mobile) {
+        height: 50vh;
+        max-height: unset;
+    }
+    
     display: flex;
     align-items: flex-end;
     justify-content: center;
     flex-direction: column;
 
     background-repeat: no-repeat;
-    background-position: center;
+    background-size: 69% 170%, auto;
+    background-position: -8vw 32%, center;
     background-image: url('../../Assets/img/main/shirts/combined.png'), $dark-cyan;
 
-    @include breakpoint(desktop) {
-        background-position: -30% 30%;
+    @include breakpoint(mobile) {
+        background-size: contain;
+        background-position: center;
     }
 
     &__overlay {
@@ -415,14 +439,13 @@ $dark-cyan: linear-gradient(#009595, #008080);
         align-items: flex-end;
         justify-content: center;
         flex-direction: column;
-        background-color: rgba(0, 0, 0, 0.6);
+        @include breakpoint(mobile) {
+            flex-direction: row;
+        }
 
         & > div {
             height: 100%;
-            width: 100%;
-            @include breakpoint(laptop) {
-                width: 45%;
-            }      
+            width: 45vw;  
         }
     }
 
@@ -437,34 +460,18 @@ $dark-cyan: linear-gradient(#009595, #008080);
     justify-content: end;
     align-items: end;
 
-    margin-right: 25px;
+    margin-right: 1vw;
 
-    @include breakpoint(desktop) {
-        font-size: 2rem;
-    }
-
-    @include breakpoint(mobile) {
-        font-size: 0.8rem;
-    }
+    font-size: 2vw;
 
     &__url {
         font-family: 'CocoGoose Pro', 'sans-serif';
-        font-size: 3rem;
-        line-height: 3rem;
-
-        @include breakpoint(desktop) {
-            font-size: 5rem;
-            line-height: 5rem;
-        }
-
-        @include breakpoint(mobile) {
-            font-size: 2rem;
-            line-height: 2rem;
-        }
+        font-size: 4vw;
+        line-height: 4vw;
     }
 
     &__info {
-        margin-left: 30px;
+        margin-left: 1vw;
 
         position: relative;
 
@@ -472,9 +479,13 @@ $dark-cyan: linear-gradient(#009595, #008080);
         flex-direction: column;
         justify-content: center;
 
-        font-size: 0.75rem;
-        @include breakpoint(desktop) {
-            font-size: 1.25rem;
+        font-size: 2vw;
+        @include breakpoint(laptop) {
+            font-size: 1vw;
+        }
+
+        @include breakpoint(mobile) {
+            justify-content: end;
         }
 
         &--bold {
@@ -484,24 +495,19 @@ $dark-cyan: linear-gradient(#009595, #008080);
         &--cost {
             position: absolute;
             left: 35%;
-            
-            height: 1rem;
 
-            font-size: 1.25rem;
+            font-size: 2.5vw;
             font-weight: bold;
 
-            @include breakpoint(desktop) {
-                font-size: 2.5rem;
-            }
-
             @include breakpoint(laptop) {
-                left: 40%;
-            }
-
-            @include breakpoint(mobile) {
-                left: 45%;
+                font-size: 2vw;
+                height: 1vw;
             }
             
+            @include breakpoint(mobile) {
+                position: unset;
+                height: unset;
+            }
         }
     }
 }
@@ -584,6 +590,7 @@ $dark-cyan: linear-gradient(#009595, #008080);
     flex-direction: column;
     border-radius: 10px;
     margin-bottom: 10px;
+    margin-right: 10px;
 
     &__image {
         &-container {
