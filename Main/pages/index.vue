@@ -46,9 +46,10 @@
                         </a>
                         <a 
                             v-else
-                            href="#"
+                            :href="'/api/login/discord?site=corsace&redirect=' + $route.fullPath"
                         >
-                            | DISCORD: {{ loggedInUser.discord.username }}
+                            {{ loggedInUser.discord.username }} | {{ $t('main.header.changeDiscord') }}
+                            <div class="arrow arrow--right" />
                         </a>
                     </div>
                 </div>

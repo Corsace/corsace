@@ -61,7 +61,7 @@ export async function discordPassport (accessToken: string, refreshToken: string
         }
 
         user.discord.userID = profile.id;
-        user.discord.username = profile.username;
+        user.discord.username = `${profile.username}#${profile.discriminator}`;
         user.discord.accessToken = accessToken;
         user.discord.refreshToken = refreshToken;
         user.discord.avatar = (await discordClient.users.fetch(profile.id)).displayAvatarURL();

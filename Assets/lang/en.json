@@ -362,7 +362,8 @@
     "main": {
         "header": {
             "login": "LOG IN",
-            "register": "REGISTER"
+            "register": "REGISTER",
+            "changeDiscord": "Change?"
         },
         "construction": {
             "underConstruction": "under construction",
