@@ -44,6 +44,12 @@
                             | DISCORD {{ $t('main.header.login') }}
                             <div class="arrow arrow--right" />
                         </a>
+                        <a 
+                            v-else
+                            href="#"
+                        >
+                            | DISCORD: {{ loggedInUser.discord.username }}
+                        </a>
                     </div>
                 </div>
             </div>
