@@ -9,6 +9,7 @@
       "@nuxtjs/axios": "^5.12.5",
       "@nuxtjs/proxy": "^2.1.0",
       "discord.js": "^12.5.1",
+      "googleapis": "^88.2.0",
       "koa": "^2.13.1",
       "koa-bodyparser": "^4.3.0",
       "koa-cash": "^4.0.5",

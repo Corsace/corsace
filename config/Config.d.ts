@@ -21,6 +21,7 @@ declare module "node-config-ts" {
             roles: {
                 corsace: {
                     corsace: string;
+                    core: string;
                     headStaff: string;
                     staff: string;
                     writer: string;
@@ -72,6 +73,16 @@ declare module "node-config-ts" {
             v2: {
                 clientId: string;
                 clientSecret: string;
+            };
+        };
+
+        google: {
+            credentials: {
+                private_key: string;
+                client_email: string;
+            };
+            sheets: {
+                todo: string;
             };
         };
 

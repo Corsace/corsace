@@ -88,6 +88,7 @@ Right-click your staff role and "Copy ID". You can either create a role for each
 paste that role ID into the following config values to give yourself god-tier permissions.
 ```
 config.discord.roles.corsace.corsace
+config.discord.roles.corsace.core
 config.discord.roles.corsace.headStaff
 config.discord.roles.corsace.staff
 ```

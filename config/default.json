@@ -10,6 +10,7 @@
         "roles": {
             "corsace": {
                 "corsace": "role ID",
+                "core": "role ID",
                 "headStaff": "role ID",
                 "staff": "role ID",
                 "writer": "role ID",
@@ -60,6 +61,15 @@
         "v2": {
             "clientId": "obtain from https://osu.ppy.sh/home/account/edit",
             "clientSecret": "obtain from https://osu.ppy.sh/home/account/edit"
+        }
+    },
+    "google": {
+        "credentials": {
+            "private_key": "Create a service account",
+            "client_email": "Create a service account"
+        },
+        "sheets": {
+            "todo": "your spreadsheet's ID"
         }
     },
     "koaKeys": [""],

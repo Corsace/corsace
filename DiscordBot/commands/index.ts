@@ -1,5 +1,8 @@
 import { Message } from "discord.js";
+
 import avatar from "./utility/avatar";
+import todo from "./utility/todo";
+
 import beatmap from "./osu/beatmap";
 import profile from "./osu/profile";
 import recent from "./osu/recent";
@@ -18,6 +21,8 @@ const commands: Command[] = [];
 
 // general utility commands
 commands.push(avatar);
+commands.push(todo.todo);
+commands.push(todo.todoList);
 
 // osu! commands
 commands.push(beatmap);

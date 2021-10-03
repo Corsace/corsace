@@ -123,6 +123,7 @@ async function isResults (ctx: ParameterizedContext, next: Next): Promise<any> {
     }
     if (
         member.roles.cache.has(config.discord.roles.corsace.corsace) ||
+        member.roles.cache.has(config.discord.roles.corsace.core) ||
         member.roles.cache.has(config.discord.roles.corsace.headStaff) ||
         member.roles.cache.has(config.discord.roles.mca.standard) ||
         member.roles.cache.has(config.discord.roles.mca.taiko) ||
