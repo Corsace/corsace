@@ -86,6 +86,7 @@ const profile: Command = {
     name: ["osu", "profile"], 
     description: "Obtain your or someone else's osu! profile",
     usage: "!(osu|profile)", 
+    category: "osu",
     command,
 };
 

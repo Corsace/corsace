@@ -10,7 +10,7 @@ export default async function messageCreate (m: Message) {
     const profileRegex = /(osu|old)\.ppy\.sh\/(u|users)\/(\S+)/i;
     const beatmapRegex = /(osu|old)\.ppy\.sh\/(s|b|beatmaps|beatmapsets)\/(\d+)(#(osu|taiko|fruits|mania)\/(\d+))?/i;
     const timestampRegex = /(\d+):(\d{2}):(\d{3})\s*(\(((\d,?)+)\))?/gmi;
-    const emojiRegex = /<a?(:.+:)\d+>/i;
+    const emojiRegex = /<a?(:.+:)\d+>/gi;
 
     // Don't respond to itself or other bots
     if (m.author.id === discordClient.user?.id || m.author.bot)
@@ -19,7 +19,7 @@ export default async function messageCreate (m: Message) {
     // Create a version of the message content that has no emojis
     let noEmoji = m.content;
     if (emojiRegex.test(m.content))
-        noEmoji = m.content.replaceAll(emojiRegex, "");
+        noEmoji = m.content.replace(emojiRegex, "");
 
     // Check for osu! timeestamps
     if (timestampRegex.test(noEmoji))

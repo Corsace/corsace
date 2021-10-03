@@ -92,6 +92,7 @@ const avatar: Command = {
     name: ["a", "ava", "avatar", "qa", "qava", "qavatar", "aq", "avaq", "avatarq", "quotea", "quoteava", "quoteavatar", "aquote", "avaquote", "avatarquote"],
     description: "Obtains the avatar for a user/server.",
     usage: "!(a|ava|avatar)",
+    category: "utility",
     command,
 };
 

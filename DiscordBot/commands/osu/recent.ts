@@ -149,6 +149,7 @@ const recent: Command = {
     name: ["r", "rs", "rb", "recent", "recents", "recentb", "recentbest"], 
     description: "Obtain your or someone else's most recent (top) score",
     usage: "!(r|recent|rs|rb|recentb|recentbest)", 
+    category: "osu",
     command,
 };
 
