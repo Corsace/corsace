@@ -69,7 +69,8 @@
             "client_email": "Create a service account"
         },
         "sheets": {
-            "todo": "your spreadsheet's ID"
+            "todo": "your spreadsheet's ID",
+            "mappool": "your spreadsheet's ID"
         }
     },
     "koaKeys": [""],

@@ -83,6 +83,7 @@ declare module "node-config-ts" {
             };
             sheets: {
                 todo: string;
+                mappool: string;
             };
         };
 

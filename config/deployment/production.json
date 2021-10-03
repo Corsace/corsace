@@ -61,7 +61,8 @@
             "client_email": "@@GOOGLE_CREDENTIALS_CLIENTEMAIL"
         },
         "sheets": {
-            "todo": "1id9z8YHnUJbwzAPo9mOdU2K91QTZiKEfiy6bMawBRqk"
+            "todo": "@@GOOGLE_SHEETS_TODO",
+            "mappool": "@@GOOGLE_SHEETS_MAPPOOL"
         }
     },
     "koaKeys": ["@@KOA_KEY"],
