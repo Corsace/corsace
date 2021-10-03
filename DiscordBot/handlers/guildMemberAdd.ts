@@ -15,6 +15,8 @@ export default async function guildMemberAdd (member: GuildMember) {
         });
         if (user)
             roles.push(config.discord.roles.corsace.verified);
+        else
+            member.send("Hello and welcome to Corsace.\n\nIf you want to type in the discord server, please make sure you log in on osu! and then discord at https://corsace.io to obtain the `Verified` role which gives you typing abilities");
 
         await member.roles.add(roles);
 
