@@ -338,9 +338,9 @@
                 "all": "SEMUA",
                 "played": "MAP-MAP YANG PERNAH DIMAINKAN",
                 "results": "HASIL",
-                "voters": "JUMLAH SUARA"                              
+                "voters": "SUARA"                              
             },
-            "votingOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman voting MCA. <br> MCA tahun ini menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suaramu kepada beatmap-beatmap/pengguna-pengguna yang kamu kehendaki tanpa ada batasan jumlah suara. <br> All votes are ordered by choice, so <span class='notice-modal--bold'>the first choice will have the highest priority!</span> <br> Your first choice will count until it loses the race. Then your second, then your third, then 4th, e.t.c. <br> Good luck and can't wait to see the results for MCA [YEAR]",
+            "votingOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman voting MCA. <br> MCA tahun ini menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suaramu kepada beatmap-beatmap/pengguna-pengguna yang kamu kehendaki tanpa ada batasan jumlah suara. <br> Seluruh suara yang masuk akan dihitung berdasarkan urutan pemilihannya masing-masing, atau dengan kata lain <span class='notice-modal--bold'>pilihan pertamamu akan memiliki bobot suara yang lebih tinggi dari pilihan keduamu dan seterusnya</span> <br> Selamat memilih, dan jangan lupa untuk menyaksikan livestream hasil akhir MCA [YEAR]!",
             "hosted": "DI-HOST OLEH",
             "userID": "USER ID"
         },
@@ -356,7 +356,7 @@
                 "secondThirdChoice": "JML. PILIHAN KE-2/KE-3",
                 "restChoice": "JML. PILIHAN KE-4+"
             },
-            "resultsOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman hasil voting MCA. <br> These results show the final placements of the beatmaps/users using <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> alongside the amount of times the beatmap/user was a first choice, and the total number of appearances!<br> Hopefully these results for MCA [YEAR] are to your liking! Can't wait to see you all for next MCA!"
+            "resultsOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman hasil voting MCA. <br> Hasil-hasil yang tertera pada laman ini keseluruhannya disusun berdasarkan hasil perhitungan <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting</a> yang kemudian diurutkan berdasarkan jumlah pemilih pertama, jumlah pemilih kedua, dan seterusnya.<br> Akhir kata, kami berharap kami dapat memuaskan rasa penasaranmu dengan penyelenggaraan MCA kali ini. Mohon maaf apabila sekiranya terdapat sesuatu yang kurang berkenan dari kami, dan sampai jumpa lagi di MCA selanjutnya!"
         }
     },
     "main": {
