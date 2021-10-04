@@ -260,10 +260,34 @@
                 "description": "Storyboard terbaik yang menceritakan suatu kisah."
             },
             "technicalTaiko": {
-                    "name": "Technical",
-                    "description": "Mapset terbaik yang mengusung kombinasi pattern dan beat snapping yang kompleks."
+                "name": "Technical",
+                "description": "Mapset terbaik yang mengusung kombinasi pattern dan beat snapping yang kompleks."
             },                
-            }
+            "fastTaiko": {
+                "name": "Fast",
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan SV yang tinggi dan pattern-pattern yang menuntut kecepatan tapping."
+            },
+            "slowTaiko": {
+                "name": "Slow",
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan SV yang lambat dan pattern-pattern yang menuntut kesabaran."
+            },
+            "hybrid": {
+                "name": "Hybrid",
+                "description": "Mapset terbaik yang mengusung pattern-pattern rice dan LN dalam proporsi yang kurang lebihnya seimbang."
+            },
+            "highBPMAlternator": {
+                "name": "High BPM / Alternator",
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern yang menuntut kemampuan aim dan/atau kecepatan tapping yang sangat tinggi."
+            },
+            "vanilla": {
+                "name": "Vanilla",
+                "description": "Mapset terbaik yang mengusung desain yang sederhana."
+            },
+            "complex": {
+                "name": "Complex Rhythm / Swing",
+                "description": "Mapset terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6) dan/atau snapping-snapping lainnya yang tidak lazim seperti double, 1/3, 1/5, 1/7, and lain sebagainya."
+            },            
+        }
         },
         "nom_vote": {
             "search": "cari beatmap/user",
