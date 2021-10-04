@@ -276,13 +276,20 @@
         "header": {
             "login": "MASUK",
             "register": "DAFTAR",
-            "changeDiscord": "UBAH AKUN DISCORD"
+            "changeDiscord": "GANTI AKUN DISCORD"
         },
         "index": {
             "underConstruction": "dalam pengerjaan",
             "sorry": "mohon maaf atas ketidaknyamanannya",
             "development": "situs web corsace saat ini masih sedang dalam pengerjaan",
             "theTeam": "tim corsace"
+        },
+        "merch": {
+            "official": "merchandise resmi corsace",
+            "avail": "kini telah tersedia",
+            "name": "T-Shirt Corsace Open 2021 Edisi Terbatas",
+            "colours": "Hitam/Putih",
+            "until": "Tersedia hingga 11/30/21"
         }
     }
 }
