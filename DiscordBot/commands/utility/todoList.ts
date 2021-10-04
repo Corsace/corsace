@@ -69,6 +69,11 @@ async function command (m: Message) {
         rows = rows.filter(row => row[0] === target.id);
     rows = rows.filter(row => /\d+/g.test(row[0])).sort((a, b) => parseInt(a[1]) - parseInt(b[1]));
 
+    if (rows.length === 0) {
+        m.channel.send(`No ${filter === "all" ? " " : filter === "default" ? "unfinished " : "finished " } tasks in the todo list currently`);
+        return;
+    }
+
     // Create embed
     const embed = new MessageEmbed({
         author: {
