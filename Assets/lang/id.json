@@ -286,8 +286,35 @@
             "complex": {
                 "name": "Complex Rhythm / Swing",
                 "description": "Mapset terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6) dan/atau snapping-snapping lainnya yang tidak lazim seperti double, 1/3, 1/5, 1/7, and lain sebagainya."
-            },            
-        }
+            },
+            "unorthodox": {
+                "name": "Unorthodox / Gimmick",
+                "description": "Mapset terbaik yang mengusung ide-ide atau teknik-teknik mapping yang tidak umum."
+            },
+            "sliderTech": {
+                "name": "Slider Tech",
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada desain slider, manipulasi SV, dan pattern-pattern stream yang kompleks."
+            },
+            "mostInspiring": {
+                "name": "Most Inspiring",
+                "description": "Mereka yang paling menginspirasi sesama."
+            },
+            "communityPillar": {
+                "name": "Community Pillar",
+                "description": "Mereka yang paling berkontribusi dalam memajukan dunia mapping dan modding dari balik layar."
+            },
+            "simplisticTaiko": {
+                "name": "Simplistic",
+                "description": "Mapset terbaik yang mengusung desain yang sederhana."
+            },
+            "technicalCatch": {
+                "name": "Technical",
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada konsep-konsep osu!catch kompleks."
+            },
+            "antiMetaCatch": {
+                "name": "Anti-Meta",
+                "description": "Mapset terbaik yang mengusung gimmick-gimmick atau teknik-teknik mapping yang tidak umum."
+            }                 
         },
         "nom_vote": {
             "search": "cari beatmap/user",
