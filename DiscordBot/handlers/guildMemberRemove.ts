@@ -3,7 +3,6 @@ import { config } from "node-config-ts";
 import { discordClient } from "../../Server/discord";
 
 export default async function guildMemberRemove (member: GuildMember | PartialGuildMember) {
-    console.log(member);
 
     // If this is a user joining the corsace server, add the streamannouncements and verified role as applicable
     const user = await discordClient.users.fetch(member.id);

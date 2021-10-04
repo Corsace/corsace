@@ -125,6 +125,7 @@ const beatmap: Command = {
     name: ["map", "beatmap"], 
     description: "Obtain an osu! beatmap's info",
     usage: "!(map|beatmap)", 
+    category: "osu",
     command,
 };
 

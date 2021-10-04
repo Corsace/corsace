@@ -10,6 +10,7 @@
         "roles": {
             "corsace": {
                 "corsace": "461570069533687808",
+                "core": "884233357314125824",
                 "headStaff": "461570829625458688",
                 "staff": "461571998963990539",
                 "writer": "461584747244683278",
@@ -52,6 +53,16 @@
         "v2": {
             "clientId": "@@OSU_V2_CLIENTID",
             "clientSecret": "@@OSU_V2_CLIENTSECRET"
+        }
+    },
+    "google": {
+        "credentials": {
+            "private_key": "@@GOOGLE_CREDENTIALS_PRIVATEKEY",
+            "client_email": "@@GOOGLE_CREDENTIALS_CLIENTEMAIL"
+        },
+        "sheets": {
+            "todo": "@@GOOGLE_SHEETS_TODO",
+            "mappool": "@@GOOGLE_SHEETS_MAPPOOL"
         }
     },
     "koaKeys": ["@@KOA_KEY"],

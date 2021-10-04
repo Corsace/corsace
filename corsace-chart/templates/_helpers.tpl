@@ -82,6 +82,26 @@ Shared environment by deployments
     secretKeyRef:
       name: {{ include "corsace-chart.fullname" $ }}
       key: discordClientSecret
+- name: GOOGLE_CREDENTIALS_PRIVATEKEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: googleCredentialsPrivateKey
+- name: GOOGLE_CREDENTIALS_CLIENTEMAIL
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: googleCredentialsClientEmail
+- name: GOOGLE_SHEETS_TODO
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: googleSheetsTodo
+- name: GOOGLE_SHEETS_MAPPOOL
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: googleSheetsMappool
 - name: OSU_V1_APIKEY
   valueFrom:
     secretKeyRef:

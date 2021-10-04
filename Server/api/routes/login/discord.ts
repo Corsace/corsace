@@ -44,7 +44,7 @@ discordRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
                     await guild.addMember(user.discord.userID, {
                         accessToken: user.discord.accessToken,
                         nick: user.osu.username,
-                        roles: [config.discord.roles.corsace.verified],
+                        roles: [config.discord.roles.corsace.verified, config.discord.roles.corsace.streamAnnouncements],
                     });
                 }
             } catch (err) {

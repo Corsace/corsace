@@ -4,7 +4,6 @@ import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
 
 export default async function guildMemberAdd (member: GuildMember) {
-    console.log(member);
 
     // If this is a user joining the corsace server, add the streamannouncements and verified role as applicable
     if (member.guild.id === config.discord.guild) {
@@ -16,6 +15,8 @@ export default async function guildMemberAdd (member: GuildMember) {
         });
         if (user)
             roles.push(config.discord.roles.corsace.verified);
+        else
+            member.send("Hello and welcome to Corsace.\n\nIf you want to type in the discord server, please make sure you log in on osu! and then discord at https://corsace.io to obtain the `Verified` role which gives you typing abilities");
 
         await member.roles.add(roles);
 
