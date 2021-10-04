@@ -338,10 +338,25 @@
                 "all": "SEMUA",
                 "played": "MAP-MAP YANG PERNAH DIMAINKAN",
                 "results": "HASIL",
-                "voters": "PEMBERI SUARA"                              
+                "voters": "JUMLAH SUARA"                              
             },
+            "votingOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman voting MCA. <br> MCA menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suaramu kepada beatmap-beatmap/pengguna-pengguna yang kamu kehendaki tanpa batasan jumlah suara! <br> All votes are ordered by choice, so <span class='notice-modal--bold'>the first choice will have the highest priority!</span> <br> Your first choice will count until it loses the race. Then your second, then your third, then 4th, e.t.c. <br> Good luck and can't wait to see the results for MCA [YEAR]",
             "hosted": "DI-HOST OLEH",
             "userID": "USER ID"
+        },
+        "results": {
+            "headings": {
+                "placement": "PERINGKAT",
+                "map": "MAP",
+                "title": "JUDUL",
+                "artist": "ARTIS",
+                "hoster": "HOST MAPSET",
+                "username": "USER",
+                "firstChoice": "JML. PILIHAN KE-1",
+                "secondThirdChoice": "JML. PILIHAN KE-2/KE-3",
+                "restChoice": "JML. PILIHAN KE-4+"
+            },
+            "resultsOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman hasil voting MCA. <br> These results show the final placements of the beatmaps/users using <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> alongside the amount of times the beatmap/user was a first choice, and the total number of appearances!<br> Hopefully these results for MCA [YEAR] are to your liking! Can't wait to see you all for next MCA!"
         }
     },
     "main": {
