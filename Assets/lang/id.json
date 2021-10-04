@@ -275,7 +275,7 @@
     "main": {
         "header": {
             "login": "MASUK",
-            "register": "DAFTAR" 
+            "register": "DAFTAR",
             "changeDiscord": "UBAH AKUN DISCORD"
         },
         "index": {
