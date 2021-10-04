@@ -27,6 +27,13 @@ secrets:
   discord:
     token: ""
     clientSecret: ""
+  google:
+    credentials:
+      privateKey: ""
+      clientEmail: ""
+    sheets:
+      todo: ""
+      mappool: ""
   osu:
     v1:
       apiKey: ""
