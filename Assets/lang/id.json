@@ -118,6 +118,7 @@
             "rankedSets": "TOTAL BEATMAP RANKED",
             "nominateNow": "berikan nominasimu sekarang !",
             "voteNow": "gunakan hak suaramu sekarang !",
+            "viewResults": "lihat hasil keseluruhan !",
             "daysLeft": "hari tersisa",
             "message": {
                 "2019": "<p>Mapper's Choice Awards hadir kembali untuk keempat kalinya di tahun 2019 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Oh ya, pada tahun ini kami juga telah secara khusus menyediakan situs web bagi Mapper's Choice Awards agar para mapper/modder yang memiliki hak suara dapat menyalurkan suaranya dengan lebih mudah lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>",
@@ -134,6 +135,14 @@
                 "name": "Grand Award",
                 "description": "Yang terbaik dari yang terbaik."
             },
+            "grandStoryboard": {
+                "name": "Grand Storyboard",
+                "description": "Storyboard terbaik tahun ini."
+            },
+            "grandStoryboarder": {
+                "name": "Grand Storyboarder",
+                "description": "Storyboarder terbaik tahun ini."
+            },            
             "marathon": {
                 "name": "Marathon",
                 "description": "Mapset terbaik dengan drain time di atas 5 menit."
@@ -249,6 +258,11 @@
             "narrative": {
                 "name": "Narrative",
                 "description": "Storyboard terbaik yang menceritakan suatu kisah."
+            },
+            "technicalTaiko": {
+                    "name": "Technical",
+                    "description": "Mapset terbaik yang mengusung kombinasi pattern dan beat snapping yang kompleks."
+            },                
             }
         },
         "nom_vote": {
