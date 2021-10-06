@@ -20,6 +20,7 @@
             "open": {
                 "participants": "485092513640742913",
                 "captains": "485092709179326474",
+                "mapper": ["889678780749185055", "889678952136863784"],
                 "mappooler": "461583913287024643",
                 "testplayer": "565333762586443776",
                 "scheduler": "461584274404016138",
@@ -29,6 +30,7 @@
                 "referee": "461584657042112543"
             },
             "closed": {
+                "mapper": ["793232956323659786", "889678975394258997"],
                 "mappooler": "774795961691406366"
             },
             "mca": {
@@ -62,7 +64,8 @@
         },
         "sheets": {
             "todo": "@@GOOGLE_SHEETS_TODO",
-            "mappool": "@@GOOGLE_SHEETS_MAPPOOL"
+            "openMappool": "@@GOOGLE_SHEETS_OPENMAPPOOL",
+            "closedMappool": "@@GOOGLE_SHEETS_CLOSEDMAPPOOL"
         }
     },
     "koaKeys": ["@@KOA_KEY"],

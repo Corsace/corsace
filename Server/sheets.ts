@@ -16,7 +16,13 @@ const getToDoData = async () => (await sheetsClient.spreadsheets.values.get({
     spreadsheetId: config.google.sheets.todo,
     range: "todos!A2:E",
 })).data.values as any[][];
-// const getMappingSheet = () => sheetsClient.spreadsheets.get({spreadsheetId: config.google.sheets.mapping});
+
+async function getPoolData (pool: "openMappool" | "closedMappool") {
+    return (await sheetsClient.spreadsheets.values.get({
+        spreadsheetId: config.google.sheets[pool],
+        range: "'mappool planning & assignment'!A2:L",
+    })).data.values as any[][];
+}
 
 
-export { sheetsClient, getToDoData };
+export { sheetsClient, getToDoData, getPoolData };
