@@ -1,5 +1,9 @@
 import { Message } from "discord.js";
 
+import mappoolAssign from "./mappool/assign";
+import mappoolDownload from "./mappool/download";
+import mappoolSubmit from "./mappool/submit";
+
 import avatar from "./utility/avatar";
 import mark from "./utility/mark";
 import prio from "./utility/prio";
@@ -22,6 +26,11 @@ interface Command {
 const commands: Command[] = [];
 
 // List of commands here
+
+// mappool commands
+commands.push(mappoolAssign);
+commands.push(mappoolDownload);
+commands.push(mappoolSubmit);
 
 // general utility commands
 commands.push(avatar);

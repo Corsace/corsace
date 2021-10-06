@@ -20,6 +20,7 @@
             "open": {
                 "participants": "role ID",
                 "captains": "role ID",
+                "mapper": ["role IDs"],
                 "mappooler": "role ID",
                 "testplayer": "role ID",
                 "scheduler": "role ID",
@@ -31,6 +32,7 @@
             "closed": {
                 "participants": "role ID",
                 "captains": "role ID",
+                "mapper": ["role IDs"],
                 "mappooler": "role ID",
                 "scheduler": "role ID",
                 "streamManager": "role ID",
@@ -70,7 +72,8 @@
         },
         "sheets": {
             "todo": "your spreadsheet's ID",
-            "mappool": "your spreadsheet's ID"
+            "openMappool": "your spreadsheet's ID",
+            "closedMappool": "your spreadsheet's ID"
         }
     },
     "koaKeys": [""],

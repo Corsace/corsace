@@ -31,6 +31,7 @@ declare module "node-config-ts" {
                 open: {
                     participants: string;
                     captains: string;
+                    mapper: string[];
                     mappooler: string;
                     testplayer: string;
                     scheduler: string;
@@ -42,7 +43,9 @@ declare module "node-config-ts" {
                 closed: {
                     participants: string;
                     captains: string;
+                    mapper: string[];
                     mappooler: string;
+                    testplayer: string;
                     scheduler: string;
                     streamManager: string;
                     streamer: string;
@@ -83,7 +86,8 @@ declare module "node-config-ts" {
             };
             sheets: {
                 todo: string;
-                mappool: string;
+                openMappool: string;
+                closedMappool: string;
             };
         };
 
