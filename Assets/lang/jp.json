@@ -351,9 +351,10 @@
                 "title": "タイトル",
                 "artist": "アーティスト",
                 "hoster": "ホスト",
-                "totalVotes": "票数",
                 "username": "ユーザー",
-                "firstChoice": "第一選択"
+                "firstChoice": "第一選択",
+                "secondThirdChoice": "第二、第三選択",
+                "restChoice": "第四選択以降"
             },
             "resultsOverlay": "こんにちは。結果ページを訪れるのは初めてのようですね。 <br> 結果は<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>優先順位付投票制</a>を使用した譜面/ユーザーの最終順位と、その譜面/ユーザーが第一選択となった回数、そして総登場回数が確認できます。<br> MCA [YEAR]の結果が皆さんの望むものになることを期待しています。次回のMCAでもお会いできることを楽しみにしています！"
         }
@@ -361,13 +362,21 @@
     "main": {
         "header": {
             "login": "ログイン",
-            "register": "登録"
+            "register": "登録",
+            "changeDiscord": "CHANGE DISCORD"
         },
-        "index": {
+        "construction": {
             "underConstruction": "未実装",
             "sorry": "ご不便をおかけして申し訳ございません",
             "development": "corsaceのウェブサイトはまだ開発中です",
             "theTeam": "the corsace team"
+        },
+        "merch": {
+            "official": "Corsaceオフィシャルグッズ",
+            "avail": "期間限定発売中",
+            "name": "Corsace Open 2021 Limited Edition 男女兼用Tシャツ",
+            "colours": "Black/White",
+            "until": "2021/11/30まで"
         }
     }
 }
