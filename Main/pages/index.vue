@@ -28,14 +28,30 @@
                         v-if="loggedInUser.osu"
                         class="header-login__username"
                     >
-                        {{ loggedInUser.osu.username }}
+                        {{ loggedInUser.osu.username }} <span class="header-login__line">|</span> {{ loggedInUser.discord ? loggedInUser.discord.username : "" }}
                     </div>
-                    <a
-                        class="header-login__welcome"
-                        href="/api/logout"
-                    >
-                        {{ $t('mca_ayim.header.logout') }}
-                    </a>
+                    <div class="header-login__welcome">
+                        <a
+                            href="/api/logout"
+                        >
+                            {{ $t('mca_ayim.header.logout') }}
+                            <div class="arrow arrow--right" />
+                        </a>
+                        <a
+                            v-if="!loggedInUser.discord"
+                            :href="'/api/login/discord?site=corsace&redirect=' + $route.fullPath"
+                        >
+                            | DISCORD {{ $t('main.header.login') }}
+                            <div class="arrow arrow--right" />
+                        </a>
+                        <a 
+                            v-else
+                            :href="'/api/login/discord?site=corsace&redirect=' + $route.fullPath"
+                        >
+                            {{ $t('main.header.changeDiscord') }}
+                            <div class="arrow arrow--right" />
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -45,72 +61,34 @@
             >
                 <a
                     class="header-login__link"
-                    href="#"
-                    @click="toogleLoginModal"
+                    :href="'/api/login/osu?site=corsace&redirect=' + $route.fullPath"
                 >
-                    {{ $t('main.header.login') }}
-                    <div class="arrow arrow--right" />
-                </a>
-                <a
-                    class="header-login__link"
-                    href="#"
-                    @click="toogleLoginModal"
-                >
-                    {{ $t('main.header.register') }}
+                    osu! {{ $t('main.header.login') }}
                     <div class="arrow arrow--right" />
                 </a>
             </div>
         </div>
 
         <div class="main">
-            <div class="section-info">
-                <div class="info-container">
-                    <div class="info-warning">
-                        <div
-                            v-for="i in 20"
-                            :key="i"
-                            class="info-warning__group"
-                        >
-                            <img
-                                :key="i"
-                                class="info-warning__lines"
-                                src="../../Assets/img/main/lines.png"
-                            >
-                            <div 
-                                :key="i + '-text'"
-                                class="info-warning__text"
-                            >
-                                {{ $t('main.index.underConstruction') }}
-                            </div>
-                        </div>
+            <a 
+                class="section-info"
+                href="https://shop.corsace.io"
+                target="_blank"
+            >   
+                <div class="section-info__overlay">
+                    <div class="announcement">
+                        <div class="announcement__url">shop.corsace.io</div>
+                        <div>{{ $t('main.merch.official') }}</div>
+                        <div>{{ $t('main.merch.avail') }}</div>
                     </div>
-                    <h2 class="info-message">
-                        <div>{{ $t('main.index.sorry') }}</div>
-                        <p>{{ $t('main.index.development') }}</p>
-                        
-                        {{ $t('main.index.theTeam') }}
-                    </h2>
-                    <div class="info-warning">
-                        <div
-                            v-for="i in 20"
-                            :key="i"
-                            class="info-warning__group"
-                        >
-                            <img
-                                :key="i"
-                                class="info-warning__lines"
-                                src="../../Assets/img/main/lines.png"
-                            >
-                            <div 
-                                :key="i + '-text'"
-                                class="info-warning__text"
-                            >
-                                {{ $t('main.index.underConstruction') }}
-                            </div>
-                        </div>
+                    <div class="announcement__info">
+                        <div class="announcement__info--bold">{{ $t('main.merch.name') }}</div>
+                        <div>{{ $t('main.merch.colours') }}</div>
+                        <div>{{ $t('main.merch.until') }}</div>
+                        <div class="announcement__info--cost">€24.99</div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <div class="section-events">
                 <h2 class="events-title">
@@ -199,12 +177,6 @@
             
             <language-switcher />
         </div>
-
-        <login-modal
-            v-if="showLoginModal"
-            site="mca"
-            @close="toogleLoginModal"
-        />
     </div>
 </template>
 
@@ -213,13 +185,11 @@ import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 import LanguageSwitcher from "../components/LanguageSwitcher.vue";
-import LoginModal from "../../MCA-AYIM/components/header/LoginModal.vue";
 
 import { UserInfo } from "../../Interfaces/user";
 
 @Component({
     components: {
-        LoginModal,
         LanguageSwitcher,
     },
     head () {
@@ -241,7 +211,6 @@ export default class Default extends Vue {
 
     @State loggedInUser!: UserInfo;
 
-    showLoginModal = false;
     events = {
         "ayim": {
             title: "A YEAR IN MAPPING",
@@ -257,16 +226,12 @@ export default class Default extends Vue {
         },
         "closed": {
             title: "CORSACE CLOSED",
-            url: "#",
+            url: "https://osu.ppy.sh/community/forums/topics/1324620",
         },
     };
 
     get avatarURL (): string  {
         return this.loggedInUser?.osu?.avatar || "";
-    }
-    
-    toogleLoginModal (): void {
-        this.showLoginModal = !this.showLoginModal;
     }
 
     async mounted () {
@@ -277,12 +242,15 @@ export default class Default extends Vue {
 </script>
 
 <style lang="scss">
+@import '@s-sass/_mixins';
+
 $dark: #0f0f0f;
 $dark-dark-gray: #141414;
 $dark-gray: #242424;
 $gray: #343434;
 $light-gray: #cccccc;
 $pink: #e98792;
+$dark-cyan: linear-gradient(#009595, #008080);
 
 @keyframes leftscroll {
     from {
@@ -310,6 +278,9 @@ $pink: #e98792;
     background-color: $dark;
     width: 100%;
     height: 70px;
+    @include breakpoint(mobile) {
+        height: 55px;
+    }
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -323,7 +294,17 @@ $pink: #e98792;
         &-container {
             width: 70px;
             height: 70px;
+            @include breakpoint(mobile) {
+                width: 55px;
+                height: 55px;
+            }
             background-image: linear-gradient(to top, rgba(244, 182, 193, 0.82), #e98792);
+        }
+
+        &-name {
+            @include breakpoint(mobile) {
+                width: 100px;
+            }
         }
 
         width: 100%;
@@ -339,6 +320,9 @@ $pink: #e98792;
     align-items: flex-end;
     justify-content: center;
     margin-right: 30px;
+    @include breakpoint(mobile) {
+        margin-right: 15px;
+    }
 
     &__welcome-container {
         display: flex;
@@ -354,10 +338,13 @@ $pink: #e98792;
     &__avatar {
 		border-radius: 100%;
 
-		width: 20%;
+        flex-basis: 100%;
+        padding: 10px 0;
 
-        margin-left: 15px;
-        margin-right: 15px;
+        margin: 0 15px;
+        @include breakpoint(mobile) {
+            margin: 0 5px;
+        }
 	}
     
     &__link {
@@ -365,12 +352,39 @@ $pink: #e98792;
         align-items: center;
     }
 
+    &__line {
+        color: $pink;
+        padding: 0 5px;
+    }
+
     &__welcome {
         color: #6f6f6f;
+        display: flex;
+        @include breakpoint(mobile) {
+            font-size: 0.75rem;
+        }
+        & > a {
+            color: #6f6f6f;
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            @include breakpoint(mobile) {
+                font-size: 0.6rem;
+            }
+
+            & > div {
+                width: 10px;
+                height: 10px;
+                margin-left: 5px;
+            }
+        }
     }
 
     &__username {
         text-transform: uppercase;
+        @include breakpoint(mobile) {
+            font-size: 0.75rem;
+        }
     }
 }
 
@@ -417,11 +431,108 @@ $pink: #e98792;
 
 .section-info {
     height: 100%;
-    background-color: $gray;
+    max-height: 45vh;
+    @include breakpoint(mobile) {
+        height: 50vh;
+        max-height: unset;
+    }
+    
     display: flex;
+    align-items: flex-end;
     justify-content: center;
-    align-items: center;
-    padding: 50px 10%;
+    flex-direction: column;
+
+    background-repeat: no-repeat;
+    background-size: 69% 170%, auto;
+    background-position: -8vw 32%, center;
+    background-image: url('../../Assets/img/main/shirts/combined.png'), $dark-cyan;
+
+    @include breakpoint(mobile) {
+        background-size: contain;
+        background-position: center;
+    }
+
+    &__overlay {
+        height: 100%;
+        width: 100%;
+
+        padding: 5px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        flex-direction: column;
+        @include breakpoint(mobile) {
+            flex-direction: row;
+        }
+
+        & > div {
+            height: 100%;
+            width: 45vw;  
+        }
+    }
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+.announcement {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: end;
+
+    margin-right: 1vw;
+
+    font-size: 2vw;
+
+    &__url {
+        font-family: 'CocoGoose Pro', 'sans-serif';
+        font-size: 4vw;
+        line-height: 4vw;
+    }
+
+    &__info {
+        margin-left: 1vw;
+
+        position: relative;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        font-size: 2vw;
+        @include breakpoint(laptop) {
+            font-size: 1vw;
+        }
+
+        @include breakpoint(mobile) {
+            justify-content: end;
+        }
+
+        &--bold {
+            font-weight: bold;
+        }
+
+        &--cost {
+            position: absolute;
+            left: 35%;
+
+            font-size: 2.5vw;
+            font-weight: bold;
+
+            @include breakpoint(laptop) {
+                font-size: 2vw;
+                height: 1vw;
+            }
+            
+            @include breakpoint(mobile) {
+                position: unset;
+                height: unset;
+            }
+        }
+    }
 }
 
 .info-container {
@@ -474,7 +585,7 @@ $pink: #e98792;
     background-color: $dark-gray;
     display: flex;
     flex-direction: column;
-    padding: 20px 5%;
+    padding: 20px 2%;
 }
 
 .events-title {
@@ -502,6 +613,7 @@ $pink: #e98792;
     flex-direction: column;
     border-radius: 10px;
     margin-bottom: 10px;
+    margin-right: 10px;
 
     &__image {
         &-container {

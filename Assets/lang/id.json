@@ -118,6 +118,7 @@
             "rankedSets": "TOTAL BEATMAP RANKED",
             "nominateNow": "berikan nominasimu sekarang !",
             "voteNow": "gunakan hak suaramu sekarang !",
+            "viewResults": "lihat hasil keseluruhan !",
             "daysLeft": "hari tersisa",
             "message": {
                 "2019": "<p>Mapper's Choice Awards hadir kembali untuk keempat kalinya di tahun 2019 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Oh ya, pada tahun ini kami juga telah secara khusus menyediakan situs web bagi Mapper's Choice Awards agar para mapper/modder yang memiliki hak suara dapat menyalurkan suaranya dengan lebih mudah lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>",
@@ -134,6 +135,14 @@
                 "name": "Grand Award",
                 "description": "Yang terbaik dari yang terbaik."
             },
+            "grandStoryboard": {
+                "name": "Grand Storyboard",
+                "description": "Storyboard terbaik tahun ini."
+            },
+            "grandStoryboarder": {
+                "name": "Grand Storyboarder",
+                "description": "Storyboarder terbaik tahun ini."
+            },            
             "marathon": {
                 "name": "Marathon",
                 "description": "Mapset terbaik dengan drain time di atas 5 menit."
@@ -249,7 +258,63 @@
             "narrative": {
                 "name": "Narrative",
                 "description": "Storyboard terbaik yang menceritakan suatu kisah."
-            }
+            },
+            "technicalTaiko": {
+                "name": "Technical",
+                "description": "Mapset terbaik yang mengusung kombinasi pattern dan beat snapping yang kompleks."
+            },                
+            "fastTaiko": {
+                "name": "Fast",
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan SV yang tinggi dan pattern-pattern yang menuntut kecepatan tapping."
+            },
+            "slowTaiko": {
+                "name": "Slow",
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan SV yang lambat dan pattern-pattern yang menuntut kesabaran."
+            },
+            "hybrid": {
+                "name": "Hybrid",
+                "description": "Mapset terbaik yang mengusung pattern-pattern rice dan LN dalam proporsi yang kurang lebihnya seimbang."
+            },
+            "highBPMAlternator": {
+                "name": "High BPM / Alternator",
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern yang menuntut kemampuan aim dan/atau kecepatan tapping yang sangat tinggi."
+            },
+            "vanilla": {
+                "name": "Vanilla",
+                "description": "Mapset terbaik yang mengusung desain yang sederhana."
+            },
+            "complex": {
+                "name": "Complex Rhythm / Swing",
+                "description": "Mapset terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6) dan/atau snapping-snapping lainnya yang tidak lazim seperti double, 1/3, 1/5, 1/7, and lain sebagainya."
+            },
+            "unorthodox": {
+                "name": "Unorthodox / Gimmick",
+                "description": "Mapset terbaik yang mengusung ide-ide atau teknik-teknik mapping yang tidak umum."
+            },
+            "sliderTech": {
+                "name": "Slider Tech",
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada desain slider, manipulasi SV, dan pattern-pattern stream yang kompleks."
+            },
+            "mostInspiring": {
+                "name": "Most Inspiring",
+                "description": "Mereka yang paling menginspirasi sesama."
+            },
+            "communityPillar": {
+                "name": "Community Pillar",
+                "description": "Mereka yang paling berkontribusi dalam memajukan dunia mapping dan modding dari balik layar."
+            },
+            "simplisticTaiko": {
+                "name": "Simplistic",
+                "description": "Mapset terbaik yang mengusung desain yang sederhana."
+            },
+            "technicalCatch": {
+                "name": "Technical",
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada konsep-konsep osu!catch kompleks."
+            },
+            "antiMetaCatch": {
+                "name": "Anti-Meta",
+                "description": "Mapset terbaik yang mengusung gimmick-gimmick atau teknik-teknik mapping yang tidak umum."
+            }                 
         },
         "nom_vote": {
             "search": "cari beatmap/user",
@@ -266,22 +331,52 @@
                 "alph": "ALPH",
                 "asc": "ASC",
                 "desc": "DESC",
-                "voteOrder": "URUTAN VOTING"                
+                "voteOrder": "URUTAN VOTING",
+                "valid": "VALID",
+                "invalid": "TIDAK VALID",
+                "both": "KEDUANYA",
+                "all": "SEMUA",
+                "played": "MAP-MAP YANG PERNAH DIMAINKAN",
+                "results": "HASIL",
+                "voters": "SUARA"                              
             },
+            "votingOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman voting MCA. <br> MCA tahun ini menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suaramu kepada beatmap-beatmap/pengguna-pengguna yang kamu kehendaki tanpa ada batasan jumlah suara. <br> Seluruh suara yang masuk akan dihitung berdasarkan urutan pemilihannya masing-masing, atau dengan kata lain <span class='notice-modal--bold'>pilihan pertamamu akan memiliki bobot suara yang lebih tinggi dari pilihan keduamu dan seterusnya</span> <br> Selamat memilih, dan jangan lupa untuk menyaksikan livestream hasil akhir MCA [YEAR]!",
             "hosted": "DI-HOST OLEH",
             "userID": "USER ID"
+        },
+        "results": {
+            "headings": {
+                "placement": "PERINGKAT",
+                "map": "MAP",
+                "title": "JUDUL",
+                "artist": "ARTIS",
+                "hoster": "HOST MAPSET",
+                "username": "USER",
+                "firstChoice": "JML. PILIHAN KE-1",
+                "secondThirdChoice": "JML. PILIHAN KE-2/KE-3",
+                "restChoice": "JML. PILIHAN KE-4+"
+            },
+            "resultsOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman hasil voting MCA. <br> Hasil-hasil yang tertera pada laman ini keseluruhannya disusun berdasarkan hasil perhitungan <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting</a> yang kemudian diurutkan berdasarkan jumlah pemilih pertama, jumlah pemilih kedua, dan seterusnya.<br> Akhir kata, kami berharap kami dapat memuaskan rasa penasaranmu dengan penyelenggaraan MCA kali ini. Mohon maaf apabila sekiranya terdapat sesuatu yang kurang berkenan dari kami, dan sampai jumpa lagi di MCA selanjutnya!"
         }
     },
     "main": {
         "header": {
             "login": "MASUK",
-            "register": "DAFTAR"
+            "register": "DAFTAR",
+            "changeDiscord": "GANTI AKUN DISCORD"
         },
         "index": {
             "underConstruction": "dalam pengerjaan",
             "sorry": "mohon maaf atas ketidaknyamanannya",
             "development": "situs web corsace saat ini masih sedang dalam pengerjaan",
             "theTeam": "tim corsace"
+        },
+        "merch": {
+            "official": "merchandise resmi corsace",
+            "avail": "kini telah tersedia",
+            "name": "T-Shirt Corsace Open 2021 Edisi Terbatas",
+            "colours": "Hitam/Putih",
+            "until": "Tersedia hingga 11/30/21"
         }
     }
 }

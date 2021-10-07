@@ -7,7 +7,7 @@ import mappoolDownload from "./mappool/download";
 import mappoolInfo from "./mappool/info";
 import mappoolRemove from "./mappool/remove";
 import mappoolSubmit from "./mappool/submit";
-import mappoolSwap from "./mappool/swap";
+import mappoolSwap from "./mappool/swap"
 
 import avatar from "./utility/avatar";
 import mark from "./utility/mark";
