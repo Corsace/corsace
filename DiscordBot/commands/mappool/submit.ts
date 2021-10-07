@@ -1,12 +1,17 @@
 import { config } from "node-config-ts";
-import { Message } from "discord.js";
-import { getPoolData, sheetsClient } from "../../../Server/sheets";
+import { Message, TextChannel } from "discord.js";
+import { getPoolData, updatePoolRow } from "../../../Server/sheets";
 import { Command } from "../index";
 import identifierToPool from "../../functions/identifierToPool";
 import { getMember } from "../../../Server/discord";
 import { roundAcronyms, roundNames } from "../../../Interfaces/rounds";
 
 async function command (m: Message) {
+    if (!m.guild || m.guild.id !== config.discord.guild || !(m.channel as TextChannel).name.toLowerCase().includes("mappool")) {
+        m.channel.send("You can only do this in the corsace discord server. (Please do not use this in outside of mappool/secured channels!)");
+        return;
+    }
+
     // If core corsace staff, allow them to filter by user aside for author
     const member = await getMember(m.author.id);
     if (
@@ -16,11 +21,6 @@ async function command (m: Message) {
         !config.discord.roles.closed.mapper.some(r => member?.roles.cache.has(r))
     ) {
         m.channel.send("You do not have the perms to use this command.");
-        return;
-    }
-
-    if (!m.guild || m.guild.id !== config.discord.guild) {
-        m.channel.send("You can only do this in the corsace discord server. (Please do not do this in general!)");
         return;
     }
 
@@ -39,9 +39,9 @@ async function command (m: Message) {
         if (translation)
             pool = translation;
         else if (roundNames.some(name => name === part))
-            round = part;
+            round = roundAcronyms[roundNames.findIndex(name => name === part)];
         else if (roundAcronyms.some(name => name === part))
-            round = roundNames[roundAcronyms.findIndex(name => name === part)];
+            round = part;
         else if (/http/i.test(part))
             link = part;
         else
@@ -56,49 +56,25 @@ async function command (m: Message) {
         m.channel.send("No link or attachment is provided.");
         return;
     }
+    if (round === "") {
+        m.channel.send("No round is provided.");
+        return;
+    }
+    round = round.toUpperCase();
 
     // Get pool data and iterate thru
-    const rows = await getPoolData(pool);
-    let inPool = false;
-    let currentPool = "";
+    const rows = await getPoolData(pool, round);
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
-        if (row.some(val => val === member?.nickname ?? member?.user.username)) {
+        if (row.some(val => val === member?.id)) {
             if (
-                (slot === "" && round === "") || // no slot or round given
-                (round !== "" && inPool && slot === "")  || // round given, no slot given
-                (round !== "" && inPool && slot !== "" && slot.toLowerCase() === row[0].toLowerCase()) || // round and slot given
-                (round === "" && slot.toLowerCase() !== row[0].toLowerCase()) // no round given, slot given
+                (slot === "") || // no slot given
+                (slot !== "" && slot.toLowerCase() === row[0].toLowerCase()) // slot given
             ) {
-                await sheetsClient.spreadsheets.values.update({
-                    spreadsheetId: config.google.sheets[pool],
-                    range: `'mappool planning & assignment'!I${i + 2}`,
-                    valueInputOption: "RAW", 
-                    requestBody: {
-                        values: [
-                            [ link ],
-                        ],
-                    },
-                });
-                m.channel.send(`Submitted your map for the slot **${row[0].toUpperCase()}** in **${currentPool.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**\n${m.attachments.first() ? "**DO NOT DELETE YOUR MESSAGE, YOUR LINK IS THE ATTACHMENT.**" : ""}`);
+                await updatePoolRow(pool, `'${round}'!O${i + 2}`, [ link ]);
+                m.channel.send(`Submitted your map for the slot **${row[0].toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**\n${m.attachments.first() ? "**DO NOT DELETE YOUR MESSAGE, YOUR LINK IS THE ATTACHMENT.**" : ""}`);
                 return;
             }
-        }
-    
-        if (roundNames.some(name => name === row[0].toLowerCase()) || roundAcronyms.some(name => name === row[0].toLowerCase())) {
-            if (inPool) {
-                if (slot !== "") {
-                    m.channel.send(`Could not find slot **${slot.toUpperCase()}** in **${currentPool.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** which you were also assigned to.`);
-                    return;
-                }
-                m.channel.send(`Could not find your slot(s) in **${currentPool.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** which you were also assigned to.`);
-                return;
-            }
-            const roundFound = roundNames.some(name => name === row[0].toLowerCase()) ? row[0].toLowerCase() : roundNames[roundAcronyms.findIndex(name => name === row[0].toLowerCase())];
-            if (roundFound === round)
-                inPool = true;
-            currentPool = roundFound;
-            continue;
         }
     }
     m.channel.send(`Could not find anything for **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** which you were also assigned to.`);
@@ -106,8 +82,8 @@ async function command (m: Message) {
 
 const mappoolSubmit: Command = {
     name: ["psubmit", "poolsubmit", "submitp", "submitpool"], 
-    description: "Allows an assigned mapper to send a link / attachment for their finished/work in progress beatmap\nDefaults to lowest round",
-    usage: "!psubmit <link / attachment> [round] [slot] [pool]", 
+    description: "Allows an assigned mapper to send a link / attachment for their finished/work in progress beatmap\nDefaults to NM -> HD -> HR -> DT -> FM -> TB",
+    usage: "!psubmit <link / attachment> <round> [slot] [pool]", 
     category: "mappool",
     command,
 };

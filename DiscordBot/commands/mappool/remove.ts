@@ -1,6 +1,6 @@
 import { config } from "node-config-ts";
 import { Message, TextChannel } from "discord.js";
-import { getPoolData } from "../../../Server/sheets";
+import { getPoolData, updatePoolRow } from "../../../Server/sheets";
 import { Command } from "../index";
 import identifierToPool from "../../functions/identifierToPool";
 import { getMember } from "../../../Server/discord";
@@ -63,21 +63,19 @@ async function command (m: Message) {
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         if (slot.toLowerCase() === row[0].toLowerCase()) {
-            if (!row.some(r => /http/i.test(r)))
-                m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** does not have any submission currently.`);
-            else
-                m.channel.send(row.find(r => /http/i.test(r)));
+            await updatePoolRow(pool, `'${round}'!B${i + 2}:P${i + 2}`, [ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" ]);
+            m.channel.send(`Removed the assignment on slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**`);
             return;
         }
     }
 }
 
-const mappoolDownload: Command = {
-    name: ["pdl", "pdownload", "pooldl", "pooldownload", "dlp", "downloadp", "dlpool", "downloadpool"], 
-    description: "Let's you download the currently submitted version of the beatmap",
-    usage: "!pdl <round> <slot> [pool]", 
+const mappoolRemove: Command = {
+    name: ["premove", "poolremove", "removep", "removepool"], 
+    description: "Let's you remove a mapper from a slot",
+    usage: "!premove <round> <slot> [pool]", 
     category: "mappool",
     command,
 };
 
-export default mappoolDownload;
+export default mappoolRemove;

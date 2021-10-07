@@ -1,6 +1,6 @@
 import { config } from "node-config-ts";
 import { Message, TextChannel } from "discord.js";
-import { getPoolData } from "../../../Server/sheets";
+import { getPoolData, updatePoolRow } from "../../../Server/sheets";
 import { Command } from "../index";
 import identifierToPool from "../../functions/identifierToPool";
 import { getMember } from "../../../Server/discord";
@@ -16,11 +16,7 @@ async function command (m: Message) {
     const member = await getMember(m.author.id);
     if (
         !member?.roles.cache.has(config.discord.roles.corsace.corsace) &&
-        !member?.roles.cache.has(config.discord.roles.corsace.headStaff) &&
-        !member?.roles.cache.has(config.discord.roles.open.testplayer) &&
-        !member?.roles.cache.has(config.discord.roles.closed.testplayer) &&
-        !config.discord.roles.open.mapper.some(r => member?.roles.cache.has(r)) &&
-        !config.discord.roles.closed.mapper.some(r => member?.roles.cache.has(r))
+        !member?.roles.cache.has(config.discord.roles.corsace.headStaff)
     ) {
         m.channel.send("You do not have the perms to use this command.");
         return;
@@ -29,10 +25,12 @@ async function command (m: Message) {
     let pool: "openMappool" | "closedMappool" = "openMappool";
     let round = "";
     let slot = "";
+    let deadlineType: "preview" | "map" = "map";
+    let deadline = new Date();
 
     // Find pool + slot + round
     const msgContent = m.content.toLowerCase();
-    const parts = msgContent.split(" ");
+    let parts = msgContent.split(" ");
     for (const part of parts) {
         if (part[0] === "!")
             continue;
@@ -43,7 +41,9 @@ async function command (m: Message) {
             round = roundAcronyms[roundNames.findIndex(name => name === part)];
         else if (roundAcronyms.some(name => name === part))
             round = part;
-        else
+        else if (part === "preview" || part === "map")
+            deadlineType = part;
+        else if (round !== "" && slot === "")
             slot = part;
     }
 
@@ -58,26 +58,35 @@ async function command (m: Message) {
     }
     round = round.toUpperCase();
 
+    // Get deadline
+    parts = msgContent.replace(pool, "").replace(slot, "").replace(round, "").replace(deadlineType, "").trim().split(" ");
+    parts.shift();
+    deadline = new Date(parts.join(" ").trim());
+    if (isNaN(deadline.getDate())) {
+        m.channel.send(`**${parts.join(" ").trim()}** is an invalid date.`);
+        return;
+    }
+    if (deadline.getUTCFullYear() < new Date().getUTCFullYear())
+        deadline.setUTCFullYear(new Date().getUTCFullYear());
+
     // Get pool data and iterate thru
     const rows = await getPoolData(pool, round);
     for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         if (slot.toLowerCase() === row[0].toLowerCase()) {
-            if (!row.some(r => /http/i.test(r)))
-                m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** does not have any submission currently.`);
-            else
-                m.channel.send(row.find(r => /http/i.test(r)));
+            await updatePoolRow(pool, `'${round}'!${deadlineType === "map" ? "N" : "M"}${i + 2}`, [ deadline.toDateString() ]);
+            m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** now has a **${deadlineType} deadline** for ${deadline.toDateString()}\nMapper will be DM'd/pinged everyday for the last 3 days before deadline.`);
             return;
         }
     }
 }
 
-const mappoolDownload: Command = {
-    name: ["pdl", "pdownload", "pooldl", "pooldownload", "dlp", "downloadp", "dlpool", "downloadpool"], 
-    description: "Let's you download the currently submitted version of the beatmap",
-    usage: "!pdl <round> <slot> [pool]", 
+const mappoolDeadline: Command = {
+    name: ["pdeadline", "pooldeadline", "deadlinep", "deadlinepool"], 
+    description: "Let's you add a deadline for the specified slot and specified deadline slot",
+    usage: "!pdeadline <round> <slot> <datetime> [pool] [deadline type]", 
     category: "mappool",
     command,
 };
 
-export default mappoolDownload;
+export default mappoolDeadline;

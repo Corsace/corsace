@@ -17,12 +17,22 @@ const getToDoData = async () => (await sheetsClient.spreadsheets.values.get({
     range: "todos!A2:E",
 })).data.values as any[][];
 
-async function getPoolData (pool: "openMappool" | "closedMappool") {
+async function getPoolData (pool: "openMappool" | "closedMappool", round: string) {
     return (await sheetsClient.spreadsheets.values.get({
         spreadsheetId: config.google.sheets[pool],
-        range: "'mappool planning & assignment'!A2:L",
+        range: `'${round}'!A2:P`,
     })).data.values as any[][];
 }
 
+async function updatePoolRow (pool: "openMappool" | "closedMappool", range: string, data: any[]) {
+    return sheetsClient.spreadsheets.values.update({
+        spreadsheetId: config.google.sheets[pool],
+        range,
+        valueInputOption: "RAW", 
+        requestBody: {
+            values: [ data ],
+        },
+    });
+}
 
-export { sheetsClient, getToDoData, getPoolData };
+export { sheetsClient, getToDoData, getPoolData, updatePoolRow };
