@@ -1,8 +1,13 @@
 import { Message } from "discord.js";
 
 import mappoolAssign from "./mappool/assign";
+import mappoolAssignments from "./mappool/assignments";
+import mappoolDeadline from "./mappool/deadline";
 import mappoolDownload from "./mappool/download";
+import mappoolInfo from "./mappool/info";
+import mappoolRemove from "./mappool/remove";
 import mappoolSubmit from "./mappool/submit";
+import mappoolSwap from "./mappool/swap";
 
 import avatar from "./utility/avatar";
 import mark from "./utility/mark";
@@ -29,8 +34,13 @@ const commands: Command[] = [];
 
 // mappool commands
 commands.push(mappoolAssign);
+commands.push(mappoolAssignments);
+commands.push(mappoolDeadline);
 commands.push(mappoolDownload);
+commands.push(mappoolInfo);
+commands.push(mappoolRemove);
 commands.push(mappoolSubmit);
+commands.push(mappoolSwap);
 
 // general utility commands
 commands.push(avatar);

@@ -1,10 +1,14 @@
 import { config } from "node-config-ts";
-import { GuildMember, Message, TextChannel } from "discord.js";
-import { getPoolData, updatePoolRow } from "../../../Server/sheets";
+import { GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
+import { getPoolData } from "../../../Server/sheets";
 import { Command } from "../index";
 import identifierToPool from "../../functions/identifierToPool";
 import { getMember } from "../../../Server/discord";
-import { roundAcronyms, roundNames } from "../../../Interfaces/rounds";
+
+const acronyms = {
+    openMappool: ["QL", "RO32", "RO16", "QF", "SF", "F", "GF"],
+    closedMappool: ["QL", "RO16", "QF", "SF", "F", "GF"],
+};
 
 async function command (m: Message) {
     if (!m.guild || m.guild.id !== config.discord.guild || !(m.channel as TextChannel).name.toLowerCase().includes("mappool")) {
@@ -16,16 +20,18 @@ async function command (m: Message) {
     const member = await getMember(m.author.id);
     if (
         !member?.roles.cache.has(config.discord.roles.corsace.corsace) &&
-        !member?.roles.cache.has(config.discord.roles.corsace.headStaff)
+        !member?.roles.cache.has(config.discord.roles.corsace.headStaff) &&
+        !member?.roles.cache.has(config.discord.roles.open.testplayer) &&
+        !member?.roles.cache.has(config.discord.roles.closed.testplayer) &&
+        !config.discord.roles.open.mapper.some(r => member?.roles.cache.has(r)) &&
+        !config.discord.roles.closed.mapper.some(r => member?.roles.cache.has(r))
     ) {
         m.channel.send("You do not have the perms to use this command.");
         return;
     }
 
     let pool: "openMappool" | "closedMappool" = "openMappool";
-    let user = member;
-    let round = "";
-    let slot = "";
+    let user = member as GuildMember;
 
     let msgContent = m.content.toLowerCase();
     let parts = msgContent.split(" ");
@@ -45,7 +51,7 @@ async function command (m: Message) {
             }
         }
     }
-    
+
     // Find pool + slot + round
     parts = msgContent.split(" ");
     for (const part of parts) {
@@ -54,46 +60,38 @@ async function command (m: Message) {
         const translation = identifierToPool(part);
         if (translation)
             pool = translation;
-        else if (roundNames.some(name => name === part))
-            round = roundAcronyms[roundNames.findIndex(name => name === part)];
-        else if (roundAcronyms.some(name => name === part))
-            round = part;
-        else
-            slot = part;
     }
-
-    // check if slot and round were given
-    if (slot === "") {
-        m.channel.send("Missing slot");
-        return;
-    }
-    if (round === "") {
-        m.channel.send("Missing round");
-        return;
-    }
-    round = round.toUpperCase();
+    
+    const embed = new MessageEmbed({
+        author: {
+            name: user.nickname ?? user.user.username,
+            iconURL: user.user.displayAvatarURL({format: "png", size: 2048, dynamic: true}),
+        },
+        description: `Your assignments for **${pool === "closedMappool" ? "Corsace Closed" : "Corsace Open"}**`,
+        fields: [],
+    });
 
     // Get pool data and iterate thru
-    const rows = await getPoolData(pool, round);
-    for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        if (slot.toLowerCase() === row[0].toLowerCase()) {
-            await Promise.all([
-                updatePoolRow(pool, `'${round}'!B${i + 2}`, [ user.nickname ?? user.user.username ]),
-                updatePoolRow(pool, `'${round}'!P${i + 2}`, [ user.id ]),
-            ]);
-            m.channel.send(`Assigned ${user.nickname ?? user.user.username} to the slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**`);
-            return;
+    for (const round of acronyms[pool]) {
+        const rows = await getPoolData(pool, round);
+        for (const row of rows) {
+            if (row.some(v => v === user?.id))
+                embed.fields.push({
+                    name: `${round} ${row[0]}: ${row[2]} - ${row[3]} [${row[4]}]`,
+                    value: `Preview Deadline: ${row[12]}\nMapping deadline: ${row[13]}`,
+                    inline: true,
+                });
         }
     }
+    m.channel.send(embed);
 }
 
-const mappoolAssign: Command = {
-    name: ["passign", "poolassign", "assignp", "assignpool"], 
-    description: "Allows mappool heads to assign mappers to slots / rounds",
-    usage: "!passign [@mention | username | nickname] <pool> <round> <slot>", 
+const mappoolAssignments: Command = {
+    name: ["passigns", "passignments", "poolassigns", "poolassignments"], 
+    description: "Let's you obtain information about your/someone else's assigned slots in the pool",
+    usage: "!passigns [@mention | username | nickname] [pool]", 
     category: "mappool",
     command,
 };
 
-export default mappoolAssign;
+export default mappoolAssignments;

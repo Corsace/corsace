@@ -1,9 +1,9 @@
 import { config } from "node-config-ts";
-import { Message, TextChannel } from "discord.js";
+import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { getPoolData } from "../../../Server/sheets";
 import { Command } from "../index";
 import identifierToPool from "../../functions/identifierToPool";
-import { getMember } from "../../../Server/discord";
+import { discordClient, getMember } from "../../../Server/discord";
 import { roundAcronyms, roundNames } from "../../../Interfaces/rounds";
 
 async function command (m: Message) {
@@ -28,7 +28,6 @@ async function command (m: Message) {
 
     let pool: "openMappool" | "closedMappool" = "openMappool";
     let round = "";
-    let slot = "";
 
     // Find pool + slot + round
     const msgContent = m.content.toLowerCase();
@@ -43,15 +42,9 @@ async function command (m: Message) {
             round = roundAcronyms[roundNames.findIndex(name => name === part)];
         else if (roundAcronyms.some(name => name === part))
             round = part;
-        else
-            slot = part;
     }
 
-    // check if slot and round were given
-    if (slot === "") {
-        m.channel.send("Missing slot");
-        return;
-    }
+    // check if round was given
     if (round === "") {
         m.channel.send("Missing round");
         return;
@@ -60,24 +53,39 @@ async function command (m: Message) {
 
     // Get pool data and iterate thru
     const rows = await getPoolData(pool, round);
-    for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        if (slot.toLowerCase() === row[0].toLowerCase()) {
-            if (!row.some(r => /http/i.test(r)))
-                m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** does not have any submission currently.`);
-            else
-                m.channel.send(row.find(r => /http/i.test(r)));
-            return;
-        }
+
+    const embed = new MessageEmbed({
+        author: {
+            name: pool === "openMappool" ? "Corsace Open" : "Corsace Closed",
+            iconURL: discordClient.user?.displayAvatarURL({format: "png", size: 2048, dynamic: true}),
+        },
+        description: `**${roundNames[roundAcronyms.findIndex(name => name === round.toLowerCase())].toUpperCase()} POOL**`,
+        fields: [],
+    });
+
+    for (const row of rows) {
+        if (row.length < 5)
+            embed.fields.push({
+                name: row[0],
+                value: "**EMPTY SLOT**",
+                inline: true,
+            });
+        else
+            embed.fields.push({
+                name: row[0],
+                value: `${row[2]} - ${row[3]} [${row[4]}] mapped by ${row[1]}`,
+                inline: true,
+            });
     }
+    m.channel.send(embed);
 }
 
-const mappoolDownload: Command = {
-    name: ["pdl", "pdownload", "pooldl", "pooldownload", "dlp", "downloadp", "dlpool", "downloadpool"], 
-    description: "Let's you download the currently submitted version of the beatmap",
-    usage: "!pdl <round> <slot> [pool]", 
+const mappoolInfo: Command = {
+    name: ["pool", "pinfo", "poolinfo"], 
+    description: "Let's you obtain information about the mappool",
+    usage: "!pool <round> [pool]", 
     category: "mappool",
     command,
 };
 
-export default mappoolDownload;
+export default mappoolInfo;
