@@ -7,7 +7,7 @@ import { getMember } from "../../../Server/discord";
 import { roundAcronyms, roundNames } from "../../../Interfaces/rounds";
 
 async function command (m: Message) {
-    if (!m.guild || m.guild.id !== config.discord.guild || !(m.channel as TextChannel).name.toLowerCase().includes("mappool")) {
+    if (!m.guild || m.guild.id !== config.discord.guild || (!(m.channel as TextChannel).name.toLowerCase().includes("mappool") && !(m.channel as TextChannel).name.toLowerCase().includes("head"))) {
         m.channel.send("You can only do this in the corsace discord server. (Please do not use this in outside of mappool/secured channels!)");
         return;
     }
@@ -75,7 +75,7 @@ async function command (m: Message) {
         const row = rows[i];
         if (slot.toLowerCase() === row[0].toLowerCase()) {
             await updatePoolRow(pool, `'${round}'!${deadlineType === "map" ? "N" : "M"}${i + 2}`, [ deadline.toDateString() ]);
-            m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** now has a **${deadlineType} deadline** for ${deadline.toDateString()}\nMapper will be DM'd/pinged everyday for the last 3 days before deadline.`);
+            m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** now has a **${deadlineType} deadline** for ${deadline.toDateString()}\nMapper will be pinged every 12 hours for the last 3 days before deadline.`);
             return;
         }
     }

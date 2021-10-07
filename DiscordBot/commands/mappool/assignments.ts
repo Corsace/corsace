@@ -4,14 +4,10 @@ import { getPoolData } from "../../../Server/sheets";
 import { Command } from "../index";
 import identifierToPool from "../../functions/identifierToPool";
 import { getMember } from "../../../Server/discord";
-
-const acronyms = {
-    openMappool: ["QL", "RO32", "RO16", "QF", "SF", "F", "GF"],
-    closedMappool: ["QL", "RO16", "QF", "SF", "F", "GF"],
-};
+import sheetFunctions from "../../functions/sheetFunctions";
 
 async function command (m: Message) {
-    if (!m.guild || m.guild.id !== config.discord.guild || !(m.channel as TextChannel).name.toLowerCase().includes("mappool")) {
+    if (!m.guild || m.guild.id !== config.discord.guild || (!(m.channel as TextChannel).name.toLowerCase().includes("mappool") && !(m.channel as TextChannel).name.toLowerCase().includes("head"))) {
         m.channel.send("You can only do this in the corsace discord server. (Please do not use this in outside of mappool/secured channels!)");
         return;
     }
@@ -72,7 +68,7 @@ async function command (m: Message) {
     });
 
     // Get pool data and iterate thru
-    for (const round of acronyms[pool]) {
+    for (const round of sheetFunctions.acronyms[pool]) {
         const rows = await getPoolData(pool, round);
         for (const row of rows) {
             if (row.some(v => v === user?.id))
