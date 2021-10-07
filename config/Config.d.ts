@@ -67,6 +67,8 @@ declare module "node-config-ts" {
             clientSecret: string;
             invite: string;
             logChannel: string;
+            mappoolChannelCO: string;
+            mappoolChannelCC: string;
         };
 
         osu: {

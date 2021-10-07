@@ -7,7 +7,7 @@ import { discordClient, getMember } from "../../../Server/discord";
 import { roundAcronyms, roundNames } from "../../../Interfaces/rounds";
 
 async function command (m: Message) {
-    if (!m.guild || m.guild.id !== config.discord.guild || !(m.channel as TextChannel).name.toLowerCase().includes("mappool")) {
+    if (!m.guild || m.guild.id !== config.discord.guild || (!(m.channel as TextChannel).name.toLowerCase().includes("mappool") && !(m.channel as TextChannel).name.toLowerCase().includes("head"))) {
         m.channel.send("You can only do this in the corsace discord server. (Please do not use this in outside of mappool/secured channels!)");
         return;
     }

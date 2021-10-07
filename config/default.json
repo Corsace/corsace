@@ -54,7 +54,9 @@
         "clientId": "bot ID",
         "clientSecret": "bot secret",
         "invite": "invite link",
-        "logChannel": "channel ID"
+        "logChannel": "channel ID",
+        "mappoolChannelCO": "channel ID",
+        "mappoolChannelCC": "channel ID"
     },
     "osu": {
         "v1": {

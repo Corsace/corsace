@@ -46,7 +46,9 @@
         "clientId": "485083088226091015",
         "clientSecret": "@@DISCORD_CLIENTSECRET",
         "invite": "Z6vEMsr",
-        "logChannel": "461591966321344513"
+        "logChannel": "461591966321344513",
+        "mappoolChannelCO": "889674855400751154",
+        "mappoolChannelCC": "887098641699962910"
     },
     "osu": {
         "v1": {
