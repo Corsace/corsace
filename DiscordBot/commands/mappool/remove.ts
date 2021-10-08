@@ -25,12 +25,20 @@ async function command (m: Message) {
         const rows = await getPoolData(pool, round.toUpperCase());
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
+            if (slot === "all") {
+                await updatePoolRow(pool, `'${round}'!B${i + 2}:P${i + 2}`, [ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" ]);
+                continue;
+            }
             if (slot.toLowerCase() === row[0].toLowerCase()) {
                 await updatePoolRow(pool, `'${round}'!B${i + 2}:P${i + 2}`, [ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" ]);
                 m.channel.send(`Removed the assignment on slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**`);
                 return;
             }
         }
+        if (slot === "all")
+            m.channel.send(`Removed **all** assignments in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**`);
+        else
+            m.channel.send(`Could not find the slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**`);
     } finally {
         waiting.delete();
     }

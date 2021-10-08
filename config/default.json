@@ -58,6 +58,7 @@
         "headChannel": "channel ID",
         "coreChannel": "channel ID",
         "openMappool": {
+            "admin": "channel ID",
             "general": "channel ID",
             "epic": "channel ID",
             "update": "channel ID",
@@ -67,6 +68,7 @@
             "songSubmission": "channel ID"
         },
         "closedMappool": {
+            "admin": "channel ID",
             "general": "channel ID",
             "epic": "channel ID",
             "update": "channel ID",

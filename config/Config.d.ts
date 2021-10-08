@@ -9,6 +9,7 @@ declare module "node-config-ts" {
     }
 
     interface IMappoolChannelConfig {
+        admin: string;
         general: string;
         epic: string;
         update: string;

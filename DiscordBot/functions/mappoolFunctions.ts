@@ -28,8 +28,8 @@ function poolCheck (m: Message) {
     return "openMappool";
 }
 
-async function privilegeChecks (m: Message, mappers: boolean, testplayers: boolean): Promise<boolean> {
-    // Check if this is in a proper
+async function privilegeChecks (m: Message, mappers: boolean, testplayers: boolean, updateOnly = false): Promise<boolean> {
+    // Check if this is in a whitelisted channel
     if (
         !m.guild || 
         m.guild.id !== config.discord.guild || 
@@ -39,6 +39,11 @@ async function privilegeChecks (m: Message, mappers: boolean, testplayers: boole
         !Object.values(config.discord.closedMappool).some(v => v === m.channel.id)
     ) {
         m.channel.send("You can only do this in the corsace discord server. (Please do not use this in outside of mappool/secured channels!)");
+        return false;
+    }
+
+    if (updateOnly && m.channel.id !== config.discord.openMappool.update && m.channel.id !== config.discord.openMappool.update) {
+        m.channel.send("You can only do this in an update channel.");
         return false;
     }
 

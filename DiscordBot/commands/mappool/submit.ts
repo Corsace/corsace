@@ -4,19 +4,21 @@ import { Command } from "../index";
 import mappoolFunctions from "../../functions/mappoolFunctions";
 
 async function command (m: Message) {
-    if (!(await mappoolFunctions.privilegeChecks(m, true, false)))
+    if (!(await mappoolFunctions.privilegeChecks(m, true, false, true)))
         return;
 
     const waiting = await m.channel.send("Submitting...");
+    let message: Message | undefined = undefined;
+    let success = false;
     try {
         const { pool, slot, round, link } = await mappoolFunctions.parseParams(m);
 
         if (link === "") {
-            m.channel.send("No link or attachment is provided.");
+            message = await m.channel.send("No link or attachment is provided");
             return;
         }
         if (round === "") {
-            m.channel.send("No round is provided.");
+            message = await m.channel.send("No round is provided");
             return;
         }
 
@@ -29,15 +31,23 @@ async function command (m: Message) {
                     (slot === "") || // no slot given
                     (slot !== "" && slot.toLowerCase() === row[0].toLowerCase()) // slot given
                 ) {
-                    await updatePoolRow(pool, `'${round}'!O${i + 2}`, [ link ]);
-                    m.channel.send(`Submitted your map for the slot **${row[0].toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**\n${m.attachments.first() ? "**DO NOT DELETE YOUR MESSAGE, YOUR LINK IS THE ATTACHMENT.**" : ""}`);
+                    await Promise.all([
+                        updatePoolRow(pool, `'${round}'!M${i + 2}`, [ "" ]),
+                        updatePoolRow(pool, `'${round}'!O${i + 2}`, [ link ]),
+                    ]);
+                    message = await m.channel.send(`Submitted your map for the slot **${row[0].toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**\n${m.attachments.first() ? "**DO NOT DELETE YOUR MESSAGE, YOUR LINK IS THE ATTACHMENT.**" : ""}`);
+                    success = true;
                     return;
                 }
             }
         }
-        m.channel.send(`Could not find anything for **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** which you were also assigned to.`);
+        message = await m.channel.send(`Could not find the slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** which you were also assigned to.`);
     } finally {
         waiting.delete();
+        if (message)
+            message.delete({timeout: 3000});
+        if (!success)
+            m.delete({timeout: 3000});
     }
 }
 
