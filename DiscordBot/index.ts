@@ -4,7 +4,7 @@ import guildMemberAdd from "./handlers/guildMemberAdd";
 import guildMemberRemove from "./handlers/guildMemberRemove";
 import messageCreate from "./handlers/messageCreate";
 import ormConnectionOptions from "../ormconfig";
-import sheetFunctions from "./functions/sheetFunctions";
+import mappoolFunctions from "./functions/mappoolFunctions";
 
 // Discord event handlers
 discordClient.on("guildMemberAdd", guildMemberAdd);
@@ -19,7 +19,7 @@ if (initialRun.getUTCHours() > 12)
 else
     targetRun.setUTCHours(12);
 
-discordClient.once("ready", () => setTimeout(sheetFunctions.sheetTimer, targetRun.getTime() - Date.now()));
+discordClient.once("ready", () => setTimeout(mappoolFunctions.sheetTimer, targetRun.getTime() - Date.now()));
 
 createConnection(ormConnectionOptions)
     .then((connection) => {

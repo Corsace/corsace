@@ -47,8 +47,26 @@
         "clientSecret": "@@DISCORD_CLIENTSECRET",
         "invite": "Z6vEMsr",
         "logChannel": "461591966321344513",
-        "mappoolChannelCO": "889674855400751154",
-        "mappoolChannelCC": "887098641699962910"
+        "headChannel": "461578028397625344",
+        "coreChannel": "884272754180898816",
+        "openMappool": {
+            "general": "889674855400751154",
+            "epic": "889674878310039572",
+            "update": "889674978524557332",
+            "testing": "889675017149874176",
+            "balancing": "889675047625719879",
+            "songDiscussion": "889675102432665621",
+            "songSubmission": "895117978507567104"
+        },
+        "closedMappool": {
+            "general": "887098641699962910",
+            "epic": "887098668992327701",
+            "update": "887098694124597268",
+            "testing": "887098731034456065",
+            "balancing": "889675047625719879",
+            "songDiscussion": "887111363036581908",
+            "songSubmission": "895117978507567104"
+        }
     },
     "osu": {
         "v1": {

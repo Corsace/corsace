@@ -55,8 +55,26 @@
         "clientSecret": "bot secret",
         "invite": "invite link",
         "logChannel": "channel ID",
-        "mappoolChannelCO": "channel ID",
-        "mappoolChannelCC": "channel ID"
+        "headChannel": "channel ID",
+        "coreChannel": "channel ID",
+        "openMappool": {
+            "general": "channel ID",
+            "epic": "channel ID",
+            "update": "channel ID",
+            "testing": "channel ID",
+            "balancing": "channel ID",
+            "songDiscussion": "channel ID",
+            "songSubmission": "channel ID"
+        },
+        "closedMappool": {
+            "general": "channel ID",
+            "epic": "channel ID",
+            "update": "channel ID",
+            "testing": "channel ID",
+            "balancing": "channel ID",
+            "songDiscussion": "channel ID",
+            "songSubmission": "channel ID"
+        }
     },
     "osu": {
         "v1": {
