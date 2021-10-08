@@ -34,6 +34,7 @@ async function command (m: Message) {
                 return;
             }
         }
+        m.channel.send(`Could not assign ${user.nickname ?? user.user.username} to the slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**`);
     } finally {
         waiting.delete();
     }

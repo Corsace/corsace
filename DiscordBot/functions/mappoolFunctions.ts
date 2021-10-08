@@ -85,7 +85,7 @@ async function parseParams (m: Message) {
     // Check for mention
     if (m.mentions.members && m.mentions.members.first()) {
         user = m.mentions.members.first() as GuildMember;
-        msgContent = m.content.replace(`<@${m.mentions.users.first()!.id}>`, "").toLowerCase();
+        msgContent = m.content.replace(`<@!${m.mentions.users.first()!.id}>`, "").replace(`<@${m.mentions.users.first()!.id}>`, "").toLowerCase();
     } else {
         for (const part of parts) {
             const members = await m.guild!.members.fetch({ query: part });
