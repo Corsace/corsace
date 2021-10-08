@@ -17,7 +17,7 @@ async function command (m: Message) {
                 name: user.nickname ?? user.user.username,
                 iconURL: user.user.displayAvatarURL({format: "png", size: 2048, dynamic: true}),
             },
-            description: `Your assignments for **${pool === "closedMappool" ? "Corsace Closed" : "Corsace Open"}**`,
+            description: `${m.author.id === user.id ? "Your" : user.nickname ?? user.user.username} assignments for **${pool === "closedMappool" ? "Corsace Closed" : "Corsace Open"}**`,
             fields: [],
         });
 
