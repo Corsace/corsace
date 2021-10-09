@@ -29,28 +29,34 @@ function poolCheck (m: Message) {
 }
 
 async function privilegeChecks (m: Message, mappers: boolean, testplayers: boolean, updateOnly = false): Promise<boolean> {
-    // Check if this is in a whitelisted channel
     if (
         !m.guild || 
-        m.guild.id !== config.discord.guild || 
-        m.channel.id !== config.discord.headChannel || 
-        m.channel.id !== config.discord.coreChannel || 
-        !Object.values(config.discord.openMappool).some(v => v === m.channel.id) || 
-        !Object.values(config.discord.closedMappool).some(v => v === m.channel.id)
+        m.guild.id !== config.discord.guild
     ) {
         m.channel.send("You can only do this in the corsace discord server. (Please do not use this in outside of mappool/secured channels!)");
         return false;
     }
 
+    // Check if this is in a whitelisted channel
+    if (
+        m.channel.id !== config.discord.headChannel &&
+        m.channel.id !== config.discord.coreChannel &&
+        !Object.values(config.discord.openMappool).some(v => v === m.channel.id) &&
+        !Object.values(config.discord.closedMappool).some(v => v === m.channel.id)
+    ) {
+        m.channel.send("You can only do this in mappool/secured channels");
+        return false;
+    }
+
     if (updateOnly && m.channel.id !== config.discord.openMappool.update && m.channel.id !== config.discord.openMappool.update) {
-        m.channel.send("You can only do this in an update channel.");
+        m.channel.send("You can only do this in an update channel");
         return false;
     }
 
     // If core corsace staff, allow them to filter by user aside for author
     const member = await getMember(m.author.id);
     if (!member) {
-        m.channel.send("Unable to obtain your role perms from the Corsace server.");
+        m.channel.send("Unable to obtain your role perms from the Corsace server");
         return false;
     }
     if (
@@ -69,7 +75,7 @@ async function privilegeChecks (m: Message, mappers: boolean, testplayers: boole
         ))
             return true;
 
-        m.channel.send("You do not have the perms to use this command.");
+        m.channel.send("You do not have the perms to use this command");
         return false;
     }
 
