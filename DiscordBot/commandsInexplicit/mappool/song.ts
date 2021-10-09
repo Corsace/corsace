@@ -37,7 +37,7 @@ export default async function mappoolSong (m: Message) {
         } else if (slotRegex.test(line)) {
             slot = slotRegex.exec(line)![1];
         } else if (linkRegex.test(line)) {
-            link = linkRegex.exec(line)![1].replace("<http", "http");
+            link = linkRegex.exec(line)![1].replace("<", "").replace(">", "");
         } else if (ratingRegex.test(line)) {
             rating = ratingRegex.exec(line)![1];
         } else if (noteRegex.test(line)) {
