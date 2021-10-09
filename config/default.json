@@ -95,7 +95,8 @@
         "sheets": {
             "todo": "your spreadsheet's ID",
             "openMappool": "your spreadsheet's ID",
-            "closedMappool": "your spreadsheet's ID"
+            "closedMappool": "your spreadsheet's ID",
+            "songs": "your spreadsheet's ID"
         }
     },
     "koaKeys": [""],

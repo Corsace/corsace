@@ -35,4 +35,15 @@ async function updatePoolRow (pool: "openMappool" | "closedMappool", range: stri
     });
 }
 
-export { sheetsClient, getToDoData, getPoolData, updatePoolRow };
+async function appendSongSubmission (data: any[]) {
+    return sheetsClient.spreadsheets.values.append({
+        spreadsheetId: config.google.sheets.songs,
+        range: "Submissions",
+        valueInputOption: "RAW",
+        requestBody: {
+            values: [ data ],
+        },
+    });
+}
+
+export { sheetsClient, getToDoData, getPoolData, updatePoolRow, appendSongSubmission };
