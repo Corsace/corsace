@@ -20,6 +20,7 @@
             "open": {
                 "participants": "role ID",
                 "captains": "role ID",
+                "mapper": ["role IDs"],
                 "mappooler": "role ID",
                 "testplayer": "role ID",
                 "scheduler": "role ID",
@@ -31,6 +32,7 @@
             "closed": {
                 "participants": "role ID",
                 "captains": "role ID",
+                "mapper": ["role IDs"],
                 "mappooler": "role ID",
                 "scheduler": "role ID",
                 "streamManager": "role ID",
@@ -52,7 +54,29 @@
         "clientId": "bot ID",
         "clientSecret": "bot secret",
         "invite": "invite link",
-        "logChannel": "channel ID"
+        "logChannel": "channel ID",
+        "headChannel": "channel ID",
+        "coreChannel": "channel ID",
+        "openMappool": {
+            "admin": "channel ID",
+            "general": "channel ID",
+            "epic": "channel ID",
+            "update": "channel ID",
+            "testing": "channel ID",
+            "balancing": "channel ID",
+            "songDiscussion": "channel ID",
+            "songSubmission": "channel ID"
+        },
+        "closedMappool": {
+            "admin": "channel ID",
+            "general": "channel ID",
+            "epic": "channel ID",
+            "update": "channel ID",
+            "testing": "channel ID",
+            "balancing": "channel ID",
+            "songDiscussion": "channel ID",
+            "songSubmission": "channel ID"
+        }
     },
     "osu": {
         "v1": {
@@ -70,7 +94,8 @@
         },
         "sheets": {
             "todo": "your spreadsheet's ID",
-            "mappool": "your spreadsheet's ID"
+            "openMappool": "your spreadsheet's ID",
+            "closedMappool": "your spreadsheet's ID"
         }
     },
     "koaKeys": [""],

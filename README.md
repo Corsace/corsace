@@ -23,8 +23,10 @@ The values in your personal `config/user/$USER.json` config file will be referre
 
 You can obtain your osu! API V1 key at [https://osu.ppy.sh/p/api/]
 
-`config.osu.v2.clientId`
-`config.osu.v2.clientSecret`
+```
+config.osu.v2.clientId
+config.osu.v2.clientSecret
+```
 
 You will need to create a "New OAuth Application" at the bottom of https://osu.ppy.sh/home/account/edit.
 
@@ -60,6 +62,32 @@ The database will listen on `127.0.0.1:3306`, with `corsace` being the database 
 #### Seeding the database
 
 Create and seed the whole Corsace database using: `npm run typeorm migration:run`
+
+### Google Sheets
+
+#### Setup
+
+`config.google`
+
+Currently used only as a temporary measure for handling large-scale custom mappooling. May also be used for other spreadsheet purposes.
+
+#### Spreadsheet IDs
+
+Typically, a spreadsheet URL will look like `https://docs.google.com/spreadsheets/d/VERY LARGE ID/edit#gid=PAGE ID`. Obtain the `VERY LARGE ID` for the todo sheet you will have, and the open and/or closed mappools. 
+
+#### API Credentials
+
+Go to `https://console.cloud.google.com/` and create a project.
+After creating a project, enable the Sheets API, and create a service account.
+
+Make sure to download the json which contains the credentials. The fields with the respective fields for
+```
+config.google.credentials.private_key
+config.google.credentials.client_email
+```
+are within the JSON.
+
+After creating a service account, Google will create an email similar to `serviceName@projectName.iam.gserviceaccount.com`. Share your spreadsheets to this email.
 
 ### Discord
 

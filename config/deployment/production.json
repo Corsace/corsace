@@ -20,6 +20,7 @@
             "open": {
                 "participants": "485092513640742913",
                 "captains": "485092709179326474",
+                "mapper": ["889678780749185055", "889678952136863784"],
                 "mappooler": "461583913287024643",
                 "testplayer": "565333762586443776",
                 "scheduler": "461584274404016138",
@@ -29,6 +30,7 @@
                 "referee": "461584657042112543"
             },
             "closed": {
+                "mapper": ["793232956323659786", "889678975394258997"],
                 "mappooler": "774795961691406366"
             },
             "mca": {
@@ -44,7 +46,29 @@
         "clientId": "485083088226091015",
         "clientSecret": "@@DISCORD_CLIENTSECRET",
         "invite": "Z6vEMsr",
-        "logChannel": "461591966321344513"
+        "logChannel": "461591966321344513",
+        "headChannel": "461578028397625344",
+        "coreChannel": "884272754180898816",
+        "openMappool": {
+            "admin": "887101310694993930",
+            "general": "889674855400751154",
+            "epic": "889674878310039572",
+            "update": "889674978524557332",
+            "testing": "889675017149874176",
+            "balancing": "889675047625719879",
+            "songDiscussion": "889675102432665621",
+            "songSubmission": "895117978507567104"
+        },
+        "closedMappool": {
+            "admin": "886408468699951154",
+            "general": "887098641699962910",
+            "epic": "887098668992327701",
+            "update": "887098694124597268",
+            "testing": "887098731034456065",
+            "balancing": "889675047625719879",
+            "songDiscussion": "887111363036581908",
+            "songSubmission": "895117978507567104"
+        }
     },
     "osu": {
         "v1": {
@@ -62,7 +86,8 @@
         },
         "sheets": {
             "todo": "@@GOOGLE_SHEETS_TODO",
-            "mappool": "@@GOOGLE_SHEETS_MAPPOOL"
+            "openMappool": "@@GOOGLE_SHEETS_OPENMAPPOOL",
+            "closedMappool": "@@GOOGLE_SHEETS_CLOSEDMAPPOOL"
         }
     },
     "koaKeys": ["@@KOA_KEY"],

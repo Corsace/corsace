@@ -8,6 +8,17 @@ declare module "node-config-ts" {
         ssr: boolean;
     }
 
+    interface IMappoolChannelConfig {
+        admin: string;
+        general: string;
+        epic: string;
+        update: string;
+        testing: string;
+        balancing: string;
+        songDiscussion: string;
+        songSubmission: string;
+    }
+
     interface IConfig {
         database: {
             host: string;
@@ -31,6 +42,7 @@ declare module "node-config-ts" {
                 open: {
                     participants: string;
                     captains: string;
+                    mapper: string[];
                     mappooler: string;
                     testplayer: string;
                     scheduler: string;
@@ -42,7 +54,9 @@ declare module "node-config-ts" {
                 closed: {
                     participants: string;
                     captains: string;
+                    mapper: string[];
                     mappooler: string;
+                    testplayer: string;
                     scheduler: string;
                     streamManager: string;
                     streamer: string;
@@ -64,6 +78,10 @@ declare module "node-config-ts" {
             clientSecret: string;
             invite: string;
             logChannel: string;
+            headChannel: string;
+            coreChannel: string;
+            openMappool: IMappoolChannelConfig;
+            closedMappool: IMappoolChannelConfig;
         };
 
         osu: {
@@ -83,7 +101,8 @@ declare module "node-config-ts" {
             };
             sheets: {
                 todo: string;
-                mappool: string;
+                openMappool: string;
+                closedMappool: string;
             };
         };
 
