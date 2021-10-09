@@ -35,6 +35,7 @@ secrets:
       todo: ""
       openMappool: ""
       closedMappool: ""
+      songs: ""
   osu:
     v1:
       apiKey: ""
