@@ -2,10 +2,11 @@ import { config } from "node-config-ts";
 import { GuildMember, Message, TextChannel, User } from "discord.js";
 import { discordClient, getMember } from "../../Server/discord";
 import { getPoolData } from "../../Server/sheets";
-import identifierToPool from "./identifierToPool";
 import { roundAcronyms, roundNames } from "../../Interfaces/rounds";
 import timeSince from "../../Server/utils/timeSince";
 
+const openAcronyms = ["co", "open", "corsaceopen", "corsace open", "corsace"];
+const closedAcronyms = ["cc", "closed", "corsaceclosed", "corsace closed"];
 const acronyms = {
     openMappool: ["QL", "RO32", "RO16", "QF", "SF", "F", "GF"],
     closedMappool: ["QL", "RO16", "QF", "SF", "F", "GF"],
@@ -15,17 +16,25 @@ const pools: ("openMappool" | "closedMappool")[] = ["openMappool", "closedMappoo
 const hours12 = 43200000;
 const days3 = 259200000;
 
+function poolCheck (m: Message) {
+    if (Object.values(config.discord.closedMappool).some(v => v === m.channel.id))
+        return "closedMappool";
+    return "openMappool";
+}
+
+function identifierToPool (identifier: string): "openMappool" | "closedMappool" | undefined {
+    if (openAcronyms.some(a => a === identifier.toLowerCase()))
+        return "openMappool";
+    if (closedAcronyms.some(a => a === identifier.toLowerCase()))
+        return "closedMappool";
+    return undefined;
+}
+
 async function pingChannel (pool: "openMappool" | "closedMappool") {
     if (pool === "openMappool")
         return (await discordClient.channels.fetch(config.discord.openMappool.general, false, true)) as TextChannel;
     if (pool === "closedMappool")
         return (await discordClient.channels.fetch(config.discord.closedMappool.general, false, true)) as TextChannel;
-}
-
-function poolCheck (m: Message) {
-    if (Object.values(config.discord.closedMappool).some(v => v === m.channel.id))
-        return "closedMappool";
-    return "openMappool";
 }
 
 async function privilegeChecks (m: Message, mappers: boolean, testplayers: boolean, updateOnly = false): Promise<boolean> {
@@ -60,18 +69,18 @@ async function privilegeChecks (m: Message, mappers: boolean, testplayers: boole
         return false;
     }
     if (
-        !member?.roles.cache.has(config.discord.roles.corsace.corsace) &&
-        !member?.roles.cache.has(config.discord.roles.corsace.headStaff)
+        !member.roles.cache.has(config.discord.roles.corsace.corsace) &&
+        !member.roles.cache.has(config.discord.roles.corsace.headStaff)
     ) {
         if (mappers && (
-            config.discord.roles.open.mapper.some(r => member?.roles.cache.has(r)) ||
-            config.discord.roles.closed.mapper.some(r => member?.roles.cache.has(r))
+            config.discord.roles.open.mapper.some(r => member.roles.cache.has(r)) ||
+            config.discord.roles.closed.mapper.some(r => member.roles.cache.has(r))
         ))
             return true;
 
         if (testplayers && (
-            member?.roles.cache.has(config.discord.roles.open.testplayer) ||
-            member?.roles.cache.has(config.discord.roles.closed.testplayer)
+            member.roles.cache.has(config.discord.roles.open.testplayer) ||
+            member.roles.cache.has(config.discord.roles.closed.testplayer)
         ))
             return true;
 
@@ -189,6 +198,7 @@ export default {
     acronyms,
     pools,
     poolCheck,
+    identifierToPool,
     privilegeChecks,
     parseParams,
     sheetTimer,

@@ -1,7 +1,6 @@
 import { Message } from "discord.js";
 import { getPoolData, updatePoolRow } from "../../../Server/sheets";
 import { Command } from "../index";
-import identifierToPool from "../../functions/identifierToPool";
 import { roundAcronyms, roundNames } from "../../../Interfaces/rounds";
 import mappoolFunctions from "../../functions/mappoolFunctions";
 
@@ -24,7 +23,7 @@ async function command (m: Message) {
         for (const part of parts) {
             if (part[0] === "!")
                 continue;
-            const translation = identifierToPool(part);
+            const translation = mappoolFunctions.identifierToPool(part);
             if (translation)
                 pool = translation;
             else if (roundNames.some(name => name === part))
