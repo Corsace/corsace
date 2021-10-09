@@ -107,6 +107,11 @@ Shared environment by deployments
     secretKeyRef:
       name: {{ include "corsace-chart.fullname" $ }}
       key: googleSheetsClosedMappool
+- name: GOOGLE_SHEETS_SONGS
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: googleSheetsSongs
 - name: OSU_V1_APIKEY
   valueFrom:
     secretKeyRef:
