@@ -87,7 +87,8 @@
         "sheets": {
             "todo": "@@GOOGLE_SHEETS_TODO",
             "openMappool": "@@GOOGLE_SHEETS_OPENMAPPOOL",
-            "closedMappool": "@@GOOGLE_SHEETS_CLOSEDMAPPOOL"
+            "closedMappool": "@@GOOGLE_SHEETS_CLOSEDMAPPOOL",
+            "songs": "@@GOOGLE_SHEETS_SONGS"
         }
     },
     "koaKeys": ["@@KOA_KEY"],

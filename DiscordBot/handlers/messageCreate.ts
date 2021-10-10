@@ -1,9 +1,11 @@
+import { config } from "node-config-ts";
 import { Message } from "discord.js";
 import { discordClient } from "../../Server/discord";
 import { commands } from "../commands";
 import beatmap from "../commands/osu/beatmap";
 import profile from "../commands/osu/profile";
-import osuTimestamp from "../commandsInexplicit/osuTimestamp";
+import mappoolSong from "../commandsInexplicit/mappool/song";
+import osuTimestamp from "../commandsInexplicit/osu/osuTimestamp";
 
 export default async function messageCreate (m: Message) {
     const prefix = /^!(\S+)/i;
@@ -24,6 +26,9 @@ export default async function messageCreate (m: Message) {
     // Check for osu! timeestamps
     if (timestampRegex.test(noEmoji))
         osuTimestamp(m);
+
+    if (m.channel.id === config.discord.openMappool.songSubmission || m.channel.id === config.discord.closedMappool.songSubmission)
+        mappoolSong(m);
 
     // Command checking TODO: Add custom prefix (relies on discord server model)
     if (prefix.test(m.content)) {

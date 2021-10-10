@@ -121,13 +121,13 @@ async function parseParams (m: Message) {
     // Find other params
     parts = msgContent.split(" ");
     for (let i = 1; i < parts.length; i++) {
-        const part = parts[i];
+        const part = parts[i].toLowerCase();
         const translation = identifierToPool(part);
         if (translation)
             pool = translation;
-        else if (roundNames.some(name => name === part))
-            round = roundAcronyms[roundNames.findIndex(name => name === part)];
-        else if (roundAcronyms.some(name => name === part))
+        else if (roundNames.some(name => name === part.toLowerCase()))
+            round = roundAcronyms[roundNames.findIndex(name => name === part.toLowerCase())];
+        else if (roundAcronyms.some(name => name === part.toLowerCase()))
             round = part;
         else if (part === "preview" || part === "map")
             deadlineType = part;
