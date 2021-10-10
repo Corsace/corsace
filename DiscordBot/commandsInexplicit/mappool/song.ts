@@ -41,9 +41,12 @@ export default async function mappoolSong (m: Message) {
         } else if (ratingRegex.test(line)) {
             rating = ratingRegex.exec(line)![1];
         } else if (noteRegex.test(line)) {
-            note = ratingRegex.exec(line)![1];
+            note = noteRegex.exec(line)![1];
         }
     }
+
+    if (m.attachments.size > 0 && link === "")
+        link = m.attachments.first()!.url;
 
     if (artist === "") {
         const message = await m.channel.send("Missing artist");
