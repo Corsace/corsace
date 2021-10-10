@@ -103,6 +103,7 @@ declare module "node-config-ts" {
                 todo: string;
                 openMappool: string;
                 closedMappool: string;
+                songs: string;
             };
         };
 
