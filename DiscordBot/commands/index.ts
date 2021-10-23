@@ -10,6 +10,7 @@ import mappoolSubmit from "./mappool/submit";
 import mappoolSwap from "./mappool/swap";
 
 import avatar from "./utility/avatar";
+import help from "./utility/help";
 import mark from "./utility/mark";
 import prio from "./utility/prio";
 import todo from "./utility/todo";
@@ -44,6 +45,7 @@ commands.push(mappoolSwap);
 
 // general utility commands
 commands.push(avatar);
+commands.push(help);
 commands.push(mark);
 commands.push(prio);
 commands.push(todo);
