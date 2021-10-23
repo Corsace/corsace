@@ -35,12 +35,12 @@ export default async function messageCreate (m: Message) {
         const commandName = prefix.exec(m.content);
         if (!commandName)
             return;
-
-        const command =  commands.find(cmd => cmd.name.some(name => name === commandName[1].toLowerCase()));
-        if (!command)
-            return;
-
-        await command.command(m);
+        
+        for (const command of commands) { 
+            if (!command.name.some(name => name === commandName[1].toLowerCase()))
+                continue;
+            await command.command(m);
+        }
     }
 
     // Check for an osu! profile linked
