@@ -121,7 +121,7 @@ async function parseParams (m: Message) {
     // Find other params
     parts = msgContent.split(" ");
     for (let i = 1; i < parts.length; i++) {
-        const part = parts[i].toLowerCase();
+        const part = parts[i].toLowerCase().trim();
         const translation = identifierToPool(part);
         if (translation)
             pool = translation;
