@@ -35,10 +35,10 @@ async function updatePoolRow (pool: "openMappool" | "closedMappool", range: stri
     });
 }
 
-async function appendSongSubmission (data: any[]) {
+async function appendSongSubmission (isOpen: boolean, data: any[]) {
     return sheetsClient.spreadsheets.values.append({
         spreadsheetId: config.google.sheets.songs,
-        range: "Submissions",
+        range: `${isOpen ? "CO" : "CC"} Submissions`,
         valueInputOption: "RAW",
         requestBody: {
             values: [ data ],

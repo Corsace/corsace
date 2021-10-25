@@ -11,7 +11,7 @@ const linkRegex = /link:\s+(.+)/i;
 const ratingRegex = /rating:\s+(.+)/i;
 const noteRegex = /note:\s+(.+)/i;
 
-export default async function mappoolSong (m: Message) {
+export default async function mappoolSong (m: Message, isOpen: boolean) {
     let artist = "";
     let title = "";
     let genre = "";
@@ -79,7 +79,7 @@ export default async function mappoolSong (m: Message) {
     }
 
     try {
-        await appendSongSubmission([ artist, title, m.member?.nickname ?? m.author.username, link, genre, bpm, length, slot, rating, note, m.author.id ]);
+        await appendSongSubmission(isOpen, [ artist, title, m.member?.nickname ?? m.author.username, link, genre, bpm, length, slot, rating, note, m.author.id ]);
 
         m.react("✅");
     } catch (e) {
