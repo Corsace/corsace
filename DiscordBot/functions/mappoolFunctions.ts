@@ -131,15 +131,13 @@ async function parseParams (m: Message) {
             round = part;
         else if (part === "preview" || part === "map")
             deadlineType = part;
-        else if (/http/i.test(part))
-            link = part;
         else if (i === 1 || (round !== "" && slot === ""))
             slot = part;
     }
 
     // See if there's an attachment
-    if (m.attachments.first())
-        link = m.attachments.first()?.url as string;
+    if (m.attachments.first()?.url.includes("osz"))
+        link = m.attachments.first()!.url as string;
 
     return {
         pool,

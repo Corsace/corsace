@@ -14,7 +14,7 @@ async function command (m: Message) {
         const { pool, slot, round, link } = await mappoolFunctions.parseParams(m);
 
         if (link === "") {
-            message = await m.channel.send("No link or attachment is provided");
+            message = await m.channel.send("No attachment is provided");
             return;
         }
         if (round === "") {
