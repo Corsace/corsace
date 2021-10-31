@@ -8,6 +8,7 @@
       "@nuxt/typescript-runtime": "^2.0.0",
       "@nuxtjs/axios": "^5.12.5",
       "@nuxtjs/proxy": "^2.1.0",
+      "adm-zip": "^0.5.9",
       "discord.js": "^12.5.1",
       "googleapis": "^88.2.0",
       "koa": "^2.13.1",
@@ -23,6 +24,7 @@
       "nodesu": "https://github.com/ThePooN/nodesu/archive/502d65b9f84dd2fbe0a24f4eeaf9359305f8bcc3.tar.gz",
       "nuxt": "^2.14.12",
       "nuxt-i18n": "^6.17.0",
+      "ojsama": "^2.2.0",
       "passport": "^0.4.1",
       "passport-discord": "^0.1.4",
       "passport-oauth2": "^1.5.0",
@@ -38,6 +40,7 @@
    "devDependencies": {
       "@nuxt/types": "^2.14.12",
       "@nuxt/typescript-build": "^2.0.3",
+      "@types/adm-zip": "^0.4.34",
       "@types/async": "^3.2.5",
       "@types/koa": "^2.11.6",
       "@types/koa__router": "^8.0.3",

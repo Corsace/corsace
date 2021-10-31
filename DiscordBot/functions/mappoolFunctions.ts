@@ -98,6 +98,7 @@ async function parseParams (m: Message) {
     let slot = "";
     let deadlineType: "preview" | "map" = "map";
     let link = "";
+    let diffName = "";
 
     let msgContent = m.content.toLowerCase();
     let parts = msgContent.split(" ");
@@ -131,6 +132,10 @@ async function parseParams (m: Message) {
             round = part;
         else if (part === "preview" || part === "map")
             deadlineType = part;
+        else if (part === "-diff" && i < parts.length - 1) {
+            diffName = parts[i + 1]; 
+            i++;
+        }
         else if (i === 1 || (round !== "" && slot === ""))
             slot = part;
     }
@@ -145,6 +150,7 @@ async function parseParams (m: Message) {
         round,
         slot,
         deadlineType,
+        diffName,
         link,
     };
 }
@@ -154,6 +160,8 @@ async function checkTimers () {
         const channel = (await pingChannel(pool)) as TextChannel;
         for (const round of acronyms[pool]) {
             const rows = await getPoolData(pool, round);
+            if (!rows)
+                continue;
             for (const row of rows) {
                 if (row.length < 16 || (row[12] === "" && row[13] === ""))
                     continue;
