@@ -52,4 +52,15 @@ async function appendSongSubmission (isOpen: boolean, data: any[]) {
     });
 }
 
-export { sheetsClient, getToDoData, getPoolData, updatePoolRow, appendSongSubmission };
+async function appendToHistory (pool: "openMappool" | "closedMappool", data: any[]) {
+    return sheetsClient.spreadsheets.values.append({
+        spreadsheetId: config.google.sheets[pool],
+        range: "history",
+        valueInputOption: "RAW",
+        requestBody: {
+            values: [ data ],
+        },
+    });
+}
+
+export { sheetsClient, getToDoData, getPoolData, updatePoolRow, appendSongSubmission, appendToHistory };
