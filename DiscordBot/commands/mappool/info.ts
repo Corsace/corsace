@@ -21,6 +21,10 @@ async function command (m: Message) {
 
         // Get pool data and iterate thru
         const rows = await getPoolData(pool, round.toUpperCase());
+        if (!rows) {
+            m.channel.send(`Could not find round **${round.toUpperCase()}** in the **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** pool`);
+            return;
+        }
 
         const embed = new MessageEmbed({
             author: {
