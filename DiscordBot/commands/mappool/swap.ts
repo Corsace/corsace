@@ -59,6 +59,14 @@ async function command (m: Message) {
             getPoolData(pool, round1),
             getPoolData(pool, round2),
         ]);
+        if (!rows1) {
+            m.channel.send(`Could not find round **${round1.toUpperCase()}** in the **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** pool`);
+            return;
+        }
+        if (!rows2) {
+            m.channel.send(`Could not find round **${round2.toUpperCase()}** in the **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** pool`);
+            return;
+        }
         let i1 = -1;
         let i2 = -1;
         for (let i = 0; i < rows1.length; i++) {

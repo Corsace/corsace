@@ -24,6 +24,8 @@ async function command (m: Message) {
         // Get pool data and iterate thru
         for (const round of sheetFunctions.acronyms[pool]) {
             const rows = await getPoolData(pool, round);
+            if (!rows)
+                continue;
             for (const row of rows) {
                 if (row.some(v => v === user?.id))
                     embed.fields.push({

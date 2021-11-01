@@ -18,10 +18,16 @@ const getToDoData = async () => (await sheetsClient.spreadsheets.values.get({
 })).data.values as any[][];
 
 async function getPoolData (pool: "openMappool" | "closedMappool", round: string) {
-    return (await sheetsClient.spreadsheets.values.get({
-        spreadsheetId: config.google.sheets[pool],
-        range: `'${round}'!A2:P`,
-    })).data.values as any[][];
+    let data;
+    try {
+        data = (await sheetsClient.spreadsheets.values.get({
+            spreadsheetId: config.google.sheets[pool],
+            range: `'${round}'!A2:P`,
+        })).data.values as any[][];
+    } catch (e) {
+        if (e) data = undefined;
+    }
+    return data;
 }
 
 async function updatePoolRow (pool: "openMappool" | "closedMappool", range: string, data: any[]) {
@@ -46,4 +52,15 @@ async function appendSongSubmission (isOpen: boolean, data: any[]) {
     });
 }
 
-export { sheetsClient, getToDoData, getPoolData, updatePoolRow, appendSongSubmission };
+async function appendToHistory (pool: "openMappool" | "closedMappool", data: any[]) {
+    return sheetsClient.spreadsheets.values.append({
+        spreadsheetId: config.google.sheets[pool],
+        range: "history",
+        valueInputOption: "RAW",
+        requestBody: {
+            values: [ data ],
+        },
+    });
+}
+
+export { sheetsClient, getToDoData, getPoolData, updatePoolRow, appendSongSubmission, appendToHistory };
