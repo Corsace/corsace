@@ -1,9 +1,11 @@
+import { Entry, Parse } from "unzipper";
+import { once } from "events";
 import { Message } from "discord.js";
 import { appendToHistory, getPoolData, updatePoolRow } from "../../../Server/sheets";
 import { Command } from "../index";
+import { BeatmapParser } from "../../../Server/BeatmapParser";
 import mappoolFunctions from "../../functions/mappoolFunctions";
 import Axios from "axios";
-import AdmZip from "adm-zip";
 import osu from "ojsama";
 
 async function command (m: Message) {
@@ -36,41 +38,51 @@ async function command (m: Message) {
         let ar = 0;
         let od = 0;
         let hp = 0;
-        const { data } = await Axios.get(link, { responseType: "arraybuffer" });
-        const zip = new AdmZip(data);
+        const { data } = await Axios.get(link, { responseType: "stream" });
+        const zip = data.pipe(Parse({ forceStream: true }));
         const osuParser = new osu.parser();
-        const zipEntries = zip.getEntries().filter(entry => entry.entryName.includes(".osu"));
-        for (const file of zipEntries) {
-            const beatmap = osuParser.feed(zip.readAsText(file)).map;
-            if (diff !== "" && beatmap.version.toLowerCase() !== diff.toLowerCase())
-                continue;
+        for await (const _entry of zip) {
+            const entry = _entry as Entry;
+    
+            if (entry.type === "File" && entry.props.path.endsWith(".osu")) {
+                const writableBeatmapParser = new BeatmapParser(osuParser);
+                entry.pipe(writableBeatmapParser);
+                await once(writableBeatmapParser, "finish");
+                
+                if (diff !== "" && osuParser.map.version.toLowerCase() !== diff.toLowerCase())
+                    continue;
 
-            artist = beatmap.artist;
-            title = beatmap.title;
-            diff = beatmap.version;
-            cs = beatmap.cs;
-            ar = beatmap.ar!;
-            od = beatmap.od;
-            hp = beatmap.hp;
+                const beatmap = osuParser.map;
+                artist = beatmap.artist;
+                title = beatmap.title;
+                diff = beatmap.version;
+                cs = beatmap.cs;
+                ar = beatmap.ar!;
+                od = beatmap.od;
+                hp = beatmap.hp;
 
-            // Obtaining length
-            const lengthMs = beatmap.objects[beatmap.objects.length - 1].time - beatmap.objects[0].time;
-            const lengthSec = lengthMs / 1000;
-            const lengthMin = Math.round(lengthSec / 60);
-            length = `${lengthMin}:${(lengthSec % 60).toFixed(0)}`;
+                // Obtaining length
+                const lengthMs = beatmap.objects[beatmap.objects.length - 1].time - beatmap.objects[0].time;
+                const lengthSec = lengthMs / 1000;
+                const lengthMin = Math.round(lengthSec / 60);
+                length = `${lengthMin}:${(lengthSec % 60).toFixed(0)}`;
 
-            // Obtaining bpm
-            const timingPoints = beatmap.timing_points.filter(line => line.change === true).map(line => {
-                return 60000 / line.ms_per_beat;
-            }).sort((a,b) => a - b);
-            if (timingPoints.length === 1)
-                bpm = timingPoints[0] % 1 !== 0 ? timingPoints[0].toFixed(3) : timingPoints[0].toFixed();
-            else
-                bpm = `${timingPoints[0].toFixed()}-${timingPoints[timingPoints.length - 1].toFixed()}`;
+                // Obtaining bpm
+                const timingPoints = beatmap.timing_points.filter(line => line.change === true).map(line => {
+                    return 60000 / line.ms_per_beat;
+                }).sort((a,b) => a - b);
+                if (timingPoints.length === 1 || timingPoints[timingPoints.length - 1].toFixed() === timingPoints[0].toFixed())
+                    bpm = timingPoints[0] % 1 !== 0 ? timingPoints[0].toFixed(3) : timingPoints[0].toFixed();
+                else
+                    bpm = `${timingPoints[0].toFixed()}-${timingPoints[timingPoints.length - 1].toFixed()}`;
 
-            sr = new osu.std_diff().calc({map: beatmap}).total.toFixed(2);
-            break;
+                sr = new osu.std_diff().calc({map: beatmap}).total.toFixed(2);
+                break;
+            }
+
+            entry.autodrain();
         }
+
         if (artist === "") {
             message = await m.channel.send(`Could not find **${diffName !== "" ? `[${diff}]` : "a single difficulty(?)"}** in your osz`);
             return;
