@@ -6,20 +6,17 @@ import mappoolFunctions from "../../functions/mappoolFunctions";
 async function command (m: Message) {
     if (!(await mappoolFunctions.privilegeChecks(m, true, true)))
         return;
+    
+    const { pool, slot, round } = await mappoolFunctions.parseParams(m);
 
-    const waiting = await m.channel.send("Obtaining download...");
+    // check if round was given
+    if (round === "") {
+        m.channel.send("Missing round");
+        return;
+    }
+
+    const waiting = await m.channel.send(`Obtaining ${slot !== "" ? "download" : "links"}...`);
     try {
-        const { pool, slot, round } = await mappoolFunctions.parseParams(m);
-
-        // check if slot and round were given
-        if (slot === "") {
-            m.channel.send("Missing slot");
-            return;
-        }
-        if (round === "") {
-            m.channel.send("Missing round");
-            return;
-        }
 
         // Get pool data and iterate thru
         const rows = await getPoolData(pool, round.toUpperCase());
@@ -27,15 +24,25 @@ async function command (m: Message) {
             m.channel.send(`Could not find round **${round.toUpperCase()}** in the **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** pool`);
             return;
         }
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            if (slot.toLowerCase() === row[0].toLowerCase()) {
-                if (!row.some(r => /http/i.test(r)))
-                    m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** does not have any submission currently.`);
-                else
-                    m.channel.send(row.find(r => /http/i.test(r)));
-                return;
+        if (slot !== "")
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                if (slot.toLowerCase() === row[0].toLowerCase()) {
+                    if (!row.some(r => /http/i.test(r)))
+                        m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** does not have any submission currently.`);
+                    else
+                        m.channel.send(row.find(r => /http/i.test(r)));
+                    return;
+                }
             }
+        else {
+            let links = "";
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                links += `**${row[0].toUpperCase()}:** ${row.find(r => /http/i.test(r)) ?? ""}\n`;
+            }
+            m.channel.send(links);
+            return;
         }
     } finally {
         waiting.delete();
