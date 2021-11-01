@@ -107,7 +107,7 @@ async function command (m: Message) {
                         updatePoolRow(pool, `'${round}'!O${i + 2}`, [ link ]),
                         appendToHistory(pool, [ (new Date).toUTCString(), `${round.toUpperCase()}${slot ? slot.toUpperCase() : row[0].toUpperCase()}`, artist, title, m.member?.nickname ?? m.author.username, link ]),
                     ]);
-                    message = await m.channel.send(`Submitted your map for the slot **${row[0].toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**\n${m.attachments.first() ? "**DO NOT DELETE YOUR MESSAGE, YOUR LINK IS THE ATTACHMENT.**" : ""}`);
+                    message = await m.channel.send(`${m.author.toString()} Submitted your map for the slot **${row[0].toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**\n${m.attachments.first() ? "**DO NOT DELETE YOUR MESSAGE, YOUR LINK IS THE ATTACHMENT.**" : ""}`);
                     success = true;
                     return;
                 }
@@ -120,6 +120,8 @@ async function command (m: Message) {
             message.delete({timeout: 5000});
         if (!success)
             m.delete({timeout: 5000});
+        else
+            m.react("✅");
     }
 }
 
