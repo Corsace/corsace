@@ -57,7 +57,7 @@ async function privilegeChecks (m: Message, mappers: boolean, testplayers: boole
         return false;
     }
 
-    if (updateOnly && m.channel.id !== config.discord.openMappool.update && m.channel.id !== config.discord.openMappool.update) {
+    if (updateOnly && m.channel.id !== config.discord.openMappool.update && m.channel.id !== config.discord.closedMappool.update) {
         m.channel.send("You can only do this in an update channel");
         return false;
     }
