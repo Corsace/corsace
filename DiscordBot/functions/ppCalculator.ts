@@ -15,14 +15,20 @@ export default function ppCalculator (beatmap: Beatmap, score: Score): number {
     let totalPP = 0;
     switch (beatmap.mode) {
         case Mode.osu: { // I'll do other modes later (TODO)
+            let effectiveMissCount = calculateEffectiveMissCount(beatmap, score);
             let multiplier = 1.12;
+
             if (score.enabledMods && (score.enabledMods & Mods.NoFail) !== 0)
                 multiplier *= Math.max(0.9, 1 - 0.02 * score.countMiss);
             if (score.enabledMods && (score.enabledMods & Mods.SpunOut) !== 0)
                 multiplier *= 1 - Math.pow(beatmap.countSpinner / (beatmap.countNormal + beatmap.countSlider + beatmap.countSpinner), 0.85);
+            if (score.enabledMods && (score.enabledMods & Mods.Relax) !== 0) {
+                effectiveMissCount = Math.min(effectiveMissCount + score.count100 + score.count50, beatmap.countNormal + beatmap.countSlider + beatmap.countSpinner);
+                multiplier *= 0.6;
+            }
 
-            const aim = aimPP(beatmap, score);
-            const speed = speedPP(beatmap, score);
+            const aim = aimPP(beatmap, score, effectiveMissCount);
+            const speed = speedPP(beatmap, score, effectiveMissCount);
             const acc = accPP(beatmap, score);
             totalPP = Math.pow(
                 Math.pow(aim, 1.1) +
@@ -37,72 +43,78 @@ export default function ppCalculator (beatmap: Beatmap, score: Score): number {
     return totalPP;
 }
 
-function aimPP (beatmap: Beatmap, score: Score): number {
+function SR2PP (sr: number): number {
+    return Math.pow(5 * Math.max(1, sr / 0.0675) - 4, 3) / 100000; 
+}
+
+function calculateEffectiveMissCount (beatmap: Beatmap, score: Score): number {
+    let comboBasedMissCount = 0.0;
+    if (beatmap.countSlider > 0) {
+        const fullComboThreshold = beatmap.maxCombo - 0.1 * beatmap.countSlider;
+        if (score.maxCombo < fullComboThreshold)
+            comboBasedMissCount = fullComboThreshold / Math.max(1, score.maxCombo); 
+    }
+
+    comboBasedMissCount = Math.min(comboBasedMissCount, beatmap.countNormal + beatmap.countSlider + beatmap.countSpinner);
+
+    return Math.max(score.countMiss, Math.floor(comboBasedMissCount));
+}
+
+function aimPP (beatmap: Beatmap, score: Score, effectiveMissCount: number): number {
     const totalHits = beatmap.countNormal + beatmap.countSlider + beatmap.countSpinner;
     const accuracy = (score.count50 + 2 * score.count100 + 6 * score.count300) / (6 * totalHits);
 
     let rawAim = beatmap.diffAim;
     
-    if (score.enabledMods && (score.enabledMods & 4) !== 0)
+    if (score.enabledMods && (score.enabledMods & 4) !== 0) // Touchscreen
         rawAim = Math.pow(rawAim, 0.8);
     
-    let aimVal = Math.pow(5 * Math.max(1, rawAim / 0.0675) - 4, 3) / 100000;
+    let aimVal = SR2PP(rawAim);
 
     const lengthBonus = 0.95 + 0.4 * Math.min(1.0, totalHits / 2000.0) + (totalHits > 2000 ? Math.log10(totalHits / 2000.0) * 0.5 : 0.0);
     aimVal *= lengthBonus;
 
-    if (score.countMiss > 0)
-        aimVal *= 0.97 * Math.pow(1 - Math.pow(score.countMiss / totalHits, 0.775), score.countMiss);
+    if (effectiveMissCount > 0)
+        aimVal *= 0.97 * Math.pow(1 - Math.pow(effectiveMissCount / totalHits, 0.775), effectiveMissCount);
     
     if (beatmap.maxCombo > 0)
         aimVal *= Math.min(1, Math.pow(score.maxCombo, 0.8) / Math.pow(beatmap.maxCombo, 0.8));
     
     let arFactor = 0;
     if (beatmap.diffApproach > 10.33)
-        arFactor = beatmap.diffApproach - 10.33;
+        arFactor = 0.3 * (beatmap.diffApproach - 10.33);
     else if (beatmap.diffApproach < 8)
-        arFactor = 0.025 * (8 - beatmap.diffApproach);
-    const arTotalHitsFactor = 1 / (1 + Math.exp(-(0.007 * (totalHits - 400))));
-    const arBonus = 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
+        arFactor = 0.1 * (8 - beatmap.diffApproach);
+    aimVal *= 1 + arFactor * lengthBonus;
 
     if (score.enabledMods && (score.enabledMods & Mods.Hidden) !== 0)
         aimVal *= 1 + 0.04 * (12 - beatmap.diffApproach);
 
-    let flBonus = 1;
-    if (score.enabledMods && (score.enabledMods & Mods.Flashlight) !== 0)
-        flBonus = 1 + 0.35 * Math.min(1, totalHits / 200) +
-            (totalHits > 200 ? 0.3 * Math.min(1, (totalHits - 200) / 300) +
-                (totalHits > 500 ? (totalHits - 500) / 1200 : 0)
-                : 0);
-    
-    aimVal *= Math.max(flBonus, arBonus);
-
-    aimVal *= 0.5 + accuracy / 2;
+    aimVal *= accuracy;
     aimVal *= 0.98 + Math.pow(beatmap.diffOverall, 2) / 2500;
 
     return aimVal;
 }
 
-function speedPP (beatmap: Beatmap, score: Score): number {
+function speedPP (beatmap: Beatmap, score: Score, effectiveMissCount: number): number {
     const totalHits = beatmap.countNormal + beatmap.countSlider + beatmap.countSpinner;
     const accuracy = (score.count50 + 2 * score.count100 + 6 * score.count300) / (6 * totalHits);
 
-    let speedVal = Math.pow(5 * Math.max(1, beatmap.diffSpeed / 0.0675) - 4, 3) / 100000;
+    let speedVal = SR2PP(beatmap.diffSpeed);
 
     const lengthBonus = 0.95 + 0.4 * Math.min(1.0, totalHits / 2000.0) + (totalHits > 2000 ? Math.log10(totalHits / 2000.0) * 0.5 : 0.0);
     speedVal *= lengthBonus;
     
-    if (score.countMiss > 0)
-        speedVal *= 0.97 * Math.pow(1 - Math.pow(score.countMiss / totalHits, 0.775), Math.pow(score.countMiss, 0.875));
+    if (effectiveMissCount > 0)
+        speedVal *= 0.97 * Math.pow(1 - Math.pow(effectiveMissCount / totalHits, 0.775), Math.pow(effectiveMissCount, 0.875));
 
     if (beatmap.maxCombo > 0)
         speedVal *= Math.min(1, Math.pow(score.maxCombo, 0.8) / Math.pow(beatmap.maxCombo, 0.8));
 
     let arFactor = 0;
     if (beatmap.diffApproach > 10.33)
-        arFactor = beatmap.diffApproach - 10.33;
-    const arTotalHitsFactor = 1 / (1 + Math.exp(-(0.007 * (totalHits - 400))));
-    speedVal *= 1 + (0.03 + 0.37 * arTotalHitsFactor) * arFactor;
+        arFactor = 0.3 * (beatmap.diffApproach - 10.33);
+    speedVal *= 1 + arFactor * lengthBonus;
 
     if (score.enabledMods && (score.enabledMods & Mods.Hidden) !== 0)
         speedVal *= 1 + 0.04 * (12 - beatmap.diffApproach);
@@ -115,6 +127,9 @@ function speedPP (beatmap: Beatmap, score: Score): number {
 }
 
 function accPP (beatmap: Beatmap, score: Score): number {
+    if (score.enabledMods && (score.enabledMods & Mods.Relax) !== 0)
+        return 0;
+
     const totalHits = beatmap.countNormal + beatmap.countSlider + beatmap.countSpinner;
 
     let betterAcc = 0;
@@ -127,7 +142,7 @@ function accPP (beatmap: Beatmap, score: Score): number {
 
     if (score.enabledMods && (score.enabledMods & Mods.Hidden) !== 0)
         accVal *= 1.08;
-    if (score.enabledMods && (score.enabledMods & Mods.Hidden) !== 0)
+    if (score.enabledMods && (score.enabledMods & Mods.Flashlight) !== 0)
         accVal *= 1.02;
 
     return accVal;
