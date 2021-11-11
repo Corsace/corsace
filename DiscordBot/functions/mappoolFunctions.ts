@@ -122,14 +122,14 @@ async function parseParams (m: Message) {
     // Find other params
     parts = msgContent.split(" ");
     for (let i = 1; i < parts.length; i++) {
-        const part = parts[i].toLowerCase().trim();
+        const part = parts[i].trim().toLowerCase();
         const translation = identifierToPool(part);
         if (translation)
             pool = translation;
-        else if (roundNames.some(name => name === part.toLowerCase()))
-            round = roundAcronyms[roundNames.findIndex(name => name === part.toLowerCase())];
-        else if (roundAcronyms.some(name => name === part.toLowerCase()))
-            round = part;
+        else if (roundNames.some(name => name.toLowerCase() === part.toLowerCase()))
+            round = roundAcronyms[roundNames.findIndex(name => name.toLowerCase() === part.toLowerCase())];
+        else if (roundAcronyms.some(name => name.toLowerCase() === part.toLowerCase()))
+            round = part.toLowerCase();
         else if (part === "preview" || part === "map")
             deadlineType = part;
         else if (part === "-diff" && i < parts.length - 1) {
