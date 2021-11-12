@@ -9,7 +9,7 @@ import mappoolFunctions from "./functions/mappoolFunctions";
 // Discord event handlers
 discordClient.on("guildMemberAdd", guildMemberAdd);
 discordClient.on("guildMemberRemove", guildMemberRemove);
-discordClient.on("message", messageCreate);
+discordClient.on("messageCreate", messageCreate);
 
 // Setup timer for sheet query
 const initialRun = new Date();
