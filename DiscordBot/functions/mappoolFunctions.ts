@@ -126,9 +126,9 @@ async function parseParams (m: Message) {
         const translation = identifierToPool(part);
         if (translation)
             pool = translation;
-        else if (roundNames.some(name => name.toLowerCase() === part.toLowerCase()))
-            round = roundAcronyms[roundNames.findIndex(name => name.toLowerCase() === part.toLowerCase())];
-        else if (roundAcronyms.some(name => name.toLowerCase() === part.toLowerCase()))
+        else if (roundNames.some(name => name.toLowerCase() === part.toLowerCase() || name.toUpperCase() === part.toUpperCase()))
+            round = roundAcronyms[roundNames.findIndex(name => name.toLowerCase() === part.toLowerCase() || name.toUpperCase() === part.toUpperCase())];
+        else if (roundAcronyms.some(name => name.toLowerCase() === part.toLowerCase() || name.toUpperCase() === part.toUpperCase()))
             round = part.toLowerCase();
         else if (part === "preview" || part === "map")
             deadlineType = part;
