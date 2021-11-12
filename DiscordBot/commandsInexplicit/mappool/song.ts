@@ -60,7 +60,7 @@ export default async function mappoolSong (m: Message, isOpen: boolean) {
         missing += " link,";
 
     if (missing !== "") {
-        const message = await m.channel.send(`Missing ${missing.substring(0, missing.lastIndexOf(","))}`);
+        const message = await m.channel.send(`Missing${missing.substring(0, missing.lastIndexOf(","))}`);
         setTimeout(() => {
             message.delete();
             m.delete();
