@@ -157,6 +157,9 @@ export class User extends BaseEntity {
     @OneToMany(() => Match, match => match.streamer)
     matchesStreamed!: Match[];
 
+    @ManyToMany(() => Team, team => team.members)
+    teams!: Team[];
+    
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User
             .createQueryBuilder("user")

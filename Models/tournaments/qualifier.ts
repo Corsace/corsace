@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Team } from "../team";
 import { User } from "../user";
 import { Mappool } from "./mappool";
 import { MatchPlay } from "./matchPlay";
@@ -27,4 +28,12 @@ export class Qualifier extends BaseEntity {
 
     @ManyToOne(() => User, user => user.qualifiersReffed)
     referee?: User;
+
+    @Column()
+    public!: boolean;
+
+    @OneToMany(() => Team, team => team.qualifier, {
+        nullable: true
+    })
+    teams!: Team[];
 }
