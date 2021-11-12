@@ -43,6 +43,8 @@ export default async function guildMemberAdd (member: GuildMember) {
 
         const message = new MessageEmbed(embedMsg);
         const channel = await discordClient.channels.fetch(config.discord.logChannel);
-        (channel as TextChannel).send(message);
+        (channel as TextChannel).send({
+            embeds: [message],
+        });
     }
 }

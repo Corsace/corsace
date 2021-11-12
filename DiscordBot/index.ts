@@ -19,7 +19,9 @@ if (initialRun.getUTCHours() > 12)
 else
     targetRun.setUTCHours(12);
 
-discordClient.once("ready", () => setTimeout(mappoolFunctions.sheetTimer, targetRun.getTime() - Date.now()));
+discordClient.once("ready", () => {
+    setTimeout(mappoolFunctions.sheetTimer, targetRun.getTime() - Date.now());
+});
 
 createConnection(ormConnectionOptions)
     .then((connection) => {
