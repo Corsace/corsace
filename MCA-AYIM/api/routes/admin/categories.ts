@@ -13,10 +13,9 @@ adminCategoriesRouter.use(isLoggedInDiscord);
 adminCategoriesRouter.use(isCorsace);
 
 const validate: Middleware = async (ctx, next) => {
-    const req = ctx.request as any;
-    const categoryInfo = req.body.category;
+    const categoryInfo = ctx.request.body.category;
     const year: string = ctx.params.year;
-    const modeString: string = req.body.mode;
+    const modeString: string = ctx.request.body.mode;
 
     if (!categoryInfo.name)
         return ctx.body = { error: "Missing category name!" };
@@ -48,11 +47,11 @@ const validate: Middleware = async (ctx, next) => {
 
 // Endpoint for getting categories from a year
 adminCategoriesRouter.get("/:year/categories", async (ctx) => {
-    let year = ctx.params.year;
-    if (!year || !/20\d\d/.test(year))
+    const yearString = ctx.params.year;
+    if (!yearString || !/20\d\d/.test(yearString))
         return ctx.body = { error: "Invalid year given!" };
     
-    year = parseInt(year);
+    const year = parseInt(yearString);
 
     const categories = await Category.find({
         where: {
@@ -73,9 +72,8 @@ adminCategoriesRouter.get("/:year/categories", async (ctx) => {
 
 // Endpoint for creating a category
 adminCategoriesRouter.post("/:year/categories", validate, async (ctx) => {
-    const req = ctx.request as any;
-    const categoryInfo = req.body.category;
-    const filter: CategoryFilter = req.body.filter;
+    const categoryInfo = ctx.request.body.category;
+    const filter: CategoryFilter = ctx.request.body.filter;
 
     const category = categoryGenerator.createOrUpdate({
         ...categoryInfo,
@@ -92,9 +90,8 @@ adminCategoriesRouter.post("/:year/categories", validate, async (ctx) => {
 
 // Endpoint for updating a category
 adminCategoriesRouter.put("/:year/categories/:id", validate, async (ctx) => {
-    const req = ctx.request as any;
-    const categoryInfo = req.body.category;
-    const filter: CategoryFilter = req.body.filter;
+    const categoryInfo = ctx.request.body.category;
+    const filter: CategoryFilter = ctx.request.body.filter;
 
     const ID = parseInt(ctx.params.id, 10);
     let category = await Category.findOneOrFail({ ID });
@@ -113,11 +110,11 @@ adminCategoriesRouter.put("/:year/categories/:id", validate, async (ctx) => {
 
 // Endpoint for deleting a category
 adminCategoriesRouter.delete("/:year/categories/:id", async (ctx) => {
-    let categoryID = ctx.params.id;
-    if (!categoryID || !/\d+/.test(categoryID))
+    const categoryIDString = ctx.params.id;
+    if (!categoryIDString || !/\d+/.test(categoryIDString))
         return ctx.body = { error: "Invalid category ID given!" };
 
-    categoryID = parseInt(categoryID);
+    const categoryID = parseInt(categoryIDString);
 
     const category = await Category.findOne(categoryID);
     if (!category)

@@ -2,6 +2,7 @@ import Router from "@koa/router";
 import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
 import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
 import { StaffNomination } from "../../../../Interfaces/nomination";
+import { parseQueryParam } from "../../../../Server/utils/query";
 
 const staffNominationsRouter = new Router;
 
@@ -10,12 +11,12 @@ staffNominationsRouter.use(isStaff);
 
 // Endpoint for getting information for a category
 staffNominationsRouter.get("/", async (ctx) => {
-    let categoryID = ctx.query.category;
+    const categoryIDString = parseQueryParam(ctx.query.category);
     
-    if (!categoryID || !/\d+/.test(categoryID))
+    if (!categoryIDString || !/\d+/.test(categoryIDString))
         return ctx.body = { error: "Invalid category ID given!" };
 
-    categoryID = parseInt(categoryID);
+    const categoryID = parseInt(categoryIDString);
 
     const nominations = await Nomination
         .createQueryBuilder("nomination")
@@ -82,7 +83,7 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
     const nomination = await Nomination.findOneOrFail({
         ID: parseInt(nominationID),
     });
-    nomination.isValid = (ctx.request as any).body.isValid; 
+    nomination.isValid = ctx.request.body.isValid; 
     nomination.reviewer = ctx.state.user;
     nomination.lastReviewedAt = new Date;
     if (!nomination.isValid)
@@ -90,7 +91,7 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
     await nomination.save();
 
     ctx.body = {
-        isValid: (ctx.request as any).body.isValid,
+        isValid: ctx.request.body.isValid,
         reviewer: ctx.state.user.osu.username,
         lastReviewedAt: new Date,
     };

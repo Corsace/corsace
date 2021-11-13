@@ -88,7 +88,7 @@ guestRequestRouter.use(currentMCA);
 guestRequestRouter.post("/create", async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const user: User = ctx.state.user;
-    const res = await validateBody(user, mca.year, (ctx.request as any).body);
+    const res = await validateBody(user, mca.year, ctx.request.body);
 
     if ("error" in res) {
         return ctx.body = res;
@@ -118,7 +118,7 @@ guestRequestRouter.post("/:id/update", async (ctx) => {
         };
     }
     
-    const res = await validateBody(user, mca.year, (ctx.request as any).body, id);
+    const res = await validateBody(user, mca.year, ctx.request.body, id);
 
     if ("error" in res) {
         return ctx.body = res;

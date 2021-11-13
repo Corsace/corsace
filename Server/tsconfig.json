@@ -9,5 +9,8 @@
     },
     "files": [
         "index.ts"
+    ],
+    "include": [
+        "../Typing/passport.d.ts"
     ]
 }

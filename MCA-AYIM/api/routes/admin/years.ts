@@ -15,7 +15,7 @@ adminYearsRouter.use(isLoggedInDiscord);
 adminYearsRouter.use(isCorsace);
 
 const validate: Middleware = async (ctx, next) => {
-    const data = (ctx.request as any).body;
+    const data = ctx.request.body;
 
     if (!data.year) {
         return ctx.body = { error: "Missing year!" };
@@ -36,7 +36,7 @@ const validate: Middleware = async (ctx, next) => {
 
 // Endpoints for creating a year
 adminYearsRouter.post("/", validate, async (ctx) => {
-    const data = (ctx.request as any).body;
+    const data = ctx.request.body;
 
     let mca = await MCA.findOne(data.year);
     if (mca)
@@ -65,7 +65,7 @@ adminYearsRouter.post("/", validate, async (ctx) => {
 
 // Endpoints for updating a year
 adminYearsRouter.put("/:year", validate, async (ctx) => {
-    const data = (ctx.request as any).body;
+    const data = ctx.request.body;
 
     let mca = await MCA.findOneOrFail(data.year);    
     mca = await MCA.fillAndSave(data, mca);
@@ -82,22 +82,24 @@ adminYearsRouter.put("/:year", validate, async (ctx) => {
 
 // Endpoint for deleting a year
 adminYearsRouter.delete("/:year/delete", async (ctx) => {
-    let year = ctx.params.year;
-    if (!year || !/20\d\d/.test(year))
+    const yearStr = ctx.params.year;
+    if (!yearStr || !/20\d\d/.test(yearStr))
         return ctx.body = { error: "Invalid year given!" };
     
-    year = parseInt(year);
+    const year = parseInt(yearStr);
 
     try {
         const mca = await MCA.findOne({
-            year,
+            where: { year },
         });
         if (!mca)
             return ctx.body = { error: "This year doesn't exist!" };
 
         const categories = await Category.find({
-            mca: {
-                year,
+            where: {
+                mca: {
+                    year,
+                },
             },
         });
         for (const category of categories) {

@@ -9,7 +9,7 @@ import { UsernameChange } from "../Models/usernameChange";
 
 export function setupPassport () {
     // Setup passport
-    passport.serializeUser((user: User, done) => {
+    passport.serializeUser((user, done) => {
         done(null, user.ID);
     });
 

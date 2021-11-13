@@ -44,7 +44,7 @@ staffRequestsRouter.post("/:id/update", async (ctx) => {
         },
         relations: ["user", "mca"],
     });
-    request.status = (ctx.request as any).body.status;
+    request.status = ctx.request.body.status;
 
     if (request.status === RequestStatus.Accepted) {
         let eligibility = await MCAEligibility.findOne({

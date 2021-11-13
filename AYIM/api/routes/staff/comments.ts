@@ -5,6 +5,7 @@ import { validatePhaseYear } from "../../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { StaffComment } from "../../../../Interfaces/comment";
 import { Brackets } from "typeorm";
+import { parseQueryParam } from "../../../../Server/utils/query";
 
 const commentsReviewRouter = new Router();
 
@@ -14,7 +15,7 @@ commentsReviewRouter.use(isMCAStaff);
 commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
-    const skip = ctx.query.skip ? parseInt(ctx.query.skip) : 0;
+    const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) || "") : 0;
     const text = ctx.query.text ?? undefined;
     const query = UserComment
         .createQueryBuilder("userComment")
@@ -81,7 +82,7 @@ commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
 
 commentsReviewRouter.post("/:id/review", async (ctx) => {
     const comment = await UserComment.findOneOrFail(ctx.params.id);
-    comment.comment = (ctx.request as any).body.comment.trim();
+    comment.comment = ctx.request.body.comment.trim();
     comment.isValid = true;
     comment.reviewer = ctx.state.user;
     comment.lastReviewedAt = new Date();
