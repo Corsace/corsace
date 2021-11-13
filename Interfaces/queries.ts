@@ -9,12 +9,12 @@ export interface StageQuery {
 }
 
 export interface MapperQuery {
-    text: string;
-    skip: string;
+    text?: string;
+    skip?: string;
     year: string;
-    mode: string;
-    option: string;
-    notCommented: string;
-    friends: number[];
-    order: "ASC" | "DESC" | undefined;
+    mode?: string;
+    option?: string;
+    notCommented?: string;
+    friends?: number[];
+    order?: "ASC" | "DESC" | undefined;
 }

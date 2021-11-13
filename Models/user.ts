@@ -125,7 +125,7 @@ export class User extends BaseEntity {
             .where(`mca.year = :q`, { q: parseInt(query.year) });
 
         // Check mode
-        if (query.mode in ModeDivisionType) {
+        if (query.mode && query.mode in ModeDivisionType) {
             queryBuilder.andWhere(`mca.${query.mode} = true`);
         }
         
@@ -142,7 +142,7 @@ export class User extends BaseEntity {
         }
 
         // osu! friends list
-        if (query.friends?.length > 0)
+        if (query.friends && query.friends?.length > 0)
             queryBuilder.andWhere("user.osuUserid IN (" + query.friends.join(",") + ")");
 
         // Check for search text
@@ -164,7 +164,7 @@ export class User extends BaseEntity {
             
         // Search
         return queryBuilder
-            .skip(parseInt(query.skip))
+            .skip(parseInt(query.skip || "") || 0)
             .take(50)
             .orderBy(orderMethod, order)
             .getMany();
