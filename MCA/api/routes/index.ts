@@ -10,7 +10,7 @@ const indexRouter = new Router();
 const modeStaff = config.discord.roles.mca;
 
 indexRouter.get("/front", async (ctx) => {
-    if (await ctx.cashed())
+    if (await (ctx as any).cashed())
         return;
 
     const mca = await MCA.findOne(ctx.query.year);

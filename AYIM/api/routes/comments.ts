@@ -105,10 +105,10 @@ commentsRouter.get("/", async (ctx) => {
 });
 
 commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
-    const newComment: string = ctx.request.body.comment.trim();
-    const year: number = ctx.request.body.year;
-    const targetID: number = ctx.request.body.targetID;
-    const modeInput: string = ctx.request.body.mode;
+    const newComment: string = (ctx.request as any).body.comment.trim();
+    const year: number = (ctx.request as any).body.year;
+    const targetID: number = (ctx.request as any).body.targetID;
+    const modeInput: string = (ctx.request as any).body.mode;
     const modeID = ModeDivisionType[modeInput];
     const commenter: User = ctx.state.user;
     
@@ -178,7 +178,7 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
 });
 
 commentsRouter.post("/:id/update", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
-    const newComment: string = ctx.request.body.comment.trim();
+    const newComment: string = (ctx.request as any).body.comment.trim();
 
     if (!newComment) {
         return ctx.body = {

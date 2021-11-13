@@ -76,7 +76,7 @@ koa.use(async (ctx, next) => {
         }
 
         await next();
-    } catch (err) {
+    } catch (err: any) {
         console.log(err);
         
         ctx.status = err.status || 500;

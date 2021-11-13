@@ -13,9 +13,10 @@ adminCategoriesRouter.use(isLoggedInDiscord);
 adminCategoriesRouter.use(isCorsace);
 
 const validate: Middleware = async (ctx, next) => {
-    const categoryInfo = ctx.request.body.category;
+    const req = ctx.request as any;
+    const categoryInfo = req.body.category;
     const year: string = ctx.params.year;
-    const modeString: string = ctx.request.body.mode;
+    const modeString: string = req.body.mode;
 
     if (!categoryInfo.name)
         return ctx.body = { error: "Missing category name!" };
@@ -72,8 +73,9 @@ adminCategoriesRouter.get("/:year/categories", async (ctx) => {
 
 // Endpoint for creating a category
 adminCategoriesRouter.post("/:year/categories", validate, async (ctx) => {
-    const categoryInfo = ctx.request.body.category;
-    const filter: CategoryFilter = ctx.request.body.filter;
+    const req = ctx.request as any;
+    const categoryInfo = req.body.category;
+    const filter: CategoryFilter = req.body.filter;
 
     const category = categoryGenerator.createOrUpdate({
         ...categoryInfo,
@@ -90,8 +92,9 @@ adminCategoriesRouter.post("/:year/categories", validate, async (ctx) => {
 
 // Endpoint for updating a category
 adminCategoriesRouter.put("/:year/categories/:id", validate, async (ctx) => {
-    const categoryInfo = ctx.request.body.category;
-    const filter: CategoryFilter = ctx.request.body.filter;
+    const req = ctx.request as any;
+    const categoryInfo = req.body.category;
+    const filter: CategoryFilter = req.body.filter;
 
     const ID = parseInt(ctx.params.id, 10);
     let category = await Category.findOneOrFail({ ID });

@@ -15,7 +15,7 @@ adminYearsRouter.use(isLoggedInDiscord);
 adminYearsRouter.use(isCorsace);
 
 const validate: Middleware = async (ctx, next) => {
-    const data = ctx.request.body;
+    const data = (ctx.request as any).body;
 
     if (!data.year) {
         return ctx.body = { error: "Missing year!" };
@@ -36,7 +36,7 @@ const validate: Middleware = async (ctx, next) => {
 
 // Endpoints for creating a year
 adminYearsRouter.post("/", validate, async (ctx) => {
-    const data = ctx.request.body;
+    const data = (ctx.request as any).body;
 
     let mca = await MCA.findOne(data.year);
     if (mca)
@@ -65,7 +65,7 @@ adminYearsRouter.post("/", validate, async (ctx) => {
 
 // Endpoints for updating a year
 adminYearsRouter.put("/:year", validate, async (ctx) => {
-    const data = ctx.request.body;
+    const data = (ctx.request as any).body;
 
     let mca = await MCA.findOneOrFail(data.year);    
     mca = await MCA.fillAndSave(data, mca);

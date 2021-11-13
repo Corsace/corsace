@@ -82,7 +82,7 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
     const nomination = await Nomination.findOneOrFail({
         ID: parseInt(nominationID),
     });
-    nomination.isValid = ctx.request.body.isValid; 
+    nomination.isValid = (ctx.request as any).body.isValid; 
     nomination.reviewer = ctx.state.user;
     nomination.lastReviewedAt = new Date;
     if (!nomination.isValid)
@@ -90,7 +90,7 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
     await nomination.save();
 
     ctx.body = {
-        isValid: ctx.request.body.isValid,
+        isValid: (ctx.request as any).body.isValid,
         reviewer: ctx.state.user.osu.username,
         lastReviewedAt: new Date,
     };

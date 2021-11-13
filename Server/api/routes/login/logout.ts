@@ -4,8 +4,8 @@ import { isLoggedIn } from "../../../middleware";
 const logoutRouter = new Router();
 
 logoutRouter.get("/", isLoggedIn, async (ctx) => {
-    if (ctx.isAuthenticated()) {
-        await ctx.logout();
+    if ((ctx as any).isAuthenticated()) {
+        await (ctx as any).logout();
         ctx.redirect("back");
     } else {
         ctx.body = { error: "Unable to logout!" };

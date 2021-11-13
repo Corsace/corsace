@@ -26,7 +26,7 @@ resultsRouter.get("/:year?", validatePhaseYear, isResults, async (ctx) => {
 });
 
 resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => {
-    if (await ctx.cashed() && ctx.state.mca.currentPhase() === "results")
+    if (await (ctx as any).cashed() && ctx.state.mca.currentPhase() === "results")
         return;
 
     let categoryID = ctx.query.category;

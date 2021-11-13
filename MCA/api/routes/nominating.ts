@@ -50,10 +50,10 @@ nominatingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomina
 
 nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const category = await Category.findOneOrFail({
-        ID: ctx.request.body.categoryId,
+        ID: (ctx.request as any).body.categoryId,
     });
     const nominator: User = ctx.state.user;
-    const nomineeID: number = ctx.request.body.nomineeId;
+    const nomineeID: number = (ctx.request as any).body.nomineeId;
     
     if (!isEligibleFor(nominator, category.mode.ID, ctx.state.year))
         return ctx.body = { 

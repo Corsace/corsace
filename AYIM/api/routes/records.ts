@@ -38,7 +38,7 @@ function padLengthWithZero (lengthRecord: Record<string, any>): Record<string, a
 const recordsRouter = new Router();
 
 recordsRouter.get("/beatmapsets", async (ctx) => {
-    if (await ctx.cashed())
+    if (await (ctx as any).cashed())
         return;
 
     const year = parseInt(ctx.query.year || new Date().getUTCFullYear());
@@ -207,7 +207,7 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
 });
 
 recordsRouter.get("/mappers", async (ctx) => {
-    if (await ctx.cashed())
+    if (await (ctx as any).cashed())
         return;
 
     const year = parseInt(ctx.query.year || new Date().getUTCFullYear());

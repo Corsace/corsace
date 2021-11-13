@@ -45,7 +45,7 @@ function valueToFixed (record: any, digits = 2): any {
 }
 
 statisticsRouter.get("/beatmapsets", async (ctx) => {
-    if (await ctx.cashed())
+    if (await (ctx as any).cashed())
         return;
 
     const year = parseInt(ctx.query.year || new Date().getUTCFullYear());
@@ -350,7 +350,7 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
 });
 
 statisticsRouter.get("/mappers", async (ctx) => {
-    if (await ctx.cashed())
+    if (await (ctx as any).cashed())
         return;
 
     const year = parseInt(ctx.query.year || new Date().getUTCFullYear());

@@ -11,7 +11,7 @@ staffRouter.use(isStaff);
 
 // Endpoint to obtain current MCA and its info
 staffRouter.get("/:year", validatePhaseYear, async (ctx) => {
-    if (await ctx.cashed())
+    if (await (ctx as any).cashed())
         return;
 
     ctx.body = ctx.state.mca.getInfo();

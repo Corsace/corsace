@@ -50,9 +50,9 @@ votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), 
 }));
 
 votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
-    const nomineeId = ctx.request.body.nomineeId;
-    const categoryId = ctx.request.body.category;
-    const choice = ctx.request.body.choice;
+    const nomineeId = (ctx.request as any).body.nomineeId;
+    const categoryId = (ctx.request as any).body.category;
+    const choice = (ctx.request as any).body.choice;
 
     const category = await Category.findOneOrFail(categoryId);
     
@@ -164,7 +164,7 @@ votingRouter.delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, as
 });
 
 votingRouter.post("/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
-    const votesInput: Vote[] = ctx.request.body;
+    const votesInput: Vote[] = (ctx.request as any).body;
     const year: number = ctx.state.year;
     
     const votes = await Vote.createQueryBuilder("vote")

@@ -4,7 +4,7 @@ import { MCA } from "../../../Models/MCA_AYIM/mca";
 const mcaRouter = new Router();
 
 mcaRouter.get("/", async (ctx) => {
-    if (await ctx.cashed())
+    if (await (ctx as any).cashed())
         return;
 
     const mca = await MCA.findOne(ctx.query.year);
