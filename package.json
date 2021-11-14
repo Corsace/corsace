@@ -85,8 +85,8 @@
       "mca-dev": "cd ./MCA && nuxt-ts",
       "main-dev": "cd ./Main && nuxt-ts",
       "open-dev": "cd ./Open && nuxt-ts",
-      "api-dev": "cross-env NODE_ENV=development ts-node-dev --respawn Server/index.ts",
-      "discord-bot-dev": "cross-env NODE_ENV=development ts-node-dev --respawn DiscordBot/index.ts",
+      "api-dev": "cross-env NODE_ENV=development ts-node-dev --project Server/tsconfig.json --respawn Server/index.ts",
+      "discord-bot-dev": "cross-env NODE_ENV=development ts-node-dev --project DiscordBot/tsconfig.json --respawn DiscordBot/index.ts",
 
       "dev": "concurrently -n MCA,AYIM,MAIN,OPEN,API -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold,black.bgYellow.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\" \"npm:api-dev\"",
       "dev-client": "concurrently -n MCA,AYIM,MAIN,OPEN -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\"",
