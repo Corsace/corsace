@@ -5,6 +5,7 @@ import { Beatmapset } from "../../../Models/beatmapset";
 import { discordGuild } from "../../../Server/discord";
 import { config } from "node-config-ts";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
+import { parseQueryParam } from "../../../Server/utils/query";
 
 const indexRouter = new Router();
 const modeStaff = config.discord.roles.mca;
@@ -13,7 +14,7 @@ indexRouter.get("/front", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const mca = await MCA.findOne(ctx.query.year);
+    const mca = await MCA.findOne(parseQueryParam(ctx.query.year));
 
     if (!mca)
         return ctx.body = { error: "There is no MCA for this year currently!" };

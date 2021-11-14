@@ -47,34 +47,24 @@ export default async function mappoolSong (m: Message, isOpen: boolean) {
     if (m.attachments.size > 0 && link === "")
         link = m.attachments.first()!.url;
 
-    if (artist === "") {
-        const message = await m.channel.send("Missing artist");
-        await message.delete({timeout: 3000});
-        await m.delete({timeout: 3000});
-        return;
-    }
-    if (title === "") {
-        const message = await m.channel.send("Missing title");
-        await message.delete({timeout: 3000});
-        await m.delete({timeout: 3000});
-        return;
-    }
-    if (bpm === "") {
-        const message = await m.channel.send("Missing BPM");
-        await message.delete({timeout: 3000});
-        await m.delete({timeout: 3000});
-        return;
-    }
-    if (length === "") {
-        const message = await m.channel.send("Missing length");
-        await message.delete({timeout: 3000});
-        await m.delete({timeout: 3000});
-        return;
-    }
-    if (link === "") {
-        const message = await m.channel.send("Missing link");
-        await message.delete({timeout: 3000});
-        await m.delete({timeout: 3000});
+    let missing = "";
+    if (artist === "")
+        missing += " artist,";
+    if (title === "")
+        missing += " title,";
+    if (bpm === "")
+        missing += " BPM,";
+    if (length === "")
+        missing += " length,";
+    if (link === "")
+        missing += " link,";
+
+    if (missing !== "") {
+        const message = await m.channel.send(`Missing${missing.substring(0, missing.lastIndexOf(","))}`);
+        setTimeout(() => {
+            message.delete();
+            m.delete();
+        }, 5000);
         return;
     }
 
@@ -85,8 +75,10 @@ export default async function mappoolSong (m: Message, isOpen: boolean) {
     } catch (e) {
         if (e) {
             const message = await m.channel.send(`An error occurred.\n${e}`);
-            await message.delete({timeout: 3000});
-            await m.delete({timeout: 3000});
+            setTimeout(() => {
+                message.delete();
+                m.delete();
+            }, 5000);
             return;
         }
     }

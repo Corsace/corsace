@@ -46,7 +46,7 @@ async function command (m: Message) {
             return;
         }
 
-        for (const message of prevMessages.array()) {
+        for (const message of prevMessages.toJSON()) {
             // Look at the message's embed in case
             if (message.embeds.length > 0) {
                 if (message.embeds[0].url && beatmapRegex.test(message.embeds[0].url)) {
@@ -118,7 +118,7 @@ async function command (m: Message) {
 
     const message = await beatmapEmbed(beatmap, mods, set, misses);
     msg.delete();
-    m.channel.send(message);
+    m.channel.send({ embeds: [message] });
 }
 
 const beatmap: Command = {

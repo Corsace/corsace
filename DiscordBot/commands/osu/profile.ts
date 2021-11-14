@@ -79,7 +79,7 @@ async function command (m: Message) {
         },
     };
     const message = new MessageEmbed(embedMsg);
-    m.channel.send(message);
+    m.channel.send({ embeds: [message] });
 }
 
 const profile: Command = {

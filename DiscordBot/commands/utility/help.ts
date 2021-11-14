@@ -1,5 +1,4 @@
 import { Message, MessageEmbed } from "discord.js";
-import { config } from "node-config-ts";
 import { Command, commands } from "..";
 import { discordClient } from "../../../Server/discord";
 
@@ -37,7 +36,7 @@ async function command (m: Message) {
         }
     }
 
-    await m.channel.send(embed);
+    await m.channel.send({ embeds: [embed] });
 }
 
 const help: Command = {

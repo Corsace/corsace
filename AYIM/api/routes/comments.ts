@@ -7,6 +7,7 @@ import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { FindConditions } from "typeorm";
 import { isLoggedIn } from "../../../Server/middleware";
+import { parseQueryParam } from "../../../Server/utils/query";
 
 async function canComment (ctx: ParameterizedContext, next: Next): Promise<any> {
     if (!ctx.state.user.canComment) {
@@ -44,9 +45,9 @@ commentsRouter.get("/", async (ctx) => {
             error: "No user ID provided!",
         };
 
-    const userId = parseInt(ctx.query.user);
-    const year = parseInt(ctx.query.year || new Date().getUTCFullYear());
-    const modeString: string = ctx.query.mode || "standard";
+    const userId = parseInt(parseQueryParam(ctx.query.user) || "");
+    const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
+    const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
     const modeID = ModeDivisionType[modeString];
 
     if (year === 2020) {

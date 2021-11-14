@@ -6,6 +6,7 @@ import { isResults, validatePhaseYear } from "../../../MCA-AYIM/api/middleware";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
+import { parseQueryParam } from "../../../Server/utils/query";
 
 const resultsRouter = new Router();
 
@@ -29,12 +30,12 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
     if (await ctx.cashed() && ctx.state.mca.currentPhase() === "results")
         return;
 
-    let categoryID = ctx.query.category;
+    const categoryIDString = parseQueryParam(ctx.query.category);
     
-    if (!categoryID || !/\d+/.test(categoryID))
+    if (!categoryIDString || !/\d+/.test(categoryIDString))
         return ctx.body = { error: "Invalid category ID given!" };
 
-    categoryID = parseInt(categoryID);
+    const categoryID = parseInt(categoryIDString);
 
     const category = await Category
         .createQueryBuilder("category")
@@ -158,7 +159,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
         results = (results as BeatmapResult[]).filter(result => ids.some(id => result.id === id));
     }
     if (ctx.query.text) {
-        const text: string = ctx.query.text.toLowerCase();
+        const text: string = parseQueryParam(ctx.query.text)!.toLowerCase();
         if (category.type === CategoryType.Beatmapsets)
             results = (results as BeatmapResult[]).filter(result => result.artist.toLowerCase().includes(text) || result.title.toLowerCase().includes(text) || result.hoster.toLowerCase().includes(text) || result.id.toString().toLowerCase().includes(text));
         else if (category.type === CategoryType.Users)

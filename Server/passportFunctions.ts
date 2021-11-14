@@ -9,7 +9,7 @@ import { UsernameChange } from "../Models/usernameChange";
 
 export function setupPassport () {
     // Setup passport
-    passport.serializeUser((user: User, done) => {
+    passport.serializeUser((user, done) => {
         done(null, user.ID);
     });
 
@@ -68,7 +68,7 @@ export async function discordPassport (accessToken: string, refreshToken: string
         user.lastLogin = user.discord.lastVerified = new Date;
 
         done(null, user);
-    } catch(error) {
+    } catch(error: any) {
         console.log("Error while authenticating user via Discord", error);
         done(error, undefined);
     }
@@ -114,7 +114,7 @@ export async function osuPassport (accessToken: string, refreshToken: string, pr
         user.osu.lastVerified = user.lastLogin = new Date;
 
         done(null, user);
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error while authenticating user via osu!", error);
         done(error, undefined);
     }

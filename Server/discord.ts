@@ -1,7 +1,17 @@
-import { Client, Guild, GuildMember } from "discord.js";
+import { Intents, Client, Guild, GuildMember } from "discord.js";
 import { config } from "node-config-ts";
 
-const discordClient = new Client;
+// Add more later as needed
+// TODO: See which intents are required after (most) commands are imported from Maquia
+const discordClient = new Client({ 
+    intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MEMBERS,
+        Intents.FLAGS.GUILD_BANS,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.DIRECT_MESSAGES,
+    ],
+});
 
 discordClient.login(config.discord.token).catch(err => {
     if (err) throw err;
@@ -21,8 +31,8 @@ async function getMember (ID: string): Promise<GuildMember | undefined> {
     let member: GuildMember | undefined;
     try {
         member = await (await discordGuild()).members.fetch(ID);
-    } catch (e) {
-        if (e.code === 10007 || e.code === 404)
+    } catch (e: any) {
+        if (e.code && (e.code === 10007 || e.code === 404))
             member = undefined;
         else
             throw e;

@@ -142,7 +142,10 @@ async function command (m: Message) {
         message.footer =  { text: `Try #${attempt} | ` };
     }
     message.footer.text += timeSince(score.date, new Date());
-    m.channel.send(warning, {embed: message});
+    m.channel.send({ 
+        content: warning, 
+        embeds: [message],
+    });
 }
 
 const recent: Command = {

@@ -11,6 +11,7 @@ Install node-modules:
 ```
 npm i
 ```
+**Note: Please ensure that your node version is 16.6.0 or higher in order to use any of the discord features in this repository.**
 
 ## Getting Started
 
@@ -147,9 +148,11 @@ https://discordapp.com/oauth2/authorize?&client_id=<CLIENT ID>&scope=bot&permiss
 ```
 Follow this link to add your bot to your server.
 
-###### Bot Token
+###### Bot
 Head to the Bot section of the bot and copy your bot token. 
 Paste it into `config.discord.token`
+
+Ensure you enable the `Server Members` and `Message Content` intents under the **Privileged Gateway Intents** subsection before usage, the bot will not start otherwise, and you will be provided a `[DISALLOWED INTENTS]` error.
 
 #### Development
 

@@ -4,6 +4,7 @@ import { BeatmapsetRecord, MapperRecord } from "../../../Interfaces/records";
 import { Beatmap } from "../../../Models/beatmap";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { parseQueryParam } from "../../../Server/utils/query";
 
 function mapBeatmapsetRecord (response: Record<string, any>): BeatmapsetRecord[] {
     return response.map(res => ({
@@ -41,8 +42,8 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const year = parseInt(ctx.query.year || new Date().getUTCFullYear());
-    const modeString: string = ctx.query.mode || "standard";
+    const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
+    const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
     const modeId = ModeDivisionType[modeString];
 
     const [
@@ -210,8 +211,8 @@ recordsRouter.get("/mappers", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const year = parseInt(ctx.query.year || new Date().getUTCFullYear());
-    const modeString: string = ctx.query.mode || "standard";
+    const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
+    const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
     const modeId = ModeDivisionType[modeString];
 
     const [

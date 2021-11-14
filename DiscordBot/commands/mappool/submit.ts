@@ -117,9 +117,9 @@ async function command (m: Message) {
     } finally {
         waiting.delete();
         if (message)
-            message.delete({timeout: 5000});
+            setTimeout(() => message!.delete(), 5000);
         if (!success)
-            m.delete({timeout: 5000});
+            setTimeout(() => m.delete(), 5000);
         else
             m.react("✅");
     }

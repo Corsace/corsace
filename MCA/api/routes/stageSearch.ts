@@ -11,6 +11,7 @@ import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { User } from "../../../Models/user";
 import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
+import { parseQueryParam } from "../../../Server/utils/query";
 
 export default function stageSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
     return async (ctx: ParameterizedContext) => {
@@ -33,12 +34,10 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             .getOneOrFail();
     
         // Obtain mode and amount to skip
-        const modeString: string = ctx.query.mode || "standard";
+        const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
         const modeId = ModeDivisionType[modeString];
     
-        let skip = 0;
-        if (/\d+/.test(ctx.query.skip))
-            skip = parseInt(ctx.query.skip);
+        const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
         
         // Check if this is the initial call, add currently nominated beatmaps/users at the top of the list
         if (skip === 0) {
@@ -102,13 +101,19 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
 
         }
 
+        const order = parseQueryParam(ctx.query.order);
+        if (order !== undefined && order !== "ASC" && order !== "DESC")
+            return ctx.body = {
+                error: "order must be undefined, ASC or DESC",
+            };
+
         let count = 0;
         const query: StageQuery = {
             category: category.ID,
             skip,
-            option: ctx.query.option,
-            order: ctx.query.order,
-            text: ctx.query.text,
+            option: parseQueryParam(ctx.query.option) || "",
+            order,
+            text: parseQueryParam(ctx.query.text) || "",
             favourites: favIDs,
             played: playedIDs,
         };

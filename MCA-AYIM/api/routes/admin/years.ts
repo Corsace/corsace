@@ -82,22 +82,24 @@ adminYearsRouter.put("/:year", validate, async (ctx) => {
 
 // Endpoint for deleting a year
 adminYearsRouter.delete("/:year/delete", async (ctx) => {
-    let year = ctx.params.year;
-    if (!year || !/20\d\d/.test(year))
+    const yearStr = ctx.params.year;
+    if (!yearStr || !/20\d\d/.test(yearStr))
         return ctx.body = { error: "Invalid year given!" };
     
-    year = parseInt(year);
+    const year = parseInt(yearStr);
 
     try {
         const mca = await MCA.findOne({
-            year,
+            where: { year },
         });
         if (!mca)
             return ctx.body = { error: "This year doesn't exist!" };
 
         const categories = await Category.find({
-            mca: {
-                year,
+            where: {
+                mca: {
+                    year,
+                },
             },
         });
         for (const category of categories) {

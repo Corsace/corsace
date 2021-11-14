@@ -9,5 +9,11 @@
     },
     "files": [
         "index.ts"
-    ]
+    ],
+    "include": [
+        "../Typing/passport.d.ts"
+    ],
+    "ts-node": {
+        "files": true
+    }
 }

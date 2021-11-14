@@ -3,6 +3,7 @@ import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
 import { Vote } from "../../../../Models/MCA_AYIM/vote";
 import { StaffVote } from "../../../../Interfaces/vote";
 import { MoreThan, Not } from "typeorm";
+import { parseQueryParam } from "../../../../Server/utils/query";
 
 const staffVotesRouter = new Router;
 
@@ -11,12 +12,12 @@ staffVotesRouter.use(isStaff);
 
 // Endpoint for getting information for a category
 staffVotesRouter.get("/", async (ctx) => {
-    let categoryID = ctx.query.category;
+    const categoryIDString = parseQueryParam(ctx.query.category);
     
-    if (!categoryID || !/\d+/.test(categoryID))
+    if (!categoryIDString || !/\d+/.test(categoryIDString))
         return ctx.body = { error: "Invalid category ID given!" };
 
-    categoryID = parseInt(categoryID);
+    const categoryID = parseInt(categoryIDString);
 
     const votes = await Vote
         .createQueryBuilder("vote")
@@ -102,10 +103,12 @@ staffVotesRouter.delete("/:id/:user", async (ctx) => {
     });
 
     const otherUserVotes = await Vote.find({
-        ID: Not(ctx.params.id),
-        voter: ctx.params.user,
-        category: vote.category,
-        choice: MoreThan(vote.choice),
+        where: {
+            ID: Not(ctx.params.id),
+            voter: ctx.params.user,
+            category: vote.category,
+            choice: MoreThan(vote.choice),
+        },
     });
 
     await vote.remove();

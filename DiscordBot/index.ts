@@ -9,7 +9,7 @@ import mappoolFunctions from "./functions/mappoolFunctions";
 // Discord event handlers
 discordClient.on("guildMemberAdd", guildMemberAdd);
 discordClient.on("guildMemberRemove", guildMemberRemove);
-discordClient.on("message", messageCreate);
+discordClient.on("messageCreate", messageCreate);
 
 // Setup timer for sheet query
 const initialRun = new Date();
@@ -19,7 +19,9 @@ if (initialRun.getUTCHours() > 12)
 else
     targetRun.setUTCHours(12);
 
-discordClient.once("ready", () => setTimeout(mappoolFunctions.sheetTimer, targetRun.getTime() - Date.now()));
+discordClient.once("ready", () => {
+    setTimeout(mappoolFunctions.sheetTimer, targetRun.getTime() - Date.now());
+});
 
 createConnection(ormConnectionOptions)
     .then((connection) => {

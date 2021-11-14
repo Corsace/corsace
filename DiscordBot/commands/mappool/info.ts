@@ -49,7 +49,7 @@ async function command (m: Message) {
                     inline: true,
                 });
         }
-        m.channel.send(embed);
+        m.channel.send({ embeds: [embed] });
     } finally {
         waiting.delete();
     }

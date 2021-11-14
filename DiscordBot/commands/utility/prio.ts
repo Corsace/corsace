@@ -64,7 +64,7 @@ async function command (m: Message) {
         });
     }
 
-    m.channel.send(embed);
+    m.channel.send({ embeds: [embed] });
 }
 
 const prio: Command = {

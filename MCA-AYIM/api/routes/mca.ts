@@ -1,5 +1,6 @@
 import Router from "@koa/router";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
+import { parseQueryParam } from "../../../Server/utils/query";
 
 const mcaRouter = new Router();
 
@@ -7,7 +8,7 @@ mcaRouter.get("/", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const mca = await MCA.findOne(ctx.query.year);
+    const mca = await MCA.findOne(parseQueryParam(ctx.query.year));
 
     if (mca)
         ctx.body = mca;
