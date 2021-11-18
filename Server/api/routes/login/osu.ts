@@ -32,8 +32,10 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
             ctx.login(user);
             await next();
         } else {
-            ctx.status = 400;
-            ctx.body = { error: err };
+            const redirect = ctx.cookies.get("redirect");
+            ctx.cookies.set("redirect", "");
+            ctx.redirect(redirect ?? "back");
+            return;
         }
     })(ctx, next);
 }, async (ctx, next) => {

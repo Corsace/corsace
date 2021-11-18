@@ -56,8 +56,10 @@ discordRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
             ctx.cookies.set("redirect", "");
             ctx.redirect(redirect ?? "back");
         } else {
-            ctx.status = 400;
-            ctx.body = { error: err.message };
+            const redirect = ctx.cookies.get("redirect");
+            ctx.cookies.set("redirect", "");
+            ctx.redirect(redirect ?? "back");
+            return;
         }
     })(ctx, next);
 });
