@@ -1,17 +1,19 @@
 import { UserOpenInfo } from "./user";
-import { QualifierLobby } from "./qualifier";
-export interface TeamInfo {
-    id: number;
-    name: string;
-    captain: number;
-    averageBWS: number;
-    averagePp: number;
-    teamAvatarUrl: string;
-    slug: string;
-    seed: "A" | "B" | "C" | "D" | null;
-    rank: number;
-    members: UserOpenInfo[] ;
-    qualifier?: QualifierLobby | null;
-}
 
-export const nameFilter = /(nigg|fa?gg?o?t|retard|coon|pedo|gay|lesbian|fuck|sex|penis|vag)/i;
+export interface TeamInfo {
+    ID: number;
+    creation: Date;
+    name: string;
+    slug: string;
+    captain: number;
+    teamAvatarUrl: string;
+    membersAmount: number;
+    isEligible: boolean;
+    isFull: boolean;
+    qualifier: Date | null; 
+    averageBWS: number;
+    rank: number | null;
+    seed: "A" | "B" | "C" | "D" | null;
+    members?: UserOpenInfo[];
+    role: string;
+}

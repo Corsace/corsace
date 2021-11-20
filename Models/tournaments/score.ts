@@ -1,10 +1,10 @@
-import { Entity, BaseEntity, PrimaryColumn, Column, ManyToOne, OneToMany } from "typeorm";
+import { Entity, BaseEntity, PrimaryColumn, Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Team } from "../team";
 import { User } from "../user";
 
 @Entity()
 export class Score extends BaseEntity {
-    @PrimaryGeneratedcolumn()
+    @PrimaryGeneratedColumn()
     ID!: number;
 
     @Column()
