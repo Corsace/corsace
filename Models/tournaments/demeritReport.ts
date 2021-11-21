@@ -1,5 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
-import { User } from "./user";
+import { User } from "../user";
 
 @Entity()
 export class DemeritReport extends BaseEntity {

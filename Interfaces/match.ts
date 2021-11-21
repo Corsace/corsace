@@ -1,5 +1,66 @@
 import { Team } from "discord.js";
-import { MappoolMap } from "./mappool";
+import { BracketInfo } from "./bracket";
+import { GroupInfo } from "./group";
+import { MappoolBeatmapInfo } from "./mappool";
+import { StageInfo } from "./stage";
+import { TeamInfo } from "./team";
+import { UserInfo } from "./user";
+
+export interface MatchPlayInfo {
+    ID: number,
+    user: UserInfo,
+    score: number,
+    mods: string,
+    misses: number,
+    combo: number,
+    accuracy: number,
+    FC: boolean,
+    fail: boolean,
+}
+
+export interface MatchBeatmapInfo {
+    ID: number,
+    status: PickStatus,
+    beatmap: MappoolBeatmapInfo,
+    match?: MatchInfo,
+    set?: MatchSetInfo,
+    scores?: MatchPlayInfo[],
+    winner?: TeamInfo,
+}
+
+export interface MatchSetInfo {
+    ID: number;
+    match: MatchInfo,
+    winner?: TeamInfo,
+    beatmaps?: MatchBeatmapInfo[],
+    teamAScore: number,
+    teamBScore: number,
+}
+
+export interface MatchInfo {
+    ID: number,
+    matchID: string,
+    time: Date,
+    bracket?: BracketInfo,
+    group?: GroupInfo,
+    teamA?: TeamInfo,
+    teamB?: TeamInfo,
+    teamAScore: number,
+    teamBScore: number,
+    first?: TeamInfo,
+    winner?: TeamInfo,
+    sets?: MatchSetInfo[],
+    beatmaps?: MatchBeatmapInfo[],
+    forfeit: boolean,
+    potential: boolean,
+    referee?: UserInfo,
+    commentators?: UserInfo[],
+    streamer?: UserInfo,
+    twitch?: string,
+    mp?: number,
+}
+
+
 
 export enum PickStatus {
     picked,
@@ -96,29 +157,5 @@ export function modsToString (m: Mods): string {
         stringBuilder = stringBuilder.replace("SD", "");
 
     return stringBuilder;
-}
-
-export interface Match {
-    bestOf: number
-    mp?: string
-    matchID: string
-    id: string
-    sets: MatchSet[]
-    bans: MatchMap[]
-    time: Date
-    teamA: Team
-    teamB: Team
-    first?: Team
-}
-
-export interface MatchSet {
-    bans: MatchMap[]
-    picks: MatchMap[]
-}
-
-export interface MatchMap {
-    map: MappoolMap
-    mapMod: "NM" | "HD" | "HR" | "DT" | "FM" | "TB"
-    mapPosition: number
 }
 

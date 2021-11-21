@@ -1,5 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, ManyToOne, OneToOne, JoinColumn, Index, ManyToMany } from "typeorm";
-import { DemeritReport } from "./demeritReport";
+import { DemeritReport } from "./tournaments/demeritReport";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
 import { UserComment } from "./MCA_AYIM/userComments";
@@ -16,7 +16,7 @@ import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Team } from "./tournaments/team";
 import { Match } from "./tournaments/match";
-import { TeamInvitation } from "./teamInvitation";
+import { TeamInvitation } from "./tournaments/teamInvitation";
 import { MatchPlay } from "./tournaments/matchPlay";
 import { Qualifier } from "./tournaments/qualifier";
 import { Badge } from "./badge";
@@ -351,8 +351,8 @@ export class User extends BaseEntity {
         if (this.discord?.userID)
             member = await getMember(this.discord.userID);
         const openInfo: UserOpenInfo = await this.getInfo(member) as UserOpenInfo;
-        openInfo.invites = this.invitations;
-        openInfo.team = this.team;
+        openInfo.invites = this.invitations ? await Promise.all(this.invitations.map((invitation) => invitation.getInfo())) : null;
+        openInfo.team = this.team ? await this.team.getInfo() : null;
         if (member)
             openInfo.openStaff = {
                 scheduler: member.roles.cache.has(config.discord.roles.corsace.scheduler),

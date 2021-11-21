@@ -1,3 +1,6 @@
+import { MatchBeatmapInfo } from "./match";
+import { QualifierInfo } from "./qualifier";
+
 export enum ModSlots {
     NM,
     HD,
@@ -13,25 +16,21 @@ export interface ModGroup {
 }
 
 export interface MappoolInfo {
-    name: string
-    mappack: string
-    sheet: string
-    modGroups: ModGroup[]
-    length: number //check
-    slug: string
+    ID: number,
+    name: string,
+    tournament: TournamentInfo, 
+    beatmaps: MappoolBeatmapInfo,
+    brakcet: BracketInfo,
+    groups: GroupInfo[], 
+    qualifiers: QualifierInfo[],
 
 }
 
-export interface MappoolMap {
-    setID?: string
-    mapID?: string
-    mod?: "NM" | "HD" | "HR" | "DT" | "FM" | "TB" 
-    name: string
-    style?: Record<string, any>
-    artist?: string
-    title?: string
-    difficulty?: string
-    time?: string
-    bpm?: number
-    stars?: number
+export interface MappoolBeatmapInfo {
+    ID: number,
+    mod: ModSlots,
+    slot: number,
+    mappool: MappoolInfo,
+    beatmap: BeatmapInfo, // ? 
+    matchBeatmaps: MatchBeatmapInfo,
 }

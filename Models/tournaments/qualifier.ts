@@ -1,9 +1,12 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Team } from "../team";
+import { Team } from "./team";
 import { User } from "../user";
 import { Mappool } from "./mappool";
 import { MatchPlay } from "./matchPlay";
 import { Tournament } from "./tournament";
+import { UserInfo } from "../../Interfaces/user";
+import { QualifierInfo } from "../../Interfaces/qualifier";
+import { QualifierPlay } from "./qualifierPlay";
 
 @Entity()
 export class Qualifier extends BaseEntity {
@@ -21,7 +24,7 @@ export class Qualifier extends BaseEntity {
     mappool!: Mappool;
 
     @OneToMany(() => MatchPlay, score => score.qualifier)
-    scores!: MatchPlay[];
+    scores?: QualifierPlay[];
 
     @Column({ nullable: true })
     mp?: number;
@@ -29,11 +32,25 @@ export class Qualifier extends BaseEntity {
     @ManyToOne(() => User, user => user.qualifiersReffed)
     referee?: User;
 
-    @Column()
+    @Column({ default: false })
     public!: boolean;
 
     @OneToMany(() => Team, team => team.qualifier, {
         nullable: true
     })
-    teams!: Team[];
+    teams?: Team[];
+
+    public getInfo = async function(this: Qualifier): Promise<QualifierInfo> {
+        const info: QualifierInfo = {
+            ID: this.ID,
+            teams: this.teams ? await Promise.all(this.teams.map((team) => team.getInfo())) : undefined,
+            scores: this.scores ? await Promise.all(this.scores.map((score) => score.getInfo())) : undefined,
+            time: this.time,
+            mp: this.mp ? this.mp : undefined,
+            referee: this.referee ? this.referee : undefined,
+            public: this.public,
+        };
+        return info;
+    };
+    
 }

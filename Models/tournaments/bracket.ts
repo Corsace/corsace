@@ -21,4 +21,14 @@ export class Bracket extends BaseEntity {
 
     @OneToMany(() => Match, match => match.bracket)
     matches!: Match[];
+
+    public getInfo = async function (this: Bracket) {
+        return {
+            ID: this.ID,
+            name: this.name,
+            tournament: await this.tournament.getInfo(),
+            mappool: await this.mappool.getInfo(),
+            matches: await Promise.all(this.matches.map((match) => match.getInfo()))
+        }
+    }
 }

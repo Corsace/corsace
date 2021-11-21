@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Phase } from "../phase";
-import { Team } from "../team";
+import { Team } from "./team";
 import { Mappool } from "./mappool";
 import { Bracket } from "./bracket";
 import { Group } from "./group";

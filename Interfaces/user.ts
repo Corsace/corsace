@@ -2,8 +2,8 @@ import { Beatmapset } from "./beatmap";
 import { Eligibility } from "./eligibility";
 import { GuestRequest } from "./requests";
 import { TeamInfo } from "./team";
-import { Invitation } from "./invitation";
 import { Team } from "../Models/tournaments/team";
+import { TeamInviteInfo } from "./teaminvite";
 
 export interface UserMCAInfo extends UserInfo {
     guestRequests: GuestRequest[];
@@ -18,8 +18,8 @@ export interface UserMCAInfo extends UserInfo {
 }
 
 export interface UserOpenInfo extends UserInfo {
-    invites: Invitation[];
-    team: Team | null;
+    invites?: TeamInviteInfo[];
+    team: TeamInfo | null;
     pickemPoints: number;
     rank: number;
     badges: number;

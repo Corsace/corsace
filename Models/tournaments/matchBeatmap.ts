@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { PickStatus } from "../../Interfaces/match";
-import { Team } from "../team";
+import { MatchBeatmapInfo, PickStatus } from "../../Interfaces/match";
+import { Team } from "./team";
 import { MappoolBeatmap } from "./mappoolBeatmap";
 import { Match } from "./match";
 import { MatchPlay } from "./matchPlay";
@@ -31,4 +31,18 @@ export class MatchBeatmap extends BaseEntity {
 
     @ManyToOne(() => Team, team => team.mapsWon)
     winner?: Team;
+
+    public getInfo = async function(this: MatchBeatmap): Promise<MatchBeatmapInfo> {
+        const infos: MatchBeatmapInfo = {
+            ID: this.ID,
+            status: this.status,
+            beatmap: await this.beatmap.getInfo(),
+            match: this.match ? await this.match.getInfo() : undefined,
+            set: this.set ? await this.set.getInfo() : undefined,
+            winner: this.status === PickStatus.picked && this.winner ? await this.winner.getInfo() : undefined,
+        }
+        return infos;
+    }
+    
+    
 }

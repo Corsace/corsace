@@ -1,10 +1,12 @@
-import { reject } from "lodash";
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany, MoreThan, MoreThanOrEqual, ManyToOne, OneToOne } from "typeorm";
+import { Match } from "./match";
 import { TeamInfo } from "../../Interfaces/team";
-import { UserOpenInfo } from "../../Interfaces/user";
 import { User } from "../user";
+import { MatchBeatmap } from "./matchBeatmap";
+import { MatchSet } from "./matchSet";
 import { Qualifier } from  "./qualifier";
 import { TeamInvite } from "./teamInvite";
+import { Tournament } from "./tournament";
 
 
 export const TEAM_ELIGIBLE_AMOUNT = 6;
@@ -40,19 +42,37 @@ export class Team extends BaseEntity {
     averageBWS!: number;
 
     @Column({ nullable: true })
-    rank!: number | null; //dunno if you are supposed to do this but TS stops crying if u do
+    rank!: number | null;
 
     @Column({ nullable: true})
     seed!: "A" | "B" | "C" | "D" | null;
 
     @OneToMany(() => User, user => user.team)
-    members?: User[];
+    members!: User[];
 
     @Column()
     role!: string;
 
     @Column({ default: 0 })
     demerits!: number
+
+    @ManyToOne(() => Tournament, tournament => tournament.teams)
+    tournament!: Tournament;
+
+    @ManyToMany(() => Match, match => match.teamA || match.teamB)
+    matches?: Match[];
+
+    @OneToMany(() => MatchBeatmap, map => map.winner)
+    mapsWon?: MatchBeatmap[]
+
+    @OneToMany(() => MatchSet, set => set.winner)
+    setsWon?: MatchSet[]
+
+    @OneToMany(() => Match, match => match.winner)
+    matchesWon?: Match[]
+
+    @OneToMany(() => Match, match => match.first)
+    matchesFirst?: Match[]
 
     public getCaptain = async function(this: Team): Promise<User | null> {
         const user = await User.findOne(this.captain)
@@ -124,7 +144,7 @@ export class Team extends BaseEntity {
             creation: this.creation,
             name: this.name,
             slug: this.slug,
-            captain: this.captain,
+            captain: await this.captain.getInfo(),
             teamAvatarUrl: this.teamAvatarUrl,
             membersAmount: this.membersAmount,
             isEligible: this.isEligible(),
@@ -133,8 +153,16 @@ export class Team extends BaseEntity {
             averageBWS: this.averageBWS,
             rank: this.rank,
             seed: this.getSeed(),
-            members: this.members,
+            members: await Promise.all(this.members.map((member) => member.getInfo())),
             role: this.role,
+            demerits: this.demerits,
+            tournament: await this.tournament.getInfo(),
+            matches: this.matches? await this.matches.getInfo() : undefined,
+            mapsWon: this.mapsWon ? await Promise.all(this.mapsWon.map((map) => map.getInfo())) : undefined,
+            setsWon: this.setsWon ? await Promise.all(this.setsWon.map((set) => set.getInfo())) : undefined,
+            matchesWon: this.matchesWon ? await Promise.all(this.matchesWon.map((match) => match.getInfo())) : undefined,
+            matchesFirst: this.matchesFirst ? await Promise.all(this.matchesFirst.map((match) => match.getInfo())) : undefined,
+
         };
         return info;
     };
@@ -149,7 +177,7 @@ export class Team extends BaseEntity {
     };
     
     public getQualifier = async function(this: Team): Promise<Date | null> {
-        const qualifier = await Qualifier.findOne({ where: {teams: this.ID } } );
+        const qualifier = await Qualifier.findOne(this.qualifier);
         if (!qualifier)
             return null;
         return qualifier.time;
@@ -169,20 +197,15 @@ export class Team extends BaseEntity {
     }
 
     public getTeamInvites = async function(this: Team): Promise<TeamInvite[]> {
-        return await TeamInvite.find({ where: {
-            team: this.ID,
-        }});
+        return await TeamInvite.find({ team: this });
     }
 
     public getPendingTeamInvites = async function(this: Team): Promise<TeamInvite[]> {
-        return await TeamInvite.find({ where: {
-            team: this.ID,
-            status: "PENDING",
-        }});
+        return await TeamInvite.find({ team: this, status: "PENDING" });
     }
 
     static getEligibleTeams = function(): Promise<Team[]> {
-        return Team.find( {where: { membersAmount: MoreThanOrEqual(TEAM_ELIGIBLE_AMOUNT) } } )
+        return Team.find( { membersAmount: MoreThanOrEqual(TEAM_ELIGIBLE_AMOUNT) } )
     }
 
     static computeBWS = async function(eligibleTeams?: Team[], save: boolean = true): Promise<Team[]> {

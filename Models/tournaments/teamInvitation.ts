@@ -1,7 +1,7 @@
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { RequestStatus } from "../Interfaces/requests";
+import { RequestStatus } from "../../Interfaces/requests";
 import { Team } from "./team";
-import { User } from "./user";
+import { User } from "../user";
 
 @Entity()
 export class TeamInvitation extends BaseEntity {
@@ -17,4 +17,6 @@ export class TeamInvitation extends BaseEntity {
 
     @Column({ type: "enum", enum: RequestStatus, default: RequestStatus.Pending })
     status!: RequestStatus;
+
+    
 }

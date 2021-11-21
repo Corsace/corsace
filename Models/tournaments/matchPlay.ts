@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { MatchPlayInfo } from "../../Interfaces/match";
 import { User } from "../user";
 import { MatchBeatmap } from "./matchBeatmap";
 import { Qualifier } from "./qualifier";
@@ -33,9 +34,24 @@ export class MatchPlay extends BaseEntity {
     @Column({ type: "float" })
     accuracy!: number;
 
-    @Column()
+    @Column({ default: false })
     FC!: boolean;
 
-    @Column()
+    @Column({ default: false })
     fail!: boolean;
+
+    public getInfo = async function(this: MatchPlay): Promise<MatchPlayInfo> {
+        return {
+            ID: this.ID,
+            user: await this.user.getInfo(),
+            score: this.score,
+            mods: this.mods,
+            misses: this.misses,
+            combo: this.combo,
+            accuracy: this.accuracy,
+            FC: this.FC,
+            fail: this.fail,
+        }
+    }
+    
 }

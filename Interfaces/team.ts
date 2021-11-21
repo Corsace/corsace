@@ -1,11 +1,12 @@
-import { User } from "../Models/user";
+import { MatchBeatmapInfo, MatchInfo, MatchSetInfo } from "./match";
+import { UserInfo } from "./user";
 
 export interface TeamInfo {
     ID: number;
     creation: Date;
     name: string;
     slug: string;
-    captain: User;
+    captain: UserInfo;
     teamAvatarUrl: string;
     membersAmount: number;
     isEligible: boolean;
@@ -14,6 +15,13 @@ export interface TeamInfo {
     averageBWS: number;
     rank: number | null;
     seed: "A" | "B" | "C" | "D" | null;
-    members?: User[];
+    members?: UserInfo[];
     role: string;
+    demerits: number,
+    tournament: TournamentInfo,
+    matches?: MatchInfo,
+    mapsWon?: MatchBeatmapInfo[],
+    setsWon?: MatchSetInfo[],
+    matchesWon?: MatchInfo[],
+    matchesFirst?: MatchInfo[],
 }

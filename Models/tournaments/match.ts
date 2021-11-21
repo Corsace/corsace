@@ -1,5 +1,6 @@
 import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Team } from "../team";
+import { MatchInfo } from "../../Interfaces/match";
+import { Team } from "./team";
 import { User } from "../user";
 import { Bracket } from "./bracket";
 import { Group } from "./group";
@@ -69,4 +70,53 @@ export class Match extends BaseEntity {
     @Column({ nullable: true })
     mp?: number;
 
+    public getInfo = async function(this: Match): Promise<MatchInfo> {
+        const info: MatchInfo = {
+            ID: this.ID,
+            matchID: this.matchID,
+            time: this.time,
+            bracket: this.bracket ? await this.bracket.getInfo(): undefined,
+            group: this.group? await this.group.getInfo(): undefined,
+            teamA: this.teamA ? await this.teamA.getInfo() : undefined,
+            teamB: this.teamB ? await this.teamB.getInfo() : undefined,
+            teamAScore: this.teamAScore,
+            teamBScore: this.teamBScore,
+            first: this.first ? await this.first.getInfo() : undefined,
+            winner: this.winner ? await this.winner.getInfo() : undefined,
+            sets: this.sets ? await Promise.all(await this.sets.map((set) => set.getInfo())) : undefined,
+            beatmaps: this.beatmaps ? await Promise.all(await this.beatmaps.map((map) => map.getInfo())) : undefined,
+            forfeit: this.forfeit,
+            potential: this.potential,
+            referee: this.referee ? await this.referee.getInfo() : undefined,
+            commentators: this.commentators ? await Promise.all(await this.commentators.map((commentator) => commentator.getInfo())) : undefined,
+            streamer: this.streamer ? await this.streamer.getInfo() : undefined,
+            twitch: this.twitch,
+            mp: this.mp,
+        };
+        return info;
+    };
+    
+
+    /*
+    whats this for
+    MatchSchema.methods.getCondensedInfos = async function(this: IMatch): Promise<IMatchInfos> {
+        const populatedMatch = await this.populate('teamA').populate('teamB').populate('winner').execPopulate()
+        const infos: IMatchInfos = {
+            id: this.id,
+            matchID: this.matchID,
+            date: this.date,
+            teamAName: this.teamA ? populatedMatch.teamA.name : undefined,
+            teamBName: this.teamB ? populatedMatch.teamB.name : undefined,
+            teamASlug: this.teamA ? populatedMatch.teamA.slug : undefined,
+            teamBSlug: this.teamB ? populatedMatch.teamB.slug : undefined,
+            winnerName: this.winner ? populatedMatch.winner.name : undefined,
+            bestOf: this.bestOf,
+            teamAScore: this.teamAScore,
+            teamBScore: this.teamBScore,
+            teamASetScores: this.sets.map((set) => set.teamAScore),
+            teamBSetScores: this.sets.map((set) => set.teamBScore),
+        } as IMatchInfos;
+        return infos;
+    };*/
+    
 }

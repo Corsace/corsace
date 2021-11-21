@@ -1,4 +1,5 @@
 import { BaseEntity, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { GroupInfo } from "../../Interfaces/group";
 import { Mappool } from "./mappool";
 import { Match } from "./match";
 import { Tournament } from "./tournament";
@@ -17,4 +18,15 @@ export class Group extends BaseEntity {
 
     @OneToMany(() => Match, match => match.group)
     matches!: Match[];
+
+    public getInfo = async function (this: Group) : Promise<GroupInfo> {
+        return { 
+            ID: this.ID,
+            tournament: await this.tournament.getInfo(),
+            mappool: await this.mappool.getInfo(),
+            matches: await Promise.all(this.matches.map((match) => match.getInfo()))
+        }
+    }
+
+
 }
