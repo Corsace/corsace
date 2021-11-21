@@ -1,9 +1,10 @@
 import { reject } from "lodash";
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany, MoreThan, MoreThanOrEqual } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany, MoreThan, MoreThanOrEqual, ManyToOne, OneToOne } from "typeorm";
 import { TeamInfo } from "../../Interfaces/team";
 import { UserOpenInfo } from "../../Interfaces/user";
 import { User } from "../user";
 import { Qualifier } from  "./qualifier";
+import { TeamInvite } from "./teamInvite";
 
 
 export const TEAM_ELIGIBLE_AMOUNT = 6;
@@ -23,8 +24,8 @@ export class Team extends BaseEntity {
     @Column()
     slug!: string;
 
-    @Column()
-    captain!: number;//COULD BE A STRING? AN OBJECT? DUNNO
+    @OneToOne(() => User, user => user.teamCaptain)
+    captain!: User;
 
     @Column({ nullable: true, default: null })
     teamAvatarUrl!: string;
@@ -32,8 +33,8 @@ export class Team extends BaseEntity {
     @Column({ default: 1 })
     membersAmount!: number;
 
-    @Column()
-    qualifier!: Date;
+    @ManyToOne(() => Qualifier, qualifier => qualifier.teams)
+    qualifier!: Qualifier;
 
     @Column()
     averageBWS!: number;
@@ -44,9 +45,7 @@ export class Team extends BaseEntity {
     @Column({ nullable: true})
     seed!: "A" | "B" | "C" | "D" | null;
 
-    @OneToMany(() => User, user => user.team, {
-        nullable: false,
-    })
+    @OneToMany(() => User, user => user.team)
     members?: User[];
 
     @Column()
@@ -55,10 +54,8 @@ export class Team extends BaseEntity {
     @Column({ default: 0 })
     demerits!: number
 
-
-
     public getCaptain = async function(this: Team): Promise<User | null> {
-        const user = await User.findOne({ where: {ID: this.captain}})
+        const user = await User.findOne(this.captain)
         if (!user)
             return null;
         // temp
@@ -66,7 +63,7 @@ export class Team extends BaseEntity {
     }
 
     public getMembers = async function(this: Team, allMembers?: User[]): Promise<User[]> {
-        return allMembers ? allMembers.filter((m) => m.team && m.team.toString() === this.ID.toString()) : await User.find({ where: {team: this.ID }});
+        return allMembers ? allMembers.filter((m) => m.team && m.team === this) : await User.find({team: this});
     }
 
     /*
@@ -121,13 +118,13 @@ export class Team extends BaseEntity {
         return this.rank;
     };
     
-    public getInfo = async function(this: Team, populateMembers = false, allMembers: User[]) {
+    public getInfo = async function(this: Team): Promise<TeamInfo> {
         const info: TeamInfo = {
             ID: this.ID,
             creation: this.creation,
             name: this.name,
             slug: this.slug,
-            captain: this.captain as number,
+            captain: this.captain,
             teamAvatarUrl: this.teamAvatarUrl,
             membersAmount: this.membersAmount,
             isEligible: this.isEligible(),
@@ -136,14 +133,9 @@ export class Team extends BaseEntity {
             averageBWS: this.averageBWS,
             rank: this.rank,
             seed: this.getSeed(),
+            members: this.members,
             role: this.role,
         };
-        if(populateMembers) {
-            //figure this out later lol
-            const memberInfos = (await Promise.all((await this.getMembers(allMembers)).map((member) => member.getInfo(false, false, false)))).sort((a, b) => Math.pow(a.rank, Math.pow(0.9937, Math.pow(a.badges, 2))) - Math.pow(b.rank, Math.pow(0.9937, Math.pow(b.badges, 2))));
-            const captainInfos = memberInfos.splice(memberInfos.findIndex((m) => m.ID == this.captain), 1)[0];
-            info.members = [captainInfos, ...memberInfos];
-        }
         return info;
     };
     

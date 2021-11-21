@@ -3,6 +3,7 @@ import { Eligibility } from "./eligibility";
 import { GuestRequest } from "./requests";
 import { TeamInfo } from "./team";
 import { Invitation } from "./invitation";
+import { Team } from "../Models/tournaments/team";
 
 export interface UserMCAInfo extends UserInfo {
     guestRequests: GuestRequest[];
@@ -18,7 +19,7 @@ export interface UserMCAInfo extends UserInfo {
 
 export interface UserOpenInfo extends UserInfo {
     invites: Invitation[];
-    team: TeamInfo | null;
+    team: Team | null;
     pickemPoints: number;
     rank: number;
     badges: number;

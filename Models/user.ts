@@ -14,7 +14,7 @@ import { UserChoiceInfo, UserInfo, UserMCAInfo, UserOpenInfo } from "../Interfac
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
-import { Team } from "./team";
+import { Team } from "./tournaments/team";
 import { Match } from "./tournaments/match";
 import { TeamInvitation } from "./teamInvitation";
 import { MatchPlay } from "./tournaments/matchPlay";
@@ -72,7 +72,7 @@ export class User extends BaseEntity {
     })
     invitations?: TeamInvitation[];
 
-    @ManyToOne(() => Team, team => team.players)
+    @ManyToOne(() => Team, team => team.members)
     team?: Team;
 
     @OneToOne(() => Team, team => team.captain)
