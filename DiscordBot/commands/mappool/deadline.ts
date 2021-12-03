@@ -25,11 +25,7 @@ async function command (m: Message) {
         const parts = m.content.toLowerCase().replace(pool, "").replace(slot, "").replace(round, "").replace(deadlineType, "").trim().split(" ");
         parts.shift();
         const deadline = new Date(parts.join(" ").trim());
-        if (isNaN(deadline.getDate())) {
-            m.channel.send(`**${parts.join(" ").trim()}** is an invalid date.\nPlease add the date **after** the slot`);
-            return;
-        }
-        if (deadline.getUTCFullYear() < new Date().getUTCFullYear())
+        if (!isNaN(deadline.getDate()) && deadline.getUTCFullYear() < new Date().getUTCFullYear())
             deadline.setUTCFullYear(new Date().getUTCFullYear());
 
         // Get pool data and iterate thru
@@ -41,8 +37,13 @@ async function command (m: Message) {
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
             if (slot.toLowerCase() === row[0].toLowerCase()) {
-                await updatePoolRow(pool, `'${round}'!${deadlineType === "map" ? "N" : "M"}${i + 2}`, [ deadline.toDateString() ]);
-                m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** now has a **${deadlineType} deadline** for ${deadline.toDateString()}\nMapper will be pinged every 12 hours for the last 3 days before deadline.`);
+                if (isNaN(deadline.getDate())) {
+                    await updatePoolRow(pool, `'${round}'!${deadlineType === "map" ? "N" : "M"}${i + 2}`, [ "" ]);
+                    m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** now has its **${deadlineType} deadline** removed.`);
+                } else {
+                    await updatePoolRow(pool, `'${round}'!${deadlineType === "map" ? "N" : "M"}${i + 2}`, [ deadline.toDateString() ]);
+                    m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** now has a **${deadlineType} deadline** for ${deadline.toDateString()}\nMapper will be pinged every 12 hours for the last 3 days before deadline.`);
+                }
                 return;
             }
         }
@@ -54,7 +55,7 @@ async function command (m: Message) {
 
 const mappoolDeadline: Command = {
     name: ["pdeadline", "pooldeadline", "deadlinep", "deadlinepool"], 
-    description: "Let's you add a deadline for the specified slot and specified deadline slot",
+    description: "Let's you add a deadline for the specified slot and specified deadline slot. If no deadline is given, then it will remove the deadline in that slot",
     usage: "!pdeadline <round> <slot> <datetime> [pool] [deadline type]", 
     category: "mappool",
     command,
