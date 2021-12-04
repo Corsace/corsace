@@ -20,6 +20,10 @@ async function command (m: Message) {
             m.channel.send("Missing round");
             return;
         }
+        if (deadlineType === "") {
+            m.channel.send("Missing deadline type");
+            return;
+        }
 
         // Get deadline
         const parts = m.content.toLowerCase().replace(pool, "").replace(slot, "").replace(round, "").replace(deadlineType, "").trim().split(" ");

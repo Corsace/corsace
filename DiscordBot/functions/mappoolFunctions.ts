@@ -96,7 +96,7 @@ async function parseParams (m: Message) {
     let user = await getMember(m.author.id) as GuildMember;
     let round = "";
     let slot = "";
-    let deadlineType: "preview" | "map" = "map";
+    let deadlineType: "preview" | "map" | "" = "";
     let link = "";
     let diffName = "";
 
