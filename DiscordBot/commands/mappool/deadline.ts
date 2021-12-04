@@ -60,7 +60,7 @@ async function command (m: Message) {
 const mappoolDeadline: Command = {
     name: ["pdeadline", "pooldeadline", "deadlinep", "deadlinepool"], 
     description: "Let's you add a deadline for the specified slot and specified deadline slot. If no deadline is given, then it will remove the deadline in that slot",
-    usage: "!pdeadline <round> <slot> <datetime> [pool] [deadline type]", 
+    usage: "!pdeadline <round> <slot> <datetime> [pool] <deadline type>", 
     category: "mappool",
     command,
 };
