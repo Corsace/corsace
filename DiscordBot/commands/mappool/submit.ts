@@ -103,7 +103,7 @@ async function command (m: Message) {
                     (slot !== "" && slot.toLowerCase() === row[0].toLowerCase()) // slot given
                 ) {
                     await Promise.all([
-                        updatePoolRow(pool, `'${round}'!C${i + 2}:M${i + 2}`, [ artist, title, diff, length, bpm, sr, cs, ar, od, hp, "" ]),
+                        updatePoolRow(pool, `'${round}'!C${i + 2}:N${i + 2}`, [ artist, title, diff, length, bpm, sr, cs, ar, od, hp, "", "" ]),
                         updatePoolRow(pool, `'${round}'!O${i + 2}`, [ link ]),
                         appendToHistory(pool, [ (new Date).toUTCString(), `${round.toUpperCase()}${slot ? slot.toUpperCase() : row[0].toUpperCase()}`, artist, title, m.member?.nickname ?? m.author.username, link ]),
                     ]);
