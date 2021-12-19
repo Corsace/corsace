@@ -84,7 +84,6 @@
                     <div class="announcement__info">
                         <div class="announcement__info--bold">{{ $t('main.merch.name') }}</div>
                         <div>{{ $t('main.merch.colours') }}</div>
-                        <div>{{ $t('main.merch.until') }}</div>
                         <div class="announcement__info--cost">€24.99</div>
                     </div>
                 </div>
