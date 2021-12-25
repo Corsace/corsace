@@ -65,7 +65,8 @@ async function command (m: Message) {
                 const lengthMs = beatmap.objects[beatmap.objects.length - 1].time - beatmap.objects[0].time;
                 const lengthSec = lengthMs / 1000;
                 const lengthMin = Math.round(lengthSec / 60);
-                length = `${lengthMin}:${(lengthSec % 60).toFixed(0)}`;
+                const lengthMod = lengthSec % 60;
+                length = `${lengthMin}:${lengthMod >= 10 ? lengthMod.toFixed(0) : "0" + lengthMod.toFixed(0)}`;
 
                 // Obtaining bpm
                 const timingPoints = beatmap.timing_points.filter(line => line.change === true).map(line => {
