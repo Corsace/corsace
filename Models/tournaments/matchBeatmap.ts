@@ -39,8 +39,9 @@ export class MatchBeatmap extends BaseEntity {
             beatmap: await this.beatmap.getInfo(),
             match: this.match ? await this.match.getInfo() : undefined,
             set: this.set ? await this.set.getInfo() : undefined,
+            scores: this.scores ? await Promise.all(this.scores.map((score) => score.getInfo())) : undefined,
             winner: this.status === PickStatus.picked && this.winner ? await this.winner.getInfo() : undefined,
-        }
+        };
         return infos;
     }
     

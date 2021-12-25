@@ -17,7 +17,7 @@ export class Stage extends BaseEntity {
         return {
             ID: this.ID,
             name: this.name,
-            matches: await Promise.all(this.matches.map(async (match) => await match.getInfos())),
+            matches: await Promise.all(this.matches.map(async (match) => await match.getInfo())),
         };
     };
     

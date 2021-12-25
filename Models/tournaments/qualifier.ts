@@ -36,7 +36,7 @@ export class Qualifier extends BaseEntity {
     public!: boolean;
 
     @OneToMany(() => Team, team => team.qualifier, {
-        nullable: true
+        nullable: true,
     })
     teams?: Team[];
 

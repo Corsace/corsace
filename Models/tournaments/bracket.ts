@@ -28,7 +28,7 @@ export class Bracket extends BaseEntity {
             name: this.name,
             tournament: await this.tournament.getInfo(),
             mappool: await this.mappool.getInfo(),
-            matches: await Promise.all(this.matches.map((match) => match.getInfo()))
-        }
+            matches: await Promise.all(this.matches.map((match) => match.getInfo())),
+        };
     }
 }

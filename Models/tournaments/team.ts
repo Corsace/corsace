@@ -75,7 +75,7 @@ export class Team extends BaseEntity {
     matchesFirst?: Match[]
 
     public getCaptain = async function(this: Team): Promise<User | null> {
-        const user = await User.findOne(this.captain)
+        const user = await User.findOne(this.captain);
         if (!user)
             return null;
         // temp
@@ -107,10 +107,10 @@ export class Team extends BaseEntity {
         // If we have more than 4 players, only calculate BWS from middle 4, lean to top middle 4 if odd
         if (ratings.length > 4) {
             if (ratings.length % 2 !== 0)
-                ratings.splice(0, 1)
+                ratings.splice(0, 1);
             while (ratings.length > 4) {
                 ratings.splice(0,1);
-                ratings.splice(ratings.length-1, 1);
+                ratings.splice(ratings.length - 1, 1);
             }
         }
     
@@ -157,7 +157,7 @@ export class Team extends BaseEntity {
             role: this.role,
             demerits: this.demerits,
             tournament: await this.tournament.getInfo(),
-            matches: this.matches? await this.matches.getInfo() : undefined,
+            matches: this.matches ? await this.matches.getInfo() : undefined,
             mapsWon: this.mapsWon ? await Promise.all(this.mapsWon.map((map) => map.getInfo())) : undefined,
             setsWon: this.setsWon ? await Promise.all(this.setsWon.map((set) => set.getInfo())) : undefined,
             matchesWon: this.matchesWon ? await Promise.all(this.matchesWon.map((match) => match.getInfo())) : undefined,

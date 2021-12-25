@@ -1,6 +1,6 @@
 import { Entity, BaseEntity, PrimaryColumn, Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Team } from "../team";
 import { User } from "../user";
+import { Team } from "./team";
 
 @Entity()
 export class Score extends BaseEntity {

@@ -1,13 +1,20 @@
 import { BaseEntity, Column, Entity } from "typeorm";
 import { QualifierPlayInfo } from "../../Interfaces/qualifier";
 import { TeamInfo } from "../../Interfaces/team";
+import { User } from "../user";
 import { MatchPlay } from "./matchPlay";
 import { Team } from "./team";
 
 @Entity()
 export class QualifierPlay extends MatchPlay {
+
+    @Column()
+
     @Column()
     team!: number;
+
+    @Column()
+    play!: MatchPlay;
 
     public getInfo = async function(this: QualifierPlay, teams: TeamInfo[]): Promise<QualifierPlayInfo> {
         const team = teams ? teams.find(team => team.id === this.team.toString()) : null;

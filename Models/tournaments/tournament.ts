@@ -5,6 +5,7 @@ import { Mappool } from "./mappool";
 import { Bracket } from "./bracket";
 import { Group } from "./group";
 import { Qualifier } from "./qualifier";
+import { TournamentInfo } from "../../Interfaces/tournament";
 
 @Entity()
 export class Tournament extends BaseEntity {
@@ -38,4 +39,20 @@ export class Tournament extends BaseEntity {
 
     @OneToMany(() => Team, team => team.tournament)
     teams!: Team[];
+
+    public getInfo = async function(this: Tournament): Promise<TournamentInfo> {
+        const info: TournamentInfo = {
+            ID: this.ID,
+            name: this.name,
+            registration: await this.registration.getInfo();
+            size: this.size,
+            doubleElim: this.doubleElim,
+            brackets: await Promise.all(this.brackets.map((bracket) => bracket.getInfo())),
+            groups: await Promise.all(this.groups.map((group) => group.getInfo())),
+            qualifiers: await Promise.all(this.qualifiers.map((qualifier) => qualifier.getInfo())),
+            mappools: await Promise.all(this.mappools.map((mappool) => mappool.getInfo())),
+            teams: await Promise.all(this.teams.map((team) => team.getInfo())),
+        };
+        return info;
+    }
 }

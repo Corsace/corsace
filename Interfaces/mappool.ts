@@ -1,3 +1,5 @@
+import { BracketInfo } from "./bracket";
+import { GroupInfo } from "./group";
 import { MatchBeatmapInfo } from "./match";
 import { QualifierInfo } from "./qualifier";
 
@@ -19,10 +21,10 @@ export interface MappoolInfo {
     ID: number,
     name: string,
     tournament: TournamentInfo, 
-    beatmaps: MappoolBeatmapInfo,
-    brakcet: BracketInfo,
-    groups: GroupInfo[], 
-    qualifiers: QualifierInfo[],
+    beatmaps?: MappoolBeatmapInfo[],
+    bracket?: BracketInfo,
+    groups?: GroupInfo[], 
+    qualifiers?: QualifierInfo[],
 
 }
 
@@ -32,5 +34,5 @@ export interface MappoolBeatmapInfo {
     slot: number,
     mappool: MappoolInfo,
     beatmap: BeatmapInfo, // ? 
-    matchBeatmaps: MatchBeatmapInfo,
+    matchBeatmaps?: MatchBeatmapInfo[],
 }
