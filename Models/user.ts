@@ -280,6 +280,12 @@ export class User extends BaseEntity {
         return this.badges.filter(badge => !BWSFilter.test(badge.description));
     }
 
+    public getBWS = async function(this: User): Promise<number | undefined> {
+        if (this.rank) 
+            return Math.pow(this.rank, Math.pow(0.9937, Math.pow((await this.getFilteredBadges()).length, 2)));
+        return undefined;
+    }
+
     public getAccessToken = async function(this: User, tokenType: "osu" | "discord" = "osu"): Promise<string> {
         const res = await User
             .createQueryBuilder("user")
@@ -351,7 +357,7 @@ export class User extends BaseEntity {
         if (this.discord?.userID)
             member = await getMember(this.discord.userID);
         const openInfo: UserOpenInfo = await this.getInfo(member) as UserOpenInfo;
-        openInfo.invites = this.invitations ? await Promise.all(this.invitations.map((invitation) => invitation.getInfo())) : null;
+        openInfo.invites = this.invitations ? await Promise.all(this.invitations.map((invitation) => invitation.getInfo())) : undefined;
         openInfo.team = this.team ? await this.team.getInfo() : null;
         if (member)
             openInfo.openStaff = {

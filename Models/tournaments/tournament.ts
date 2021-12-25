@@ -44,7 +44,7 @@ export class Tournament extends BaseEntity {
         const info: TournamentInfo = {
             ID: this.ID,
             name: this.name,
-            registration: await this.registration.getInfo();
+            registration: this.registration,
             size: this.size,
             doubleElim: this.doubleElim,
             brackets: await Promise.all(this.brackets.map((bracket) => bracket.getInfo())),

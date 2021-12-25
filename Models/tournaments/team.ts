@@ -5,8 +5,9 @@ import { User } from "../user";
 import { MatchBeatmap } from "./matchBeatmap";
 import { MatchSet } from "./matchSet";
 import { Qualifier } from  "./qualifier";
-import { TeamInvite } from "./teamInvite";
+import { TeamInvitation } from "./teamInvitation";
 import { Tournament } from "./tournament";
+import { RequestStatus } from "../../Interfaces/requests";
 
 
 export const TEAM_ELIGIBLE_AMOUNT = 6;
@@ -41,10 +42,10 @@ export class Team extends BaseEntity {
     @Column()
     averageBWS!: number;
 
-    @Column({ nullable: true })
+    @Column({ type: "integer", nullable: true })
     rank!: number | null;
 
-    @Column({ nullable: true})
+    @Column({ type: "char", nullable: true})
     seed!: "A" | "B" | "C" | "D" | null;
 
     @OneToMany(() => User, user => user.team)
@@ -54,7 +55,7 @@ export class Team extends BaseEntity {
     role!: string;
 
     @Column({ default: 0 })
-    demerits!: number
+    demerits!: number;
 
     @ManyToOne(() => Tournament, tournament => tournament.teams)
     tournament!: Tournament;
@@ -73,6 +74,9 @@ export class Team extends BaseEntity {
 
     @OneToMany(() => Match, match => match.first)
     matchesFirst?: Match[]
+
+    @OneToMany(() => TeamInvitation, invite => invite.team)
+    invitations?: TeamInvitation[]
 
     public getCaptain = async function(this: Team): Promise<User | null> {
         const user = await User.findOne(this.captain);
@@ -99,7 +103,7 @@ export class Team extends BaseEntity {
     
     public computeBWS = async function(this: Team, save = true, computeRankOnUpdate = true): Promise<number> {
         const members = await this.getMembers();
-        const ratings = await Promise.all(members.map(m => m.osu.getBWS()));
+        const ratings = (await Promise.all(members.map(m => m.getBWS()))).filter(item => item !== undefined) as number[];
         const prevAvg = this.averageBWS;
     
         ratings.sort((a, b) => a - b);
@@ -157,7 +161,7 @@ export class Team extends BaseEntity {
             role: this.role,
             demerits: this.demerits,
             tournament: await this.tournament.getInfo(),
-            matches: this.matches ? await this.matches.getInfo() : undefined,
+            matches: this.matches ? await Promise.all(this.matches.map((match) => match.getInfo())) : undefined,
             mapsWon: this.mapsWon ? await Promise.all(this.mapsWon.map((map) => map.getInfo())) : undefined,
             setsWon: this.setsWon ? await Promise.all(this.setsWon.map((set) => set.getInfo())) : undefined,
             matchesWon: this.matchesWon ? await Promise.all(this.matchesWon.map((match) => match.getInfo())) : undefined,
@@ -192,32 +196,31 @@ export class Team extends BaseEntity {
     public getSeed = function(this: Team): "A" | "B" | "C" | "D" | null {
         if(!this.isEligible() || !this.rank)
             return null;
-        
-            return "A";
+        return "A";
     }
 
-    public getTeamInvites = async function(this: Team): Promise<TeamInvite[]> {
-        return await TeamInvite.find({ team: this });
+    public getTeamInvites = async function(this: Team): Promise<TeamInvitation[]> {
+        return await TeamInvitation.find({ team: this });
     }
 
-    public getPendingTeamInvites = async function(this: Team): Promise<TeamInvite[]> {
-        return await TeamInvite.find({ team: this, status: "PENDING" });
+    public getPendingTeamInvites = async function(this: Team): Promise<TeamInvitation[]> {
+        return await TeamInvitation.find({ team: this, status: RequestStatus.Pending });
     }
 
     static getEligibleTeams = function(): Promise<Team[]> {
-        return Team.find( { membersAmount: MoreThanOrEqual(TEAM_ELIGIBLE_AMOUNT) } )
+        return Team.find( { membersAmount: MoreThanOrEqual(TEAM_ELIGIBLE_AMOUNT) } );
     }
 
-    static computeBWS = async function(eligibleTeams?: Team[], save: boolean = true): Promise<Team[]> {
+    static computeBWS = async function(eligibleTeams?: Team[], save = true): Promise<Team[]> {
         if (!eligibleTeams)
-            eligibleTeams = await Team.getEligibleTeams()
+            eligibleTeams = await Team.getEligibleTeams();
         await Promise.all(eligibleTeams?.map((team) => team.computeBWS(save, false)));
         return eligibleTeams;
     }
 
-    static computeRanks = async function(eligibleTeams?: Team[], save: boolean = true): Promise<Team[]> {
+    static computeRanks = async function(eligibleTeams?: Team[], save = true): Promise<Team[]> {
         if(!eligibleTeams) 
-            eligibleTeams = await Team.getEligibleTeams()
+            eligibleTeams = await Team.getEligibleTeams();
         await Promise.all(eligibleTeams?.map((team) => team.computeRank(save, false)));
         return eligibleTeams;
     }

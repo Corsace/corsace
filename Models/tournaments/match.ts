@@ -6,6 +6,7 @@ import { Bracket } from "./bracket";
 import { Group } from "./group";
 import { MatchBeatmap } from "./matchBeatmap";
 import { MatchSet } from "./matchSet";
+import { Stage } from "./stage";
 
 @Entity()
 export class Match extends BaseEntity {
@@ -70,6 +71,9 @@ export class Match extends BaseEntity {
     @Column({ nullable: true })
     mp?: number;
 
+    @ManyToOne(()  => Stage, stage => stage.matches)
+    stage!: Stage;
+
     public getInfo = async function(this: Match): Promise<MatchInfo> {
         const info: MatchInfo = {
             ID: this.ID,
@@ -83,15 +87,16 @@ export class Match extends BaseEntity {
             teamBScore: this.teamBScore,
             first: this.first ? await this.first.getInfo() : undefined,
             winner: this.winner ? await this.winner.getInfo() : undefined,
-            sets: this.sets ? await Promise.all(await this.sets.map((set) => set.getInfo())) : undefined,
-            beatmaps: this.beatmaps ? await Promise.all(await this.beatmaps.map((map) => map.getInfo())) : undefined,
+            sets: this.sets ? await Promise.all(this.sets.map((set) => set.getInfo())) : undefined,
+            beatmaps: this.beatmaps ? await Promise.all(this.beatmaps.map((map) => map.getInfo())) : undefined,
             forfeit: this.forfeit,
             potential: this.potential,
             referee: this.referee ? await this.referee.getInfo() : undefined,
-            commentators: this.commentators ? await Promise.all(await this.commentators.map((commentator) => commentator.getInfo())) : undefined,
+            commentators: this.commentators ? await Promise.all(this.commentators.map((commentator) => commentator.getInfo())) : undefined,
             streamer: this.streamer ? await this.streamer.getInfo() : undefined,
             twitch: this.twitch,
             mp: this.mp,
+            stage: await this.stage,
         };
         return info;
     };

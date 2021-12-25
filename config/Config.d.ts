@@ -34,6 +34,7 @@ declare module "node-config-ts" {
             roles: {
                 corsace: {
                     corsace: string;
+                    scheduler: string;
                     headStaff: string;
                     staff: string;
                     designer: string;

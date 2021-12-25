@@ -26,7 +26,7 @@ export class MatchSet extends BaseEntity {
     teamBScore!: number;
 
     public getInfo = async function(this: MatchSet): Promise<MatchSetInfo> {
-        const infos = {
+        const info: MatchSetInfo = {
             ID: this.ID,
             match: await this.match.getInfo(),
             winner: this.winner ? await this.winner.getInfo() : undefined, // uhh
@@ -34,7 +34,7 @@ export class MatchSet extends BaseEntity {
             teamAScore: this.teamAScore,
             teamBScore: this.teamBScore,
         };
-        return infos;
+        return info;
     }
     
 }

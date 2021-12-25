@@ -1,17 +1,11 @@
 import { TeamInfo } from "./team";
 import { User } from "../Models/user";
-
-export interface QualifierPlayInfo extends MatchPlayInfo {
-    mapID: number;
-    team?: string;
-    score: number;
-    userOsuID: number;
-}
+import { MatchPlayInfo } from "./match";
 
 export interface QualifierInfo {
     ID: number;
     teams?: TeamInfo[];
-    scores?: QualifierPlayInfo[];
+    scores?: MatchPlayInfo[];
     time: Date;
     mp?: number;
     referee?: User;

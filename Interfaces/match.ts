@@ -58,6 +58,7 @@ export interface MatchInfo {
     streamer?: UserInfo,
     twitch?: string,
     mp?: number,
+    stage: StageInfo,
 }
 
 

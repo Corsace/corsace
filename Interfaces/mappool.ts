@@ -1,7 +1,9 @@
+import { BeatmapInfo } from "./beatmap";
 import { BracketInfo } from "./bracket";
 import { GroupInfo } from "./group";
 import { MatchBeatmapInfo } from "./match";
 import { QualifierInfo } from "./qualifier";
+import { TournamentInfo } from "./tournament";
 
 export enum ModSlots {
     NM,
@@ -13,7 +15,7 @@ export enum ModSlots {
 }
 
 export interface ModGroup {
-    beatmaps: MappoolMap[]
+    beatmaps: MappoolBeatmapInfo[]
     mod: "NM" | "HD" | "HR" | "DT" | "FM" | "TB" 
 }
 

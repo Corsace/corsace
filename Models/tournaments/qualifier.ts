@@ -6,7 +6,6 @@ import { MatchPlay } from "./matchPlay";
 import { Tournament } from "./tournament";
 import { UserInfo } from "../../Interfaces/user";
 import { QualifierInfo } from "../../Interfaces/qualifier";
-import { QualifierPlay } from "./qualifierPlay";
 
 @Entity()
 export class Qualifier extends BaseEntity {
@@ -24,7 +23,7 @@ export class Qualifier extends BaseEntity {
     mappool!: Mappool;
 
     @OneToMany(() => MatchPlay, score => score.qualifier)
-    scores?: QualifierPlay[];
+    scores?: MatchPlay[];
 
     @Column({ nullable: true })
     mp?: number;

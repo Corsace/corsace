@@ -41,7 +41,7 @@ export class MatchPlay extends BaseEntity {
     fail!: boolean;
 
     public getInfo = async function(this: MatchPlay): Promise<MatchPlayInfo> {
-        const infos = {
+        const info: MatchPlayInfo = {
             ID: this.ID,
             user: await this.user.getInfo(),
             score: this.score,
@@ -52,7 +52,7 @@ export class MatchPlay extends BaseEntity {
             FC: this.FC,
             fail: this.fail,
         };
-        return infos;
+        return info;
     }
     
 }

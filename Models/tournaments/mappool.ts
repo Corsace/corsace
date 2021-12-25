@@ -31,15 +31,15 @@ export class Mappool extends BaseEntity {
     qualifiers?: Qualifier[];
 
     public getInfo = async function(this: Mappool): Promise<MappoolInfo> {
-        const infos = {
+        const info: MappoolInfo = {
             ID: this.ID,
             name: this.name,
             tournament: await this.tournament.getInfo(),
             beatmaps: this.beatmaps ? await Promise.all(this.beatmaps.map((beatmap) => beatmap.getInfo())) : undefined,
             bracket: this.bracket ? await this.bracket.getInfo() : undefined,
             groups: this.groups ? await Promise.all(this.groups.map((group) => group.getInfo())) : undefined,
-            qualifers: this.qualifiers ? await Promise.all(this.qualifiers.map((qualifier) => qualifier.getInfo())) : undefined,
+            qualifiers: this.qualifiers ? await Promise.all(this.qualifiers.map((qualifier) => qualifier.getInfo())) : undefined,
         };
-        return infos;
+        return info;
     }
 }

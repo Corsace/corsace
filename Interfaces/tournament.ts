@@ -4,11 +4,15 @@ import { MappoolInfo } from "./mappool";
 import { QualifierInfo } from "./qualifier";
 import { TeamInfo } from "./team";
 
+interface InternalPhase {
+    start: Date;
+    end: Date;
+}
 
 export interface TournamentInfo { 
     ID: number,
     name: string,
-    registration: PhaseInfo,
+    registration: InternalPhase,
     size: number,
     doubleElim: boolean,
     brackets: BracketInfo[],

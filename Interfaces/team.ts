@@ -1,4 +1,5 @@
 import { MatchBeatmapInfo, MatchInfo, MatchSetInfo } from "./match";
+import { TournamentInfo } from "./tournament";
 import { UserInfo } from "./user";
 
 export interface TeamInfo {
@@ -19,7 +20,7 @@ export interface TeamInfo {
     role: string;
     demerits: number,
     tournament: TournamentInfo,
-    matches?: MatchInfo,
+    matches?: MatchInfo[],
     mapsWon?: MatchBeatmapInfo[],
     setsWon?: MatchSetInfo[],
     matchesWon?: MatchInfo[],

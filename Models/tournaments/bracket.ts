@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BracketInfo } from "../../Interfaces/bracket";
 import { Mappool } from "./mappool";
 import { Match } from "./match";
 import { Tournament } from "./tournament";
@@ -22,13 +23,14 @@ export class Bracket extends BaseEntity {
     @OneToMany(() => Match, match => match.bracket)
     matches!: Match[];
 
-    public getInfo = async function (this: Bracket) {
-        return {
+    public getInfo = async function (this: Bracket): Promise<BracketInfo> {
+        const info: BracketInfo = {
             ID: this.ID,
             name: this.name,
             tournament: await this.tournament.getInfo(),
             mappool: await this.mappool.getInfo(),
             matches: await Promise.all(this.matches.map((match) => match.getInfo())),
         };
+        return info;
     }
 }

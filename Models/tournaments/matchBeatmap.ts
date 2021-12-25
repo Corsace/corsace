@@ -33,7 +33,7 @@ export class MatchBeatmap extends BaseEntity {
     winner?: Team;
 
     public getInfo = async function(this: MatchBeatmap): Promise<MatchBeatmapInfo> {
-        const infos: MatchBeatmapInfo = {
+        const info: MatchBeatmapInfo = {
             ID: this.ID,
             status: this.status,
             beatmap: await this.beatmap.getInfo(),
@@ -42,7 +42,7 @@ export class MatchBeatmap extends BaseEntity {
             scores: this.scores ? await Promise.all(this.scores.map((score) => score.getInfo())) : undefined,
             winner: this.status === PickStatus.picked && this.winner ? await this.winner.getInfo() : undefined,
         };
-        return infos;
+        return info;
     }
     
     
