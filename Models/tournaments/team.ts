@@ -9,10 +9,6 @@ import { TeamInvitation } from "./teamInvitation";
 import { Tournament } from "./tournament";
 import { RequestStatus } from "../../Interfaces/requests";
 
-
-export const TEAM_ELIGIBLE_AMOUNT = 6;
-export const TEAM_FULL_AMOUNT = 8;
-
 @Entity()
 export class Team extends BaseEntity {
     @PrimaryGeneratedColumn()
@@ -130,14 +126,15 @@ export class Team extends BaseEntity {
 
     public computeRank = async function(this: Team, save = true, computeAllRanksOnUpdate = true): Promise<number | null> {
         const oldRank = this.rank;
+        const eligibleamount = this.tournament.getEligibleAmount();
         this.rank = this.isEligible() ? (await Team
             .createQueryBuilder("team")
-            .where(`averageBWS < ${this.averageBWS} AND membersAmount >= ${TEAM_ELIGIBLE_AMOUNT}`)
+            .where(`averageBWS < ${this.averageBWS} AND membersAmount >= ${eligibleamount}`)
             .getCount() + 1) : null;
         if(save) {
             await this.save();
             if(oldRank !== this.rank && computeAllRanksOnUpdate)
-                await Team.computeRanks();
+                await this.tournament.computeRanks();
         }
         return this.rank;
     };
@@ -166,18 +163,16 @@ export class Team extends BaseEntity {
             setsWon: this.setsWon ? await Promise.all(this.setsWon.map((set) => set.getInfo())) : undefined,
             matchesWon: this.matchesWon ? await Promise.all(this.matchesWon.map((match) => match.getInfo())) : undefined,
             matchesFirst: this.matchesFirst ? await Promise.all(this.matchesFirst.map((match) => match.getInfo())) : undefined,
-
         };
         return info;
     };
-    
 
     public isEligible = function(this: Team): boolean {
-        return this.membersAmount >= TEAM_ELIGIBLE_AMOUNT;
+        return this.membersAmount >= this.tournament.getEligibleAmount();
     };
     
     public isFull = function(this: Team): boolean {
-        return this.membersAmount >= TEAM_FULL_AMOUNT;
+        return this.membersAmount >= this.tournament.getFullAmount();
     };
     
     public getQualifier = async function(this: Team): Promise<Date | null> {
@@ -187,12 +182,6 @@ export class Team extends BaseEntity {
         return qualifier.time;
     };
     
-    /*
-    public getDiscordRole = function(this: Team): Role {
-        return App.instance.discordGuild.roles.resolve(this.role);
-    };*/ 
-    
-
     public getSeed = function(this: Team): "A" | "B" | "C" | "D" | null {
         if(!this.isEligible() || !this.rank)
             return null;
@@ -205,24 +194,6 @@ export class Team extends BaseEntity {
 
     public getPendingTeamInvites = async function(this: Team): Promise<TeamInvitation[]> {
         return await TeamInvitation.find({ team: this, status: RequestStatus.Pending });
-    }
-
-    static getEligibleTeams = function(): Promise<Team[]> {
-        return Team.find( { membersAmount: MoreThanOrEqual(TEAM_ELIGIBLE_AMOUNT) } );
-    }
-
-    static computeBWS = async function(eligibleTeams?: Team[], save = true): Promise<Team[]> {
-        if (!eligibleTeams)
-            eligibleTeams = await Team.getEligibleTeams();
-        await Promise.all(eligibleTeams?.map((team) => team.computeBWS(save, false)));
-        return eligibleTeams;
-    }
-
-    static computeRanks = async function(eligibleTeams?: Team[], save = true): Promise<Team[]> {
-        if(!eligibleTeams) 
-            eligibleTeams = await Team.getEligibleTeams();
-        await Promise.all(eligibleTeams?.map((team) => team.computeRank(save, false)));
-        return eligibleTeams;
     }
 
 }
