@@ -70,6 +70,9 @@ export class Match extends BaseEntity {
     @Column({ nullable: true })
     mp?: number;
 
+    @Column({ type: "tinyint" })
+    bestof!: 1 | 3 | 5 | 7 | 9 | 11 | 13 | 15;
+
     public getInfo = async function(this: Match): Promise<MatchInfo> {
         const info: MatchInfo = {
             ID: this.ID,
@@ -92,32 +95,7 @@ export class Match extends BaseEntity {
             streamer: this.streamer ? await this.streamer.getInfo() : undefined,
             twitch: this.twitch,
             mp: this.mp,
-            stage: await this.stage,
         };
         return info;
     };
-    
-
-    /*
-    whats this for
-    MatchSchema.methods.getCondensedInfos = async function(this: IMatch): Promise<IMatchInfos> {
-        const populatedMatch = await this.populate('teamA').populate('teamB').populate('winner').execPopulate()
-        const infos: IMatchInfos = {
-            id: this.id,
-            matchID: this.matchID,
-            date: this.date,
-            teamAName: this.teamA ? populatedMatch.teamA.name : undefined,
-            teamBName: this.teamB ? populatedMatch.teamB.name : undefined,
-            teamASlug: this.teamA ? populatedMatch.teamA.slug : undefined,
-            teamBSlug: this.teamB ? populatedMatch.teamB.slug : undefined,
-            winnerName: this.winner ? populatedMatch.winner.name : undefined,
-            bestOf: this.bestOf,
-            teamAScore: this.teamAScore,
-            teamBScore: this.teamBScore,
-            teamASetScores: this.sets.map((set) => set.teamAScore),
-            teamBSetScores: this.sets.map((set) => set.teamBScore),
-        } as IMatchInfos;
-        return infos;
-    };*/
-    
 }

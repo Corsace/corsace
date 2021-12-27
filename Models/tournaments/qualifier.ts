@@ -4,7 +4,6 @@ import { User } from "../user";
 import { Mappool } from "./mappool";
 import { MatchPlay } from "./matchPlay";
 import { Tournament } from "./tournament";
-import { UserInfo } from "../../Interfaces/user";
 import { QualifierInfo } from "../../Interfaces/qualifier";
 
 @Entity()

@@ -1,8 +1,6 @@
-import { Team } from "discord.js";
 import { BracketInfo } from "./bracket";
 import { GroupInfo } from "./group";
 import { MappoolBeatmapInfo } from "./mappool";
-import { StageInfo } from "./stage";
 import { TeamInfo } from "./team";
 import { UserInfo } from "./user";
 
@@ -58,7 +56,6 @@ export interface MatchInfo {
     streamer?: UserInfo,
     twitch?: string,
     mp?: number,
-    stage: StageInfo,
 }
 
 

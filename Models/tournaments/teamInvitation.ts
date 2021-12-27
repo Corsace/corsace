@@ -36,7 +36,5 @@ export class TeamInvitation extends BaseEntity {
         };
         return info;
     }
-    //TODO: add getUser, getTeam
-
     
 }

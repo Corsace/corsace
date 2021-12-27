@@ -35,6 +35,6 @@ export interface MappoolBeatmapInfo {
     mod: ModSlots,
     slot: number,
     mappool: MappoolInfo,
-    beatmap: BeatmapInfo, // ? 
+    beatmap: BeatmapInfo, 
     matchBeatmaps?: MatchBeatmapInfo[],
 }
