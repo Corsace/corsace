@@ -6,7 +6,6 @@ import { Bracket } from "./bracket";
 import { Group } from "./group";
 import { MatchBeatmap } from "./matchBeatmap";
 import { MatchSet } from "./matchSet";
-import { Stage } from "./stage";
 
 @Entity()
 export class Match extends BaseEntity {
@@ -70,9 +69,6 @@ export class Match extends BaseEntity {
 
     @Column({ nullable: true })
     mp?: number;
-
-    @ManyToOne(()  => Stage, stage => stage.matches)
-    stage!: Stage;
 
     public getInfo = async function(this: Match): Promise<MatchInfo> {
         const info: MatchInfo = {
