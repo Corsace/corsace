@@ -18,7 +18,7 @@ export class Team extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
 
-    @Column({ default: Date.now })
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     creation!: Date;
 
     @Column()

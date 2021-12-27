@@ -19,10 +19,10 @@ export class TeamInvitation extends BaseEntity {
     @Column({ type: "enum", enum: RequestStatus, default: RequestStatus.Pending })
     status!: RequestStatus;
 
-    @Column({ default: Date.now })
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     dateCreated!: Date;
 
-    @Column({ default: Date.now })
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     lastUpdate!: Date;
 
     public getInfo = async function(this: TeamInvitation): Promise<TeamInvitationInfo> {
