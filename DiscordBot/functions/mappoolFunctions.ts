@@ -93,7 +93,6 @@ async function privilegeChecks (m: Message, mappers: boolean, testplayers: boole
 
     // Check if the user has the required role(s).
     const roleCheck = await roleChecks(member, mappers, testplayers);
-    console.log(member, mappers, testplayers, roleCheck);
 
     if (!roleCheck)
         m.channel.send("You do not have the perms to use this command");
