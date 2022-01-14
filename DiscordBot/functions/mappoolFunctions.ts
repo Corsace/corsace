@@ -40,8 +40,8 @@ async function pingChannel (pool: "openMappool" | "closedMappool") {
 async function roleChecks (member: GuildMember, mappers: boolean, testplayers: boolean): Promise <boolean> {
     // If core corsace staff, allow them to filter by user aside for author
     if (
-        member.roles.cache.has(config.discord.roles.corsace.corsace) ||
-        member.roles.cache.has(config.discord.roles.corsace.headStaff)
+        !member.roles.cache.has(config.discord.roles.corsace.corsace) &&
+        !member.roles.cache.has(config.discord.roles.corsace.headStaff)
     ) {
         if (mappers && (
             config.discord.roles.open.mapper.some(r => member.roles.cache.has(r)) ||
@@ -93,6 +93,8 @@ async function privilegeChecks (m: Message, mappers: boolean, testplayers: boole
 
     // Check if the user has the required role(s).
     const roleCheck = await roleChecks(member, mappers, testplayers);
+    console.log(member, mappers, testplayers, roleCheck);
+
     if (!roleCheck)
         m.channel.send("You do not have the perms to use this command");
 
