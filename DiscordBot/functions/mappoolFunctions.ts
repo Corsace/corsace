@@ -37,6 +37,29 @@ async function pingChannel (pool: "openMappool" | "closedMappool") {
         return (await discordClient.channels.fetch(config.discord.closedMappool.general)) as TextChannel;
 }
 
+async function roleChecks (member: GuildMember, mappers: boolean, testplayers: boolean): Promise <boolean> {
+    // If core corsace staff, allow them to filter by user aside for author
+    if (
+        member.roles.cache.has(config.discord.roles.corsace.corsace) ||
+        member.roles.cache.has(config.discord.roles.corsace.headStaff)
+    ) {
+        if (mappers && (
+            config.discord.roles.open.mapper.some(r => member.roles.cache.has(r)) ||
+            config.discord.roles.closed.mapper.some(r => member.roles.cache.has(r))
+        ))
+            return true;
+
+        if (testplayers && (
+            member.roles.cache.has(config.discord.roles.open.testplayer) ||
+            member.roles.cache.has(config.discord.roles.closed.testplayer)
+        ))
+            return true;
+        return false;
+    }
+
+    return true;
+}
+
 async function privilegeChecks (m: Message, mappers: boolean, testplayers: boolean, updateOnly = false): Promise<boolean> {
     if (
         !m.guild || 
@@ -62,33 +85,18 @@ async function privilegeChecks (m: Message, mappers: boolean, testplayers: boole
         return false;
     }
 
-    // If core corsace staff, allow them to filter by user aside for author
     const member = await getMember(m.author.id);
     if (!member) {
         m.channel.send("Unable to obtain your role perms from the Corsace server");
         return false;
     }
-    if (
-        !member.roles.cache.has(config.discord.roles.corsace.corsace) &&
-        !member.roles.cache.has(config.discord.roles.corsace.headStaff)
-    ) {
-        if (mappers && (
-            config.discord.roles.open.mapper.some(r => member.roles.cache.has(r)) ||
-            config.discord.roles.closed.mapper.some(r => member.roles.cache.has(r))
-        ))
-            return true;
 
-        if (testplayers && (
-            member.roles.cache.has(config.discord.roles.open.testplayer) ||
-            member.roles.cache.has(config.discord.roles.closed.testplayer)
-        ))
-            return true;
-
+    // Check if the user has the required role(s).
+    const roleCheck = await roleChecks(member, mappers, testplayers);
+    if (!roleCheck)
         m.channel.send("You do not have the perms to use this command");
-        return false;
-    }
 
-    return true;
+    return roleCheck;
 }
 
 async function parseParams (m: Message) {
@@ -106,12 +114,12 @@ async function parseParams (m: Message) {
     // Check for mention
     if (m.mentions.members && m.mentions.members.first()) {
         user = m.mentions.members.first() as GuildMember;
-        msgContent = m.content.replace(`<@!${m.mentions.users.first()!.id}>`, "").replace(`<@${m.mentions.users.first()!.id}>`, "").toLowerCase();
+        msgContent = m.content.replace(`<@!${m.mentions.users.first()!.id}>`, "").toLowerCase();
     } else {
         for (const part of parts) {
             const members = await m.guild!.members.fetch({ query: part });
             const member = members.first();
-            if (member) {
+            if (member && await roleChecks(member, true, true)) {
                 user = member;
                 msgContent = m.content.replace(part, "").toLowerCase();
                 break;
