@@ -2,12 +2,12 @@ import {MigrationInterface, QueryRunner} from "typeorm";
 import { Influence } from "../MCA_AYIM/influence";
 import { OAuth, User } from "../user";
 import { UsernameChange } from "../usernameChange";
-import output from './1642311161985-influencesSeed.json';
+import output from "./1642311161985-influencesSeed.json";
 
 export class SeedInfluenceTable1642311161985 implements MigrationInterface {
-    name = 'SeedInfluenceTable1642311161985'
+    name = "SeedInfluenceTable1642311161985"
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
+    public async up (queryRunner: QueryRunner): Promise<void> {
         const rawData: any = output;
         let missingUserId = 10000001;
         
@@ -18,34 +18,34 @@ export class SeedInfluenceTable1642311161985 implements MigrationInterface {
             if (item.userId) {
                 user = await queryRunner.manager
                     .createQueryBuilder()
-                    .select('ID')
-                    .from(User, 'user')
-                    .where('user.osuUserID = :value', { value: item.userId })
+                    .select("ID")
+                    .from(User, "user")
+                    .where("user.osuUserID = :value", { value: item.userId })
                     .getOne();
             }
 
             if (user && item.username !== user.osu.username) {
-                const name = new UsernameChange()
+                const name = new UsernameChange();
                 name.name = item.username;
                 name.user = user;
-                await queryRunner.manager.save(name)
+                await queryRunner.manager.save(name);
             }
             
             if (!user && item.username) {
                 user = await queryRunner.manager
                     .createQueryBuilder()
-                    .select('ID')
-                    .from(User, 'user')
-                    .where('user.osuUsername = :value', { value: item.username })
+                    .select("ID")
+                    .from(User, "user")
+                    .where("user.osuUsername = :value", { value: item.username })
                     .getOne();
             }
 
             if (!user) {
-                console.log('creating user', item.userId, item.username);
+                console.log("creating user", item.userId, item.username);
                 
                 user = new User();
                 user.osu = new OAuth();
-                user.osu.username = item.username || 'unknown';
+                user.osu.username = item.username || "unknown";
                 user.osu.userID = item.userId || (missingUserId++).toString();
                 user.country = item.country;
                 await queryRunner.manager.save(user);
@@ -54,26 +54,26 @@ export class SeedInfluenceTable1642311161985 implements MigrationInterface {
             if (item.alt) {
                 const altExists = await queryRunner.manager
                     .createQueryBuilder()
-                    .select('ID')
-                    .from(User, 'user')
-                    .where('user.osuUsername = :value', { value: item.alt })
+                    .select("ID")
+                    .from(User, "user")
+                    .where("user.osuUsername = :value", { value: item.alt })
                     .getOne();
 
                 if (!altExists) {
                     let name = await queryRunner.manager
                         .createQueryBuilder()
-                        .select('ID')
-                        .from(UsernameChange, 'username_change')
-                        .where('username_change.name = :value', { value: item.alt })
+                        .select("ID")
+                        .from(UsernameChange, "username_change")
+                        .where("username_change.name = :value", { value: item.alt })
                         .getOne();
         
                     if (!name) {
-                        console.log('creating namechange', item.alt, item.username);
+                        console.log("creating namechange", item.alt, item.username);
                         
-                        name = new UsernameChange()
+                        name = new UsernameChange();
                         name.name = item.alt;
                         name.user = user;
-                        await queryRunner.manager.save(name)
+                        await queryRunner.manager.save(name);
                     }
                 }
             }
@@ -89,25 +89,25 @@ export class SeedInfluenceTable1642311161985 implements MigrationInterface {
 
                 let dbInfluence = await queryRunner.manager
                     .createQueryBuilder()
-                    .select('ID')
-                    .from(User, 'user')
-                    .where('user.osuUsername = :value', { value: itemInfluence })
+                    .select("ID")
+                    .from(User, "user")
+                    .where("user.osuUsername = :value", { value: itemInfluence })
                     .getOne();
                 
                 if (!dbInfluence) {
                     const names = await queryRunner.manager
                         .createQueryBuilder()
-                        .from(UsernameChange, 'username_change')
-                        .leftJoin('username_change.user', 'user')
-                        .where('username_change.name = :value', { value: itemInfluence })
+                        .from(UsernameChange, "username_change")
+                        .leftJoin("username_change.user", "user")
+                        .where("username_change.name = :value", { value: itemInfluence })
                         .getMany();
                     
                     for (const name of names) {
                         dbInfluence = await queryRunner.manager
                             .createQueryBuilder()
-                            .select('ID')
-                            .from(User, 'user')
-                            .where('user.ID = :value', { value: name.user.ID })
+                            .select("ID")
+                            .from(User, "user")
+                            .where("user.ID = :value", { value: name.user.ID })
                             .getOne();
 
                         if (dbInfluence) {
@@ -117,17 +117,18 @@ export class SeedInfluenceTable1642311161985 implements MigrationInterface {
                 }
 
                 if (!dbInfluence) {
-                    console.log('couldnt find influence', itemInfluence);
+                    console.log("couldnt find influence", itemInfluence);
                     continue;
                 }
 
                 newInfluence.influence = dbInfluence;
-                await queryRunner.manager.save(newInfluence)
+                await queryRunner.manager.save(newInfluence);
             }
         }
     }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
+    public async down (queryRunner: QueryRunner): Promise<void> {
+        //
     }
 
 }
