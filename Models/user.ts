@@ -15,6 +15,7 @@ import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
+import { Influence } from "./MCA_AYIM/influence";
 
 // General middlewares
 
@@ -116,6 +117,12 @@ export class User extends BaseEntity {
     
     @OneToMany(() => Vote, vote => vote.user)
     votesReceived!: Vote[];
+    
+    @OneToMany(() => Influence, influence => influence.user)
+    influences!: Influence[];
+    
+    @OneToMany(() => Influence, influence => influence.influence)
+    influencing!: Influence[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User
