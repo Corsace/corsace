@@ -247,8 +247,8 @@ $max-height-container: calc(100% - #{$icon-size} - #{$mode-selection-padding});
 
     &__mode {
         cursor: pointer;
-        width: $icon-size / 1.2;
-        height: $icon-size / 1.2;
+        width: calc(#{$icon-size} / 1.2);
+        height: calc(#{$icon-size} / 1.2);
         background-repeat: no-repeat;
         background-size: cover;
         border-radius: 100%;
