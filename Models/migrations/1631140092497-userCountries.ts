@@ -7,6 +7,9 @@ export class userCountries1631140092497 implements MigrationInterface {
     name = "userCountries1631140092497"
 
     public async up (queryRunner: QueryRunner): Promise<void> {
+        if (process.env.NODE_ENV !== "production")
+            return;
+
         await queryRunner.query("ALTER TABLE `user` ADD `country` tinytext NOT NULL");
 
         const users = await User
@@ -21,6 +24,9 @@ export class userCountries1631140092497 implements MigrationInterface {
     }
 
     public async down (queryRunner: QueryRunner): Promise<void> {
+        if (process.env.NODE_ENV !== "production")
+            return;
+
         await queryRunner.query("ALTER TABLE `user` DROP COLUMN `country`");
     }
 
