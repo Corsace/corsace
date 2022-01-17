@@ -33,6 +33,7 @@ import staffVotesRouter from "../MCA/api/routes/staff/votes";
 import resultsRouter from "../MCA/api/routes/results";
 
 import commentsRouter from "../AYIM/api/routes/comments";
+import influencesRouter from "../AYIM/api/routes/influences";
 import commentsReviewRouter from "../AYIM/api/routes/staff/comments";
 import usersRouter from "../AYIM/api/routes/staff/users";
 import recordsRouter from "../AYIM/api/routes/records";
@@ -109,6 +110,7 @@ koa.use(Mount("/api/records", recordsRouter.routes()));
 koa.use(Mount("/api/statistics", statisticsRouter.routes()));
 koa.use(Mount("/api/mappers", mappersRouter.routes()));
 koa.use(Mount("/api/comments", commentsRouter.routes()));
+koa.use(Mount("/api/influences", influencesRouter.routes()));
 
 koa.use(Mount("/api/staff/comments", commentsReviewRouter.routes()));
 koa.use(Mount("/api/staff/users", usersRouter.routes()));
