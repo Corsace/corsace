@@ -10,38 +10,48 @@ export class SeedInfluenceTable1642311161985 implements MigrationInterface {
     public async up (queryRunner: QueryRunner): Promise<void> {
         const rawData: any = output;
         let missingUserId = 10000001;
+        const missingUsers: any[] = [];
         
         // Fill missing users and username changes
         for (const item of rawData) {
-            let user: User | undefined;
-        
-            if (item.userId) {
-                user = await queryRunner.manager
-                    .createQueryBuilder()
-                    .select("ID")
-                    .from(User, "user")
-                    .where("user.osuUserID = :value", { value: item.userId })
-                    .getOne();
+            const query = queryRunner.manager
+                .createQueryBuilder()
+                .from(User, "user")
+                .leftJoin("user.otherNames", "otherName")
+                .where("user.osuUserid = :userId", { userId: item.userId });
+
+            if (item.username) {
+                query.orWhere("user.osuUsername = :username")
+                    .orWhere("otherName.name = :username")
+                    .setParameter("username", item.username);
             }
 
-            if (user && item.username !== user.osu.username) {
+            if (item.alt) {
+                query
+                    .orWhere("user.osuUsername = :altUsername")
+                    .orWhere("otherName.name = :altUsername")
+                    .setParameter("altUsername", item.alt);
+            }
+
+            let user = await query.select(["user", "otherName"]).getOne();
+        
+            if (user && item.username && item.username !== user.osu.username && !user.otherNames.some(n => n.name === item.username)) {
                 const name = new UsernameChange();
                 name.name = item.username;
                 name.user = user;
                 await queryRunner.manager.save(name);
             }
-            
-            if (!user && item.username) {
-                user = await queryRunner.manager
-                    .createQueryBuilder()
-                    .select("ID")
-                    .from(User, "user")
-                    .where("user.osuUsername = :value", { value: item.username })
-                    .getOne();
+
+            if (user && item.alt && item.alt !== user.osu.username && !user.otherNames.some(n => n.name === item.alt)) {
+                const name = new UsernameChange();
+                name.name = item.alt;
+                name.user = user;
+                await queryRunner.manager.save(name);
             }
 
             if (!user) {
                 console.log("creating user", item.userId, item.username);
+                missingUsers.push(item);
                 
                 user = new User();
                 user.osu = new OAuth();
@@ -51,35 +61,10 @@ export class SeedInfluenceTable1642311161985 implements MigrationInterface {
                 await queryRunner.manager.save(user);
             }
 
-            if (item.alt) {
-                const altExists = await queryRunner.manager
-                    .createQueryBuilder()
-                    .select("ID")
-                    .from(User, "user")
-                    .where("user.osuUsername = :value", { value: item.alt })
-                    .getOne();
-
-                if (!altExists) {
-                    let name = await queryRunner.manager
-                        .createQueryBuilder()
-                        .select("ID")
-                        .from(UsernameChange, "username_change")
-                        .where("username_change.name = :value", { value: item.alt })
-                        .getOne();
-        
-                    if (!name) {
-                        console.log("creating namechange", item.alt, item.username);
-                        
-                        name = new UsernameChange();
-                        name.name = item.alt;
-                        name.user = user;
-                        await queryRunner.manager.save(name);
-                    }
-                }
-            }
-
             item.id = user.ID;
         }
+
+        const missingInfluences: any[] = [];
 
         // Fill influences
         for (const item of rawData) {
@@ -87,44 +72,28 @@ export class SeedInfluenceTable1642311161985 implements MigrationInterface {
                 const newInfluence = new Influence();
                 newInfluence.user = item.id;
 
-                let dbInfluence = await queryRunner.manager
+                const dbInfluence = await queryRunner.manager
                     .createQueryBuilder()
-                    .select("ID")
                     .from(User, "user")
-                    .where("user.osuUsername = :value", { value: itemInfluence })
+                    .leftJoin("user.otherNames", "otherName")
+                    .where("user.osuUsername = :username")
+                    .orWhere("otherName.name = :username")
+                    .setParameter("username", itemInfluence)
+                    .select(["user", "otherName"])
                     .getOne();
                 
                 if (!dbInfluence) {
-                    const names = await queryRunner.manager
-                        .createQueryBuilder()
-                        .from(UsernameChange, "username_change")
-                        .leftJoin("username_change.user", "user")
-                        .where("username_change.name = :value", { value: itemInfluence })
-                        .getMany();
-                    
-                    for (const name of names) {
-                        dbInfluence = await queryRunner.manager
-                            .createQueryBuilder()
-                            .select("ID")
-                            .from(User, "user")
-                            .where("user.ID = :value", { value: name.user.ID })
-                            .getOne();
-
-                        if (dbInfluence) {
-                            break;
-                        }
-                    }
-                }
-
-                if (!dbInfluence) {
                     console.log("couldnt find influence", itemInfluence);
-                    continue;
+                    missingInfluences.push(itemInfluence);
+                } else {
+                    newInfluence.influence = dbInfluence;
+                    await queryRunner.manager.save(newInfluence);
                 }
-
-                newInfluence.influence = dbInfluence;
-                await queryRunner.manager.save(newInfluence);
             }
         }
+
+        console.log(missingUsers.length, "created users");
+        console.log(missingInfluences.length, "influences not created", missingInfluences.join(", "));
     }
 
     public async down (queryRunner: QueryRunner): Promise<void> {
