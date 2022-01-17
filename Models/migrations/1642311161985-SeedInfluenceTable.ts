@@ -9,7 +9,6 @@ export class SeedInfluenceTable1642311161985 implements MigrationInterface {
 
     public async up (queryRunner: QueryRunner): Promise<void> {
         const rawData: any = output;
-        let missingUserId = 10000001;
         const missingUsers: any[] = [];
         
         // Fill missing users and username changes
@@ -55,8 +54,8 @@ export class SeedInfluenceTable1642311161985 implements MigrationInterface {
                 
                 user = new User();
                 user.osu = new OAuth();
-                user.osu.username = item.username || "unknown";
-                user.osu.userID = item.userId || (missingUserId++).toString();
+                user.osu.username = item.username;
+                user.osu.userID = item.userId;
                 user.country = item.country;
                 await queryRunner.manager.save(user);
             }
