@@ -2,12 +2,16 @@ import {MigrationInterface, QueryRunner} from "typeorm";
 import { Influence } from "../MCA_AYIM/influence";
 import { OAuth, User } from "../user";
 import { UsernameChange } from "../usernameChange";
-import output from "./1642311161985-influencesSeed.json";
+import output from "./1642302144275-SeedingInfluenceTable.json";
 
-export class SeedInfluenceTable1642311161985 implements MigrationInterface {
-    name = "SeedInfluenceTable1642311161985"
+export class CreateInfluenceTable1642302144275 implements MigrationInterface {
+    name = "CreateInfluenceTable1642302144275"
 
     public async up (queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`CREATE TABLE \`influence\` (\`ID\` int NOT NULL AUTO_INCREMENT, \`userID\` int NOT NULL, \`influenceID\` int NOT NULL, PRIMARY KEY (\`ID\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`ALTER TABLE \`influence\` ADD CONSTRAINT \`FK_feddb1198a3f7fd89dd8207e7f6\` FOREIGN KEY (\`userID\`) REFERENCES \`user\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`influence\` ADD CONSTRAINT \`FK_3d99ed61b7beae928a1935202e3\` FOREIGN KEY (\`influenceID\`) REFERENCES \`user\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+    
         const rawData: any = output;
         const missingUsers: any[] = [];
         
@@ -96,7 +100,9 @@ export class SeedInfluenceTable1642311161985 implements MigrationInterface {
     }
 
     public async down (queryRunner: QueryRunner): Promise<void> {
-        //
+        await queryRunner.query(`ALTER TABLE \`influence\` DROP FOREIGN KEY \`FK_3d99ed61b7beae928a1935202e3\``);
+        await queryRunner.query(`ALTER TABLE \`influence\` DROP FOREIGN KEY \`FK_feddb1198a3f7fd89dd8207e7f6\``);
+        await queryRunner.query(`DROP TABLE \`influence\``);
     }
 
 }
