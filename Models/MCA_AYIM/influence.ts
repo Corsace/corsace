@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, BaseEntity, ManyToOne, PrimaryGeneratedColumn, Column } from "typeorm";
 import { User } from "../user";
 
 @Entity()
@@ -13,4 +13,6 @@ export class Influence extends BaseEntity {
     @ManyToOne(() => User, user => user.influencing, { nullable: false })
     influence!: User;
 
+    @Column({ type: "year" })
+    year!: number;
 }
