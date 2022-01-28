@@ -15,7 +15,8 @@ influencesRouter.get("/", async (ctx) => {
         .where("user.osuUserid = :userId", { userId: userSearch })
         .orWhere("user.osuUsername LIKE :user")
         .orWhere("otherName.name LIKE :user")
-        .andWhere("influence.year = :year", { year: yearSearch })
+        .andWhere("influence.year <= :year", { year: yearSearch })
+        .orderBy("influence.year", "DESC")
         .setParameter("user", `%${userSearch}%`)
         .getOneOrFail();
 
