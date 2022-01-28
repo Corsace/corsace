@@ -6,12 +6,12 @@
         >
             <a
                 href="#"
-                @click="search(influence.influence.osu.userID)"
+                @click="showAndSearch(influence.influence.osu.userID)"
             >
                 {{ influence.influence.osu.userID }} - {{ influence.influence.osu.username }}
             </a>
             <InfluenceTreeLeaf
-                v-if="findUser(influence.influence.osu.userID) && findUser(influence.influence.osu.userID).influences"
+                v-if="show && findUser(influence.influence.osu.userID) && findUser(influence.influence.osu.userID).influences"
                 :influences="findUser(influence.influence.osu.userID).influences"
             />
         </li>
@@ -34,6 +34,16 @@ export default class InfluenceTreeLeaf extends Vue {
     @influencesModule.State users;
     
     @influencesModule.Action search;
+
+    show = false;
+
+    showAndSearch (osuId: number) {
+        this.search({
+            user: osuId,
+            year: this.$route.params.year,
+        });
+        this.show = true;
+    }
 
     findUser (userId) {
         return this.users.find(u => u.osu.userID == userId);
