@@ -39,7 +39,10 @@ export default class Comments extends Vue {
     
     async resetSearch () {
         this.resetRoot();
-        this.search(this.userSearch);
+        this.search({
+            user: this.userSearch, 
+            year: this.$route.params.year,
+        });
     }
     
 }

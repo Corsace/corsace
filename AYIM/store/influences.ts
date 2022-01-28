@@ -31,7 +31,7 @@ export const getters: GetterTree<StaffState, RootState> = {
 
 export const actions: ActionTree<StaffState, RootState> = {
     async search ({ state, commit }, value) {
-        const user = state.users.find(u => u.osu.userID === value);
+        const user = state.users.find(u => u.osu.userID === value.user);
         if (user) {
             if (!state.root) {
                 commit("setRoot", user);
@@ -40,7 +40,7 @@ export const actions: ActionTree<StaffState, RootState> = {
         }
 
         try {
-            const {data} = await this.$axios.get(`/api/influences?user=${value}`);
+            const {data} = await this.$axios.get(`/api/influences?user=${value.user}&year=${value.year}`);
         
             if (!data.error) {
                 commit("addUser", data);
