@@ -7,7 +7,6 @@ async function command (m: Message) {
 
     // No params so just get the latest influences for the user who called the command
     if (!influenceRegex.test(m.content)) {
-        console.log("test");
         const user = await User
             .createQueryBuilder("user")
             .leftJoin("user.otherNames", "otherName")
@@ -63,7 +62,6 @@ async function command (m: Message) {
         await m.channel.send("No user containing influences found in the corsace database with the given year and query!");
         return;
     }
-    console.log(user);
     const latestYear = Math.max(...user.influences.map(inf => inf.year));
     const influences = user.influences.filter(inf => inf.year === latestYear);
     m.channel.send(`Influences for **${user.osu.username}:**\n${influences.map((inf, i) => `${i + 1}: **${inf.influence.osu.username}**`).join("\n")}`);
