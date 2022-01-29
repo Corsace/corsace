@@ -63,7 +63,7 @@ async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> 
 async function validatePhaseYear (ctx: ParameterizedContext, next: Next): Promise<any> {
     try {
         let year = ctx.params.year;
-        if (!year || !/20\d\d/.test(year)) {
+        if (!year || !/^20[0-9]{2}$/.test(year)) {
             ctx.state.mca = await MCA.current();
             year = ctx.state.mca.year;
         } else {
