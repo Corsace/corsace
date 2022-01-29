@@ -73,7 +73,7 @@ async function command (m: Message) {
 
 const influence: Command = {
     name: ["inf", "influence"], 
-    description: "Show your influences, add an influence, or remove them",
+    description: "Show your influences or someone else's given a username and a year",
     usage: "!(inf|influence)", 
     category: "osu",
     command,
