@@ -126,7 +126,13 @@ influencesRouter.delete("/:id", isLoggedIn, currentMCA, async (ctx) => {
         };
         return;
     }
-    if (influence.year < ctx.state.mca.year) {
+    const mca = await MCA.findOne({
+        results: MoreThanOrEqual(new Date()),
+        nomination: {
+            start: LessThanOrEqual(new Date()),
+        },
+    });
+    if (influence.year < (mca ? mca.year : (new Date()).getUTCFullYear())) {
         ctx.body = { 
             error: "You cannot remove influences for previous years!",
         };
