@@ -1,8 +1,9 @@
 import Router from "@koa/router";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
-import { currentMCA } from "../../../MCA-AYIM/api/middleware";
+import { currentMCA, isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 import { Influence } from "../../../Models/MCA_AYIM/influence";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
 
@@ -48,45 +49,60 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
         };
         return;
     }
+    query.year = parseInt(query.year, 10);
     if (!query.target || !/^\d+$/.test(query.target)) {
         ctx.body = { 
             error: "Missing corsace ID!",
         };
         return;
     }
+    query.target = parseInt(query.target, 10);
+    if (!query.mode || !/^\d$/.test(query.mode)) {
+        ctx.body = { 
+            error: "Missing mode!",
+        };
+        return;
+    }
+    query.mode = parseInt(query.mode, 10);
+    const modeDivision = await ModeDivision.findOne(query.mode);
+    if (!modeDivision) {
+        ctx.body = { 
+            error: "Could not find the appropriate mode!",
+        };
+        return;
+    }
+    if (!isEligibleFor(ctx.state.user, query.mode, query.year)) {
+        ctx.body = { 
+            error: "You did not rank a set or guest difficulty this year!",
+        };
+        return;
+    }
 
-    // Check if there are 3 influences already, or if this influence already exists, or if the year is in the future
-    const influence = await Influence.createQueryBuilder("influence")
-        .leftJoinAndSelect("influence.user", "user", "influence.userID = user.ID")
-        .leftJoinAndSelect("influence.influence", "influenceUser")
-        .where("influence.year = :year", { year: query.year })
-        .getMany();
-    if (influence.length === 5) {
+    // Check if there are 5 influences already, or if this influence already exists, or if the year is in the future
+    const influences = await Influence.find({
+        user: ctx.state.user,
+        year: query.year,
+        mode: modeDivision,
+    });
+    if (influences.length === 5) {
         ctx.body = { 
             error: "There are 5 influences already!",
         };
         return;
     }
-    query.target = parseInt(query.target, 10);
-    if (influence.some(inf => inf.influence.ID === query.target)) {
+    if (influences.some(inf => inf.influence.ID === query.target)) {
         ctx.body = { 
             error: "This influence already exists!",
         };
         return;
     }
-    query.year = parseInt(query.year, 10);
     if (query.year > (new Date).getUTCFullYear()) {
         ctx.body = { 
             error: "You cannot provide influences for future years!",
         };
         return;
     }
-
-    const target = await User
-        .createQueryBuilder("user")
-        .leftJoin("user.otherNames", "otherName")
-        .where("user.ID = :userId", { userId: query.target })
-        .getOne();
+    const target = await User.findOne(query.target);
     if (!target) {
         ctx.body = { 
             error: `No user with corsace ID ${query.target} found!`,
@@ -98,6 +114,9 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
     newInfluence.user = ctx.state.user;
     newInfluence.influence = target;
     newInfluence.year = query.year;
+    newInfluence.comment = query.comment;
+    newInfluence.rank = influences.length + 1;
+    newInfluence.mode = modeDivision;
     await newInfluence.save();
     ctx.body = {
         newInfluence,

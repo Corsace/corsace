@@ -6,10 +6,13 @@ import { osuClient } from "../../../Server/osu";
 import { Influence } from "../../../Models/MCA_AYIM/influence";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
+import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 
 async function command (m: Message) {
     const influenceAddRegex = /(inf|influence)add\s+(.+)/i;
     const profileRegex = /(osu|old)\.ppy\.sh\/(u|users)\/(\S+)/i;
+    const modeRegex = /-(standard|std|taiko|tko|catch|ctb|mania|man|storyboard|sb)/i;
 
     if (!influenceAddRegex.test(m.content)) {
         await m.channel.send("Please provide a year and user!");
@@ -31,17 +34,50 @@ async function command (m: Message) {
     if (!res)
         return;
     const params = res[2].split(" ");
-    let year = "";
+    let year = 0;
     let search = "";
+    let mode: ModeDivision | undefined = undefined;
     if (/^20[0-9]{2}$/.test(params[0])) {
-        year = params[0];
+        year = parseInt(params[0], 10);
         search = params.slice(1).join(" ");
     } else if (/^20[0-9]{2}$/.test(params[params.length - 1])) {
-        year = params[params.length - 1];
+        year = parseInt(params[params.length - 1], 10);
         params.pop();
         search = params.join(" ");
     } else {
         await m.channel.send(`Could not parse any year provided!`);
+        return;
+    }
+    for (const param of params) {
+        if (modeRegex.test(param)) {
+            switch (modeRegex.exec(param)![1]) {
+                case "standard" || "std": {
+                    mode = await ModeDivision.findOne(1);
+                    break;
+                } case "taiko" || "tko": {
+                    mode = await ModeDivision.findOne(2);
+                    break;
+                } case "catch" || "ctb": {
+                    mode = await ModeDivision.findOne(3);
+                    break;
+                } case "mania" || "man": {
+                    mode = await ModeDivision.findOne(4);
+                    break;
+                } case "storyboard" || "sb": {
+                    mode = await ModeDivision.findOne(5);
+                    break;
+                }
+            }
+            if (mode)
+                break;
+        }
+    }
+    if (!mode) {
+        await m.channel.send(`Could not parse any mode provided!`);
+        return;
+    }
+    if (!isEligibleFor(user, mode.ID, year)) {
+        await m.channel.send(`You did not rank a set or guest difficulty this year!`);
         return;
     }
 
@@ -78,17 +114,24 @@ async function command (m: Message) {
         await influenceUser.save();
     }
 
-    const infCheck = await Influence.find({
+    const influences = await Influence.find({
         user,
-        year: parseInt(year, 10),
+        year,
     });
-    if (infCheck.length === 5) {
+    if (influences.length === 5) {
         await m.channel.send(`You already have 5 influences for **${year}**!`);
         return;
-    } else if (infCheck.some(inf => inf.influence.osu.username === apiUser.username)) {
+    } else if (influences.some(inf => inf.influence.osu.username === apiUser.username)) {
         await m.channel.send(`You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}**!`);
         return;
     }
+
+    const influence = new Influence;
+    influence.user = user;
+    influence.influence = influenceUser!;
+    influence.year = year;
+    influence.mode = mode;
+    influence.rank = influences.length + 1;
 
     // Warn for older years
     const mca = await MCA.findOne({
@@ -97,7 +140,7 @@ async function command (m: Message) {
             start: LessThanOrEqual(new Date()),
         },
     });
-    if (parseInt(year, 10) < (mca ? mca.year : (new Date()).getUTCFullYear())) {
+    if (year < (mca ? mca.year : (new Date()).getUTCFullYear())) {
         const row = new MessageActionRow();
         row.addComponents(
             new MessageButton()
@@ -121,12 +164,7 @@ async function command (m: Message) {
             }
 
             if (i.customId === "true") {
-                const influence = new Influence;
-                influence.user = user;
-                influence.influence = influenceUser!;
-                influence.year = parseInt(year, 10);
                 await influence.save();
-
                 m.reply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}**!`);
             }
             await message.delete();
@@ -134,10 +172,6 @@ async function command (m: Message) {
         return;
     }
 
-    const influence = new Influence;
-    influence.user = user;
-    influence.influence = influenceUser;
-    influence.year = parseInt(year, 10);
     await influence.save();
 
     m.reply(`Added **${influenceUser.osu.username}** as a mapping influence for **${year}**!`);

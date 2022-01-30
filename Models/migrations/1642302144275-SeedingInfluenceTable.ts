@@ -5,8 +5,8 @@ import { OAuth, User } from "../user";
 import { UsernameChange } from "../usernameChange";
 import output from "./1642302144275-SeedingInfluenceTable.json";
 
-export class CreateInfluenceTable1642302144275 implements MigrationInterface {
-    name = "CreateInfluenceTable1642302144275"
+export class SeedingInfluenceTable1642302144275 implements MigrationInterface {
+    name = "SeedingInfluenceTable1642302144275"
 
     public async up (queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE \`influence\` (\`ID\` int NOT NULL AUTO_INCREMENT, \`year\` year NOT NULL, \`rank\` int NOT NULL, \`comment\` text NULL, \`userID\` int NOT NULL, \`influenceID\` int NOT NULL, \`modeID\` int NOT NULL, PRIMARY KEY (\`ID\`)) ENGINE=InnoDB`);
