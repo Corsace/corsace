@@ -83,7 +83,7 @@ async function command (m: Message) {
             year: parseInt(year, 10),
         });
         if (infCheck) {
-            await m.channel.send(`You have already marked **${influenceUser.osu.username}** as an influence for **${year}**!`);
+            await m.channel.send(`You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}**!`);
             return;
         }
     }
@@ -108,7 +108,7 @@ async function command (m: Message) {
                 .setStyle("DANGER")
         );
         const message = await m.reply({
-            content: `Are you sure you want to add **${influenceUser.osu.username}** as an influence for **${year}**? You cannot remove influences for years past the currently running MCA!`,
+            content: `Are you sure you want to add **${influenceUser.osu.username}** as a mapping influence for **${year}**? You cannot remove influences for years past the currently running MCA!`,
             components: [row],
         });
         const collector = message.createMessageComponentCollector({ componentType: "BUTTON", time: 10000 });
@@ -125,7 +125,7 @@ async function command (m: Message) {
                 influence.year = parseInt(year, 10);
                 await influence.save();
 
-                m.reply(`Added **${influenceUser!.osu.username}** as an influence for **${year}**!`);
+                m.reply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}**!`);
             }
             await message.delete();
         });
@@ -138,7 +138,7 @@ async function command (m: Message) {
     influence.year = parseInt(year, 10);
     await influence.save();
 
-    m.reply(`Added **${influenceUser.osu.username}** as an influence for **${year}**!`);
+    m.reply(`Added **${influenceUser.osu.username}** as a mapping influence for **${year}**!`);
     return;
     
 }

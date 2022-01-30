@@ -21,7 +21,7 @@ async function command (m: Message) {
         }
         const latestYear = Math.max(...user.influences.map(inf => inf.year));
         const influences = user.influences.filter(inf => inf.year === latestYear);
-        m.channel.send(`Influences for **${user.osu.username} (${latestYear}):**\n${influences.map((inf, i) => `${i + 1}: **${inf.influence.osu.username}**`).join("\n")}`);
+        m.channel.send(`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map((inf, i) => `${i + 1}: **${inf.influence.osu.username}**`).join("\n")}`);
         return;
     }
 
@@ -64,14 +64,14 @@ async function command (m: Message) {
     }
     const latestYear = Math.max(...user.influences.map(inf => inf.year));
     const influences = user.influences.filter(inf => inf.year === latestYear);
-    m.channel.send(`Influences for **${user.osu.username} (${latestYear}):**\n${influences.map((inf, i) => `${i + 1}: **${inf.influence.osu.username}**`).join("\n")}`);
+    m.channel.send(`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map((inf, i) => `${i + 1}: **${inf.influence.osu.username}**`).join("\n")}`);
     return;
     
 }
 
 const influence: Command = {
     name: ["inf", "influence", "influences"], 
-    description: "Show your influences or someone else's given a username and a year",
+    description: "Show your mapping influences or someone else's given a username and a year",
     usage: "!(inf|influence|influences)", 
     category: "osu",
     command,

@@ -52,7 +52,7 @@ async function command (m: Message) {
         },
     });
     if (parseInt(year, 10) < (mca ? mca.year : (new Date()).getUTCFullYear())) {
-        await m.channel.send(`You cannot remove influences for previous years!`);
+        await m.channel.send(`You cannot remove mapping influences for previous years!`);
         return;
     }
 
@@ -89,12 +89,12 @@ async function command (m: Message) {
         year: parseInt(year, 10),
     });
     if (!influence) {
-        await m.channel.send(`**${influenceUser.osu.username}** influencing you in **${year}** doesn't seem to exist currently!`);
+        await m.channel.send(`**${influenceUser.osu.username}** influencing you as a mapper in **${year}** doesn't seem to exist currently!`);
         return;
     }
 
     await influence.remove();
-    m.channel.send(`**${influenceUser.osu.username}** influencing you for **${year}** has been removed!`);
+    m.channel.send(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** has been removed!`);
     return;
     
 }
