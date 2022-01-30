@@ -105,69 +105,6 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
     return;
 });
 
-influencesRouter.post("/edit", isLoggedIn, currentMCA, async (ctx) => {
-    const query = ctx.request.body;
-
-    if (!query.ID || !/^\d+$/.test(query.ID)) {
-        ctx.body = { 
-            error: "An influnce ID is not provided!",
-        };
-        return;
-    }
-    if (!query.target || !/^\d+$/.test(query.target)) {
-        ctx.body = { 
-            error: "Missing corsace ID!",
-        };
-        return;
-    }
-
-    // Find influence 
-    // and check if the influence's year is the current MCA's or later 
-    // (aka 2021-2022 if MCA 2021 is currently running in 2022)
-    const influence = await Influence.createQueryBuilder("influence")
-        .leftJoinAndSelect("influence.user", "user", "influence.userID = user.ID")
-        .leftJoinAndSelect("influence.influence", "influenceUser")
-        .where("influence.ID = :id", { id: query.ID })
-        .andWhere("user.ID = :userID", { userID: ctx.state.user.ID })
-        .getOne();
-    if (!influence) {
-        ctx.body = { 
-            error: "Invalid influence ID!",
-        };
-        return;
-    }
-    const mca = await MCA.findOne({
-        results: MoreThanOrEqual(new Date()),
-        nomination: {
-            start: LessThanOrEqual(new Date()),
-        },
-    });
-    if (influence.year < (mca ? mca.year : (new Date()).getUTCFullYear())) {
-        ctx.body = { 
-            error: "You cannot edit influences for previous years!",
-        };
-        return;
-    }
-
-    const target = await User
-        .createQueryBuilder("user")
-        .leftJoin("user.otherNames", "otherName")
-        .where("user.ID = :userId", { userId: query.target })
-        .getOne();
-    if (!target) {
-        ctx.body = { 
-            error: `No user with corsace ID ${query.target} found!`,
-        };
-        return;
-    }
-    influence.influence = target;
-    await influence.save();
-    ctx.body = {
-        influence,
-    };
-    return;
-}); 
-
 influencesRouter.delete("/:id", isLoggedIn, currentMCA, async (ctx) => {
     const id = ctx.params.id;
     if (!/^\d+$/.test(id)) {
