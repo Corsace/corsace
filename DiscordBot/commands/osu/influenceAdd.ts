@@ -76,16 +76,18 @@ async function command (m: Message) {
         influenceUser.osu.username = apiUser.username;
         influenceUser.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;
         await influenceUser.save();
-    } else {
-        const infCheck = await Influence.findOne({
-            user,
-            influence: influenceUser,
-            year: parseInt(year, 10),
-        });
-        if (infCheck) {
-            await m.channel.send(`You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}**!`);
-            return;
-        }
+    }
+
+    const infCheck = await Influence.find({
+        user,
+        year: parseInt(year, 10),
+    });
+    if (infCheck.length === 5) {
+        await m.channel.send(`You already have 5 influences for **${year}**!`);
+        return;
+    } else if (infCheck.some(inf => inf.influence.osu.username === apiUser.username)) {
+        await m.channel.send(`You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}**!`);
+        return;
     }
 
     // Warn for older years

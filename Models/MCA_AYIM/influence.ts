@@ -1,5 +1,6 @@
 import { Entity, BaseEntity, ManyToOne, PrimaryGeneratedColumn, Column } from "typeorm";
 import { User } from "../user";
+import { ModeDivision } from "./modeDivision";
 
 @Entity()
 export class Influence extends BaseEntity {
@@ -13,6 +14,18 @@ export class Influence extends BaseEntity {
     @ManyToOne(() => User, user => user.influencing, { nullable: false })
     influence!: User;
 
-    @Column({ type: "year" })
+    @Column({ type: "year", nullable: false })
     year!: number;
+
+    @ManyToOne(() => ModeDivision, modeDivision => modeDivision.influences, {
+        nullable: false,
+        eager: true,
+    })
+    mode!: ModeDivision;
+
+    @Column()
+    rank!: number;
+
+    @Column({ type: "text", nullable: true })
+    comment!: string;
 }

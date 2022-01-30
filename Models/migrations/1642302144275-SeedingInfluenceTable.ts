@@ -1,5 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 import { Influence } from "../MCA_AYIM/influence";
+import { ModeDivision } from "../MCA_AYIM/modeDivision";
 import { OAuth, User } from "../user";
 import { UsernameChange } from "../usernameChange";
 import output from "./1642302144275-SeedingInfluenceTable.json";
@@ -8,10 +9,11 @@ export class CreateInfluenceTable1642302144275 implements MigrationInterface {
     name = "CreateInfluenceTable1642302144275"
 
     public async up (queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TABLE \`influence\` (\`ID\` int NOT NULL AUTO_INCREMENT, \`year\` year NOT NULL, \`userID\` int NOT NULL, \`influenceID\` int NOT NULL, PRIMARY KEY (\`ID\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`influence\` (\`ID\` int NOT NULL AUTO_INCREMENT, \`year\` year NOT NULL, \`rank\` int NOT NULL, \`comment\` text NULL, \`userID\` int NOT NULL, \`influenceID\` int NOT NULL, \`modeID\` int NOT NULL, PRIMARY KEY (\`ID\`)) ENGINE=InnoDB`);
         await queryRunner.query(`ALTER TABLE \`influence\` ADD CONSTRAINT \`FK_feddb1198a3f7fd89dd8207e7f6\` FOREIGN KEY (\`userID\`) REFERENCES \`user\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`influence\` ADD CONSTRAINT \`FK_3d99ed61b7beae928a1935202e3\` FOREIGN KEY (\`influenceID\`) REFERENCES \`user\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
-    
+        await queryRunner.query(`ALTER TABLE \`influence\` ADD CONSTRAINT \`FK_55fef2fbf5e7e0be2651720597a\` FOREIGN KEY (\`modeID\`) REFERENCES \`mode_division\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);        
+
         const rawData: any = output;
         const missingUsers: any[] = [];
         
@@ -68,13 +70,19 @@ export class CreateInfluenceTable1642302144275 implements MigrationInterface {
         }
 
         const missingInfluences: any[] = [];
+        const standardMode = await ModeDivision.findOne(1);
+        if (!standardMode)
+            throw "Could not find the standard mode division. There may have been an issue with a previous migration that inserts this!";
 
         // Fill influences
         for (const item of rawData) {
-            for (const itemInfluence of item.influences) {
+            for (let i = 0; i < item.influences.length; i++) {
+                const itemInfluence = item.influences[i];
                 const newInfluence = new Influence();
                 newInfluence.user = item.id;
                 newInfluence.year = 2018;
+                newInfluence.mode = standardMode;
+                newInfluence.rank = i + 1;
 
                 const dbInfluence = await queryRunner.manager
                     .createQueryBuilder()

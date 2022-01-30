@@ -61,9 +61,9 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
         .leftJoinAndSelect("influence.influence", "influenceUser")
         .where("influence.year = :year", { year: query.year })
         .getMany();
-    if (influence.length === 3) {
+    if (influence.length === 5) {
         ctx.body = { 
-            error: "There are 3 influences already!",
+            error: "There are 5 influences already!",
         };
         return;
     }

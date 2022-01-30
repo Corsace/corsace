@@ -3,6 +3,7 @@ import { UserComment } from "./userComments";
 import { Beatmap } from "../beatmap";
 import { GuestRequest } from "./guestRequest";
 import { Category } from "./category";
+import { Influence } from "./influence";
 
 @Entity()
 export class ModeDivision extends BaseEntity {
@@ -18,6 +19,9 @@ export class ModeDivision extends BaseEntity {
 
     @OneToMany(() => UserComment, userComment => userComment.mode)
     userComments!: UserComment[];
+
+    @OneToMany(() => Influence, influence => influence.mode)
+    influences!: Influence[];
 
     @OneToMany(() => Beatmap, beatmap => beatmap.mode)
     beatmaps!: Beatmap[];
