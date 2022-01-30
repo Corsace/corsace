@@ -3,7 +3,7 @@ import { User } from "../../../Models/user";
 import { Command } from "../index";
 
 async function command (m: Message) {
-    const influenceRegex = /(inf|influence)\s+(.+)/i;
+    const influenceRegex = /(inf|influence|influences)\s+(.+)/i;
 
     // No params so just get the latest influences for the user who called the command
     if (!influenceRegex.test(m.content)) {
@@ -21,7 +21,7 @@ async function command (m: Message) {
         }
         const latestYear = Math.max(...user.influences.map(inf => inf.year));
         const influences = user.influences.filter(inf => inf.year === latestYear);
-        m.channel.send(`Influences for **${user.osu.username}:**\n${influences.map((inf, i) => `${i + 1}: **${inf.influence.osu.username}**`).join("\n")}`);
+        m.channel.send(`Influences for **${user.osu.username} (${latestYear}):**\n${influences.map((inf, i) => `${i + 1}: **${inf.influence.osu.username}**`).join("\n")}`);
         return;
     }
 
@@ -64,15 +64,15 @@ async function command (m: Message) {
     }
     const latestYear = Math.max(...user.influences.map(inf => inf.year));
     const influences = user.influences.filter(inf => inf.year === latestYear);
-    m.channel.send(`Influences for **${user.osu.username}:**\n${influences.map((inf, i) => `${i + 1}: **${inf.influence.osu.username}**`).join("\n")}`);
+    m.channel.send(`Influences for **${user.osu.username} (${latestYear}):**\n${influences.map((inf, i) => `${i + 1}: **${inf.influence.osu.username}**`).join("\n")}`);
     return;
     
 }
 
 const influence: Command = {
-    name: ["inf", "influence"], 
+    name: ["inf", "influence", "influences"], 
     description: "Show your influences or someone else's given a username and a year",
-    usage: "!(inf|influence)", 
+    usage: "!(inf|influence|influences)", 
     category: "osu",
     command,
 };

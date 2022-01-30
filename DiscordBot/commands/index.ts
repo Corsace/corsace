@@ -18,6 +18,8 @@ import todoList from "./utility/todoList";
 
 import beatmap from "./osu/beatmap";
 import influence from "./osu/influence";
+import influenceAdd from "./osu/influenceAdd";
+import influenceRemove from "./osu/influenceRemove";
 import profile from "./osu/profile";
 import recent from "./osu/recent";
 
@@ -55,6 +57,8 @@ commands.push(todoList);
 // osu! commands
 commands.push(beatmap);
 commands.push(influence);
+commands.push(influenceAdd);
+commands.push(influenceRemove);
 commands.push(profile);
 commands.push(recent);
 
