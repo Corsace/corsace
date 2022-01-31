@@ -28,6 +28,7 @@ export interface StaffVote {
         osuUsername: string;
         discordUsername: string;
     }
+    difficulty?: string;
     beatmapset?: {
         ID: number;
         artist: string;

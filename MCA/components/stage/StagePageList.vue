@@ -38,7 +38,7 @@
 
                     <template v-else>
                         <results-beatmapset-card
-                            v-for="(item, i) in beatmapResults"
+                            v-for="(item, i) in beatmapsetResults"
                             :key="i"
                             :columns="columns"
                             :choice="item"
@@ -77,7 +77,7 @@ import VotingBox from "./VotingBox.vue";
 import { SectionCategory } from "../../../MCA-AYIM/store/stage";
 import { UserChoiceInfo } from "../../../Interfaces/user";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
-import { BeatmapResult, UserResult, ResultColumn } from "../../../Interfaces/result";
+import { BeatmapsetResult, UserResult, ResultColumn } from "../../../Interfaces/result";
 
 const stageModule = namespace("stage");
 
@@ -99,7 +99,7 @@ export default class StagePageList extends Vue {
     @stageModule.State beatmaps!: BeatmapsetInfo[];
 
     @stageModule.State userResults!: UserResult[];
-    @stageModule.State beatmapResults!: BeatmapResult[];
+    @stageModule.State beatmapsetResults!: BeatmapsetResult[];
 
     @stageModule.State loading!: boolean;
 

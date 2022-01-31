@@ -49,11 +49,11 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { BeatmapResult, ResultColumn } from "../../../Interfaces/result";
+import { BeatmapsetResult, ResultColumn } from "../../../Interfaces/result";
 
 @Component
 export default class ResultsBeatmapsetCard extends Vue {
-    @Prop({ type: Object, default: () => ({}) }) readonly choice!: BeatmapResult;
+    @Prop({ type: Object, default: () => ({}) }) readonly choice!: BeatmapsetResult;
     @Prop({ type: Array, required: false }) columns!: ResultColumn[];
     @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
 

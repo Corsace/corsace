@@ -2,6 +2,7 @@ import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column, ManyToMa
 import { User } from "../user";
 import { Beatmapset } from "../beatmapset";
 import { Category } from "./category";
+import { Beatmap } from "../beatmap";
 
 @Entity()
 export class Nomination extends BaseEntity {
@@ -27,6 +28,11 @@ export class Nomination extends BaseEntity {
         eager: true,
     })
     beatmapset?: Beatmapset;
+
+    @ManyToOne(() => Beatmap, Beatmap => Beatmap.nominationsReceived, {
+        eager: true,
+    })
+    beatmap?: Beatmap;
 
     @Column({ default: false })
     isValid!: boolean;

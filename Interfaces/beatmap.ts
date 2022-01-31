@@ -49,3 +49,7 @@ export interface BeatmapsetInfo {
     hoster: string;
     chosen: boolean;
 }
+
+export interface BeatmapInfo extends BeatmapsetInfo {
+    difficulty: string;
+}

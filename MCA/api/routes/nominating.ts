@@ -2,6 +2,7 @@ import Router from "@koa/router";
 import { isLoggedIn } from "../../../Server/middleware";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Category } from "../../../Models/MCA_AYIM/category";
+import { Beatmap } from "../../../Models/beatmap";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
 import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear } from "../../../MCA-AYIM/api/middleware";
@@ -96,9 +97,10 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
         nomination.category = category;
         nomination.isValid = true;
         let beatmapset: Beatmapset;
+        let beatmap: Beatmap;
         let user: User;
 
-        if (category.type == CategoryType.Beatmapsets) {
+        if (category.type == CategoryType.Beatmapsets && ctx.state.year < 2021) {
             beatmapset = await Beatmapset.findOneOrFail({
                 where: {
                     ID: nomineeID,
@@ -153,6 +155,60 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
             }
 
             nomination.beatmapset = beatmapset;
+        } else if (category.type == CategoryType.Beatmapsets && ctx.state.year >= 2021) {
+            beatmap = await Beatmap.findOneOrFail({
+                where: {
+                    ID: nomineeID,
+                },
+                relations: ["beatmapset"],
+            });
+            if (beatmap.beatmapset.approvedDate.getUTCFullYear() !== category.mca.year)
+                return ctx.body = {
+                    error: "Mapset is ineligible for the given MCA year!",
+                };
+
+            if (categoryNominations.some(n => n.beatmap?.ID === beatmap.ID)) {
+                return ctx.body = {
+                    error: "You have already nominated this beatmap!",
+                };
+            }
+            // Check if the category has filters since this is a beatmap search
+            if (category.filter) {
+                if (category.filter.minLength && beatmap.hitLength < category.filter!.minLength!)
+                    return ctx.body = {
+                        error: "Beatmapset does not exceed minimum length requirement!", 
+                    };
+                if (category.filter.maxLength && beatmap.hitLength > category.filter!.maxLength!)
+                    return ctx.body = {
+                        error: "Beatmapset exceeds maximum length requirement!", 
+                    };
+                if (category.filter.minBPM && !(beatmap.beatmapset.BPM < category.filter!.minBPM!))
+                    return ctx.body = {
+                        error: "Beatmapset does not exceed minimum BPM requirement!", 
+                    };
+                if (category.filter.maxBPM && !(beatmap.beatmapset.BPM <= category.filter!.maxBPM!))
+                    return ctx.body = {
+                        error: "Beatmapset exceeds maximum BPM requirement!", 
+                    };
+                if (category.filter.minSR && beatmap.totalSR < category.filter!.minSR!)
+                    return ctx.body = {
+                        error: "Beatmapset does not exceed minimum SR requirement!", 
+                    };
+                if (category.filter.maxSR && beatmap.totalSR > category.filter!.maxSR!)
+                    return ctx.body = {
+                        error: "Beatmapset exceeds maximum SR requirement!", 
+                    };
+                if (category.filter.minCS && beatmap.circleSize < category.filter.minCS)
+                    return ctx.body = {
+                        error: "Beatmapset does not exceed minimum CS requirement!", 
+                    };
+                if (category.filter.maxCS && beatmap.circleSize > category.filter.maxCS)
+                    return ctx.body = {
+                        error: "Beatmapset exceeds maximum CS requirement!", 
+                    };
+            }
+
+            nomination.beatmap = beatmap;
         } else if (category.type == CategoryType.Users) {
             user = await User.findOneOrFail({
                 ID: nomineeID,
