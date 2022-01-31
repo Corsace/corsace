@@ -128,11 +128,11 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
                     return ctx.body = {
                         error: "Beatmapset exceeds maximum length requirement!", 
                     };
-                if (category.filter.minBPM && !(beatmapset.BPM >= category.filter!.minBPM!))
+                if (category.filter.minBPM && beatmapset.BPM < category.filter!.minBPM!)
                     return ctx.body = {
                         error: "Beatmapset does not exceed minimum BPM requirement!", 
                     };
-                if (category.filter.maxBPM && !(beatmapset.BPM <= category.filter!.maxBPM!))
+                if (category.filter.maxBPM && beatmapset.BPM > category.filter!.maxBPM!)
                     return ctx.body = {
                         error: "Beatmapset exceeds maximum BPM requirement!", 
                     };
@@ -182,11 +182,11 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
                     return ctx.body = {
                         error: "Beatmapset exceeds maximum length requirement!", 
                     };
-                if (category.filter.minBPM && !(beatmap.beatmapset.BPM < category.filter!.minBPM!))
+                if (category.filter.minBPM && beatmap.beatmapset.BPM < category.filter!.minBPM!)
                     return ctx.body = {
                         error: "Beatmapset does not exceed minimum BPM requirement!", 
                     };
-                if (category.filter.maxBPM && !(beatmap.beatmapset.BPM <= category.filter!.maxBPM!))
+                if (category.filter.maxBPM && beatmap.beatmapset.BPM > category.filter!.maxBPM!)
                     return ctx.body = {
                         error: "Beatmapset exceeds maximum BPM requirement!", 
                     };
