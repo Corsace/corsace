@@ -147,7 +147,8 @@ export default class Comments extends Vue {
     
     async mounted () {
         if (!this.mca) {
-            return alert("No MCA yet");
+            alert("No MCA yet");
+            return this.$router.go(-1);
         }
 
         this.lastInfluences = await this.getLastestInfluences(this.mca.year - 1);
