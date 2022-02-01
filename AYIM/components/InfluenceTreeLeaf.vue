@@ -46,6 +46,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+import { User } from "../../Interfaces/user";
 
 const influencesModule = namespace("influences");
 
@@ -56,7 +57,7 @@ export default class InfluenceTreeLeaf extends Vue {
     
     @Prop({ type: Array, required: true }) readonly influences!: any[];
 
-    @influencesModule.State users;
+    @influencesModule.State users!: User[];
     
     @influencesModule.Action search;
 
@@ -64,10 +65,7 @@ export default class InfluenceTreeLeaf extends Vue {
 
     showAndSearch (userId: string) {
         if (!this.findUser(userId)) {
-            this.search({
-                user: userId,
-                year: this.$route.params.year,
-            });
+            this.search(userId);
         }
 
         const i = this.expandedInfluencesFor.findIndex(i => i == userId);
@@ -83,10 +81,7 @@ export default class InfluenceTreeLeaf extends Vue {
     }
 
     savedInflueces (userId: string) {
-        const user = this.findUser(userId);
-        if (user) {
-            return user.influences;
-        }
+        return this.findUser(userId)?.influences;
     }
 
 }

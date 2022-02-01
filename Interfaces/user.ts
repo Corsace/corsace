@@ -1,6 +1,7 @@
 import { Beatmapset } from "./beatmap";
 import { Eligibility } from "./eligibility";
 import { GuestRequest } from "./guestRequests";
+import { Influence } from "./influence";
 
 export interface UserMCAInfo extends UserInfo {
     guestRequests: GuestRequest[];
@@ -55,6 +56,8 @@ export interface User {
     mcaEligibility: Eligibility[];
     beatmapsets: Beatmapset[];
     canComment: boolean;
+
+    influences: Influence[];
 }
 
 export interface OAuth {

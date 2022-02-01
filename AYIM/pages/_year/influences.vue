@@ -1,45 +1,58 @@
 <template>
-    <div class="influences-page">
-        <search-bar
-            :placeholder="$t('ayim.comments.search')"
-            @update:search="resetSearch($event)"
-        />
+    <mode-switcher
+        v-if="mca"
+        hide-phase
+        tablet
+        stretch
+        :ignore-modes="['storyboard']"
+    >
+        <div class="influences-page">
+            <search-bar
+                :placeholder="$t('ayim.comments.search')"
+                @update:search="resetSearch($event)"
+            />
 
-        <div class="treeview-container">
-            <ul
-                v-if="root"
-                class="treeview"
-            >
-                <li class="treeview__root">
-                    <img
-                        :src="`https://osu.ppy.sh/images/flags/${root.country}.png`"
-                        :alt="root.country"
-                        class="treeview__flag"
-                    >
-                    {{ root.osu.username }}
-                    <InfluenceTreeLeaf :influences="root.influences" />
-                </li>
-            </ul>
+            <div class="treeview-container">
+                <ul
+                    v-if="root"
+                    class="treeview"
+                >
+                    <li class="treeview__root">
+                        <img
+                            :src="`https://osu.ppy.sh/images/flags/${root.country}.png`"
+                            :alt="root.country"
+                            class="treeview__flag"
+                        >
+                        {{ root.osu.username }}
+                        <InfluenceTreeLeaf :influences="root.influences" />
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
+    </mode-switcher>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { namespace, State } from "vuex-class";
+import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import InfluenceTreeLeaf from "../../components/InfluenceTreeLeaf.vue";
 import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
+import { MCA } from "../../../Interfaces/mca";
 
 const influencesModule = namespace("influences");
 
 @Component({
     components: {
+        ModeSwitcher,
         InfluenceTreeLeaf,
         SearchBar,
     },
 })
 export default class Comments extends Vue {
 
+    @State mca!: MCA;
+    
     @influencesModule.State users!: any[];
     @influencesModule.State root!: Record<string, any> | null;
 
@@ -48,10 +61,7 @@ export default class Comments extends Vue {
     
     async resetSearch (userSearch) {
         this.resetRoot();
-        this.search({
-            user: userSearch, 
-            year: this.$route.params.year,
-        });
+        this.search(userSearch);
     }
     
 }

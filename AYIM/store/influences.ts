@@ -1,17 +1,17 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { RootState } from "../../MCA-AYIM/store/index";
 
-export interface StaffState {
+export interface InfluenceState {
     users: any[];
     root: Record<string, any> | null;
 }
 
-export const state = (): StaffState => ({
+export const state = (): InfluenceState => ({
     users: [],
     root: null,
 });
 
-export const mutations: MutationTree<StaffState> = {
+export const mutations: MutationTree<InfluenceState> = {
     addUser (state, user) {
         state.users.push(user);
     },
@@ -25,13 +25,13 @@ export const mutations: MutationTree<StaffState> = {
     },
 };
 
-export const getters: GetterTree<StaffState, RootState> = {
+export const getters: GetterTree<InfluenceState, RootState> = {
 
 };
 
-export const actions: ActionTree<StaffState, RootState> = {
-    async search ({ state, commit }, value) {
-        const user = state.users.find(u => u.osu.userID === value.user);
+export const actions: ActionTree<InfluenceState, RootState> = {
+    async search ({ state, commit, rootState }, value) {
+        const user = state.users.find(u => u.osu.userID === value);
         if (user) {
             if (!state.root) {
                 commit("setRoot", user);
@@ -40,7 +40,7 @@ export const actions: ActionTree<StaffState, RootState> = {
         }
 
         try {
-            const {data} = await this.$axios.get(`/api/influences?user=${value.user}&year=${value.year}`);
+            const {data} = await this.$axios.get(`/api/influences?user=${value}&year=${rootState.mca?.year}&mode=${rootState.selectedMode}`);
         
             if (!data.error) {
                 commit("addUser", data);
