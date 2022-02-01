@@ -3,6 +3,12 @@
         class="dropdown"
         @click="$emit('close')"
     >
+        <nuxt-link
+            v-if="site === 'ayim'"
+            :to="`/${$route.params.year}/profile`"
+        >
+            PROFILE
+        </nuxt-link>
         <a 
             v-if="!loggedInUser.discord || !loggedInUser.discord.userID"
             @click="$emit('showLoginModal')"
