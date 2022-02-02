@@ -179,6 +179,7 @@ influencesRouter.delete("/:id", isLoggedIn, currentMCA, async (ctx) => {
         user: ctx.state.user,
         year: mca.year,
         rank: MoreThan(influence.rank),
+        mode: influence.mode,
     });
 
     await Promise.all(
