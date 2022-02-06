@@ -26,7 +26,10 @@ staffNominationsRouter.get("/", async (ctx) => {
         .leftJoinAndSelect("nomination.user", "user")
         .leftJoinAndSelect("nomination.beatmapset", "beatmapset")
         .leftJoinAndSelect("beatmapset.creator", "creator")
-        .leftJoinAndSelect("beatmapset.beatmaps", "beatmap")
+        .leftJoinAndSelect("beatmapset.beatmaps", "beatmapsetBeatmap")
+        .leftJoinAndSelect("nomination.beatmap", "beatmap")
+        .leftJoinAndSelect("beatmap.beatmapset", "beatmapBeatmapset")
+        .leftJoinAndSelect("beatmapBeatmapset.creator", "beatmapsetCreator")
         .andWhere("category.ID = :id", { id: categoryID })
         .orderBy("nomination.isValid", "ASC")
         .addOrderBy("nomination.reviewerID", "ASC")
@@ -65,6 +68,26 @@ staffNominationsRouter.get("/", async (ctx) => {
                     osuID: nom.beatmapset.creator.osu.userID,
                     osuUsername: nom.beatmapset.creator.osu.username,
                     discordUsername: nom.beatmapset.creator.discord.username,
+                },
+            };
+        }
+        if (nom.beatmap) {
+            staffNom.beatmap = {
+                ID: nom.beatmap.ID,
+                difficulty: nom.beatmap.difficulty,
+            };
+            staffNom.beatmapset = {
+                ID: nom.beatmap.beatmapsetID,
+                artist: nom.beatmap.beatmapset.artist,
+                title: nom.beatmap.beatmapset.title,
+                tags: nom.beatmap.beatmapset.tags,
+                BPM: nom.beatmap.beatmapset.BPM,
+                length: nom.beatmap.hitLength,
+                maxSR: nom.beatmap.totalSR,
+                creator: {
+                    osuID: nom.beatmap.beatmapset.creator.osu.userID,
+                    osuUsername: nom.beatmap.beatmapset.creator.osu.username,
+                    discordUsername: nom.beatmap.beatmapset.creator.discord.username,
                 },
             };
         }

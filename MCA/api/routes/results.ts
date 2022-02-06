@@ -79,6 +79,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
             .addSelect("voter.osuUsername", "voterOsu")
             .addSelect("voter.discordUsername", "voterDiscord")
             // beatmap selects
+            .addSelect("beatmap.ID", "beatmapID")
             .addSelect("beatmap.difficulty", "difficulty")
             // beatmapset selects
             .addSelect("beatmapset.ID", "beatmapsetID")
@@ -128,8 +129,11 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
                 discordUsername: vote.userDiscord,
             };
         }
-        if (vote.difficulty)
-            staffVote.difficulty = vote.difficulty;
+        if (vote.beatmapID)
+            staffVote.beatmap = {
+                ID: vote.beatmapID,
+                difficulty: vote.difficulty,
+            };
         if (vote.beatmapsetID) {
             staffVote.beatmapset = {
                 ID: vote.beatmapsetID,

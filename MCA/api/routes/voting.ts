@@ -43,7 +43,10 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
 
 votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), stageSearch("voting", async (ctx, category) => {
     let votes = await Vote.find({
-        voter: ctx.state.user,
+        where: {
+            voter: ctx.state.user,
+        },
+        relations: ["user", "beatmapset", "beatmap", "beatmap.beatmapset", "beatmap.beatmapset.creator"],
     });
     votes = votes.filter(vote => vote.category.mca.year === category.mca.year).sort((a, b) => a.choice - b.choice);
 

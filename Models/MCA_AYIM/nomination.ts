@@ -52,7 +52,10 @@ export class Nomination extends BaseEntity {
             .leftJoinAndSelect("nomination.user", "user")
             .leftJoinAndSelect("user.otherNames", "otherNames")
             .leftJoinAndSelect("nomination.beatmapset", "beatmapset")
-            .leftJoinAndSelect("beatmapset.creator", "creator");
+            .leftJoinAndSelect("beatmapset.creator", "creator")
+            .leftJoinAndSelect("nomination.beatmap", "beatmap")
+            .leftJoinAndSelect("beatmap.beatmapset", "nominationBeatmapset")
+            .leftJoinAndSelect("nominationBeatmapset.creator", "nominationBeatmapsetCreator");
     }
 
     static userNominations (options: { userID: number, year?: number }): SelectQueryBuilder<Nomination> {

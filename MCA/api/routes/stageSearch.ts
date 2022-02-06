@@ -21,6 +21,12 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
                 error: "Missing category ID!",
             };
 
+        // Make sure user is eligible to nominate in this mode
+        const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
+        const modeId = ModeDivisionType[modeString];
+        if (!isEligibleFor(ctx.state.user, modeId, ctx.state.year))
+            return ctx.body = { error: "Not eligible for this mode!" };
+
         let list: BeatmapInfo[] | BeatmapsetInfo[] | UserChoiceInfo[] = [];
         let setList: BeatmapsetInfo[] = [];
         let mapList: BeatmapInfo[] = [];
@@ -35,13 +41,9 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             .andWhere("mca.year = :year", { year: ctx.state.year })
             .getOneOrFail();
     
-        // Obtain mode and amount to skip
-        const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
-        const modeId = ModeDivisionType[modeString];
-    
-        const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
         
         // Check if this is the initial call, add currently nominated beatmaps/users at the top of the list
+        const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
         if (skip === 0) {
             let objects = await initialCall(ctx, category) as Vote[]; // doesnt really matter the type in this case
             objects = objects.filter(o => o.category.ID === category.ID);
@@ -53,10 +55,6 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             else if (category.type == CategoryType.Users)
                 userList = objects.map(o => o.user?.getCondensedInfo(true) as UserChoiceInfo);
         }
-        
-        // Make sure user is eligible to nominate in this mode
-        if (!isEligibleFor(ctx.state.user, modeId, ctx.state.year))
-            return ctx.body = { error: "Not eligible for this mode!" };
         
         if ((ctx.query.favourites === "true" || ctx.query.played === "true") && category.type == CategoryType.Beatmapsets) {
             const accessToken: string = await ctx.state.user.getAccessToken("osu");

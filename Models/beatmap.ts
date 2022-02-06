@@ -102,7 +102,7 @@ export class Beatmap extends BaseEntity {
         // Initial repo setup
         const includeStoryboard = modeId === ModeDivisionType.storyboard;
         const queryBuilder = this.createQueryBuilder("beatmap")
-            .leftJoin("beatmap.beatmapset", "beatmapset");
+            .leftJoinAndSelect("beatmap.beatmapset", "beatmapset");
         
         if (stage === "voting") {
             queryBuilder
@@ -126,7 +126,7 @@ export class Beatmap extends BaseEntity {
         queryBuilder
             .leftJoinAndSelect("beatmapset.creator", "user")
             .leftJoinAndSelect("user.otherNames", "otherName")
-            .innerJoinAndSelect("beatmapset.beatmaps", "beatmap", includeStoryboard ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: includeStoryboard ? true : modeId })
+            .andWhere(includeStoryboard ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: includeStoryboard ? true : modeId })
             .andWhere("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${year}-01-01`, end: `${year + 1}-01-01` });
                                 
         // Check if the category has filters since this is a beatmap search
@@ -151,10 +151,10 @@ export class Beatmap extends BaseEntity {
                     .andWhere(`beatmap.totalSR<=${category.filter.maxSR}`);
             if (category.filter.minCS)
                 queryBuilder
-                    .andWhere(`beatmap.totalSR>=${category.filter.minCS}`);
+                    .andWhere(`beatmap.circleSize>=${category.filter.minCS}`);
             if (category.filter.maxCS)
                 queryBuilder
-                    .andWhere(`beatmap.totalSR<=${category.filter.maxCS}`);
+                    .andWhere(`beatmap.circleSize<=${category.filter.maxCS}`);
         }
 
         // Check for search text
@@ -212,6 +212,7 @@ export class Beatmap extends BaseEntity {
     
     public getInfo (chosen = false): BeatmapInfo {
         return {
+            setID: this.beatmapsetID,
             id: this.ID,
             artist: this.beatmapset.artist,
             title: this.beatmapset.title,

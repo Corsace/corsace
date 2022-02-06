@@ -95,7 +95,8 @@ export default class BaseChoiceCard extends Vue {
         if (this.stage === "nominating") return undefined;
 
         return (this.relatedCandidacies as Vote[]).find(v => {
-            if (this.choice.id) return v.beatmapset?.ID === this.choice.id;
+            if (this.choice.id && parseInt(this.$route.params.year) < 2021) return v.beatmapset?.ID === this.choice.id;
+            else if (this.choice.id && parseInt(this.$route.params.year) >= 2021) return v.beatmap?.ID === this.choice.id;
             else return v.user?.ID === this.choice.corsaceID;
         });
     }
@@ -104,7 +105,8 @@ export default class BaseChoiceCard extends Vue {
         if (this.stage === "voting") return undefined;
 
         return (this.relatedCandidacies as Nomination[]).find(v => {
-            if (this.choice.id) return v.beatmapset?.ID === this.choice.id;
+            if (this.choice.id && parseInt(this.$route.params.year) < 2021) return v.beatmapset?.ID === this.choice.id;
+            else if (this.choice.id && parseInt(this.$route.params.year) >= 2021) return v.beatmap?.ID === this.choice.id;
             else return v.user?.ID === this.choice.corsaceID;
         });
     }

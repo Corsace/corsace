@@ -51,5 +51,6 @@ export interface BeatmapsetInfo {
 }
 
 export interface BeatmapInfo extends BeatmapsetInfo {
+    setID: number;
     difficulty: string;
 }
