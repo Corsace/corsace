@@ -124,6 +124,9 @@ export class User extends BaseEntity {
     @OneToMany(() => Influence, influence => influence.influence)
     influencing!: Influence[];
 
+    @OneToMany(() => Influence, influence => influence.reviewer)
+    influenceReviews!: Influence[];
+
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User
             .createQueryBuilder("user")

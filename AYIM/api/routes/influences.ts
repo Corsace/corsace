@@ -137,7 +137,7 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
     newInfluence.user = ctx.state.user;
     newInfluence.influence = target;
     newInfluence.year = query.year;
-    newInfluence.comment = query.comment;
+    newInfluence.comment = ctx.state.user.canComment ? query.comment : "";
     newInfluence.rank = influences.length + 1;
     newInfluence.mode = modeDivision;
     await newInfluence.save();

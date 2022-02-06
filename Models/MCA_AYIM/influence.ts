@@ -28,4 +28,13 @@ export class Influence extends BaseEntity {
 
     @Column({ type: "text", nullable: true })
     comment!: string;
+
+    @Column({ default: false })
+    isValid!: boolean;
+
+    @ManyToOne(() => User, user => user.influenceReviews)
+    reviewer?: User;
+
+    @Column({ nullable: true })
+    lastReviewedAt?: Date;
 }
