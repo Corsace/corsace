@@ -8,6 +8,7 @@ import { User } from "../../../Models/user";
 import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear } from "../../../MCA-AYIM/api/middleware";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
+import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 
 const nominatingRouter = new Router();
 
@@ -176,36 +177,46 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
             if (category.filter) {
                 if (category.filter.minLength && beatmap.hitLength < category.filter!.minLength!)
                     return ctx.body = {
-                        error: "Beatmapset does not exceed minimum length requirement!", 
+                        error: "Beatmap does not exceed minimum length requirement!", 
                     };
                 if (category.filter.maxLength && beatmap.hitLength > category.filter!.maxLength!)
                     return ctx.body = {
-                        error: "Beatmapset exceeds maximum length requirement!", 
+                        error: "Beatmap exceeds maximum length requirement!", 
                     };
                 if (category.filter.minBPM && beatmap.beatmapset.BPM < category.filter!.minBPM!)
                     return ctx.body = {
-                        error: "Beatmapset does not exceed minimum BPM requirement!", 
+                        error: "Beatmap does not exceed minimum BPM requirement!", 
                     };
                 if (category.filter.maxBPM && beatmap.beatmapset.BPM > category.filter!.maxBPM!)
                     return ctx.body = {
-                        error: "Beatmapset exceeds maximum BPM requirement!", 
+                        error: "Beatmap exceeds maximum BPM requirement!", 
                     };
                 if (category.filter.minSR && beatmap.totalSR < category.filter!.minSR!)
                     return ctx.body = {
-                        error: "Beatmapset does not exceed minimum SR requirement!", 
+                        error: "Beatmap does not exceed minimum SR requirement!", 
                     };
                 if (category.filter.maxSR && beatmap.totalSR > category.filter!.maxSR!)
                     return ctx.body = {
-                        error: "Beatmapset exceeds maximum SR requirement!", 
+                        error: "Beatmap exceeds maximum SR requirement!", 
                     };
                 if (category.filter.minCS && beatmap.circleSize < category.filter.minCS)
                     return ctx.body = {
-                        error: "Beatmapset does not exceed minimum CS requirement!", 
+                        error: "Beatmap does not exceed minimum CS requirement!", 
                     };
                 if (category.filter.maxCS && beatmap.circleSize > category.filter.maxCS)
                     return ctx.body = {
-                        error: "Beatmapset exceeds maximum CS requirement!", 
+                        error: "Beatmap exceeds maximum CS requirement!", 
                     };
+                if ((category.filter.topOnly || category.mode.ID === ModeDivisionType.storyboard)) {
+                    const set = await Beatmap
+                        .createQueryBuilder("beatmap")
+                        .where("beatmapsetID = :id", { id: beatmap.beatmapsetID })
+                        .getMany();
+                    if (beatmap.totalSR !== Math.max(...set.map(b => b.totalSR)))
+                        return ctx.body = {
+                            error: "Beatmap is not the top diff! This category only focuses on the top diffs only.", 
+                        };
+                }
             }
 
             nomination.beatmap = beatmap;

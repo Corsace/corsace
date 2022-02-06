@@ -155,6 +155,17 @@ export class Beatmap extends BaseEntity {
             if (category.filter.maxCS)
                 queryBuilder
                     .andWhere(`beatmap.circleSize<=${category.filter.maxCS}`);
+            if (category.filter.topOnly || includeStoryboard)
+                queryBuilder
+                    .andWhere((sqb) => {
+                        const subSubQuery = sqb.subQuery()
+                            .from(Beatmap, "refMap")
+                            .select("max(refMap.totalSR)")
+                            .where("beatmapsetID = beatmapset.ID")
+                            .limit(1)
+                            .getQuery();
+                        return "beatmap.totalSR = " + subSubQuery;
+                    });
         }
 
         // Check for search text

@@ -34,6 +34,17 @@
                     v-model="filterParams"
                     :fields="filterFields"
                 />
+
+                <div 
+                    class="admin-popout__section"
+                >
+                    top diff Only
+                    <input
+                        v-model="filterParams.topOnly"
+                        type="checkbox"
+                        class="admin-popout__input"
+                    >
+                </div>
             </div>
             
             <button
@@ -90,6 +101,7 @@ export default class AdminModalCategory extends Vue {
             maxSR: info?.filter?.maxSR,
             minCS: info?.filter?.minCS,
             maxCS: info?.filter?.maxCS,
+            topOnly: info?.filter?.topOnly,
         };
     }
 

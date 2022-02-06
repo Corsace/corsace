@@ -9,6 +9,7 @@ export interface CategoryFilter {
     maxSR?: number;
     minCS?: number;
     maxCS?: number;
+    topOnly?: boolean;
     rookie?: boolean;
 }
 

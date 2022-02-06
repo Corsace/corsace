@@ -31,6 +31,9 @@ export class CategoryFilter {
     @Column({ nullable: true })
     maxCS?: number;
 
+    @Column({ default: false })
+    topOnly?: boolean;
+
     @Column({ nullable: true })
     rookie?: boolean;
 
@@ -79,7 +82,7 @@ export class Category extends BaseEntity {
             maxNominations: this.maxNominations,
             type: CategoryType[this.type],
             mode: this.mode.name,
-            isFiltered: this.filter && (this.filter.minLength || this.filter.maxLength || this.filter.minBPM || this.filter.maxBPM || this.filter.minSR || this.filter.maxSR || this.filter.minCS || this.filter.maxCS) ? true : false,
+            isFiltered: this.filter && (this.filter.minLength || this.filter.maxLength || this.filter.minBPM || this.filter.maxBPM || this.filter.minSR || this.filter.maxSR || this.filter.minCS || this.filter.maxCS || this.filter.topOnly) ? true : false,
             filter: this.filter ?? undefined, 
         };
     }
@@ -105,6 +108,7 @@ export class Category extends BaseEntity {
         filter.maxSR = params.maxSR ?? undefined;
         filter.minCS = params.minCS ?? undefined;
         filter.maxCS = params.maxCS ?? undefined;
+        filter.topOnly = params.topOnly ?? undefined;
         filter.rookie = params.rookie ?? undefined;
         this.filter = filter;
     }
