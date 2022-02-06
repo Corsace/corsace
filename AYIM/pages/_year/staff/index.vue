@@ -13,6 +13,13 @@
         >
             Comments pending >
         </nuxt-link>
+
+        <nuxt-link
+            :to="`/${mca.name}/staff/influences`"
+            class="staff-page__link"
+        >
+            Influence Comments pending >
+        </nuxt-link>
     </div>
 </template>
 

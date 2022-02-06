@@ -32,9 +32,12 @@ import staffRequestsRouter from "../MCA/api/routes/staff/requests";
 import staffVotesRouter from "../MCA/api/routes/staff/votes";
 import resultsRouter from "../MCA/api/routes/results";
 
+import usersRouter from "../AYIM/api/routes/users";
 import commentsRouter from "../AYIM/api/routes/comments";
+import influencesRouter from "../AYIM/api/routes/influences";
 import commentsReviewRouter from "../AYIM/api/routes/staff/comments";
-import usersRouter from "../AYIM/api/routes/staff/users";
+import influencesReviewRouter from "../AYIM/api/routes/staff/influences";
+import usersStaffRouter from "../AYIM/api/routes/staff/users";
 import recordsRouter from "../AYIM/api/routes/records";
 import statisticsRouter from "../AYIM/api/routes/statistics";
 import mappersRouter from "../AYIM/api/routes/mappers";
@@ -105,13 +108,16 @@ koa.use(Mount("/api/staff/votes", staffVotesRouter.routes()));
 koa.use(Mount("/api/staff/requests", staffRequestsRouter.routes()));
 
 // AYIM
+koa.use(Mount("/api/users", usersRouter.routes()));
 koa.use(Mount("/api/records", recordsRouter.routes()));
 koa.use(Mount("/api/statistics", statisticsRouter.routes()));
 koa.use(Mount("/api/mappers", mappersRouter.routes()));
 koa.use(Mount("/api/comments", commentsRouter.routes()));
+koa.use(Mount("/api/influences", influencesRouter.routes()));
 
 koa.use(Mount("/api/staff/comments", commentsReviewRouter.routes()));
-koa.use(Mount("/api/staff/users", usersRouter.routes()));
+koa.use(Mount("/api/staff/influences", influencesReviewRouter.routes()));
+koa.use(Mount("/api/staff/users", usersStaffRouter.routes()));
 
 // MCA-AYIM
 koa.use(Mount("/api/mca", mcaRouter.routes()));

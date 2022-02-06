@@ -1,7 +1,7 @@
 <template>
     <div class="staff-page">
         <div class="staff-page__title">
-            Comments
+            Influences
         </div>
         <search-bar
             :placeholder="$t('ayim.comments.search')"
@@ -101,7 +101,7 @@
                         v-else-if="end"
                         class="staff-comment__loading"
                     >
-                        No more comments!~
+                        No more influences with comments!~
                     </div>
                 </div>
             </div>
@@ -125,7 +125,7 @@ import { StaffComment } from "../../../../Interfaces/comment";
 @Component({
     head () {
         return {
-            title: "Comments | Staff | AYIM",
+            title: "Influences | Staff | AYIM",
         };
     },
     components: {
@@ -162,7 +162,7 @@ export default class StaffComments extends Vue {
         this.loading = true;
         this.comments = [];
 
-        let url = `/api/staff/comments/${this.$route.params.year}`;
+        let url = `/api/staff/influences`;
         if (!this.showValidated) url += "?filter=true";
         if (this.text) url += (url.includes("?") ? "&" : "?") + `text=${this.text}`;
 
@@ -187,7 +187,7 @@ export default class StaffComments extends Vue {
         if (this.end) return;
 
         this.loading = true;
-        let url = `/api/staff/comments/${this.$route.params.year}?skip=${this.comments.length}`;
+        let url = `/api/staff/influences?skip=${this.comments.length}`;
         if (!this.showValidated) url += "&filter=true";
         if (this.text) url += `&text=${this.text}`;
 
@@ -208,7 +208,7 @@ export default class StaffComments extends Vue {
     async update (id: number) {
         this.info = "";
         const i = this.comments.findIndex(c => c.ID === id);
-        const res = await this.$axios.post(`/api/staff/comments/${id}/review`, {
+        const res = await this.$axios.post(`/api/staff/influences/${id}/review`, {
             comment: this.comments[i].comment,
         });
             
@@ -228,7 +228,7 @@ export default class StaffComments extends Vue {
         if (!confirm("Are you sure?")) 
             return;
             
-        const res = await this.$axios.post(`/api/staff/comments/${id}/remove`);
+        const res = await this.$axios.post(`/api/staff/influences/${id}/remove`);
             
         if (res.data.error) {
             this.info = res.data.error;
