@@ -16,12 +16,12 @@ async function command (m: Message) {
             .orderBy("influence.year", "DESC")
             .getOne();
         if (!user) {
-            await m.channel.send("No user found in the corsace database for you! Please login to https://corsace.io with your discord and osu! accounts!");
+            await m.reply("No user found in the corsace database for you! Please login to https://corsace.io with your discord and osu! accounts!");
             return;
         }
         const latestYear = Math.max(...user.influences.map(inf => inf.year));
-        const influences = user.influences.filter(inf => inf.year === latestYear);
-        m.channel.send(`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map((inf, i) => `${i + 1}: **${inf.influence.osu.username}**`).join("\n")}`);
+        const influences = user.influences.filter(inf => inf.year === latestYear).sort((a, b) => a.rank - b.rank);
+        m.reply(`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map(inf => `${inf.rank}: **${inf.influence.osu.username}** ${inf.comment ? " - " + inf.comment : ""}`).join("\n")}`);
         return;
     }
 
@@ -53,18 +53,23 @@ async function command (m: Message) {
     if (search)
         query = query.andWhere("user.osuUserid = :search", { search })
             .orWhere("user.osuUsername LIKE :user")
-            .orWhere("otherName.name LIKE :user");
+            .orWhere("otherName.name LIKE :user")
+            .setParameter("user", `%${search}%`);
+    else
+        query = query.andWhere("user.discordUserid = :id", { id: m.author.id });
     
     const user = await query.orderBy("influence.year", "DESC")
-        .setParameter("user", `%${search}%`)
         .getOne();
     if (!user) {
-        await m.channel.send("No user containing influences found in the corsace database with the given year and query!");
+        if (!search) {
+            await m.reply("You either currently do not have influences for year less than equal to the provided year, or you have not logged into Corsace!\nIf you are not logged into Corsace, please login to https://corsace.io with your discord and osu! accounts in order to obtain your influences implicitly!");
+        } else
+            await m.reply(`${search} does not currently contain influences found in the corsace database with the given year!`);
         return;
     }
     const latestYear = Math.max(...user.influences.map(inf => inf.year));
-    const influences = user.influences.filter(inf => inf.year === latestYear);
-    m.channel.send(`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map((inf, i) => `${i + 1}: **${inf.influence.osu.username}**`).join("\n")}`);
+    const influences = user.influences.filter(inf => inf.year === latestYear).sort((a, b) => a.rank - b.rank);
+    m.reply(`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map(inf => `${inf.rank}: **${inf.influence.osu.username}** ${inf.comment ? " - " + inf.comment : ""}`).join("\n")}`);
     return;
     
 }

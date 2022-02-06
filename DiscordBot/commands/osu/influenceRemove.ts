@@ -6,13 +6,15 @@ import { osuClient } from "../../../Server/osu";
 import { Influence } from "../../../Models/MCA_AYIM/influence";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 
 async function command (m: Message) {
     const influenceRemoveRegex = /(inf|influence)del(ete)?\s+(.+)/i;
     const profileRegex = /(osu|old)\.ppy\.sh\/(u|users)\/(\S+)/i;
+    const modeRegex = /-(standard|std|taiko|tko|catch|ctb|mania|man|storyboard|sb)/i;
 
     if (!influenceRemoveRegex.test(m.content)) {
-        await m.channel.send("Please provide a year and user!");
+        await m.reply("Please provide a year and user it's not that hard!!!!!");
         return;
     }
 
@@ -22,7 +24,7 @@ async function command (m: Message) {
         },
     });
     if (!user) {
-        await m.channel.send("No user found in the corsace database for you! Please login to https://corsace.io with your discord and osu! accounts!");
+        await m.reply("No user found in the corsace database for you! Please login to https://corsace.io with your discord and osu! accounts!");
         return;
     }
 
@@ -31,19 +33,48 @@ async function command (m: Message) {
     if (!res)
         return;
     const params = res[3].split(" ");
-    let year = "";
+    let year = 0;
     let search = "";
+    let mode: ModeDivision | undefined = undefined;
     if (/^20[0-9]{2}$/.test(params[0])) {
-        year = params[0];
+        year = parseInt(params[0], 10);
         search = params.slice(1).join(" ");
     } else if (/^20[0-9]{2}$/.test(params[params.length - 1])) {
-        year = params[params.length - 1];
+        year = parseInt(params[params.length - 1], 10);
         params.pop();
         search = params.join(" ");
     } else {
-        await m.channel.send(`Could not parse any year provided!`);
-        return;
+        year = (new Date).getUTCFullYear();
+        search = params.join(" ");
     }
+    for (const param of params) {
+        if (modeRegex.test(param)) {
+            switch (modeRegex.exec(param)![1]) {
+                case "standard" || "std": {
+                    mode = await ModeDivision.findOne(1);
+                    break;
+                } case "taiko" || "tko": {
+                    mode = await ModeDivision.findOne(2);
+                    break;
+                } case "catch" || "ctb": {
+                    mode = await ModeDivision.findOne(3);
+                    break;
+                } case "mania" || "man": {
+                    mode = await ModeDivision.findOne(4);
+                    break;
+                } case "storyboard" || "sb": {
+                    mode = await ModeDivision.findOne(5);
+                    break;
+                }
+            }
+            if (mode) {
+                search = params.filter(p => p !== param).join(" ");
+                break;
+            }
+        }
+    }
+    if (!mode)
+        mode = await ModeDivision.findOne(1);
 
     const mca = await MCA.findOne({
         results: MoreThanOrEqual(new Date()),
@@ -51,8 +82,8 @@ async function command (m: Message) {
             start: LessThanOrEqual(new Date()),
         },
     });
-    if (parseInt(year, 10) < (mca ? mca.year : (new Date()).getUTCFullYear())) {
-        await m.channel.send(`You cannot remove mapping influences for previous years!`);
+    if (year < (mca ? mca.year : (new Date()).getUTCFullYear())) {
+        await m.reply(`You cannot remove mapping influences for previous years!`);
         return;
     }
 
@@ -69,7 +100,7 @@ async function command (m: Message) {
         apiUser = (await osuClient.user.get(search)) as APIUser;
 
     if (!apiUser) {
-        await m.channel.send(`No user found for **${q}**`);
+        await m.reply(`No user found for **${q}**`);
         return;
     }
 
@@ -80,21 +111,22 @@ async function command (m: Message) {
     });
 
     if (!influenceUser) {
-        await m.channel.send(`**${apiUser.username}** doesn't even exist in the Corsace database! You're capping!!!!!!!`);
+        await m.reply(`**${apiUser.username}** doesn't even exist in the Corsace database! You're capping!!!!!!!`);
         return;
     }
     const influence = await Influence.findOne({
         user,
         influence: influenceUser,
-        year: parseInt(year, 10),
+        year,
+        mode,
     });
     if (!influence) {
-        await m.channel.send(`**${influenceUser.osu.username}** influencing you as a mapper in **${year}** doesn't seem to exist currently!`);
+        await m.reply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** doesn't seem to exist currently!`);
         return;
     }
 
     await influence.remove();
-    m.channel.send(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** has been removed!`);
+    m.reply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** has been removed!`);
     return;
     
 }

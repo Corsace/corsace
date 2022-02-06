@@ -32,7 +32,8 @@ influencesReviewRouter.get("/", async (ctx) => {
         .addSelect("influenceUser.osuUserid", "targetosuID")
         .addSelect("influenceUser.osuUsername", "targetosuUsername")
         .addSelect("reviewer.osuUsername", "reviewer")
-        .where("inhfluence.comment IS NOT NULL");
+        .where("influence.comment IS NOT NULL")
+        .andWhere("influence.comment <> ''");
     if (filter)
         query.andWhere(`isValid = 0`);
     if (text) {
@@ -100,3 +101,5 @@ influencesReviewRouter.post("/:id/remove", async (ctx) => {
         success: "ok",
     };
 });
+
+export default influencesReviewRouter;

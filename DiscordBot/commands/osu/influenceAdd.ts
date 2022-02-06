@@ -13,9 +13,10 @@ async function command (m: Message) {
     const influenceAddRegex = /(inf|influence)add\s+(.+)/i;
     const profileRegex = /(osu|old)\.ppy\.sh\/(u|users)\/(\S+)/i;
     const modeRegex = /-(standard|std|taiko|tko|catch|ctb|mania|man|storyboard|sb)/i;
+    const commentRegex = /-c (.+)/i;
 
     if (!influenceAddRegex.test(m.content)) {
-        await m.channel.send("Please provide a year and user!");
+        await m.reply("Please at least provide a user come on!!!!!!");
         return;
     }
 
@@ -25,11 +26,16 @@ async function command (m: Message) {
         },
     });
     if (!user) {
-        await m.channel.send("No user found in the corsace database for you! Please login to https://corsace.io with your discord and osu! accounts!");
+        await m.reply("No user found in the corsace database for you! Please login to https://corsace.io with your discord and osu! accounts!");
         return;
     }
 
-    // Get year and/or search query params
+    // Get year, search, mode, and/or comment params
+    let comment = "";
+    if (commentRegex.test(m.content)) {
+        comment = commentRegex.exec(m.content)![1];
+        m.content = m.content.replace(commentRegex, "");
+    }
     const res = influenceAddRegex.exec(m.content);
     if (!res)
         return;
@@ -45,8 +51,8 @@ async function command (m: Message) {
         params.pop();
         search = params.join(" ");
     } else {
-        await m.channel.send(`Could not parse any year provided!`);
-        return;
+        year = (new Date).getUTCFullYear();
+        search = params.join(" ");
     }
     for (const param of params) {
         if (modeRegex.test(param)) {
@@ -68,16 +74,17 @@ async function command (m: Message) {
                     break;
                 }
             }
-            if (mode)
+            if (mode) {
+                search = params.filter(p => p !== param).join(" ");
                 break;
+            }
         }
     }
-    if (!mode) {
-        await m.channel.send(`Could not parse any mode provided!`);
-        return;
-    }
-    if (!isEligibleFor(user, mode.ID, year)) {
-        await m.channel.send(`You did not rank a set or guest difficulty this year!`);
+    if (!mode)
+        mode = await ModeDivision.findOne(1);
+
+    if (!isEligibleFor(user, mode!.ID, year)) {
+        await m.reply(`You did not rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date).getUTCFullYear() ? "\nFor adding influences in the current year, then if you have ranked a set, re-login to Corsace with your osu! account, and you should be able to add them after!" : ""}`);
         return;
     }
 
@@ -94,7 +101,7 @@ async function command (m: Message) {
         apiUser = (await osuClient.user.get(search)) as APIUser;
 
     if (!apiUser) {
-        await m.channel.send(`No user found for **${q}**`);
+        await m.reply(`No user found for **${q}**`);
         return;
     }
 
@@ -115,14 +122,18 @@ async function command (m: Message) {
     }
 
     const influences = await Influence.find({
-        user,
-        year,
+        where: {
+            user,
+            year,
+            mode,
+        },
+        relations: ["user", "influence"],
     });
     if (influences.length === 5) {
-        await m.channel.send(`You already have 5 influences for **${year}**!`);
+        await m.reply(`You already have 5 influences for **${year}** in **${mode!.name}**!`);
         return;
-    } else if (influences.some(inf => inf.influence.osu.username === apiUser.username)) {
-        await m.channel.send(`You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}**!`);
+    } else if (influences.some(inf => inf.influence.osu.userID === influenceUser!.osu.userID)) {
+        await m.reply(`You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
         return;
     }
 
@@ -130,7 +141,8 @@ async function command (m: Message) {
     influence.user = user;
     influence.influence = influenceUser!;
     influence.year = year;
-    influence.mode = mode;
+    influence.mode = mode!;
+    influence.comment = comment;
     influence.rank = influences.length + 1;
 
     // Warn for older years
@@ -153,7 +165,7 @@ async function command (m: Message) {
                 .setStyle("DANGER")
         );
         const message = await m.reply({
-            content: `Are you sure you want to add **${influenceUser.osu.username}** as a mapping influence for **${year}**? You cannot remove influences for years past the currently running MCA!`,
+            content: `Are you sure you want to add **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**? You cannot remove influences for years past the currently running MCA!`,
             components: [row],
         });
         const collector = message.createMessageComponentCollector({ componentType: "BUTTON", time: 10000 });
@@ -165,7 +177,7 @@ async function command (m: Message) {
 
             if (i.customId === "true") {
                 await influence.save();
-                m.reply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}**!`);
+                m.reply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
             }
             await message.delete();
         });
@@ -174,7 +186,7 @@ async function command (m: Message) {
 
     await influence.save();
 
-    m.reply(`Added **${influenceUser.osu.username}** as a mapping influence for **${year}**!`);
+    m.reply(`Added **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
     return;
     
 }
