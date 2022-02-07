@@ -7,7 +7,7 @@ import { modAcronyms } from "./mods";
 import axios from "axios";
 import uleb from "../Server/utils/uleb";
 import lzma from "lzma-native";
-import { objtypes, parser } from "ojsama";
+import { beatmap, objtypes, parser } from "ojsama";
 
 export class ReplayData {
 
@@ -251,7 +251,11 @@ export class ReplayData {
             }
         }
 
-        let version = beatmap.format_version;
+        const version = beatmap.format_version;
+        if (version >= 6)
+            beatmap = applyStacking(beatmap);
+        else
+            beatmap = applyStackingOld(beatmap);
     }
 
     public createOSR (this: ReplayData) {
@@ -287,3 +291,11 @@ export const Press: {
     K2: 8,
     Smoke: 16,
 };
+
+function applyStacking (beatmap: beatmap): beatmap {
+
+}
+
+function applyStackingOld (beatmap: beatmap): beatmap {
+
+}
