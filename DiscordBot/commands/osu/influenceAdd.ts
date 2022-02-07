@@ -34,7 +34,7 @@ async function command (m: Message) {
     let comment = "";
     if (commentRegex.test(m.content)) {
         comment = commentRegex.exec(m.content)![1];
-        m.content = m.content.replace(commentRegex, "");
+        m.content = m.content.replace(commentRegex, "").trim();
     }
     const res = influenceAddRegex.exec(m.content);
     if (!res)
