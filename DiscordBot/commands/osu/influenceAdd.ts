@@ -43,14 +43,15 @@ async function command (m: Message) {
     let year = 0;
     let search = "";
     let mode: ModeDivision | undefined = undefined;
-    if (/^20[0-9]{2}$/.test(params[0])) {
-        year = parseInt(params[0], 10);
-        search = params.slice(1).join(" ");
-    } else if (/^20[0-9]{2}$/.test(params[params.length - 1])) {
-        year = parseInt(params[params.length - 1], 10);
-        params.pop();
-        search = params.join(" ");
-    } else {
+    for (const param of params) {
+        if (/^20[0-9]{2}$/.test(param))
+            year = parseInt(param, 10);
+        if (year !== 0) {
+            search = params.filter(p => p !== param).join(" ");
+            break;
+        }
+    }
+    if (year === 0) {
         year = (new Date).getUTCFullYear();
         search = params.join(" ");
     }
