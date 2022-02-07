@@ -1,4 +1,4 @@
-import { Message, MessageActionRow, MessageButton } from "discord.js";
+import { DiscordAPIError, Message, MessageActionRow, MessageButton } from "discord.js";
 import { OAuth, User } from "../../../Models/user";
 import { Command } from "../index";
 import { User as APIUser } from "nodesu";
@@ -181,6 +181,15 @@ async function command (m: Message) {
                 m.reply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
             }
             await message.delete();
+        });
+        collector.on("end", async () => {
+            try {
+                await message.delete();
+            } catch (e) {   
+                if (e instanceof DiscordAPIError)
+                    return;
+                console.error(e);
+            }
         });
         return;
     }
