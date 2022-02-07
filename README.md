@@ -62,7 +62,7 @@ The database will listen on `127.0.0.1:3306`, with `corsace` being the database 
 
 #### Seeding the database
 
-Create and seed the whole Corsace database using: `npm run typeorm migration:run`
+Create and seed the whole Corsace database using: `NODE_ENV=development npm run typeorm migration:run`
 
 ### Google Sheets
 
