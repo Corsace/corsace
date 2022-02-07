@@ -9,6 +9,7 @@ import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
 import { MoreThan, Not } from "typeorm";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
+import { Beatmap } from "../../../Models/beatmap";
 
 const votingRouter = new Router();
 
@@ -42,7 +43,10 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
 
 votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), stageSearch("voting", async (ctx, category) => {
     let votes = await Vote.find({
-        voter: ctx.state.user,
+        where: {
+            voter: ctx.state.user,
+        },
+        relations: ["user", "beatmapset", "beatmap", "beatmap.beatmapset", "beatmap.beatmapset.creator"],
     });
     votes = votes.filter(vote => vote.category.mca.year === category.mca.year).sort((a, b) => a.choice - b.choice);
 
@@ -66,8 +70,10 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
         .createQueryBuilder("nomination")
         .where(`categoryID = ${category.ID}`);
 
-    if (category.type === CategoryType.Beatmapsets) {
+    if (category.type === CategoryType.Beatmapsets && ctx.state.year < 2021) {
         nomQ.andWhere(`beatmapsetID = ${nomineeId}`);
+    } else if (category.type === CategoryType.Beatmapsets && ctx.state.year >= 2021) {
+        nomQ.andWhere(`beatmapID = ${nomineeId}`);
     } else {
         nomQ.andWhere(`userID = ${nomineeId}`);
     }
@@ -104,11 +110,18 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
     vote.voter = ctx.state.user;
     vote.category = category;
     
-    if (category.type === CategoryType.Beatmapsets) {
+    if (category.type === CategoryType.Beatmapsets && ctx.state.year < 2021) {
         const nominee = await Beatmapset.findOneOrFail(nomineeId);
         vote.beatmapset = nominee;
 
         if (categoryVotes.some(v => v.beatmapset?.ID == nominee.ID)) {
+            alreadyVoted = true;
+        }
+    } else if (category.type === CategoryType.Beatmapsets && ctx.state.year >= 2021) {
+        const nominee = await Beatmap.findOneOrFail(nomineeId);
+        vote.beatmap = nominee;
+
+        if (categoryVotes.some(v => v.beatmap?.ID == nominee.ID)) {
             alreadyVoted = true;
         }
     } else if (category.type === CategoryType.Users) {

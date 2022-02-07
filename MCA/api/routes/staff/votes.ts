@@ -26,7 +26,9 @@ staffVotesRouter.get("/", async (ctx) => {
         .leftJoin("vote.user", "user")
         .leftJoin("vote.beatmapset", "beatmapset")
         .leftJoin("beatmapset.creator", "creator")
-        .leftJoin("beatmapset.beatmaps", "beatmap")
+        .leftJoin("vote.beatmap", "beatmap")
+        .leftJoin("beatmap.beatmapset", "beatmapBeatmapset")
+        .leftJoin("beatmapBeatmapset.creator", "beatmapsetCreator")
         .select("vote.ID", "ID")
         .addSelect("category.ID", "categoryID")
         .addSelect("vote.choice", "choice")
@@ -47,6 +49,16 @@ staffVotesRouter.get("/", async (ctx) => {
         .addSelect("creator.osuUserid", "creatorID")
         .addSelect("creator.osuUsername", "creatorOsu")
         .addSelect("creator.discordUsername", "creatorDiscord")
+    // beatmap selects
+        .addSelect("beatmap.ID", "beatmapID")
+        .addSelect("beatmap.difficulty", "difficulty")
+        .addSelect("beatmapBeatmapset.ID", "beatmapBeatmapsetID")
+        .addSelect("beatmapBeatmapset.artist", "beatmapBeatmapsetArtist")
+        .addSelect("beatmapBeatmapset.title", "beatmapBeatmapsetTitle")
+        .addSelect("beatmapBeatmapset.tags", "beatmapBeatmapsetTags")
+        .addSelect("beatmapsetCreator.osuUserid", "beatmapsetCreatorID")
+        .addSelect("beatmapsetCreator.osuUsername", "beatmapsetCreatorOsu")
+        .addSelect("beatmapsetCreator.discordUsername", "beatmapsetCreatorDiscord")
     // wheres + groups + orders
         .where("category.ID = :id", { id: categoryID })
         .groupBy("vote.ID")
@@ -82,6 +94,23 @@ staffVotesRouter.get("/", async (ctx) => {
                     osuID: vote.creatorID,
                     osuUsername: vote.creatorOsu,
                     discordUsername: vote.creatorDiscord,
+                },
+            };
+        }
+        if (vote.beatmapID) {
+            staffVote.beatmap = {
+                ID: vote.beatmapID,
+                difficulty: vote.difficulty, 
+            };
+            staffVote.beatmapset = {
+                ID: vote.beatmapBeatmapsetID,
+                artist: vote.beatmapBeatmapsetArtist,
+                title: vote.beatmapBeatmapsetTitle,
+                tags: vote.beatmapBeatmapsetTags,
+                creator: {
+                    osuID: vote.beatmapsetCreatorID,
+                    osuUsername: vote.beatmapsetCreatorOsu,
+                    discordUsername: vote.beatmapsetCreatorDiscord,
                 },
             };
         }

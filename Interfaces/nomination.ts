@@ -1,4 +1,4 @@
-import { Beatmapset } from "./beatmap";
+import { Beatmap, Beatmapset } from "./beatmap";
 import { Category } from "./category";
 import { User } from "./user";
 
@@ -8,6 +8,7 @@ export interface Nomination {
     category: Category;
     user?: User;
     beatmapset?: Beatmapset;
+    beatmap?: Beatmap;
     isValid: boolean;
     reviewer: User;
     lastReviewedAt: Date;
@@ -28,6 +29,10 @@ export interface StaffNomination {
         osuID: string;
         osuUsername: string;
         discordUsername: string;
+    }
+    beatmap?: {
+        ID: number;
+        difficulty: string;
     }
     beatmapset?: {
         ID: number;

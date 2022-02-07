@@ -2,6 +2,7 @@ import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column, ManyToMa
 import { User } from "../user";
 import { Beatmapset } from "../beatmapset";
 import { Category } from "./category";
+import { Beatmap } from "../beatmap";
 
 @Entity()
 export class Nomination extends BaseEntity {
@@ -28,6 +29,11 @@ export class Nomination extends BaseEntity {
     })
     beatmapset?: Beatmapset;
 
+    @ManyToOne(() => Beatmap, Beatmap => Beatmap.nominationsReceived, {
+        eager: true,
+    })
+    beatmap?: Beatmap;
+
     @Column({ default: false })
     isValid!: boolean;
     
@@ -46,7 +52,10 @@ export class Nomination extends BaseEntity {
             .leftJoinAndSelect("nomination.user", "user")
             .leftJoinAndSelect("user.otherNames", "otherNames")
             .leftJoinAndSelect("nomination.beatmapset", "beatmapset")
-            .leftJoinAndSelect("beatmapset.creator", "creator");
+            .leftJoinAndSelect("beatmapset.creator", "creator")
+            .leftJoinAndSelect("nomination.beatmap", "beatmap")
+            .leftJoinAndSelect("beatmap.beatmapset", "nominationBeatmapset")
+            .leftJoinAndSelect("nominationBeatmapset.creator", "nominationBeatmapsetCreator");
     }
 
     static userNominations (options: { userID: number, year?: number }): SelectQueryBuilder<Nomination> {

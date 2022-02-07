@@ -3,7 +3,7 @@
         <a
             class="choice__info"
             :style="bgImg"
-            :href="`https://osu.ppy.sh/beatmapsets/${choice.id}`"
+            :href="$route.params.year < 2021 ? `https://osu.ppy.sh/beatmapsets/${choice.id}` : `https://osu.ppy.sh/beatmaps/${choice.id}`"
             target="_blank"
         >
             <div class="choice__info-title">
@@ -12,7 +12,7 @@
             <div class="choice__info-secondary">
                 <span class="choice__info-artist">{{ choice.artist }}</span>
                 <span class="choice__info-host">|
-                    <span class="choice__info-hoster">{{ choice.hoster }}</span>
+                    <span class="choice__info-hoster">{{ choice.hoster }} {{ $route.params.year >= 2021 ? `[${choice.difficulty}]` : "" }}</span>
                 </span>
             </div>
         </a>
@@ -34,7 +34,7 @@ export default class ChoiceBeatmapsetCard extends Vue {
 
     get bgImg (): any {
         if (this.choice)
-            return { "background-image": `linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('https://assets.ppy.sh/beatmaps/${this.choice.id}/covers/cover.jpg?1560315422')` };
+            return { "background-image": `linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('https://assets.ppy.sh/beatmaps/${parseInt(this.$route.params.year, 10) < 2021 ? this.choice.id : this.choice.setID}/covers/cover.jpg?1560315422')` };
 
         return { "background-image": "" };
     }

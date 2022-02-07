@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { ParameterizedContext } from "koa";
-import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
+import { BeatmapInfo, BeatmapsetInfo } from "../../../Interfaces/beatmap";
 import { CategoryType } from "../../../Interfaces/category";
 import { StageQuery } from "../../../Interfaces/queries";
 import { UserChoiceInfo } from "../../../Interfaces/user";
@@ -12,6 +12,7 @@ import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { User } from "../../../Models/user";
 import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 import { parseQueryParam } from "../../../Server/utils/query";
+import { Beatmap } from "../../../Models/beatmap";
 
 export default function stageSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
     return async (ctx: ParameterizedContext) => {
@@ -20,8 +21,15 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
                 error: "Missing category ID!",
             };
 
-        let list: BeatmapsetInfo[] | UserChoiceInfo[] = [];
+        // Make sure user is eligible to nominate in this mode
+        const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
+        const modeId = ModeDivisionType[modeString];
+        if (!isEligibleFor(ctx.state.user, modeId, ctx.state.year))
+            return ctx.body = { error: "Not eligible for this mode!" };
+
+        let list: BeatmapInfo[] | BeatmapsetInfo[] | UserChoiceInfo[] = [];
         let setList: BeatmapsetInfo[] = [];
+        let mapList: BeatmapInfo[] = [];
         let userList: UserChoiceInfo[] = [];
         const favIDs: number[] = [];
         const playedIDs: number[] = [];
@@ -33,26 +41,20 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             .andWhere("mca.year = :year", { year: ctx.state.year })
             .getOneOrFail();
     
-        // Obtain mode and amount to skip
-        const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
-        const modeId = ModeDivisionType[modeString];
-    
-        const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
         
         // Check if this is the initial call, add currently nominated beatmaps/users at the top of the list
+        const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
         if (skip === 0) {
             let objects = await initialCall(ctx, category) as Vote[]; // doesnt really matter the type in this case
             objects = objects.filter(o => o.category.ID === category.ID);
 
-            if (category.type == CategoryType.Beatmapsets)
+            if (category.type == CategoryType.Beatmapsets && ctx.state.year < 2021)
                 setList = objects.map(o => o.beatmapset?.getInfo(true) as BeatmapsetInfo);  
+            else if (category.type == CategoryType.Beatmapsets && ctx.state.year >= 2021)
+                mapList = objects.map(o => o.beatmap?.getInfo(true) as BeatmapInfo);
             else if (category.type == CategoryType.Users)
                 userList = objects.map(o => o.user?.getCondensedInfo(true) as UserChoiceInfo);
         }
-        
-        // Make sure user is eligible to nominate in this mode
-        if (!isEligibleFor(ctx.state.user, modeId, ctx.state.year))
-            return ctx.body = { error: "Not eligible for this mode!" };
         
         if ((ctx.query.favourites === "true" || ctx.query.played === "true") && category.type == CategoryType.Beatmapsets) {
             const accessToken: string = await ctx.state.user.getAccessToken("osu");
@@ -118,11 +120,17 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             played: playedIDs,
         };
     
-        if (category.type == CategoryType.Beatmapsets) { // Search for beatmaps
+        if (category.type == CategoryType.Beatmapsets && ctx.state.year < 2021) { // Search for beatmapsets
             const [beatmaps, totalCount] = await Beatmapset.search(ctx.state.year, modeId, stage, category, query);
             
             setList.push(...beatmaps.map(map => map.getInfo()));
             list = setList;
+            count = totalCount;
+        } else if (category.type == CategoryType.Beatmapsets && ctx.state.year >= 2021) { // Search for beatmaps
+            const [beatmaps, totalCount] = await Beatmap.search(ctx.state.year, modeId, stage, category, query);
+            
+            mapList.push(...beatmaps.map(map => map.getInfo()));
+            list = mapList;
             count = totalCount;
         } else if (category.type == CategoryType.Users) { // Search for users
             const [users, totalCount] = await User.search(ctx.state.year, modeString, stage, category, query);

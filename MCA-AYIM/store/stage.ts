@@ -6,7 +6,7 @@ import { BeatmapsetInfo } from "../../Interfaces/beatmap";
 import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
 import { StageQuery } from "../../Interfaces/queries";
-import { BeatmapResult, UserResult } from "../../Interfaces/result";
+import { BeatmapsetResult, UserResult } from "../../Interfaces/result";
 
 export type SectionCategory = "beatmaps" | "users" | "";
 export type StageType = "nominating" | "voting" | "results";
@@ -18,7 +18,7 @@ interface StageState {
     selectedCategory: CategoryStageInfo | null;
     nominations: Nomination[];
     votes: Vote[];
-    beatmapResults: BeatmapResult[];
+    beatmapsetResults: BeatmapsetResult[];
     userResults: UserResult[];
     stage: StageType;
     count: number;
@@ -38,7 +38,7 @@ export const state = (): StageState => ({
     categories: [],
     nominations: [],
     votes: [],
-    beatmapResults: [],
+    beatmapsetResults: [],
     userResults: [],
     stage: "nominating",
     count: 0,
@@ -102,8 +102,8 @@ export const mutations: MutationTree<StageState> = {
     updateUsers (state, users) {
         state.users = users || [];
     },
-    updateBeatmapResults (state, beatmaps) {
-        state.beatmapResults = beatmaps || [];
+    updateBeatmapsetResults (state, beatmaps) {
+        state.beatmapsetResults = beatmaps || [];
     },
     updateUserResults (state, users) {
         state.userResults = users || [];
@@ -258,7 +258,7 @@ export const actions: ActionTree<StageState, RootState> = {
             if (state.selectedCategory.type === "Users")
                 commit("updateUserResults", data.list);
             else if (state.selectedCategory.type === "Beatmapsets")
-                commit("updateBeatmapResults", data.list);
+                commit("updateBeatmapsetResults", data.list);
         } else {
             if (state.selectedCategory.type === "Users") {
                 let users = data.list;

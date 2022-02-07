@@ -29,11 +29,7 @@
                                 <div>1st Choices: {{ result.placeCounts[1] || 0 }}</div>
                                 <div>2nd-3rd Choices: {{ (result.placeCounts[2] || 0) + (result.placeCounts[3] || 0) }}</div>
                                 <div>
-                                    4th+ Choices: {{ () => {
-                                        let res = 0; 
-                                        Object.keys(result.placeCounts).filter(k => parseInt(k) > 3).forEach(k => res += result.placeCounts[k]);
-                                        return res;
-                                    } }}
+                                    4th+ Choices: {{ count4thChoices(result.placeCounts) }}
                                 </div>
                             </div>
                         </div>
@@ -121,7 +117,9 @@ export default class StaffVoteAccordion extends Vue {
     }
 
     generateUrl (vote: StaffVote): string {
-        if (vote.beatmapset) {
+        if (vote.beatmap) {
+            return `https://osu.ppy.sh/beatmaps/${vote.beatmap.ID}`;
+        } else if (vote.beatmapset) {
             return `https://osu.ppy.sh/beatmapsets/${vote.beatmapset.ID}`;
         }
         
@@ -129,11 +127,21 @@ export default class StaffVoteAccordion extends Vue {
     }
 
     getVoteName (vote: StaffVote) {
+        console.log(vote);
         if (vote.beatmapset) {
-            return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator!.osuUsername}`;
+            if (vote.beatmap)
+                return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator!.osuUsername} [${vote.beatmap.difficulty}]`;
+            else
+                return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator!.osuUsername}`;
         }
 
         return `${vote.user?.osuUsername}`;
+    }
+
+    count4thChoices (placeCounts) {
+        let res = 0; 
+        Object.keys(placeCounts).filter(k => parseInt(k) > 3).forEach(k => res += placeCounts[k]);
+        return res;
     }
 
 }

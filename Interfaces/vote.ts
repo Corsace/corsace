@@ -1,4 +1,4 @@
-import { Beatmapset } from "./beatmap";
+import { Beatmap, Beatmapset } from "./beatmap";
 import { Category } from "./category";
 import { User } from "./user";
 
@@ -10,6 +10,8 @@ export interface Vote {
     user?: User;
     beatmapsetID?: number;
     beatmapset?: Beatmapset;
+    beatmapID?: number;
+    beatmap?: Beatmap;
     choice: number;
 }
 
@@ -27,6 +29,10 @@ export interface StaffVote {
         osuID: string;
         osuUsername: string;
         discordUsername: string;
+    }
+    beatmap?: {
+        ID: number;
+        difficulty: string;
     }
     beatmapset?: {
         ID: number;
@@ -95,23 +101,24 @@ export function voteCounter (votes: UserVote[], year: number): ResultVote[] {
     // Obtain candidate list
     for (const voter of votes) {
         for (const vote of voter.votes) {
-            if (!candidates.some(candidate => vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID)) {
+            if (!candidates.some(candidate => vote.beatmap?.ID ? vote.beatmap.ID === candidate.beatmap?.ID : vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID)) {
                 candidates.push({
                     count: 0,
                     placeCounts: {},
                     inRace: true,
                     beatmapset: vote.beatmapset ?? undefined,
+                    beatmap: vote.beatmap ?? undefined,
                     user: vote.user ?? undefined,
                 } as ResultVote);
             }
         }
     }
-    candidates = candidates.filter((val, i, self) => self.findIndex(v => v.beatmapset?.ID ? v.beatmapset?.ID === val.beatmapset?.ID : v.user?.osuID === val.user?.osuID) === i);
+    candidates = candidates.filter((val, i, self) => self.findIndex(v => v.beatmap?.ID ? v.beatmap?.ID === val.beatmap?.ID : v.beatmapset?.ID ? v.beatmapset?.ID === val.beatmapset?.ID : v.user?.osuID === val.user?.osuID) === i);
     
     // Get the place choice counts in
     for (const voter of votes) {
         for (const vote of voter.votes) {
-            const k = candidates.findIndex(candidate => vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID);
+            const k = candidates.findIndex(candidate => vote.beatmap?.ID ? vote.beatmap.ID === candidate.beatmap?.ID : vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID);
             if (candidates[k].placeCounts[vote.choice])
                 candidates[k].placeCounts[vote.choice]++;
             else
@@ -129,7 +136,7 @@ export function voteCounter (votes: UserVote[], year: number): ResultVote[] {
                     const vote = voter.votes[j];
                     if (!vote.inRace) continue;
 
-                    const k = candidates.findIndex(candidate => vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID);
+                    const k = candidates.findIndex(candidate => vote.beatmap?.ID ? vote.beatmap.ID === candidate.beatmap?.ID : vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID);
                     if (k === -1) { // Placement for this choice is already accounted for in results array
                         votes[i].votes[j].used = true;
                         votes[i].votes[j].inRace = false;

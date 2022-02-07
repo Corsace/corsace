@@ -100,7 +100,7 @@ export default class Results extends Vue {
     } 
 
     // label must match a field in BOTH assets/lang/{lang}/mca.results.headings.*
-    //   AND a property of either BeatmapResults or UserResults 
+    //   AND a property of either BeatmapsetResults or UserResults 
     columns: ResultColumn[] = [
         {label: "placement", size: 1.5, category: "beatmaps", prio: true}, 
         {label: "placement", size: 4, category: "users", prio: true},
