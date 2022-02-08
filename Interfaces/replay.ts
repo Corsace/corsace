@@ -1,13 +1,15 @@
 import { TextChannel } from "discord.js";
 import { config } from "node-config-ts";
-import { Beatmap, ModeType, User, UserScore } from "nodesu";
+import { Beatmap, ModeType, User as APIUser, UserScore } from "nodesu";
 import { discordClient } from "../Server/discord";
 import { osuClient } from "../Server/osu";
-import { modAcronyms } from "./mods";
+import { diffRange, modAcronyms } from "./mods";
 import axios from "axios";
 import uleb from "../Server/utils/uleb";
-import lzma from "lzma-native";
-import { beatmap, objtypes, parser } from "ojsama";
+import lzma from "lzma";
+import { Beatmap as beatmapParse, HitType } from "osu-bpdpc";
+import { HitObject } from "osu-bpdpc/src/Beatmap";
+import { OAuth, User } from "../Models/user";
 
 export class ReplayData {
 
@@ -28,13 +30,18 @@ export class ReplayData {
 
     private data: Buffer; // To reference in the process of parsing it
 
-    constructor (data: Buffer, parseReplay: boolean) {
+    constructor (data: Buffer, mode?: ModeType, beatmap?: Beatmap, player?: User, score?: UserScore) {
         this.data = data;
 
-        if (parseReplay)
+        if (!mode)
             this.parseBasicInfo();
-        else
+        else {
+            this.mode = mode;
+            this.beatmap = beatmap;
+            this.player = player!;
+            this.score = score!;
             this.getPlayData(true);
+        }
     }
 
     public async parseBasicInfo (this: ReplayData) {
@@ -97,7 +104,26 @@ export class ReplayData {
         this.data = this.data.slice(usernameLength + offset - 1);
 
         try {
-            this.player = await osuClient.user.get(username) as User;
+            const apiUser = await osuClient.user.get(username) as APIUser;
+            if (!apiUser)
+                return;
+
+            let userQ = await User.findOne({
+                osu: { 
+                    userID: apiUser.userId.toString(), 
+                },
+            });
+    
+            if (!userQ) {
+                userQ = new User;
+                userQ.country = apiUser.country.toString();
+                userQ.osu = new OAuth;
+                userQ.osu.userID = `${apiUser.userId}`;
+                userQ.osu.username = apiUser.username;
+                userQ.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;
+                await userQ.save();
+            }
+            this.player = userQ;
         } catch (e: any) {
             if (e)
                 (await discordClient.channels.fetch(config.discord.coreChannel) as TextChannel).send(e.toString());
@@ -182,14 +208,14 @@ export class ReplayData {
         this.score.date = date;
     }
 
-    public getPlayData (this: ReplayData, usedAPI: boolean) {
+    public async getPlayData (this: ReplayData, usedAPI: boolean) {
         if (this.mode !== 0) {
             this.data = Buffer.alloc(0);
             return;
         }
 
         // Get length, and decompress LZMA stream
-        let playBuffer = Buffer.alloc(0);
+        let playBuffer: Buffer;
         let playDataString = "";
         if (!usedAPI) {
             const end = (this.data[3] << 24) | (this.data[2] << 16) | (this.data[1] << 8) | this.data[0];
@@ -197,9 +223,7 @@ export class ReplayData {
             playBuffer = this.data.slice(0, end);
         } else
             playBuffer = this.data;
-        lzma.decompress(playBuffer, undefined, (res: Buffer) => {
-            playDataString = res.toString();
-        });
+        console.log(lzma.decompress(playBuffer));
         this.data = Buffer.alloc(0); // goobye
         if (playDataString === "")
             return;
@@ -241,26 +265,134 @@ export class ReplayData {
         const window50 = 199.5 - this.beatmap.overallDifficulty * 10;
 
         const { data } = await axios.get(`https://osu.ppy.sh/osu/${this.beatmap.id}`);
-        let beatmap = new parser().feed(data).map;
+        const lines = data.split("\n");
+        let stackLeniency = 0.7;
+        for (const line of lines) {
+            if (/StackLeniency:\s+((\d|\.)+)/i.test(line)) {
+                stackLeniency = parseFloat(/StackLeniency:\s+((\d|\.)+)/i.exec(line)![1]);
+                break;
+            }
+        } 
+        let beatmap = beatmapParse.fromOsu(data);
         if ((this.score.enabledMods! & modAcronyms.HR) !== 0) {
-            for (let i = 0; i < beatmap.objects.length; i++) {
-                const obj = beatmap.objects[i];
-                if (obj.type === objtypes.spinner)
+            for (let i = 0; i < beatmap.HitObjects.length; i++) {
+                const obj = beatmap.HitObjects[i];
+                if (obj.hitType === HitType.Spinner)
                     continue;
-                beatmap.objects[i].data!.pos[1] = 384 - obj.data!.pos[1];
+
+                beatmap.HitObjects[i].pos.y = 384 - beatmap.HitObjects[i].pos.y;
+                if (obj.hitType === HitType.Slider)
+                    for (let j = 0; j < beatmap.HitObjects[i].curvePoints!.length; j++)
+                        beatmap.HitObjects[i].curvePoints![j].y = 384 - beatmap.HitObjects[i].curvePoints![j].y;
             }
         }
 
-        const version = beatmap.format_version;
-        if (version >= 6)
-            beatmap = applyStacking(beatmap);
+        // see https://github.com/ppy/osu/blob/master/osu.Game.Rulesets.Osu/Beatmaps/OsuBeatmapProcessor.cs#L34
+        if (beatmap.Version >= 6)
+            beatmap = applyStacking(beatmap, stackLeniency);
         else
-            beatmap = applyStackingOld(beatmap);
+            beatmap = applyStackingOld(beatmap, stackLeniency);
+
+        const usedPlays: PlayData[] = [];
+        let prevHit = true; // NOTELOCK IN CURRENT YEAR!!!! XDDD
+        for (let i = 0; i < beatmap.HitObjects.length; i++) {
+            const obj = beatmap.HitObjects[i];
+            if (obj.hitType === HitType.Spinner)
+                continue;
+            
+            let replayFound = false;
+            for (let j = 0; j < this.playData.length; j++) {
+                const play = this.playData[j];
+
+                // Check if this play data is within the 50 window
+                if (play.timestamp < obj.startTime - window50)
+                    continue;
+                if (play.timeSince > obj.startTime + window50)
+                    break;
+
+                // Check if this was already used
+                let used = false;
+                for (const usedPlay of usedPlays) {
+                    if (usedPlay.timestamp === play.timestamp && usedPlay.x === play.x && usedPlay.y === play.y && usedPlay.pressType === play.pressType) {
+                        used = true;
+                        break;
+                    }
+                }
+                if (used)
+                    continue;
+
+                // Check if play data is a press and in the circle/sliderhead
+                const inCircle = Math.pow(play.x - obj.pos.x, 2) + Math.pow(play.y - obj.pos.y, 2) < Math.pow(radius, 2);
+                const m1 = (play.pressType & 1) !== 0 && (this.playData[j - 1].pressType & 1) === 0;
+                const m2 = (play.pressType & 2) !== 0 && (this.playData[j - 1].pressType & 2) === 0;
+                const m3 = (play.pressType & 4) !== 0 && (this.playData[j - 1].pressType & 4) === 0;
+                const m4 = (play.pressType & 8) !== 0 && (this.playData[j - 1].pressType & 8) === 0;
+                const press = m1 || m2 || m3 || m4;
+
+                // Check notelock
+                let notelock = false;
+                if (i > 0) {
+                    notelock = !prevHit && play.timestamp < beatmap.HitObjects[i - 1].startTime + window50;
+
+                    // Sliders are kinda fucked
+                    if (beatmap.HitObjects[i - 1].hitType === HitType.Slider) {
+                        const inPrevCircle = Math.pow(play.x - beatmap.HitObjects[i - 1].pos.x, 2) + Math.pow(play.y - beatmap.HitObjects[i - 1].pos.y, 2) < Math.pow(radius, 2);
+                        const sliderLock = press && inPrevCircle && play.timestamp < beatmap.HitObjects[i - 1].endTime!;
+                        notelock = notelock || sliderLock;
+                    }
+                }
+
+                if (inCircle && press && !notelock) {
+                    this.hitErrors.push(play.timestamp - obj.startTime);
+                    usedPlays.push(play);
+                    replayFound = true;
+                    break;
+                }
+            }
+            prevHit = replayFound;
+        }
+        
+        // Get Std Deviation
+        let avgHitError = 0;
+        let earlyCount = 0;
+        let earlyTotal = 0;
+        let lateCount = 0;
+        let lateTotal = 0;
+        for (const hitError of this.hitErrors) {
+            avgHitError += hitError;
+            if (hitError >= 0) {
+                lateTotal += hitError;
+                lateCount++;
+            } else {
+                earlyTotal += hitError;
+                earlyCount++;
+            }
+        }
+        if (earlyCount > 0)
+            this.earlyHitCount = earlyTotal / earlyCount;
+        if (lateCount > 0)
+            this.lateHitCount = lateTotal / lateCount;
+        if (this.hitErrors.length - 1 < 0)
+            return 0;
+        avgHitError /= (this.hitErrors.length - 1);
+
+        let stdDevHitError = 0;
+        for (const hitError of this.hitErrors)
+            stdDevHitError += Math.pow(hitError - avgHitError, 2);
+        stdDevHitError = Math.sqrt(stdDevHitError / this.hitErrors.length);
+
+        let unstableRate = stdDevHitError * 10;
+        if ((this.score.enabledMods! & modAcronyms.DT) !== 0)
+            unstableRate /= 1.5;
+        if ((this.score.enabledMods! & modAcronyms.HT) !== 0)
+            unstableRate /= 0.75;
+
+        return unstableRate;
     }
 
-    public createOSR (this: ReplayData) {
+    // public createOSR (this: ReplayData) {
 
-    }
+    // }
 }
 
 export interface LifeData {
@@ -292,10 +424,148 @@ export const Press: {
     Smoke: 16,
 };
 
-function applyStacking (beatmap: beatmap): beatmap {
-
+export interface StackObject extends HitObject {
+    stackHeight: number;
 }
 
-function applyStackingOld (beatmap: beatmap): beatmap {
+// https://github.com/ppy/osu/blob/master/osu.Game.Rulesets.Osu/Beatmaps/OsuBeatmapProcessor.cs#L41
+// https://github.com/VINXIS/maquiaBot/blob/master/structs/replayData.go#L586
+function applyStacking (beatmap: beatmapParse, stackLeniency: number): beatmapParse {
+    const scale = (1.0 - 0.7 * (beatmap.Difficulty.CircleSize - 5.0) / 5.0) / 2.0;
+    const ARMS = diffRange(beatmap.Difficulty.ApproachRate);
+    const stackThresh = Math.floor(stackLeniency * ARMS);
 
+    // Get list of objects with the stackheight property
+    const rawObjs = beatmap.HitObjects;
+    const objs: StackObject[] = [];
+    for (const obj of rawObjs) {
+        const stackObj = obj as StackObject;
+        stackObj.stackHeight = 0;
+        objs.push(stackObj);
+    }
+
+    // Get stack heights
+    for (let i = objs.length - 1; i > 0; i--) {
+        let n = i - 1;
+        let obji = objs[i];
+        if (obji.stackHeight !== 0 || obji.hitType === HitType.Spinner)
+            continue;
+
+        if (obji.hitType === HitType.Normal) {
+            while (n - 1 >= 0) {
+                const objn = objs[n];
+                n--;
+                if (objn.hitType === HitType.Spinner)
+                    continue;
+
+                if (obji.startTime - (objn.hitType === HitType.Slider ? objn.endTime! : objn.startTime) > stackThresh)
+                    break;
+
+                if (objn.hitType === HitType.Slider && objn.curvePoints![objn.curvePoints!.length - 1].distance(obji.pos) < 3) {
+                    const offset = obji.stackHeight - objn.stackHeight + 1;
+
+                    for (let j = n + 1; j <= i; j++) {
+                        const objj = objs[j];
+                        if (objn.curvePoints![objn.curvePoints!.length - 1].distance(objj.pos) < 3)
+                            objj.stackHeight -= offset;
+                        objs[j] = objj;
+                    }
+
+                    break;
+                }
+
+                if (objn.pos.distance(obji.pos) < 3) {
+                    objn.stackHeight = obji.stackHeight + 1;
+                    obji = objn;
+                    objs[n] = objn;
+                }
+            }
+        } else if (obji.hitType === HitType.Slider) {
+            while (n - 1 >= 0) {
+                const objn = objs[n];
+                n--;
+                if (objn.hitType === HitType.Spinner)
+                    continue;
+                    
+                if (obji.startTime - objn.startTime > stackThresh)
+                    break;
+                
+                if (objn.pos.distance(obji.pos) < 3) {
+                    objn.stackHeight = obji.stackHeight + 1;
+                    obji = objn;
+                    objs[n] = objn;
+                }
+            } 
+        }
+    }
+
+    for (let i = 0; i < beatmap.HitObjects.length - 1; i++) {
+        const offset = objs[i].stackHeight * scale * -6.4;
+        beatmap.HitObjects[i].pos.x += offset;
+        beatmap.HitObjects[i].pos.y += offset;
+    }
+
+    return beatmap;
+}
+
+// https://github.com/ppy/osu/blob/master/osu.Game.Rulesets.Osu/Beatmaps/OsuBeatmapProcessor.cs#L193
+// https://github.com/VINXIS/maquiaBot/blob/master/structs/replayData.go#L665
+function applyStackingOld (beatmap: beatmapParse, stackLeniency: number): beatmapParse {
+    const scale = (1.0 - 0.7 * (beatmap.Difficulty.CircleSize - 5.0) / 5.0) / 2.0;
+    const ARMS = diffRange(beatmap.Difficulty.ApproachRate);
+    const stackThresh = Math.floor(stackLeniency * ARMS);
+
+    // Get list of objects with the stackheight property
+    const rawObjs = beatmap.HitObjects;
+    const objs: StackObject[] = [];
+    for (const obj of rawObjs) {
+        const stackObj = obj as StackObject;
+        stackObj.stackHeight = 0;
+        objs.push(stackObj);
+    }
+
+    for (let i = 0; i < objs.length; i++) {
+        const obji = objs[i];
+        if (obji.stackHeight !== 0 && obji.hitType !== HitType.Slider)
+            continue;
+
+        let sliderStack = 0;
+        let startTime = obji.startTime;
+        let pos2 = obji.pos;
+        if (obji.hitType === HitType.Slider) {
+            startTime = obji.endTime!;
+            pos2 = obji.curvePoints![obji.curvePoints!.length - 1];
+        }
+
+        for (let j = i + 1; j < objs.length; j++) {
+            const objj = objs[j];
+            if (objj.startTime - stackThresh > startTime)
+                break;
+
+            if (objj.pos.distance(obji.pos) < 3) {
+                obji.stackHeight++;
+                startTime = objj.startTime;
+                if (objj.hitType === HitType.Slider)
+                    startTime = objj.endTime!;
+            }
+            if (objj.pos.distance(pos2) < 3) {
+                sliderStack++;
+                obji.stackHeight -= sliderStack;
+                startTime = objj.startTime;
+                if (objj.hitType === HitType.Slider)
+                    startTime = objj.endTime!;
+            }
+            objs[j] = objj;
+        }
+
+        objs[i] = obji;
+    }
+
+    for (let i = 0; i < beatmap.HitObjects.length - 1; i++) {
+        const offset = objs[i].stackHeight * scale * -6.4;
+        beatmap.HitObjects[i].pos.x += offset;
+        beatmap.HitObjects[i].pos.y += offset;
+    }
+
+    return beatmap;
 }

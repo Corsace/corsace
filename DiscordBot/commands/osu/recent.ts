@@ -114,7 +114,7 @@ async function command (m: Message) {
     }
 
     // Check if index given is larger than score list size
-    let warning = "";
+    let warning: string | undefined = undefined;
     if (index > scores.length) {
         index = scores.length;
         warning = `Defaulted to max: ${scores.length}`;
@@ -126,7 +126,7 @@ async function command (m: Message) {
     let beatmap = ((await osuClient.beatmaps.getByBeatmapId(score.beatmapId, Mode.all, 1, undefined, score.enabledMods)) as Beatmap[])[0];
     beatmap = applyMods(beatmap, mods);
 
-    const message = await beatmapEmbed(beatmap, mods, undefined, undefined, score, user);
+    const message = await beatmapEmbed(beatmap, mods, undefined, undefined, score, user, true);
 
     message.footer = { text: "" };
 

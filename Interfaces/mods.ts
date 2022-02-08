@@ -109,7 +109,7 @@ export function applyMods (beatmap: Beatmap, mods: string): Beatmap {
  * @param value The initial AR/HP value
  * @returns The ms speed of AR/HP
  */
-function diffRange (value: number): number {
+export function diffRange (value: number): number {
     let val = 1200;
     if (value > 5)
         val = 1200 + (450 - 1200) * (value - 5) / 5;

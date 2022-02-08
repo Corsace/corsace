@@ -1,9 +1,10 @@
 import { MessageEmbed, MessageEmbedOptions } from "discord.js";
-import { ApprovalStatus, Beatmap, BeatmapScore, Mode, Score, UserScore } from "nodesu";
+import { ApprovalStatus, Beatmap, BeatmapScore, LookupType, Mode, ReplayData as Replay, Score, UserScore } from "nodesu";
 import { acronymtoMods, modsToAcronym } from "../../Interfaces/mods";
 import { User } from "../../Models/user";
 import { discordGuild } from "../../Server/discord";
 import { osuClient } from "../../Server/osu";
+import { ReplayData } from "../../Interfaces/replay";
 import modeColour from "./modeColour";
 import ppCalculator from "./ppCalculator";
 
@@ -46,15 +47,39 @@ export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set?
             }
         }
 
-        // The dreaded replay data (TODO)
+        // The dreaded replay data
         let replay = "";
-        if (score.replayAvailable)
-            replay = " | Replay data is not available yet!";
+        if (score.replayAvailable) {
+            replay = `| [**Replay**](https://osu.ppy.sh/scores/osu/${score.scoreId}/download)`;
+            const apiReplay = (await osuClient.replay.get(beatmap.id, user.osu.userID, beatmap.mode, LookupType.id, score.enabledMods)) as Replay;
+            const replayData = new ReplayData(apiReplay.content, beatmap.mode, beatmap, user, score);
+            const UR = await replayData.getUnstableRate();
+            replay += ` | ${UR}`;
+            if (mods.includes("DT") || mods.includes("NC") || mods.includes("HT"))
+                replay += " cv. UR";
+            else
+                replay += " UR";
+        } else if (isRecent && scoreHits === totalHits) {
+            const scores = (await osuClient.scores.get(beatmap.id, score.enabledMods, beatmap.mode, 1, user.osu.userID, LookupType.id)) as BeatmapScore[];
+            if (scores && scores[0].scoreId === score.scoreId) {
+                const apiReplay = (await osuClient.replay.get(beatmap.id, user.osu.userID, beatmap.mode, LookupType.id, score.enabledMods)) as Replay;
+                if (apiReplay?.content) {
+                    replay = `| [**Replay**](https://osu.ppy.sh/scores/osu/${score.scoreId}/download)`;
+                    const replayData = new ReplayData(apiReplay.content, beatmap.mode, beatmap, user, score);
+                    const UR = await replayData.getUnstableRate();
+                    replay += ` | ${UR}`;
+                    if (mods.includes("DT") || mods.includes("NC") || mods.includes("HT"))
+                        replay += " cv. UR";
+                    else
+                        replay += " UR";
+                }
+            }
+        }
 
         // Get pp value(s)
         let pp = "";
         if (score.pp === 0 || isNaN(score.pp)) { // Didn't finish
-            if (scoreHits === totalHits) // Laugh at them for failing at the end
+            if (scoreHits === totalHits && mapCompletion == "" && score.rank === "F") // Laugh at them for failing at the end
                 mapCompletion += "**FAILED RIGHT AT THE END LMFAO** \n";
             const FCVersion = new Score({
                 maxcombo: beatmap.maxCombo,
