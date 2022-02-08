@@ -225,7 +225,6 @@ export class ReplayData {
             playBuffer = this.data;
 
         playDataString = lzma.decompress(playBuffer);
-        console.log(playDataString);
         this.data = Buffer.alloc(0); // goobye
         if (playDataString === "")
             return;
