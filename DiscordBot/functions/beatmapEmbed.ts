@@ -54,7 +54,7 @@ export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set?
             const apiReplay = (await osuClient.replay.get(beatmap.id, user.osu.userID, beatmap.mode, LookupType.id, score.enabledMods)) as Replay;
             const replayData = new ReplayData(apiReplay.content, beatmap.mode, beatmap, user, score);
             const UR = await replayData.getUnstableRate();
-            replay += ` | ${UR}`;
+            replay += ` | ${UR.toFixed(2)}`;
             if (mods.includes("DT") || mods.includes("NC") || mods.includes("HT"))
                 replay += " cv. UR";
             else
@@ -67,7 +67,7 @@ export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set?
                     replay = `| [**Replay**](https://osu.ppy.sh/scores/osu/${score.scoreId}/download)`;
                     const replayData = new ReplayData(apiReplay.content, beatmap.mode, beatmap, user, score);
                     const UR = await replayData.getUnstableRate();
-                    replay += ` | ${UR}`;
+                    replay += ` | ${UR.toFixed(2)}`;
                     if (mods.includes("DT") || mods.includes("NC") || mods.includes("HT"))
                         replay += " cv. UR";
                     else

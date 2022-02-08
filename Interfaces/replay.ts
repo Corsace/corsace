@@ -33,7 +33,7 @@ export class ReplayData {
     constructor (data: Buffer, mode?: ModeType, beatmap?: Beatmap, player?: User, score?: UserScore) {
         this.data = data;
 
-        if (!mode)
+        if (mode === undefined)
             this.parseBasicInfo();
         else {
             this.mode = mode;
@@ -223,7 +223,9 @@ export class ReplayData {
             playBuffer = this.data.slice(0, end);
         } else
             playBuffer = this.data;
-        console.log(lzma.decompress(playBuffer));
+
+        playDataString = lzma.decompress(playBuffer);
+        console.log(playDataString);
         this.data = Buffer.alloc(0); // goobye
         if (playDataString === "")
             return;
