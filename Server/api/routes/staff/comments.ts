@@ -1,8 +1,8 @@
 import Router from "@koa/router";
-import { isLoggedInDiscord, isMCAStaff } from "../../../middleware";
+import { isLoggedInDiscord } from "../../../middleware";
 import { User } from "../../../../Models/user";
 import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
-import { validatePhaseYear } from "../../../middleware/mca-ayim";
+import { isMCAStaff, validatePhaseYear } from "../../../middleware/mca-ayim";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { StaffComment } from "../../../../Interfaces/comment";
 import { Brackets } from "typeorm";

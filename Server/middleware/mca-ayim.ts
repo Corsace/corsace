@@ -5,6 +5,7 @@ import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
 import { MCA } from "../../Models/MCA_AYIM/mca";
 import { User } from "../../Models/user";
 import { getMember } from "../discord";
+import { hasRoles } from ".";
 
 async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
     const mca: MCA = ctx.state.mca;
@@ -136,4 +137,21 @@ async function isResults (ctx: ParameterizedContext, next: Next): Promise<any> {
     }
 }
 
-export { isEligible, isEligibleFor, currentMCA, validatePhaseYear, isPhase, isPhaseStarted, isResults };
+const isMCAStaff = hasRoles([{
+    section: "mca",
+    role: "standard",
+}, {
+    section: "mca",
+    role: "taiko",
+}, {
+    section: "mca",
+    role: "fruits",
+}, {
+    section: "mca",
+    role: "mania",
+}, {
+    section: "mca",
+    role: "storyboard",
+}]);
+
+export { isEligible, isEligibleFor, currentMCA, validatePhaseYear, isPhase, isPhaseStarted, isResults, isMCAStaff };
