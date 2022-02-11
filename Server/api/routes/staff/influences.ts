@@ -1,9 +1,10 @@
 import Router from "@koa/router";
 import { Influence } from "../../../../Models/MCA_AYIM/influence";
-import { isLoggedInDiscord, isMCAStaff } from "../../../../Server/middleware";
+import { isLoggedInDiscord } from "../../../../Server/middleware";
 import { Brackets } from "typeorm";
 import { parseQueryParam } from "../../../../Server/utils/query";
 import { StaffComment } from "../../../../Interfaces/comment";
+import { isMCAStaff } from "../../../middleware/mca-ayim";
 
 const influencesReviewRouter = new Router();
 

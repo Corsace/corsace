@@ -93,23 +93,7 @@ function hasRoles (roles: discordRoleInfo[]) {
     };
 }
 
-const isMCAStaff = hasRoles([{
-    section: "mca",
-    role: "standard",
-}, {
-    section: "mca",
-    role: "taiko",
-}, {
-    section: "mca",
-    role: "fruits",
-}, {
-    section: "mca",
-    role: "mania",
-}, {
-    section: "mca",
-    role: "storyboard",
-}]);
 const isHeadStaff = hasRole("corsace", "headStaff");
 const isCorsace = hasRole("corsace", "corsace");
 
-export { isLoggedIn, isLoggedInDiscord, isStaff, isMCAStaff, isHeadStaff, isCorsace, hasRole, hasRoles };
+export { isLoggedIn, isLoggedInDiscord, isStaff, isHeadStaff, isCorsace, hasRole, hasRoles };
