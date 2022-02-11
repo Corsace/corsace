@@ -114,7 +114,6 @@ export default class SearchBar extends Vue {
 }
 
 .search__input {
-    font-family: $font-body;
     font-size: $font-lg;
     @include breakpoint(mobile) {
         font-size: $font-base;

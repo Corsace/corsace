@@ -241,7 +241,7 @@ export default class Comments extends Vue {
 
         & > a {
             margin-bottom: 10px;
-            background-color: $gray-dark;
+            background-color: $grayluscent;
         }
     }
 }

@@ -197,7 +197,6 @@ export default class Collapsible extends Vue {
     &__title {
         white-space: normal;
         letter-spacing: -3px;
-        font-family: $font-display;
         text-align: center;
         font-size: $font-lg;
         cursor: pointer;

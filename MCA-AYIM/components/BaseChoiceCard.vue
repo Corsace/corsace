@@ -66,7 +66,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Getter, namespace } from "vuex-class";
 
-import { StageType } from "../../MCA-AYIM/store/stage";
+import { StageType } from "../../Interfaces/mca";
 import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
 import { Phase } from "../../Interfaces/mca";

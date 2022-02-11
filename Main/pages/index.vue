@@ -1,180 +1,52 @@
 <template>
-    <div class="layout">
-        <div class="header">
-            <div class="header-nav">
-                <div class="header-nav__brand-container">
-                    <div class="header-nav__brand" />
+    <div>
+        <a 
+            class="section-info"
+            href="https://shop.corsace.io"
+            target="_blank"
+        >   
+            <div class="section-info__overlay">
+                <div class="announcement">
+                    <div class="announcement__url">shop.corsace.io</div>
+                    <div>{{ $t('main.merch.official') }}</div>
+                    <div>{{ $t('main.merch.avail') }}</div>
                 </div>
-                <img
-                    class="header-nav__brand-name"
-                    src="../../Assets/img/ayim-mca/site/corsace_text.png"
-                    alt=""
-                >
+                <div class="announcement__info">
+                    <div class="announcement__info--bold">{{ $t('main.merch.name') }}</div>
+                    <div>{{ $t('main.merch.colours') }}</div>
+                    <div class="announcement__info--cost">€24.99</div>
+                </div>
             </div>
+        </a>
 
-            <div 
-                v-if="loggedInUser"
-                class="header-login"
+        <div class="section-events">
+            <h2 
+                class="events-title"
+                :class="`events-title--${viewTheme}`"
             >
-                <div class="header-login__welcome-container">
-                    <img 
-                        :src="avatarURL"
-                        class="header-login__avatar"
-                    >
-                    <div class="header-login__welcome">
-                        {{ $t('mca_ayim.header.welcomeBack') }}
-                    </div>
-                    <div
-                        v-if="loggedInUser.osu"
-                        class="header-login__username"
-                    >
-                        {{ loggedInUser.osu.username }} <span class="header-login__line">|</span> {{ loggedInUser.discord ? loggedInUser.discord.username : "" }}
-                    </div>
-                    <div class="header-login__welcome">
-                        <a
-                            href="/api/logout"
+                CORSACE EVENTS
+            </h2>
+
+            <div class="events">
+                <a
+                    v-for="(event, key) in events"
+                    :key="key"
+                    class="event"
+                    :href="event.url"
+                    target="_blank"
+                >
+                    <div class="event__image-container">
+                        <img
+                            class="event__image"
+                            :src="require(`../../Assets/img/main/${key}.jpg`)"
+                            alt=""
                         >
-                            {{ $t('mca_ayim.header.logout') }}
-                            <div class="arrow arrow--right" />
-                        </a>
-                        <a
-                            v-if="!loggedInUser.discord"
-                            :href="'/api/login/discord?site=corsace&redirect=' + $route.fullPath"
-                        >
-                            | DISCORD {{ $t('main.header.login') }}
-                            <div class="arrow arrow--right" />
-                        </a>
-                        <a 
-                            v-else
-                            :href="'/api/login/discord?site=corsace&redirect=' + $route.fullPath"
-                        >
-                            {{ $t('main.header.changeDiscord') }}
-                            <div class="arrow arrow--right" />
-                        </a>
                     </div>
-                </div>
-            </div>
-
-            <div
-                v-else
-                class="header-login"
-            >
-                <a
-                    class="header-login__link"
-                    :href="'/api/login/osu?site=corsace&redirect=' + $route.fullPath"
-                >
-                    osu! {{ $t('main.header.login') }}
-                    <div class="arrow arrow--right" />
-                </a>
-            </div>
-        </div>
-
-        <div class="main">
-            <a 
-                class="section-info"
-                href="https://shop.corsace.io"
-                target="_blank"
-            >   
-                <div class="section-info__overlay">
-                    <div class="announcement">
-                        <div class="announcement__url">shop.corsace.io</div>
-                        <div>{{ $t('main.merch.official') }}</div>
-                        <div>{{ $t('main.merch.avail') }}</div>
+                    <div class="event__title">
+                        {{ event.title }}
                     </div>
-                    <div class="announcement__info">
-                        <div class="announcement__info--bold">{{ $t('main.merch.name') }}</div>
-                        <div>{{ $t('main.merch.colours') }}</div>
-                        <div class="announcement__info--cost">€24.99</div>
-                    </div>
-                </div>
-            </a>
-
-            <div class="section-events">
-                <h2 class="events-title">
-                    CORSACE EVENTS
-                </h2>
-
-                <div class="events">
-                    <a
-                        v-for="(event, key) in events"
-                        :key="key"
-                        class="event"
-                        :href="event.url"
-                        target="_blank"
-                    >
-                        <div class="event__image-container">
-                            <img
-                                class="event__image"
-                                :src="require(`../../Assets/img/main/${key}.jpg`)"
-                                alt=""
-                            >
-                        </div>
-                        <div class="event__title">
-                            {{ event.title }}
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="subfooter">
-            Powered by
-            <a
-                class="subfooter__powered"
-                href="https://twitter.com/kkaetwo"
-            >
-                <img
-                    class="subfooter__kaetwo" 
-                    src="../../Assets/img/partners/kaetwo.png"
-                >
-            </a>
-        </div>
-
-        <div class="footer">
-            <div class="socials">
-                <a
-                    href="https://twitter.com/corsace_"
-                    target="_blank"
-                >
-                    <img
-                        class="socials__icon"
-                        src="../../Assets/img/social/twitter.png"
-                        alt=""
-                    >
-                </a>
-                <a
-                    href="https://discord.gg/Z6vEMsr"
-                    target="_blank"
-                >
-                    <img
-                        class="socials__icon"
-                        src="../../Assets/img/social/discord.png"
-                        alt=""
-                    >
-                </a>
-                <a
-                    href="https://www.twitch.tv/corsace"
-                    target="_blank"
-                >
-                    <img
-                        class="socials__icon"
-                        src="../../Assets/img/social/ttv.png"
-                        alt=""
-                    >
-                </a>
-                <a
-                    href="https://github.com/corsace/corsace"
-                    target="_blank"
-                >
-                    <img
-                        class="socials__icon"
-                        src="../../Assets/img/social/github.png"
-                        alt=""
-                    >
                 </a>
             </div>
-            
-            <language-switcher />
         </div>
     </div>
 </template>
@@ -183,14 +55,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
-import LanguageSwitcher from "../components/LanguageSwitcher.vue";
-
-import { UserInfo } from "../../Interfaces/user";
-
 @Component({
-    components: {
-        LanguageSwitcher,
-    },
     head () {
         return {
             title: "Corsace",
@@ -208,7 +73,7 @@ import { UserInfo } from "../../Interfaces/user";
 })
 export default class Default extends Vue {
 
-    @State loggedInUser!: UserInfo;
+    @State viewTheme!: "light" | "dark";
 
     events = {
         "ayim": {
@@ -228,28 +93,13 @@ export default class Default extends Vue {
             url: "https://osu.ppy.sh/community/forums/topics/1324620",
         },
     };
-
-    get avatarURL (): string  {
-        return this.loggedInUser?.osu?.avatar || "";
-    }
-
-    async mounted () {
-        await this.$store.dispatch("setInitialData");
-    }
     
 }
 </script>
 
 <style lang="scss">
 @import '@s-sass/_mixins';
-
-$dark: #0f0f0f;
-$dark-dark-gray: #141414;
-$dark-gray: #242424;
-$gray: #343434;
-$light-gray: #cccccc;
-$pink: #e98792;
-$dark-cyan: linear-gradient(#009595, #008080);
+@import '@s-sass/_variables';
 
 @keyframes leftscroll {
     from {
@@ -257,174 +107,6 @@ $dark-cyan: linear-gradient(#009595, #008080);
     }
     to {
         transform: translateX(100%);
-    }
-}
-
-.layout {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.main {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    background-color: $dark-gray;
-}
-
-.header {
-    background-color: $dark;
-    width: 100%;
-    height: 70px;
-    @include breakpoint(mobile) {
-        height: 55px;
-    }
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.header-nav {
-    display: flex;
-    align-items: center;
-
-    &__brand {
-        &-container {
-            width: 70px;
-            height: 70px;
-            @include breakpoint(mobile) {
-                width: 55px;
-                height: 55px;
-            }
-            background-image: linear-gradient(to top, rgba(244, 182, 193, 0.82), #e98792);
-        }
-
-        &-name {
-            @include breakpoint(mobile) {
-                width: 100px;
-            }
-        }
-
-        width: 100%;
-        height: 100%;
-        background-size: contain;
-        background-image: url('../../Assets/img/ayim-mca/site/corsace_logo.png');
-    }
-}
-
-.header-login {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-    margin-right: 30px;
-    @include breakpoint(mobile) {
-        margin-right: 15px;
-    }
-
-    &__welcome-container {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-
-        justify-content: center;
-        align-content: flex-end;
-
-        height: 100%;
-    }
-
-    &__avatar {
-		border-radius: 100%;
-
-        flex-basis: 100%;
-        padding: 10px 0;
-
-        margin: 0 15px;
-        @include breakpoint(mobile) {
-            margin: 0 5px;
-        }
-	}
-    
-    &__link {
-        display: flex;
-        align-items: center;
-    }
-
-    &__line {
-        color: $pink;
-        padding: 0 5px;
-    }
-
-    &__welcome {
-        color: #6f6f6f;
-        display: flex;
-        @include breakpoint(mobile) {
-            font-size: 0.75rem;
-        }
-        & > a {
-            color: #6f6f6f;
-            display: flex;
-            align-items: center;
-            font-size: 0.75rem;
-            @include breakpoint(mobile) {
-                font-size: 0.6rem;
-            }
-
-            & > div {
-                width: 10px;
-                height: 10px;
-                margin-left: 5px;
-            }
-        }
-    }
-
-    &__username {
-        text-transform: uppercase;
-        @include breakpoint(mobile) {
-            font-size: 0.75rem;
-        }
-    }
-}
-
-.subfooter {
-    color: $light-gray;
-    background-color: $dark-dark-gray;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 0;
-
-    &__powered {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    &__kaetwo {
-        height: 15px;
-        padding: 0 5px;
-    }
-}
-
-.footer {
-    background-color: $dark;
-    width: 100%;
-    height: 50px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.socials {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    margin-left: 30px;
-
-    &__icon {
-        margin-right: 10px;
-        width: auto;
-        height: 30px;
     }
 }
 
@@ -537,7 +219,7 @@ $dark-cyan: linear-gradient(#009595, #008080);
 .info-container {
     width: 100%;
     height: 100%;
-    background-color: $dark-gray;
+    background-color: $darker-gray;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -581,10 +263,10 @@ $dark-cyan: linear-gradient(#009595, #008080);
 }
 
 .section-events {
-    background-color: $dark-gray;
     display: flex;
     flex-direction: column;
     padding: 20px 2%;
+    margin: auto 0;
 }
 
 .events-title {
@@ -592,6 +274,13 @@ $dark-cyan: linear-gradient(#009595, #008080);
     border-bottom-color: $pink;
     border-bottom-style: solid;
     border-bottom-width: 1px;
+    &--light {
+        color: black;
+    }
+    &--dark {
+        color: white;
+    }
+    @include transition;
 }
 
 .events {
@@ -634,21 +323,4 @@ $dark-cyan: linear-gradient(#009595, #008080);
         padding: 10px 10px 2em 10px;
     }
 }
-
-.arrow {
-    width: 15px;
-    height: 15px;
-    margin-left: 10px;
-    background-repeat: no-repeat;
-    background-size: contain;
-
-    &--up {
-        background-image: url('../../Assets/img/main/arrow_up.png');
-    }
-
-    &--right {
-        background-image: url('../../Assets/img/main/arrow_right.png');
-    }
-}
-
 </style>

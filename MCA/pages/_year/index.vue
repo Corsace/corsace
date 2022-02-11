@@ -1,74 +1,19 @@
 <template>
     <div>
-        <div
-            v-if="phase"
-            class="left-side"
-        >
-            <div class="voting-date">
-                <div
-                    v-if="phase.phase === 'nominating' || phase.phase === 'voting'" 
-                    class="voting-date__wheel-container"
-                >
-                    <div class="voting-date__wheel-img" />
-
-                    <div class="voting-date__wheel-box" />
-
-                    <div class="voting-date__content">
-                        <div class="voting-date__title">
-                            <b>{{ $t(`mca.main.stage.${phase.phase}`) }}</b>
-                        </div>
-                        <div class="voting-date__subtitle">
-                            <!-- Only show on mobile instead of wheel -->
-                            <div class="voting-date__days">
-                                {{ remainingDays }}
-                            </div>
-                            {{ $t('mca.main.daysLeft') }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="general-info">
-                <p v-if="phase.phase">
-                    <span :class="phase.phase === 'nominating' ? `general-info--${selectedMode}` : ''">
-                        {{ $t(`mca.main.nominating`).toUpperCase() + " | " + mca.nomination.start.toLocaleString(dateInfo.locale, options) + " - " + mca.nomination.end.toLocaleString(dateInfo.locale, options) }}
-                    </span>
-                    <br>
-                    <span :class="phase.phase === 'voting' ? `general-info--${selectedMode}` : ''">
-                        {{ $t(`mca.main.voting`).toUpperCase() + " | " + mca.voting.start.toLocaleString(dateInfo.locale, options) + " - " + mca.voting.end.toLocaleString(dateInfo.locale, options) }}
-                    </span>
-                    <br>
-                    <span :class="phase.phase === 'results' ? `general-info--${selectedMode}` : ''">
-                        {{ $t(`mca.main.results`).toUpperCase() + " | " + mca.results.toLocaleString(dateInfo.locale, options) }}
-                    </span>
-                </p>
-                <div v-html="$t(`mca.main.message.${$route.params.year}`)" />
-            </div>
-        </div>
-
-        <div :class="{'right-side': phase, 'full-side': !phase}">
-            <mode-switcher 
-                hide-phase
-            >
-                <index-page />
-            </mode-switcher>
-        </div>
+        Hello
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter, State } from "vuex-class";
-
-import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
-import IndexPage from "../../components/IndexPage.vue";
+import { Getter, State, namespace } from "vuex-class";
 
 import { MCA, Phase } from "../../../Interfaces/mca";
 
+const mcaAyimModule = namespace("mca-ayim");
+
 @Component({
     components: {
-        ModeSwitcher,
-        IndexPage,
     },
     head () {
         return {
@@ -87,10 +32,10 @@ import { MCA, Phase } from "../../../Interfaces/mca";
 })
 export default class Index extends Vue {
 
-    @State mca!: MCA;
-    @State selectedMode!: string;
+    @mcaAyimModule.State mca!: MCA;
+    @mcaAyimModule.State selectedMode!: string;
 
-    @Getter phase!: Phase;
+    @mcaAyimModule.Getter phase!: Phase;
 
     dateInfo = Intl.DateTimeFormat().resolvedOptions();
     options: Intl.DateTimeFormatOptions = { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };

@@ -36,7 +36,7 @@ import Collapsible from "../../../MCA-AYIM/components/Collapsible.vue";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import { Vote } from "../../../Interfaces/vote";
 import { Nomination } from "../../../Interfaces/nomination";
-import { StageType } from "../../../MCA-AYIM/store/stage";
+import { StageType } from "../../../Interfaces/mca";
 
 const stageModule = namespace("stage");
 

@@ -34,7 +34,6 @@ export default class ResultsTableHeadings extends Vue {
     padding: 0 5px 0 5px;
 
     font-size: 0.9rem;
-    font-family: $font-body;
     text-transform: uppercase;
 
     flex: initial;

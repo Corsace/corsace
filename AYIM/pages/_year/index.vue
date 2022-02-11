@@ -1,35 +1,18 @@
 <template>
     <div>
-        <div
-            v-if="mca"
-            :style="{ backgroundImage: 'url(' + require(`../../../Assets/img/ayim-mca/site/goodbye/${this.$route.params.year}.png`) + ')' }"
-            class="ayim-bg"
-        />
-        <div class="left-side" />
-        <div :class="{'right-side': mca, 'full-side': !mca}">
-            <mode-switcher
-                stretch
-                hide-phase
-                :ignore-modes="['storyboard']"
-            >
-                <index-page />
-            </mode-switcher>
-        </div>
+        Hello
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { namespace } from "vuex-class";
 import { MCA } from "../../../Interfaces/mca";
 
-import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
-import IndexPage from "../../components/IndexPage.vue";
+const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
-        ModeSwitcher,
-        IndexPage,
     },
     head () {
         return {
@@ -47,7 +30,7 @@ import IndexPage from "../../components/IndexPage.vue";
     },
 })
 export default class Index extends Vue {
-    @State mca!: MCA;
+    @mcaAyimModule.State mca!: MCA;
 }
 </script>
 

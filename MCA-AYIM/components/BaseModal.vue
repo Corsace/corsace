@@ -85,7 +85,6 @@ export default class BaseModal extends Vue {
 }
 
 .modal__title {
-    font-family: $font-display;
     font-size: 3rem;
     margin-bottom: 30px;
 }

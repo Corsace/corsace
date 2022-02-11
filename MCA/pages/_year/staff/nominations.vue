@@ -66,13 +66,6 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import ModeSwitcher from "../../../../MCA-AYIM/components/ModeSwitcher.vue";
-import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
-import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
-import ButtonGroup from "../../../../MCA-AYIM/components/ButtonGroup.vue";
-import StaffAccordionHeader from "../../../components/staff/StaffAccordionHeader.vue";
-import StaffNominationAccordion from "../../../components/staff/StaffNomAccordion.vue";
-
 import { CategoryInfo } from "../../../../Interfaces/category";
 import { StaffNomination } from "../../../../Interfaces/nomination";
 
@@ -85,12 +78,6 @@ interface NominationsByCategory {
 
 @Component({
     components: {
-        ModeSwitcher,
-        ScrollBar,
-        SearchBar,
-        ButtonGroup,
-        StaffAccordionHeader,
-        StaffNominationAccordion,
     },
     head () {
         return {

@@ -125,7 +125,6 @@ $icon-margin: 15px;
         gap: 10px;
     }
 
-    font-family: $font-display;
     font-size: $font-base;
     text-shadow: 0 0 4px white;
     text-align: center;

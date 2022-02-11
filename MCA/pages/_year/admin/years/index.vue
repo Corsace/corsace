@@ -12,13 +12,8 @@ import { State } from "vuex-class";
 
 import { UserMCAInfo } from "../../../../../Interfaces/user";
 
-import ModeSwitcher from "../../../../../MCA-AYIM/components/ModeSwitcher.vue";
-import AdminYears from "../../../../../MCA-AYIM/components/admin/AdminYears.vue";
-
 @Component({
     components: {
-        ModeSwitcher,
-        AdminYears,
     },
     head () {
         return {

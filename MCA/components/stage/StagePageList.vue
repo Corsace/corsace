@@ -74,7 +74,7 @@ import ResultsUserCard from "../results/ResultsUserCard.vue";
 import ScrollBar from "../../../MCA-AYIM/components/ScrollBar.vue";
 import VotingBox from "./VotingBox.vue";
 
-import { SectionCategory } from "../../../MCA-AYIM/store/stage";
+import { SectionCategory } from  "../../../Interfaces/category";
 import { UserChoiceInfo } from "../../../Interfaces/user";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 import { BeatmapsetResult, UserResult, ResultColumn } from "../../../Interfaces/result";

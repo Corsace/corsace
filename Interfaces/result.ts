@@ -2,7 +2,7 @@ import { BeatmapInfo, BeatmapsetInfo } from "./beatmap";
 import { CategoryType } from "./category";
 import { UserChoiceInfo } from "./user";
 import { ResultVote } from "./vote";
-import { SectionCategory } from "../MCA-AYIM/store/stage";
+import { SectionCategory } from "./category";
 
 export interface BeatmapsetResult extends BeatmapsetInfo {
     placement: number,

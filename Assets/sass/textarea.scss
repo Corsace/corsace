@@ -1,0 +1,15 @@
+@import '_variables';
+
+.textarea {
+    color: white;
+    padding: 5px;
+    margin: 0;
+    background: black;
+    box-shadow: $black-shadow;
+    border-radius: 5.5px;
+    font-size: $font-base;
+    border: none;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 100%;
+}

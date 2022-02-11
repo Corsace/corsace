@@ -1,0 +1,44 @@
+$modes: "storyboard", "mania" , "fruits", "taiko", "standard";
+$themes: "light", "dark";
+
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+$font-scoreboard: 'Scoreboard', sans-serif;
+
+$font-sm: 0.75rem;
+$font-base: 1rem;
+$font-lg: 1.25rem;
+$font-xl: 1.5rem;
+$font-xxl: 1.7rem;
+
+$standard: #fb2475;
+$taiko: #ff890a;
+$fruits: #0abdff;
+$mania: #48f326;
+$storyboard: #919191;
+
+$gray: #cccccc;
+$dark-gray: #343434;
+$darker-gray: #242424;
+$darkest-gray: #141414;
+$dark: #0f0f0f;
+$dark-bg: rgba(0, 0, 0, 0.65);
+$grayluscent: rgba(255, 255, 255, 0.2);
+$inactive: rgba(255, 255, 255, 0.529);
+
+$red: #c43c3c;
+$yellow: #fad95b;
+$green: #378f37;
+$pink: #e98792;
+$blue: #d8f0fa;
+$dark-cyan: linear-gradient(#009595, #008080);
+
+$border-radius: 15px;
+
+$black-shadow: 0 0 8px rgba(0, 0, 0, 0.63);
+$gray-shadow: 0 0 8px rgba(255, 255, 255, 0.25);
+$text-shadow: 0 0 2px white;
+$text-shadow-lg: 0 0 4px white;

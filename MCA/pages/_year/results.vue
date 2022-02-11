@@ -37,26 +37,15 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { Getter, Mutation, State, namespace } from "vuex-class";
+import { SectionCategory } from "../../../Interfaces/category";
 
-import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
-import NoticeModal from "../../../MCA-AYIM/components/NoticeModal.vue";
-import ResultsFilters from "../../components/results/ResultsFilters.vue";
-import ResultsTableHeadings from "../../components/results/ResultsTableHeadings.vue";
-import StagePageList from "../../components/stage/StagePageList.vue";
-
-import { MCAInfo, Phase } from "../../../Interfaces/mca";
-import { SectionCategory, StageType } from "../../../MCA-AYIM/store/stage";
+import { MCAInfo, Phase, StageType } from "../../../Interfaces/mca";
 import { ResultColumn } from "../../../Interfaces/result";
 
 const stageModule = namespace("stage");
 
 @Component({
     components: {
-        ModeSwitcher,
-        NoticeModal,
-        ResultsFilters,
-        ResultsTableHeadings,
-        StagePageList,
     },
     head () {
         return {
