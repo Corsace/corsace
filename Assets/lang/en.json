@@ -1,6 +1,12 @@
 {
     "flag": "https://osu.ppy.sh/images/flags/GB.png",
-    "login": "LOG IN",
+    "header": {
+        "welcomeBack": "welcome back",
+        "login": "login",
+        "register": "register",
+        "changeDiscord": "change discord",
+        "logout": "logout"
+    },
     "mca_ayim": {
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
@@ -360,11 +366,6 @@
         }
     },
     "main": {
-        "header": {
-            "login": "LOG IN",
-            "register": "REGISTER",
-            "changeDiscord": "CHANGE DISCORD"
-        },
         "construction": {
             "underConstruction": "under construction",
             "sorry": "sorry for the inconvenience",

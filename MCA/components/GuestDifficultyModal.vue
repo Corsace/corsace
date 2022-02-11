@@ -52,7 +52,7 @@ import GuestDifficultySubmission from "./GuestDifficultySubmission.vue";
 
 import { GuestRequest, RequestStatus } from "../../Interfaces/guestRequests";
 import { UserMCAInfo } from "../../Interfaces/user";
-import { GuestRequestPayload, UpdateGuestRequestPayload } from "../../MCA-AYIM/store";
+import { GuestRequestPayload, UpdateGuestRequestPayload } from "../../Assets/store/mca-ayim";
 
 interface RequestData {
     url: string;

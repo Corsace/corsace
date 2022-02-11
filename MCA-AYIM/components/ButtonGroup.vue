@@ -72,7 +72,6 @@ div.button-group {
     border-radius: 0;
 
     font-size: $font-lg;
-    font-family: $font-body;
     text-transform: uppercase;
     color: $inactive;
     @include breakpoint(mobile) {

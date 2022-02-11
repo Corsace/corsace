@@ -1,3 +1,3 @@
-import mca from "../../MCA-AYIM/middleware/mca";
+import mca from "../../Assets/middleware/mca";
 
 export default mca;

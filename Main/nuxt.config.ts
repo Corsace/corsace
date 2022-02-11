@@ -1,23 +1,8 @@
-import { config } from "node-config-ts";
-import * as fs from "fs";
-import path from "path";
-
-const locales: any[] = [];
-
-fs.readdirSync("../Assets/lang").forEach(file => {
-    if (file !== "example.json" && file !== "flagCodes.json" && file !== "index.js")
-        locales.push({
-            code: file.split(".")[0],
-            file,
-        });
-});
+import { NuxtConfig } from "@nuxt/types";
+import nuxtConfig from "../Assets/nuxt.base.config";
 
 export default {
-    server: {
-        host: config.corsace.host,
-        port: config.corsace.port,
-    },
-    ssr: config.corsace.ssr,
+    ...nuxtConfig("corsace"),
     head: {
         title: "Corsace",
         link: [
@@ -37,38 +22,4 @@ export default {
             { hid: "theme-color", name: "theme-color", content: "#e98792" },
         ],
     },
-    buildModules: ["@nuxt/typescript-build"],
-    modules: [
-        "@nuxtjs/axios",
-        [
-            "nuxt-i18n",
-            {
-                locales,
-                defaultLocale: "en",
-                strategy: "no_prefix",
-                lazy: true,
-                langDir: "../Assets/lang/",
-                vueI18n: {
-                    fallbackLocale: "en",
-                },
-            },
-        ],
-    ],
-    css: [
-        "./assets/main.scss",
-    ],
-    build: {
-        extend (config) {
-            config.resolve.alias["@s-sass"] = path.join(__dirname, "../MCA-AYIM/assets/sass");
-        },
-    },
-    dir: {
-        static: "../Assets/static",
-    },
-    axios: {
-        proxy: true,
-    },
-    proxy: {
-        "/api/": config.api.publicUrl,
-    },
-};
+} as NuxtConfig;

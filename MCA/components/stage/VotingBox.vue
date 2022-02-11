@@ -79,7 +79,7 @@ import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 import { UserChoiceInfo } from "../../../Interfaces/user";
 
 import { Vote } from "../../../Interfaces/vote";
-import { SectionCategory } from "../../../MCA-AYIM/store/stage";
+import { SectionCategory } from "../../../Interfaces/category";
 import BaseModal from "../../../MCA-AYIM/components/BaseModal.vue";
 
 const stageModule = namespace("stage");

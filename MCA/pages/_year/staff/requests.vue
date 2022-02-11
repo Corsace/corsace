@@ -83,10 +83,6 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import ChoiceBeatmapsetCard from "../../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
-import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
-import UserAvatar from "../../../components/staff/UserAvatar.vue";
-
 import { StaffGuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
 import { UpdateRequestData } from "../../../store/staff";
 
@@ -94,9 +90,6 @@ const staffModule = namespace("staff");
 
 @Component({
     components: {
-        ChoiceBeatmapsetCard,
-        ScrollBar,
-        UserAvatar,
     },
     head () {
         return {

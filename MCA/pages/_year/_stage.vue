@@ -38,18 +38,11 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, State } from "vuex-class";
 
-import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
-import NoticeModal from "../../../MCA-AYIM/components/NoticeModal.vue";
-import StagePage from "../../components/stage/StagePage.vue";
-
 import { MCA, Phase } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
 @Component({
     components: {
-        ModeSwitcher,
-        NoticeModal,
-        StagePage,
     },
     validate ({ params }): boolean {
         const stageRegex = /^(nominating|nominate|vote|voting)$/i;

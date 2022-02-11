@@ -1,5 +1,5 @@
 import { NuxtConfig } from "@nuxt/types";
-import nuxtConfig from "../MCA-AYIM/nuxt.base.config";
+import nuxtConfig from "../Assets/nuxt.base.config";
 
 export default {
     ...nuxtConfig("mca"),

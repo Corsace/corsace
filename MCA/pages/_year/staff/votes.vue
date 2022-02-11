@@ -54,13 +54,6 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import ModeSwitcher from "../../../../MCA-AYIM/components/ModeSwitcher.vue";
-import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
-import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
-import ButtonGroup from "../../../../MCA-AYIM/components/ButtonGroup.vue";
-import StaffAccordionHeader from "../../../components/staff/StaffAccordionHeader.vue";
-import StaffVoteAccordion from "../../../components/staff/StaffVoteAccordion.vue";
-
 import { CategoryInfo } from "../../../../Interfaces/category";
 import { ResultVote, StaffVote, UserVote, voteCounter } from "../../../../Interfaces/vote";
 
@@ -80,12 +73,6 @@ type ViewOption = "results" | "voters";
 
 @Component({
     components: {
-        ModeSwitcher,
-        ScrollBar,
-        SearchBar,
-        ButtonGroup,
-        StaffAccordionHeader,
-        StaffVoteAccordion,
     },
     head () {
         return {

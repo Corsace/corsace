@@ -87,8 +87,6 @@ export default class GuestDifficultySubmission extends Vue {
         color: white;
         background-color: black;
         box-shadow: 0 0 8px rgba(0, 0, 0, 0.63);
-
-        font-family: $font-body;
         font-size: $font-lg;
         text-align: center;
 

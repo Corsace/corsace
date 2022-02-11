@@ -1,0 +1,127 @@
+@import '_mixins';
+@import '_variables';
+
+@font-face {
+    font-family: CocoGoose Pro;
+    src: url("../fonts/Cocogoose Pro.ttf") format("truetype");
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: CocoGoose Pro;
+    src: url("../fonts/Cocogoose Pro Light.ttf") format("truetype");
+    font-weight: lighter;
+}
+
+@font-face {
+    font-family: DIN2014;
+    src: url("../fonts/DIN2014-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: DIN2014;
+    src: url("../fonts/DIN2014-Italic.ttf") format("truetype");
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: DIN2014;
+    src: url("../fonts/DIN2014-DemiBold.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: DIN2014;
+    src: url("../fonts/DIN2014-BoldItalic.ttf") format("truetype");
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Futura PT;
+    src: url("../fonts/FuturaPTMedium.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Futura PT;
+    src: url("../fonts/FuturaPTMediumOblique.otf") format("opentype");
+    font-weight: normal;
+    font-style: oblique;
+}
+
+@font-face {
+    font-family: Futura PT;
+    src: url("../fonts/FuturaPTBook.otf") format("opentype");
+    font-weight: lighter;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Futura PT;
+    src: url("../fonts/FuturaPTBookOblique.otf") format("opentype");
+    font-weight: lighter;
+    font-style: oblique;
+}
+
+@font-face {
+    font-family: Scoreboard;
+    src: url("../fonts/scoreboard.ttf");
+}
+
+*, *:after, *:before {
+    box-sizing: border-box;
+}
+
+html, body, #__nuxt, #__layout {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    color: white;
+    font-size: 1rem;
+}
+
+.layout {
+    &--corsace {
+        font-family: 'DIN2014', 'sans-serif';
+    }
+    &--mca, &--ayim {
+        font-family: 'Futura PT', 'sans-serif';
+    }
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    &--light {
+        background-color: $gray;
+    }
+    &--dark {
+        background-color: $darker-gray;
+    }
+    @include transition;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+p {
+    margin-top: 0;
+}
