@@ -55,7 +55,7 @@ export default class Error extends Vue {
 
 <style lang="scss">
 .error {
-    background-image: url("../../Assets/img/ayim-mca/site/error.png");
+    background-image: url("../../Assets/img/site/mca-ayim/error.png");
     background-size: 80%;
     background-repeat: no-repeat;
     background-position: center;

@@ -80,14 +80,12 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { State } from "vuex-class";
 
-import ModeSwitcher from "../../MCA-AYIM/components/ModeSwitcher.vue";
 import ScrollBar from "../../MCA-AYIM/components/ScrollBar.vue";
 
 import { MCA } from "../../Interfaces/mca";
 
 @Component({
     components: {
-        ModeSwitcher,
         ScrollBar,
     },
 })
@@ -151,8 +149,6 @@ export default class DisplayLayout extends Vue {
 
         &--inactive {
             color: $inactive;
-            
-            @include transition('color');
 
             &:hover {
                 color: white;

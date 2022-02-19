@@ -17,7 +17,7 @@
                 <img
                     class="header-nav__brand-name"
                     :class="`header-nav__brand-name--${viewTheme}`"
-                    src="../../Assets/img/ayim-mca/site/corsace_text.png"
+                    src="../../Assets/img/site/mca-ayim/corsace_text.png"
                     alt=""
                 >
             </div>
@@ -99,8 +99,8 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
-import TheHeader from "../../Assets/components/Header/TheHeader.vue";
-import TheFooter from "../../Assets/components/Footer/TheFooter.vue";
+import TheHeader from "../../Assets/components/header/TheHeader.vue";
+import TheFooter from "../../Assets/components/footer/TheFooter.vue";
 
 @Component({
     components: {
@@ -165,7 +165,7 @@ export default class Default extends Vue {
         width: 100%;
         height: 100%;
         background-size: contain;
-        background-image: url('../../Assets/img/ayim-mca/site/corsace_logo.png');
+        background-image: url('../../Assets/img/site/mca-ayim/corsace_logo.png');
         &--light {
             filter: invert(1);
         }

@@ -7,17 +7,17 @@
             >
                 <img
                     class="footer__logo" 
-                    src="../../../Assets/img/ayim-mca/site/corsace_logo.png"
+                    src="../../../Assets/img/site/mca-ayim/corsace_logo.png"
                 >
                 <img
                     class="footer__logo-text" 
-                    src="../../../Assets/img/ayim-mca/site/corsace_text.png"
+                    src="../../../Assets/img/site/mca-ayim/corsace_text.png"
                 >
             </a>
 
             <img 
                 class="footer__dot" 
-                src="../../../Assets/img/ayim-mca/site/d.png"
+                src="../../../Assets/img/site/mca-ayim/d.png"
             >
 
             <a
@@ -32,7 +32,7 @@
 
             <img 
                 class="footer__dot" 
-                src="../../../Assets/img/ayim-mca/site/d.png"
+                src="../../../Assets/img/site/mca-ayim/d.png"
             >
 
             <div class="footer__socials">

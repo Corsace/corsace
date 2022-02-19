@@ -25,7 +25,7 @@
                         <img
                             v-if="currentNomination.isValid"
                             class="choice__selection-check choice__selection-check--chosen"
-                            src="../../Assets/img/ayim-mca/site/checkmark.png"
+                            src="../../Assets/img/site/mca-ayim/checkmark.png"
                         >
                         <div
                             v-else

@@ -14,7 +14,7 @@
             }"
             @click="updateFavourite"
         >
-            <img src="../../../Assets/img/ayim-mca/site/heart.png">
+            <img src="../../../Assets/img/site/mca-ayim/heart.png">
         </button>
 
         <toggle-button

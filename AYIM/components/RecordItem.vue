@@ -37,14 +37,14 @@ export default class RecordItem extends Vue {
             $gap: 2%;
             background: linear-gradient(
                 120deg, 
-                #{$dark-bg} calc(#{$start} - 1px),
+                #{$dark} calc(#{$start} - 1px),
                 var(--#{$mode}) $start,
                 var(--#{$mode}) calc(#{$start} + #{$width} - 1px),
-                #{$dark-bg} $start + $width,
-                #{$dark-bg} calc(#{$start} + #{$width} + #{$gap} - 1px),
+                #{$dark} $start + $width,
+                #{$dark} calc(#{$start} + #{$width} + #{$gap} - 1px),
                 var(--#{$mode}) $start + $width + $gap,
                 var(--#{$mode}) calc(#{$start} + #{$width} * 2 + #{$gap} - 1px),
-                #{$dark-bg} $start + $width * 2 + $gap
+                #{$dark} $start + $width * 2 + $gap
             );
         }
     }

@@ -116,7 +116,6 @@ $selector-orange: #ff890a;
 .locale__option {
     text-align: center;
     padding: 5px 5px 5px 0;
-    @include transition('background-color, border');
     cursor: pointer;
 
     &:hover {

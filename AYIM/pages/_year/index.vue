@@ -1,12 +1,37 @@
 <template>
     <div>
-        Hello
+        <div 
+            class="index"
+            :class="`index--${viewTheme}`"
+        >
+            <div class="portal__mca">
+                MCA
+            </div>
+            <div class="portal__other">
+                <a 
+                    href="https://shop.corsace.io"
+                    class="portal__shop"
+                >
+                    CORSACE SHOP
+                </a>
+                <a 
+                    href="https://corsace.io"
+                    class="portal__main"
+                >
+                    CORSACE MAIN
+                </a>
+            </div>
+            <div>
+                USUAL WELCOME BACK TO AYIM
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { State, namespace } from "vuex-class";
+
 import { MCA } from "../../../Interfaces/mca";
 
 const mcaAyimModule = namespace("mca-ayim");
@@ -31,6 +56,9 @@ const mcaAyimModule = namespace("mca-ayim");
 })
 export default class Index extends Vue {
     @mcaAyimModule.State mca!: MCA;
+    @mcaAyimModule.State selectedMode!: string;
+
+    @State viewTheme!: "light" | "dark";
 }
 </script>
 
@@ -38,60 +66,59 @@ export default class Index extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
-.ayim-bg {
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
-    z-index: -100;
+.index {
+    background-image: url("../../../Assets/img/site/mca-ayim/home-bg.png");
+    background-attachment: local;
 
-    height: 100%;
-    width: 100%;
-    padding-bottom: 9vh;
-
-    background-size: auto 80%;
-    background-repeat: no-repeat;
-    background-position: center left;
-
-	animation: fade-in 1s ease-in both;
-}
-
-.left-side {
-    display: none;
-}
-
-.right-side {
     display: flex;
-    align-items: flex-end;
-    padding-top: 10px;
-}
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 
-.full-side {
-    height: 100%;
-    width: 100%;
-}
-
-@include breakpoint(laptop) {    
-    .left-side {
-        display: block;
-        flex: 0 0 40%;
-        max-width: 40%;
+    font-size: $font-title;
+    &--light {
+        color: black;
     }
-    .right-side {
-        flex: 0 0 60%;
-        max-width: 60%;
-        padding-top: 50px;
+    &--dark {
+        color: white;
+    }
+
+    overflow-y: scroll;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
     }
 }
 
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-    bottom: 0px;
-  }
-  100% {
-    opacity: 1;
-    bottom: 10px;
-  }
+.portal {
+    &__mca {
+        padding: 100px 0;
+    }
+
+    &__other {
+        display: flex;
+        padding-bottom: 100px;
+        & a {
+            color: $blue;
+            background-color: white;
+
+            width: 30vw;
+            margin: 0 25px;
+            padding: 10px;
+            border: 1px $blue solid; 
+
+            text-align: center;
+        }
+    }
+}
+
+@include breakpoint(laptop) {
+    .left-side, .right-side {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
 }
 
 </style>

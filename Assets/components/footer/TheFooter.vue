@@ -35,16 +35,19 @@ export default class TheFooter extends Vue {
 
 .footer {
     &--light {
+        background-color: white;
         color: black;
     }
     &--dark {
         background-color: $dark;
         color: white;
     }
-    font-size: 1.5rem;
+    bottom: 0;
+
+    font-size: $font-xl;
+
     width: 100%;
     height: 50px;
     display: flex;
-    @include transition;
 }
 </style>

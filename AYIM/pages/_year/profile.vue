@@ -101,7 +101,6 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
-import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import InfluenceTreeLeaf from "../../components/InfluenceTreeLeaf.vue";
 import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
 import { User, UserMCAInfo } from "../../../Interfaces/user";
@@ -110,7 +109,6 @@ import { MCA } from "../../../Interfaces/mca";
 
 @Component({
     components: {
-        ModeSwitcher,
         InfluenceTreeLeaf,
         SearchBar,
     },

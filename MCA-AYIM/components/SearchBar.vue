@@ -4,7 +4,7 @@
             <div class="search__pre">
                 <img 
                     class="search__pre-image"
-                    src="../../Assets/img/ayim-mca/site/magnifying glass.png"
+                    src="../../Assets/img/site/mca-ayim/magnifying glass.png"
                 >
             </div>
             <input

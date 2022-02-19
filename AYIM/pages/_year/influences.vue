@@ -35,7 +35,6 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
-import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
 import InfluenceTreeLeaf from "../../components/InfluenceTreeLeaf.vue";
 import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
 import { MCA } from "../../../Interfaces/mca";
@@ -44,7 +43,6 @@ const influencesModule = namespace("influences");
 
 @Component({
     components: {
-        ModeSwitcher,
         InfluenceTreeLeaf,
         SearchBar,
     },
