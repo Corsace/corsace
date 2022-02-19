@@ -38,7 +38,7 @@
                     <div class="event__image-container">
                         <img
                             class="event__image"
-                            :src="require(`../../Assets/img/main/${key}.jpg`)"
+                            :src="require(`../../Assets/img/site/main/${key}.jpg`)"
                             alt=""
                         >
                     </div>
@@ -126,7 +126,7 @@ export default class Default extends Vue {
     background-repeat: no-repeat;
     background-size: 69% 170%, auto;
     background-position: -8vw 32%, center;
-    background-image: url('../../Assets/img/main/shirts/combined.png'), $dark-cyan;
+    background-image: url('../../Assets/img/site/main/shirts/combined.png'), $dark-cyan;
 
     @include breakpoint(mobile) {
         background-size: contain;

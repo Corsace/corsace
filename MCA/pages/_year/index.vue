@@ -1,14 +1,94 @@
 <template>
     <div>
-        Hello
+        <div 
+            class="index scroll__mca"
+            :class="[
+                `index--${viewTheme}`,
+                `scroll--${viewTheme}`
+            ]"
+        >
+            <a
+                href="https://ayim.corsace.io" 
+                class="portal__ayim"
+            >
+                <div :class="`portal__ayim--container portal--${viewTheme}`">
+                    <div 
+                        class="portal__ayim--offset"
+                        :class="`index--${viewTheme}`"
+                    >
+                        LET'S LOOK BACK AT 2021
+                    </div>
+                    <div class="portal__ayim--centre">
+                        <img
+                            :src="require(`../../../Assets/img/site/mca-ayim/year/${$route.params.year}-${viewTheme}-ayim.png`)" 
+                        >
+                        <div class="portal__desc">
+                            CLICK HERE TO ENTER
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <div class="portal__other">
+                <a 
+                    href="https://shop.corsace.io"
+                    class="portal__shop"
+                    :class="`portal--${viewTheme}`"
+                >
+                    <div class="portal__link">
+                        shop.<span class="bold">corsace</span>.io
+                    </div>
+                    <div class="portal__desc">
+                        OFFICIAL MERCHANDISE STORE
+                    </div>
+                </a>
+                <a 
+                    href="https://corsace.io"
+                    class="portal__main"
+                    :class="`portal--${viewTheme}`"
+                >
+                    <div class="portal__link">
+                        <span class="bold">corsace</span>.io
+                    </div>
+                    <div class="portal__desc">
+                        OFFICIAL MERCHANDISE STORE
+                    </div>
+                </a>
+            </div>
+            <div class="welcomeBack">
+                <div>
+                    WELCOME TO MCA
+                </div>
+                <div>
+                    USUAL WELCOME BACK TO MCA
+                </div>
+                <div>
+                    USUAL WELCOME BACK TO MCA
+                </div>
+                <div>
+                    USUAL WELCOME BACK TO MCA
+                </div>
+                <div>
+                    USUAL WELCOME BACK TO MCA
+                </div>
+                <div>
+                    USUAL WELCOME BACK TO MCA
+                </div>
+                <div>
+                    USUAL WELCOME BACK TO MCA
+                </div>
+                <div>
+                    USUAL WELCOME BACK TO MCA
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter, State, namespace } from "vuex-class";
+import { State, namespace } from "vuex-class";
 
-import { MCA, Phase } from "../../../Interfaces/mca";
+import { MCA } from "../../../Interfaces/mca";
 
 const mcaAyimModule = namespace("mca-ayim");
 
@@ -35,31 +115,10 @@ export default class Index extends Vue {
     @mcaAyimModule.State mca!: MCA;
     @mcaAyimModule.State selectedMode!: string;
 
-    @mcaAyimModule.Getter phase!: Phase;
+    @State viewTheme!: "light" | "dark";
 
     dateInfo = Intl.DateTimeFormat().resolvedOptions();
     options: Intl.DateTimeFormatOptions = { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
-
-    mounted () {
-        let days = 0;
-
-        if (this.remainingDays > 31) {
-            days = 32; // 31
-        } else if (this.remainingDays <= 0) {
-            days = 1; // 00
-        } else {
-            days = this.remainingDays + 1;
-        }
-        const wheel: HTMLElement | null = document.querySelector(".voting-date__wheel-img");
-
-        if (wheel) {
-            wheel.style["transform"] = `rotate(${(360 / 32) * days}deg)`;
-        }
-    }
-
-    get remainingDays (): number {
-        return Math.floor((this.phase?.endDate?.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-    }
 
 }
 </script>
@@ -68,143 +127,113 @@ export default class Index extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
-.left-side {
-    overflow: hidden;
-    padding-right: 0;
-    padding-top: 7%;
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: flex-end;
-    flex: 0 0 100%;
-    width: 100%;
+.index {
+    background-image: url("../../../Assets/img/site/mca-ayim/home-bg.png");
+    background-attachment: local;
 
-    @include breakpoint(mobile) {
-        margin-bottom: 0;
-    }
-
-    @include breakpoint(laptop) {
-        padding-right: 35px;
-    }
-}
-
-.voting-date {
     display: flex;
     align-items: center;
-    flex-wrap: nowrap;
-    margin-bottom: 40px;
-    width: 100%;
-
-    &__wheel-container {
-        display: flex;
-        width: 100%;
-        position: relative;
-    }
-
-    &__wheel-img {
-        display: none;
-        width: 965px;
-        height: 965px;
-        background: url("../../../Assets/img/ayim-mca/site/wheel.png") no-repeat center;
-        background-size: cover;
-        left: -730px;
-        top: -400px;
-        position: absolute;
-        z-index: -1;
-    }
-
-    &__wheel-box {
-        display: none;
-        box-shadow: inset 0 0 20px 0px #222;
-        border: 3px solid rgba(0, 0, 0, 0.3);
-        border-radius: 15px;
-        border-bottom: 2px solid white;
-        border-right: 2px solid white;
-        width: 220px;
-        height: 150px;
-        flex: 0 0 220px;
-        margin-left: 35px;
-    }
-
-    &__content {
-        display: flex;
-        flex-direction: column;
-        flex: 1 1 auto;
-        flex-wrap: nowrap;
-    }
-
-    &__title {
-        font-size: 2rem;
-        border-bottom: 3px solid white;
-        width: 100%;
-        text-align: right;
-    }
-
-    &__subtitle {
-        font-family: 'Lexend Peta';
-        font-size: 4.5rem;
-        text-align: right;
-        letter-spacing: -8.96px;
-    }
-
-    &__days {
-        display: inline-block;
-    }
-
-    @include breakpoint(tablet) {
-        &__wheel-img, &__wheel-box {
-            display: block;
-        }
-
-        &__days {
-            display: none;
-        }
-    }
-}
-
-.general-info {
-    border-radius: 0 15px 15px 0; 
-    background-color: rgba(0, 0, 0, 0.8); 
-    padding: 45px 30px;
-
-    width: 100%;
-    display: flex;
     flex-direction: column;
 
-    & > p, &--header {
-        text-align: center;
+    font-size: $font-title;
+    &--light {
+        color: black;
+    }
+    &--dark {
+        color: white;
     }
 
-    &--header {
-        font-size: 2rem;
+    height: 100%;
+}
+
+.portal {
+    &--light {
+        background-color: white;
+    }
+    &--dark {
+        background-color: $dark;
+    }
+    &--light, &--dark {
+        color: $blue;
+        border: 1px $blue solid; 
     }
 
-    @each $mode in $modes {
-        &--#{$mode} {
-            color: var(--#{$mode});
+    &__ayim {
+        width: 75vw;
+        margin: 100px 0;
+        padding: 0 25px;
+
+        &:hover {
+            text-decoration: none;
+        }
+
+        &--container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            position: relative; 
+        }
+
+        &--offset {
+            position: absolute;
+            left: calc(-1 * $font-title/2);
+
+            width: 12rem;
+            line-height: 2.5rem;
+            letter-spacing: 3px;
+
             font-weight: bold;
-            text-shadow: 0 0 8px var(--#{$mode});
-            @include transition;
+            font-style: italic;
+        }
+
+        &--centre {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            padding: 15px 0;
+
+            & > img {
+                height: 70px;
+                margin: 25px 0;
+            }
+        }
+    }
+
+    &__desc {
+        font-size: $font-lg;
+        font-weight: bold;
+    }
+
+    &__link {
+        font-family: "CocoGoose Pro", 'sans-serif';
+        line-height: $font-title;
+    }
+
+    &__other {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: 75vw;
+        padding-bottom: 100px;
+        & a {
+
+            flex: 1;
+            margin: 0 25px;
+            padding: 15px 45px;
+
+            &:hover {
+                text-decoration: none;
+            }
         }
     }
 }
 
-.right-side {
-    flex: 0 0 100%;
-    width: 100%;
-    padding-top: 50px;
-}
-
-.full-side {
-    width: 100%;
-}
-
-@include breakpoint(laptop) {
-    .left-side, .right-side {
-        flex: 0 0 50%;
-        max-width: 50%;
-    }
+.welcomeBack {
+    font-weight: bold;
 }
 
 </style>

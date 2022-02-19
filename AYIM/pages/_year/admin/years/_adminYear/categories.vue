@@ -12,12 +12,10 @@ import { State } from "vuex-class";
 
 import { UserMCAInfo } from "../../../../../../Interfaces/user";
 
-import ModeSwitcher from "../../../../../../MCA-AYIM/components/ModeSwitcher.vue";
 import AdminCategories from "../../../../../../MCA-AYIM/components/admin/AdminCategories.vue";
 
 @Component({
     components: {
-        ModeSwitcher,
         AdminCategories,
     },
     head () {

@@ -28,7 +28,7 @@ export const state = (): RootState => ({
     loggedInMCAUser: null,
     mca: null,
     allMCA: [],
-    selectedMode: "standard",
+    selectedMode: "",
     modes: ["standard", "taiko", "fruits", "mania", "storyboard"],
     showGuestDifficultyModal: false,
 });

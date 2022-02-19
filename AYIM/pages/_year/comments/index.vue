@@ -30,12 +30,12 @@
                         <img
                             v-if="!filterFriends"
                             alt="All users shown"
-                            src="../../../../Assets/img/ayim-mca/site/all.png"
+                            src="../../../../Assets/img/site/mca-ayim/all.png"
                         >
                         <img
                             v-else
                             alt="Friends shown only"
-                            src="../../../../Assets/img/ayim-mca/site/friends.png"
+                            src="../../../../Assets/img/site/mca-ayim/friends.png"
                         >
                     </button>
 
@@ -47,12 +47,12 @@
                         <img
                             v-if="!notCommented"
                             alt="All users shown"
-                            src="../../../../Assets/img/ayim-mca/site/comments.png"
+                            src="../../../../Assets/img/site/mca-ayim/comments.png"
                         >
                         <img
                             v-else
                             alt="Users without comments shown only"
-                            src="../../../../Assets/img/ayim-mca/site/comments_hidden.png"
+                            src="../../../../Assets/img/site/mca-ayim/comments_hidden.png"
                         >
                     </button>
                 </search-bar>

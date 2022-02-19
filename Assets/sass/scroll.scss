@@ -1,0 +1,33 @@
+.scroll {
+    &__mca, &__ayim {
+        overflow-y: scroll;
+        &::-webkit-scrollbar {
+            
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(90deg, #b2e8ff 45%, #6fc7ec 45%, #6fc7ec 55%, #b2e8ff 55%);
+
+            &-thumb {
+                border: 5px solid transparent;
+                background-clip: content-box;
+                border-radius: 10px;
+            }
+
+            &-button {
+                display: none;
+            }
+        }
+    }
+}
+
+.scroll--light {
+    &::-webkit-scrollbar-thumb {
+        background-color: white;
+    }
+}
+
+.scroll--dark {
+    &::-webkit-scrollbar-thumb {
+        background-color: $dark;
+    }
+}

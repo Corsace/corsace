@@ -123,8 +123,11 @@ export default class TheHeader extends Vue {
         background-color: $dark;
     }
     &--light {
+        background-color: white;
         color: black;
     }
+    top: 0;
+
     width: 100%;
     height: 70px;
     @include breakpoint(mobile) {
@@ -133,7 +136,6 @@ export default class TheHeader extends Vue {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    @include transition;
 }
 
 .header-login {
@@ -175,7 +177,7 @@ export default class TheHeader extends Vue {
     &__link {
         display: flex;
         align-items: center;
-        @include transition;
+
         font-weight: bold;
         &--light {
             color: black;
@@ -210,14 +212,14 @@ export default class TheHeader extends Vue {
         }
         display: flex;
         @include breakpoint(mobile) {
-            font-size: 0.75rem;
+            font-size: $font-sm;
         }
         & > a {
             display: flex;
             align-items: center;
-            font-size: 0.75rem;
+            font-size: $font-sm;
             @include breakpoint(mobile) {
-                font-size: 0.6rem;
+                font-size: $font-xsm;
             }
 
             & > div {
@@ -232,7 +234,7 @@ export default class TheHeader extends Vue {
         text-transform: uppercase;
         text-overflow: ellipsis;
         @include breakpoint(mobile) {
-            font-size: 0.75rem;
+            font-size: $font-sm;
         }
     }
 }
@@ -245,23 +247,6 @@ export default class TheHeader extends Vue {
     margin-right: 8px;
     &--dark {
         background: white;
-    }
-    @include transition;
-}
-
-.arrow {
-    width: 15px;
-    height: 15px;
-    margin-left: 10px;
-    background-repeat: no-repeat;
-    background-size: contain;
-
-    &--up {
-        background-image: url('../../img/main/arrow_up.png');
-    }
-
-    &--right {
-        background-image: url('../../img/main/arrow_right.png');
     }
 }
 </style>

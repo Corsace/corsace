@@ -74,8 +74,17 @@
     src: url("../fonts/scoreboard.ttf");
 }
 
+:root {
+    --standard: #fb2475;
+    --taiko: #ff890a;
+    --fruits: #0abdff;
+    --mania: #48f326;
+    --storyboard: #919191;
+}
+
 *, *:after, *:before {
     box-sizing: border-box;
+    @include transition;
 }
 
 html, body, #__nuxt, #__layout {
@@ -85,7 +94,7 @@ html, body, #__nuxt, #__layout {
 body {
     margin: 0;
     color: white;
-    font-size: 1rem;
+    font-size: $font-base;
 }
 
 .layout {
@@ -110,7 +119,6 @@ body {
     &--dark {
         background-color: $darker-gray;
     }
-    @include transition;
 }
 
 a {

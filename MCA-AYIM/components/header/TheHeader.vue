@@ -29,7 +29,7 @@
             v-html="$t('mca_ayim.header.mca')"
         />
         <a class="header__seperator">
-            <img src="../../../Assets/img/ayim-mca/site/l.png">
+            <img src="../../../Assets/img/site/mca-ayim/l.png">
         </a>
         <a
             class="header__title"
