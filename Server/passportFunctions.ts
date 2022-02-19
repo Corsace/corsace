@@ -3,9 +3,9 @@ import { config } from "node-config-ts";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import OAuth2Strategy from "passport-oauth2";
 import { User, OAuth } from "../Models/user";
-import Axios from "axios";
 import { discordClient } from "./discord";
 import { UsernameChange } from "../Models/usernameChange";
+import { osuV2Client } from "./osu";
 
 export function setupPassport () {
     // Setup passport
@@ -76,12 +76,7 @@ export async function discordPassport (accessToken: string, refreshToken: string
 
 export async function osuPassport (accessToken: string, refreshToken: string, profile: any, done: OAuth2Strategy.VerifyCallback): Promise<void> {
     try {
-        const res = await Axios.get("https://osu.ppy.sh/api/v2/me", {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
-        const userProfile = res.data;
+        const userProfile = await osuV2Client.getUserInfo(accessToken);
         let user = await User.findOne({
             osu: {
                 userID: userProfile.id,

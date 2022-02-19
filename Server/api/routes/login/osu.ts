@@ -6,6 +6,7 @@ import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { config } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
 import { redirectToMainDomain } from "./middleware";
+import { osuV2Client } from "../../../osu";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
@@ -41,12 +42,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
 }, async (ctx, next) => {
     try {
         // api v2 data
-        const res = await Axios.get("https://osu.ppy.sh/api/v2/me", {
-            headers: {
-                Authorization: `Bearer ${ctx.state.user.osu.accessToken}`,
-            },
-        });
-        const data = res.data;
+        const data = await osuV2Client.getUserInfo(ctx.state.user.osu.accessToken);
 
         // Username changes
         const usernames: string[] = data.previous_usernames;

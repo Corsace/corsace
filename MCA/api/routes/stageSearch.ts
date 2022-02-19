@@ -1,4 +1,3 @@
-import Axios from "axios";
 import { ParameterizedContext } from "koa";
 import { BeatmapInfo, BeatmapsetInfo } from "../../../Interfaces/beatmap";
 import { CategoryType } from "../../../Interfaces/category";
@@ -13,6 +12,7 @@ import { User } from "../../../Models/user";
 import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
 import { parseQueryParam } from "../../../Server/utils/query";
 import { Beatmap } from "../../../Models/beatmap";
+import { osuV2Client } from "../../../Server/osu";
 
 export default function stageSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
     return async (ctx: ParameterizedContext) => {
@@ -61,12 +61,8 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             if (ctx.query.favourites === "true") { // Fav filter
                 let offset = 0;
                 for (;;) {
-                    const res = await Axios.get(`https://osu.ppy.sh/api/v2/users/${ctx.state.user.osu.userID}/beatmapsets/favourite?limit=51&offset=${offset}`, {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                        },
-                    });
-                    const sets = res.data.map(set => set.id);
+                    const data = await osuV2Client.getFavouriteBeatmaps(ctx.state.user.osu.userID, accessToken, offset);
+                    const sets = data.map(set => set.id);
 
                     favIDs.push(...sets);
 
@@ -80,24 +76,21 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
                 let approvedDate = "";
                 let _id = "";
                 for (;;) {
-                    let url = `https://osu.ppy.sh/api/v2/beatmapsets/search?played=played&q=ranked%3D${ctx.state.year}`;
-                    if (approvedDate) url += `&cursor%5Bapproved_date%5D=${approvedDate}&cursor%5B_id%5D=${_id}`;
-                    const res = await Axios.get(url, {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                        },
-                    });
+                    const data = await osuV2Client.getPlayedBeatmaps(accessToken, ctx.state.year, approvedDate ? {
+                        approvedDate,
+                        _id,
+                    } : undefined);
 
-                    if (!approvedDate && res.data.beatmapsets.length === 0) break;
+                    if (!approvedDate && data.beatmapsets.length === 0) break;
 
-                    const sets = res.data.beatmapsets.map(set => set.id);
+                    const sets = data.beatmapsets.map(set => set.id);
 
                     playedIDs.push(...sets);
 
                     if (sets.length < 50) break;
 
-                    approvedDate = res.data.cursor.approved_date;
-                    _id = res.data.cursor._id;
+                    approvedDate = data.cursor.approved_date;
+                    _id = data.cursor._id;
                 }
             }
 
