@@ -2,6 +2,8 @@ import { Beatmapset } from "./beatmap";
 import { Eligibility } from "./eligibility";
 import { GuestRequest } from "./guestRequests";
 import { Influence } from "./influence";
+import { TeamInfo } from "./team";
+import { TeamInvitationInfo } from "./teaminvitation";
 
 export interface UserMCAInfo extends UserInfo {
     guestRequests: GuestRequest[];
@@ -12,7 +14,26 @@ export interface UserMCAInfo extends UserInfo {
         fruits: boolean;
         mania: boolean;
         storyboard: boolean;
-    }
+    };
+}
+
+export interface UserOpenInfo extends UserInfo {
+    invites?: TeamInvitationInfo[];
+    team: TeamInfo | null;
+    pickemPoints: number;
+    rank: number;
+    badges: number;
+    pp: number;
+    openStaff: {
+        scheduler: boolean;
+        mappooler: boolean;
+        mapper: boolean;
+        testplayer: boolean;
+        scrim: boolean;
+        advisor: boolean;
+        streamer: boolean;
+        referee: boolean;
+    };
 }
 
 export interface UserInfo {
@@ -56,8 +77,7 @@ export interface User {
     mcaEligibility: Eligibility[];
     beatmapsets: Beatmapset[];
     canComment: boolean;
-
-    influences: Influence[];
+    influence: Influence[];
 }
 
 export interface OAuth {
