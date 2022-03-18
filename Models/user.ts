@@ -11,13 +11,19 @@ import { Beatmapset } from "./beatmapset";
 import { config } from "node-config-ts";
 import { GuildMember } from "discord.js";
 import { getMember } from "../Server/discord";
-import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
+import { UserChoiceInfo, UserInfo, UserMCAInfo, UserOpenInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Influence } from "./MCA_AYIM/influence";
+import { Team } from "./tournaments/team";
+import { Match } from "./tournaments/match";
+import { TeamInvitation } from "./tournaments/teamInvitation";
+import { MatchPlay } from "./tournaments/matchPlay";
+import { Qualifier } from "./tournaments/qualifier";
+import { Badge } from "./badge";
 
-// General middlewares
+export const BWSFilter = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|community|moderation|moderating|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
 
 export class OAuth {
 
@@ -60,6 +66,27 @@ export class User extends BaseEntity {
     @Column({ type: "tinytext" })
     country!: string;
 
+    @Column({ nullable: true, type: "float" })
+    pp?: number;
+
+    @Column({ nullable: true })
+    rank?: number;
+
+    @OneToMany(() => TeamInvitation, invitation => invitation.target, {
+        eager: true,
+    })
+    invitations?: TeamInvitation[];
+
+    @ManyToOne(() => Team, team => team.members)
+    team?: Team;
+
+    @OneToOne(() => Team, team => team.captain)
+    @JoinColumn()
+    teamCaptain?: Team;
+
+    @OneToMany(() => MatchPlay, play => play.user)
+    scores?: MatchPlay[];
+
     @CreateDateColumn()
     registered!: Date;
     
@@ -70,6 +97,11 @@ export class User extends BaseEntity {
         eager: true,
     })
     otherNames!: UsernameChange[];
+
+    @OneToMany(() => Badge, badge => badge.user, {
+        eager: true,
+    })
+    badges!: Badge[];
 
     @OneToMany(() => DemeritReport, demerit => demerit.user, {
         eager: true,
@@ -126,6 +158,18 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Influence, influence => influence.reviewer)
     influenceReviews!: Influence[];
+    
+    @OneToMany(() => Qualifier, qualifier => qualifier.referee)
+    qualifiersReffed!: Qualifier[];
+
+    @OneToMany(() => Match, match => match.referee)
+    matchesReffed!: Match[];
+
+    @ManyToMany(() => Match, match => match.commentators)
+    matchesCommentated!: Match[];
+
+    @OneToMany(() => Match, match => match.streamer)
+    matchesStreamed!: Match[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User
@@ -246,6 +290,16 @@ export class User extends BaseEntity {
         ]);
     }
 
+    public getFilteredBadges = function(this: User): Badge[] {
+        return this.badges.filter(badge => !BWSFilter.test(badge.description));
+    }
+
+    public getBWS = async function(this: User): Promise<number | undefined> {
+        if (this.rank) 
+            return Math.pow(this.rank, Math.pow(0.9937, Math.pow((await this.getFilteredBadges()).length, 2)));
+        return undefined;
+    }
+
     public getAccessToken = async function(this: User, tokenType: "osu" | "discord" = "osu"): Promise<string> {
         const res = await User
             .createQueryBuilder("user")
@@ -310,5 +364,26 @@ export class User extends BaseEntity {
         };
 
         return mcaInfo;
+    }
+
+    public getOpenInfo = async function(this: User): Promise<UserOpenInfo> {
+        let member: GuildMember | undefined;
+        if (this.discord?.userID)
+            member = await getMember(this.discord.userID);
+        const openInfo: UserOpenInfo = await this.getInfo(member) as UserOpenInfo;
+        openInfo.invites = this.invitations ? await Promise.all(this.invitations.map((invitation) => invitation.getInfo())) : undefined;
+        openInfo.team = this.team ? await this.team.getInfo() : null;
+        if (member)
+            openInfo.openStaff = {
+                scheduler: member.roles.cache.has(config.discord.roles.corsace.scheduler),
+                mappooler: member.roles.cache.has(config.discord.roles.open.mappooler),
+                mapper: member.roles.cache.has(config.discord.roles.open.mapper),
+                testplayer: member.roles.cache.has(config.discord.roles.open.testplayer),
+                scrim: member.roles.cache.has(config.discord.roles.open.scrim),
+                advisor: member.roles.cache.has(config.discord.roles.open.advisor),
+                streamer: member.roles.cache.has(config.discord.roles.open.streamer),
+                referee: member.roles.cache.has(config.discord.roles.open.referee),
+            };
+        return openInfo;
     }
 }

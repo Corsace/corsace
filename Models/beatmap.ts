@@ -4,9 +4,10 @@ import { ModeDivision, ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Beatmapset } from "./beatmapset";
 import { Nomination } from "./MCA_AYIM/nomination";
 import { Vote } from "./MCA_AYIM/vote";
-import { BeatmapInfo } from "../Interfaces/beatmap";
+import { BeatmapInfo, TournamentBeatmapInfo } from "../Interfaces/beatmap";
 import { Category } from "../Interfaces/category";
 import { StageQuery } from "../Interfaces/queries";
+import { MappoolBeatmap } from "./tournaments/mappoolBeatmap";
 
 @Entity()
 export class Beatmap extends BaseEntity {
@@ -98,6 +99,9 @@ export class Beatmap extends BaseEntity {
     @OneToMany(() => Vote, vote => vote.beatmap)
     votesReceived!: Vote[];
 
+    @OneToMany(() => MappoolBeatmap, mappoolBeatmap => mappoolBeatmap.beatmap)
+    mappoolBeatmaps!: MappoolBeatmap[];
+    
     static search (year: number, modeId: number, stage: "voting" | "nominating", category: Category, query: StageQuery): Promise<[Beatmap[], number]> {
         // Initial repo setup
         const includeStoryboard = modeId === ModeDivisionType.storyboard;
@@ -231,6 +235,35 @@ export class Beatmap extends BaseEntity {
             difficulty: this.difficulty,
             chosen,
         };
+    }
+
+    public getTournamentInfo = async function(this: Beatmap): Promise<TournamentBeatmapInfo> {
+        const info: TournamentBeatmapInfo = {
+            ID: this.ID,
+            beatmapsetID: this.beatmapsetID,
+            beatmapset: await this.beatmapset.getInfo(),
+            totalLength: this.totalLength,
+            hitLength: this.hitLength,
+            difficulty: this.difficulty,
+            circleSize: this.circleSize,
+            overallDifficulty: this.overallDifficulty,
+            approachRate: this.approachRate,
+            hpDrain: this.hpDrain,
+            circles: this.circles,
+            sliders: this.sliders,
+            spinners: this.spinners,
+            rating: this.rating,
+            storyboard: this.storyboard,
+            video: this.video,
+            playCount: this.playCount,
+            passCount: this.passCount,
+            packs: this.packs,
+            maxCombo: this.maxCombo,
+            aimSR: this.aimSR,
+            speedSR: this.speedSR,
+            totalSR: this.totalSR,
+        };
+        return info;
     }
 
 }
