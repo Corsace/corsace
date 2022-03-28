@@ -75,7 +75,10 @@ export default class LanguagueSwitcher extends Vue {
 .locale {
     display: flex;
     position: relative;
-    width: 45px;
+    width: 40px;
+    @include breakpoint(laptop) {
+        width: 45px;
+    }
 }
 
 .locale__current {
@@ -97,10 +100,16 @@ $selector-orange: #ff890a;
 .locale__selector {
     position: absolute;
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
     right: 0;
     bottom: 100%;
     padding: 5px 10px;
+    width: 40px;
+    @include breakpoint(laptop) {
+        width: 45px;
+    }
     border-radius: 7px 7px 0 0;
 
     &--light {

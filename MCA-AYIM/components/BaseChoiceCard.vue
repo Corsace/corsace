@@ -64,13 +64,14 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { Getter, namespace } from "vuex-class";
+import { namespace } from "vuex-class";
 
 import { StageType } from "../../Interfaces/mca";
 import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
 import { Phase } from "../../Interfaces/mca";
 
+const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
 
 @Component
@@ -79,7 +80,7 @@ export default class BaseChoiceCard extends Vue {
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
 
     
-    @Getter phase!: Phase | null;
+    @mcaAyimModule.Getter phase!: Phase | null;
 
     @stageModule.State selected!: boolean;
     @stageModule.State stage!: StageType;

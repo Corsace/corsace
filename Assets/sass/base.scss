@@ -57,15 +57,29 @@
 
 @font-face {
     font-family: Futura PT;
-    src: url("../fonts/FuturaPTBook.otf") format("opentype");
-    font-weight: lighter;
+    src: url("../fonts/FuturaPTHeavy.otf") format("opentype");
+    font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
     font-family: Futura PT;
+    src: url("../fonts/FuturaPTHeavyOblique.otf") format("opentype");
+    font-weight: bold;
+    font-style: oblique;
+}
+
+@font-face {
+    font-family: Futura PT Book;
+    src: url("../fonts/FuturaPTBook.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Futura PT Book;
     src: url("../fonts/FuturaPTBookOblique.otf") format("opentype");
-    font-weight: lighter;
+    font-weight: normal;
     font-style: oblique;
 }
 

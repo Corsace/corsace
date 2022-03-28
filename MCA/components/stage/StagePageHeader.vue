@@ -30,16 +30,18 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { namespace, State } from "vuex-class";
+import { namespace } from "vuex-class";
 
 import { CategoryStageInfo } from "../../../Interfaces/category";
 
+const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
 
 @Component
 export default class StateContent extends Vue {
 
-    @State selectedMode!: string;
+    @mcaAyimModule.State selectedMode!: string;
+
     @stageModule.State selectedCategory!: CategoryStageInfo | null;
 
 }

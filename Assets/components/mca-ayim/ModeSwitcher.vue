@@ -1,5 +1,8 @@
 <template>
-    <div class="mode__section">
+    <div 
+        class="mode__section"
+        :class="`mode__section--${viewTheme}`"
+    >
         <div
             v-for="mode in availableModes"
             :key="mode"
@@ -24,7 +27,7 @@
                     selectedMode === mode ? `mode__${mode}--selected--${viewTheme}` : '',
                 ]" 
             />
-            {{ mode.toUpperCase() }}
+            {{ isSmall ? modeShort[mode] : mode.toUpperCase() }}
         </div>
     </div>
 </template>
@@ -51,15 +54,34 @@ export default class ModeSwitcher extends Vue {
     @mcaAyimModule.Getter isEligibleFor!: (mode: string) => boolean;
     @mcaAyimModule.Action updateSelectedMode
 
+    modeShort = {
+        standard: "STD",
+        taiko: "TKO",
+        fruits: "CTB",
+        mania: "MAN",
+        storyboard: "SB",
+    };
+    isSmall = false;
+
     get availableModes () {
         return this.modes.filter(m => !this.ignoreModes.includes(m));
     }
 
     setMode (mode): void {
-        if (!this.enableModeEligibility || this.isEligibleFor(mode)) {
+        if (this.selectedMode === mode && this.$route.name === "year")
+            this.updateSelectedMode("");
+        else if (!this.enableModeEligibility || this.isEligibleFor(mode))
             this.updateSelectedMode(mode);
-        } else {
+        else
             this.$emit("inactiveModeClicked");
+    }
+
+    mounted () {
+        if (process.client) {
+            this.isSmall = window.innerWidth < 992;
+            window.addEventListener("resize", () => {
+                this.isSmall = window.innerWidth < 992;
+            });
         }
     }
 
@@ -70,18 +92,39 @@ export default class ModeSwitcher extends Vue {
 @import '@s-sass/_variables';
 @import '@s-sass/_mixins';
 
-$icon-size: 50px;
-$icon-padding: 30px;
-$icon-margin: 15px;
+$icon-size: 45px;
+$icon-margin: 8px;
 
 .mode {
     &__section {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: calc(50vw - 155px * 2.5 - 260px);
-        @include breakpoint(mobile) {  
-            margin-left: calc(50vw - 155px * 2.5 - 180px);
+
+        @include breakpoint(mobile) {
+            width: 100%;
+            position: absolute;
+            top: 52px;
+            z-index: 1;
+            border-bottom: 1px solid $blue;
+        }
+        margin-left: auto;
+        margin-right: auto;
+        // 50vw - 2.5 modes - mca/ayim logo
+        @include breakpoint(laptop) {
+            margin-left: calc(50vw - 92px * 2.5 - 225px);
+            margin-right: 0;
+        }
+        @include breakpoint(desktop) {
+            margin-left: calc(50vw - 116px * 2.5 - 260px);
+            margin-right: 0;
+        }
+
+        &--light {
+            background-color: white;
+        }
+        &--dark {
+            background-color: $dark;
         }
     }
 
@@ -94,7 +137,7 @@ $icon-margin: 15px;
 
     &--overlay {
         position: absolute;
-        width: 125px;
+        width: 100%;
         height: 100%;
         top: -100%;
         z-index: -1;
@@ -109,21 +152,42 @@ $icon-margin: 15px;
     align-items: center;
     justify-content: center;
 
-    font-size: $font-sm;
+    @include breakpoint(mobile) {
+        flex: 1;
+        font-size: 0;
+    }
+    font-size: $font-xsm;
+    @include breakpoint(laptop) {
+        font-size: $font-sm;
+    }
     height: 100%;
-    width: 125px;
-    padding: 5px $icon-padding;
-    margin: 0 $icon-margin;
+    width: 60px;
+    @include breakpoint(laptop) {
+        width: 80px;
+    }
+    @include breakpoint(desktop) {
+        width: 100px;
+    }
+    padding: 5px 0;
+    @include breakpoint(laptop) {
+        margin: 0 calc($icon-margin * 0.75);
+    }
+    @include breakpoint(desktop) {
+        margin: 0 $icon-margin;
+    }
 
     @each $mode in $modes {
 
         &__#{$mode} {
             height: $icon-size;
             width: $icon-size;
-            background-image: url("../../img/site/mca-ayim/mode/#{$mode}.png");
-            background-size: $icon-size;
+            background-image: url("../../img/site/mca-ayim/mode/#{$mode}.svg");
             background-position: center;
             background-repeat: no-repeat;
+            background-size: calc($icon-size * 0.3);
+            @include breakpoint(laptop) {
+                background-size: calc($icon-size * 0.6);
+            }
 
             &--dark {
                 filter: invert(1);

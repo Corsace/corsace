@@ -1,18 +1,11 @@
 <template>
     <div>
+        <mode-header />
         <div 
             v-if="onTime"
             class="stage-wrapper"
         >
-            <mode-switcher
-                stretch
-                enable-mode-eligibility
-                :hide-phase="phase.phase !== $route.params.stage"
-                :hide-title="true"
-                @inactiveModeClicked="toggleGuestDifficultyModal"
-            >
-                <stage-page />
-            </mode-switcher>
+            <stage-page />
         </div>
         <div 
             v-else
@@ -36,13 +29,20 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter, Mutation, State } from "vuex-class";
+import { State, namespace } from "vuex-class";
 
 import { MCA, Phase } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
+import StagePage from "../../components/stage/StagePage.vue";
+import ModeHeader from "../../../Assets/components/mca-ayim/ModeHeader.vue";
+
+const mcaAyimModule = namespace("mca-ayim");
+
 @Component({
     components: {
+        StagePage,
+        ModeHeader,
     },
     validate ({ params }): boolean {
         const stageRegex = /^(nominating|nominate|vote|voting)$/i;
@@ -67,14 +67,16 @@ import { UserMCAInfo } from "../../../Interfaces/user";
 })
 export default class Stage extends Vue {
 
-    @State selectedMode!: string;
-    @State loggedInUser!: UserMCAInfo;
-    @State mca!: MCA | null;
-    @Getter phase!: Phase | null;
-    @Mutation toggleGuestDifficultyModal;
+    @State viewTheme!: "light" | "dark";
+
+    @mcaAyimModule.State selectedMode!: string;
+    @mcaAyimModule.State loggedInMCAUser!: UserMCAInfo | null;
+    @mcaAyimModule.State mca!: MCA | null;
+    @mcaAyimModule.Getter phase!: Phase | null;
+    @mcaAyimModule.Mutation toggleGuestDifficultyModal;
     
     mounted () {
-        if (!this.loggedInUser || !this.loggedInUser.eligibility.some(eligibility => eligibility.year == parseInt(this.$route.params.year)))
+        if (!this.loggedInMCAUser || !this.loggedInMCAUser.eligibility.some(eligibility => eligibility.year == parseInt(this.$route.params.year)))
             this.$router.push("/" + this.$route.params.year);
     }
 

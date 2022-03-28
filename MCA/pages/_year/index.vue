@@ -1,7 +1,182 @@
 <template>
     <div>
-        <div 
-            class="index scroll__mca"
+        <div
+            v-if="selectedMode && phase"
+            class="index scroll__mca index__main"
+            :class="[
+                `index--${viewTheme}`,
+                `scroll--${viewTheme}`
+            ]"
+        >
+            <mode-header />
+            <div class="index__modeInfo">
+                <div
+                    class="index__modeInfo--time"
+                    :class="`index__modeInfo--time-${viewTheme}`"
+                >
+                    <div 
+                        class="index__modeInfo--time-topBorder"
+                        :class="`index__modeInfo--time-topBorder-${viewTheme}`"
+                    >
+                        {{ $t(`mca.main.stage.stage`) }}
+                        <div :class="`index__modeInfo--time-line${viewTheme}`" />
+                        <div class="index__modeInfo--time-stage">
+                            {{ $t(`mca.main.${phase.phase}`).split("").join(" ").toUpperCase() }}
+                        </div>
+                    </div>
+                    
+                    <div 
+                        class="index__modeInfo--time-text"
+                        :class="`index__modeInfo--time-text-${viewTheme}`"
+                    >
+                        <div class="index__modeInfo--time-textNumber">
+                            {{ phase.phase === 'nominating' || phase.phase === 'voting' ? remainingDays : "00" }}
+                        </div>
+                        <div class="index__modeInfo--time-textLine" />
+                        {{ $t('mca.main.daysLeft').toUpperCase() }}
+                    </div>
+
+                    <div class="index__modeInfo--time-bottomBorder" />
+
+                    <div class="index__modeInfo--time-superBottomBorder" />
+                </div>
+                <div 
+                    class="index__modeInfo--info"
+                    :class="`index__modeInfo--info-${viewTheme}`"
+                >
+                    <div class="index__modeInfo--timeline">
+                        <div class="index__mainHeader">
+                            {{ $t("mca.main.timeline").toUpperCase() }}
+                        </div>
+                        <div class="index__modeInfo--timeline-phase">
+                            <div 
+                                class="index__modeInfo--timeline-stage"
+                                :class="phase.phase === 'nominating' ? [
+                                    `index__modeInfo--${selectedMode}`,
+                                    `index__modeInfo--${selectedMode}-${viewTheme}`
+                                ] : ''"
+                            >
+                                {{ $t(`mca.main.nominating`).toUpperCase() }}
+                            </div>
+                            <div 
+                                class="index__modeInfo--timeline-dot"
+                                :class="phase.phase === 'nominating' ? `index__modeInfo--timeline-dot-${selectedMode}` : ''"
+                            />
+                            {{ mca.nomination.start.toLocaleString(dateInfo.locale, options) + " -" }} 
+                            <br>
+                            {{ mca.nomination.end.toLocaleString(dateInfo.locale, options) }}
+                        </div>
+                        <div class="index__modeInfo--timeline-phase">
+                            <div 
+                                class="index__modeInfo--timeline-stage"
+                                :class="phase.phase === 'voting' ? [
+                                    `index__modeInfo--${selectedMode}`,
+                                    `index__modeInfo--${selectedMode}-${viewTheme}`
+                                ] : ''"
+                            >
+                                {{ $t(`mca.main.voting`).toUpperCase() }}
+                            </div>
+                            <div 
+                                class="index__modeInfo--timeline-dot"
+                                :class="phase.phase === 'voting' ? `index__modeInfo--timeline-dot-${selectedMode}` : ''"
+                            />
+                            {{ mca.nomination.start.toLocaleString(dateInfo.locale, options) + " -" }} 
+                            <br>
+                            {{ mca.nomination.end.toLocaleString(dateInfo.locale, options) }}
+                        </div>
+                        <div class="index__modeInfo--timeline-phase">
+                            <div 
+                                class="index__modeInfo--timeline-stage"
+                                :class="phase.phase === 'results' ? [
+                                    `index__modeInfo--${selectedMode}`,
+                                    `index__modeInfo--${selectedMode}-${viewTheme}`
+                                ] : ''"
+                            >
+                                {{ $t(`mca.main.results`).toUpperCase() }}
+                            </div>
+                            <div 
+                                class="index__modeInfo--timeline-dot"
+                                :class="phase.phase === 'results' ? `index__modeInfo--timeline-dot-${selectedMode}` : ''"
+                            />
+                            {{ mca.nomination.start.toLocaleString(dateInfo.locale, options) + " -" }} 
+                            <br>
+                            {{ mca.nomination.end.toLocaleString(dateInfo.locale, options) }}
+                        </div>
+                    </div>
+                    <div class="index__modeInfo--organizers">
+                        <div class="index__mainHeader">
+                            {{ $t('mca.main.organized') }}
+                        </div>
+                        <div class="index__modeInfo--organizers-list">
+                            {{ organizers }}
+                        </div>
+                    </div>
+                </div>
+                <div 
+                    class="index__modeInfo--categories"
+                    :class="`index__modeInfo--categories-${viewTheme}`"
+                >
+                    <div class="index__mainHeader">
+                        {{ $t('mca.main.categories.index') }}
+                    </div>
+                    <div 
+                        class="index__setCount"
+                        :class="`index__setCount--${viewTheme}`"
+                    >
+                        {{ $t('mca.main.rankedSets') }}
+                        <div 
+                            class="index__setCount--counter"
+                            :class="`index__setCount--counter-${viewTheme}`"
+                        >
+                            <div
+                                v-for="i in 5"
+                                :key="i"
+                                class="index__setCount--number"
+                                :class="`index__setCount--number-${viewTheme}`"
+                            >
+                                {{ beatmapCountString.length > (i - 1) ? beatmapCountString[i - 1] : "" }}
+                            </div>
+                        </div>
+                    </div>
+                    <a
+                        v-if="phase.phase !== 'preparation' && loggedInMCAUser && (phase.phase === 'results' || isEligibleFor(selectedMode))"
+                        class="index__navigation"
+                        :class="`index__navigation--${viewTheme} index__navigation--${selectedMode} index__navigation--${selectedMode}-${viewTheme}`" 
+                        :href="`/${phase.year}/${phase.phase}`"
+                    >
+                        {{ $t(`mca.main.${phaseText}`) }}
+                    </a>
+                    <div
+                        v-else-if="phase.phase !== 'preparation' && loggedInMCAUser && !isEligibleFor(selectedMode)"
+                        class="index__navigation index__navigation--inactive"
+                        :class="`index__navigation--inactive-${viewTheme} index__navigation--${viewTheme}-inactive`"
+                        @click="toggleGuestDifficultyModal"
+                    >
+                        {{ $t(`mca.main.${phaseText}`) }}
+                    </div>
+                    <div class="index__modeInfo--categories-line" />
+                    <div class="index__categories">
+                        <collapsible
+                            :title="$t('mca.main.categories.map').toUpperCase()"
+                            :list="beatmapCategories"
+                            active
+                            category-name
+                            scroll
+                        />
+                        <collapsible
+                            :title="$t('mca.main.categories.user').toUpperCase()"
+                            :list="userCategories"
+                            active
+                            category-name
+                            scroll
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            v-else-if="!selectedMode"
+            class="index scroll__mca index__bg"
             :class="[
                 `index--${viewTheme}`,
                 `scroll--${viewTheme}`
@@ -16,7 +191,7 @@
                         class="portal__ayim--offset"
                         :class="`index--${viewTheme}`"
                     >
-                        LET'S LOOK BACK AT 2021
+                        LET'S LOOK BACK AT {{ $route.params.year }}
                     </div>
                     <div class="portal__ayim--centre">
                         <img
@@ -50,7 +225,7 @@
                         <span class="bold">corsace</span>.io
                     </div>
                     <div class="portal__desc">
-                        OFFICIAL MERCHANDISE STORE
+                        MAIN EVENT HUB
                     </div>
                 </a>
             </div>
@@ -59,26 +234,31 @@
                     WELCOME TO MCA
                 </div>
                 <div>
-                    USUAL WELCOME BACK TO MCA
+                    THE YEARLY VOTE 
                 </div>
                 <div>
-                    USUAL WELCOME BACK TO MCA
+                    OF THE BEST MAPS AND MAPPERS
                 </div>
                 <div>
-                    USUAL WELCOME BACK TO MCA
+                    DECIDED BY MAPPERS
                 </div>
+                <br>
                 <div>
-                    USUAL WELCOME BACK TO MCA
+                    CLICK ON A MODE TO GET STARTED
                 </div>
-                <div>
-                    USUAL WELCOME BACK TO MCA
-                </div>
-                <div>
-                    USUAL WELCOME BACK TO MCA
-                </div>
-                <div>
-                    USUAL WELCOME BACK TO MCA
-                </div>
+                <br>
+            </div>
+        </div>
+        <div 
+            v-else
+            class="index__noMCA index__bg"
+            :class="`index--${viewTheme}`"
+        >
+            <div>
+                No MCA currently for {{ $route.params.year }}
+            </div>
+            <div>
+                Click below to navigate between years
             </div>
         </div>
     </div>
@@ -88,12 +268,33 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
-import { MCA } from "../../../Interfaces/mca";
+import { CategoryInfo } from "../../../Interfaces/category";
+import { MCA, Phase } from "../../../Interfaces/mca";
+import { UserMCAInfo } from "../../../Interfaces/user";
+
+import Collapsible from "../../../Assets/components/mca-ayim/Collapsible.vue";
+import ModeHeader from "../../../Assets/components/mca-ayim/ModeHeader.vue";
 
 const mcaAyimModule = namespace("mca-ayim");
 
+interface FullFrontInfo {
+    standard: FrontInfo;
+    taiko: FrontInfo;
+    fruits: FrontInfo;
+    mania: FrontInfo;
+    storyboard: FrontInfo;
+}
+
+interface FrontInfo {
+    categoryInfos: CategoryInfo[];
+    beatmapCount: number;
+    organizers: string[];
+}
+
 @Component({
     components: {
+        ModeHeader,
+        Collapsible,
     },
     head () {
         return {
@@ -112,13 +313,72 @@ const mcaAyimModule = namespace("mca-ayim");
 })
 export default class Index extends Vue {
 
+    @mcaAyimModule.State loggedInMCAUser!: null | UserMCAInfo;
     @mcaAyimModule.State mca!: MCA;
     @mcaAyimModule.State selectedMode!: string;
+    @mcaAyimModule.Getter phase!: Phase;
+    @mcaAyimModule.Getter isEligibleFor!: (mode: string) => boolean;
+    @mcaAyimModule.Mutation toggleGuestDifficultyModal!: boolean;
 
     @State viewTheme!: "light" | "dark";
 
     dateInfo = Intl.DateTimeFormat().resolvedOptions();
-    options: Intl.DateTimeFormatOptions = { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, timeZoneName: "short", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
+    options: Intl.DateTimeFormatOptions = { timeZone: this.dateInfo.timeZone, timeZoneName: "short", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
+
+    info: FullFrontInfo | null = null;
+
+    get remainingDays (): number {
+        return Math.floor((this.phase?.endDate?.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+    }
+
+    get currentModeInfo (): FrontInfo | undefined {
+        if (!this.info) return undefined;
+
+        return this.info[this.selectedMode];
+    }
+
+    get beatmapCategories (): CategoryInfo[] | undefined {
+        return this.currentModeInfo?.categoryInfos.filter(x => x.type === "Beatmapsets");
+    }
+
+    get userCategories (): CategoryInfo[] | undefined{
+        return this.currentModeInfo?.categoryInfos.filter(x => x.type === "Users");
+    }
+
+    get beatmapCount (): number {
+        return this.currentModeInfo ? this.currentModeInfo.beatmapCount : 0;
+    }
+
+    get beatmapCountString (): string[] {
+        return this.beatmapCount.toString().split("").reverse();
+    }
+    
+    get organizers (): string {
+        return this.currentModeInfo?.organizers.join(", ") || "";
+    }
+
+    get phaseText (): string {
+        if (!this.phase) return "";
+
+        const text = {
+            nominating: "nominateNow",
+            voting: "voteNow",
+            results: "viewResults",
+        };
+        return text[this.phase.phase];
+    }
+
+    async mounted () {
+        if (this.mca) {
+            const { data } = await this.$axios.get(`/api/mca/front?year=${this.mca.year}`);
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            this.info = data.frontData;
+        }
+    }
 
 }
 </script>
@@ -128,14 +388,34 @@ export default class Index extends Vue {
 @import '@s-sass/_variables';
 
 .index {
-    background-image: url("../../../Assets/img/site/mca-ayim/home-bg.png");
-    background-attachment: local;
+
+    &__bg {
+        background-image: url("../../../Assets/img/site/mca-ayim/home-bg.png");
+        background-position: center;
+        background-repeat: repeat-y;
+        background-attachment: local;
+        background-size: 100%;
+    }
 
     display: flex;
     align-items: center;
     flex-direction: column;
+    gap: 20px;
 
-    font-size: $font-title;
+    @include breakpoint(mobile) {
+        margin-top: 55px;
+    }
+
+    font-size: $font-xl;
+    @include breakpoint(tablet) {
+        font-size: $font-xxl;
+    }
+    @include breakpoint(laptop) {
+        font-size: $font-xxxl;
+    }
+    @include breakpoint(desktop) {
+        font-size: $font-title;
+    }
     &--light {
         color: black;
     }
@@ -144,6 +424,426 @@ export default class Index extends Vue {
     }
 
     height: 100%;
+
+    &__main {
+        font-size: $font-xxxl;
+        padding: 20px 50px;
+    }
+
+    &__navigation {
+
+        width: 75%;
+        align-self: center;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        padding: 10px;
+        margin-bottom: 25px;
+
+        border: 1px $blue solid;
+        border-radius: 3px;
+
+        &--light {
+            background-color: white;
+            &-inactive {
+                border: 1px rgba(0,0,0,0.5) solid;
+            }
+        }
+        &--dark {
+            background-color: $dark;
+            &-inactive {
+                border: 1px rgba(255,255,255,0.5) solid;
+            }
+        }
+
+        @each $mode in $modes {
+            &--#{$mode} {
+                color: var(--#{$mode});
+                &-light {
+                    &:hover {
+                        color: white;
+                        background-color: var(--#{$mode});
+                        text-decoration: none;
+                    }
+                }
+                &-dark {
+                    &:hover {
+                        color: $dark;
+                        background-color: var(--#{$mode});
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+
+        &--inactive {
+            cursor: pointer;
+
+            &-light {
+                color: rgba(0,0,0,0.5);
+                background-color: rgba(0,0,0,0.5);
+            }
+            &-dark {
+                color: rgba(255,255,255,0.5);
+                background-color: rgba(255,255,255,0.5);
+            }
+        }
+    }
+
+    &__modeInfo {
+        flex: 1;
+        display: flex;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+        gap: 50px;
+
+        width: 100%;
+
+        &--time, &--info, &--categories {
+            border: 1px $blue solid;
+
+            display: flex;
+            flex-direction: column;
+
+            &-light {
+                background-color: white;
+            }
+            &-dark {
+                background-color: $dark;
+            }
+        }
+
+        &--time, &--info {
+            flex: 1;
+        }
+
+        &--info, &--categories {
+            padding: 20px;
+        }
+
+        &--time {
+
+            &-stage {
+                font-weight: bold;
+                width: 100%;
+                text-align: center;
+                text-align-last: justify;
+                white-space: nowrap;
+            }
+
+            &-text {
+                position: relative;
+                padding: 20px;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                font-weight: bold;
+                color: $blue;
+
+                &-light {
+                    &::after {
+                        content: "";
+                        display: block;
+                        position: absolute;
+                        width: 100%;
+                        bottom: -20px;
+                        height: 20px;
+                        background: linear-gradient(-45deg, transparent 75%, white 0) 0 50%,
+                                    linear-gradient(45deg, transparent 75%, white 0) 0 50%;
+                        background-size: 20px 20px;
+                        z-index: 1;
+                    }
+                }
+                &-dark {
+                    &::after {
+                        content: "";
+                        display: block;
+                        position: absolute;
+                        width: 100%;
+                        bottom: -20px;
+                        height: 20px;
+                        background: linear-gradient(-45deg, transparent 75%, $dark 0) 0 50%,
+                                    linear-gradient(45deg, transparent 75%, $dark 0) 0 50%;
+                        background-size: 20px 20px;
+                        z-index: 1;
+                    }
+                }
+
+                &Line {
+                    border: 1px $blue solid;
+                    width: 75%;
+                }
+
+                &Number {
+                    font-size: 17rem;
+                    font-weight: normal;
+                    line-height: 14rem;
+                }
+            }
+
+            &-line {
+                border: 1px solid $blue;
+            }
+            &-linelight {
+                border: 1px solid white;
+                width: 75%;
+            }
+            &-linedark {
+                border: 1px solid $dark;
+                width: 75%;
+            }
+
+            &-topBorder {
+                &-light {
+                    color: white;
+                }
+                &-dark {
+                    color: $dark;
+                }
+
+                &::after {
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    width: 100%;
+                    bottom: -20px;
+                    height: 20px;
+                    background: linear-gradient(-45deg, transparent 75%, $blue 0) 0 50%,
+                                linear-gradient(45deg, transparent 75%, $blue 0) 0 50%;
+                    background-size: 20px 20px;
+                }
+
+                position: relative;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: wrap;
+                column-gap: 10px;
+
+                padding: 40px;
+                background-color: $blue;
+            }
+
+            &-bottomBorder {
+                position: relative;
+                background-image: url("../../../Assets/img/site/mca-ayim/fractal.png");
+                background-position: right;
+                background-size: 125%;
+                height: 100%;
+            }
+
+            &-superBottomBorder {
+                position: relative;
+                background-color: $blue;
+                height: 100px;
+
+                &::before {
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    width: 100%;
+                    top: -20px;
+                    height: 20px;
+                    background: linear-gradient(-45deg, transparent 75%, $blue 0) 0 50%,
+                                linear-gradient(45deg, transparent 75%, $blue 0) 0 50%;
+                    background-size: 20px 20px;
+                    transform: rotate(180deg);
+                }
+            }
+        }
+
+        &--info {
+            gap: 75px;
+        }
+
+        &--timeline {
+            font-size: $font-lg;
+
+            &-dot {
+                position: absolute;
+                right: -5px;
+                top: 40%;
+
+                height: 10px;
+                width: 10px;
+
+                background-color: $blue;
+
+                border-radius: 50%;
+
+                @each $mode in $modes {
+                    &-#{$mode} {
+                        height: 12px;
+                        width: 12px;
+                        border: 2px solid var(--#{$mode});
+                    }
+                }
+            }
+
+            &-phase {
+                position: relative;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                
+                text-align: right;
+                white-space: nowrap;
+
+                margin-left: 20px;
+                padding: 25px 0;
+                border-left: 2px dashed $blue;
+            }
+
+            &-stage {
+                color: $gray;
+                font-size: $font-xxl;
+                border-bottom: 2px dashed $blue;
+            }
+        }
+
+        @each $mode in $modes {
+            &--#{$mode} {
+                color: var(--#{$mode});
+                &-dark {
+                    text-shadow: 0 0 2px var(--#{$mode});
+                }
+            }
+        }
+
+        &--organizers {
+
+            &-list {
+                font-size: $font-xl;
+                color: #808080;
+                text-align: center;
+            }
+        }
+
+        &--categories {
+            flex: 2;
+            text-transform: uppercase;
+
+            &-line {
+                width: 100%;
+                border: 1px solid $blue;
+                margin-bottom: 20px;
+            }
+        }
+    }
+
+    &__mainHeader {
+        font-weight: bold;
+        font-size: $font-xxxl;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 60%;
+
+        border-bottom: 2px $blue solid;
+    }
+
+    &__categories {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+
+        &--map, &--user {
+            flex: 1;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    &__setCount {
+        align-self: center;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        font-weight: bold;
+
+        width: 75%;
+
+        margin: 25px 0;
+        padding: 20px 50px;
+        border-radius: 15px;
+        background-color: $blue;
+
+        &--light {
+            color: white;
+        }
+        &--dark {
+            color: black;
+        }
+
+        &--counter {
+            display: flex;
+            gap: 10px;
+            flex-direction: row-reverse;
+            &-light {
+                color: $gray;
+            }
+            &-dark {
+                color: white;
+            }
+        }
+
+        &--number {
+            padding: 10px;
+            border-radius: 15px;
+
+            font-size: 5rem;
+            font-weight: normal;
+
+            height: 100px;
+            width: 3rem;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &-light {
+                background-color: white;
+            }
+            &-dark {
+                background-color: $dark;
+            }
+        }
+    }
+
+    &__noMCA {
+        height: 100%;
+
+        @include breakpoint(mobile) {
+            font-size: $font-xl;
+        }
+        font-size: $font-xxl;
+        @include breakpoint(tablet) {
+            font-size: $font-xxxl;
+        }
+        @include breakpoint(desktop) {
+            font-size: $font-title;
+        }
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+    }
 }
 
 .portal {
@@ -160,7 +860,10 @@ export default class Index extends Vue {
 
     &__ayim {
         width: 75vw;
-        margin: 100px 0;
+        margin: 50px 0;
+        @include breakpoint(laptop) {
+            margin: 100px 0;
+        }
         padding: 0 25px;
 
         &:hover {
@@ -173,17 +876,38 @@ export default class Index extends Vue {
             justify-content: center;
 
             position: relative; 
+
+            background-image: url("../../../Assets/img/site/mca-ayim/blue-line.png");
+            background-repeat: no-repeat;
+            background-position-y: 5%;
+            background-position-x: 33%;
         }
 
         &--offset {
             position: absolute;
+            @include breakpoint(mobile) {
+                left: 0;
+                right: 0;
+                top: -3rem;
+            }
             left: calc(-1 * $font-title/2);
-
-            width: 12rem;
+            
+            @include breakpoint(mobile) {
+                width: 100%;
+            }
+            width: calc(4 * $font-xl);
+            @include breakpoint(tablet) {
+                width: calc(4 * $font-xxl);
+            }
+            @include breakpoint(laptop) {
+                width: calc(4 * $font-xxxl);
+            }
+            @include breakpoint(desktop) {
+                width: calc(4 * $font-title);
+            }
             line-height: 2.5rem;
             letter-spacing: 3px;
 
-            font-weight: bold;
             font-style: italic;
         }
 
@@ -196,6 +920,9 @@ export default class Index extends Vue {
             padding: 15px 0;
 
             & > img {
+                @include breakpoint(mobile) {
+                    height: 40px;
+                }
                 height: 70px;
                 margin: 25px 0;
             }
@@ -203,27 +930,55 @@ export default class Index extends Vue {
     }
 
     &__desc {
-        font-size: $font-lg;
+        font-size: $font-xsm;
+        @include breakpoint(laptop) {
+            font-size: $font-sm;
+        }
+        @include breakpoint(desktop) {
+            font-size: $font-base;
+        }
         font-weight: bold;
     }
 
     &__link {
         font-family: "CocoGoose Pro", 'sans-serif';
-        line-height: $font-title;
+        font-size: $font-lg;
+        line-height: $font-lg;
+        @include breakpoint(laptop) {
+            font-size: $font-xl;
+            line-height: $font-xl;
+        }
+        @include breakpoint(desktop) {
+            font-size: $font-xxxl;
+            line-height: $font-xxxl;
+        }
     }
 
     &__other {
         display: flex;
         justify-content: center;
         align-items: center;
+        @include breakpoint(mobile) {
+            flex-direction: column;
+        }
 
         width: 75vw;
-        padding-bottom: 100px;
+        padding-bottom: 50px;
+        @include breakpoint(laptop) {
+            padding-bottom: 100px;
+        }
         & a {
 
             flex: 1;
+            @include breakpoint(mobile) {
+                margin: 25px 0;
+                width: 100%;
+            }
             margin: 0 25px;
-            padding: 15px 45px;
+            padding: 10px 20px;
+            @include breakpoint(desktop) {
+                padding: 15px 45px;
+            }
 
             &:hover {
                 text-decoration: none;
@@ -233,7 +988,35 @@ export default class Index extends Vue {
 }
 
 .welcomeBack {
-    font-weight: bold;
+    line-height: $font-xl;
+    @include breakpoint(tablet) {
+        line-height: $font-xxl;
+    }
+    @include breakpoint(laptop) {
+        line-height: $font-xxxl;
+    }
+    @include breakpoint(desktop) {
+        line-height: $font-title;
+    }
 }
 
+.nominating {
+    text-shadow: -1px -1px 0 $dark, 1px -1px 0 $dark, -1px 1px 0 $dark, 1px 1px 0 $dark;
+    color: $yellow;
+}
+
+.voting {
+    text-shadow: -1px -1px 0 $dark, 1px -1px 0 $dark, -1px 1px 0 $dark, 1px 1px 0 $dark;
+    color: $yellow;
+}
+
+.preparation {
+    text-shadow: -1px -1px 0 $dark, 1px -1px 0 $dark, -1px 1px 0 $dark, 1px 1px 0 $dark;
+    color: $red;
+}
+
+.results {
+    text-shadow: -1px -1px 0 $dark, 1px -1px 0 $dark, -1px 1px 0 $dark, 1px 1px 0 $dark;
+    color: $green;
+}
 </style>

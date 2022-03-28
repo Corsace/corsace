@@ -6,7 +6,7 @@
         @update:search="updateText($event)"
     >
         <button
-            v-if="section === 'beatmaps' && loggedInUser"
+            v-if="section === 'beatmaps' && loggedInMCAUser"
             class="button"
             :class="{ 
                 'button--friends': favourites,
@@ -18,7 +18,7 @@
         </button>
 
         <toggle-button
-            v-if="section === 'beatmaps' && loggedInUser"
+            v-if="section === 'beatmaps' && loggedInMCAUser"
             :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
             :options="playedFilters"
             @change="changePlayed"
@@ -56,7 +56,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { namespace, State } from "vuex-class";
+import { namespace } from "vuex-class";
 import _ from "lodash";
 
 import ToggleButton from "../../../MCA-AYIM/components/ToggleButton.vue";
@@ -65,6 +65,7 @@ import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
 import { StageQuery } from "../../../Interfaces/queries";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
+const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
 
 @Component({
@@ -90,7 +91,7 @@ export default class StagePageFilters extends Vue {
 
     @stageModule.Mutation toggleVoteChoiceBox;
 
-    @State loggedInUser!: UserMCAInfo | null;
+    @mcaAyimModule.State loggedInMCAUser!: UserMCAInfo | null;
 
     @Prop({ type: Boolean, default: false }) results!: boolean;
     @Prop({ type: Number, required: false }) searchKey!: number;
@@ -145,6 +146,10 @@ export default class StagePageFilters extends Vue {
 </script>
 
 <style lang="scss">
+
+.button img {
+    height: 25px;
+}
 
 .category-filters {
     padding: 15px 0;

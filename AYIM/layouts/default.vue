@@ -1,15 +1,18 @@
 <template>
-    <div class="layout layout--ayim">
+    <div class="layout layout--mca">
         <the-header 
             :site="'ayim'"
             class="mcaayim__header"
         >
-            <div
+            <img
+                :src="require(`../../Assets/img/site/mca-ayim/year/${$route.params.year}-${viewTheme}-ayim.png`)"
                 class="mcaayim__logo"
                 :class="`mcaayim__logo--${viewTheme}`"
-            />
+            >
 
-            <mode-switcher />
+            <mode-switcher 
+                :enable-mode-eligibility="$route.name === 'year-stage'"
+            />
         </the-header>
 
         <nuxt 
@@ -21,35 +24,88 @@
             <a 
                 class="footer-nav__brand-name" 
                 :class="`footer-nav__brand-name--${viewTheme}`"
-                href="https://corsace.io">
+                href="https://corsace.io"
+            >
                 <img
+                    class="corsace__icon"
                     src="../../Assets/img/site/mca-ayim/corsace_text.png"
                     alt=""
                 >
             </a>
+            <div 
+                class="socials"
+                :class="`socials--${viewTheme}`"
+            >
+                <a
+                    class="socials__link"
+                    href="https://twitter.com/corsace_"
+                    target="_blank"
+                >
+                    <img
+                        class="socials__icon"
+                        src="../../Assets/img/social/twitter.png"
+                        alt=""
+                    >
+                </a>
+                <a
+                    class="socials__link"
+                    href="https://discord.gg/Z6vEMsr"
+                    target="_blank"
+                >
+                    <img
+                        class="socials__icon"
+                        src="../../Assets/img/social/discord.png"
+                        alt=""
+                    >
+                </a>
+                <a
+                    class="socials__link"
+                    href="https://www.twitch.tv/corsace"
+                    target="_blank"
+                >
+                    <img
+                        class="socials__icon"
+                        src="../../Assets/img/social/ttv.png"
+                        alt=""
+                    >
+                </a>
+            </div>
+            <year-switcher />
         </the-footer>
+        <guest-difficulty-modal
+            v-if="loggedInMCAUser"
+        />
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { State, namespace } from "vuex-class";
 
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import ModeSwitcher from "../../Assets/components/mca-ayim/ModeSwitcher.vue";
+import YearSwitcher from "../../Assets/components/mca-ayim/YearSwitcher.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
+import GuestDifficultyModal from "../../Assets/components/mca-ayim/GuestDifficultyModal.vue";
+
+import { UserMCAInfo } from "../../Interfaces/user";
+
+const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
         TheHeader,
         ModeSwitcher,
+        YearSwitcher,
         TheFooter,
+        GuestDifficultyModal,
     },
     middleware: "mca",
 })
 export default class Default extends Vue {
 
     @State viewTheme!: "light" | "dark";
+    @mcaAyimModule.State loggedInMCAUser!: null | UserMCAInfo;
 
     async mounted () {
         await Promise.all([
@@ -71,23 +127,24 @@ export default class Default extends Vue {
     }
 
     &__logo {
-        width: 260px;
-
-        background-size: 240px;
-        background-position: center;
-        background-repeat: no-repeat;
-
-        &--light {
-            background-image: url("../../Assets/img/site/mca-ayim/year/2021-light-ayim.png");
-        }
-
-        &--dark {
-            background-image: url("../../Assets/img/site/mca-ayim/year/2021-dark-ayim.png");
-        }
+        align-self: center;
 
         @include breakpoint(mobile) {
+            display: none;
+        }
+        width: 150px;
+        padding-left: 6px;
+        @include breakpoint(tablet) {
             width: 180px;
-            background-size: 160px;
+            padding-left: 7px;
+        }
+        @include breakpoint(laptop) {
+            width: 225px;
+            padding-left: 9px;
+        }
+        @include breakpoint(desktop) {
+            width: 260px;
+            padding-left: 10px;
         }
     }
 
@@ -100,32 +157,73 @@ export default class Default extends Vue {
     &__brand {
 
         &-name {
-            & img {
-                object-fit: contain;
-                width: 128px;
-            }
-            margin-right: auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            @include breakpoint(mobile) {
-                width: 100px;
-            }
             &--light {
                 filter: invert(1);
             }
+            @include transition;
         }
     }
 }
 
+.corsace__icon {
+    object-fit: contain;
+    width: 80px;
+    @include breakpoint(tablet) {
+        width: 100px;   
+    }
+    @include breakpoint(laptop) {
+        width: 128px;
+    }
+}
+
+.socials {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    @include breakpoint(laptop) {
+        margin-left: 5px;
+    }
+
+    &__link {
+        display: flex;
+    }
+
+    &__icon {
+        margin-right: 3px;
+        height: 20px;
+        @include breakpoint(tablet) {
+            margin-right: 5px;
+            height: 25px;   
+        }
+        @include breakpoint(laptop) {
+            margin-right: 10px;
+            height: 30px;   
+        }
+    }
+    &--light {
+        filter: invert(1);
+    }
+    &--dark {
+        color: $gray;
+    }
+    @include transition;
+}
+
 .main {
+    overflow: hidden;
     &--light {
         background-color: white;
         background-image: url("../../Assets/img/site/mca-ayim/grid-light.jpg");
+        background-size: cover;
     }
     &--dark {
         background-color: $darker-gray;
         background-image: url("../../Assets/img/site/mca-ayim/grid-dark.jpg");
+        background-size: cover;
     }
+    @include transition;
 }
 </style>

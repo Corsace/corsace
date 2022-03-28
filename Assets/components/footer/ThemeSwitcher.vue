@@ -40,11 +40,14 @@ export default class ThemeSwitcher extends Vue {
 .theme {
     cursor: pointer;
 
-    width: 70px;
-
     background-position: center;
     background-repeat: no-repeat;
-    background-size: 50px;
+    background-size: 40px;
+    width: 40px;
+    @include breakpoint(laptop) {
+        background-size: 50px;
+        width: 70px;
+    }
 
     @each $mode in $modes {
         &__#{$mode} {

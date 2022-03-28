@@ -315,6 +315,7 @@ export default class MapperComments extends Vue {
     }
 
     & > .button {
+        height: 25px;
         margin-left: 10px;
     }
 }

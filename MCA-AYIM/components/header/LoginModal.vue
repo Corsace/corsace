@@ -56,7 +56,7 @@ import { State } from "vuex-class";
 
 import { UserMCAInfo } from "../../../Interfaces/user";
 
-import BaseModal from "../BaseModal.vue";
+import BaseModal from "../../../Assets/components/BaseModal.vue";
 
 @Component({
     components: {

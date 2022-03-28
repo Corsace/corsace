@@ -67,7 +67,7 @@
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
 
-import BaseModal from "../BaseModal.vue";
+import BaseModal from "../../../Assets/components/BaseModal.vue";
 import AdminInputs from "./AdminInputs.vue";
 
 import { Category, CategoryFilter, CategoryInfo, CategoryType } from "../../../Interfaces/category";

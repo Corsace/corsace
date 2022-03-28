@@ -43,6 +43,7 @@ import { MCAInfo, Phase, StageType } from "../../../Interfaces/mca";
 import { ResultColumn } from "../../../Interfaces/result";
 
 const stageModule = namespace("stage");
+const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
@@ -64,12 +65,12 @@ const stageModule = namespace("stage");
 })
 
 export default class Results extends Vue {
-    @State allMCA!: MCAInfo[];
+    @mcaAyimModule.State allMCA!: MCAInfo[];
 
-    @Getter phase!: Phase | undefined;
-    @Getter isMCAStaff!: boolean;
+    @mcaAyimModule.Getter phase!: Phase | null;
+    @mcaAyimModule.Getter isMCAStaff!: boolean;
 
-    @Mutation toggleGuestDifficultyModal;
+    @mcaAyimModule.Mutation toggleGuestDifficultyModal;
 
     @stageModule.State section!: SectionCategory;
     @stageModule.State stage!: StageType;

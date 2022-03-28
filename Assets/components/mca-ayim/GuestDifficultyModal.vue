@@ -47,12 +47,12 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation, State } from "vuex-class";
 
-import BaseModal from "../../MCA-AYIM/components/BaseModal.vue";
+import BaseModal from "../BaseModal.vue";
 import GuestDifficultySubmission from "./GuestDifficultySubmission.vue";
 
-import { GuestRequest, RequestStatus } from "../../Interfaces/guestRequests";
-import { UserMCAInfo } from "../../Interfaces/user";
-import { GuestRequestPayload, UpdateGuestRequestPayload } from "../../Assets/store/mca-ayim";
+import { GuestRequest, RequestStatus } from "../../../Interfaces/guestRequests";
+import { UserMCAInfo } from "../../../Interfaces/user";
+import { GuestRequestPayload, UpdateGuestRequestPayload } from "../../store/mca-ayim";
 
 interface RequestData {
     url: string;

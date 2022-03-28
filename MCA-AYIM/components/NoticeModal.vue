@@ -15,7 +15,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { State } from "vuex-class";
 
-import BaseModal from "../../MCA-AYIM/components/BaseModal.vue";
+import BaseModal from "../../Assets/components/BaseModal.vue";
 
 import { MCA } from "../../Interfaces/mca";
 

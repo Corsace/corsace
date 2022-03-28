@@ -1,28 +1,100 @@
 <template>
     <div>
-        <div 
-            class="index"
-            :class="`index--${viewTheme}`"
+        <div
+            v-if="selectedMode"
+            class="index scroll__mca index__main"
+            :class="[
+                `index--${viewTheme}`,
+                `scroll--${viewTheme}`
+            ]"
         >
-            <div class="portal__mca">
-                MCA
-            </div>
+            Lol
+        </div>
+        <div
+            v-else-if="!selectedMode"
+            class="index scroll__mca index__bg"
+            :class="[
+                `index--${viewTheme}`,
+                `scroll--${viewTheme}`
+            ]"
+        >
+            <a
+                href="https://ayim.corsace.io" 
+                class="portal__ayim"
+            >
+                <div :class="`portal__ayim--container portal--${viewTheme}`">
+                    <div 
+                        class="portal__ayim--offset"
+                        :class="`index--${viewTheme}`"
+                    >
+                        {{ $route.params.year }}'s BEST MAPS
+                    </div>
+                    <div class="portal__ayim--centre">
+                        <img
+                            :src="require(`../../../Assets/img/site/mca-ayim/year/${$route.params.year}-${viewTheme}-mca.png`)" 
+                        >
+                        <div class="portal__desc">
+                            CLICK HERE TO ENTER
+                        </div>
+                    </div>
+                </div>
+            </a>
             <div class="portal__other">
                 <a 
                     href="https://shop.corsace.io"
                     class="portal__shop"
+                    :class="`portal--${viewTheme}`"
                 >
-                    CORSACE SHOP
+                    <div class="portal__link">
+                        shop.<span class="bold">corsace</span>.io
+                    </div>
+                    <div class="portal__desc">
+                        OFFICIAL MERCHANDISE STORE
+                    </div>
                 </a>
                 <a 
                     href="https://corsace.io"
                     class="portal__main"
+                    :class="`portal--${viewTheme}`"
                 >
-                    CORSACE MAIN
+                    <div class="portal__link">
+                        <span class="bold">corsace</span>.io
+                    </div>
+                    <div class="portal__desc">
+                        MAIN EVENT HUB
+                    </div>
                 </a>
             </div>
+            <div class="welcomeBack">
+                <div>
+                    WELCOME TO AYIM
+                </div>
+                <div>
+                    THE YEARLY RECAP
+                </div>
+                <div>
+                    OF THE RECORDS AND STATS
+                </div>
+                <div>
+                    CREATED BY MAPS AND MAPPERS
+                </div>
+                <br>
+                <div>
+                    CLICK ON A MODE TO GET STARTED
+                </div>
+                <br>
+            </div>
+        </div>
+        <div 
+            v-else
+            class="index__noMCA index__bg"
+            :class="`index--${viewTheme}`"
+        >
             <div>
-                USUAL WELCOME BACK TO AYIM
+                No MCA currently for {{ $route.params.year }}
+            </div>
+            <div>
+                Click below to navigate between years
             </div>
         </div>
     </div>
@@ -67,15 +139,28 @@ export default class Index extends Vue {
 @import '@s-sass/_variables';
 
 .index {
-    background-image: url("../../../Assets/img/site/mca-ayim/home-bg.png");
-    background-attachment: local;
+    &__bg {
+        background-image: url("../../../Assets/img/site/mca-ayim/home-bg.png");
+        background-position: center;
+        background-repeat: repeat-y;
+        background-attachment: local;
+        background-size: 100%;
+    }
 
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
 
-    font-size: $font-title;
+    font-size: $font-xl;
+    @include breakpoint(tablet) {
+        font-size: $font-xxl;
+    }
+    @include breakpoint(laptop) {
+        font-size: $font-xxxl;
+    }
+    @include breakpoint(desktop) {
+        font-size: $font-title;
+    }
     &--light {
         color: black;
     }
@@ -83,42 +168,335 @@ export default class Index extends Vue {
         color: white;
     }
 
-    overflow-y: scroll;
+    height: 100%;
 
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    &::-webkit-scrollbar {
-        display: none;
+    &__main {
+        font-size: $font-xxxl;
+    }
+
+    &__navigation {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        padding: 10px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+
+        border: 1px $blue solid;
+
+        &--light {
+            background-color: white;
+            &-inactive {
+                border: 1px rgba(0,0,0,0.5) solid;
+            }
+        }
+        &--dark {
+            background-color: $dark;
+            &-inactive {
+                border: 1px rgba(255,255,255,0.5) solid;
+            }
+        }
+
+        &--option {
+            color: $blue;
+        }
+
+        &--inactive {
+            cursor: pointer;
+
+            &-light {
+                color: rgba(0,0,0,0.5);
+            }
+            &-dark {
+                color: rgba(255,255,255,0.5);
+            }
+        }
+    }
+
+    &__mode {
+        margin-top: 25px;
+
+        &--notLoggedIn {
+            margin-bottom: 25px;
+        }
+
+        &Info {
+            display: flex;
+            justify-content: space-evenly;
+
+            width: 100%;
+
+            &--left, &--right {
+                width: 45%;
+                padding: 1%;
+                border: 1px $blue solid;
+
+                display: flex;
+                flex-direction: column;
+
+                &-light {
+                    background-color: white;
+                }
+                &-dark {
+                    background-color: $dark;
+                }
+            }
+
+            &--left {
+                justify-content: space-between;
+            }
+
+            &--right {
+                align-items: center;
+            }
+
+            &--timeline {
+                font-size: $font-lg;
+
+                &-phase {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                }
+            }
+
+            @each $mode in $modes {
+                &--#{$mode} {
+                    color: var(--#{$mode});
+                    &-dark {
+                        text-shadow: 0 0 2px var(--#{$mode});
+                    }
+                }
+            }
+
+            &--organizers {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                &-list {
+                    font-size: $font-lg;
+                }
+            }
+        }
+    }
+
+    &__currentStage {
+        font-weight: bold;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__categories {
+        width: 100%;
+        display: flex;
+
+        &--map, &--user {
+            flex: 1;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    &__noMCA {
+        height: 100%;
+
+        @include breakpoint(mobile) {
+            font-size: $font-xl;
+        }
+        font-size: $font-xxl;
+        @include breakpoint(tablet) {
+            font-size: $font-xxxl;
+        }
+        @include breakpoint(desktop) {
+            font-size: $font-title;
+        }
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
     }
 }
 
 .portal {
-    &__mca {
-        padding: 100px 0;
+    &--light {
+        background-color: white;
+    }
+    &--dark {
+        background-color: $dark;
+    }
+    &--light, &--dark {
+        color: $blue;
+        border: 1px $blue solid; 
+    }
+
+    &__ayim {
+        width: 75vw;
+        margin: 50px 0;
+        @include breakpoint(laptop) {
+            margin: 100px 0;
+        }
+        padding: 0 25px;
+
+        &:hover {
+            text-decoration: none;
+        }
+
+        &--container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            position: relative; 
+
+            background-image: url("../../../Assets/img/site/mca-ayim/blue-line.png");
+            background-repeat: no-repeat;
+            background-position-y: 5%;
+            background-position-x: 33%;
+        }
+
+        &--offset {
+            position: absolute;
+            @include breakpoint(mobile) {
+                left: 0;
+                right: 0;
+                top: -3rem;
+            }
+            left: calc(-1 * $font-title/2);
+            
+            @include breakpoint(mobile) {
+                width: 100%;
+            }
+            width: calc(4 * $font-xl);
+            @include breakpoint(tablet) {
+                width: calc(4 * $font-xxl);
+            }
+            @include breakpoint(laptop) {
+                width: calc(4 * $font-xxxl);
+            }
+            @include breakpoint(desktop) {
+                width: calc(4 * $font-title);
+            }
+            line-height: 2.5rem;
+            letter-spacing: 3px;
+
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        &--centre {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            padding: 15px 0;
+
+            & > img {
+                height: 70px;
+                margin: 25px 0;
+            }
+        }
+    }
+
+    &__desc {
+        font-size: $font-xsm;
+        @include breakpoint(laptop) {
+            font-size: $font-sm;
+        }
+        @include breakpoint(desktop) {
+            font-size: $font-base;
+        }
+        font-weight: bold;
+    }
+
+    &__link {
+        font-family: "CocoGoose Pro", 'sans-serif';
+        font-size: $font-lg;
+        line-height: $font-lg;
+        @include breakpoint(laptop) {
+            font-size: $font-xl;
+            line-height: $font-xl;
+        }
+        @include breakpoint(desktop) {
+            font-size: $font-xxxl;
+            line-height: $font-xxxl;
+        }
     }
 
     &__other {
         display: flex;
-        padding-bottom: 100px;
+        justify-content: center;
+        align-items: center;
+        @include breakpoint(mobile) {
+            flex-direction: column;
+        }
+
+        width: 75vw;
+        padding-bottom: 50px;
+        @include breakpoint(laptop) {
+            padding-bottom: 100px;
+        }
         & a {
-            color: $blue;
-            background-color: white;
 
-            width: 30vw;
+            flex: 1;
+            @include breakpoint(mobile) {
+                margin: 25px 0;
+                width: 100%;
+            }
             margin: 0 25px;
-            padding: 10px;
-            border: 1px $blue solid; 
+            padding: 10px 20px;
+            @include breakpoint(desktop) {
+                padding: 15px 45px;
+            }
 
-            text-align: center;
+            &:hover {
+                text-decoration: none;
+            }
         }
     }
 }
 
-@include breakpoint(laptop) {
-    .left-side, .right-side {
-        flex: 0 0 50%;
-        max-width: 50%;
+.welcomeBack {
+    font-weight: bold;
+    line-height: $font-xl;
+    @include breakpoint(tablet) {
+        line-height: $font-xxl;
+    }
+    @include breakpoint(laptop) {
+        line-height: $font-xxxl;
+    }
+    @include breakpoint(desktop) {
+        line-height: $font-title;
     }
 }
 
+.nominating {
+    text-shadow: -1px -1px 0 $dark, 1px -1px 0 $dark, -1px 1px 0 $dark, 1px 1px 0 $dark;
+    color: $yellow;
+}
+
+.voting {
+    text-shadow: -1px -1px 0 $dark, 1px -1px 0 $dark, -1px 1px 0 $dark, 1px 1px 0 $dark;
+    color: $yellow;
+}
+
+.preparation {
+    text-shadow: -1px -1px 0 $dark, 1px -1px 0 $dark, -1px 1px 0 $dark, 1px 1px 0 $dark;
+    color: $red;
+}
+
+.results {
+    text-shadow: -1px -1px 0 $dark, 1px -1px 0 $dark, -1px 1px 0 $dark, 1px 1px 0 $dark;
+    color: $green;
+}
 </style>

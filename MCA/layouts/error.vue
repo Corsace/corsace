@@ -7,7 +7,7 @@
             uh oh
         </div>
         <div class="error__text">
-            You aren't allowed here yet!
+            You aren't allowed here (yet)!
         </div>
         <a 
             class="error__text error__back"
@@ -54,12 +54,9 @@ export default class Error extends Vue {
 </script>
 
 <style lang="scss">
-.error {
-    background-image: url("../../Assets/img/site/mca-ayim/error.png");
-    background-size: 80%;
-    background-repeat: no-repeat;
-    background-position: center;
+@import '@s-sass/_variables';
 
+.error {
     height: 100%;
     width: 100%;
 
@@ -69,6 +66,11 @@ export default class Error extends Vue {
     justify-content: center;
 
     font-size: 2rem;
+
+    
+    background-color: $darker-gray;
+    background-image: url("../../Assets/img/site/mca-ayim/grid-dark.jpg");
+    color: white;
 }
 
 .error__large {

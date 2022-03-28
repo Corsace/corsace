@@ -15,15 +15,17 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State, Getter } from "vuex-class";
+import { namespace } from "vuex-class";
 
 import { Phase } from "../../../Interfaces/mca";
+
+const mcaAyimModule = namespace("mca-ayim");
 
 @Component
 export default class StateContent extends Vue {
 
-    @State selectedMode!: string;
-    @Getter phase!: Phase | null;
+    @mcaAyimModule.State selectedMode!: string;
+    @mcaAyimModule.Getter phase!: Phase | null;
 
     get remainingDays (): string {
         if (this.phase) {

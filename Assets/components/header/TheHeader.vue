@@ -14,14 +14,21 @@
                     :src="avatarURL"
                     class="header-login__avatar"
                 >
+                <div
+                    v-if="isSmall"
+                    class="header-login__welcome"
+                >
+                    {{ loggedInUser.discord.username ? loggedInUser.discord.username : loggedInUser.osu.username }}
+                </div>
                 <div 
+                    v-else
                     class="header-login__welcome"
                     :class="`header-login__welcome--${viewTheme}`"
                 >
                     {{ $t('header.welcomeBack') }}
                 </div>
                 <div
-                    v-if="loggedInUser.discord.username"
+                    v-if="loggedInUser.discord.username && !isSmall"
                     class="header-login__username"
                 >
                     {{ loggedInUser.osu.username }} 
@@ -32,7 +39,7 @@
                     {{ loggedInUser.discord.username }}
                 </div>
                 <div
-                    v-else-if="loggedInUser.osu.username"
+                    v-else-if="loggedInUser.osu.username && !isSmall"
                     class="header-login__username"
                 >
                     {{ loggedInUser.osu.username }}
@@ -44,7 +51,8 @@
                     <a
                         href="/api/logout"
                     >
-                        <div 
+                        <div
+                            v-if="!isSmall" 
                             class="dot" 
                             :class="`dot--${viewTheme}`"
                         />
@@ -55,16 +63,18 @@
                         :href="`/api/login/discord?site=${site}&redirect=${$route.fullPath}`"
                     >
                         <div 
+                            v-if="!isSmall" 
                             class="dot" 
                             :class="`dot--${viewTheme}`"
                         />
-                        | discord {{ $t('header.login') }}
+                        discord {{ $t('header.login') }}
                     </a>
                     <a 
                         v-else
                         :href="`/api/login/discord?site=${site}&redirect=${$route.fullPath}`"
                     >
                         <div 
+                            v-if="!isSmall" 
                             class="dot" 
                             :class="`dot--${viewTheme}`"
                         />
@@ -111,6 +121,17 @@ export default class TheHeader extends Vue {
         return this.loggedInUser?.osu?.avatar || "";
     }
 
+    isSmall = false;
+
+    mounted () {
+        if (process.client) {
+            this.isSmall = window.innerWidth < 992;
+            window.addEventListener("resize", () => {
+                this.isSmall = window.innerWidth < 992;
+            });
+        }
+    }
+
 }
 </script>
 
@@ -126,6 +147,7 @@ export default class TheHeader extends Vue {
         background-color: white;
         color: black;
     }
+    position: relative;
     top: 0;
 
     width: 100%;
@@ -143,11 +165,14 @@ export default class TheHeader extends Vue {
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
-    margin-right: 30px;
     margin-left: auto;
     
     @include breakpoint(mobile) {
-        margin-right: 15px;
+        margin-right: 10px;
+    }
+    margin-right: 15px;
+    @include breakpoint(laptop) {
+        margin-right: 30px;
     }
 
     &__welcome-container {
@@ -166,9 +191,10 @@ export default class TheHeader extends Vue {
         max-height: 100%;
 
         flex-basis: 100%;
+
         padding: 10px 0;
 
-        margin: 0 15px;
+        margin: 0 10px;
         @include breakpoint(mobile) {
             margin: 0 5px;
         }
@@ -194,7 +220,10 @@ export default class TheHeader extends Vue {
         &--mca, &--ayim{
             color: $blue;
         }
-        padding: 0 5px;
+        padding: 0 2.5px;
+        @include breakpoint(laptop) {
+            padding: 0 5px;
+        }
     }
 
     &__welcome {
@@ -211,8 +240,17 @@ export default class TheHeader extends Vue {
             }
         }
         display: flex;
+        flex-direction: column;
+        @include breakpoint(laptop) {
+            flex-direction: row;
+        }
+
         @include breakpoint(mobile) {
             font-size: $font-sm;
+        }
+        font-size: 0.8rem;
+        @include breakpoint(laptop) {
+            font-size: $font-base;
         }
         & > a {
             display: flex;
@@ -225,7 +263,7 @@ export default class TheHeader extends Vue {
             & > div {
                 width: 10px;
                 height: 10px;
-                margin-left: 5px;
+                margin-left: 10px;
             }
         }
     }

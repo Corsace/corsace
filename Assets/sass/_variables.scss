@@ -1,10 +1,10 @@
 $modes: "storyboard", "mania" , "fruits", "taiko", "standard";
 $themes: "light", "dark";
 
-$breakpoint-sm: 576px;
-$breakpoint-md: 768px;
-$breakpoint-lg: 992px;
-$breakpoint-xl: 1200px;
+$breakpoint-sm: 576px; // mobile breakpoint
+$breakpoint-md: 768px; // tablet breakpoint
+$breakpoint-lg: 992px; // laptop breakpoint
+$breakpoint-xl: 1200px; // desktop breakpoint
 
 $font-scoreboard: 'Scoreboard', sans-serif;
 
@@ -23,7 +23,7 @@ $fruits: #0abdff;
 $mania: #48f326;
 $storyboard: #919191;
 
-$gray: #cccccc;
+$gray: #808080;
 $dark-gray: #343434;
 $darker-gray: #242424;
 $darkest-gray: #141414;

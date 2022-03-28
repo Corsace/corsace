@@ -19,7 +19,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
-import { UserMCAInfo } from "../../../../Interfaces/user";
+import { UserInfo } from "../../../../Interfaces/user";
 
 @Component({
     head () {
@@ -29,7 +29,7 @@ import { UserMCAInfo } from "../../../../Interfaces/user";
     },
 })
 export default class Years extends Vue {
-    @State loggedInUser!: UserMCAInfo;
+    @State loggedInUser!: UserInfo;
 
     async mounted () {
         if (!(this.loggedInUser?.staff?.corsace || this.loggedInUser?.staff?.headStaff))
