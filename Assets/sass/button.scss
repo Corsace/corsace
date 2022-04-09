@@ -1,0 +1,17 @@
+.button {
+    min-width: 80px;
+    background-color: $blue;
+
+    color: white;
+    font-weight: bold;
+    white-space: nowrap;
+
+    border: none;
+    border-radius: .25rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+}

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page">
         <mode-header />
         <div 
             v-if="onTime"
@@ -103,6 +103,10 @@ export default class Stage extends Vue {
 @import '@s-sass/_variables';
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
+
+.page {
+    padding: 20px 50px;
+}
 
 .stage-wrapper {
     width: 100%;

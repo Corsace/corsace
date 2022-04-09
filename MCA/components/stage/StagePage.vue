@@ -2,8 +2,6 @@
     <div class="stage">
         <stage-page-categories />
         
-        <stage-page-count />
-        
         <div class="stage-general">
             <stage-page-header />
             

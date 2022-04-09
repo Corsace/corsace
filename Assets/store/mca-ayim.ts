@@ -64,12 +64,14 @@ export const mutations: MutationTree<RootState> = {
 
         if (localMode && modeRegex.test(localMode)) {
             state.selectedMode = localMode;
+            document.documentElement.style.setProperty("--selected-mode", `var(--${localMode})`);
         }
     },
     updateSelectedMode (state, mode) {
         if (modeRegex.test(mode) || mode === "") {
             state.selectedMode = mode;
             localStorage.setItem("mode", mode);
+            document.documentElement.style.setProperty("--selected-mode", `var(--${mode})`);
         }
     },
 

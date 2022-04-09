@@ -1,18 +1,23 @@
 <template>
-    <base-choice-card :choice="choice">
+    <base-choice-card
+        :choice="choice"
+        :image-url="imageUrl"
+    >
         <a
-            class="choice__info"
-            :style="bgImg"
-            :href="$route.params.year < 2021 ? `https://osu.ppy.sh/beatmapsets/${choice.id}` : `https://osu.ppy.sh/beatmaps/${choice.id}`"
+            class="choice__text"
+            :href="beatmapLink"
             target="_blank"
         >
-            <div class="choice__info-title">
-                {{ choice.title }}
+            <div>
+                {{ choice.title }} {{ $route.params.year >= 2021 ? `[${choice.difficulty}]` : "" }}
             </div>
-            <div class="choice__info-secondary">
-                <span class="choice__info-artist">{{ choice.artist }}</span>
-                <span class="choice__info-host">|
-                    <span class="choice__info-hoster">{{ choice.hoster }} {{ $route.params.year >= 2021 ? `[${choice.difficulty}]` : "" }}</span>
+            <div class="choice__text--subtitle">{{ choice.artist }}</div>
+            <div>
+                <span class="choice__text--subtitle">
+                    hosted by 
+                </span>
+                <span class="choice__text--title">
+                    {{ choice.hoster }}
                 </span>
             </div>
         </a>
@@ -32,11 +37,15 @@ export default class ChoiceBeatmapsetCard extends Vue {
 
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
 
-    get bgImg (): any {
+    get imageUrl (): string {
         if (this.choice)
-            return { "background-image": `linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('https://assets.ppy.sh/beatmaps/${parseInt(this.$route.params.year, 10) < 2021 ? this.choice.id : this.choice.setID}/covers/cover.jpg?1560315422')` };
+            return `https://assets.ppy.sh/beatmaps/${parseInt(this.$route.params.year, 10) < 2021 ? this.choice.id : this.choice.setID}/covers/cover.jpg?1560315422`;
 
-        return { "background-image": "" };
+        return "";
+    }
+
+    get beatmapLink (): string {
+        return parseInt(this.$route.params.year) < 2021 ? `https://osu.ppy.sh/beatmapsets/${this.choice.id}` : `https://osu.ppy.sh/beatmaps/${this.choice.id}`;
     }
 
 }

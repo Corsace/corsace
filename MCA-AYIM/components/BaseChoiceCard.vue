@@ -1,61 +1,57 @@
 <template>
     <div class="choice-container">
-        <div class="choice">
-            <slot />
-        
-            <div 
-                v-if="stage === 'nominating'"
-                class="choice__selection"
-                @click="nominate"
-            >
+        <div class="choice box">
+            <div class="choice__content">
                 <div
-                    class="choice__selection-box" 
-                    :class="{ 
-                        'choice__selection-box--chosen': currentNomination,
-                        'choice__selection-box--denied': currentNomination && !currentNomination.isValid
-                    }"
-                >
-                    <div
-                        v-if="currentSelected"
-                        class="choice__selection-check choice__selection-check--chosen"
-                    >
-                        ...
-                    </div>
-                    <template v-else-if="currentNomination">
-                        <img
-                            v-if="currentNomination.isValid"
-                            class="choice__selection-check choice__selection-check--chosen"
-                            src="../../Assets/img/site/mca-ayim/checkmark.png"
-                        >
-                        <div
-                            v-else
-                            class="choice__selection-invalid"
-                        >
-                            ✕
-                        </div>
-                    </template>
+                    class="choice__img"
+                    :style="`background-image: url(${imageUrl})`"
+                />
+    
+                <div class="choice__info">
+                    <slot />
                 </div>
             </div>
 
             <div
-                v-else-if="stage === 'voting'"
-                class="choice__voting"
-                @click="vote"
+                class="choice__actions"
+                :class="{ 
+                    'choice__actions--selected': currentNomination,
+                    'choice__actions--denied': invalidNomination
+                }"
             >
-                <div class="choice__voting-title">
-                    vote
-                </div>
-                <div
-                    v-if="currentSelected"
-                    class="choice__voting-vote"
-                >
-                    ...
-                </div>
-                <div
-                    v-else
-                    class="choice__voting-vote"
-                >
-                    {{ currentVote && currentVote.choice || '!' }}
+                <div>VOTE</div>
+                <div class="choice__value-container">
+                    <div
+                        v-if="currentSelected"
+                        class="choice__value choice__value--processing"
+                    >
+                        ...
+                    </div>
+                    <div
+                        v-else-if="invalidNomination"
+                        class="choice__value choice__value--denied"
+                    >
+                        ✕
+                    </div>
+                    <div
+                        v-else
+                        class="choice__value"
+                        @click="triggerAction"
+                    >
+                        <svg
+                            v-if="currentNomination"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            viewBox="0 0 16 16"
+                        >
+                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                        </svg>
+                        <span v-else-if="stage === 'voting'">
+                            {{ currentVote && currentVote.choice || '!' }}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,6 +74,7 @@ const stageModule = namespace("stage");
 export default class BaseChoiceCard extends Vue {
 
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
+    @Prop({ type: String, default: () => "" }) readonly imageUrl!: string;
 
     
     @mcaAyimModule.Getter phase!: Phase | null;
@@ -110,6 +107,18 @@ export default class BaseChoiceCard extends Vue {
             else if (this.choice.id && parseInt(this.$route.params.year) >= 2021) return v.beatmap?.ID === this.choice.id;
             else return v.user?.ID === this.choice.corsaceID;
         });
+    }
+
+    get invalidNomination (): boolean {
+        return (this.currentNomination && !this.currentNomination.isValid) || false;
+    }
+
+    async triggerAction () {
+        if (this.stage === "nominating") {
+            await this.nominate();
+        } else {
+            await this.vote();
+        }
     }
 
     async vote () {
@@ -184,138 +193,84 @@ export default class BaseChoiceCard extends Vue {
         }
     }
 
-    @extend %flex-box;
+    min-height: 100px;
     padding: 0;
-    box-shadow: 0 0 8px rgba(255,255,255,0.25);
-    cursor: pointer;
 
     @include transition();
 
-    &:hover {
-        box-shadow: 0 0 12px rgba(255,255,255,0.75);
+    &__content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
 
-}
-
-.choice__voting {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    // position: relative; It should be here instead of .category__selection-maps...
-
-    @include transition('color');
-
-    &-title {
-        font-size: $font-sm;
+    &__img {
+        background-repeat: no-repeat;
+        background-size: cover;
+        width: auto;
+        height: 100%;
     }
 
-    &-vote {
-        font-size: 2rem;
-        font-weight: bold;
+    &__info {
+        display: flex;
+        flex-direction: column;
+        width: auto;
+        height: 100%;
+        padding: 5px 10px;
     }
 
-    &:hover {
-        color: $standard;
+    &__text {
+        @extend %text-wrap;
+        color: #000;
+        
+        &--title {
+            color: var(--selected-mode);
+        }
+
+        &--subtitle {
+            font-size: $font-sm;
+        }
     }
-}
 
-.choice__selection {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
+    &__actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
 
-    padding-bottom: 15px;
+        background-color: $gray;
+        color: white;
+        padding: 5px 10px;
 
-    &-box {
-        height: 30px;
-        width: 30px;
-    
-        border: 4px solid rgba(255, 255, 255, 0.3); 
-        border-radius: 5px;
-
-        @include transition;
-
-        &--chosen, &:hover {
-            border-color: white;
-            box-shadow: 0 0 4px white, inset 0 0 4px white;
+        &--selected {
+            background-color: var(--selected-mode);
         }
 
         &--denied {
-            border-color: $red;
-            box-shadow: 0 0 4px $red, inset 0 0 4px $red;
-
-            &:hover {
-                border-color: $red;
-                box-shadow: 0 0 4px $red, inset 0 0 4px $red;
-            }
+            background-color: $red;
         }
+        
     }
 
-    &-check {
-        width: 100%;
-        height: 100%;
-
-        font-weight: bold;
-        text-align: center;
-
-        opacity: 0;
-
-        @include transition;
-
-        &--chosen {
-            opacity: 1
-        }
-    }
-    
-    &-invalid {
-        color: $red;
-        text-align: center;
-        text-shadow: 0 0 4px $red;
-    }
-}
-
-.choice__info {
-    flex: 5;
-    padding: 8px 12px;
-    border-radius: 10px 0 0 10px;
-
-    background-size: cover;
-    background-position: 34% 30%;
-    overflow: hidden;
-
-    color: white;
-    text-decoration: none;
-
-    &-title {
-        text-shadow: 0 0 2px white;
-        font-weight: 500;
-        font-size: $font-lg;
-        @extend %text-wrap;
-    }
-
-    &-secondary {
+    &__value {
         display: flex;
-        max-height: 1.3rem; 
-        text-shadow: 0 0 2px rgba(255,255,255,0.6);
-        font-size: $font-base;
-    }
+        justify-content: center;
+        align-items: center;
 
-    &-artist {
-        margin-right: 0.25rem;
-        @extend %text-wrap;
-    }
+        border-radius: 100%;
+        border: 2px solid white;
+        width: 40px;
+        height: 40px;
 
-    &-host {
-        flex: 0 0 auto;
-        margin-right: auto;
-    }
+        cursor: pointer;
 
-    &-hoster {
-        font-style: italic;
+        &:hover {
+            background-color: white;
+            color: var(--selected-mode);
+        }
+
+        &--processing, &--denied {
+            cursor: default;
+        }
     }
 }
 </style>

@@ -2,10 +2,14 @@
     <div class="search-bar">
         <div class="search">
             <div class="search__pre">
-                <img 
+                <svg
                     class="search__pre-image"
-                    src="../../Assets/img/site/mca-ayim/magnifying glass.png"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
                 >
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                </svg>
             </div>
             <input
                 class="search__input"
@@ -15,12 +19,13 @@
                 maxlength="50"
                 @input="updateText($event)"
             >
-        </div>
-        <div 
-            v-if="showAdj"
-            class="search-adj"
-        >
-            <slot />
+            
+            <div 
+                v-if="showActions"
+                class="search__actions"
+            >
+                <slot />
+            </div>
         </div>
     </div>    
 </template>
@@ -38,7 +43,7 @@ export default class SearchBar extends Vue {
     @Prop({ type: String, required: true }) readonly placeholder!: string;
     @Prop({ type: Boolean, default: false }) readonly disabled!: boolean;
 
-    showAdj = false;
+    showActions = false;
 
     updateText (e) {
         this.debounce(e.target.value);
@@ -48,7 +53,7 @@ export default class SearchBar extends Vue {
     mounted () {
         this.emitUpdate = _.debounce(this.emitUpdate, 500);
         this.$nextTick(() => {
-            this.showAdj = !!this.$slots.default;
+            this.showActions = !!this.$slots.default;
         });
     }
 
@@ -77,77 +82,66 @@ export default class SearchBar extends Vue {
     display: flex;
     flex: 10;
     min-width: 9rem; // any less and magnifying glass exits container
+    color: $blue;
+    background-color: white;
+    border: 2px solid $blue;
 
-    & > * {
-        padding: 5px;
-        margin: 5px;
-    }
-}
+    &__pre {
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-.search__pre, .search__input {
-    color: white;
-    background-color: black;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.63);
-}
-
-.search__pre {
-    width: 20%;
-    border-radius: 5.5px 0 0 5.5px;
-    margin-right: 0px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &-image {
-        width: 35px;
+        min-width: 50px;
+        
         @include breakpoint(mobile) {
             width: 17px;
         }
+
+        &-image {
+            width: 20px;
+            height: 20px;
+            background-size: 1rem 1rem;
+            color: $blue;
+            font-size: $font-xl;
+        }
     }
 
-    &::before {
-        width: 1px;
-        height: 75%;
-        background-color: white;
+    &__input {
+        flex: 1;
+        font-size: $font-lg;
+        @include breakpoint(mobile) {
+            font-size: $font-base;
+        }
+
+        border: 0;
+        border-radius: 0 5.5px 5.5px 0;
+
+        width: 100%;
+        margin-left: 0px;
+
+        &:focus {
+            outline: none;
+        }
+
+        &::placeholder, &:placeholder-shown {
+            color: rgba(255, 255, 255, 0.26);
+            font-style: italic;
+        }
+
+        &--disabled {
+            cursor: not-allowed;
+        }
     }
-}
 
-.search__input {
-    font-size: $font-lg;
-    @include breakpoint(mobile) {
-        font-size: $font-base;
+    &__actions {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        & > * {
+            padding: 5px;
+            margin: 5px;
+        }
     }
-
-    border: 0;
-    border-radius: 0 5.5px 5.5px 0;
-
-    width: 100%;
-    margin-left: 0px;
-
-    &:focus {
-        outline: none;
-    }
-
-    &::placeholder, &:placeholder-shown {
-        color: rgba(255, 255, 255, 0.26);
-        font-style: italic;
-    }
-
-    &--disabled {
-        cursor: not-allowed;
-    }
-}
-
-.search-adj {
-    display: flex;
-    justify-content: space-between;
-    & > * {
-        white-space: nowrap;
-        flex: 1 1 auto;
-        padding: 9.5px 5px;
-        margin: 5px;
-    }
-    flex: 1;
 }
 </style>

@@ -148,11 +148,11 @@ export default class StagePageFilters extends Vue {
 <style lang="scss">
 
 .button img {
-    height: 25px;
+    height: 15px;
 }
 
 .category-filters {
-    padding: 15px 0;
+    padding: 10px 0;
 }
 
 </style>
