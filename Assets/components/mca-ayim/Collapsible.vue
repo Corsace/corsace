@@ -41,12 +41,12 @@
                         <div
                             v-if="'count' in item && 'maxNominations' in item"
                             class="collapsible__count"
-                            :class="[{
-                                         'collapsible__count--inactive': clickable && item.inactive,
-                                         'collapsible__count--active': isSelected(item)
-                                     },
-                                     item.maxNominations !== 100 && item.count === item.maxNominations ? `collapsible__count--${selectedMode}` : '',
-                                     item.maxNominations !== 100 && item.count === item.maxNominations && isSelected(item) ? `collapsible__count--active--${selectedMode}` : '',
+                            :class="[
+                                {
+                                    'collapsible__count--inactive': clickable && item.inactive,
+                                    'collapsible__count--active': isSelected(item)
+                                },
+                                item.maxNominations !== 100 && item.count !== item.maxNominations ? `collapsible__count--empty` : '',
                             ]"
                         >
                             {{ item.maxNominations !== 100 ? item.count + "/" + item.maxNominations : item.count }}
@@ -59,17 +59,19 @@
                             {{ item.type }}
                         </div>
                     </template>
-                    <div class="collapsible__info--dot" />
+                    <div 
+                        class="collapsible__info--dot"
+                        :class="{ 'collapsible__info--dot-active': 'count' in item && isSelected(item) }"
+                    />
                     <div
                         class="collapsible__text"
-                        :class="[{
-                                     'collapsible__name': clickable && !item.inactive,
-                                     'collapsible__name--inactive': clickable && item.inactive,
-                                     'collapsible__name--active': showExtra && isSelected(item),
-                                 }, 
-                                 'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count === item.maxNominations ? `collapsible__name--${selectedMode}` : '',
-                                 'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count === item.maxNominations && showExtra && isSelected(item) ? `collapsible__name--active--${selectedMode}` : '',
-
+                        :class="[
+                            {
+                                'collapsible__text': clickable && !item.inactive,
+                                'collapsible__text--inactive': clickable && item.inactive,
+                                'collapsible__text--active': showExtra && isSelected(item),
+                            }, 
+                            'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count !== item.maxNominations ? `collapsible__text--empty` : '',
                         ]"
                     >
                         {{ categoryName ? $t(`mca.categories.${item.name}.name`) : item.name }}
@@ -162,10 +164,9 @@ export default class Collapsible extends Vue {
 
 .collapsible {
     display: flex;
-    flex: 1 1 auto;
+    flex-grow: 1;
     flex-direction: column;
     white-space: nowrap;
-    padding: 15px;
     max-height: 400px;
     overflow: hidden;
 
@@ -178,8 +179,6 @@ export default class Collapsible extends Vue {
 
     &--scrollable {
         overflow-y: visible;
-        scrollbar-width: thin;
-        border-radius: 15px 0 0 15px;;
 
         &::-webkit-scrollbar {
             width: 7px;
@@ -202,7 +201,6 @@ export default class Collapsible extends Vue {
         display: flex;
         align-items: center;
         width: 100%;
-        margin: 10px 0;
 
         &--centre {
             justify-content: center;
@@ -214,19 +212,27 @@ export default class Collapsible extends Vue {
             background-color: $blue;
             border-radius: 100%;
             margin: 0 10px;
+            @include breakpoint(mobile) {
+                display: none;
+            }
+
+            &-active {
+                background-color: rgba(0,0,0,0);
+                border: 3px solid var(--selected-mode);
+            }
         }
     }
 
     &__title {
-        font-size: $font-lg;
+        font-size: $font-sm;
         @include breakpoint(tablet) { 
-            font-size: $font-xl;
+            font-size: $font-base;
         }
         @include breakpoint(laptop) { 
-            font-size: $font-xxl;
+            font-size: $font-lg;
         }
         @include breakpoint(desktop) { 
-            font-size: $font-xxxl;
+            font-size: $font-xl;
         }
         text-transform: uppercase;
         text-align: center;
@@ -234,7 +240,16 @@ export default class Collapsible extends Vue {
 
         position: relative;
         background-color: $blue;
-        padding: 15px 50px;
+        padding: 15px 0;
+        @include breakpoint(tablet) { 
+            padding: 15px 0;
+        }
+        @include breakpoint(laptop) { 
+            padding: 15px 0;
+        }
+        @include breakpoint(desktop) { 
+            padding: 15px 0;
+        }
         border-radius: 3px 3px 0 0;
 
         white-space: nowrap;
@@ -267,6 +282,9 @@ export default class Collapsible extends Vue {
         border-radius: 3px;
 
         display: flex;
+        row-gap: 10px;
+        padding-top: 20px;
+        padding-bottom: 10px;
         justify-content: center;
         align-items: center;
         flex-direction: column;
@@ -280,25 +298,44 @@ export default class Collapsible extends Vue {
     }
 
     &__count {
-        text-align: center;
+        font-size: $font-xsm;
+        @include breakpoint(tablet) { 
+            font-size: $font-xsm;
+        }
+        @include breakpoint(laptop) { 
+            font-size: $font-xsm;
+        }
+        @include breakpoint(desktop) { 
+            font-size: $font-sm;
+        }
 
-        border: 1px solid white;
+        text-align: center;
+    
+        border: 1px solid $blue;
         border-radius: 5px;
 
         padding: 3px;
 
         margin-left: 20px;
+        @include breakpoint(mobile) { 
+            margin: 0 5px;
+        }
 
         cursor: default;
 
-        &--active {
-            background-color: white;
-            color: rgba(0, 0, 0, 0.6);
-            box-shadow: 0 0 10px white;
+        &--empty {
+            color: $blue;
         }
 
         &--inactive {
             opacity: .5;
+        }
+        
+        &--active {
+            border: 1px solid var(--selected-mode);
+            background-color: var(--selected-mode);
+            color: white;
+            box-shadow: 0 0 10px var(--selected-mode);
         }
 
         @include mode-border;
@@ -314,36 +351,45 @@ export default class Collapsible extends Vue {
     }
 
     &__text {
-        font-size: $font-base;
+        font-size: $font-xsm;
         @include breakpoint(tablet) { 
-            font-size: $font-lg;
+            font-size: $font-sm;
         }
         @include breakpoint(laptop) { 
-            font-size: $font-xl;
+            font-size: $font-base;
         }
         @include breakpoint(desktop) { 
-            font-size: $font-xxl;
+            font-size: $font-lg;
         }
+        margin-right: 20px;
         text-transform: uppercase;
         position: relative;
+
+        &--empty {
+            color: $blue;
+        }
+
+        &--active {
+            color: var(--selected-mode);
+        }
     }
 
     @include mode-border;
 
     &__expand {
-        font-size: $font-base;
+        font-size: $font-sm;
         @include breakpoint(tablet) { 
-            font-size: $font-lg;
+            font-size: $font-base;
         }
         @include breakpoint(laptop) { 
-            font-size: $font-xl;
+            font-size: $font-lg;
         }
         @include breakpoint(desktop) { 
-            font-size: $font-xxl;
+            font-size: $font-xl;
         }
 
         width: 100%;
-        padding: 25px;
+        padding: 15px;
 
         text-align: center;
 

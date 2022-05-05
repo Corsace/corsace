@@ -93,43 +93,30 @@ export const mutations: MutationTree<RootState> = {
 
 export const getters: GetterTree<RootState, RootState> = {
     phase (state): Phase | undefined {
-        // if (!state.mca) return undefined;
+        if (!state.mca) return undefined;
 
-        // let phase: PhaseType = "preparation";
-        // const newDate = new Date;
-        // let startDate: Date = newDate;
-        // let endDate: Date = newDate;
+        let phase: PhaseType = "preparation";
+        const newDate = new Date;
+        let startDate: Date = newDate;
+        let endDate: Date = newDate;
         
-        // if (newDate > state.mca.nomination.start && newDate < state.mca.nomination.end) {
-        //     phase = "nominating";
-        //     startDate = state.mca.nomination.start;
-        //     endDate = state.mca.nomination.end;
-        // } else if (newDate > state.mca.voting.start && newDate < state.mca.voting.end) {
-        //     phase = "voting";
-        //     startDate = state.mca.voting.start;
-        //     endDate = state.mca.voting.end;
-        // } else if (newDate > state.mca.results) {
-        //     phase = "results";
-        // }
+        if (newDate > state.mca.nomination.start && newDate < state.mca.nomination.end) {
+            phase = "nominating";
+            startDate = state.mca.nomination.start;
+            endDate = state.mca.nomination.end;
+        } else if (newDate > state.mca.voting.start && newDate < state.mca.voting.end) {
+            phase = "voting";
+            startDate = state.mca.voting.start;
+            endDate = state.mca.voting.end;
+        } else if (newDate > state.mca.results) {
+            phase = "results";
+        }
 
-        // return { 
-        //     phase,
-        //     startDate: new Date(startDate),
-        //     endDate: new Date(endDate),
-        //     year: state.mca.year,
-        // };
-
-        const today = new Date();
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 2);
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 2);
-
-        return {
-            phase: "nominating",
-            startDate: yesterday,
-            endDate: tomorrow,
-            year: state.mca ? state.mca.year : today.getUTCFullYear(),
+        return { 
+            phase,
+            startDate: new Date(startDate),
+            endDate: new Date(endDate),
+            year: state.mca.year,
         };
     },
     isMCAStaff (state): boolean {

@@ -11,7 +11,7 @@
         >
             {{ choice.username }}
         </a>
-        <div class="choice__text choice__text--subtitle">
+        <div class="choice__text choice__text--user choice__text--subtitle">
             {{ choice.otherNames.length ? choice.otherNames.join(", ") : "&#x2800;" }}
         </div>
     </base-choice-card>

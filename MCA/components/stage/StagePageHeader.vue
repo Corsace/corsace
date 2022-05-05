@@ -1,28 +1,33 @@
 <template>
     <div 
+        v-if="selectedCategory"
         class="category-header"
         :class="`category-header--${selectedMode}`"
     >
-        <div class="category-header__stage">
+        <div 
+            class="category-header__stage"
+            :class="`category-header__stage--${viewTheme}`"
+        >
             {{ stage }}
         </div>
         
-        <template v-if="selectedCategory">
-            <div class="category-header__info">
-                <div class="category-header__title">
-                    {{ ($t(`mca.categories.${selectedCategory.name}.name`)) }}
-                </div>
-                <div class="category-header__desc">
-                    {{ $t(`mca.categories.${selectedCategory.name}.description`) + (selectedCategory.isFiltered ? " (auto filter enabled)" : "") }}
-                </div>
+        <div 
+            class="category-header__info"
+            :class="`category-header__info--${viewTheme}`"
+        >
+            <div class="category-header__title">
+                {{ ($t(`mca.categories.${selectedCategory.name}.name`)) }}
             </div>
-        </template>
+            <div class="category-header__desc">
+                {{ $t(`mca.categories.${selectedCategory.name}.description`) + (selectedCategory.isFiltered ? " (auto filter enabled)" : "") }}
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { namespace, State } from "vuex-class";
 
 import { CategoryStageInfo } from "../../../Interfaces/category";
 import { StageType } from "../../../Interfaces/mca";
@@ -32,6 +37,8 @@ const stageModule = namespace("stage");
 
 @Component
 export default class StateContent extends Vue {
+
+    @State viewTheme!: "light" | "dark";
 
     @mcaAyimModule.State selectedMode!: string;
 
@@ -68,10 +75,20 @@ export default class StateContent extends Vue {
 
     &__stage {
         font-size: $font-lg;
+        @include breakpoint(mobile) {
+            font-size: $font-base;
+        }
         letter-spacing: .25rem;
         color: white;
         text-align: center;
         text-transform: uppercase;
+
+        &--light {
+            color: white;
+        }
+        &--dark {
+            color: black;
+        }
     }
 
     &__info {
@@ -83,6 +100,15 @@ export default class StateContent extends Vue {
         @include breakpoint(mobile) {
             flex-direction: column;
         }
+
+        &--light {
+            background-color: white;
+            color: black;
+        }
+        &--dark {
+            background-color: $dark;
+            color: white;
+        }
     }
 
     &__title {
@@ -90,25 +116,38 @@ export default class StateContent extends Vue {
         align-items: center;
         height: 100%;
 
-        padding-left: 20px;
-        padding-right: 40px;
+        padding: 10px 40px 10px 20px;
 
         font-weight: bold;
-        font-size: $font-xxxl;
+        font-size: $font-xl;
         font-family: $font-book;
         text-transform: uppercase;
-        color: #000;
 
         @include breakpoint(mobile) {
+            padding: 15px 0;
+            font-size: $font-xl;
             grid-column: 1;
             justify-self: center;
             align-self: center;
+        }
+        @include breakpoint(tablet) {
+            padding: 15px 40px 15px 20px;
+            font-size: $font-xxl;
+        }
+        @include breakpoint(laptop) {
+            padding: 20px 40px 20px 20px;
+            font-size: $font-xxl;
+        }
+        @include breakpoint(desktop) {
+            padding: 30px 40px 30px 20px;
+            font-size: $font-xxxl;
         }
 
         @include transition;
     }
 
     &__desc {
+        flex: 1;
         display: flex;
         align-items: center;
         padding-left: 40px;
@@ -116,14 +155,19 @@ export default class StateContent extends Vue {
 
         height: 100%;
         width: 100%;
-        font-size: $font-sm;
+        font-size: $font-lg;
         color: white;
         background-color: var(--selected-mode);
 
         clip-path: polygon(84% 0, 100% 18%, 100% 100%, 0 100%, 1% 0);
+        @include breakpoint(mobile) {
+            font-size: $font-base;
+            clip-path: none;
+            justify-content: center;
+        }
 
         @include breakpoint(tablet) {
-            font-size: $font-base;
+            font-size: $font-xl;
         }
 
         @include transition;

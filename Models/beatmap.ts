@@ -228,6 +228,7 @@ export class Beatmap extends BaseEntity {
             artist: this.beatmapset.artist,
             title: this.beatmapset.title,
             hoster: this.beatmapset.creator.osu.username,
+            hostID: this.beatmapset.creator.osu.userID,
             difficulty: this.difficulty,
             chosen,
         };

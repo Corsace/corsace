@@ -194,9 +194,9 @@ export default class TheHeader extends Vue {
 
         padding: 10px 0;
 
-        margin: 0 10px;
-        @include breakpoint(mobile) {
-            margin: 0 5px;
+        margin: 0 5px;
+        @include breakpoint(tablet) {
+            margin: 0 10px;
         }
 	}
     

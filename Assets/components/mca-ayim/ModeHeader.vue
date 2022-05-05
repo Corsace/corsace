@@ -67,22 +67,43 @@ $scroll-rotate: 10deg;
 }
 
 .modeHeader {
-    min-height: 65px;
+    min-height: 40px;
+    @include breakpoint(laptop) {
+        min-height: 65px;
+    }
     width: 100%;
     padding: 10px;
     border: 1px $blue solid;
+
+    font-weight: bold;
+    font-size: $font-xl;
+    font-family: $font-book;
     
     overflow: hidden;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
+    @include breakpoint(mobile) {
+        display: none;
+    }
+    @include breakpoint(tablet) {
+        font-size: $font-xxl;
+    }
+    @include breakpoint(laptop) {
+        font-size: $font-xxl;
+    }
+    @include breakpoint(desktop) {
+        font-size: $font-xxxl;
+    }
 
     &--light {
         background-color: white;
+        color: black;
     }
     &--dark {
         background-color: $dark;
+        color: white;
     }
 
     @each $mode in $modes {
@@ -100,6 +121,11 @@ $scroll-rotate: 10deg;
         font-size: $scroll-size;
         line-height: $scroll-size;
         white-space: nowrap;
+
+        display: none;
+        @include breakpoint(laptop) {
+            display: initial;
+        }
 
         animation-name: modeScroll;
         animation-duration: 4s;

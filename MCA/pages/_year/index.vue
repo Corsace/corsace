@@ -406,15 +406,15 @@ export default class Index extends Vue {
         margin-top: 55px;
     }
 
-    font-size: $font-xl;
+    font-size: $font-base;
     @include breakpoint(tablet) {
-        font-size: $font-xxl;
+        font-size: $font-xl;
     }
     @include breakpoint(laptop) {
-        font-size: $font-xxxl;
+        font-size: $font-xxl;
     }
     @include breakpoint(desktop) {
-        font-size: $font-title;
+        font-size: $font-xxxl;
     }
     &--light {
         color: black;
@@ -426,7 +426,16 @@ export default class Index extends Vue {
     height: 100%;
 
     &__main {
-        font-size: $font-xxxl;
+        font-size: $font-sm;
+        @include breakpoint(tablet) { 
+            font-size: $font-base;
+        }
+        @include breakpoint(laptop) { 
+            font-size: $font-lg;
+        }
+        @include breakpoint(desktop) { 
+            font-size: $font-xl;
+        }
         padding: 20px 50px;
     }
 
@@ -580,7 +589,7 @@ export default class Index extends Vue {
                 }
 
                 &Number {
-                    font-size: 17rem;
+                    font-size: 13rem;
                     font-weight: normal;
                     line-height: 14rem;
                 }
@@ -626,7 +635,7 @@ export default class Index extends Vue {
                 flex-wrap: wrap;
                 column-gap: 10px;
 
-                padding: 40px;
+                padding: 20px;
                 background-color: $blue;
             }
 
@@ -663,7 +672,7 @@ export default class Index extends Vue {
         }
 
         &--timeline {
-            font-size: $font-lg;
+            font-size: $font-base;
 
             &-dot {
                 position: absolute;
@@ -740,7 +749,16 @@ export default class Index extends Vue {
 
     &__mainHeader {
         font-weight: bold;
-        font-size: $font-xxxl;
+        font-size: $font-base;
+        @include breakpoint(tablet) { 
+            font-size: $font-lg;
+        }
+        @include breakpoint(laptop) { 
+            font-size: $font-xl;
+        }
+        @include breakpoint(desktop) { 
+            font-size: $font-xxl;
+        }
 
         display: flex;
         justify-content: space-between;

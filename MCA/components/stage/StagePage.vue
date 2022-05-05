@@ -88,7 +88,6 @@ export default class StateContent extends Vue {
 }
 
 .stage-general {
-    flex: 3 1 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;

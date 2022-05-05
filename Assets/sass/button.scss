@@ -1,8 +1,35 @@
 .button {
-    min-width: 80px;
+    min-width: 60px;
+    @include breakpoint(mobile) {
+        min-width: 45px;
+    }
+    @include breakpoint(tablet) {
+        min-width: 80px;
+    }
+    @include breakpoint(desktop) {
+        min-width: 100px;
+    }
     background-color: $blue;
 
-    color: white;
+    &--triangle {
+        margin-left: 5px;
+    }
+
+    &--light {
+        color: white;        
+    }
+    &--dark {
+        color: black;
+
+        & img {
+            filter: invert(100%);
+        }
+    }
+    font-family: 'Futura PT', sans-serif;
+    font-size: $font-base;
+    @include breakpoint(mobile) {
+        font-size: $font-sm;
+    }
     font-weight: bold;
     white-space: nowrap;
 
@@ -14,4 +41,8 @@
     align-items: center;
 
     cursor: pointer;
+
+    &:hover, &--friends {
+        background-color: var(--selected-mode);
+    }
 }

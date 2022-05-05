@@ -1,6 +1,9 @@
 <template>
     <div class="search-bar">
-        <div class="search">
+        <div 
+            class="search"
+            :class="`search--${viewTheme}`"
+        >
             <div class="search__pre">
                 <svg
                     class="search__pre-image"
@@ -13,7 +16,10 @@
             </div>
             <input
                 class="search__input"
-                :class="{ 'search__input--disabled': disabled }"
+                :class="[
+                    { 'search__input--disabled': disabled },
+                    `search--${viewTheme}`
+                ]"
                 :disabled="disabled"
                 :placeholder="placeholder"
                 maxlength="50"
@@ -33,12 +39,15 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import _ from "lodash";
+import { State } from "vuex-class";
 
 @Component
 export default class SearchBar extends Vue {
 
     // SearchBar requires a key to reactively render div.search-adj
     // this is necessary if it is possible for the SearchBar's slot to be empty 
+
+    @State viewTheme!: "light" | "dark";
 
     @Prop({ type: String, required: true }) readonly placeholder!: string;
     @Prop({ type: Boolean, default: false }) readonly disabled!: boolean;
@@ -80,11 +89,22 @@ export default class SearchBar extends Vue {
 
 .search {
     display: flex;
-    flex: 10;
+    flex-wrap: wrap;
+    @include breakpoint(tablet) {
+        flex-wrap: nowrap;
+    }
+    width: 100%;
     min-width: 9rem; // any less and magnifying glass exits container
     color: $blue;
-    background-color: white;
+    padding: 7px 0;
     border: 2px solid $blue;
+
+    &--light {
+        background-color: white;
+    }
+    &--dark {
+        background-color: $dark;
+    }
 
     &__pre {
         display: flex;
@@ -92,14 +112,21 @@ export default class SearchBar extends Vue {
         justify-content: center;
 
         min-width: 50px;
+
+        margin: 0 15px;
         
         @include breakpoint(mobile) {
-            width: 17px;
+            min-width: 25px;
+            margin: 0 3px;
         }
 
         &-image {
             width: 20px;
             height: 20px;
+            @include breakpoint(mobile) {
+                width: 15px;
+                height: 15px;
+            }
             background-size: 1rem 1rem;
             color: $blue;
             font-size: $font-xl;
@@ -107,16 +134,25 @@ export default class SearchBar extends Vue {
     }
 
     &__input {
+        color: $blue;
+        font-family: "Futura PT", sans-serif;
         flex: 1;
-        font-size: $font-lg;
-        @include breakpoint(mobile) {
+        font-size: $font-base;
+        @include breakpoint(tablet) {
+            font-size: $font-lg;
+        }
+        @include breakpoint(laptop) {
             font-size: $font-base;
+        }
+        @include breakpoint(desktop) {
+            font-size: $font-lg;
         }
 
         border: 0;
         border-radius: 0 5.5px 5.5px 0;
 
         width: 100%;
+        min-width: 200px;
         margin-left: 0px;
 
         &:focus {
@@ -124,7 +160,7 @@ export default class SearchBar extends Vue {
         }
 
         &::placeholder, &:placeholder-shown {
-            color: rgba(255, 255, 255, 0.26);
+            color: $blue;
             font-style: italic;
         }
 
@@ -137,6 +173,11 @@ export default class SearchBar extends Vue {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+
+        @include breakpoint(mobile) {
+            width: 100%;
+            justify-content: start;
+        }
 
         & > * {
             padding: 5px;

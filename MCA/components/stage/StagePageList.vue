@@ -1,5 +1,8 @@
 <template>
-    <div class="category-selection">
+    <div 
+        class="scroll__mca category-selection"
+        :class="`scroll--${viewTheme}`"
+    >
         <voting-box v-if="showVoteChoiceBox" />
 
         <div class="category-selection__area">
@@ -55,23 +58,18 @@
                     Loading...
                 </div>
             </div>
-            <scroll-bar
-                selector=".category-selection__maps"
-                @bottom="results ? null : search(true)"
-            />
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { namespace, State } from "vuex-class";
 
 import ChoiceBeatmapsetCard from "../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
 import ChoiceUserCard from "../ChoiceUserCard.vue";
 import ResultsBeatmapsetCard from "../results/ResultsBeatmapsetCard.vue";
 import ResultsUserCard from "../results/ResultsUserCard.vue";
-import ScrollBar from "../../../MCA-AYIM/components/ScrollBar.vue";
 import VotingBox from "./VotingBox.vue";
 
 import { SectionCategory } from  "../../../Interfaces/category";
@@ -87,7 +85,6 @@ const stageModule = namespace("stage");
         ChoiceUserCard,
         ResultsBeatmapsetCard,
         ResultsUserCard,
-        ScrollBar,
         VotingBox,
     },
 })
@@ -107,6 +104,8 @@ export default class StagePageList extends Vue {
 
     @stageModule.Action search;
 
+    @State viewTheme!: "light" | "dark";
+
     @Prop({ type: Boolean, default: false }) results!: boolean;
     @Prop({ type: Array, required: false }) columns!: ResultColumn[];
     @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
@@ -125,6 +124,7 @@ export default class StagePageList extends Vue {
     flex-direction: column;
     flex: 1;
     overflow: auto;
+    padding-right: 10px;
 
     &__area {
         height: 100%;
@@ -138,17 +138,7 @@ export default class StagePageList extends Vue {
         display: flex;
         flex-wrap: wrap;
         align-content: flex-start;
-        
-        overflow-y: scroll;
-        scrollbar-width: none;
-        margin-right: 50px; // Space for scrollbar
-        position: relative;
-
-        &::-webkit-scrollbar {
-            display: none;
-        }
-        
-        mask-image: linear-gradient(to top, transparent 0%, black 10%);
+        gap: 10px;
     }
 
     &__loading {

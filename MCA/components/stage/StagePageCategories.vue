@@ -97,14 +97,18 @@ export default class StagePageCategories extends Vue {
 @import '@s-sass/_mixins';
 
 .stage-categories {
-    flex: 1 1 15%;
-
-    min-height: 265px;
-    @include breakpoint(tablet) {
-        min-height: initial;
+    display: flex;
+    flex-direction: row;
+    @include breakpoint(laptop) {
+        flex-direction: column;
     }
+    gap: 10px;
 
-    overflow-y: scroll;
+    height: fit-content;
+
+    padding-right: 10px;
+    padding-bottom: 10px;
+
     scrollbar-width: thin;
     &::-webkit-scrollbar {
         width: 7px;

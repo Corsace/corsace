@@ -47,6 +47,7 @@ export interface BeatmapsetInfo {
     artist: string;
     title: string;
     hoster: string;
+    hostID: string;
     chosen: boolean;
 }
 

@@ -105,13 +105,16 @@ export default class Stage extends Vue {
 @import '@s-sass/_partials';
 
 .page {
-    padding: 20px 50px;
+    padding: 10px 40px;
+    @include breakpoint(mobile) {
+        padding: 75px 40px;
+    }
 }
 
 .stage-wrapper {
     width: 100%;
     max-height: 200%;
-    padding-top: 25px;
+    padding-top: 10px;
 
     @include breakpoint(laptop) {
         height: 100%;

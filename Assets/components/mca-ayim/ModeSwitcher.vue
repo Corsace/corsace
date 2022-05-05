@@ -161,7 +161,10 @@ $icon-margin: 8px;
         font-size: $font-sm;
     }
     height: 100%;
-    width: 60px;
+    width: 50px;
+    @include breakpoint(tablet) {
+        width: 60px;
+    }
     @include breakpoint(laptop) {
         width: 80px;
     }

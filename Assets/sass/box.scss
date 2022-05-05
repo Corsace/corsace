@@ -1,8 +1,14 @@
 .box {
     display: flex;
-    background-color: white;
-    color: #000;
     border: 2px solid $blue;
     padding: 5px 20px;
-    margin: 5px;
+
+    &--light {
+        background-color: white;
+        color: black;
+    }
+    &--dark {
+        background-color: $dark;
+        color: white;
+    }
 }

@@ -1,11 +1,20 @@
 <template>
     <div class="choice-container">
-        <div class="choice box">
+        <div 
+            class="choice box"
+            :class="`box--${viewTheme}`"
+        >
             <div class="choice__content">
-                <div
+                <a
                     class="choice__img"
-                    :style="`background-image: url(${imageUrl})`"
-                />
+                    :href="link"
+                    target="_blank"
+                >
+                    <div
+                        class="choice__img"
+                        :style="`background-image: url(${imageUrl})`"
+                    />
+                </a>
     
                 <div class="choice__info">
                     <slot />
@@ -19,7 +28,17 @@
                     'choice__actions--denied': invalidNomination
                 }"
             >
-                <div>VOTE</div>
+                <div
+                    v-if="stage === 'nominating'"
+                    class="choice__nominate"
+                >
+                    {{ currentNomination ? "NOMINATED" : "NOMINATE" }}
+                </div>
+                <div
+                    v-else-if="stage === 'voting'"
+                >
+                    {{ currentVote ? "VOTED" : "VOTE" }}
+                </div>
                 <div class="choice__value-container">
                     <div
                         v-if="currentSelected"
@@ -36,6 +55,9 @@
                     <div
                         v-else
                         class="choice__value"
+                        :class="{
+                            'choice__value--nominating': stage === 'nominating',
+                        }"
                         @click="triggerAction"
                     >
                         <svg
@@ -60,7 +82,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { namespace, State } from "vuex-class";
 
 import { StageType } from "../../Interfaces/mca";
 import { Vote } from "../../Interfaces/vote";
@@ -75,8 +97,10 @@ export default class BaseChoiceCard extends Vue {
 
     @Prop({ type: Object, default: () => ({}) }) readonly choice!: Record<string, any>;
     @Prop({ type: String, default: () => "" }) readonly imageUrl!: string;
+    @Prop({ type: String, default: () => "" }) readonly link!: string;
 
-    
+    @State viewTheme!: "light" | "dark";
+
     @mcaAyimModule.Getter phase!: Phase | null;
 
     @stageModule.State selected!: boolean;
@@ -176,24 +200,10 @@ export default class BaseChoiceCard extends Vue {
 
 .choice {
     &-container {
-        flex: 0 0 auto;
-        width: 100%;
-        max-width: 100%;
-
-        @include breakpoint(tablet) {
-            width: calc(100% / 2);
-        }
-
-        @include breakpoint(laptop) {
-            width: calc(100% / 2);
-        }
-
-        @include breakpoint(desktop) {
-            width: calc(100% / 3);
-        }
+        flex-grow: 1;
     }
 
-    min-height: 100px;
+    min-height: 150px;
     padding: 0;
 
     @include transition();
@@ -202,6 +212,14 @@ export default class BaseChoiceCard extends Vue {
         display: flex;
         flex-direction: column;
         flex: 1;
+    }
+
+    &__nominate {
+        align-self: center;
+        font-size: $font-sm;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        font-weight: bold;
     }
 
     &__img {
@@ -214,6 +232,8 @@ export default class BaseChoiceCard extends Vue {
     &__info {
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
+
         width: auto;
         height: 100%;
         padding: 5px 10px;
@@ -221,7 +241,27 @@ export default class BaseChoiceCard extends Vue {
 
     &__text {
         @extend %text-wrap;
-        color: #000;
+        width: 175px;
+        @include breakpoint(mobile) {
+            width: 100px;
+            font-size: $font-sm;
+        }
+        @include breakpoint(tablet) {
+            width: 250px;
+        }
+        &--user {
+            width: 150px;
+            @include breakpoint(mobile) {
+                width: 75px;
+            }
+        }
+
+        &--light {
+            color: black;
+        }
+        &--dark {
+            color: white;
+        }
         
         &--title {
             color: var(--selected-mode);
@@ -229,6 +269,15 @@ export default class BaseChoiceCard extends Vue {
 
         &--subtitle {
             font-size: $font-sm;
+            @include breakpoint(mobile) {
+                font-size: $font-xsm;
+            }
+        }
+
+        & div {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
         }
     }
 
@@ -236,10 +285,17 @@ export default class BaseChoiceCard extends Vue {
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
+        align-items: center;
 
         background-color: $gray;
         color: white;
-        padding: 5px 10px;
+        min-width: 60px;
+        @include breakpoint(mobile) {
+            min-width: 45px;
+        }
+        @include breakpoint(tablet) {
+            min-width: 75px;
+        }
 
         &--selected {
             background-color: var(--selected-mode);
@@ -258,8 +314,18 @@ export default class BaseChoiceCard extends Vue {
 
         border-radius: 100%;
         border: 2px solid white;
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
+        @include breakpoint(mobile) {
+            width: 40px;
+            height: 40px;
+        }
+        font-size: $font-xxl;
+
+        & svg {
+            width: 80%;
+            height: 80%;
+        }
 
         cursor: pointer;
 
@@ -270,6 +336,12 @@ export default class BaseChoiceCard extends Vue {
 
         &--processing, &--denied {
             cursor: default;
+        }
+
+        &--nominating {
+            border-radius: 10%;
+            width: 35px;
+            height: 35px;
         }
     }
 }

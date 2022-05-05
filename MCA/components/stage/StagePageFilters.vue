@@ -8,10 +8,13 @@
         <button
             v-if="section === 'beatmaps' && loggedInMCAUser"
             class="button"
-            :class="{ 
-                'button--friends': favourites,
-                'button--small': $route.params.stage === 'voting' && section === 'beatmaps'
-            }"
+            :class="[
+                { 
+                    'button--friends': favourites,
+                    'button--small': $route.params.stage === 'voting' && section === 'beatmaps'
+                },
+                `button--${viewTheme}`,
+            ]"
             @click="updateFavourite"
         >
             <img src="../../../Assets/img/site/mca-ayim/heart.png">
@@ -19,14 +22,20 @@
 
         <toggle-button
             v-if="section === 'beatmaps' && loggedInMCAUser"
-            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
+            :class="[
+                { 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' },    
+                `button--${viewTheme}`,
+            ]"
             :options="playedFilters"
             @change="changePlayed"
         />
 
         <toggle-button
             v-if="!results"
-            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
+            :class="[
+                { 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' },    
+                `button--${viewTheme}`,
+            ]"
             :options="sectionOptions"
             :arrow="orderOption"
             @change="changeOption"
@@ -34,7 +43,10 @@
         
         <toggle-button
             v-if="!results"
-            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
+            :class="[
+                { 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' },    
+                `button--${viewTheme}`,
+            ]"
             :options="orderOptions"
             :arrow="orderOption"
             @change="changeOrder"
@@ -43,10 +55,13 @@
         <button
             v-if="$route.params.stage === 'voting'"
             class="button"
-            :class="{ 
-                'button--active': showVoteChoiceBox,
-                'button--small': section === 'beatmaps'
-            }"
+            :class="[
+                { 
+                    'button--active': showVoteChoiceBox,
+                    'button--small': section === 'beatmaps'
+                },
+                `button--${viewTheme}`,
+            ]"
             @click="toggleVoteChoiceBox"
         >
             {{ $t(`mca.nom_vote.options.voteOrder`) }}
@@ -56,7 +71,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { namespace, State } from "vuex-class";
 import _ from "lodash";
 
 import ToggleButton from "../../../MCA-AYIM/components/ToggleButton.vue";
@@ -76,6 +91,8 @@ const stageModule = namespace("stage");
 })
 export default class StagePageFilters extends Vue {
 
+    @State viewTheme!: "light" | "dark";
+
     @stageModule.State section!: string;
 
     @stageModule.State query!: StageQuery;
@@ -92,6 +109,7 @@ export default class StagePageFilters extends Vue {
     @stageModule.Mutation toggleVoteChoiceBox;
 
     @mcaAyimModule.State loggedInMCAUser!: UserMCAInfo | null;
+    @mcaAyimModule.State selectedMode!: string;
 
     @Prop({ type: Boolean, default: false }) results!: boolean;
     @Prop({ type: Number, required: false }) searchKey!: number;
@@ -148,7 +166,7 @@ export default class StagePageFilters extends Vue {
 <style lang="scss">
 
 .button img {
-    height: 15px;
+    height: 20px;
 }
 
 .category-filters {
