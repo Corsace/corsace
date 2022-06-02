@@ -33,7 +33,7 @@ export default class Years extends Vue {
 
     async mounted () {
         if (!(this.loggedInUser?.staff?.corsace || this.loggedInUser?.staff?.headStaff))
-            this.$router.replace("/");
+            this.$router.replace(`/${this.$route.params.year}`);
     }
 
     async resetCache () {
