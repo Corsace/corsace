@@ -77,18 +77,17 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             }
 
             if (ctx.query.played === "true") { // Played filter
-                let approvedDate = "";
-                let _id = "";
+                let cursorString = "";
                 for (;;) {
                     let url = `https://osu.ppy.sh/api/v2/beatmapsets/search?played=played&q=ranked%3D${ctx.state.year}`;
-                    if (approvedDate) url += `&cursor%5Bapproved_date%5D=${approvedDate}&cursor%5B_id%5D=${_id}`;
+                    if (cursorString) url += `&cursor_string=${cursorString}`;
                     const res = await Axios.get(url, {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
                         },
                     });
 
-                    if (!approvedDate && res.data.beatmapsets.length === 0) break;
+                    if (!cursorString && res.data.beatmapsets.length === 0) break;
 
                     const sets = res.data.beatmapsets.map(set => set.id);
 
@@ -96,8 +95,7 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
 
                     if (sets.length < 50) break;
 
-                    approvedDate = res.data.cursor.approved_date;
-                    _id = res.data.cursor._id;
+                    cursorString = res.data.cursor_string;
                 }
             }
 
