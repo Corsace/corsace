@@ -230,6 +230,7 @@ export class Beatmap extends BaseEntity {
             hoster: this.beatmapset.creator.osu.username,
             hostID: this.beatmapset.creator.osu.userID,
             difficulty: this.difficulty,
+            sr: this.totalSR,
             chosen,
         };
     }
