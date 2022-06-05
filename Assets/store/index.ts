@@ -4,11 +4,13 @@ import { UserInfo } from "../../Interfaces/user";
 const themeRegex = /^(light|dark)$/;
 
 export interface BaseState {
+    site: string;
     loggedInUser: null | UserInfo;
     viewTheme: "light" | "dark";
 }
 
 export const state = (): BaseState => ({
+    site: "",
     loggedInUser: null,
     viewTheme: "light", 
 });
@@ -29,9 +31,18 @@ export const mutations: MutationTree<BaseState> = {
             localStorage.setItem("theme", theme);
         }
     },
+    setSite (state, site) {
+        state.site = site;
+    },
 };
 
 export const getters: GetterTree<BaseState, BaseState> = {
+    isHeadStaff (state): boolean {
+        if (!state.loggedInUser) return false;
+
+        return state.loggedInUser.staff.corsace || 
+            state.loggedInUser.staff.headStaff;
+    },
 };
 
 export const actions: ActionTree<BaseState, BaseState> = {
@@ -48,10 +59,8 @@ export const actions: ActionTree<BaseState, BaseState> = {
     async updateViewTheme ({ commit }, theme) {
         commit("updateViewTheme", theme);
     },
-    async setInitialData ({ dispatch }) {
-        await Promise.all([
-            dispatch("setLoggedInUser"),
-            dispatch("setViewTheme"),
-        ]);
+    async setInitialData ({ commit, dispatch }, site) {
+        commit("setSite", site);
+        await dispatch("setLoggedInUser");
     },
 };

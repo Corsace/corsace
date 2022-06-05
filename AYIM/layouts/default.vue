@@ -3,14 +3,20 @@
         <the-header 
             :site="'ayim'"
             class="mcaayim__header"
-        >
-            <img
-                :src="require(`../../Assets/img/site/mca-ayim/year/${$route.params.year}-${viewTheme}-ayim.png`)"
-                class="mcaayim__logo"
-                :class="`mcaayim__logo--${viewTheme}`"
+        >   
+            <a 
+                :href="`/${$route.params.year}`"
+                @click="updateSelectedMode('')"
             >
+                <img
+                    :src="require(`../../Assets/img/site/mca-ayim/year/${$route.params.year}-${viewTheme}-ayim.png`)"
+                    class="mcaayim__logo"
+                    :class="`mcaayim__logo--${viewTheme}`"
+                >
+            </a>
 
             <mode-switcher 
+                :ignore-modes="['storyboard']"
                 :enable-mode-eligibility="$route.name === 'year-stage'"
             />
         </the-header>
@@ -70,8 +76,13 @@
                     >
                 </a>
             </div>
-            <year-switcher />
-        </the-footer>
+            <year-switcher 	
+                v-if="!isSmall"	
+            />	
+        </the-footer>	
+        <year-switcher 	
+            v-if="isSmall"	
+        />
         <guest-difficulty-modal
             v-if="loggedInMCAUser"
         />
@@ -106,10 +117,22 @@ export default class Default extends Vue {
 
     @State viewTheme!: "light" | "dark";
     @mcaAyimModule.State loggedInMCAUser!: null | UserMCAInfo;
+    @mcaAyimModule.State selectedMode!: string;
 
-    async mounted () {
+    @mcaAyimModule.Action updateSelectedMode;
+    
+    isSmall = false;	
+    
+    async mounted () {	
+        if (process.client) {	
+            this.isSmall = window.innerWidth < 576;	
+            window.addEventListener("resize", () => {	
+                this.isSmall = window.innerWidth < 576;	
+            });	
+        }
+
         await Promise.all([
-            this.$store.dispatch("setInitialData"),
+            this.$store.dispatch("setViewTheme"),
             this.$store.dispatch("mca-ayim/setSelectedMode"),
         ]);
     }
@@ -119,7 +142,7 @@ export default class Default extends Vue {
 
 <style lang="scss">
 @import '@s-sass/_mixins';
-@import '@s-sass/_variables'; 
+@import '@s-sass/_variables';
 
 .mcaayim {
     &__header {
@@ -129,9 +152,6 @@ export default class Default extends Vue {
     &__logo {
         align-self: center;
 
-        @include breakpoint(mobile) {
-            display: none;
-        }
         width: 150px;
         padding-left: 6px;
         @include breakpoint(tablet) {
@@ -163,7 +183,6 @@ export default class Default extends Vue {
             &--light {
                 filter: invert(1);
             }
-            @include transition;
         }
     }
 }
@@ -183,6 +202,9 @@ export default class Default extends Vue {
     height: 100%;
     display: flex;
     align-items: center;
+    @include breakpoint(mobile) {	
+        margin-right: auto;	
+    }
     @include breakpoint(laptop) {
         margin-left: 5px;
     }
@@ -209,7 +231,6 @@ export default class Default extends Vue {
     &--dark {
         color: $gray;
     }
-    @include transition;
 }
 
 .main {
@@ -224,6 +245,5 @@ export default class Default extends Vue {
         background-image: url("../../Assets/img/site/mca-ayim/grid-dark.jpg");
         background-size: cover;
     }
-    @include transition;
 }
 </style>

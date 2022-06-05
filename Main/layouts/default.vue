@@ -4,7 +4,10 @@
             :site="'corsace'"
             class="main__header"
         >
-            <div class="header-nav">
+            <a 
+                class="header-nav"
+                href="/"
+            >
                 <div 
                     class="header-nav__brand-container"
                     :class="`header-nav__brand-container--${viewTheme}`"
@@ -20,7 +23,7 @@
                     src="../../Assets/img/site/mca-ayim/corsace_text.png"
                     alt=""
                 >
-            </div>
+            </a>
         </the-header>
 
         <nuxt 
@@ -107,13 +110,14 @@ import TheFooter from "../../Assets/components/footer/TheFooter.vue";
         TheHeader,
         TheFooter,
     },
+    middleware: "index",
 })
 export default class Default extends Vue {
 
     @State viewTheme!: "light" | "dark";
 
     async mounted () {
-        await this.$store.dispatch("setInitialData");
+        await this.$store.dispatch("setViewTheme");
     }
     
 }
@@ -149,7 +153,6 @@ export default class Default extends Vue {
             &--dark {
                 background-image: linear-gradient(to top, rgba(244, 182, 193, 0.82), #e98792);
             }
-            @include transition;
         }
 
         &-name {
@@ -159,7 +162,6 @@ export default class Default extends Vue {
             &--light {
                 filter: invert(1);
             }
-            @include transition;
         }
 
         width: 100%;
@@ -169,7 +171,6 @@ export default class Default extends Vue {
         &--light {
             filter: invert(1);
         }
-        @include transition;
     }
 }
 
@@ -190,7 +191,6 @@ export default class Default extends Vue {
     &--dark {
         color: $gray;
     }
-    @include transition;
 }
 
 .kaetwo {
@@ -222,8 +222,6 @@ export default class Default extends Vue {
         &--dark {
             color: $gray;
         }
-        @include transition;
     }
-    @include transition;
 }
 </style>

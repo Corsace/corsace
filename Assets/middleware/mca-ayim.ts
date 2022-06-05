@@ -1,6 +1,8 @@
 import { Context } from "@nuxt/types";
 
 export default async function ({ redirect, route, store }: Context) {
+    if (!store.state.loggedInUser)
+        await store.dispatch("setInitialData", "mca-ayim");
     let year: string | number = route.params.year;
     const lastYear = new Date().getUTCFullYear() - 1;
 
@@ -14,14 +16,13 @@ export default async function ({ redirect, route, store }: Context) {
 
     year = /^20\d\d$/.test(year) ? parseInt(year) : lastYear;
 
-    if (!store.state.mca || store.state.mca.year !== year) {
+    if (!store.state["mca-ayim"].mca || store.state["mca-ayim"].mca.year !== year)
         await store.dispatch("mca-ayim/setInitialData", year);
-    }
 
     if (route.path.includes("staff")) {
-        if (store.hasModule("staff") && store.getters.isMCAStaff && !store.state.staff?.mca)
+        if (store.hasModule("staff") && store.getters["mca-ayim/isMCAStaff"] && !store.state["mca-ayim"].staff?.mca)
             await store.dispatch("staff/setInitialData", year);
-        else if (!store.hasModule("staff") || !store.getters.isMCAStaff)
+        else if (!store.hasModule("staff") || !store.getters["mca-ayim/isMCAStaff"])
             throw { statusCode: 403 };
     }
 }

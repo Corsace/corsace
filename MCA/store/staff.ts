@@ -43,14 +43,14 @@ export const getters: GetterTree<StaffState, RootState> = {
 
 export const actions: ActionTree<StaffState, RootState> = {
     async setMca ({ commit }, year: number) {
-        const { data } = await this.$axios.get(`/api/staff/${year}`);
+        const { data } = await this.$axios.get(`/api/staff/mca/${year}`);
 
         if (!data.error) {
             commit("setMca", data);
         }
     },
     async setCategories ({ commit }, year: number) {
-        const { data } = await this.$axios.get(`/api/staff/categories/${year}`);
+        const { data } = await this.$axios.get(`/api/staff/mca/categories/${year}`);
 
         if (!data.error) {
             commit("setCategories", data);

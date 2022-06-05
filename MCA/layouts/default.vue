@@ -4,11 +4,16 @@
             :site="'mca'"
             class="mcaayim__header"
         >
-            <img
-                :src="require(`../../Assets/img/site/mca-ayim/year/${$route.params.year}-${viewTheme}-mca.png`)"
-                class="mcaayim__logo"
-                :class="`mcaayim__logo--${viewTheme}`"
-            >
+            <a 
+                :href="`/${$route.params.year}`"
+                @click="updateSelectedMode('')"
+            >          
+                <img
+                    :src="require(`../../Assets/img/site/mca-ayim/year/${$route.params.year}-${viewTheme}-mca.png`)"
+                    class="mcaayim__logo"
+                    :class="`mcaayim__logo--${viewTheme}`"
+                >
+            </a>
 
             <mode-switcher 
                 :enable-mode-eligibility="$route.name === 'year-stage'"
@@ -113,6 +118,8 @@ export default class Default extends Vue {
     @mcaAyimModule.State loggedInMCAUser!: null | UserMCAInfo;
     @mcaAyimModule.State selectedMode!: string;
 
+    @mcaAyimModule.Action updateSelectedMode;
+
     isSmall = false;
 
     async mounted () {
@@ -124,7 +131,7 @@ export default class Default extends Vue {
         }
 
         await Promise.all([
-            this.$store.dispatch("setInitialData"),
+            this.$store.dispatch("setViewTheme"),
             this.$store.dispatch("mca-ayim/setSelectedMode"),
         ]);
     }
@@ -175,7 +182,6 @@ export default class Default extends Vue {
             &--light {
                 filter: invert(1);
             }
-            @include transition;
         }
     }
 }
@@ -224,7 +230,6 @@ export default class Default extends Vue {
     &--dark {
         color: $gray;
     }
-    @include transition;
 }
 
 .main {
@@ -239,6 +244,5 @@ export default class Default extends Vue {
         background-image: url("../../Assets/img/site/mca-ayim/grid-dark.jpg");
         background-size: cover;
     }
-    @include transition;
 }
 </style>
