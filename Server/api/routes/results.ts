@@ -169,15 +169,11 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
         }
 
         if (ctx.query.played === "true") { // Played filter
-            let approvedDate = "";
-            let _id = "";
+            let cursorString = "";
             for (;;) {
-                const data = await osuV2Client.getPlayedBeatmaps(accessToken, ctx.state.year, approvedDate ? {
-                    approvedDate,
-                    _id,
-                } : undefined);
+                const data = await osuV2Client.getPlayedBeatmaps(accessToken, ctx.state.year, cursorString);
 
-                if (!approvedDate && data.beatmapsets.length === 0) break;
+                if (!cursorString && data.beatmapsets.length === 0) break;
 
                 let sets: any;
                 if (ctx.state.mca.year < 2021)
@@ -189,8 +185,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
 
                 if (data.beatmapsets.map(set => set.id).length < 50) break;
 
-                approvedDate = data.cursor.approved_date;
-                _id = data.cursor._id;
+                cursorString = data.cursor_string;
             }
         }
         ids = ids.filter((val, i, self) => self.findIndex(v => v === val) === i);
