@@ -134,7 +134,7 @@
                                 class="index__setCount--number"
                                 :class="`index__setCount--number-${viewTheme}`"
                             >
-                                {{ beatmapCountString.length > (i - 1) ? beatmapCountString[i - 1] : "" }}
+                                {{ countString.length > (i - 1) ? countString[i - 1] : "" }}
                             </div>
                         </div>
                     </div>
@@ -265,7 +265,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
 import { CategoryInfo } from "../../../Interfaces/category";
@@ -327,6 +327,13 @@ export default class Index extends Vue {
 
     info: FullFrontInfo | null = null;
 
+    countString = ["0"];
+
+    easingIterations = 20;
+    easing (easingVal) {
+        return easingVal * (2 - easingVal);
+    }
+
     get remainingDays (): number {
         return Math.floor((this.phase?.endDate?.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
     }
@@ -349,8 +356,16 @@ export default class Index extends Vue {
         return this.currentModeInfo ? this.currentModeInfo.beatmapCount : 0;
     }
 
-    get beatmapCountString (): string[] {
-        return this.beatmapCount.toString().split("").reverse();
+    @Watch("beatmapCount")
+    onPropertyChanged (newVal: number, oldVal: number) {
+        var i = 1;
+        var timer = setInterval(() => {
+            const val = Math.round(oldVal + (newVal - oldVal) * this.easing(i / this.easingIterations));
+            this.countString = val.toString().split("").reverse()
+            i++;
+            if (i > this.easingIterations)
+                clearInterval(timer);
+        }, 10);
     }
     
     get organizers (): string {
