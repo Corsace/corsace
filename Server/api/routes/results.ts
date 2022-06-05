@@ -1,4 +1,3 @@
-import Axios from "axios";
 import Router from "@koa/router";
 import { BeatmapResult, BeatmapsetResult, UserResult, votesToResults } from "../../../Interfaces/result";
 import { groupVotesByVoters, StaffVote, voteCounter } from "../../../Interfaces/vote";
@@ -7,6 +6,7 @@ import { Category } from "../../../Models/MCA_AYIM/category";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import { parseQueryParam } from "../../../Server/utils/query";
+import { osuV2Client } from "../../../Server/osu";
 
 const resultsRouter = new Router();
 
@@ -156,13 +156,9 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
         let ids: number[] = [];
         if (ctx.query.favourites === "true") { // Fav filter
             let offset = 0;
-            for (;;) {
-                const res = await Axios.get(`https://osu.ppy.sh/api/v2/users/${ctx.state.user.osu.userID}/beatmapsets/favourite?limit=51&offset=${offset}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
-                const sets = res.data.map(set => set.id);
+            while (true) {
+                const data = await osuV2Client.getFavouriteBeatmaps(ctx.state.user.osu.userID, accessToken, offset);
+                const sets = data.map(set => set.id);
 
                 ids.push(...sets);
 
@@ -173,31 +169,23 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
         }
 
         if (ctx.query.played === "true") { // Played filter
-            let approvedDate = "";
-            let _id = "";
-            for (;;) {
-                let url = `https://osu.ppy.sh/api/v2/beatmapsets/search?played=played&q=ranked%3D${ctx.state.year}`;
-                if (approvedDate) url += `&cursor%5Bapproved_date%5D=${approvedDate}&cursor%5B_id%5D=${_id}`;
-                const res = await Axios.get(url, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
+            let cursorString = "";
+            while (true) {
+                const data = await osuV2Client.getPlayedBeatmaps(accessToken, ctx.state.year, cursorString);
 
-                if (!approvedDate && res.data.beatmapsets.length === 0) break;
+                if (!cursorString && data.beatmapsets.length === 0) break;
 
                 let sets: any;
                 if (ctx.state.mca.year < 2021)
-                    sets = res.data.beatmapsets.map(set => set.id);
+                    sets = data.beatmapsets.map(set => set.id);
                 else
-                    sets = res.data.beatmapsets.map(set => set.beatmaps.map(map => map.id)).flat();
+                    sets = data.beatmapsets.map(set => set.beatmaps.map(map => map.id)).flat();
 
                 ids.push(...sets);
 
-                if (res.data.beatmapsets.map(set => set.id).length < 50) break;
+                if (data.beatmapsets.map(set => set.id).length < 50) break;
 
-                approvedDate = res.data.cursor.approved_date;
-                _id = res.data.cursor._id;
+                cursorString = data.cursor_string;
             }
         }
         ids = ids.filter((val, i, self) => self.findIndex(v => v === val) === i);

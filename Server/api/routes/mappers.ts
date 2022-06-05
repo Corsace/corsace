@@ -2,7 +2,8 @@ import Router from "@koa/router";
 import Axios from "axios";
 import { User } from "../../../Models/user";
 import { MapperQuery } from "../../../Interfaces/queries";
-import { parseQueryParam } from "../../utils/query";
+import { parseQueryParam } from "../../../Server/utils/query";
+import { osuV2Client } from "../../../Server/osu";
 
 const mappersRouter = new Router();
 
@@ -34,12 +35,8 @@ mappersRouter.get("/search", async (ctx) => {
             return ctx.body = { error: "Please login via osu! to use the friends filter!" };
         try {
             const accessToken: string = await ctx.state.user.getAccessToken("osu");
-            const res = await Axios.get("https://osu.ppy.sh/api/v2/friends", {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
-            query.friends = res.data.map(friend => friend.id);
+            const data = await osuV2Client.getUserFriends(accessToken);
+            query.friends = data.map(friend => friend.id);
         } catch (e) {
             if (Axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) 
                 return ctx.body = { error: "Please re-login via osu! again in order to use the friends filter! If you logged in again via osu! and it still isn't working, contact VINXIS!" };
