@@ -156,7 +156,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
         let ids: number[] = [];
         if (ctx.query.favourites === "true") { // Fav filter
             let offset = 0;
-            for (;;) {
+            while (true) {
                 const data = await osuV2Client.getFavouriteBeatmaps(ctx.state.user.osu.userID, accessToken, offset);
                 const sets = data.map(set => set.id);
 
@@ -170,7 +170,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
 
         if (ctx.query.played === "true") { // Played filter
             let cursorString = "";
-            for (;;) {
+            while (true) {
                 const data = await osuV2Client.getPlayedBeatmaps(accessToken, ctx.state.year, cursorString);
 
                 if (!cursorString && data.beatmapsets.length === 0) break;
