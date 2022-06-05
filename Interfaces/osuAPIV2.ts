@@ -77,7 +77,7 @@ export class osuAPIV2 {
     }
 
     private async getchatBotToken (): Promise<string> {
-        if (this.chatBotToken && this.chatBotToken.expiresAt > new Date())
+        if (this.chatBotToken && (this.chatBotToken.expiresAt.getTime() - (new Date()).getTime()) / 1000 > 300)
             return this.chatBotToken.token;
 
         let res: any;
