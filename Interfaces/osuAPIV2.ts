@@ -45,12 +45,12 @@ export class osuAPIV2 {
         return this.get(endpoint, accessToken);
     }
 
-    public getPlayedBeatmaps (accessToken: string, year?: number, cursorData?: any) {
+    public getPlayedBeatmaps (accessToken: string, year?: number, cursorString?: string) {
         let endpoint = "/beatmapsets/search?played=played";
         if (year)
             endpoint += `&q=ranked%3D${year}`;
-        if (cursorData)
-            endpoint += `&cursor%5Bapproved_date%5D=${cursorData.approvedDate}&cursor%5B_id%5D=${cursorData._id}`;
+        if (cursorString)
+            endpoint += `&cursor_string=${cursorString}`;
         return this.get(endpoint, accessToken);
     }
 
