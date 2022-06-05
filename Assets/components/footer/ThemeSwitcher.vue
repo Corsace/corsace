@@ -11,25 +11,23 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State, namespace } from "vuex-class";
-
-const mcaAyimModule = namespace("mca-ayim");
+import { State } from "vuex-class";
 
 @Component
 export default class ThemeSwitcher extends Vue {
 
     @State viewTheme!: "light" | "dark";
-    
-    @mcaAyimModule.State selectedMode?: string;
+    @State site!: string;
 
     setTheme (): void {
         this.$store.dispatch("updateViewTheme", this.viewTheme === "light" ? "dark" : "light");
     }
 
     getMode () {
-        if (this.selectedMode)
-            return this.selectedMode;
-        return "corsace";
+        if (this.site === "mca-ayim" && this.$store.state["mca-ayim"].selectedMode) {
+            return this.$store.state["mca-ayim"].selectedMode;
+        }
+        return this.site;
     }
 }
 </script>

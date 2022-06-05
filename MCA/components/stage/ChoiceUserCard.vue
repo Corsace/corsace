@@ -20,7 +20,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import BaseChoiceCard from "../../MCA-AYIM/components/BaseChoiceCard.vue";
+import BaseChoiceCard from "./BaseChoiceCard.vue";
 
 const mcaAyimModule = namespace("mca-ayim");
 

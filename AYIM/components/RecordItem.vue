@@ -1,7 +1,13 @@
 <template>
     <div class="ayim-layout__item">
-        <div class="ayim-item__title ayim-item__title--standard">
-            <div class="ayim-item__triangles ayim-item__triangles--standard">
+        <div 
+            class="ayim-item__title"
+            :class="`ayim-item__title--${selectedMode}`"
+        >
+            <div 
+                class="ayim-item__triangles"
+                :class="`ayim-item__triangles--${selectedMode}`"
+            >
                 <span class="triangle" />
                 <span class="triangle" />
             </div>
@@ -14,6 +20,9 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+
+const mcaAyimModule = namespace("mca-ayim");
 
 @Component
 export default class RecordItem extends Vue {
@@ -21,6 +30,7 @@ export default class RecordItem extends Vue {
     @Prop({ type: String, required: true }) readonly title!: string;
     @Prop({ type: String, required: true }) readonly type!: string;
 
+    @mcaAyimModule.State selectedMode!: string;	
 }
 </script>
 

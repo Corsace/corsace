@@ -84,10 +84,10 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import { StageType } from "../../Interfaces/mca";
-import { Vote } from "../../Interfaces/vote";
-import { Nomination } from "../../Interfaces/nomination";
-import { Phase } from "../../Interfaces/mca";
+import { StageType } from "../../../Interfaces/mca";
+import { Vote } from "../../../Interfaces/vote";
+import { Nomination } from "../../../Interfaces/nomination";
+import { Phase } from "../../../Interfaces/mca";
 
 const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
@@ -158,8 +158,8 @@ export default class BaseChoiceCard extends Vue {
         }
         
         const id = this.choice.id || this.choice.corsaceID;
-        let vote = 1;
 
+        let vote = 1;
         if (this.relatedCandidacies.length) {
             vote = (this.relatedCandidacies as Vote[]).sort((a, b) => b.choice - a.choice)[0].choice + 1;
         }
@@ -205,8 +205,6 @@ export default class BaseChoiceCard extends Vue {
 
     min-height: 150px;
     padding: 0;
-
-    @include transition();
 
     &__content {
         display: flex;

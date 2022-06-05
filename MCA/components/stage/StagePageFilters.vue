@@ -74,8 +74,8 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 import _ from "lodash";
 
-import ToggleButton from "../../../MCA-AYIM/components/ToggleButton.vue";
-import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
+import ToggleButton from "../../../Assets/components/ToggleButton.vue";
+import SearchBar from "../../../Assets/components/SearchBar.vue";
 
 import { StageQuery } from "../../../Interfaces/queries";
 import { UserMCAInfo } from "../../../Interfaces/user";
@@ -164,10 +164,6 @@ export default class StagePageFilters extends Vue {
 </script>
 
 <style lang="scss">
-
-.button img {
-    height: 20px;
-}
 
 .category-filters {
     padding: 10px 0;

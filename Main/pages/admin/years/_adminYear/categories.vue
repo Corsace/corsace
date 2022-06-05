@@ -1,6 +1,6 @@
 <template>
     <div class="admin">
-        <div class="admin-actions">
+        <div class="admin__actions">
             <button 
                 class="admin__button admin__add button"
                 @click="create"
@@ -9,12 +9,65 @@
             </button>
 
             <nuxt-link
-                class="admin__button admin__add button"
+                class="admin__button admin__link admin__add button"
                 to="../"
             >
                 years
             </nuxt-link>
+
+            <nuxt-link
+                class="admin__button admin__link admin__add button"
+                to="/admin"
+            >
+                admin
+            </nuxt-link>
+
+            <nuxt-link
+                class="admin__button admin__link admin__add button"
+                to="/"
+            >
+                home
+            </nuxt-link>
         </div>
+
+        
+        <div class="admin__actions">
+            <button 
+                class="admin__button admin__add button"
+                @click="changeMode('standard')"
+            >
+                standard
+            </button>
+
+            <button 
+                class="admin__button admin__add button"
+                @click="changeMode('taiko')"
+            >
+                taiko
+            </button>
+            
+            <button 
+                class="admin__button admin__add button"
+                @click="changeMode('fruits')"
+            >
+                fruits
+            </button>
+
+            <button 
+                class="admin__button admin__add button"
+                @click="changeMode('mania')"
+            >
+                mania
+            </button>
+
+            <button 
+                class="admin__button admin__add button"
+                @click="changeMode('storyboard')"
+            >
+                storyboard
+            </button>
+        </div>
+
 
         <data-table
             :fields="fields"
@@ -22,13 +75,13 @@
         >
             <template #actions="{ item }">
                 <button
-                    class="button button--small"
+                    class="admin__button button button--small"
                     @click="edit(item)"
                 >
                     Edit
                 </button>
                 <button
-                    class="button button--small"
+                    class="admin__button button button--small"
                     @click="remove(item)"
                 >
                     Remove
@@ -47,24 +100,36 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { State, namespace } from "vuex-class";
 
-import AdminModalCategory from "./AdminModalCategory.vue";
-import DataTable, { Field } from "./DataTable.vue";
+import { UserInfo } from "../../../../../Interfaces/user";
+import AdminModalCategory from "../../../../../Assets/components/admin/AdminModalCategory.vue";
+import DataTable, { Field } from "../../../../../Assets/components/DataTable.vue";
 
-import { CategoryInfo } from "../../../Interfaces/category";
+import { CategoryInfo } from "../../../../../Interfaces/category";
 
 @Component({
     components: {
         AdminModalCategory,
         DataTable,
     },
-    
+    head () {
+        return {
+            title: "Admin - Categories | MCA",
+        };
+    },
 })
-export default class AdminCategories extends Vue {
+export default class Years extends Vue {
+    @State loggedInUser!: UserInfo;
 
-    @State selectedMode!: string;
-    
+    async mounted () {
+        if (!(this.loggedInUser?.staff?.corsace || this.loggedInUser?.staff?.headStaff))
+            return this.$router.replace("/");
+        
+        await this.getCategories();
+    }
+
+    selectedMode = "standard";
     showModal = false;
     categories: CategoryInfo[] = [];
     selectedCategory: CategoryInfo | null = null;
@@ -81,10 +146,6 @@ export default class AdminCategories extends Vue {
         return this.categories.filter(x => x.mode === this.selectedMode);
     }
 
-    async mounted () {
-        await this.getCategories();
-    }
-
     async getCategories () {
         const { data } = await this.$axios.get(`/api/admin/years/${this.$route.params.adminYear}/categories`);
 
@@ -99,6 +160,10 @@ export default class AdminCategories extends Vue {
     async updateCategory () {
         this.showModal = false;
         await this.getCategories();
+    }
+
+    changeMode (mode) {
+        this.selectedMode = mode;
     }
 
     create () {
@@ -124,17 +189,5 @@ export default class AdminCategories extends Vue {
 
         await this.getCategories();
     }
-
 }
 </script>
-
-<style lang="scss">
-
-.admin-actions {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: .5rem;
-}
-
-</style>

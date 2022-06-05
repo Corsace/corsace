@@ -32,14 +32,16 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { State, namespace } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
-import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
+import ListTransition from "../../../../Assets/components/ListTransition.vue";
 
 import { Statistic } from "../../../../Interfaces/records";
 import { MCA } from "../../../../Interfaces/mca";
+
+const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
@@ -64,8 +66,9 @@ import { MCA } from "../../../../Interfaces/mca";
 })
 export default class MapperStatistics extends Vue {
 
-    @State selectedMode!: string;
-    @State mca!: MCA;
+    @mcaAyimModule.State selectedMode!: string;
+    @mcaAyimModule.State mca!: MCA;
+    @State viewTheme!: "light" | "dark";
     
     statistics: Record<string, Statistic[]> = {};
 

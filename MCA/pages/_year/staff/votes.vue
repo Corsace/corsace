@@ -1,52 +1,47 @@
 <template>
-    <div class="staff-page">
-        <mode-switcher
-            hide-phase
-            title="voting"
-        >
-            <div class="staff-main">
-                <div class="staff-filters">
-                    <search-bar
-                        :placeholder="canSearch ?
-                            $t('mca.nom_vote.search') :
-                            'searching is disabled'"
-                        :disabled="!canSearch"
-                        @update:search="text = $event"
-                    >
-                        <button-group
-                            :options="viewOptions"
-                            :selected-buttons="[viewOption]"
-                            @group-clicked="changeView"
-                        />
-                    </search-bar>
-                </div>
-
-                <div class="staff-container staff-searchContainer">
-                    <div class="staff-container staff-scrollTrack">
-                        <template
-                            v-for="category in relatedCategories"
-                        >   
-                            <staff-accordion-header
-                                :key="category.id + '-acc-header'"
-                                :left="$t(`mca.categories.${category.name}.name`)"
-                                :right="category.type"
-                                :active="category.id === selectedCategoryId"
-                                @on-click="selectCategory(category.id)"
-                            />
-                            
-                            <staff-vote-accordion
-                                v-if="category.id === selectedCategoryId"
-                                :key="category.id + '-category'"
-                                :view-option="viewOption"
-                                :data="selectedCategoryInfo"
-                                @remove-vote="removeVote"
-                            />
-                        </template>
-                    </div>
-                    <scroll-bar selector=".staff-scrollTrack" />
-                </div>
+    <div class="admin">
+        <div class="staff-main">
+            <div class="staff-filters">
+                <search-bar
+                    :placeholder="canSearch ?
+                        $t('mca.nom_vote.search') :
+                        'searching is disabled'"
+                    :disabled="!canSearch"
+                    @update:search="text = $event"
+                >
+                    <button-group
+                        :options="viewOptions"
+                        :selected-buttons="[viewOption]"
+                        @group-clicked="changeView"
+                    />
+                </search-bar>
             </div>
-        </mode-switcher>
+
+            <div
+                class="scroll__mca"
+                :class="`scroll--${viewTheme}`"
+            >
+                <template
+                    v-for="category in relatedCategories"
+                >   
+                    <StaffAccordianHeader
+                        :key="category.id + '-acc-header'"
+                        :left="$t(`mca.categories.${category.name}.name`)"
+                        :right="category.type"
+                        :active="category.id === selectedCategoryId"
+                        @on-click="selectCategory(category.id)"
+                    />
+                    
+                    <StaffVoteAccordion
+                        v-if="category.id === selectedCategoryId"
+                        :key="category.id + '-category'"
+                        :view-option="viewOption"
+                        :data="selectedCategoryInfo"
+                        @remove-vote="removeVote"
+                    />
+                </template>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -57,6 +52,12 @@ import { namespace, State } from "vuex-class";
 import { CategoryInfo } from "../../../../Interfaces/category";
 import { ResultVote, StaffVote, UserVote, voteCounter } from "../../../../Interfaces/vote";
 
+import ButtonGroup from "../../../../Assets/components/ButtonGroup.vue";
+import SearchBar from "../../../../Assets/components/SearchBar.vue";
+import StaffAccordianHeader from "../../../components/staff/StaffAccordionHeader.vue";
+import StaffVoteAccordion from "../../../components/staff/StaffVoteAccordion.vue";
+
+const mcaAyimModule = namespace("mca-ayim");
 const staffModule = namespace("staff");
 
 interface VotesByCategory {
@@ -73,6 +74,10 @@ type ViewOption = "results" | "voters";
 
 @Component({
     components: {
+        ButtonGroup,
+        SearchBar,
+        StaffAccordianHeader,
+        StaffVoteAccordion,
     },
     head () {
         return {
@@ -82,7 +87,8 @@ type ViewOption = "results" | "voters";
 })
 export default class Votes extends Vue {
     
-    @State selectedMode!: string;
+    @State viewTheme!: "light" | "dark";
+    @mcaAyimModule.State selectedMode!: string;
     @staffModule.State categories!: CategoryInfo[];
 
     votes: StaffVote[] = [];

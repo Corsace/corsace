@@ -66,8 +66,8 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import ChoiceBeatmapsetCard from "../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
-import ChoiceUserCard from "../ChoiceUserCard.vue";
+import ChoiceBeatmapsetCard from "./ChoiceBeatmapsetCard.vue";
+import ChoiceUserCard from "./ChoiceUserCard.vue";
 import ResultsBeatmapsetCard from "../results/ResultsBeatmapsetCard.vue";
 import ResultsUserCard from "../results/ResultsUserCard.vue";
 import VotingBox from "./VotingBox.vue";
@@ -109,6 +109,42 @@ export default class StagePageList extends Vue {
     @Prop({ type: Boolean, default: false }) results!: boolean;
     @Prop({ type: Array, required: false }) columns!: ResultColumn[];
     @Prop({ type: Boolean, default: false }) readonly mobile!: boolean;
+
+    scrollPos = 0;
+    scrollSize = 1;
+    bottom = false;
+
+    mounted () {
+        const list = document.querySelector(".category-selection");
+        if (list) {
+            list.addEventListener("scroll", this.handleScroll);
+        }
+    }
+
+    beforeDestroy () {
+        const list = document.querySelector(".category-selection");
+        if (list) {
+            list.removeEventListener("scroll", this.handleScroll);
+        }
+    }
+
+    handleScroll (event) {
+        if (event.target) {
+            this.scrollPos = event.target.scrollTop;
+            this.scrollSize = event.target.scrollHeight - event.target.clientHeight; // U know... just in case the window size changes Lol
+
+            const diff = Math.abs(this.scrollSize - this.scrollPos);
+            this.emit(diff <= 50);
+        }
+    }
+
+    emit (currentlyBottom: boolean): void {
+        if (currentlyBottom !== this.bottom) {
+            this.bottom = currentlyBottom;
+            if (currentlyBottom && !this.results)
+                this.search(true);
+        }
+    }
 
 }
 </script>

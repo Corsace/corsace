@@ -1,6 +1,9 @@
 <template>
     <div class="table-container">
-        <table class="table">
+        <table 
+            class="table"
+            :class="`table--${viewTheme}`"
+        >
             <thead>
                 <tr>
                     <th
@@ -49,6 +52,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { State } from "vuex-class";
 
 export enum Format {
     DateTimeString
@@ -62,6 +66,8 @@ export interface Field {
 
 @Component
 export default class DataTable extends Vue {
+
+    @State viewTheme!: "light" | "dark";
     
     @Prop({ type: Array, default: () => [] }) readonly fields!: (Field | string)[];
     @Prop({ type: Array, required: true }) readonly items!: any[];
@@ -132,7 +138,6 @@ export default class DataTable extends Vue {
 .table {
     border-collapse: collapse;
     width: 100%;
-    border-color: #dee2e6;
 
     & th, td {
         padding: .5rem;
@@ -148,6 +153,15 @@ export default class DataTable extends Vue {
         flex-wrap: wrap;
         justify-content: center;
         gap: 0.25rem;
+    }
+
+    &--light {
+        border-color: black;
+        color: black;
+    }
+    &--dark {
+        border-color: white;
+        color: white;
     }
 }
 

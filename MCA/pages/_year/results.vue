@@ -1,28 +1,21 @@
 <template>
     <div>
         <div class="results-wrapper">
-            <mode-switcher
-                hide-phase
-                hide-title
-                force-no-scroll
-                :title="$t(`mca.main.results`)"
-            >
-                <div class="results-general"> 
-                    <results-filters />
-                    <results-table-headings 
-                        :section="section"
-                        :columns="filtCol"
-                        :mobile="mobile"
-                    />
-                    <hr class="table-border">
-                    <stage-page-list 
-                        results
-                        class="results-table"
-                        :columns="filtCol"
-                        :mobile="mobile"
-                    />
-                </div>
-            </mode-switcher>
+            <div class="results-general"> 
+                <results-filters />
+                <results-table-headings 
+                    :section="section"
+                    :columns="filtCol"
+                    :mobile="mobile"
+                />
+                <hr class="table-border">
+                <stage-page-list 
+                    results
+                    class="results-table"
+                    :columns="filtCol"
+                    :mobile="mobile"
+                />
+            </div>
         </div>
 
         <notice-modal
@@ -36,17 +29,26 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { Getter, Mutation, State, namespace } from "vuex-class";
-import { SectionCategory } from "../../../Interfaces/category";
+import { namespace } from "vuex-class";
 
+import { SectionCategory } from "../../../Interfaces/category";
 import { MCAInfo, Phase, StageType } from "../../../Interfaces/mca";
 import { ResultColumn } from "../../../Interfaces/result";
+
+import ResultsFilters from "../../components/results/ResultsFilters.vue";
+import ResultsTableHeadings from "../../components/results/ResultsTableHeadings.vue";
+import StagePageList from "../../components/stage/StagePageList.vue";
+import NoticeModal from "../../../Assets/components/NoticeModal.vue";
 
 const stageModule = namespace("stage");
 const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
+        ResultsFilters,
+        ResultsTableHeadings,
+        StagePageList,
+        NoticeModal,
     },
     head () {
         return {

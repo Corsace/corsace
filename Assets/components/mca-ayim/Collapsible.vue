@@ -61,7 +61,10 @@
                     </template>
                     <div 
                         class="collapsible__info--dot"
-                        :class="{ 'collapsible__info--dot-active': 'count' in item && isSelected(item) }"
+                        :class="[
+                            { 'collapsible__info--dot-active': 'count' in item && isSelected(item) },
+                            'count' in item && 'maxNominations' in item && item.maxNominations !== 100 && item.count !== item.maxNominations ? `collapsible__info--dot-empty` : '',
+                        ]"
                     />
                     <div
                         class="collapsible__text"
@@ -209,11 +212,15 @@ export default class Collapsible extends Vue {
         &--dot {
             height: 10px;
             width: 10px;
-            background-color: $blue;
+            background-color: #8b8b8b;
             border-radius: 100%;
             margin: 0 10px;
             @include breakpoint(mobile) {
                 display: none;
+            }
+
+            &-empty {
+                background-color: $blue;
             }
 
             &-active {
@@ -311,7 +318,7 @@ export default class Collapsible extends Vue {
 
         text-align: center;
     
-        border: 1px solid $blue;
+        border: 1px solid #8b8b8b;
         border-radius: 5px;
 
         padding: 3px;
@@ -324,6 +331,7 @@ export default class Collapsible extends Vue {
         cursor: default;
 
         &--empty {
+            border: 1px solid $blue;
             color: $blue;
         }
 

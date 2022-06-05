@@ -19,7 +19,7 @@
             ]"
         >
             <a
-                href="https://ayim.corsace.io" 
+                href="https://mca.corsace.io" 
                 class="portal__ayim"
             >
                 <div :class="`portal__ayim--container portal--${viewTheme}`">
@@ -131,6 +131,22 @@ export default class Index extends Vue {
     @mcaAyimModule.State selectedMode!: string;
 
     @State viewTheme!: "light" | "dark";
+    
+    currentMode = "";
+
+    async mounted () {
+        await this.$store.dispatch("mca-ayim/setSelectedMode");
+        if (this.selectedMode !== "")
+            this.$router.push(`${this.$route.path}/mappers/records`);
+    }
+
+    // get ModeChange () {
+    //     if (this.currentMode !== this.selectedMode) {
+    //         this.$router.push(`${this.$route.path}/mappers/records`);
+    //         return true;
+    //     }
+    //     return false;
+    // }
 }
 </script>
 
@@ -150,16 +166,20 @@ export default class Index extends Vue {
     display: flex;
     align-items: center;
     flex-direction: column;
+    gap: 20px;	
+    @include breakpoint(mobile) {	
+        margin-top: 55px;	
+    }
 
-    font-size: $font-xl;
+    font-size: $font-base;
     @include breakpoint(tablet) {
-        font-size: $font-xxl;
+        font-size: $font-xl;
     }
     @include breakpoint(laptop) {
-        font-size: $font-xxxl;
+        font-size: $font-xxl;
     }
     @include breakpoint(desktop) {
-        font-size: $font-title;
+        font-size: $font-xxxl;
     }
     &--light {
         color: black;
@@ -171,139 +191,17 @@ export default class Index extends Vue {
     height: 100%;
 
     &__main {
-        font-size: $font-xxxl;
-    }
-
-    &__navigation {
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        padding: 10px;
-        margin-top: 10px;
-        margin-bottom: 20px;
-
-        border: 1px $blue solid;
-
-        &--light {
-            background-color: white;
-            &-inactive {
-                border: 1px rgba(0,0,0,0.5) solid;
-            }
-        }
-        &--dark {
-            background-color: $dark;
-            &-inactive {
-                border: 1px rgba(255,255,255,0.5) solid;
-            }
-        }
-
-        &--option {
-            color: $blue;
-        }
-
-        &--inactive {
-            cursor: pointer;
-
-            &-light {
-                color: rgba(0,0,0,0.5);
-            }
-            &-dark {
-                color: rgba(255,255,255,0.5);
-            }
-        }
-    }
-
-    &__mode {
-        margin-top: 25px;
-
-        &--notLoggedIn {
-            margin-bottom: 25px;
-        }
-
-        &Info {
-            display: flex;
-            justify-content: space-evenly;
-
-            width: 100%;
-
-            &--left, &--right {
-                width: 45%;
-                padding: 1%;
-                border: 1px $blue solid;
-
-                display: flex;
-                flex-direction: column;
-
-                &-light {
-                    background-color: white;
-                }
-                &-dark {
-                    background-color: $dark;
-                }
-            }
-
-            &--left {
-                justify-content: space-between;
-            }
-
-            &--right {
-                align-items: center;
-            }
-
-            &--timeline {
-                font-size: $font-lg;
-
-                &-phase {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                }
-            }
-
-            @each $mode in $modes {
-                &--#{$mode} {
-                    color: var(--#{$mode});
-                    &-dark {
-                        text-shadow: 0 0 2px var(--#{$mode});
-                    }
-                }
-            }
-
-            &--organizers {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-
-                &-list {
-                    font-size: $font-lg;
-                }
-            }
-        }
-    }
-
-    &__currentStage {
-        font-weight: bold;
-
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    &__categories {
-        width: 100%;
-        display: flex;
-
-        &--map, &--user {
-            flex: 1;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+        font-size: $font-sm;	
+        @include breakpoint(tablet) { 	
+            font-size: $font-base;	
+        }	
+        @include breakpoint(laptop) { 	
+            font-size: $font-lg;	
+        }	
+        @include breakpoint(desktop) { 	
+            font-size: $font-xl;	
+        }	
+        padding: 20px 50px;
     }
 
     &__noMCA {
@@ -343,7 +241,7 @@ export default class Index extends Vue {
         width: 75vw;
         margin: 50px 0;
         @include breakpoint(laptop) {
-            margin: 100px 0;
+            margin: 80px 0;
         }
         padding: 0 25px;
 
@@ -389,8 +287,8 @@ export default class Index extends Vue {
             line-height: 2.5rem;
             letter-spacing: 3px;
 
-            font-weight: bold;
             font-style: italic;
+            font-weight: bold;
         }
 
         &--centre {
@@ -402,6 +300,9 @@ export default class Index extends Vue {
             padding: 15px 0;
 
             & > img {
+                @include breakpoint(mobile) {	
+                    height: 40px;	
+                }
                 height: 70px;
                 margin: 25px 0;
             }
@@ -442,10 +343,6 @@ export default class Index extends Vue {
         }
 
         width: 75vw;
-        padding-bottom: 50px;
-        @include breakpoint(laptop) {
-            padding-bottom: 100px;
-        }
         & a {
 
             flex: 1;

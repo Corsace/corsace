@@ -28,14 +28,15 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { Mutation, State, namespace } from "vuex-class";
+import { namespace } from "vuex-class";
 
-import DropdownSelector from "../../../MCA-AYIM/components/DropdownSelector.vue";
+import DropdownSelector from "../../../Assets/components/DropdownSelector.vue";
 import StagePageFilters from "../stage/StagePageFilters.vue";
 
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import { TranslateResult } from "vue-i18n";
 
+const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
 
 @Component({
@@ -45,8 +46,7 @@ const stageModule = namespace("stage");
     },
 })
 export default class ResultsFilters extends Vue {
-    @Mutation toggleGuestDifficultyModal;
-    @State selectedMode!: string;
+    @mcaAyimModule.State selectedMode!: string;
 
     @stageModule.Getter categoriesInfo!: CategoryStageInfo[];
 

@@ -42,7 +42,19 @@
 
     cursor: pointer;
 
+    &__add {
+        background-color: rgba(0, 255, 0, 0.6);
+    }
+    
+    &__remove {
+        background-color: rgba(255, 0, 0, 0.6);
+    }
+
     &:hover, &--friends {
         background-color: var(--selected-mode);
+    }
+
+    & img {
+        height: 20px;
     }
 }

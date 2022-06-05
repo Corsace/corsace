@@ -25,6 +25,8 @@
         </div>
         <div class="error__text">
             {{ error.statusCode }}? I guess so.
+            <br>
+            <span class="error__text--message">{{ error.message }}</span>
         </div>
         <a 
             class="error__text error__back"
@@ -82,6 +84,12 @@ export default class Error extends Vue {
 
 .error__text {
     margin-top: 4rem;
+    text-align: center;
+
+    &--message {
+        color: $blue;
+        font-size: $font-base;
+    }
 }
 
 .error__back {

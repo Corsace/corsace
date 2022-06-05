@@ -142,8 +142,6 @@ export default class StateContent extends Vue {
             padding: 30px 40px 30px 20px;
             font-size: $font-xxxl;
         }
-
-        @include transition;
     }
 
     &__desc {
@@ -169,8 +167,6 @@ export default class StateContent extends Vue {
         @include breakpoint(tablet) {
             font-size: $font-xl;
         }
-
-        @include transition;
     }
 }
 </style>

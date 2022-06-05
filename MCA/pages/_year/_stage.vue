@@ -76,6 +76,7 @@ export default class Stage extends Vue {
     @mcaAyimModule.Mutation toggleGuestDifficultyModal;
     
     mounted () {
+        
         if (!this.loggedInMCAUser || !this.loggedInMCAUser.eligibility.some(eligibility => eligibility.year == parseInt(this.$route.params.year)))
             this.$router.push("/" + this.$route.params.year);
     }
@@ -140,7 +141,6 @@ export default class Stage extends Vue {
     }
 
     @include mode-text-color;
-    @include transition;
 
     &__number {
         font-size: 4rem;

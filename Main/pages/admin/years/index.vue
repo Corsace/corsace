@@ -1,11 +1,30 @@
 <template>
-    <div class="admin">
-        <button 
-            class="admin__button admin__add button"
-            @click="create"
-        >
-            add
-        </button>
+    <div 
+        class="admin"
+        :class="`admin--${viewTheme}`"
+    >
+        <div class="admin__actions">
+            <button 
+                class="admin__button admin__add button"
+                @click="create"
+            >
+                add
+            </button>
+
+            <nuxt-link
+                class="admin__button admin__link admin__add button"
+                to="/admin"
+            >
+                admin
+            </nuxt-link>
+            
+            <nuxt-link
+                class="admin__button admin__link admin__add button"
+                to="/"
+            >
+                home
+            </nuxt-link>
+        </div>
 
         <data-table
             :fields="fields"
@@ -13,20 +32,20 @@
         >
             <template #actions="{ item }">
                 <button
-                    class="button button--small"
+                    class="admin__button button button--small"
                     @click="edit(item)"
                 >
                     Edit
                 </button>
                 <button
-                    class="button button--small"
+                    class="admin__button button button--small"
                     @click="remove(item)"
                 >
                     Remove
                 </button>
                 <nuxt-link
                     :to="`/admin/years/${item.name}/categories`"
-                    class="button button--small"
+                    class="admin__button button button--small"
                 >
                     Categories
                 </nuxt-link>
@@ -45,22 +64,25 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
+import DataTable, { Field, Format } from "../../../../Assets/components/DataTable.vue";
+import AdminModalYear from "../../../../Assets/components/admin/AdminModalYear.vue";
 
-import AdminModalYear from "./AdminModalYear.vue";
-import DataTable, { Field, Format } from "./DataTable.vue";
-
-import { UserMCAInfo } from "../../../Interfaces/user";
-import { MCAInfo } from "../../../Interfaces/mca";
+import { MCAInfo } from "../../../../Interfaces/mca";
+import { UserInfo } from "../../../../Interfaces/user";
 
 @Component({
     components: {
         AdminModalYear,
         DataTable,
     },
+    head () {
+        return {
+            title: "Admin - Years | MCA/AYIM",
+        };
+    },
 })
-export default class AdminPage extends Vue {
-
-    @State loggedInUser!: UserMCAInfo;
+export default class Years extends Vue {
+   @State loggedInUser!: UserInfo;
 
     showYearModal = false;
     years: MCAInfo[] = [];
@@ -77,9 +99,9 @@ export default class AdminPage extends Vue {
 
     async mounted () {
         if (!(this.loggedInUser?.staff?.corsace || this.loggedInUser?.staff?.headStaff))
-            this.$router.replace("/");
-        else
-            await this.getMcaInfo();
+            return this.$router.replace("/");
+        
+        await this.getMcaInfo();
     }
 
     async getMcaInfo () {
@@ -121,6 +143,5 @@ export default class AdminPage extends Vue {
 
         await this.getMcaInfo();
     }
-
 }
 </script>

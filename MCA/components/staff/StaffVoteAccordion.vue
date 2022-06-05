@@ -96,7 +96,7 @@
 <script lang="ts">
 import { Vue, Prop, Component } from "vue-property-decorator";
 import { UserVote, ResultVote, StaffVote } from "../../../Interfaces/vote";
-import UserAvatar from "../staff/UserAvatar.vue";
+import UserAvatar from "./UserAvatar.vue";
 
 @Component({
     components: {

@@ -108,7 +108,6 @@ export default class StateContent extends Vue {
         line-height: 0.7;
 
         @include mode-text-color;
-        @include transition;
     }
 
 }

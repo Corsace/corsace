@@ -118,8 +118,6 @@ export default class DropdownSelector extends Vue{
     -moz-user-select: none;
 
     transform: translate(-50%, 0);
-    
-    @include transition('background-color, color');
 
     &:last-child {
         border-radius: 0 0 10px 10px;

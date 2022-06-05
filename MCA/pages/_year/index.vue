@@ -80,9 +80,9 @@
                                 class="index__modeInfo--timeline-dot"
                                 :class="phase.phase === 'voting' ? `index__modeInfo--timeline-dot-${selectedMode}` : ''"
                             />
-                            {{ mca.nomination.start.toLocaleString(dateInfo.locale, options) + " -" }} 
+                            {{ mca.voting.start.toLocaleString(dateInfo.locale, options) + " -" }} 
                             <br>
-                            {{ mca.nomination.end.toLocaleString(dateInfo.locale, options) }}
+                            {{ mca.voting.end.toLocaleString(dateInfo.locale, options) }}
                         </div>
                         <div class="index__modeInfo--timeline-phase">
                             <div 
@@ -98,9 +98,9 @@
                                 class="index__modeInfo--timeline-dot"
                                 :class="phase.phase === 'results' ? `index__modeInfo--timeline-dot-${selectedMode}` : ''"
                             />
-                            {{ mca.nomination.start.toLocaleString(dateInfo.locale, options) + " -" }} 
+                            {{ mca.results.toLocaleString(dateInfo.locale, options) }}
                             <br>
-                            {{ mca.nomination.end.toLocaleString(dateInfo.locale, options) }}
+                            <br>
                         </div>
                     </div>
                     <div class="index__modeInfo--organizers">
@@ -388,7 +388,6 @@ export default class Index extends Vue {
 @import '@s-sass/_variables';
 
 .index {
-
     &__bg {
         background-image: url("../../../Assets/img/site/mca-ayim/home-bg.png");
         background-position: center;
@@ -677,7 +676,7 @@ export default class Index extends Vue {
             &-dot {
                 position: absolute;
                 right: -5px;
-                top: 40%;
+                top: 43%;
 
                 height: 10px;
                 width: 10px;
@@ -880,7 +879,7 @@ export default class Index extends Vue {
         width: 75vw;
         margin: 50px 0;
         @include breakpoint(laptop) {
-            margin: 100px 0;
+            margin: 80px 0;
         }
         padding: 0 25px;
 
@@ -927,6 +926,7 @@ export default class Index extends Vue {
             letter-spacing: 3px;
 
             font-style: italic;
+            font-weight: bold;
         }
 
         &--centre {
@@ -981,10 +981,6 @@ export default class Index extends Vue {
         }
 
         width: 75vw;
-        padding-bottom: 50px;
-        @include breakpoint(laptop) {
-            padding-bottom: 100px;
-        }
         & a {
 
             flex: 1;
@@ -1006,6 +1002,7 @@ export default class Index extends Vue {
 }
 
 .welcomeBack {
+    font-weight: bold;
     line-height: $font-xl;
     @include breakpoint(tablet) {
         line-height: $font-xxl;

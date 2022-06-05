@@ -1,0 +1,59 @@
+@import '_partials';
+@import '_variables';
+
+.admin {
+    padding: 25px;
+
+    &--light {
+        color: black;
+    }
+    &--dark {
+        color: white;
+    }
+
+    &-popout {
+        
+    }
+
+    &__title {
+        font-size: 50px;
+    }
+    
+    &__button {
+        width: 50px;
+        margin: 10px 0;
+        color: black;
+
+        &--fit {
+            width: 250px !important;
+        }
+
+        &:hover {
+            color: black;
+            background-color: $pink !important;
+        }
+    }
+
+    &__link {
+
+        text-decoration: none !important;
+        
+    }
+
+    &__reset {
+        color: red;
+    }
+
+    &__add {
+
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+
+}

@@ -161,8 +161,8 @@ export default class Default extends Vue {
 .announcement {
     display: flex;
     flex-direction: column;
-    justify-content: end;
-    align-items: end;
+    justify-content: flex-end;
+    align-items: flex-end;
 
     margin-right: 1vw;
 
@@ -280,7 +280,6 @@ export default class Default extends Vue {
     &--dark {
         color: white;
     }
-    @include transition;
 }
 
 .events {

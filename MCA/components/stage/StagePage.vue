@@ -80,7 +80,7 @@ export default class StateContent extends Vue {
 .stage {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: calc(100% - 55px);
 
     @include breakpoint(laptop) {
         flex-direction: row;
