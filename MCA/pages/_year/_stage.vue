@@ -35,6 +35,7 @@ import { MCA, Phase } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
 import StagePage from "../../components/stage/StagePage.vue";
+import NoticeModal from "../../../Assets/components/NoticeModal.vue";
 import ModeHeader from "../../../Assets/components/mca-ayim/ModeHeader.vue";
 
 const mcaAyimModule = namespace("mca-ayim");
@@ -43,6 +44,7 @@ const mcaAyimModule = namespace("mca-ayim");
     components: {
         StagePage,
         ModeHeader,
+        NoticeModal,
     },
     validate ({ params }): boolean {
         const stageRegex = /^(nominating|nominate|vote|voting)$/i;

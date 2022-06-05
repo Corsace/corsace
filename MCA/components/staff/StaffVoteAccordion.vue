@@ -107,27 +107,27 @@ export default class StaffVoteAccordion extends Vue {
     @Prop({ type: String, default: "results" }) viewOption!: string;
     @Prop({ type: Array, default: {} }) data!: ResultVote[] | UserVote[];
 
-    getBanner (item: ResultVote) {
-        if (item.beatmapset) {
-            return { "background-image": `url('https://assets.ppy.sh/beatmaps/${item.beatmapset.ID}/covers/cover.jpg?1560315422')` };
-        } else if (item.user) {
-            return { "background-image": `url(https://a.ppy.sh/${item.user.osuID})` };
-        }
+    getBanner (vote: ResultVote) {
+        if (vote.beatmapset)
+            return { "background-image": `url('https://assets.ppy.sh/beatmaps/${vote.beatmapset.ID}/covers/cover.jpg?1560315422')` };
+        
+        if (vote.user)
+            return { "background-image": `url(https://a.ppy.sh/${vote.user.osuID})` };
+
         return { "background-image": "" };
     }
 
     generateUrl (vote: StaffVote): string {
-        if (vote.beatmap) {
+        if (vote.beatmap) 
             return `https://osu.ppy.sh/beatmaps/${vote.beatmap.ID}`;
-        } else if (vote.beatmapset) {
+        
+        if (vote.beatmapset)
             return `https://osu.ppy.sh/beatmapsets/${vote.beatmapset.ID}`;
-        }
         
         return `https://osu.ppy.sh/users/${vote.user?.osuID}`;
     }
 
     getVoteName (vote: StaffVote) {
-        console.log(vote);
         if (vote.beatmapset) {
             if (vote.beatmap)
                 return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator!.osuUsername} [${vote.beatmap.difficulty}]`;
