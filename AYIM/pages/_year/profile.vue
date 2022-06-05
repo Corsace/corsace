@@ -100,26 +100,26 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State } from "vuex-class";
-import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
+import { State, namespace } from "vuex-class";
 import InfluenceTreeLeaf from "../../components/InfluenceTreeLeaf.vue";
-import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
-import { User, UserMCAInfo } from "../../../Interfaces/user";
+import SearchBar from "../../../Assets/components/SearchBar.vue";
+import { User, UserInfo } from "../../../Interfaces/user";
 import { Influence } from "../../../Interfaces/influence";
 import { MCA } from "../../../Interfaces/mca";
 
+const mcaAyimModule = namespace("mca-ayim");
+
 @Component({
     components: {
-        ModeSwitcher,
         InfluenceTreeLeaf,
         SearchBar,
     },
 })
 export default class Comments extends Vue {
 
-    @State loggedInUser!: UserMCAInfo;
-    @State selectedMode!: string;
-    @State mca!: MCA;
+    @State loggedInUser!: UserInfo;
+    @mcaAyimModule.State selectedMode!: string;
+    @mcaAyimModule.State mca!: MCA;
 
     lastInfluences: Influence[] = [];
     influences: Influence[] = [];

@@ -47,10 +47,12 @@ export interface BeatmapsetInfo {
     artist: string;
     title: string;
     hoster: string;
+    hostID: string;
     chosen: boolean;
 }
 
 export interface BeatmapInfo extends BeatmapsetInfo {
     setID: number;
     difficulty: string;
+    sr: number;
 }

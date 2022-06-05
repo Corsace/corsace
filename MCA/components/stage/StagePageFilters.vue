@@ -6,27 +6,36 @@
         @update:search="updateText($event)"
     >
         <button
-            v-if="section === 'beatmaps' && loggedInUser"
+            v-if="section === 'beatmaps' && loggedInMCAUser"
             class="button"
-            :class="{ 
-                'button--friends': favourites,
-                'button--small': $route.params.stage === 'voting' && section === 'beatmaps'
-            }"
+            :class="[
+                { 
+                    'button--friends': favourites,
+                    'button--small': $route.params.stage === 'voting' && section === 'beatmaps'
+                },
+                `button--${viewTheme}`,
+            ]"
             @click="updateFavourite"
         >
-            <img src="../../../Assets/img/ayim-mca/site/heart.png">
+            <img src="../../../Assets/img/site/mca-ayim/heart.png">
         </button>
 
         <toggle-button
-            v-if="section === 'beatmaps' && loggedInUser"
-            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
+            v-if="section === 'beatmaps' && loggedInMCAUser"
+            :class="[
+                { 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' },    
+                `button--${viewTheme}`,
+            ]"
             :options="playedFilters"
             @change="changePlayed"
         />
 
         <toggle-button
             v-if="!results"
-            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
+            :class="[
+                { 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' },    
+                `button--${viewTheme}`,
+            ]"
             :options="sectionOptions"
             :arrow="orderOption"
             @change="changeOption"
@@ -34,7 +43,10 @@
         
         <toggle-button
             v-if="!results"
-            :class="{ 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' }"
+            :class="[
+                { 'button--small': $route.params.stage === 'voting' && section === 'beatmaps' },    
+                `button--${viewTheme}`,
+            ]"
             :options="orderOptions"
             :arrow="orderOption"
             @change="changeOrder"
@@ -43,10 +55,13 @@
         <button
             v-if="$route.params.stage === 'voting'"
             class="button"
-            :class="{ 
-                'button--active': showVoteChoiceBox,
-                'button--small': section === 'beatmaps'
-            }"
+            :class="[
+                { 
+                    'button--active': showVoteChoiceBox,
+                    'button--small': section === 'beatmaps'
+                },
+                `button--${viewTheme}`,
+            ]"
             @click="toggleVoteChoiceBox"
         >
             {{ $t(`mca.nom_vote.options.voteOrder`) }}
@@ -59,12 +74,13 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 import _ from "lodash";
 
-import ToggleButton from "../../../MCA-AYIM/components/ToggleButton.vue";
-import SearchBar from "../../../MCA-AYIM/components/SearchBar.vue";
+import ToggleButton from "../../../Assets/components/ToggleButton.vue";
+import SearchBar from "../../../Assets/components/SearchBar.vue";
 
 import { StageQuery } from "../../../Interfaces/queries";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
+const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
 
 @Component({
@@ -74,6 +90,8 @@ const stageModule = namespace("stage");
     },
 })
 export default class StagePageFilters extends Vue {
+
+    @State viewTheme!: "light" | "dark";
 
     @stageModule.State section!: string;
 
@@ -90,7 +108,8 @@ export default class StagePageFilters extends Vue {
 
     @stageModule.Mutation toggleVoteChoiceBox;
 
-    @State loggedInUser!: UserMCAInfo | null;
+    @mcaAyimModule.State loggedInMCAUser!: UserMCAInfo | null;
+    @mcaAyimModule.State selectedMode!: string;
 
     @Prop({ type: Boolean, default: false }) results!: boolean;
     @Prop({ type: Number, required: false }) searchKey!: number;
@@ -147,7 +166,7 @@ export default class StagePageFilters extends Vue {
 <style lang="scss">
 
 .category-filters {
-    padding: 15px 0;
+    padding: 10px 0;
 }
 
 </style>

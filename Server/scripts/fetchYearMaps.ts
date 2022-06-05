@@ -41,7 +41,7 @@ function timeFormatter (ms: number): string {
 
 const getModeDivison = memoizee(async (modeDivisionId: number) => {
     modeDivisionId += 1;
-    let mode = await ModeDivision.findOne(modeDivisionId + 1);
+    let mode = await ModeDivision.findOne(modeDivisionId);
     if (!mode) {
         mode = new ModeDivision;
         mode.ID = modeDivisionId;

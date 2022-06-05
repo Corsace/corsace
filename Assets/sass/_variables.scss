@@ -1,0 +1,48 @@
+$modes: "storyboard", "mania" , "fruits", "taiko", "standard";
+$themes: "light", "dark";
+
+$breakpoint-sm: 576px; // mobile breakpoint
+$breakpoint-md: 768px; // tablet breakpoint
+$breakpoint-lg: 992px; // laptop breakpoint
+$breakpoint-xl: 1200px; // desktop breakpoint
+
+$font-scoreboard: 'Scoreboard', sans-serif;
+$font-book: 'Futura PT Book', sans-serif;
+
+$font-xsm: 0.6rem;
+$font-sm: 0.75rem;
+$font-base: 1rem;
+$font-lg: 1.25rem;
+$font-xl: 1.5rem;
+$font-xxl: 1.7rem;
+$font-xxxl: 2rem;
+$font-title: 3rem;
+
+$standard: #fb2475;
+$taiko: #ff890a;
+$fruits: #0abdff;
+$mania: #48f326;
+$storyboard: #919191;
+
+$gray: #8b8b8b;
+$dark-gray: #343434;
+$darker-gray: #242424;
+$darkest-gray: #141414;
+$dark: #0f0f0f;
+$darkluscent: rgba(0, 0, 0, 0.65);
+$grayluscent: rgba(255, 255, 255, 0.2);
+$inactive: rgba(255, 255, 255, 0.529);
+
+$red: #c43c3c;
+$yellow: #fad95b;
+$green: #378f37;
+$pink: #e98792;
+$blue: #b2e8ff;
+$dark-cyan: linear-gradient(#009595, #008080);
+
+$border-radius: 15px;
+
+$black-shadow: 0 0 8px rgba(0, 0, 0, 0.63);
+$gray-shadow: 0 0 8px rgba(255, 255, 255, 0.25);
+$text-shadow: 0 0 2px white;
+$text-shadow-lg: 0 0 4px white;

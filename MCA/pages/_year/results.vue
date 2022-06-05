@@ -1,28 +1,21 @@
 <template>
     <div>
         <div class="results-wrapper">
-            <mode-switcher
-                hide-phase
-                hide-title
-                force-no-scroll
-                :title="$t(`mca.main.results`)"
-            >
-                <div class="results-general"> 
-                    <results-filters />
-                    <results-table-headings 
-                        :section="section"
-                        :columns="filtCol"
-                        :mobile="mobile"
-                    />
-                    <hr class="table-border">
-                    <stage-page-list 
-                        results
-                        class="results-table"
-                        :columns="filtCol"
-                        :mobile="mobile"
-                    />
-                </div>
-            </mode-switcher>
+            <div class="results-general"> 
+                <results-filters />
+                <results-table-headings 
+                    :section="section"
+                    :columns="filtCol"
+                    :mobile="mobile"
+                />
+                <hr class="table-border">
+                <stage-page-list 
+                    results
+                    class="results-table"
+                    :columns="filtCol"
+                    :mobile="mobile"
+                />
+            </div>
         </div>
 
         <notice-modal
@@ -36,27 +29,26 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { Getter, Mutation, State, namespace } from "vuex-class";
+import { namespace } from "vuex-class";
 
-import ModeSwitcher from "../../../MCA-AYIM/components/ModeSwitcher.vue";
-import NoticeModal from "../../../MCA-AYIM/components/NoticeModal.vue";
+import { SectionCategory } from "../../../Interfaces/category";
+import { MCAInfo, Phase, StageType } from "../../../Interfaces/mca";
+import { ResultColumn } from "../../../Interfaces/result";
+
 import ResultsFilters from "../../components/results/ResultsFilters.vue";
 import ResultsTableHeadings from "../../components/results/ResultsTableHeadings.vue";
 import StagePageList from "../../components/stage/StagePageList.vue";
-
-import { MCAInfo, Phase } from "../../../Interfaces/mca";
-import { SectionCategory, StageType } from "../../../MCA-AYIM/store/stage";
-import { ResultColumn } from "../../../Interfaces/result";
+import NoticeModal from "../../../Assets/components/NoticeModal.vue";
 
 const stageModule = namespace("stage");
+const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
-        ModeSwitcher,
-        NoticeModal,
         ResultsFilters,
         ResultsTableHeadings,
         StagePageList,
+        NoticeModal,
     },
     head () {
         return {
@@ -75,12 +67,12 @@ const stageModule = namespace("stage");
 })
 
 export default class Results extends Vue {
-    @State allMCA!: MCAInfo[];
+    @mcaAyimModule.State allMCA!: MCAInfo[];
 
-    @Getter phase!: Phase | undefined;
-    @Getter isMCAStaff!: boolean;
+    @mcaAyimModule.Getter phase!: Phase | null;
+    @mcaAyimModule.Getter isMCAStaff!: boolean;
 
-    @Mutation toggleGuestDifficultyModal;
+    @mcaAyimModule.Mutation toggleGuestDifficultyModal;
 
     @stageModule.State section!: SectionCategory;
     @stageModule.State stage!: StageType;

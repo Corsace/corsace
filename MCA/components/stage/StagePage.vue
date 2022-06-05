@@ -2,8 +2,6 @@
     <div class="stage">
         <stage-page-categories />
         
-        <stage-page-count />
-        
         <div class="stage-general">
             <stage-page-header />
             
@@ -25,7 +23,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { namespace, State } from "vuex-class";
+import { namespace } from "vuex-class";
 
 import StagePageCategories from "./StagePageCategories.vue";
 import StagePageCount from "./StagePageCount.vue";
@@ -34,6 +32,7 @@ import StagePageFilters from "./StagePageFilters.vue";
 import StagePageList from "./StagePageList.vue";
 import { CategoryStageInfo } from "../../../Interfaces/category";
 
+const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
 
 @Component({
@@ -47,7 +46,7 @@ const stageModule = namespace("stage");
 })
 export default class StateContent extends Vue {
 
-    @State selectedMode!: string;
+    @mcaAyimModule.State selectedMode!: string;
 
     @stageModule.State count!: number;
     @stageModule.State selectedCategory!: CategoryStageInfo;
@@ -81,7 +80,7 @@ export default class StateContent extends Vue {
 .stage {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: calc(100% - 55px);
 
     @include breakpoint(laptop) {
         flex-direction: row;
@@ -89,7 +88,6 @@ export default class StateContent extends Vue {
 }
 
 .stage-general {
-    flex: 3 1 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;

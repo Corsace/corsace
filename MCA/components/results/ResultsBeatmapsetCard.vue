@@ -96,8 +96,6 @@ export default class ResultsBeatmapsetCard extends Vue {
     box-shadow: 0 0 8px rgba(255,255,255,0.25);
     cursor: pointer;
 
-    @include transition();
-
     &:hover {
         box-shadow: 0 0 12px rgba(255,255,255,0.75);
     }

@@ -35,7 +35,7 @@ export default class Default extends Vue {
     }
 
     async mounted () {
-        await this.$store.dispatch("setInitialData");
+        await this.$store.dispatch("setInitialData", "open");
     }
     
 }

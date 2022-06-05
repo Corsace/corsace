@@ -1,34 +1,31 @@
 <template>
     <div
         v-if="mca"
-        class="staff-page"
+        class="admin"
     >
-        <div class="staff-page__title">
+        <div class="admin__title">
             MCA - {{ mca.name }}
         </div>
 
         <nuxt-link
-            v-if="requests.length"
             :to="`/${mca.name}/staff/requests`"
-            class="staff-page__link"
+            class="admin__button admin__button--fit admin__link button"
         >
-            Requests pending >
+            Requests pending
         </nuxt-link>
 
         <nuxt-link
-            v-if="categories.length"
             :to="`/${mca.name}/staff/nominations`"
-            class="staff-page__link"
+            class="admin__button admin__button--fit admin__link button"
         >
-            Nominations review >
+            Nominations review
         </nuxt-link>
 
         <nuxt-link
-            v-if="categories.length"
             :to="`/${mca.name}/staff/votes`"
-            class="staff-page__link"
+            class="admin__button admin__button--fit admin__link button"
         >
-            Vote Lists >
+            Vote Lists
         </nuxt-link>
     </div>
 </template>
