@@ -24,6 +24,7 @@ const yearIDthresholds = [
     13683105, // 2019
     15887198, // 2020
     20136967, // 2021
+    27999020, // 2022
 ]; // IDs where they are the first for each year starting from 2007
 
 function createUserQuery (year, modeId, i) : SelectQueryBuilder<User> {
