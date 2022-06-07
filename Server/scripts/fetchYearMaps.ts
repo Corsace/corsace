@@ -51,6 +51,50 @@ const getModeDivison = memoizee(async (modeDivisionId: number) => {
     return mode;
 });
 
+// API call to fetch a user's country.
+async function getUserCountry (userID: number): Promise<string> {
+    const userApi = (await axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`)).data as any[];
+    if (userApi.length === 0)
+        return "";
+    return userApi[0].country;
+};
+
+const getUser = memoizee(async (targetUser: { username: string, userID: number, country?: string }): Promise<User> =>{
+    let user = await User.findOne({ osu: { userID: `${targetUser.userID}` } });
+    
+    if (!user) {
+        user = new User;
+        user.osu = new OAuth;
+        user.osu.userID = `${targetUser.userID}`;
+        user.osu.username = targetUser.username;
+        user.osu.avatar = "https://a.ppy.sh/" + targetUser.userID;
+        user.country = targetUser.country ?? await getUserCountry(targetUser.userID);
+        user = await user.save();
+    } else if (user.osu.username !== targetUser.username) {
+        // Check if old exists (add if it doesn't)
+        if (!user.otherNames.some(v => v.name === user!.osu.username)) {
+            const nameChange = new UsernameChange;
+            nameChange.name = user.osu.username;
+            nameChange.user = user;
+            await nameChange.save();
+            user.otherNames.push(nameChange);
+        }
+
+        // Check if new exists (remove if it does)
+        if (user.otherNames.some(v => v.name === targetUser.username)) {
+            await user.otherNames.find(v => v.name === targetUser.username)!.remove();
+            user.otherNames = user.otherNames.filter(v => v.name !== targetUser.username);
+        }
+        user.osu.username = targetUser.username;
+        await user.save();
+    }
+
+    return user;
+}, {
+    max: 200,
+    normalizer: ([user]) => `${user.username}`,
+});
+
 // Memoized method to create or fetch a BeatmapSet from DB.
 const existingSets: number[] = [];
 const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> => {
@@ -68,34 +112,38 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     beatmapSet.tags = beatmap.tags.join(" ");
     beatmapSet.favourites = beatmap.favoriteCount;
 
-    let user = await User.findOne({ osu: { userID: `${beatmap.creatorId}` } });
-    
-    if (!user) {
-        user = new User;
-        user.osu = new OAuth;
-        user.osu.userID = `${beatmap.creatorId}`;
-        user.osu.username = beatmap.creator;
-        user.osu.avatar = "https://a.ppy.sh/" + beatmap.creatorId;
-        user = await user.save();
-    } else if (user.osu.username !== beatmap.creator) {
-        // Check if old exists (add if it doesn't)
-        if (!user.otherNames.some(v => v.name === user!.osu.username)) {
-            const nameChange = new UsernameChange;
-            nameChange.name = user.osu.username;
-            nameChange.user = user;
-            await nameChange.save();
-            user.otherNames.push(nameChange);
-        }
-
-        // Check if new exists (remove if it does)
-        if (user.otherNames.some(v => v.name === beatmap.creator)) {
-            await user.otherNames.find(v => v.name === beatmap.creator)!.remove();
-            user.otherNames = user.otherNames.filter(v => v.name !== beatmap.creator);
-        }
-        user.osu.username = beatmap.creator;
-        await user.save();
-    }
+    const user = await getUser({ username: beatmap.creator, userID: beatmap.creatorId });
     beatmapSet.creator = user;
+
+    // interOp call to pishi's BN site to get the user IDs of the BNs of a beatmapset.
+    // NOTE: The BN site only has nomination data from ~mid 2019 onward.
+    beatmapSet.rankers = [];
+    const beatmapEvents = (await axios.get(`https://bn.mappersguild.com/interOp/events/${beatmapSet.ID}`, {
+        headers:{
+            username: config.bn.username,
+            secret: config.bn.secret,
+        }
+    })).data as any[];
+    // Find the beatmap nominators for the map
+    if (beatmapEvents.length !== 0) {
+        const modeCount = beatmapEvents[0].modes.length;
+        const bns: number[] = [];
+        const nomEvents = beatmapEvents.filter(e => e.type === "nominate" || e.type === "qualify");
+        for (let i = nomEvents.length - 1; i >= 0; i--) {
+            if (!bns.some(bn => bn === nomEvents[i].userId))
+                bns.push(nomEvents[i].userId);
+            if (bns.length === modeCount * 2)
+                break;
+        }
+        for (const bnID of bns) {
+            const osuBNData = (await axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${bnID}&type=id`)).data as any[];
+            if (osuBNData.length === 0)
+                continue;
+            const bnApi = osuBNData[0];
+            let bn = await getUser({username: bnApi.username, userID: bnID, country: bnApi.country});
+            beatmapSet.rankers.push(bn);
+        }
+    }
 
     beatmapSet = await beatmapSet.save();
     bmsInserted++;
