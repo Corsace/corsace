@@ -135,12 +135,13 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
             if (bns.length === modeCount * 2)
                 break;
         }
-        for (const bnID of bns) {
-            const osuBNData = (await axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${bnID}&type=id`)).data as any[];
+        const bnUsers = await Promise.all(bns.map(bnID => axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${bnID}&type=id`)));
+        for (const bnUser of bnUsers) {
+            const osuBNData = bnUser.data as any[];
             if (osuBNData.length === 0)
                 continue;
             const bnApi = osuBNData[0];
-            let bn = await getUser({username: bnApi.username, userID: bnID, country: bnApi.country});
+            let bn = await getUser({username: bnApi.username, userID: bnApi.user_id, country: bnApi.country});
             beatmapSet.rankers.push(bn);
         }
     }
