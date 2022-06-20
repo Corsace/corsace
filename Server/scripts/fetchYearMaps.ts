@@ -119,10 +119,7 @@ const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
 
 
 // Memoized method to create or fetch a BeatmapSet from DB.
-const existingSets: number[] = [];
 const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> => {
-    if(existingSets.includes(beatmap.setId))
-        return await Beatmapset.findOne(beatmap.setId) as Beatmapset;
     let beatmapSet = new Beatmapset;
     beatmapSet.ID = beatmap.setId;
     beatmapSet.approvedDate = beatmap.approvedDate;
@@ -146,7 +143,6 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     
     beatmapSet = await beatmapSet.save();
     bmsInserted++;
-    existingSets.push(beatmap.setId);
     return beatmapSet;
 }, {
     max: 200,
