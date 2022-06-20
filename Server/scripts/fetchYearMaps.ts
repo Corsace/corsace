@@ -52,25 +52,36 @@ const getModeDivison = memoizee(async (modeDivisionId: number) => {
 });
 
 // API call to fetch a user's country.
-async function getUserCountry (userID: number): Promise<string> {
+async function getMissingOsuUserProperties (userID: number): Promise<{ country: string; username: string; }> {
     const userApi = (await axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`)).data as any[];
     if (userApi.length === 0)
-        return "";
-    return userApi[0].country;
+        return { country: "", username: "" };
+    return {
+        country: userApi[0].country,
+        username: userApi[0].username,
+    };
 };
 
-const getUser = memoizee(async (targetUser: { username: string, userID: number, country?: string }): Promise<User> =>{
+const getUser = memoizee(async (targetUser: { username?: string, userID: number, country?: string }): Promise<User> =>{
     let user = await User.findOne({ osu: { userID: `${targetUser.userID}` } });
     
     if (!user) {
+        let country = targetUser.country;
+        let username = targetUser.username;
+        if (!username || !country) {
+            const { country: newCountry, username: newUsername } = await getMissingOsuUserProperties(targetUser.userID);
+            country = newCountry;
+            username = newUsername;
+        }
+
         user = new User;
         user.osu = new OAuth;
         user.osu.userID = `${targetUser.userID}`;
-        user.osu.username = targetUser.username;
+        user.osu.username = username;
         user.osu.avatar = "https://a.ppy.sh/" + targetUser.userID;
-        user.country = targetUser.country ?? await getUserCountry(targetUser.userID);
+        user.country = country;
         user = await user.save();
-    } else if (user.osu.username !== targetUser.username) {
+    } else if (targetUser.username && user.osu.username !== targetUser.username) {
         // Check if old exists (add if it doesn't)
         if (!user.otherNames.some(v => v.name === user!.osu.username)) {
             const nameChange = new UsernameChange;
@@ -118,31 +129,23 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     // interOp call to pishi's BN site to get the user IDs of the BNs of a beatmapset.
     // NOTE: The BN site only has nomination data from ~mid 2019 onward.
     beatmapSet.rankers = [];
-    const beatmapEvents = (await axios.get(`https://bn.mappersguild.com/interOp/events/${beatmapSet.ID}`, {
-        headers:{
-            username: config.bn.username,
-            secret: config.bn.secret,
-        }
-    })).data as any[];
-    // Find the beatmap nominators for the map
-    if (beatmapEvents.length !== 0) {
-        const modeCount = beatmapEvents[0].modes.length;
-        const bns: number[] = [];
-        const nomEvents = beatmapEvents.filter(e => e.type === "nominate" || e.type === "qualify");
-        for (let i = nomEvents.length - 1; i >= 0; i--) {
-            if (!bns.some(bn => bn === nomEvents[i].userId))
-                bns.push(nomEvents[i].userId);
-            if (bns.length === modeCount * 2)
-                break;
-        }
-        const bnUsers = await Promise.all(bns.map(bnID => axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${bnID}&type=id`)));
-        for (const bnUser of bnUsers) {
-            const osuBNData = bnUser.data as any[];
-            if (osuBNData.length === 0)
-                continue;
-            const bnApi = osuBNData[0];
-            let bn = await getUser({username: bnApi.username, userID: bnApi.user_id, country: bnApi.country});
-            beatmapSet.rankers.push(bn);
+
+    if (config.bn.username && config.bn.secret) {
+        const beatmapEvents = (await axios.get(`https://bn.mappersguild.com/interOp/events/${beatmapSet.ID}`, {
+            headers:{
+                username: config.bn.username,
+                secret: config.bn.secret,
+            }
+        })).data as any[];
+        // Find the beatmap nominators for the map
+        if (beatmapEvents.length !== 0) {
+            const modeCount = beatmapEvents[0].modes.length;
+            const nomEvents = beatmapEvents.filter(e => e.type === "nominate" || e.type === "qualify");
+            const bns = new Set(nomEvents.map((event) => event.userId));
+            for (const bn of Array.from(bns)) {
+                const bnUser = await getUser({ userID: bn });
+                beatmapSet.rankers.push(bnUser);
+            }
         }
     }
 
@@ -222,6 +225,10 @@ async function script () {
         throw new Error("Please provide a valid year in first argument!");
     }
     const until = new Date(`${year + 1}-01-01`);
+
+    if (!config.bn.username || !config.bn.secret) {
+        console.warn("WARNING: No BN website username/secret provided in config. Beatmapsets rankers will not be retrieved.");
+    }
 
     console.log("This script can damage your database. Make sure to only execute this if you know what you're doing.");
     console.log("This script will automatically continue in 5 seconds. Cancel using Ctrl+C.");
