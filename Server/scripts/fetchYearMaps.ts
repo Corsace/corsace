@@ -108,10 +108,13 @@ const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
     const rankers: User[] = [];
     if (beatmapEvents.length > 0) {
         const nomEvents = beatmapEvents.filter(e => e.type === "nominate" || e.type === "qualify");
-        const bnUserIds = new Set<number>(nomEvents.map((event) => event.userId));
+        const bnUserIds = new Set<number>(nomEvents.map((event) => event.userId).reverse()); // Reversed order, index 0 = latest event
+        const modeCount = nomEvents[0].modes.length;
         for (const bnUserId of Array.from(bnUserIds)) {
             const bnUser = await getUser({ userID: bnUserId });
             rankers.push(bnUser);
+            if (rankers.length === modeCount * 2) // 2 nominators per mode e.g. std/man set needs 4 BNs, std set needs 2 BNs
+                break;
         }
     }
     return rankers;
@@ -167,6 +170,7 @@ const getMCAEligibility = memoizee(async function(year: number, user: User) {
 
 type BeatmapsetID = number;
 export type BNEvent = {
+    modes: string[];
     type: string;
     userId: number;
 }
