@@ -10,7 +10,7 @@ import { Beatmap } from "../../Models/beatmap";
 import { OAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
-import { RateLimiter } from "limiter";
+import { RateLimiterMemory, RateLimiterQueue } from "rate-limiter-flexible";
 
 let bmQueued = 0; // beatmaps inserted in queue
 let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
@@ -166,16 +166,16 @@ const getMCAEligibility = memoizee(async function(year: number, user: User) {
 
 type BeatmapsetID = number;
 const bnsRawData = new Map<BeatmapsetID, Promise<null | any[]>>();
-const bnFetchingLimiter = new RateLimiter({ interval: "second", tokensPerInterval: 25 });
+const bnFetchingLimiter = new RateLimiterQueue(new RateLimiterMemory({ points: 20, duration: 1 }));
 const getBNsApiCallRawData = async (beatmapSetID: BeatmapsetID): Promise<null | any[]> => {
     if (config.bn.username && config.bn.secret) {
         try {
             await bnFetchingLimiter.removeTokens(1);
             return (await axios.get(`https://bn.mappersguild.com/interOp/events/${beatmapSetID}`, {
-                headers:{
+                headers: {
                     username: config.bn.username,
                     secret: config.bn.secret,
-                }
+                },
             })).data as any[];
         } catch (err: any) {
             console.error('An error occured while fetching BNs for beatmap set ' + beatmapSetID);
