@@ -3,6 +3,10 @@ import { Beatmapset } from "../beatmapset";
 import { config } from "node-config-ts";
 import { MoreThanOrEqual } from "typeorm";
 import { BNEvent, getBNsApiCallRawData, getRankers } from "../../Server/scripts/fetchYearMaps";
+import { resolve } from "path";
+import { createReadStream, existsSync } from "fs";
+import { createGunzip } from "zlib";
+import streamToString from "stream-to-string";
 
 export class BeatmapNominators1654558569754 implements MigrationInterface {
     name = 'BeatmapNominators1654558569754'
@@ -13,6 +17,18 @@ export class BeatmapNominators1654558569754 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`user_maps_ranked_beatmapset\` ADD CONSTRAINT \`FK_3cda7daeb4ff2b0dbc4b90736ca\` FOREIGN KEY (\`userID\`) REFERENCES \`user\`(\`ID\`) ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE \`user_maps_ranked_beatmapset\` ADD CONSTRAINT \`FK_f0b456f4502aebcbfd9233edf70\` FOREIGN KEY (\`beatmapsetID\`) REFERENCES \`beatmapset\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
 
+        // If .sql.gz file exists, just execute it
+        const sqlGzFilePath = resolve(__dirname, "1654558569754-BeatmapNominators.sql.gz");
+        if (existsSync(sqlGzFilePath)) {
+            const bigSql = await streamToString(createReadStream(sqlGzFilePath).pipe(createGunzip()));
+            const sqlInstructions = bigSql.split("\n").filter(sql => sql.trim().length !== 0);
+            for(const sqlInstruction of sqlInstructions)
+                if(sqlInstruction.trim().length !== 0)
+                    await queryRunner.query(sqlInstruction);
+            return;
+        }
+
+        // Otherwise, run the migration
         if (!config.bn.username || !config.bn.secret) {
             console.warn("WARNING: No BN website username/secret provided in config. Beatmapsets rankers will not be retrieved.");
         } else {
