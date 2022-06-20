@@ -96,6 +96,7 @@ const mcaAyimModule = namespace("mca-ayim");
             ],
         };
     },
+    layout: "construction",
 })
 export default class MapsetRecords extends Vue {
 

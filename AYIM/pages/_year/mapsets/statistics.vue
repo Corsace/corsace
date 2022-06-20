@@ -67,6 +67,7 @@ const mcaAyimModule = namespace("mca-ayim");
             ],
         };
     },
+    layout: "construction",
 })
 export default class MapsetStatistics extends Vue {
 
@@ -94,10 +95,3 @@ export default class MapsetStatistics extends Vue {
 
 }
 </script>
-
-<style lang="scss">
-@import '@s-sass/_variables';
-@import '@s-sass/_mixins';
-@import '@s-sass/_partials';
-
-</style>

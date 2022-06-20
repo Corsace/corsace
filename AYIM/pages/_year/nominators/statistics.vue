@@ -1,11 +1,11 @@
 <template>
-    <display-layout nav-title="mappers">
+    <display-layout nav-title="mapsets">
         <list-transition class="ayim-layout">
             <record-item
                 v-for="(statisticItems, statisticName) in statistics"
                 :key="statisticName + '-stat'"
                 :title="statisticName"
-                :type="'mappers'"
+                :type="'mapsets'"
             >
                 <div
                     v-for="statistic in statisticItems"
@@ -16,7 +16,7 @@
                         <div class="ayim-text ayim-text--italic">
                             {{ $t('ayim.statistics.numberOf') }}
                         </div>
-                            
+
                         <div class="ayim-text ayim-text--xl">
                             {{ statistic.constraint }}
                         </div>
@@ -51,13 +51,13 @@ const mcaAyimModule = namespace("mca-ayim");
     },
     head () {
         return {
-            title: `Mappers' Statistics | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}`,
+            title: `Nominators' Statistics | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}`,
             meta: [
-                { hid: "description", name: "description", content: `The statistics related to mappers in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
-                { hid: "og:title", property: "og:title", content: `Mappers' Statistics | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}` },
+                { hid: "description", name: "description", content: `The statistics related to beatmap nominators in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
+                { hid: "og:title", property: "og:title", content: `Nominators' Statistics | AYIM ${this.$route.params.year ?? (new Date()).getUTCFullYear()}` },
                 { hid: "og:type", property: "og:type", content: "website" },
                 { hid: "og:url", property: "og:url", content: "https://ayim.corsace.io" },
-                { hid: "og:description", property: "og:description", content: `The statistics related to mappers in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
+                { hid: "og:description", property: "og:description", content: `The statistics related to beatmap nominators in A Year in Mapping ${this.$route.params.year ?? (new Date()).getUTCFullYear()}.` },
                 { hid: "og:site_name",property: "og:site_name", content: "AYIM" },
                 { hid: "theme-color", name: "theme-color", content: "#fb2475" },
             ],
@@ -65,11 +65,11 @@ const mcaAyimModule = namespace("mca-ayim");
     },
     layout: "construction",
 })
-export default class MapperStatistics extends Vue {
+export default class MapsetStatistics extends Vue {
 
     @mcaAyimModule.State selectedMode!: string;
     @mcaAyimModule.State mca!: MCA;
-    
+
     statistics: Record<string, Statistic[]> = {};
 
     @Watch("selectedMode")
@@ -82,12 +82,12 @@ export default class MapperStatistics extends Vue {
     }
 
     async getStats () {
-        const { data } = await this.$axios.get(`/api/statistics/mappers?year=${this.mca.year}&mode=${this.selectedMode}`);
+        const { data } = await this.$axios.get(`/api/statistics/nominators?year=${this.mca.year}&mode=${this.selectedMode}`);
 
         if (!data.error) {
             this.statistics = data;
         }
     }
-    
+
 }
 </script>

@@ -30,6 +30,16 @@
                     {{ $t('ayim.mappers.name') }}
                 </nuxt-link>
                 <nuxt-link
+                    :to="`/${mca.year}/nominators/records`"
+                    class="ayim-nav__item button"
+                    :class="[
+                        getNavClass('nominators'),
+                        `button--${viewTheme}`,
+                    ]"
+                >
+                    {{ $t('ayim.nominators.name') }}
+                </nuxt-link>
+                <nuxt-link
                     v-if="mca.year < 2020"
                     :to="`/${mca.year}/comments`"
                     class="ayim-nav__item button"

@@ -60,7 +60,8 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
         avgSliders,
         avgSpinners,
         highestSr,
-        lowestSr] = await Promise.all([
+        lowestSr
+    ] = await Promise.all([
         // Playcount
         Beatmapset
             .queryRecord(year, modeId)
@@ -424,5 +425,27 @@ recordsRouter.get("/mappers", async (ctx) => {
 
     ctx.body = records;
 });
+
+// recordsRouter.get("/nominators", async (ctx) => {
+//     if (await ctx.cashed())
+//         return;
+
+//     const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
+//     const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
+//     const modeId = ModeDivisionType[modeString];
+
+
+//     const records: Record<string, MapperRecord[]> = {
+//         mostNoms,
+//         mostDiffs,
+//         mostPlayed,
+//         mostFavs,
+//         mostFavsExclHybrid,
+//         highestAvgSr: highestAvgSr.map(o => valueToFixed(o)),
+//         lowestAvgSr: lowestAvgSr.map(o => valueToFixed(o)),
+//     };
+
+//     ctx.body = records;
+// });
 
 export default recordsRouter;

@@ -114,6 +114,7 @@ const mcaAyimModule = namespace("mca-ayim");
         InfluenceTreeLeaf,
         SearchBar,
     },
+    layout: "construction",
 })
 export default class Comments extends Vue {
 

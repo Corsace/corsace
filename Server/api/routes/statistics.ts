@@ -437,14 +437,6 @@ statisticsRouter.get("/mappers", async (ctx) => {
                 value: (newMappers.value / uniqueMappers.value * 100).toFixed(2) + "%",
             },
         ],
-        bng: [
-            getHistoryStat(year, modeString, "bns", "joined"),
-            getHistoryStat(year, modeString, "bns", "left"),
-        ],
-        nat: [
-            getHistoryStat(year, modeString, "nat", "joined"),
-            getHistoryStat(year, modeString, "nat", "left"),
-        ],
         newMapperAges: newYears,
         mapperAges: years,
         mapsPerMapperAges: mapYears,
@@ -452,5 +444,33 @@ statisticsRouter.get("/mappers", async (ctx) => {
 
     ctx.body = statistics;
 });
+
+// statisticsRouter.get("/nominators", async (ctx) => {
+//     if (await ctx.cashed())
+//         return;
+
+//     const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
+//     const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
+//     const modeId = ModeDivisionType[modeString];
+
+
+
+//     const statistics: Record<string, Statistic[]> = {
+//         bng: [
+//             getHistoryStat(year, modeString, "bns", "joined"),
+//             getHistoryStat(year, modeString, "bns", "left"),
+//         ],
+//         nat: [
+//             getHistoryStat(year, modeString, "nat", "joined"),
+//             getHistoryStat(year, modeString, "nat", "left"),
+//         ],
+//         size: [
+//             getSize(year, modeString, "max"),
+//             getSize(year, modeString, "min"),
+//         ],
+//     };
+
+//     ctx.body = statistics;
+// });
 
 export default statisticsRouter;
