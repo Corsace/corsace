@@ -10,6 +10,7 @@ import { Beatmap } from "../../Models/beatmap";
 import { OAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
+import { RateLimiter } from "limiter";
 
 let bmQueued = 0; // beatmaps inserted in queue
 let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
@@ -127,22 +128,14 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     // NOTE: The BN site only has nomination data from ~mid 2019 onward.
     beatmapSet.rankers = [];
 
-    if (config.bn.username && config.bn.secret) {
-        const beatmapEvents = (await axios.get(`https://bn.mappersguild.com/interOp/events/${beatmapSet.ID}`, {
-            headers:{
-                username: config.bn.username,
-                secret: config.bn.secret,
-            }
-        })).data as any[];
-        // Find the beatmap nominators for the map
-        if (beatmapEvents.length !== 0) {
-            const modeCount = beatmapEvents[0].modes.length;
-            const nomEvents = beatmapEvents.filter(e => e.type === "nominate" || e.type === "qualify");
-            const bns = new Set(nomEvents.map((event) => event.userId));
-            for (const bn of Array.from(bns)) {
-                const bnUser = await getUser({ userID: bn });
-                beatmapSet.rankers.push(bnUser);
-            }
+    const beatmapEvents = await bnsRawData.get(beatmapSet.ID);
+    bnsRawData.delete(beatmapSet.ID);
+    if (beatmapEvents && beatmapEvents.length > 0) {
+        const nomEvents = beatmapEvents.filter(e => e.type === "nominate" || e.type === "qualify");
+        const bnUserIds = new Set<number>(nomEvents.map((event) => event.userId));
+        for (const bnUserId of Array.from(bnUserIds)) {
+            const bnUser = await getUser({ userID: bnUserId });
+            beatmapSet.rankers.push(bnUser);
         }
     }
 
@@ -169,6 +162,29 @@ const getMCAEligibility = memoizee(async function(year: number, user: User) {
         return `${year}-${user.ID}`;
     },
 });
+
+
+type BeatmapsetID = number;
+const bnsRawData = new Map<BeatmapsetID, Promise<null | any[]>>();
+const bnFetchingLimiter = new RateLimiter({ interval: "second", tokensPerInterval: 25 });
+const getBNsApiCallRawData = async (beatmapSetID: BeatmapsetID): Promise<null | any[]> => {
+    if (config.bn.username && config.bn.secret) {
+        try {
+            await bnFetchingLimiter.removeTokens(1);
+            return (await axios.get(`https://bn.mappersguild.com/interOp/events/${beatmapSetID}`, {
+                headers:{
+                    username: config.bn.username,
+                    secret: config.bn.secret,
+                }
+            })).data as any[];
+        } catch (err: any) {
+            console.error('An error occured while fetching BNs for beatmap set ' + beatmapSetID);
+            console.error(err.stack);
+            process.exit(1);
+        }
+    }
+    return null;
+}
 
 async function insertBeatmap (apiBeatmap: APIBeatmap) {
     let beatmap = new Beatmap;
@@ -263,6 +279,11 @@ async function script () {
                 break;
             if(![1, 2].includes(Number(newBeatmap.approved)))
                 continue;
+
+            if (!bnsRawData[newBeatmap.beatmapSetId]) {
+                bnsRawData[newBeatmap.beatmapSetId] = getBNsApiCallRawData(newBeatmap.beatmapSetId);
+            }
+
             queuedBeatmapIds.push(newBeatmap.id);
             processingQueue.push(newBeatmap);
             bmQueued++;
