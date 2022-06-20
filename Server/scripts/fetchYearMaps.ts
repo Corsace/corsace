@@ -62,7 +62,7 @@ async function getMissingOsuUserProperties (userID: number): Promise<{ country: 
     };
 };
 
-const getUser = memoizee(async (targetUser: { username?: string, userID: number, country?: string }): Promise<User> =>{
+const getUser = async (targetUser: { username?: string, userID: number, country?: string }): Promise<User> => {
     let user = await User.findOne({ osu: { userID: `${targetUser.userID}` } });
     
     if (!user) {
@@ -101,10 +101,7 @@ const getUser = memoizee(async (targetUser: { username?: string, userID: number,
     }
 
     return user;
-}, {
-    max: 200,
-    normalizer: ([user]) => `${user.username}`,
-});
+};
 
 // Memoized method to create or fetch a BeatmapSet from DB.
 const existingSets: number[] = [];
