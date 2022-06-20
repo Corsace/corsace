@@ -104,6 +104,20 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
     return user;
 };
 
+const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
+    const rankers: User[] = [];
+    if (beatmapEvents.length > 0) {
+        const nomEvents = beatmapEvents.filter(e => e.type === "nominate" || e.type === "qualify");
+        const bnUserIds = new Set<number>(nomEvents.map((event) => event.userId));
+        for (const bnUserId of Array.from(bnUserIds)) {
+            const bnUser = await getUser({ userID: bnUserId });
+            rankers.push(bnUser);
+        }
+    }
+    return rankers;
+}
+
+
 // Memoized method to create or fetch a BeatmapSet from DB.
 const existingSets: number[] = [];
 const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> => {
@@ -123,22 +137,13 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
 
     const user = await getUser({ username: beatmap.creator, userID: beatmap.creatorId });
     beatmapSet.creator = user;
-
+    
     // interOp call to pishi's BN site to get the user IDs of the BNs of a beatmapset.
     // NOTE: The BN site only has nomination data from ~mid 2019 onward.
-    beatmapSet.rankers = [];
-
     const beatmapEvents = await bnsRawData.get(beatmapSet.ID);
     bnsRawData.delete(beatmapSet.ID);
-    if (beatmapEvents && beatmapEvents.length > 0) {
-        const nomEvents = beatmapEvents.filter(e => e.type === "nominate" || e.type === "qualify");
-        const bnUserIds = new Set<number>(nomEvents.map((event) => event.userId));
-        for (const bnUserId of Array.from(bnUserIds)) {
-            const bnUser = await getUser({ userID: bnUserId });
-            beatmapSet.rankers.push(bnUser);
-        }
-    }
-
+    beatmapSet.rankers = beatmapEvents ? await getRankers(beatmapEvents) : [];
+    
     beatmapSet = await beatmapSet.save();
     bmsInserted++;
     existingSets.push(beatmap.setId);
@@ -165,7 +170,7 @@ const getMCAEligibility = memoizee(async function(year: number, user: User) {
 
 
 type BeatmapsetID = number;
-type BNEvent = {
+export type BNEvent = {
     type: string;
     userId: number;
 }
@@ -301,17 +306,18 @@ async function script () {
     console.log("All beatmaps have been successfully processed!");
 }
 
-script()
-    .then(() => {
-        console.log("Script completed successfully!");
-        process.exit(0);
-    })
-    .catch((err: Error) => {
-        console.error("Script encountered an error!");
-        console.error(err.stack);
-        process.exit(1);
-    });
-
+if(module === require.main) {
+    script()
+        .then(() => {
+            console.log("Script completed successfully!");
+            process.exit(0);
+        })
+        .catch((err: Error) => {
+            console.error("Script encountered an error!");
+            console.error(err.stack);
+            process.exit(1);
+        });
+}
 
 const genres = [
     "any",
@@ -355,3 +361,5 @@ const modeList = [
     "fruits",
     "mania",
 ];
+
+export { getUser, getBNsApiCallRawData, getRankers };
