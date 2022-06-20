@@ -259,8 +259,8 @@ async function script () {
     }, 1);
 
     const printStatus = () => {
-        const eta = ((Date.now() - start) / bmInserted) * (bmQueued - bmInserted);
-        console.log(new Date(), `Queued beatmaps: ${bmQueued} / Imported beatmaps: ${bmInserted} / Imported beatmapsets: ${bmsInserted} / ETA: ${timeFormatter(eta)}`);
+        const eta = bmInserted === 0 ? "N/A" : timeFormatter(((Date.now() - start) / bmInserted) * (bmQueued - bmInserted));
+        console.log(new Date(), `Queued beatmaps: ${bmQueued} / Imported beatmaps: ${bmInserted} / Imported beatmapsets: ${bmsInserted} / ETA: ${eta}`);
     };
     const progressInterval = setInterval(printStatus, 1000);
 
