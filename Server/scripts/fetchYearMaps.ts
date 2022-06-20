@@ -280,8 +280,8 @@ async function script () {
             if(![1, 2].includes(Number(newBeatmap.approved)))
                 continue;
 
-            if (!bnsRawData[newBeatmap.beatmapSetId]) {
-                bnsRawData[newBeatmap.beatmapSetId] = getBNsApiCallRawData(newBeatmap.beatmapSetId);
+            if (!bnsRawData.has(newBeatmap.beatmapSetId)) {
+                bnsRawData.set(newBeatmap.beatmapSetId, getBNsApiCallRawData(newBeatmap.beatmapSetId));
             }
 
             queuedBeatmapIds.push(newBeatmap.id);
