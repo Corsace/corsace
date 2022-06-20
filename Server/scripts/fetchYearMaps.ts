@@ -106,14 +106,18 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
 
 const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
     const rankers: User[] = [];
-    if (beatmapEvents.length > 0) {
-        const nomEvents = beatmapEvents.filter(e => e.type === "nominate" || e.type === "qualify");
-        const bnUserIds = new Set<number>(nomEvents.map((event) => event.userId));
-        for (const bnUserId of Array.from(bnUserIds)) {
-            const bnUser = await getUser({ userID: bnUserId });
+    if (beatmapEvents.length > 0)
+        for (const bnEvent of beatmapEvents.reverse()) { 
+            // Run from rank to the last disqual/nom_reset event 
+            // (or to the beginning of list if no disqual/nom_reset)
+            if (bnEvent.type === "rank")
+                continue;
+            if (bnEvent.type === "disqualify" || bnEvent.type === "nomination_reset")
+                break;
+            
+            const bnUser = await getUser({ userID: bnEvent.userId });
             rankers.push(bnUser);
         }
-    }
     return rankers;
 }
 
@@ -167,7 +171,7 @@ const getMCAEligibility = memoizee(async function(year: number, user: User) {
 
 type BeatmapsetID = number;
 export type BNEvent = {
-    type: string;
+    type: "nominate" | "qualify" | "disqualify" | "nomination_reset" | "rank";
     userId: number;
 }
 const bnsRawData = new Map<BeatmapsetID, Promise<null | BNEvent[]>>();
