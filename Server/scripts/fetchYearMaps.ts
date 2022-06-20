@@ -165,18 +165,22 @@ const getMCAEligibility = memoizee(async function(year: number, user: User) {
 
 
 type BeatmapsetID = number;
-const bnsRawData = new Map<BeatmapsetID, Promise<null | any[]>>();
+type BNEvent = {
+    type: string;
+    userId: number;
+}
+const bnsRawData = new Map<BeatmapsetID, Promise<null | BNEvent[]>>();
 const bnFetchingLimiter = new RateLimiterQueue(new RateLimiterMemory({ points: 20, duration: 1 }));
-const getBNsApiCallRawData = async (beatmapSetID: BeatmapsetID): Promise<null | any[]> => {
+const getBNsApiCallRawData = async (beatmapSetID: BeatmapsetID): Promise<null | BNEvent[]> => {
     if (config.bn.username && config.bn.secret) {
         try {
             await bnFetchingLimiter.removeTokens(1);
-            return (await axios.get(`https://bn.mappersguild.com/interOp/events/${beatmapSetID}`, {
+            return (await axios.get<BNEvent[]>(`https://bn.mappersguild.com/interOp/events/${beatmapSetID}`, {
                 headers: {
                     username: config.bn.username,
                     secret: config.bn.secret,
                 },
-            })).data as any[];
+            })).data;
         } catch (err: any) {
             console.error('An error occured while fetching BNs for beatmap set ' + beatmapSetID);
             console.error(err.stack);
