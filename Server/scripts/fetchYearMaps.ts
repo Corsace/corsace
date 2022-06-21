@@ -114,9 +114,11 @@ const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
                 continue;
             if (bnEvent.type === "disqualify" || bnEvent.type === "nomination_reset")
                 break;
-            
-            const bnUser = await getUser({ userID: bnEvent.userId });
-            rankers.push(bnUser);
+
+            if (!rankers.some((ranker) => ranker.osu.userID === `${bnEvent.userId}`)) {
+                const bnUser = await getUser({ userID: bnEvent.userId });
+                rankers.push(bnUser);
+            }
         }
     return rankers;
 }
