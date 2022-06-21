@@ -7,6 +7,7 @@ import { Vote } from "./MCA_AYIM/vote";
 import { BeatmapInfo } from "../Interfaces/beatmap";
 import { Category } from "../Interfaces/category";
 import { StageQuery } from "../Interfaces/queries";
+import { MappoolBeatmap } from "./tournaments/mappoolBeatmap";
 
 @Entity()
 export class Beatmap extends BaseEntity {
@@ -97,6 +98,9 @@ export class Beatmap extends BaseEntity {
     
     @OneToMany(() => Vote, vote => vote.beatmap)
     votesReceived!: Vote[];
+
+    @OneToMany(() => MappoolBeatmap, mappoolBeatmap => mappoolBeatmap.beatmap)
+    mappoolBeatmaps!: MappoolBeatmap[];
 
     static search (year: number, modeId: number, stage: "voting" | "nominating", category: Category, query: StageQuery): Promise<[Beatmap[], number]> {
         // Initial repo setup

@@ -1,16 +1,7 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, OneToMany, MoreThanOrEqual, LessThanOrEqual } from "typeorm";
 import { MCAInfo, PhaseType } from "../../Interfaces/mca";
+import { Phase } from "../phase";
 import { Category } from "./category";
-
-export class Phase {
-
-    @Column({ type: "timestamp" })
-    start!: Date;
-
-    @Column({ type: "timestamp" })
-    end!: Date;
-
-}
 
 @Entity()
 export class MCA extends BaseEntity {

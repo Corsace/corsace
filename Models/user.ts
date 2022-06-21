@@ -16,6 +16,12 @@ import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Influence } from "./MCA_AYIM/influence";
+import { Tournament } from "./tournaments/tournament";
+import { Team } from "./tournaments/team";
+import { TeamInvitation } from "./tournaments/teamInvitation";
+import { Qualifier } from "./tournaments/qualifier";
+import { Match } from "./tournaments/match";
+import { MatchPlay } from "./tournaments/matchPlay";
 
 // General middlewares
 
@@ -126,6 +132,42 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Influence, influence => influence.reviewer)
     influenceReviews!: Influence[];
+
+    @OneToMany(() => Team, team => team.manager)
+    teamsManaging!: Team[];
+
+    @ManyToMany(() => Team, team => team.members)
+    teams!: Team[];
+
+    @OneToMany(() => MatchPlay, score => score.user)
+    scores!: MatchPlay[];
+
+    @OneToMany(() => TeamInvitation, invitation => invitation.target)
+    teamInvitations!: TeamInvitation[];
+
+    @ManyToMany(() => Tournament, tournament => tournament.players)
+    tournaments!: Tournament[];
+
+    @ManyToMany(() => Qualifier, qualifier => qualifier.players)
+    qualifiers!: Qualifier[];
+
+    @ManyToMany(() => Tournament, tournament => tournament.referees)
+    tournamentsRefereed!: Tournament[];
+
+    @ManyToMany(() => Tournament, tournament => tournament.commentators)
+    tournamentsCommentated!: Tournament[];
+
+    @ManyToMany(() => Tournament, tournament => tournament.mappoolers)
+    tournamentsMappooled!: Tournament[];
+
+    @OneToMany(() => Qualifier, qualifier => qualifier.referee)
+    qualifiersRefereed!: Qualifier[];
+
+    @OneToMany(() => Match, match => match.referee)
+    matchesRefereed!: Match[];
+
+    @ManyToMany(() => Match, match => match.commentators)
+    matchesCommentated!: Match[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User
