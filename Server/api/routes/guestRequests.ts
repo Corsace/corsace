@@ -7,7 +7,7 @@ import { config } from "node-config-ts";
 import axios from "axios";
 import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
-import { RequestStatus } from "../../../Interfaces/guestRequests";
+import { RequestStatus } from "../../../Interfaces/requestStatus";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 
 const guestRequestRouter = new Router();

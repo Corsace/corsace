@@ -4,7 +4,7 @@ import { validatePhaseYear } from "../../../../Server/middleware/mca-ayim";
 import { GuestRequest } from "../../../../Models/MCA_AYIM/guestRequest";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
-import { RequestStatus } from "../../../../Interfaces/guestRequests";
+import { RequestStatus } from "../../../../Interfaces/requestStatus";
 
 const staffRequestsRouter = new Router;
 

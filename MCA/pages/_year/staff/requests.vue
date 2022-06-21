@@ -83,7 +83,8 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import { StaffGuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
+import { StaffGuestRequest } from "../../../../Interfaces/guestRequests";
+import { RequestStatus } from "../../../../Interfaces/requestStatus";
 import { UpdateRequestData } from "../../../store/staff";
 
 import UserAvatar from "../../../components/staff/UserAvatar.vue";
