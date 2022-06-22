@@ -22,6 +22,9 @@ export class Tournament extends BaseEntity {
     @Column()
     slug!: string;
 
+    @Column({ type: "year" })
+    year!: number;
+
     @Column(() => Phase)
     registration!: Phase;
 
@@ -33,6 +36,9 @@ export class Tournament extends BaseEntity {
 
     @Column({ default: false })
     isClosed!: boolean;
+
+    @Column({ default: false })
+    invitational!: boolean;
 
     @Column()
     eligibleTeamSize!: number;
@@ -77,5 +83,27 @@ export class Tournament extends BaseEntity {
     @ManyToMany(() => User, user => user.tournamentsMappooled)
     @JoinTable()
     mappoolers!: User[];
+    
+    static generateCorsaceTournament(data): Promise<Tournament> {
+        const tournament = new Tournament;
+        tournament.year = data.year;
+        tournament.name = `Corsace Open ${data.year}`;
+        tournament.slug = `open${data.year}`;
+
+        tournament.isOpen = data.tourney === "open";
+        tournament.isClosed = data.tourney === "closed";
+        tournament.invitational = data.tourney === "closed";
+        tournament.size = data.size;
+
+        tournament.eligibleTeamSize = data.tourney === "open" ? 6 : 1;
+        tournament.maximumTeamSize = data.tourney === "open" ? 8 : 1;
+
+        tournament.registration = {
+            start: data.registrationStart,
+            end: data.registrationEnd,
+        };
+
+        return tournament.save();
+    }
 
 }
