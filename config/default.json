@@ -88,8 +88,8 @@
         }
     },
     "bn": {
-        "username": "interOp username",
-        "secret": "interOp secret"
+        "username": "",
+        "secret": ""
     },
     "google": {
         "credentials": {
