@@ -83,21 +83,35 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
         user.country = country;
         user = await user.save();
     } else if (targetUser.username && user.osu.username !== targetUser.username) {
-        // Check if old exists (add if it doesn't)
-        if (!user.otherNames.some(v => v.name === user!.osu.username)) {
-            const nameChange = new UsernameChange;
-            nameChange.name = user.osu.username;
-            nameChange.user = user;
-            await nameChange.save();
-            user.otherNames.push(nameChange);
+        // osu! name change detection routine:
+        // The username that we have in DB doesn't match the one that we got from a beatmapset.
+
+        const { username: currentUsername } = await getMissingOsuUserProperties(targetUser.userID);
+
+        // currentUsername can be empty if user is restricted; ignoring API result in this case.
+        if (currentUsername && user.osu.username !== currentUsername) {
+            // The username from DB doesn't match their current name; adding to history and updating.
+            if (!user.otherNames.some(v => v.name === user!.osu.username)) {
+                const nameChange = new UsernameChange;
+                nameChange.name = user.osu.username;
+                nameChange.user = user;
+                await nameChange.save();
+                user.otherNames.push(nameChange);
+            }
+            user.osu.username = currentUsername;
         }
 
-        // Check if new exists (remove if it does)
-        if (user.otherNames.some(v => v.name === targetUser.username)) {
-            await user.otherNames.find(v => v.name === targetUser.username)!.remove();
-            user.otherNames = user.otherNames.filter(v => v.name !== targetUser.username);
+        if (targetUser.username !== user.osu.username) {
+            // The name that we got from a beatmapset isn't their current name according to current API or DB if restricted; adding to history.
+            if (!user.otherNames.some(v => v.name === targetUser.username)) {
+                const nameChange = new UsernameChange;
+                nameChange.name = targetUser.username;
+                nameChange.user = user;
+                await nameChange.save();
+                user.otherNames.push(nameChange);
+            }
         }
-        user.osu.username = targetUser.username;
+
         await user.save();
     }
 
