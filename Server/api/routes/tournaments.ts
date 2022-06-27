@@ -4,6 +4,7 @@ import { parseQueryParam } from "../../utils/query";
 
 const tournamentsRouter = new Router;
 
+// Get list of all current tournaments
 tournamentsRouter.get("/", async (ctx) => {
     if (await ctx.cashed())
         return;
@@ -23,6 +24,7 @@ tournamentsRouter.get("/", async (ctx) => {
         .getMany();
 });
 
+// Get current tournament info
 tournamentsRouter.get("/:id", async (ctx) => {
     if (await ctx.cashed())
         return;

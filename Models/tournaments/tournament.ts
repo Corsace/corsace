@@ -24,6 +24,9 @@ export class Tournament extends BaseEntity {
     @Column()
     slug!: string;
 
+    @Column()
+    server!: string;
+
     @Column({ type: "year" })
     year!: number;
 
@@ -94,12 +97,22 @@ export class Tournament extends BaseEntity {
             year: this.year,
             name: this.name,
             size: this.size,
+            isOpen: this.isOpen,
+            isClosed: this.isClosed,
             teamSize: this.maximumTeamSize === this.eligibleTeamSize ? `${this.maximumTeamSize}` : `${this.eligibleTeamSize}-${this.maximumTeamSize}`,
             registration: this.registration,
             usesSets: this.usesSets,
             invitational: this.invitational,
             currentTeamCount: this.teams.length,
         };
+    }
+
+    public getTeams = async function(this: Tournament): Promise<Team[]> {
+        return Team
+            .createQueryBuilder("team")
+            .leftJoinAndSelect("team.tournaments", "tournament")
+            .where("tournament.ID = :id", { id: this.ID })
+            .getMany();
     }
     
     static generateCorsaceTournament(data): Promise<Tournament> {
