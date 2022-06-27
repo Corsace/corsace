@@ -1,8 +1,10 @@
 import { BaseEntity, Check, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, MoreThanOrEqual, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { TournamentInfo } from "../../Interfaces/tournaments";
 import { Phase } from "../phase";
 import { User } from "../user";
 import { Bracket } from "./bracket";
 import { Group } from "./group";
+import { Match } from "./match";
 import { Qualifier } from "./qualifier";
 import { Team } from "./team";
 
@@ -32,6 +34,9 @@ export class Tournament extends BaseEntity {
     size!: number;
 
     @Column({ default: false })
+    usesSets!: boolean;
+
+    @Column({ default: false })
     isOpen!: boolean;
 
     @Column({ default: false })
@@ -49,14 +54,14 @@ export class Tournament extends BaseEntity {
     @Column({ default: true })
     doubleElim!: boolean;
 
-    @Column({ default: true })
-    useBWS!: boolean;
-
     @Column({ default: false })
     publicQualifiers!: boolean;
 
     @OneToMany(() => Bracket, bracket => bracket.tournament)
     brackets!: Bracket[];
+
+    @OneToMany(() => Match, match => match.tournament)
+    matches!: Match[];
 
     @OneToMany(() => Group, group => group.tournament)
     groups!: Group[];
@@ -83,6 +88,19 @@ export class Tournament extends BaseEntity {
     @ManyToMany(() => User, user => user.tournamentsMappooled)
     @JoinTable()
     mappoolers!: User[];
+
+    public getInfo = function(this: Tournament): TournamentInfo {
+        return {
+            year: this.year,
+            name: this.name,
+            size: this.size,
+            teamSize: this.maximumTeamSize === this.eligibleTeamSize ? `${this.maximumTeamSize}` : `${this.eligibleTeamSize}-${this.maximumTeamSize}`,
+            registration: this.registration,
+            usesSets: this.usesSets,
+            invitational: this.invitational,
+            currentTeamCount: this.teams.length,
+        };
+    }
     
     static generateCorsaceTournament(data): Promise<Tournament> {
         const tournament = new Tournament;
@@ -90,6 +108,7 @@ export class Tournament extends BaseEntity {
         tournament.name = `Corsace Open ${data.year}`;
         tournament.slug = `open${data.year}`;
 
+        tournament.usesSets = data.tourney === "open";
         tournament.isOpen = data.tourney === "open";
         tournament.isClosed = data.tourney === "closed";
         tournament.invitational = data.tourney === "closed";

@@ -18,6 +18,7 @@ import helloWorldRouter from "./api/routes/helloWorld";
 
 import mcaRouter from "./api/routes/mca";
 import adminRouter from "./api/routes/admin";
+import adminTournamentsRouter from "./api/routes/admin/tournaments";
 import adminCategoriesRouter from "./api/routes/admin/categories";
 import adminYearsRouter from "./api/routes/admin/years";
 
@@ -38,6 +39,8 @@ import influencesReviewRouter from "./api/routes/staff/influences";
 import recordsRouter from "./api/routes/records";
 import statisticsRouter from "./api/routes/statistics";
 import mappersRouter from "./api/routes/mappers";
+
+import tournamentsRouter from "./api/routes/tournaments";
 
 import ormConnectionOptions from "../ormconfig";
 
@@ -104,6 +107,7 @@ koa.use(Mount("/api/staff/requests", staffRequestsRouter.routes()));
 
 /// Admin
 koa.use(Mount("/api/admin", adminRouter.routes()));
+koa.use(Mount("/api/admin/tournaments", adminTournamentsRouter.routes()));
 koa.use(Mount("/api/admin/years", adminCategoriesRouter.routes()));
 koa.use(Mount("/api/admin/years", adminYearsRouter.routes()));
 
@@ -121,6 +125,9 @@ koa.use(Mount("/api/statistics", statisticsRouter.routes()));
 koa.use(Mount("/api/mappers", mappersRouter.routes()));
 koa.use(Mount("/api/comments", commentsRouter.routes()));
 koa.use(Mount("/api/influences", influencesRouter.routes()));
+
+// Tournaments
+koa.use(Mount("/api/tournaments", tournamentsRouter.routes()));
 
 // Hello World!
 koa.use(Mount("/", helloWorldRouter.routes()));

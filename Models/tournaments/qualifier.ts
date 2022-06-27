@@ -36,3 +36,20 @@ export class Qualifier extends BaseEntity {
     players!: User[];
 
 }
+
+export class QualifierGenerator {
+    /**
+     * Generates multiple qualifiers for a given tournament and its size
+     */
+    public async generateQualifiers(tournament: Tournament, qualStart: Date) {
+        let qualTime = qualStart;
+        const endTime = new Date(qualStart.getTime() + (2 * 24 * 60 * 60 * 1000));
+        while (qualTime < endTime) {
+            const qualifier = new Qualifier();
+            qualifier.tournament = tournament;
+            qualifier.time = qualTime;
+            await qualifier.save();
+            qualTime = new Date(qualTime.getTime() + (30 * 60 * 1000));
+        }
+    }
+}

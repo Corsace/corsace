@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BracketData, smallRounds } from "../../Interfaces/bracket";
 import { Mappool } from "./mappool";
-import { Match } from "./match";
+import { Match, MatchGenerator } from "./match";
 import { Tournament } from "./tournament";
 
 @Entity()
@@ -28,30 +29,27 @@ export class BracketGenerator {
     /**
      * Generates multiple brackets for a given tournament and its size
      */
-    public generateBrackets(tournament: Tournament): Bracket[] {
+    public async generateBrackets(tournament: Tournament, data: BracketData[]) {
         let size = tournament.size;
-        const divCheck = Math.log2(size) % 1 === 0;
+        if (Math.log2(size) % 1 !== 0)
+            throw new Error("Tournament size must be a power of 2");
+        
+        const matchGenerator = new MatchGenerator;
 
-        let brackets: Bracket[] = [];
-        while (size >= 1) {
+        while (size >= (tournament.doubleElim ? 1 : 2)) {
+            const bracketData = data.find(d => d.size === size);
+            if (!bracketData)
+                throw new Error("Bracket data for size " + size + " not found");
             const bracket = new Bracket;
-            bracket.name = size > 4 ? divCheck ? `round of ${size}` : `play in` : smallRounds[size];
+            bracket.name = size > 8 ? `round of ${size}` : smallRounds[size];
             bracket.tournament = tournament;
-            brackets.push(bracket);
-            size /= 2;
+            await bracket.save();
+            if (tournament.size < 8)
+                await matchGenerator.generateMatches(tournament, bracket, 2, bracketData.matchSize, bracketData.setSize);
+            else if (size > tournament.size / 8)
+                await matchGenerator.generateMatches(tournament, bracket, tournament.size / 2, bracketData.matchSize, bracketData.setSize);
+            else 
+                await matchGenerator.generateMatches(tournament, bracket, tournament.size * 2, bracketData.matchSize, bracketData.setSize);
         }
-        if (tournament.doubleElim) {
-            const bracket = new Bracket;
-            bracket.name = "grand finals";
-            bracket.tournament = tournament;
-            brackets.push(bracket);
-        }
-        return brackets;
     }
-}
-
-const smallRounds = {
-    4: "quarter finals",
-    2: "semi finals",
-    1: "finals",
 }

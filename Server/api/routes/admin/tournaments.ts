@@ -3,11 +3,13 @@ import { isCorsace, isLoggedInDiscord } from "../../../middleware";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { cache } from "../../../../Server/cache";
 import { BracketGenerator } from "../../../../Models/tournaments/bracket";
-import { Qualifier } from "../../../../Models/tournaments/qualifier";
+import { QualifierGenerator } from "../../../../Models/tournaments/qualifier";
+import { GroupGenerator } from "../../../../Models/tournaments/group";
 
 const adminTournamentsRouter = new Router;
 const bracketGenerator = new BracketGenerator;
-const qualifierGenerator = new Qualifier;
+const qualifierGenerator = new QualifierGenerator;
+const groupGenerator = new GroupGenerator;
 
 adminTournamentsRouter.use(isLoggedInDiscord);
 adminTournamentsRouter.use(isCorsace);
@@ -21,6 +23,12 @@ const validate: Middleware = async (ctx, next) => {
         return ctx.body = { error: "Missing Corsace tournament type!" };
     } else if (!data.size) {
         return ctx.body = { error: "Missing tournament size!" };
+    } else if (!data.brackets) {
+        return ctx.body = { error: "Missing tournament bracket info!" };
+    } else if (!data.qualStart) {
+        return ctx.body = { error: "Missing tournament qualifier start date!" };
+    } else if (!data.seedingType) {
+        return ctx.body = { error: "Missing tournament seeding type!" };
     }
 
     await next();
@@ -39,22 +47,23 @@ adminTournamentsRouter.post("/", validate, async (ctx) => {
         return ctx.body = { error: `This year's edition of Corsace ${data.open ? "open" : "closed"} already exists!` };
 
     // Create the tournament
-    tournament = await Tournament.generateCorsaceTournament(data);
+    tournament = (await Tournament.generateCorsaceTournament(data)) as Tournament;
 
-    // Create tournament brackets based on tournament size
-    const brackets = await bracketGenerator.generateBrackets(tournament);
-    await Promise.all(brackets.map(bracket => bracket.save()));
+    try {
+        // Create tournament brackets based on tournament size
+        await bracketGenerator.generateBrackets(tournament, data.brackets);
 
-    // Create either qualifiers or groups based on data given
-    if (data.qualifier) {
-        const qualifiers = await qualifierGenerator.generateQualifiers(tournament);
-        await Promise.all(qualifiers.map(qualifier => qualifier.save()));
-    } else {
-        const groups = await qualifierGenerator.generateGroups(tournament);
-        await Promise.all(groups.map(group => group.save()));
+        // Create either qualifiers or groups based on data given
+        if (data.seedingType === "qualifier")
+            await qualifierGenerator.generateQualifiers(tournament, data.qualStart);
+        else
+            await groupGenerator.generateGroups(tournament);
+
+    } catch (err: any) {
+        if (err) 
+            return ctx.body = { error: err.message };
     }
 
-    cache.del("/api/tournaments/front?year=" + data.year);
     cache.del("/api/tournaments?year=" + data.year);
     cache.del("/api/staff");
 
@@ -62,3 +71,5 @@ adminTournamentsRouter.post("/", validate, async (ctx) => {
         success: true
     };
 });
+
+export default adminTournamentsRouter;
