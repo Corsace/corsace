@@ -38,12 +38,6 @@ export class Team extends BaseEntity {
     @Column()
     averageBWS!: number;
 
-    @Column({ type: "integer", nullable: true })
-    rank?: number;
-
-    @Column({ type: "char", nullable: true })
-    seed?: "A" | "B" | "C" | "D";
-
     @ManyToMany(() => Tournament, tournament => tournament.teams)
     tournaments!: Tournament;
 
@@ -69,4 +63,10 @@ export class Team extends BaseEntity {
     @OneToMany(() => TeamInvitation, invitation => invitation.team)
     invitations!: TeamInvitation[];
 
+    public async computeBWS(hasMembers = false) {
+        if (!hasMembers) {
+            this.members = await this.getMembers();
+        }
+        const ratings = await Promise.all(this.members.map(m => m.))
+    }
 }
