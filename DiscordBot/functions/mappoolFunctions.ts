@@ -114,7 +114,6 @@ async function parseParams (m: Message) {
     let parts = msgContent.split(" ");
     
     // Find other params
-    parts = msgContent.split(" ");
     for (let i = 1; i < parts.length; i++) {
         const part = parts[i].trim().toLowerCase();
         const translation = identifierToPool(part);
@@ -137,10 +136,11 @@ async function parseParams (m: Message) {
             used = false;
 
         if (used)
-            msgContent = m.content.replace(part, "").toLowerCase();
+            msgContent = msgContent.replace(part, "").toLowerCase();
     }
 
     // Check for mention
+    parts = msgContent.split(" ");
     if (m.mentions.members && m.mentions.members.first()) {
         user = m.mentions.members.first() as GuildMember;
     } else {
