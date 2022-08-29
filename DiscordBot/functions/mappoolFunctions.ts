@@ -12,6 +12,7 @@ const acronyms = {
     closedMappool: ["QL", "RO16", "QF", "SF", "F", "GF"],
 };
 const pools: ("openMappool" | "closedMappool")[] = ["openMappool", "closedMappool"];
+const modSlots = ["NM", "HR", "HD", "DT", "FM", "TB"]; 
 
 const hours12 = 43200000;
 const days3 = 259200000;
@@ -111,33 +112,18 @@ async function parseParams (m: Message) {
 
     let msgContent = m.content.toLowerCase();
     let parts = msgContent.split(" ");
-
-    // Check for mention
-    if (m.mentions.members && m.mentions.members.first()) {
-        user = m.mentions.members.first() as GuildMember;
-        msgContent = m.content.replace(`<@!${m.mentions.users.first()!.id}>`, "").toLowerCase();
-    } else {
-        for (const part of parts) {
-            const members = await m.guild!.members.fetch({ query: part });
-            const member = members.first();
-            if (member && await roleChecks(member, true, true)) {
-                user = member;
-                msgContent = m.content.replace(part, "").toLowerCase();
-                break;
-            }
-        }
-    }
     
     // Find other params
     parts = msgContent.split(" ");
     for (let i = 1; i < parts.length; i++) {
         const part = parts[i].trim().toLowerCase();
         const translation = identifierToPool(part);
+        let used = true;
         if (translation)
             pool = translation;
-        else if (roundNames.some(name => name.toLowerCase() === part.toLowerCase() || name.toUpperCase() === part.toUpperCase()))
-            round = roundAcronyms[roundNames.findIndex(name => name.toLowerCase() === part.toLowerCase() || name.toUpperCase() === part.toUpperCase())];
-        else if (roundAcronyms.some(name => name.toLowerCase() === part.toLowerCase() || name.toUpperCase() === part.toUpperCase()))
+        else if (roundNames.some(name => name.toLowerCase() === part.toLowerCase()))
+            round = roundAcronyms[roundNames.findIndex(name => name.toLowerCase() === part.toLowerCase())];
+        else if (roundAcronyms.some(name => name.toLowerCase() === part.toLowerCase()))
             round = part.toLowerCase();
         else if (part === "preview" || part === "map")
             deadlineType = part;
@@ -145,13 +131,36 @@ async function parseParams (m: Message) {
             diffName = parts[i + 1]; 
             i++;
         }
-        else if (i === 1 || (round !== "" && slot === ""))
+        else if (modSlots.some(name => part.toLowerCase().includes(name.toLowerCase())))
             slot = part;
+        else
+            used = false;
+
+        if (used)
+            msgContent = m.content.replace(part, "").toLowerCase();
+    }
+
+    // Check for mention
+    if (m.mentions.members && m.mentions.members.first()) {
+        user = m.mentions.members.first() as GuildMember;
+    } else {
+        for (const part of parts) {
+            const members = await m.guild!.members.fetch({ query: part });
+            const member = members.first();
+            if (member && await roleChecks(member, true, true)) {
+                user = member;
+                break;
+            }
+        }
     }
 
     // See if there's an attachment
     if (m.attachments.first()?.url.includes("osz"))
         link = m.attachments.first()!.url as string;
+
+    // For Corsace winner finals is just finals
+    if (round === "wf")
+        round = "f";
 
     return {
         pool,

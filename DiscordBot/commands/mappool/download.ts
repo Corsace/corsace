@@ -39,6 +39,10 @@ async function command (m: Message) {
             let links = "";
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];
+                if ((links + `**${row[0].toUpperCase()}:** ${row.find(r => /http/i.test(r)) ?? ""}\n`).length > 2000) {
+                    m.channel.send(links);
+                    links = "";
+                }
                 links += `**${row[0].toUpperCase()}:** ${row.find(r => /http/i.test(r)) ?? ""}\n`;
             }
             m.channel.send(links);
