@@ -4,6 +4,7 @@ import { discordClient, getMember } from "../../Server/discord";
 import { getPoolData } from "../../Server/sheets";
 import { roundAcronyms, roundNames } from "../../Interfaces/rounds";
 import timeSince from "../../Server/utils/timeSince";
+import { genericPoolMods } from "../../Interfaces/mods";
 
 const openAcronyms = ["co", "open", "corsaceopen", "corsace open", "corsace"];
 const closedAcronyms = ["cc", "closed", "corsaceclosed", "corsace closed"];
@@ -12,7 +13,6 @@ const acronyms = {
     closedMappool: ["QL", "RO16", "QF", "SF", "F", "GF"],
 };
 const pools: ("openMappool" | "closedMappool")[] = ["openMappool", "closedMappool"];
-const modSlots = ["NM", "HR", "HD", "DT", "FM", "TB"]; 
 
 const hours12 = 43200000;
 const days3 = 259200000;
@@ -120,23 +120,23 @@ async function parseParams (m: Message) {
         let used = true;
         if (translation)
             pool = translation;
-        else if (roundNames.some(name => name.toLowerCase() === part.toLowerCase()))
-            round = roundAcronyms[roundNames.findIndex(name => name.toLowerCase() === part.toLowerCase())];
-        else if (roundAcronyms.some(name => name.toLowerCase() === part.toLowerCase()))
-            round = part.toLowerCase();
+        else if (roundNames.some(name => name === part))
+            round = roundAcronyms[roundNames.findIndex(name => name === part)];
+        else if (roundAcronyms.some(name => name === part))
+            round = part;
         else if (part === "preview" || part === "map")
             deadlineType = part;
         else if (part === "-diff" && i < parts.length - 1) {
             diffName = parts[i + 1]; 
             i++;
         }
-        else if (modSlots.some(name => part.toLowerCase().includes(name.toLowerCase())))
+        else if (genericPoolMods.some(poolMod => part.includes(poolMod.toLowerCase())))
             slot = part;
         else
             used = false;
 
         if (used)
-            msgContent = msgContent.replace(part, "").toLowerCase();
+            msgContent = msgContent.replace(part, "");
     }
 
     // Check for mention
