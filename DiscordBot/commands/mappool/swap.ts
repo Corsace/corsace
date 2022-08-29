@@ -3,6 +3,7 @@ import { getPoolData, updatePoolRow } from "../../../Server/sheets";
 import { Command } from "../index";
 import { roundAcronyms, roundNames } from "../../../Interfaces/rounds";
 import mappoolFunctions from "../../functions/mappoolFunctions";
+import { genericPoolMods } from "../../../Interfaces/mods";
 
 async function command (m: Message) {
     if (!(await mappoolFunctions.privilegeChecks(m, false, false)))
@@ -36,10 +37,11 @@ async function command (m: Message) {
                     round1 = part;
                 else
                     round2 = part;
-            else if (slot1 === "")
-                slot1 = part;
-            else
-                slot2 = part;
+            else if (genericPoolMods.some(poolMod => part.includes(poolMod.toLowerCase())))
+                if (slot1 === "")
+                    slot1 = part;
+                else
+                    slot2 = part;
         }
 
         // check if slot and round were given

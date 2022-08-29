@@ -335,7 +335,9 @@ $dark-cyan: linear-gradient(#009595, #008080);
     }
 
     &__avatar {
-		border-radius: 100%;
+        height: 70px;
+		
+        border-radius: 100%;
 
         flex-basis: 100%;
         padding: 10px 0;
