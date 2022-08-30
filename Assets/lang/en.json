@@ -104,7 +104,6 @@
             "nominating": "nominating",
             "preparation": "preparation",
             "results": "results",
-            "undefined": "",
             "mapsetsLabel": "MAPSETS",
             "mappersLabel": "MAPPERS",
             "commentsLabel": "COMMENTS",
@@ -112,8 +111,7 @@
             "statisticsLabel": "STATISTICS",
             "stage": {
                 "voting": "voting stage",
-                "nominating": "nomination stage",
-                "undefined": ""
+                "nominating": "nomination stage"
             },
             "rankedSets": "RANKED SETS",
             "nominateNow": "nominate now !",
@@ -372,10 +370,8 @@
             "theTeam": "the corsace team"
         },
         "merch": {
-            "official": "official corsace merchandise",
-            "avail": "now available",
-            "name": "Corsace Open 2021 Limited Edition Unisex T",
-            "colours": "Black/White"
+            "code": "Use code CORSACE for 10% off on",
+            "products": "Sim Pad 2 OR Sim Pad Nano"
         }
     }
 }
