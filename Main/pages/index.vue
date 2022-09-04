@@ -72,15 +72,15 @@
         <div class="main">
             <a 
                 class="section-info"
-                href="https://momokai.com"
+                href="https://momokai.com/corsace"
                 target="_blank"
             >   
-                <img src="../../Assets/img/main/momokai/nano.png">
-                <img src="../../Assets/img/main/momokai/pad2.png">
+                <img src="../../Assets/img/main/momokai/corsace2.png">
                 <div class="announcement">
-                    <div class="announcement__url">momokai.com</div>
+                    <div class="announcement__url">momokai x corsace</div>
                     <div>{{ $t('main.merch.code') }}</div>
                     <div>{{ $t('main.merch.products') }}</div>
+                    <div>momokai.com/corsace</div>
                 </div>
             </a>
 
@@ -438,19 +438,15 @@ $dark-cyan: linear-gradient(#009595, #008080);
     
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 
     background-image: $dark-cyan;
 
     padding: 0 25px;
 
     @include breakpoint(mobile) {
-        align-items: flex-start;
-        justify-content: center;
+        align-items: center;
         flex-direction: column;
-        flex-wrap: wrap;
-
-        padding: 25px;
     }
 
     &:hover {
@@ -458,10 +454,10 @@ $dark-cyan: linear-gradient(#009595, #008080);
     }
 
     & > img {
-        width: 20vw;
+        width: 40vw;
 
         @include breakpoint(mobile) {
-            width: 45vw;
+            width: 90vw;
         }
     }
 }
