@@ -244,6 +244,7 @@ $dark-gray: #242424;
 $gray: #343434;
 $light-gray: #cccccc;
 $pink: #e98792;
+$dark-red: linear-gradient(#e44f3f, #e42f1f);
 $dark-cyan: linear-gradient(#009595, #008080);
 
 @keyframes leftscroll {
@@ -440,7 +441,8 @@ $dark-cyan: linear-gradient(#009595, #008080);
     align-items: center;
     justify-content: center;
 
-    background-image: $dark-cyan;
+    color: #e44f3f;
+    background-color: white;
 
     padding: 0 25px;
 
