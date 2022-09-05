@@ -24,7 +24,7 @@
       "nuxt": "^2.14.12",
       "nuxt-i18n": "^6.17.0",
       "ojsama": "^2.2.0",
-      "passport": "^0.4.1",
+      "passport": "^0.6.0",
       "passport-discord": "^0.1.4",
       "passport-oauth2": "^1.5.0",
       "reflect-metadata": "^0.1.10",
