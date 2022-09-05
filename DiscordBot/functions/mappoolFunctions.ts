@@ -4,6 +4,7 @@ import { discordClient, getMember } from "../../Server/discord";
 import { getPoolData } from "../../Server/sheets";
 import { roundAcronyms, roundNames } from "../../Interfaces/rounds";
 import timeSince from "../../Server/utils/timeSince";
+import { genericPoolMods } from "../../Interfaces/mods";
 
 const openAcronyms = ["co", "open", "corsaceopen", "corsace open", "corsace"];
 const closedAcronyms = ["cc", "closed", "corsaceclosed", "corsace closed"];
@@ -111,47 +112,55 @@ async function parseParams (m: Message) {
 
     let msgContent = m.content.toLowerCase();
     let parts = msgContent.split(" ");
-
-    // Check for mention
-    if (m.mentions.members && m.mentions.members.first()) {
-        user = m.mentions.members.first() as GuildMember;
-        msgContent = m.content.replace(`<@!${m.mentions.users.first()!.id}>`, "").toLowerCase();
-    } else {
-        for (const part of parts) {
-            const members = await m.guild!.members.fetch({ query: part });
-            const member = members.first();
-            if (member && await roleChecks(member, true, true)) {
-                user = member;
-                msgContent = m.content.replace(part, "").toLowerCase();
-                break;
-            }
-        }
-    }
     
     // Find other params
-    parts = msgContent.split(" ");
     for (let i = 1; i < parts.length; i++) {
         const part = parts[i].trim().toLowerCase();
         const translation = identifierToPool(part);
+        let used = true;
         if (translation)
             pool = translation;
-        else if (roundNames.some(name => name.toLowerCase() === part.toLowerCase() || name.toUpperCase() === part.toUpperCase()))
-            round = roundAcronyms[roundNames.findIndex(name => name.toLowerCase() === part.toLowerCase() || name.toUpperCase() === part.toUpperCase())];
-        else if (roundAcronyms.some(name => name.toLowerCase() === part.toLowerCase() || name.toUpperCase() === part.toUpperCase()))
-            round = part.toLowerCase();
+        else if (roundNames.some(name => name === part))
+            round = roundAcronyms[roundNames.findIndex(name => name === part)];
+        else if (roundAcronyms.some(name => name === part))
+            round = part;
         else if (part === "preview" || part === "map")
             deadlineType = part;
         else if (part === "-diff" && i < parts.length - 1) {
             diffName = parts[i + 1]; 
             i++;
         }
-        else if (i === 1 || (round !== "" && slot === ""))
+        else if (genericPoolMods.some(poolMod => part.includes(poolMod.toLowerCase())))
             slot = part;
+        else
+            used = false;
+
+        if (used)
+            msgContent = msgContent.replace(part, "");
+    }
+
+    // Check for mention
+    parts = msgContent.split(" ");
+    if (m.mentions.members && m.mentions.members.first()) {
+        user = m.mentions.members.first() as GuildMember;
+    } else {
+        for (const part of parts) {
+            const members = await m.guild!.members.fetch({ query: part });
+            const member = members.first();
+            if (member && await roleChecks(member, true, true)) {
+                user = member;
+                break;
+            }
+        }
     }
 
     // See if there's an attachment
     if (m.attachments.first()?.url.includes("osz"))
         link = m.attachments.first()!.url as string;
+
+    // For Corsace winner finals is just finals
+    if (round === "wf")
+        round = "f";
 
     return {
         pool,

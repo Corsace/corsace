@@ -2,20 +2,15 @@
     <div>
         <a 
             class="section-info"
-            href="https://shop.corsace.io"
+            href="https://momokai.com/corsace"
             target="_blank"
         >   
-            <div class="section-info__overlay">
-                <div class="announcement">
-                    <div class="announcement__url">shop.corsace.io</div>
-                    <div>{{ $t('main.merch.official') }}</div>
-                    <div>{{ $t('main.merch.avail') }}</div>
-                </div>
-                <div class="announcement__info">
-                    <div class="announcement__info--bold">{{ $t('main.merch.name') }}</div>
-                    <div>{{ $t('main.merch.colours') }}</div>
-                    <div class="announcement__info--cost">€24.99</div>
-                </div>
+            <img src="../../Assets/img/main/momokai/corsace2.png">
+            <div class="announcement">
+                <div class="announcement__url">momokai x corsace</div>
+                <div>{{ $t('main.merch.code') }}</div>
+                <div>{{ $t('main.merch.products') }}</div>
+                <div>momokai.com/corsace</div>
             </div>
         </a>
 
@@ -26,8 +21,8 @@
             >
                 CORSACE EVENTS
             </h2>
-
             <div class="events">
+
                 <a
                     v-for="(event, key) in events"
                     :key="key"
@@ -90,7 +85,7 @@ export default class Default extends Vue {
         },
         "closed": {
             title: "CORSACE CLOSED",
-            url: "https://osu.ppy.sh/community/forums/topics/1324620",
+            url: "https://osu.ppy.sh/community/forums/topics/1567710",
         },
     };
     
@@ -113,56 +108,44 @@ export default class Default extends Vue {
 .section-info {
     height: 100%;
     max-height: 45vh;
+    width: 100vw;
     @include breakpoint(mobile) {
         height: 50vh;
         max-height: unset;
     }
     
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
-    flex-direction: column;
 
-    background-repeat: no-repeat;
-    background-size: 69% 170%, auto;
-    background-position: -8vw 32%, center;
-    background-image: url('../../Assets/img/site/main/shirts/combined.png'), $dark-cyan;
+    color: #e44f3f;
+    background-color: white;
+
+    padding: 0 25px;
 
     @include breakpoint(mobile) {
-        background-size: contain;
-        background-position: center;
-    }
-
-    &__overlay {
-        height: 100%;
-        width: 100%;
-
-        padding: 5px;
-
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
+        align-items: center;
         flex-direction: column;
-        @include breakpoint(mobile) {
-            flex-direction: row;
-        }
-
-        & > div {
-            height: 100%;
-            width: 45vw;  
-        }
     }
 
     &:hover {
         text-decoration: none;
+    }
+
+    & > img {
+        width: 40vw;
+
+        @include breakpoint(mobile) {
+            width: 90vw;
+        }
     }
 }
 
 .announcement {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-end;
+    justify-content: center;
+    align-items: center;
 
     margin-right: 1vw;
 
@@ -172,47 +155,15 @@ export default class Default extends Vue {
         font-family: 'CocoGoose Pro', 'sans-serif';
         font-size: 4vw;
         line-height: 4vw;
-    }
-
-    &__info {
-        margin-left: 1vw;
-
-        position: relative;
-
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-
-        font-size: 2vw;
-        @include breakpoint(laptop) {
-            font-size: 1vw;
-        }
 
         @include breakpoint(mobile) {
-            justify-content: end;
+            font-size: 6vw;
+            line-height: 6vw;
         }
+    }
 
-        &--bold {
-            font-weight: bold;
-        }
-
-        &--cost {
-            position: absolute;
-            left: 35%;
-
-            font-size: 2.5vw;
-            font-weight: bold;
-
-            @include breakpoint(laptop) {
-                font-size: 2vw;
-                height: 1vw;
-            }
-            
-            @include breakpoint(mobile) {
-                position: unset;
-                height: unset;
-            }
-        }
+    @include breakpoint(mobile) {
+        height: 100%;
     }
 }
 

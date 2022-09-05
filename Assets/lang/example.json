@@ -103,7 +103,6 @@
             "voting": "",
             "nominating": "",
             "results": "",
-            "undefined": "",
             "mapsetsLabel": "",
             "mappersLabel": "",
             "commentsLabel": "",
@@ -111,8 +110,7 @@
             "statisticsLabel": "",
             "stage": {
                 "voting": "",
-                "nominating": "",
-                "undefined": ""
+                "nominating": ""
             },
             "rankedSets": "",
             "nominateNow": "",
@@ -126,7 +124,9 @@
                 "map": "",
                 "user": ""
             },
-            "organized": ""
+            "organized": "",
+            "preparation": "",
+            "viewResults": ""
         },
         "categories": {
             "grandAward": {
@@ -244,6 +244,74 @@
             "narrative": {
                 "name": "",
                 "description": ""
+            },
+            "grandStoryboard": {
+                "name": "",
+                "description": ""
+            },
+            "grandStoryboarder": {
+                "name": "",
+                "description": ""
+            },
+            "featuredArtist": {
+                "name": "",
+                "description": ""
+            },
+            "technicalTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "fastTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "slowTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "hybrid": {
+                "name": "",
+                "description": ""
+            },
+            "highBPMAlternator": {
+                "name": "",
+                "description": ""
+            },
+            "vanilla": {
+                "name": "",
+                "description": ""
+            },
+            "complex": {
+                "name": "",
+                "description": ""
+            },
+            "unorthodox": {
+                "name": "",
+                "description": ""
+            },
+            "sliderTech": {
+                "name": "",
+                "description": ""
+            },
+            "mostInspiring": {
+                "name": "",
+                "description": ""
+            },
+            "communityPillar": {
+                "name": "",
+                "description": ""
+            },
+            "simplisticTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "technicalCatch": {
+                "name": "",
+                "description": ""
+            },
+            "antiMetaCatch": {
+                "name": "",
+                "description": ""
             }
         },
         "nom_vote": {
@@ -261,22 +329,49 @@
                 "alph": "",
                 "asc": "",
                 "desc": "",
-                "voteOrder": ""
+                "voteOrder": "",
+                "valid": "",
+                "invalid": "",
+                "both": "",
+                "all": "",
+                "played": "",
+                "results": "",
+                "voters": ""
             },
             "hosted": "",
-            "userID": ""
+            "userID": "",
+            "votingOverlay": ""
+        },
+        "results": {
+            "headings": {
+                "placement": "",
+                "map": "",
+                "title": "",
+                "artist": "",
+                "hoster": "",
+                "username": "",
+                "firstChoice": "",
+                "secondThirdChoice": "",
+                "restChoice": ""
+            },
+            "resultsOverlay": ""
         }
     },
     "main": {
         "header": {
             "login": "",
-            "register": ""
+            "register": "",
+            "changeDiscord": ""
         },
-        "index": {
+        "construction": {
             "underConstruction": "",
             "sorry": "",
             "development": "",
             "theTeam": ""
+        },
+        "merch": {
+            "code": "",
+            "products": ""
         }
     }
 }

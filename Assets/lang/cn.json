@@ -14,13 +14,13 @@
         "login": {
             "login": "登录",
             "message": {
-                "1": "你好像并没有登录！<br>只需要通过osu!登录，你就可以立刻进行谱面投票/提名！",
-                "2": "通过osu!登录后你还可以选择通过Discord帐户登录，但投票/提名<b>不要求</b>你通过Discord登录。<br>谱师之选奖/做谱又一年的工作人员<b>必须</b>还要通过Discord登录。</span>"
+                "1": "你好像并没有登录！<br>只需要通过 osu! 登录，你就可以立刻进行谱面投票/提名！",
+                "2": "通过 osu! 登录后你还可以选择通过 Discord 帐户登录，但投票/提名<b>不要求</b>你通过 Discord 登录。<br>谱师之选奖/做谱又一年的工作人员<b>必须</b>还要通过 Discord 登录。</span>"
             },
-            "authOsu": "点击这里通过osu!登录",
-            "authOsuComp": "osu!认证通过。你好，",
-            "authDiscord": "点击这里通过Discord登录",
-            "authDiscordComp": "Discord认证通过。你好，"
+            "authOsu": "点击这里通过 osu! 登录",
+            "authOsuComp": "osu! 认证通过。你好，",
+            "authDiscord": "点击这里通过 Discord 登录",
+            "authDiscordComp": "Discord 认证通过。你好，"
         }
     },
 	"ayim": {
@@ -31,8 +31,8 @@
             "numberof": "总计",
             "numberwith": "包含下述属性的难度个数",
             "message": {
-                "2019": "<p>时间来到2020年。</p><p>做谱又一年：2019，回归！这里有当年做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>通过本网站，只要是我们能够获得的信息，我们想加多少就加多少！如果你有任何建议（或者发现了任何网站bugs），请在corsace discord群联系VINXIS（链接见左下方）！</p><p><b>我们目前还在公开征集评论！</b>这意味着只要你愿意，<b>你本人</b>可以为任意多的谱师撰写并发表评论！</p><p>在下方的图标中选择你关心的游戏模式以开始！</p>",
-                "2020": "<p>时间来到2021年...这下对了吧！</p><p>做谱又一年：2020，再次回归！这里有<b>今年</b>做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>并且同样地，我们依旧在公开征集评论！在下方的图标中选择你关心的游戏模式以开始！</p>"
+                "2019": "<p>时间来到 2020 年。</p><p>做谱又一年：2019，回归！这里有当年做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>通过本网站，只要是我们能够获得的信息，我们想加多少就加多少！如果你有任何建议（或者发现了任何网站 Bug），请在 Corsace Discord 群联系 VINXIS（链接见左下方）！</p><p><b>我们目前还在公开征集评论！</b>这意味着只要你愿意，<b>你本人</b>可以为任意多的谱师撰写并发表评论！</p><p>在下方的图标中选择你关心的游戏模式以开始！</p>",
+                "2020": "<p>时间来到 2021 年...这下对了吧！</p><p>做谱又一年：2020，再次回归！这里有<b>今年</b>做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>并且同样地，我们依旧在公开征集评论！在下方的图标中选择你关心的游戏模式以开始！</p>"
             }
         },
         "mapsets": {
@@ -62,10 +62,10 @@
         },
         "mappers": {
             "name": "谱师姓名",
-            "mostRanked": "拥有最多Ranked",
+            "mostRanked": "拥有最多 Ranked",
             "mostDiffs": "拥有最多难度",
             "mostFavs": "拥有最多收藏",
-            "mostFavsExclHybrid": "拥有最多收藏(非Hybrid谱面)",
+            "mostFavsExclHybrid": "拥有最多收藏（非 Hybrid 谱面）",
             "mostPlayed": "拥有最多游玩次数",
             "totalMappers": "谱师总数",
             "newMapperAges": "新谱师号龄",
@@ -86,7 +86,7 @@
         },
         "comments": {
             "name": "用户姓名",
-            "info": "所有评论都会在MCA结果公布后对外公开！在那之前，你都可以提交自己的评论。",
+            "info": "所有评论都会在 MCA 结果公布后对外公开！在那之前，你都可以提交自己的评论。",
             "search": "搜索谱师",
             "viewSubmit": "浏览/发表评论",
             "writeHere": "为这位谱师撰写评论！",
@@ -95,7 +95,7 @@
             "create": "新建",
             "login": "登录以创建评论！",
             "visible": "（暂不可见）",
-            "notice": "你好！这或许是你第一次来到评论页面（中的一张）！注意：所有的评论都是公开征集的！<br>任何人（包括你）在今年的谱师之选奖结束前，都可以为任何人撰写评论！<br>为你关注的谱师们撰写评论，描述他们在[YEAR]年的所作所为或获得的成就，以表达你对他们在做谱社群内活动的感谢！"
+            "notice": "你好！这或许是你第一次来到评论页面（中的一张）！注意：所有的评论都是公开征集的！<br>任何人（包括你）在今年的谱师之选奖结束前，都可以为任何人撰写评论！<br>为你关注的谱师们撰写评论，描述他们在 [YEAR] 年的所作所为或获得的成就，以表达你对他们在做谱社群内活动的感谢！"
         }
     },
     "mca": {
@@ -113,14 +113,14 @@
                 "voting": "投票阶段",
                 "nominating": "提名阶段"
             },
-            "rankedSets": "Ranked谱面",
+            "rankedSets": "Ranked 谱面",
             "nominateNow": "现在提名！",
             "voteNow": "现在投票！",
             "viewResults": "查看结果！",
             "daysLeft": "天剩余",
             "message": {
-                "2019": "<p>2019年，第四届谱师之选奖（Mapper's Choice Awards），归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2019年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>今年，我们尽全力制作了一个网站，以便符合要求的你能够尽可能轻松地立刻开始提名和投票！</p><p>所有osu!支援者（supporter）奖励将直接由osu! 工作人员给出。每个大类下的获奖者将获得2个月的supporter奖励，而大奖获奖者将获得6个月的supporter奖励！2 months of supporter for winners of each category, and 6 months for winners of the Grand Awards!</p><p>我们希望尽量多的人能够参与到这次评选当中来！如果你对本网站有任何建议或发现了本网站的bug，请在corsace discord群内联系VINXIS！</p>",
-                "2020": "<p>2020年，第五届谱师之选奖（Mapper's Choice Awards），再次归来! 在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2020年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>我们在MCA 2019的基础上网站进行了（希望是）彻底的debug，并对部分分类进行了更改，所以现在的网站应该如丝般顺滑！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>"
+                "2019": "<p>2019 年，第四届谱师之选奖（Mapper's Choice Awards），归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2019 年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>今年，我们尽全力制作了一个网站，以便符合要求的你能够尽可能轻松地立刻开始提名和投票！</p><p>所有 osu! 支持者（supporter）奖励将直接由 osu! 工作人员给出。每个大类下的获奖者将获得 2 个月的 supporter 奖励，而大奖获奖者将获得 6 个月的 supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！如果你对本网站有任何建议或发现了本网站的 Bug，请在 Corsace Discord 群内联系 VINXIS！</p>",
+                "2020": "<p>2020 年，第五届谱师之选奖（Mapper's Choice Awards），再次归来! 在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2020 年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>我们在 MCA 2019 的基础上网站进行了（希望是）彻底的 Debug，并对部分分类进行了更改，所以现在的网站应该如丝般顺滑！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>"
             },
             "categories": {
                 "map": "谱面分类",
@@ -143,7 +143,7 @@
             },
             "marathon": {
                 "name": "马拉松",
-                "description": "总有效时长5分钟以上的最佳谱面。"
+                "description": "总有效时长 5 分钟以上的最佳谱面。"
             },
             "hitsounding": {
                 "name": "音效",
@@ -151,14 +151,14 @@
             },
             "collab": {
                 "name": "合作",
-                "description": "最佳合作（最高难度由2人以上共同制作的）谱面。"
+                "description": "最佳合作（最高难度由 2 人以上共同制作的）谱面。"
             },
             "simple": {
                 "name": "低难度",
-                "description": "最高难度不高于insane的最佳谱面。"
+                "description": "最高难度不高于 Insane 的最佳谱面。"
             },
             "highBPM": {
-                "name": "高BPM",
+                "name": "高 BPM",
                 "description": "以超大间距串或高强度单点为特征的最佳谱面。"
             },
             "smallCircles": {
@@ -167,7 +167,7 @@
             },
             "heavy13": {
                 "name": "三拍子",
-                "description": "以1/3、1/6或1/12为主要节奏的最佳谱面。"
+                "description": "以 1/3、1/6 或 1/12 为主要节奏的最佳谱面。"
             },
             "throwback": {
                 "name": "怀旧",
@@ -187,7 +187,7 @@
             },
             "mostPromising": {
                 "name": "最具潜力奖",
-                "description": "在今年才ranked图的谱师当中最厉害的那个人。"
+                "description": "在今年才 Ranked 图的谱师当中最厉害的那个人。"
             },
             "mostInfluential": {
                 "name": "最具影响力奖",
@@ -195,27 +195,27 @@
             },
             "outCont": {
                 "name": "突出贡献奖",
-                "description": "为osu!的健康发展做出最积极贡献的那个人。"
+                "description": "为 osu! 的健康发展做出最积极贡献的那个人。"
             },
             "spread": {
                 "name": "Spread",
-                "description": "具有最佳spread*的谱面。（*spread：指各难度从低到高的过渡是否自然）"
+                "description": "具有最佳 Spread* 的谱面。（*Spread：指各难度从低到高的过渡是否自然）"
             },
             "experimental": {
                 "name": "实验性",
-                "description": "最佳\"tech\"/非主流谱面。"
+                "description": "最佳 \"Tech\"/ 非主流谱面。"
             },
             "stream": {
                 "name": "串",
                 "description": "具有最佳连续串的谱面。"
             },
             "highBPMTaiko": {
-                "name": "高BPM",
-                "description": "240BPM以上的最佳谱面。"
+                "name": "高 BPM",
+                "description": "240BPM 以上的最佳谱面。"
             },
             "lowBPMTaiko": {
-                "name": "低BPM",
-                "description": "140BPM以下的最佳谱面。"
+                "name": "低 BPM",
+                "description": "140BPM 以下的最佳谱面。"
             },
             "simplistic": {
                 "name": "简约",
@@ -231,15 +231,15 @@
             },
             "longNotes": {
                 "name": "长押（LN）",
-                "description": "大量使用LN的最佳谱面。"
+                "description": "大量使用 LN 的最佳谱面。"
             },
             "antiMeta": {
                 "name": "非主流",
-                "description": "基于5K/6K/8K/9K的最佳谱面。"
+                "description": "基于 5K/6K/8K/9K 的最佳谱面。"
             },
             "7K": {
                 "name": "7K",
-                "description": "最佳7K谱面。"
+                "description": "最佳 7K 谱面。"
             },
             "technical": {
                 "name": "技术",
@@ -259,22 +259,22 @@
             },
 	        "technicalTaiko": {
                 "name": "Tech",
-                "description": "以使用复杂梗和snap为特色的最佳谱面。"
+                "description": "以使用复杂梗和 Snap 为特色的最佳谱面。"
             },
             "fastTaiko": {
                 "name": "快速",
-                "description": "高SV、击打速度快的最佳谱面。"
+                "description": "高 SV、击打速度快的最佳谱面。"
             },
             "slowTaiko": {
                 "name": "慢速",
-                "description": "低SV、击打速度慢的最佳谱面。"
+                "description": "低 SV、击打速度慢的最佳谱面。"
             },
             "hybrid": {
                 "name": "混合",
-                "description": "大量使用长条（LN）和乱打（rice）梗的最佳谱面。"
+                "description": "大量使用长条（LN）和乱打（Rice）梗的最佳谱面。"
             },
             "highBPMAlternator": {
-                "name": "高BPM / Alt",
+                "name": "高 BPM / Alt",
                 "description": "强调超快击打和 / 或移动水平的最佳谱面。"
             },
             "vanilla": {
@@ -283,7 +283,7 @@
             },
             "complex": {
                 "name": "复杂节奏 / Swing",
-                "description": "大量使用非传统snapping的最佳谱面（二连，1/3，1/5，1/7等）。"
+                "description": "大量使用非传统 Snapping 的最佳谱面（二连，1/3，1/5，1/7 等）。"
             },
             "unorthodox": {
                 "name": "非主流 / Gimmick",
@@ -307,11 +307,11 @@
             },
             "technicalCatch": {
                 "name": "Tech",
-                "description": "突破接水果游戏玩法极限的最佳谱面。The best beatmap which utilizes concepts that push the boundaries of catch gameplay."
+                "description": "突破接水果游戏玩法极限的最佳谱面。"
             },
             "antiMetaCatch": {
                 "name": "非主流",
-                "description": "使用非传统 / gimmicky梗的最佳谱面。."
+                "description": "使用非传统 / Gimmicky 梗的最佳谱面。."
             }
         },
         "nom_vote": {
@@ -338,9 +338,9 @@
                 "results": "结果",
                 "voters": "投票者"
             },
-	        "votingOverlay": "你好！或许这是你第一次来到投票界面！<br>MCA的投票基于<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>排序复选法</a>进行！<br>这意味着，你可以为任意多的谱面/用户进行投票！<br>你的每一个选择都会被排序，因此<span class='notice-modal--bold'>你的第一候选具有最高的优先级！</span><br>直到因为被选为第一候选的人数最少而被淘汰，或因为最终得票超过半数而被判为获得第一为止，你的第一候选都是合法的。当你的第一候选被淘汰时，你投给TA的票将转给在此时你的未淘汰候选者中顺位最高的那一个。<br>祝各位好运，让我们共同期待MCA [YEAR]的最终结果！",
+	        "votingOverlay": "你好！或许这是你第一次来到投票界面！<br>MCA 的投票基于<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>排序复选法</a>进行！<br>这意味着，你可以为任意多的谱面/用户进行投票！<br>你的每一个选择都会被排序，因此<span class='notice-modal--bold'>你的第一候选具有最高的优先级！</span><br>直到因为被选为第一候选的人数最少而被淘汰，或因为最终得票超过半数而被判为获得第一为止，你的第一候选都是合法的。当你的第一候选被淘汰时，你投给TA的票将转给在此时你的未淘汰候选者中顺位最高的那一个。<br>祝各位好运，让我们共同期待 MCA [YEAR] 的最终结果！",
             "hosted": "谱面拥有者",
-            "userID": "用户ID"
+            "userID": "用户 ID"
         },
 	    "results": {
             "headings": {
@@ -349,23 +349,29 @@
                 "title": "标题",
                 "artist": "艺术家",
                 "hoster": "谱面拥有者",
-                "totalVotes": "总票数",
                 "username": "人物",
-                "firstChoice": "被选为第一候选的次数"
+                "firstChoice": "第一候选",
+                "secondThirdChoice": "第二至第三候选",
+                "restChoice": "其他候选"
             },
-            "resultsOverlay": "你好！或许这是你第一次来到结果公布界面！<br>这里公布了通过<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>排序复选法</a>筛选出的最佳谱面/人物及各自的最终排名，以及所有获奖者被选为第一候选和总共被选的次数！<br>希望你中意MCA [YEAR]的最终结果！让我们下届MCA再会"
+            "resultsOverlay": "你好！或许这是你第一次来到结果公布界面！<br>这里公布了通过<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>排序复选法</a>筛选出的最佳谱面/人物及各自的最终排名，以及所有获奖者被选为第一候选和总共被选的次数！<br>希望你中意 MCA [YEAR] 的最终结果！让我们下届 MCA 再会"
         }
     },
     "main": {
         "header": {
             "login": "登录",
-            "register": "注册"
+            "register": "注册",
+            "changeDiscord": "修改 Discord"
         },
-        "index": {
+        "construction": {
             "underConstruction": "施工中",
             "sorry": "抱歉给你带来不便",
-            "development": "corsace网站目前依旧处于早期开发阶段",
-            "theTeam": "corsace团队"
+            "development": "Corsace 网站目前依旧处于早期开发阶段",
+            "theTeam": "Corsace 团队"
+        },
+        "merch": {
+            "code": "使用优惠代码 CORSACE 来获得 10% 的折扣",
+            "products": "Sim Pad 2 或 Sim Pad Nano"
         }
     }
 }

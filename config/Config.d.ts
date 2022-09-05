@@ -12,6 +12,7 @@ declare module "node-config-ts" {
         admin: string;
         general: string;
         epic: string;
+        testplayers: string;
         update: string;
         testing: string;
         balancing: string;

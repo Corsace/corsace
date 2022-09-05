@@ -375,10 +375,8 @@
             "theTeam": "the corsace team"
         },
         "merch": {
-            "official": "official corsace merchandise",
-            "avail": "now available",
-            "name": "Corsace Open 2021 Limited Edition Unisex T",
-            "colours": "Black/White"
+            "code": "Tap Trio - Corsace Bundle",
+            "products": "Limited quantity available"
         }
     }
 }
