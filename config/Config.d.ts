@@ -95,6 +95,11 @@ declare module "node-config-ts" {
             };
         };
 
+        bn: {
+            username: string;
+            secret: string;
+        }
+
         google: {
             credentials: {
                 private_key: string;

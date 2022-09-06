@@ -63,6 +63,7 @@
       "eslint": "^7.17.0",
       "eslint-plugin-vue": "^7.4.1",
       "memoizee": "^0.4.15",
+      "rate-limiter-flexible": "^2.3.7",
       "sass": "^1.32.2",
       "sass-loader": "^10.1.0",
       "ts-node-dev": "^1.1.8"

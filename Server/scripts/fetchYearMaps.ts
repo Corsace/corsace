@@ -10,6 +10,7 @@ import { Beatmap } from "../../Models/beatmap";
 import { OAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
+import { RateLimiterMemory, RateLimiterQueue } from "rate-limiter-flexible";
 
 let bmQueued = 0; // beatmaps inserted in queue
 let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
@@ -51,11 +52,94 @@ const getModeDivison = memoizee(async (modeDivisionId: number) => {
     return mode;
 });
 
+// API call to fetch a user's country.
+async function getMissingOsuUserProperties (userID: number): Promise<{ country: string; username: string; }> {
+    const userApi = (await axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`)).data as any[];
+    if (userApi.length === 0)
+        return { country: "", username: "" };
+    return {
+        country: userApi[0].country,
+        username: userApi[0].username,
+    };
+};
+
+const getUser = async (targetUser: { username?: string, userID: number, country?: string }): Promise<User> => {
+    let user = await User.findOne({ osu: { userID: `${targetUser.userID}` } });
+    
+    if (!user) {
+        let country = targetUser.country;
+        let username = targetUser.username;
+        if (!username || !country) {
+            const { country: newCountry, username: newUsername } = await getMissingOsuUserProperties(targetUser.userID);
+            country = newCountry;
+            username = newUsername;
+        }
+
+        user = new User;
+        user.osu = new OAuth;
+        user.osu.userID = `${targetUser.userID}`;
+        user.osu.username = username;
+        user.osu.avatar = "https://a.ppy.sh/" + targetUser.userID;
+        user.country = country;
+        user = await user.save();
+    } else if (targetUser.username && user.osu.username !== targetUser.username) {
+        // osu! name change detection routine:
+        // The username that we have in DB doesn't match the one that we got from a beatmapset.
+
+        const { username: currentUsername } = await getMissingOsuUserProperties(targetUser.userID);
+
+        // currentUsername can be empty if user is restricted; ignoring API result in this case.
+        if (currentUsername && user.osu.username !== currentUsername) {
+            // The username from DB doesn't match their current name; adding to history and updating.
+            if (!user.otherNames.some(v => v.name === user!.osu.username)) {
+                const nameChange = new UsernameChange;
+                nameChange.name = user.osu.username;
+                nameChange.user = user;
+                await nameChange.save();
+                user.otherNames.push(nameChange);
+            }
+            user.osu.username = currentUsername;
+        }
+
+        if (targetUser.username !== user.osu.username) {
+            // The name that we got from a beatmapset isn't their current name according to current API or DB if restricted; adding to history.
+            if (!user.otherNames.some(v => v.name === targetUser.username)) {
+                const nameChange = new UsernameChange;
+                nameChange.name = targetUser.username;
+                nameChange.user = user;
+                await nameChange.save();
+                user.otherNames.push(nameChange);
+            }
+        }
+
+        await user.save();
+    }
+
+    return user;
+};
+
+const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
+    const rankers: User[] = [];
+    if (beatmapEvents.length > 0)
+        for (const bnEvent of beatmapEvents.reverse()) { 
+            // Run from rank to the last disqual/nom_reset event 
+            // (or to the beginning of list if no disqual/nom_reset)
+            if (bnEvent.type === "rank")
+                continue;
+            if (bnEvent.type === "disqualify" || bnEvent.type === "nomination_reset")
+                break;
+
+            if (!rankers.some((ranker) => ranker.osu.userID === `${bnEvent.userId}`)) {
+                const bnUser = await getUser({ userID: bnEvent.userId });
+                rankers.push(bnUser);
+            }
+        }
+    return rankers;
+}
+
+
 // Memoized method to create or fetch a BeatmapSet from DB.
-const existingSets: number[] = [];
 const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> => {
-    if(existingSets.includes(beatmap.setId))
-        return await Beatmapset.findOne(beatmap.setId) as Beatmapset;
     let beatmapSet = new Beatmapset;
     beatmapSet.ID = beatmap.setId;
     beatmapSet.approvedDate = beatmap.approvedDate;
@@ -68,38 +152,17 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     beatmapSet.tags = beatmap.tags.join(" ");
     beatmapSet.favourites = beatmap.favoriteCount;
 
-    let user = await User.findOne({ osu: { userID: `${beatmap.creatorId}` } });
-    
-    if (!user) {
-        user = new User;
-        user.osu = new OAuth;
-        user.osu.userID = `${beatmap.creatorId}`;
-        user.osu.username = beatmap.creator;
-        user.osu.avatar = "https://a.ppy.sh/" + beatmap.creatorId;
-        user = await user.save();
-    } else if (user.osu.username !== beatmap.creator) {
-        // Check if old exists (add if it doesn't)
-        if (!user.otherNames.some(v => v.name === user!.osu.username)) {
-            const nameChange = new UsernameChange;
-            nameChange.name = user.osu.username;
-            nameChange.user = user;
-            await nameChange.save();
-            user.otherNames.push(nameChange);
-        }
-
-        // Check if new exists (remove if it does)
-        if (user.otherNames.some(v => v.name === beatmap.creator)) {
-            await user.otherNames.find(v => v.name === beatmap.creator)!.remove();
-            user.otherNames = user.otherNames.filter(v => v.name !== beatmap.creator);
-        }
-        user.osu.username = beatmap.creator;
-        await user.save();
-    }
+    const user = await getUser({ username: beatmap.creator, userID: beatmap.creatorId });
     beatmapSet.creator = user;
-
+    
+    // interOp call to pishi's BN site to get the user IDs of the BNs of a beatmapset.
+    // NOTE: The BN site only has nomination data from ~mid 2019 onward.
+    const beatmapEvents = await bnsRawData.get(beatmapSet.ID);
+    bnsRawData.delete(beatmapSet.ID);
+    beatmapSet.rankers = beatmapEvents ? await getRankers(beatmapEvents) : [];
+    
     beatmapSet = await beatmapSet.save();
     bmsInserted++;
-    existingSets.push(beatmap.setId);
     return beatmapSet;
 }, {
     max: 200,
@@ -120,6 +183,33 @@ const getMCAEligibility = memoizee(async function(year: number, user: User) {
         return `${year}-${user.ID}`;
     },
 });
+
+
+type BeatmapsetID = number;
+export type BNEvent = {
+    type: "nominate" | "qualify" | "disqualify" | "nomination_reset" | "rank";
+    userId: number;
+}
+const bnsRawData = new Map<BeatmapsetID, Promise<null | BNEvent[]>>();
+const bnFetchingLimiter = new RateLimiterQueue(new RateLimiterMemory({ points: 20, duration: 1 }));
+const getBNsApiCallRawData = async (beatmapSetID: BeatmapsetID): Promise<null | BNEvent[]> => {
+    if (config.bn.username && config.bn.secret) {
+        try {
+            await bnFetchingLimiter.removeTokens(1);
+            return (await axios.get<BNEvent[]>(`https://bn.mappersguild.com/interOp/events/${beatmapSetID}`, {
+                headers: {
+                    username: config.bn.username,
+                    secret: config.bn.secret,
+                },
+            })).data;
+        } catch (err: any) {
+            console.error('An error occured while fetching BNs for beatmap set ' + beatmapSetID);
+            console.error(err.stack);
+            process.exit(1);
+        }
+    }
+    return null;
+}
 
 async function insertBeatmap (apiBeatmap: APIBeatmap) {
     let beatmap = new Beatmap;
@@ -174,6 +264,10 @@ async function script () {
     }
     const until = new Date(`${year + 1}-01-01`);
 
+    if (!config.bn.username || !config.bn.secret) {
+        console.warn("WARNING: No BN website username/secret provided in config. Beatmapsets rankers will not be retrieved.");
+    }
+
     console.log("This script can damage your database. Make sure to only execute this if you know what you're doing.");
     console.log("This script will automatically continue in 5 seconds. Cancel using Ctrl+C.");
     await sleep(5000);
@@ -190,8 +284,8 @@ async function script () {
     }, 1);
 
     const printStatus = () => {
-        const eta = ((Date.now() - start) / bmInserted) * (bmQueued - bmInserted);
-        console.log(new Date(), `Queued beatmaps: ${bmQueued} / Imported beatmaps: ${bmInserted} / Imported beatmapsets: ${bmsInserted} / ETA: ${timeFormatter(eta)}`);
+        const eta = bmInserted === 0 ? "N/A" : timeFormatter(((Date.now() - start) / bmInserted) * (bmQueued - bmInserted));
+        console.log(new Date(), `Queued beatmaps: ${bmQueued} / Imported beatmaps: ${bmInserted} / Imported beatmapsets: ${bmsInserted} / ETA: ${eta}`);
     };
     const progressInterval = setInterval(printStatus, 1000);
 
@@ -210,6 +304,11 @@ async function script () {
                 break;
             if(![1, 2].includes(Number(newBeatmap.approved)))
                 continue;
+
+            if (!bnsRawData.has(newBeatmap.beatmapSetId)) {
+                bnsRawData.set(newBeatmap.beatmapSetId, getBNsApiCallRawData(newBeatmap.beatmapSetId));
+            }
+
             queuedBeatmapIds.push(newBeatmap.id);
             processingQueue.push(newBeatmap);
             bmQueued++;
@@ -223,17 +322,18 @@ async function script () {
     console.log("All beatmaps have been successfully processed!");
 }
 
-script()
-    .then(() => {
-        console.log("Script completed successfully!");
-        process.exit(0);
-    })
-    .catch((err: Error) => {
-        console.error("Script encountered an error!");
-        console.error(err.stack);
-        process.exit(1);
-    });
-
+if(module === require.main) {
+    script()
+        .then(() => {
+            console.log("Script completed successfully!");
+            process.exit(0);
+        })
+        .catch((err: Error) => {
+            console.error("Script encountered an error!");
+            console.error(err.stack);
+            process.exit(1);
+        });
+}
 
 const genres = [
     "any",
@@ -277,3 +377,5 @@ const modeList = [
     "fruits",
     "mania",
 ];
+
+export { getUser, getBNsApiCallRawData, getRankers };

@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne, SelectQueryBuilder, Index } from "typeorm";
+import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne, SelectQueryBuilder, Index, ManyToMany } from "typeorm";
 import { BeatmapsetInfo } from "../Interfaces/beatmap";
 import { Category } from "../Interfaces/category";
 import { StageQuery } from "../Interfaces/queries";
@@ -61,6 +61,9 @@ export class Beatmapset extends BaseEntity {
     
     @OneToMany(() => Vote, vote => vote.beatmapset)
     votesReceived!: Vote[];
+
+    @ManyToMany(() => User, user => user.mapsRanked)
+    rankers!: User[];
 
     static search (year: number, modeId: number, stage: "voting" | "nominating", category: Category, query: StageQuery): Promise<[Beatmapset[], number]> {
         // Initial repo setup

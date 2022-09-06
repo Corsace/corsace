@@ -72,6 +72,10 @@
             "songSubmission": "902305213958983690"
         }
     },
+    "bn": {
+        "username": "@@BN_USERNAME",
+        "secret": "@@BN_SECRET"
+    },
     "osu": {
         "v1": {
             "apiKey": "@@OSU_V1_APIKEY"
