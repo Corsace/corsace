@@ -1,4 +1,4 @@
-import { BaseEntity, Check, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, MoreThanOrEqual, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Check, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, MoreThanOrEqual, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { TournamentInfo } from "../../Interfaces/tournaments";
 import { Phase } from "../phase";
 import { User } from "../user";
@@ -17,6 +17,9 @@ export class Tournament extends BaseEntity {
 
     @CreateDateColumn()
     createdAt!: Date;
+
+    @ManyToOne(() => User, user => user.tournamentsOrganized)
+    organizer!: User;
 
     @Column()
     name!: string;

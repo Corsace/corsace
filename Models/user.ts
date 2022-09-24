@@ -151,6 +151,9 @@ export class User extends BaseEntity {
     @ManyToMany(() => Qualifier, qualifier => qualifier.players)
     qualifiers!: Qualifier[];
 
+    @OneToMany(() => Tournament, tournament => tournament.organizer)
+    tournamentsOrganized!: Tournament[];
+
     @ManyToMany(() => Tournament, tournament => tournament.referees)
     tournamentsRefereed!: Tournament[];
 
