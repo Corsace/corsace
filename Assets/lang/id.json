@@ -314,7 +314,11 @@
             "antiMetaCatch": {
                 "name": "Anti-Meta",
                 "description": "Mapset terbaik yang mengusung gimmick-gimmick atau teknik-teknik mapping yang tidak umum."
-            }                 
+            },
+            "diversity": {
+                "name": "Diversity",
+                "description": "Mapset terbaik yang berfokus pada berbagai macam skillset/kategori."
+            }           
         },
         "nom_vote": {
             "search": "cari beatmap/user",
