@@ -182,8 +182,8 @@ export default class MapperComments extends Vue {
     }
 
     async mounted () {
-        if (this.mca.year === 2020)
-            this.$router.replace("/2020");
+        if (this.mca.year >= 2020)
+            this.$router.replace(`/${this.mca.year}`);
         await this.getData();
     }
     
