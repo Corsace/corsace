@@ -9,7 +9,7 @@ import { Qualifier } from "./qualifier";
 import { Team } from "./team";
 
 @Entity()
-@Check(`"eligibleTeamSize" <= "maximumTeamSize"`)
+@Check(`"minTeamSize" <= "maxTeamSize"`)
 export class Tournament extends BaseEntity {
 
     @PrimaryGeneratedColumn()
@@ -25,9 +25,6 @@ export class Tournament extends BaseEntity {
     name!: string;
 
     @Column()
-    slug!: string;
-
-    @Column()
     server!: string;
 
     @Column({ type: "year" })
@@ -40,9 +37,6 @@ export class Tournament extends BaseEntity {
     size!: number;
 
     @Column({ default: false })
-    usesSets!: boolean;
-
-    @Column({ default: false })
     isOpen!: boolean;
 
     @Column({ default: false })
@@ -52,13 +46,10 @@ export class Tournament extends BaseEntity {
     invitational!: boolean;
 
     @Column()
-    eligibleTeamSize!: number;
+    minTeamSize!: number;
 
     @Column()
-    maximumTeamSize!: number;
-
-    @Column({ default: true })
-    doubleElim!: boolean;
+    maxTeamSize!: number;
 
     @Column({ default: false })
     publicQualifiers!: boolean;
