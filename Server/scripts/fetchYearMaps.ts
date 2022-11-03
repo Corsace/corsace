@@ -41,7 +41,7 @@ function timeFormatter (ms: number): string {
 
 const getModeDivison = memoizee(async (modeDivisionId: number) => {
     modeDivisionId += 1;
-    let mode = await ModeDivision.findOne(modeDivisionId + 1);
+    let mode = await ModeDivision.findOne(modeDivisionId);
     if (!mode) {
         mode = new ModeDivision;
         mode.ID = modeDivisionId;
@@ -51,11 +51,74 @@ const getModeDivison = memoizee(async (modeDivisionId: number) => {
     return mode;
 });
 
+// API call to fetch a user's country.
+async function getMissingOsuUserProperties (userID: number): Promise<{ country: string; username: string; }> {
+    const userApi = (await axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`)).data as any[];
+    if (userApi.length === 0)
+        return { country: "", username: "" };
+    return {
+        country: userApi[0].country,
+        username: userApi[0].username,
+    };
+}
+
+const getUser = async (targetUser: { username?: string, userID: number, country?: string }): Promise<User> => {
+    let user = await User.findOne({ osu: { userID: `${targetUser.userID}` } });
+    
+    if (!user) {
+        let country = targetUser.country;
+        let username = targetUser.username;
+        if (!username || !country) {
+            const { country: newCountry, username: newUsername } = await getMissingOsuUserProperties(targetUser.userID);
+            country = newCountry;
+            username = newUsername;
+        }
+
+        user = new User;
+        user.osu = new OAuth;
+        user.osu.userID = `${targetUser.userID}`;
+        user.osu.username = username;
+        user.osu.avatar = "https://a.ppy.sh/" + targetUser.userID;
+        user.country = country;
+        user = await user.save();
+    } else if (targetUser.username && user.osu.username !== targetUser.username) {
+        // osu! name change detection routine:
+        // The username that we have in DB doesn't match the one that we got from a beatmapset.
+
+        const { username: currentUsername } = await getMissingOsuUserProperties(targetUser.userID);
+
+        // currentUsername can be empty if user is restricted; ignoring API result in this case.
+        if (currentUsername && user.osu.username !== currentUsername) {
+            // The username from DB doesn't match their current name; adding to history and updating.
+            if (!user.otherNames.some(v => v.name === user!.osu.username)) {
+                const nameChange = new UsernameChange;
+                nameChange.name = user.osu.username;
+                nameChange.user = user;
+                await nameChange.save();
+                user.otherNames.push(nameChange);
+            }
+            user.osu.username = currentUsername;
+        }
+
+        if (targetUser.username !== user.osu.username) {
+            // The name that we got from a beatmapset isn't their current name according to current API or DB if restricted; adding to history.
+            if (!user.otherNames.some(v => v.name === targetUser.username)) {
+                const nameChange = new UsernameChange;
+                nameChange.name = targetUser.username;
+                nameChange.user = user;
+                await nameChange.save();
+                user.otherNames.push(nameChange);
+            }
+        }
+
+        await user.save();
+    }
+
+    return user;
+};
+
 // Memoized method to create or fetch a BeatmapSet from DB.
-const existingSets: number[] = [];
 const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> => {
-    if(existingSets.includes(beatmap.setId))
-        return await Beatmapset.findOne(beatmap.setId) as Beatmapset;
     let beatmapSet = new Beatmapset;
     beatmapSet.ID = beatmap.setId;
     beatmapSet.approvedDate = beatmap.approvedDate;
@@ -68,38 +131,11 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     beatmapSet.tags = beatmap.tags.join(" ");
     beatmapSet.favourites = beatmap.favoriteCount;
 
-    let user = await User.findOne({ osu: { userID: `${beatmap.creatorId}` } });
-    
-    if (!user) {
-        user = new User;
-        user.osu = new OAuth;
-        user.osu.userID = `${beatmap.creatorId}`;
-        user.osu.username = beatmap.creator;
-        user.osu.avatar = "https://a.ppy.sh/" + beatmap.creatorId;
-        user = await user.save();
-    } else if (user.osu.username !== beatmap.creator) {
-        // Check if old exists (add if it doesn't)
-        if (!user.otherNames.some(v => v.name === user!.osu.username)) {
-            const nameChange = new UsernameChange;
-            nameChange.name = user.osu.username;
-            nameChange.user = user;
-            await nameChange.save();
-            user.otherNames.push(nameChange);
-        }
-
-        // Check if new exists (remove if it does)
-        if (user.otherNames.some(v => v.name === beatmap.creator)) {
-            await user.otherNames.find(v => v.name === beatmap.creator)!.remove();
-            user.otherNames = user.otherNames.filter(v => v.name !== beatmap.creator);
-        }
-        user.osu.username = beatmap.creator;
-        await user.save();
-    }
+    const user = await getUser({ username: beatmap.creator, userID: beatmap.creatorId });
     beatmapSet.creator = user;
-
+    
     beatmapSet = await beatmapSet.save();
     bmsInserted++;
-    existingSets.push(beatmap.setId);
     return beatmapSet;
 }, {
     max: 200,
@@ -190,8 +226,8 @@ async function script () {
     }, 1);
 
     const printStatus = () => {
-        const eta = ((Date.now() - start) / bmInserted) * (bmQueued - bmInserted);
-        console.log(new Date(), `Queued beatmaps: ${bmQueued} / Imported beatmaps: ${bmInserted} / Imported beatmapsets: ${bmsInserted} / ETA: ${timeFormatter(eta)}`);
+        const eta = bmInserted === 0 ? "N/A" : timeFormatter(((Date.now() - start) / bmInserted) * (bmQueued - bmInserted));
+        console.log(new Date(), `Queued beatmaps: ${bmQueued} / Imported beatmaps: ${bmInserted} / Imported beatmapsets: ${bmsInserted} / ETA: ${eta}`);
     };
     const progressInterval = setInterval(printStatus, 1000);
 
@@ -210,6 +246,7 @@ async function script () {
                 break;
             if(![1, 2].includes(Number(newBeatmap.approved)))
                 continue;
+
             queuedBeatmapIds.push(newBeatmap.id);
             processingQueue.push(newBeatmap);
             bmQueued++;
@@ -223,17 +260,18 @@ async function script () {
     console.log("All beatmaps have been successfully processed!");
 }
 
-script()
-    .then(() => {
-        console.log("Script completed successfully!");
-        process.exit(0);
-    })
-    .catch((err: Error) => {
-        console.error("Script encountered an error!");
-        console.error(err.stack);
-        process.exit(1);
-    });
-
+if(module === require.main) {
+    script()
+        .then(() => {
+            console.log("Script completed successfully!");
+            process.exit(0);
+        })
+        .catch((err: Error) => {
+            console.error("Script encountered an error!");
+            console.error(err.stack);
+            process.exit(1);
+        });
+}
 
 const genres = [
     "any",
@@ -277,3 +315,5 @@ const modeList = [
     "fruits",
     "mania",
 ];
+
+export { getUser };
