@@ -39,3 +39,9 @@ export class GuestRequest extends BaseEntity {
     beatmap!: Beatmap;
 
 }
+
+// Check if text is posessive for guest difficulty checks (TODO: osu! now tracks guest difficulties, should replace this with a check using that instead later)
+export function isPossessive (text: string) {
+    const lowerText = text.toLowerCase();
+    return lowerText.includes("'s") || lowerText.includes("s'");
+}

@@ -10,6 +10,7 @@ import { Beatmap } from "../../Models/beatmap";
 import { OAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
+import { isPossessive } from "../../Models/MCA_AYIM/guestRequest";
 
 let bmQueued = 0; // beatmaps inserted in queue
 let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
@@ -184,7 +185,7 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
 
     beatmap.beatmapset = await getBeatmapSet(apiBeatmap);
 
-    if (!(beatmap.difficulty.includes("s'") || beatmap.difficulty.includes("'s"))) {
+    if (!isPossessive(beatmap.difficulty)) {
         const eligibility = await getMCAEligibility(apiBeatmap.approvedDate.getUTCFullYear(), beatmap.beatmapset.creator);
         if (!eligibility[modeList[apiBeatmap.mode as number]]) {
             eligibility[modeList[apiBeatmap.mode as number]] = true;

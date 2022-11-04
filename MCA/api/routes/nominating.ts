@@ -9,6 +9,7 @@ import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear }
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import stageSearch from "./stageSearch";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { isPossessive } from "../../../Models/MCA_AYIM/guestRequest";
 
 const nominatingRouter = new Router();
 
@@ -231,7 +232,7 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
                 });
                 const years: number[] = [];
                 for (const set of sets) 
-                    if (set.beatmaps.some(b => b.mode.ID === category.mode.ID && !(b.difficulty.includes("s'") || b.difficulty.includes("'s"))))
+                    if (set.beatmaps.some(b => b.mode.ID === category.mode.ID && !isPossessive(b.difficulty)))
                         years.push(set.approvedDate.getUTCFullYear());
                 
                 if (Math.min(...years) !== ctx.state.year)
