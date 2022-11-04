@@ -208,7 +208,8 @@ export class User extends BaseEntity {
                         .select("min(year(approvedDate))")
                         .andWhere("creatorID = user.ID")
                         .andWhere(`beatmap.modeID = ${ModeDivisionType[modeString]}`)
-                        .andWhere(`beatmap.difficulty NOT LIKE '%\\'%'`)
+                        .andWhere(`beatmap.difficulty NOT LIKE '%\\'s%'`)
+                        .andWhere(`beatmap.difficulty NOT LIKE '%s\\'%'`)
                         .getQuery();
 
                     return subQuery + " = " + year;
