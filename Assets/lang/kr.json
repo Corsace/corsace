@@ -275,7 +275,7 @@
             },
             "highBPMAlternator": {
                 "name": "고BPM / 양타",
-                "description": "빠른 연타 및/혹은 에임을 요구로 하는 최고의 비트맵"
+                "description": "빠른 연타 및/혹은 에임을 요구로 하는 최고의 비트맵 (240+ BPM)"
             },
             "vanilla": {
                 "name": "제너릭",

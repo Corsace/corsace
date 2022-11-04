@@ -275,7 +275,7 @@
             },
             "highBPMAlternator": {
                 "name": "高 BPM / Alt",
-                "description": "强调超快击打和 / 或移动水平的最佳谱面。"
+                "description": "强调超快击打和 / 或移动水平的最佳谱面。 (240+ BPM)"
             },
             "vanilla": {
                 "name": "基本功",
