@@ -9,30 +9,6 @@ userRouter.get("/", isLoggedIn, async (ctx) => {
     ctx.body = await ctx.state.user.getInfo();
 });
 
-userRouter.post("/username/add", isHeadStaff, async (ctx) => {
-    const body = ctx.request.body;
-    if (!body.ID || !body.username)
-        return ctx.body = { 
-            error: "Missing parameters",
-        };
-    
-    const user = await User.findOneOrFail({
-        ID: body.ID,
-    });
-
-    if (user.osu.username)
-        return ctx.body = { 
-            error: "User already has a username",
-        };
-
-    user.osu.username = body.username;
-    await user.save();
-    ctx.body = {
-        success: true,
-        user,
-    };
-});
-
 userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
     const body = ctx.request.body;
     if (!body.ID || !body.username)
