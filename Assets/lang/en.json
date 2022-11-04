@@ -196,7 +196,7 @@
                 "description": "The one who inspired and influenced other mappers the most."
             },
             "outCont": {
-                "name": "Outstanding Contributer",
+                "name": "Outstanding Contributor",
                 "description": "The one who positively contributed to the health of osu! the most."
             },
             "spread": {
@@ -277,7 +277,7 @@
             },
             "highBPMAlternator": {
                 "name": "High BPM / Alternator",
-                "description": "The best beatmap with priority on extremely fast tapping and / or aim skills."
+                "description": "The best beatmap with priority on extremely fast tapping and / or aim skills. (240+ BPM)"
             },
             "vanilla": {
                 "name": "Vanilla",

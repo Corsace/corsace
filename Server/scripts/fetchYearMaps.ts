@@ -184,7 +184,7 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
 
     beatmap.beatmapset = await getBeatmapSet(apiBeatmap);
 
-    if (!beatmap.difficulty.includes("'")) {
+    if (!(beatmap.difficulty.includes("s'") || beatmap.difficulty.includes("'s"))) {
         const eligibility = await getMCAEligibility(apiBeatmap.approvedDate.getUTCFullYear(), beatmap.beatmapset.creator);
         if (!eligibility[modeList[apiBeatmap.mode as number]]) {
             eligibility[modeList[apiBeatmap.mode as number]] = true;
