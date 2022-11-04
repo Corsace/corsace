@@ -79,7 +79,7 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
     let nomination = await Nomination
         .populate()
         .where("nomination.categoryID = :categoryID", { categoryID: category.ID })
-        .andWhere("(nomination.userID = :nomineeID OR nomination.beatmapsetID = :nomineeID)", { nomineeID })
+        .andWhere("(nomination.userID = :nomineeID OR nomination.beatmapsetID = :nomineeID OR nomination.beatmapID = :nomineeID)", { nomineeID })
         .getOne();
     
     if (nomination && !nomination.isValid) {
