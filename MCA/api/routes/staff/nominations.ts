@@ -97,6 +97,47 @@ staffNominationsRouter.get("/", async (ctx) => {
     ctx.body = staffNominations;
 });
 
+// Endpoint for concatenating nominators to the same sets/beatmaps/users
+staffNominationsRouter.post("/:id/concat", async (ctx) => {
+    const categoryIDString = parseQueryParam(ctx.query.category);
+    
+    if (!categoryIDString || !/\d+/.test(categoryIDString))
+        return ctx.body = { error: "Invalid category ID given!" };
+
+    const categoryID = parseInt(categoryIDString);
+
+    const nominations = await Nomination.find({
+        relations: ["nominators", "reviewer", "user", "beatmapset", "beatmap"],
+        where: {
+            category: categoryID,
+        },
+    });
+    
+    const uniqueNominations: Nomination[] = nominations.filter((v, i, a) => {
+        return a.findIndex(t => 
+            t.beatmapset?.ID === v.beatmapset?.ID ||
+            t.beatmap?.ID === v.beatmap?.ID ||
+            t.user?.ID === v.user?.ID
+        ) === i;
+    });
+    const dupeNoms: Nomination[] = [];
+    for (const nom of nominations) {
+        if (nom.beatmap) {
+            const targetNom = uniqueNominations.find(n => 
+                n.beatmapset?.ID === nom.beatmapset?.ID ||
+                n.beatmap?.ID === nom.beatmap?.ID ||
+                n.user?.ID === nom.user?.ID
+            );
+            if (targetNom && targetNom.ID !== nom.ID) {
+                targetNom.nominators.push(...nom.nominators);
+                dupeNoms.push(nom);
+            }
+        }
+    }
+    await Promise.all(dupeNoms.map(n => n.remove()));
+    await Promise.all(uniqueNominations.map(n => n.save()));
+});
+
 // Endpoint for accepting a nomination
 staffNominationsRouter.post("/:id/update", async (ctx) => {
     const nominationID = ctx.params.id;
