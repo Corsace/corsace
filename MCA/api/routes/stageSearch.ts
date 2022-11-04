@@ -79,7 +79,7 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             if (ctx.query.played === "true") { // Played filter
                 let cursorString = "";
                 for (;;) {
-                    let url = `https://osu.ppy.sh/api/v2/beatmapsets/search?played=played&q=ranked&q=ranked%3D${ctx.state.year}`;
+                    let url = `https://osu.ppy.sh/api/v2/beatmapsets/search?played=played&q=ranked%3D${ctx.state.year}`;
                     if (cursorString) url += `&cursor_string=${cursorString}`;
                     const res = await Axios.get(url, {
                         headers: {

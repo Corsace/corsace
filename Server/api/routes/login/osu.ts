@@ -6,6 +6,7 @@ import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { config } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
 import { redirectToMainDomain } from "./middleware";
+import { isPossessive } from "../../../../Models/MCA_AYIM/guestRequest";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
@@ -127,7 +128,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         const beatmaps = (await Axios.get(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osu.v1.apiKey}&u=${ctx.state.user.osu.userID}`)).data;
         if (beatmaps.length != 0) {
             for (const beatmap of beatmaps) {
-                if (!(beatmap.version.includes("s'") || beatmap.version.includes("'s")) && (beatmap.approved == 2 || beatmap.approved == 1)) {
+                if (!isPossessive(beatmap.version) && (beatmap.approved == 2 || beatmap.approved == 1)) {
                     const date = new Date(beatmap.approved_date);
                     const year = date.getUTCFullYear();
                     let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: ctx.state.user }});
