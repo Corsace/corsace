@@ -148,26 +148,50 @@ const bnNatHistory = [
     {
         year: 2020,
         mode: "standard",
-        bns: { joined: 50, left: 34 },
+        bns: { joined: 51, left: 36 },
         nat: { joined: 3, left: 0 },
     },
     {
         year: 2020,
         mode: "taiko",
-        bns: { joined: 25, left: 18 },
-        nat: { joined: 1, left: 0 },
+        bns: { joined: 27, left: 18 },
+        nat: { joined: 1, left: 1 },
     },
     {
         year: 2020,
-        mode: "fruits",
-        bns: { joined: 17, left: 17 },
+        mode: "catch",
+        bns: { joined: 17, left: 19 },
         nat: { joined: 2, left: 1 },
     },
     {
         year: 2020,
         mode: "mania",
-        bns: { joined: 20, left: 14 },
+        bns: { joined: 20, left: 15 },
         nat: { joined: 1, left: 0 },
+    },
+    {
+        year: 2021,
+        mode: "standard",
+        bns: { joined: 51, left: 45 },
+        nat: { joined: 5, left: 5 },
+    },
+    {
+        year: 2021,
+        mode: "taiko",
+        bns: { joined: 24, left: 18 },
+        nat: { joined: 2, left: 1 },
+    },
+    {
+        year: 2021,
+        mode: "catch",
+        bns: { joined: 22, left: 16 },
+        nat: { joined: 0, left: 0 },
+    },
+    {
+        year: 2021,
+        mode: "mania",
+        bns: { joined: 14, left: 11 },
+        nat: { joined: 2, left: 2 },
     },
 ];
 
