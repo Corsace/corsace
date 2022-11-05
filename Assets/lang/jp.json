@@ -314,6 +314,10 @@
             "antiMetaCatch": {
                 "name": "反主流",
                 "description": "独創的なパターンやギミックを使用した譜面"
+            },
+            "diversity": {
+                "name": "多様性",
+                "description": "多くの部門や技能を内包した譜面"
             }
         },
         "nom_vote": {
@@ -372,10 +376,8 @@
             "theTeam": "the corsace team"
         },
         "merch": {
-            "official": "Corsaceオフィシャルグッズ",
-            "avail": "期間限定発売中",
-            "name": "Corsace Open 2021 Limited Edition 男女兼用Tシャツ",
-            "colours": "Black/White"
+            "code": "Tap Trio - Corsace Bundle",
+            "products": "数量限定"
         }
     }
 }
