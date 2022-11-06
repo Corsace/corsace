@@ -254,11 +254,11 @@
                 "description": "Le meilleur mapset utilisant des conceptes novateurs, repoussant les limites du gameplay catch"
             },
             "antiMetaCatch": {
-                "name": "Anti-Meta",
+                "name": "Anti-Méta",
                 "description": "Le mapset aux meilleurs patterns non conventionnels et gimmicks."
             },
             "diversity": {
-                "name": "Diversity",
+                "name": "Diversité",
                 "description": "Le meilleur mapset excellant dans un nombre important de skillsets et de catégories."
             }
         },
