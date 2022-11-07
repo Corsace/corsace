@@ -11,16 +11,11 @@ import { OAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
 import { isPossessive } from "../../Models/MCA_AYIM/guestRequest";
+import { sleep } from "../utils/sleep";
 
 let bmQueued = 0; // beatmaps inserted in queue
 let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
 let bmsInserted = 0; // beatmapsets inserted in db (no longer in queue)
-
-function sleep (ms: number): Promise<void> {
-    return new Promise((resolve) => {
-        setTimeout(() => resolve(), ms);
-    });
-}
 
 function timeFormatter (ms: number): string {
     if (isNaN(ms) || ms <= 0)
