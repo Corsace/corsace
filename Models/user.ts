@@ -192,10 +192,6 @@ export class User extends BaseEntity {
                     "nominationReceived.isValid = true AND nominationReceived.categoryID = :categoryId", 
                     { categoryId: category.ID }
                 );
-            if (modeString === "standard") {
-                queryBuilder
-                    .innerJoinAndSelect("count(nominationReceived.nominators)", "nominatorCount", "nominatorCount >= 2");
-            }
         }
 
         queryBuilder
@@ -203,6 +199,21 @@ export class User extends BaseEntity {
             .leftJoinAndSelect("user.mcaEligibility", "mca")
             .where(`mca.${modeString} = 1`);
 
+        // Only include if there are more than 2 nominators in voting stage
+        if (stage === "voting" && modeString === "standard") {
+            queryBuilder
+                .andWhere((qb) => {
+                    const subQuery = qb.subQuery()
+                        .select("count(nominator.ID)")
+                        .from(Nomination, "nomination")
+                        .innerJoin("nomination.nominators", "nominator")
+                        .where("nomination.user = user.ID")
+                        .getQuery();
+
+                    return `${subQuery} >= 2`;
+                });
+        }
+        
         if (category.filter?.rookie) {
             queryBuilder
                 .andWhere((qb) => {

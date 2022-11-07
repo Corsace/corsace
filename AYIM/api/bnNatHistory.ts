@@ -183,7 +183,7 @@ const bnNatHistory = [
     },
     {
         year: 2021,
-        mode: "catch",
+        mode: "fruits",
         bns: { joined: 22, left: 16 },
         nat: { joined: 0, left: 0 },
     },
