@@ -9,9 +9,9 @@ async function script () {
         throw new Error("To prevent disasters, you can only run this script using NODE_ENV=development; eg. `NODE_ENV=development npm run concatNoms`.");
     }
 
-    // console.log("This script can damage your database. Make sure to only execute this if you know what you're doing.");
-    // console.log("This script will automatically continue in 5 seconds. Cancel using Ctrl+C.");
-    // await sleep(5000);
+    console.log("This script can damage your database. Make sure to only execute this if you know what you're doing.");
+    console.log("This script will automatically continue in 5 seconds. Cancel using Ctrl+C.");
+    await sleep(5000);
 
     const conn = await createConnection();
     // ensure schema is up-to-date
