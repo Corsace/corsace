@@ -45,6 +45,8 @@ async function script () {
                 throw new Error("Nomination has no beatmapset, beatmap or user!");
         });
 
+        console.log(`Category ${cat.name} - ${cat.ID} contains ${nominations.length} nominations, reduced to ${uniqueNominations.length} unique nominations.`);
+
         // Iterate over each unique nomination to delete duplicates and transfer nominators to it
         let uniqCount = 0;
         for (const nom of uniqueNominations) {
