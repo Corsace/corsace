@@ -34,34 +34,53 @@ async function script () {
 
         // Reduce list of nominations to 1 for each user/beatmap/set
         const uniqueNominations: Nomination[] = nominations.filter((v, i, a) => {
-            return a.findIndex(t => 
-                t.beatmapset?.ID === v.beatmapset?.ID ||
-                t.beatmap?.ID === v.beatmap?.ID ||
-                t.user?.ID === v.user?.ID
-            ) === i;
+            if (v.beatmapset)
+                return a.findIndex(t => t.beatmapset?.ID === v.beatmapset?.ID) === i;
+            else if (v.beatmap)
+                return a.findIndex(t => t.beatmap?.ID === v.beatmap?.ID) === i;
+            else if (v.user)
+                return a.findIndex(t => t.user?.ID === v.user?.ID) === i;
+            else
+                throw new Error("Nomination has no beatmapset, beatmap or user!");
         });
+        console.log(`Category ${cat.name} - ${cat.ID} contains ${nominations.length} nominations, reduced to ${uniqueNominations.length} unique nominations.`);
         const dupeNoms: Nomination[] = [];
         for (let i = 0; i < uniqueNominations.length; i++) { // Cycle through reduced list
+            console.log(`Running unique nomination ${i + 1}/${uniqueNominations.length}`);
             const nom = uniqueNominations[i];
             // Find all nominations that are for the same user/beatmap/set
             const uniqueDupeNoms = nominations.filter(n => {
-                return (n.beatmapset?.ID === nom.beatmapset?.ID ||
-                    n.beatmap?.ID === nom.beatmap?.ID ||
-                    n.user?.ID === nom.user?.ID) && n.ID !== nom.ID;
+                if (nom.beatmapset)
+                    return n.beatmapset?.ID === nom.beatmapset.ID;
+                else if (nom.beatmap)
+                    return n.beatmap?.ID === nom.beatmap.ID;
+                else if (nom.user)
+                    return n.user?.ID === nom.user.ID;
+                else
+                    throw new Error("Nomination has no beatmapset, beatmap or user!");
             });
-            // See if any of the nominations were reviewed, apply the reviewer and the validity status to it
-            const reviewedNoms = uniqueDupeNoms.filter(n => n.reviewer);
-            // If invalid, remove all nominators; otherwise, add all nominators
-            if (reviewedNoms.length > 0 && reviewedNoms.some(n => !n.isValid)) {
+
+            // If invalid and no other dupe nomination is currently valid, remove all nominators
+            // Otherwise, add all nominators, and remove reviewer if there are validity conflicts
+            if (uniqueDupeNoms.some(n => !n.isValid) && !uniqueDupeNoms.some(n => n.isValid && n.reviewer)) {
                 nom.nominators = [];
                 nom.isValid = false;
+                nom.reviewer = uniqueDupeNoms.find(n => !n.isValid)!.reviewer; // Just take any reviewer, all invalid reviews have reviewers
+                nom.lastReviewedAt = uniqueDupeNoms.find(n => !n.isValid)!.lastReviewedAt; // Just take any lastReviewedAt
             } else {
                 nom.nominators = uniqueDupeNoms.map(n => n.nominators).flat();
+    
+                if (uniqueDupeNoms.some(n => !n.isValid)) 
+                    // If there are any invalid nominations, then that means there are review conflicts, so remove reviewer
+                    nom.reviewer = undefined;
+                else if (!nom.reviewer && uniqueDupeNoms.some(n => n.reviewer)) {
+                    nom.reviewer = uniqueDupeNoms.find(n => n.reviewer)!.reviewer; // Just take any reviewer
+                    nom.lastReviewedAt = uniqueDupeNoms.find(n => n.reviewer)!.lastReviewedAt; // Just take any lastReviewedAt
+                }
+                
+                nom.isValid = true;
             }
-            if (reviewedNoms.length > 0) {
-                nom.reviewer = reviewedNoms[0].reviewer; // Just take any reviewer
-                nom.lastReviewedAt = reviewedNoms[0].lastReviewedAt; // Just take any lastReviewedAt
-            }
+
             uniqueNominations[i] = nom;
             dupeNoms.push(...uniqueDupeNoms);
         }
