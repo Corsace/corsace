@@ -48,6 +48,7 @@ async function script () {
                 return (n.beatmapset?.ID === nom.beatmapset?.ID ||
                     n.beatmap?.ID === nom.beatmap?.ID ||
                     n.user?.ID === nom.user?.ID) && n.ID !== nom.ID;
+
             });
             // See if any of the nominations were reviewed, apply the reviewer and the validity status to it
             const reviewedNoms = uniqueDupeNoms.filter(n => n.reviewer);
