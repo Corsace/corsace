@@ -248,6 +248,18 @@
             "narrative": {
                 "name": "Narration",
                 "description": "Le meilleur storybaord racontant une histoire de lui même."
+            },
+            "technicalCatch": {
+                "name": "Technique",
+                "description": "Le meilleur mapset utilisant des concepts novateurs, repoussant les limites du gameplay catch"
+            },
+            "antiMetaCatch": {
+                "name": "Anti-Méta",
+                "description": "Le mapset aux meilleurs gimmicks et patterns non conventionnels."
+            },
+            "diversity": {
+                "name": "Diversité",
+                "description": "le meilleur mapset excellant dans sa variété de skillsets et catégories."
             }
         },
         "nom_vote": {
