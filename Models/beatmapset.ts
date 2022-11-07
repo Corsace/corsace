@@ -75,10 +75,6 @@ export class Beatmapset extends BaseEntity {
                     "nominationReceived.isValid = true AND nominationReceived.categoryID = :categoryId", 
                     { categoryId: category.ID }
                 );
-            if (modeId === 1) {
-                queryBuilder
-                    .innerJoinAndSelect("count(nominationReceived.nominators)", "nominatorCount", "nominatorCount >= 2");
-            }
         } else {
             queryBuilder
                 .leftJoin(
@@ -95,6 +91,21 @@ export class Beatmapset extends BaseEntity {
             .leftJoinAndSelect("user.otherNames", "otherName")
             .innerJoinAndSelect("beatmapset.beatmaps", "beatmap", includeStoryboard ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: includeStoryboard ? true : modeId })
             .andWhere("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${year}-01-01`, end: `${year + 1}-01-01` });
+
+        // Only include if there are more than 2 nominators in voting stage
+        if (stage === "voting" && modeId === 1) {
+            queryBuilder
+                .andWhere((qb) => {
+                    const subQuery = qb.subQuery()
+                        .select("count(nominator.ID)")
+                        .from(Nomination, "nomination")
+                        .innerJoin("nomination.nominators", "nominator")
+                        .where("nomination.beatmapset = beatmapset.ID")
+                        .getQuery();
+
+                    return `${subQuery} >= 2`;
+                });
+        }
                                 
         // Check if the category has filters since this is a beatmap search
         if (category.filter) {
