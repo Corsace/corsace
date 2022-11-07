@@ -75,6 +75,10 @@ export class Beatmapset extends BaseEntity {
                     "nominationReceived.isValid = true AND nominationReceived.categoryID = :categoryId", 
                     { categoryId: category.ID }
                 );
+            if (modeId === 1) {
+                queryBuilder
+                    .innerJoinAndSelect("count(nominationReceived.nominators)", "nominatorCount", "nominatorCount >= 2");
+            }
         } else {
             queryBuilder
                 .leftJoin(
