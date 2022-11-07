@@ -192,6 +192,10 @@ export class User extends BaseEntity {
                     "nominationReceived.isValid = true AND nominationReceived.categoryID = :categoryId", 
                     { categoryId: category.ID }
                 );
+            if (modeString === "standard") {
+                queryBuilder
+                    .innerJoinAndSelect("count(nominationReceived.nominators)", "nominatorCount", "nominatorCount >= 2");
+            }
         }
 
         queryBuilder
