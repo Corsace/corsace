@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column, ManyToMany, SelectQueryBuilder } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, ManyToOne, Column, ManyToMany, SelectQueryBuilder, RelationId } from "typeorm";
 import { User } from "../user";
 import { Beatmapset } from "../beatmapset";
 import { Category } from "./category";
@@ -13,22 +13,34 @@ export class Nomination extends BaseEntity {
     @ManyToMany(() => User, user => user.nominations)
     nominators!: User[];
     
+    @RelationId((nomination: Nomination) => nomination.category)
+    categoryID!: number;
+
     @ManyToOne(() => Category, category => category.nominations, {
         nullable: false,
         eager: true,
     })
     category!: Category;
 
+    @RelationId((nomination: Nomination) => nomination.user)
+    userID?: number;
+
     @ManyToOne(() => User, user => user.nominationsReceived, {
         eager: true,
     })
     user?: User;
 
+    @RelationId((nomination: Nomination) => nomination.beatmapset)
+    beatmapsetID?: number;
+    
     @ManyToOne(() => Beatmapset, Beatmapset => Beatmapset.nominationsReceived, {
         eager: true,
     })
     beatmapset?: Beatmapset;
 
+    @RelationId((nomination: Nomination) => nomination.beatmap)
+    beatmapID?: number;
+    
     @ManyToOne(() => Beatmap, Beatmap => Beatmap.nominationsReceived, {
         eager: true,
     })
@@ -36,6 +48,9 @@ export class Nomination extends BaseEntity {
 
     @Column({ default: false })
     isValid!: boolean;
+    
+    @RelationId((nomination: Nomination) => nomination.reviewer)
+    reviewerID?: number;
     
     @ManyToOne(() => User, user => user.nominationReviews)
     reviewer?: User;

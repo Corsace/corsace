@@ -1,5 +1,5 @@
 
-import { createConnection } from "typeorm";
+import { createConnection, EntityManager } from "typeorm";
 import { Category } from "../../Models/MCA_AYIM/category";
 import { Nomination } from "../../Models/MCA_AYIM/nomination";
 import { sleep } from "../utils/sleep";
@@ -18,6 +18,8 @@ async function script () {
     await conn.synchronize();
     console.log("DB schema is now up-to-date!");
 
+    const entityManager = new EntityManager(conn);
+
     const categories = await Category.find();
 
 
@@ -25,67 +27,88 @@ async function script () {
     let catCount = 0;
     for (const cat of categories) { // Cycle through each category
         // Get all nominations for this category
-        const nominations = await Nomination.find({
-            relations: ["nominators", "reviewer", "user", "beatmapset", "beatmap", "category"],
-            where: {
-                category: cat,
-            },
-        });
+        const nominations = await Nomination.
+            createQueryBuilder("nomination")
+            .innerJoin("nomination.category", "category")
+            .where("nomination.categoryID = :categoryID", { categoryID: cat.ID })
+            .getMany();
 
-        // Reduce list of nominations to 1 for each user/beatmap/set
+        // Reduce the list to unique nominations only
         const uniqueNominations: Nomination[] = nominations.filter((v, i, a) => {
-            if (v.beatmapset)
-                return a.findIndex(t => t.beatmapset?.ID === v.beatmapset?.ID) === i;
-            else if (v.beatmap)
-                return a.findIndex(t => t.beatmap?.ID === v.beatmap?.ID) === i;
-            else if (v.user)
-                return a.findIndex(t => t.user?.ID === v.user?.ID) === i;
+            if (v.beatmapsetID)
+                return a.findIndex(t => t.beatmapsetID === v.beatmapsetID) === i;
+            else if (v.beatmapID)
+                return a.findIndex(t => t.beatmapID === v.beatmapID) === i;
+            else if (v.userID)
+                return a.findIndex(t => t.userID === v.userID) === i;
             else
                 throw new Error("Nomination has no beatmapset, beatmap or user!");
         });
+
         console.log(`Category ${cat.name} - ${cat.ID} contains ${nominations.length} nominations, reduced to ${uniqueNominations.length} unique nominations.`);
-        const dupeNoms: Nomination[] = [];
-        for (let i = 0; i < uniqueNominations.length; i++) { // Cycle through reduced list
-            console.log(`Running unique nomination ${i + 1}/${uniqueNominations.length}`);
-            const nom = uniqueNominations[i];
-            // Find all nominations that are for the same user/beatmap/set
-            const uniqueDupeNoms = nominations.filter(n => {
-                if (nom.beatmapset)
-                    return n.beatmapset?.ID === nom.beatmapset.ID;
-                else if (nom.beatmap)
-                    return n.beatmap?.ID === nom.beatmap.ID;
-                else if (nom.user)
-                    return n.user?.ID === nom.user.ID;
-                else
-                    throw new Error("Nomination has no beatmapset, beatmap or user!");
+
+        // Iterate over each unique nomination to delete duplicates and transfer nominators to it
+        let uniqCount = 0;
+        for (const nom of uniqueNominations) {
+            uniqCount++;
+            console.log(`Running unique nomination ${uniqCount}/${uniqueNominations.length}`);
+            // Get all nominations for the target user/map/set (including itself)
+            const dupeNoms = (await Nomination
+                .createQueryBuilder("nomination")
+                .select("nomination.ID")
+                .addSelect("nomination.isValid")
+                .addSelect("nomination.reviewerID")
+                .addSelect("nomination.categoryID")
+                .where("nomination.userID = :userID OR nomination.beatmapID = :beatmapID OR nomination.beatmapsetID = :setID", { 
+                    userID: nom.userID ?? null, 
+                    beatmapID: nom.beatmapID ?? null, 
+                    setID: nom.beatmapsetID ?? null,
+                }).getRawMany()
+            ).filter(v => v.categoryID === cat.ID).map(v => {
+                return {
+                    ID: v.nomination_ID,
+                    isValid: v.nomination_isValid === 1,
+                    reviewerID: v.reviewerID,
+                };
             });
 
-            // If invalid and no other dupe nomination is currently valid, remove all nominators
-            // Otherwise, add all nominators, and remove reviewer if there are validity conflicts
-            if (uniqueDupeNoms.some(n => !n.isValid) && !uniqueDupeNoms.some(n => n.isValid && n.reviewer)) {
-                nom.nominators = [];
-                nom.isValid = false;
-                nom.reviewer = uniqueDupeNoms.find(n => !n.isValid)!.reviewer; // Just take any reviewer, all invalid reviews have reviewers
-                nom.lastReviewedAt = uniqueDupeNoms.find(n => !n.isValid)!.lastReviewedAt; // Just take any lastReviewedAt
-            } else {
-                nom.nominators = uniqueDupeNoms.map(n => n.nominators).flat();
-    
-                if (uniqueDupeNoms.some(n => !n.isValid)) 
-                    // If there are any invalid nominations, then that means there are review conflicts, so remove reviewer
-                    nom.reviewer = undefined;
-                else if (!nom.reviewer && uniqueDupeNoms.some(n => n.reviewer)) {
-                    nom.reviewer = uniqueDupeNoms.find(n => n.reviewer)!.reviewer; // Just take any reviewer
-                    nom.lastReviewedAt = uniqueDupeNoms.find(n => n.reviewer)!.lastReviewedAt; // Just take any lastReviewedAt
-                }
-                
-                nom.isValid = true;
-            }
+            // Get all nominators for the target user/map/set (including from itself)
+            const nominators = (await Nomination
+                .createQueryBuilder("nomination")
+                .leftJoin("nomination.nominators", "nominator")
+                .select("nominator.ID")
+                .addSelect("nomination.categoryID")
+                .andWhere("nomination.userID = :userID OR nomination.beatmapID = :beatmapID OR nomination.beatmapsetID = :setID", { 
+                    userID: nom.userID ?? null, 
+                    beatmapID: nom.beatmapID ?? null, 
+                    setID: nom.beatmapsetID ?? null,
+                })
+                .getRawMany()
+            ).filter(v => v.categoryID === cat.ID && v.nominator_ID != null ).map(v => v.nominator_ID);
+            // Check for validity conflicts, will decide on if a reviewer should still be assigned or not
+            const conflict = dupeNoms.some(v => !v.isValid) && dupeNoms.some(v => v.isValid && v.reviewerID !== null);
+            const reviewer = conflict ? null : dupeNoms.find(v => v.reviewerID !== null)?.reviewerID ?? null;
+            // Check if nomination should be considered valid or not.
+            // If no valid or any vetted to be valid, the nomination is valid.
+            const isValid = !dupeNoms.some(v => !v.isValid) || dupeNoms.some(v => v.isValid && v.reviewerID !== null);
 
-            uniqueNominations[i] = nom;
-            dupeNoms.push(...uniqueDupeNoms);
+            // Delete all user-nomination relationships for all nominations (including itself)
+            await entityManager.query(`DELETE FROM user_nominations_nomination WHERE nominationID IN (${dupeNoms.map(v => v.ID).join(", ")})` );
+
+            // Delete all nominations ASIDE for itself
+            const dupeNomsIDs = dupeNoms.filter(v => v.ID !== nom.ID).map(v => v.ID);
+            if (dupeNomsIDs.length > 0)
+                await entityManager.query(`DELETE FROM nomination WHERE ID IN (${dupeNomsIDs.join(", ")})` );
+
+            // Assign nominators to itself if it is considered a valid nomination, do not assign it otherwise.
+            if (isValid && nominators.length > 0)
+                await entityManager.query(`INSERT INTO user_nominations_nomination (userID, nominationID) VALUES ${nominators.map(v => `(${v}, ${nom.ID})`).join(", ")}`);
+            else if (!isValid)
+                await entityManager.query(`DELETE FROM user_nominations_nomination WHERE nominationID = ${nom.ID}` );
+
+            // Assign validity and reviewer as applicable
+            await entityManager.query(`UPDATE nomination SET isValid = ${isValid ? 1 : 0}, reviewerID = ${reviewer ?? "NULL"} WHERE ID = ${nom.ID}`);
         }
-        await Promise.all(dupeNoms.map(n => n.remove()));
-        await Promise.all(uniqueNominations.map(n => n.save()));
         catCount++;
         console.log(`Done with category ${catCount}/${categories.length} (${cat.name} - ${cat.ID})`);
     }
