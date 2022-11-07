@@ -45,9 +45,9 @@ async function script () {
             const nom = uniqueNominations[i];
             // Find all nominations that are for the same user/beatmap/set
             const uniqueDupeNoms = nominations.filter(n => {
-                return n.beatmapset?.ID === nom.beatmapset?.ID ||
+                return (n.beatmapset?.ID === nom.beatmapset?.ID ||
                     n.beatmap?.ID === nom.beatmap?.ID ||
-                    n.user?.ID === nom.user?.ID;
+                    n.user?.ID === nom.user?.ID) && n.ID !== nom.ID;
             });
             // See if any of the nominations were reviewed, apply the reviewer and the validity status to it
             const reviewedNoms = uniqueDupeNoms.filter(n => n.reviewer);
