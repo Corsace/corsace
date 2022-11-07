@@ -83,11 +83,11 @@ async function script () {
                 })
                 .getRawMany()
             ).filter(v => v.categoryID === cat.ID && v.nominator_ID != null ).map(v => v.nominator_ID);
-            // Check for validity conflicts, will depend on if a reviewer should still be assigned or not
+            // Check for validity conflicts, will decide on if a reviewer should still be assigned or not
             const conflict = dupeNoms.some(v => !v.isValid) && dupeNoms.some(v => v.isValid && v.reviewerID !== null);
             const reviewer = conflict ? null : dupeNoms.find(v => v.reviewerID !== null)?.reviewerID ?? null;
             // Check if nomination should be considered valid or not.
-            // If any of the nominations are valid, the nomination is valid.
+            // If no valid or any vetted to be valid, the nomination is valid.
             const isValid = !dupeNoms.some(v => !v.isValid) || dupeNoms.some(v => v.isValid && v.reviewerID !== null);
 
             // Delete all user-nomination relationships for all nominations (including itself)
