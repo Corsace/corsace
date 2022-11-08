@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import { User as APIUser } from "nodesu";
-import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
+import { isCorsace, isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { Category } from "../../../../Models/MCA_AYIM/category";
 import { validatePhaseYear } from "../../../../MCA-AYIM/api/middleware";
@@ -35,7 +35,7 @@ staffRouter.get("/categories/:year", validatePhaseYear, async (ctx) => {
 });
 
 // Endpoint for granting direct MCA nom/vote access to users
-staffRouter.post("/grant/:year", validatePhaseYear, async (ctx) => {
+staffRouter.post("/grant/:year", isCorsace, validatePhaseYear, async (ctx) => {
     if (!ctx.request.body.user)
         return ctx.body = { error: "No user ID given!" };
     if (!ctx.request.body.mode)
