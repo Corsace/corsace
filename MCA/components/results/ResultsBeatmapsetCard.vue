@@ -24,7 +24,7 @@
                             {{ choice.artist }}
                         </div>
                         <div class="map-info__map-hoster">
-                            {{ choice.hoster }}
+                            {{ choice.hoster }} {{ choice.difficulty ? `[${choice.difficulty}]` : "" }}
                         </div>
                     </div>
 
@@ -39,7 +39,7 @@
                         ]"
                         :style="flexFromCol(col.label)"
                     >
-                        {{ col.label ? choice[col.label] : "" }}
+                        {{ col.label ? choice[col.label] : "" }} {{ col.label === "hoster" && choice.difficulty ? `[${choice.difficulty}]` : "" }}
                     </span>
                 </template>
             </a>

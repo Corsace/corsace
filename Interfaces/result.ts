@@ -5,6 +5,7 @@ import { ResultVote } from "./vote";
 import { SectionCategory } from "../MCA-AYIM/store/stage";
 
 export interface BeatmapsetResult extends BeatmapsetInfo {
+    difficulty?: string,
     placement: number,
     firstChoice: number,
     secondThirdChoice: number,
