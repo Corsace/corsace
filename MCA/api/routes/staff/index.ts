@@ -40,7 +40,7 @@ staffRouter.post("/grant/:year", isCorsace, validatePhaseYear, async (ctx) => {
         return ctx.body = { error: "No user ID given!" };
     if (!ctx.request.body.mode)
         return ctx.body = { error: "No mode given!" };
-    if (/^(standard|taiko|fruits|mania|storyboard)$/.test(ctx.request.body.mode))
+    if (!/^(standard|taiko|fruits|mania|storyboard)$/.test(ctx.request.body.mode))
         return ctx.body = { error: "Invalid mode given!" };
 
     const mca: MCA = ctx.state.mca;
