@@ -40,9 +40,13 @@
             <div
                 v-else-if="stage === 'voting'"
                 class="choice__voting"
+                :class="`choice__voting--${selectedMode}`"
                 @click="vote"
             >
-                <div class="choice__voting-title">
+                <div 
+                    class="choice__voting-title"
+                    :class="currentVote ? `choice__voting-title--${selectedMode}` : ''"
+                >
                     vote
                 </div>
                 <div
@@ -54,6 +58,7 @@
                 <div
                     v-else
                     class="choice__voting-vote"
+                    :class="currentVote ? `choice__voting-vote--${selectedMode}` : ''"
                 >
                     {{ currentVote && currentVote.choice || '!' }}
                 </div>
@@ -64,7 +69,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { Getter, namespace } from "vuex-class";
+import { Getter, namespace, State } from "vuex-class";
 
 import { StageType } from "../../MCA-AYIM/store/stage";
 import { Vote } from "../../Interfaces/vote";
@@ -80,6 +85,8 @@ export default class BaseChoiceCard extends Vue {
 
     
     @Getter phase!: Phase | null;
+
+    @State selectedMode!: string;
 
     @stageModule.State selected!: boolean;
     @stageModule.State stage!: StageType;
@@ -208,15 +215,21 @@ export default class BaseChoiceCard extends Vue {
 
     &-title {
         font-size: $font-sm;
+
+        @include mode-text-color;
     }
 
     &-vote {
         font-size: 2rem;
         font-weight: bold;
+
+        @include mode-text-color;
     }
 
-    &:hover {
-        color: $standard;
+    @each $mode in $modes {
+        &--#{$mode}:hover {
+            color: var(--#{$mode});
+        }
     }
 }
 
