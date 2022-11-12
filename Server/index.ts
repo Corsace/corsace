@@ -60,7 +60,7 @@ koa.use(passport.initialize());
 koa.use(passport.session());
 
 koa.use(koaCash({
-    maxAge: 60 * 60 * 24 * 1000,
+    maxAge: 60 * 60 * 1000,
     hash (ctx) {
         return ctx.originalUrl;
     },
