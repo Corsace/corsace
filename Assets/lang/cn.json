@@ -76,7 +76,7 @@
             "uniqueMappers": "总谱师数",
             "newMappers": "新谱师数",
             "highestAvgSr": "最高平均星级",
-            "lowestAvgSr": "最高平均星级",
+            "lowestAvgSr": "最低平均星级",
             "mappers": "谱师数"
         },
         "statistics": {
