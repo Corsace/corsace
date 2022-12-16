@@ -81,7 +81,7 @@ commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
 });
 
 commentsReviewRouter.post("/:id/review", async (ctx) => {
-    const comment = await UserComment.findOneOrFail(ctx.params.id);
+    const comment = await UserComment.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     comment.comment = ctx.request.body.comment.trim();
     comment.isValid = true;
     comment.reviewer = ctx.state.user;
@@ -92,7 +92,7 @@ commentsReviewRouter.post("/:id/review", async (ctx) => {
 });
 
 commentsReviewRouter.post("/:id/remove", async (ctx) => {
-    const comment = await UserComment.findOneOrFail(ctx.params.id);
+    const comment = await UserComment.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     await comment.remove();
 
     ctx.body = {

@@ -148,8 +148,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const message = await beatmapEmbed(beatmap, mods, undefined, undefined, score, user);
 
-    message.setFooter({ text: "" });
-
     if (!(
         (m instanceof Message && /^(rb|recentb|recentbest)/i.test(m.content.substring(1))) ||
         (m instanceof ChatInputCommandInteraction && m.options.getBoolean("best"))
@@ -162,9 +160,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
             else
                 break;
         }
-        message.setFooter({ text: `Try #${attempt} | ` });
-    }
-    message.data.footer!.text += timeSince(score.date, new Date());
+        message.setFooter({ text: `Try #${attempt} | ${timeSince(score.date, new Date())}` });
+    } else
+        message.setFooter({ text: timeSince(score.date, new Date()) });
     m.reply({ 
         content: warning, 
         embeds: [message],
@@ -176,7 +174,7 @@ const data = new SlashCommandBuilder()
     .setDescription("Obtain your or someone else's recent score on osu!")
     .addStringOption(option => option.setName("user").setDescription("The user to query (Default you)"))
     .addStringOption(option => option.setName("mods").setDescription("The mods to filter by (Default all)"))
-    .addIntegerOption(option => option.setName("index").setDescription("The nth score to get (Default latest").setMinValue(1).setMaxValue(100))
+    .addIntegerOption(option => option.setName("index").setDescription("The nth score to get (Default latest)").setMinValue(1).setMaxValue(100))
     .addBooleanOption(option => option.setName("strict").setDescription("Whether to filter by strict mods or not (Default true)"))
     .addBooleanOption(option => option.setName("best").setDescription("Whether to limit to top scores or not (Default false)"));
 

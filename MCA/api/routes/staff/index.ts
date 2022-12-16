@@ -25,7 +25,11 @@ staffRouter.get("/:year", validatePhaseYear, async (ctx) => {
 staffRouter.get("/categories/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const categories = await Category.find({
-        mca,
+        where: {
+            mca: {
+                year: mca.year,
+            },
+        },
     });
 
     if (categories.length === 0)
@@ -45,8 +49,10 @@ staffRouter.post("/grant/:year", isCorsace, validatePhaseYear, async (ctx) => {
 
     const mca: MCA = ctx.state.mca;
     let user = await User.findOne({
-        osu: {
-            userID: ctx.request.body.user,
+        where: {
+            osu: {
+                userID: ctx.request.body.user,
+            },
         },
     });
     if (!user) {
@@ -65,7 +71,9 @@ staffRouter.post("/grant/:year", isCorsace, validatePhaseYear, async (ctx) => {
     let eligibility = await MCAEligibility.findOne({
         where: {
             year: mca.year,
-            user,
+            user: {
+                ID: user.ID,
+            },
         },
         relations: ["user"],
     });

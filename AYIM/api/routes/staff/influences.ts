@@ -82,7 +82,7 @@ influencesReviewRouter.get("/", async (ctx) => {
 });
 
 influencesReviewRouter.post("/:id/review", async (ctx) => {
-    const influence = await Influence.findOneOrFail(ctx.params.id);
+    const influence = await Influence.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     influence.comment = ctx.request.body.comment.trim();
     influence.isValid = true;
     influence.reviewer = ctx.state.user;
@@ -93,7 +93,7 @@ influencesReviewRouter.post("/:id/review", async (ctx) => {
 });
 
 influencesReviewRouter.post("/:id/remove", async (ctx) => {
-    const influence = await Influence.findOneOrFail(ctx.params.id);
+    const influence = await Influence.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     influence.comment = "";
     await influence.save();
 

@@ -40,7 +40,7 @@ staffRequestsRouter.get("/:year", validatePhaseYear, async (ctx) => {
 staffRequestsRouter.post("/:id/update", async (ctx) => {
     const request = await GuestRequest.findOneOrFail({
         where: {
-            ID: ctx.params.id,
+            ID: parseInt(ctx.params.id, 10),
         },
         relations: ["user", "mca"],
     });
@@ -50,7 +50,9 @@ staffRequestsRouter.post("/:id/update", async (ctx) => {
         let eligibility = await MCAEligibility.findOne({
             where: {
                 year: request.mca.year,
-                user: request.user,
+                user: {
+                    ID: request.user.ID,
+                },
             },
             relations: ["user"],
         });
@@ -68,7 +70,9 @@ staffRequestsRouter.post("/:id/update", async (ctx) => {
         const eligibility = await MCAEligibility.findOne({
             where: {
                 year: request.mca.year,
-                user: request.user,
+                user: {
+                    ID: request.user.ID,
+                },
             },
             relations: ["user"],
         });

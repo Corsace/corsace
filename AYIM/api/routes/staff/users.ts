@@ -9,7 +9,8 @@ usersRouter.use(isLoggedInDiscord);
 usersRouter.use(isHeadStaff);
 
 usersRouter.post("/:id/ban", async (ctx) => {
-    const user = await User.findOneOrFail(ctx.params.id, {
+    const user = await User.findOneOrFail({
+        where: { ID: parseInt(ctx.params.id, 10) },
         relations: ["commentsMade"],
     });
     const invalidComments = user.commentsMade.filter(c => !c.isValid);
@@ -26,7 +27,7 @@ usersRouter.post("/:id/ban", async (ctx) => {
 });
 
 usersRouter.get("/:id/unban", async (ctx) => {
-    const user = await User.findOneOrFail(ctx.params.id);
+    const user = await User.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     user.canComment = true;
     await user.save();
 

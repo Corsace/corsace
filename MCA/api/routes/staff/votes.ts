@@ -123,8 +123,10 @@ staffVotesRouter.get("/", async (ctx) => {
 staffVotesRouter.delete("/:id/:user", async (ctx) => {
     const vote = await Vote.findOneOrFail({
         where: {
-            ID: ctx.params.id,
-            voter: ctx.params.user,
+            ID: parseInt(ctx.params.id, 10),
+            voter: {
+                ID: parseInt(ctx.params.user, 10),
+            },
         },
         relations: [
             "category",
@@ -133,9 +135,13 @@ staffVotesRouter.delete("/:id/:user", async (ctx) => {
 
     const otherUserVotes = await Vote.find({
         where: {
-            ID: Not(ctx.params.id),
-            voter: ctx.params.user,
-            category: vote.category,
+            ID: Not(parseInt(ctx.params.id, 10)),
+            voter: {
+                ID: parseInt(ctx.params.user, 10),
+            },
+            category: {
+                ID: vote.category.ID,
+            },
             choice: MoreThan(vote.choice),
         },
     });

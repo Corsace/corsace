@@ -29,6 +29,24 @@ export class ModeDivision extends BaseEntity {
     @OneToMany(() => Category, category => category.mode)
     categories!: Category[];
 
+    static modeSelect (modeText: string): Promise<ModeDivision | null> {
+        switch (modeText) {
+            case "standard" || "std": {
+                return ModeDivision.findOne({ where: { ID: 1 }});
+            } case "taiko" || "tko": {
+                return ModeDivision.findOne({ where: { ID: 2 }});
+            } case "catch" || "ctb": {
+                return ModeDivision.findOne({ where: { ID: 3 }});
+            } case "mania" || "man": {
+                return ModeDivision.findOne({ where: { ID: 4 }});
+            } case "storyboard" || "sb": {
+                return ModeDivision.findOne({ where: { ID: 5 }});
+            } default: {
+                return Promise.resolve(null);
+            }
+        }
+    }
+
 }
 
 export enum ModeDivisionType {

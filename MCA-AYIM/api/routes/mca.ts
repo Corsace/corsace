@@ -8,7 +8,7 @@ mcaRouter.get("/", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const mca = await MCA.findOne(parseQueryParam(ctx.query.year));
+    const mca = ctx.query.year ? await MCA.findOne({ where: { year: parseInt(parseQueryParam(ctx.query.year)!.toString(), 10) }}) : null;
 
     if (mca)
         ctx.body = mca;

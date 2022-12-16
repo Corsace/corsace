@@ -17,7 +17,7 @@ export function setupPassport () {
         if (!id) return done(null, null);
 
         try {
-            const user = await User.findOne(id);
+            const user = await User.findOne({ where: { ID: id }});
             if (user)
                 done(null, user);
             else
@@ -48,8 +48,10 @@ export function setupPassport () {
 export async function discordPassport (accessToken: string, refreshToken: string, profile: DiscordStrategy.Profile, done: OAuth2Strategy.VerifyCallback): Promise<void> {
     try {
         let user = await User.findOne({
-            discord: {
-                userID: profile.id,
+            where: {
+                discord: {
+                    userID: profile.id,
+                },
             },
         });
 
@@ -83,8 +85,10 @@ export async function osuPassport (accessToken: string, refreshToken: string, pr
         });
         const userProfile = res.data;
         let user = await User.findOne({
-            osu: {
-                userID: userProfile.id,
+            where: {
+                osu: {
+                    userID: userProfile.id,
+                },
             },
         });
 
@@ -94,8 +98,12 @@ export async function osuPassport (accessToken: string, refreshToken: string, pr
             user.osu.dateAdded = user.registered = new Date;
         } else if (user.osu.username !== userProfile.username) {
             let nameChange = await UsernameChange.findOne({ 
-                name: user.osu.username, 
-                user, 
+                where: {
+                    name: user.osu.username, 
+                    user: {
+                        ID: user.ID,
+                    },
+                }, 
             });
             if (!nameChange) {
                 nameChange = new UsernameChange;

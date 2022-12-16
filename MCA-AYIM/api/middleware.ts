@@ -43,9 +43,11 @@ function isEligibleFor (user: User, modeID: number, year: number): boolean {
 
 async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> {
     const mca = await MCA.findOne({
-        results: MoreThanOrEqual(new Date()),
-        nomination: {
-            start: LessThanOrEqual(new Date()),
+        where: {
+            results: MoreThanOrEqual(new Date()),
+            nomination: {
+                start: LessThanOrEqual(new Date()),
+            },
         },
     });
 

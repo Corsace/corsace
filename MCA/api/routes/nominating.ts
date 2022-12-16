@@ -53,7 +53,9 @@ nominatingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomina
 
 nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const category = await Category.findOneOrFail({
-        ID: ctx.request.body.categoryId,
+        where: {
+            ID: ctx.request.body.categoryId,
+        },
     });
     const nominator: User = ctx.state.user;
     const nomineeID: number = ctx.request.body.nomineeId;
@@ -223,12 +225,18 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
             nomination.beatmap = beatmap;
         } else if (category.type == CategoryType.Users) {
             user = await User.findOneOrFail({
-                ID: nomineeID,
+                where: {
+                    ID: nomineeID,
+                },
             });
 
             if (category.filter?.rookie) {
                 const sets = await Beatmapset.find({
-                    creator: user,
+                    where: {
+                        creator: {
+                            ID: user.ID,
+                        },
+                    },
                 });
                 const years: number[] = [];
                 for (const set of sets) 

@@ -52,7 +52,14 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         // Username changes
         const usernames: string[] = data.previous_usernames;
         for (const name of usernames) {
-            let nameChange = await UsernameChange.findOne({ name, user: ctx.state.user });
+            let nameChange = await UsernameChange.findOne({ 
+                where: { 
+                    name, 
+                    user: {
+                        ID: ctx.state.user.ID,
+                    },
+                },
+            });
             if (!nameChange) {
                 nameChange = new UsernameChange;
                 nameChange.name = name;
@@ -63,8 +70,12 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
 
         // Check if current username is a previous username or not
         const currentName = await UsernameChange.findOne({
-            name: ctx.state.user.osu.username,
-            user: ctx.state.user,
+            where: {
+                name: ctx.state.user.osu.username,
+                user: {
+                    ID: ctx.state.user.ID,
+                },
+            },
         });
         if (currentName)
             await currentName.remove();
