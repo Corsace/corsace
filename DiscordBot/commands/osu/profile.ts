@@ -17,8 +17,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         (m instanceof ChatInputCommandInteraction && !m.options.getString("user"))
     ) { // Querying themself in message command
         const userQ = await User.findOne({
-            discord: {
-                userID: author.id,
+            where: {
+                discord: {
+                    userID: author.id,
+                },
             },
         });
         if (!userQ) {
@@ -30,15 +32,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
         user = userQ;
     } else { // Querying someone else
         let q = "";
-        if (
-            (m instanceof Message && osuRegex.test(m.content)) ||
-            (m instanceof ChatInputCommandInteraction && osuRegex.test(m.options.getString("user")!))
-        ) { // Command run
-            const res = osuRegex.exec(m instanceof Message ? m.content : m.options.getString("user")!);
+        if (m instanceof Message && osuRegex.test(m.content)) { // Command run
+            const res = osuRegex.exec(m.content);
             if (!res)
                 return;
             q = res[2];
             apiUser = (await osuClient.user.get(res[2])) as APIUser;
+        } else if (m instanceof ChatInputCommandInteraction && !profileRegex.test(m.options.getString("user")!)) { // Slash command run
+            apiUser = (await osuClient.user.get(m.options.getString("user")!)) as APIUser;
         } else { // Profile linked
             const res = profileRegex.exec(m instanceof Message ? m.content : m.options.getString("user")!);
             if (!res)
@@ -53,8 +54,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
 
         let userQ = await User.findOne({
-            osu: { 
-                userID: apiUser.userId.toString(), 
+            where: {
+                osu: { 
+                    userID: apiUser.userId.toString(), 
+                },
             },
         });
 

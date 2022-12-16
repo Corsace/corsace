@@ -71,8 +71,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             apiUser = (await osuClient.user.get(m.options.getString("user")!)) as APIUser;
 
         let userQ = await User.findOne({
-            osu: { 
-                userID: apiUser.userId.toString(), 
+            where: {
+                osu: { 
+                    userID: apiUser.userId.toString(), 
+                },
             },
         });
 
@@ -88,8 +90,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         user = userQ;
     } else {
         const userQ = await User.findOne({
-            discord: {
-                userID: m instanceof Message ? m.author.id : m.user.id,
+            where: {
+                discord: {
+                    userID: m instanceof Message ? m.author.id : m.user.id,
+                },
             },
         });
         if (!userQ) {

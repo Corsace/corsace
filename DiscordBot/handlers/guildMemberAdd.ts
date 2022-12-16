@@ -9,8 +9,10 @@ export default async function guildMemberAdd (member: GuildMember) {
     if (member.guild.id === config.discord.guild) {
         const roles = [config.discord.roles.corsace.streamAnnouncements];
         const user = await User.findOne({
-            discord: {
-                userID: member.id,
+            where: {
+                discord: {
+                    userID: member.id,
+                },
             },
         });
         if (user)

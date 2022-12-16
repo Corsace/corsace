@@ -24,8 +24,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const author = m instanceof Message ? m.author : m.user;
 
     const user = await User.findOne({
-        discord: {
-            userID: author.id,
+        where: {
+            discord: {
+                userID: author.id,
+            },
         },
     });
     if (!user) {
@@ -37,7 +39,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     let comment = "";
     let year = (new Date).getUTCFullYear();
     let search = "";
-    let mode: ModeDivision | undefined = undefined;
+    let mode: ModeDivision | null = null;
     if (m instanceof Message) {
         if (commentRegex.test(m.content)) {
             comment = commentRegex.exec(m.content)![1];
@@ -68,8 +70,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 }
             }
         }
-        if (!mode)
-            mode = await ModeDivision.findOne(1);
     } else {
         comment = m.options.getString("comment") ?? "";
         search = m.options.getString("user") ?? "";
@@ -79,9 +79,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const modeText = m.options.getString("mode");
         if (modeText)
             mode = await ModeDivision.modeSelect(modeText);
-        if (!mode)
-            mode = await ModeDivision.findOne(1);
     }
+
+    if (!mode)
+        mode = await ModeDivision.findOne({ where: { ID: 1 }});
 
     if (!isEligibleFor(user, mode!.ID, year)) {
         await m.reply(`You did not rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date).getUTCFullYear() ? "\nFor adding influences in the current year, then if you have ranked a set, re-login to Corsace with your osu! account, and you should be able to add them after!" : ""}`);
@@ -106,8 +107,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     let influenceUser = await User.findOne({
-        osu: { 
-            userID: apiUser.userId.toString(), 
+        where: {
+            osu: { 
+                userID: apiUser.userId.toString(), 
+            },
         },
     });
 
@@ -123,9 +126,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const influences = await Influence.find({
         where: {
-            user,
+            user: {
+                ID: user.ID,
+            },
             year,
-            mode,
+            mode: {
+                ID: mode!.ID,
+            },
         },
         relations: ["user", "influence"],
     });
@@ -147,9 +154,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     // Warn for older years
     const mca = await MCA.findOne({
-        results: MoreThanOrEqual(new Date()),
-        nomination: {
-            start: LessThanOrEqual(new Date()),
+        where: {
+            results: MoreThanOrEqual(new Date()),
+            nomination: {
+                start: LessThanOrEqual(new Date()),
+            },
         },
     });
     if (year < (mca ? mca.year : (new Date()).getUTCFullYear())) {

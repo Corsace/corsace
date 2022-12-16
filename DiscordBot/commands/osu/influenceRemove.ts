@@ -22,8 +22,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const author = m instanceof Message ? m.author : m.user;
 
     const user = await User.findOne({
-        discord: {
-            userID: author.id,
+        where: {
+            discord: {
+                userID: author.id,
+            },
         },
     });
     if (!user) {
@@ -34,7 +36,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Get year and/or search query params
     let year = 0;
     let search = "";
-    let mode: ModeDivision | undefined = undefined;
+    let mode: ModeDivision | null = null;
     if (m instanceof Message) {
         const res = influenceRemoveRegex.exec(m.content);
         if (!res)
@@ -61,8 +63,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 }
             }
         }
-        if (!mode)
-            mode = await ModeDivision.findOne(1);
     } else {
         search = m.options.getString("user") ?? "";
         year = m.options.getInteger("year") ?? 0;
@@ -71,14 +71,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const modeText = m.options.getString("mode");
         if (modeText)
             mode = await ModeDivision.modeSelect(modeText);
-        if (!mode)
-            mode = await ModeDivision.findOne(1);
     }
 
+    if (!mode)
+        mode = await ModeDivision.findOne({ where: { ID: 1 }});
+
     const mca = await MCA.findOne({
-        results: MoreThanOrEqual(new Date()),
-        nomination: {
-            start: LessThanOrEqual(new Date()),
+        where: {
+            results: MoreThanOrEqual(new Date()),
+            nomination: {
+                start: LessThanOrEqual(new Date()),
+            },
         },
     });
     if (year < (mca ? mca.year : (new Date()).getUTCFullYear())) {
@@ -104,8 +107,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     const influenceUser = await User.findOne({
-        osu: { 
-            userID: apiUser.userId.toString(), 
+        where: {
+            osu: { 
+                userID: apiUser.userId.toString(), 
+            },
         },
     });
 
@@ -114,10 +119,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
     const influence = await Influence.findOne({
-        user,
-        influence: influenceUser,
-        year,
-        mode,
+        where: {
+            user: {
+                ID: user.ID,
+            },
+            influence: {
+                ID: influenceUser.ID,
+            },
+            year,
+            mode: {
+                ID: mode!.ID,
+            },
+        },
     });
     if (!influence) {
         await m.reply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** doesn't seem to exist currently!`);
