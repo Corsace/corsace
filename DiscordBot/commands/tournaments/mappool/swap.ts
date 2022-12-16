@@ -1,9 +1,9 @@
 import { Message } from "discord.js";
-import { getPoolData, updatePoolRow } from "../../../Server/sheets";
-import { Command } from "../index";
-import { roundAcronyms, roundNames } from "../../../Interfaces/rounds";
-import mappoolFunctions from "../../functions/mappoolFunctions";
-import { genericPoolMods } from "../../../Interfaces/mods";
+import { getPoolData, updatePoolRow } from "../../../../Server/sheets";
+import { Command } from "../../index";
+import { roundAcronyms, roundNames } from "../../../../Interfaces/rounds";
+import mappoolFunctions from "../../../functions/mappoolFunctions";
+import { genericPoolMods } from "../../../../Interfaces/mods";
 
 async function command (m: Message) {
     if (!(await mappoolFunctions.privilegeChecks(m, false, false)))

@@ -1,8 +1,8 @@
-import { Message, MessageEmbed } from "discord.js";
-import { getPoolData } from "../../../Server/sheets";
-import { Command } from "../index";
-import sheetFunctions from "../../functions/mappoolFunctions";
-import mappoolFunctions from "../../functions/mappoolFunctions";
+import { Message, EmbedBuilder } from "discord.js";
+import { getPoolData } from "../../../../Server/sheets";
+import { Command } from "../../index";
+import sheetFunctions from "../../../functions/mappoolFunctions";
+import mappoolFunctions from "../../../functions/mappoolFunctions";
 
 async function command (m: Message) {
     if (!(await mappoolFunctions.privilegeChecks(m, true, true)))
@@ -12,10 +12,10 @@ async function command (m: Message) {
     try {
         const { pool, user } = await mappoolFunctions.parseParams(m);
         
-        const embed = new MessageEmbed({
+        const embed = new EmbedBuilder({
             author: {
                 name: user.nickname ?? user.user.username,
-                iconURL: user.user.displayAvatarURL({format: "png", size: 2048, dynamic: true}),
+                iconURL: user.displayAvatarURL({ extension: "png", size: 2048 }),
             },
             description: `${m.author.id === user.id ? "Your" : user.nickname ?? user.user.username} assignments for **${pool === "closedMappool" ? "Corsace Closed" : "Corsace Open"}**`,
             fields: [],
@@ -28,7 +28,7 @@ async function command (m: Message) {
                 continue;
             for (const row of rows) {
                 if (row.some(v => v === user?.id))
-                    embed.fields.push({
+                    embed.addFields({
                         name: `${round} ${row[0]}: ${row[2]} - ${row[3]} [${row[4]}]`,
                         value: `Preview Deadline: ${row[12]}\nMapping deadline: ${row[13]}`,
                         inline: true,

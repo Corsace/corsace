@@ -1,4 +1,4 @@
-import { MessageEmbed, MessageEmbedOptions } from "discord.js";
+import { EmbedBuilder, EmbedData } from "discord.js";
 import { ApprovalStatus, Beatmap, BeatmapScore, Mode, Score, UserScore } from "nodesu";
 import { acronymtoMods, modsToAcronym } from "../../Interfaces/mods";
 import { User } from "../../Models/user";
@@ -7,7 +7,7 @@ import { osuClient } from "../../Server/osu";
 import modeColour from "./modeColour";
 import ppCalculator from "./ppCalculator";
 
-export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set?: Beatmap[], missCount?: number, score?: UserScore, user?: User, isRecent?: boolean): Promise<MessageEmbed> {
+export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set?: Beatmap[], missCount?: number, score?: UserScore, user?: User, isRecent?: boolean): Promise<EmbedBuilder> {
 
     const embedMsg = defaultBeatmapEmbed(beatmap, score && user ? false : true);
 
@@ -167,10 +167,10 @@ export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set?
     } else
         throw new Error("Please provide either set + miss count, or score + user params!");
 
-    return new MessageEmbed(embedMsg);
+    return new EmbedBuilder(embedMsg);
 }
 
-function defaultBeatmapEmbed (beatmap: Beatmap, addFC: boolean): MessageEmbedOptions {
+function defaultBeatmapEmbed (beatmap: Beatmap, addFC: boolean): EmbedData {
     // Obtain beatmap information
     const totalMinutes = Math.floor(beatmap.totalLength / 60);
     let totalSeconds = `${Math.round(beatmap.totalLength % 60)}`;

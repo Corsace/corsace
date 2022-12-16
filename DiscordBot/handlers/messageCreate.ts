@@ -37,17 +37,17 @@ export default async function messageCreate (m: Message) {
             return;
         
         for (const command of commands) { 
-            if (!command.name.some(name => name === commandName[1].toLowerCase()))
+            if (command.data.name.toLowerCase() !== commandName[1].toLowerCase())
                 continue;
-            await command.command(m);
+            await command.run(m);
         }
     }
 
     // Check for an osu! profile linked
     if (profileRegex.test(m.content))
-        profile.command(m);
+        profile.run(m);
 
     // Check for an osu! beatmap linked
     if (beatmapRegex.test(m.content))
-        beatmap.command(m);
+        beatmap.run(m);
 }

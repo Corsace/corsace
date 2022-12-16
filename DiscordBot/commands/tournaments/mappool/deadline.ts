@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
-import { getPoolData, updatePoolRow } from "../../../Server/sheets";
-import { Command } from "../index";
-import mappoolFunctions from "../../functions/mappoolFunctions";
+import { getPoolData, updatePoolRow } from "../../../../Server/sheets";
+import { Command } from "../../index";
+import mappoolFunctions from "../../../functions/mappoolFunctions";
 
 async function command (m: Message) {
     if (!(await mappoolFunctions.privilegeChecks(m, false, false)))

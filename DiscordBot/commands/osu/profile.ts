@@ -1,39 +1,46 @@
-import { Message, MessageEmbed, MessageEmbedOptions } from "discord.js";
+import { Message, EmbedBuilder, EmbedData, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { OAuth, User } from "../../../Models/user";
 import { Command } from "../index";
 import { User as APIUser } from "nodesu";
 import { osuClient } from "../../../Server/osu";
+import loginResponse from "../../functions/loginResponse";
 
-async function command (m: Message) {
+async function run (m: Message | ChatInputCommandInteraction) {
     const osuRegex = /(osu|profile)\s+(.+)/i;
     const profileRegex = /(osu|old)\.ppy\.sh\/(u|users)\/(\S+)/i;
 
+    const author = m instanceof Message ? m.author : m.user;
     let user: User;
     let apiUser: APIUser;
-    if (!osuRegex.test(m.content) && !profileRegex.test(m.content)) { // Querying themself
+    if (
+        (m instanceof Message && !osuRegex.test(m.content) && !profileRegex.test(m.content)) ||
+        (m instanceof ChatInputCommandInteraction && !m.options.getString("user"))
+    ) { // Querying themself in message command
         const userQ = await User.findOne({
             discord: {
-                userID: m.author.id,
+                userID: author.id,
             },
         });
         if (!userQ) {
-            await m.channel.send("No user found in the corsace database for you! Please login to https://corsace.io with your discord and osu! accounts!");
+            await loginResponse(m);
             return;
         }
 
         apiUser = (await osuClient.user.get(userQ.osu.userID)) as APIUser;
         user = userQ;
     } else { // Querying someone else
-
         let q = "";
-        if (osuRegex.test(m.content)) { // Command run
-            const res = osuRegex.exec(m.content);
+        if (
+            (m instanceof Message && osuRegex.test(m.content)) ||
+            (m instanceof ChatInputCommandInteraction && osuRegex.test(m.options.getString("user")!))
+        ) { // Command run
+            const res = osuRegex.exec(m instanceof Message ? m.content : m.options.getString("user")!);
             if (!res)
                 return;
             q = res[2];
             apiUser = (await osuClient.user.get(res[2])) as APIUser;
         } else { // Profile linked
-            const res = profileRegex.exec(m.content);
+            const res = profileRegex.exec(m instanceof Message ? m.content : m.options.getString("user")!);
             if (!res)
                 return;
             q = res[3];
@@ -41,7 +48,7 @@ async function command (m: Message) {
         }
 
         if (!apiUser) {
-            await m.channel.send(`No user found for **${q}**`);
+            await m.reply(`No user found for **${q}**`);
             return;
         }
 
@@ -63,7 +70,7 @@ async function command (m: Message) {
         user = userQ;
     }
     
-    const embedMsg: MessageEmbedOptions = {
+    const embedMsg: EmbedData = {
         author: {
             url: `https://osu.ppy.sh/users/${user.osu.userID}`,
             name: `${user.osu.username} (${user.osu.userID})`,
@@ -78,16 +85,19 @@ async function command (m: Message) {
             url: user.osu.avatar,
         },
     };
-    const message = new MessageEmbed(embedMsg);
-    m.channel.send({ embeds: [message] });
+    const message = new EmbedBuilder(embedMsg);
+    m.reply({ embeds: [message] });
 }
 
+const data = new SlashCommandBuilder()
+    .setName("profile")
+    .setDescription("Obtain your or someone else's osu! profile")
+    .addStringOption(option => option.setName("user").setDescription("The user to query"));
+
 const profile: Command = {
-    name: ["osu", "profile"], 
-    description: "Obtain your or someone else's osu! profile",
-    usage: "!(osu|profile)", 
+    data, 
     category: "osu",
-    command,
+    run,
 };
 
 export default profile;

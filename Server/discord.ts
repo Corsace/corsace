@@ -1,15 +1,15 @@
-import { Intents, Client, Guild, GuildMember } from "discord.js";
+import { Client, Guild, GuildMember, GatewayIntentBits } from "discord.js";
 import { config } from "node-config-ts";
 
 // Add more later as needed
 // TODO: See which intents are required after (most) commands are imported from Maquia
 const discordClient = new Client({ 
     intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MEMBERS,
-        Intents.FLAGS.GUILD_BANS,
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.DIRECT_MESSAGES,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.MessageContent,
     ],
 });
 

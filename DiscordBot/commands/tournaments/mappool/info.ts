@@ -1,9 +1,9 @@
-import { Message, MessageEmbed } from "discord.js";
-import { getPoolData } from "../../../Server/sheets";
-import { Command } from "../index";
-import { discordClient } from "../../../Server/discord";
-import { roundAcronyms, roundNames } from "../../../Interfaces/rounds";
-import mappoolFunctions from "../../functions/mappoolFunctions";
+import { Message, EmbedBuilder } from "discord.js";
+import { getPoolData } from "../../../../Server/sheets";
+import { Command } from "../../index";
+import { discordClient } from "../../../../Server/discord";
+import { roundAcronyms, roundNames } from "../../../../Interfaces/rounds";
+import mappoolFunctions from "../../../functions/mappoolFunctions";
 
 async function command (m: Message) {
     if (!(await mappoolFunctions.privilegeChecks(m, true, true)))
@@ -26,10 +26,10 @@ async function command (m: Message) {
             return;
         }
 
-        const embed = new MessageEmbed({
+        const embed = new EmbedBuilder({
             author: {
                 name: pool === "openMappool" ? "Corsace Open" : "Corsace Closed",
-                iconURL: discordClient.user?.displayAvatarURL({format: "png", size: 2048, dynamic: true}),
+                iconURL: discordClient.user?.displayAvatarURL({extension: "png", size: 2048}),
             },
             description: `**${roundNames[roundAcronyms.findIndex(name => name === round.toLowerCase())].toUpperCase()} POOL**`,
             fields: [],
@@ -37,13 +37,13 @@ async function command (m: Message) {
 
         for (const row of rows) {
             if (row.length < 5)
-                embed.fields.push({
+                embed.addFields({
                     name: row[0],
                     value: "**EMPTY SLOT**",
                     inline: true,
                 });
             else
-                embed.fields.push({
+                embed.addFields({
                     name: row[0],
                     value: `${row[2]} - ${row[3]} [${row[4]}] mapped by ${row[1]}`,
                     inline: true,

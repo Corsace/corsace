@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../index";
 import { osuClient } from "../../../Server/osu";
 import { Beatmap, Mode } from "nodesu";
@@ -31,18 +31,29 @@ async function obtainBeatmap (res: RegExpExecArray, mods: string): Promise<[Beat
     return [beatmap, set];
 }
 
-async function command (m: Message) {
+async function run (m: Message | ChatInputCommandInteraction) {
+
+    if (m instanceof Message) {
+        "";
+    }
+
     const beatmapRegex = /(osu|old)\.ppy\.sh\/(s|b|beatmaps|beatmapsets)\/(\d+)(#(osu|taiko|fruits|mania)\/(\d+))?/i;
     const modRegex = /-m\s*(\S+)/i;
     const missRegex = /-x\s*(\S+)/i;
 
     let reg: RegExpExecArray | null = null; 
-    if (beatmapRegex.test(m.content)) { // Beatmap link
+    if (m instanceof Message && beatmapRegex.test(m.content)) { // Beatmap link
         reg = beatmapRegex.exec(m.content);
+    } else if (m instanceof ChatInputCommandInteraction && m.options.getString("beatmap")) {
+        reg = beatmapRegex.exec(m.options.getString("beatmap")!); 
     } else { // Beatmap command, look at previous messages
+        if (!m.channel) {
+            m.reply("There isn't a channel(?)");
+            return;
+        }
         const prevMessages = await m.channel.messages.fetch({ limit: 100 });
         if (prevMessages.size === 0) { // Check if they are trolling and there's no previous messages
-            m.channel.send("There are no previous messages... what are u doing");
+            m.reply("There are no previous messages... what are u doing");
             return;
         }
 
@@ -63,34 +74,34 @@ async function command (m: Message) {
         }
     }
 
-    const msg = await m.channel.send("Processing beatmap...");
-
     // Check if beatmap was found
     if (!reg) {
-        msg.delete();
-        if (beatmapRegex.test(m.content))
+        if (m instanceof Message && beatmapRegex.test(m.content))
             return;
-        m.channel.send("No previous beatmap link found");
+        m.reply("No previous beatmap link found");
         return;
     }
 
     // Check if mods were specified
     let mods = "NM";
-    if (modRegex.test(m.content)) {
+    if (m instanceof Message && modRegex.test(m.content)) {
         const res = modRegex.exec(m.content);
         if (res) {
             mods = res[1].toUpperCase();
             if (mods.includes("NC") && !mods.includes("DT"))
                 mods += "DT";
         }
+    } else if (m instanceof ChatInputCommandInteraction && m.options.getString("mods")) {
+        mods = m.options.getString("mods")!.toUpperCase();
+        if (mods.includes("NC") && !mods.includes("DT"))
+            mods += "DT";
     }
 
     let [beatmap, set] = await obtainBeatmap(reg, mods);
     if (!beatmap) {
-        msg.delete();
-        if (beatmapRegex.test(m.content))
+        if (m instanceof Message && beatmapRegex.test(m.content))
             return;
-        m.channel.send("No previous beatmap found from previous link on osu!");
+        m.reply("No previous beatmap found from previous link on osu!");
         return;
     }
     if (!set)
@@ -100,13 +111,17 @@ async function command (m: Message) {
 
     // Check if misses were specified
     let misses = 0;
-    if (missRegex.test(m.content)) {
+    if (m instanceof Message && missRegex.test(m.content)) {
         const res = missRegex.exec(m.content);
         if (res) {
             misses = parseInt(res[1]);
             if (Number.isNaN(misses) || misses < 0 || misses > totalHits)
                 misses = 0;
         }
+    } else if (m instanceof ChatInputCommandInteraction && m.options.getInteger("misses")) {
+        misses = m.options.getInteger("misses")!;
+        if (misses < 0 || misses > totalHits)
+            misses = 0;
     }
 
     // Apply mod scalings
@@ -117,16 +132,20 @@ async function command (m: Message) {
         mods = mods.replace("DT", "");
 
     const message = await beatmapEmbed(beatmap, mods, set, misses);
-    msg.delete();
-    m.channel.send({ embeds: [message] });
+    m.reply({ embeds: [message] });
 }
 
+const data = new SlashCommandBuilder()
+    .setName("beatmap")
+    .setDescription("Obtain an osu! beatmap's info")
+    .addStringOption(option => option.setName("beatmap").setDescription("The beatmap link or ID"))
+    .addStringOption(option => option.setName("mods").setDescription("The mods to apply to the beatmap"))
+    .addIntegerOption(option => option.setName("misses").setDescription("The amount of misses to apply to the beatmap's pp calculation"));
+
 const beatmap: Command = {
-    name: ["map", "beatmap"], 
-    description: "Obtain an osu! beatmap's info",
-    usage: "!(map|beatmap)", 
+    data, 
     category: "osu",
-    command,
+    run,
 };
 
 export default beatmap;
