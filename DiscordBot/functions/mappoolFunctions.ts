@@ -9,7 +9,7 @@ import { genericPoolMods } from "../../Interfaces/mods";
 const openAcronyms = ["co", "open", "corsaceopen", "corsace open", "corsace"];
 const closedAcronyms = ["cc", "closed", "corsaceclosed", "corsace closed"];
 const acronyms = {
-    openMappool: ["QL", "RO32", "RO16", "QF", "SF", "F", "GF"],
+    openMappool: ["RR", "RO", "KO1", "KO2"],
     closedMappool: ["QL", "RO16", "QF", "SF", "F", "GF"],
 };
 const pools: ("openMappool" | "closedMappool")[] = ["openMappool", "closedMappool"];
