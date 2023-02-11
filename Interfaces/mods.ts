@@ -31,8 +31,6 @@ export const modAcronyms = {
     "K2": Mods.Key2,
 };
 
-export const genericPoolMods = ["NM", "HR", "HD", "DT", "FM", "TB"]; 
-
 /**
  * Parses a list of mod acronyms into nodesu ModsType enums
  * @param text A string consisting of mods as acronyms

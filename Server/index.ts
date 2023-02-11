@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { config } from "node-config-ts";
-import { createConnection } from "typeorm";
 import Koa from "koa";
 import koaCash from "koa-cash";
 import BodyParser from "koa-bodyparser";
@@ -42,7 +41,7 @@ import recordsRouter from "../AYIM/api/routes/records";
 import statisticsRouter from "../AYIM/api/routes/statistics";
 import mappersRouter from "../AYIM/api/routes/mappers";
 
-import ormConnectionOptions from "../ormconfig";
+import ormConfig from "../ormconfig";
 
 const koa = new Koa;
 
@@ -133,8 +132,7 @@ koa.use(Mount("/api/staff", mcaStaffRouter.routes()));
 koa.use(Mount("/", helloWorldRouter.routes()));
 koa.use(Mount("/api", helloWorldRouter.routes()));
 
-
-createConnection(ormConnectionOptions)
+ormConfig.initialize()
     .then((connection) => {
         console.log(`Connected to the ${connection.options.database} (${connection.options.name}) database!`);
         setupPassport();

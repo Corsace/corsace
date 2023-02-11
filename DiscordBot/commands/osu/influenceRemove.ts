@@ -7,7 +7,7 @@ import { Influence } from "../../../Models/MCA_AYIM/influence";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
-import loginResponse from "../../functions/loginResponse";
+import { loginResponse } from "../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     const influenceRemoveRegex = /(inf|influence)del(ete)?\s+(.+)/i;

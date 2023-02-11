@@ -3,7 +3,7 @@ import { OAuth, User } from "../../../Models/user";
 import { Command } from "../index";
 import { User as APIUser } from "nodesu";
 import { osuClient } from "../../../Server/osu";
-import loginResponse from "../../functions/loginResponse";
+import { loginResponse } from "../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     const osuRegex = /(osu|profile)\s+(.+)/i;

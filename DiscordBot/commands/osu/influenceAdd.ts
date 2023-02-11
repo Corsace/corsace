@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType, DiscordAPIError, InteractionResponse, Message, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType, DiscordAPIError, Message, SlashCommandBuilder } from "discord.js";
 import { OAuth, User } from "../../../Models/user";
 import { Command } from "../index";
 import { User as APIUser } from "nodesu";
@@ -8,7 +8,7 @@ import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
-import loginResponse from "../../functions/loginResponse";
+import { loginResponse } from "../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     const influenceAddRegex = /(inf|influence)add\s+(.+)/i;

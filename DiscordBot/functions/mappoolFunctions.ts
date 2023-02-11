@@ -4,7 +4,6 @@ import { discordClient, getMember } from "../../Server/discord";
 import { getPoolData } from "../../Server/sheets";
 import { roundAcronyms, roundNames } from "../../Interfaces/rounds";
 import timeSince from "../../Server/utils/timeSince";
-import { genericPoolMods } from "../../Interfaces/mods";
 
 const openAcronyms = ["co", "open", "corsaceopen", "corsace open", "corsace"];
 const closedAcronyms = ["cc", "closed", "corsaceclosed", "corsace closed"];
@@ -105,7 +104,7 @@ async function parseParams (m: Message) {
     let pool: "openMappool" | "closedMappool" = poolCheck(m);
     let user = await getMember(m.author.id) as GuildMember;
     let round = "";
-    let slot = "";
+    // let slot = "";
     let deadlineType: "preview" | "map" | "" = "";
     let link = "";
     let diffName = "";
@@ -130,8 +129,8 @@ async function parseParams (m: Message) {
             diffName = parts[i + 1]; 
             i++;
         }
-        else if (genericPoolMods.some(poolMod => part.includes(poolMod.toLowerCase())))
-            slot = part;
+        // else if (genericPoolMods.some(poolMod => part.includes(poolMod.toLowerCase())))
+        //     slot = part;
         else
             used = false;
 
@@ -166,7 +165,7 @@ async function parseParams (m: Message) {
         pool,
         user,
         round,
-        slot,
+        // slot,
         deadlineType,
         diffName,
         link,

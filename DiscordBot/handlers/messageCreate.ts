@@ -27,9 +27,6 @@ export default async function messageCreate (m: Message) {
     if (timestampRegex.test(noEmoji))
         osuTimestamp(m);
 
-    if (m.channel.id === config.discord.openMappool.songSubmission || m.channel.id === config.discord.closedMappool.songSubmission)
-        mappoolSong(m, m.channel.id === config.discord.openMappool.songSubmission);
-
     // Command checking TODO: Add custom prefix (relies on discord server model)
     if (prefix.test(m.content)) {
         const commandName = prefix.exec(m.content);

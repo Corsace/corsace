@@ -6,7 +6,7 @@ import { OAuth, User } from "../../../Models/user";
 import { applyMods, acronymtoMods, modsToAcronym } from "../../../Interfaces/mods";
 import beatmapEmbed from "../../functions/beatmapEmbed";
 import timeSince from "../../../Server/utils/timeSince";
-import loginResponse from "../../functions/loginResponse";
+import { loginResponse } from "../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     const recentRegex = /(^r|recent|rs|rb|recentb|recentbest)\s+(.+)/i;

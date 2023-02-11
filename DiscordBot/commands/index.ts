@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, Collection, Interaction, Message, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
+
+import tournamentCreate from "./tournaments/create";
+import tournamentList from "./tournaments/list";
+import stageCreate from "./tournaments/stage/create";
 
 import avatar from "./utility/avatar";
 import help from "./utility/help";
@@ -21,8 +25,10 @@ const commands: Command[] = [];
 
 // List of commands here
 
-// mappool commands
-
+// tournament commands
+commands.push(tournamentCreate);
+commands.push(tournamentList);
+commands.push(stageCreate);
 
 // general utility commands
 commands.push(avatar);

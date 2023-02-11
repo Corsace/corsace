@@ -17,23 +17,6 @@
                 "verified": "625020515697950723",
                 "streamAnnouncements": "881052012601569340"
             },
-            "open": {
-                "participants": "485092513640742913",
-                "captains": "485092709179326474",
-                "mapper": ["889678780749185055", "889678952136863784"],
-                "mappooler": "461583913287024643",
-                "testplayer": "889679000300027934",
-                "scheduler": "461584274404016138",
-                "streamManager": "461584529627414538",
-                "streamer": "461584578461696000",
-                "commentator": "461584618643259400",
-                "referee": "461584657042112543"
-            },
-            "closed": {
-                "mapper": ["793232956323659786", "889678975394258997"],
-                "mappooler": "774795961691406366",
-                "testplayer": "787801509152423987"
-            },
             "mca": {
                 "standard": "461585071053209631",
                 "taiko": "461585200376184842",
@@ -48,29 +31,7 @@
         "clientSecret": "@@DISCORD_CLIENTSECRET",
         "invite": "Z6vEMsr",
         "logChannel": "461591966321344513",
-        "headChannel": "461578028397625344",
-        "coreChannel": "884272754180898816",
-        "openMappool": {
-            "admin": "887101310694993930",
-            "general": "889674855400751154",
-            "epic": "889674878310039572",
-            "update": "889674978524557332",
-            "testing": "889675017149874176",
-            "balancing": "889675047625719879",
-            "songDiscussion": "889675102432665621",
-            "songSubmission": "895117978507567104"
-        },
-        "closedMappool": {
-            "admin": "886408468699951154",
-            "general": "887098641699962910",
-            "epic": "887098668992327701",
-            "testplayers": "947972071265280060",
-            "update": "887098694124597268",
-            "testing": "887098731034456065",
-            "balancing": "",
-            "songDiscussion": "887111363036581908",
-            "songSubmission": "902305213958983690"
-        }
+        "coreChannel": "884272754180898816"
     },
     "osu": {
         "v1": {
@@ -85,12 +46,6 @@
         "credentials": {
             "private_key": "@@GOOGLE_CREDENTIALS_PRIVATEKEY",
             "client_email": "@@GOOGLE_CREDENTIALS_CLIENTEMAIL"
-        },
-        "sheets": {
-            "todo": "@@GOOGLE_SHEETS_TODO",
-            "openMappool": "@@GOOGLE_SHEETS_OPENMAPPOOL",
-            "closedMappool": "@@GOOGLE_SHEETS_CLOSEDMAPPOOL",
-            "songs": "@@GOOGLE_SHEETS_SONGS"
         }
     },
     "koaKeys": ["@@KOA_KEY"],

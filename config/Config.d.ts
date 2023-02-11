@@ -8,18 +8,6 @@ declare module "node-config-ts" {
         ssr: boolean;
     }
 
-    interface IMappoolChannelConfig {
-        admin: string;
-        general: string;
-        epic: string;
-        testplayers: string;
-        update: string;
-        testing: string;
-        balancing: string;
-        songDiscussion: string;
-        songSubmission: string;
-    }
-
     interface IConfig {
         database: {
             host: string;
@@ -40,37 +28,12 @@ declare module "node-config-ts" {
                     verified: string;
                     streamAnnouncements: string;
                 };
-                open: {
-                    participants: string;
-                    captains: string;
-                    mapper: string[];
-                    mappooler: string;
-                    testplayer: string;
-                    scheduler: string;
-                    streamManager: string;
-                    streamer: string;
-                    commentator: string;
-                    referee: string;
-                };
-                closed: {
-                    participants: string;
-                    captains: string;
-                    mapper: string[];
-                    mappooler: string;
-                    testplayer: string;
-                    scheduler: string;
-                    streamManager: string;
-                    streamer: string;
-                    commentator: string;
-                    referee: string;
-                };
                 mca: {
                     standard: string;
                     taiko: string;
                     fruits: string;
                     mania: string;
                     storyboard: string;
-                    arg: string;
                 };
             };
             token: string;
@@ -79,10 +42,7 @@ declare module "node-config-ts" {
             clientSecret: string;
             invite: string;
             logChannel: string;
-            headChannel: string;
             coreChannel: string;
-            openMappool: IMappoolChannelConfig;
-            closedMappool: IMappoolChannelConfig;
         };
 
         osu: {
@@ -100,12 +60,7 @@ declare module "node-config-ts" {
                 private_key: string;
                 client_email: string;
             };
-            sheets: {
-                todo: string;
-                openMappool: string;
-                closedMappool: string;
-                songs: string;
-            };
+            // sheets: { };
         };
 
         koaKeys: string[];

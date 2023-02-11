@@ -16,6 +16,7 @@ import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Influence } from "./MCA_AYIM/influence";
+import { Tournament } from "./tournaments/tournament";
 
 // General middlewares
 
@@ -126,6 +127,9 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Influence, influence => influence.reviewer)
     influenceReviews!: Influence[];
+
+    @OneToMany(() => Tournament, tournament => tournament.organizer)
+    tournamentsOrganized!: Tournament[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User

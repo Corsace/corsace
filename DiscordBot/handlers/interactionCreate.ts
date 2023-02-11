@@ -13,6 +13,6 @@ export default async function interactionCreate (interaction: Interaction) {
         await command.run(interaction);
     } catch (error) {
         console.error(error);
-        await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+        await interaction.followUp({ content: "There was an error while executing this command!", ephemeral: true });
     }
 }

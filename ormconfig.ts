@@ -1,8 +1,8 @@
 import { config } from "node-config-ts";
-import { ConnectionOptions } from "typeorm";
+import { DataSource } from "typeorm";
 import { resolve } from "path";
 
-export default {
+const ormConfig = new DataSource({
     name: "default",
     type: "mariadb",
     host: config.database.host,
@@ -25,7 +25,6 @@ export default {
         `${resolve(__dirname, "Models/migrations")}/*.ts`,
         `${resolve(__dirname, "Models/migrations")}/*.js`,
     ],
-    cli: {
-        migrationsDir: "Models/migrations",
-    },
-} as ConnectionOptions;
+});
+
+export default ormConfig;

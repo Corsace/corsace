@@ -4,6 +4,7 @@ import { Beatmap } from "../beatmap";
 import { GuestRequest } from "./guestRequest";
 import { Category } from "./category";
 import { Influence } from "./influence";
+import { Tournament } from "../tournaments/tournament";
 
 @Entity()
 export class ModeDivision extends BaseEntity {
@@ -28,6 +29,9 @@ export class ModeDivision extends BaseEntity {
     
     @OneToMany(() => Category, category => category.mode)
     categories!: Category[];
+
+    @OneToMany(() => Tournament, tournament => tournament.mode)
+    tournaments!: Tournament[];
 
     static modeSelect (modeText: string): Promise<ModeDivision | null> {
         switch (modeText) {

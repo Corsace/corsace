@@ -98,7 +98,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
             }
 
             for (let year = 2007; year <= (new Date).getUTCFullYear(); year++) {
-                let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: ctx.state.user }});
+                let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: { ID: ctx.state.user.ID }}});
                 if (!eligibility) {
                     eligibility = new MCAEligibility();
                     eligibility.year = year;
@@ -142,7 +142,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                 if (!isPossessive(beatmap.version) && (beatmap.approved == 2 || beatmap.approved == 1)) {
                     const date = new Date(beatmap.approved_date);
                     const year = date.getUTCFullYear();
-                    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: ctx.state.user }});
+                    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: { ID: ctx.state.user.ID }}});
                     if (!eligibility) {
                         eligibility = new MCAEligibility();
                         eligibility.year = year;
