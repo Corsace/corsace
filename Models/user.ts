@@ -17,6 +17,9 @@ import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Influence } from "./MCA_AYIM/influence";
 import { Tournament } from "./tournaments/tournament";
+import { MappoolMap } from "./tournaments/mappools/mappoolMap";
+import { MappoolMapSkill } from "./tournaments/mappools/mappoolMapSkill";
+import { MappoolMapWeight } from "./tournaments/mappools/mappoolMapWeight";
 
 // General middlewares
 
@@ -130,6 +133,15 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Tournament, tournament => tournament.organizer)
     tournamentsOrganized!: Tournament[];
+
+    @ManyToMany(() => MappoolMap, mappoolMap => mappoolMap.mappers)
+    mappoolMaps!: MappoolMap[];
+
+    @OneToMany(() => MappoolMapSkill, skill => skill.user)
+    mappoolMapSkillRatings!: MappoolMapSkill[];
+
+    @OneToMany(() => MappoolMapWeight, weight => weight.user)
+    mappoolMapSkillWeights!: MappoolMapWeight[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User

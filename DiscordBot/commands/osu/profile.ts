@@ -99,6 +99,7 @@ const data = new SlashCommandBuilder()
 
 const profile: Command = {
     data, 
+    alternativeNames: ["osu"],
     category: "osu",
     run,
 };

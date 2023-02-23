@@ -74,6 +74,7 @@ const data = new SlashCommandBuilder()
 
 const help: Command = {
     data,
+    alternativeNames: ["h"],
     category: "utility",
     run,
 };

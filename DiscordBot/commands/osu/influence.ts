@@ -68,6 +68,7 @@ const data = new SlashCommandBuilder()
 
 const influence: Command = {
     data, 
+    alternativeNames: ["inf", "influences"],
     category: "osu",
     run,
 };

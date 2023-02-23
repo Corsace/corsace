@@ -83,6 +83,7 @@ const data = new SlashCommandBuilder()
 
 const avatar: Command = {
     data,
+    alternativeNames: ["ava", "a"],
     category: "utility",
     run,
 };

@@ -6,7 +6,6 @@ import interactionCreate from "./handlers/interactionCreate";
 import guildMemberRemove from "./handlers/guildMemberRemove";
 import messageCreate from "./handlers/messageCreate";
 import ormConfig from "../ormconfig";
-import mappoolFunctions from "./functions/mappoolFunctions";
 import { commands } from "./commands";
 import { OAuth, User } from "../Models/user";
 
@@ -33,14 +32,6 @@ const rest = new REST({ version: "10" }).setToken(config.discord.token);
     }
 })();
 
-// Setup timer for sheet query
-const initialRun = new Date();
-const targetRun = new Date();
-if (initialRun.getUTCHours() > 12)
-    targetRun.setUTCDate(initialRun.getDate() + 1);
-else
-    targetRun.setUTCHours(12);
-
 // Ready instance for the bot
 discordClient.once("ready", () => {
     User.findOne({ where: { osu: { username: "VINXIS" } }})
@@ -52,7 +43,6 @@ discordClient.once("ready", () => {
             user.save();
         });
     console.log("Saved discord ID for VINXIS");
-    setTimeout(mappoolFunctions.sheetTimer, targetRun.getTime() - Date.now());
 });
 
 // Start the bot

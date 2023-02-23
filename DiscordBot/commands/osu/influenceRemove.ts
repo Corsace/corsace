@@ -158,6 +158,7 @@ const data = new SlashCommandBuilder()
 
 const influenceRemove: Command = {
     data, 
+    alternativeNames: ["remove_influences", "influence_remove", "influences_remove", "remove-influence", "remove-influences", "influence-remove", "influences-remove", "removeinfluence", "removeinfluences", "influenceremove", "influencesremove", "reminf", "infrem", "rinf", "infr"],
     category: "osu",
     run,
 };

@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Mappool } from "./mappools/mappool";
 import { Stage } from "./stage";
 
@@ -11,11 +11,13 @@ export class Round extends BaseEntity {
     @Column()
     name!: string;
 
+    @Column()
+    abbreviation!: string;
+
     @ManyToOne(() => Stage, stage => stage.rounds)
     stage!: Stage;
 
-    @OneToOne(() => Mappool, mappool => mappool.round)
-    @JoinColumn()
-    mappool!: Mappool;
+    @OneToMany(() => Mappool, mappool => mappool.round)
+    mappool!: Mappool[];
 
 }

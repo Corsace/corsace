@@ -3,6 +3,7 @@ import { ChatInputCommandInteraction, Message, SlashCommandBuilder, SlashCommand
 import tournamentCreate from "./tournaments/create";
 import tournamentList from "./tournaments/list";
 import stageCreate from "./tournaments/stage/create";
+import mappoolCreate from "./tournaments/mappool/create";
 
 import avatar from "./utility/avatar";
 import help from "./utility/help";
@@ -16,7 +17,9 @@ import recent from "./osu/recent";
 
 interface Command {
     data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | SlashCommandSubcommandsOnlyBuilder;
+    alternativeNames: string[];
     category: string
+    subCategory?: string;
 
     run: (message: Message | ChatInputCommandInteraction, ...args: any[]) => Promise<void>;
 }
@@ -29,6 +32,7 @@ const commands: Command[] = [];
 commands.push(tournamentCreate);
 commands.push(tournamentList);
 commands.push(stageCreate);
+commands.push(mappoolCreate);
 
 // general utility commands
 commands.push(avatar);

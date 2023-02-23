@@ -232,6 +232,7 @@ const data = new SlashCommandBuilder()
 
 const influenceAdd: Command = {
     data, 
+    alternativeNames: ["add_influences", "influence_add", "influences_add", "add-influence", "add-influences", "influence-add", "influences-add", "addinfluence", "addinfluences", "influenceadd", "influencesadd", "addinf", "infadd", "ainf", "infa"],
     category: "osu",
     run,
 };

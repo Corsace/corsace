@@ -3,6 +3,8 @@ import { ModeDivision } from "../MCA_AYIM/modeDivision";
 import { Phase } from "../phase";
 import { User } from "../user";
 import { Stage } from "./stage";
+import { TournamentChannel } from "./tournamentChannel";
+import { TournamentRole } from "./tournamentRole";
 
 export enum SortOrder {
     Signup,
@@ -39,10 +41,19 @@ export class Tournament extends BaseEntity {
     name!: string;
 
     @Column()
+    abbreviation!: string;
+
+    @Column()
     description!: string;
 
     @Column()
     server!: string;
+
+    @OneToMany(() => TournamentRole, role => role.tournament)
+    roles!: TournamentRole[];
+
+    @OneToMany(() => TournamentChannel, channel => channel.tournament)
+    channels!: TournamentChannel[];
 
     @Column({ type: "year" })
     year!: number;
@@ -51,7 +62,7 @@ export class Tournament extends BaseEntity {
     matchSize!: number;
 
     @Column({ type: "enum", enum: SortOrder, default: SortOrder.Signup })
-    regSortOrder!: SortOrder
+    regSortOrder!: SortOrder;
 
     @Column({ default: false })
     isOpen!: boolean;

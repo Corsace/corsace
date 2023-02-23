@@ -184,6 +184,7 @@ const data = new SlashCommandBuilder()
 
 const recent: Command = {
     data, 
+    alternativeNames: ["rs", "recentbest", "recentb", "rb", "r"],
     category: "osu",
     run,
 };

@@ -144,6 +144,7 @@ const data = new SlashCommandBuilder()
 
 const beatmap: Command = {
     data, 
+    alternativeNames: ["map"],
     category: "osu",
     run,
 };

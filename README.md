@@ -42,6 +42,12 @@ config.corsace.publicUrl + /api/login/osu/callback
 
 `config.database`
 
+##### Via Docker (Recommended)
+
+We are shipping a production-like `docker-compose.yml` file. You can start only the database service using: `docker-compose up -d database` or `npm run database`.
+
+The database will listen on `127.0.0.1:3306`, with `corsace` being the database name, username and password.
+
 ##### Manual MariaDB Setup
 
 You will need to install [MariaDB](https://mariadb.org/) and create an empty database, named whatever you like. 
@@ -53,12 +59,6 @@ MySQL> create database <new_db_name>;
 ```
 
 Make sure to update `config.database` to reflect your choice of database name and credentials.
-
-##### Via Docker
-
-We are shipping a production-like `docker-compose.yml` file. You can start only the database service using: `docker-compose up -d database` or `npm run database`.
-
-The database will listen on `127.0.0.1:3306`, with `corsace` being the database name, username and password.
 
 #### Seeding the database
 

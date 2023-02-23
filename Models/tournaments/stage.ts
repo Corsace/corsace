@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Phase } from "../phase";
 import { Round } from "./round";
 import { Mappool } from "./mappools/mappool";
@@ -36,6 +36,9 @@ export class Stage extends BaseEntity {
     name!: string;
 
     @Column()
+    abbreviation!: string;
+
+    @Column()
     order!: number;
 
     @Column({ type: "enum", enum: StageType, default: StageType.DoubleElimination })
@@ -53,15 +56,14 @@ export class Stage extends BaseEntity {
     @OneToMany(() => Round, bracket => bracket.stage)
     rounds!: Round[];
 
-    @OneToOne(() => Mappool, mappool => mappool.stage)
-    @JoinColumn()
-    mappool?: Mappool;
+    @OneToMany(() => Mappool, mappool => mappool.stage)
+    mappool?: Mappool[];
 
     @Column({ default: false })
     isFinished!: boolean;
 
-    @Column({ nullable: true })
-    initialSize?: number;
+    @Column()
+    initialSize!: number;
 
     @Column()
     finalSize!: number;
