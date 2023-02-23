@@ -11,13 +11,9 @@ declare module "node-config-ts" {
     interface IMappoolChannelConfig {
         admin: string;
         general: string;
-        epic: string;
-        testplayers: string;
         update: string;
         testing: string;
         balancing: string;
-        songDiscussion: string;
-        songSubmission: string;
     }
 
     interface IConfig {

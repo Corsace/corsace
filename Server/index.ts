@@ -49,6 +49,8 @@ koa.use(Session({
     domain: config.cookiesDomain,
     secure: process.env.NODE_ENV !== "development",
     httpOnly: true,
+    renew: true,
+    maxAge: 60 * 24 * 60 * 60 * 1000, // 2 months
 }, koa));
 koa.use(BodyParser());
 koa.use(passport.initialize());

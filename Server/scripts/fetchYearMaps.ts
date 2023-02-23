@@ -11,16 +11,12 @@ import { OAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
 import { RateLimiterMemory, RateLimiterQueue } from "rate-limiter-flexible";
+import { isPossessive } from "../../Models/MCA_AYIM/guestRequest";
+import { sleep } from "../utils/sleep";
 
 let bmQueued = 0; // beatmaps inserted in queue
 let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
 let bmsInserted = 0; // beatmapsets inserted in db (no longer in queue)
-
-function sleep (ms: number): Promise<void> {
-    return new Promise((resolve) => {
-        setTimeout(() => resolve(), ms);
-    });
-}
 
 function timeFormatter (ms: number): string {
     if (isNaN(ms) || ms <= 0)
@@ -42,7 +38,7 @@ function timeFormatter (ms: number): string {
 
 const getModeDivison = memoizee(async (modeDivisionId: number) => {
     modeDivisionId += 1;
-    let mode = await ModeDivision.findOne(modeDivisionId);
+    let mode = await ModeDivision.findOne({ where: { ID: modeDivisionId }});
     if (!mode) {
         mode = new ModeDivision;
         mode.ID = modeDivisionId;
@@ -64,7 +60,7 @@ async function getMissingOsuUserProperties (userID: number): Promise<{ country: 
 };
 
 const getUser = async (targetUser: { username?: string, userID: number, country?: string }): Promise<User> => {
-    let user = await User.findOne({ osu: { userID: `${targetUser.userID}` } });
+    let user = await User.findOne({ where: { osu: { userID: `${targetUser.userID}` }}});
     
     if (!user) {
         let country = targetUser.country;
@@ -137,7 +133,6 @@ const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
     return rankers;
 }
 
-
 // Memoized method to create or fetch a BeatmapSet from DB.
 const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> => {
     let beatmapSet = new Beatmapset;
@@ -170,7 +165,7 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
 });
 
 const getMCAEligibility = memoizee(async function(year: number, user: User) {
-    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year, user }});
+    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year, user: { ID: user.ID } }});
     if (!eligibility) {
         eligibility = new MCAEligibility();
         eligibility.year = year;
@@ -238,7 +233,7 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
 
     beatmap.beatmapset = await getBeatmapSet(apiBeatmap);
 
-    if (!beatmap.difficulty.includes("'")) {
+    if (!isPossessive(beatmap.difficulty)) {
         const eligibility = await getMCAEligibility(apiBeatmap.approvedDate.getUTCFullYear(), beatmap.beatmapset.creator);
         if (!eligibility[modeList[apiBeatmap.mode as number]]) {
             eligibility[modeList[apiBeatmap.mode as number]] = true;
@@ -379,3 +374,4 @@ const modeList = [
 ];
 
 export { getUser, getBNsApiCallRawData, getRankers };
+

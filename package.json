@@ -96,6 +96,7 @@
       "lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",
       "lintfix": "eslint --fix --ext .ts,.vue --ignore-path .gitignore .",
 
+      "concatNoms": "ts-node ./Server/scripts/concatNoms.ts",
       "updateLanguages": "ts-node ./Server/scripts/updateLanguages.ts",
       "fetchMaps": "ts-node ./Server/scripts/fetchYearMaps.ts",
 

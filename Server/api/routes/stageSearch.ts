@@ -75,17 +75,17 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             if (ctx.query.played === "true") { // Played filter
                 let cursorString = "";
                 while (true) {
-                    const data = await osuV2Client.getPlayedBeatmaps(accessToken, ctx.state.year, cursorString);
+                    const res = await osuV2Client.getPlayedBeatmaps(accessToken, ctx.state.year, cursorString);
 
-                    if (!cursorString && data.beatmapsets.length === 0) break;
+                    if (!cursorString && res.data.beatmapsets.length === 0) break;
 
-                    const sets = data.beatmapsets.map(set => set.id);
+                    const sets = res.data.beatmapsets.map(set => set.id);
 
                     playedIDs.push(...sets);
 
                     if (sets.length < 50) break;
 
-                    cursorString = data.cursor_string;
+                    cursorString = res.data.cursor_string;
                 }
             }
 

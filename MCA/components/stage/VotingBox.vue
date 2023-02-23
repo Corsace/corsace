@@ -121,8 +121,14 @@ export default class VotingBox extends Vue {
 
     formatTitle (vote: Vote) {
         let target = "";
-        if (this.section === "beatmaps") target = vote.beatmapset?.title || "";
-        else target = vote.user?.osu.username || "";
+        if (this.section === "beatmaps") {
+            const targetMap = this.beatmaps.find(b => b.id === (vote.beatmap ? vote.beatmap.ID : vote.beatmapset!.ID));
+            if (targetMap)
+                target = targetMap.title;
+            else
+                target = vote.beatmapset?.title || "";
+        } else 
+            target = vote.user?.osu.username || "";
         
         return vote.choice + " - " + target;
     }

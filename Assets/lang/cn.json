@@ -76,7 +76,7 @@
             "uniqueMappers": "总谱师数",
             "newMappers": "新谱师数",
             "highestAvgSr": "最高平均星级",
-            "lowestAvgSr": "最高平均星级",
+            "lowestAvgSr": "最低平均星级",
             "mappers": "谱师数"
         },
         "statistics": {
@@ -275,7 +275,7 @@
             },
             "highBPMAlternator": {
                 "name": "高 BPM / Alt",
-                "description": "强调超快击打和 / 或移动水平的最佳谱面。"
+                "description": "强调超快击打和 / 或移动水平的最佳谱面。 (240+ BPM)"
             },
             "vanilla": {
                 "name": "基本功",

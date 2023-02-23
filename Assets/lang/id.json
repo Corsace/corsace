@@ -277,7 +277,7 @@
             },
             "highBPMAlternator": {
                 "name": "High BPM / Alternator",
-                "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern yang menuntut kemampuan aim dan/atau kecepatan tapping yang sangat tinggi."
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern yang menuntut kemampuan aim dan/atau kecepatan tapping yang sangat tinggi. (240+ BPM)"
             },
             "vanilla": {
                 "name": "Vanilla",
@@ -314,7 +314,11 @@
             "antiMetaCatch": {
                 "name": "Anti-Meta",
                 "description": "Mapset terbaik yang mengusung gimmick-gimmick atau teknik-teknik mapping yang tidak umum."
-            }                 
+            },
+            "diversity": {
+                "name": "Diversity",
+                "description": "Mapset terbaik yang berfokus pada berbagai macam skillset/kategori."
+            }           
         },
         "nom_vote": {
             "search": "cari beatmap/user",

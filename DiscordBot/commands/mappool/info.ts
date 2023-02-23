@@ -36,6 +36,9 @@ async function command (m: Message) {
         });
 
         for (const row of rows) {
+            if (row[0] === "" || row.length === 0)
+                continue;
+
             if (row.length < 5)
                 embed.fields.push({
                     name: row[0],
@@ -48,8 +51,14 @@ async function command (m: Message) {
                     value: `${row[2]} - ${row[3]} [${row[4]}] mapped by ${row[1]}`,
                     inline: true,
                 });
+            
+            if (embed.fields.length === 25) {
+                m.channel.send({ embeds: [embed] });
+                embed.fields = [];
+            }
         }
-        m.channel.send({ embeds: [embed] });
+        if (embed.fields.length > 0)
+            m.channel.send({ embeds: [embed] });
     } finally {
         waiting.delete();
     }

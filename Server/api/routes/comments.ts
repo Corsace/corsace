@@ -50,9 +50,9 @@ commentsRouter.get("/", async (ctx) => {
     const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
     const modeID = ModeDivisionType[modeString];
 
-    if (year === 2020) {
+    if (year >= 2020) {
         ctx.body = {
-            error: "MCA 2020 is not running comments for AYIM. Sorry for the inconvenience.",
+            error: `MCA ${year} is not running comments for AYIM. Sorry for the inconvenience.`,
         };
         return;
     }
@@ -119,9 +119,9 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
         };
     }
 
-    if (year === 2020) {
+    if (year >= 2020) {
         ctx.body = {
-            error: "MCA 2020 is not running comments for AYIM. Sorry for the inconvenience.",
+            error: `MCA ${year} is not running comments for AYIM. Sorry for the inconvenience.`,
         };
         return;
     }

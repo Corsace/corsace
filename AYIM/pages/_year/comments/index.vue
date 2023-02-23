@@ -176,10 +176,8 @@ export default class Comments extends Vue {
     }
     
     async mounted () {
-        if (this.mca.year >= 2020) {
-            this.updateSelectedMode("");
+        if (this.mca.year >= 2020)
             this.$router.replace(`/${this.mca.year}`);
-        }
         await this.getMappers();
     }
 

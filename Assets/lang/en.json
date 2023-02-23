@@ -38,7 +38,8 @@
             "numberwith": "number of maps with",
             "message": {
                 "2019": "<p>Hello 2020.</p><p>A Year in Mapping 2019 has returned to bring you the record-breaks of the year, and the detailed statistics amassed as well!</p><p>With this website, we can now add as much information as we can feasibly retrieve for all years! If you have any suggestions (as well as any website bugs), let VINXIS know in the corsace server (link at the bottom left!)</p><p>WE ARE ALSO CROWDFUNDING COMMENTS! That means YOU can write and submit a comment for as many mappers as you want!</p><p>Select your preferred mode with the icons below to get started!</p>",
-                "2020": "<p>Hello 2021... the correct year this time!</p><p>A Year in Mapping 2020 has come to you back to back to bring you the record-breaks of THIS year, and the detailed statistics amassed as well!</p><p>Comments are closed off for 2020. Hopefully we will be able to bring them back in the future! In the meantime, check out all the records and stats!</p>"
+                "2020": "<p>Hello 2021... the correct year this time!</p><p>A Year in Mapping 2020 has come to you back to back to bring you the record-breaks of THIS year, and the detailed statistics amassed as well!</p><p>Comments are closed off for 2020. Hopefully we will be able to bring them back in the future! In the meantime, check out all the records and stats!</p>",
+                "2021": "<p>2022 is here!</p> <p>A Year in Mapping 2021 is here to provide the records and stats made or even broken!</p>"
             }
         },
         "mapsets": {
@@ -129,7 +130,8 @@
             "daysLeft": "days left",
             "message": {
                 "2019": "<p>Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community!</p><p>This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 6 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event! Let VINXIS know in the corsace discord server for any bugs or issues with the website!</p>",
-                "2020": "<p>Back to back, mapper's choice awards is again to finish it off at round 5 with 2020! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2020 through the eyes of the mapping community!</p><p>We've made many changes and hopefully dealt with all the bugs that were found throughout MCA 2019 as well as changing categories as needed so this one should be far smoother!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 6 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event!</p>"
+                "2020": "<p>Back to back, mapper's choice awards is again to finish it off at round 5 with 2020! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2020 through the eyes of the mapping community!</p><p>We've made many changes and hopefully dealt with all the bugs that were found throughout MCA 2019 as well as changing categories as needed so this one should be far smoother!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 6 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event!</p>",
+                "2021": "<p>Mapper's Choice Awards is back again for 2021! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event!</p>"
             },
             "categories": {
                 "index": "categories",
@@ -204,7 +206,7 @@
                 "description": "The one who inspired and influenced other mappers the most."
             },
             "outCont": {
-                "name": "Outstanding Contribution",
+                "name": "Outstanding Contributor",
                 "description": "The one who positively contributed to the health of osu! the most."
             },
             "spread": {
@@ -285,7 +287,7 @@
             },
             "highBPMAlternator": {
                 "name": "High BPM / Alternator",
-                "description": "The best beatmap with priority on extremely fast tapping and / or aim skills."
+                "description": "The best beatmap with priority on extremely fast tapping and / or aim skills. (240+ BPM)"
             },
             "vanilla": {
                 "name": "Vanilla",
@@ -322,6 +324,10 @@
             "antiMetaCatch": {
                 "name": "Anti-Meta",
                 "description": "The best beatmap at using unconventional / gimmicky patterning."
+            },
+            "diversity": {
+                "name": "Diversity",
+                "description": "The best beatmap focusing on many skillsets / categories."
             }
         },
         "nom_vote": {

@@ -5,6 +5,7 @@ import { ResultVote } from "./vote";
 import { SectionCategory } from "./category";
 
 export interface BeatmapsetResult extends BeatmapsetInfo {
+    difficulty?: string,
     placement: number,
     firstChoice: number,
     secondThirdChoice: number,

@@ -51,6 +51,12 @@ export default (subSite: string): Partial<NuxtConfig> => ({
     },
     axios: {
         proxy: true,
+        headers: {
+            common: {
+                // Allow secure cookies to be set by the `cookies` module
+                "X-Forwarded-Proto": "https",
+            },
+        },
     },
     proxy: {
         "/api/": config.api.publicUrl,
