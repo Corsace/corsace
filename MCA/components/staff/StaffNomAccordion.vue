@@ -102,18 +102,20 @@ export default class StaffNominationAccordion extends Vue {
     @Prop({ type: Array, default: {} }) nominations!: StaffNomination[];
 
     getBanner (nomination: StaffNomination) {
-        if (nomination.beatmapset) {
+        if (nomination.beatmapset)
             return { "background-image": `url('https://assets.ppy.sh/beatmaps/${nomination.beatmapset.ID}/covers/cover.jpg?1560315422')` };
-        } else if (nomination.user) {
+        
+        if (nomination.user)
             return { "background-image": `url(https://a.ppy.sh/${nomination.user.osuID})` };
-        }
+    
         return { "background-image": "" };
     }
 
     generateUrl (nomination: StaffNomination): string {
         if (nomination.beatmap) 
             return `https://osu.ppy.sh/beatmaps/${nomination.beatmap.ID}`;
-        else if (nomination.beatmapset)
+        
+        if (nomination.beatmapset)
             return `https://osu.ppy.sh/beatmapsets/${nomination.beatmapset.ID}`;
         
         return `https://osu.ppy.sh/users/${nomination.user?.osuID}`;
@@ -123,22 +125,23 @@ export default class StaffNominationAccordion extends Vue {
         if (nomination.beatmapset) {
             if (nomination.beatmap)
                 return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title} by ${nomination.beatmapset.creator!.osuUsername} [${nomination.beatmap?.difficulty}]`;
-            else
-                return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title} by ${nomination.beatmapset.creator!.osuUsername}`;
+
+            return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title} by ${nomination.beatmapset.creator!.osuUsername}`;
         }
 
         return `${nomination.user?.osuUsername}`;
     }
 
     getSpecs (nomination: StaffNomination): string {
-        if (!nomination.beatmapset) return "";
+        if (!nomination.beatmapset) 
+            return "";
         
         const minutes = Math.floor(nomination.beatmapset.length / 60);
         const seconds = nomination.beatmapset.length - minutes * 60;
         let time = `${minutes}:${seconds}`;
-        if (time.slice(-2, -1) === ":") {
+        if (time.slice(-2, -1) === ":")
             time =  time.slice(0, -1) + "0" + time.slice(-1);
-        }
+
         return `${nomination.beatmapset.BPM} BPM | ${time} | ${nomination.beatmapset.maxSR.toFixed(2)} ★`;
     }
 }

@@ -20,6 +20,11 @@ export const roundAcronyms = [
     "lr8",
     "lr9",
     "lr10",
+    "rr",
+    "ro",
+    "ko1",
+    "ko2",
+    "ko3",
 ];
 
 export const roundNames = [
@@ -44,4 +49,9 @@ export const roundNames = [
     "losers round 8",
     "losers round 9",
     "losers round 10",
+    "round robin",
+    "runoff",
+    "knockout 1",
+    "knockout 2",
+    "knockout 3",
 ];

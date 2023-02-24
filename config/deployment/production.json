@@ -33,6 +33,10 @@
         "logChannel": "461591966321344513",
         "coreChannel": "884272754180898816"
     },
+    "bn": {
+        "username": "@@BN_USERNAME",
+        "secret": "@@BN_SECRET"
+    },
     "osu": {
         "v1": {
             "apiKey": "@@OSU_V1_APIKEY"

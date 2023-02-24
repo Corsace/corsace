@@ -10,6 +10,7 @@ import { Beatmap } from "../../Models/beatmap";
 import { OAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
+import { RateLimiterMemory, RateLimiterQueue } from "rate-limiter-flexible";
 import { isPossessive } from "../../Models/MCA_AYIM/guestRequest";
 import { sleep } from "../utils/sleep";
 import { modeList } from "../../Interfaces/modes";
@@ -58,7 +59,7 @@ async function getMissingOsuUserProperties (userID: number): Promise<{ country: 
         country: userApi[0].country,
         username: userApi[0].username,
     };
-}
+};
 
 const getUser = async (targetUser: { username?: string, userID: number, country?: string }): Promise<User> => {
     let user = await User.findOne({ where: { osu: { userID: `${targetUser.userID}` }}});
@@ -115,6 +116,25 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
     return user;
 };
 
+const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
+    const rankers: User[] = [];
+    if (beatmapEvents.length > 0)
+        for (const bnEvent of beatmapEvents.reverse()) { 
+            // Run from rank to the last disqual/nom_reset event 
+            // (or to the beginning of list if no disqual/nom_reset)
+            if (bnEvent.type === "rank")
+                continue;
+            if (bnEvent.type === "disqualify" || bnEvent.type === "nomination_reset")
+                break;
+
+            if (!rankers.some((ranker) => ranker.osu.userID === `${bnEvent.userId}`)) {
+                const bnUser = await getUser({ userID: bnEvent.userId });
+                rankers.push(bnUser);
+            }
+        }
+    return rankers;
+}
+
 // Memoized method to create or fetch a BeatmapSet from DB.
 const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> => {
     let beatmapSet = new Beatmapset;
@@ -131,6 +151,12 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
 
     const user = await getUser({ username: beatmap.creator, userID: beatmap.creatorId });
     beatmapSet.creator = user;
+    
+    // interOp call to pishi's BN site to get the user IDs of the BNs of a beatmapset.
+    // NOTE: The BN site only has nomination data from ~mid 2019 onward.
+    const beatmapEvents = await bnsRawData.get(beatmapSet.ID);
+    bnsRawData.delete(beatmapSet.ID);
+    beatmapSet.rankers = beatmapEvents ? await getRankers(beatmapEvents) : [];
     
     beatmapSet = await beatmapSet.save();
     bmsInserted++;
@@ -154,6 +180,33 @@ const getMCAEligibility = memoizee(async function(year: number, user: User) {
         return `${year}-${user.ID}`;
     },
 });
+
+
+type BeatmapsetID = number;
+export type BNEvent = {
+    type: "nominate" | "qualify" | "disqualify" | "nomination_reset" | "rank";
+    userId: number;
+}
+const bnsRawData = new Map<BeatmapsetID, Promise<null | BNEvent[]>>();
+const bnFetchingLimiter = new RateLimiterQueue(new RateLimiterMemory({ points: 20, duration: 1 }));
+const getBNsApiCallRawData = async (beatmapSetID: BeatmapsetID): Promise<null | BNEvent[]> => {
+    if (config.bn.username && config.bn.secret) {
+        try {
+            await bnFetchingLimiter.removeTokens(1);
+            return (await axios.get<BNEvent[]>(`https://bn.mappersguild.com/interOp/events/${beatmapSetID}`, {
+                headers: {
+                    username: config.bn.username,
+                    secret: config.bn.secret,
+                },
+            })).data;
+        } catch (err: any) {
+            console.error('An error occured while fetching BNs for beatmap set ' + beatmapSetID);
+            console.error(err.stack);
+            process.exit(1);
+        }
+    }
+    return null;
+}
 
 async function insertBeatmap (apiBeatmap: APIBeatmap) {
     let beatmap = new Beatmap;
@@ -208,6 +261,10 @@ async function script () {
     }
     const until = new Date(`${year + 1}-01-01`);
 
+    if (!config.bn.username || !config.bn.secret) {
+        console.warn("WARNING: No BN website username/secret provided in config. Beatmapsets rankers will not be retrieved.");
+    }
+
     console.log("This script can damage your database. Make sure to only execute this if you know what you're doing.");
     console.log("This script will automatically continue in 5 seconds. Cancel using Ctrl+C.");
     await sleep(5000);
@@ -245,6 +302,10 @@ async function script () {
             if(![1, 2].includes(Number(newBeatmap.approved)))
                 continue;
 
+            if (!bnsRawData.has(newBeatmap.beatmapSetId)) {
+                bnsRawData.set(newBeatmap.beatmapSetId, getBNsApiCallRawData(newBeatmap.beatmapSetId));
+            }
+
             queuedBeatmapIds.push(newBeatmap.id);
             processingQueue.push(newBeatmap);
             bmQueued++;
@@ -271,4 +332,4 @@ if(module === require.main) {
         });
 }
 
-export { getUser, insertBeatmap };
+export { getUser, insertBeatmap, getBNsApiCallRawData, getRankers };

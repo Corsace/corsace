@@ -1,10 +1,10 @@
 import { Entry, Parse } from "unzipper";
 import { once } from "events";
 import { Message } from "discord.js";
-import { appendToHistory, getPoolData, updatePoolRow } from "../../../../Server/sheets";
-import { Command } from "../../index";
-import { BeatmapParser } from "../../../../Server/BeatmapParser";
-import mappoolFunctions from "../../../functions/mappoolFunctions";
+import { appendToHistory, getPoolData, updatePoolRow } from "../../../Server/sheets";
+import { Command } from "../index";
+import { BeatmapParser } from "../../../Server/beatmapParser";
+import mappoolFunctions from "../../functions/mappoolFunctions";
 import Axios from "axios";
 import osu from "ojsama";
 

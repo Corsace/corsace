@@ -7,7 +7,7 @@
             uh oh
         </div>
         <div class="error__text">
-            You aren't allowed here yet!
+            You aren't allowed here (yet)!
         </div>
         <a 
             class="error__text error__back"
@@ -25,6 +25,8 @@
         </div>
         <div class="error__text">
             {{ error.statusCode }}? I guess so.
+            <br>
+            <span class="error__text--message">{{ error.message }}</span>
         </div>
         <a 
             class="error__text error__back"
@@ -54,12 +56,9 @@ export default class Error extends Vue {
 </script>
 
 <style lang="scss">
-.error {
-    background-image: url("../../Assets/img/ayim-mca/site/error.png");
-    background-size: 80%;
-    background-repeat: no-repeat;
-    background-position: center;
+@import '@s-sass/_variables';
 
+.error {
     height: 100%;
     width: 100%;
 
@@ -69,6 +68,11 @@ export default class Error extends Vue {
     justify-content: center;
 
     font-size: 2rem;
+
+    
+    background-color: $darker-gray;
+    background-image: url("../../Assets/img/site/mca-ayim/grid-dark.jpg");
+    color: white;
 }
 
 .error__large {
@@ -80,6 +84,12 @@ export default class Error extends Vue {
 
 .error__text {
     margin-top: 4rem;
+    text-align: center;
+
+    &--message {
+        color: $blue;
+        font-size: $font-base;
+    }
 }
 
 .error__back {

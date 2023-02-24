@@ -44,3 +44,4 @@ export enum CategoryType {
     Beatmapsets = 0,
     Users = 1,
 }
+export type SectionCategory = "beatmaps" | "users" | "";

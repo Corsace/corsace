@@ -7,7 +7,7 @@ import { Influence } from "../../../Models/MCA_AYIM/influence";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
-import { isEligibleFor } from "../../../MCA-AYIM/api/middleware";
+import { isEligibleFor } from "../../../Server/middleware/mca-ayim";
 import { loginResponse } from "../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {

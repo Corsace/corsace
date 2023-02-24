@@ -65,14 +65,16 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { namespace } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
-import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
+import ListTransition from "../../../../Assets/components/ListTransition.vue";
 
 import { BeatmapsetRecord } from "../../../../Interfaces/records";
 import { MCA } from "../../../../Interfaces/mca";
+
+const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
@@ -94,11 +96,12 @@ import { MCA } from "../../../../Interfaces/mca";
             ],
         };
     },
+    layout: "construction",
 })
 export default class MapsetRecords extends Vue {
 
-    @State selectedMode!: string;
-    @State mca!: MCA;
+    @mcaAyimModule.State selectedMode!: string;
+    @mcaAyimModule.State mca!: MCA;
 
     records: Record<string, BeatmapsetRecord[]> = {};
 

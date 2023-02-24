@@ -30,12 +30,12 @@
                         <img
                             v-if="!filterFriends"
                             alt="All users shown"
-                            src="../../../../Assets/img/ayim-mca/site/all.png"
+                            src="../../../../Assets/img/site/mca-ayim/all.png"
                         >
                         <img
                             v-else
                             alt="Friends shown only"
-                            src="../../../../Assets/img/ayim-mca/site/friends.png"
+                            src="../../../../Assets/img/site/mca-ayim/friends.png"
                         >
                     </button>
 
@@ -47,12 +47,12 @@
                         <img
                             v-if="!notCommented"
                             alt="All users shown"
-                            src="../../../../Assets/img/ayim-mca/site/comments.png"
+                            src="../../../../Assets/img/site/mca-ayim/comments.png"
                         >
                         <img
                             v-else
                             alt="Users without comments shown only"
-                            src="../../../../Assets/img/ayim-mca/site/comments_hidden.png"
+                            src="../../../../Assets/img/site/mca-ayim/comments_hidden.png"
                         >
                     </button>
                 </search-bar>
@@ -109,16 +109,18 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { Getter, State } from "vuex-class";
+import { State, namespace } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
-import ToggleButton from "../../../../MCA-AYIM/components/ToggleButton.vue";
-import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
-import NoticeModal from "../../../../MCA-AYIM/components/NoticeModal.vue";
-import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
+import ToggleButton from "../../../../Assets/components/ToggleButton.vue";
+import SearchBar from "../../../../Assets/components/SearchBar.vue";
+import NoticeModal from "../../../../Assets/components/NoticeModal.vue";
+import ListTransition from "../../../../Assets/components/ListTransition.vue";
 
-import { User, UserMCAInfo } from "../../../../Interfaces/user";
+import { User, UserInfo } from "../../../../Interfaces/user";
 import { MCA, Phase } from "../../../../Interfaces/mca";
+
+const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
@@ -142,13 +144,17 @@ import { MCA, Phase } from "../../../../Interfaces/mca";
             ],
         };
     },
+    layout: "construction",
 })
 export default class Comments extends Vue {
 
-    @State loggedInUser!: UserMCAInfo | null;
-    @State mca!: MCA;
-    @State selectedMode!: string;
-    @Getter phase!: Phase | null;
+    @State loggedInUser!: UserInfo;
+    @mcaAyimModule.State mca!: MCA;
+    @mcaAyimModule.State selectedMode!: string;
+
+    @mcaAyimModule.Getter phase!: Phase | null;
+
+    @mcaAyimModule.Action updateSelectedMode;
 
     loading = false;
     text = "";
@@ -241,7 +247,7 @@ export default class Comments extends Vue {
 
         & > a {
             margin-bottom: 10px;
-            background-color: $gray-dark;
+            background-color: $grayluscent;
         }
     }
 }

@@ -121,6 +121,10 @@ export class User extends BaseEntity {
     
     @OneToMany(() => Vote, vote => vote.user)
     votesReceived!: Vote[];
+
+    @ManyToMany(() => Beatmapset, set => set.rankers)
+    @JoinTable()
+    mapsRanked!: Beatmapset[];
     
     @OneToMany(() => Influence, influence => influence.user)
     influences!: Influence[];

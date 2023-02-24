@@ -1,30 +1,27 @@
 <template>
     <div 
+        v-if="selectedCategory"
         class="category-header"
         :class="`category-header--${selectedMode}`"
     >
-        <div class="category-header__shapes">
-            <div 
-                class="category-header__shape--large"
-                :class="`category-header__shape--${selectedMode}`"
-            />
-            <div 
-                class="category-header__shape--small"
-                :class="`category-header__shape--${selectedMode}`"
-            />
-            <div 
-                class="category-header__shape--small2"
-                :class="`category-header__shape--${selectedMode}`"
-            />
+        <div 
+            class="category-header__stage"
+            :class="`category-header__stage--${viewTheme}`"
+        >
+            {{ stage }}
         </div>
-        <template v-if="selectedCategory">
+        
+        <div 
+            class="category-header__info"
+            :class="`category-header__info--${viewTheme}`"
+        >
             <div class="category-header__title">
                 {{ ($t(`mca.categories.${selectedCategory.name}.name`)) }}
             </div>
             <div class="category-header__desc">
                 {{ $t(`mca.categories.${selectedCategory.name}.description`) + (selectedCategory.isFiltered ? " (auto filter enabled)" : "") }}
             </div>
-        </template>
+        </div>
     </div>
 </template>
 
@@ -33,14 +30,20 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
 import { CategoryStageInfo } from "../../../Interfaces/category";
+import { StageType } from "../../../Interfaces/mca";
 
+const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
 
 @Component
 export default class StateContent extends Vue {
 
-    @State selectedMode!: string;
+    @State viewTheme!: "light" | "dark";
+
+    @mcaAyimModule.State selectedMode!: string;
+
     @stageModule.State selectedCategory!: CategoryStageInfo | null;
+    @stageModule.State stage!: StageType;
 
 }
 </script>
@@ -50,28 +53,16 @@ export default class StateContent extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_partials';
 
-@mixin mode-category__shapes {
-    @each $mode in $modes {
-        &--#{$mode} {
-            background-color: var(--#{$mode});
-        }
-    }
-}
-
 .category-header {
-    background-color: white;
-    border-radius: 5.5px 0 0 5.5px;
-    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.63);
+    background-color: $blue;
+    border: 2px solid $blue;
 
-    display: grid;
+    display: flex;
+    flex-direction: column;
+
     width: 100%;
     height: auto;
     min-height: 80px;
-    position: relative;
-    padding-right: 3%;
-    line-height: 0.9;
-    overflow: hidden;
-    z-index: -1;
 
     @include breakpoint(mobile) {
         display: flex;
@@ -82,101 +73,100 @@ export default class StateContent extends Vue {
 
     @include mode-text-color;
 
-    &__title {
-        font-weight: bold;
-        font-size: 2rem;
+    &__stage {
+        font-size: $font-lg;
+        @include breakpoint(mobile) {
+            font-size: $font-base;
+        }
+        letter-spacing: .25rem;
+        color: white;
+        text-align: center;
         text-transform: uppercase;
 
-        @include breakpoint(tablet) {
-            font-size: 1.9rem;
+        &--light {
+            color: white;
         }
-        @include breakpoint(laptop) {
-            font-size: 1.46rem;
+        &--dark {
+            color: black;
         }
-        @include breakpoint(desktop) {
-            font-size: 2.16rem;
+    }
+
+    &__info {
+        display: flex;
+        background-color: white;
+        height: 100%;
+        width: 100%;
+        
+        @include breakpoint(mobile) {
+            flex-direction: column;
         }
 
-        grid-column: 2;
-        justify-self: end;
-        align-self: end;
+        &--light {
+            background-color: white;
+            color: black;
+        }
+        &--dark {
+            background-color: $dark;
+            color: white;
+        }
+    }
 
-        padding-bottom: 5px;
+    &__title {
+        display: flex;
+        align-items: center;
+        height: 100%;
+
+        padding: 10px 40px 10px 20px;
+
+        font-weight: bold;
+        font-size: $font-xl;
+        font-family: $font-book;
+        text-transform: uppercase;
 
         @include breakpoint(mobile) {
+            padding: 15px 0;
+            font-size: $font-xl;
             grid-column: 1;
             justify-self: center;
             align-self: center;
         }
-
-        @include transition;
+        @include breakpoint(tablet) {
+            padding: 15px 40px 15px 20px;
+            font-size: $font-xxl;
+        }
+        @include breakpoint(laptop) {
+            padding: 20px 40px 20px 20px;
+            font-size: $font-xxl;
+        }
+        @include breakpoint(desktop) {
+            padding: 30px 40px 30px 20px;
+            font-size: $font-xxxl;
+        }
     }
 
     &__desc {
-        font-size: $font-sm;
-        @include breakpoint(tablet) {
-            font-size: $font-base;
-        }
-        font-style: italic;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        padding-left: 40px;
+        padding-right: 40px;
 
-        grid-column: 2;
-        justify-self: end;
+        height: 100%;
+        width: 100%;
+        font-size: $font-lg;
+        color: white;
+        background-color: var(--selected-mode);
+
+        clip-path: polygon(84% 0, 100% 18%, 100% 100%, 0 100%, 1% 0);
         @include breakpoint(mobile) {
-            grid-column: 1;
-            justify-self: center;
-            align-self: center;
+            font-size: $font-base;
+            clip-path: none;
+            justify-content: center;
         }
-        @include transition;
-    }
-
-    &__shapes {
-        display: none;
-        background-color: #242424;
-
-        position: relative;
-
-        grid-row: 1 / 3;
-        width: 206px;
 
         @include breakpoint(tablet) {
-            display: block;
-        }
-    }
-
-    &__shape {
-        @include mode-category__shapes;
-
-        &--large, &--small, &--small2 {
-            transform: rotate(45deg);
-
-            position: absolute;
-
-            @include transition;
-        }
-
-        &--small, &--small2 {
-            height: 150px;
-            width: 23px;
-        }
-
-        &--large {
-            height: 300px;
-            width: 300px;
-
-            right: 30%;
-            top: -200%;
-        }
-
-        &--small {
-            right: 31%;
-            top: 20%;
-        }
-
-        &--small2 {
-            right: 5%;
-            top: 4%;
+            font-size: $font-xl;
         }
     }
 }
-
 </style>

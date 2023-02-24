@@ -1,5 +1,5 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
-import { RootState } from "../../MCA-AYIM/store/index";
+import { RootState } from "../../Assets/store/mca-ayim";
 import { MCAInfo } from "../../Interfaces/mca";
 
 export interface UpdateRequestData {

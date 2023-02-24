@@ -42,6 +42,10 @@
             "clientSecret": "obtain from https://osu.ppy.sh/home/account/edit"
         }
     },
+    "bn": {
+        "username": "",
+        "secret": ""
+    },
     "google": {
         "credentials": {
             "private_key": "Create a service account",

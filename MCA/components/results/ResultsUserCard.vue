@@ -65,8 +65,6 @@ export default class ResultsUserCard extends Vue {
     cursor: pointer;
     background-position: 31% 0%;
 
-    @include transition();
-
     &:hover {
         box-shadow: 0 0 12px rgba(255,255,255,0.75);
     }
