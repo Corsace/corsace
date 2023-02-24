@@ -11,6 +11,7 @@ import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot
 import { Beatmap } from "../../../../Models/beatmap";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { osuClient } from "../../../../Server/osu";
+import { insertBeatmap } from "../../../../Server/scripts/fetchYearMaps";
 
 async function command (m: Message) {
     if (!(await mappoolFunctions.privilegeChecks(m, false, false)))
@@ -189,7 +190,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 m.reply("Could not find beatmap on osu!api.");
                 return;
             }
-            beatmap = await Beatmap.fromAPI(apiMap[0]);
+            beatmap = await insertBeatmap(apiMap[0]);
+        }
+
+        mappoolMap.beatmap = beatmap;
+        await mappoolMap.save();
+        m.reply(`Successfully set map **${slot}${order}** to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`);
+        return;
+    }
+
+    // Check if target is user
+    const user = await osuClient.users.getByUsername(target);
+
             
 
 }

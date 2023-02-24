@@ -12,6 +12,8 @@ import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
 import { isPossessive } from "../../Models/MCA_AYIM/guestRequest";
 import { sleep } from "../utils/sleep";
+import { modeList } from "../../Interfaces/modes";
+import { genres, langs } from "../../Interfaces/beatmap";
 
 let bmQueued = 0; // beatmaps inserted in queue
 let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
@@ -37,7 +39,7 @@ function timeFormatter (ms: number): string {
 
 const getModeDivison = memoizee(async (modeDivisionId: number) => {
     modeDivisionId += 1;
-    let mode = await ModeDivision.findOne(modeDivisionId);
+    let mode = await ModeDivision.findOne({ where: { ID: modeDivisionId }});
     if (!mode) {
         mode = new ModeDivision;
         mode.ID = modeDivisionId;
@@ -59,7 +61,7 @@ async function getMissingOsuUserProperties (userID: number): Promise<{ country: 
 }
 
 const getUser = async (targetUser: { username?: string, userID: number, country?: string }): Promise<User> => {
-    let user = await User.findOne({ osu: { userID: `${targetUser.userID}` } });
+    let user = await User.findOne({ where: { osu: { userID: `${targetUser.userID}` }}});
     
     if (!user) {
         let country = targetUser.country;
@@ -139,7 +141,7 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
 });
 
 const getMCAEligibility = memoizee(async function(year: number, user: User) {
-    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year, user }});
+    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year, user: { ID: user.ID }}});
     if (!eligibility) {
         eligibility = new MCAEligibility();
         eligibility.year = year;
@@ -269,47 +271,4 @@ if(module === require.main) {
         });
 }
 
-const genres = [
-    "any",
-    "unspecified",
-    "video game",
-    "anime",
-    "rock",
-    "pop",
-    "other",
-    "novelty",
-    "---",
-    "hip hop",
-    "electronic",
-    "metal",
-    "classical",
-    "folk",
-    "jazz",
-];
-
-const langs = [
-    "any",
-    "unspecified",
-    "english",
-    "japanese",
-    "chinese",
-    "instrumental",
-    "korean",
-    "french",
-    "german",
-    "swedish",
-    "spanish",
-    "italian",
-    "russian",
-    "polish",
-    "other",
-];
-
-const modeList = [
-    "standard",
-    "taiko",
-    "fruits",
-    "mania",
-];
-
-export { getUser };
+export { getUser, insertBeatmap };
