@@ -144,47 +144,47 @@
                 "description": "The best storyboarder out there."
             },
             "marathon": {
-                "name": "Marathon",
+                "name": "Best Marathon",
                 "description": "The best beatmap with 5+ minute drain time."
             },
             "hitsounding": {
-                "name": "Hitsounding",
+                "name": "Best Hitsounding",
                 "description": "The best bells and whistles out there."
             },
             "collab": {
-                "name": "Collab",
+                "name": "Best Collab",
                 "description": "The best beatmap with 2+ mappers creating the top difficulty."
             },
             "simple": {
-                "name": "Simple",
+                "name": "Best Simple",
                 "description": "The best beatmap with the top difficulty lower than an insane."
             },
             "highBPM": {
-                "name": "High BPM",
+                "name": "Best High BPM",
                 "description": "The best beatmap with atypically fast streaming or high singletap strain."
             },
             "smallCircles": {
-                "name": "Small Circles",
+                "name": "Best Small Circles",
                 "description": "The best beatmap with the top difficulty using circle size 5 or smaller."
             },
             "heavy13": {
-                "name": "1/3 Heavy",
+                "name": "Best 1/3 Heavy",
                 "description": "The best beatmap with top difficulties using lots of purple ticks."
             },
             "throwback": {
-                "name": "Throwback",
+                "name": "Best Throwback",
                 "description": "The best beatmap with a style of the old."
             },
             "mapper": {
-                "name": "Mapper",
+                "name": "Best Mapper",
                 "description": "The one who created the best beatmaps."
             },
             "modder": {
-                "name": "Modder",
+                "name": "Best Modder",
                 "description": "The one who created the best mods."
             },
             "hitsounder": {
-                "name": "Hitsounder",
+                "name": "Best Hitsounder",
                 "description": "The one who created the best hitsounds."
             },
             "mostPromising": {
@@ -200,99 +200,99 @@
                 "description": "The one who positively contributed to the health of osu! the most."
             },
             "spread": {
-                "name": "Spread",
+                "name": "Best Spread",
                 "description": "The set with the best spread of difficulties."
             },
             "experimental": {
-                "name": "Experimental",
+                "name": "Best Experimental",
                 "description": "The best \"tech\" / off meta beatmap."
             },
             "stream": {
-                "name": "Stream",
+                "name": "Best Stream",
                 "description": "The beatmap with the best continuous streams."
             },
             "highBPMTaiko": {
-                "name": "High BPM",
+                "name": "Best High BPM",
                 "description": "The best beatmap with over 240 BPM."
             },
             "lowBPMTaiko": {
-                "name": "Low BPM",
+                "name": "Best Low BPM",
                 "description": "The best beatmap with under 140 BPM."
             },
             "simplistic": {
-                "name": "Simplistic",
+                "name": "Best Simplistic",
                 "description": "The best cleanest beatmap out there."
             },
             "sliderVelocity": {
-                "name": "Slider Velocity",
+                "name": "Best Slider Velocity",
                 "description": "The best beatmap with an intense usage of slider velocities."
             },
             "featuredArtist": {
-                "name": "Featured Artist",
+                "name": "Best Featured Artist",
                 "description": "The best beatmap for a featured artist song."
             },
             "longNotes": {
-                "name": "Long Notes",
+                "name": "Best Long Notes",
                 "description": "The best beatmap with an intense usage of LNs."
             },
             "antiMeta": {
-                "name": "Anti Meta",
+                "name": "Best Anti Meta",
                 "description": "The best beatmap based around 5K/6K/8K/9K."
             },
             "7K": {
-                "name": "7K Specific",
+                "name": "Best 7K Specific",
                 "description": "The best beatmap based around 7K."
             },
             "technical": {
-                "name": "Technical",
+                "name": "Best Technical",
                 "description": "The best storyboard in its technical capabilities."
             },
             "gameplay": {
-                "name": "Gameplay",
+                "name": "Best Gameplay",
                 "description": "The best storyboard in utilizing gameplay elements."
             },
             "minimalistic": {
-                "name": "Minimalistic",
+                "name": "Best Minimalistic",
                 "description": "The best storyboard in saying a lot with very little."
             },
             "narrative": {
-                "name": "Narrative",
+                "name": "Best Narrative",
                 "description": "The best storyboard in telling a great story."
             },
             "technicalTaiko": {
-                "name": "Technical",
+                "name": "Best Technical",
                 "description": "The best beatmap rich in complex patterning and snap combinations."
             },
             "fastTaiko": {
-                "name": "Fast",
+                "name": "Best Fast",
                 "description": "The best beatmap with fast tapping and high SV."
             },
             "slowTaiko": {
-                "name": "Slow",
+                "name": "Best Slow",
                 "description": "The best beatmap with slow tapping and low SV."
             },
             "hybrid": {
-                "name": "Hybrid",
+                "name": "Best Hybrid",
                 "description": "The best beatmap which showcases substantial amounts of both LN and rice patterning."
             },
             "highBPMAlternator": {
-                "name": "High BPM / Alternator",
+                "name": "Best High BPM / Alternator",
                 "description": "The best beatmap with priority on extremely fast tapping and / or aim skills. (240+ BPM)"
             },
             "vanilla": {
-                "name": "Vanilla",
+                "name": "Best Vanilla",
                 "description": "The best beatmap utilizing simple mapping techniques to great effect."
             },
             "complex": {
-                "name": "Complex Rhythm / Swing",
+                "name": "Best Complex Rhythm / Swing",
                 "description": "The best beatmap with extensive usage of uncommon snappings, including doubles, 1/3, 1/5, 1/7, and more."
             },
             "unorthodox": {
-                "name": "Unorthodox / Gimmick",
+                "name": "Best Unorthodox / Gimmick",
                 "description": "The best beatmap showcasing mapping techniques or ideas that are not frequently seen."
             },
             "sliderTech": {
-                "name": "Slider Tech",
+                "name": "Best Slider Tech",
                 "description": "The best beatmap featuring technical elements, intricate slider design and velocity usage, and complex stream patterns."
             },
             "mostInspiring": {
@@ -304,19 +304,19 @@
                 "description": "The best user in providing outstanding contribution to the community behind-the-scenes."
             },
             "simplisticTaiko": {
-                "name": "Simplistic",
+                "name": "Best Simplistic",
                 "description": "The best beatmap in using simple patterning and rhythm."
             },
             "technicalCatch": {
-                "name": "Technical",
+                "name": "Best Technical",
                 "description": "The best beatmap which utilizes concepts that push the boundaries of catch gameplay."
             },
             "antiMetaCatch": {
-                "name": "Anti-Meta",
+                "name": "Best Anti-Meta",
                 "description": "The best beatmap at using unconventional / gimmicky patterning."
             },
             "diversity": {
-                "name": "Diversity",
+                "name": "Best Diversity",
                 "description": "The best beatmap focusing on many skillsets / categories."
             }
         },
