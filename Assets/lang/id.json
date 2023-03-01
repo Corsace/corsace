@@ -144,47 +144,47 @@
                 "description": "Storyboarder terbaik tahun ini."
             },            
             "marathon": {
-                "name": "Marathon",
+                "name": "Best Marathon",
                 "description": "Mapset terbaik dengan drain time di atas 5 menit."
             },
             "hitsounding": {
-                "name": "Hitsounding",
+                "name": "Best Hitsounding",
                 "description": "Mapset yang mengusung hitsound terbaik."
             },
             "collab": {
-                "name": "Collab",
-                "description": "Mapset terbaik yang tingkat kesulitan tertingginya merupakan hasil kolaborasi antar 2 orang mapper atau lebih."
+                "name": "Best Collab",
+                "description": "Mapset terbaik yang tingkat kesulitan tertingginya merupakan hasil kolaborasi antar dua orang mapper atau lebih."
             },
             "simple": {
-                "name": "Simple",
+                "name": "Best Simple",
                 "description": "Mapset terbaik dengan tingkat kesulitan tertinggi di bawah Insane."
             },
             "highBPM": {
-                "name": "High BPM",
+                "name": "Best High BPM",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern spaced stream atau singletap."
             },
             "smallCircles": {
-                "name": "Small Circles",
+                "name": "Best Small Circles",
                 "description": "Mapset terbaik yang mempergunakan circle size 5 atau lebih kecil."
             },
             "heavy13": {
-                "name": "1/3 Heavy",
+                "name": "Best 1/3 Heavy",
                 "description": "Mapset terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6)."
             },
             "throwback": {
-                "name": "Throwback",
+                "name": "Best Throwback",
                 "description": "Mapset terbaik dengan gaya mapping yang membawa nuansa nostalgia."
             },
             "mapper": {
-                "name": "Mapper",
+                "name": "Best Mapper",
                 "description": "Mereka yang membuat map-map terbaik."
             },
             "modder": {
-                "name": "Modder",
+                "name": "Best Modder",
                 "description": "Mereka yang memberikan mod-mod yang paling membantu."
             },
             "hitsounder": {
-                "name": "Hitsounder",
+                "name": "Best Hitsounder",
                 "description": "Mereka yang paling piawai dalam meracik hitsound."
             },
             "mostPromising": {
@@ -200,99 +200,99 @@
                 "description": "Mereka yang paling berkontribusi memajukan osu!."
             },
             "spread": {
-                "name": "Spread",
+                "name": "Best Spread",
                 "description": "Mapset dengan persebaran tingkat kesulitan (diffficulty spread) terbaik."
             },
             "experimental": {
-                "name": "Experimental",
+                "name": "Best Experimental",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern yang tergolong \"tech\" atau off-meta."
             },
             "stream": {
-                "name": "Stream",
+                "name": "Best Stream",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern stream."
             },
             "highBPMTaiko": {
-                "name": "High BPM",
+                "name": "Best High BPM",
                 "description": "Mapset terbaik dengan tempo lagu di atas 240 BPM."
             },
             "lowBPMTaiko": {
-                "name": "Low BPM",
+                "name": "Best Low BPM",
                 "description": "Mapset terbaik dengan tempo lagu di bawah 140 BPM."
             },
             "simplistic": {
-                "name": "Simplistic",
+                "name": "Best Simplistic",
                 "description": "Mapset terbaik yang mengusung desain yang sederhana."
             },
             "sliderVelocity": {
-                "name": "Slider Velocity",
+                "name": "Best Slider Velocity",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada manipulasi slider velocity."
             },
             "featuredArtist": {
-                "name": "Featured Artist",
+                "name": "Best Featured Artist",
                 "description": "Mapset terbaik yang mengusung lagu Featured Artist."
             },                
             "longNotes": {
-                "name": "Long Notes",
+                "name": "Best Long Notes",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan LN."
             },
             "antiMeta": {
-                "name": "Anti Meta",
+                "name": "Best Anti Meta",
                 "description": "Mapset 5K/6K/8K/9K terbaik."
             },
             "7K": {
-                "name": "7K Specific",
+                "name": "Best 7K Specific",
                 "description": "Mapset 7K terbaik."
             },
             "technical": {
-                "name": "Technical",
+                "name": "Best Technical",
                 "description": "Storyboard yang paling memukau secara teknis."
             },
             "gameplay": {
-                "name": "Gameplay",
+                "name": "Best Gameplay",
                 "description": "Storyboard terbaik yang memperkaya permainan."
             },
             "minimalistic": {
-                "name": "Minimalistic",
+                "name": "Best Minimalistic",
                 "description": "Storyboard terbaik yang mengusung elemen-elemen desain minimalis."
             },
             "narrative": {
-                "name": "Narrative",
+                "name": "Best Narrative",
                 "description": "Storyboard terbaik yang menceritakan suatu kisah."
             },
             "technicalTaiko": {
-                "name": "Technical",
+                "name": "Best Technical",
                 "description": "Mapset terbaik yang mengusung kombinasi pattern dan beat snapping yang kompleks."
             },                
             "fastTaiko": {
-                "name": "Fast",
+                "name": "Best Fast",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan SV yang tinggi dan pattern-pattern yang menuntut kecepatan tapping."
             },
             "slowTaiko": {
-                "name": "Slow",
+                "name": "Best Slow",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan SV yang lambat dan pattern-pattern yang menuntut kesabaran."
             },
             "hybrid": {
-                "name": "Hybrid",
+                "name": "Best Hybrid",
                 "description": "Mapset terbaik yang mengusung pattern-pattern rice dan LN dalam proporsi yang kurang lebihnya seimbang."
             },
             "highBPMAlternator": {
-                "name": "High BPM / Alternator",
+                "name": "Best High BPM / Alternator",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern yang menuntut kemampuan aim dan/atau kecepatan tapping yang sangat tinggi. (240+ BPM)"
             },
             "vanilla": {
-                "name": "Vanilla",
+                "name": "Best Vanilla",
                 "description": "Mapset terbaik yang mengusung desain yang sederhana."
             },
             "complex": {
-                "name": "Complex Rhythm / Swing",
+                "name": "Best Complex Rhythm / Swing",
                 "description": "Mapset terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6) dan/atau snapping-snapping lainnya yang tidak lazim seperti double, 1/3, 1/5, 1/7, and lain sebagainya."
             },
             "unorthodox": {
-                "name": "Unorthodox / Gimmick",
+                "name": "Best Unorthodox / Gimmick",
                 "description": "Mapset terbaik yang mengusung ide-ide atau teknik-teknik mapping yang tidak umum."
             },
             "sliderTech": {
-                "name": "Slider Tech",
+                "name": "Best Slider Tech",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada desain slider, manipulasi SV, dan pattern-pattern stream yang kompleks."
             },
             "mostInspiring": {
@@ -304,19 +304,19 @@
                 "description": "Mereka yang paling berkontribusi dalam memajukan dunia mapping dan modding dari balik layar."
             },
             "simplisticTaiko": {
-                "name": "Simplistic",
+                "name": "Best Simplistic",
                 "description": "Mapset terbaik yang mengusung desain yang sederhana."
             },
             "technicalCatch": {
-                "name": "Technical",
+                "name": "Best Technical",
                 "description": "Mapset terbaik yang kesulitannya bertitik berat pada konsep-konsep osu!catch kompleks."
             },
             "antiMetaCatch": {
-                "name": "Anti-Meta",
+                "name": "Best Anti-Meta",
                 "description": "Mapset terbaik yang mengusung gimmick-gimmick atau teknik-teknik mapping yang tidak umum."
             },
             "diversity": {
-                "name": "Diversity",
+                "name": "Best Diversity",
                 "description": "Mapset terbaik yang berfokus pada berbagai macam skillset/kategori."
             }           
         },
@@ -372,7 +372,7 @@
         "index": {
             "underConstruction": "dalam pengerjaan",
             "sorry": "mohon maaf atas ketidaknyamanannya",
-            "development": "situs web corsace saat ini masih sedang dalam pengerjaan",
+            "development": "situs web corsace saat ini sedang dalam pengerjaan",
             "theTeam": "tim corsace"
         },
         "merch": {
