@@ -354,7 +354,7 @@
                 "description": "The best beatmap at using unconventional / gimmicky patterning."
             },
             "unconventionalCtb": {
-                "name": "Unconventional AR/CS",
+                "name": "Best Unconventional AR/CS",
                 "description": "The best beatmap with unusual AR (Approx. <=8.5) or unusual CS (Approx. >=5, <=3)."
             },
             "diversity": {
