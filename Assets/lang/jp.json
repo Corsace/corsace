@@ -132,55 +132,55 @@
         },
         "categories": {
             "grandAward": {
-                "name": "グランプリ",
+                "name": "大賞",
                 "description": "2020年を代表するのにふさわしい譜面"
             },
             "grandStoryboard": {
-                "name": "ストーリーボードグランプリ",
+                "name": "最優秀ストーリーボード",
                 "description": "2020年を代表するのにふさわしいストーリーボード"
             },
             "grandStoryboarder": {
-                "name": "ストーリーボーダーグランプリ",
+                "name": "最優秀ストーリーボーダー",
                 "description": "2020年を代表するのにふさわしいストーリーボーダー"
             },
             "marathon": {
-                "name": "マラソン",
+                "name": "最優秀マラソン譜面",
                 "description": "ドレインタイムが5分以上の譜面"
             },
             "hitsounding": {
-                "name": "ヒットサウンド",
-                "description": "耳を楽しませてくれる最高のヒットサウンド"
+                "name": "最優秀ヒットサウンド",
+                "description": "聴き心地が最高なヒットサウンド"
             },
             "collab": {
-                "name": "コラボ",
+                "name": "最優秀コラボ譜面",
                 "description": "2人以上の手でトップ難易度が作られた譜面"
             },
             "simple": {
-                "name": "シンプル",
+                "name": "最優秀低難易度譜面",
                 "description": "トップ難易度がInsaneより易しい譜面"
             },
             "highBPM": {
-                "name": "高BPM",
+                "name": "最優秀高BPM譜面",
                 "description": "息をのむような速度と密度を誇る譜面"
             },
             "smallCircles": {
-                "name": "小さいサークル",
+                "name": "最優秀高CS譜面",
                 "description": "トップ難易度のCSが5以上である譜面"
             },
             "heavy13": {
-                "name": "三拍子",
+                "name": "最優秀三拍子譜面",
                 "description": "トップ難易度が「紫線」を大量に使用している譜面"
             },
             "throwback": {
-                "name": "懐古",
+                "name": "最優秀懐古譜面",
                 "description": "古き良きスタイルで作られた譜面"
             },
             "mapper": {
-                "name": "マッパー",
+                "name": "最優秀マッパー",
                 "description": "2020年を代表するのにふさわしいマッパー"
             },
             "modder": {
-                "name": "モッダー",
+                "name": "最優秀モッダー",
                 "description": "2020年を代表するのにふさわしいモッダー"
             },
             "hitsounder": {
@@ -200,39 +200,39 @@
                 "description": "osu!のために献身的に尽くした人物"
             },
             "spread": {
-                "name": "スプレッド",
+                "name": "最優秀スプレッド",
                 "description": "難易度間のスプレッドがきれいな譜面"
             },
             "experimental": {
-                "name": "斬新性",
+                "name": "最も実験的な譜面",
                 "description": "既存の枠組みから外れた面白い試みをした譜面"
             },
             "stream": {
-                "name": "連打",
+                "name": "最優秀連打譜面",
                 "description": "魅力的な連打を置いた譜面"
             },
             "highBPMTaiko": {
-                "name": "高BPM",
+                "name": "最優秀高BPM譜面",
                 "description": "240BPMより速い譜面"
             },
             "lowBPMTaiko": {
-                "name": "低BPM",
+                "name": "最優秀低BPM譜面",
                 "description": "140BPMより遅い譜面"
             },
             "simplistic": {
-                "name": "シンプル",
+                "name": "最優秀シンプル譜面",
                 "description": "シンプルイズベストを体現した譜面"
             },
             "sliderVelocity": {
-                "name": "SV変化",
+                "name": "最優秀SV変化譜面",
                 "description": "SV変化を多用した譜面"
             },
             "featuredArtist": {
-                "name": "Featured Artist",
+                "name": "最優秀Featured Artist譜面",
                 "description": "FAの楽曲を使用した譜面"
             },
             "longNotes": {
-                "name": "LN",
+                "name": "最優秀LN譜面",
                 "description": "ロングノーツを多用した譜面"
             },
             "antiMeta": {
@@ -240,11 +240,11 @@
                 "description": "5K/6K/8K/9Kで作られた譜面"
             },
             "7K": {
-                "name": "7K",
+                "name": "最優秀7K譜面",
                 "description": "7Kで作られた譜面"
             },
             "technical": {
-                "name": "技術力",
+                "name": "技術者",
                 "description": "高度な技術を使用したストーリーボード"
             },
             "gameplay": {
@@ -260,31 +260,31 @@
                 "description": "ストーリー展開を含んだストーリーボード"
             },
             "technicalTaiko": {
-                "name": "Technical",
+                "name": "最優秀Technical譜面",
                 "description": "複雑なスナップとパターンを駆使した譜面"
             },
             "fastTaiko": {
-                "name": "高速",
+                "name": "最優秀高速譜面",
                 "description": "SVが速く巧みな指さばきが要求される譜面"
             },
             "slowTaiko": {
-                "name": "低速",
+                "name": "最優秀低速譜面",
                 "description": "SVが遅くゆったりとした運指が特徴の譜面"
             },
             "hybrid": {
-                "name": "ハイブリッド",
+                "name": "最優秀ハイブリッド譜面",
                 "description": "ロングノーツとノーツの両方において多様なパターンのアイディアを使用した譜面"
             },
             "highBPMAlternator": {
-                "name": "高BPM/交互",
+                "name": "最優秀高BPM/交互譜面",
                 "description": "超高速の指さばきとエイムスキルが要求される譜面 (240+ BPM)"
             },
             "vanilla": {
-                "name": "バニラ",
+                "name": "最優秀バニラ譜面",
                 "description": "シンプルなマッピング技術を非常に効果的に活かした譜面"
             },
             "complex": {
-                "name": "リズム難",
+                "name": "最優秀リズム難譜面",
                 "description": "2連や1/3、1/5、1/7など一般的でないスナップを多用した譜面"
             },
             "unorthodox": {
@@ -292,7 +292,7 @@
                 "description": "物珍しいマッピング技術やギミックを使用した譜面"
             },
             "sliderTech": {
-                "name": "Slider Tech",
+                "name": "最優秀Slider Tech譜面",
                 "description": "複雑なスライダーデザインやSVの使い方、複雑なストリーム等、Tech系の要素を駆使した譜面"
             },
             "mostInspiring": {
@@ -304,11 +304,11 @@
                 "description": "縁の下でコミュニティーのために献身的に尽くした人物"
             },
             "simplisticTaiko": {
-                "name": "シンプル",
+                "name": "最優秀シンプル譜面",
                 "description": "パターンと音取りにおいてシンプルイズベストを体現した譜面"
             },
             "technicalCatch": {
-                "name": "Technical",
+                "name": "最優秀Technical譜面",
                 "description": "catchのプレイの幅を広げるようなコンセプトを使用した譜面"
             },
             "antiMetaCatch": {
