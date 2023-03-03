@@ -52,8 +52,9 @@ function hasRole (section: string, role: string) {
             const hasRole =  Array.isArray(config.discord.roles[section][role]) ? config.discord.roles[section][role].some(r => member.roles.cache.has(r)) : member.roles.cache.has(config.discord.roles[section][role]);
             if (
                 hasRole || 
+                member.roles.cache.has(config.discord.roles.corsace.core) || 
                 member.roles.cache.has(config.discord.roles.corsace.corsace) || 
-                (role === "corsace" ? false : config.discord.roles.corsace.headStaff.some(r => member.roles.cache.has(r)))
+                (role === "corsace" || role === "core" ? false : config.discord.roles.corsace.headStaff.some(r => member.roles.cache.has(r)))
             ) {
                 await next();
                 return;
@@ -81,7 +82,8 @@ function hasRoles (roles: discordRoleInfo[]) {
             return;
         }
         for (const role of roles) {
-            if (member.roles.cache.has(config.discord.roles[role.section][role.role]))
+            const hasRole =  Array.isArray(config.discord.roles[role.section][role.role]) ? config.discord.roles[role.section][role.role].some(r => member.roles.cache.has(r)) : member.roles.cache.has(config.discord.roles[role.section][role.role]);
+            if (hasRole)
             {
                 await next();
                 return;
