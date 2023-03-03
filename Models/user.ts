@@ -298,7 +298,7 @@ export class User extends BaseEntity {
             },
             staff: {
                 corsace: member ? member.roles.cache.has(config.discord.roles.corsace.corsace) : false,
-                headStaff: member ? member.roles.cache.has(config.discord.roles.corsace.headStaff) : false,
+                headStaff: member ? config.discord.roles.corsace.headStaff.some(r => member!.roles.cache.has(r)) : false,
                 staff: member ? member.roles.cache.has(config.discord.roles.corsace.staff) : false,
             },
             joinDate: this.registered,

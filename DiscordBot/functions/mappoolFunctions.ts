@@ -39,10 +39,11 @@ async function pingChannel (pool: "openMappool" | "closedMappool") {
 }
 
 async function roleChecks (member: GuildMember, mappers: boolean, testplayers: boolean): Promise <boolean> {
-    // If core corsace staff, allow them to filter by user aside for author
+    // Corsace head staff bypass role check
     if (
         !member.roles.cache.has(config.discord.roles.corsace.corsace) &&
-        !member.roles.cache.has(config.discord.roles.corsace.headStaff)
+        !member.roles.cache.has(config.discord.roles.corsace.core) &&
+        !config.discord.roles.corsace.headStaff.some(r => member.roles.cache.has(r))
     ) {
         if (mappers && (
             config.discord.roles.open.mapper.some(r => member.roles.cache.has(r)) ||
