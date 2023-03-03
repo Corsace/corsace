@@ -31,7 +31,7 @@ async function isStaff (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (member) {
         const roles = [
             config.discord.roles.corsace.corsace,
-            config.discord.roles.corsace.headStaff,
+            ...config.discord.roles.corsace.headStaff,
             config.discord.roles.corsace.staff,
         ];
         for (const role of roles)
