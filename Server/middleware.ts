@@ -48,16 +48,16 @@ async function isStaff (ctx: ParameterizedContext, next: Next): Promise<void> {
 function hasRole (section: string, role: string) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
         const member = await getMember(ctx.state.user.discord.userID);
-        if (
-            member && 
-            (
-                member.roles.cache.has(config.discord.roles[section][role]) || 
+        if (member) {
+            const hasRole =  Array.isArray(config.discord.roles[section][role]) ? config.discord.roles[section][role].some(r => member.roles.cache.has(r)) : member.roles.cache.has(config.discord.roles[section][role]);
+            if (
+                hasRole || 
                 member.roles.cache.has(config.discord.roles.corsace.corsace) || 
                 (role === "corsace" ? false : config.discord.roles.corsace.headStaff.some(r => member.roles.cache.has(r)))
-            )
-        ) {
-            await next();
-            return;
+            ) {
+                await next();
+                return;
+            }
         } 
         
         ctx.body = { error: "User does not have the " + role + " role!" };
