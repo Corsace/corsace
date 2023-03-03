@@ -195,9 +195,6 @@ export class Beatmapset extends BaseEntity {
                     "beatmapset.tags LIKE :criteria OR " + 
                     "beatmap.difficulty LIKE :criteria OR " +
                     "user.osuUsername LIKE :criteria OR " +
-                    "user.osuUserid LIKE :criteria OR " +
-                    "user.discordUserid LIKE :criteria OR " +
-                    "user.discordUsername LIKE :criteria OR " +
                     "otherName.name LIKE :criteria)", { criteria: `%${query.text}%` });
         }
         
