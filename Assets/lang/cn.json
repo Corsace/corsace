@@ -41,11 +41,11 @@
             "name": "谱面名称",
             "playcount": "游玩次数",
             "favourites": "收藏次数",
-            "favouritesExclHybrid": "收藏次数（非Hybrid谱面）",
+            "favouritesExclHybrid": "收藏次数（非 Hybrid 谱面）",
             "length": "谱面长度",
             "difficulties": "难度个数",
             "playTime": "游玩时间（所有难度总和）",
-            "totalRanked": "总Ranked图张数",
+            "totalRanked": "总上架（Ranked）图张数",
             "totalDiff": "总难度数",
             "submitDates": "提交时间",
             "starRatings": "难度星级",
@@ -64,7 +64,7 @@
         },
         "mappers": {
             "name": "谱师姓名",
-            "mostRanked": "拥有最多 Ranked",
+            "mostRanked": "拥有最多上架（Ranked）谱面",
             "mostDiffs": "拥有最多难度",
             "mostFavs": "拥有最多收藏",
             "mostFavsExclHybrid": "拥有最多收藏（非 Hybrid 谱面）",
@@ -115,7 +115,7 @@
                 "voting": "投票阶段",
                 "nominating": "提名阶段"
             },
-            "rankedSets": "Ranked 谱面",
+            "rankedSets": "上架（Ranked）谱面",
             "nominateNow": "现在提名！",
             "voteNow": "现在投票！",
             "viewResults": "查看结果！",
@@ -195,7 +195,7 @@
             },
             "mostPromising": {
                 "name": "最具潜力奖",
-                "description": "在今年才 Ranked 图的谱师当中最厉害的那个人。"
+                "description": "在今年才上架（Ranked）图的谱师当中最厉害的那个人。"
             },
             "mostInfluential": {
                 "name": "最具影响力奖",
@@ -207,11 +207,11 @@
             },
             "spread": {
                 "name": "最佳 Spread",
-                "description": "具有最佳 Spread* 的谱面。（*Spread：指各难度从低到高的过渡是否自然）"
+                "description": "具有最佳 spread* 的谱面。（*spread：指各难度从低到高的过渡是否自然）"
             },
             "experimental": {
                 "name": "最佳实验性谱面",
-                "description": "最佳 \"Tech\"/ 非主流谱面。"
+                "description": "最佳 \"tech\"/ 非主流谱面。"
             },
             "stream": {
                 "name": "最佳连打谱面",
@@ -238,7 +238,7 @@
                 "description": "基于精选艺术家曲目所制的最佳谱面。"
             },
             "longNotes": {
-                "name": "最佳长条（LN）谱面",
+                "name": "最佳 LN 谱面",
                 "description": "大量使用 LN 的最佳谱面。"
             },
 	    "longNotes4K": {
@@ -250,15 +250,15 @@
                 "description": "大量使用 LN 的最佳 7K 谱面。"
             },
             "rice": {
-                "name": "最佳乱打（rice）谱面",
+                "name": "最佳 Rice 谱面",
                 "description": "大量使用 rice 的最佳谱面。"
             },
             "rice4K": {
-                "name": "最佳 4K rice 谱面",
+                "name": "最佳 4K Rice 谱面",
                 "description": "大量使用 rice 的最佳 4K 谱面。"
             },
             "rice7K": {
-                "name": "最佳 7K rice 谱面",
+                "name": "最佳 7K Rice 谱面",
                 "description": "大量使用 rice 的最佳 7K 谱面。"
             },
             "antiMeta": {
@@ -286,7 +286,7 @@
                 "description": "叙事性最强的故事板。"
             },
 	    "technicalTaiko": {
-                "name": "最佳 technical 谱面",
+                "name": "最佳 Technical 谱面",
                 "description": "以使用复杂梗和 snap 为特色的最佳谱面。"
             },
             "fastTaiko": {
@@ -299,27 +299,27 @@
             },
             "hybrid": {
                 "name": "最佳混合（Hybrid）谱面",
-                "description": "大量使用长条（LN）和乱打（rice）梗的最佳谱面。"
+                "description": "大量使用 LN 和 rice 的最佳谱面。"
             },
 	    "hybrid4K": {
                 "name": "最佳 4K 混合（Hybrid）谱面",
-                "description": "大量使用长条（LN）和乱打（rice）梗的最佳 4K 谱面。"
+                "description": "大量使用 LN 和 rice 的最佳 4K 谱面。"
             },
             "hybrid7K": {
                 "name": "最佳 7K 混合（Hybrid）谱面",
-                "description": "大量使用长条（LN）和乱打（rice）梗的最佳 7K 谱面。"
+                "description": "大量使用 LN 和 rice 的最佳 7K 谱面。"
             },
             "highBPMAlternator": {
                 "name": "最佳高 BPM / 切指谱面",
-                "description": "强调超快击打和 / 或移动水平的最佳谱面。 (240+ BPM)"
+                "description": "强调超快击打和 / 或移动水平的最佳谱面。(240+ BPM)"
             },
             "vanilla": {
                 "name": "具有最佳基本功的谱面",
                 "description": "最能够以小见大的谱面。"
             },
             "complex": {
-                "name": "最佳复杂 / 摇摆（swing）节奏谱面",
-                "description": "大量使用非传统 Snapping 的最佳谱面（二连，1/3，1/5，1/7 等）。"
+                "name": "最佳复杂 / 摇摆（Swing）节奏谱面",
+                "description": "大量使用非传统 snapping 的最佳谱面（二连，1/3，1/5，1/7 等）。"
             },
             "unorthodox": {
                 "name": "最佳非主流 / 歪点子谱面",
@@ -335,7 +335,7 @@
             },
 	    "mostInnovative": {
                 "name": "最具创新精神奖",
-                "description": "The one who influenced and provided inspiration to others the most."
+                "description": "给予了他人最大影响和启发的人。"
             },
             "communityPillar": {
                 "name": "社群栋梁",
@@ -346,7 +346,7 @@
                 "description": "使用简单梗和节奏的最佳谱面。"
             },
             "technicalCatch": {
-                "name": "最佳 technical 谱面",
+                "name": "最佳 Technical 谱面",
                 "description": "突破接水果游戏玩法极限的最佳谱面。"
             },
             "antiMetaCatch": {
