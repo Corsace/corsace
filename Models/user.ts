@@ -138,8 +138,8 @@ export class User extends BaseEntity {
     @OneToMany(() => Tournament, tournament => tournament.organizer)
     tournamentsOrganized!: Tournament[];
 
-    @ManyToMany(() => MappoolMap, mappoolMap => mappoolMap.mappers)
-    mappoolMaps!: MappoolMap[];
+    @ManyToMany(() => MappoolMap, mappoolMap => mappoolMap.customMappers)
+    customMaps!: MappoolMap[];
 
     @OneToMany(() => MappoolMapSkill, skill => skill.user)
     mappoolMapSkillRatings!: MappoolMapSkill[];

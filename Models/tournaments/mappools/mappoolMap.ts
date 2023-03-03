@@ -25,14 +25,17 @@ export class MappoolMap extends BaseEntity {
     isCustom!: boolean;
 
     @Column({ nullable: true })
+    deadline?: Date;
+
+    @Column({ nullable: true })
     link?: string;
 
     @ManyToOne(() => MappoolSlot, slot => slot.maps)
     slot!: MappoolSlot;
 
-    @ManyToMany(() => User, user => user.mappoolMaps)
+    @ManyToMany(() => User, user => user.customMaps)
     @JoinTable()
-    mappers!: User[];
+    customMappers!: User[];
 
     @ManyToOne(() => Beatmap, beatmap => beatmap.mappoolMaps)
     beatmap!: Beatmap;
@@ -45,5 +48,4 @@ export class MappoolMap extends BaseEntity {
 
     @OneToMany(() => MappoolMapWeight, weight => weight.mappoolMap)
     skillWeights!: MappoolMapWeight[];
-
 }

@@ -52,12 +52,12 @@ async function command (m: Message) {
                     inline: true,
                 });
             
-            if (embed.fields.length === 25) {
+            if (embed.data.fields!.length === 25) {
                 m.channel.send({ embeds: [embed] });
-                embed.fields = [];
+                embed.data.fields = [];
             }
         }
-        if (embed.fields.length > 0)
+        if (embed.data.fields!.length > 0)
             m.channel.send({ embeds: [embed] });
     } finally {
         waiting.delete();

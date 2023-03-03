@@ -15,6 +15,7 @@ import { isPossessive } from "../../Models/MCA_AYIM/guestRequest";
 import { sleep } from "../utils/sleep";
 import { modeList } from "../../Interfaces/modes";
 import { genres, langs } from "../../Interfaces/beatmap";
+import ormConfig from "../../ormconfig";
 
 let bmQueued = 0; // beatmaps inserted in queue
 let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
@@ -269,7 +270,7 @@ async function script () {
     console.log("This script will automatically continue in 5 seconds. Cancel using Ctrl+C.");
     await sleep(5000);
 
-    const conn = await createConnection();
+    const conn = await ormConfig.initialize();
     // ensure schema is up-to-date
     await conn.synchronize();
     console.log("DB schema is now up-to-date!");
@@ -286,7 +287,7 @@ async function script () {
     };
     const progressInterval = setInterval(printStatus, 1000);
 
-    let since = new Date((await Beatmapset.findOne({ order: { approvedDate: "DESC" } }))?.approvedDate || new Date("2006-01-01"));
+    let since = new Date((await Beatmapset.findOne({ where: {}, order: { approvedDate: "DESC" } }))?.approvedDate || new Date("2006-01-01"));
     console.log(`Fetching all beatmaps starting from ${since.toJSON()} until ${year}-12-31...`);
     printStatus();
     const queuedBeatmapIds: number[] = [];

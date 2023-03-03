@@ -29,8 +29,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             },
         ],
     });
-    if (serverTournaments.length === 5) {
-        await m.reply("You can only have 5 tournaments at a time!");
+    if (serverTournaments.length === 3) {
+        await m.reply("You can only have 3 tournaments at a time!");
         return;
     }
 

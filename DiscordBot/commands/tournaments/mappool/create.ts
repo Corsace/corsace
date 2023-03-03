@@ -4,37 +4,16 @@ import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { StageType } from "../../../../Models/tournaments/stage";
-import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
-import { fetchRound, fetchStage, fetchTournament } from "../../../functions/fetchTournament";
+import { TournamentStatus } from "../../../../Models/tournaments/tournament";
+import { fetchRound, fetchStage, fetchTournament } from "../../../functions/tournamentFunctions";
 import { filter } from "../../../functions/messageInteractionFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
-        return;
-    
-    // Check if the server has any running tournaments
-    const serverTournamentsAll = await Tournament.find({
-        where: {
-            server: m.guild.id,
-        },
-        relations: ["stages", "stages.rounds"],
-    });
-    const serverTournaments = serverTournamentsAll.filter(t => t.status !== TournamentStatus.Finished);
-    if (serverTournaments.length === 0) {
-        await m.reply("This server currently has no tournaments running.");
-        return;
-    }
-
-    if (m instanceof ChatInputCommandInteraction)
-        await m.deferReply();
-
-    const message = await m.channel!.send("Alright let's get started!");
-
-    const tournament = await fetchTournament(message, serverTournaments);
+    const tournament = await fetchTournament(m, [TournamentStatus.NotStarted, TournamentStatus.Ongoing, TournamentStatus.Registrations], true, true, true);
     if (!tournament)
         return;
 
-    const stage = await fetchStage(message, tournament);
+    const stage = await fetchStage(m, tournament);
     if (!stage)
         return;
     
@@ -51,7 +30,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // If the stage is an elmination-type stage, then check if they want to make a mappool for a specific round for the stage; otherwise, just make a mappool for the stage
     if (stage.stageType === StageType.DoubleElimination || stage.stageType === StageType.SingleElimination) {
         // Ask if they want to make a mappool for a specific round, or just for the stage
-        const round = await fetchRound(message, stage);
+        const round = await fetchRound(m, stage);
         if (round)
             mappool.round = round;
     }
@@ -77,12 +56,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
             },
         });
 
-    const cont = await confirm(message, existingMappools);
+    const cont = await confirm(m, existingMappools);
     if (!cont)
         return;
 
     mappool.order = existingMappools.length + 1;
 
+    const message = await m.channel!.send("Alright let's get started!");
     await mappoolSlots(message, mappool);
 
     if (m instanceof ChatInputCommandInteraction)
@@ -90,11 +70,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
 }
 
 // Function to confirm if they want to create another mappool for the same stage/round
-async function confirm (m: Message, existingMappools: Mappool[]): Promise<boolean> {
+async function confirm (m: Message | ChatInputCommandInteraction, existingMappools: Mappool[]): Promise<boolean> {
     if (existingMappools.length === 0)
         return true;
 
-    const message = await m.reply({
+    const message = await m.channel!.send({
         content: `This stage/round already has ${existingMappools.length} mappools. Are you sure you want to create another?`,
         components: [
             new ActionRowBuilder<ButtonBuilder>()

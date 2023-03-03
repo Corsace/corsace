@@ -1,9 +1,8 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, GuildMemberRoleManager, Message, MessageComponentInteraction, SlashCommandBuilder } from "discord.js";
-import { getPoolData, updatePoolRow } from "../../../../Server/sheets";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, GuildMember, User as DiscordUser, Message, MessageComponentInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../index";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
-import { fetchTournament } from "../../../functions/fetchTournament";
-import { TournamentRole, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
+import { fetchMappool, fetchSlot, fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
+import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Brackets } from "typeorm";
 import { filter } from "../../../functions/messageInteractionFunctions";
@@ -12,104 +11,36 @@ import { Beatmap } from "../../../../Models/beatmap";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { osuClient } from "../../../../Server/osu";
 import { insertBeatmap } from "../../../../Server/scripts/fetchYearMaps";
-
-async function command (m: Message) {
-    if (!(await mappoolFunctions.privilegeChecks(m, false, false)))
-        return;
-
-    const waiting = await m.channel.send("Assigning...");
-    try {
-        const { pool, user, slot, round } = await mappoolFunctions.parseParams(m);
-
-        // check if slot and round were given
-        if (slot === "") {
-            m.channel.send("Missing slot");
-            return;
-        }
-        if (round === "") {
-            m.channel.send("Missing round");
-            return;
-        }
-
-        // Get pool data and iterate thru
-        const rows = await getPoolData(pool, round.toUpperCase());
-        if (!rows) {
-            m.channel.send(`Could not find round **${round.toUpperCase()}** in the **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** pool`);
-            return;
-        }
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            if (slot.toLowerCase() === row[0].toLowerCase()) {
-                await Promise.all([
-                    updatePoolRow(pool, `'${round}'!B${i + 2}`, [ user.nickname ?? user.user.username ]),
-                    updatePoolRow(pool, `'${round}'!P${i + 2}`, [ user.id ]),
-                ]);
-                m.channel.send(`Assigned ${user.nickname ?? user.user.username} to the slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**`);
-                return;
-            }
-        }
-        m.channel.send(`Could not assign ${user.nickname ?? user.user.username} to the slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**`);
-    } finally {
-        waiting.delete();
-    }
-}
+import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    if (!m.guild) {
-        return;
-    }
-
-    const tournaments = await Tournament.find({
-        where: {
-            server: m.guild.id,
-        },
-    });
-    const currentTournaments = tournaments.filter(t => t.status !== TournamentStatus.Finished);
-    if (currentTournaments.length === 0) {
-        m.reply("There is no tournament running on this server");
-        return;
-    }
-
-    const message = await m.channel!.send("Assigning...");
-
-    const tournament = await fetchTournament(message, currentTournaments);
+    const tournament = await fetchTournament(m, []);
     if (!tournament)
         return;
 
-    const roles = await TournamentRole.find({
-        where: {
-            tournament: { ID: tournament.ID },
-        },
-    });
-    const allowedRoles = roles.filter(r => r.roleType === TournamentRoleType.Organizer || r.roleType === TournamentRoleType.Mappoolers);
-    if (allowedRoles.length === 0) {
-        m.reply("There are no roles for this tournament. Please add organizer/mappooler (and mapper if custom mapping) roles first.");
+    const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]);
+    if (!allowed)
         return;
-    }
-
-    // Check if user is a mappooler or organizer
-    const allowed = (m.member!.roles as GuildMemberRoleManager).cache.hasAny(...allowedRoles.map(r => r.roleID));
-    if (!allowed) {
-        m.reply("You are not a mappooler or organizer for this tournament.");
+    const securedChannel = await isSecuredChannel(m, tournament, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.MappoolLog, TournamentChannelType.MappoolQA, TournamentChannelType.Testplayers]);
+    if (!securedChannel)
         return;
-    }
 
+    const targetRegex = /-t (\S+)/;
     const poolRegex = /-p (\S+)/;
     const slotRegex = /-s (\S+)/;
-    const targetRegex = /-t (\S+)/;
-    const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
-    const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
-    const targetText = m instanceof Message ? m.content.match(targetRegex) ?? m.content.split(" ")[3] : m.options.getSubcommand() === "custom" ? m.options.getUser("user")?.id : m.options.getString("link");
+    const targetText = m instanceof Message ? m.content.match(targetRegex) ?? m.content.split(" ")[1] : m.options.getSubcommand() === "custom" ? m.options.getUser("user")?.id : m.options.getString("link");
+    const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[2] : m.options.getString("pool");
+    const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[3] : m.options.getString("slot");
     if (!poolText || !slotText || !targetText) {
-        m.reply("Missing parameters. Please use `-p <pool> -s <slot> -t <target>` or `<pool> <slot> <target>`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        m.reply("Missing parameters. Please use `-t <target> -p <pool> -s <slot>` or `<target> <pool> <slot>`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
 
-    const pool = typeof poolText === "string" ? poolText : poolText[0];
-    const order = typeof slotText === "string" ? parseInt(slotText.substring(slotText.length - 1)) : parseInt(slotText[0].substring(slotText[0].length - 1));
-    const slot = typeof slotText === "string" ? parseInt(slotText.substring(0, slotText.length - 1)) : parseInt(slotText[0].substring(0, slotText[0].length - 1));
     const target = typeof targetText === "string" ? targetText : targetText[0];
-    if (!poolText || !slotText || !targetText || !order) {
+    const pool = typeof poolText === "string" ? poolText : poolText[0];
+    const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[0].substring(slotText[0].length - 1));
+    const slot = parseInt(typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[0].substring(0, slotText[0].length - 1));
+    if (!pool || !slot || !target || !order) {
         m.reply("Missing parameters. Please use `-p <pool> -s <slot> -t <target>` or `<pool> <slot> <target>`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
@@ -118,53 +49,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const mappools = await Mappool
-        .createQueryBuilder("mappool")
-        .leftJoinAndSelect("mappool.stage", "stage")
-        .leftJoinAndSelect("mappool.round", "round")
-        .where("stage.tournament = :tournament")
-        .andWhere(new Brackets(qb => {
-            qb.where("stage.name LIKE :criteria")
-                .orWhere("round.name LIKE :criteria")
-                .orWhere("stage.abbreviation LIKE :criteria")
-                .orWhere("round.abbreviation LIKE :criteria");
-        }))
-        .setParameters({
-            tournament: tournament.ID,
-            criteria: `%${pool}%`,
-        })
-        .getMany();
-
-    if (mappools.length === 0) {
-        m.reply(`Could not find mappool **${pool}**`);
-        return;
-    }
-
-    const mappool = await multipleMappools(m, mappools);
+    const mappool = await fetchMappool(m, tournament, pool);
     if (!mappool)
         return;
 
-    const slotMods = await MappoolSlot
-        .createQueryBuilder("slot")
-        .leftJoinAndSelect("slot.mappool", "mappool")
-        .leftJoinAndSelect("slot.maps", "maps")
-        .where("mappool.ID = :mappool")
-        .andWhere(new Brackets(qb => {
-            qb.where("slot.name LIKE :criteria")
-                .orWhere("slot.abbreviation LIKE :criteria");
-        }))
-        .setParameters({
-            mappool: mappool.ID,
-            criteria: `%${slot}%`,
-        })
-        .getMany();
-
-    if (slotMods.length === 0) {
-        m.reply(`Could not find slot **${slot}**`);
-        return;
-    }
-
-    const slotMod = await multipleSlots(m, slotMods);
+    const slotMod = await fetchSlot(m, mappool, slot.toString());
     if (!slotMod)
         return;
 
@@ -192,106 +81,53 @@ async function run (m: Message | ChatInputCommandInteraction) {
             }
             beatmap = await insertBeatmap(apiMap[0]);
         }
+        if (mappoolMap.beatmap.ID === beatmap.ID) {
+            m.reply(`**${slot}${order}** is already set to this beatmap.`);
+            return;
+        }
 
         mappoolMap.beatmap = beatmap;
         await mappoolMap.save();
-        m.reply(`Successfully set map **${slot}${order}** to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`);
+
+        const mappoolMapEmbed = new EmbedBuilder()
+            .setTitle(`Map ${slot}${order}: ${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]`)
+            .setURL(`https://osu.ppy.sh/beatmapsets/${beatmap.beatmapset.ID}#osu/${beatmap.ID}`)
+            .setThumbnail(`https://b.ppy.sh/thumb/${beatmap.beatmapset.ID}l.jpg`)
+            .addFields(
+                {
+                    name: "BPM",
+                    value: beatmap.beatmapset.BPM.toString(),
+                    inline: true,
+                },
+            );
+
+
+        m.reply({
+            content: `Successfully set **${slot}${order}** to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`,
+            embeds: [mappoolMapEmbed],
+        });
         return;
     }
 
-    // Check if target is user
-    const user = await osuClient.users.getByUsername(target);
+    // Check if user has any mapper roles
+    const user = await fetchStaff(m, tournament, target, [TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]);
+    if (!user)
+        return;
+    
+    if (mappoolMap.customMappers?.find(u => u.ID === user.ID)) {
+        m.reply(`**${user.osu.username}** is already a mapper for **${slot}${order}**`);
+        return;
+    }
 
-            
+    mappoolMap.isCustom = true;
+    if (!mappoolMap.customMappers || (m as ChatInputCommandInteraction).options.getBoolean("replace")!)
+        mappoolMap.customMappers = [user];
+    else
+        mappoolMap.customMappers.push(user);
 
-}
+    await mappoolMap.save();
+    m.reply(`Successfully added **${user.osu.username}** as a mapper for map **${slot}${order}**`);
 
-// Function to choose a mappool from a list of mappools
-async function multipleMappools (m: Message | ChatInputCommandInteraction, existingMappools: Mappool[]): Promise<Mappool | undefined> {
-    if (existingMappools.length === 1)
-        return existingMappools[0];
-
-    const buttons = existingMappools.map((mappool, i) => {
-        return new ButtonBuilder()
-            .setCustomId(i.toString())
-            .setLabel(`${mappool.round ? mappool.round.abbreviation : mappool.stage!.abbreviation}${mappool.order ? `-${mappool.order}` : ""}`)
-            .setStyle(ButtonStyle.Primary);
-    });
-
-    const message = await m.channel!.send({
-        content: `There are multiple mappools that matched your query. Please choose the appropriate one:`,
-        components: [
-            new ActionRowBuilder<ButtonBuilder>()
-                .addComponents(
-                    ...buttons,
-                    new ButtonBuilder()
-                        .setCustomId("none")
-                        .setLabel("None of these. Failed query.")
-                        .setStyle(ButtonStyle.Danger)),
-        ],
-    });
-
-    return new Promise<Mappool | undefined>(resolve => {
-        const confirmationCollector = m.channel!.createMessageComponentCollector({ filter, time: 60000 });
-        confirmationCollector.on("collect", async (msg: Message | MessageComponentInteraction) => {
-            if (msg instanceof MessageComponentInteraction) {
-                if (msg.customId === "none") {
-                    await message.delete();
-                    confirmationCollector.stop();
-                    resolve(undefined);
-                } else {
-                    const mappool = existingMappools[parseInt(msg.customId)];
-                    await message.delete();
-                    confirmationCollector.stop();
-                    resolve(mappool);
-                }
-            }
-        });
-    });
-}
-
-// Function to choose a slot from a list of slots
-async function multipleSlots (m: Message | ChatInputCommandInteraction, existingSlots: MappoolSlot[]): Promise<MappoolSlot | undefined> {
-    if (existingSlots.length === 1)
-        return existingSlots[0];
-
-    const buttons = existingSlots.map((slot, i) => {
-        return new ButtonBuilder()
-            .setCustomId(i.toString())
-            .setLabel(`${slot.name} (${slot.acronym})`)
-            .setStyle(ButtonStyle.Primary);
-    });
-
-    const message = await m.channel!.send({
-        content: `There are multiple slots that matched your query. Please choose the appropriate one:`,
-        components: [
-            new ActionRowBuilder<ButtonBuilder>()
-                .addComponents(
-                    ...buttons,
-                    new ButtonBuilder()
-                        .setCustomId("none")
-                        .setLabel("None of these. Failed query.")
-                        .setStyle(ButtonStyle.Danger)),
-        ],
-    });
-
-    return new Promise<MappoolSlot | undefined>(resolve => {
-        const confirmationCollector = m.channel!.createMessageComponentCollector({ filter, time: 60000 });  
-        confirmationCollector.on("collect", async (msg: Message | MessageComponentInteraction) => {
-            if (msg instanceof MessageComponentInteraction) {
-                if (msg.customId === "none") {
-                    await message.delete();
-                    confirmationCollector.stop();
-                    resolve(undefined);
-                } else {
-                    const slot = existingSlots[parseInt(msg.customId)];
-                    await message.delete();
-                    confirmationCollector.stop();
-                    resolve(slot);
-                }
-            }
-        });
-    });
 }
 
 const data = new SlashCommandBuilder()
@@ -311,7 +147,11 @@ const data = new SlashCommandBuilder()
             .addUserOption(option =>
                 option.setName("user")
                     .setDescription("The user to assign.")
-                    .setRequired(true)))
+                    .setRequired(true))
+            .addBooleanOption(option =>
+                option.setName("replace")
+                    .setDescription("Whether to replace the existing mapper, or to add on.")
+                    .setRequired(false)))
     .addSubcommand(subcommand =>
         subcommand.setName("beatmap")
             .setDescription("Assign an already existing beatmap to a mappool slot.")

@@ -3,37 +3,15 @@ import { Command } from "../..";
 import { profanityFilter } from "../../../../Interfaces/comment";
 import { Round } from "../../../../Models/tournaments/round";
 import { ScoringMethod, Stage, StageType } from "../../../../Models/tournaments/stage";
-import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
-import { fetchTournament } from "../../../functions/fetchTournament";
+import { TournamentStatus } from "../../../../Models/tournaments/tournament";
+import { fetchTournament } from "../../../functions/tournamentFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
-        return;
-    
-    // Check if the server has any running tournaments
-    const serverTournaments = await Tournament.find({
-        where: [
-            {
-                server: m.guild.id,
-                status: TournamentStatus.NotStarted,
-            },
-            {
-                server: m.guild.id,
-                status: TournamentStatus.Registrations,
-            },
-        ],
-        relations: ["stages"],
-    });
-    if (serverTournaments.length === 0) {
-        await m.reply("This server currently has no tournaments running.");
-        return;
-    }
-
-    const message = await m.channel!.send("Creating stage...");
-
-    const tournament = await fetchTournament(message, serverTournaments);
+    const tournament = await fetchTournament(m, [TournamentStatus.NotStarted, TournamentStatus.Registrations], true, true);
     if (!tournament)
         return;
+
+    const message = await m.channel!.send("Creating stage...");
 
     const stage = new Stage();
     stage.tournament = tournament;

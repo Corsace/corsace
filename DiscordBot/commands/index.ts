@@ -2,8 +2,14 @@ import { ChatInputCommandInteraction, Message, SlashCommandBuilder, SlashCommand
 
 import tournamentCreate from "./tournaments/create";
 import tournamentList from "./tournaments/list";
+
 import stageCreate from "./tournaments/stage/create";
+
+import mappoolAssign from "./tournaments/mappool/assign";
+import mappoolAssignments from "./tournaments/mappool/assignments";
 import mappoolCreate from "./tournaments/mappool/create";
+import mappoolDeadline from "./tournaments/mappool/deadline";
+import mappoolDownload from "./tournaments/mappool/download";
 
 import avatar from "./utility/avatar";
 import help from "./utility/help";
@@ -31,8 +37,16 @@ const commands: Command[] = [];
 // tournament commands
 commands.push(tournamentCreate);
 commands.push(tournamentList);
+
+// stage commands
 commands.push(stageCreate);
+
+// mappool commands
+commands.push(mappoolAssign);
+commands.push(mappoolAssignments);
 commands.push(mappoolCreate);
+commands.push(mappoolDeadline);
+commands.push(mappoolDownload);
 
 // general utility commands
 commands.push(avatar);

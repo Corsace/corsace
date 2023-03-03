@@ -1,68 +1,93 @@
-import { Message } from "discord.js";
-import { getPoolData, updatePoolRow } from "../../../../Server/sheets";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
+import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
+import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
+import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
+import { fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
-import mappoolFunctions from "../../../functions/mappoolFunctions";
 
-async function command (m: Message) {
-    if (!(await mappoolFunctions.privilegeChecks(m, false, false)))
+async function run (m: Message | ChatInputCommandInteraction) {
+    const tournament = await fetchTournament(m, []);
+    if (!tournament)
         return;
 
-    const waiting = await m.channel.send("Adding deadline...");
-    try {
-        const { pool, slot, round, deadlineType } = await mappoolFunctions.parseParams(m);
+    const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]);
+    if (!allowed)
+        return;
+    const securedChannel = await isSecuredChannel(m, tournament, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.MappoolLog, TournamentChannelType.MappoolQA, TournamentChannelType.Testplayers]);
+    if (!securedChannel)
+        return;
 
-        // check if slot and round were given
-        if (slot === "") {
-            m.channel.send("Missing slot");
-            return;
-        }
-        if (round === "") {
-            m.channel.send("Missing round");
-            return;
-        }
-        if (deadlineType === "") {
-            m.channel.send("Missing deadline type");
-            return;
-        }
-
-        // Get deadline
-        const parts = m.content.toLowerCase().replace(pool, "").replace(slot, "").replace(round, "").replace(deadlineType, "").trim().split(" ");
-        parts.shift();
-        const deadline = new Date(parts.join(" ").trim());
-        if (!isNaN(deadline.getDate()) && deadline.getUTCFullYear() < new Date().getUTCFullYear())
-            deadline.setUTCFullYear(new Date().getUTCFullYear());
-
-        // Get pool data and iterate thru
-        const rows = await getPoolData(pool, round);
-        if (!rows) {
-            m.channel.send(`Could not find round **${round.toUpperCase()}** in the **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** pool`);
-            return;
-        }
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            if (slot.toLowerCase() === row[0].toLowerCase()) {
-                if (isNaN(deadline.getDate())) {
-                    await updatePoolRow(pool, `'${round}'!${deadlineType === "map" ? "N" : "M"}${i + 2}`, [ "" ]);
-                    m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** now has its **${deadlineType} deadline** removed.`);
-                } else {
-                    await updatePoolRow(pool, `'${round}'!${deadlineType === "map" ? "N" : "M"}${i + 2}`, [ deadline.toDateString() ]);
-                    m.channel.send(`Slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}** now has a **${deadlineType} deadline** for ${deadline.toDateString()}\nMapper will be pinged every 12 hours for the last 3 days before deadline.`);
-                }
-                return;
-            }
-        }
-        m.channel.send(`Unable to find slot **${slot.toUpperCase()}** in **${round.toUpperCase()}** on **${pool === "openMappool" ? "Corsace Open" : "Corsace Closed"}**.\nPlease add the date **after** the slot`);
-    } finally {
-        waiting.delete();
+    const poolRegex = /-p (\S+)/;
+    const slotRegex = /-s (\S+)/;
+    const dateRegex = /-d ((\d|-)+ ?(\d|:)*)/;
+    const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
+    const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
+    const dateText = m instanceof Message ? m.content.match(dateRegex) ?? m.content.split(" ")[3] : m.options.getString("date");
+    if (!poolText || !slotText || !dateText) {
+        m.reply("Missing parameters. Please use `-p <pool> -s <slot> -d <date>` or `<pool> <slot> <date>`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        return;
     }
+
+    const date = new Date(typeof dateText === "string" ? dateText : dateText[0]);
+    const pool = typeof poolText === "string" ? poolText : poolText[0];
+    const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[0].substring(slotText[0].length - 1));
+    const slot = parseInt(typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[0].substring(0, slotText[0].length - 1));
+    if (!pool || !slot || isNaN(date.getTime()) || !order) {
+        m.reply("Missing parameters. Please use `-p <pool> -s <slot> -d <date>` or `<pool> <slot> <date>`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        return;
+    }
+    if (isNaN(order)) {
+        m.reply("Invalid slot number. Please use a valid slot number.");
+        return;
+    }
+
+    const mappool = await fetchMappool(m, tournament, pool);
+    if (!mappool)
+        return;
+
+    const slotMod = await fetchSlot(m, mappool, slot.toString(), true);
+    if (!slotMod)
+        return;
+
+    const mappoolMap = slotMod.maps.find(m => m.order === order);
+    if (!mappoolMap) {
+        m.reply(`Could not find **${slot}${order}**`);
+        return;
+    }
+    if (!mappoolMap.customMappers || mappoolMap.customMappers.length === 0) {
+        m.reply(`**${slot}${order}** does not have any custom mappers`);
+        return;
+    }
+
+    mappoolMap.deadline = date;
+    await mappool.save();
+
+    m.reply(`Set deadline for **${slot}${order}** to **${date.toUTCString()}**`);
 }
 
+const data = new SlashCommandBuilder()
+    .setName("mappool_deadline")
+    .setDescription("Set a deadline for a slot in a mappool")
+    .addStringOption(option =>
+        option.setName("pool")
+            .setDescription("The mappool to set the deadline for")
+            .setRequired(true))
+    .addStringOption(option =>
+        option.setName("slot")
+            .setDescription("The slot to set the deadline for")
+            .setRequired(true))
+    .addStringOption(option =>
+        option.setName("date")
+            .setDescription("The date (and time) to set the deadline for")
+            .setRequired(true))
+    .setDMPermission(false);  
+
 const mappoolDeadline: Command = {
-    name: ["pdeadline", "pooldeadline", "deadlinep", "deadlinepool"], 
-    description: "Let's you add a deadline for the specified slot and specified deadline slot. If no deadline is given, then it will remove the deadline in that slot",
-    usage: "!pdeadline <round> <slot> <datetime> [pool] <deadline type>", 
-    category: "mappool",
-    command,
+    data,
+    alternativeNames: [ "deadline_mappool", "mappool-deadline", "deadline-mappool", "mappooldeadline", "deadlinemappool", "deadlinesp", "pdeadline", "pool_deadline", "deadline_pool", "pool-deadline", "deadline-pool", "pooldeadline", "deadlinepool" ],
+    category: "tournaments",
+    subCategory: "mappools",
+    run,
 };
 
 export default mappoolDeadline;
