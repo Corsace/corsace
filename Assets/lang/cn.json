@@ -33,7 +33,8 @@
             "message": {
                 "2019": "<p>时间来到 2020 年。</p><p>做谱又一年：2019，回归！这里有当年做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>通过本网站，只要是我们能够获得的信息，我们想加多少就加多少！如果你有任何建议（或者发现了任何网站 Bug），请在 Corsace Discord 群联系 VINXIS（链接见左下方）！</p><p><b>我们目前还在公开征集评论！</b>这意味着只要你愿意，<b>你本人</b>可以为任意多的谱师撰写并发表评论！</p><p>在下方的图标中选择你关心的游戏模式以开始！</p>",
                 "2020": "<p>时间来到 2021 年...这下对了吧！</p><p>做谱又一年：2020，再次回归！这里有<b>今年</b>做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>并且同样地，我们依旧在公开征集评论！在下方的图标中选择你关心的游戏模式以开始！</p>",
-                "2021": "<p>现在是 2022 年！</p> <p>在做谱又一年：2021 里，你可以看到做谱界破纪录的创举，以及大量、详细的统计数据！</p>"
+                "2021": "<p>现在是 2022 年！</p> <p>在做谱又一年：2021 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！</p>",
+		"2022": "<p>欢迎来到 2023 年！</p> <p>在做谱又一年：2022 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！这次总算（差不多）如期公布了！</p>"
             }
         },
         "mapsets": {
@@ -122,7 +123,8 @@
             "message": {
                 "2019": "<p>2019 年，第四届谱师之选奖（Mapper's Choice Awards），归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2019 年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>今年，我们尽全力制作了一个网站，以便符合要求的你能够尽可能轻松地立刻开始提名和投票！</p><p>所有 osu! 支持者（supporter）奖励将直接由 osu! 工作人员给出。每个大类下的获奖者将获得 2 个月的 supporter 奖励，而大奖获奖者将获得 6 个月的 supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！如果你对本网站有任何建议或发现了本网站的 Bug，请在 Corsace Discord 群内联系 VINXIS！</p>",
                 "2020": "<p>2020 年，第五届谱师之选奖（Mapper's Choice Awards），再次归来! 在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2020 年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>我们在 MCA 2019 的基础上网站进行了（希望是）彻底的 Debug，并对部分分类进行了更改，所以现在的网站应该如丝般顺滑！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>",
-                "2021": "<p>2021 年，第六届谱师之选奖（Mapper's Choice Awards），又一次归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>所有 osu! supporter 奖品均由 osu! 工作人员直接提供。获得各分类小奖第一名的谱师将收到 2 个月的 osu! supporter 奖励，而获得各项大奖的谱师将获得 4 个月的 osu! supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>"
+                "2021": "<p>2021 年，第六届谱师之选奖（Mapper's Choice Awards），又一次归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>所有 osu! supporter 奖品均由 osu! 工作人员直接提供。获得各分类小奖第一名的谱师将收到 2 个月的 osu! supporter 奖励，而获得各项大奖的谱师将获得 4 个月的 osu! supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>",
+		"2022": "<p>新一届谱师之选奖（Mapper's Choice Awards）再一次拉开了帷幕！（这一届基本可以说是如期而至！）在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>所有 osu! supporter 奖品均由 osu! 工作人员直接提供。获得各分类小奖第一名的谱师将收到 2 个月的 osu! supporter 奖励，而获得各项大奖的谱师将获得 4 个月的 osu! supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>"
             },
             "categories": {
                 "map": "谱面分类",
@@ -146,6 +148,10 @@
             "marathon": {
                 "name": "最佳马拉松谱面",
                 "description": "总有效时长 5 分钟以上的最佳谱面。"
+            },
+	    "marathonMan": {
+                "name": "最佳迷你马拉松谱面",
+                "description": "总有效时长 4 分钟以上的最佳谱面。"
             },
             "hitsounding": {
                 "name": "最佳音效",
@@ -213,11 +219,11 @@
             },
             "highBPMTaiko": {
                 "name": "最佳高 BPM 谱面",
-                "description": "240BPM 以上的最佳谱面。"
+                "description": "240 BPM 以上的最佳谱面。"
             },
             "lowBPMTaiko": {
                 "name": "最佳低 BPM 谱面",
-                "description": "140BPM 以下的最佳谱面。"
+                "description": "130 BPM 以下的最佳谱面。"
             },
             "simplistic": {
                 "name": "最佳简约谱面",
@@ -232,8 +238,28 @@
                 "description": "基于精选艺术家曲目所制的最佳谱面。"
             },
             "longNotes": {
-                "name": "最佳长押（LN）谱面",
+                "name": "最佳长条（LN）谱面",
                 "description": "大量使用 LN 的最佳谱面。"
+            },
+	    "longNotes4K": {
+                "name": "最佳 4K LN 谱面",
+                "description": "大量使用 LN 的最佳 4K 谱面。"
+            },
+            "longNotes7K": {
+                "name": "最佳 7K LN 谱面",
+                "description": "大量使用 LN 的最佳 7K 谱面。"
+            },
+            "rice": {
+                "name": "最佳乱打（rice）谱面",
+                "description": "大量使用 rice 的最佳谱面。"
+            },
+            "rice4K": {
+                "name": "最佳 4K rice 谱面",
+                "description": "大量使用 rice 的最佳 4K 谱面。"
+            },
+            "rice7K": {
+                "name": "最佳 7K rice 谱面",
+                "description": "大量使用 rice 的最佳 7K 谱面。"
             },
             "antiMeta": {
                 "name": "最佳非主流谱面",
@@ -260,8 +286,8 @@
                 "description": "叙事性最强的故事板。"
             },
 	    "technicalTaiko": {
-                "name": "最佳技术谱面",
-                "description": "以使用复杂梗和 Snap 为特色的最佳谱面。"
+                "name": "最佳 technical 谱面",
+                "description": "以使用复杂梗和 snap 为特色的最佳谱面。"
             },
             "fastTaiko": {
                 "name": "最佳快速谱面",
@@ -273,7 +299,15 @@
             },
             "hybrid": {
                 "name": "最佳混合（Hybrid）谱面",
-                "description": "大量使用长条（LN）和乱打（Rice）梗的最佳谱面。"
+                "description": "大量使用长条（LN）和乱打（rice）梗的最佳谱面。"
+            },
+	    "hybrid4K": {
+                "name": "最佳 4K 混合（Hybrid）谱面",
+                "description": "大量使用长条（LN）和乱打（rice）梗的最佳 4K 谱面。"
+            },
+            "hybrid7K": {
+                "name": "最佳 7K 混合（Hybrid）谱面",
+                "description": "大量使用长条（LN）和乱打（rice）梗的最佳 7K 谱面。"
             },
             "highBPMAlternator": {
                 "name": "最佳高 BPM / 切指谱面",
@@ -299,6 +333,10 @@
                 "name": "最具启发奖",
                 "description": "给予了他人最大影响和启发的人。"
             },
+	    "mostInnovative": {
+                "name": "最具创新精神奖",
+                "description": "The one who influenced and provided inspiration to others the most."
+            },
             "communityPillar": {
                 "name": "社群栋梁",
                 "description": "在背后为社群作出突出贡献的最佳人物。"
@@ -308,12 +346,16 @@
                 "description": "使用简单梗和节奏的最佳谱面。"
             },
             "technicalCatch": {
-                "name": "最佳 Technical 谱面",
+                "name": "最佳 technical 谱面",
                 "description": "突破接水果游戏玩法极限的最佳谱面。"
             },
             "antiMetaCatch": {
                 "name": "最佳非主流谱面",
                 "description": "使用非传统 / 神秘梗的最佳谱面。"
+            },
+	    "unconventionalCtb": {
+                "name": "最佳非常规 AR / CS 谱面",
+                "description": "具有不常见 AR (≤8.5 左右）或 CS (大约 ≥5 且 ≤3) 的最佳谱面。"
             },
 	    "diversity": {
                 "name": "最具有多样性的谱面",
