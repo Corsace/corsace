@@ -237,8 +237,6 @@ export class User extends BaseEntity {
                 .andWhere(new Brackets(qb => {
                     qb.where("user.osuUsername LIKE :criteria")
                         .orWhere("user.osuUserid LIKE :criteria")
-                        .orWhere("user.discordUsername LIKE :criteria")
-                        .orWhere("user.discordUserid LIKE :criteria")
                         .orWhere("otherName.name LIKE :criteria");
                 }))
                 .setParameter("criteria", `%${query.text}%`);
