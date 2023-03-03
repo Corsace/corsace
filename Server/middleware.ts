@@ -31,6 +31,7 @@ async function isStaff (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (member) {
         const roles = [
             config.discord.roles.corsace.corsace,
+            config.discord.roles.corsace.core,
             ...config.discord.roles.corsace.headStaff,
             config.discord.roles.corsace.staff,
         ];
@@ -49,13 +50,18 @@ function hasRole (section: string, role: string) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
         const member = await getMember(ctx.state.user.discord.userID);
         if (member) {
-            const hasRole =  Array.isArray(config.discord.roles[section][role]) ? config.discord.roles[section][role].some(r => member.roles.cache.has(r)) : member.roles.cache.has(config.discord.roles[section][role]);
             if (
-                hasRole || 
-                member.roles.cache.has(config.discord.roles.corsace.core) || 
                 member.roles.cache.has(config.discord.roles.corsace.corsace) || 
+                member.roles.cache.has(config.discord.roles.corsace.core) || 
                 (role === "corsace" || role === "core" ? false : config.discord.roles.corsace.headStaff.some(r => member.roles.cache.has(r)))
             ) {
+                await next();
+                return;
+            }
+
+            const hasRole =  Array.isArray(config.discord.roles[section][role]) ? config.discord.roles[section][role].some(r => member.roles.cache.has(r)) : member.roles.cache.has(config.discord.roles[section][role]);
+            if (hasRole) {
+                
                 await next();
                 return;
             }
@@ -76,11 +82,13 @@ function hasRoles (roles: discordRoleInfo[]) {
 
         if (
             member.roles.cache.has(config.discord.roles.corsace.corsace) || 
+            member.roles.cache.has(config.discord.roles.corsace.core) || 
             (roles.some(role => role.section == "corsace" && role.role == "corsace") ? false : config.discord.roles.corsace.headStaff.some(r => member.roles.cache.has(r)))
         ) {
             await next();
             return;
         }
+
         for (const role of roles) {
             const hasRole =  Array.isArray(config.discord.roles[role.section][role.role]) ? config.discord.roles[role.section][role.role].some(r => member.roles.cache.has(r)) : member.roles.cache.has(config.discord.roles[role.section][role.role]);
             if (hasRole)
