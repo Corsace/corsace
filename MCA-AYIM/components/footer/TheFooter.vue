@@ -38,7 +38,7 @@
             <div class="footer__socials">
                 <a href="https://twitter.com/corsace_"> <img src="../../../Assets/img/social/twitter.png"> </a>
                 <a href="https://discord.gg/Z6vEMsr"><img src="../../../Assets/img/social/discord.png"></a>
-                <a href="https://www.twitch.tv/corsace"><img src="../../../Assets/img/social/ttv.png"></a>
+                <a href="https://youtube.com/Corsace"><img src="../../../Assets/img/social/youtube.png"></a>
                 <a href="https://github.com/corsace/corsace"><img src="../../../Assets/img/social/github.png"></a>
             </div>
         </div>
