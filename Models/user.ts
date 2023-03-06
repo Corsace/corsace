@@ -207,7 +207,9 @@ export class User extends BaseEntity {
                         .select("count(nominator.ID)")
                         .from(Nomination, "nomination")
                         .innerJoin("nomination.nominators", "nominator")
+                        .leftJoin("nomination.category", "category")
                         .where("nomination.user = user.ID")
+                        .andWhere("category.ID = :categoryId", { categoryId: category.ID })
                         .getQuery();
 
                     return `${subQuery} >= 2`;

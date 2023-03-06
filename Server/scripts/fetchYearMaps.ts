@@ -66,8 +66,8 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
         let username = targetUser.username;
         if (!username || !country) {
             const { country: newCountry, username: newUsername } = await getMissingOsuUserProperties(targetUser.userID);
-            country = newCountry;
-            username = newUsername;
+            country = newCountry || country || "";
+            username = newUsername || username || "";
         }
 
         user = new User;
