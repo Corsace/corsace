@@ -195,7 +195,7 @@ const bnNatHistory = [
     },
     {
         year: 2022,
-        mode: "osu",
+        mode: "standard",
         bns: { joined: 40, left: 59 },
         nat: { joined: 10, left: 5 },
     },
