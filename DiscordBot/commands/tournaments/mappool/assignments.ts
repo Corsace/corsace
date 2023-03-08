@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, SlashCommandBuilder, ChatInputCommandInteraction, GuildMemberRoleManager } from "discord.js";
+import { Message, EmbedBuilder, SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { Command } from "../../index";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";

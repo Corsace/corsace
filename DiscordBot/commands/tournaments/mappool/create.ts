@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, Message, MessageComponentInteraction, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, Message, MessageComponentInteraction, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { Command } from "../..";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";

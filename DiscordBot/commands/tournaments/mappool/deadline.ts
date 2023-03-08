@@ -1,5 +1,4 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
-import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";

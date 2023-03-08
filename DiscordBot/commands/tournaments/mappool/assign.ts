@@ -1,12 +1,7 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, GuildMember, User as DiscordUser, Message, MessageComponentInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../index";
-import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { fetchMappool, fetchSlot, fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
-import { Brackets } from "typeorm";
-import { filter } from "../../../functions/messageInteractionFunctions";
-import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { Beatmap } from "../../../../Models/beatmap";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { osuClient } from "../../../../Server/osu";
