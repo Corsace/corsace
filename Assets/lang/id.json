@@ -31,10 +31,10 @@
             "numberof": "total",
             "numberwith": "total map dengan",
             "message": {
-                "2019": "<p>Halo, 2020!</p>A Year in Mapping 2019 kembali hadir ke hadapan kalian semua guys! Seperti tahun-tahun sebelumnya, A Year in Mapping merupakan suatu bentuk napak tilas atas apa-apa saja yang telah terjadi di dalam dunia mapping dan modding selama satu tahun ke belakang.</p><p>Pada situs web ini, kamu dapat menemukan berbagai informasi menarik seputar mapping yang disajikan secara terperinci. Apabila kamu memiliki kritik atau saran, jangan sungkan untuk menghubungi VINXIS melalui server Corsace (yang link-nya dapat Anda jumpai pada pojok kiri bawah layar) ya guys!</p><p>Oh ya, pada tahun ini kami juga MENERIMA KOMENTAR SECARA TERBUKA lho guys! Kamu dapat memberikan komentar sebanyak-banyaknya kepada mapper-mapper yang kamu kehendaki sesuka hatimu!</p><p>Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>",
-                "2020": "<p>Halo, 2021… akhirnya kita berjumpa lagi!</p>Setelah penyelenggaraan A Year in Mapping tahun lalu terpaksa dibatalkan karena satu dan lain hal, A Year in Mapping 2020 kali ini (benar-benar) kembali ke hadapan kalian semua!</p><p>Tidak hanya itu, pada tahun ini kami kembali menerima komentar secara terbuka! Silakan pilih mode permainan yang dikehendaki untuk mulai menjelajah situs A Year in Mapping.</p>,
-                "2021": "<p>2022 is here!</p> <p>A Year in Mapping 2021 is here to provide the records and stats made or even broken!</p>",
-                "2022": "<p>Selamat datang di tahun 2023!</p> <p>A Year in Mapping 2022 is here to provide the records and stats made or even broken! This time actually (kind of) on schedule!</p>"                
+                "2019": "<p>Halo, 2020!</p>A Year in Mapping 2019 kembali hadir ke hadapan kalian semua! Seperti tahun-tahun sebelumnya, A Year in Mapping merupakan suatu bentuk napak tilas atas apa-apa saja yang telah terjadi di dalam dunia mapping dan modding selama satu tahun ke belakang.</p><p>Pada situs web ini, kamu dapat menemukan berbagai informasi menarik seputar mapping yang disajikan secara terperinci. Apabila kamu memiliki kritik atau saran, jangan sungkan untuk menghubungi VINXIS melalui server Corsace (yang link-nya dapat kamu jumpai pada pojok kiri bawah layar) ya guys!</p><p>Oh ya, pada tahun ini kami juga MENERIMA KOMENTAR SECARA TERBUKA lho guys! Kamu dapat memberikan komentar sebanyak-banyaknya kepada mapper-mapper yang kamu kehendaki sesuka hatimu!</p><p>Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>",
+                "2020": "<p>Halo, 2021… Akhirnya kita berjumpa lagi!</p>Setelah penyelenggaraan A Year in Mapping tahun lalu terpaksa batal karena satu dan lain hal, A Year in Mapping 2020 kali ini (benar-benar) kembali ke hadapan kalian semua!</p><p>Tidak hanya itu, pada tahun ini kami kembali menerima komentar secara terbuka! Silakan pilih mode permainan yang dikehendaki untuk mulai menjelajah situs A Year in Mapping.</p>,
+                "2021": "<p>Selamat datang di tahun 2022!</p> <p>A Year in Mapping 2021 hadir untuk merekap berbagai statistik dan rekor yang telah ditorehkan selama setahun ke belakang.</p>",
+                "2022": "<p>Selamat datang di tahun 2023!</p> <p>A Year in Mapping 2022 hadir untuk merekap berbagai statistik dan rekor yang telah ditorehkan selama setahun ke belakang. This time actually (kind of) on schedule!</p>"                
             }
         },
         "mapsets": {
@@ -97,7 +97,7 @@
             "create": "Tulis",
             "login": "Silakan masuk terlebih dahulu sebelum menulis komentar!",
             "visible": "(belum tersedia)",
-            "Notice": "Halo! Sepertinya ini merupakan kali pertamamu mengakses laman ini. <br> Tahun ini, kami menerima komentar secara terbuka. <br> Dengan kata lain, siapa pun kini dapat memberikan komentar apapun kepada siapa saja yang mereka kehendaki, termasuk dirimu! <br> Gunakan laman ini untuk mengutarakan apresiasimu akan hasil jerih payah para mapper di tahun [YEAR] sebagaimana yang kamu kehendaki."        
+            "Notice": "Halo! Sepertinya ini merupakan kali pertamamu mengakses laman ini. <br> Tahun ini, kami menerima komentar secara terbuka. <br> Dengan kata lain, siapa pun dapat memberikan komentar mereka kepada siapa saja, termasuk dirimu! <br> Gunakan laman ini untuk memberikan apresiasimu kepada para mapper yang telah berkarya sepanjang tahun [YEAR]."        
         }
     },
     "mca": {
