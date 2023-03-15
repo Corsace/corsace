@@ -14,7 +14,7 @@
         "login": {
             "login": "masuk",
             "message": {
-                "1": "Sepertinya kamu belum terhubung masuk!<br>Kamu harus masuk terlebih dahulu masuk dengan menggunakan akun osu! milikmu untuk dapat menominasikan beatmap dan menyalurkan hak suaramu.",
+                "1": "Sepertinya kamu belum terhubung masuk!<br>Kamu harus masuk terlebih dahulu dengan menggunakan akun osu! milikmu untuk dapat menominasikan beatmap dan memberikan suara.",
                 "2": "Kamu juga dapat masuk dengan menggunakan Discord, namun hal ini <b>tidak diwajibkan</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staf yang bertugas.</b></span>"
             },
             "authOsu": "klik di sini untuk masuk dengan akun osu! milikmu",
@@ -32,9 +32,9 @@
             "numberwith": "total map dengan",
             "message": {
                 "2019": "<p>Halo, 2020!</p>A Year in Mapping 2019 kembali hadir ke hadapan kalian semua guys! Seperti tahun-tahun sebelumnya, A Year in Mapping merupakan suatu bentuk napak tilas atas apa-apa saja yang telah terjadi di dalam dunia mapping dan modding selama satu tahun ke belakang.</p><p>Pada situs web ini, kamu dapat menemukan berbagai informasi menarik seputar mapping yang disajikan secara terperinci. Apabila kamu memiliki kritik atau saran, jangan sungkan untuk menghubungi VINXIS melalui server Corsace (yang link-nya dapat Anda jumpai pada pojok kiri bawah layar) ya guys!</p><p>Oh ya, pada tahun ini kami juga MENERIMA KOMENTAR SECARA TERBUKA lho guys! Kamu dapat memberikan komentar sebanyak-banyaknya kepada mapper-mapper yang kamu kehendaki sesuka hatimu!</p><p>Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>",
-                "2020": "<p>Halo, 2021… akhirnya kita berjumpa lagi!</p>Setelah pada tahun lalu kami harus membatalkan penyelenggaraan A Year in Mapping karena satu dan lain hal, A Year in Mapping 2020 kali ini (benar-benar) kembali hadir ke hadapan kalian semua guys!</p><p>Tidak hanya itu, pada tahun ini kami kembali menerima komentar secara terbuka lho guys! Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>"
+                "2020": "<p>Halo, 2021… akhirnya kita berjumpa lagi!</p>Setelah penyelenggaraan A Year in Mapping tahun lalu terpaksa dibatalkan karena satu dan lain hal, A Year in Mapping 2020 kali ini (benar-benar) kembali ke hadapan kalian semua!</p><p>Tidak hanya itu, pada tahun ini kami kembali menerima komentar secara terbuka! Silakan pilih mode permainan yang dikehendaki untuk mulai menjelajah situs A Year in Mapping.</p>,
                 "2021": "<p>2022 is here!</p> <p>A Year in Mapping 2021 is here to provide the records and stats made or even broken!</p>",
-                "2022": "<p>Welcome to 2023!</p> <p>A Year in Mapping 2022 is here to provide the records and stats made or even broken! This time actually (kind of) on schedule!</p>"                
+                "2022": "<p>Selamat datang di tahun 2023!</p> <p>A Year in Mapping 2022 is here to provide the records and stats made or even broken! This time actually (kind of) on schedule!</p>"                
             }
         },
         "mapsets": {
@@ -88,16 +88,16 @@
         },
         "comments": {
             "name": "KOMENTAR",
-            "info": "Berikanlah apresiasimu kepada mapper-mapper di bawah ini! Semua komentar yang masuk akan ditampilkan setelah hasil MCA diumumkan.",
+            "info": "Berikanlah komentarmu kepada para mapper di bawah ini! Seluruh komentar yang masuk akan ditampilkan setelah hasil MCA diumumkan.",
             "search": "cari mapper",
             "viewSubmit": "lihat/kirim komentar",
             "writeHere": "Berikan komentarmu untuk mapper ini!",
             "update": "Perbarui",
             "remove": "Hapus",
             "create": "Tulis",
-            "login": "Harap masuk terlebih dahulu untuk dapat berkomentar!",
+            "login": "Silakan masuk terlebih dahulu sebelum menulis komentar!",
             "visible": "(belum tersedia)",
-            "Notice": "Halo! Mungkin kamu merasa bingung dengan sistem pemberian komentar yang kami berlakukan pada AYIM kali ini. <br> Tahun ini, kami menerima komentar secara terbuka. Dengan kata lain, siapapun kini dapat memberikan komentar apapun kepada siapa saja yang mereka kehendaki, termasuk dirimu! <br> Silakan gunakan laman ini untuk mengutarakan apresiasimu akan hasil jerih payah para mapper di tahun [YEAR] sebagaimana yang kamu kehendaki."        
+            "Notice": "Halo! Sepertinya ini merupakan kali pertamamu mengakses laman ini. <br> Tahun ini, kami menerima komentar secara terbuka. <br> Dengan kata lain, siapa pun kini dapat memberikan komentar apapun kepada siapa saja yang mereka kehendaki, termasuk dirimu! <br> Gunakan laman ini untuk mengutarakan apresiasimu akan hasil jerih payah para mapper di tahun [YEAR] sebagaimana yang kamu kehendaki."        
         }
     },
     "mca": {
@@ -124,7 +124,7 @@
             "daysLeft": "hari tersisa",
             "message": {
                 "2019": "<p>Mapper's Choice Awards hadir kembali untuk keempat kalinya di tahun 2019 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Oh ya, pada tahun ini kami juga telah secara khusus menyediakan situs web bagi Mapper's Choice Awards agar para mapper/modder yang memiliki hak suara dapat menyalurkan suaranya dengan lebih mudah lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>",
-                "2020": "<p>Tanpa harus menunggu lama, Mapper's Choice Awards hadir kembali untuk kelima kalinya di tahun 2020 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Tidak hanya itu, pada tahun kami ini telah banyak berbenah untuk dapat menyajikan Mapper’s Choice Awards yang lebih baik dari tahun-tahun sebelumnya lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>"
+                "2020": "<p>Tanpa harus menunggu lama, Mapper's Choice Awards hadir kembali untuk kelima kalinya di tahun 2020 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Tidak hanya itu, pada tahun kami ini telah banyak berbenah untuk dapat menyajikan Mapper’s Choice Awards yang lebih baik dari tahun-tahun sebelumnya lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>",
                 "2021": "<p>Mapper's Choice Awards is back again for 2021! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event!</p>",,
                 "2022": "<p>We are back for another installment of Mapper's Choice Awards! (This time almost on schedule!)</p><p>This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event!</p>"
             },
@@ -217,7 +217,7 @@
             },
             "stream": {
                 "name": "Best Streams",
-                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada stream."
+                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada penggunaan stream."
             },
             "highBPMTaiko": {
                 "name": "Best High BPM",
@@ -366,7 +366,7 @@
         },
         "nom_vote": {
             "search": "cari beatmap/user",
-            "select": "Harap pilih kategori!",
+            "select": "Silakan pilih kategori!",
             "candidates": "kandidat",
             "options": {
                 "date": "TANGGAL",
@@ -388,7 +388,7 @@
                 "results": "HASIL",
                 "voters": "SUARA"                              
             },
-            "votingOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman voting MCA. <br> MCA tahun ini menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suaramu kepada beatmap-beatmap/pengguna-pengguna yang kamu kehendaki tanpa ada batasan jumlah suara. <br> Seluruh suara yang masuk akan dihitung berdasarkan urutan pemilihannya masing-masing, atau dengan kata lain <span class='notice-modal--bold'>pilihan pertamamu akan memiliki bobot suara yang lebih tinggi dari pilihan keduamu dan seterusnya</span> <br> Selamat memilih, dan jangan lupa untuk menyaksikan livestream hasil akhir MCA [YEAR]!",
+            "votingOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses laman voting MCA. <br> MCA tahun ini menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suara sebanyak-banyaknya tanpa ada batasan jumlah suara. <br> Seluruh suara yang masuk akan dihitung berdasarkan urutan pemilihannya masing-masing, di mana <span class='notice-modal--bold'>pilihan pertamamu akan memiliki bobot suara yang lebih tinggi dari pilihan keduamu dan seterusnya.</span> <br> Selamat memilih, dan jangan lewatkan pengumuman hasil akhir MCA [YEAR] pada saatnya nanti!",
             "hosted": "DI-HOST OLEH",
             "userID": "USER ID"
         },
@@ -404,14 +404,14 @@
                 "secondThirdChoice": "JML. PILIHAN KE-2/KE-3",
                 "restChoice": "JML. PILIHAN KE-4+"
             },
-            "resultsOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman hasil voting MCA. <br> Hasil-hasil yang tertera pada laman ini keseluruhannya disusun berdasarkan hasil perhitungan <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting</a> yang kemudian diurutkan berdasarkan jumlah pemilih pertama, jumlah pemilih kedua, dan seterusnya.<br> Akhir kata, kami berharap kami dapat memuaskan rasa penasaranmu dengan penyelenggaraan MCA kali ini. Mohon maaf apabila sekiranya terdapat sesuatu yang kurang berkenan dari kami, dan sampai jumpa lagi di MCA selanjutnya!"
+            "resultsOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses laman hasil voting MCA. <br> Seluruh hasil yang tertera pada laman ini dihitung berdasarkan sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting</a>, yang kemudian diurutkan berdasarkan jumlah pemilih pertama, jumlah pemilih kedua, dan seterusnya.<br> Akhir kata, semoga kamu terpuaskan dengan penyelenggaraan MCA kali ini, dan sampai jumpa lagi di MCA selanjutnya!"
         }
     },
     "main": {
         "header": {
             "login": "MASUK",
             "register": "DAFTAR",
-            "changeDiscord": "GANTI AKUN DISCORD"
+            "changeDiscord": "UBAH AKUN DISCORD"
         },
         "index": {
             "underConstruction": "dalam pengerjaan",
@@ -425,7 +425,7 @@
             "name": "T-Shirt Corsace Open 2021 Edisi Terbatas",
             "colours": "Hitam/Putih",
             "code": "Tap Trio - Corsace Bundle",
-            "products": "Limited quantity available"            
+            "products": "Persediaan terbatas"
         }
     }
 }
