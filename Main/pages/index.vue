@@ -220,7 +220,7 @@ export default class Default extends Vue {
         },
         "closed": {
             title: "CORSACE CLOSED",
-            url: "https://osu.ppy.sh/community/forums/topics/1567710",
+            url: "https://osu.ppy.sh/community/forums/topics/1744515",
         },
     };
 
