@@ -7,15 +7,6 @@ import { TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { fetchTournament } from "../../../functions/tournamentFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    const tournament = await fetchTournament(m, [TournamentStatus.NotStarted, TournamentStatus.Registrations], true, true);
-    if (!tournament)
-        return;
-
-    const message = await m.channel!.send("Creating stage...");
-
-    const stage = new Stage();
-    stage.tournament = tournament;
-
     // Check for name validity
     const nameRegex = new RegExp(/-n [a-zA-Z0-9_ ]{3,50}/);
     const name = m instanceof Message ? nameRegex.exec(m.content)?.[0] : m.options.getString("name");
@@ -27,6 +18,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await m.reply("LMFAO! XD Shut the fuck up and give a valid name you fucking idiot (Nobody's laughing with you, fucking dumbass)");
         return;
     }
+
+    const tournament = await fetchTournament(m, [TournamentStatus.NotStarted, TournamentStatus.Registrations], true, true);
+    if (!tournament)
+        return;
+
+    const message = await m.channel!.send("Creating stage...");
+
+    const stage = new Stage();
+    stage.tournament = tournament;
     if (tournament.stages.find(s => s.name.toLowerCase() === name.toLowerCase())) {
         await m.reply("A stage with that name already exists.");
         return;
@@ -189,12 +189,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
 async function stageDone (m: Message, stage: Stage) {
     const tournament = stage.tournament;
     await tournament.save();
+
     stage.tournament = tournament;
     await stage.save();
-    for (const round of stage.rounds) {
-        round.stage = stage;
-        await round.save();
-    }
+
+    await Promise.all(stage.rounds.map(async r => {
+        r.stage = stage;
+        return r.save();
+    }));
 
     // Move later stages up in order
     const laterStages = tournament.stages.filter((s) => s.order >= stage.order);

@@ -83,10 +83,10 @@ export async function fetchTournament (m: Message | ChatInputCommandInteraction,
         relations.push("stages");
     if (rounds)
         relations.push("stages.rounds"); 
-    if (relations.length > 0)
+    if (relations.length === 0)
         relations = undefined;
 
-    // Check for tournaments in
+    // Check for tournaments in the server
     const tournamentList = await Tournament.find({
         where: {
             server: m.guild.id,

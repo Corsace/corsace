@@ -9,17 +9,6 @@ import { insertBeatmap } from "../../../../Server/scripts/fetchYearMaps";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    const tournament = await fetchTournament(m, []);
-    if (!tournament)
-        return;
-
-    const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]);
-    if (!allowed)
-        return;
-    const securedChannel = await isSecuredChannel(m, tournament, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.MappoolLog, TournamentChannelType.MappoolQA, TournamentChannelType.Testplayers]);
-    if (!securedChannel)
-        return;
-
     const targetRegex = /-t (\S+)/;
     const poolRegex = /-p (\S+)/;
     const slotRegex = /-s (\S+)/;
@@ -31,10 +20,22 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
+    const tournament = await fetchTournament(m, []);
+    if (!tournament)
+        return;
+
+    const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]);
+    if (!allowed)
+        return;
+    const securedChannel = await isSecuredChannel(m, tournament, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.MappoolLog, TournamentChannelType.MappoolQA, TournamentChannelType.Testplayers]);
+    if (!securedChannel)
+        return;
+
     const target = typeof targetText === "string" ? targetText : targetText[0];
     const pool = typeof poolText === "string" ? poolText : poolText[0];
     const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[0].substring(slotText[0].length - 1));
-    const slot = parseInt(typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[0].substring(0, slotText[0].length - 1));
+    const slot = typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[0].substring(0, slotText[0].length - 1);
+    console.log(target, pool, slot, order, slotText);
     if (!pool || !slot || !target || !order) {
         m.reply("Missing parameters. Please use `-p <pool> -s <slot> -t <target>` or `<pool> <slot> <target>`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
@@ -48,7 +49,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!mappool)
         return;
 
-    const slotMod = await fetchSlot(m, mappool, slot.toString());
+    const slotMod = await fetchSlot(m, mappool, slot.toString(), true);
     if (!slotMod)
         return;
 
@@ -76,7 +77,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             }
             beatmap = await insertBeatmap(apiMap[0]);
         }
-        if (mappoolMap.beatmap.ID === beatmap.ID) {
+        if (mappoolMap.beatmap && mappoolMap.beatmap.ID === beatmap.ID) {
             m.reply(`**${slot}${order}** is already set to this beatmap.`);
             return;
         }

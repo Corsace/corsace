@@ -45,7 +45,7 @@ export class MappoolSlot extends BaseEntity {
             .where("mappool.ID = :mappool")
             .andWhere(new Brackets(qb => {
                 qb.where("slot.name LIKE :criteria")
-                    .orWhere("slot.abbreviation LIKE :criteria");
+                    .orWhere("slot.acronym LIKE :criteria");
             }))
             .setParameters({
                 mappool: mappool.ID,

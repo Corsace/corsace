@@ -701,18 +701,18 @@ async function tournamentCorsace (m: Message, tournament: Tournament) {
 // Function to save the tournament
 async function tournamentSave (m: Message, tournament: Tournament) {
     await tournament.save();
-    await tournament.stages.map(async s => {
+    await Promise.all(tournament.stages.map(async s => {
         s.tournament = tournament;
-        await s.save();
-    });
-    await tournament.channels!.map(async c => {
+        return s.save();
+    }));
+    await Promise.all(tournament.channels!.map(async c => {
         c.tournament = tournament;
-        await c.save();
-    });
-    await tournament.roles!.map(async r => {
+        return c.save();
+    }));
+    await Promise.all(tournament.roles!.map(async r => {
         r.tournament = tournament;
-        await r.save();
-    });
+        return r.save();
+    }));
     const embed = new EmbedBuilder()
         .setTitle(tournament.name)
         .setDescription(tournament.description)
