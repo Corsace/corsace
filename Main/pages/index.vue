@@ -441,8 +441,8 @@ $dark-cyan: linear-gradient(#009595, #008080);
     align-items: center;
     justify-content: center;
 
-    color: #e44f3f;
-    background-color: white;
+    color: #231F20;
+    background-color: #FBBA20;
 
     padding: 0 25px;
 
