@@ -56,3 +56,39 @@ export interface BeatmapInfo extends BeatmapsetInfo {
     difficulty: string;
     sr: number;
 }
+
+export const genres = [
+    "any",
+    "unspecified",
+    "video game",
+    "anime",
+    "rock",
+    "pop",
+    "other",
+    "novelty",
+    "---",
+    "hip hop",
+    "electronic",
+    "metal",
+    "classical",
+    "folk",
+    "jazz",
+];
+
+export const langs = [
+    "any",
+    "unspecified",
+    "english",
+    "japanese",
+    "chinese",
+    "instrumental",
+    "korean",
+    "french",
+    "german",
+    "swedish",
+    "spanish",
+    "italian",
+    "russian",
+    "polish",
+    "other",
+];

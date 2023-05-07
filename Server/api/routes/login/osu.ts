@@ -48,7 +48,14 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         // Username changes
         const usernames: string[] = data.previous_usernames;
         for (const name of usernames) {
-            let nameChange = await UsernameChange.findOne({ where: { name, user: ctx.state.user }});
+            let nameChange = await UsernameChange.findOne({ 
+                where: { 
+                    name, 
+                    user: {
+                        ID: ctx.state.user.ID,
+                    },
+                },
+            });
             if (!nameChange) {
                 nameChange = new UsernameChange;
                 nameChange.name = name;
@@ -61,7 +68,9 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         const currentName = await UsernameChange.findOne({
             where: {
                 name: ctx.state.user.osu.username,
-                user: ctx.state.user,
+                user: {
+                    ID: ctx.state.user.ID,
+                },
             },
         });
         if (currentName)
@@ -85,7 +94,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
             }
 
             for (let year = 2007; year <= (new Date).getUTCFullYear(); year++) {
-                let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: ctx.state.user }});
+                let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: { ID: ctx.state.user.ID }}});
                 if (!eligibility) {
                     eligibility = new MCAEligibility();
                     eligibility.year = year;
@@ -129,7 +138,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                 if (!isPossessive(beatmap.version) && (beatmap.approved == 2 || beatmap.approved == 1)) {
                     const date = new Date(beatmap.approved_date);
                     const year = date.getUTCFullYear();
-                    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: ctx.state.user }});
+                    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: { ID: ctx.state.user.ID }}});
                     if (!eligibility) {
                         eligibility = new MCAEligibility();
                         eligibility.year = year;

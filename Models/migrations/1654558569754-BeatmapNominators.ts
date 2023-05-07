@@ -1,4 +1,4 @@
-import {FindCondition, MigrationInterface, MoreThan, QueryRunner} from "typeorm";
+import { FindOptionsWhere, MigrationInterface, MoreThan, QueryRunner } from "typeorm";
 import { Beatmapset } from "../beatmapset";
 import { config } from "node-config-ts";
 import { MoreThanOrEqual } from "typeorm";
@@ -36,7 +36,7 @@ export class BeatmapNominators1654558569754 implements MigrationInterface {
             const bnsRawData = new Map<Beatmapset['ID'], Promise<null | BNEvent[]>>();
 
             while (true) {
-                const where: FindCondition<Beatmapset> = { approvedDate: MoreThanOrEqual('2019-01-01T00:00:00.000Z') };
+                const where: FindOptionsWhere<Beatmapset> = { approvedDate: MoreThanOrEqual(new Date('2019-01-01T00:00:00.000Z')) };
                 if (currentBeatmapsetId) {
                     where.ID = MoreThan(currentBeatmapsetId);
                 }

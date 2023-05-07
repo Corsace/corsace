@@ -1,16 +1,7 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, OneToMany, MoreThanOrEqual, LessThanOrEqual } from "typeorm";
 import { MCAInfo, PhaseType } from "../../Interfaces/mca";
+import { Phase } from "../phase";
 import { Category } from "./category";
-
-export class Phase {
-
-    @Column({ type: "timestamp" })
-    start!: Date;
-
-    @Column({ type: "timestamp" })
-    end!: Date;
-
-}
 
 @Entity()
 export class MCA extends BaseEntity {
@@ -24,7 +15,7 @@ export class MCA extends BaseEntity {
     @Column(() => Phase)
     voting!: Phase;
 
-    @Column({ type: "timestamp" })
+    @Column({ type: "datetime" })
     results!: Date;
 
     @OneToMany(() => Category, category => category.mca)
@@ -53,14 +44,16 @@ export class MCA extends BaseEntity {
         const date = new Date();
 
         return MCA.findOneOrFail({
-            results: MoreThanOrEqual(date),
-            nomination: {
-                start: LessThanOrEqual(date),
+            where: {
+                results: MoreThanOrEqual(date),
+                nomination: {
+                    start: LessThanOrEqual(date),
+                },
             },
         });
     }
 
-    static currentOrLatest (): Promise<MCA | undefined> {
+    static currentOrLatest (): Promise<MCA | null> {
         const date = new Date();
 
         return MCA.findOne({

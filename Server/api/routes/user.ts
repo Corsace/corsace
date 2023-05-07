@@ -18,17 +18,17 @@ userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
     
     const user = await User.findOneOrFail({
         where: {
-            ID: body.ID,
+            ID: body.ID,  
         },
     });
 
     if (user.osu.username === body.username) {
         const otherNames = await UsernameChange.find({  
-            where: {
+            where: { 
                 user: {
                     ID: user.ID,
-                },
-            }, 
+                }, 
+            },
         });
         if (otherNames.length === 0) {
             return ctx.body = { 
@@ -44,8 +44,8 @@ userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
         };
     }
 
-    const name = await UsernameChange.findOneOrFail({  
-        where: { 
+    const name = await UsernameChange.findOneOrFail({
+        where: {  
             user: {
                 ID: user.ID,
             }, 

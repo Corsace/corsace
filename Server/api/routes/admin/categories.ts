@@ -31,11 +31,11 @@ const validate: Middleware = async (ctx, next) => {
     if (categoryInfo.type !== CategoryType.Users && categoryInfo.type !== CategoryType.Beatmapsets)
         return ctx.body = { error: "The category type provided does not exist!"};
 
-    const mca = await MCA.findOne({ year: parseInt(year, 10) });
+    const mca = await MCA.findOne({ where: { year: parseInt(year, 10) }});
     if (!mca)
         return ctx.body = { error: "MCA for this year does not exist currently!" };
 
-    const mode = await ModeDivision.findOne({ name: modeString });
+    const mode = await ModeDivision.findOne({ where: { name: modeString }});
     if (!mode)
         return ctx.body = { error: "The mode provided does not exist!" };
 
@@ -60,7 +60,9 @@ adminCategoriesRouter.get("/:year/categories", async (ctx) => {
             },
         },
         order: {
-            mode: "ASC",
+            mode: {
+                ID: "ASC",
+            },
             name: "ASC",
         },
     });
@@ -94,7 +96,7 @@ adminCategoriesRouter.put("/:year/categories/:id", validate, async (ctx) => {
     const filter: CategoryFilter = ctx.request.body.filter;
 
     const ID = parseInt(ctx.params.id, 10);
-    let category = await Category.findOneOrFail({ ID });
+    let category = await Category.findOneOrFail({ where: { ID }});
     category = categoryGenerator.createOrUpdate({
         ...categoryInfo,
         mca: ctx.state.mca,
@@ -116,12 +118,16 @@ adminCategoriesRouter.delete("/:year/categories/:id", async (ctx) => {
 
     const categoryID = parseInt(categoryIDString);
 
-    const category = await Category.findOne(categoryID);
+    const category = await Category.findOne({ where: { ID: categoryID }});
     if (!category)
         return ctx.body = { error: "No category with this ID exists!" };
 
     await Promise.all((await Nomination.find({
-        category,
+        where: {
+            category: {
+                ID: categoryID,
+            },
+        },
     })).map(nom => nom.remove()));
     const categoryRes = await category.remove(); 
     ctx.body = { message: "Success! attached is the delete result.", categoryRes };

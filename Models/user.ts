@@ -16,6 +16,16 @@ import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Influence } from "./MCA_AYIM/influence";
+import { Tournament } from "./tournaments/tournament";
+import { MappoolMap } from "./tournaments/mappools/mappoolMap";
+import { MappoolMapSkill } from "./tournaments/mappools/mappoolMapSkill";
+import { MappoolMapWeight } from "./tournaments/mappools/mappoolMapWeight";
+import { TournamentChannel } from "./tournaments/tournamentChannel";
+import { TournamentRole } from "./tournaments/tournamentRole";
+import { Stage } from "./tournaments/stage";
+import { Mappool } from "./tournaments/mappools/mappool";
+import { MappoolSlot } from "./tournaments/mappools/mappoolSlot";
+import { MappoolMapHistory } from "./tournaments/mappools/mappoolMapHistory";
 
 // General middlewares
 
@@ -40,7 +50,7 @@ export class OAuth {
     @CreateDateColumn()
     dateAdded!: Date;
 
-    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
     lastVerified!: Date;
 
 }
@@ -63,7 +73,7 @@ export class User extends BaseEntity {
     @CreateDateColumn()
     registered!: Date;
     
-    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
     lastLogin!: Date;
 
     @OneToMany(() => UsernameChange, change => change.user, {
@@ -130,6 +140,45 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Influence, influence => influence.reviewer)
     influenceReviews!: Influence[];
+
+    @OneToMany(() => Tournament, tournament => tournament.organizer)
+    tournamentsOrganized!: Tournament[];
+
+    @ManyToMany(() => MappoolMap, mappoolMap => mappoolMap.customMappers)
+    customMaps!: MappoolMap[];
+
+    @ManyToMany(() => MappoolMap, mappoolMap => mappoolMap.testplayers)
+    customMapsTested!: MappoolMap[];
+
+    @OneToMany(() => MappoolMapSkill, skill => skill.user)
+    mappoolMapSkillRatings!: MappoolMapSkill[];
+
+    @OneToMany(() => MappoolMapWeight, weight => weight.user)
+    mappoolMapSkillWeights!: MappoolMapWeight[];
+
+    @OneToMany(() => TournamentChannel, channel => channel.createdBy)
+    tournamentChannelsCreated!: TournamentChannel[];
+
+    @OneToMany(() => TournamentRole, role => role.createdBy)
+    tournamentRolesCreated!: TournamentRole[];
+
+    @OneToMany(() => Stage, stage => stage.createdBy)
+    stagesCreated!: Stage[];
+
+    @OneToMany(() => Mappool, mappool => mappool.createdBy)
+    mappoolsCreated!: Mappool[];
+
+    @OneToMany(() => MappoolSlot, mappoolSlot => mappoolSlot.createdBy)
+    mappoolSlotsCreated!: MappoolSlot[];
+
+    @OneToMany(() => MappoolMap, mappoolMap => mappoolMap.createdBy)
+    mappoolMapsCreated!: MappoolMap[];
+
+    @OneToMany(() => MappoolMap, mappoolMap => mappoolMap.assignedBy)
+    mappoolMapsAssigned!: MappoolMap[];
+
+    @OneToMany(() => MappoolMapHistory, history => history.createdBy)
+    mappoolMapHistoryEntriesCreated!: MappoolMapHistory[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User

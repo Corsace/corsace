@@ -104,7 +104,9 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
         return ctx.body = { error: "Invalid nomination ID given!" };
 
     const nomination = await Nomination.findOneOrFail({
-        ID: parseInt(nominationID),
+        where: {
+            ID: parseInt(nominationID, 10),
+        },
     });
     nomination.isValid = ctx.request.body.isValid; 
     nomination.reviewer = ctx.state.user;
@@ -127,7 +129,9 @@ staffNominationsRouter.delete("/:id", async (ctx) => {
         return ctx.body = { error: "Invalid nomination ID given!" };
 
     const nomination = await Nomination.findOneOrFail({
-        ID: parseInt(nominationID),
+        where: {
+            ID: parseInt(nominationID, 10),
+        },
     });
     await nomination.remove();
 

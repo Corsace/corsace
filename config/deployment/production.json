@@ -17,23 +17,6 @@
                 "verified": "625020515697950723",
                 "streamAnnouncements": "881052012601569340"
             },
-            "open": {
-                "participants": "485092513640742913",
-                "captains": "485092709179326474",
-                "mapper": ["1042975740389511249"],
-                "mappooler": "1042975740389511249",
-                "testplayer": "1042985751282995330",
-                "scheduler": "461584274404016138",
-                "streamManager": "461584529627414538",
-                "streamer": "461584578461696000",
-                "commentator": "461584618643259400",
-                "referee": "461584657042112543"
-            },
-            "closed": {
-                "mapper": ["1042985936255991818"],
-                "mappooler": "1042985936255991818",
-                "testplayer": "1042986001049591828"
-            },
             "mca": {
                 "standard": "461585071053209631",
                 "taiko": "461585200376184842",
@@ -48,22 +31,7 @@
         "clientSecret": "@@DISCORD_CLIENTSECRET",
         "invite": "Z6vEMsr",
         "logChannel": "461591966321344513",
-        "headChannel": "461578028397625344",
-        "coreChannel": "884272754180898816",
-        "openMappool": {
-            "admin": "1023311012532846782",
-            "general": "1023309862337249330",
-            "update": "1023313053820911707",
-            "testing": "1023310452639408138",
-            "balancing": "1023310090301882468"
-        },
-        "closedMappool": {
-            "admin": "983029956613386362",
-            "general": "1040990101485912064",
-            "update": "1040994155263959080",
-            "testing": "1042978310495424594",
-            "balancing": ""
-        }
+        "coreChannel": "884272754180898816"
     },
     "bn": {
         "username": "@@BN_USERNAME",
@@ -82,12 +50,6 @@
         "credentials": {
             "private_key": "@@GOOGLE_CREDENTIALS_PRIVATEKEY",
             "client_email": "@@GOOGLE_CREDENTIALS_CLIENTEMAIL"
-        },
-        "sheets": {
-            "todo": "@@GOOGLE_SHEETS_TODO",
-            "openMappool": "@@GOOGLE_SHEETS_OPENMAPPOOL",
-            "closedMappool": "@@GOOGLE_SHEETS_CLOSEDMAPPOOL",
-            "songs": "@@GOOGLE_SHEETS_SONGS"
         }
     },
     "koaKeys": ["@@KOA_KEY"],

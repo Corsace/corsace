@@ -92,7 +92,11 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
     }
 
     let votes = await Vote.find({
-        voter: ctx.state.user,
+        where: {
+            voter: {
+                ID: ctx.state.user,
+            },
+        },
     });
     votes = votes.filter(vote => vote.category.mca.year === category.mca.year);
 
@@ -148,8 +152,10 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
 votingRouter.delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const vote = await Vote.findOneOrFail({
         where: {
-            ID: ctx.params.id,
-            voter: ctx.state.user.ID,
+            ID: parseInt(ctx.params.id, 10),
+            voter: {
+                ID: ctx.state.user.ID,
+            },
         },
         relations: [
             "category",
@@ -158,9 +164,13 @@ votingRouter.delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, as
 
     const otherUserVotes = await Vote.find({
         where: {
-            ID: Not(ctx.params.id),
-            voter: ctx.state.user,
-            category: vote.category,
+            ID: Not(parseInt(ctx.params.id, 10)),
+            voter: {
+                ID: ctx.state.user.ID,
+            },
+            category: {
+                ID: vote.category.ID,
+            },
             choice: MoreThan(vote.choice),
         },
     });

@@ -5,7 +5,7 @@ import { UserComment } from "../../../Models/MCA_AYIM/userComments";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { isEligibleFor } from "../../middleware/mca-ayim";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
-import { FindConditions } from "typeorm";
+import { FindOptionsWhere } from "typeorm";
 import { isLoggedIn } from "../../middleware";
 import { parseQueryParam } from "../../utils/query";
 
@@ -58,10 +58,10 @@ commentsRouter.get("/", async (ctx) => {
     }
 
     const mca = await MCA.findOneOrFail({
-        year,
+        where: { year },
     });
 
-    let query: FindConditions<UserComment> | FindConditions<UserComment>[] = {
+    let query: FindOptionsWhere<UserComment> | FindOptionsWhere<UserComment>[] = {
         targetID: userId,
         year: year,
         mode: modeID,
@@ -82,7 +82,11 @@ commentsRouter.get("/", async (ctx) => {
     }
 
     const [target, comments] = await Promise.all([
-        User.findOneOrFail(userId),
+        User.findOneOrFail({
+            where: {
+                ID: userId,
+            },
+        }),
 
         UserComment.find({
             where: query,
@@ -127,7 +131,7 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
     }
 
     const mca = await MCA.findOneOrFail({
-        year,
+        where: { year },
     });
 
     if (mca.currentPhase() === "results") {
@@ -143,15 +147,31 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
     }
 
     const [mode, target] = await Promise.all([
-        ModeDivision.findOneOrFail(modeID),
-        User.findOneOrFail(targetID),
+        ModeDivision.findOneOrFail({
+            where: {
+                ID: modeID,
+            },
+        }),
+        User.findOneOrFail({
+            where: {
+                ID: targetID,
+            },
+        }),
     ]);
 
     const hasCommented = await UserComment.findOne({
-        commenter,
-        year,
-        target,
-        mode,
+        where: {
+            commenter: {
+                ID: commenter.ID,
+            },
+            year,
+            target: {
+                ID: target.ID,
+            },
+            mode: {
+                ID: mode.ID,
+            },
+        },
     });
 
     if (hasCommented) {
@@ -189,7 +209,7 @@ commentsRouter.post("/:id/update", isLoggedIn, canComment, isCommentOwner, async
 
     const comment: UserComment = ctx.state.comment;
     const mca = await MCA.findOneOrFail({
-        year: comment.year,
+        where: { year: comment.year },
     });
 
     if (mca.currentPhase() === "results") {
@@ -209,7 +229,7 @@ commentsRouter.post("/:id/update", isLoggedIn, canComment, isCommentOwner, async
 commentsRouter.post("/:id/remove", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
     const comment: UserComment = ctx.state.comment;
     const mca = await MCA.findOneOrFail({
-        year: comment.year,
+        where: { year: comment.year },
     });
 
     if (mca.currentPhase() === "results") {

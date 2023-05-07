@@ -14,7 +14,22 @@ mcaRouter.get("/", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const mca = await MCA.findOne(parseQueryParam(ctx.query.year));
+    const param = parseQueryParam(ctx.query.year);
+    if (!param) {
+        ctx.body = {error: "No year specified!"};
+        return;
+    }
+    const year = parseInt(param);
+    if (isNaN(year)) {
+        ctx.body = {error: "Invalid year specified!"};
+        return;
+    }
+
+    const mca = await MCA.findOne({
+        where: {
+            year,
+        },
+    });
 
     if (mca)
         ctx.body = mca;
@@ -33,7 +48,7 @@ mcaRouter.get("/front", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const mca = await MCA.findOne(parseQueryParam(ctx.query.year));
+    const mca = ctx.query.year ? await MCA.findOne({ where: { year: parseInt(parseQueryParam(ctx.query.year)!.toString(), 10) }}) : null;
 
     if (!mca)
         return ctx.body = { error: "There is no MCA for this year currently!" };
@@ -49,7 +64,16 @@ mcaRouter.get("/front", async (ctx) => {
             .getCount();
 
         const [categories, beatmapCount, organizers] = await Promise.all([
-            Category.find({ mca, mode }), 
+            Category.find({ 
+                where: {
+                    mca: {
+                        year: mca.year,
+                    },
+                    mode: {
+                        ID: mode.ID,
+                    },
+                },
+            }), 
             beatmapCounter,
             (await discordGuild()).members.cache.filter(x => x.roles.cache.has(modeStaff[mode.name])).map(x => x.nickname ?? x.user.username),
         ]);

@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed, MessageEmbedOptions, TextChannel } from "discord.js";
+import { EmbedBuilder, EmbedData, GuildMember, TextChannel } from "discord.js";
 import { config } from "node-config-ts";
 import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
@@ -9,8 +9,10 @@ export default async function guildMemberAdd (member: GuildMember) {
     if (member.guild.id === config.discord.guild) {
         const roles = [config.discord.roles.corsace.streamAnnouncements];
         const user = await User.findOne({
-            discord: {
-                userID: member.id,
+            where: {
+                discord: {
+                    userID: member.id,
+                },
             },
         });
         if (user)
@@ -21,7 +23,7 @@ export default async function guildMemberAdd (member: GuildMember) {
         await member.roles.add(roles);
 
         const memberUser = member.user;
-        const embedMsg: MessageEmbedOptions = {
+        const embed = new EmbedBuilder({
             title: `${memberUser.tag} joined!`,
             description: `Users currently in server: ${member.guild.memberCount}`,
             color: 3066993,
@@ -39,12 +41,11 @@ export default async function guildMemberAdd (member: GuildMember) {
                     value: user ? `${memberUser.tag} is registered!` : `${memberUser.tag} is not registered!`,
                 },
             ],
-        };
+        } as EmbedData);
 
-        const message = new MessageEmbed(embedMsg);
         const channel = (await discordClient.channels.fetch(config.discord.logChannel))!;
         (channel as TextChannel).send({
-            embeds: [message],
+            embeds: [embed],
         });
     }
 }

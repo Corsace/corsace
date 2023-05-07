@@ -103,7 +103,9 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
         where: {
             user: ctx.state.user,
             year: query.year,
-            mode: modeDivision,
+            mode: {
+                ID: modeDivision.ID,
+            },
         },
         relations: ["influence"],
     });
@@ -176,10 +178,16 @@ influencesRouter.delete("/:id", isLoggedIn, currentMCA, async (ctx) => {
     await influence.remove();
 
     const influences = await Influence.find({
-        user: ctx.state.user,
-        year: mca.year,
-        rank: MoreThan(influence.rank),
-        mode: influence.mode,
+        where: {
+            user: {
+                ID: ctx.state.user,
+            },
+            year: mca.year,
+            rank: MoreThan(influence.rank),
+            mode: {
+                ID: influence.mode.ID,
+            },
+        },
     });
 
     await Promise.all(

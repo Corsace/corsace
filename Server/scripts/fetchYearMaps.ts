@@ -13,6 +13,9 @@ import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
 import { RateLimiterMemory, RateLimiterQueue } from "rate-limiter-flexible";
 import { isPossessive } from "../../Models/MCA_AYIM/guestRequest";
 import { sleep } from "../utils/sleep";
+import { modeList } from "../../Interfaces/modes";
+import { genres, langs } from "../../Interfaces/beatmap";
+import ormConfig from "../../ormconfig";
 
 let bmQueued = 0; // beatmaps inserted in queue
 let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
@@ -165,7 +168,7 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
 });
 
 const getMCAEligibility = memoizee(async function(year: number, user: User) {
-    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year, user: { ID: user.ID } }});
+    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year, user: { ID: user.ID }}});
     if (!eligibility) {
         eligibility = new MCAEligibility();
         eligibility.year = year;
@@ -267,7 +270,7 @@ async function script () {
     console.log("This script will automatically continue in 5 seconds. Cancel using Ctrl+C.");
     await sleep(5000);
 
-    const conn = await createConnection();
+    const conn = await ormConfig.initialize();
     // ensure schema is up-to-date
     await conn.synchronize();
     console.log("DB schema is now up-to-date!");
@@ -284,7 +287,7 @@ async function script () {
     };
     const progressInterval = setInterval(printStatus, 1000);
 
-    let since = new Date((await Beatmapset.findOne({ order: { approvedDate: "DESC" } }))?.approvedDate || new Date("2006-01-01"));
+    let since = new Date((await Beatmapset.findOne({ where: {}, order: { approvedDate: "DESC" } }))?.approvedDate || new Date("2006-01-01"));
     console.log(`Fetching all beatmaps starting from ${since.toJSON()} until ${year}-12-31...`);
     printStatus();
     const queuedBeatmapIds: number[] = [];
@@ -330,48 +333,4 @@ if(module === require.main) {
         });
 }
 
-const genres = [
-    "any",
-    "unspecified",
-    "video game",
-    "anime",
-    "rock",
-    "pop",
-    "other",
-    "novelty",
-    "---",
-    "hip hop",
-    "electronic",
-    "metal",
-    "classical",
-    "folk",
-    "jazz",
-];
-
-const langs = [
-    "any",
-    "unspecified",
-    "english",
-    "japanese",
-    "chinese",
-    "instrumental",
-    "korean",
-    "french",
-    "german",
-    "swedish",
-    "spanish",
-    "italian",
-    "russian",
-    "polish",
-    "other",
-];
-
-const modeList = [
-    "standard",
-    "taiko",
-    "fruits",
-    "mania",
-];
-
-export { getUser, getBNsApiCallRawData, getRankers };
-
+export { getUser, insertBeatmap, getBNsApiCallRawData, getRankers };

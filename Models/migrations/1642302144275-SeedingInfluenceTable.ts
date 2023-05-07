@@ -71,7 +71,7 @@ export class SeedingInfluenceTable1642302144275 implements MigrationInterface {
         }
 
         const missingInfluences: any[] = [];
-        const standardMode = await ModeDivision.findOne(1);
+        const standardMode = await ModeDivision.findOne({ where: { ID: 1 }});
         if (!standardMode)
             throw "Could not find the standard mode division. There may have been an issue with a previous migration that inserts this!";
 

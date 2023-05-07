@@ -105,10 +105,18 @@ adminYearsRouter.delete("/:year/delete", async (ctx) => {
         for (const category of categories) {
             const [nominations, votes] = await Promise.all([
                 Nomination.find({
-                    category,
+                    where: {
+                        category: {
+                            ID: category.ID,
+                        },
+                    },
                 }),
                 Vote.find({
-                    category,
+                    where: {
+                        category: {
+                            ID: category.ID,
+                        },
+                    },
                 }),
             ]);
             for (const nom of nominations) {

@@ -31,21 +31,19 @@ export const modAcronyms = {
     "K2": Mods.Key2,
 };
 
-export const genericPoolMods = ["NM", "HR", "HD", "DT", "FM", "TB"]; 
-
 /**
  * Parses a list of mod acronyms into nodesu ModsType enums
  * @param text A string consisting of mods as acronyms
  * @returns Either an enum of the mods or undefined
  */
 export function acronymtoMods (text: string): ModsType | undefined {
-    const modStrings = text.match(/.{1,2}/g);
+    const modStrings = text.match(/.{2}/g);
     if (!modStrings)
         return;
     let val = 0;
-    for (const mod of modStrings) {
+    for (const mod of modStrings)
         val += modAcronyms[mod.toUpperCase()];
-    }
+
     return val;
 }
 

@@ -17,36 +17,12 @@
                 "verified": "role ID",
                 "streamAnnouncements": "role ID"
             },
-            "open": {
-                "participants": "role ID",
-                "captains": "role ID",
-                "mapper": ["role IDs"],
-                "mappooler": "role ID",
-                "testplayer": "role ID",
-                "scheduler": "role ID",
-                "streamManager": "role ID",
-                "streamer": "role ID",
-                "commentator": "role ID",
-                "referee": "role ID"
-            },
-            "closed": {
-                "participants": "role ID",
-                "captains": "role ID",
-                "mapper": ["role IDs"],
-                "mappooler": "role ID",
-                "scheduler": "role ID",
-                "streamManager": "role ID",
-                "streamer": "role ID",
-                "commentator": "role ID",
-                "referee": "role ID"
-            },
             "mca": {
                 "standard": "role ID",
                 "taiko": "role ID",
                 "fruits": "role ID",
                 "mania": "role ID",
-                "storyboard": "role ID",
-                "arg": "role ID"
+                "storyboard": "role ID"
             }
         },
         "token": "bot token",
@@ -55,30 +31,7 @@
         "clientSecret": "bot secret",
         "invite": "invite link",
         "logChannel": "channel ID",
-        "headChannel": "channel ID",
-        "coreChannel": "channel ID",
-        "openMappool": {
-            "admin": "channel ID",
-            "general": "channel ID",
-            "epic": "channel ID",
-            "testplayers": "channel ID",
-            "update": "channel ID",
-            "testing": "channel ID",
-            "balancing": "channel ID",
-            "songDiscussion": "channel ID",
-            "songSubmission": "channel ID"
-        },
-        "closedMappool": {
-            "admin": "channel ID",
-            "general": "channel ID",
-            "epic": "channel ID",
-            "testplayers": "channel ID",
-            "update": "channel ID",
-            "testing": "channel ID",
-            "balancing": "channel ID",
-            "songDiscussion": "channel ID",
-            "songSubmission": "channel ID"
-        }
+        "coreChannel": "channel ID"
     },
     "osu": {
         "v1": {
@@ -97,12 +50,6 @@
         "credentials": {
             "private_key": "Create a service account",
             "client_email": "Create a service account"
-        },
-        "sheets": {
-            "todo": "your spreadsheet's ID",
-            "openMappool": "your spreadsheet's ID",
-            "closedMappool": "your spreadsheet's ID",
-            "songs": "your spreadsheet's ID"
         }
     },
     "koaKeys": [""],
