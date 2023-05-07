@@ -50,7 +50,7 @@ The database will listen on `127.0.0.1:3306`, with `corsace` being the database 
 
 ##### Manual MariaDB Setup
 
-You will need to install [MariaDB](https://mariadb.org/) and create an empty database, named whatever you like. 
+If you do not want to use Docker, you will need to install [MariaDB](https://mariadb.org/) and create an empty database, named whatever you like. 
 
 It can be as simple as running:
 ```
@@ -63,32 +63,6 @@ Make sure to update `config.database` to reflect your choice of database name an
 #### Seeding the database
 
 Create and seed the whole Corsace database using: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
-
-### Google Sheets
-
-#### Setup
-
-`config.google`
-
-Currently used only as a temporary measure for handling large-scale custom mappooling. May also be used for other spreadsheet purposes.
-
-#### Spreadsheet IDs
-
-Typically, a spreadsheet URL will look like `https://docs.google.com/spreadsheets/d/VERY LARGE ID/edit#gid=PAGE ID`. Obtain the `VERY LARGE ID` for the todo sheet you will have, and the open and/or closed mappools. 
-
-#### API Credentials
-
-Go to `https://console.cloud.google.com/` and create a project.
-After creating a project, enable the Sheets API, and create a service account.
-
-Make sure to download the json which contains the credentials. The fields with the respective fields for
-```
-config.google.credentials.private_key
-config.google.credentials.client_email
-```
-are within the JSON.
-
-After creating a service account, Google will create an email similar to `serviceName@projectName.iam.gserviceaccount.com`. Share your spreadsheets to this email.
 
 ### Discord
 
