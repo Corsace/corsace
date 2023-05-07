@@ -102,7 +102,18 @@ commentsReviewRouter.post("/:id/remove", async (ctx) => {
 });
 
 commentsReviewRouter.post("/:id/ban", async (ctx) => {
-    const user = await User.findOneOrFail(ctx.params.id, {
+    const ID = parseInt(ctx.params.id, 10);
+    if (!ID) {
+        ctx.body = {
+            error: "Invalid ID provided.",
+        };
+        return;
+    }
+
+    const user = await User.findOneOrFail({
+        where: {
+            ID,
+        },
         relations: ["commentsMade"],
     });
     const invalidComments = user.commentsMade.filter(c => !c.isValid);
@@ -119,7 +130,19 @@ commentsReviewRouter.post("/:id/ban", async (ctx) => {
 });
 
 commentsReviewRouter.post("/:id/unban", async (ctx) => {
-    const user = await User.findOneOrFail(ctx.params.id);
+    const ID = parseInt(ctx.params.id, 10);
+    if (!ID) {
+        ctx.body = {
+            error: "Invalid ID provided.",
+        };
+        return;
+    }
+
+    const user = await User.findOneOrFail({
+        where: {
+            ID,
+        },
+    });
     user.canComment = true;
     await user.save();
 

@@ -14,7 +14,22 @@ mcaRouter.get("/", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const mca = await MCA.findOne(parseQueryParam(ctx.query.year));
+    const param = parseQueryParam(ctx.query.year);
+    if (!param) {
+        ctx.body = {error: "No year specified!"};
+        return;
+    }
+    const year = parseInt(param);
+    if (isNaN(year)) {
+        ctx.body = {error: "Invalid year specified!"};
+        return;
+    }
+
+    const mca = await MCA.findOne({
+        where: {
+            year,
+        },
+    });
 
     if (mca)
         ctx.body = mca;
