@@ -32,10 +32,8 @@ async function obtainBeatmap (res: RegExpExecArray, mods: string): Promise<[Beat
 }
 
 async function run (m: Message | ChatInputCommandInteraction) {
-
-    if (m instanceof Message) {
-        "";
-    }
+    if (m instanceof ChatInputCommandInteraction)
+        await m.deferReply();
 
     const beatmapRegex = /(osu|old)\.ppy\.sh\/(s|b|beatmaps|beatmapsets)\/(\d+)(#(osu|taiko|fruits|mania)\/(\d+))?/i;
     const modRegex = /-m\s*(\S+)/i;
@@ -48,12 +46,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
         reg = beatmapRegex.exec(m.options.getString("beatmap")!); 
     } else { // Beatmap command, look at previous messages
         if (!m.channel) {
-            m.reply("There isn't a channel(?)");
+            if (m instanceof Message) m.reply("There isn't a channel(?)");
+            else m.editReply("There isn't a channel(?)");
             return;
         }
         const prevMessages = await m.channel.messages.fetch({ limit: 100 });
         if (prevMessages.size === 0) { // Check if they are trolling and there's no previous messages
-            m.reply("There are no previous messages... what are u doing");
+            if (m instanceof Message) m.reply("There are no previous messages... what are u doing");
+            else m.editReply("There are no previous messages... what are u doing");
             return;
         }
 
@@ -78,7 +78,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!reg) {
         if (m instanceof Message && beatmapRegex.test(m.content))
             return;
-        m.reply("No previous beatmap link found");
+        
+        if (m instanceof Message) m.reply("No previous beatmap link found");
+        else m.editReply("No previous beatmap link found");
         return;
     }
 
@@ -101,7 +103,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!beatmap) {
         if (m instanceof Message && beatmapRegex.test(m.content))
             return;
-        m.reply("No previous beatmap found from previous link on osu!");
+        
+        if (m instanceof Message) m.reply("No previous beatmap found from previous link on osu!");
+        else m.editReply("No previous beatmap found from previous link on osu!");
         return;
     }
     if (!set)
@@ -132,7 +136,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mods = mods.replace("DT", "");
 
     const message = await beatmapEmbed(beatmap, mods, set, misses);
-    m.reply({ embeds: [message] });
+    if (m instanceof Message) m.reply({ embeds: [message] });
+    else m.editReply({ embeds: [message] });
 }
 
 const data = new SlashCommandBuilder()

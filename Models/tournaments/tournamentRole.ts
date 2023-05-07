@@ -1,5 +1,6 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Tournament } from "./tournament";
+import { User } from "../user";
 
 export enum TournamentRoleType {
     Organizer,
@@ -18,6 +19,12 @@ export class TournamentRole extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     ID!: number;
+
+    @CreateDateColumn()
+    createdAt!: Date;
+
+    @ManyToOne(() => User, user => user.tournamentRolesCreated)
+    createdBy!: User;
 
     @Column()
     roleID!: string;

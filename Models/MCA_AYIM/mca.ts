@@ -15,7 +15,7 @@ export class MCA extends BaseEntity {
     @Column(() => Phase)
     voting!: Phase;
 
-    @Column({ type: "timestamp" })
+    @Column({ type: "datetime" })
     results!: Date;
 
     @OneToMany(() => Category, category => category.mca)

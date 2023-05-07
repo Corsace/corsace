@@ -10,9 +10,14 @@ import mappoolAssignments from "./tournaments/mappool/assignments";
 import mappoolCreate from "./tournaments/mappool/create";
 import mappoolDeadline from "./tournaments/mappool/deadline";
 import mappoolDownload from "./tournaments/mappool/download";
+import mappoolInfo from "./tournaments/mappool/info";
+import mappoolRemove from "./tournaments/mappool/remove";
+import mappoolSubmit from "./tournaments/mappool/submit";
+import mappoolSwap from "./tournaments/mappool/swap";
 
 import avatar from "./utility/avatar";
 import help from "./utility/help";
+import ping from "./utility/ping";
 
 import beatmap from "./osu/beatmap";
 import influence from "./osu/influence";
@@ -47,10 +52,15 @@ commands.push(mappoolAssignments);
 commands.push(mappoolCreate);
 commands.push(mappoolDeadline);
 commands.push(mappoolDownload);
+commands.push(mappoolInfo);
+commands.push(mappoolRemove);
+commands.push(mappoolSubmit);
+commands.push(mappoolSwap);
 
 // general utility commands
 commands.push(avatar);
 commands.push(help);
+commands.push(ping);
 
 // osu! commands
 commands.push(beatmap);

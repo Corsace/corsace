@@ -2,10 +2,10 @@ import { Column } from "typeorm";
 
 export class Phase {
 
-    @Column({ type: "timestamp" })
+    @Column({ type: "datetime" })
     start!: Date;
 
-    @Column({ type: "timestamp" })
+    @Column({ type: "datetime" })
     end!: Date;
 
 }

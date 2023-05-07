@@ -55,7 +55,7 @@ export class Nomination extends BaseEntity {
     @ManyToOne(() => User, user => user.nominationReviews)
     reviewer?: User;
 
-    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
     lastReviewedAt!: Date;
 
     static populate (): SelectQueryBuilder<Nomination> {

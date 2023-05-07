@@ -7,7 +7,7 @@ export class DemeritReport extends BaseEntity {
     @PrimaryGeneratedColumn()
     ID!: number;
     
-    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
     reportDate!: Date;
 
     @Column({ type: "longtext", nullable: true })

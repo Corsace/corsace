@@ -1,12 +1,19 @@
-import { BaseEntity, Brackets, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Brackets, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Mappool } from "./mappool";
 import { MappoolMap } from "./mappoolMap";
+import { User } from "../../user";
 
 @Entity()
 export class MappoolSlot extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     ID!: number;
+
+    @CreateDateColumn()
+    createdAt!: Date;
+
+    @ManyToOne(() => User, user => user.mappoolSlotsCreated)
+    createdBy!: User;
 
     @ManyToOne(() => Mappool, mappool => mappool.slots)
     mappool!: Mappool;
@@ -23,6 +30,12 @@ export class MappoolSlot extends BaseEntity {
     @Column({ nullable: true })
     allowedMods?: number;
 
+    @Column({ nullable: true })
+    userModCount?: number;
+
+    @Column({ nullable: true })
+    uniqueModCount?: number;
+
     @OneToMany(() => MappoolMap, poolMap => poolMap.slot)
     maps!: MappoolMap[];
 
@@ -33,13 +46,14 @@ export class MappoolSlot extends BaseEntity {
                 .leftJoinAndSelect("slot.mappool", "mappool")
                 .leftJoinAndSelect("slot.maps", "maps")
                 .leftJoinAndSelect("maps.beatmap", "beatmap")
-                .leftJoinAndSelect("maps.customMappers", "users")
+                .leftJoinAndSelect("beatmap.beatmapset", "beatmapset")
+                .leftJoinAndSelect("maps.customMappers", "customMappers")
+                .leftJoinAndSelect("maps.testplayers", "testplayers")
+                .leftJoinAndSelect("maps.customBeatmap", "customBeatmap")
+                .leftJoinAndSelect("customBeatmap.mode", "mode")
         } else {
             q
                 .leftJoin("slot.mappool", "mappool")
-                .leftJoin("slot.maps", "maps")
-                .leftJoin("maps.beatmap", "beatmap")
-                .leftJoin("maps.customMappers", "users")
         }
         return q
             .where("mappool.ID = :mappool")

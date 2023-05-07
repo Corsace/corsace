@@ -1,11 +1,10 @@
-import { config } from "node-config-ts";
 import { Message } from "discord.js";
 import { discordClient } from "../../Server/discord";
 import { commands } from "../commands";
 import beatmap from "../commands/osu/beatmap";
 import profile from "../commands/osu/profile";
-import mappoolSong from "../commandsInexplicit/mappool/song";
 import osuTimestamp from "../commandsInexplicit/osu/osuTimestamp";
+import autoSubmit from "../commandsInexplicit/tournaments/mappool/autoSubmit";
 
 export default async function messageCreate (m: Message) {
     const prefix = /^!(\S+)/i;
@@ -28,23 +27,35 @@ export default async function messageCreate (m: Message) {
         osuTimestamp(m);
 
     // Command checking TODO: Add custom prefix (relies on discord server model)
+    let commandRun = false;
     if (prefix.test(m.content)) {
         const commandName = prefix.exec(m.content);
         if (!commandName)
             return;
-        
+
         for (const command of commands) { 
-            if (command.data.name.toLowerCase() !== commandName[1].toLowerCase())
+            if (command.data.name.toLowerCase() !== commandName[1].toLowerCase() && !command.alternativeNames.some(a => a.toLowerCase() === commandName[1].toLowerCase()))
                 continue;
-            await command.run(m);
+            
+            commandRun = true;
+            try {
+                await command.run(m);
+            } catch (e) {
+                console.error(e);
+                m.reply(`Something went wrong while running the command. Please try again later.`);
+            }
         }
     }
 
     // Check for an osu! profile linked
-    if (profileRegex.test(m.content))
+    if (profileRegex.test(m.content) && !commandRun)
         profile.run(m);
 
     // Check for an osu! beatmap linked
-    if (beatmapRegex.test(m.content))
+    if (beatmapRegex.test(m.content) && !commandRun)
         beatmap.run(m);
+
+    // Check if a tournament map was uploaded/linked
+    if ((m.attachments.first()?.url || /https?:\/\/\S+/.test(m.content)) && !commandRun)
+        autoSubmit(m);
 }

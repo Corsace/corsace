@@ -1,14 +1,30 @@
-import { BaseEntity, Brackets, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Brackets, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Round } from "../round";
 import { Stage } from "../stage";
 import { Tournament } from "../tournament";
 import { MappoolSlot } from "./mappoolSlot";
+import { User } from "../../user";
 
 @Entity()
 export class Mappool extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     ID!: number;
+
+    @CreateDateColumn()
+    createdAt!: Date;
+
+    @ManyToOne(() => User, user => user.mappoolsCreated)
+    createdBy!: User;
+
+    @Column()
+    name!: string;
+
+    @Column()
+    abbreviation!: string;
+
+    @Column({ default: false })
+    isPublic!: boolean;
 
     @Column()
     targetSR!: number;
@@ -25,22 +41,30 @@ export class Mappool extends BaseEntity {
     @OneToMany(() => MappoolSlot, mappoolSlot => mappoolSlot.mappool)
     slots!: MappoolSlot[];
 
-    static search (tournament: Tournament, poolText: string = "", getRelations: boolean = false) {
+    static search (tournament: Tournament, poolText: string = "", getStageRound: boolean = false, getSlots: boolean = false, getMaps: boolean = false) {
         const q = this.createQueryBuilder("mappool")
-        if (getRelations) {
+        if (getStageRound) {
             q.leftJoinAndSelect("mappool.stage", "stage")
             q.leftJoinAndSelect("mappool.round", "round")
-        } else {
+        } else
             q.leftJoin("mappool.stage", "stage")
-            q.leftJoin("mappool.round", "round")
+
+        if (getSlots) {
+            q.leftJoinAndSelect("mappool.slots", "slot")
+            q.leftJoinAndSelect("slot.maps", "mappoolMap")
+            if (getMaps) {
+                q.leftJoinAndSelect("mappoolMap.customBeatmap", "customBeatmap")
+                q.leftJoinAndSelect("mappoolMap.customMappers", "customMapper")
+                q.leftJoinAndSelect("mappoolMap.testplayers", "testplayer")
+                q.leftJoinAndSelect("mappoolMap.beatmap", "beatmap")
+                q.leftJoinAndSelect("beatmap.beatmapset", "beatmapset")
+            }
         }
         return q
             .where("stage.tournament = :tournament")
             .andWhere(new Brackets(qb => {
-                qb.where("stage.name LIKE :criteria")
-                    .orWhere("round.name LIKE :criteria")
-                    .orWhere("stage.abbreviation LIKE :criteria")
-                    .orWhere("round.abbreviation LIKE :criteria");
+                qb.where("mappool.name LIKE :criteria")
+                    .orWhere("mappool.abbreviation LIKE :criteria");
             }))
             .setParameters({
                 tournament: tournament.ID,

@@ -1,67 +1,114 @@
-import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
+import { fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
+import { User } from "../../../../Models/user";
+import { loginResponse } from "../../../functions/loginResponse";
+import { discordClient } from "../../../../Server/discord";
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    const tournament = await fetchTournament(m, []);
-    if (!tournament)
+    if (!m.guild)
+        return;
+
+    if (m instanceof ChatInputCommandInteraction)
+        await m.deferReply();
+
+    const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers]);
+    if (!securedChannel) 
+        return;
+
+    const tournament = await fetchTournament(m);
+    if (!tournament) 
         return;
 
     const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]);
-    if (!allowed)
+    if (!allowed) 
         return;
-    const securedChannel = await isSecuredChannel(m, tournament, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.MappoolLog, TournamentChannelType.MappoolQA, TournamentChannelType.Testplayers]);
-    if (!securedChannel)
+
+    const user = await User.findOne({
+        where: {
+            discord: {
+                userID: m instanceof Message ? m.author.id : m.user.id,
+            }
+        }
+    })
+    if (!user) {
+        await loginResponse(m);
         return;
+    }
 
     const poolRegex = /-p (\S+)/;
     const slotRegex = /-s (\S+)/;
-    const dateRegex = /-d ((\d|-)+ ?(\d|:)*)/;
+    const dateRegex = new RegExp(/-r ((?:\d{4}-\d{2}-\d{2})|\d{10})/);
     const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
     const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
     const dateText = m instanceof Message ? m.content.match(dateRegex) ?? m.content.split(" ")[3] : m.options.getString("date");
     if (!poolText || !slotText || !dateText) {
-        m.reply("Missing parameters. Please use `-p <pool> -s <slot> -d <date>` or `<pool> <slot> <date>`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        if (m instanceof Message) m.reply("Missing parameters. Please use `-p <pool> -s <slot> -d <date>` or `<pool> <slot> <date>`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        else m.editReply("Missing parameters. Please use `-p <pool> -s <slot> -d <date>` or `<pool> <slot> <date>`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
 
-    const date = new Date(typeof dateText === "string" ? dateText : dateText[0]);
+    const date = new Date(typeof dateText === "string" ? dateText.includes("-") ? dateText : parseInt(dateText + "000") : dateText[1].includes("-") ? dateText[1] : parseInt(dateText[1] + "000"));
     const pool = typeof poolText === "string" ? poolText : poolText[0];
-    const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[0].substring(slotText[0].length - 1));
-    const slot = parseInt(typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[0].substring(0, slotText[0].length - 1));
-    if (!pool || !slot || isNaN(date.getTime()) || !order) {
-        m.reply("Missing parameters. Please use `-p <pool> -s <slot> -d <date>` or `<pool> <slot> <date>`. If you do not use the `-` prefixes, the order of the parameters is important.");
+    const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
+    const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
+
+    if (isNaN(date.getTime())) {
+        if (m instanceof Message) m.reply("Invalid date. Please provide a valid date using either `YYYY-MM-DD` format, or a unix/epoch timestamp in seconds.");
+        else m.editReply("Invalid date. Please provide a valid date using either `YYYY-MM-DD` format, or a unix/epoch timestamp in seconds.");
         return;
     }
     if (isNaN(order)) {
-        m.reply("Invalid slot number. Please use a valid slot number.");
+        if (m instanceof Message) m.reply("Invalid slot number. Please use a valid slot number.");
+        else m.editReply("Invalid slot number. Please use a valid slot number.");
         return;
     }
 
-    const mappool = await fetchMappool(m, tournament, pool);
-    if (!mappool)
+    const mappool = await fetchMappool(m, tournament, pool, true);
+    if (!mappool) 
         return;
 
-    const slotMod = await fetchSlot(m, mappool, slot.toString(), true);
-    if (!slotMod)
+    if (mappool.stage.timespan.start.getTime() < date.getTime()) {
+        if (m instanceof Message) m.reply("The deadline cannot be after the start of the stage. That literally makes no sense.");
+        else m.editReply("The deadline cannot be after the start of the stage. That literally makes no sense.");
+        return;
+    }
+    const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
+
+    const slotMod = await fetchSlot(m, mappool, slot, true);
+    if (!slotMod) 
         return;
 
     const mappoolMap = slotMod.maps.find(m => m.order === order);
     if (!mappoolMap) {
-        m.reply(`Could not find **${slot}${order}**`);
+        if (m instanceof Message) m.reply(`Could not find **${mappoolSlot}**`);
+        else m.editReply(`Could not find **${mappoolSlot}**`);
         return;
     }
     if (!mappoolMap.customMappers || mappoolMap.customMappers.length === 0) {
-        m.reply(`**${slot}${order}** does not have any custom mappers`);
+        if (m instanceof Message) m.reply(`**${mappoolSlot}** does not have any custom mappers`);
+        else m.editReply(`**${mappoolSlot}** does not have any custom mappers`);
         return;
     }
 
     mappoolMap.deadline = date;
-    await mappool.save();
 
-    m.reply(`Set deadline for **${slot}${order}** to **${date.toUTCString()}**`);
+    const customThread = await fetchCustomThread(m, mappoolMap, tournament, mappoolSlot);
+    if (!customThread)
+        return;
+    if (customThread !== true && m.channel?.id !== customThread[0].id) {
+        const [thread] = customThread;
+        await thread.send(`<@${user.discord.userID}> has added a deadline: **<t:${date.getTime() / 1000}>**`);
+    }
+
+    await mappoolMap.save();
+
+    if (m instanceof Message) m.reply(`Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}>**`);
+    else m.editReply(`Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}>**`);
+
+    await mappoolLog(tournament, "deadline", user, `Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}>**`);
 }
 
 const data = new SlashCommandBuilder()
@@ -83,7 +130,7 @@ const data = new SlashCommandBuilder()
 
 const mappoolDeadline: Command = {
     data,
-    alternativeNames: [ "deadline_mappool", "mappool-deadline", "deadline-mappool", "mappooldeadline", "deadlinemappool", "deadlinesp", "pdeadline", "pool_deadline", "deadline_pool", "pool-deadline", "deadline-pool", "pooldeadline", "deadlinepool" ],
+    alternativeNames: [ "deadline_mappool", "mappool-deadline", "deadline-mappool", "mappooldeadline", "deadlinemappool", "deadlinep", "pdeadline", "pool_deadline", "deadline_pool", "pool-deadline", "deadline-pool", "pooldeadline", "deadlinepool", "mappool_dd", "dd_mappool", "mappool-dd", "dd-mappool", "mappooldd", "ddmappool", "ddp", "pdd", "pool_dd", "dd_pool", "pool-dd", "dd-pool", "pooldd", "ddpool" ],
     category: "tournaments",
     subCategory: "mappools",
     run,

@@ -1,4 +1,4 @@
-import { Client, Guild, GuildMember, GatewayIntentBits } from "discord.js";
+import { Client, Guild, GuildMember, GatewayIntentBits, Partials } from "discord.js";
 import { config } from "node-config-ts";
 
 // Add more later as needed
@@ -10,6 +10,9 @@ const discordClient = new Client({
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.DirectMessages,
         GatewayIntentBits.MessageContent,
+    ],
+    partials: [
+        Partials.Channel,
     ],
 });
 

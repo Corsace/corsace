@@ -7,14 +7,18 @@ import { osuClient } from "../../Server/osu";
 import modeColour from "./modeColour";
 import ppCalculator from "./ppCalculator";
 
-export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set?: Beatmap[], missCount?: number, score?: UserScore, user?: User, isRecent?: boolean): Promise<EmbedBuilder> {
+export default async function beatmapEmbed (beatmap: Beatmap, mods: string, user: User, missCount?: number, userScore?: UserScore, isRecent?: boolean): Promise<EmbedBuilder>
+export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set: Beatmap[], missCount?: number): Promise<EmbedBuilder>
+export default async function beatmapEmbed (beatmap: Beatmap, mods: string, setorUser: Beatmap[] | User, missCount?: number, userScore?: UserScore, isRecent?: boolean): Promise<EmbedBuilder> {
 
-    const embedMsg = defaultBeatmapEmbed(beatmap, score && user ? false : true);
+    const embedMsg = defaultBeatmapEmbed(beatmap, setorUser instanceof User ? false : true);
 
     const totalHits = beatmap.countNormal + beatmap.countSlider + beatmap.countSpinner;
 
-    if (score && user) {
+    if (setorUser instanceof User) {
         // Get score info
+        const user = setorUser;
+        const score = userScore!;
         const scoreMod = ` **+${modsToAcronym(score.enabledMods ?? 0)}** `;
         const scoreRank = (await discordGuild()).emojis.cache.find(e => e.name === `${score.rank}_`)?.toString();
         const scorePrint = ` **${score.score.toLocaleString()}** `;
@@ -90,15 +94,16 @@ export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set?
             scoreRank + scorePrint + scoreMod + combo + acc + replay + "\n" +
             mapCompletion + "\n" +
             pp + hits + "\n" + "\n";
-    } else if (set) {
+    } else {
         // Get extra beatmap information
-        const download = `**Download:** [osz link](https://osu.ppy.sh/beatmapsets/${beatmap.beatmapSetId}/download) | <osu://dl/${beatmap.beatmapSetId}>`;
+        const set = setorUser;
+        const download = `**Download:** ${set[0].setId === -1 ? beatmap.tags : `[osz link](https://osu.ppy.sh/beatmapsets/${beatmap.beatmapSetId}/download) | <osu://dl/${beatmap.beatmapSetId}>`}`;
         let diffs = `**${set.length}** difficulties`;
         if (set.length === 1)
             diffs = "**1** difficulty";
 
         // Not sure if there's a better way to get this
-        let rankStatus = "Graveyard";
+        let rankStatus = "Unknown";
         for (const status of Object.keys(ApprovalStatus)) {
             if (beatmap.approved === ApprovalStatus[status]) {
                 rankStatus = `${status[0].toUpperCase()}${status.substring(1)}`; 
@@ -164,8 +169,7 @@ export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set?
         embedMsg.footer = {
             text: `Corsace | https://corsace.io`,
         };
-    } else
-        throw new Error("Please provide either set + miss count, or score + user params!");
+    }
 
     return new EmbedBuilder(embedMsg);
 }

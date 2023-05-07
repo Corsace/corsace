@@ -6,6 +6,9 @@ import { osuClient } from "../../../Server/osu";
 import { loginResponse } from "../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
+    if (m instanceof ChatInputCommandInteraction)
+        await m.deferReply();
+
     const osuRegex = /(osu|profile)\s+(.+)/i;
     const profileRegex = /(osu|old)\.ppy\.sh\/(u|users)\/(\S+)/i;
 
@@ -49,7 +52,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
 
         if (!apiUser) {
-            await m.reply(`No user found for **${q}**`);
+            if (m instanceof Message) await m.reply(`No user found for **${q}**`);
+            else await m.editReply(`No user found for **${q}**`);
             return;
         }
 
@@ -79,7 +83,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             name: `${user.osu.username} (${user.osu.userID})`,
             iconURL: `https://osu.ppy.sh/images/flags/${user.country}.png`,
         },
-        description: `**PP:** ${apiUser.pp}\n **Rank:** #${apiUser.rank} (${user.country}#${apiUser.countryRank})\n **Acc:** ${apiUser.accuracy.toFixed(2)}%\n **Playcount:** ${apiUser.playcount}\n **SS**: ${apiUser.countRankSS} **S:** ${apiUser.countRankS} **A:** ${apiUser.countRankA}\n **Joined:** ${apiUser.joinDate.toDateString()}`,
+        description: `**PP:** ${apiUser.pp}\n **Rank:** #${apiUser.rank} (${user.country}#${apiUser.countryRank})\n **Acc:** ${apiUser.accuracy.toFixed(2)}%\n **Playcount:** ${apiUser.playcount}\n **SS**: ${apiUser.countRankSS} **S:** ${apiUser.countRankS} **A:** ${apiUser.countRankA}\n **Joined:** <t:${apiUser.joinDate.getTime() / 1000}>`,
         color: 0xFB2475,
         footer: {
             text: `Corsace ID #${user.ID}`,
@@ -89,7 +93,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         },
     };
     const message = new EmbedBuilder(embedMsg);
-    m.reply({ embeds: [message] });
+    if (m instanceof Message) m.reply({ embeds: [message] });
+    else m.editReply({ embeds: [message] });
 }
 
 const data = new SlashCommandBuilder()

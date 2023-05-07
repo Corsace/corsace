@@ -1,10 +1,11 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Beatmap } from "../../beatmap";
 import { User } from "../../user";
 import { MappoolMapHistory } from "./mappoolMapHistory";
 import { MappoolMapSkill } from "./mappoolMapSkill";
 import { MappoolMapWeight } from "./mappoolMapWeight";
 import { MappoolSlot } from "./mappoolSlot";
+import { CustomBeatmap } from "./customBeatmap";
 
 @Entity()
 export class MappoolMap extends BaseEntity {
@@ -15,7 +16,13 @@ export class MappoolMap extends BaseEntity {
     @CreateDateColumn()
     createdAt!: Date;
     
-    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    @ManyToOne(() => User, user => user.mappoolMapsCreated)
+    createdBy!: User;
+
+    @ManyToOne(() => User, user => user.mappoolMapsAssigned)
+    assignedBy?: User | null;
+    
+    @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
     lastUpdate!: Date;
 
     @Column({ nullable: false })
@@ -24,21 +31,32 @@ export class MappoolMap extends BaseEntity {
     @Column({ default: false })
     isCustom!: boolean;
 
-    @Column({ nullable: true })
-    deadline?: Date;
-
-    @Column({ nullable: true })
-    link?: string;
+    @Column({ type: "datetime", nullable: true })
+    deadline?: Date | null;
 
     @ManyToOne(() => MappoolSlot, slot => slot.maps)
     slot!: MappoolSlot;
+
+    @Column({ type: "varchar", nullable: true })
+    customThreadID?: string | null;
+
+    @Column({ type: "varchar", nullable: true })
+    customMessageID?: string | null;
+
+    @ManyToMany(() => User, user => user.customMapsTested)
+    @JoinTable()
+    testplayers!: User[];
 
     @ManyToMany(() => User, user => user.customMaps)
     @JoinTable()
     customMappers!: User[];
 
+    @OneToOne(() => CustomBeatmap, beatmap => beatmap.mappoolMap)
+    @JoinColumn()
+    customBeatmap?: CustomBeatmap | null;
+
     @ManyToOne(() => Beatmap, beatmap => beatmap.mappoolMaps)
-    beatmap!: Beatmap;
+    beatmap?: Beatmap | null;
 
     @OneToMany(() => MappoolMapHistory, history => history.mappoolMap)
     history!: MappoolMapHistory[];

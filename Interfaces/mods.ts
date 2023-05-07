@@ -37,13 +37,13 @@ export const modAcronyms = {
  * @returns Either an enum of the mods or undefined
  */
 export function acronymtoMods (text: string): ModsType | undefined {
-    const modStrings = text.match(/.{1,2}/g);
+    const modStrings = text.match(/.{2}/g);
     if (!modStrings)
         return;
     let val = 0;
-    for (const mod of modStrings) {
+    for (const mod of modStrings)
         val += modAcronyms[mod.toUpperCase()];
-    }
+
     return val;
 }
 

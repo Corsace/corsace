@@ -1,44 +1,37 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
-import { MoreThan, Not } from "typeorm";
+import { In, MoreThan, Not } from "typeorm";
 import { Command } from "..";
 import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    let serverOnly = false;
-    let pastRegistration = false;
-    let finishedTournaments = false;
-    let mode = "";
-    if (m instanceof ChatInputCommandInteraction) {
-        serverOnly = m.options.getBoolean("server") ?? false;
-        pastRegistration = m.options.getBoolean("past_registration") ?? false;
-        finishedTournaments = m.options.getBoolean("finished") ?? false;
-        mode = m.options.getString("mode") ?? "";
-    } else {
-        serverOnly = /-s(erver)?/.test(m.content);
-        pastRegistration = /-p(ast_)?r(egistration)?/.test(m.content);
-        finishedTournaments = /-f(inished)?/.test(m.content);
-        mode = /-m(ode)?\s+(.+)/.exec(m.content)?.[1] ?? "";
-    }
+    if (m instanceof ChatInputCommandInteraction)
+        await m.deferReply();
+
+    const serverOnly = m instanceof Message ? /-s(erver)?/.test(m.content) : m.options.getBoolean("server");
+    const pastRegistration = m instanceof Message ? /-p(ast_)?r(egistration)?/.test(m.content) : m.options.getBoolean("past_registration");
+    const finishedTournaments = m instanceof Message ? /-f(inished)?/.test(m.content) : m.options.getBoolean("finished");
+    let mode = m instanceof Message ? /-m(ode)?\s+(.+)/.exec(m.content)?.[1] || "" : m.options.getString("mode") || "";
 
     if (serverOnly && !m.guild) {
-        m.reply("You can only use this option in a server");
+        if (m instanceof Message) m.reply("You can only use this option in a server");
+        else m.editReply("You can only use this option in a server");
         return;
     }
 
     if (mode && !["osu", "taiko", "catch", "mania"].includes(mode)) {
-        m.reply("Invalid mode");
+        if (m instanceof Message) m.reply("Invalid mode");
+        else m.editReply("Invalid mode");
         return;
     }
 
     const modeID = ["osu", "taiko", "catch", "mania"].indexOf(mode) + 1;
 
-    const findOptions: any = {
-        ...(serverOnly ? { server: m.guild?.id } : { }),
+    const findOptions = {
+        ...(serverOnly ? { server: m.guild!.id } : { }),
         ...(mode ? { mode: { ID: modeID } } : { }),
         ...(pastRegistration ? { } : { registrations: { end: MoreThan(new Date()) } }),
+        ...(finishedTournaments ? { } : { status: In([TournamentStatus.NotStarted, TournamentStatus.Registrations, TournamentStatus.Ongoing]) }),
     };
-    if (!finishedTournaments)
-        findOptions.status = Not(TournamentStatus.Finished);
 
     const tournaments = await Tournament.find({
         where: findOptions,
@@ -46,18 +39,20 @@ async function run (m: Message | ChatInputCommandInteraction) {
     });
 
     if (tournaments.length === 0) {
-        m.reply("No tournaments found");
+        if (m instanceof Message) m.reply("No tournaments found");
+        else m.editReply("No tournaments found");
         return;
     }
 
     const embed = {
         title: "Tournaments",
         description: tournaments.map(t => {
-            return `**${t.name}** - ${t.mode.name} - ${t.registrations.start.toDateString()} - ${t.registrations.end.toDateString()}`;
+            return `**${t.name}** - ${t.mode.name} - <t:${t.registrations.start.getTime() / 1000}> - <t:${t.registrations.end.getTime() / 1000}>`;
         }).join("\n"),
     };
 
-    m.reply({ embeds: [embed] });
+    if (m instanceof Message) m.reply({ embeds: [embed] });
+    else m.editReply({ embeds: [embed] });
 }
 
 const data = new SlashCommandBuilder()

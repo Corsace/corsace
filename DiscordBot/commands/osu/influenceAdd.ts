@@ -11,6 +11,9 @@ import { isEligibleFor } from "../../../Server/middleware/mca-ayim";
 import { loginResponse } from "../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
+    if (m instanceof ChatInputCommandInteraction)
+        await m.deferReply({ephemeral: true});
+
     const influenceAddRegex = /(inf|influence)add\s+(.+)/i;
     const profileRegex = /(osu|old)\.ppy\.sh\/(u|users)\/(\S+)/i;
     const modeRegex = /-(standard|std|taiko|tko|catch|ctb|mania|man|storyboard|sb)/i;
@@ -85,7 +88,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mode = await ModeDivision.findOne({ where: { ID: 1 }});
 
     if (!isEligibleFor(user, mode!.ID, year)) {
-        await m.reply(`You did not rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date).getUTCFullYear() ? "\nFor adding influences in the current year, then if you have ranked a set, re-login to Corsace with your osu! account, and you should be able to add them after!" : ""}`);
+        if (m instanceof Message) await m.reply(`You did not rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date).getUTCFullYear() ? "\nFor adding influences in the current year, then if you have ranked a set, re-login to Corsace with your osu! account, and you should be able to add them after!" : ""}`);
+        else await m.editReply(`You did not rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date).getUTCFullYear() ? "\nFor adding influences in the current year, then if you have ranked a set, re-login to Corsace with your osu! account, and you should be able to add them after!" : ""}`);
         return;
     }
 
@@ -102,7 +106,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         apiUser = (await osuClient.user.get(search)) as APIUser;
 
     if (!apiUser) {
-        await m.reply(`No user found for **${q}**`);
+        if (m instanceof Message) await m.reply(`No user found for **${q}**`);
+        else await m.editReply(`No user found for **${q}**`);
         return;
     }
 
@@ -137,10 +142,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         relations: ["user", "influence"],
     });
     if (influences.length === 5) {
-        await m.reply(`You already have 5 influences for **${year}** in **${mode!.name}**!`);
+        if (m instanceof Message) await m.reply(`You already have 5 influences for **${year}** in **${mode!.name}**!`);
+        else await m.editReply(`You already have 5 influences for **${year}** in **${mode!.name}**!`);
         return;
     } else if (influences.some(inf => inf.influence.osu.userID === influenceUser!.osu.userID)) {
-        await m.reply(`You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+        if (m instanceof Message) await m.reply(`You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+        else await m.editReply(`You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
         return;
     }
 
@@ -173,10 +180,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     .setLabel("No")
                     .setStyle(ButtonStyle.Danger)
             );
-        const message = await m.reply({
+        const message = await m.channel!.send({
             content: `Are you sure you want to add **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**? You cannot remove influences for years past the currently running MCA!`,
             components: [row],
-            ephemeral: true,
         });
         const collector = message.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10000 });
         collector.on("collect", async (i) => {
@@ -187,31 +193,21 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
             if (i.customId === "true") {
                 await influence.save();
-                m.reply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+                if (m instanceof Message) await m.reply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+                else await m.editReply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
             }
-            if (message instanceof Message)
-                await message.delete();
-            else
-                await (m as ChatInputCommandInteraction).deleteReply();
+            await message.delete();
         });
         collector.on("end", async () => {
-            try {
-                if (message instanceof Message)
-                    await message.delete();
-                else
-                    await (m as ChatInputCommandInteraction).deleteReply();
-            } catch (e) {   
-                if (e instanceof DiscordAPIError)
-                    return;
-                console.error(e);
-            }
+            await message.delete();
         });
         return;
     }
 
     await influence.save();
 
-    m.reply(`Added **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+    if (m instanceof Message) await m.reply(`Added **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+    else await m.editReply(`Added **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
     return;
     
 }

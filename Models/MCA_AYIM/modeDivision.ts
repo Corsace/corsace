@@ -5,6 +5,7 @@ import { GuestRequest } from "./guestRequest";
 import { Category } from "./category";
 import { Influence } from "./influence";
 import { Tournament } from "../tournaments/tournament";
+import { CustomBeatmap } from "../tournaments/mappools/customBeatmap";
 
 @Entity()
 export class ModeDivision extends BaseEntity {
@@ -26,6 +27,9 @@ export class ModeDivision extends BaseEntity {
 
     @OneToMany(() => Beatmap, beatmap => beatmap.mode)
     beatmaps!: Beatmap[];
+
+    @OneToMany(() => CustomBeatmap, customBeatmap => customBeatmap.mode)
+    customBeatmaps!: CustomBeatmap[];
     
     @OneToMany(() => Category, category => category.mode)
     categories!: Category[];

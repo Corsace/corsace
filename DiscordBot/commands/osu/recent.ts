@@ -5,10 +5,12 @@ import { Beatmap, Mode, User as APIUser, UserScore } from "nodesu";
 import { OAuth, User } from "../../../Models/user";
 import { applyMods, acronymtoMods, modsToAcronym } from "../../../Interfaces/mods";
 import beatmapEmbed from "../../functions/beatmapEmbed";
-import timeSince from "../../../Server/utils/timeSince";
 import { loginResponse } from "../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
+    if (m instanceof ChatInputCommandInteraction)
+        await m.deferReply();
+
     const recentRegex = /(^r|recent|rs|rb|recentb|recentbest)\s+(.+)/i;
     const modRegex = /-m\s*(\S+)/i;
     const strictRegex = /-nostrict/i;
@@ -113,13 +115,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
     ) {
         scores = (await osuClient.user.getBest(apiUser.userId, Mode.all, 100)) as UserScore[];
         if (scores.length < 1) {
-            m.reply(`${!isOtherUser ? "you" : `**${user.osu.username}**`} has no top plays.... What are u doing`);
+            if (m instanceof Message) await m.reply(`${!isOtherUser ? "you" : `**${user.osu.username}**`} has no top plays.... What are u doing`);
+            else await m.editReply(`${!isOtherUser ? "You" : `**${user.osu.username}**`} have no top plays.... What are u doing`);
             return;
         }
     } else {
         scores = (await osuClient.user.getRecent(apiUser.userId, Mode.all, 50)) as UserScore[];
         if (scores.length < 1) {
-            m.reply(`${!isOtherUser ? "You have" : `**${user.osu.username}** has`} not played recently`);
+            if (m instanceof Message) m.reply(`${!isOtherUser ? "You have" : `**${user.osu.username}** has`} not played recently`);
+            else m.editReply(`${!isOtherUser ? "You have" : `**${user.osu.username}** has`} not played recently`);
             return;
         }
     }
@@ -129,11 +133,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (mods !== "") {
         const modVal = acronymtoMods(mods);
         if (!modVal) {
-            m.reply(`Error parsing the mods ${mods}`);
+            if (m instanceof Message) m.reply(`Error parsing the mods ${mods}`);
+            else m.editReply(`Error parsing the mods ${mods}`);
             return;
         }
         scores = scores.filter(score => (!score.enabledMods && modVal === 0) || (strict && score.enabledMods && modVal === score.enabledMods) || (!strict && score.enabledMods && (modVal & score.enabledMods) === modVal));
-        await m.reply(`No scores with the mod combination **${mods}** exist!`);
+        if (m instanceof Message) await m.reply(`No scores with the mod combination **${mods}** exist!`);
+        else await m.editReply(`No scores with the mod combination **${mods}** exist!`);
         return;
     }
 
@@ -150,7 +156,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     let beatmap = ((await osuClient.beatmaps.getByBeatmapId(score.beatmapId, Mode.all, 1, undefined, score.enabledMods)) as Beatmap[])[0];
     beatmap = applyMods(beatmap, mods);
 
-    const message = await beatmapEmbed(beatmap, mods, undefined, undefined, score, user);
+    const message = await beatmapEmbed(beatmap, mods, user, undefined, score);
 
     if (!(
         (m instanceof Message && /^(rb|recentb|recentbest)/i.test(m.content.substring(1))) ||
@@ -164,11 +170,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
             else
                 break;
         }
-        message.setFooter({ text: `Try #${attempt} | ${timeSince(score.date, new Date())}` });
+        message.setFooter({ text: `Try #${attempt} | <t:${score.date.getTime() / 1000}:R>` });
     } else
-        message.setFooter({ text: timeSince(score.date, new Date()) });
-    m.reply({ 
+        message.setFooter({ text: `<t:${score.date.getTime() / 1000}:R>` });
+    if (m instanceof Message) m.reply({ 
         content: warning, 
+        embeds: [message],
+    });
+    else m.editReply({
+        content: warning,
         embeds: [message],
     });
 }

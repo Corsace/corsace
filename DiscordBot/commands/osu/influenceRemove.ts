@@ -10,6 +10,9 @@ import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { loginResponse } from "../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
+    if (m instanceof ChatInputCommandInteraction)
+        await m.deferReply({ephemeral: true});
+
     const influenceRemoveRegex = /(inf|influence)del(ete)?\s+(.+)/i;
     const profileRegex = /(osu|old)\.ppy\.sh\/(u|users)\/(\S+)/i;
     const modeRegex = /-(standard|std|taiko|tko|catch|ctb|mania|man|storyboard|sb)/i;
@@ -85,7 +88,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         },
     });
     if (year < (mca ? mca.year : (new Date()).getUTCFullYear())) {
-        await m.reply(`You cannot remove mapping influences for previous years!`);
+        if (m instanceof Message) await m.reply(`You cannot remove mapping influences for previous years!`);
+        else await m.editReply(`You cannot remove mapping influences for previous years!`);
         return;
     }
 
@@ -102,7 +106,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         apiUser = (await osuClient.user.get(search)) as APIUser;
 
     if (!apiUser) {
-        await m.reply(`No user found for **${q}**`);
+        if (m instanceof Message) await m.reply(`No user found for **${q}**`);
+        else await m.editReply(`No user found for **${q}**`);
         return;
     }
 
@@ -115,7 +120,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     });
 
     if (!influenceUser) {
-        await m.reply(`**${apiUser.username}** doesn't even exist in the Corsace database! You're capping!!!!!!!`);
+        if (m instanceof Message) await m.reply(`**${apiUser.username}** doesn't even exist in the Corsace database! You're capping!!!!!!!`);
+        else await m.editReply(`**${apiUser.username}** doesn't even exist in the Corsace database! You're capping!!!!!!!`);
         return;
     }
     const influence = await Influence.findOne({
@@ -133,12 +139,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
         },
     });
     if (!influence) {
-        await m.reply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** doesn't seem to exist currently!`);
+        if (m instanceof Message) await m.reply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** doesn't seem to exist currently!`);
+        else await m.editReply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** doesn't seem to exist currently!`);
         return;
     }
 
     await influence.remove();
-    m.reply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** has been removed!`);
+    if (m instanceof Message) m.reply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** has been removed!`);
+    else await m.editReply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** has been removed!`);
     return;
     
 }

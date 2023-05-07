@@ -1,21 +1,38 @@
 import { config } from "node-config-ts";
-import { ActionRowBuilder, ChatInputCommandInteraction, Message, PermissionFlagsBits, SlashCommandBuilder, MessageComponentInteraction, StringSelectMenuBuilder, StringSelectMenuInteraction, EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ChannelType } from "discord.js";
+import { ActionRowBuilder, ChatInputCommandInteraction, Message, PermissionFlagsBits, SlashCommandBuilder, MessageComponentInteraction, StringSelectMenuBuilder, StringSelectMenuInteraction, EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ChannelType, GuildChannelCreateOptions } from "discord.js";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
 import { User } from "../../../Models/user";
 import { Command } from "../index";
-import { loginRow } from "../../functions/loginResponse";
+import { loginResponse, loginRow } from "../../functions/loginResponse";
 import { filter, stopRow } from "../../functions/messageInteractionFunctions";
 import { profanityFilter } from "../../../Interfaces/comment";
 import { Stage, StageType } from "../../../Models/tournaments/stage";
 import { Phase } from "../../../Models/phase";
-import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
+import { TournamentChannel, TournamentChannelType, TournamentChannelTypeRoles } from "../../../Models/tournaments/tournamentChannel";
 import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
         return;
     
+    if (m instanceof ChatInputCommandInteraction)
+        await m.deferReply();
+
+    const nameRegex = new RegExp(/-n ([a-zA-Z0-9_ ]{3,32})/);
+    const abbreviationRegex = new RegExp(/-a ([a-zA-Z0-9_]{3,8})/);
+    const descriptionRegex = new RegExp(/-d ([a-zA-Z0-9_ ]{3,512})/);
+    const modeRegex = new RegExp(/-m ([a-zA-Z0-9_ ]{1,14})/);
+    const matchSizeRegex = new RegExp(/-ms ([a-zA-Z0-9_ ]{1,3})/);
+    const teamSizeRegex = new RegExp(/-ts (\d+) (\d+)/);
+    const registrationRegex = new RegExp(/-r ((?:\d{4}-\d{2}-\d{2})|\d{10}) ((?:\d{4}-\d{2}-\d{2})|\d{10})/);
+    const sortOrderRegex = new RegExp(/-s ([a-zA-Z0-9_ ]{1,6})/);
+    const helpRegex = new RegExp(/-h/);
+    if (m instanceof Message && (helpRegex.test(m.content) || (!nameRegex.test(m.content) && !abbreviationRegex.test(m.content) && !descriptionRegex.test(m.content) && !modeRegex.test(m.content) && !matchSizeRegex.test(m.content) && !teamSizeRegex.test(m.content) && !registrationRegex.test(m.content) && !sortOrderRegex.test(m.content)))) {
+        await m.reply(`Please provide all required parameters! Here is a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Description:** \`-d <description>\`\n**Mode:** \`-m <mode>\`\n**Match Size (xvx, input x):** \`-ms <match size>\`\n**Team Size:** \`-ts <min> <max>\`\n**Registration Period:** \`-r <start date (YYYY-MM-DD OR unix/epoch)> <end date (YYYY-MM-DD OR unix/epoch)>\`\n**Sort Order:** \`-s <sort order>\`\n\nIt is recommended to use slash commands for any \`create\` command.`);
+        return;
+    }
+
     // Check if the server is already running 5 tournaments (the limit)
     const serverTournaments = await Tournament.find({
         where: [
@@ -29,8 +46,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
             },
         ],
     });
-    if (serverTournaments.length === 3) {
-        await m.reply("You can only have 3 tournaments at a time!");
+    if (serverTournaments.length === 5) {
+        if (m instanceof Message) await m.reply("You can only have 5 tournaments at a time!");
+        else await m.editReply("You can only have 5 tournaments at a time!");
         return;
     }
 
@@ -42,71 +60,93 @@ async function run (m: Message | ChatInputCommandInteraction) {
     tournament.roles = [];
 
     // Find server owner and assign them as the tournament organizer
+    let organizerTarget = m instanceof Message ? m.mentions.users.first() : m.options.getUser("organizer");
+    if (!organizerTarget)
+        organizerTarget = m instanceof Message ? m.author : m.user;
     const organizer = await User.findOne({
         where: {
             discord: {
-                userID: m.guild.ownerId,
+                userID: organizerTarget.id,
             },
         },
     });
     if (!organizer) {
-        await m.reply({
-            content: "No user found in the corsace database for the server owner! Please have <@" + m.guild.ownerId + "> login to the Corsace website with your discord and osu! accounts!", 
+        if (m instanceof Message) await m.reply({
+            content: "No user found in the corsace database for <@" + organizerTarget.id+ ">! Please have them login to the Corsace website with their discord and osu! accounts!", 
+            components: [loginRow],
+        });
+        else await m.editReply({
+            content: "No user found in the corsace database for <@" + organizerTarget.id+ ">! Please have them login to the Corsace website with their discord and osu! accounts!",
             components: [loginRow],
         });
         return;
     }
     tournament.organizer = organizer;
 
+    const creator = await User.findOne({
+        where: {
+            discord: {
+                userID: m instanceof Message ? m.author.id : m.user.id,
+            },
+        },
+    });
+    if (!creator) {
+        await loginResponse(m);
+        return;
+    }
+
     // Check for name validity
-    const nameRegex = new RegExp(/-n [a-zA-Z0-9_ ]{3,32}/);
-    const name = m instanceof Message ? nameRegex.exec(m.content)?.[0] : m.options.getString("name");
+    const name = m instanceof Message ? nameRegex.exec(m.content)?.[1] : m.options.getString("name");
     if (!name) {
-        await m.reply("Please provide a valid name for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 32 characters long.");
+        if (m instanceof Message)  await m.reply("Please provide a valid name for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 32 characters long.");
+        else await m.editReply("Please provide a valid name for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 32 characters long.");
         return;
     }
     if (profanityFilter.test(name)) {
-        await m.reply("LMFAO! XD Shut the fuck up and give a valid name you fucking idiot (Nobody's laughing with you, fucking dumbass)");
+        if (m instanceof Message) await m.reply("LMFAO! XD Shut the fuck up and give a valid name you fucking idiot (Nobody's laughing with you, fucking dumbass)");
+        else await m.editReply("LMFAO! XD Shut the fuck up and give a valid name you fucking idiot (Nobody's laughing with you, fucking dumbass)");
         return;
     }
     tournament.name = name;
 
     // Check for abbreviation validity
-    const abbreviationRegex = new RegExp(/-a [a-zA-Z0-9_]{3,8}/);
-    const abbreviation = m instanceof Message ? abbreviationRegex.exec(m.content)?.[0] : m.options.getString("abbreviation");
+    const abbreviation = m instanceof Message ? abbreviationRegex.exec(m.content)?.[1] : m.options.getString("abbreviation");
     if (!abbreviation) {
-        await m.reply("Please provide a valid abbreviation for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 3 and 8 characters long.");
+        if (m instanceof Message) await m.reply("Please provide a valid abbreviation for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 3 and 8 characters long.");
+        else await m.editReply("Please provide a valid abbreviation for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 3 and 8 characters long.");
         return;
     }
     if (profanityFilter.test(abbreviation)) {
-        await m.reply("The abbreviation is sus . Change it to something more appropriate.");
+        if (m instanceof Message) await m.reply("The abbreviation is sus . Change it to something more appropriate.");
+        else await m.editReply("The abbreviation is sus . Change it to something more appropriate.");
         return;
     }
     tournament.abbreviation = abbreviation;
 
     // Check for description validity
-    const descriptionRegex = new RegExp(/-d [a-zA-Z0-9_ ]{3,512}/);
-    const description = m instanceof Message ? descriptionRegex.exec(m.content)?.[0] : m.options.getString("description");
+    const description = m instanceof Message ? descriptionRegex.exec(m.content)?.[1] : m.options.getString("description");
     if (!description) {
-        await m.reply("Please provide a valid description for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The description must be between 3 and 512 characters long.");
+        if (m instanceof Message) await m.reply("Please provide a valid description for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The description must be between 3 and 512 characters long.");
+        else await m.editReply("Please provide a valid description for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The description must be between 3 and 512 characters long.");
         return;
     }
     if (profanityFilter.test(description)) {
-        await m.reply("Write a description that doesn't sound like it was written by a 12 year old.");
+        if (m instanceof Message) await m.reply("Write a description that doesn't sound like it was written by a 15 year old.");
+        else await m.editReply("Write a description that doesn't sound like it was written by a 15 year old.");
         return;
     }
     tournament.description = description;
 
     // Check for mode validity
-    const modeRegex = new RegExp(/-m [a-zA-Z0-9_ ]{1,14}/);
-    const mode = m instanceof Message ? modeRegex.exec(m.content)?.[0] : m.options.getString("mode");
-    if (!mode) {
-        await m.reply("Please provide a valid mode for your tournament!");
+    const mode = m instanceof Message ? modeRegex.exec(m.content)?.[1] : m.options.getString("mode");
+    if (mode === null || mode === undefined) {
+        if (m instanceof Message) await m.reply("Please provide a valid mode for your tournament!");
+        else await m.editReply("Please provide a valid mode for your tournament!");
         return;
     }
     let modeID = 0;
-    switch (mode) {
-        case "1":
+    switch (mode.trim().toLowerCase()) {
+        case "0":
         case "standard": 
         case "osu":
         case "osu!":
@@ -115,14 +155,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
         case "std":
             modeID = 1;
             break;
-        case "2":
+        case "1":
         case "taiko":
         case "osu!taiko":
         case "osu!tko":
         case "tko":
             modeID = 2;
             break;
-        case "3":
+        case "2":
         case "fruits":
         case "catch":
         case "catch the beat":
@@ -132,7 +172,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         case "ctb":
             modeID = 3;
             break;
-        case "4":
+        case "3":
         case "mania":
         case "osu!mania":
         case "osu!man":
@@ -141,7 +181,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             break;
     }
     if (modeID === 0) {
-        await m.reply("Please provide a valid mode for your tournament!");
+        if (m instanceof Message) await m.reply("Please provide a valid mode for your tournament!");
+        else await m.editReply("Please provide a valid mode for your tournament!");
         return;
     }
 
@@ -151,69 +192,70 @@ async function run (m: Message | ChatInputCommandInteraction) {
         },
     });
     if (!modeDivision) {
-        await m.reply("That mode does not exist!");
+        if (m instanceof Message) await m.reply("That mode does not exist!");
+        else await m.editReply("That mode does not exist!");
         return;
     }
     tournament.mode = modeDivision;
 
     // Check for match size validity
-    const matchSizeRegex = new RegExp(/-ms [a-zA-Z0-9_ ]{1,3}/);
     if (m instanceof Message) {
-        const matchSize = matchSizeRegex.exec(m.content)?.[0];
+        const matchSize = matchSizeRegex.exec(m.content)?.[1];
         if (!matchSize || parseInt(matchSize) > 16 || parseInt(matchSize) < 1) {
             await m.reply("Please provide a valid match size for your tournament!");
             return;
         }
         tournament.matchSize = parseInt(matchSize);
     } else {
-        const matchSize = m.options.getInteger("match_size");
+        const matchSize = m.options.getInteger("players_in_match");
         if (!matchSize || matchSize > 8 || matchSize < 1) {
-            await m.reply("Please provide a valid match size for your tournament!");
+            await m.editReply("Please provide a valid match size for your tournament!");
             return;
         }
         tournament.matchSize = matchSize;
     }
 
     // Check for min and max team size validity
-    const teamSizeRegex = new RegExp(/-ts \d+ \d+/);
     let minSize: number | null = 0;
     let maxSize: number | null = 0;
     if (m instanceof Message) {
-        const teamSize = teamSizeRegex.exec(m.content)?.[0];
+        const teamSize = teamSizeRegex.exec(m.content);
         if (!teamSize) {
             await m.reply("Please provide a valid team size for your tournament!");
             return;
         }
-        minSize = parseInt(teamSize[0]);
-        maxSize = parseInt(teamSize[1]);
+        minSize = parseInt(teamSize[1]);
+        maxSize = parseInt(teamSize[2]);
     } else {
-        minSize = m.options.getInteger("min_team_size");
-        maxSize = m.options.getInteger("max_team_size");
+        minSize = m.options.getInteger("min_players");
+        maxSize = m.options.getInteger("max_players");
         if (!minSize || !maxSize) {
-            await m.reply("Please provide a valid team size for your tournament!");
+            await m.editReply("Please provide a valid team size for your tournament!");
             return;
         }
     }
-    if (minSize < 1 || minSize > 8 || minSize < tournament.matchSize || maxSize > 32 || minSize > maxSize) {
-        await m.reply("Please provide a valid team size for your tournament!");
+    if (minSize < 1 || minSize > 16 || minSize < tournament.matchSize || maxSize > 32 || minSize > maxSize) {
+        if (m instanceof Message) await m.reply("Please provide a valid team size for your tournament!");
+        else await m.editReply("Please provide a valid team size for your tournament!");
         return;
     }
     tournament.minTeamSize = minSize;
     tournament.maxTeamSize = maxSize;
 
     // Check for registration date validity
-    const registrationRegex = new RegExp(/-r (\d{4}-\d{2}-\d{2}) (\d{4}-\d{2}-\d{2})/);
     const registrationStartText = m instanceof Message ? registrationRegex.exec(m.content)?.[1] : m.options.getString("registration_start");
     const registrationEndText = m instanceof Message ? registrationRegex.exec(m.content)?.[2] : m.options.getString("registration_end");
     if (!registrationStartText || !registrationEndText) {
-        await m.reply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD`.");
+        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
+        else await m.editReply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
         return;
     }
 
-    const registrationStart = new Date(registrationStartText);
-    const registrationEnd = new Date(registrationEndText);
+    const registrationStart = new Date(registrationStartText.includes("-") ? registrationStartText : parseInt(registrationStartText + "000"));
+    const registrationEnd = new Date(registrationEndText.includes("-") ? registrationEndText : parseInt(registrationEndText + "000"));
     if (isNaN(registrationStart.getTime()) || isNaN(registrationEnd.getTime()) || registrationStart.getTime() > registrationEnd.getTime() || registrationEnd.getTime() < Date.now()) {
-        await m.reply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD`.");
+        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
+        else await m.editReply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
         return;
     }
 
@@ -223,21 +265,23 @@ async function run (m: Message | ChatInputCommandInteraction) {
     tournament.year = registrationEnd.getUTCFullYear();
 
     // Check for registration sort order validity
-    const sortOrderRegex = new RegExp(/-s [a-zA-Z0-9_ ]{1,3}/);
-    const sortOrder = m instanceof Message ? sortOrderRegex.exec(m.content)?.[0] : m.options.getString("sort_order");
+    const sortOrder = m instanceof Message ? sortOrderRegex.exec(m.content)?.[1] : m.options.getString("sort_order");
     if (!sortOrder) {
-        await m.reply("Please provide a valid sort order for your tournament!");
+        if (m instanceof Message) await m.reply("Please provide a valid sort order for your tournament!");
+        else await m.editReply("Please provide a valid sort order for your tournament!");
         return;
     }
     let sortOrderID = -1;
-    switch (sortOrder) {
+    switch (sortOrder.trim().toLowerCase()) {
         case "signup":
             sortOrderID = 0;
             break;
         case "random":
             sortOrderID = 1;
             break;
-        case "rank" || "pp":
+        case "rank":
+        case "pp":
+        case "rankpp":
             sortOrderID = 2;
             break;
         case "bws":
@@ -245,18 +289,20 @@ async function run (m: Message | ChatInputCommandInteraction) {
             break;
     }
     if (sortOrderID === -1) {
-        await m.reply("Please provide a valid sort order for your tournament!");
+        if (m instanceof Message) await m.reply("Please provide a valid sort order for your tournament!");
+        else await m.editReply("Please provide a valid sort order for your tournament!");
         return;
     }
     tournament.regSortOrder = sortOrderID;
 
     // Check for qualifiers validity
     const qualifiersRegex = new RegExp(/-q Y/);
-    const qualifiers = (m instanceof Message && qualifiersRegex.exec(m.content)?.[0] === "Y") || (m instanceof ChatInputCommandInteraction && m.options.getBoolean("qualifiers"));
+    const qualifiers = (m instanceof Message && qualifiersRegex.test(m.content)) || (m instanceof ChatInputCommandInteraction && m.options.getBoolean("qualifiers"));
     if (qualifiers) {
         const qualifiers = new Stage();
         qualifiers.name = "Qualifiers";
         qualifiers.abbreviation = "QL";
+        qualifiers.createdBy = creator;
         qualifiers.order = 1;
         qualifiers.stageType = StageType.Qualifiers;
         qualifiers.timespan = {
@@ -266,30 +312,26 @@ async function run (m: Message | ChatInputCommandInteraction) {
         tournament.stages = [qualifiers];
     }
 
-    // Ask for extra tournament features, callbacks continue within functions
-    if (m instanceof ChatInputCommandInteraction)
-        await m.deferReply();
-    const message = await m.channel!.send("Alright let's get started!");
+    const message = m instanceof Message ? await m.reply("Alright let's get started!") : await m.editReply("Alright let's get started!");
     if (qualifiers)
-        await tournamentQualifiersPass(message, tournament);
+        await tournamentQualifiersPass(message, tournament, creator);
     else
-        await tournamentChannels(message, tournament);
-    if (m instanceof ChatInputCommandInteraction)
-        await m.deleteReply();
+        await tournamentRoles(message, tournament, creator);
 }
 
 // Function to retrieve how many teams/players pass qualifiers
-async function tournamentQualifiersPass (m: Message, tournament: Tournament) {
+async function tournamentQualifiersPass (m: Message, tournament: Tournament, creator: User) {
     const passMessage = await m.reply({
-        content: "How many teams are expected to pass qualifiers? (Please enter a number >= 2.", 
+        content: "How many teams are expected to pass qualifiers? (Please enter a number >= 2.)", 
         components: [stopRow],
     });
     let stopped = false;
-    const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 600000 });	
-    const collector = m.channel!.createMessageCollector({ filter, time: 600000 });
+    const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });	
+    const collector = m.channel!.createMessageCollector({ filter, time: 6000000 });
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {	
         if (i.customId === "stop") {
-            await i.reply("Tournament creation stopped.");
+            const reply = await i.reply("Tournament creation stopped.");
+            setTimeout(async () => reply.delete(), 5000);
             stopped = true;
             collector.stop();
             componentCollector.stop();
@@ -312,8 +354,9 @@ async function tournamentQualifiersPass (m: Message, tournament: Tournament) {
         stopped = true;
         collector.stop();
         componentCollector.stop();
-        await msg.reply(`${tournament.stages[0].finalSize} teams to pass qualifiers saved.`);
-        await tournamentChannels(m, tournament);
+        const reply = await msg.reply(`${tournament.stages[0].finalSize} teams to pass qualifiers saved.`);
+        setTimeout(async () => reply.delete(), 5000);
+        await tournamentRoles(m, tournament, creator);
     });
     collector.on("end", async () => {
         await passMessage.delete();
@@ -322,184 +365,27 @@ async function tournamentQualifiersPass (m: Message, tournament: Tournament) {
     });
 }
 
-// Function to fetch and assign channels
-async function tournamentChannels (m: Message, tournament: Tournament) {
-    let stopped = false;
-    const channelMessage = await m.reply({
-        content: "Mention/paste a channel ID, and then write the designated tournament channel type it is for. (e.g. `#general general` or `#organizers admin`).\nIf you want the bot to create a channel for you, select a channel type from the dropdown below.\nIf you are done, press the `done` button.",
-        components: [
-            new ActionRowBuilder<StringSelectMenuBuilder>()
-                .addComponents(
-                    new StringSelectMenuBuilder()
-                        .setCustomId("channel")
-                        .setPlaceholder("Select a channel type")
-                        .addOptions(
-                            {
-                                label: "General",
-                                value: "General",
-                                description: "Create a general tournament channel",
-                            },
-                            {
-                                label: "Participants",
-                                value: "Participants",
-                                description: "Create a tournament participants channel",
-                            },
-                            {
-                                label: "Managers",
-                                value: "Managers",
-                                description: "Create a tournament team managers channel",
-                            },
-                            {
-                                label: "Announcements",
-                                value: "Announcements",
-                                description: "Create a tournament announcements channel (requires a community server)",
-                            },
-                            {
-                                label: "Admin",
-                                value: "Admin",
-                                description: "Create a tournament admin channel",
-                            },
-                            {
-                                label: "Mappool",
-                                value: "Mappool",
-                                description: "Create a tournament mappool channel",
-                            },
-                            {
-                                label: "Mappool Log (For custom maps)",
-                                value: "Mappoollog",
-                                description: "Create a channel to log custom mappool changes",
-                            },
-                            {
-                                label: "Mappool QA (For custom maps)",
-                                value: "MappoolQA",
-                                description: "Create a forum channel to QA any custom maps made for the tournament (requires a community server)",
-                            },
-                            {
-                                label: "Testplayers",
-                                value: "Testplayers",
-                                description: "Create a tournament testplayer channel",
-                            },
-                            {
-                                label: "Referees",
-                                value: "Referees",
-                                description: "Create a tournament referee channel",
-                            },
-                            {
-                                label: "Streamers",
-                                value: "Streamers",
-                                description: "Create a tournament streamer channel",
-                            },
-                            {
-                                label: "Match Results",
-                                value: "MatchResults",
-                                description: "Create a channel to log tournament match results",
-                            })
-                ),
-            new ActionRowBuilder<ButtonBuilder>()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId("stop")
-                        .setLabel("STOP COMMAND")
-                        .setStyle(ButtonStyle.Danger),
-                    new ButtonBuilder()
-                        .setCustomId("done")
-                        .setLabel("Done adding channels.")
-                        .setStyle(ButtonStyle.Success)
-                ),
-        ],
-    });
-
-    const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });
-    const channelCollector = m.channel!.createMessageCollector({ filter, time: 6000000 });
-
-    componentCollector.on("collect", async (i: MessageComponentInteraction) => {
-        if (i.customId === "stop") {
-            await i.reply("Tournament creation stopped.");
-            stopped = true;
-            componentCollector.stop();
-            channelCollector.stop();
-            return;
-        }
-        if (i.customId === "done") {
-            await i.reply("Tournament channel designation has finished.");
-            stopped = true;
-            componentCollector.stop();
-            channelCollector.stop();
-            await tournamentRoles(m, tournament);
-            return;
-        }
-        if (i.customId === "channel") {
-            const channelTypeMenu = (i as StringSelectMenuInteraction).values[0];
-            let channelType: ChannelType;
-            switch (channelTypeMenu) {
-                case "Announcements":
-                    channelType = ChannelType.GuildAnnouncement;
-                    break;
-                case "MappoolQA":
-                    channelType = ChannelType.GuildForum;
-                    break;
-                default:
-                    channelType = ChannelType.GuildText;
-                    break;
-            }
-            try {
-                const channel = await m.guild!.channels.create({
-                    type: channelType,
-                    name: `${tournament.abbreviation}-${channelTypeMenu}`,
-                    topic: `Tournament ${tournament.name} ${channelType} channel`,
-                    reason: `${tournament.name} channel created by ${m.author.tag} for ${(i as StringSelectMenuInteraction).values[0]} purposes.`,
-                });
-                
-                const tournamentChannel = new TournamentChannel();
-                tournamentChannel.channelID = channel.id;
-                tournamentChannel.channelType = TournamentChannelType[channelTypeMenu];
-                tournament.channels!.push(tournamentChannel);
-
-                await i.reply(`Created channel <#${channel.id}> for \`${channelTypeMenu}\`.`);
-            } catch (e) {
-                await i.reply("Failed to create channel. If you are creating an announcement or mappool qa channel, you need to turn your server into a community server. Error below:\n```" + e + "```");
-            }
-        }
-    });
-
-    channelCollector.on("collect", async (msg: Message) => {
-        if (stopped)
-            return;
-
-        const channel = msg.mentions.channels.first() || m.guild!.channels.cache.get(msg.content.split(" ")[0]);
-        if (!channel || (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement && channel.type !== ChannelType.GuildForum)) {
-            const reply = await msg.reply("Invalid channel.");
-            setTimeout(async () => reply.delete(), 5000);
-            return;
-        }
-        const channelType = msg.content.split(" ")[1].charAt(0).toUpperCase() + msg.content.split(" ")[1].slice(1);
-        if (!channelType || TournamentChannelType[channelType] === undefined || (channelType === "announcements" && channel.type !== ChannelType.GuildAnnouncement) || (channelType === "mappoolQA" && channel.type !== ChannelType.GuildForum)) {
-            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel.\nMappool QA should be a guild forum channel.`);
-            setTimeout(async () => reply.delete(), 5000);
-            return;
-        }
-        const tournamentChannel = new TournamentChannel();
-        tournamentChannel.channelID = channel.id;
-        tournamentChannel.channelType = TournamentChannelType[channelType];
-        tournament.channels!.push(tournamentChannel);
-
-        await msg.reply(`Channel <#${channel.id}> designated for \`${channelType}\`.`);
-    });
-    channelCollector.on("end", async () => {
-        await channelMessage.delete();
-        if (!stopped)
-            await m.reply("Tournament creation timed out.");
-        return;
-    });
-}
-
 // Function to fetch and assign roles
-async function tournamentRoles (m: Message, tournament: Tournament) {
+async function tournamentRoles (m: Message, tournament: Tournament, creator: User) {
     tournament.roles = [];
 
     let stopped = false;
+    let content = "Mention/paste a role ID, and then write the designated tournament role it is for. (e.g. `1024037229250744411 participants`).\n\nIf you want the bot to create a role for you, select a role type from the dropdown below.\nIf you are done, press the `done` button.\nAny roles with administrator privileges are automatically assigned as `Organizer`.\n";
+
+    // Find all roles in the server and assign them as organizer tournament roles
+    const roles = m.guild!.roles.cache.filter(r => r.permissions.has(PermissionFlagsBits.Administrator));
+    for (const role of roles.toJSON()) {
+        const tournamentRole = new TournamentRole();
+        tournamentRole.createdBy = creator;
+        tournamentRole.roleID = role.id;
+        tournamentRole.roleType = TournamentRoleType.Organizer;
+        tournament.roles!.push(tournamentRole);
+
+        content += `\nDesignated role \`${role.name} (${role.id})\` for \`Organizer\`.`;
+    }
+
     const roleMessage = await m.reply({
-        content: "Mention/paste a role ID, and then write the designated tournament role it is for. (e.g. `1024037229250744411 participants`).\nIf you want the bot to create a role for you, select a role type from the dropdown below.\nIf you are done, press the `done` button.",
+        content,
         components: [
             new ActionRowBuilder<StringSelectMenuBuilder>()
                 .addComponents(
@@ -561,7 +447,7 @@ async function tournamentRoles (m: Message, tournament: Tournament) {
                         .setStyle(ButtonStyle.Danger),
                     new ButtonBuilder()
                         .setCustomId("done")
-                        .setLabel("Done adding roles.")
+                        .setLabel("Done adding roles")
                         .setStyle(ButtonStyle.Success)
                 ),
         ],
@@ -576,6 +462,7 @@ async function tournamentRoles (m: Message, tournament: Tournament) {
 
         if (i.customId === "stop") {
             await i.reply("Tournament creation stopped.");
+            setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
             componentCollector.stop();
             roleCollector.stop();
@@ -583,31 +470,40 @@ async function tournamentRoles (m: Message, tournament: Tournament) {
         }
         if (i.customId === "done") {
             await i.reply("Tournament role designation has finished.");
+            setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
             componentCollector.stop();
             roleCollector.stop();
-            if (m.guild!.id === config.discord.guild)
-                await tournamentCorsace(m, tournament);
-            else
-                await tournamentSave(m, tournament);
+            await tournamentChannels(m, tournament, creator);
             return;
         }
         if (i.customId === "role") {
-            const roleType = (i as StringSelectMenuInteraction).values[0];
+            const roleString = (i as StringSelectMenuInteraction).values[0];
+            const roleType = TournamentRoleType[roleString];
+            if (tournament.roles!.find(r => r.roleType === roleType)) {
+                await i.reply("A role with this type already exists.\n If you want to create another role with this type, manually create it and then mention it here.");
+                setTimeout(async () => (await i.deleteReply()), 5000);
+                return;
+            }
             try {
                 const role = await m.guild!.roles.create({
-                    name: `${tournament.name} ${roleType}`,
+                    name: `${tournament.name} ${roleString}`,
                     reason: `Created by ${m.author.tag} for tournament ${tournament.name}`,
                     mentionable: true,
                 });
                 const tournamentRole = new TournamentRole();
+                tournamentRole.createdBy = creator;
                 tournamentRole.roleID = role.id;
-                tournamentRole.roleType = TournamentRoleType[roleType];
+                tournamentRole.roleType = roleType;
                 tournament.roles!.push(tournamentRole);
 
-                await i.reply(`Created role <@&${role.id}> for \`${roleType}\`.`);
+                content += `\nCreated role <@&${role.id}> for \`${roleString}\`.`;
+                await roleMessage.edit(content);
+                await i.reply(`Created role <@&${role.id}> for \`${roleString}\`.`);
+                setTimeout(async () => (await i.deleteReply()), 5000);
             } catch (e) {
                 await i.reply("Failed to create role.\n```" + e + "```");
+                setTimeout(async () => (await i.deleteReply()), 5000);
             }
         }
     });
@@ -619,13 +515,28 @@ async function tournamentRoles (m: Message, tournament: Tournament) {
         const role = msg.mentions.roles.first() || m.guild!.roles.cache.get(msg.content.split(" ")[0]);
         if (!role) {
             const reply = await msg.reply("Invalid role.");
-            setTimeout(async () => reply.delete(), 5000);
+            setTimeout(async () => {
+                reply.delete();
+                msg.delete();
+            }, 5000);
             return;
         }
         const roleType = msg.content.split(" ")[1].charAt(0).toUpperCase() + msg.content.split(" ")[1].slice(1);
         if (TournamentRoleType[roleType] === undefined) {
             const reply = await msg.reply(`Invalid role type ${roleType}.`);
-            setTimeout(async () => reply.delete(), 5000);
+            setTimeout(async () => {
+                reply.delete();
+                msg.delete();
+            }, 5000);
+            return;
+        }
+        const dupeRole = tournament.roles!.find(r => r.roleID === role.id);
+        if (dupeRole) {
+            const reply = await msg.reply(`${role.name} (${role.id}) is already designated as \`${TournamentRoleType[dupeRole.roleType]}\`.`);
+            setTimeout(async () => {
+                reply.delete();
+                msg.delete();
+            }, 5000);
             return;
         }
         const tournamentRole = new TournamentRole();
@@ -633,12 +544,272 @@ async function tournamentRoles (m: Message, tournament: Tournament) {
         tournamentRole.roleType = TournamentRoleType[roleType];
         tournament.roles!.push(tournamentRole);
 
-        await msg.reply(`Designated role \`${role.name} (${role.id})\` for \`${roleType}\`.`);
+        content += `\nDesignated role \`${role.name} (${role.id})\` for \`${roleType}\`.`;
+        await roleMessage.edit(content);
+        const reply = await msg.reply(`Designated role \`${role.name} (${role.id})\` for \`${roleType}\`.`);
+        setTimeout(async () => {
+            reply.delete();
+            msg.delete();
+        }, 5000);
     });
     roleCollector.on("end", async () => {
         await roleMessage.delete();
         if (!stopped)
             await m.reply("Tournament creation timed out.");
+    });
+}
+
+// Function to fetch and assign channels
+async function tournamentChannels (m: Message, tournament: Tournament, creator: User) {
+    let stopped = false;
+    let content = "Mention/paste a channel ID, and then write the designated tournament channel type it is for. (e.g. `#general general` or `#organizers admin`).\n\nIf you want the bot to create a channel for you, select a channel type from the dropdown below.\nIf you are done, press the `done` button.\n";
+    const channelMessage = await m.reply({
+        content,
+        components: [
+            new ActionRowBuilder<StringSelectMenuBuilder>()
+                .addComponents(
+                    new StringSelectMenuBuilder()
+                        .setCustomId("channel")
+                        .setPlaceholder("Select a channel type")
+                        .addOptions(
+                            {
+                                label: "General",
+                                value: "General",
+                                description: "Create a general tournament channel",
+                            },
+                            {
+                                label: "Participants",
+                                value: "Participants",
+                                description: "Create a tournament participants channel",
+                            },
+                            {
+                                label: "Managers",
+                                value: "Managers",
+                                description: "Create a tournament team managers channel",
+                            },
+                            {
+                                label: "Announcements",
+                                value: "Announcements",
+                                description: "Create a tournament announcements channel (requires a community server)",
+                            },
+                            {
+                                label: "Admin",
+                                value: "Admin",
+                                description: "Create a tournament admin channel",
+                            },
+                            {
+                                label: "Mappool",
+                                value: "Mappool",
+                                description: "Create a tournament mappool channel",
+                            },
+                            {
+                                label: "Mappool Log",
+                                value: "Mappoollog",
+                                description: "Create a channel to log any mappool changes",
+                            },
+                            {
+                                label: "Mappool QA (For custom maps)",
+                                value: "Mappoolqa",
+                                description: "Create a forum channel to QA any custom maps made for the tournament (requires a community server)",
+                            },
+                            {
+                                label: "Testplayers",
+                                value: "Testplayers",
+                                description: "Create a tournament testplayer channel",
+                            },
+                            {
+                                label: "Referees",
+                                value: "Referees",
+                                description: "Create a tournament referee channel",
+                            },
+                            {
+                                label: "Streamers",
+                                value: "Streamers",
+                                description: "Create a tournament streamer channel",
+                            },
+                            {
+                                label: "Match Results",
+                                value: "Matchresults",
+                                description: "Create a channel to log tournament match results",
+                            })
+                ),
+            new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId("stop")
+                        .setLabel("STOP COMMAND")
+                        .setStyle(ButtonStyle.Danger),
+                    new ButtonBuilder()
+                        .setCustomId("done")
+                        .setLabel("Done adding channels")
+                        .setStyle(ButtonStyle.Success)
+                ),
+        ],
+    });
+
+    const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });
+    const channelCollector = m.channel!.createMessageCollector({ filter, time: 6000000 });
+
+    componentCollector.on("collect", async (i: MessageComponentInteraction) => {
+        if (i.customId === "stop") {
+            await i.reply("Tournament creation stopped.");
+            setTimeout(async () => (await i.deleteReply()), 5000);
+            stopped = true;
+            componentCollector.stop();
+            channelCollector.stop();
+            return;
+        }
+        if (i.customId === "done") {
+            await i.reply("Tournament channel designation has finished.");
+            setTimeout(async () => (await i.deleteReply()), 5000);
+            stopped = true;
+            componentCollector.stop();
+            channelCollector.stop();
+            if (m.guild!.id === config.discord.guild)
+                await tournamentCorsace(m, tournament);
+            else
+                await tournamentSave(m, tournament);
+            return;
+        }
+        if (i.customId === "channel") {
+            const channelTypeMenu = (i as StringSelectMenuInteraction).values[0];
+            const tournamentChannelType = TournamentChannelType[channelTypeMenu];
+            if (tournament.channels!.find(c => c.channelType === tournamentChannelType)) {
+                await i.reply("A channel of this type has already been designated. If you want to create another channel of this type, manually create it and then mention it here.");
+                setTimeout(async () => (await i.deleteReply()), 5000);
+                return;
+            }
+
+            let channelType: ChannelType;
+            switch (channelTypeMenu) {
+                case "Announcements":
+                    channelType = ChannelType.GuildAnnouncement;
+                    break;
+                case "Mappoolqa":
+                    channelType = ChannelType.GuildForum;
+                    break;
+                default:
+                    channelType = ChannelType.GuildText;
+                    break;
+            }
+            try {
+                const tournamentChannel = new TournamentChannel();
+                tournamentChannel.channelType = tournamentChannelType;
+
+                const channelObject: GuildChannelCreateOptions = {
+                    type: channelType,
+                    name: `${tournament.abbreviation}-${channelTypeMenu}`,
+                    topic: `Tournament ${tournament.name} channel for ${channelTypeMenu}`,
+                    reason: `${tournament.name} channel created by ${m.author.tag} for ${(i as StringSelectMenuInteraction).values[0]} purposes.`,
+                    defaultAutoArchiveDuration: 10080,
+                };
+
+                const allowedRoleTypes = TournamentChannelTypeRoles[tournamentChannel.channelType];
+                if (allowedRoleTypes !== undefined) {
+                    channelObject.permissionOverwrites = [
+                        {
+                            id: m.guild!.id, // the ID of the @everyone role is the same as the guild ID
+                            deny: PermissionFlagsBits.ViewChannel,
+                        },
+                    ];
+                    const allowedRoles = tournament.roles!.filter(r => allowedRoleTypes.includes(r.roleType));
+                    channelObject.permissionOverwrites.push(...allowedRoles.map(r => {
+                        return {
+                            id: r.roleID,
+                            allow: PermissionFlagsBits.ViewChannel,
+                        };
+                    }));
+                    
+
+                    if (tournamentChannel.channelType === TournamentChannelType.Mappoollog)
+                        channelObject.permissionOverwrites[0].deny = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.SendMessages;
+                }
+
+                if (channelType === ChannelType.GuildForum)
+                    channelObject.availableTags = [{
+                        name: "WIP",
+                        moderated: true,
+                    },{
+                        name: "Finished",
+                        moderated: true,
+                    },{
+                        name: "Needs HS",
+                        moderated: true,
+                    }];
+
+                const channel = await m.guild!.channels.create(channelObject);
+
+                tournamentChannel.channelID = channel.id;
+                tournament.channels!.push(tournamentChannel);
+
+                content += `\nCreated channel <#${channel.id}> for \`${channelTypeMenu}\`.`;
+                await channelMessage.edit(content);
+                await i.reply(`Created channel <#${channel.id}> for \`${channelTypeMenu}\`.`);
+                setTimeout(async () => (await i.deleteReply()), 5000);
+            } catch (e) {
+                await i.reply("Failed to create channel. If you are creating an announcement or mappool qa channel, you need to turn your server into a community server. Error below:\n```" + e + "```");
+                setTimeout(async () => (await i.deleteReply()), 5000);
+            }
+        }
+    });
+
+    channelCollector.on("collect", async (msg: Message) => {
+        if (stopped)
+            return;
+
+        const channel = msg.mentions.channels.first() || m.guild!.channels.cache.get(msg.content.split(" ")[0]);
+        if (!channel || (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement && channel.type !== ChannelType.GuildForum)) {
+            const reply = await msg.reply("Invalid channel.");
+            setTimeout(async () => {
+                reply.delete();
+                msg.delete();
+            }, 5000);
+            return;
+        }
+        const channelType = msg.content.split(" ")[1].charAt(0).toUpperCase() + msg.content.split(" ")[1].slice(1);
+        if (
+            !channelType || 
+            TournamentChannelType[channelType] === undefined || 
+            (channelType.toLowerCase() === "announcements" && channel.type !== ChannelType.GuildAnnouncement) || 
+            (channelType.toLowerCase() === "mappoolqa" && channel.type !== ChannelType.GuildForum) ||
+            (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "mappoolqa" && channel.type !== ChannelType.GuildText)
+        ) {
+            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel.\nMappool QA should be a guild forum channel. All other channels should be guild text channels.`);
+            setTimeout(async () => {
+                reply.delete();
+                msg.delete();
+            }, 5000);
+            return;
+        }
+        const dupeChannel = tournament.channels!.find(c => c.channelID === channel.id);
+        if (dupeChannel) {
+            const reply = await msg.reply(`Channel <#${channel.id}> has already been designated for \`${TournamentChannelType[dupeChannel.channelType]}\`.`);
+            setTimeout(async () => {
+                reply.delete();
+                msg.delete();
+            }, 5000);
+            return;
+        }
+
+        const tournamentChannel = new TournamentChannel();
+        tournamentChannel.createdBy = creator;
+        tournamentChannel.channelID = channel.id;
+        tournamentChannel.channelType = TournamentChannelType[channelType];
+        tournament.channels!.push(tournamentChannel);
+
+        content += `\nChannel <#${channel.id}> designated for \`${channelType}\`.`;
+        await channelMessage.edit(content);
+        const reply = await msg.reply(`Channel <#${channel.id}> designated for \`${channelType}\`.`);
+        setTimeout(async () => {
+            reply.delete();
+            msg.delete();
+        }, 5000);
+    });
+    channelCollector.on("end", async () => {
+        await channelMessage.delete();
+        if (!stopped)
+            await m.reply("Tournament creation timed out.");
+        return;
     });
 }
 
@@ -672,7 +843,7 @@ async function tournamentCorsace (m: Message, tournament: Tournament) {
         components: [corsaceRow, stopRow],
     });
     let stopped = false;
-    const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 600000 });
+    const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {
         if (i.customId === "stop") {
             stopped = true;
@@ -720,7 +891,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Mode", value: tournament.mode.name, inline: true },
             { name: "Match Size", value: tournament.matchSize.toString(), inline: true },
             { name: "Allowed Team Size", value: `${tournament.minTeamSize} - ${tournament.maxTeamSize}`, inline: true },
-            { name: "Registration Start Date", value: tournament.registrations.start.toUTCString(), inline: true },
+            { name: "Registration Start Date", value: `<t:${tournament.registrations.start.getTime() / 1000}>`, inline: true },
             { name: "Qualifiers", value: tournament.stages.some(q => q.stageType === StageType.Qualifiers).toString(), inline: true },
             { name: "Invitational", value: tournament.invitational ? "Yes" : "No", inline: true },
             { name: "Server", value: tournament.server, inline: true }
@@ -737,7 +908,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
 }
 
 const data = new SlashCommandBuilder()
-    .setName("create_tournament")
+    .setName("tournament_create")
     .setDescription("Create a tournament")
     .addStringOption(option =>
         option.setName("name")
@@ -768,30 +939,30 @@ const data = new SlashCommandBuilder()
                 { name: "Mania", value: "man" }
             ))
     .addIntegerOption(option =>
-        option.setName("match_size")
-            .setDescription("The match size of the tournament")
+        option.setName("players_in_match")
+            .setDescription("The amount of players from each team in a given match (4v4 = 4)")
             .setRequired(true)
             .setMinValue(1)
             .setMaxValue(16))
     .addIntegerOption(option =>
-        option.setName("min_team_size")
-            .setDescription("The minimum team size of the tournament")
+        option.setName("min_players")
+            .setDescription("The minimum size for a team in the tournament")
             .setRequired(true)
             .setMinValue(1)
             .setMaxValue(16))
     .addIntegerOption(option =>
-        option.setName("max_team_size")
-            .setDescription("The maximum team size of the tournament")
+        option.setName("max_players")
+            .setDescription("The maximum size for a team in the tournament (excl. managers)")
             .setRequired(true)
             .setMinValue(1)
             .setMaxValue(16))
     .addStringOption(option =>
         option.setName("registration_start")
-            .setDescription("The registration start date of the tournament in YYYY-MM-DD (e.g. 2024-01-01)")
+            .setDescription("The registration start date in YYYY-MM-DD (e.g. 2024-01-01) OR unix/epoch (e.g. 1704092400)")
             .setRequired(true))
     .addStringOption(option =>
         option.setName("registration_end")
-            .setDescription("The registration end date of the tournament in YYYY-MM-DD (e.g. 2024-01-02)")
+            .setDescription("The registration end date in YYYY-MM-DD (e.g. 2024-01-02) OR unix/epoch (e.g. 1704178800)")
             .setRequired(true))
     .addStringOption(option =>
         option.setName("sort_order")
@@ -807,12 +978,16 @@ const data = new SlashCommandBuilder()
         option.setName("qualifiers")
             .setDescription("Does the tournament have qualifiers?")
             .setRequired(true))
+    .addUserOption(option =>
+        option.setName("organizer")
+            .setDescription("Is the tournament organizer someone aside from you? (Blank will assume you are the organizer)")
+            .setRequired(false))
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .setDMPermission(false);
 
 const tournamentCreate: Command = {
     data,
-    alternativeNames: ["tournament_create", "tournamentc", "ctournament", "createt", "tcreate", "createtournament", "tournamentcreate", "create-tournament", "tournament-create"],
+    alternativeNames: ["create_tournament", "tournamentc", "ctournament", "createt", "tcreate", "createtournament", "tournamentcreate", "create-tournament", "tournament-create"],
     category: "tournaments",
     run,
 };

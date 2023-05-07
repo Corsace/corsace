@@ -52,10 +52,10 @@ class BeatmapParser extends EventEmitter implements NodeJS.WritableStream {
         return true;
     }
 
-    end (cb?: () => void): void;
-    end (data: string | Uint8Array, cb?: () => void): void;
-    end (str: string, encoding?: BufferEncoding, cb?: () => void): void;
-    end (dataOrCb?: any, encodingOrCb?: any, cb?: any): void {
+    end (cb?: () => void): this;
+    end (data: string | Uint8Array, cb?: () => void): this;
+    end (str: string, encoding?: BufferEncoding, cb?: () => void): this;
+    end (dataOrCb?: any, encodingOrCb?: any, cb?: any): this {
         if (dataOrCb && typeof dataOrCb !== "function") {
             this.write(dataOrCb, encodingOrCb);
         }
@@ -68,6 +68,8 @@ class BeatmapParser extends EventEmitter implements NodeJS.WritableStream {
         } else if (typeof cb === "function") {
             cb();
         }
+
+        return this;
     }
 }
 

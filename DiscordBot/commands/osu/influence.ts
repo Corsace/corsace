@@ -3,6 +3,9 @@ import { User } from "../../../Models/user";
 import { Command } from "../index";
 
 async function run (m: Message | ChatInputCommandInteraction) {
+    if (m instanceof ChatInputCommandInteraction)
+        await m.deferReply();
+    
     // Get year and/or search query params
     let year = 0;
     let search = "";
@@ -48,14 +51,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .getOne();
     if (!user) {
         if (!search) {
-            await m.reply("You either currently do not have influences for year less than equal to the provided year, or you have not logged into Corsace!\nIf you are not logged into Corsace, please login to https://corsace.io with your discord and osu! accounts in order to obtain your influences implicitly!");
-        } else
-            await m.reply(`${search} does not currently contain influences found in the corsace database with the given year!`);
+            if (m instanceof Message) await m.reply("You either currently do not have influences for year less than equal to the provided year, or you have not logged into Corsace!\nIf you are not logged into Corsace, please login to https://corsace.io with your discord and osu! accounts in order to obtain your influences implicitly!");
+            else await m.editReply("You either currently do not have influences for year less than equal to the provided year, or you have not logged into Corsace!\nIf you are not logged into Corsace, please login to https://corsace.io with your discord and osu! accounts in order to obtain your influences implicitly!");
+        } else {
+            if (m instanceof Message) await m.reply(`${search} does not currently contain influences found in the corsace database with the given year!`);
+            else await m.editReply(`${search} does not currently contain influences found in the corsace database with the given year!`);
+        }
         return;
     }
     const latestYear = Math.max(...user.influences.map(inf => inf.year));
     const influences = user.influences.filter(inf => inf.year === latestYear).sort((a, b) => a.rank - b.rank);
-    m.reply(`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map(inf => `${inf.rank}: **${inf.influence.osu.username}** ${inf.comment ? " - " + inf.comment : ""}`).join("\n")}`);
+    if (m instanceof Message) await m.reply(`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map(inf => `${inf.rank}: **${inf.influence.osu.username}** ${inf.comment ? " - " + inf.comment : ""}`).join("\n")}`);
+    else await m.editReply(`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map(inf => `${inf.rank}: **${inf.influence.osu.username}** ${inf.comment ? " - " + inf.comment : ""}`).join("\n")}`);
     return;
     
 }

@@ -7,7 +7,6 @@ import guildMemberRemove from "./handlers/guildMemberRemove";
 import messageCreate from "./handlers/messageCreate";
 import ormConfig from "../ormconfig";
 import { commands } from "./commands";
-import { OAuth, User } from "../Models/user";
 
 // Discord bot event handlers
 discordClient.on("guildMemberAdd", guildMemberAdd);
@@ -34,15 +33,7 @@ const rest = new REST({ version: "10" }).setToken(config.discord.token);
 
 // Ready instance for the bot
 discordClient.once("ready", () => {
-    User.findOne({ where: { osu: { username: "VINXIS" } }})
-        .then((user) => {
-            if (!user)
-                return;
-            
-            user.discord = { username: "pink blood", userID: "92502458588205056" } as OAuth;
-            user.save();
-        });
-    console.log("Saved discord ID for VINXIS");
+    console.log(`Logged in as ${discordClient.user?.tag}!`);
 });
 
 // Start the bot

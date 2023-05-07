@@ -3,6 +3,7 @@ import { Phase } from "../phase";
 import { Round } from "./round";
 import { Mappool } from "./mappools/mappool";
 import { Tournament } from "./tournament";
+import { User } from "../user";
 
 export enum StageType {
     Qualifiers,
@@ -31,6 +32,9 @@ export class Stage extends BaseEntity {
     
     @CreateDateColumn()
     createdAt!: Date;
+
+    @ManyToOne(() => User, user => user.stagesCreated)
+    createdBy!: User;
 
     @Column()
     name!: string;

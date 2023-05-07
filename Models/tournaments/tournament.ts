@@ -34,7 +34,10 @@ export class Tournament extends BaseEntity {
     @ManyToOne(() => User, user => user.tournamentsOrganized)
     organizer!: User;
 
-    @ManyToOne(() => ModeDivision, mode => mode.tournaments)
+    @ManyToOne(() => ModeDivision, mode => mode.tournaments, {
+        nullable: false,
+        eager: true,
+    })
     mode!: ModeDivision;
 
     @Column()
