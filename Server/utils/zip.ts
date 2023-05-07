@@ -1,26 +1,16 @@
 import archiver from 'archiver';
-import { PassThrough, Stream } from 'stream';
-import { promisify } from 'util';
+import { PassThrough, Readable } from 'stream';
 
-export async function zipFiles(buffers: Buffer[], fileNames: string[]): Promise<Buffer> {
+export function zipFiles(files: { content: Readable, name: string }[]): Readable {
     const archive = archiver('zip');
-    const bufferStream = new PassThrough();
-    const finished = promisify(Stream.finished);
-    const zipBuffer = new Promise<Buffer>((resolve, reject) => {
-        const chunks: Buffer[] = [];
-        bufferStream.on('data', chunk => chunks.push(chunk));
-        bufferStream.on('end', () => resolve(Buffer.concat(chunks)));
-        bufferStream.on('error', reject);
-    });
+    const passThrough = new PassThrough();
 
-    archive.pipe(bufferStream);
+    archive.pipe(passThrough);
 
-    for (let i = 0; i < buffers.length; i++) {
-        archive.append(buffers[i], { name: fileNames[i] });
+    for (const { content, name } of files) {
+        archive.append(content, { name });
     }
 
     archive.finalize();
-
-    await finished(bufferStream);
-    return zipBuffer;
+    return passThrough as any;
 }

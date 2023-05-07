@@ -1,12 +1,14 @@
 import * as https from "https";
+import { PassThrough, Readable } from "stream";
 
-export function download (url: string): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
-        https.get(url, res => {
-            const chunks: Buffer[] = [];
-            res.on("data", chunk => chunks.push(chunk));
-            res.on("end", () => resolve(Buffer.concat(chunks)));
-            res.on("error", reject);
-        });
+export function download(url: string): Readable {
+    const passThrough = new PassThrough();
+    https.get(url, (res) => {
+        if (res.statusCode && res.statusCode >= 400) {
+            passThrough.emit("error", new Error(`HTTP Error ${res.statusCode}`));
+            return;
+        }
+        res.pipe(passThrough);
     });
+    return passThrough;
 }
