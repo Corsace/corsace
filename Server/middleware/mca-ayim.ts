@@ -127,12 +127,12 @@ async function isResults (ctx: ParameterizedContext, next: Next): Promise<any> {
     if (
         member.roles.cache.has(config.discord.roles.corsace.corsace) ||
         member.roles.cache.has(config.discord.roles.corsace.core) ||
-        member.roles.cache.has(config.discord.roles.corsace.headStaff) ||
         member.roles.cache.has(config.discord.roles.mca.standard) ||
         member.roles.cache.has(config.discord.roles.mca.taiko) ||
         member.roles.cache.has(config.discord.roles.mca.fruits) ||
         member.roles.cache.has(config.discord.roles.mca.mania) ||
-        member.roles.cache.has(config.discord.roles.mca.storyboard)
+        member.roles.cache.has(config.discord.roles.mca.storyboard) ||
+        config.discord.roles.corsace.headStaff.some(r => member.roles.cache.has(r))
     ) {
         await next();
         return;

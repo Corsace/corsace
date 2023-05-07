@@ -22,7 +22,7 @@ declare module "node-config-ts" {
                 corsace: {
                     corsace: string;
                     core: string;
-                    headStaff: string;
+                    headStaff: string[];
                     staff: string;
                     writer: string;
                     verified: string;

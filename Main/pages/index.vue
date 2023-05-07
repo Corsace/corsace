@@ -85,7 +85,7 @@ export default class Default extends Vue {
         },
         "closed": {
             title: "CORSACE CLOSED",
-            url: "https://osu.ppy.sh/community/forums/topics/1567710",
+            url: "https://osu.ppy.sh/community/forums/topics/1744515",
         },
     };
     
@@ -118,8 +118,8 @@ export default class Default extends Vue {
     align-items: center;
     justify-content: center;
 
-    color: #e44f3f;
-    background-color: white;
+    color: #231F20;
+    background-color: #FBBA20;
 
     padding: 0 25px;
 

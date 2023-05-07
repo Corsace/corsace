@@ -193,6 +193,30 @@ const bnNatHistory = [
         bns: { joined: 14, left: 11 },
         nat: { joined: 2, left: 2 },
     },
+    {
+        year: 2022,
+        mode: "standard",
+        bns: { joined: 40, left: 59 },
+        nat: { joined: 10, left: 5 },
+    },
+    {
+        year: 2022,
+        mode: "mania",
+        bns: { joined: 33, left: 14 },
+        nat: { joined: 3, left: 1 },
+    },
+    {
+        year: 2022,
+        mode: "fruits",
+        bns: { joined: 15, left: 18 },
+        nat: { joined: 1, left: 1 },
+    },
+    {
+        year: 2022,
+        mode: "taiko",
+        bns: { joined: 25, left: 22 },
+        nat: { joined: 2, left: 0 },
+    },
 ];
 
 export default function getHistoryStat (year: number, mode: string, group: "bns" | "nat", kind: "joined" | "left"): Statistic {

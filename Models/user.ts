@@ -260,7 +260,9 @@ export class User extends BaseEntity {
                         .select("count(nominator.ID)")
                         .from(Nomination, "nomination")
                         .innerJoin("nomination.nominators", "nominator")
+                        .leftJoin("nomination.category", "category")
                         .where("nomination.user = user.ID")
+                        .andWhere("category.ID = :categoryId", { categoryId: category.ID })
                         .getQuery();
 
                     return `${subQuery} >= 2`;
@@ -290,8 +292,6 @@ export class User extends BaseEntity {
                 .andWhere(new Brackets(qb => {
                     qb.where("user.osuUsername LIKE :criteria")
                         .orWhere("user.osuUserid LIKE :criteria")
-                        .orWhere("user.discordUsername LIKE :criteria")
-                        .orWhere("user.discordUserid LIKE :criteria")
                         .orWhere("otherName.name LIKE :criteria");
                 }))
                 .setParameter("criteria", `%${query.text}%`);
@@ -353,7 +353,7 @@ export class User extends BaseEntity {
             },
             staff: {
                 corsace: member ? member.roles.cache.has(config.discord.roles.corsace.corsace) : false,
-                headStaff: member ? member.roles.cache.has(config.discord.roles.corsace.headStaff) : false,
+                headStaff: member ? config.discord.roles.corsace.headStaff.some(r => member!.roles.cache.has(r)) : false,
                 staff: member ? member.roles.cache.has(config.discord.roles.corsace.staff) : false,
             },
             joinDate: this.registered,

@@ -14,7 +14,7 @@
         "login": {
             "login": "masuk",
             "message": {
-                "1": "Sepertinya kamu belum terhubung masuk!<br>Kamu harus masuk terlebih dahulu masuk dengan menggunakan akun osu! yang kamu miliki untuk dapat mulai menominasikan beatmap dan menyalurkan hak suaramu.",
+                "1": "Sepertinya kamu belum terhubung masuk!<br>Kamu harus masuk terlebih dahulu dengan menggunakan akun osu! milikmu untuk dapat menominasikan beatmap dan memberikan suara.",
                 "2": "Kamu juga dapat masuk dengan menggunakan Discord, namun hal ini <b>tidak diwajibkan</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staf yang bertugas.</b></span>"
             },
             "authOsu": "klik di sini untuk masuk dengan akun osu! milikmu",
@@ -31,8 +31,10 @@
             "numberof": "total",
             "numberwith": "total map dengan",
             "message": {
-                "2019": "<p>Halo, 2020!</p>A Year in Mapping 2019 kembali hadir ke hadapan kalian semua guys! Seperti tahun-tahun sebelumnya, A Year in Mapping merupakan suatu bentuk napak tilas atas apa-apa saja yang telah terjadi di dalam dunia mapping dan modding selama satu tahun ke belakang.</p><p>Pada situs web ini, kamu dapat menemukan berbagai informasi menarik seputar mapping yang disajikan secara terperinci. Apabila kamu memiliki kritik atau saran, jangan sungkan untuk menghubungi VINXIS melalui server Corsace (yang link-nya dapat Anda jumpai pada pojok kiri bawah layar) ya guys!</p><p>Oh ya, pada tahun ini kami juga MENERIMA KOMENTAR SECARA TERBUKA lho guys! Kamu dapat memberikan komentar sebanyak-banyaknya kepada mapper-mapper yang kamu kehendaki sesuka hatimu!</p><p>Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>",
-                "2020": "<p>Halo, 2021… akhirnya kita berjumpa lagi!</p>Setelah pada tahun lalu kami harus membatalkan penyelenggaraan A Year in Mapping karena satu dan lain hal, A Year in Mapping 2020 kali ini (benar-benar) kembali hadir ke hadapan kalian semua guys!</p><p>Tidak hanya itu, pada tahun ini kami kembali menerima komentar secara terbuka lho guys! Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>"
+                "2019": "<p>Halo, 2020!</p>A Year in Mapping 2019 kembali hadir ke hadapan kalian semua! Seperti tahun-tahun sebelumnya, A Year in Mapping merupakan suatu bentuk napak tilas atas apa-apa saja yang telah terjadi di dalam dunia mapping dan modding selama satu tahun ke belakang.</p><p>Pada situs web ini, kamu dapat menemukan berbagai informasi menarik seputar mapping yang disajikan secara terperinci. Apabila kamu memiliki kritik atau saran, jangan sungkan untuk menghubungi VINXIS melalui server Corsace (yang link-nya dapat kamu jumpai pada pojok kiri bawah layar) ya guys!</p><p>Oh ya, pada tahun ini kami juga MENERIMA KOMENTAR SECARA TERBUKA lho guys! Kamu dapat memberikan komentar sebanyak-banyaknya kepada mapper-mapper yang kamu kehendaki sesuka hatimu!</p><p>Harap pilih salah satu mode permainan yang tertera di bawah ini untuk dapat mulai menjelajah situs web A Year in Mapping.</p>",
+                "2020": "<p>Halo, 2021… Akhirnya kita berjumpa lagi!</p>Setelah penyelenggaraan A Year in Mapping tahun lalu terpaksa batal karena satu dan lain hal, A Year in Mapping 2020 (akhirnya) dapat kembali hadir ke hadapan kalian semua!</p><p>Tidak hanya itu, tahun ini kami juga kembali menerima komentar secara terbuka! Silakan pilih mode permainan yang dikehendaki untuk mulai menjelajah situs A Year in Mapping.</p>",
+                "2021": "<p>2022 telah tiba!</p> <p>A Year in Mapping 2021 hadir untuk merekap berbagai statistik dan rekor yang telah ditorehkan selama setahun ke belakang.</p>",
+                "2022": "<p>Selamat datang di tahun 2023!</p> <p>A Year in Mapping 2022 hadir untuk merekap berbagai statistik dan rekor yang telah ditorehkan selama setahun ke belakang. (Dan kali ini kami hadir tepat waktu!)</p>"                
             }
         },
         "mapsets": {
@@ -86,16 +88,16 @@
         },
         "comments": {
             "name": "KOMENTAR",
-            "info": "Berikanlah apresiasimu kepada mapper-mapper di bawah ini! Semua komentar yang masuk akan ditampilkan setelah hasil MCA diumumkan.",
+            "info": "Berikanlah komentarmu kepada para mapper di bawah ini! Seluruh komentar yang masuk akan ditampilkan setelah hasil MCA diumumkan.",
             "search": "cari mapper",
             "viewSubmit": "lihat/kirim komentar",
             "writeHere": "Berikan komentarmu untuk mapper ini!",
             "update": "Perbarui",
             "remove": "Hapus",
             "create": "Tulis",
-            "login": "Harap masuk terlebih dahulu untuk dapat berkomentar!",
+            "login": "Silakan masuk terlebih dahulu sebelum menulis komentar!",
             "visible": "(belum tersedia)",
-            "Notice": "Halo! Mungkin kamu merasa bingung dengan sistem pemberian komentar yang kami berlakukan pada AYIM kali ini. <br> Tahun ini, kami menerima komentar secara terbuka. Dengan kata lain, siapapun kini dapat memberikan komentar apapun kepada siapa saja yang mereka kehendaki, termasuk dirimu! <br> Silakan gunakan laman ini untuk mengutarakan apresiasimu akan hasil jerih payah para mapper di tahun [YEAR] sebagaimana yang kamu kehendaki."        
+            "Notice": "Halo! Sepertinya ini merupakan kali pertamamu mengakses laman ini. <br> Tahun ini, kami menerima komentar secara terbuka. <br> Dengan kata lain, siapa pun dapat memberikan komentar mereka kepada siapa saja, termasuk dirimu! <br> Gunakan laman ini untuk memberikan apresiasimu kepada para mapper yang telah berkarya sepanjang tahun [YEAR]."        
         }
     },
     "mca": {
@@ -121,8 +123,10 @@
             "viewResults": "lihat hasil keseluruhan !",
             "daysLeft": "hari tersisa",
             "message": {
-                "2019": "<p>Mapper's Choice Awards hadir kembali untuk keempat kalinya di tahun 2019 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Oh ya, pada tahun ini kami juga telah secara khusus menyediakan situs web bagi Mapper's Choice Awards agar para mapper/modder yang memiliki hak suara dapat menyalurkan suaranya dengan lebih mudah lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>",
-                "2020": "<p>Tanpa harus menunggu lama, Mapper's Choice Awards hadir kembali untuk kelima kalinya di tahun 2020 ini guys! Mapper's Choice Awards merupakan suatu ajang penghargaan di mana para mapper/modder dapat menominasikan dan memilih map-map/mapper-mapper terbaik pada berbagai kategori yang diperlombakan.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Tidak hanya itu, pada tahun kami ini telah banyak berbenah untuk dapat menyajikan Mapper’s Choice Awards yang lebih baik dari tahun-tahun sebelumnya lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>"
+                "2019": "<p>Mapper's Choice Awards kembali hadir untuk yang keempat kalinya di tahun 2019! Ajang ini merupakan ajang penganugerahan bagi para mapper/modder untuk saling menominasikan dan memilih map/mapper terbaik selama setahun ke belakang dalam berbagai kategori.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Oh ya, pada tahun ini kami juga telah secara khusus menyediakan situs web bagi Mapper's Choice Awards agar para mapper/modder yang memiliki hak suara dapat menyalurkan suaranya dengan lebih mudah lho guys!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>",
+                "2020": "<p>Tanpa harus menunggu lama, Mapper's Choice Awards kembali hadir untuk yang kelima kalinya di tahun 2020! Ajang ini merupakan ajang penganugerahan bagi para mapper/modder untuk saling menominasikan dan memilih map/mapper terbaik selama setahun ke belakang dalam berbagai kategori.</p> Dengan diadakannya Mapper's Choice Awards ini, kami berharap kami dapat memberikan pencerahan seputar map-map apa saja dan nama-nama siapa saja yang telah dijunjung tinggi oleh komunitas mapping selama satu tahun ke belakang.</p><p>Tidak hanya itu, pada tahun kami ini juga telah banyak berbenah agar Mapper’s Choice Awards dapat berlangsung lebih baik dari tahun-tahun sebelumnya!</p><p>Akhir kata, kami berharap kalian semua dapat turut serta berpartisipasi dalam Mapper's Choice Award kali ini!</p>",
+                "2021": "<p>Mapper's Choice Awards hadir kembali di tahun 2021! Ajang ini merupakan ajang penganugerahan bagi para mapper/modder untuk saling menominasikan dan memilih map/mapper terbaik selama setahun ke belakang dalam berbagai kategori.</p><p>Seluruh hadiah osu! supporter dipersembahkan oleh staf osu! secara langsung. Para pemenang masing-masing kategori akan memperoleh osu! supporter selama 2 bulan, dan para pemenang Grand Award akan memperoleh osu! supporter selama 4 bulan!</p><p>Kami berharap kalian semua dapat berpartisipasi dalam ajang ini!</p>",
+                "2022": "<p>Kami kembali menghadirkan ajang Mapper's Choice Awards (yang kali ini berlangsung hampir sesuai jadwal!)</p><p>Ajang ini merupakan ajang penganugerahan bagi para mapper/modder untuk saling menominasikan dan memilih map/mapper terbaik selama setahun ke belakang dalam berbagai kategori.</p><p>Seluruh hadiah osu! supporter dipersembahkan oleh staf osu! secara langsung. Para pemenang masing-masing kategori akan memperoleh osu! supporter selama 2 bulan, dan para pemenang Grand Award akan memperoleh osu! supporter selama 4 bulan!</p><p>Kami berharap kalian semua dapat berpartisipasi dalam ajang ini!</p>"
             },
             "categories": {
                 "map": "kategori map",
@@ -144,47 +148,51 @@
                 "description": "Storyboarder terbaik tahun ini."
             },            
             "marathon": {
-                "name": "Marathon",
-                "description": "Mapset terbaik dengan drain time di atas 5 menit."
+                "name": "Best Marathon",
+                "description": "Beatmap terbaik dengan drain time di atas 5 menit."
             },
+            "marathonMan": {
+                "name": "Best Marathon",
+                "description": "Beatmap terbaik dengan drain time di atas 4 menit."
+            },            
             "hitsounding": {
-                "name": "Hitsounding",
-                "description": "Mapset yang mengusung hitsound terbaik."
+                "name": "Best Hitsounding",
+                "description": "Beatmap yang mengusung hitsound terbaik."
             },
             "collab": {
-                "name": "Collab",
-                "description": "Mapset terbaik yang tingkat kesulitan tertingginya merupakan hasil kolaborasi antar 2 orang mapper atau lebih."
+                "name": "Best Collab",
+                "description": "Beatmap terbaik yang tingkat kesulitan tertingginya merupakan hasil kolaborasi antar dua orang mapper atau lebih."
             },
             "simple": {
-                "name": "Simple",
-                "description": "Mapset terbaik dengan tingkat kesulitan tertinggi di bawah Insane."
+                "name": "Best Simple",
+                "description": "Beatmap terbaik yang tingkat kesulitan tertingginya merupakan Insane atau lebih rendah."
             },
             "highBPM": {
-                "name": "High BPM",
-                "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern spaced stream atau singletap."
+                "name": "Best High BPM",
+                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada pattern spaced stream atau singletap."
             },
             "smallCircles": {
-                "name": "Small Circles",
-                "description": "Mapset terbaik yang mempergunakan circle size 5 atau lebih kecil."
+                "name": "Best Small Circles",
+                "description": "Beatmap terbaik yang mengusung circle size 5 atau lebih kecil."
             },
             "heavy13": {
-                "name": "1/3 Heavy",
-                "description": "Mapset terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6)."
+                "name": "Best 1/3 Heavy",
+                "description": "Beatmap terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6)."
             },
             "throwback": {
-                "name": "Throwback",
-                "description": "Mapset terbaik dengan gaya mapping yang membawa nuansa nostalgia."
+                "name": "Best Throwback",
+                "description": "Beatmap terbaik dengan gaya mapping yang mengusung nuansa nostalgia."
             },
             "mapper": {
-                "name": "Mapper",
-                "description": "Mereka yang membuat map-map terbaik."
+                "name": "Best Mapper",
+                "description": "Mereka yang menghasilkan karya terbaik."
             },
             "modder": {
-                "name": "Modder",
-                "description": "Mereka yang memberikan mod-mod yang paling membantu."
+                "name": "Best Modder",
+                "description": "Mereka yang memberikan mod yang paling membantu."
             },
             "hitsounder": {
-                "name": "Hitsounder",
+                "name": "Best Hitsounder",
                 "description": "Mereka yang paling piawai dalam meracik hitsound."
             },
             "mostPromising": {
@@ -193,136 +201,172 @@
             },
             "mostInfluential": {
                 "name": "Most Influential",
-                "description": "Mereka yang karya dan pemikirannya paling berpengaruh di mata mapper-mapper lain."
+                "description": "Mereka yang karya dan pemikirannya paling berpengaruh di mata para mapper lain."
             },
             "outCont": {
                 "name": "Outstanding Contribution",
                 "description": "Mereka yang paling berkontribusi memajukan osu!."
             },
             "spread": {
-                "name": "Spread",
-                "description": "Mapset dengan persebaran tingkat kesulitan (diffficulty spread) terbaik."
+                "name": "Best Spread",
+                "description": "Beatmap dengan persebaran tingkat kesulitan (diffficulty spread) terbaik."
             },
             "experimental": {
-                "name": "Experimental",
-                "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern yang tergolong \"tech\" atau off-meta."
+                "name": "Best Experimental",
+                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada berbagai jenis pattern yang tergolong \"tech\" atau off-meta."
             },
             "stream": {
-                "name": "Stream",
-                "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern stream."
+                "name": "Best Streams",
+                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada penggunaan stream."
             },
             "highBPMTaiko": {
-                "name": "High BPM",
-                "description": "Mapset terbaik dengan tempo lagu di atas 240 BPM."
+                "name": "Best High BPM",
+                "description": "Beatmap terbaik dengan tempo lagu di atas 240 BPM."
             },
             "lowBPMTaiko": {
-                "name": "Low BPM",
-                "description": "Mapset terbaik dengan tempo lagu di bawah 140 BPM."
+                "name": "Best Low BPM",
+                "description": "Beatmap terbaik dengan tempo lagu di bawah 130 BPM."
             },
             "simplistic": {
-                "name": "Simplistic",
-                "description": "Mapset terbaik yang mengusung desain yang sederhana."
+                "name": "Best Simplistic",
+                "description": "Beatmap terbaik yang mengusung desain yang sederhana."
             },
             "sliderVelocity": {
-                "name": "Slider Velocity",
-                "description": "Mapset terbaik yang kesulitannya bertitik berat pada manipulasi slider velocity."
+                "name": "Best Slider Velocity",
+                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada manipulasi slider velocity."
             },
             "featuredArtist": {
-                "name": "Featured Artist",
-                "description": "Mapset terbaik yang mengusung lagu Featured Artist."
+                "name": "Best Featured Artist",
+                "description": "Beatmap terbaik yang mengusung lagu Featured Artist."
             },                
             "longNotes": {
-                "name": "Long Notes",
-                "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan LN."
+                "name": "Best Long Notes",
+                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada penggunaan LN."
             },
+            "longNotes4K": {
+                "name": "Best 4K Long Notes",
+                "description": "Beatmap 4K terbaik yang kesulitannya bertitik berat pada penggunaan LN."
+            },
+            "longNotes7K": {
+                "name": "Best 7K Long Notes",
+                "description": "Beatmap 7K terbaik yang kesulitannya bertitik berat pada penggunaan LN."
+            },
+            "rice": {
+                "name": "Best Rice",
+                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada penggunaan Rice."
+            },
+            "rice4K": {
+                "name": "Best 4K Rice",
+                "description": "Beatmap 4K terbaik yang kesulitannya bertitik berat pada penggunaan Rice."
+            },
+            "rice7K": {
+                "name": "Best 7K Rice",
+                "description": "Beatmap 7K terbaik yang kesulitannya bertitik berat pada penggunaan Rice."
+            },            
             "antiMeta": {
-                "name": "Anti Meta",
-                "description": "Mapset 5K/6K/8K/9K terbaik."
+                "name": "Best Anti Meta",
+                "description": "Beatmap 5K/6K/8K/9K terbaik."
             },
             "7K": {
-                "name": "7K Specific",
-                "description": "Mapset 7K terbaik."
+                "name": "Best 7K Specific",
+                "description": "Beatmap 7K terbaik."
             },
             "technical": {
-                "name": "Technical",
+                "name": "Best Technical",
                 "description": "Storyboard yang paling memukau secara teknis."
             },
             "gameplay": {
-                "name": "Gameplay",
+                "name": "Best Gameplay",
                 "description": "Storyboard terbaik yang memperkaya permainan."
             },
             "minimalistic": {
-                "name": "Minimalistic",
-                "description": "Storyboard terbaik yang mengusung elemen-elemen desain minimalis."
+                "name": "Best Minimalistic",
+                "description": "Storyboard terbaik yang mengusung elemen desain yang minimalis."
             },
             "narrative": {
-                "name": "Narrative",
+                "name": "Best Narrative",
                 "description": "Storyboard terbaik yang menceritakan suatu kisah."
             },
             "technicalTaiko": {
-                "name": "Technical",
-                "description": "Mapset terbaik yang mengusung kombinasi pattern dan beat snapping yang kompleks."
+                "name": "Best Technical",
+                "description": "Beatmap terbaik yang mengusung kombinasi pattern dan beat snapping yang kompleks."
             },                
             "fastTaiko": {
-                "name": "Fast",
-                "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan SV yang tinggi dan pattern-pattern yang menuntut kecepatan tapping."
+                "name": "Best Fast",
+                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada penggunaan SV yang tinggi dan berbagai jenis pattern yang menuntut kecepatan tapping."
             },
             "slowTaiko": {
-                "name": "Slow",
-                "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan SV yang lambat dan pattern-pattern yang menuntut kesabaran."
+                "name": "Best Slow",
+                "description": "Mapset terbaik yang kesulitannya bertitik berat pada penggunaan SV yang lambat dan berbagai jenis pattern yang menuntut kesabaran."
             },
             "hybrid": {
-                "name": "Hybrid",
-                "description": "Mapset terbaik yang mengusung pattern-pattern rice dan LN dalam proporsi yang kurang lebihnya seimbang."
+                "name": "Best Hybrid",
+                "description": "Beatmap terbaik yang mengusung rice dan LN dalam jumlah yang kurang lebihnya seimbang."
             },
+            "hybrid4K": {
+                "name": "Best 4K Hybrid",
+                "description": "Beatmap 4K terbaik yang mengusung rice dan LN dalam jumlah yang kurang lebihnya seimbang."
+            },
+            "hybrid7K": {
+                "name": "Best 7K Hybrid",
+                "description": "Beatmap 7K terbaik yang mengusung rice dan LN dalam jumlah yang kurang lebihnya seimbang."
+            },            
             "highBPMAlternator": {
-                "name": "High BPM / Alternator",
-                "description": "Mapset terbaik yang kesulitannya bertitik berat pada pattern-pattern yang menuntut kemampuan aim dan/atau kecepatan tapping yang sangat tinggi. (240+ BPM)"
+                "name": "Best High BPM / Alternator",
+                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada berbagai jenis pattern yang menuntut kemampuan aim dan/atau kecepatan tapping yang sangat tinggi. (240+ BPM)"
             },
             "vanilla": {
-                "name": "Vanilla",
-                "description": "Mapset terbaik yang mengusung desain yang sederhana."
+                "name": "Best Vanilla",
+                "description": "Beatmap terbaik yang mengusung desain yang sederhana."
             },
             "complex": {
-                "name": "Complex Rhythm / Swing",
-                "description": "Mapset terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6) dan/atau snapping-snapping lainnya yang tidak lazim seperti double, 1/3, 1/5, 1/7, and lain sebagainya."
+                "name": "Best Complex Rhythm / Swing",
+                "description": "Beatmap terbaik yang bertitik berat pada penggunaan swing rhythm (1/3 dan 1/6) dan/atau berbagai snapping lainnya yang tidak lazim seperti double, 1/3, 1/5, 1/7, and lain sebagainya."
             },
             "unorthodox": {
-                "name": "Unorthodox / Gimmick",
-                "description": "Mapset terbaik yang mengusung ide-ide atau teknik-teknik mapping yang tidak umum."
+                "name": "Best Unorthodox / Gimmick",
+                "description": "Beatmap terbaik yang mengusung ide atau teknik mapping yang tidak umum."
             },
             "sliderTech": {
-                "name": "Slider Tech",
-                "description": "Mapset terbaik yang kesulitannya bertitik berat pada desain slider, manipulasi SV, dan pattern-pattern stream yang kompleks."
+                "name": "Best Slider Tech",
+                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada desain slider, manipulasi SV, dan pattern stream yang kompleks."
             },
             "mostInspiring": {
                 "name": "Most Inspiring",
-                "description": "Mereka yang paling menginspirasi sesama."
+                "description": "Mereka yang paling memberikan pengaruh dan inspirasi bagi sesama."
             },
+            "mostInnovative": {
+                "name": "Most Innovative",
+                "description": "Mereka yang paling memberikan pengaruh dan inspirasi bagi sesama."
+            },            
             "communityPillar": {
                 "name": "Community Pillar",
                 "description": "Mereka yang paling berkontribusi dalam memajukan dunia mapping dan modding dari balik layar."
             },
             "simplisticTaiko": {
-                "name": "Simplistic",
-                "description": "Mapset terbaik yang mengusung desain yang sederhana."
+                "name": "Best Simplistic",
+                "description": "Beatmap terbaik yang mengusung desain yang sederhana."
             },
             "technicalCatch": {
-                "name": "Technical",
-                "description": "Mapset terbaik yang kesulitannya bertitik berat pada konsep-konsep osu!catch kompleks."
+                "name": "Best Technical",
+                "description": "Beatmap terbaik yang kesulitannya bertitik berat pada penggunaan berbagai konsep osu!catch yang kompleks."
             },
             "antiMetaCatch": {
-                "name": "Anti-Meta",
-                "description": "Mapset terbaik yang mengusung gimmick-gimmick atau teknik-teknik mapping yang tidak umum."
+                "name": "Best Anti-Meta",
+                "description": "Beatmap terbaik yang mengusung gimmick atau teknik mapping yang tidak umum."
             },
+            "unconventionalCtb": {
+                "name": "Best Unconventional AR/CS",
+                "description": "Beatmap terbaik yang mengusung nilai AR atau CS yang tidak lazim (~AR <=8.5 atau ~CS >=5 / <=3)."
+            },            
             "diversity": {
-                "name": "Diversity",
-                "description": "Mapset terbaik yang berfokus pada berbagai macam skillset/kategori."
-            }           
+                "name": "Best Diversity",
+                "description": "Beatmap terbaik yang mengusung berbagai macam skillset / kategori di dalamnya."
+            }          
         },
         "nom_vote": {
             "search": "cari beatmap/user",
-            "select": "Harap pilih kategori!",
+            "select": "Silakan pilih kategori!",
             "candidates": "kandidat",
             "options": {
                 "date": "TANGGAL",
@@ -340,11 +384,11 @@
                 "invalid": "TIDAK VALID",
                 "both": "KEDUANYA",
                 "all": "SEMUA",
-                "played": "MAP-MAP YANG PERNAH DIMAINKAN",
+                "played": "MAP YANG PERNAH DIMAINKAN",
                 "results": "HASIL",
                 "voters": "SUARA"                              
             },
-            "votingOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman voting MCA. <br> MCA tahun ini menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suaramu kepada beatmap-beatmap/pengguna-pengguna yang kamu kehendaki tanpa ada batasan jumlah suara. <br> Seluruh suara yang masuk akan dihitung berdasarkan urutan pemilihannya masing-masing, atau dengan kata lain <span class='notice-modal--bold'>pilihan pertamamu akan memiliki bobot suara yang lebih tinggi dari pilihan keduamu dan seterusnya</span> <br> Selamat memilih, dan jangan lupa untuk menyaksikan livestream hasil akhir MCA [YEAR]!",
+            "votingOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses laman voting MCA. <br> MCA tahun ini menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suara sebanyak-banyaknya tanpa ada batasan jumlah suara. <br> Seluruh suara yang masuk akan dihitung berdasarkan urutan pemilihannya masing-masing, di mana <span class='notice-modal--bold'>pilihan pertamamu akan memiliki bobot suara yang lebih tinggi dari pilihan keduamu dan seterusnya.</span> <br> Selamat memilih, dan jangan lewatkan pengumuman hasil akhir MCA [YEAR] pada saatnya nanti!",
             "hosted": "DI-HOST OLEH",
             "userID": "USER ID"
         },
@@ -360,26 +404,28 @@
                 "secondThirdChoice": "JML. PILIHAN KE-2/KE-3",
                 "restChoice": "JML. PILIHAN KE-4+"
             },
-            "resultsOverlay": "Halo! Sepertinya ini kali pertama kamu mengakses laman hasil voting MCA. <br> Hasil-hasil yang tertera pada laman ini keseluruhannya disusun berdasarkan hasil perhitungan <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting</a> yang kemudian diurutkan berdasarkan jumlah pemilih pertama, jumlah pemilih kedua, dan seterusnya.<br> Akhir kata, kami berharap kami dapat memuaskan rasa penasaranmu dengan penyelenggaraan MCA kali ini. Mohon maaf apabila sekiranya terdapat sesuatu yang kurang berkenan dari kami, dan sampai jumpa lagi di MCA selanjutnya!"
+            "resultsOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses laman hasil voting MCA. <br> Seluruh hasil yang tertera pada laman ini dihitung berdasarkan sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting</a>, yang kemudian diurutkan berdasarkan jumlah pemilih pertama, jumlah pemilih kedua, dan seterusnya.<br> Akhir kata, semoga kamu terpuaskan dengan penyelenggaraan MCA kali ini, dan sampai jumpa lagi di MCA selanjutnya!"
         }
     },
     "main": {
         "header": {
             "login": "MASUK",
             "register": "DAFTAR",
-            "changeDiscord": "GANTI AKUN DISCORD"
+            "changeDiscord": "UBAH AKUN DISCORD"
         },
         "index": {
             "underConstruction": "dalam pengerjaan",
             "sorry": "mohon maaf atas ketidaknyamanannya",
-            "development": "situs web corsace saat ini masih sedang dalam pengerjaan",
+            "development": "situs web corsace saat ini sedang dalam pengerjaan",
             "theTeam": "tim corsace"
         },
         "merch": {
             "official": "merchandise resmi corsace",
             "avail": "kini telah tersedia",
             "name": "T-Shirt Corsace Open 2021 Edisi Terbatas",
-            "colours": "Hitam/Putih"
+            "colours": "Hitam/Putih",
+            "code": "Tap Trio - Corsace Bundle",
+            "products": "Persediaan terbatas"
         }
     }
 }

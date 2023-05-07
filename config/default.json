@@ -11,7 +11,7 @@
             "corsace": {
                 "corsace": "role ID",
                 "core": "role ID",
-                "headStaff": "role ID",
+                "headStaff": ["role IDs"],
                 "staff": "role ID",
                 "writer": "role ID",
                 "verified": "role ID",
