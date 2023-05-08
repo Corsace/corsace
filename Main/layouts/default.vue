@@ -62,7 +62,17 @@
                 >
                     <img
                         class="socials__icon"
-                        src="../../Assets/img/social/ttv.png"
+                        src="../../Assets/img/social/twitch.png"
+                        alt=""
+                    >
+                </a>
+                <a
+                    href="https://youtube.com/corsace"
+                    target="_blank"
+                >
+                    <img
+                        class="socials__icon"
+                        src="../../Assets/img/social/youtube.png"
                         alt=""
                     >
                 </a>
