@@ -12,6 +12,8 @@ import { randomUUID } from "crypto";
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
+    else
+        await m.react("⏳");
 
     const tournament = await fetchTournament(m);
     if (!tournament) 
@@ -89,13 +91,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
         try {
             const data = await download(link);
-            if (m instanceof Message) m.reply({ files: [
+            if (m instanceof Message) await m.reply({ files: [
                 {
                     attachment: data,
                     name: `${mappoolSlot}.osz`,
                 }
             ] });
-            else m.editReply({ files: [
+            else await m.editReply({ files: [
                 {
                     attachment: data,
                     name: `${mappoolSlot}.osz`,
@@ -105,6 +107,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (m instanceof Message) m.reply(`Could not download **${mappoolSlot}**\n\`\`\`\n${e}\`\`\``);
             else m.editReply(`Could not download **${mappoolSlot}**\n\`\`\`\n${e}\`\`\``);
         }
+
+        if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
         return;
     }
 
@@ -142,10 +146,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
         //         name,
         //     }
         // ] });
+
     } catch (e) {
         if (m instanceof Message) m.reply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
         else m.editReply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
     }
+
+    if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
 }
 
 const data = new SlashCommandBuilder()
