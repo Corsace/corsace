@@ -6,6 +6,8 @@ import { download } from "../../../../Server/utils/download";
 import { zipFiles } from "../../../../Server/utils/zip";
 import { fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
+import { buckets } from "../../../../Server/s3";
+import { randomUUID } from "crypto";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -125,19 +127,25 @@ async function run (m: Message | ChatInputCommandInteraction) {
     try {
         const streams = dlLinks.map(m => download(m));
         const zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
-        const name = `${tournament.abbreviation.toUpperCase()}${tournament.year} ${mappool.abbreviation.toUpperCase()}.zip`;
-        if (m instanceof Message) await m.reply({ files: [
-            {
-                attachment: zipStream,
-                name,
-            }
-        ] });
-        else await m.editReply({ files: [
-            {
-                attachment: zipStream,
-                name,
-            }
-        ] });
+
+        const s3Key = `${randomUUID()}/${tournament.abbreviation.toUpperCase()}${tournament.year} ${mappool.abbreviation.toUpperCase()}.zip`;
+        await buckets.mappacksTemp.putObject(s3Key, zipStream, "application/zip");
+        const url = await buckets.mappacksTemp.getSignedUrl(s3Key, 60 * 60 * 24 * 7);
+
+        // TODO: Rewrite to send generated URL instead of attaching.
+
+        // if (m instanceof Message) await m.reply({ files: [
+        //     {
+        //         attachment: zipStream,
+        //         name,
+        //     }
+        // ] });
+        // else await m.editReply({ files: [
+        //     {
+        //         attachment: zipStream,
+        //         name,
+        //     }
+        // ] });
     } catch (e) {
         if (m instanceof Message) m.reply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
         else m.editReply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
