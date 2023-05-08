@@ -10,6 +10,8 @@ import { Command } from "../../index";
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
+    else
+        await m.react("⏳");
 
     const tournament = await fetchTournament(m);
     if (!tournament) 
@@ -87,13 +89,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
         try {
             const data = await download(link);
-            if (m instanceof Message) m.reply({ files: [
+            if (m instanceof Message) await m.reply({ files: [
                 {
                     attachment: data,
                     name: `${mappoolSlot}.osz`,
                 }
             ] });
-            else m.editReply({ files: [
+            else await m.editReply({ files: [
                 {
                     attachment: data,
                     name: `${mappoolSlot}.osz`,
@@ -103,6 +105,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (m instanceof Message) m.reply(`Could not download **${mappoolSlot}**\n\`\`\`\n${e}\`\`\``);
             else m.editReply(`Could not download **${mappoolSlot}**\n\`\`\`\n${e}\`\`\``);
         }
+
+        if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
         return;
     }
 
@@ -112,25 +116,25 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const names = filteredMaps.map(m => `${m.slot.acronym}${m.order}.osz`);
     const dlLinks = filteredMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}`);
 
-    if (dlLinks.length === 0) {
+    if (filteredMaps.length === 0) {
         if (m instanceof Message) m.reply(`**${pool}** does not have any downloadable beatmaps.`);
         else m.editReply(`**${pool}** does not have any downloadable beatmaps.`);
         return;
     }
 
     try {
-        const data = await Promise.all(dlLinks.map(m => download(m)));
-        const zipBuffer = await zipFiles(data, names);
+        const streams = dlLinks.map(m => download(m));
+        const zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
         const name = `${tournament.abbreviation.toUpperCase()}${tournament.year} ${mappool.abbreviation.toUpperCase()}.zip`;
-        if (m instanceof Message) m.reply({ files: [
+        if (m instanceof Message) await m.reply({ files: [
             {
-                attachment: zipBuffer,
+                attachment: zipStream,
                 name,
             }
         ] });
-        else m.editReply({ files: [
+        else await m.editReply({ files: [
             {
-                attachment: zipBuffer,
+                attachment: zipStream,
                 name,
             }
         ] });
@@ -138,6 +142,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (m instanceof Message) m.reply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
         else m.editReply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
     }
+
+    if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
 }
 
 const data = new SlashCommandBuilder()
