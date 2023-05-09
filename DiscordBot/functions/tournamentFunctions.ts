@@ -398,7 +398,7 @@ export async function fetchSlot (m: Message | ChatInputCommandInteraction, mappo
         });
     });
 }
- 
+
 export async function fetchCustomThread (m: Message | ChatInputCommandInteraction, mappoolMap: MappoolMap, tournament: Tournament, slot: string): Promise<[ThreadChannel, Message] | boolean | undefined> {
     const content = `Map: **${mappoolMap.customBeatmap ? `${mappoolMap.customBeatmap.artist} - ${mappoolMap.customBeatmap.title} [${mappoolMap.customBeatmap.difficulty}]` : "N/A"}**\nMapper(s): **${mappoolMap.customMappers.length > 0 ? mappoolMap.customMappers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nTestplayer(s): **${mappoolMap.testplayers.length > 0 ? mappoolMap.testplayers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nDeadline: ${mappoolMap.deadline ? `<t:${mappoolMap.deadline.getTime()}>` : "**N/A**"}`;
 
@@ -507,6 +507,25 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
 
         return [thread, threadMsg];
     }
+}
+
+export async function fetchJobThread (m: Message | ChatInputCommandInteraction, tournament: Tournament): Promise<ForumChannel | undefined> {
+    const tourneyChannels = await TournamentChannel.find({
+        where: {
+            tournament: {
+                ID: tournament.ID,
+            }
+        }
+    });
+    const tournamentChannel = tourneyChannels.find(c => c.channelType === TournamentChannelType.Jobboard);
+    const jobChannel = discordClient.channels.cache.get(tournamentChannel?.channelID ?? "");
+    if (!(jobChannel && jobChannel.type === ChannelType.GuildForum)) {
+        if (m instanceof Message) m.reply(`Could not find job channel for tournament ${tournament.name}`);
+        else m.editReply(`Could not find job channel for tournament ${tournament.name}`);
+        return;
+    }
+
+    return jobChannel as ForumChannel;
 }
 
 export async function hasTournamentRoles (m: Message | ChatInputCommandInteraction, tournament: Tournament, targetRoles: TournamentRoleType[]): Promise<boolean> {

@@ -60,7 +60,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     
     if (!mappool.isPublic) {
-        const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers]);
+        const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard]);
         if (!securedChannel) 
             return;
     }
@@ -184,7 +184,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .setTitle(`Info for ${mappool.name} (${mappool.abbreviation.toUpperCase()})`)
         .setFields(mappool.slots.map(slot => ({
             name: `**${slot.name}**`,
-            value: slot.maps.map(map => `${slot.acronym}${map.order}: ${map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap && map.customBeatmap.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : "N/A"}`).join("\n"),
+            value: slot.maps.map(map => `**${slot.acronym}${map.order}:** ${map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap && map.customBeatmap.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : "N/A"}`).join("\n"),
             inline: true,
         })))
         .setColor(modeColour(tournament.mode.ID - 1))

@@ -26,6 +26,7 @@ import { Stage } from "./tournaments/stage";
 import { Mappool } from "./tournaments/mappools/mappool";
 import { MappoolSlot } from "./tournaments/mappools/mappoolSlot";
 import { MappoolMapHistory } from "./tournaments/mappools/mappoolMapHistory";
+import { JobPost } from "./tournaments/mappools/jobPost";
 
 // General middlewares
 
@@ -179,6 +180,9 @@ export class User extends BaseEntity {
 
     @OneToMany(() => MappoolMapHistory, history => history.createdBy)
     mappoolMapHistoryEntriesCreated!: MappoolMapHistory[];
+
+    @OneToMany(() => JobPost, post => post.createdBy)
+    jobPostsCreated!: JobPost[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User

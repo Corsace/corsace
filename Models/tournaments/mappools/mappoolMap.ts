@@ -6,6 +6,7 @@ import { MappoolMapSkill } from "./mappoolMapSkill";
 import { MappoolMapWeight } from "./mappoolMapWeight";
 import { MappoolSlot } from "./mappoolSlot";
 import { CustomBeatmap } from "./customBeatmap";
+import { JobPost } from "./jobPost";
 
 @Entity()
 export class MappoolMap extends BaseEntity {
@@ -50,6 +51,10 @@ export class MappoolMap extends BaseEntity {
     @ManyToMany(() => User, user => user.customMaps)
     @JoinTable()
     customMappers!: User[];
+
+    @OneToOne(() => JobPost, post => post.map)
+    @JoinColumn()
+    jobPost?: JobPost | null;
 
     @OneToOne(() => CustomBeatmap, beatmap => beatmap.mappoolMap)
     @JoinColumn()
