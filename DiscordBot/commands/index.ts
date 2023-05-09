@@ -15,6 +15,10 @@ import mappoolRemove from "./tournaments/mappool/remove";
 import mappoolSubmit from "./tournaments/mappool/submit";
 import mappoolSwap from "./tournaments/mappool/swap";
 
+import job from "./tournaments/mappool/jobBoard/job";
+import jobInfo from "./tournaments/mappool/jobBoard/info";
+import jobPublish from "./tournaments/mappool/jobBoard/publish";
+
 import avatar from "./utility/avatar";
 import help from "./utility/help";
 import ping from "./utility/ping";
@@ -56,6 +60,11 @@ commands.push(mappoolInfo);
 commands.push(mappoolRemove);
 commands.push(mappoolSubmit);
 commands.push(mappoolSwap);
+
+// job board commands
+commands.push(job);
+commands.push(jobInfo);
+commands.push(jobPublish);
 
 // general utility commands
 commands.push(avatar);

@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, ForumChannel, Message, MessageComponentInteraction, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
 import { fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
-import { TournamentChannel, TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
+import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
@@ -16,7 +16,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers]);
+    const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard]);
     if (!securedChannel) 
         return;
 
@@ -157,10 +157,21 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const testplayers2 = mappoolMap2.testplayers;
     let log1: MappoolMapHistory | undefined = new MappoolMapHistory();
     let log2: MappoolMapHistory | undefined = new MappoolMapHistory();
+    const jobPost1 = mappoolMap1.jobPost;
+    const jobPost2 = mappoolMap2.jobPost;
 
     log1.createdBy = log2.createdBy = user;
 
     if (beatmap1) {
+        if (jobPost2?.jobBoardThread) {
+            const thread = await discordClient.channels.fetch(jobPost2.jobBoardThread) as ThreadChannel | null;
+            if (thread) {
+                await thread.setAppliedTags([(thread.parent as ForumChannel).availableTags.find(t => t.name.toLowerCase() === "closed")?.id ?? ""], "This slot is now assigned.");
+                await thread.setArchived(true, "This slot is now assigned.");
+            }
+        }
+        mappoolMap2.jobPost = null;
+
         if (beatmap1 instanceof CustomBeatmap) {
             mappoolMap2.beatmap = null;
             mappoolMap2.customBeatmap = beatmap1;
@@ -212,6 +223,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (beatmap2) {
+        if (jobPost1?.jobBoardThread) {
+            const thread = await discordClient.channels.fetch(jobPost1.jobBoardThread) as ThreadChannel | null;
+            if (thread) {
+                await thread.setAppliedTags([(thread.parent as ForumChannel).availableTags.find(t => t.name.toLowerCase() === "closed")?.id ?? ""], "This slot is now assigned.");
+                await thread.setArchived(true, "This slot is now assigned.");
+            }
+        }
+        mappoolMap1.jobPost = null;
         if (beatmap2 instanceof CustomBeatmap) {
             mappoolMap1.beatmap = null;
             mappoolMap1.customBeatmap = beatmap2;
@@ -267,6 +286,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     if (log1) await log1.save()
     if (log2) await log2.save()
+
+    if (jobPost1 && beatmap2) await jobPost1.remove();
+    if (jobPost2 && beatmap1) await jobPost2.remove();
 
     if (m instanceof Message) m.reply(`Swapped **${slot1}${order1}** with **${slot2}${order2}**`);
     else await m.editReply(`Swapped **${slot1}${order1}** with **${slot2}${order2}**`);

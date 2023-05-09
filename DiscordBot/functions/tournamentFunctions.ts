@@ -345,14 +345,14 @@ export async function fetchMappool (m: Message | ChatInputCommandInteraction, to
     });
 }
 
-export async function fetchSlot (m: Message | ChatInputCommandInteraction, mappool: Mappool, poolText: string = "", getRelations: boolean = false): Promise<MappoolSlot | undefined> {
-    let slots = mappool.slots ?? await MappoolSlot.search(mappool, poolText, getRelations);
+export async function fetchSlot (m: Message | ChatInputCommandInteraction, mappool: Mappool, slotText: string = "", getRelations: boolean = false): Promise<MappoolSlot | undefined> {
+    let slots = mappool.slots ?? await MappoolSlot.search(mappool, slotText, getRelations);
     if (mappool.slots)
-        slots = slots.filter(slot => slot.name.toLowerCase().includes(poolText.toLowerCase()));
+        slots = slots.filter(slot => slot.name.toLowerCase().includes(slotText.toLowerCase()));
 
     if (slots.length === 0) {
-        if (m instanceof Message) m.reply(`Could not find slot **${poolText}**`);
-        else m.editReply(`Could not find slot **${poolText}**`);
+        if (m instanceof Message) m.reply(`Could not find slot **${slotText}**`);
+        else m.editReply(`Could not find slot **${slotText}**`);
         return;
     }
     
@@ -398,9 +398,9 @@ export async function fetchSlot (m: Message | ChatInputCommandInteraction, mappo
         });
     });
 }
- 
+
 export async function fetchCustomThread (m: Message | ChatInputCommandInteraction, mappoolMap: MappoolMap, tournament: Tournament, slot: string): Promise<[ThreadChannel, Message] | boolean | undefined> {
-    const content = `Map: **${mappoolMap.customBeatmap ? `${mappoolMap.customBeatmap.artist} - ${mappoolMap.customBeatmap.title} [${mappoolMap.customBeatmap.difficulty}]` : "N/A"}**\nMapper(s): **${mappoolMap.customMappers.length > 0 ? mappoolMap.customMappers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nTestplayer(s): **${mappoolMap.testplayers.length > 0 ? mappoolMap.testplayers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nDeadline: ${mappoolMap.deadline ? `<t:${mappoolMap.deadline.getTime()}>` : "**N/A**"}`;
+    const content = `Map: **${mappoolMap.customBeatmap ? `${mappoolMap.customBeatmap.artist} - ${mappoolMap.customBeatmap.title} [${mappoolMap.customBeatmap.difficulty}]` : "N/A"}**\nMapper(s): **${mappoolMap.customMappers.length > 0 ? mappoolMap.customMappers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nTestplayer(s): **${mappoolMap.testplayers.length > 0 ? mappoolMap.testplayers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nDeadline: ${mappoolMap.deadline ? `<t:${mappoolMap.deadline.getTime() / 1000}>` : "**N/A**"}`;
 
     if (!mappoolMap.customThreadID) {
         const tourneyChannels = await TournamentChannel.find({
@@ -509,6 +509,25 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
     }
 }
 
+export async function fetchJobChannel (m: Message | ChatInputCommandInteraction, tournament: Tournament): Promise<ForumChannel | undefined> {
+    const tourneyChannels = await TournamentChannel.find({
+        where: {
+            tournament: {
+                ID: tournament.ID,
+            }
+        }
+    });
+    const tournamentChannel = tourneyChannels.find(c => c.channelType === TournamentChannelType.Jobboard);
+    const jobChannel = discordClient.channels.cache.get(tournamentChannel?.channelID ?? "");
+    if (!(jobChannel && jobChannel.type === ChannelType.GuildForum)) {
+        if (m instanceof Message) m.reply(`Could not find job channel for tournament ${tournament.name}`);
+        else m.editReply(`Could not find job channel for tournament ${tournament.name}`);
+        return;
+    }
+
+    return jobChannel as ForumChannel;
+}
+
 export async function hasTournamentRoles (m: Message | ChatInputCommandInteraction, tournament: Tournament, targetRoles: TournamentRoleType[]): Promise<boolean> {
     const roles = await TournamentRole.find({
         where: {
@@ -551,8 +570,8 @@ export async function isSecuredChannel (m: Message | ChatInputCommandInteraction
     // Check if the channel type is allowed
     const allowed = targetChannels.some(t => t === channel.channelType);
     if (!allowed) {
-        if (m instanceof Message) m.reply(`This channel is not any of the following channel types: ${targetChannels.map(t => t.toString()).join(", ")}. If this is a mistake, please have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type.`);
-        else m.editReply(`This channel is not any of the following channel types: ${targetChannels.map(t => t.toString()).join(", ")}. If this is a mistake, please have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type.`);
+        if (m instanceof Message) m.reply(`This channel is not any of the following channel types: ${targetChannels.map(t => TournamentChannelType[t]).join(", ")}. If this is a mistake, please have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type.`);
+        else m.editReply(`This channel is not any of the following channel types: ${targetChannels.map(t => TournamentChannelType[t]).join(", ")}. If this is a mistake, please have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type.`);
         return false;
     }
 

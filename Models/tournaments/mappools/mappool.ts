@@ -56,6 +56,7 @@ export class Mappool extends BaseEntity {
                 q.leftJoinAndSelect("mappoolMap.customBeatmap", "customBeatmap")
                 q.leftJoinAndSelect("mappoolMap.customMappers", "customMapper")
                 q.leftJoinAndSelect("mappoolMap.testplayers", "testplayer")
+                q.leftJoinAndSelect("mappoolMap.jobPost", "jobPost")
                 q.leftJoinAndSelect("mappoolMap.beatmap", "beatmap")
                 q.leftJoinAndSelect("beatmap.beatmapset", "beatmapset")
             }

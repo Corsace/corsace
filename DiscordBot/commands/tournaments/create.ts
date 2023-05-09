@@ -1,5 +1,5 @@
 import { config } from "node-config-ts";
-import { ActionRowBuilder, ChatInputCommandInteraction, Message, PermissionFlagsBits, SlashCommandBuilder, MessageComponentInteraction, StringSelectMenuBuilder, StringSelectMenuInteraction, EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ChannelType, GuildChannelCreateOptions } from "discord.js";
+import { ActionRowBuilder, ChatInputCommandInteraction, Message, PermissionFlagsBits, SlashCommandBuilder, MessageComponentInteraction, StringSelectMenuBuilder, StringSelectMenuInteraction, EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ChannelType, GuildChannelCreateOptions, ForumChannel } from "discord.js";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
 import { User } from "../../../Models/user";
@@ -613,6 +613,11 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                                 description: "Create a forum channel to QA any custom maps made for the tournament (requires a community server)",
                             },
                             {
+                                label: "Job Board (For custom maps)",
+                                value: "Jobboard",
+                                description: "Create a forum channel for mappers to find open slots and specs (requires a community server)",
+                            },
+                            {
                                 label: "Testplayers",
                                 value: "Testplayers",
                                 description: "Create a tournament testplayer channel",
@@ -680,18 +685,12 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                 return;
             }
 
-            let channelType: ChannelType;
-            switch (channelTypeMenu) {
-                case "Announcements":
-                    channelType = ChannelType.GuildAnnouncement;
-                    break;
-                case "Mappoolqa":
-                    channelType = ChannelType.GuildForum;
-                    break;
-                default:
-                    channelType = ChannelType.GuildText;
-                    break;
-            }
+            let channelType = ChannelType.GuildText;
+            if (channelTypeMenu === "Announcements")
+                channelType = ChannelType.GuildAnnouncement;
+            else if (channelTypeMenu === "Jobboard" || channelTypeMenu === "Mappoolqa")
+                channelType = ChannelType.GuildForum;
+
             try {
                 const tournamentChannel = new TournamentChannel();
                 tournamentChannel.channelType = tournamentChannelType;
@@ -725,7 +724,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                         channelObject.permissionOverwrites[0].deny = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.SendMessages;
                 }
 
-                if (channelType === ChannelType.GuildForum)
+                if (channelTypeMenu === "Mappoolqa")
                     channelObject.availableTags = [{
                         name: "WIP",
                         moderated: true,
@@ -733,7 +732,21 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                         name: "Finished",
                         moderated: true,
                     },{
+                        name: "Late",
+                        moderated: true,
+                    },{
                         name: "Needs HS",
+                        moderated: true,
+                    }];
+                else if (channelTypeMenu === "Jobboard")
+                    channelObject.availableTags = [{
+                        name: "Open",
+                        moderated: true,
+                    },{
+                        name: "Closed",
+                        moderated: true,
+                    },{
+                        name: "To Assign",
                         moderated: true,
                     }];
 
@@ -772,9 +785,10 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             TournamentChannelType[channelType] === undefined || 
             (channelType.toLowerCase() === "announcements" && channel.type !== ChannelType.GuildAnnouncement) || 
             (channelType.toLowerCase() === "mappoolqa" && channel.type !== ChannelType.GuildForum) ||
-            (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "mappoolqa" && channel.type !== ChannelType.GuildText)
+            (channelType.toLowerCase() === "jobboard" && channel.type !== ChannelType.GuildForum) ||
+            (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "mappoolqa" && channelType.toLowerCase() !== "jobboard" && channel.type !== ChannelType.GuildText)
         ) {
-            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel.\nMappool QA should be a guild forum channel. All other channels should be guild text channels.`);
+            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel.\nMappool QA and Job Board should be guild forum channels. All other channels should be guild text channels.`);
             setTimeout(async () => {
                 reply.delete();
                 msg.delete();
@@ -796,6 +810,28 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         tournamentChannel.channelID = channel.id;
         tournamentChannel.channelType = TournamentChannelType[channelType];
         tournament.channels!.push(tournamentChannel);
+        
+        let tags: string[] = [];
+        let forumChannel: ForumChannel | undefined = undefined;
+        if (channelType.toLowerCase() === "mappoolqa") {
+            forumChannel = channel as ForumChannel;
+            tags = ["WIP", "Finished", "Late", "Needs HS"];
+        } else if (channelType.toLowerCase() === "jobboard") {
+            forumChannel = channel as ForumChannel;
+            tags = ["Open", "Closed", "To Assign"];
+        }
+
+        if (forumChannel) {
+            const tagsToAdd = tags.filter(t => !forumChannel!.availableTags.some(at => at.name.toLowerCase() === t.toLowerCase()));
+            if (tagsToAdd.length > 0) {
+                await forumChannel.setAvailableTags(tagsToAdd.map(t => {
+                    return {
+                        name: t,
+                        moderated: true,
+                    }
+                }));
+            }
+        }
 
         content += `\nChannel <#${channel.id}> designated for \`${channelType}\`.`;
         await channelMessage.edit(content);

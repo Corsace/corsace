@@ -42,7 +42,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers]);
+        const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard]);
         if (!securedChannel) 
             return;
 
@@ -54,12 +54,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (slotText) {
         const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
         const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
-
         if (isNaN(order)) {
-            if (m instanceof Message) m.reply("Invalid slot number. Please use a valid slot number.");
-            else m.editReply("Invalid slot number. Please use a valid slot number.");
+            if (m instanceof Message) m.reply(`Invalid slot number **${order}**. Please use a valid slot number.`);
+            else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
             return;
         }
+
         const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
 
         const slotMod = await fetchSlot(m, mappool, slot, true);

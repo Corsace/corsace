@@ -14,7 +14,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers]);
+    const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard]);
     if (!securedChannel) 
         return;
 
@@ -61,8 +61,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
     if (isNaN(order)) {
-        if (m instanceof Message) m.reply("Invalid slot number. Please use a valid slot number.");
-        else m.editReply("Invalid slot number. Please use a valid slot number.");
+        if (m instanceof Message) m.reply(`Invalid slot number **${order}**. Please use a valid slot number.`);
+        else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
         return;
     }
 
