@@ -61,12 +61,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (slotText) {
         const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
         const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
-
         if (isNaN(order)) {
-            if (m instanceof Message) m.reply("Invalid slot number. Please use a valid slot number.");
-            else m.editReply("Invalid slot number. Please use a valid slot number.");
+            if (m instanceof Message) m.reply(`Invalid slot number **${order}**. Please use a valid slot number.`);
+            else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
             return;
         }
+
         const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
 
         const slotMod = await fetchSlot(m, mappool, slot, true);

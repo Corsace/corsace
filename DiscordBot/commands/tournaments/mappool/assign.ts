@@ -57,8 +57,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
     const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
     if (isNaN(order)) {
-        if (m instanceof Message) m.reply("Invalid slot number. Please use a valid slot number.");
-        else m.editReply("Invalid slot number. Please use a valid slot number.");
+        if (m instanceof Message) m.reply(`Invalid slot number **${order}** for. Please use a valid slot number.`);
+        else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
         return;
     }
 
@@ -67,7 +67,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
 
-    const slotMod = await fetchSlot(m, mappool, slot.toString(), true);
+    const slotMod = await fetchSlot(m, mappool, slot, true);
     if (!slotMod) 
         return;
 
@@ -228,10 +228,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await mappoolMap.save();
     if (jobPost) await jobPost.remove();
 
-    if (m instanceof Message) m.reply(`Successfully added **${user.osu.username}** as a mapper for **${mappoolSlot}**`);
-    else m.editReply(`Successfully added **${user.osu.username}** as a mapper for **${mappoolSlot}**`);
+    if (m instanceof Message) m.reply(`Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**`);
+    else m.editReply(`Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**`);
 
-    await mappoolLog(tournament, "assign", assigner, `**${user.osu.username}** is now a custom mapper for **${mappoolSlot}**`);
+    await mappoolLog(tournament, "assign", assigner, `**${user.osu.username}** is now a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**`);
 }
 
 const data = new SlashCommandBuilder()

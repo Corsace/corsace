@@ -14,6 +14,9 @@ export class JobPost extends BaseEntity {
     @ManyToOne(() => User, user => user.jobPostsCreated)
     createdBy!: User;
 
+    @Column({ type: "datetime", nullable: true })
+    deadline?: Date | null;
+
     @Column()
     description!: string;
 

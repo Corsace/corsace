@@ -67,6 +67,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 await starter?.pin();
 
                 map.jobPost.jobBoardThread = jobBoardThread.id;
+                map.jobPost.deadline = endTime;
                 await map.jobPost.save();
 
                 counter++;

@@ -1,5 +1,5 @@
 import { config } from "node-config-ts";
-import { ActionRowBuilder, ChatInputCommandInteraction, Message, PermissionFlagsBits, SlashCommandBuilder, MessageComponentInteraction, StringSelectMenuBuilder, StringSelectMenuInteraction, EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ChannelType, GuildChannelCreateOptions } from "discord.js";
+import { ActionRowBuilder, ChatInputCommandInteraction, Message, PermissionFlagsBits, SlashCommandBuilder, MessageComponentInteraction, StringSelectMenuBuilder, StringSelectMenuInteraction, EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ChannelType, GuildChannelCreateOptions, ForumChannel } from "discord.js";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
 import { User } from "../../../Models/user";
@@ -732,6 +732,9 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                         name: "Finished",
                         moderated: true,
                     },{
+                        name: "Late",
+                        moderated: true,
+                    },{
                         name: "Needs HS",
                         moderated: true,
                     }];
@@ -785,7 +788,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             (channelType.toLowerCase() === "jobboard" && channel.type !== ChannelType.GuildForum) ||
             (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "mappoolqa" && channelType.toLowerCase() !== "jobboard" && channel.type !== ChannelType.GuildText)
         ) {
-            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel.\nMappool QA should be a guild forum channel. All other channels should be guild text channels.`);
+            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel.\nMappool QA and Job Board should be guild forum channels. All other channels should be guild text channels.`);
             setTimeout(async () => {
                 reply.delete();
                 msg.delete();
@@ -807,6 +810,28 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         tournamentChannel.channelID = channel.id;
         tournamentChannel.channelType = TournamentChannelType[channelType];
         tournament.channels!.push(tournamentChannel);
+        
+        let tags: string[] = [];
+        let forumChannel: ForumChannel | undefined = undefined;
+        if (channelType.toLowerCase() === "mappoolqa") {
+            forumChannel = channel as ForumChannel;
+            tags = ["WIP", "Finished", "Late", "Needs HS"];
+        } else if (channelType.toLowerCase() === "jobboard") {
+            forumChannel = channel as ForumChannel;
+            tags = ["Open", "Closed", "To Assign"];
+        }
+
+        if (forumChannel) {
+            const tagsToAdd = tags.filter(t => !forumChannel!.availableTags.some(at => at.name.toLowerCase() === t.toLowerCase()));
+            if (tagsToAdd.length > 0) {
+                await forumChannel.setAvailableTags(tagsToAdd.map(t => {
+                    return {
+                        name: t,
+                        moderated: true,
+                    }
+                }));
+            }
+        }
 
         content += `\nChannel <#${channel.id}> designated for \`${channelType}\`.`;
         await channelMessage.edit(content);
