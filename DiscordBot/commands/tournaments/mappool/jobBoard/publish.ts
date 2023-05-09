@@ -1,8 +1,12 @@
-import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, GuildForumThreadCreateOptions, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../index";
-import { fetchJobChannel, fetchMappool, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../../functions/tournamentFunctions";
+import { fetchJobChannel, fetchMappool, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../../functions/tournamentFunctions";
 import { TournamentChannelType } from "../../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../../Models/tournaments/tournamentRole";
+import { cron } from "../../../../../Server/cron";
+import { CronJobType } from "../../../../../Interfaces/cron";
+import { User } from "../../../../../Models/user";
+import { loginResponse } from "../../../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -26,6 +30,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const forumChannel = await fetchJobChannel(m, tournament);
     if (!forumChannel)
         return;
+
+    const user = await User.findOne({
+        where: {
+            discord: {
+                userID: m instanceof Message ? m.author.id : m.user.id,
+            }
+        }
+    })
+    if (!user) {
+        await loginResponse(m);
+        return;
+    }
 
     const poolRegex = /-p (\S+)/;
     const endTimeRegex = /-e (\S+)/;
@@ -51,18 +67,28 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
 
     const totalThreadCount = mappool.slots.map(slot => slot.maps).flat().filter(map => map.jobPost && !map.jobPost.jobBoardThread).length;
+    if (totalThreadCount === 0) {
+        if (m instanceof Message) m.reply("No job board posts to publish.");
+        else m.editReply("No job board posts to publish.");
+        return;
+    }
+
     let content = `Generating ${totalThreadCount} threads for ${mappool.abbreviation.toUpperCase()}.\n`;
+    let logText = "";
     let counter = 0;
     const threadMessage = m instanceof Message ? await m.reply(content) : await m.editReply(content);
 
     for (const slot of mappool.slots)
         for (const map of slot.maps) {
             if (map.jobPost && !map.jobPost.jobBoardThread) {
-                const jobBoardThread = await forumChannel.threads.create({
+                const createObj: GuildForumThreadCreateOptions = {
                     name: `${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${map.order}`,
                     message: { content: map.jobPost.description },
-                    appliedTags: [forumChannel.availableTags.find(t => t.name.toLowerCase() === "open")?.id ?? ""],
-                });
+                }
+                const tag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "open")?.id;
+                if (tag)
+                    createObj.appliedTags = [tag];
+                const jobBoardThread = await forumChannel.threads.create(createObj);
                 const starter = await jobBoardThread.fetchStarterMessage();
                 await starter?.pin();
 
@@ -71,13 +97,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 await map.jobPost.save();
 
                 counter++;
-                content += `Created thread for ${mappool.abbreviation.toUpperCase()} - ${slot.acronym.toUpperCase()}${map.order}. ${counter}/${totalThreadCount}\n`;
+                content += `Created thread for **${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${map.order}**. ${counter}/${totalThreadCount}\n`;
+                logText += `Created thread for **${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${map.order}** <#${jobBoardThread.id}>.\n`;
                 await threadMessage.edit(content);
             }
         }
 
     content += "\nCreated all threads. You can close threads and assign mappers using `mappool_assign`.";
     await threadMessage.edit(content);
+
+    await mappoolLog(tournament, "jobPublish", user, logText);
+
+    cron.add(CronJobType.Jobboard, endTime);
 }
 
 const data = new SlashCommandBuilder()

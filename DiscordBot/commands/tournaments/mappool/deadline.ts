@@ -1,11 +1,12 @@
-import { ChatInputCommandInteraction, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
+import { ChatInputCommandInteraction, ForumChannel, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
 import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
-import { discordClient } from "../../../../Server/discord";
+import { cron } from "../../../../Server/cron"
+import { CronJobType } from "../../../../Interfaces/cron";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -55,9 +56,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
     const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
 
-    if (isNaN(date.getTime())) {
-        if (m instanceof Message) m.reply("Invalid date. Please provide a valid date using either `YYYY-MM-DD` format, or a unix/epoch timestamp in seconds.");
-        else m.editReply("Invalid date. Please provide a valid date using either `YYYY-MM-DD` format, or a unix/epoch timestamp in seconds.");
+    if (isNaN(date.getTime()) || date.getTime() < Date.now()) {
+        if (m instanceof Message) m.reply("Invalid date. Please provide a valid date using either `YYYY-MM-DD` format, or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        else m.editReply("Invalid date. Please provide a valid date using either `YYYY-MM-DD` format, or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
         return;
     }
     if (isNaN(order)) {
@@ -100,7 +101,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     if (customThread !== true && m.channel?.id !== customThread[0].id) {
         const [thread] = customThread;
+        const forumChannel = thread.parent as ForumChannel;
         await thread.send(`<@${user.discord.userID}> has added a deadline: **<t:${date.getTime() / 1000}>**`);
+        const lateTag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "late");
+        if (lateTag) await thread.setAppliedTags(thread.appliedTags.filter(t => t !== lateTag.id))
     }
 
     await mappoolMap.save();
@@ -109,6 +113,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     else m.editReply(`Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}>**`);
 
     await mappoolLog(tournament, "deadline", user, `Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}>**`);
+
+    cron.add(CronJobType.Custommap, date);
 }
 
 const data = new SlashCommandBuilder()

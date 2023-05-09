@@ -166,7 +166,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (jobPost2?.jobBoardThread) {
             const thread = await discordClient.channels.fetch(jobPost2.jobBoardThread) as ThreadChannel | null;
             if (thread) {
-                await thread.setAppliedTags([(thread.parent as ForumChannel).availableTags.find(t => t.name.toLowerCase() === "closed")?.id ?? ""], "This slot is now assigned.");
+                const tag = (thread.parent as ForumChannel).availableTags.find(t => t.name.toLowerCase() === "closed")?.id;
+                if (tag) await thread.setAppliedTags([tag], "This slot is now assigned.");
                 await thread.setArchived(true, "This slot is now assigned.");
             }
         }
@@ -226,7 +227,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (jobPost1?.jobBoardThread) {
             const thread = await discordClient.channels.fetch(jobPost1.jobBoardThread) as ThreadChannel | null;
             if (thread) {
-                await thread.setAppliedTags([(thread.parent as ForumChannel).availableTags.find(t => t.name.toLowerCase() === "closed")?.id ?? ""], "This slot is now assigned.");
+                const tag = (thread.parent as ForumChannel).availableTags.find(t => t.name.toLowerCase() === "closed")?.id;
+                if (tag) await thread.setAppliedTags([tag], "This slot is now assigned.");
                 await thread.setArchived(true, "This slot is now assigned.");
             }
         }

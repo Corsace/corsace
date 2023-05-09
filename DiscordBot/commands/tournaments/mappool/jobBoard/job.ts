@@ -73,13 +73,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const mappoolMap = slotMod.maps.find(m => m.order === order);
     if (!mappoolMap) {
-        if (m instanceof Message) m.reply(`Could not find map **${mappoolSlot}**`);
-        else m.editReply(`Could not find map **${mappoolSlot}**`);
+        if (m instanceof Message) m.reply(`Could not find **${mappoolSlot}**`);
+        else m.editReply(`Could not find **${mappoolSlot}**`);
         return;
     }
     if ((mappoolMap.customMappers && mappoolMap.customMappers.length > 0) || mappoolMap.beatmap) {
-        if (m instanceof Message) m.reply(`Map **${mappoolSlot}** has already been assigned.`);
-        else m.editReply(`Map **${mappoolSlot}** has already been assigned.`);
+        if (m instanceof Message) m.reply(`**${mappoolSlot}** has already been assigned. There is no reason to create a job board post.`);
+        else m.editReply(`**${mappoolSlot}** has already been assigned. There is no reason to create a job board post.`);
         return;
     }
 

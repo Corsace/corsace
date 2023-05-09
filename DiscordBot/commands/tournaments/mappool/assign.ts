@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, ForumChannel, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
-import { fetchCustomThread, fetchMappool, fetchSlot, fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
+import { confirmCommand, fetchCustomThread, fetchMappool, fetchSlot, fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { Beatmap } from "../../../../Models/beatmap";
 import { Beatmap as APIBeatmap, Mode } from "nodesu";
@@ -31,14 +31,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]);
     if (!allowed) 
         return;
-
-    const replace = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("replace") : /-r Y/i.test(m.content));
-    if (replace && m instanceof Message)
-        m.content = m.content.replace(/-r Y/i, "");
     
     const testing = (m instanceof ChatInputCommandInteraction ? m.options.getSubcommand() === "tester": /-test Y/i.test(m.content));
     if (testing && m instanceof Message)    
         m.content = m.content.replace(/-test Y/i, "");
+
+    const replace = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("replace") : /-r Y/i.test(m.content));
+    if (replace && m instanceof Message) {
+        const confirm = await confirmCommand(m, `Toggling \`replace\` will replace all ${testing ? "tesplayers" : "custom mappers"} in the slot. Are you sure you want to continue?`);
+        if (!confirm)
+            return;
+        m.content = m.content.replace(/-r Y/i, "");
+    }
 
     const targetRegex = /-t (.+)/;
     const poolRegex = /-p (\S+)/;
@@ -95,7 +99,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (jobPost?.jobBoardThread) {
         const thread = await discordClient.channels.fetch(jobPost.jobBoardThread) as ThreadChannel | null;
         if (thread) {
-            await thread.setAppliedTags([(thread.parent as ForumChannel).availableTags.find(t => t.name.toLowerCase() === "closed")?.id ?? ""], "This slot is now assigned.");
+            const tag = (thread.parent as ForumChannel).availableTags.find(t => t.name.toLowerCase() === "closed")?.id;
+            if (tag) await thread.setAppliedTags([tag], "This slot is now assigned.");
             await thread.setArchived(true, "This slot is now assigned.");
         }
     }
@@ -180,7 +185,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             embeds: [mappoolMapEmbed],
         });
 
-        await mappoolLog(tournament, "assign", assigner, log, slotMod, mappool);
+        await mappoolLog(tournament, "assignMap", assigner, log, slotMod, mappool);
         return;
     }
 
@@ -228,10 +233,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await mappoolMap.save();
     if (jobPost) await jobPost.remove();
 
-    if (m instanceof Message) m.reply(`Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**`);
-    else m.editReply(`Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**`);
+    if (m instanceof Message) m.reply(`Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
+    else m.editReply(`Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
 
-    await mappoolLog(tournament, "assign", assigner, `**${user.osu.username}** is now a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**`);
+    await mappoolLog(tournament, "assignCustom", assigner, `**${user.osu.username}** is now a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
 }
 
 const data = new SlashCommandBuilder()

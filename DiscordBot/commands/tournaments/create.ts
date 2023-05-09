@@ -29,7 +29,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const sortOrderRegex = new RegExp(/-s ([a-zA-Z0-9_ ]{1,6})/);
     const helpRegex = new RegExp(/-h/);
     if (m instanceof Message && (helpRegex.test(m.content) || (!nameRegex.test(m.content) && !abbreviationRegex.test(m.content) && !descriptionRegex.test(m.content) && !modeRegex.test(m.content) && !matchSizeRegex.test(m.content) && !teamSizeRegex.test(m.content) && !registrationRegex.test(m.content) && !sortOrderRegex.test(m.content)))) {
-        await m.reply(`Please provide all required parameters! Here is a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Description:** \`-d <description>\`\n**Mode:** \`-m <mode>\`\n**Match Size (xvx, input x):** \`-ms <match size>\`\n**Team Size:** \`-ts <min> <max>\`\n**Registration Period:** \`-r <start date (YYYY-MM-DD OR unix/epoch)> <end date (YYYY-MM-DD OR unix/epoch)>\`\n**Sort Order:** \`-s <sort order>\`\n\nIt is recommended to use slash commands for any \`create\` command.`);
+        await m.reply(`Please provide all required parameters! Here is a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Description:** \`-d <description>\`\n**Mode:** \`-m <mode>\`\n**Match Size (xvx, input x):** \`-ms <match size>\`\n**Team Size:** \`-ts <min> <max>\`\n**Registration Period:** \`-r <start date (YYYY-MM-DD OR unix/epoch)> <end date (YYYY-MM-DD OR unix/epoch)>\`\n**Sort Order:** \`-s <sort order>\`\n\nIt is recommended to use slash commands for any \`create\` command.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).`);
         return;
     }
 
@@ -246,16 +246,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const registrationStartText = m instanceof Message ? registrationRegex.exec(m.content)?.[1] : m.options.getString("registration_start");
     const registrationEndText = m instanceof Message ? registrationRegex.exec(m.content)?.[2] : m.options.getString("registration_end");
     if (!registrationStartText || !registrationEndText) {
-        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
-        else await m.editReply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
+        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        else await m.editReply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
         return;
     }
 
     const registrationStart = new Date(registrationStartText.includes("-") ? registrationStartText : parseInt(registrationStartText + "000"));
     const registrationEnd = new Date(registrationEndText.includes("-") ? registrationEndText : parseInt(registrationEndText + "000"));
     if (isNaN(registrationStart.getTime()) || isNaN(registrationEnd.getTime()) || registrationStart.getTime() > registrationEnd.getTime() || registrationEnd.getTime() < Date.now()) {
-        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
-        else await m.editReply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
+        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        else await m.editReply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
         return;
     }
 
