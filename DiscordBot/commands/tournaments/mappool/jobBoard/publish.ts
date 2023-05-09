@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../index";
-import { fetchJobThread, fetchMappool, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../../functions/tournamentFunctions";
+import { fetchJobChannel, fetchMappool, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../../functions/tournamentFunctions";
 import { TournamentChannelType } from "../../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../../Models/tournaments/tournamentRole";
 
@@ -23,7 +23,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!allowed) 
         return;
 
-    const forumChannel = await fetchJobThread(m, tournament);
+    const forumChannel = await fetchJobChannel(m, tournament);
     if (!forumChannel)
         return;
 

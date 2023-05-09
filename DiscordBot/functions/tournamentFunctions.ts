@@ -509,7 +509,7 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
     }
 }
 
-export async function fetchJobThread (m: Message | ChatInputCommandInteraction, tournament: Tournament): Promise<ForumChannel | undefined> {
+export async function fetchJobChannel (m: Message | ChatInputCommandInteraction, tournament: Tournament): Promise<ForumChannel | undefined> {
     const tourneyChannels = await TournamentChannel.find({
         where: {
             tournament: {
