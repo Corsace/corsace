@@ -155,6 +155,7 @@ const mcaAyimModule = namespace("mca-ayim");
 export default class MapperComments extends Vue {
 
     @State loggedInUser!: UserInfo;
+    @State viewTheme!: "light" | "dark";
     @mcaAyimModule.State selectedMode!: string;
     @mcaAyimModule.State mca!: MCA;
 
@@ -200,7 +201,7 @@ export default class MapperComments extends Vue {
 
         if (data.error) {
             alert(data.error);
-            this.$router.push(`/${this.mca.year}/comments`);
+            this.$router.push(`/comments`);
         } else {
             this.comments = data.comments;
             this.user = data.user;

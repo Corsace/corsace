@@ -1,17 +1,7 @@
 <template>
     <div>
         <div
-            v-if="selectedMode"
-            class="index scroll__mca index__main"
-            :class="[
-                `index--${viewTheme}`,
-                `scroll--${viewTheme}`
-            ]"
-        >
-            Lol
-        </div>
-        <div
-            v-else-if="!selectedMode"
+            v-if="!selectedMode"
             class="index scroll__mca index__bg"
             :class="[
                 `index--${viewTheme}`,
@@ -136,17 +126,7 @@ export default class Index extends Vue {
 
     async mounted () {
         await this.$store.dispatch("mca-ayim/setSelectedMode");
-        if (this.selectedMode !== "")
-            this.$router.push(`${this.$route.path}/mappers/records`);
     }
-
-    // get ModeChange () {
-    //     if (this.currentMode !== this.selectedMode) {
-    //         this.$router.push(`${this.$route.path}/mappers/records`);
-    //         return true;
-    //     }
-    //     return false;
-    // }
 }
 </script>
 
