@@ -29,7 +29,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const sortOrderRegex = new RegExp(/-s ([a-zA-Z0-9_ ]{1,6})/);
     const helpRegex = new RegExp(/-h/);
     if (m instanceof Message && (helpRegex.test(m.content) || (!nameRegex.test(m.content) && !abbreviationRegex.test(m.content) && !descriptionRegex.test(m.content) && !modeRegex.test(m.content) && !matchSizeRegex.test(m.content) && !teamSizeRegex.test(m.content) && !registrationRegex.test(m.content) && !sortOrderRegex.test(m.content)))) {
-        await m.reply(`Please provide all required parameters! Here is a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Description:** \`-d <description>\`\n**Mode:** \`-m <mode>\`\n**Match Size (xvx, input x):** \`-ms <match size>\`\n**Team Size:** \`-ts <min> <max>\`\n**Registration Period:** \`-r <start date (YYYY-MM-DD OR unix/epoch)> <end date (YYYY-MM-DD OR unix/epoch)>\`\n**Sort Order:** \`-s <sort order>\`\n\nIt is recommended to use slash commands for any \`create\` command.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).`);
+        await m.reply(`Please provide all required parameters! Here is a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Description:** \`-d <description>\`\n**Mode:** \`-m <mode>\`\n**Match Size (xvx, input x):** \`-ms <match size>\`\n**Team Size:** \`-ts <min> <max>\`\n**Registration Period:** \`-r <start date (YYYY-MM-DD OR unix/epoch)> <end date (YYYY-MM-DD OR unix/epoch)>\`\n**Team Sort Order:** \`-s <sort order>\`\n\nIt is recommended to use slash commands for any \`create\` command.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).`);
         return;
     }
 
@@ -265,7 +265,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     tournament.year = registrationEnd.getUTCFullYear();
 
     // Check for registration sort order validity
-    const sortOrder = m instanceof Message ? sortOrderRegex.exec(m.content)?.[1] : m.options.getString("sort_order");
+    const sortOrder = m instanceof Message ? sortOrderRegex.exec(m.content)?.[1] : m.options.getString("team_sort_order");
     if (!sortOrder) {
         if (m instanceof Message) await m.reply("Please provide a valid sort order for your tournament!");
         else await m.editReply("Please provide a valid sort order for your tournament!");
@@ -1001,8 +1001,8 @@ const data = new SlashCommandBuilder()
             .setDescription("The registration end date in YYYY-MM-DD (e.g. 2024-01-02) OR unix/epoch (e.g. 1704178800)")
             .setRequired(true))
     .addStringOption(option =>
-        option.setName("sort_order")
-            .setDescription("The sort order of the tournament")
+        option.setName("team_sort_order")
+            .setDescription("The sort order of players/teams in the tournament")
             .setRequired(true)
             .addChoices(
                 { name: "Signup Order", value: "signup" },
