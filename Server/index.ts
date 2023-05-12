@@ -80,10 +80,21 @@ koa.use(async (ctx, next) => {
 
         await next();
     } catch (err: any) {
-        console.log(err);
-        
         ctx.status = err.status || 500;
-        ctx.body = { error: "Something went wrong!" };
+
+        if (ctx.status >= 500) {
+            ctx.body = { 
+                error: "Something went wrong!",
+                status: ctx.status,
+            };            
+            console.log(err);
+            return;
+        }
+
+        ctx.body = { 
+            error: err.message,
+            status: ctx.status,
+        };
     }
 });
 
