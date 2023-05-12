@@ -1,4 +1,4 @@
-import { ForumChannel, ThreadChannel } from "discord.js";
+import { DiscordAPIError, ForumChannel, ThreadChannel } from "discord.js";
 import { discordClient } from "../../discord";
 import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
 import { Tournament } from "../../../Models/tournaments/tournament";
@@ -17,11 +17,15 @@ async function initialize (): Promise<CronJobData[]> {
     let cronJobs: CronJobData[] = maps.map(map => ({
         type: CronJobType.Custommap,
         date: map.deadline!,
-    })).filter((j, i, a) => a.findIndex(j2 => j2.date.getTime() === j.date.getTime()) === i);
+    }));
 
+    // If any dates are in the past, remove them and add a job to start instantly.
     if (cronJobs.some(j => j.date.getTime() < Date.now())) {
-        await execute();
         cronJobs = cronJobs.filter(j => j.date.getTime() > Date.now());
+        cronJobs.push({
+            type: CronJobType.Custommap,
+            date: new Date(Date.now() + 1000), // 1 second delay to avoid Date in past error
+        });
     }
 
     return cronJobs;
@@ -38,21 +42,26 @@ async function execute () {
     const tournaments: Tournament[] = [];
     for (const map of maps) {
         if (map.customThreadID) {
-            const thread = await discordClient.channels.fetch(map.customThreadID) as ThreadChannel | null;
-            if (thread) {
-                const forumChannel = thread.parent as ForumChannel;
-                const tag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "late")?.id;
-                if (tag) await thread.setAppliedTags([...thread.appliedTags, tag], "The deadline for this beatmap has now passed.");
+            try {
+                const thread = await discordClient.channels.fetch(map.customThreadID) as ThreadChannel | null;
+                if (thread) {
+                    const forumChannel = thread.parent as ForumChannel;
+                    const tag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "late")?.id;
+                    if (tag) await thread.setAppliedTags([...thread.appliedTags, tag], "The deadline for this beatmap has now passed.");
 
-                const tournament = tournaments.find(t => t.server === thread.guildId) || await Tournament
-                    .createQueryBuilder("tournament")
-                    .leftJoinAndSelect("tournament.organizer", "organizer")
-                    .leftJoinAndSelect("tournament.mode", "mode")
-                    .where("tournament.server = :server", { server: thread.guildId })
-                    .getOne();
+                    const tournament = tournaments.find(t => t.server === thread.guildId) || await Tournament
+                        .createQueryBuilder("tournament")
+                        .leftJoinAndSelect("tournament.organizer", "organizer")
+                        .leftJoinAndSelect("tournament.mode", "mode")
+                        .where("tournament.server = :server", { server: thread.guildId })
+                        .getOne();
 
-                if (tournament)
-                    mappoolLog(tournament, "customMapCron", tournament.organizer, `Applied the \`late\` tag for **${thread.name}** <#${thread.id}>.`);
+                    if (tournament)
+                        mappoolLog(tournament, "customMapCron", tournament.organizer, `Applied the \`late\` tag for **${thread.name}** <#${thread.id}>.`);
+                }
+            } catch (err) {
+                if (!(err instanceof DiscordAPIError && err.code === 10003))
+                    console.error(err);
             }
         }
 

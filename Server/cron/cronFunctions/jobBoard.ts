@@ -18,11 +18,15 @@ async function initialize (): Promise<CronJobData[]> {
     let cronJobs: CronJobData[] = jobs.map(job => ({
         type: CronJobType.Jobboard,
         date: job.deadline!,
-    })).filter((j, i, a) => a.findIndex(j2 => j2.date.getTime() === j.date.getTime()) === i);
+    }));
 
+    // If any dates are in the past, remove them and add a job to start instantly.
     if (cronJobs.some(j => j.date.getTime() < Date.now())) {
-        await execute();
         cronJobs = cronJobs.filter(j => j.date.getTime() > Date.now());
+        cronJobs.push({
+            type: CronJobType.Jobboard,
+            date: new Date(Date.now() + 1000), // 1 second delay to avoid Date in past error
+        });
     }
 
     return cronJobs;
