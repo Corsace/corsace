@@ -76,7 +76,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     try {
         await cron.add(CronJobType.Jobboard, endTime);
     } catch (err) {
-        m.channel?.send(`Failed to get cron job running to close job board posts on time. Please contact VINXIS.\n\nError: ${err}`);
+        m.channel?.send(`Failed to get cron job running to close job board posts on time. Please contact VINXIS.`);
+        console.log(err);
         return;
     }
 

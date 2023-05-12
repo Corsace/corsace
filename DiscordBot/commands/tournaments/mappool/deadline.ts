@@ -101,7 +101,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     try {
         await cron.add(CronJobType.Custommap, date);
     } catch (err) {
-        m.channel?.send(`Failed to get cron job running to apply changes at deadline. Please contact VINXIS.\n\nError: ${err}`);
+        m.channel?.send(`Failed to get cron job running to apply changes at deadline. Please contact VINXIS.`);
+        console.log(err);
         return;
     }
 
