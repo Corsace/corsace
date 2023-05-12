@@ -1,23 +1,46 @@
 import Router from "@koa/router";
+import koaBasicAuth from "koa-basic-auth";
+import { ParameterizedContext, Next } from "koa";
 import { cron } from "../../../cron";
 import { CronJobType } from "../../../../Interfaces/cron";
-import koaBasicAuth from "koa-basic-auth";
 import { config } from "node-config-ts";
 
-function validateData(body: any) {
-    if (body.type === undefined || body.date === undefined)
-        return "Missing data";
+async function validateData (ctx: ParameterizedContext, next: Next) {
+    const body = ctx.request.body;
+
+    if (body.type === undefined || body.date === undefined) {
+        ctx.body = {
+            success: false,
+            error: "Missing data",
+        };
+        return;
+    }
         
     const { type, date }: { type: number, date: number } = body;
 
     const triggerDate = new Date(date);
-    if (isNaN(triggerDate.getTime()) || triggerDate.getTime() < Date.now())
-        return "Invalid date";
+    if (isNaN(triggerDate.getTime()) || triggerDate.getTime() < Date.now()) {
+        ctx.body = {
+            success: false,
+            error: "Invalid date",
+        };
+        return;
+    }
 
-    if (CronJobType[type] === undefined)
-        return "Invalid type";
+    if (CronJobType[type] === undefined) {
+        ctx.body = {
+            success: false,
+            error: "Invalid type",
+        };
+        return;
+    }
 
-    return { type, triggerDate };
+    ctx.state.cronJob = {
+        type,
+        date: triggerDate,
+    };
+
+    await next();
 }
 
 const cronRouter = new Router();
@@ -31,33 +54,19 @@ cronRouter.get("/", async (ctx) => {
     ctx.body = cron.listJobs();
 });
 
-cronRouter.post("/add", async (ctx) => {
-    const data = validateData(ctx.request.body);
-    if (typeof data === "string")
-        return ctx.body = {
-            success: false,
-            error: data,
-        };
+cronRouter.post("/add", validateData, async (ctx) => {
+    const { type, date } = ctx.state.cronJob;
 
-    const { type, triggerDate } = data;
-
-    await cron.add(type, triggerDate);
+    await cron.add(type, date);
     ctx.body = {
         success: true,
     };
 });
 
-cronRouter.post("/remove", async (ctx) => {
-    const data = validateData(ctx.request.body);
-    if (typeof data === "string")
-        return ctx.body = {
-            success: false,
-            error: data,
-        };
+cronRouter.post("/remove", validateData, async (ctx) => {
+    const { type, date } = ctx.state.cronJob;
 
-    const { type, triggerDate } = data;
-
-    await cron.remove(type, triggerDate);
+    await cron.remove(type, date);
     ctx.body = {
         success: true,
     };
