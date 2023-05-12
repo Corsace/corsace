@@ -9,5 +9,8 @@
     },
     "files": [
         "index.ts"
-    ]
+    ],
+    "include": [
+        "../config/Config.d.ts"
+    ],
 }
