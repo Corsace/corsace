@@ -4,13 +4,8 @@ import { CronJobData, CronJobType } from '../../Interfaces/cron';
 
 class Cron {
 
-    private data: CronJobData[];
-    private jobs: CronJob[]; 
-
-    constructor (data?: CronJobData[]) {
-        this.data = data || [];
-        this.jobs = this.data.map(job => new CronJob(job.date, async () => await cronFunctions[job.type].execute(job), undefined, true));
-    }
+    private data: CronJobData[] = [];
+    private jobs: CronJob[] = [];
 
     public async initialize () {
         const data = await Promise.all(Object.values(cronFunctions).map(async func => await func.initialize()));
