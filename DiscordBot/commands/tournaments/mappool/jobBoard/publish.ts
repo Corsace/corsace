@@ -1,5 +1,3 @@
-import Axios from "axios";
-import { config } from "node-config-ts";
 import { ChatInputCommandInteraction, GuildForumThreadCreateOptions, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../index";
 import { fetchJobChannel, fetchMappool, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../../functions/tournamentFunctions";
@@ -8,6 +6,7 @@ import { TournamentRoleType } from "../../../../../Models/tournaments/tournament
 import { CronJobType } from "../../../../../Interfaces/cron";
 import { User } from "../../../../../Models/user";
 import { loginResponse } from "../../../../functions/loginResponse";
+import { cron } from "../../../../../Server/cron";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -74,12 +73,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const { data } = await Axios.post(`${config.api.publicUrl}/api/cron/add`, {
-        type: CronJobType.Jobboard,
-        date: endTime.getTime(),
-    });
-    if (!data.success) {
-        m.channel?.send(`Failed to get cron job running to close job board posts on time. Please contact VINXIS.\n\nError: ${data.error}`);
+    try {
+        await cron.add(CronJobType.Jobboard, endTime);
+    } catch (err) {
+        m.channel?.send(`Failed to get cron job running to close job board posts on time. Please contact VINXIS.\n\nError: ${err}`);
         return;
     }
 

@@ -34,7 +34,7 @@ cronRouter.post("/add", async (ctx) => {
 
     const { type, triggerDate } = data;
 
-    cron.add(type, triggerDate);
+    await cron.add(type, triggerDate);
     ctx.body = {
         success: true,
     };
@@ -50,7 +50,7 @@ cronRouter.post("/remove", async (ctx) => {
 
     const { type, triggerDate } = data;
 
-    cron.remove(type, triggerDate);
+    await cron.remove(type, triggerDate);
     ctx.body = {
         success: true,
     };

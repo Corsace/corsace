@@ -8,6 +8,7 @@ import { Command } from "../../index";
 import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { CronJobType } from "../../../../Interfaces/cron";
+import { cron } from "../../../../Server/cron";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -96,12 +97,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     mappoolMap.deadline = date;
-    const { data } = await Axios.post(`${config.api.publicUrl}/api/cron/add`, {
-        type: CronJobType.Custommap,
-        date: date.getTime(),
-    });
-    if (!data.success) {
-        m.channel?.send(`Failed to get cron job running to apply changes at deadline. Please contact VINXIS.\n\nError: ${data.error}`);
+
+    try {
+        await cron.add(CronJobType.Custommap, date);
+    } catch (err) {
+        m.channel?.send(`Failed to get cron job running to apply changes at deadline. Please contact VINXIS.\n\nError: ${err}`);
         return;
     }
 
