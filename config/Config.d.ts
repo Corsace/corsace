@@ -77,6 +77,11 @@ declare module "node-config-ts" {
         mca: ISubSiteConfig;
         open: ISubSiteConfig;
         api: IWebServiceConfig;
+
+        interOpAuth: {
+            username: string;
+            password: string;
+        };
     }
 
     export const config: Config;

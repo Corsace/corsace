@@ -24,6 +24,8 @@ class Cron {
             const { data } = await Axios.post(`${config.api.publicUrl}/api/cron/add`, {
                 type,
                 date: date.getTime(),
+            }, {
+                auth: config.interOpAuth,
             });
             if (!data.success)
                 throw new Error(data.error);
@@ -43,6 +45,8 @@ class Cron {
             const { data } = await Axios.post(`${config.api.publicUrl}/api/cron/remove`, {
                 type,
                 date: date.getTime(),
+            }, {
+                auth: config.interOpAuth,
             });
             if (!data.success)
                 throw new Error(data.error);

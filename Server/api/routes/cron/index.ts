@@ -1,6 +1,8 @@
 import Router from "@koa/router";
 import { cron } from "../../../cron";
 import { CronJobType } from "../../../../Interfaces/cron";
+import koaBasicAuth from "koa-basic-auth";
+import { config } from "node-config-ts";
 
 function validateData(body: any) {
     if (body.type === undefined || body.date === undefined)
@@ -19,6 +21,11 @@ function validateData(body: any) {
 }
 
 const cronRouter = new Router();
+
+cronRouter.use(koaBasicAuth({
+    name: config.interOpAuth.username,
+    pass: config.interOpAuth.password,
+}))
 
 cronRouter.get("/", async (ctx) => {
     ctx.body = cron.listJobs();
