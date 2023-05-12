@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "corsace-chart.fullname" $ }}-{{ $webServiceName }}
+  name: {{ include "corsace-chart.fullname" $ }}-{{ lower $webServiceName }}
   labels:
     webServiceName: {{ $webServiceName }}
     {{- include "corsace-chart.labels" $ | nindent 4 }}

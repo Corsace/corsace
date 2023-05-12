@@ -89,6 +89,11 @@
         "port": 8080,
         "publicUrl": "http://localhost:8080"
     },
+    "cronRunner": {
+        "host": "localhost",
+        "port": 8081,
+        "publicUrl": "http://localhost:8081"
+    },
     "interOpAuth": {
         "username": "interop",
         "password": "generate random password"

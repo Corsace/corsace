@@ -17,11 +17,12 @@ class Cron {
         this.jobs = this.data.map(job => new CronJob(job.date, async () => await cronFunctions[job.type].execute(job), undefined, true));
 
         this.initialized = true;
+        console.log("Cron runner initialized!");
     }
 
     public async add (type: CronJobType, date: Date) {
         if (!this.initialized) {
-            const { data } = await Axios.post(`${config.api.publicUrl}/api/cron/add`, {
+            const { data } = await Axios.post(`${config.cronRunner.publicUrl}/api/cron/add`, {
                 type,
                 date: date.getTime(),
             }, {
@@ -42,7 +43,7 @@ class Cron {
 
     public async remove (type: CronJobType, date: Date) {
         if (!this.initialized) {
-            const { data } = await Axios.post(`${config.api.publicUrl}/api/cron/remove`, {
+            const { data } = await Axios.post(`${config.cronRunner.publicUrl}/api/cron/remove`, {
                 type,
                 date: date.getTime(),
             }, {
