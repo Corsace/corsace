@@ -16,6 +16,7 @@ export enum TournamentChannelType {
     Referee,
     Stream,
     Matchresults,
+    Jobboard,
 }
 
 // Designate an array of TournamentRoles for each channel type
@@ -32,6 +33,7 @@ export const TournamentChannelTypeRoles: { [key in TournamentChannelType]: Tourn
     [TournamentChannelType.Referee]: [TournamentRoleType.Organizer, TournamentRoleType.Referees],
     [TournamentChannelType.Stream]: [TournamentRoleType.Organizer, TournamentRoleType.Referees, TournamentRoleType.Streamers, TournamentRoleType.Commentators],
     [TournamentChannelType.Matchresults]: undefined,
+    [TournamentChannelType.Jobboard]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers],
 };
 
 @Entity()

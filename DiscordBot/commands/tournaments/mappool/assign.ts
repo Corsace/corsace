@@ -1,6 +1,6 @@
-import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, ForumChannel, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
-import { fetchCustomThread, fetchMappool, fetchSlot, fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
+import { confirmCommand, fetchCustomThread, fetchMappool, fetchSlot, fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { Beatmap } from "../../../../Models/beatmap";
 import { Beatmap as APIBeatmap, Mode } from "nodesu";
@@ -11,6 +11,7 @@ import beatmapEmbed from "../../../functions/beatmapEmbed";
 import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
+import { discordClient } from "../../../../Server/discord";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -19,7 +20,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers]);
+    const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard]);
     if (!securedChannel) 
         return;
 
@@ -30,14 +31,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]);
     if (!allowed) 
         return;
-
-    const replace = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("replace") : /-r Y/i.test(m.content));
-    if (replace && m instanceof Message)
-        m.content = m.content.replace(/-r Y/i, "");
     
     const testing = (m instanceof ChatInputCommandInteraction ? m.options.getSubcommand() === "tester": /-test Y/i.test(m.content));
     if (testing && m instanceof Message)    
         m.content = m.content.replace(/-test Y/i, "");
+
+    const replace = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("replace") : /-r Y/i.test(m.content));
+    if (replace && m instanceof Message) {
+        const confirm = await confirmCommand(m, `Toggling \`replace\` will replace all ${testing ? "tesplayers" : "custom mappers"} in the slot. Are you sure you want to continue?`);
+        if (!confirm)
+            return;
+        m.content = m.content.replace(/-r Y/i, "");
+    }
 
     const targetRegex = /-t (.+)/;
     const poolRegex = /-p (\S+)/;
@@ -55,10 +60,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const pool = typeof poolText === "string" ? poolText : poolText[1];
     const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
     const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
-
     if (isNaN(order)) {
-        if (m instanceof Message) m.reply("Invalid slot number. Please use a valid slot number.");
-        else m.editReply("Invalid slot number. Please use a valid slot number.");
+        if (m instanceof Message) m.reply(`Invalid slot number **${order}** for. Please use a valid slot number.`);
+        else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
         return;
     }
 
@@ -67,7 +71,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
 
-    const slotMod = await fetchSlot(m, mappool, slot.toString(), true);
+    const slotMod = await fetchSlot(m, mappool, slot, true);
     if (!slotMod) 
         return;
 
@@ -90,6 +94,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
     mappoolMap.assignedBy = assigner;
+
+    const jobPost = mappoolMap.jobPost;
+    if (jobPost?.jobBoardThread) {
+        const thread = await discordClient.channels.fetch(jobPost.jobBoardThread) as ThreadChannel | null;
+        if (thread) {
+            const tag = (thread.parent as ForumChannel).availableTags.find(t => t.name.toLowerCase() === "closed")?.id;
+            if (tag) await thread.setAppliedTags([tag], "This slot is now assigned.");
+            await thread.setArchived(true, "This slot is now assigned.");
+        }
+    }
+    mappoolMap.jobPost = null;
 
     // Check if target is link
     if ((m instanceof ChatInputCommandInteraction && m.options.getSubcommand() === "link") || target.includes("osu.ppy.sh/beatmaps")) {
@@ -134,12 +149,23 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mappoolMap.isCustom = false;
         mappoolMap.deadline = null;
         mappoolMap.customMappers = [];
-        if (mappoolMap.customBeatmap) {
-            const customMap = mappoolMap.customBeatmap;
-            mappoolMap.customBeatmap = undefined;
-            await customMap.remove();
+
+        const customMap = mappoolMap.customBeatmap;
+        if (mappoolMap.customBeatmap)
+            mappoolMap.customBeatmap = null;
+        if (mappoolMap.customThreadID) {
+            const thread = await discordClient.channels.fetch(mappoolMap.customThreadID) as ThreadChannel | null;
+            if (thread) {
+                await thread.setAppliedTags([], "**All mappers** are removed. The thread is now archived.");
+                await thread.setArchived(true, "**All mappers** are removed. The thread is now archived.");
+            }
+            mappoolMap.customThreadID = null;
+            mappoolMap.customMessageID = null;
         }
+
         await mappoolMap.save();
+        if (customMap) await customMap.remove();
+        if (jobPost) await jobPost.remove();
 
         const log = new MappoolMapHistory();
         log.createdBy = assigner;
@@ -159,7 +185,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             embeds: [mappoolMapEmbed],
         });
 
-        await mappoolLog(tournament, "assign", assigner, log, slotMod, mappool);
+        await mappoolLog(tournament, "assignMap", assigner, log, slotMod, mappool);
         return;
     }
 
@@ -205,10 +231,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     await mappoolMap.save();
-    if (m instanceof Message) m.reply(`Successfully added **${user.osu.username}** as a mapper for **${mappoolSlot}**`);
-    else m.editReply(`Successfully added **${user.osu.username}** as a mapper for **${mappoolSlot}**`);
+    if (jobPost) await jobPost.remove();
 
-    await mappoolLog(tournament, "assign", assigner, `**${user.osu.username}** is now a custom mapper for **${mappoolSlot}**`);
+    if (m instanceof Message) m.reply(`Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
+    else m.editReply(`Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
+
+    await mappoolLog(tournament, "assignCustom", assigner, `**${user.osu.username}** is now a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
 }
 
 const data = new SlashCommandBuilder()

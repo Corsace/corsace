@@ -9,6 +9,10 @@ userRouter.get("/", isLoggedIn, async (ctx) => {
     ctx.body = await ctx.state.user.getInfo();
 });
 
+userRouter.get("/mca", isLoggedIn, async (ctx) => {
+    ctx.body = await ctx.state.user.getMCAInfo();
+});
+
 userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
     const body = ctx.request.body;
     if (!body.ID || !body.username)

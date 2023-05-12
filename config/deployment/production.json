@@ -92,5 +92,9 @@
                 "publicUrl": "https://mappacks.corsace.io"
             }
         }
+    },
+    "interOpAuth": {
+        "username": "interop",
+        "password": "@@INTEROP_PASSWORD"
     }
 }

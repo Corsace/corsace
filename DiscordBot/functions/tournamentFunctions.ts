@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, GuildMember, GuildMemberRoleManager, Message, MessageComponentInteraction, PermissionFlagsBits, PermissionsBitField, User as DiscordUser, EmbedBuilder, TextChannel, ThreadChannel, ForumChannel, ChannelType } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, GuildMember, GuildMemberRoleManager, Message, MessageComponentInteraction, PermissionFlagsBits, PermissionsBitField, User as DiscordUser, EmbedBuilder, TextChannel, ThreadChannel, ForumChannel, ChannelType, GuildForumThreadCreateOptions } from "discord.js";
 import { Mappool } from "../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../Models/tournaments/mappools/mappoolSlot";
 import { Round } from "../../Models/tournaments/round";
@@ -345,14 +345,14 @@ export async function fetchMappool (m: Message | ChatInputCommandInteraction, to
     });
 }
 
-export async function fetchSlot (m: Message | ChatInputCommandInteraction, mappool: Mappool, poolText: string = "", getRelations: boolean = false): Promise<MappoolSlot | undefined> {
-    let slots = mappool.slots ?? await MappoolSlot.search(mappool, poolText, getRelations);
+export async function fetchSlot (m: Message | ChatInputCommandInteraction, mappool: Mappool, slotText: string = "", getRelations: boolean = false): Promise<MappoolSlot | undefined> {
+    let slots = mappool.slots ?? await MappoolSlot.search(mappool, slotText, getRelations);
     if (mappool.slots)
-        slots = slots.filter(slot => slot.name.toLowerCase().includes(poolText.toLowerCase()));
+        slots = slots.filter(slot => slot.name.toLowerCase().includes(slotText.toLowerCase()));
 
     if (slots.length === 0) {
-        if (m instanceof Message) m.reply(`Could not find slot **${poolText}**`);
-        else m.editReply(`Could not find slot **${poolText}**`);
+        if (m instanceof Message) m.reply(`Could not find slot **${slotText}**`);
+        else m.editReply(`Could not find slot **${slotText}**`);
         return;
     }
     
@@ -398,9 +398,9 @@ export async function fetchSlot (m: Message | ChatInputCommandInteraction, mappo
         });
     });
 }
- 
+
 export async function fetchCustomThread (m: Message | ChatInputCommandInteraction, mappoolMap: MappoolMap, tournament: Tournament, slot: string): Promise<[ThreadChannel, Message] | boolean | undefined> {
-    const content = `Map: **${mappoolMap.customBeatmap ? `${mappoolMap.customBeatmap.artist} - ${mappoolMap.customBeatmap.title} [${mappoolMap.customBeatmap.difficulty}]` : "N/A"}**\nMapper(s): **${mappoolMap.customMappers.length > 0 ? mappoolMap.customMappers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nTestplayer(s): **${mappoolMap.testplayers.length > 0 ? mappoolMap.testplayers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nDeadline: ${mappoolMap.deadline ? `<t:${mappoolMap.deadline.getTime()}>` : "**N/A**"}`;
+    const content = `Map: **${mappoolMap.customBeatmap ? `${mappoolMap.customBeatmap.artist} - ${mappoolMap.customBeatmap.title} [${mappoolMap.customBeatmap.difficulty}]` : "N/A"}**\nMapper(s): **${mappoolMap.customMappers.length > 0 ? mappoolMap.customMappers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nTestplayer(s): **${mappoolMap.testplayers.length > 0 ? mappoolMap.testplayers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nDeadline: ${mappoolMap.deadline ? `<t:${mappoolMap.deadline.getTime() / 1000}>` : "**N/A**"}`;
 
     if (!mappoolMap.customThreadID) {
         const tourneyChannels = await TournamentChannel.find({
@@ -445,11 +445,14 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
                     resolve(undefined);
                 } else if (i.customId === "create") {
                     await i.reply("Creating thread...");
-                    const thread = await forumChannel.threads.create({
+                    const createObj: GuildForumThreadCreateOptions = {
                         name: `${slot} (${mappoolMap.customMappers.map(u => u.osu.username).join(", ")})`,
                         message: { content },
-                        appliedTags: [forumChannel.availableTags.find(t => t.name.toLowerCase() === "wip")?.id ?? ""],
-                    });
+                    }
+                    const tag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "wip")?.id;
+                    if (tag)
+                        createObj.appliedTags = [tag];
+                    const thread = await forumChannel.threads.create(createObj);
                     const threadMsg = await thread.fetchStarterMessage();
                     await i.deleteReply();
                     resolve([thread, threadMsg!]);
@@ -493,7 +496,8 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
         }
 
         const thread = ch as ThreadChannel;
-        const threadMsg = thread.messages.cache.get(mappoolMap.customMessageID!);
+        const threadMsg = await thread.messages.fetch(mappoolMap.customMessageID!);
+        console.log()
         if (!threadMsg) {
             if (m instanceof Message) m.reply(`Could not find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);
             else m.editReply(`Could not find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);
@@ -507,6 +511,25 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
 
         return [thread, threadMsg];
     }
+}
+
+export async function fetchJobChannel (m: Message | ChatInputCommandInteraction, tournament: Tournament): Promise<ForumChannel | undefined> {
+    const tourneyChannels = await TournamentChannel.find({
+        where: {
+            tournament: {
+                ID: tournament.ID,
+            }
+        }
+    });
+    const tournamentChannel = tourneyChannels.find(c => c.channelType === TournamentChannelType.Jobboard);
+    const jobChannel = discordClient.channels.cache.get(tournamentChannel?.channelID ?? "");
+    if (!(jobChannel && jobChannel.type === ChannelType.GuildForum)) {
+        if (m instanceof Message) m.reply(`Could not find job channel for tournament ${tournament.name}`);
+        else m.editReply(`Could not find job channel for tournament ${tournament.name}`);
+        return;
+    }
+
+    return jobChannel as ForumChannel;
 }
 
 export async function hasTournamentRoles (m: Message | ChatInputCommandInteraction, tournament: Tournament, targetRoles: TournamentRoleType[]): Promise<boolean> {
@@ -551,8 +574,8 @@ export async function isSecuredChannel (m: Message | ChatInputCommandInteraction
     // Check if the channel type is allowed
     const allowed = targetChannels.some(t => t === channel.channelType);
     if (!allowed) {
-        if (m instanceof Message) m.reply(`This channel is not any of the following channel types: ${targetChannels.map(t => t.toString()).join(", ")}. If this is a mistake, please have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type.`);
-        else m.editReply(`This channel is not any of the following channel types: ${targetChannels.map(t => t.toString()).join(", ")}. If this is a mistake, please have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type.`);
+        if (m instanceof Message) m.reply(`This channel is not any of the following channel types: ${targetChannels.map(t => TournamentChannelType[t]).join(", ")}. If this is a mistake, please have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type.`);
+        else m.editReply(`This channel is not any of the following channel types: ${targetChannels.map(t => TournamentChannelType[t]).join(", ")}. If this is a mistake, please have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type.`);
         return false;
     }
 

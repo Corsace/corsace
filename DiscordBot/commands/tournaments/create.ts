@@ -1,5 +1,5 @@
 import { config } from "node-config-ts";
-import { ActionRowBuilder, ChatInputCommandInteraction, Message, PermissionFlagsBits, SlashCommandBuilder, MessageComponentInteraction, StringSelectMenuBuilder, StringSelectMenuInteraction, EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ChannelType, GuildChannelCreateOptions } from "discord.js";
+import { ActionRowBuilder, ChatInputCommandInteraction, Message, PermissionFlagsBits, SlashCommandBuilder, MessageComponentInteraction, StringSelectMenuBuilder, StringSelectMenuInteraction, EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ChannelType, GuildChannelCreateOptions, ForumChannel } from "discord.js";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
 import { User } from "../../../Models/user";
@@ -29,7 +29,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const sortOrderRegex = new RegExp(/-s ([a-zA-Z0-9_ ]{1,6})/);
     const helpRegex = new RegExp(/-h/);
     if (m instanceof Message && (helpRegex.test(m.content) || (!nameRegex.test(m.content) && !abbreviationRegex.test(m.content) && !descriptionRegex.test(m.content) && !modeRegex.test(m.content) && !matchSizeRegex.test(m.content) && !teamSizeRegex.test(m.content) && !registrationRegex.test(m.content) && !sortOrderRegex.test(m.content)))) {
-        await m.reply(`Please provide all required parameters! Here is a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Description:** \`-d <description>\`\n**Mode:** \`-m <mode>\`\n**Match Size (xvx, input x):** \`-ms <match size>\`\n**Team Size:** \`-ts <min> <max>\`\n**Registration Period:** \`-r <start date (YYYY-MM-DD OR unix/epoch)> <end date (YYYY-MM-DD OR unix/epoch)>\`\n**Sort Order:** \`-s <sort order>\`\n\nIt is recommended to use slash commands for any \`create\` command.`);
+        await m.reply(`Please provide all required parameters! Here is a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Description:** \`-d <description>\`\n**Mode:** \`-m <mode>\`\n**Match Size (xvx, input x):** \`-ms <match size>\`\n**Team Size:** \`-ts <min> <max>\`\n**Registration Period:** \`-r <start date (YYYY-MM-DD OR unix/epoch)> <end date (YYYY-MM-DD OR unix/epoch)>\`\n**Team Sort Order:** \`-s <sort order>\`\n\nIt is recommended to use slash commands for any \`create\` command.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).`);
         return;
     }
 
@@ -246,16 +246,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const registrationStartText = m instanceof Message ? registrationRegex.exec(m.content)?.[1] : m.options.getString("registration_start");
     const registrationEndText = m instanceof Message ? registrationRegex.exec(m.content)?.[2] : m.options.getString("registration_end");
     if (!registrationStartText || !registrationEndText) {
-        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
-        else await m.editReply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
+        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        else await m.editReply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
         return;
     }
 
     const registrationStart = new Date(registrationStartText.includes("-") ? registrationStartText : parseInt(registrationStartText + "000"));
     const registrationEnd = new Date(registrationEndText.includes("-") ? registrationEndText : parseInt(registrationEndText + "000"));
     if (isNaN(registrationStart.getTime()) || isNaN(registrationEnd.getTime()) || registrationStart.getTime() > registrationEnd.getTime() || registrationEnd.getTime() < Date.now()) {
-        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
-        else await m.editReply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
+        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        else await m.editReply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
         return;
     }
 
@@ -265,7 +265,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     tournament.year = registrationEnd.getUTCFullYear();
 
     // Check for registration sort order validity
-    const sortOrder = m instanceof Message ? sortOrderRegex.exec(m.content)?.[1] : m.options.getString("sort_order");
+    const sortOrder = m instanceof Message ? sortOrderRegex.exec(m.content)?.[1] : m.options.getString("team_sort_order");
     if (!sortOrder) {
         if (m instanceof Message) await m.reply("Please provide a valid sort order for your tournament!");
         else await m.editReply("Please provide a valid sort order for your tournament!");
@@ -613,6 +613,11 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                                 description: "Create a forum channel to QA any custom maps made for the tournament (requires a community server)",
                             },
                             {
+                                label: "Job Board (For custom maps)",
+                                value: "Jobboard",
+                                description: "Create a forum channel for mappers to find open slots and specs (requires a community server)",
+                            },
+                            {
                                 label: "Testplayers",
                                 value: "Testplayers",
                                 description: "Create a tournament testplayer channel",
@@ -680,18 +685,12 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                 return;
             }
 
-            let channelType: ChannelType;
-            switch (channelTypeMenu) {
-                case "Announcements":
-                    channelType = ChannelType.GuildAnnouncement;
-                    break;
-                case "Mappoolqa":
-                    channelType = ChannelType.GuildForum;
-                    break;
-                default:
-                    channelType = ChannelType.GuildText;
-                    break;
-            }
+            let channelType = ChannelType.GuildText;
+            if (channelTypeMenu === "Announcements")
+                channelType = ChannelType.GuildAnnouncement;
+            else if (channelTypeMenu === "Jobboard" || channelTypeMenu === "Mappoolqa")
+                channelType = ChannelType.GuildForum;
+
             try {
                 const tournamentChannel = new TournamentChannel();
                 tournamentChannel.channelType = tournamentChannelType;
@@ -725,7 +724,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                         channelObject.permissionOverwrites[0].deny = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.SendMessages;
                 }
 
-                if (channelType === ChannelType.GuildForum)
+                if (channelTypeMenu === "Mappoolqa")
                     channelObject.availableTags = [{
                         name: "WIP",
                         moderated: true,
@@ -733,7 +732,21 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                         name: "Finished",
                         moderated: true,
                     },{
+                        name: "Late",
+                        moderated: true,
+                    },{
                         name: "Needs HS",
+                        moderated: true,
+                    }];
+                else if (channelTypeMenu === "Jobboard")
+                    channelObject.availableTags = [{
+                        name: "Open",
+                        moderated: true,
+                    },{
+                        name: "Closed",
+                        moderated: true,
+                    },{
+                        name: "To Assign",
                         moderated: true,
                     }];
 
@@ -772,9 +785,10 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             TournamentChannelType[channelType] === undefined || 
             (channelType.toLowerCase() === "announcements" && channel.type !== ChannelType.GuildAnnouncement) || 
             (channelType.toLowerCase() === "mappoolqa" && channel.type !== ChannelType.GuildForum) ||
-            (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "mappoolqa" && channel.type !== ChannelType.GuildText)
+            (channelType.toLowerCase() === "jobboard" && channel.type !== ChannelType.GuildForum) ||
+            (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "mappoolqa" && channelType.toLowerCase() !== "jobboard" && channel.type !== ChannelType.GuildText)
         ) {
-            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel.\nMappool QA should be a guild forum channel. All other channels should be guild text channels.`);
+            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel.\nMappool QA and Job Board should be guild forum channels. All other channels should be guild text channels.`);
             setTimeout(async () => {
                 reply.delete();
                 msg.delete();
@@ -796,6 +810,28 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         tournamentChannel.channelID = channel.id;
         tournamentChannel.channelType = TournamentChannelType[channelType];
         tournament.channels!.push(tournamentChannel);
+        
+        let tags: string[] = [];
+        let forumChannel: ForumChannel | undefined = undefined;
+        if (channelType.toLowerCase() === "mappoolqa") {
+            forumChannel = channel as ForumChannel;
+            tags = ["WIP", "Finished", "Late", "Needs HS"];
+        } else if (channelType.toLowerCase() === "jobboard") {
+            forumChannel = channel as ForumChannel;
+            tags = ["Open", "Closed", "To Assign"];
+        }
+
+        if (forumChannel) {
+            const tagsToAdd = tags.filter(t => !forumChannel!.availableTags.some(at => at.name.toLowerCase() === t.toLowerCase()));
+            if (tagsToAdd.length > 0) {
+                await forumChannel.setAvailableTags(tagsToAdd.map(t => {
+                    return {
+                        name: t,
+                        moderated: true,
+                    }
+                }));
+            }
+        }
 
         content += `\nChannel <#${channel.id}> designated for \`${channelType}\`.`;
         await channelMessage.edit(content);
@@ -965,8 +1001,8 @@ const data = new SlashCommandBuilder()
             .setDescription("The registration end date in YYYY-MM-DD (e.g. 2024-01-02) OR unix/epoch (e.g. 1704178800)")
             .setRequired(true))
     .addStringOption(option =>
-        option.setName("sort_order")
-            .setDescription("The sort order of the tournament")
+        option.setName("team_sort_order")
+            .setDescription("The sort order of players/teams in the tournament")
             .setRequired(true)
             .addChoices(
                 { name: "Signup Order", value: "signup" },

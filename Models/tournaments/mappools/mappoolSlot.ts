@@ -51,6 +51,7 @@ export class MappoolSlot extends BaseEntity {
                 .leftJoinAndSelect("maps.testplayers", "testplayers")
                 .leftJoinAndSelect("maps.customBeatmap", "customBeatmap")
                 .leftJoinAndSelect("customBeatmap.mode", "mode")
+                .leftJoinAndSelect("maps.jobPost", "jobPost")
         } else {
             q
                 .leftJoin("slot.mappool", "mappool")

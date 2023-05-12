@@ -112,5 +112,9 @@
                 "bucketName": "mappacks-temp"
             }
         }
+    },
+    "interOpAuth": {
+        "username": "interop",
+        "password": "generate random password"
     }
 }

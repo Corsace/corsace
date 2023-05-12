@@ -24,4 +24,7 @@
         ],
         "sourceMap": true,
     },
+    "include": [
+        "./config/Config.d.ts"
+    ],
 }
