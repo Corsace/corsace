@@ -55,7 +55,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             inline: true,
         });
     } else if (commands.some(cmd => cmd.data.name.toLowerCase() === arg.toLowerCase() || cmd.alternativeNames.some(a => a.toLowerCase() === arg.toLowerCase()))) {
-        const command = commands.find(cmd => cmd.data.name.toLowerCase() === arg.toLowerCase());
+        const command = commands.find(cmd => cmd.data.name.toLowerCase() === arg.toLowerCase() || cmd.alternativeNames.some(a => a.toLowerCase() === arg.toLowerCase()));
         embed.setAuthor({name: `Command: ${command!.data.name}`});
         embed.setDescription(`\`!${command!.data.name} ${optionParser(command!.data.options)}\`\n${command!.data.description}\n\n**Aliases:** ${command!.alternativeNames.map(a => `\`${a}\``).join(", ")}`);
         embed.addFields(command!.data.options.map(option => {

@@ -113,7 +113,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const slots = await MappoolSlot.search(mappool, "", true);
     const mappoolMaps = slots.flatMap(s => s.maps.map(m => ({ ...m, slot: s })));
     const filteredMaps = mappoolMaps.filter(m => m !== undefined && ((m.customBeatmap && m.customBeatmap.link) || m.beatmap));
-    const names = filteredMaps.map(m => `${m.slot.acronym}${m.order}.osz`);
+    const names = filteredMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
     const dlLinks = filteredMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}`);
 
     if (filteredMaps.length === 0) {

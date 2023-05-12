@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, GuildMember, GuildMemberRoleManager, Message, MessageComponentInteraction, PermissionFlagsBits, PermissionsBitField, User as DiscordUser, EmbedBuilder, TextChannel, ThreadChannel, ForumChannel, ChannelType } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, GuildMember, GuildMemberRoleManager, Message, MessageComponentInteraction, PermissionFlagsBits, PermissionsBitField, User as DiscordUser, EmbedBuilder, TextChannel, ThreadChannel, ForumChannel, ChannelType, GuildForumThreadCreateOptions } from "discord.js";
 import { Mappool } from "../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../Models/tournaments/mappools/mappoolSlot";
 import { Round } from "../../Models/tournaments/round";
@@ -445,11 +445,14 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
                     resolve(undefined);
                 } else if (i.customId === "create") {
                     await i.reply("Creating thread...");
-                    const thread = await forumChannel.threads.create({
+                    const createObj: GuildForumThreadCreateOptions = {
                         name: `${slot} (${mappoolMap.customMappers.map(u => u.osu.username).join(", ")})`,
                         message: { content },
-                        appliedTags: [forumChannel.availableTags.find(t => t.name.toLowerCase() === "wip")?.id ?? ""],
-                    });
+                    }
+                    const tag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "wip")?.id;
+                    if (tag)
+                        createObj.appliedTags = [tag];
+                    const thread = await forumChannel.threads.create(createObj);
                     const threadMsg = await thread.fetchStarterMessage();
                     await i.deleteReply();
                     resolve([thread, threadMsg!]);
@@ -493,7 +496,8 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
         }
 
         const thread = ch as ThreadChannel;
-        const threadMsg = thread.messages.cache.get(mappoolMap.customMessageID!);
+        const threadMsg = await thread.messages.fetch(mappoolMap.customMessageID!);
+        console.log()
         if (!threadMsg) {
             if (m instanceof Message) m.reply(`Could not find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);
             else m.editReply(`Could not find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);

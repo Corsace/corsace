@@ -87,7 +87,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (m instanceof Message) m.reply(`Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
             else m.editReply(`Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
             
-            await mappoolLog(tournament, "remove", user, `Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`)
+            await mappoolLog(tournament, "removeMap", user, `Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`)
             return;
         }
 
@@ -133,7 +133,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 if (m instanceof Message) m.reply(`Removed **${targetUser.osu.username}** from playtesting **${mappoolSlot}**`);
                 else m.editReply(`Removed **${targetUser.osu.username}** from playtesting **${mappoolSlot}**`);
 
-                await mappoolLog(tournament, "remove (playtester)", user, `Removed **${targetUser.osu.username}** from playtesting **${mappoolSlot}**`)
+                await mappoolLog(tournament, "removeTester", user, `Removed **${targetUser.osu.username}** from playtesting **${mappoolSlot}**`)
                 return;
             }
 
@@ -153,7 +153,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 if (m instanceof Message) m.reply(`Removed **${targetUser.osu.username}** from **${mappoolSlot}**`);
                 else m.editReply(`Removed **${targetUser.osu.username}** from **${mappoolSlot}**`);
 
-                await mappoolLog(tournament, "remove", user, `Removed **${targetUser.osu.username}** from **${mappoolSlot}**`)
+                await mappoolLog(tournament, "removeCustomMapper", user, `Removed **${targetUser.osu.username}** from **${mappoolSlot}**`)
                 return;
             }
         }
@@ -172,7 +172,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (m instanceof Message) m.reply(`Removed all testplayers from **${mappoolSlot}**`);
             else m.editReply(`Removed all testplayers from **${mappoolSlot}**`);
 
-            await mappoolLog(tournament, "remove", user, `Removed all testplayers from **${mappoolSlot}**`)
+            await mappoolLog(tournament, "removeTester", user, `Removed all testplayers from **${mappoolSlot}**`)
             return;
         }
 
@@ -195,7 +195,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (m instanceof Message) m.reply(`Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
         else m.editReply(`Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
 
-        await mappoolLog(tournament, "remove", user, `Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`)
+        await mappoolLog(tournament, "removeCustom", user, `Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`)
         return;
     }
 
@@ -246,7 +246,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof Message) m.reply(`Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`);
     else m.editReply(`Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`);
 
-    await mappoolLog(tournament, "remove", user, `Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`)
+    await mappoolLog(tournament, "removePool", user, `Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`)
 } 
 
 const data = new SlashCommandBuilder()

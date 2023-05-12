@@ -90,8 +90,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const startText = m instanceof Message ? dateRegex.exec(m.content)?.[1] : m.options.getString("start");
     const endText = m instanceof Message ? dateRegex.exec(m.content)?.[2] : m.options.getString("end");
     if (!startText || !endText) {
-        if (m instanceof Message) await m.reply("Please provide a valid start and end date for your stage! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
-        else await m.editReply("Please provide a valid start and end date for your stage! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.");
+        if (m instanceof Message) await m.reply("Please provide a valid start and end date for your stage! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        else await m.editReply("Please provide a valid start and end date for your stage! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
         return;
     }
     const start = new Date(startText.includes("-") ? startText : parseInt(startText + "000"));

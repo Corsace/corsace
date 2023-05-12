@@ -88,5 +88,9 @@
         "host": "localhost",
         "port": 8080,
         "publicUrl": "http://localhost:8080"
+    },
+    "interOpAuth": {
+        "username": "interop",
+        "password": "generate random password"
     }
 }
