@@ -3,8 +3,31 @@ import { discordClient } from "../../discord";
 import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
 import { Tournament } from "../../../Models/tournaments/tournament";
 import { mappoolLog } from "../../../DiscordBot/functions/tournamentFunctions";
+import { CronJobData, CronJobType } from "../../../Interfaces/cron";
 
-export default async function execute () {
+async function initialize (): Promise<CronJobData[]> {
+    // Get all maps with a deadline
+    const maps: { deadline: Date }[] = await MappoolMap
+        .createQueryBuilder("map")
+        .select("distinct deadline")
+        .where("map.deadline IS NOT NULL")
+        .getRawMany();
+
+    // For each map, create a cron job with the deadline as the date.
+    let cronJobs: CronJobData[] = maps.map(map => ({
+        type: CronJobType.Custommap,
+        date: map.deadline!,
+    })).filter((j, i, a) => a.findIndex(j2 => j2.date.getTime() === j.date.getTime()) === i);
+
+    if (cronJobs.some(j => j.date.getTime() < Date.now())) {
+        await execute();
+        cronJobs = cronJobs.filter(j => j.date.getTime() > Date.now());
+    }
+
+    return cronJobs;
+}
+
+async function execute () {
     // Get all mappoolMaps where their deadline has passed.
     const maps = await MappoolMap
         .createQueryBuilder("map")
@@ -36,4 +59,9 @@ export default async function execute () {
         map.deadline = null;
         await map.save();
     }
+}
+
+export default {
+    initialize,
+    execute,
 }

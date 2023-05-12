@@ -13,6 +13,7 @@ import logoutRouter from "./api/routes/login/logout";
 import discordRouter from "./api/routes/login/discord";
 import osuRouter from "./api/routes/login/osu";
 import userRouter from "./api/routes/user";
+import cronRouter from "./api/routes/cron";
 import helloWorldRouter from "./api/routes/helloWorld";
 
 import mcaRouter from "./api/routes/mca";
@@ -39,6 +40,7 @@ import statisticsRouter from "./api/routes/statistics";
 import mappersRouter from "./api/routes/mappers";
 
 import ormConfig from "../ormconfig";
+import { cron } from "./cron";
 
 const koa = new Koa;
 
@@ -87,6 +89,9 @@ koa.use(async (ctx, next) => {
 
 // General
 
+/// Cron
+koa.use(Mount("/api/cron", cronRouter.routes()));
+
 /// Login
 koa.use(Mount("/api/login/discord", discordRouter.routes()));
 koa.use(Mount("/api/login/osu", osuRouter.routes()));
@@ -129,8 +134,9 @@ koa.use(Mount("/api", helloWorldRouter.routes()));
 
 ormConfig.initialize()
     .then((connection) => {
-        console.log(`Connected to the ${connection.options.database} (${connection.options.name}) database!`);
+        console.log(`Connected to the ${connection.options.database} database!`);
         setupPassport();
+        cron.initialize();
         koa.listen(config.api.port);
     })
     .catch((error) => console.log("An error has occurred in connecting.", error));

@@ -1,11 +1,12 @@
-import { ChatInputCommandInteraction, ForumChannel, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
+import Axios from "axios";
+import { config } from "node-config-ts";
+import { ChatInputCommandInteraction, ForumChannel, Message, SlashCommandBuilder } from "discord.js";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
 import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
-import { cron } from "../../../../Server/cron"
 import { CronJobType } from "../../../../Interfaces/cron";
 
 async function run (m: Message | ChatInputCommandInteraction) {
@@ -95,6 +96,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     mappoolMap.deadline = date;
+    const { data } = await Axios.post(`${config.api.publicUrl}/api/cron/add`, {
+        type: CronJobType.Custommap,
+        date: date.getTime(),
+    });
+    if (!data.success) {
+        m.channel?.send(`Failed to get cron job running to apply changes at deadline. Please contact VINXIS.\n\nError: ${data.error}`);
+        return;
+    }
 
     const customThread = await fetchCustomThread(m, mappoolMap, tournament, mappoolSlot);
     if (!customThread)
@@ -113,8 +122,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
     else m.editReply(`Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}>**`);
 
     await mappoolLog(tournament, "deadline", user, `Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}>**`);
-
-    cron.add(CronJobType.Custommap, date);
 }
 
 const data = new SlashCommandBuilder()

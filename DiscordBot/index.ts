@@ -7,7 +7,6 @@ import guildMemberRemove from "./handlers/guildMemberRemove";
 import messageCreate from "./handlers/messageCreate";
 import ormConfig from "../ormconfig";
 import { commands } from "./commands";
-import { OAuth, User } from "../Models/user";
 
 // Discord bot event handlers
 discordClient.on("guildMemberAdd", guildMemberAdd);
@@ -40,6 +39,6 @@ discordClient.once("ready", () => {
 // Start the bot
 ormConfig.initialize()
     .then((connection) => {
-        console.log(`Connected to the ${connection.options.database} (${connection.options.name}) database!`);
+        console.log(`Connected to the ${connection.options.database} database!`);
     })
     .catch((error) => console.log("An error has occurred in connecting.", error));
