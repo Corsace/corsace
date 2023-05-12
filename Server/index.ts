@@ -133,10 +133,10 @@ koa.use(Mount("/", helloWorldRouter.routes()));
 koa.use(Mount("/api", helloWorldRouter.routes()));
 
 ormConfig.initialize()
-    .then((connection) => {
+    .then(async (connection) => {
         console.log(`Connected to the ${connection.options.database} database!`);
         setupPassport();
-        cron.initialize();
+        await cron.initialize();
         koa.listen(config.api.port);
     })
     .catch((error) => console.log("An error has occurred in connecting.", error));
