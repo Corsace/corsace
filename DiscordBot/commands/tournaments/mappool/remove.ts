@@ -57,6 +57,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const mappool = await fetchMappool(m, tournament, pool, false, slotText ? false : true, slotText ? false : true);
     if (!mappool) 
         return;
+    if (mappool.isPublic) {
+        if (m instanceof Message) m.reply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        else m.editReply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+    }
 
     if (slotText) {
         const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));

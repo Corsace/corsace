@@ -69,9 +69,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const mappool1 = await fetchMappool(m, tournament, pool1);
     if (!mappool1) 
         return;
+    if (mappool1.isPublic) {
+        if (m instanceof Message) m.reply(`Mappool **${mappool1.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        else m.editReply(`Mappool **${mappool1.name}** is public. You cannot use this command. Please make the mappool private first.`);
+    }
     const mappool2 = !pool2 ? mappool1 : await fetchMappool(m, tournament, pool2);
     if (!mappool2) 
         return;
+    if (mappool2.isPublic) {
+        if (m instanceof Message) m.reply(`Mappool **${mappool2.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        else m.editReply(`Mappool **${mappool2.name}** is public. You cannot use this command. Please make the mappool private first.`);
+    }
     
     const mappoolSlot1 = `${mappool1.abbreviation.toUpperCase()} ${slot1}${order1}`;
     const mappoolSlot2 = `${mappool2.abbreviation.toUpperCase()} ${slot2}${order2}`;
