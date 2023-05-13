@@ -33,7 +33,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const pool = typeof poolText === "string" ? poolText : poolText[0];
 
-    const mappool = await fetchMappool(m, tournament, pool);
+    const mappool = await fetchMappool(m, tournament, pool, false, slotText ? false : true, slotText ? false : true);
     if (!mappool) 
         return;
     
@@ -80,8 +80,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
             else m.editReply(`**${mappoolSlot}** does not have a link.`);
             return;
         }
+        
+        if (mappoolMap.customBeatmap?.link) {
+            if (m instanceof Message) 
+                await m.reply(mappoolMap.customBeatmap.link);
+            else 
+                await m.editReply(mappoolMap.customBeatmap.link);
+            return;
+        }
 
-        let link = mappoolMap.customBeatmap ? mappoolMap.customBeatmap.link : mappoolMap.beatmap ? `https://osu.direct/api/d/${mappoolMap.beatmap.beatmapsetID}` : undefined;
+        let link = mappoolMap.beatmap ? `https://osu.direct/api/d/${mappoolMap.beatmap.beatmapsetID}` : undefined;
 
         if (!link) {
             if (m instanceof Message) m.reply(`**${mappoolSlot}** currently does not have a beatmap.`);
@@ -104,23 +112,30 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 }
             ] });
         } catch (e) {
-            if (m instanceof Message) m.reply(`Could not download **${mappoolSlot}**\n\`\`\`\n${e}\`\`\``);
-            else m.editReply(`Could not download **${mappoolSlot}**\n\`\`\`\n${e}\`\`\``);
+            if (m instanceof Message) m.reply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
+            else m.editReply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
         }
 
         if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
         return;
     }
 
-    const slots = await MappoolSlot.search(mappool, "", true);
-    const mappoolMaps = slots.flatMap(s => s.maps.map(m => ({ ...m, slot: s })));
-    const filteredMaps = mappoolMaps.filter(m => m !== undefined && ((m.customBeatmap && m.customBeatmap.link) || m.beatmap));
+    const mappoolMaps = mappool.slots.flatMap(s => s.maps);
+    const filteredMaps = mappoolMaps.filter(m => (m.customBeatmap && m.customBeatmap.link) || m.beatmap);
     const names = filteredMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
     const dlLinks = filteredMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}`);
 
     if (filteredMaps.length === 0) {
         if (m instanceof Message) m.reply(`**${pool}** does not have any downloadable beatmaps.`);
         else m.editReply(`**${pool}** does not have any downloadable beatmaps.`);
+        return;
+    }
+
+    if (mappool.isPublic || (mappool.linkExpiry?.getTime() ?? -1) > Date.now()) {
+        if (m instanceof Message) 
+            await m.reply(mappool.link!);
+        else 
+            await m.editReply(mappool.link!);
         return;
     }
 
@@ -132,20 +147,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await buckets.mappacksTemp.putObject(s3Key, zipStream, "application/zip");
         const url = await buckets.mappacksTemp.getSignedUrl(s3Key, 60 * 60 * 24 * 7);
 
-        // TODO: Rewrite to send generated URL instead of attaching.
+        mappool.s3Key = s3Key;
+        mappool.link = url;
+        mappool.linkExpiry = new Date(Date.now() + 60 * 60 * 24 * 7 * 1000);
+        await mappool.save();
 
-        // if (m instanceof Message) await m.reply({ files: [
-        //     {
-        //         attachment: zipStream,
-        //         name,
-        //     }
-        // ] });
-        // else await m.editReply({ files: [
-        //     {
-        //         attachment: zipStream,
-        //         name,
-        //     }
-        // ] });
+        if (m instanceof Message) 
+            await m.reply(url);
+        else 
+            await m.editReply(url);
     } catch (e) {
         if (m instanceof Message) m.reply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
         else m.editReply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);

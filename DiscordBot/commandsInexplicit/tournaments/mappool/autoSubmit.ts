@@ -291,6 +291,9 @@ export default async function autoSubmit (m: Message) {
     mappoolMapEmbed.data.author!.name = `${slot.acronym.toUpperCase()}${mappoolMap.order}: ${mappoolMapEmbed.data.author!.name}`;
     
     const mappool = mappoolMap.slot.mappool;
+    mappool.s3Key = mappool.link = mappool.linkExpiry = null;
+    await mappool.save();
+
     m.reply({
         content: `Successfully submitted **${artist} - ${title} [${diff}]** to **${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${mappoolMap.order}**`,
         embeds: [mappoolMapEmbed],

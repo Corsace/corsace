@@ -300,6 +300,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (jobPost1 && beatmap2) await jobPost1.remove();
     if (jobPost2 && beatmap1) await jobPost2.remove();
 
+    mappool1.s3Key = mappool1.link = mappool1.linkExpiry = null;
+    mappool2.s3Key = mappool2.link = mappool2.linkExpiry = null;
+    await mappool1.save();
+    await mappool2.save();
+
     if (m instanceof Message) m.reply(`Swapped **${slot1}${order1}** with **${slot2}${order2}**`);
     else await m.editReply(`Swapped **${slot1}${order1}** with **${slot2}${order2}**`);
 

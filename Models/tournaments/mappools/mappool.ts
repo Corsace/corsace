@@ -26,6 +26,15 @@ export class Mappool extends BaseEntity {
     @Column({ default: false })
     isPublic!: boolean;
 
+    @Column({ type: "varchar", nullable: true })
+    s3Key?: string | null;
+
+    @Column({ type: "varchar", nullable: true })
+    link?: string | null;
+
+    @Column({ type: "datetime", nullable: true })
+    linkExpiry?: Date | null;
+
     @Column()
     targetSR!: number;
 

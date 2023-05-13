@@ -88,6 +88,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
             mappoolMap.beatmap = null;
             await mappoolMap.save();
 
+            mappool.s3Key = mappool.link = mappool.linkExpiry = null;
+            await mappool.save();
+
             if (m instanceof Message) m.reply(`Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
             else m.editReply(`Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
             
@@ -195,6 +198,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         await mappoolMap.save();
         if (customMap) await customMap.remove();
+        
+        mappool.s3Key = mappool.link = mappool.linkExpiry = null;
+        await mappool.save();
 
         if (m instanceof Message) m.reply(`Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
         else m.editReply(`Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
@@ -246,6 +252,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (customMap && !testing) await customMap.remove();
         });
     });
+
+    mappool.s3Key = mappool.link = mappool.linkExpiry = null;
+    await mappool.save();
 
     if (m instanceof Message) m.reply(`Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`);
     else m.editReply(`Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`);

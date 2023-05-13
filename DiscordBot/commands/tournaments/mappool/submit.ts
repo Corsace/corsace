@@ -261,6 +261,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await mappoolMap.customBeatmap.save();
     await mappoolMap.save();
 
+    mappool.s3Key = mappool.link = mappool.linkExpiry = null;
+    await mappool.save();
+
     const log = new MappoolMapHistory();
     log.createdBy = user;
     log.mappoolMap = mappoolMap;
