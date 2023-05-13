@@ -1,12 +1,12 @@
 import { GetObjectCommand, S3 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { config, IConfig, S3BucketConfig } from "node-config-ts";
+import { config, IConfig, S3BucketConfig, S3ClientConfig } from "node-config-ts";
 import { Readable } from "stream";
 
 const _clients: Record<string, S3> = {};
 
-for (const [clientName, clientConfig] of Object.entries(config.s3.clients)) {
+for (const [clientName, clientConfig] of Object.entries<S3ClientConfig>(config.s3.clients)) {
     _clients[clientName] = new S3({
         endpoint: {
             hostname: clientConfig.hostname,
@@ -26,13 +26,14 @@ class S3Bucket {
     private readonly client: S3;
     public readonly clientName: string;
     public readonly bucketName: string;
-    public readonly publicUrl: string;
+    public readonly publicUrl?: string;
 
     constructor(bucketConfig: S3BucketConfig) {
         this.client = clients[bucketConfig.clientName];
         this.clientName = bucketConfig.clientName;
         this.bucketName = bucketConfig.bucketName;
-        this.publicUrl = bucketConfig.publicUrl.endsWith("/") ? bucketConfig.publicUrl.slice(0, -1) : bucketConfig.publicUrl;
+        if (bucketConfig.publicUrl)
+            this.publicUrl = bucketConfig.publicUrl.endsWith("/") ? bucketConfig.publicUrl.slice(0, -1) : bucketConfig.publicUrl;
     }
 
     getPublicUrl(path: string) {

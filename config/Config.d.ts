@@ -24,7 +24,7 @@ declare module "node-config-ts" {
     interface S3BucketConfig {
         clientName: keyof IConfig["s3"]["clients"];
         bucketName: string;
-        publicUrl: string;
+        publicUrl?: string;
     }
 
     interface IConfig {
