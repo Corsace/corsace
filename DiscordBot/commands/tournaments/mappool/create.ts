@@ -213,7 +213,7 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
 
 // This function asks the user for slots (slotname, slottype, and # of maps) for the mappool
 async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournament) {
-    let content = "Provide the acronym for the slot, followed by the name, and the number of maps that will be in the slot.\nFor any mod restrictions, ALSO provide a list of 2 letter acronyms of all allowed mods followed by 2 numbers, one for the number of users that require mods, one for the number of unique mods required.\nYou can choose to provide 2 numbers only and just the mod combination to allow all non-DT/HT mods for a slot.\nYou can choose to provide mods only if all users will require selecting a mod from the selection of mods.\n\n**Examples:**\nNM Nomod 6 NM: A typical nomod slot with 6 maps in it that will enforce nomod.\nDT Double Time 4 DT: A typical hidden slot with 3 maps in it that will enforce hidden.\nFM Freemod 3 2 2: A typical freemod slot that will enforce at least 2 unique mods per team, and at least 2 players having mods per team\nTB Tiebreaker 1 0 0 OR TB Tiebreaker 1: A typical tiebreaker slot that will allow all mods, but will not enforce any mods.\n\nYou can also separate each slot with a semicolon, like so:\nNM Nomod 6 NM; DT Double Time 4 DT; FM Freemod 3 2 2; TB Tiebreaker 1\n";
+    let content = "Provide the acronym for the slot, followed by the name, and the number of maps that will be in the slot.\nFor any mod restrictions, ALSO provide a list of 2 letter acronyms of all allowed mods followed by 2 numbers, one for the number of users that require mods, one for the number of unique mods required.\nYou can choose to provide 2 numbers only and just the mod combination to allow all non-DT/HT mods for a slot.\nYou can choose to provide mods only if all users will require selecting a mod from the selection of mods.\n\n**Examples:**\nNM Nomod 6 NM: A typical nomod slot with 6 maps in it that will enforce nomod.\nDT Double Time 4 DT: A typical double time slot with 3 maps in it that will enforce double time.\nFM Freemod 3 2 2: A typical freemod slot that will enforce at least 2 unique mods per team, and at least 2 players having mods per team\nFM Freemod 3 HDHRFL 2 2: A typical freemod slot that will enforce at least 2 unique mods per team within the mods HD, HR, or FL, and at least 2 players having mods per team\nTB Tiebreaker 1 0 0 OR TB Tiebreaker 1: A typical tiebreaker slot that will allow all mods, but will not enforce any mods.\n\nYou can also separate each slot with a semicolon, like so:\nNM Nomod 6 NM; DT Double Time 4 DT; FM Freemod 3 2 2; TB Tiebreaker 1\n";
     const slotMessage = await m.channel!.send({
         content,
         components: [
@@ -354,6 +354,20 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
 
             mappoolSlotsMade.push(slot)
             newSlots += `\n${acronym} ${slotName.join(" ")} ${mapCount} maps ${modNum !== undefined ? `with ${modsToAcronym(modNum)} mods` : ""}${userModCount ? ` with ${userModCount} mod${userModCount > 1 ? "s" : ""} per user` : ""}${uniqueModCount ? ` with ${uniqueModCount} unique mod${uniqueModCount > 1 ? "s" : ""}` : ""}`;
+        }
+
+        // Check for duplicate slot names/abbreviations
+        const slotNames = [mappool.slots.map(s => s.name.toLowerCase()), mappoolSlotsMade.map(s => s.name.toLowerCase())].flat();
+        const slotAcronyms = [mappool.slots.map(s => s.acronym.toLowerCase()), mappoolSlotsMade.map(s => s.acronym.toLowerCase())].flat();
+        const duplicateSlotNames = slotNames.filter((s, i) => slotNames.indexOf(s) !== i);
+        const duplicateSlotAcronyms = slotAcronyms.filter((s, i) => slotAcronyms.indexOf(s) !== i);
+        if (duplicateSlotNames.length > 0 || duplicateSlotAcronyms.length > 0) {
+            const reply = await msg.reply(`Please provide unique slot names and abbreviations.\nDuplicate slot names: \`${duplicateSlotNames.join(", ")}\`.\nDuplicate slot abbreviations: \`${duplicateSlotAcronyms.join(", ")}\`.`);
+            setTimeout(async () => {
+                await reply.delete();
+                await msg.delete();
+            }, 5000);
+            return;
         }
 
         mappool.slots.push(...mappoolSlotsMade);

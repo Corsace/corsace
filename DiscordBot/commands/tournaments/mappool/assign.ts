@@ -111,7 +111,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     mappoolMap.jobPost = null;
 
     // Check if target is link
-    if ((m instanceof ChatInputCommandInteraction && m.options.getSubcommand() === "link") || target.includes("osu.ppy.sh/beatmaps")) {
+    if ((m instanceof ChatInputCommandInteraction && m.options.getSubcommand() === "beatmap") || target.includes("osu.ppy.sh/beatmaps")) {
         const linkRegex = /https?:\/\/osu.ppy.sh\/beatmapsets\/(\d+)#(osu|taiko|fruits|mania)\/(\d+)/;
         const link = target.match(linkRegex);
         if (!link) {
@@ -131,6 +131,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (apiMap.mode !== tournament.mode.ID - 1) {
             if (m instanceof Message) m.reply("Beatmap mode does not match tournament mode.");
             else m.editReply("Beatmap mode does not match tournament mode.");
+            return;
+        }
+        // TODO: Support for maps with no approved date (e.g. graveyarded maps) https://github.com/Corsace/Corsace/issues/193
+        if (isNaN(apiMap.approvedDate.getTime())) {
+            if (m instanceof Message) m.reply("Beatmap is not ranked. Support will be added soon!\nhttps://github.com/Corsace/Corsace/issues/193");
+            else m.editReply("Beatmap is not ranked. Support will be added soon!\nhttps://github.com/Corsace/Corsace/issues/193");
             return;
         }
 

@@ -170,6 +170,12 @@ export async function fetchTournament (m: Message | ChatInputCommandInteraction,
 
 // Function to fetch the stage to create a mappool for
 export async function fetchStage (m: Message | ChatInputCommandInteraction, tournament: Tournament): Promise<Stage | undefined> {
+    if (tournament.stages.length === 0) {
+        if (m instanceof Message) m.reply("This tournament has no stages.");
+        else m.editReply("This tournament has no stages.");
+        return;
+    }
+
     if (tournament.stages.length === 1)
         return tournament.stages[0];
 
@@ -497,7 +503,6 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
 
         const thread = ch as ThreadChannel;
         const threadMsg = await thread.messages.fetch(mappoolMap.customMessageID!);
-        console.log()
         if (!threadMsg) {
             if (m instanceof Message) m.reply(`Could not find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);
             else m.editReply(`Could not find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);

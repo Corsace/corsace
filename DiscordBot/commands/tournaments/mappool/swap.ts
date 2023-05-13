@@ -163,6 +163,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const customMappers2 = mappoolMap2.customMappers;
     const testplayers1 = mappoolMap1.testplayers;
     const testplayers2 = mappoolMap2.testplayers;
+    const deadline1 = mappoolMap1.deadline;
+    const deadline2 = mappoolMap2.deadline;
     let log1: MappoolMapHistory | undefined = new MappoolMapHistory();
     let log2: MappoolMapHistory | undefined = new MappoolMapHistory();
     const jobPost1 = mappoolMap1.jobPost;
@@ -211,6 +213,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
     mappoolMap2.customMappers = customMappers1;
     mappoolMap2.testplayers = testplayers1;
+    mappoolMap2.deadline = deadline1 || null;
     if (mappoolMap2.customThreadID && mappoolMap2.customMappers.length === 0) {
         const thread = await discordClient.channels.fetch(mappoolMap2.customThreadID) as ThreadChannel | null;
         if (thread) {
@@ -271,6 +274,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
     mappoolMap1.customMappers = customMappers2;
     mappoolMap1.testplayers = testplayers2;
+    mappoolMap1.deadline = deadline2 || null;
     if (mappoolMap1.customThreadID && mappoolMap1.customMappers.length === 0) {
         const thread = await discordClient.channels.fetch(mappoolMap1.customThreadID) as ThreadChannel | null;
         if (thread) {
