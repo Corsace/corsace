@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, ForumChannel, Message, MessageComponentInteraction, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
-import { deletePack, fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
+import { fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
@@ -8,6 +8,7 @@ import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappo
 import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { discordClient } from "../../../../Server/discord";
+import { deletePack } from "../../../functions/mappackFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)

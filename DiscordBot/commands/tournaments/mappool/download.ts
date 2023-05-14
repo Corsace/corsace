@@ -2,8 +2,9 @@ import { ChannelType, ChatInputCommandInteraction, Message, SlashCommandBuilder 
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { download } from "../../../../Server/utils/download";
-import { createPack, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
+import { fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
+import { createPack } from "../../../functions/mappackFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

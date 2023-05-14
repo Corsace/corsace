@@ -8,7 +8,7 @@ import { once } from "events";
 import { BeatmapParser } from "../../../../Server/beatmapParser";
 import { Brackets } from "typeorm";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
-import { deletePack, fetchCustomThread, mappoolLog } from "../../../functions/tournamentFunctions";
+import { fetchCustomThread, mappoolLog } from "../../../functions/tournamentFunctions";
 import { TournamentRole, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { User } from "../../../../Models/user";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
@@ -16,6 +16,7 @@ import { Beatmap as APIBeatmap} from "nodesu";
 import beatmapEmbed from "../../../functions/beatmapEmbed";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
+import { deletePack } from "../../../functions/mappackFunctions";
 
 export default async function autoSubmit (m: Message) {
     if (!m.guild)

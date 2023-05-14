@@ -1,11 +1,12 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { confirmCommand, createPack, deletePack, fetchMappool, fetchTournament, hasTournamentRoles, mappoolLog } from "../../../functions/tournamentFunctions";
+import { confirmCommand, fetchMappool, fetchTournament, hasTournamentRoles, mappoolLog } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
 import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { buckets } from "../../../../Server/s3";
 import { gets3Key } from "../../../../Server/utils/s3";
+import { createPack, deletePack } from "../../../functions/mappackFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)

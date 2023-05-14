@@ -7,7 +7,7 @@ import Axios from "axios";
 import osu from "ojsama";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRole, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { deletePack, fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
+import { fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
 import { User } from "../../../../Models/user";
@@ -15,6 +15,7 @@ import { loginResponse } from "../../../functions/loginResponse";
 import beatmapEmbed from "../../../functions/beatmapEmbed";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
+import { deletePack } from "../../../functions/mappackFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
