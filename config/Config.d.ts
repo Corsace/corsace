@@ -106,6 +106,7 @@ declare module "node-config-ts" {
         mca: ISubSiteConfig;
         open: ISubSiteConfig;
         api: IWebServiceConfig;
+        cronRunner: IWebServiceConfig;
 
         interOpAuth: {
             username: string;

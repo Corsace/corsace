@@ -87,6 +87,11 @@ webServices:
     command: api
     ingress:
       enabled: false
+  cronRunner:
+    replicaCount: 1
+    command: cron-runner
+    ingress:
+      enabled: false
 
 bot:
   enabled: true

@@ -139,8 +139,10 @@ Shared environment by deployments
       key: interOpPassword
 - name: API_PUBLICURL
   value: {{ default (printf "%s%s%s" "http://" (include "corsace-chart.fullname" $) "-api") $.Values.webServices.api.publicUrl }}
+- name: CRONRUNNER_PUBLICURL
+  value: {{ default (lower (printf "%s%s%s" "http://" (include "corsace-chart.fullname" $) "-cronRunner")) $.Values.webServices.api.publicUrl }}
 {{- range $webServiceName, $webService := $.Values.webServices }}
-{{- if ne $webServiceName "api" }}
+{{- if and (ne $webServiceName "api") (ne $webServiceName "cronRunner") }}
 - name: {{ $webServiceName | upper }}_PUBLICURL
   value: {{ $webService.publicUrl }}
 - name: {{ $webServiceName | upper }}_SSR

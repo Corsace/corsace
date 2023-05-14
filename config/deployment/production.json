@@ -77,6 +77,11 @@
         "port": 80,
         "publicUrl": "@@API_PUBLICURL"
     },
+    "cronRunner": {
+        "host": "0.0.0.0",
+        "port": 80,
+        "publicUrl": "@@CRONRUNNER_PUBLICURL"
+    },
     "s3": {
         "clients": {
             "r2": {
