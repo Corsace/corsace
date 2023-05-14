@@ -89,6 +89,30 @@
         "port": 8080,
         "publicUrl": "http://localhost:8080"
     },
+    "s3": {
+        "clients": {
+            "r2": {
+                "hostname": "<cloudflare account id>.r2.cloudflarestorage.com",
+                "useSSL": true,
+                "forcePathStyle": true,
+                "credentials": {
+                    "accessKeyId": "obtain from https://dash.cloudflare.com/?to=/:account/r2/api-tokens",
+                    "secretAccessKey": "obtain from https://dash.cloudflare.com/?to=/:account/r2/api-tokens"
+                }
+            }
+        },
+        "buckets": {
+            "mappacks": {
+                "clientName": "r2",
+                "bucketName": "mappacks",
+                "publicUrl": "set custom domain or enable r2.dev url in bucket settings"
+            },
+            "mappacksTemp": {
+                "clientName": "r2",
+                "bucketName": "mappacks-temp"
+            }
+        }
+    },
     "interOpAuth": {
         "username": "interop",
         "password": "generate random password"

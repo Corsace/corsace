@@ -8,6 +8,7 @@ import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappo
 import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { discordClient } from "../../../../Server/discord";
+import { deletePack } from "../../../functions/mappackFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -69,9 +70,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const mappool1 = await fetchMappool(m, tournament, pool1);
     if (!mappool1) 
         return;
+    if (mappool1.isPublic) {
+        if (m instanceof Message) m.reply(`Mappool **${mappool1.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        else m.editReply(`Mappool **${mappool1.name}** is public. You cannot use this command. Please make the mappool private first.`);
+    }
     const mappool2 = !pool2 ? mappool1 : await fetchMappool(m, tournament, pool2);
     if (!mappool2) 
         return;
+    if (mappool2.isPublic) {
+        if (m instanceof Message) m.reply(`Mappool **${mappool2.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        else m.editReply(`Mappool **${mappool2.name}** is public. You cannot use this command. Please make the mappool private first.`);
+    }
     
     const mappoolSlot1 = `${mappool1.abbreviation.toUpperCase()} ${slot1}${order1}`;
     const mappoolSlot2 = `${mappool2.abbreviation.toUpperCase()} ${slot2}${order2}`;
@@ -155,6 +164,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const customMappers2 = mappoolMap2.customMappers;
     const testplayers1 = mappoolMap1.testplayers;
     const testplayers2 = mappoolMap2.testplayers;
+    const deadline1 = mappoolMap1.deadline;
+    const deadline2 = mappoolMap2.deadline;
     let log1: MappoolMapHistory | undefined = new MappoolMapHistory();
     let log2: MappoolMapHistory | undefined = new MappoolMapHistory();
     const jobPost1 = mappoolMap1.jobPost;
@@ -203,6 +214,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
     mappoolMap2.customMappers = customMappers1;
     mappoolMap2.testplayers = testplayers1;
+    mappoolMap2.deadline = deadline1 || null;
     if (mappoolMap2.customThreadID && mappoolMap2.customMappers.length === 0) {
         const thread = await discordClient.channels.fetch(mappoolMap2.customThreadID) as ThreadChannel | null;
         if (thread) {
@@ -263,6 +275,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
     mappoolMap1.customMappers = customMappers2;
     mappoolMap1.testplayers = testplayers2;
+    mappoolMap1.deadline = deadline2 || null;
     if (mappoolMap1.customThreadID && mappoolMap1.customMappers.length === 0) {
         const thread = await discordClient.channels.fetch(mappoolMap1.customThreadID) as ThreadChannel | null;
         if (thread) {
@@ -291,6 +304,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     if (jobPost1 && beatmap2) await jobPost1.remove();
     if (jobPost2 && beatmap1) await jobPost2.remove();
+
+    await deletePack("mappacksTemp", mappool1);
+    await deletePack("mappacksTemp", mappool2);
+    mappool1.mappackLink = mappool1.mappackExpiry = null;
+    mappool2.mappackLink = mappool2.mappackExpiry = null;
+    await mappool1.save();
+    await mappool2.save();
 
     if (m instanceof Message) m.reply(`Swapped **${slot1}${order1}** with **${slot2}${order2}**`);
     else await m.editReply(`Swapped **${slot1}${order1}** with **${slot2}${order2}**`);

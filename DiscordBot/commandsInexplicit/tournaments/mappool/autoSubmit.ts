@@ -16,6 +16,7 @@ import { Beatmap as APIBeatmap} from "nodesu";
 import beatmapEmbed from "../../../functions/beatmapEmbed";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
+import { deletePack } from "../../../functions/mappackFunctions";
 
 export default async function autoSubmit (m: Message) {
     if (!m.guild)
@@ -158,6 +159,9 @@ export default async function autoSubmit (m: Message) {
         return;
 
     const mappoolMap = mappoolMaps[0];
+    if (mappoolMap.slot.mappool.isPublic)
+        return;
+
     if (!mappoolMap.customBeatmap)
         mappoolMap.customBeatmap = new CustomBeatmap();
 
@@ -291,6 +295,10 @@ export default async function autoSubmit (m: Message) {
     mappoolMapEmbed.data.author!.name = `${slot.acronym.toUpperCase()}${mappoolMap.order}: ${mappoolMapEmbed.data.author!.name}`;
     
     const mappool = mappoolMap.slot.mappool;
+    await deletePack("mappacksTemp", mappool);
+    mappool.mappackLink = mappool.mappackExpiry = null;
+    await mappool.save();
+
     m.reply({
         content: `Successfully submitted **${artist} - ${title} [${diff}]** to **${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${mappoolMap.order}**`,
         embeds: [mappoolMapEmbed],

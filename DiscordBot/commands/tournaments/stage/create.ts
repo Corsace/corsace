@@ -4,7 +4,7 @@ import { profanityFilter } from "../../../../Interfaces/comment";
 import { Round } from "../../../../Models/tournaments/round";
 import { ScoringMethod, Stage, StageType } from "../../../../Models/tournaments/stage";
 import { TournamentStatus } from "../../../../Models/tournaments/tournament";
-import { fetchTournament } from "../../../functions/tournamentFunctions";
+import { confirmCommand, fetchTournament } from "../../../functions/tournamentFunctions";
 import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 
@@ -59,6 +59,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     });
     if (!creator) {
         await loginResponse(m);
+        return;
+    }
+
+    // Confirm to understand the difference between a stage and a round
+    const confirm = await confirmCommand(m, "A stage consists of multiple rounds. Rounds consist of multiple matches.\n**FOR EXAMPLE:** `Knockout 1` that consists of `Round of 16`, `Quarter Finals`, `Semi Finals`, and `Finals` would be considered a stage with multiple rounds in it.\n`Round of 16` is considered as a round WITHIN a stage.\n\nPlease make sure you understand that what you are creating right now is a **stage** and not a **round**.\nDo you understand the difference, and that you are creating a stage, that will create subsequent rounds, and **NOT** a specific round?");
+    if (!confirm) {
+        if (m instanceof Message) await m.reply("Ok Lol .");
+        else await m.editReply("Ok Lol .");
         return;
     }
 

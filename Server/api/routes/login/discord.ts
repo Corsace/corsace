@@ -10,7 +10,11 @@ import { redirectToMainDomain } from "./middleware";
 const discordRouter = new Router();
 
 discordRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext<any>, next) => {
-    const baseURL = ctx.query.site ? (config[ctx.query.site] ? config[ctx.query.site].publicUrl : config.corsace.publicUrl) : "";
+    const site = Array.isArray(ctx.query.site) ? ctx.query.site[0] : ctx.query.site;
+    if (!site)
+        throw new Error("No site specified");
+
+    const baseURL = ctx.query.site ? (config[site] ? config[site].publicUrl : config.corsace.publicUrl) : "";
     const params = ctx.query.redirect ?? "";
     const redirectURL = baseURL + params ?? "back";
     ctx.cookies.set("redirect", redirectURL, { overwrite: true });

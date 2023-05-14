@@ -7,6 +7,7 @@ import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
 import { discordClient } from "../../../../Server/discord";
+import { deletePack } from "../../../functions/mappackFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -57,6 +58,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const mappool = await fetchMappool(m, tournament, pool, false, slotText ? false : true, slotText ? false : true);
     if (!mappool) 
         return;
+    if (mappool.isPublic) {
+        if (m instanceof Message) m.reply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        else m.editReply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+    }
 
     if (slotText) {
         const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
@@ -79,10 +84,20 @@ async function run (m: Message | ChatInputCommandInteraction) {
             else m.editReply(`Could not find **${mappoolSlot}**`);
             return;
         }
+        if ((testing && mappoolMap.testplayers.length === 0) || (!mappoolMap.beatmap && mappoolMap.customMappers.length === 0)) {
+            if (m instanceof Message) m.reply(`**${mappoolSlot}** is currently empty.`);
+            else m.editReply(`**${mappoolSlot}** is currently empty.`);
+            return;
+        }
+
         if (mappoolMap.beatmap) {
             const map = mappoolMap.beatmap;
             mappoolMap.beatmap = null;
             await mappoolMap.save();
+
+            await deletePack("mappacksTemp", mappool);
+            mappool.mappackLink = mappool.mappackExpiry = null;
+            await mappool.save();
 
             if (m instanceof Message) m.reply(`Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
             else m.editReply(`Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
@@ -191,6 +206,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         await mappoolMap.save();
         if (customMap) await customMap.remove();
+        
+        await deletePack("mappacksTemp", mappool);
+        mappool.mappackLink = mappool.mappackExpiry = null;
+        await mappool.save();
 
         if (m instanceof Message) m.reply(`Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
         else m.editReply(`Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
@@ -242,6 +261,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (customMap && !testing) await customMap.remove();
         });
     });
+
+    await deletePack("mappacksTemp", mappool);
+    mappool.mappackLink = mappool.mappackExpiry = null;
+    
+    await mappool.save();
 
     if (m instanceof Message) m.reply(`Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`);
     else m.editReply(`Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`);

@@ -66,6 +66,29 @@ Create and seed the whole Corsace database using: `NODE_ENV=development npm run 
 
 ### Discord
 
+### Object Storage/S3
+
+We use S3-compatible object storage for storing and serving mappacks, configured in `config.s3`.
+
+While we target Cloudflare R2, any S3 provider should work as long as they support multipart uploads and pre-signed URLs.
+
+We use two buckets:  
+- `mappacks` is a public bucket that stores public mappacks, can be served by a CDN without authentication
+- `mappacks-temp` is a private bucket that stores private mappacks that should not have public access  
+  Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.  
+  Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.  
+  Mappacks that should become public get moved to the `mappacks` bucket.
+
+#### Cloudflare R2
+
+Go to the [Cloudflare R2 dashboard page](https://dash.cloudflare.com/?to=/:account/r2). Enable your plan if you haven't already (good luck exceeding free limits).
+
+Create the `mappacks` bucket and enable its R2.dev subdomain, or associate a custom domain.
+
+Create the `mappacks-temp` bucket and add an object lifecycle rule to delete objects after 7 days (leave prefix empty).
+
+Set hostname to `<cloudflare account id>.r2.cloudflarestorage.com`, and obtain S3 credentials from https://dash.cloudflare.com/?to=/:account/r2/api-tokens.
+
 #### Setup
 
 `config.discord`
@@ -128,7 +151,7 @@ Paste it into `config.discord.token`
 
 Ensure you enable the `Server Members` and `Message Content` intents under the **Privileged Gateway Intents** subsection before usage, the bot will not start otherwise, and you will be provided a `[DISALLOWED INTENTS]` error.
 
-#### Development
+## Development
 
 Run `npm run dev`, if you only want to run one of the projects, refer to the scripts in `package.json`.
 To run the project without the api, use `npm run dev-client`.

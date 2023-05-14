@@ -72,6 +72,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const mappool = await fetchMappool(m, tournament, pool, true);
     if (!mappool) 
         return;
+    if (mappool.isPublic) {
+        if (m instanceof Message) m.reply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        else m.editReply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+    }
 
     if (mappool.stage.timespan.start.getTime() < date.getTime()) {
         if (m instanceof Message) m.reply("The deadline cannot be after the start of the stage. That literally makes no sense.");
