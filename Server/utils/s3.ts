@@ -10,7 +10,7 @@ export function gets3Key(bucket: string, obj?: string | null | Mappool): string 
     if (typeof obj === "string")
         url = obj;
     else if (obj instanceof Mappool && (obj.isPublic || (obj.mappackExpiry?.getTime() ?? -1) > Date.now()))
-        url = obj.mappack;
+        url = obj.mappackLink;
     else
         return;
 

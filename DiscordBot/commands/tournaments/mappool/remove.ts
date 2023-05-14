@@ -96,7 +96,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             await mappoolMap.save();
 
             await deletePack("mappacksTemp", mappool);
-            mappool.mappack = mappool.mappackExpiry = null;
+            mappool.mappackLink = mappool.mappackExpiry = null;
             await mappool.save();
 
             if (m instanceof Message) m.reply(`Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
@@ -208,7 +208,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (customMap) await customMap.remove();
         
         await deletePack("mappacksTemp", mappool);
-        mappool.mappack = mappool.mappackExpiry = null;
+        mappool.mappackLink = mappool.mappackExpiry = null;
         await mappool.save();
 
         if (m instanceof Message) m.reply(`Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
@@ -263,7 +263,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     });
 
     await deletePack("mappacksTemp", mappool);
-    mappool.mappack = mappool.mappackExpiry = null;
+    mappool.mappackLink = mappool.mappackExpiry = null;
     
     await mappool.save();
 

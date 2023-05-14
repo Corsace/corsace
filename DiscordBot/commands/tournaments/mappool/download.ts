@@ -116,8 +116,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (mappool.isPublic || (mappool.mappackExpiry?.getTime() ?? -1) > Date.now()) {
-        if (m instanceof Message) await m.reply(mappool.mappack!);
-        else await m.editReply(mappool.mappack!);
+        if (m instanceof Message) await m.reply(mappool.mappackLink!);
+        else await m.editReply(mappool.mappackLink!);
         return;
     }
 
@@ -127,7 +127,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (!url)
             return;
 
-        mappool.mappack = url;
+        mappool.mappackLink = url;
         mappool.mappackExpiry = new Date(Date.now() + 60 * 60 * 24 * 1000);
         await mappool.save();
 

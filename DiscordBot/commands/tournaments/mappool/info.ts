@@ -39,7 +39,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .setTitle(`Mappools for ${tournament.name}`)
             .setFields(mappools.map(mappool => ({
                 name: `**${mappool.name}**`,
-                value: `${mappool.slots.map(slot => `${slot.name}: ${slot.maps.length}`).join("\n")}\n${mappool.isPublic || (mappool.mappackExpiry?.getTime() ?? -1) > Date.now() ? `Link: ${mappool.mappack}` : ""}`,
+                value: `${mappool.slots.map(slot => `${slot.name}: ${slot.maps.length}`).join("\n")}\n${mappool.isPublic || (mappool.mappackExpiry?.getTime() ?? -1) > Date.now() ? `Link: ${mappool.mappackLink}` : ""}`,
                 inline: true,
             })))
             .setColor(modeColour(tournament.mode.ID - 1))

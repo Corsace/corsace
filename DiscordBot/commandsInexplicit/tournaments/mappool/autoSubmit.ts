@@ -296,7 +296,7 @@ export default async function autoSubmit (m: Message) {
     
     const mappool = mappoolMap.slot.mappool;
     await deletePack("mappacksTemp", mappool);
-    mappool.mappack = mappool.mappackExpiry = null;
+    mappool.mappackLink = mappool.mappackExpiry = null;
     await mappool.save();
 
     m.reply({

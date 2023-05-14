@@ -307,8 +307,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     await deletePack("mappacksTemp", mappool1);
     await deletePack("mappacksTemp", mappool2);
-    mappool1.mappack = mappool1.mappackExpiry = null;
-    mappool2.mappack = mappool2.mappackExpiry = null;
+    mappool1.mappackLink = mappool1.mappackExpiry = null;
+    mappool2.mappackLink = mappool2.mappackExpiry = null;
     await mappool1.save();
     await mappool2.save();
 

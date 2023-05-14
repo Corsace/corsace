@@ -71,7 +71,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (mappool.isPublic) {
         // Reset link before making it private
         await deletePack("mappacks", mappool);
-        mappool.mappack = mappool.mappackExpiry = null;
+        mappool.mappackLink = mappool.mappackExpiry = null;
         mappool.isPublic = false;
 
         await mappool.save();
@@ -87,13 +87,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof Message) await m.react("⏳");
 
     const s3Key = gets3Key("mappacksTemp", mappool);
-    if (mappool.mappack && (mappool.mappackExpiry?.getTime() ?? -1) > Date.now() && s3Key) {
+    if (mappool.mappackLink && (mappool.mappackExpiry?.getTime() ?? -1) > Date.now() && s3Key) {
         // Copy mappack from temp to public
         try {
             await buckets.mappacks.copyObject(s3Key, buckets.mappacksTemp, s3Key, "application/zip");
             await buckets.mappacksTemp.deleteObject(s3Key);
         
-            mappool.mappack = await buckets.mappacks.getPublicUrl(s3Key);
+            mappool.mappackLink = await buckets.mappacks.getPublicUrl(s3Key);
         } catch (err) {
             if (m instanceof Message) await m.reply("Something went wrong while copying the mappack. Contact VINXIS.");
             else await m.editReply("Something went wrong while copying the mappack. Contact VINXIS.");
@@ -105,17 +105,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (!url)
             return;
 
-        mappool.mappack = url;
+        mappool.mappackLink = url;
     }
     
     mappool.mappackExpiry = null;
     mappool.isPublic = true;
     await mappool.save();
 
-    if (m instanceof Message) m.reply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}.\nMappack: ${mappool.mappack}`);
-    else m.editReply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}\nMappack: ${mappool.mappack}`);
+    if (m instanceof Message) m.reply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}.\nMappack: ${mappool.mappackLink}`);
+    else m.editReply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}\nMappack: ${mappool.mappackLink}`);
 
-    await mappoolLog(tournament, "publish", user, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}\nMappack: ${mappool.mappack}`);
+    await mappoolLog(tournament, "publish", user, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}\nMappack: ${mappool.mappackLink}`);
 
     if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
 }

@@ -263,7 +263,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await mappoolMap.save();
 
     await deletePack("mappacks", mappool);
-    mappool.mappack = mappool.mappackExpiry = null;
+    mappool.mappackLink = mappool.mappackExpiry = null;
     await mappool.save();
 
     const log = new MappoolMapHistory();

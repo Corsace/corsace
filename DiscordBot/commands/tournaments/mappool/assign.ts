@@ -195,7 +195,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (jobPost) await jobPost.remove();
 
         await deletePack("mappacksTemp", mappool);
-        mappool.mappack = mappool.mappackExpiry = null;
+        mappool.mappackLink = mappool.mappackExpiry = null;
         await mappool.save();
 
         const log = new MappoolMapHistory();
@@ -251,7 +251,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             mappoolMap.customMappers.push(user);
 
         await deletePack("mappacksTemp", mappool);
-        mappool.mappack = mappool.mappackExpiry = null;
+        mappool.mappackLink = mappool.mappackExpiry = null;
         await mappool.save();
     }
 
