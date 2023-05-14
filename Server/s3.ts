@@ -101,7 +101,7 @@ class S3Bucket {
         return this.client.copyObject({
             Bucket: this.bucketName,
             Key: objectName,
-            CopySource: `${sourceBucket.bucketName}/${sourceObjectName}`,
+            CopySource: `${sourceBucket.bucketName}/${encodeURIComponent(sourceObjectName).replace(/%2F/g, '/')}`,
             ContentType: mimeType,
         });
     }
