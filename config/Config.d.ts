@@ -8,6 +8,25 @@ declare module "node-config-ts" {
         ssr: boolean;
     }
 
+    interface S3ClientConfig {
+        hostname: string;
+        port?: number | string;
+        useSSL: boolean | string;
+        path?: string;
+        forcePathStyle?: boolean | string;
+        region?: string;
+        credentials: {
+            accessKeyId: string;
+            secretAccessKey: string;
+        };
+    }
+
+    interface S3BucketConfig {
+        clientName: keyof IConfig["s3"]["clients"];
+        bucketName: string;
+        publicUrl?: string;
+    }
+
     interface IConfig {
         database: {
             host: string;
@@ -67,6 +86,16 @@ declare module "node-config-ts" {
             };
             // sheets: { };
         };
+
+        s3: {
+            clients: {
+                r2: S3ClientConfig;
+            };
+            buckets: {
+                mappacks: S3BucketConfig;
+                mappacksTemp: S3BucketConfig;
+            };
+        }
 
         koaKeys: string[];
         cookiesDomain: string;

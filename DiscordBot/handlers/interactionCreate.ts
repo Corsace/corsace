@@ -12,7 +12,6 @@ export default async function interactionCreate (interaction: Interaction) {
     try {
         await command.run(interaction);
     } catch (error) {
-        console.log("Yo");
         console.error(error);
         await interaction.followUp({ content: "There was an error while executing this command!", ephemeral: true });
     }

@@ -12,6 +12,7 @@
         "cron-runner.ts"
     ],
     "include": [
+        "../config/Config.d.ts",
         "../Typing/passport.d.ts"
     ],
     "ts-node": {

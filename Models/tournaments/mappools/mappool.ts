@@ -26,6 +26,12 @@ export class Mappool extends BaseEntity {
     @Column({ default: false })
     isPublic!: boolean;
 
+    @Column({ type: "text", nullable: true })
+    mappackLink?: string | null;
+
+    @Column({ type: "datetime", nullable: true })
+    mappackExpiry?: Date | null;
+
     @Column()
     targetSR!: number;
 

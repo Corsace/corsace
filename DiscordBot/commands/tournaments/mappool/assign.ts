@@ -12,6 +12,8 @@ import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
 import { discordClient } from "../../../../Server/discord";
+import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
+import { deletePack } from "../../../functions/mappackFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -69,6 +71,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const mappool = await fetchMappool(m, tournament, pool);
     if (!mappool) 
         return;
+    if (mappool.isPublic) {
+        if (m instanceof Message) m.reply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        else m.editReply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+    }
     const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
 
     const slotMod = await fetchSlot(m, mappool, slot, true);
@@ -107,7 +113,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     mappoolMap.jobPost = null;
 
     // Check if target is link
-    if ((m instanceof ChatInputCommandInteraction && m.options.getSubcommand() === "link") || target.includes("osu.ppy.sh/beatmaps")) {
+    if ((m instanceof ChatInputCommandInteraction && m.options.getSubcommand() === "beatmap") || target.includes("osu.ppy.sh/beatmaps")) {
         const linkRegex = /https?:\/\/osu.ppy.sh\/beatmapsets\/(\d+)#(osu|taiko|fruits|mania)\/(\d+)/;
         const link = target.match(linkRegex);
         if (!link) {
@@ -129,6 +135,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
             else m.editReply("Beatmap mode does not match tournament mode.");
             return;
         }
+        // TODO: Support for maps with no approved date (e.g. graveyarded maps) https://github.com/Corsace/Corsace/issues/193
+        if (isNaN(apiMap.approvedDate.getTime())) {
+            if (m instanceof Message) m.reply("Beatmap is not ranked. Support will be added soon!\nhttps://github.com/Corsace/Corsace/issues/193");
+            else m.editReply("Beatmap is not ranked. Support will be added soon!\nhttps://github.com/Corsace/Corsace/issues/193");
+            return;
+        }
 
         let beatmap = await Beatmap.findOne({
             where: {
@@ -138,6 +150,21 @@ async function run (m: Message | ChatInputCommandInteraction) {
         });
         if (!beatmap)
             beatmap = await insertBeatmap(apiMap);
+        else {
+            const dupeMaps = await MappoolMap
+                .createQueryBuilder("mappoolMap")
+                .leftJoin("mappoolMap.beatmap", "beatmap")
+                .leftJoin("mappoolMap.slot", "slot")
+                .leftJoin("slot.mappool", "mappool")
+                .where("beatmap.ID = :id", { id: beatmap.ID })
+                .andWhere("mappool.ID = :mappool", { mappool: mappool.ID })
+                .getExists();
+            if (dupeMaps) {
+                if (m instanceof Message) m.reply(`The beatmap you are trying to add is already in **${mappool.name}**.`);
+                else m.editReply(`The beatmap you are trying to add is already in **${mappool.name}**.`);
+                return;
+            }
+        }
 
         if (mappoolMap.beatmap && mappoolMap.beatmap.ID === beatmap.ID) {
             if (m instanceof Message) m.reply(`**${mappoolSlot}** is already set to this beatmap.`);
@@ -166,6 +193,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await mappoolMap.save();
         if (customMap) await customMap.remove();
         if (jobPost) await jobPost.remove();
+
+        await deletePack("mappacksTemp", mappool);
+        mappool.mappackLink = mappool.mappackExpiry = null;
+        await mappool.save();
 
         const log = new MappoolMapHistory();
         log.createdBy = assigner;
@@ -218,6 +249,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             mappoolMap.customMappers = [user];
         else
             mappoolMap.customMappers.push(user);
+
+        await deletePack("mappacksTemp", mappool);
+        mappool.mappackLink = mappool.mappackExpiry = null;
+        await mappool.save();
     }
 
     const customThread = await fetchCustomThread(m, mappoolMap, tournament, mappoolSlot);

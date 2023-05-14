@@ -82,6 +82,22 @@
         "port": 80,
         "publicUrl": "@@CRONRUNNER_PUBLICURL"
     },
+    "s3": {
+        "clients": {
+            "r2": {
+                "hostname": "@@CLOUDFLARE_R2_HOSTNAME",
+                "credentials": {
+                    "accessKeyId": "@@CLOUDFLARE_R2_ACCESS_KEY_ID",
+                    "secretAccessKey": "@@CLOUDFLARE_R2_SECRET_ACCESS_KEY"
+                }
+            }
+        },
+        "buckets": {
+            "mappacks": {
+                "publicUrl": "https://mappacks.corsace.io"
+            }
+        }
+    },
     "interOpAuth": {
         "username": "interop",
         "password": "@@INTEROP_PASSWORD"

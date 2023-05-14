@@ -15,6 +15,7 @@ import { loginResponse } from "../../../functions/loginResponse";
 import beatmapEmbed from "../../../functions/beatmapEmbed";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
+import { deletePack } from "../../../functions/mappackFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -122,6 +123,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const mappool = await fetchMappool(m, tournament, pool);
     if (!mappool) 
         return;
+    if (mappool.isPublic) {
+        if (m instanceof Message) m.reply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        else m.editReply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+    }
     const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
 
     const slotMod = await fetchSlot(m, mappool, slot, true);
@@ -256,6 +261,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     await mappoolMap.customBeatmap.save();
     await mappoolMap.save();
+
+    await deletePack("mappacks", mappool);
+    mappool.mappackLink = mappool.mappackExpiry = null;
+    await mappool.save();
 
     const log = new MappoolMapHistory();
     log.createdBy = user;
