@@ -89,8 +89,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const cont = existingMappools.length === 0 ? true : await confirmCommand(m, `This stage/round already has ${existingMappools.length} mappool${existingMappools.length === 1 ? "" : "s"}. Are you sure you want to create another?`);
     if (!cont) {
-        if (m instanceof Message) await m.reply("Ok.");
-        else await m.editReply("Ok.");
+        if (m instanceof Message) await m.reply("Ok Lol .");
+        else await m.editReply("Ok Lol .");
         return;
     }
 

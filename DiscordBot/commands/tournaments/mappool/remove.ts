@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
-import { confirmCommand, fetchCustomThread, fetchMappool, fetchSlot, fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
+import { confirmCommand, deletePack, fetchCustomThread, fetchMappool, fetchSlot, fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { User } from "../../../../Models/user";
@@ -83,12 +83,19 @@ async function run (m: Message | ChatInputCommandInteraction) {
             else m.editReply(`Could not find **${mappoolSlot}**`);
             return;
         }
+        if ((testing && mappoolMap.testplayers.length === 0) || (!mappoolMap.beatmap && mappoolMap.customMappers.length === 0)) {
+            if (m instanceof Message) m.reply(`**${mappoolSlot}** is currently empty.`);
+            else m.editReply(`**${mappoolSlot}** is currently empty.`);
+            return;
+        }
+
         if (mappoolMap.beatmap) {
             const map = mappoolMap.beatmap;
             mappoolMap.beatmap = null;
             await mappoolMap.save();
 
-            mappool.s3Key = mappool.link = mappool.linkExpiry = null;
+            await deletePack("mappacksTemp", mappool);
+            mappool.mappack = mappool.mappackExpiry = null;
             await mappool.save();
 
             if (m instanceof Message) m.reply(`Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
@@ -199,7 +206,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await mappoolMap.save();
         if (customMap) await customMap.remove();
         
-        mappool.s3Key = mappool.link = mappool.linkExpiry = null;
+        await deletePack("mappacksTemp", mappool);
+        mappool.mappack = mappool.mappackExpiry = null;
         await mappool.save();
 
         if (m instanceof Message) m.reply(`Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
@@ -253,7 +261,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         });
     });
 
-    mappool.s3Key = mappool.link = mappool.linkExpiry = null;
+    await deletePack("mappacksTemp", mappool);
+    mappool.mappack = mappool.mappackExpiry = null;
+    
     await mappool.save();
 
     if (m instanceof Message) m.reply(`Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`);

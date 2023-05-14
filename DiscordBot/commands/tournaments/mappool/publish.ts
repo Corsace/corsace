@@ -1,13 +1,11 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { confirmCommand, fetchMappool, fetchTournament, hasTournamentRoles, mappoolLog } from "../../../functions/tournamentFunctions";
+import { confirmCommand, createPack, deletePack, fetchMappool, fetchTournament, hasTournamentRoles, mappoolLog } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
 import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { buckets } from "../../../../Server/s3";
-import { randomUUID } from "crypto";
-import { download } from "../../../../Server/utils/download";
-import { zipFiles } from "../../../../Server/utils/zip";
+import { gets3Key } from "../../../../Server/utils/s3";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -71,8 +69,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     if (mappool.isPublic) {
         // Reset link before making it private
-        await buckets.mappacks.deleteObject(mappool.s3Key!);
-        mappool.s3Key = mappool.link = mappool.linkExpiry = null;
+        await deletePack("mappacks", mappool);
+        mappool.mappack = mappool.mappackExpiry = null;
         mappool.isPublic = false;
 
         await mappool.save();
@@ -84,41 +82,39 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         return;
     }
+    
+    if (m instanceof Message) await m.react("⏳");
 
-    const s3Key = mappool.s3Key || `${randomUUID()}/${tournament.abbreviation.toUpperCase()}${tournament.year} ${mappool.abbreviation.toUpperCase()}.zip`;
-
-    const mappack = await buckets.mappacksTemp.getObject(s3Key);
-    if (mappack) {
-        await buckets.mappacksTemp.deleteObject(s3Key);
-        await buckets.mappacks.putObject(s3Key, mappack);
-    } else {
-        const mappoolMaps = mappool.slots.flatMap(s => s.maps);
-        const filteredMaps = mappoolMaps.filter(m => (m.customBeatmap && m.customBeatmap.link) || m.beatmap);
-        if (filteredMaps.length === 0) {
-            if (m instanceof Message) m.reply(`**${pool}** does not have any downloadable beatmaps.`);
-            else m.editReply(`**${pool}** does not have any downloadable beatmaps.`);
+    const s3Key = gets3Key("mappacksTemp", mappool);
+    if (mappool.mappack && (mappool.mappackExpiry?.getTime() ?? -1) > Date.now() && s3Key) {
+        // Copy mappack from temp to public
+        try {
+            await buckets.mappacks.copyObject(s3Key, buckets.mappacksTemp, s3Key, "application/zip");
+            await buckets.mappacksTemp.deleteObject(s3Key);
+        
+            mappool.mappack = await buckets.mappacks.getPublicUrl(s3Key);
+        } catch (err) {
+            if (m instanceof Message) await m.reply("Something went wrong while copying the mappack. Contact VINXIS.");
+            else await m.editReply("Something went wrong while copying the mappack. Contact VINXIS.");
+            console.log(err);
             return;
         }
+    } else {
+        const url = await createPack(m, "mappacks", mappool, `${tournament.abbreviation.toUpperCase()}${tournament.year}_${mappool.abbreviation.toUpperCase()}`);
+        if (!url)
+            return;
 
-        const names = filteredMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
-        const dlLinks = filteredMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}n`);
-
-        const streams = dlLinks.map(m => download(m));
-        const zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
-        await buckets.mappacks.putObject(s3Key, zipStream, "application/zip");
+        mappool.mappack = url;
     }
-
-    const url = await buckets.mappacks.getPublicUrl(mappool.s3Key!);
-    mappool.link = url;
-    mappool.linkExpiry = null;
-    mappool.s3Key = s3Key;
-
+    
+    mappool.mappackExpiry = null;
+    mappool.isPublic = true;
     await mappool.save();
 
-    if (m instanceof Message) m.reply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}`);
-    else m.editReply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}`);
+    if (m instanceof Message) m.reply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}.\nMappack: ${mappool.mappack}`);
+    else m.editReply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}\nMappack: ${mappool.mappack}`);
 
-    await mappoolLog(tournament, "publish", user, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}`);
+    await mappoolLog(tournament, "publish", user, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}\nMappack: ${mappool.mappack}`);
 
     if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
 }

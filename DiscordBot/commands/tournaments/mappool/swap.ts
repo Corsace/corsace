@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, ForumChannel, Message, MessageComponentInteraction, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
-import { fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
+import { deletePack, fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
@@ -304,8 +304,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (jobPost1 && beatmap2) await jobPost1.remove();
     if (jobPost2 && beatmap1) await jobPost2.remove();
 
-    mappool1.s3Key = mappool1.link = mappool1.linkExpiry = null;
-    mappool2.s3Key = mappool2.link = mappool2.linkExpiry = null;
+    await deletePack("mappacksTemp", mappool1);
+    await deletePack("mappacksTemp", mappool2);
+    mappool1.mappack = mappool1.mappackExpiry = null;
+    mappool2.mappack = mappool2.mappackExpiry = null;
     await mappool1.save();
     await mappool2.save();
 

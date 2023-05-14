@@ -8,7 +8,7 @@ import { once } from "events";
 import { BeatmapParser } from "../../../../Server/beatmapParser";
 import { Brackets } from "typeorm";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
-import { fetchCustomThread, mappoolLog } from "../../../functions/tournamentFunctions";
+import { deletePack, fetchCustomThread, mappoolLog } from "../../../functions/tournamentFunctions";
 import { TournamentRole, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { User } from "../../../../Models/user";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
@@ -158,6 +158,9 @@ export default async function autoSubmit (m: Message) {
         return;
 
     const mappoolMap = mappoolMaps[0];
+    if (mappoolMap.slot.mappool.isPublic)
+        return;
+
     if (!mappoolMap.customBeatmap)
         mappoolMap.customBeatmap = new CustomBeatmap();
 
@@ -291,7 +294,8 @@ export default async function autoSubmit (m: Message) {
     mappoolMapEmbed.data.author!.name = `${slot.acronym.toUpperCase()}${mappoolMap.order}: ${mappoolMapEmbed.data.author!.name}`;
     
     const mappool = mappoolMap.slot.mappool;
-    mappool.s3Key = mappool.link = mappool.linkExpiry = null;
+    await deletePack("mappacksTemp", mappool);
+    mappool.mappack = mappool.mappackExpiry = null;
     await mappool.save();
 
     m.reply({

@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, ForumChannel, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
-import { confirmCommand, fetchCustomThread, fetchMappool, fetchSlot, fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
+import { confirmCommand, deletePack, fetchCustomThread, fetchMappool, fetchSlot, fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { Beatmap } from "../../../../Models/beatmap";
 import { Beatmap as APIBeatmap, Mode } from "nodesu";
@@ -12,6 +12,7 @@ import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
 import { discordClient } from "../../../../Server/discord";
+import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -148,6 +149,21 @@ async function run (m: Message | ChatInputCommandInteraction) {
         });
         if (!beatmap)
             beatmap = await insertBeatmap(apiMap);
+        else {
+            const dupeMaps = await MappoolMap
+                .createQueryBuilder("mappoolMap")
+                .leftJoin("mappoolMap.beatmap", "beatmap")
+                .leftJoin("mappoolMap.slot", "slot")
+                .leftJoin("slot.mappool", "mappool")
+                .where("beatmap.ID = :id", { id: beatmap.ID })
+                .andWhere("mappool.ID = :mappool", { mappool: mappool.ID })
+                .getExists();
+            if (dupeMaps) {
+                if (m instanceof Message) m.reply(`The beatmap you are trying to add is already in **${mappool.name}**.`);
+                else m.editReply(`The beatmap you are trying to add is already in **${mappool.name}**.`);
+                return;
+            }
+        }
 
         if (mappoolMap.beatmap && mappoolMap.beatmap.ID === beatmap.ID) {
             if (m instanceof Message) m.reply(`**${mappoolSlot}** is already set to this beatmap.`);
@@ -176,6 +192,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await mappoolMap.save();
         if (customMap) await customMap.remove();
         if (jobPost) await jobPost.remove();
+
+        await deletePack("mappacksTemp", mappool);
+        mappool.mappack = mappool.mappackExpiry = null;
+        await mappool.save();
 
         const log = new MappoolMapHistory();
         log.createdBy = assigner;
@@ -228,6 +248,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             mappoolMap.customMappers = [user];
         else
             mappoolMap.customMappers.push(user);
+
+        await deletePack("mappacksTemp", mappool);
+        mappool.mappack = mappool.mappackExpiry = null;
+        await mappool.save();
     }
 
     const customThread = await fetchCustomThread(m, mappoolMap, tournament, mappoolSlot);

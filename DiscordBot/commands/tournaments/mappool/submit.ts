@@ -7,7 +7,7 @@ import Axios from "axios";
 import osu from "ojsama";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRole, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
+import { deletePack, fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
 import { User } from "../../../../Models/user";
@@ -261,7 +261,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await mappoolMap.customBeatmap.save();
     await mappoolMap.save();
 
-    mappool.s3Key = mappool.link = mappool.linkExpiry = null;
+    await deletePack("mappacks", mappool);
+    mappool.mappack = mappool.mappackExpiry = null;
     await mappool.save();
 
     const log = new MappoolMapHistory();

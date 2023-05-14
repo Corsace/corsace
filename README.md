@@ -76,7 +76,7 @@ We use two buckets:
 - `mappacks` is a public bucket that stores public mappacks, can be served by a CDN without authentication
 - `mappacks-temp` is a private bucket that stores private mappacks that should not have public access  
   Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.  
-  Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to delete objects after 7 days.  
+  Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.  
   Mappacks that should become public get moved to the `mappacks` bucket.
 
 #### Cloudflare R2

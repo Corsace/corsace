@@ -1,19 +1,13 @@
 import { ChannelType, ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
-import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { download } from "../../../../Server/utils/download";
-import { zipFiles } from "../../../../Server/utils/zip";
-import { fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
+import { createPack, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
-import { buckets } from "../../../../Server/s3";
-import { randomUUID } from "crypto";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
-    else
-        await m.react("⏳");
 
     const tournament = await fetchTournament(m);
     if (!tournament) 
@@ -24,10 +18,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const videoRegex = /-v/;
     const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
     const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
-    const video = m instanceof Message ? m.content.match(videoRegex) ?? m.content.split(" ")[3] : m.options.getBoolean("video");
+    const video = (m instanceof Message ? videoRegex.test(m.content) ?? m.content.split(" ")[3] === "-v" : m.options.getBoolean("video")) || false;
     if (!poolText) {
-        if (m instanceof Message) m.reply("Missing parameters. Please use `-p <pool> [-s <slot>]` or `<pool> [<]slot]`. If you do not use the `-` prefixes, the order of the parameters is important.");
-        else m.editReply("Missing parameters. Please use `-p <pool> [-s <slot>]` or `<pool> [<]slot]`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        if (m instanceof Message) m.reply("Missing parameters. Please use `-p <pool> [-s <slot>] [-v]` or `<pool> [slot] [-v]`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        else m.editReply("Missing parameters. Please use `-p <pool> [-s <slot>] [-v]` or `<pool> [slot] [-v]`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
 
@@ -120,42 +114,24 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const mappoolMaps = mappool.slots.flatMap(s => s.maps);
-    const filteredMaps = mappoolMaps.filter(m => (m.customBeatmap && m.customBeatmap.link) || m.beatmap);
-    const names = filteredMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
-    const dlLinks = filteredMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}`);
-
-    if (filteredMaps.length === 0) {
-        if (m instanceof Message) m.reply(`**${pool}** does not have any downloadable beatmaps.`);
-        else m.editReply(`**${pool}** does not have any downloadable beatmaps.`);
-        return;
-    }
-
-    if (mappool.isPublic || (mappool.linkExpiry?.getTime() ?? -1) > Date.now()) {
-        if (m instanceof Message) 
-            await m.reply(mappool.link!);
-        else 
-            await m.editReply(mappool.link!);
+    if (mappool.isPublic || (mappool.mappackExpiry?.getTime() ?? -1) > Date.now()) {
+        if (m instanceof Message) await m.reply(mappool.mappack!);
+        else await m.editReply(mappool.mappack!);
         return;
     }
 
     try {
-        const streams = dlLinks.map(m => download(m));
-        const zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
+        if (m instanceof Message) await m.react("⏳");
+        const url = await createPack(m, "mappacksTemp", mappool, `${tournament.abbreviation.toUpperCase()}${tournament.year}_${mappool.abbreviation.toUpperCase()}`, video);
+        if (!url)
+            return;
 
-        const s3Key = `${randomUUID()}/${tournament.abbreviation.toUpperCase()}${tournament.year} ${mappool.abbreviation.toUpperCase()}.zip`;
-        await buckets.mappacksTemp.putObject(s3Key, zipStream, "application/zip");
-        const url = await buckets.mappacksTemp.getSignedUrl(s3Key, 60 * 60 * 24 * 7);
-
-        mappool.s3Key = s3Key;
-        mappool.link = url;
-        mappool.linkExpiry = new Date(Date.now() + 60 * 60 * 24 * 7 * 1000);
+        mappool.mappack = url;
+        mappool.mappackExpiry = new Date(Date.now() + 60 * 60 * 24 * 1000);
         await mappool.save();
 
-        if (m instanceof Message) 
-            await m.reply(url);
-        else 
-            await m.editReply(url);
+        if (m instanceof Message) await m.reply(`Here is a temporary mappack link valid for 1 day:\n${url}`);
+        else await m.editReply(`Here is a temporary mappack link valid for 1 day:\n${url}`);
     } catch (e) {
         if (m instanceof Message) m.reply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
         else m.editReply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
