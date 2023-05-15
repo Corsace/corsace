@@ -83,7 +83,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             name: `${user.osu.username} (${user.osu.userID})`,
             iconURL: `https://osu.ppy.sh/images/flags/${user.country}.png`,
         },
-        description: `**PP:** ${apiUser.pp}\n **Rank:** #${apiUser.rank} (${user.country}#${apiUser.countryRank})\n **Acc:** ${apiUser.accuracy.toFixed(2)}%\n **Playcount:** ${apiUser.playcount}\n **SS**: ${apiUser.countRankSS} **S:** ${apiUser.countRankS} **A:** ${apiUser.countRankA}\n **Joined:** <t:${apiUser.joinDate.getTime() / 1000}>`,
+        description: `**PP:** ${apiUser.pp}\n **Rank:** #${apiUser.rank} (${user.country}#${apiUser.countryRank})\n **Acc:** ${apiUser.accuracy.toFixed(2)}%\n **Playcount:** ${apiUser.playcount}\n **SS**: ${apiUser.countRankSS} **S:** ${apiUser.countRankS} **A:** ${apiUser.countRankA}\n **Joined:** <t:${apiUser.joinDate.getTime() / 1000}:F> (<t:${apiUser.joinDate.getTime() / 1000}:R>)`,
         color: 0xFB2475,
         footer: {
             text: `Corsace ID #${user.ID}`,

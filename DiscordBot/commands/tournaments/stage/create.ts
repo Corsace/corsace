@@ -266,7 +266,7 @@ async function stageDone (m: Message | ChatInputCommandInteraction, stage: Stage
 
     const embed = new EmbedBuilder()
         .setTitle(stage.name)
-        .setDescription(`<t:${stage.timespan.start.getTime() / 1000}> - <t:${stage.timespan.end.getTime() / 1000}>`)
+        .setDescription(`<t:${stage.timespan.start.getTime() / 1000}:F> - <t:${stage.timespan.end.getTime() / 1000}:F> (<t:${stage.timespan.start.getTime() / 1000}:R> - <t:${stage.timespan.end.getTime() / 1000}:R>)`)
         .addFields(
             { name: "Stage ID", value: stage.ID.toString(), inline: true },
             { name: "Stage Type", value: StageType[stage.stageType], inline: true },

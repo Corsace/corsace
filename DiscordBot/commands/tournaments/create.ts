@@ -927,7 +927,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Mode", value: tournament.mode.name, inline: true },
             { name: "Match Size", value: tournament.matchSize.toString(), inline: true },
             { name: "Allowed Team Size", value: `${tournament.minTeamSize} - ${tournament.maxTeamSize}`, inline: true },
-            { name: "Registration Start Date", value: `<t:${tournament.registrations.start.getTime() / 1000}>`, inline: true },
+            { name: "Registration Start Date", value: `<t:${tournament.registrations.start.getTime() / 1000}:F> (<t:${tournament.registrations.start.getTime() / 1000}:R>)`, inline: true },
             { name: "Qualifiers", value: tournament.stages.some(q => q.stageType === StageType.Qualifiers).toString(), inline: true },
             { name: "Invitational", value: tournament.invitational ? "Yes" : "No", inline: true },
             { name: "Server", value: tournament.server, inline: true }

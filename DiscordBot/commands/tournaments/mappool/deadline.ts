@@ -116,17 +116,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (customThread !== true && m.channel?.id !== customThread[0].id) {
         const [thread] = customThread;
         const forumChannel = thread.parent as ForumChannel;
-        await thread.send(`<@${user.discord.userID}> has added a deadline: **<t:${date.getTime() / 1000}>**`);
+        await thread.send(`<@${user.discord.userID}> has added a deadline: **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
         const lateTag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "late");
         if (lateTag) await thread.setAppliedTags(thread.appliedTags.filter(t => t !== lateTag.id))
     }
 
     await mappoolMap.save();
 
-    if (m instanceof Message) m.reply(`Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}>**`);
-    else m.editReply(`Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}>**`);
+    if (m instanceof Message) m.reply(`Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
+    else m.editReply(`Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
 
-    await mappoolLog(tournament, "deadline", user, `Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}>**`);
+    await mappoolLog(tournament, "deadline", user, `Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
 }
 
 const data = new SlashCommandBuilder()

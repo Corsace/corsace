@@ -47,7 +47,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const embed = {
         title: "Tournaments",
         description: tournaments.map(t => {
-            return `**${t.name}** - ${t.mode.name} - <t:${t.registrations.start.getTime() / 1000}> - <t:${t.registrations.end.getTime() / 1000}>`;
+            return `**${t.name}** - ${t.mode.name} - <t:${t.registrations.start.getTime() / 1000}:F> - <t:${t.registrations.end.getTime() / 1000}:F> (<t:${t.registrations.start.getTime() / 1000}:R> - <t:${t.registrations.end.getTime() / 1000}:R>)`;
         }).join("\n"),
     };
 
