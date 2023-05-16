@@ -10,6 +10,7 @@ import { filter } from "../../../functions/messageInteractionFunctions";
 import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { acronymtoMods, modsToAcronym } from "../../../../Interfaces/mods";
+import { randomUUID } from "crypto";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -119,17 +120,21 @@ async function run (m: Message | ChatInputCommandInteraction) {
 // This function asks for confirmation on the name and abbreviatoin of the mappool, and updates it if the user wants to
 async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament, existingMappools: Mappool[]) {
     let content = `The name of the mappool will be **${mappool.name}** and the abbreviation will be **${mappool.abbreviation}**.\n\nIs this ok? If not, type the new name and abbreviation, with the name first, and the abbreviation after.`;
+    const ids = {
+        stop: randomUUID(),
+        confirm: randomUUID(),
+    };
     const nameMessage = await m.channel!.send({
         content,
         components: [
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId("stop")
+                        .setCustomId(ids.stop)
                         .setLabel("STOP COMMAND")
                         .setStyle(ButtonStyle.Danger),
                     new ButtonBuilder()
-                        .setCustomId("confirm")
+                        .setCustomId(ids.confirm)
                         .setLabel("Looks good")
                         .setStyle(ButtonStyle.Success)
                 ),
@@ -141,7 +146,7 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
     const mappoolNameCollector = m.channel!.createMessageCollector({ filter, time: 6000000 });
 
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {	
-        if (i.customId === "stop") {
+        if (i.customId === ids.stop) {
             await i.reply("Mappool creation stopped.");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
@@ -149,8 +154,8 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
             mappoolNameCollector.stop();
             return;	
         }
-        if (i.customId === "confirm") {
-            await i.reply("Cool.");
+        if (i.customId === ids.confirm) {
+            await i.reply("ok Cool.");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
             componentCollector.stop();
@@ -214,17 +219,21 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
 // This function asks the user for slots (slotname, slottype, and # of maps) for the mappool
 async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournament) {
     let content = "Provide the acronym for the slot, followed by the name, and the number of maps that will be in the slot.\nFor any mod restrictions, ALSO provide a list of 2 letter acronyms of all allowed mods followed by 2 numbers, one for the number of users that require mods, one for the number of unique mods required.\nYou can choose to provide 2 numbers only and just the mod combination to allow all non-DT/HT mods for a slot.\nYou can choose to provide mods only if all users will require selecting a mod from the selection of mods.\n\n**Examples:**\nNM Nomod 6 NM: A typical nomod slot with 6 maps in it that will enforce nomod.\nDT Double Time 4 DT: A typical double time slot with 3 maps in it that will enforce double time.\nFM Freemod 3 2 2: A typical freemod slot that will enforce at least 2 unique mods per team, and at least 2 players having mods per team\nFM Freemod 3 HDHRFL 2 2: A typical freemod slot that will enforce at least 2 unique mods per team within the mods HD, HR, or FL, and at least 2 players having mods per team\nTB Tiebreaker 1 0 0 OR TB Tiebreaker 1: A typical tiebreaker slot that will allow all mods, but will not enforce any mods.\n\nYou can also separate each slot with a semicolon, like so:\nNM Nomod 6 NM; DT Double Time 4 DT; FM Freemod 3 2 2; TB Tiebreaker 1\n\nYou have a limit of 10 maps per slot, and 10 slots.\n";
+    const ids = {
+        stop: randomUUID(),
+        done: randomUUID(),
+    };
     const slotMessage = await m.channel!.send({
         content,
         components: [
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId("stop")
+                        .setCustomId(ids.stop)
                         .setLabel("STOP COMMAND")
                         .setStyle(ButtonStyle.Danger),
                     new ButtonBuilder()
-                        .setCustomId("done")
+                        .setCustomId(ids.done)
                         .setLabel("Done adding slots")
                         .setStyle(ButtonStyle.Success)
                 ),
@@ -236,7 +245,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
     const slotNameCollector = m.channel!.createMessageCollector({ filter, time: 6000000 });
     
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {	
-        if (i.customId === "stop") {
+        if (i.customId === ids.stop) {
             await i.reply("Mappool creation stopped.");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
@@ -244,7 +253,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             slotNameCollector.stop();
             return;	
         }
-        if (i.customId === "done") {
+        if (i.customId === ids.done) {
             if (mappool.slots.length === 0) {
                 await i.reply("You don't have any slots in the pool bro.");
                 setTimeout(async () => (await i.deleteReply()), 5000);

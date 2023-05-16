@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Message, MessageComponentInteraction, PermissionFlagsBits, PermissionsBitField } from "discord.js";
 
 // Filter to use for message and interaction collectors
@@ -8,10 +9,14 @@ export const filter = (msg: Message | MessageComponentInteraction) => {
 };
 
 // Basic button row with a single stop button
-export const stopRow = new ActionRowBuilder<ButtonBuilder>()
-    .addComponents(
-        new ButtonBuilder()
-            .setCustomId("stop")
-            .setLabel("STOP COMMAND")
-            .setStyle(ButtonStyle.Danger)
-    );
+export function stopRow (): [string, ActionRowBuilder<ButtonBuilder>]  {
+    const id = randomUUID();
+    const stopRow = new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(
+            new ButtonBuilder()
+                .setCustomId(id)
+                .setLabel("STOP COMMAND")
+                .setStyle(ButtonStyle.Danger)
+        );
+    return [id, stopRow];
+}

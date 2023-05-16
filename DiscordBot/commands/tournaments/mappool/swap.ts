@@ -9,6 +9,7 @@ import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { discordClient } from "../../../../Server/discord";
 import { deletePack } from "../../../functions/mappackFunctions";
+import { randomUUID } from "crypto";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -109,17 +110,21 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Confirm swap before swapping
     const name1 = mappoolMap1.beatmap ? `${mappoolMap1.beatmap.beatmapset.artist} - ${mappoolMap1.beatmap.beatmapset.title} [${mappoolMap1.beatmap.difficulty}]` : mappoolMap1.customBeatmap ? `${mappoolMap1.customBeatmap.artist} - ${mappoolMap1.customBeatmap.title} [${mappoolMap1.customBeatmap.difficulty}]` : "Nothing";
     const name2 = mappoolMap2.beatmap ? `${mappoolMap2.beatmap.beatmapset.artist} - ${mappoolMap2.beatmap.beatmapset.title} [${mappoolMap2.beatmap.difficulty}]` : mappoolMap2.customBeatmap ? `${mappoolMap2.customBeatmap.artist} - ${mappoolMap2.customBeatmap.title} [${mappoolMap2.customBeatmap.difficulty}]` : "Nothing";
+    const ids = {
+        yes: randomUUID(),
+        no: randomUUID(),
+    }
     const confirm = await m.channel!.send({
         content: `Are you sure you want to swap **${slot1}${order1}** (${name1}) with **${slot2}${order2}** (${name2})?`,
         components: [
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId("yes")
+                        .setCustomId(ids.yes)
                         .setLabel("YES")
                         .setStyle(ButtonStyle.Success),
                     new ButtonBuilder()
-                        .setCustomId("no")
+                        .setCustomId(ids.no)
                         .setLabel("NO")
                         .setStyle(ButtonStyle.Danger)
                 ),
@@ -132,14 +137,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     let stop = await new Promise<boolean>((resolve) => {
             let done = false;
             collector.on("collect", async i => {
-                if (i.customId === "yes") {
+                if (i.customId === ids.yes) {
                     done = true;
                     await i.reply("Swapping...");
                     setTimeout(async () => (await i.deleteReply()), 100);
                     collector.stop();
                     await confirm.delete();
                     return resolve(false);
-                } else if (i.customId === "no") {
+                } else if (i.customId === ids.no) {
                     done = true;
                     await i.reply("Ok");
                     setTimeout(async () => (await i.deleteReply()), 5000);

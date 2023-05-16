@@ -12,6 +12,7 @@ import { stopRow } from "./messageInteractionFunctions";
 import { MappoolMapHistory } from "../../Models/tournaments/mappools/mappoolMapHistory";
 import modeColour from "./modeColour";
 import { MappoolMap } from "../../Models/tournaments/mappools/mappoolMap";
+import { randomUUID } from "crypto";
 
 // Function to fetch a staff member for a tournament
 export async function fetchStaff (m: Message | ChatInputCommandInteraction, tournament: Tournament, target: string, targetRoles: TournamentRoleType[]): Promise<User | undefined> {
@@ -120,17 +121,23 @@ export async function fetchTournament (m: Message | ChatInputCommandInteraction,
         return tournamentList[0];
 
     let row = new ActionRowBuilder<ButtonBuilder>();
-    for (const tournament of tournamentList)
+    const [stopID, stop] = stopRow();
+    const ids: any = {
+        stop: stopID,
+    }
+    for (const tournament of tournamentList) {
+        ids[tournament.ID.toString()] = randomUUID();
         row = row.addComponents(
             new ButtonBuilder()
-                .setCustomId(tournament.ID.toString())
+                .setCustomId(ids[tournament.ID.toString()])
                 .setLabel(tournament.name)
                 .setStyle(ButtonStyle.Primary)
         );
+    }
 
     const message = await m.channel!.send({
         content: "Which tournament are we working on?",
-        components: [row, stopRow],
+        components: [row, stop],
     });
 
     let stopped = false;
@@ -139,14 +146,14 @@ export async function fetchTournament (m: Message | ChatInputCommandInteraction,
     
     return new Promise((resolve) => {
         componentCollector.on("collect", async (i: MessageComponentInteraction) => {
-            if (i.customId === "stop") {
+            if (i.customId === ids.stop) {
                 stopped = true;
                 componentCollector.stop();
                 await i.reply("Tournament creation stopped.");
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }
-            const tournament = tournamentList.find(t => t.ID.toString() === i.customId);
+            const tournament = tournamentList.find(t => ids[t.ID.toString()] === i.customId);
             if (!tournament) {
                 await i.reply("That tournament doesn't exist.");
                 setTimeout(async () => (await i.deleteReply()), 5000);
@@ -179,11 +186,16 @@ export async function fetchStage (m: Message | ChatInputCommandInteraction, tour
     if (tournament.stages.length === 1)
         return tournament.stages[0];
 
+    const [stopID, stop] = stopRow();
+    const ids: any = {
+        stop: stopID,
+    }
     let row = new ActionRowBuilder<ButtonBuilder>();
     for (const stage of tournament.stages) {
+        ids[stage.ID.toString()] = randomUUID();
         row = row.addComponents(
             new ButtonBuilder()
-                .setCustomId(stage.ID.toString())
+                .setCustomId(ids[stage.ID.toString()])
                 .setLabel(stage.name)
                 .setStyle(ButtonStyle.Primary)
         );
@@ -191,7 +203,7 @@ export async function fetchStage (m: Message | ChatInputCommandInteraction, tour
 
     const message = await m.channel!.send({
         content: "Which stage are we working on?",
-        components: [row, stopRow],
+        components: [row, stop],
     });
 
     let stopped = false;
@@ -200,14 +212,14 @@ export async function fetchStage (m: Message | ChatInputCommandInteraction, tour
     
     return new Promise((resolve) => {
         componentCollector.on("collect", async (i: MessageComponentInteraction) => {
-            if (i.customId === "stop") {
+            if (i.customId === ids.stop) {
                 stopped = true;
                 componentCollector.stop();
                 await i.reply("Tournament creation stopped.");
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }
-            const stage = tournament.stages.find(s => s.ID.toString() === i.customId);
+            const stage = tournament.stages.find(s => ids[s.ID.toString()] === i.customId);
             if (!stage) {
                 await i.reply("That stage doesn't exist.");
                 setTimeout(async () => (await i.deleteReply()), 5000);
@@ -236,17 +248,23 @@ export async function fetchRound (m: Message | ChatInputCommandInteraction, stag
 
     const components: ActionRowBuilder<ButtonBuilder>[] = [];
 
+    const [stopID, stop] = stopRow();
+    const ids: any = {
+        stop: stopID,
+        none: randomUUID(),
+    }
     let row = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
             new ButtonBuilder()
-                .setCustomId("none")
+                .setCustomId(ids.none)
                 .setLabel("None this is for the stage")
                 .setStyle(ButtonStyle.Primary)
         );
     for (const round of stage.rounds) {
+        ids[round.ID.toString()] = randomUUID();
         row = row.addComponents(
             new ButtonBuilder()
-                .setCustomId(round.ID.toString())
+                .setCustomId(ids[round.ID.toString()])
                 .setLabel(round.name)
                 .setStyle(ButtonStyle.Secondary)
         );
@@ -255,7 +273,7 @@ export async function fetchRound (m: Message | ChatInputCommandInteraction, stag
             row = new ActionRowBuilder<ButtonBuilder>();
         }
     }
-    components.push(row, stopRow);
+    components.push(row, stop);
 
     const message = await m.channel!.send({
         content: "Which round are we working on?",
@@ -268,15 +286,15 @@ export async function fetchRound (m: Message | ChatInputCommandInteraction, stag
     
     return new Promise((resolve) => {
         componentCollector.on("collect", async (i: MessageComponentInteraction) => {
-            if (i.customId === "stop") {
+            if (i.customId === ids.stop) {
                 stopped = true;
                 componentCollector.stop();
                 await i.reply("Tournament creation stopped.");
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }
-            const round = stage.rounds.find(r => r.ID.toString() === i.customId);
-            if (!round && i.customId !== "none") {
+            const round = stage.rounds.find(r => ids[r.ID.toString()] === i.customId);
+            if (!round && i.customId !== ids.none) {
                 await i.reply("That round doesn't exist.");
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
@@ -284,7 +302,7 @@ export async function fetchRound (m: Message | ChatInputCommandInteraction, stag
 
             stopped = true;
             componentCollector.stop();
-            if (i.customId === "none")
+            if (i.customId === ids.none)
                 resolve(undefined);
             else
                 resolve(round);
@@ -311,9 +329,13 @@ export async function fetchMappool (m: Message | ChatInputCommandInteraction, to
     if (mappools.length === 1)
         return mappools[0];
 
+    const ids: any = {
+        none: randomUUID(),
+    };
     const buttons = mappools.map((mappool, i) => {
+        ids[i.toString()] = randomUUID();
         return new ButtonBuilder()
-            .setCustomId(i.toString())
+            .setCustomId(ids[i.toString()])
             .setLabel(`${mappool.abbreviation.toUpperCase()}${mappool.order ? `-${mappool.order}` : ""}`)
             .setStyle(ButtonStyle.Primary);
     });
@@ -325,7 +347,7 @@ export async function fetchMappool (m: Message | ChatInputCommandInteraction, to
                 .addComponents(
                     ...buttons,
                     new ButtonBuilder()
-                        .setCustomId("none")
+                        .setCustomId(ids.none)
                         .setLabel("None of these")
                         .setStyle(ButtonStyle.Danger)),
         ],
@@ -336,12 +358,17 @@ export async function fetchMappool (m: Message | ChatInputCommandInteraction, to
         const confirmationCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });
         confirmationCollector.on("collect", async (msg: Message | MessageComponentInteraction) => {
             if (msg instanceof MessageComponentInteraction) {
-                if (msg.customId === "none") {
+                if (msg.customId === ids.none) {
                     await message.delete();
                     confirmationCollector.stop();
                     resolve(undefined);
                 } else {
-                    const mappool = mappools[parseInt(msg.customId)];
+                    const mappool = mappools.find((m, i) => ids[i.toString()] === msg.customId);
+                    if (!mappool) {
+                        await msg.reply("That mappool doesn't exist.");
+                        setTimeout(async () => await msg.deleteReply(), 5000);
+                        return;
+                    }
                     await message.delete();
                     confirmationCollector.stop();
                     resolve(mappool);
@@ -365,9 +392,13 @@ export async function fetchSlot (m: Message | ChatInputCommandInteraction, mappo
     if (slots.length === 1)
         return slots[0];
 
+    const ids: any = {
+        none: randomUUID(),
+    };
     const buttons = slots.map((slot, i) => {
+        ids[i.toString()] = randomUUID();
         return new ButtonBuilder()
-            .setCustomId(i.toString())
+            .setCustomId(ids[i.toString()])
             .setLabel(`${slot.name} (${slot.acronym})`)
             .setStyle(ButtonStyle.Primary);
     });
@@ -379,7 +410,7 @@ export async function fetchSlot (m: Message | ChatInputCommandInteraction, mappo
                 .addComponents(
                     ...buttons,
                     new ButtonBuilder()
-                        .setCustomId("none")
+                        .setCustomId(ids.none)
                         .setLabel("None of these")
                         .setStyle(ButtonStyle.Danger)),
         ],
@@ -390,12 +421,12 @@ export async function fetchSlot (m: Message | ChatInputCommandInteraction, mappo
         const confirmationCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });  
         confirmationCollector.on("collect", async (msg: Message | MessageComponentInteraction) => {
             if (msg instanceof MessageComponentInteraction) {
-                if (msg.customId === "none") {
+                if (msg.customId === ids.none) {
                     await message.delete();
                     confirmationCollector.stop();
                     resolve(undefined);
                 } else {
-                    const slot = slots[parseInt(msg.customId)];
+                    const slot = slots.find((s, i) => ids[i.toString()] === msg.customId);
                     await message.delete();
                     confirmationCollector.stop();
                     resolve(slot);
@@ -422,17 +453,21 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
             return true;
     
         const forumChannel = mappoolChannel as ForumChannel;
+        const ids = {
+            stop: randomUUID(),
+            create: randomUUID(),
+        }
         const threadMessage = await m.channel!.send({
             content: `Is there a thread for this map already? Or should I create one in <#${forumChannel.id}>? If there already is a thread, paste the thread's ID.`,
             components: [
                 new ActionRowBuilder<ButtonBuilder>()
                     .addComponents(
                         new ButtonBuilder()
-                            .setCustomId("stop")
+                            .setCustomId(ids.stop)
                             .setLabel("STOP COMMAND")
                             .setStyle(ButtonStyle.Danger),
                         new ButtonBuilder()
-                            .setCustomId("create")
+                            .setCustomId(ids.create)
                             .setLabel("Create thread")
                             .setStyle(ButtonStyle.Primary))
                         
@@ -443,13 +478,13 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
             const confirmationCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });
             const idCollector = m.channel!.createMessageCollector({ filter, time: 6000000 });
             confirmationCollector.on("collect", async (i: MessageComponentInteraction) => {
-                if (i.customId === "stop") {
+                if (i.customId === ids.stop) {
                     await i.reply("Stopped command.");
                     setTimeout(async () => await i.deleteReply(), 5000);
                     confirmationCollector.stop();
                     idCollector.stop();
                     resolve(undefined);
-                } else if (i.customId === "create") {
+                } else if (i.customId === ids.create) {
                     await i.reply("Creating thread...");
                     const createObj: GuildForumThreadCreateOptions = {
                         name: `${slot} (${mappoolMap.customMappers.map(u => u.osu.username).join(", ")})`,
@@ -628,17 +663,21 @@ export async function mappoolLog(tournament: Tournament, command: string, user: 
 
 // Function to confirm if they want to create another mappool for the same stage/round
 export async function confirmCommand (m: Message | ChatInputCommandInteraction, content: string): Promise<boolean> {
+    const ids = {
+        yes: randomUUID(),
+        no: randomUUID(),
+    }
     const message = await m.channel!.send({
         content,
         components: [
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId("yes")
+                        .setCustomId(ids.yes)
                         .setLabel("Yes")
                         .setStyle(ButtonStyle.Success),
                     new ButtonBuilder()
-                        .setCustomId("no")
+                        .setCustomId(ids.no)
                         .setLabel("No")
                         .setStyle(ButtonStyle.Danger)),
         ],
@@ -649,12 +688,12 @@ export async function confirmCommand (m: Message | ChatInputCommandInteraction, 
         const confirmationCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });
         confirmationCollector.on("collect", async (msg: Message | MessageComponentInteraction) => {
             if (msg instanceof MessageComponentInteraction) {
-                if (msg.customId === "yes") {
+                if (msg.customId === ids.yes) {
                     await message.delete();
                     confirmationCollector.stop();
                     resolve(true);
                 }
-                else if (msg.customId === "no") {
+                else if (msg.customId === ids.no) {
                     await message.delete();
                     confirmationCollector.stop();
                     resolve(false);

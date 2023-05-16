@@ -9,6 +9,7 @@ import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { isEligibleFor } from "../../../Server/middleware/mca-ayim";
 import { loginResponse } from "../../functions/loginResponse";
+import { randomUUID } from "crypto";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -168,15 +169,19 @@ async function run (m: Message | ChatInputCommandInteraction) {
             },
         },
     });
+    const buttonIDs = {
+        true: randomUUID(),
+        false: randomUUID(),
+    }
     if (year < (mca ? mca.year : (new Date()).getUTCFullYear())) {
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId("true")
+                    .setCustomId(buttonIDs.true)
                     .setLabel("Yes")
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
-                    .setCustomId("false")
+                    .setCustomId(buttonIDs.false)
                     .setLabel("No")
                     .setStyle(ButtonStyle.Danger)
             );
@@ -191,7 +196,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 return;
             }
 
-            if (i.customId === "true") {
+            if (i.customId === buttonIDs.true) {
                 await influence.save();
                 if (m instanceof Message) await m.reply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
                 else await m.editReply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);

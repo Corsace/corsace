@@ -11,6 +11,7 @@ import { Stage, StageType } from "../../../Models/tournaments/stage";
 import { Phase } from "../../../Models/phase";
 import { TournamentChannel, TournamentChannelType, TournamentChannelTypeRoles } from "../../../Models/tournaments/tournamentChannel";
 import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
+import { randomUUID } from "crypto";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -321,15 +322,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
 // Function to retrieve how many teams/players pass qualifiers
 async function tournamentQualifiersPass (m: Message, tournament: Tournament, creator: User) {
+    const [id, stop] = stopRow();
     const passMessage = await m.reply({
         content: "How many teams are expected to pass qualifiers? (Please enter a number >= 2.)", 
-        components: [stopRow],
+        components: [stop],
     });
     let stopped = false;
     const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });	
     const collector = m.channel!.createMessageCollector({ filter, time: 6000000 });
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {	
-        if (i.customId === "stop") {
+        if (i.customId === id) {
             const reply = await i.reply("Tournament creation stopped.");
             setTimeout(async () => reply.delete(), 5000);
             stopped = true;
@@ -384,13 +386,18 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         content += `\nDesignated role \`${role.name} (${role.id})\` for \`Organizer\`.`;
     }
 
+    const ids = {
+        "role": randomUUID(),
+        "stop": randomUUID(),
+        "done": randomUUID(),
+    }
     const roleMessage = await m.reply({
         content,
         components: [
             new ActionRowBuilder<StringSelectMenuBuilder>()
                 .addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId("role")
+                        .setCustomId(ids.role)
                         .setPlaceholder("Select a role type")
                         .addOptions(
                             {
@@ -442,11 +449,11 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId("stop")
+                        .setCustomId(ids.stop)
                         .setLabel("STOP COMMAND")
                         .setStyle(ButtonStyle.Danger),
                     new ButtonBuilder()
-                        .setCustomId("done")
+                        .setCustomId(ids.done)
                         .setLabel("Done adding roles")
                         .setStyle(ButtonStyle.Success)
                 ),
@@ -460,7 +467,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         if (stopped)
             return;
 
-        if (i.customId === "stop") {
+        if (i.customId === ids.stop) {
             await i.reply("Tournament creation stopped.");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
@@ -468,7 +475,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             roleCollector.stop();
             return;
         }
-        if (i.customId === "done") {
+        if (i.customId === ids.done) {
             await i.reply("Tournament role designation has finished.");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
@@ -477,7 +484,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             await tournamentChannels(m, tournament, creator);
             return;
         }
-        if (i.customId === "role") {
+        if (i.customId === ids.role) {
             const roleString = (i as StringSelectMenuInteraction).values[0];
             const roleType = TournamentRoleType[roleString];
             if (tournament.roles!.find(r => r.roleType === roleType)) {
@@ -563,13 +570,18 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
 async function tournamentChannels (m: Message, tournament: Tournament, creator: User) {
     let stopped = false;
     let content = "Mention/paste a channel ID, and then write the designated tournament channel type it is for. (e.g. `#general general` or `#organizers admin`).\n\nIf you want the bot to create a channel for you, select a channel type from the dropdown below.\nIf you are done, press the `done` button.\n";
+    const ids = {
+        "channel": randomUUID(),
+        "stop": randomUUID(),
+        "done": randomUUID(),
+    }
     const channelMessage = await m.reply({
         content,
         components: [
             new ActionRowBuilder<StringSelectMenuBuilder>()
                 .addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId("channel")
+                        .setCustomId(ids.channel)
                         .setPlaceholder("Select a channel type")
                         .addOptions(
                             {
@@ -641,11 +653,11 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId("stop")
+                        .setCustomId(ids.stop)
                         .setLabel("STOP COMMAND")
                         .setStyle(ButtonStyle.Danger),
                     new ButtonBuilder()
-                        .setCustomId("done")
+                        .setCustomId(ids.done)
                         .setLabel("Done adding channels")
                         .setStyle(ButtonStyle.Success)
                 ),
@@ -656,7 +668,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
     const channelCollector = m.channel!.createMessageCollector({ filter, time: 6000000 });
 
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {
-        if (i.customId === "stop") {
+        if (i.customId === ids.stop) {
             await i.reply("Tournament creation stopped.");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
@@ -664,7 +676,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             channelCollector.stop();
             return;
         }
-        if (i.customId === "done") {
+        if (i.customId === ids.done) {
             await i.reply("Tournament channel designation has finished.");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
@@ -676,7 +688,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                 await tournamentSave(m, tournament);
             return;
         }
-        if (i.customId === "channel") {
+        if (i.customId === ids.channel) {
             const channelTypeMenu = (i as StringSelectMenuInteraction).values[0];
             const tournamentChannelType = TournamentChannelType[channelTypeMenu];
             if (tournament.channels!.find(c => c.channelType === tournamentChannelType)) {
@@ -851,10 +863,15 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
 
 // Function to fetch and toggle corsace
 async function tournamentCorsace (m: Message, tournament: Tournament) {
+    const [stopID, stop] = stopRow();
+    const ids = {
+        "corsace": randomUUID(),
+        "stop": stopID,
+    }
     const corsaceRow = new ActionRowBuilder<StringSelectMenuBuilder>()
         .addComponents(
             new StringSelectMenuBuilder()
-                .setCustomId("corsace")
+                .setCustomId(ids.corsace)
                 .setPlaceholder("Select a corsace option")
                 .addOptions(
                     {
@@ -876,12 +893,12 @@ async function tournamentCorsace (m: Message, tournament: Tournament) {
         );
     const corsaceMessage = await m.reply({
         content: "Is this a Corsace tournament?",
-        components: [corsaceRow, stopRow],
+        components: [corsaceRow, stop],
     });
     let stopped = false;
     const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {
-        if (i.customId === "stop") {
+        if (i.customId === ids.stop) {
             stopped = true;
             componentCollector.stop();
             await i.reply("Tournament creation stopped.");
