@@ -537,6 +537,7 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
         }
 
         const thread = ch as ThreadChannel;
+        await thread.setArchived(false);
         const threadMsg = await thread.messages.fetch(mappoolMap.customMessageID!);
         if (!threadMsg) {
             if (m instanceof Message) m.reply(`Could not find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);

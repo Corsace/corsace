@@ -492,26 +492,21 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }
-            try {
-                const role = await m.guild!.roles.create({
-                    name: `${tournament.name} ${roleString}`,
-                    reason: `Created by ${m.author.tag} for tournament ${tournament.name}`,
-                    mentionable: true,
-                });
-                const tournamentRole = new TournamentRole();
-                tournamentRole.createdBy = creator;
-                tournamentRole.roleID = role.id;
-                tournamentRole.roleType = roleType;
-                tournament.roles!.push(tournamentRole);
+            const role = await m.guild!.roles.create({
+                name: `${tournament.name} ${roleString}`,
+                reason: `Created by ${m.author.tag} for tournament ${tournament.name}`,
+                mentionable: true,
+            });
+            const tournamentRole = new TournamentRole();
+            tournamentRole.createdBy = creator;
+            tournamentRole.roleID = role.id;
+            tournamentRole.roleType = roleType;
+            tournament.roles!.push(tournamentRole);
 
-                content += `\nCreated role <@&${role.id}> for \`${roleString}\`.`;
-                await roleMessage.edit(content);
-                await i.reply(`Created role <@&${role.id}> for \`${roleString}\`.`);
-                setTimeout(async () => (await i.deleteReply()), 5000);
-            } catch (e) {
-                await i.reply("Failed to create role.\n```" + e + "```");
-                setTimeout(async () => (await i.deleteReply()), 5000);
-            }
+            content += `\nCreated role <@&${role.id}> for \`${roleString}\`.`;
+            await roleMessage.edit(content);
+            await i.reply(`Created role <@&${role.id}> for \`${roleString}\`.`);
+            setTimeout(async () => (await i.deleteReply()), 5000);
         }
     });
 
@@ -703,78 +698,73 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             else if (channelTypeMenu === "Jobboard" || channelTypeMenu === "Mappoolqa")
                 channelType = ChannelType.GuildForum;
 
-            try {
-                const tournamentChannel = new TournamentChannel();
-                tournamentChannel.channelType = tournamentChannelType;
+            const tournamentChannel = new TournamentChannel();
+            tournamentChannel.channelType = tournamentChannelType;
 
-                const channelObject: GuildChannelCreateOptions = {
-                    type: channelType,
-                    name: `${tournament.abbreviation}-${channelTypeMenu}`,
-                    topic: `Tournament ${tournament.name} channel for ${channelTypeMenu}`,
-                    reason: `${tournament.name} channel created by ${m.author.tag} for ${(i as StringSelectMenuInteraction).values[0]} purposes.`,
-                    defaultAutoArchiveDuration: 10080,
-                };
+            const channelObject: GuildChannelCreateOptions = {
+                type: channelType,
+                name: `${tournament.abbreviation}-${channelTypeMenu}`,
+                topic: `Tournament ${tournament.name} channel for ${channelTypeMenu}`,
+                reason: `${tournament.name} channel created by ${m.author.tag} for ${(i as StringSelectMenuInteraction).values[0]} purposes.`,
+                defaultAutoArchiveDuration: 10080,
+            };
 
-                const allowedRoleTypes = TournamentChannelTypeRoles[tournamentChannel.channelType];
-                if (allowedRoleTypes !== undefined) {
-                    channelObject.permissionOverwrites = [
-                        {
-                            id: m.guild!.id, // the ID of the @everyone role is the same as the guild ID
-                            deny: PermissionFlagsBits.ViewChannel,
-                        },
-                    ];
-                    const allowedRoles = tournament.roles!.filter(r => allowedRoleTypes.includes(r.roleType));
-                    channelObject.permissionOverwrites.push(...allowedRoles.map(r => {
-                        return {
-                            id: r.roleID,
-                            allow: PermissionFlagsBits.ViewChannel,
-                        };
-                    }));
-                    
+            const allowedRoleTypes = TournamentChannelTypeRoles[tournamentChannel.channelType];
+            if (allowedRoleTypes !== undefined) {
+                channelObject.permissionOverwrites = [
+                    {
+                        id: m.guild!.id, // the ID of the @everyone role is the same as the guild ID
+                        deny: PermissionFlagsBits.ViewChannel,
+                    },
+                ];
+                const allowedRoles = tournament.roles!.filter(r => allowedRoleTypes.includes(r.roleType));
+                channelObject.permissionOverwrites.push(...allowedRoles.map(r => {
+                    return {
+                        id: r.roleID,
+                        allow: PermissionFlagsBits.ViewChannel,
+                    };
+                }));
+                
 
-                    if (tournamentChannel.channelType === TournamentChannelType.Mappoollog)
-                        channelObject.permissionOverwrites[0].deny = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.SendMessages;
-                }
-
-                if (channelTypeMenu === "Mappoolqa")
-                    channelObject.availableTags = [{
-                        name: "WIP",
-                        moderated: true,
-                    },{
-                        name: "Finished",
-                        moderated: true,
-                    },{
-                        name: "Late",
-                        moderated: true,
-                    },{
-                        name: "Needs HS",
-                        moderated: true,
-                    }];
-                else if (channelTypeMenu === "Jobboard")
-                    channelObject.availableTags = [{
-                        name: "Open",
-                        moderated: true,
-                    },{
-                        name: "Closed",
-                        moderated: true,
-                    },{
-                        name: "To Assign",
-                        moderated: true,
-                    }];
-
-                const channel = await m.guild!.channels.create(channelObject);
-
-                tournamentChannel.channelID = channel.id;
-                tournament.channels!.push(tournamentChannel);
-
-                content += `\nCreated channel <#${channel.id}> for \`${channelTypeMenu}\`.`;
-                await channelMessage.edit(content);
-                await i.reply(`Created channel <#${channel.id}> for \`${channelTypeMenu}\`.`);
-                setTimeout(async () => (await i.deleteReply()), 5000);
-            } catch (e) {
-                await i.reply("Failed to create channel. If you are creating an announcement or mappool qa channel, you need to turn your server into a community server. Error below:\n```" + e + "```");
-                setTimeout(async () => (await i.deleteReply()), 5000);
+                if (tournamentChannel.channelType === TournamentChannelType.Mappoollog)
+                    channelObject.permissionOverwrites[0].deny = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.SendMessages;
             }
+
+            if (channelTypeMenu === "Mappoolqa")
+                channelObject.availableTags = [{
+                    name: "WIP",
+                    moderated: true,
+                },{
+                    name: "Finished",
+                    moderated: true,
+                },{
+                    name: "Late",
+                    moderated: true,
+                },{
+                    name: "Needs HS",
+                    moderated: true,
+                }];
+            else if (channelTypeMenu === "Jobboard")
+                channelObject.availableTags = [{
+                    name: "Open",
+                    moderated: true,
+                },{
+                    name: "Closed",
+                    moderated: true,
+                },{
+                    name: "To Assign",
+                    moderated: true,
+                }];
+
+            const channel = await m.guild!.channels.create(channelObject);
+
+            tournamentChannel.channelID = channel.id;
+            tournament.channels!.push(tournamentChannel);
+
+            content += `\nCreated channel <#${channel.id}> for \`${channelTypeMenu}\`.`;
+            await channelMessage.edit(content);
+            await i.reply(`Created channel <#${channel.id}> for \`${channelTypeMenu}\`.`);
+            setTimeout(async () => (await i.deleteReply()), 5000);
         }
     });
 
