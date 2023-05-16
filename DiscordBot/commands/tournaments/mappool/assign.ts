@@ -156,12 +156,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 .leftJoin("mappoolMap.beatmap", "beatmap")
                 .leftJoin("mappoolMap.slot", "slot")
                 .leftJoin("slot.mappool", "mappool")
+                .leftJoin("mappool.stage", "stage")
+                .leftJoin("stage.tournament", "tournament")
                 .where("beatmap.ID = :id", { id: beatmap.ID })
-                .andWhere("mappool.ID = :mappool", { mappool: mappool.ID })
+                .andWhere("tournament.ID = :tournament", { tournament: tournament.ID })
                 .getExists();
             if (dupeMaps) {
-                if (m instanceof Message) m.reply(`The beatmap you are trying to add is already in **${mappool.name}**.`);
-                else m.editReply(`The beatmap you are trying to add is already in **${mappool.name}**.`);
+                if (m instanceof Message) m.reply(`The beatmap you are trying to add is already in **${tournament.name}**.`);
+                else m.editReply(`The beatmap you are trying to add is already in **${tournament.name}**.`);
                 return;
             }
         }
