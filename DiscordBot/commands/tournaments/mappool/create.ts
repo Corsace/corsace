@@ -213,7 +213,7 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
 
 // This function asks the user for slots (slotname, slottype, and # of maps) for the mappool
 async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournament) {
-    let content = "Provide the acronym for the slot, followed by the name, and the number of maps that will be in the slot.\nFor any mod restrictions, ALSO provide a list of 2 letter acronyms of all allowed mods followed by 2 numbers, one for the number of users that require mods, one for the number of unique mods required.\nYou can choose to provide 2 numbers only and just the mod combination to allow all non-DT/HT mods for a slot.\nYou can choose to provide mods only if all users will require selecting a mod from the selection of mods.\n\n**Examples:**\nNM Nomod 6 NM: A typical nomod slot with 6 maps in it that will enforce nomod.\nDT Double Time 4 DT: A typical double time slot with 3 maps in it that will enforce double time.\nFM Freemod 3 2 2: A typical freemod slot that will enforce at least 2 unique mods per team, and at least 2 players having mods per team\nFM Freemod 3 HDHRFL 2 2: A typical freemod slot that will enforce at least 2 unique mods per team within the mods HD, HR, or FL, and at least 2 players having mods per team\nTB Tiebreaker 1 0 0 OR TB Tiebreaker 1: A typical tiebreaker slot that will allow all mods, but will not enforce any mods.\n\nYou can also separate each slot with a semicolon, like so:\nNM Nomod 6 NM; DT Double Time 4 DT; FM Freemod 3 2 2; TB Tiebreaker 1\n";
+    let content = "Provide the acronym for the slot, followed by the name, and the number of maps that will be in the slot.\nFor any mod restrictions, ALSO provide a list of 2 letter acronyms of all allowed mods followed by 2 numbers, one for the number of users that require mods, one for the number of unique mods required.\nYou can choose to provide 2 numbers only and just the mod combination to allow all non-DT/HT mods for a slot.\nYou can choose to provide mods only if all users will require selecting a mod from the selection of mods.\n\n**Examples:**\nNM Nomod 6 NM: A typical nomod slot with 6 maps in it that will enforce nomod.\nDT Double Time 4 DT: A typical double time slot with 3 maps in it that will enforce double time.\nFM Freemod 3 2 2: A typical freemod slot that will enforce at least 2 unique mods per team, and at least 2 players having mods per team\nFM Freemod 3 HDHRFL 2 2: A typical freemod slot that will enforce at least 2 unique mods per team within the mods HD, HR, or FL, and at least 2 players having mods per team\nTB Tiebreaker 1 0 0 OR TB Tiebreaker 1: A typical tiebreaker slot that will allow all mods, but will not enforce any mods.\n\nYou can also separate each slot with a semicolon, like so:\nNM Nomod 6 NM; DT Double Time 4 DT; FM Freemod 3 2 2; TB Tiebreaker 1\n\nYou have a limit of 10 maps per slot, and 10 slots.\n";
     const slotMessage = await m.channel!.send({
         content,
         components: [
@@ -294,11 +294,17 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
                     const num = parseInt(slotInfo[j]);
                     if (modNum === undefined && slotInfo[j].length % 2 === 0 && isNaN(num)) {
                         const modTest = acronymtoMods(slotInfo[j]);
-                        if (modTest !== undefined) {
-                            modNum = modTest;
-                            slotInfo.splice(j, 1);
-                            break;
+                        if (modTest === undefined) {
+                            const reply = await msg.reply(`**${slotInfo[j]}** is an invalid mod. Please provide a valid mod for slot #${i + 1} \`${slotInfo}\`.`);
+                            setTimeout(async () => {
+                                await reply.delete();
+                                await msg.delete();
+                            }, 5000);
+                            return;
                         }
+                        modNum = modTest;
+                        slotInfo.splice(j, 1);
+                        break;
                     } else if (!isNaN(num) && num <= tournament.matchSize && num >= 0 && (userModCount === undefined || uniqueModCount === undefined)) {
                         slotInfo.splice(j, 1);
 
@@ -319,7 +325,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             const mapCount = parseInt(slotInfo[slotInfo.length - 1]);
             const slotName = slotInfo.slice(1, slotInfo.length - 1);
 
-            if (isNaN(mapCount) || mapCount <= 0) {
+            if (isNaN(mapCount) || mapCount <= 0 || mapCount > 10) {
                 const reply = await msg.reply(`Please provide a valid number of maps that will be in the slot for slot #${i + 1} \`${slotInfo}\`.`);
                 setTimeout(async () => {
                     await reply.delete();
@@ -363,6 +369,16 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
         const duplicateSlotAcronyms = slotAcronyms.filter((s, i) => slotAcronyms.indexOf(s) !== i);
         if (duplicateSlotNames.length > 0 || duplicateSlotAcronyms.length > 0) {
             const reply = await msg.reply(`Please provide unique slot names and abbreviations.\nDuplicate slot names: \`${duplicateSlotNames.join(", ")}\`.\nDuplicate slot abbreviations: \`${duplicateSlotAcronyms.join(", ")}\`.`);
+            setTimeout(async () => {
+                await reply.delete();
+                await msg.delete();
+            }, 5000);
+            return;
+        }
+
+        // Check for 10 slot limit
+        if (mappool.slots.length + mappoolSlotsMade.length > 10) {
+            const reply = await msg.reply(`You can only have 10 slots in a mappool. You would have ${mappool.slots.length + mappoolSlotsMade.length} slots if you added these slots.`);
             setTimeout(async () => {
                 await reply.delete();
                 await msg.delete();
