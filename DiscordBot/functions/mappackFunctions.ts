@@ -17,7 +17,7 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
         else m.editReply(`**${mappool.name}** does not have any downloadable beatmaps.`);
         return;
     }
-    const streams = dlLinks.map(m => download(m));
+    const streams = dlLinks.map(link => download(link));
     const zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
 
     const s3Key = `${randomUUID()}/${packName}.zip`;

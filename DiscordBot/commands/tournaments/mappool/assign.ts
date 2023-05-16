@@ -35,7 +35,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     
     const testing = (m instanceof ChatInputCommandInteraction ? m.options.getSubcommand() === "tester": /-test Y/i.test(m.content));
-    if (testing && m instanceof Message)    
+    if (testing && m instanceof Message) 
         m.content = m.content.replace(/-test Y/i, "");
 
     const replace = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("replace") : /-r Y/i.test(m.content));
@@ -223,7 +223,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     // Check if user has any mapper/tester roles
-    const user = await fetchStaff(m, tournament, target, [testing ? TournamentRoleType.Mappers : TournamentRoleType.Testplayers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]);
+    const user = await fetchStaff(m, tournament, target, [testing ? TournamentRoleType.Testplayers : TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]);
     if (!user) 
         return;
     

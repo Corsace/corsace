@@ -94,18 +94,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
         try {
             const data = await download(link);
-            if (m instanceof Message) await m.reply({ files: [
+            const discordFile = { files: [
                 {
                     attachment: data,
                     name: `${mappoolSlot}.osz`,
                 }
-            ] });
-            else await m.editReply({ files: [
-                {
-                    attachment: data,
-                    name: `${mappoolSlot}.osz`,
-                }
-            ] });
+            ] };
+            if (m instanceof Message) await m.reply(discordFile);
+            else await m.editReply(discordFile);
         } catch (e) {
             if (m instanceof Message) m.reply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
             else m.editReply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
@@ -129,14 +125,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         mappool.mappackLink = url;
         mappool.mappackExpiry = new Date(Date.now() + 60 * 60 * 24 * 1000);
-        await mappool.save();
-
-        if (m instanceof Message) await m.reply(`Here is a temporary mappack link valid for 1 day:\n${url}`);
-        else await m.editReply(`Here is a temporary mappack link valid for 1 day:\n${url}`);
     } catch (e) {
         if (m instanceof Message) m.reply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
         else m.editReply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
+        return;
     }
+
+    await mappool.save();
+
+    if (m instanceof Message) await m.reply(`Here is a temporary mappack link valid for 1 day:\n${mappool.mappackLink}`);
+    else await m.editReply(`Here is a temporary mappack link valid for 1 day:\n${mappool.mappackLink}`);
 
     if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
 }

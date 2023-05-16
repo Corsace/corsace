@@ -25,7 +25,7 @@ export async function fetchStaff (m: Message | ChatInputCommandInteraction, tour
         const members = await m.guild!.members.fetch({ query: target });
         const member = members.first();
         if (!member) {
-            m.reply(`Could not find user \`${target}\` in the server. Please try again, or contact a Corsace admin if the problem persists.`);
+            m.reply(`Could not find user \`${target}\` in the server. Contact a Corsace admin if the problem persists.`);
             return;
         }
         discordUser = member;
@@ -490,9 +490,6 @@ export async function fetchCustomThread (m: Message | ChatInputCommandInteractio
                         name: `${slot} (${mappoolMap.customMappers.map(u => u.osu.username).join(", ")})`,
                         message: { content },
                     }
-                    const tag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "wip")?.id;
-                    if (tag)
-                        createObj.appliedTags = [tag];
                     const thread = await forumChannel.threads.create(createObj);
                     const threadMsg = await thread.fetchStarterMessage();
                     await i.deleteReply();
