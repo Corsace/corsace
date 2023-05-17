@@ -23,7 +23,7 @@ export class JobPost extends BaseEntity {
     @OneToOne(() => MappoolMap, map => map.jobPost)
     map!: MappoolMap;
 
-    @Column({ nullable: true })
-    jobBoardThread?: string;
+    @Column({ type: "varchar", nullable: true })
+    jobBoardThread?: string | null;
 
 }
