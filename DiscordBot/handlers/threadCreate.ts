@@ -57,7 +57,7 @@ export default async function threadCreate (t: ThreadChannel, newlyCreated: bool
     const allowed = (owner.guildMember.roles as GuildMemberRoleManager).cache.hasAny(...allowedRoles.map(r => r.roleID));
     if (!allowed) {
         m.reply("You are not a mappooler or organizer for this tournament.");
-        return false;
+        return;
     }
 
     const mappool = await fetchMappool(m, tournament, poolText);

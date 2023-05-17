@@ -91,7 +91,7 @@ export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel
     const allowed = member.roles.cache.hasAny(...allowedRoles.map(r => r.roleID));
     if (!allowed) {
         m.reply("You are not a mappooler or organizer for this tournament.");
-        return false;
+        return;
     }
 
     const mappool = await fetchMappool(m, tournament, poolText);
