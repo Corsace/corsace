@@ -10,7 +10,6 @@ import { Brackets } from "typeorm";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { fetchCustomThread, mappoolLog } from "../../../functions/tournamentFunctions";
 import { TournamentRole, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { User } from "../../../../Models/user";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
 import { Beatmap as APIBeatmap} from "nodesu";
 import beatmapEmbed from "../../../functions/beatmapEmbed";

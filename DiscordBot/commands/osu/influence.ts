@@ -29,8 +29,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     } else {
         search = m.options.getString("username") ?? "";
         year = m.options.getInteger("year") ?? 0;
-        if (year < 2007)
-            year = 0;
+    }
+
+    if (year > new Date().getFullYear()) {
+        await respond(m, "U cant search for influences in the future dumbass");
+        return;
     }
 
     let query = await User
@@ -68,8 +71,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
 const data = new SlashCommandBuilder()
     .setName("influence")
     .setDescription("Show your mapping influences or someone else's given a username and a year")
-    .addStringOption(option => option.setName("username").setDescription("The osu! username to search for influences for"))
-    .addIntegerOption(option => option.setName("year").setDescription("The year to search for influences for").setMinValue(2007));
+    .addStringOption(option => 
+        option.setName("username")
+            .setDescription("The osu! username to search for influences for"))
+    .addIntegerOption(option => 
+        option.setName("year")
+            .setDescription("The year to search for influences for")
+            .setMinValue(2007));
 
 const influence: Command = {
     data, 

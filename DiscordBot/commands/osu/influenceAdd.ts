@@ -212,16 +212,28 @@ async function run (m: Message | ChatInputCommandInteraction) {
 const data = new SlashCommandBuilder()
     .setName("add_influence")
     .setDescription("Allows you to add a mapper influence for a given year")
-    .addStringOption(option => option.setName("user").setDescription("The osu! username/ID/profile link to search for influences for").setRequired(true))
-    .addIntegerOption(option => option.setName("year").setDescription("The year to search for influences in").setMinValue(2007))
-    .addStringOption(option => option.setName("comment").setDescription("The comment to add to the influence"))
-    .addStringOption(option => option.setName("mode").setDescription("The mode to search for influences in (default: Standard)").addChoices(
-        { name: "Standard", value: "standard" },
-        { name: "Taiko", value: "taiko" },
-        { name: "Catch", value: "catch" },
-        { name: "Mania", value: "mania" },
-        { name: "Storyboard", value: "storyboard" }
-    ).setRequired(false));
+    .addStringOption(option => 
+        option.setName("user")
+            .setDescription("The osu! username/ID/profile link to search for influences for")
+            .setRequired(true))
+    .addIntegerOption(option => 
+        option.setName("year")
+            .setDescription("The year to search for influences in")
+            .setMinValue(2007))
+    .addStringOption(option => 
+        option.setName("comment")
+            .setDescription("The comment to add to the influence"))
+    .addStringOption(option => 
+        option.setName("mode")
+            .setDescription("The mode to search for influences in (default: Standard)")
+            .addChoices(
+                { name: "Standard", value: "standard" },
+                { name: "Taiko", value: "taiko" },
+                { name: "Catch", value: "catch" },
+                { name: "Mania", value: "mania" },
+                { name: "Storyboard", value: "storyboard" }
+            )
+            .setRequired(false));
 
 const influenceAdd: Command = {
     data, 

@@ -94,7 +94,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
 const data = new SlashCommandBuilder()
     .setName("profile")
     .setDescription("Obtain your or someone else's osu! profile")
-    .addStringOption(option => option.setName("user").setDescription("The user to query"));
+    .addStringOption(option => 
+        option.setName("user")
+            .setDescription("The user to query"));
 
 const profile: Command = {
     data, 

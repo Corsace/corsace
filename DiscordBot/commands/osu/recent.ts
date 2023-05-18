@@ -173,11 +173,23 @@ async function run (m: Message | ChatInputCommandInteraction) {
 const data = new SlashCommandBuilder()
     .setName("recent")
     .setDescription("Obtain your or someone else's recent score on osu!")
-    .addStringOption(option => option.setName("user").setDescription("The user to query (Default you)"))
-    .addStringOption(option => option.setName("mods").setDescription("The mods to filter by (Default all)"))
-    .addIntegerOption(option => option.setName("index").setDescription("The nth score to get (Default latest)").setMinValue(1).setMaxValue(100))
-    .addBooleanOption(option => option.setName("strict").setDescription("Whether to filter by strict mods or not (Default true)"))
-    .addBooleanOption(option => option.setName("best").setDescription("Whether to limit to top scores or not (Default false)"));
+    .addStringOption(option => 
+        option.setName("user")
+            .setDescription("The user to query (Default you)"))
+    .addStringOption(option => 
+        option.setName("mods")
+            .setDescription("The mods to filter by (Default all)"))
+    .addIntegerOption(option => 
+        option.setName("index")
+            .setDescription("The nth score to get (Default latest)")
+            .setMinValue(1)
+            .setMaxValue(100))
+    .addBooleanOption(option => 
+        option.setName("strict")
+            .setDescription("Whether to filter by strict mods or not (Default true)"))
+    .addBooleanOption(option => 
+        option.setName("best")
+            .setDescription("Whether to limit to top scores or not (Default false)"));
 
 const recent: Command = {
     data, 

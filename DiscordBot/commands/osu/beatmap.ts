@@ -139,9 +139,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
 const data = new SlashCommandBuilder()
     .setName("beatmap")
     .setDescription("Obtain an osu! beatmap's info")
-    .addStringOption(option => option.setName("beatmap").setDescription("The beatmap link or ID"))
-    .addStringOption(option => option.setName("mods").setDescription("The mods to apply to the beatmap"))
-    .addIntegerOption(option => option.setName("misses").setDescription("The amount of misses to apply to the beatmap's pp calculation"));
+    .addStringOption(option => 
+        option.setName("beatmap")
+            .setDescription("The beatmap link or ID"))
+    .addStringOption(option => 
+        option.setName("mods")
+            .setDescription("The mods to apply to the beatmap"))
+    .addIntegerOption(option => 
+        option.setName("misses")
+            .setDescription("The amount of misses to apply to the beatmap's pp calculation"));
 
 const beatmap: Command = {
     data, 

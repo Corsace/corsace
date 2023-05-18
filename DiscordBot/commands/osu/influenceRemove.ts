@@ -145,15 +145,25 @@ async function run (m: Message | ChatInputCommandInteraction) {
 const data = new SlashCommandBuilder()
     .setName("remove_influence")
     .setDescription("Allows you to delete a mapper influence.")
-    .addStringOption(option => option.setName("user").setDescription("The osu! username/ID/profile link to remove influence from.").setRequired(true))
-    .addIntegerOption(option => option.setName("year").setDescription("The year of the influence.").setMinValue(2007).setRequired(true))
-    .addStringOption(option => option.setName("mode").setDescription("The mode of the influence (default: Standard)").addChoices(
-        { name: "Standard", value: "standard" },
-        { name: "Taiko", value: "taiko" },
-        { name: "Catch", value: "catch" },
-        { name: "Mania", value: "mania" },
-        { name: "Storyboard", value: "storyboard" }
-    ).setRequired(false));
+    .addStringOption(option => 
+        option.setName("user")
+            .setDescription("The osu! username/ID/profile link to remove influence from.")
+            .setRequired(true))
+    .addIntegerOption(option => 
+        option.setName("year")
+            .setDescription("The year of the influence.")
+            .setMinValue(2007)
+            .setRequired(true))
+    .addStringOption(option => 
+        option.setName("mode")
+            .setDescription("The mode of the influence (default: Standard)")
+            .addChoices(
+                { name: "Standard", value: "standard" },
+                { name: "Taiko", value: "taiko" },
+                { name: "Catch", value: "catch" },
+                { name: "Mania", value: "mania" },
+                { name: "Storyboard", value: "storyboard" }
+            ).setRequired(false));
 
 const influenceRemove: Command = {
     data, 
