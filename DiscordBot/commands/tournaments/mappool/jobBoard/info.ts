@@ -4,6 +4,7 @@ import { fetchJobChannel, fetchMappool, fetchSlot, fetchTournament, hasTournamen
 import { TournamentRoleType } from "../../../../../Models/tournaments/tournamentRole";
 import modeColour from "../../../../functions/modeColour";
 import { TournamentChannelType } from "../../../../../Models/tournaments/tournamentChannel";
+import respond from "../../../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -33,8 +34,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
     const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
     if (!poolText) {
-        if (m instanceof Message) m.reply("Missing parameters. Please use `-p <pool> [-s <slot>]` or `<pool> [slot]`. If you do not use the `-` prefixes, the order of the parameters is important.");
-        else m.editReply("Missing parameters. Please use `/job_info <pool> [slot]`.");
+        await respond(m, "Missing parameters. Please use `-p <pool> [-s <slot>]` or `<pool> [slot]`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
 
@@ -48,8 +48,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
         const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
         if (isNaN(order)) {
-            if (m instanceof Message) m.reply(`Invalid slot number **${order}**. Please use a valid slot number.`);
-            else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
+            await respond(m, `Invalid slot number **${order}**. Please use a valid slot number.`);
             return;
         }
 
@@ -61,19 +60,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
         
         const mappoolMap = slotMod.maps.find(m => m.order === order);
         if (!mappoolMap) {
-            if (m instanceof Message) m.reply(`Could not find **${mappoolSlot}**`);
-            else m.editReply(`Could not find **${mappoolSlot}**`);
+            await respond(m, `Could not find **${mappoolSlot}**`);
             return;
         }
 
         if (!mappoolMap.jobPost) {
-            if (m instanceof Message) m.reply(`**${mappoolSlot}** does not have a job board post.`);
-            else m.editReply(`**${mappoolSlot}** does not have a job board post.`);
+            await respond(m, `**${mappoolSlot}** does not have a job board post.`);
             return;
         }
 
-        if (m instanceof Message) m.reply(`${mappoolSlot} job board post:\n\n${mappoolMap.jobPost.description}`);
-        else m.editReply(`${mappoolSlot} job board post:\n\n${mappoolMap.jobPost.description}`);
+        await respond(m, `${mappoolSlot} job board post:\n\n${mappoolMap.jobPost.description}`);
         return;
     }
 
@@ -94,8 +90,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
     }));
 
-    if (m instanceof Message) m.reply({ embeds: [jobBoardEmbed] });
-    else m.editReply({ embeds: [jobBoardEmbed] });
+    await respond(m, undefined, [jobBoardEmbed]);
 }
 
 const data = new SlashCommandBuilder()

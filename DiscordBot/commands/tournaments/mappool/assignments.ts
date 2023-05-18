@@ -7,19 +7,16 @@ import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot
 import { Brackets } from "typeorm";
 import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
+import getUser from "../../../functions/dbFunctions/getUser";
+import commandUser from "../../../functions/commandUser";
+import respond from "../../../functions/respond";
 
 async function assignmentListDM(m: Message | ChatInputCommandInteraction) {
     // Check if they had -incfin in their text, or if they said true for the include_finished option in the slash command
     const all = m instanceof Message ? m.content.includes("-incfin") : m.options.getBoolean("include_finished");
 
     // Get all mappoolMaps the user is assigned to, and get all the tournaments they are in
-    const user = await User.findOne({
-        where: {
-            discord: {
-                userID: m instanceof Message ? m.author.id : m.user.id,
-            }
-        }
-    });
+    const user = await getUser(commandUser(m).id, "discord", false);
     if (!user) {
         await loginResponse(m);
         return;
@@ -48,8 +45,7 @@ async function assignmentListDM(m: Message | ChatInputCommandInteraction) {
         })).flat();
 
     if (mappoolMaps.length === 0) {
-        if (m instanceof Message) await m.reply("No maps found for this user.");
-        else await m.editReply("No maps found for this user.");
+        await respond(m, "No maps found for this user.")
         return;
     }
 
@@ -67,11 +63,10 @@ async function assignmentListDM(m: Message | ChatInputCommandInteraction) {
 
         if (embed.data.fields!.length === 25) {
             if (!replied) {
-                if (m instanceof Message) await m.reply({ embeds: [embed] });
-                else await m.editReply({ embeds: [embed] });
+                await respond(m, undefined, [embed]);
                 replied = true;
             } else {
-                (m.channel as TextChannel).send({ embeds: [embed] });
+                await (m.channel as TextChannel).send({ embeds: [embed] });
             }
             embed.data.fields = [];
         }
@@ -81,8 +76,7 @@ async function assignmentListDM(m: Message | ChatInputCommandInteraction) {
         if (embed.data.fields!.length === 0)
             embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters."});
         
-        if (m instanceof Message) m.reply({ embeds: [embed] });
-        else m.editReply({ embeds: [embed] });
+        await respond(m, undefined, [embed]);
     }
 }
 
@@ -97,8 +91,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (m instanceof Message ? m.content.includes("-all") : m.options.getBoolean("all")) {
-        if (m instanceof Message) await m.reply("`-all` is not allowed outside of DMs, as it shows your assignments across all pools and tournaments.");
-        else await m.editReply("You cannot use the `all` option outside of DMs, as it shows your assignments across all pools and tournaments");
+        await respond(m, "You cannot use the `all` option outside of DMs, as it shows your assignments across all pools and tournaments");
         return;
     }
 
@@ -154,8 +147,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         })).flat();
 
     if (mappoolMaps.length === 0) {
-        if (m instanceof Message) m.reply(`No maps found${pool || targetUser ? ` with the given parameters: **${poolText ? `pool: \`${pool}\`` : ""} ${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`);
-        else m.editReply(`No maps found${pool || targetUser ? ` with the given parameters: **${poolText ? `pool: \`${pool}\`` : ""} ${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`);
+        await respond(m, `No maps found${pool || targetUser ? ` with the given parameters: **${poolText ? `pool: \`${pool}\`` : ""} ${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`);
         return;
     }
 
@@ -184,11 +176,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         if (embed.data.fields!.length === 25) {
             if (!replied) {
-                if (m instanceof Message) m.reply({ embeds: [embed] });
-                else m.editReply({ embeds: [embed] });
+                await respond(m, undefined, [embed]);
                 replied = true;
             } else {
-                (m.channel as TextChannel).send({ embeds: [embed] });
+                await (m.channel as TextChannel).send({ embeds: [embed] });
             }
             embed.data.fields = [];
         }
@@ -198,8 +189,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (embed.data.fields!.length === 0)
             embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters."});
         
-        if (m instanceof Message) m.reply({ embeds: [embed] });
-        else m.editReply({ embeds: [embed] });
+        await respond(m, undefined, [embed]);
     }
 
 }

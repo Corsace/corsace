@@ -31,20 +31,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }],
     });
 
-    let arg = "";
-    if (m instanceof Message) {
-        if (helpRegex.test(m.content)) {
-            arg = helpRegex.exec(m.content)![1];
-        } else {
-            await m.reply({ embeds: [embed] });
-            return;
-        }
-    } else {
-        arg = m.options.getString("command", false) || "";
-        if (!arg) {
-            await m.reply({ embeds: [embed] });
-            return;
-        }
+    const arg = m instanceof Message ? helpRegex.exec(m.content)?.[1] : m.options.getString("command", false);
+    if (!arg) {
+        await m.reply({ embeds: [embed] });
+        return;
     }
 
     if (commands.filter((v, i, s) => s.findIndex(c => c.category === v.category) === i).map(c => c.category).some(category => category.toLowerCase() === arg.toLowerCase())) {

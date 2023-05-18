@@ -17,6 +17,7 @@ import beatmapEmbed from "../../../functions/beatmapEmbed";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
 import { deletePack } from "../../../functions/mappackFunctions";
+import getUser from "../../../functions/dbFunctions/getUser";
 
 export default async function autoSubmit (m: Message) {
     if (!m.guild)
@@ -81,13 +82,7 @@ export default async function autoSubmit (m: Message) {
             return;
     }
 
-    const user = await User.findOne({
-        where: {
-            discord: {
-                userID: m.author.id,
-            }
-        }
-    });
+    const user = await getUser(m.author.id, "discord", false);
     if (!user)
         return;
 

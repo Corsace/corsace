@@ -8,12 +8,14 @@ import { osuClient } from "../../../../Server/osu";
 import { insertBeatmap } from "../../../../Server/scripts/fetchYearMaps";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import beatmapEmbed from "../../../functions/beatmapEmbed";
-import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
 import { discordClient } from "../../../../Server/discord";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { deletePack } from "../../../functions/mappackFunctions";
+import respond from "../../../functions/respond";
+import getUser from "../../../functions/dbFunctions/getUser";
+import commandUser from "../../../functions/commandUser";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -53,8 +55,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
     const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
     if (!poolText || !slotText || !targetText) {
-        if (m instanceof Message) m.reply("Missing parameters. Please use `-p <pool> -s <slot> -t <target>` or `<pool> <slot> <target>`. If you do not use the `-` prefixes, the order of the parameters is important.");
-        else m.editReply("Missing parameters. Please use `/assign <pool> <slot> <target>`.");
+        await respond(m, "Missing parameters. Please use `-p <pool> -s <slot> -t <target>` or `<pool> <slot> <target>`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
 
@@ -63,8 +64,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
     const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
     if (isNaN(order)) {
-        if (m instanceof Message) m.reply(`Invalid slot number **${order}** for. Please use a valid slot number.`);
-        else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
+        await respond(m, `Invalid slot number **${order}**. Please use a valid slot number.`);
         return;
     }
 
@@ -72,8 +72,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!mappool) 
         return;
     if (mappool.isPublic) {
-        if (m instanceof Message) m.reply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
-        else m.editReply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        await respond(m, `Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        return;
     }
     const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
 
@@ -83,18 +83,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const mappoolMap = slotMod.maps.find(m => m.order === order);
     if (!mappoolMap) {
-        if (m instanceof Message) m.reply(`Could not find map **${mappoolSlot}**`);
-        else m.editReply(`Could not find map **${mappoolSlot}**`);
+        await respond(m, `Could not find map **${mappoolSlot}**`);
         return;
     }
 
-    const assigner = await User.findOne({
-        where: {
-            discord: {
-                userID: m instanceof Message ? m.author.id : m.user.id,
-            },
-        },
-    })
+    const assigner = await getUser(commandUser(m).id, "discord", false);
     if (!assigner) {
         await loginResponse(m);
         return;
@@ -117,8 +110,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const linkRegex = /https?:\/\/osu.ppy.sh\/beatmapsets\/(\d+)#(osu|taiko|fruits|mania)\/(\d+)/;
         const link = target.match(linkRegex);
         if (!link) {
-            if (m instanceof Message) m.reply("Invalid link. Please use a valid osu! beatmap link that contains the set id and beatmap id (e.g. https://osu.ppy.sh/beatmapsets/1234567#osu/1234567).");
-            else m.editReply("Invalid link. Please use a valid osu! beatmap link that contains the set id and beatmap id (e.g. https://osu.ppy.sh/beatmapsets/1234567#osu/1234567).");
+            await respond(m, "Invalid link. Please use a valid osu! beatmap link that contains the set id and beatmap id (e.g. https://osu.ppy.sh/beatmapsets/1234567#osu/1234567).");
             return;
         }
         const beatmapID = parseInt(link[3]);
@@ -126,19 +118,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const set = (await osuClient.beatmaps.getBySetId(parseInt(link[1]), Mode.all, undefined, undefined, slotMod.allowedMods) as APIBeatmap[]);
         const apiMap = set.find(m => m.beatmapId === beatmapID)
         if (!apiMap) {
-            if (m instanceof Message) m.reply("Could not find beatmap on osu!api.");
-            else m.editReply("Could not find beatmap on osu!api.");
+            await respond(m, "Could not find beatmap on osu!api.");
             return;
         }
         if (apiMap.mode !== tournament.mode.ID - 1) {
-            if (m instanceof Message) m.reply("Beatmap mode does not match tournament mode.");
-            else m.editReply("Beatmap mode does not match tournament mode.");
+            await respond(m, "Beatmap mode does not match tournament mode.");
             return;
         }
         // TODO: Support for maps with no approved date (e.g. graveyarded maps) https://github.com/Corsace/Corsace/issues/193
         if (isNaN(apiMap.approvedDate.getTime())) {
-            if (m instanceof Message) m.reply("Beatmap is not ranked. Support will be added soon!\nhttps://github.com/Corsace/Corsace/issues/193");
-            else m.editReply("Beatmap is not ranked. Support will be added soon!\nhttps://github.com/Corsace/Corsace/issues/193");
+            await respond(m, "Beatmap is not ranked. Support will be added soon!\nhttps://github.com/Corsace/Corsace/issues/193");
             return;
         }
 
@@ -162,15 +151,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 .andWhere("tournament.ID = :tournament", { tournament: tournament.ID })
                 .getExists();
             if (dupeMaps) {
-                if (m instanceof Message) m.reply(`The beatmap you are trying to add is already in **${tournament.name}**.`);
-                else m.editReply(`The beatmap you are trying to add is already in **${tournament.name}**.`);
+                await respond(m, `The beatmap you are trying to add is already in **${tournament.name}**.`);
                 return;
             }
         }
 
         if (mappoolMap.beatmap && mappoolMap.beatmap.ID === beatmap.ID) {
-            if (m instanceof Message) m.reply(`**${mappoolSlot}** is already set to this beatmap.`);
-            else m.editReply(`**${mappoolSlot}** is already set to this beatmap.`);
+            await respond(m, `**${mappoolSlot}** is already set to this beatmap.`);
             return;
         }
 
@@ -209,14 +196,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const mappoolMapEmbed = await beatmapEmbed(apiMap, slot, set);
         mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
-        if (m instanceof Message) m.reply({
-            content: `Successfully set **${mappoolSlot}** to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`,
-            embeds: [mappoolMapEmbed],
-        });
-        else m.editReply({
-            content: `Successfully set **${mappoolSlot}** to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`,
-            embeds: [mappoolMapEmbed],
-        });
+        await respond(m, `Successfully set **${mappoolSlot}** to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`, [mappoolMapEmbed]);
 
         await mappoolLog(tournament, "assignMap", assigner, log, slotMod, mappool);
         return;
@@ -229,8 +209,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
     if (testing) {
         if (mappoolMap.testplayers.find(u => u.ID === user.ID)) {
-            if (m instanceof Message) m.reply(`**${user.osu.username}** is already assigned as a testplayer to **${mappoolSlot}**`);
-            else m.editReply(`**${user.osu.username}** is already assigned as a testplayer to **${mappoolSlot}**`);
+            await respond(m, `**${user.osu.username}** is already assigned as a testplayer to **${mappoolSlot}**`);
             return;
         }
 
@@ -240,8 +219,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             mappoolMap.testplayers.push(user);
     } else {
         if (mappoolMap.customMappers.find(u => u.ID === user.ID)) {
-            if (m instanceof Message) m.reply(`**${user.osu.username}** is already assigned as a mapper to **${mappoolSlot}**`);
-            else m.editReply(`**${user.osu.username}** is already assigned as a mapper to **${mappoolSlot}**`);
+            await respond(m, `**${user.osu.username}** is already assigned as a custom mapper to **${mappoolSlot}**`);
             return;
         }
 
@@ -270,8 +248,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await mappoolMap.save();
     if (jobPost) await jobPost.remove();
 
-    if (m instanceof Message) m.reply(`Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
-    else m.editReply(`Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
+    await respond(m, `Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
 
     await mappoolLog(tournament, "assignCustom", assigner, `**${user.osu.username}** is now a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
 }

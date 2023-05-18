@@ -10,12 +10,14 @@ import { TournamentRole, TournamentRoleType } from "../../../../Models/tournamen
 import { fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
-import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import beatmapEmbed from "../../../functions/beatmapEmbed";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { deletePack } from "../../../functions/mappackFunctions";
+import respond from "../../../functions/respond";
+import getUser from "../../../functions/dbFunctions/getUser";
+import commandUser from "../../../functions/commandUser";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -49,25 +51,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!bypass) {
         const roleFilter = roles.filter(role => role.roleType === TournamentRoleType.Mappers);
         if (roleFilter.length === 0) {
-            if (m instanceof Message) m.reply(`There are no valid roles for this tournament. Please add ${TournamentRoleType.Mappers.toString()} roles first.`);
-            else m.editReply(`There are no valid roles for this tournament. Please add ${TournamentRoleType.Mappers.toString()} roles first.`);
+            await respond(m, `There are no valid roles for this tournament. Please add ${TournamentRoleType.Mappers.toString()} roles first.`);
             return;
         }
         const allowed = (m.member!.roles as GuildMemberRoleManager).cache.hasAny(...roleFilter.map(r => r.roleID));
         if (!allowed) {
-            if (m instanceof Message) m.reply("You are not a mappooler or organizer for this tournament.");
-            else m.editReply("You are not a mappooler or organizer for this tournament.");
+            await respond(m, "You are not a mappooler or organizer for this tournament.");
             return;
         }
     }
 
-    const user = await User.findOne({
-        where: {
-            discord: {
-                userID: m instanceof Message ? m.author.id : m.user.id,
-            }
-        }
-    });
+    const user = await getUser(commandUser(m).id, "discord", false);
     if (!user) {
         await loginResponse(m);
         return;
@@ -93,8 +87,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (!link.endsWith(".osz")) {
-        if (m instanceof Message) m.reply("Please provide a proper .osz file.");
-        else m.editReply("Please provide a proper .osz file.");
+        await respond(m, "Please provide a proper .osz file.");
         return;
     }
 
@@ -105,8 +98,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
     const diffText = m instanceof Message ? m.content.match(diffRegex) ?? m.content.split(" ")[3] : m.options.getString("difficulty");
     if (!poolText || !slotText) {
-        if (m instanceof Message) m.reply("Missing parameters. Please use `-p <pool> -s <slot> [-d difficulty]` or `<pool> <slot> [difficulty]`. If you do not use the `-` prefixes, the order of the parameters is important.");
-        else m.editReply("Missing parameters. Please use `-p <pool> -s <slot> [-d difficulty]` or `<pool> <slot> [difficulty]`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        await respond(m, "Missing parameters. Please use `-p <pool> -s <slot> [-d difficulty]` or `<pool> <slot> [difficulty]`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
 
@@ -115,8 +107,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
     let diff = !diffText ? "" : typeof diffText === "string" ? diffText.replace(/_/g, " ") : diffText[0].replace(/_/g, " ");
     if (isNaN(order)) {
-        if (m instanceof Message) m.reply(`Invalid slot number **${order}**. Please use a valid slot number.`);
-        else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
+        await respond(m, `Invalid slot number **${order}**. Please use a valid slot number.`);
         return;
     }
 
@@ -124,8 +115,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!mappool) 
         return;
     if (mappool.isPublic) {
-        if (m instanceof Message) m.reply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
-        else m.editReply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        await respond(m, `Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        return;
     }
     const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
 
@@ -135,15 +126,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const mappoolMap = slotMod.maps.find(m => m.order === order);
     if (!mappoolMap) {
-        if (m instanceof Message) m.reply(`Could not find map **${order}**`);
-        else m.editReply(`Could not find map **${order}**`);
+        await respond(m, `Could not find map **${order}**`);
         return;
     }
 
     // Check if they are assigned to the map
-    if (!bypass && !mappoolMap.customMappers.some(mapper => mapper.discord.userID !== (m instanceof Message ? m.author.id : m.user.id))) {
-        if (m instanceof Message) m.reply("You are not assigned to this map.");
-        else m.editReply("You are not assigned to this map.");
+    if (!bypass && !mappoolMap.customMappers.some(mapper => mapper.discord.userID !== commandUser(m).id)) {
+        await respond(m, "You are not assigned to this map.");
         return;
     }
 
@@ -168,8 +157,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const { data } = await Axios.get(link, { responseType: "stream" });
         axiosData = data;
     } catch (e) {
-        if (m instanceof Message) m.reply("Could not download the map. Please make sure the link is valid.");
-        else m.editReply("Could not download the map. Please make sure the link is valid.");
+        await respond(m, `Could not download the map. Please make sure the link is valid. Error below:\n\`\`\`${e}\`\`\``);
         return;
     }
     const zip = axiosData.pipe(Parse({ forceStream: true }));
@@ -227,8 +215,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (artist === "") {
-        if (m instanceof Message) m.reply(`Could not find **${diff !== "" ? `[${diff}]` : "a single difficulty(?)"}** in your osz`);
-        else m.editReply(`Could not find **${diff !== "" ? `[${diff}]` : "a single difficulty(?)"}** in your osz`);
+        await respond(m, `Could not find **${diff !== "" ? `[${diff}]` : "a single difficulty(?)"}** in your osz`);
         return;
     }
 
@@ -333,14 +320,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slotMod.allowedMods ?? 0)), modsToAcronym(slotMod.allowedMods ?? 0), set);
     mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
     
-    if (m instanceof Message) m.reply({
-        content: `Successfully submitted **${artist} - ${title} [${diff}]** to **${mappoolSlot}**`,
-        embeds: [mappoolMapEmbed],
-    });
-    else m.editReply({
-        content: `Successfully submitted **${artist} - ${title} [${diff}]** to **${mappoolSlot}**`,
-        embeds: [mappoolMapEmbed],
-    });
+    await respond(m, `Successfully submitted **${artist} - ${title} [${diff}]** to **${mappoolSlot}**`, [mappoolMapEmbed]);
 
     await mappoolLog(tournament, "submit", user, log, slotMod, mappool);
     return;

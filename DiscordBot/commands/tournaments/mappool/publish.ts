@@ -2,11 +2,13 @@ import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "disco
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { confirmCommand, fetchMappool, fetchTournament, hasTournamentRoles, mappoolLog } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
-import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { buckets } from "../../../../Server/s3";
 import { gets3Key } from "../../../../Server/utils/s3";
 import { createPack, deletePack } from "../../../functions/mappackFunctions";
+import getUser from "../../../functions/dbFunctions/getUser";
+import commandUser from "../../../functions/commandUser";
+import respond from "../../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -25,13 +27,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!allowed) 
         return;
 
-    const user = await User.findOne({
-        where: {
-            discord: {
-                userID: m instanceof Message ? m.author.id : m.user.id,
-            }
-        }
-    })
+    const user = await getUser(commandUser(m).id, "discord", false);
     if (!user) {
         await loginResponse(m);
         return;
@@ -40,8 +36,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const poolRegex = /-p (\S+)/;
     const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
     if (!poolText) {
-        if (m instanceof Message) m.reply("Missing parameters. Please use `-p <pool>` or `<pool>`. If you do not use the `-` prefixes, the order of the parameters is important.");
-        else m.editReply("Missing parameters. Please use `-p <pool>` or `<pool>`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        await respond(m, "Missing parameters. Please use `-p <pool>` or `<pool>`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
 
@@ -76,8 +71,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         await mappool.save();
 
-        if (m instanceof Message) m.reply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now private`);
-        else m.editReply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now private`);
+        await respond(m, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now private`);
 
         await mappoolLog(tournament, "publish", user, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now private`);
 
@@ -95,8 +89,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         
             mappool.mappackLink = await buckets.mappacks.getPublicUrl(s3Key);
         } catch (err) {
-            if (m instanceof Message) await m.reply("Something went wrong while copying the mappack. Contact VINXIS.");
-            else await m.editReply("Something went wrong while copying the mappack. Contact VINXIS.");
+            await respond(m, "Something went wrong while copying the mappack. Contact VINXIS.");
             console.log(err);
             return;
         }
@@ -112,8 +105,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     mappool.isPublic = true;
     await mappool.save();
 
-    if (m instanceof Message) m.reply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}.\nMappack: ${mappool.mappackLink}`);
-    else m.editReply(`**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}\nMappack: ${mappool.mappackLink}`);
+    await respond(m, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now public\nMappack: ${mappool.mappackLink}`);
 
     await mappoolLog(tournament, "publish", user, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}\nMappack: ${mappool.mappackLink}`);
 

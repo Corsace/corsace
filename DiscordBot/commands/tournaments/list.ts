@@ -1,7 +1,8 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
-import { In, MoreThan, Not } from "typeorm";
+import { In, MoreThan } from "typeorm";
 import { Command } from "..";
 import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
+import respond from "../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -13,14 +14,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     let mode = m instanceof Message ? /-m(ode)?\s+(.+)/.exec(m.content)?.[1] || "" : m.options.getString("mode") || "";
 
     if (serverOnly && !m.guild) {
-        if (m instanceof Message) m.reply("You can only use this option in a server");
-        else m.editReply("You can only use this option in a server");
+        await respond(m, "You can only use this option in a server dude");
         return;
     }
 
     if (mode && !["osu", "taiko", "catch", "mania"].includes(mode)) {
-        if (m instanceof Message) m.reply("Invalid mode");
-        else m.editReply("Invalid mode");
+        await respond(m, "Invalid mode");
         return;
     }
 
@@ -39,8 +38,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     });
 
     if (tournaments.length === 0) {
-        if (m instanceof Message) m.reply("No tournaments found");
-        else m.editReply("No tournaments found");
+        await respond(m, "No tournaments found");
         return;
     }
 
@@ -51,8 +49,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }).join("\n"),
     };
 
-    if (m instanceof Message) m.reply({ embeds: [embed] });
-    else m.editReply({ embeds: [embed] });
+    await respond(m, undefined, [embed]);
 }
 
 const data = new SlashCommandBuilder()

@@ -3,11 +3,13 @@ import { Command } from "../../index";
 import { confirmCommand, fetchCustomThread, fetchMappool, fetchSlot, fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
 import { discordClient } from "../../../../Server/discord";
 import { deletePack } from "../../../functions/mappackFunctions";
+import getUser from "../../../functions/dbFunctions/getUser";
+import commandUser from "../../../functions/commandUser";
+import respond from "../../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -25,13 +27,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!allowed) 
         return;
 
-    const user = await User.findOne({
-        where: {
-            discord: {
-                userID: m instanceof Message ? m.author.id : m.user.id,
-            }
-        }
-    });
+    const user = await getUser(commandUser(m).id, "discord", false);
     if (!user) {
         await loginResponse(m);
         return;
@@ -48,8 +44,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
     const targetText = m instanceof Message ? m.mentions.users.first()?.username ?? m.content.match(targetRegex) ?? m.content.split(" ").slice(3, m.content.split(" ").length).join(" ") : m.options.getUser("user")?.id;
     if (!poolText) {
-        if (m instanceof Message) m.reply("Missing parameters. Please use `-p <pool> [-s <slot>] [-t <target>]` or `<pool> [slot] [target]`. If you do not use the `-` prefixes, the order of the parameters is important.");
-        else m.editReply("Missing parameters. Please use `-p <pool> [-s <slot>] [-t <target>]` or `<pool> [slot] [target]`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        await respond(m, "Missing parameters. Please use `-p <pool> [-s <slot>] [-t <target>]` or `<pool> [slot] [target]`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
 
@@ -59,16 +54,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!mappool) 
         return;
     if (mappool.isPublic) {
-        if (m instanceof Message) m.reply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
-        else m.editReply(`Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        await respond(m, `Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        return;
     }
 
     if (slotText) {
         const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
         const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
         if (isNaN(order)) {
-            if (m instanceof Message) m.reply(`Invalid slot number **${order}**. Please use a valid slot number.`);
-            else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
+            await respond(m, `Invalid slot number **${order}**. Please use a valid slot number.`);
             return;
         }
 
@@ -80,13 +74,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         const mappoolMap = slotMod.maps.find(m => m.order === order);
         if (!mappoolMap) {
-            if (m instanceof Message) m.reply(`Could not find **${mappoolSlot}**`);
-            else m.editReply(`Could not find **${mappoolSlot}**`);
+            await respond(m, `Could not find **${mappoolSlot}**`);
             return;
         }
         if ((testing && mappoolMap.testplayers.length === 0) || (!mappoolMap.beatmap && mappoolMap.customMappers.length === 0)) {
-            if (m instanceof Message) m.reply(`**${mappoolSlot}** is currently empty.`);
-            else m.editReply(`**${mappoolSlot}** is currently empty.`);
+            await respond(m, `**${mappoolSlot}** is currently empty.`);
             return;
         }
 
@@ -99,8 +91,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             mappool.mappackLink = mappool.mappackExpiry = null;
             await mappool.save();
 
-            if (m instanceof Message) m.reply(`Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
-            else m.editReply(`Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
+            await respond(m, `Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
             
             await mappoolLog(tournament, "removeMap", user, `Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`)
             return;
@@ -122,13 +113,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 return;
 
             if (!testing && !mappoolMap.customMappers.some(u => u.ID === targetUser.ID)) {
-                if (m instanceof Message) m.reply(`**${targetUser.osu.username}** is not a mapper for **${mappoolSlot}**`);
-                else m.editReply(`**${targetUser.osu.username}** is not a mapper for **${mappoolSlot}**`);
+                await respond(m, `**${targetUser.osu.username}** is not a mapper for **${mappoolSlot}**`);
                 return;
             }
             if (testing && !mappoolMap.testplayers.some(u => u.ID === targetUser.ID)) {
-                if (m instanceof Message) m.reply(`**${targetUser.osu.username}** is not a tester for **${mappoolSlot}**`);
-                else m.editReply(`**${targetUser.osu.username}** is not a tester for **${mappoolSlot}**`);
+                await respond(m, `**${targetUser.osu.username}** is not a tester for **${mappoolSlot}**`);
                 return;
             }
 
@@ -145,8 +134,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
                 await mappoolMap.save();
 
-                if (m instanceof Message) m.reply(`Removed **${targetUser.osu.username}** from playtesting **${mappoolSlot}**`);
-                else m.editReply(`Removed **${targetUser.osu.username}** from playtesting **${mappoolSlot}**`);
+                await respond(m, `Removed **${targetUser.osu.username}** from playtesting **${mappoolSlot}**`);
 
                 await mappoolLog(tournament, "removeTester", user, `Removed **${targetUser.osu.username}** from playtesting **${mappoolSlot}**`)
                 return;
@@ -165,8 +153,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
                 await mappoolMap.save();
 
-                if (m instanceof Message) m.reply(`Removed **${targetUser.osu.username}** from **${mappoolSlot}**`);
-                else m.editReply(`Removed **${targetUser.osu.username}** from **${mappoolSlot}**`);
+                await respond(m, `Removed **${targetUser.osu.username}** from **${mappoolSlot}**`);
 
                 await mappoolLog(tournament, "removeCustomMapper", user, `Removed **${targetUser.osu.username}** from **${mappoolSlot}**`)
                 return;
@@ -184,8 +171,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 await thread.send(`<@${user.discord.userID}> has removed **all testplayers**`);
             }
 
-            if (m instanceof Message) m.reply(`Removed all testplayers from **${mappoolSlot}**`);
-            else m.editReply(`Removed all testplayers from **${mappoolSlot}**`);
+            await respond(m, `Removed **all testplayers** from **${mappoolSlot}**`);
 
             await mappoolLog(tournament, "removeTester", user, `Removed all testplayers from **${mappoolSlot}**`)
             return;
@@ -211,8 +197,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mappool.mappackLink = mappool.mappackExpiry = null;
         await mappool.save();
 
-        if (m instanceof Message) m.reply(`Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
-        else m.editReply(`Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
+        await respond(m, `Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
 
         await mappoolLog(tournament, "removeCustom", user, `Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`)
         return;
@@ -220,8 +205,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const confirm = await confirmCommand(m, "Are you sure you want to remove **ALL** beatmaps, custom beatmaps and mappers from this mappool?\n**This action cannot be undone.**");
     if (!confirm) {
-        if (m instanceof Message) m.reply("Ok Lol");
-        else m.editReply("Ok Lol");
+        await respond(m, "Ok Lol");
         return;
     }
 
@@ -267,8 +251,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
     await mappool.save();
 
-    if (m instanceof Message) m.reply(`Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`);
-    else m.editReply(`Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`);
+    await respond(m, `Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`);
 
     await mappoolLog(tournament, "removePool", user, `Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`)
 } 

@@ -7,10 +7,12 @@ import { StageType } from "../../../../Models/tournaments/stage";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { confirmCommand, fetchRound, fetchStage, fetchTournament } from "../../../functions/tournamentFunctions";
 import { filter } from "../../../functions/messageInteractionFunctions";
-import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { acronymtoMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { randomUUID } from "crypto";
+import respond from "../../../functions/respond";
+import getUser from "../../../functions/dbFunctions/getUser";
+import commandUser from "../../../functions/commandUser";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -21,8 +23,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
     const targetSR = m instanceof Message ? parseFloat(m.content.split(" ")[1]) : m.options.getNumber("target_sr");
     if (!targetSR || isNaN(targetSR) || targetSR < 0 || targetSR > 20) {
-        if (m instanceof Message) await m.reply("Invalid target SR.");
-        else await m.editReply("Invalid target SR.");
+        await respond(m, "Invalid target SR.");
         return;
     }
 
@@ -34,13 +35,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!stage) 
         return;
 
-    const creator = await User.findOne({
-        where: {
-            discord: {
-                userID: m instanceof Message ? m.author.id : m.user.id,
-            },
-        },
-    });
+    const creator = await getUser(commandUser(m).id, "discord", false);
     if (!creator) {
         await loginResponse(m);
         return;
@@ -83,15 +78,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
         });
 
     if (existingMappools.length === 13) {
-        if (m instanceof Message) await m.reply("This stage/round already has 13 mappools. You cannot create any more.");
-        else await m.editReply("This stage/round already has 13 mappools. You cannot create any more.");
+        await respond(m, "This stage/round already has 13 mappools. You cannot create any more.");
         return;
     }
 
     const cont = existingMappools.length === 0 ? true : await confirmCommand(m, `This stage/round already has ${existingMappools.length} mappool${existingMappools.length === 1 ? "" : "s"}. Are you sure you want to create another?`);
     if (!cont) {
-        if (m instanceof Message) await m.reply("Ok Lol .");
-        else await m.editReply("Ok Lol .");
+        await respond(m, "Ok Lol .");
         return;
     }
 
@@ -113,7 +106,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
     mappool.order = existingMappools.length + 1;
 
-    const message = m instanceof Message ? await m.reply("Alright let's get started!") : await m.editReply("Alright let's get started!");
+    const message = await respond(m, "Alright let's get started!");
     await mappoolName(message, mappool, tournament, existingMappools);
 }
 

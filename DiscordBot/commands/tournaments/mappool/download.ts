@@ -5,6 +5,7 @@ import { download } from "../../../../Server/utils/download";
 import { fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
 import { createPack } from "../../../functions/mappackFunctions";
+import respond from "../../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -21,8 +22,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
     const video = (m instanceof Message ? videoRegex.test(m.content) ?? m.content.split(" ")[3] === "-v" : m.options.getBoolean("video")) || false;
     if (!poolText) {
-        if (m instanceof Message) m.reply("Missing parameters. Please use `-p <pool> [-s <slot>] [-v]` or `<pool> [slot] [-v]`. If you do not use the `-` prefixes, the order of the parameters is important.");
-        else m.editReply("Missing parameters. Please use `-p <pool> [-s <slot>] [-v]` or `<pool> [slot] [-v]`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        await respond(m, "Missing parameters. Please use `-p <pool> [-s <slot>] [-v]` or `<pool> [slot] [-v]`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
 
@@ -34,8 +34,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
     if (!mappool.isPublic) {
         if (m.channel?.type === ChannelType.DM) {
-            if (m instanceof Message) m.reply("You cannot download a private mappool in DMs.");
-            else m.editReply("You cannot download a private mappool in DMs.");
+            await respond(m, "You cannot download a private mappool in DMs.")
             return;
         }
 
@@ -52,8 +51,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
         const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
         if (isNaN(order)) {
-            if (m instanceof Message) m.reply(`Invalid slot number **${order}**. Please use a valid slot number.`);
-            else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
+            await respond(m, `Invalid slot number **${order}**. Please use a valid slot number.`);
             return;
         }
 
@@ -65,46 +63,37 @@ async function run (m: Message | ChatInputCommandInteraction) {
             
         const mappoolMap = slotMod.maps.find(m => m.order === order);
         if (!mappoolMap) {
-            if (m instanceof Message) m.reply(`Could not find **${mappoolSlot}**`);
-            else m.editReply(`Could not find **${mappoolSlot}**`);
+            await respond(m, `Could not find **${mappoolSlot}**`);
             return;
         }
 
         if (!mappoolMap.customBeatmap && !mappoolMap.beatmap) {
-            if (m instanceof Message) m.reply(`**${mappoolSlot}** does not have a link.`);
-            else m.editReply(`**${mappoolSlot}** does not have a link.`);
+            await respond(m, `**${mappoolSlot}** currently does not have a beatmap.`);
             return;
         }
         
         if (mappoolMap.customBeatmap?.link) {
-            if (m instanceof Message) 
-                await m.reply(mappoolMap.customBeatmap.link);
-            else 
-                await m.editReply(mappoolMap.customBeatmap.link);
+            await respond(m, mappoolMap.customBeatmap.link);
             return;
         }
 
         let link = mappoolMap.beatmap ? `https://osu.direct/api/d/${mappoolMap.beatmap.beatmapsetID}` : undefined;
 
         if (!link) {
-            if (m instanceof Message) m.reply(`**${mappoolSlot}** currently does not have a beatmap.`);
-            else m.editReply(`**${mappoolSlot}** currently does not have a beatmap.`);
+            await respond(m, `**${mappoolSlot}** currently does not have a beatmap.`);
             return;
         }
     
         try {
             const data = await download(link);
-            const discordFile = { files: [
+            await respond(m, undefined, undefined, undefined, [
                 {
                     attachment: data,
                     name: `${mappoolSlot}.osz`,
                 }
-            ] };
-            if (m instanceof Message) await m.reply(discordFile);
-            else await m.editReply(discordFile);
+            ]);
         } catch (e) {
-            if (m instanceof Message) m.reply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
-            else m.editReply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
+            await respond(m, `Could not download **${pool}**\nosu.direct may likely be down currently. Error below:\n\`\`\`\n${e}\`\`\``);
         }
 
         if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
@@ -112,8 +101,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (mappool.isPublic || (mappool.mappackExpiry?.getTime() ?? -1) > Date.now()) {
-        if (m instanceof Message) await m.reply(mappool.mappackLink!);
-        else await m.editReply(mappool.mappackLink!);
+        await respond(m, mappool.mappackLink!);
         return;
     }
 
@@ -126,15 +114,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mappool.mappackLink = url;
         mappool.mappackExpiry = new Date(Date.now() + 60 * 60 * 24 * 1000);
     } catch (e) {
-        if (m instanceof Message) m.reply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
-        else m.editReply(`Could not download **${pool}**\nosu.direct may likely be down currently.\n\`\`\`\n${e}\`\`\``);
+        await respond(m, `Could not download **${pool}**\nosu.direct may likely be down currently. Error below:\n\`\`\`\n${e}\`\`\``)
         return;
     }
 
     await mappool.save();
 
-    if (m instanceof Message) await m.reply(`Here is a temporary mappack link valid for 1 day:\n${mappool.mappackLink}`);
-    else await m.editReply(`Here is a temporary mappack link valid for 1 day:\n${mappool.mappackLink}`);
+    await respond(m, `Here is a temporary mappack link valid for 1 day:\n${mappool.mappackLink}`);
 
     if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
 }

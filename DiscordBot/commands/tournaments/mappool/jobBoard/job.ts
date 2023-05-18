@@ -3,10 +3,12 @@ import { Command } from "../../../index";
 import { fetchJobChannel, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../../functions/tournamentFunctions";
 import { TournamentChannelType } from "../../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../../Models/tournaments/tournamentRole";
-import { User } from "../../../../../Models/user";
 import { loginResponse } from "../../../../functions/loginResponse";
 import { JobPost } from "../../../../../Models/tournaments/mappools/jobPost";
 import { discordClient } from "../../../../../Server/discord";
+import respond from "../../../../functions/respond";
+import getUser from "../../../../functions/dbFunctions/getUser";
+import commandUser from "../../../../functions/commandUser";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild)
@@ -36,20 +38,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
     const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
     if (!poolText || !slotText) {
-        if (m instanceof Message) m.reply("Missing parameters. Please use `-p <pool> -s <slot> <description>` or `<pool> <slot> <description>`. If you do not use the `-` prefixes, the order of the parameters is important.");
-        else m.editReply("Missing parameters. Please use `/job <pool> <slot> <description>`.");
+        await respond(m, "Missing parameters. Please use `-p <pool> -s <slot> <description>` or `<pool> <slot> <description>`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
 
     const remainingText = m instanceof Message ? m.content.replace(poolRegex, "").replace(slotRegex, "").split(" ").slice(3).join(" ") : m.options.getString("description");
     if (!remainingText || remainingText === "") {
-        if (m instanceof Message) m.reply("Missing parameters. Please use `-p <pool> -s <slot> <description>` or `<pool> <slot> <description>`. If you do not use the `-` prefixes, the order of the parameters is important.");
-        else m.editReply("Missing parameters. Please use `/job <pool> <slot> <description>`.");
+        await respond(m, "Missing parameters. Please use `-p <pool> -s <slot> <description>` or `<pool> <slot> <description>`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
     if (remainingText.length > 1024) {
-        if (m instanceof Message) m.reply("Description is too long. Please keep it under 1024 characters.");
-        else m.editReply("Description is too long. Please keep it under 1024 characters.");
+        await respond(m, "Description is too long. Please keep it under 1024 characters. Ask Chat GPT to make it more concise or something Lol");
         return;
     }
 
@@ -57,8 +56,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
     const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
     if (isNaN(order)) {
-        if (m instanceof Message) m.reply(`Invalid slot number **${order}**. Please use a valid slot number.`);
-        else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
+        await respond(m, `Invalid slot number **${order}**. Please use a valid slot number.`);
         return;
     }
 
@@ -73,23 +71,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const mappoolMap = slotMod.maps.find(m => m.order === order);
     if (!mappoolMap) {
-        if (m instanceof Message) m.reply(`Could not find **${mappoolSlot}**`);
-        else m.editReply(`Could not find **${mappoolSlot}**`);
+        await respond(m, `Could not find **${mappoolSlot}**`);
         return;
     }
     if ((mappoolMap.customMappers && mappoolMap.customMappers.length > 0) || mappoolMap.beatmap) {
-        if (m instanceof Message) m.reply(`**${mappoolSlot}** has already been assigned. There is no reason to create a job board post.`);
-        else m.editReply(`**${mappoolSlot}** has already been assigned. There is no reason to create a job board post.`);
+        await respond(m, `**${mappoolSlot}** is not a job board slot. There is no reason to create a job board post.`);
         return;
     }
 
-    const user = await User.findOne({
-        where: {
-            discord: {
-                userID: m instanceof Message ? m.author.id : m.user.id,
-            },
-        },
-    })
+    const user = await getUser(commandUser(m).id, "discord", false);
     if (!user) {
         await loginResponse(m);
         return;
@@ -104,14 +94,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (mappoolMap.jobPost.jobBoardThread) {
         const ch = await discordClient.channels.fetch(mappoolMap.jobPost.jobBoardThread);
         if (!ch || !(ch instanceof ThreadChannel)) {
-            if (m instanceof Message) m.reply(`Could not find thread for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
-            else m.editReply(`Could not find thread for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
+            await respond(m, `Could not find thread for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
             return;
         }
         const msg = await ch.fetchStarterMessage()
         if (!msg) {
-            if (m instanceof Message) m.reply(`Could not find starter message for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
-            else m.editReply(`Could not find starter message for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
+            await respond(m, `Could not find starter message for **${slot}** which should be in <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
             return;
         }
 
@@ -121,8 +109,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await mappoolMap.jobPost.save();
     await mappoolMap.save();
 
-    if (m instanceof Message) m.reply(`Successfully created/edited job post for **${mappoolSlot}**:\n${remainingText}`);
-    else m.editReply(`Successfully created/edited job post for **${mappoolSlot}**:\n${remainingText}`);
+    await respond(m, `Successfully created/edited job post for **${mappoolSlot}**:\n${remainingText}`);
 }
 
 const data = new SlashCommandBuilder()

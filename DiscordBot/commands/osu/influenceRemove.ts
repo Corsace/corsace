@@ -8,6 +8,9 @@ import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { loginResponse } from "../../functions/loginResponse";
+import commandUser from "../../functions/commandUser";
+import getUser from "../../functions/dbFunctions/getUser";
+import respond from "../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -22,15 +25,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const author = m instanceof Message ? m.author : m.user;
-
-    const user = await User.findOne({
-        where: {
-            discord: {
-                userID: author.id,
-            },
-        },
-    });
+    const user = await getUser(commandUser(m).id, "discord", false);
     if (!user) {
         await loginResponse(m);
         return;
@@ -88,8 +83,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         },
     });
     if (year < (mca ? mca.year : (new Date()).getUTCFullYear())) {
-        if (m instanceof Message) await m.reply(`You cannot remove mapping influences for previous years!`);
-        else await m.editReply(`You cannot remove mapping influences for previous years!`);
+        await respond(m, "You cannot remove mapping influences for previous years!");
         return;
     }
 
@@ -106,8 +100,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         apiUser = (await osuClient.user.get(search)) as APIUser;
 
     if (!apiUser) {
-        if (m instanceof Message) await m.reply(`No user found for **${q}**`);
-        else await m.editReply(`No user found for **${q}**`);
+        await respond(m, `No user found for **${q}**`);
         return;
     }
 
@@ -120,8 +113,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     });
 
     if (!influenceUser) {
-        if (m instanceof Message) await m.reply(`**${apiUser.username}** doesn't even exist in the Corsace database! You're capping!!!!!!!`);
-        else await m.editReply(`**${apiUser.username}** doesn't even exist in the Corsace database! You're capping!!!!!!!`);
+        await respond(m, `**${apiUser.username}** doesn't even exist in the Corsace database! You're capping!!!!!!!`);
         return;
     }
     const influence = await Influence.findOne({
@@ -139,14 +131,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
         },
     });
     if (!influence) {
-        if (m instanceof Message) await m.reply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** doesn't seem to exist currently!`);
-        else await m.editReply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** doesn't seem to exist currently!`);
+        await respond(m, `**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** doesn't seem to exist currently!`);
         return;
     }
 
     await influence.remove();
-    if (m instanceof Message) m.reply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** has been removed!`);
-    else await m.editReply(`**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** has been removed!`);
+
+    await respond(m, `**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** has been removed!`);
     return;
     
 }

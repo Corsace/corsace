@@ -4,6 +4,9 @@ import { Command } from "../index";
 import { User as APIUser } from "nodesu";
 import { osuClient } from "../../../Server/osu";
 import { loginResponse } from "../../functions/loginResponse";
+import getUser from "../../functions/dbFunctions/getUser";
+import commandUser from "../../functions/commandUser";
+import respond from "../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -12,20 +15,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const osuRegex = /(osu|profile)\s+(.+)/i;
     const profileRegex = /(osu|old)\.ppy\.sh\/(u|users)\/(\S+)/i;
 
-    const author = m instanceof Message ? m.author : m.user;
     let user: User;
     let apiUser: APIUser;
     if (
         (m instanceof Message && !osuRegex.test(m.content) && !profileRegex.test(m.content)) ||
         (m instanceof ChatInputCommandInteraction && !m.options.getString("user"))
     ) { // Querying themself in message command
-        const userQ = await User.findOne({
-            where: {
-                discord: {
-                    userID: author.id,
-                },
-            },
-        });
+        const userQ = await getUser(commandUser(m).id, "discord", false);
         if (!userQ) {
             await loginResponse(m);
             return;
@@ -52,8 +48,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
 
         if (!apiUser) {
-            if (m instanceof Message) await m.reply(`No user found for **${q}**`);
-            else await m.editReply(`No user found for **${q}**`);
+            await respond(m, `No user found for **${q}**`);
             return;
         }
 
@@ -93,8 +88,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         },
     };
     const message = new EmbedBuilder(embedMsg);
-    if (m instanceof Message) m.reply({ embeds: [message] });
-    else m.editReply({ embeds: [message] });
+    await respond(m, undefined, [message]);
 }
 
 const data = new SlashCommandBuilder()

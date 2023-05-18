@@ -9,6 +9,7 @@ import beatmapEmbed from "../../../functions/beatmapEmbed";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import modeColour from "../../../functions/modeColour";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
+import respond from "../../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -30,8 +31,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         // Get a list of the tournament's mappools instead
         const mappools = await Mappool.search(tournament, "", false, true, true);
         if (mappools.length === 0) {
-            if (m instanceof Message) m.reply(`No mappools found for ${tournament.name}.`);
-            else m.editReply(`No mappools found for ${tournament.name}.`);
+            await respond(m, `No mappools found for ${tournament.name}.`);
             return;
         }
         
@@ -48,8 +48,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 iconURL: m.member?.avatar ?? undefined,
             })
             .setTimestamp();
-        if (m instanceof Message) m.reply({ embeds: [embed] });
-        else m.editReply({ embeds: [embed] });
+        await respond(m, undefined, [embed]);
         return;
     }
 
@@ -69,8 +68,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
         const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
         if (isNaN(order)) {
-            if (m instanceof Message) m.reply(`Invalid slot number **${order}**. Please use a valid slot number.`);
-            else m.editReply(`Invalid slot number **${order}**. Please use a valid slot number.`);
+            await respond(m, `Invalid slot number **${order}**. Please use a valid slot number.`);
             return;
         }
 
@@ -82,8 +80,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         
         const mappoolMap = slotMod.maps.find(m => m.order === order);
         if (!mappoolMap) {
-            if (m instanceof Message) m.reply(`Could not find **${mappoolSlot}**`);
-            else m.editReply(`Could not find **${mappoolSlot}**`);
+            await respond(m, `Could not find **${mappoolSlot}**`);
             return;
         }
 
@@ -94,20 +91,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
             const mappoolMapEmbed = await beatmapEmbed(apiMap, slotMod.acronym, set);
             mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
-            if (m instanceof Message) m.reply({
-                content: `Info for **${mappoolSlot}**:`,
-                embeds: [mappoolMapEmbed],
-            });
-            else m.editReply({
-                content: `Info for **${mappoolSlot}**:`,
-                embeds: [mappoolMapEmbed],
-            });
+            await respond(m, `Info for **${mappoolSlot}**:`, [mappoolMapEmbed]);
             return;
         }
 
         if (!mappoolMap.customBeatmap?.link) {
-            if (m instanceof Message) m.reply(`**${mappoolSlot}** currently has no beatmap.`);
-            else m.editReply(`**${mappoolSlot}** currently has no beatmap.`);
+            await respond(m, `**${mappoolSlot}** currently has no beatmap.`);
             return;
         }
 
@@ -169,14 +158,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slotMod.allowedMods ?? 0)), modsToAcronym(slotMod.allowedMods ?? 0), set);
         mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
         
-        if (m instanceof Message) m.reply({
-            content: `Info for **${mappoolSlot}**:`,
-            embeds: [mappoolMapEmbed],
-        });
-        else m.editReply({
-            content: `Info for **${mappoolSlot}**:`,
-            embeds: [mappoolMapEmbed],
-        });
+        await respond(m, `Info for **${mappoolSlot}**:`, [mappoolMapEmbed]);
         return;
     }
 
@@ -194,8 +176,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         })
         .setTimestamp();
     
-    if (m instanceof Message) m.reply({ embeds: [embed] });
-    else m.editReply({ embeds: [embed] });
+    await respond(m, undefined, [embed]);
 }
 
 const data = new SlashCommandBuilder()
