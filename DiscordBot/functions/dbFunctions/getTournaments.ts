@@ -10,7 +10,7 @@ export const tournamentSearchConditions = {
     })
 };
 
-export default async function getTournaments (target: string, searchType: keyof typeof tournamentSearchConditions, channelID?: string, tournamentStatusFilters?: TournamentStatus[], stages?: boolean, rounds?: boolean) {
+export default function getTournaments (target: string, searchType: keyof typeof tournamentSearchConditions, channelID?: string, tournamentStatusFilters?: TournamentStatus[], stages?: boolean, rounds?: boolean) {
     const tournamentQ = Tournament.createQueryBuilder("tournament")
         .leftJoinAndSelect("tournament.mode", "mode")
         .leftJoin("tournament.channels", "channel");
@@ -29,5 +29,5 @@ export default async function getTournaments (target: string, searchType: keyof 
     if (tournamentStatusFilters)
         tournamentQ.andWhere("tournament.status IN (:...status)", { status: tournamentStatusFilters });
 
-    return await tournamentQ.getMany();
+    return tournamentQ.getMany();
 }
