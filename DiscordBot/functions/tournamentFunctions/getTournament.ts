@@ -4,11 +4,11 @@ import getTournaments, { tournamentSearchConditions } from "../dbFunctions/getTo
 import respond from "../respond";
 import getFromList from "../getFromList";
 
-export default async function getTournament (m: Message | ChatInputCommandInteraction, target: string, searchType: keyof typeof tournamentSearchConditions, channelID?: string, tournamentStatusFilters?: TournamentStatus[], stages?: boolean, rounds?: boolean) {
-    const tournamentList = await getTournaments(target, searchType, channelID, tournamentStatusFilters, stages, rounds);
+export default async function getTournament (m: Message | ChatInputCommandInteraction, target: string = m.guild!.id, searchType: keyof typeof tournamentSearchConditions = "server", tournamentStatusFilters?: TournamentStatus[], stageOrRound?: boolean, mappools?: boolean, slots?: boolean, maps?: boolean, jobPosts?: boolean) {
+    const tournamentList = await getTournaments(target, searchType, tournamentStatusFilters, stageOrRound, mappools, slots, maps, jobPosts);
     if (tournamentList.length === 0) {
-        if (channelID)
-            await respond(m, `Could not find any tournaments with ${searchType} \`${target}\` in <#${channelID}>.`);
+        if (searchType === "channel")
+            await respond(m, `Could not find any tournaments with ${searchType} in <#${target}>.`);
         else
             await respond(m, `Could not find any tournaments with ${searchType} \`${target}\` in this server.`);
         return;

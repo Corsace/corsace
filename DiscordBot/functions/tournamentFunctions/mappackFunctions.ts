@@ -1,11 +1,11 @@
 import { ChatInputCommandInteraction, Message } from "discord.js";
-import { Mappool } from "../../Models/tournaments/mappools/mappool";
+import { Mappool } from "../../../Models/tournaments/mappools/mappool";
 import { randomUUID } from "crypto";
-import { gets3Key } from "../../Server/utils/s3";
-import { buckets } from "../../Server/s3";
-import { download } from "../../Server/utils/download";
-import { zipFiles } from "../../Server/utils/zip";
-import respond from "./respond";
+import { gets3Key } from "../../../Server/utils/s3";
+import { buckets } from "../../../Server/s3";
+import { download } from "../../../Server/utils/download";
+import { zipFiles } from "../../../Server/utils/zip";
+import respond from "../respond";
 
 export async function createPack (m: Message | ChatInputCommandInteraction, bucket: "mappacks" | "mappacksTemp", mappool: Mappool, packName: string, video: boolean = false): Promise<string | undefined> {
     const mappoolMaps = mappool.slots.flatMap(s => s.maps);

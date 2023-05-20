@@ -5,7 +5,7 @@ import respond from "../respond";
 import getFromList from "../getFromList";
 import getMappools from "../dbFunctions/getMappools";
 
-export async function getMappool (m: Message | ChatInputCommandInteraction, tournament: Tournament, poolText: string = "", getStageRound: boolean = false, getSlots: boolean = false, getMaps: boolean = false) {
+export default async function getMappool (m: Message | ChatInputCommandInteraction, tournament: Tournament, poolText: string = "", getStageRound: boolean = false, getSlots: boolean = false, getMaps: boolean = false) {
     const mappools = await getMappools(tournament, poolText, getStageRound, getSlots, getMaps);
     if (mappools.length === 0) {
         await respond(m, `Could not find any mappools with criteria \`${poolText}\``);
