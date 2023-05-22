@@ -6,7 +6,7 @@ import getStages from "../dbFunctions/getStages";
 import getTournament from "./getTournament";
 
 export default async function getStage (m: Message | ChatInputCommandInteraction, tournament?: Tournament, useChannel?: boolean) {
-    tournament = tournament ?? await getTournament(m, useChannel ? m.channelId : m.guildId!, useChannel ? "channel" : "server");
+    tournament = tournament ?? await getTournament(m, useChannel ? m.channelId : m.guildId || "", useChannel ? "channel" : m.guild ? "server" : "ID");
     if (!tournament)
         return;
 

@@ -9,7 +9,7 @@ import { filter, stopRow } from "../../functions/messageInteractionFunctions";
 import { profanityFilter } from "../../../Interfaces/comment";
 import { Stage, StageType } from "../../../Models/tournaments/stage";
 import { Phase } from "../../../Models/phase";
-import { TournamentChannel, TournamentChannelType, TournamentChannelTypeRoles } from "../../../Models/tournaments/tournamentChannel";
+import { TournamentChannel, TournamentChannelType, TournamentChannelTypeRoles, forumTags } from "../../../Models/tournaments/tournamentChannel";
 import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
 import { randomUUID } from "crypto";
 import respond from "../../functions/respond";
@@ -50,8 +50,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             },
         ],
     });
-    if (serverTournaments.length === 5) {
-        await respond(m, "You can only have 5 tournaments at a time!");
+    if (serverTournaments.length === 3) {
+        await respond(m, "You can only have 3 tournaments at a time!");
         return;
     }
 
@@ -775,27 +775,13 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         tournamentChannel.channelID = channel.id;
         tournamentChannel.channelType = TournamentChannelType[channelType];
         tournament.channels!.push(tournamentChannel);
-        
-        let tags: string[] = [];
-        let forumChannel: ForumChannel | undefined = undefined;
-        if (channelType.toLowerCase() === "mappoolqa") {
-            forumChannel = channel as ForumChannel;
-            tags = ["WIP", "Finished", "Late", "Needs HS"];
-        } else if (channelType.toLowerCase() === "jobboard") {
-            forumChannel = channel as ForumChannel;
-            tags = ["Open", "Closed", "To Assign"];
-        }
 
-        if (forumChannel) {
-            const tagsToAdd = tags.filter(t => !forumChannel!.availableTags.some(at => at.name.toLowerCase() === t.toLowerCase()));
-            if (tagsToAdd.length > 0) {
-                await forumChannel.setAvailableTags(tagsToAdd.map(t => {
-                    return {
-                        name: t,
-                        moderated: true,
-                    }
-                }));
-            }
+        const tags = forumTags[tournamentChannel.channelType];
+        if (tags) {
+            const forumChannel = channel as ForumChannel;
+            const tagsToAdd = tags.filter(t => !forumChannel!.availableTags.some(at => at.name.toLowerCase() === t.name.toLowerCase()));
+            if (tagsToAdd.length > 0)
+                await forumChannel.setAvailableTags(tagsToAdd);
         }
 
         content += `\nChannel <#${channel.id}> designated for \`${channelType}\`.`;

@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, GuildMemberRoleManager, Message } from "discord.js";
+import { ChatInputCommandInteraction, GuildMemberRoleManager, Message, PermissionFlagsBits, PermissionsBitField } from "discord.js";
 import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
 import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
 import respond from "../respond";
@@ -51,14 +51,21 @@ export async function isSecuredChannel (m: Message | ChatInputCommandInteraction
     return true;
 }
 
-export async function securityChecks (m: Message | ChatInputCommandInteraction, inGuild: boolean, securedChannels: TournamentChannelType[], allowedRoles: TournamentRoleType[]): Promise<boolean> {
-    if (inGuild && !m.guild)
+export async function securityChecks (m: Message | ChatInputCommandInteraction, inGuild: boolean, isAdmin: boolean, securedChannels: TournamentChannelType[], allowedRoles: TournamentRoleType[]): Promise<boolean> {
+    if (inGuild && !m.guild) {
+        await respond(m, "This command can only be used in a server.");
+        return false;
+    }
+
+    if (isAdmin && !(m.member?.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator)) {
+        await respond(m, "You must have a role with administrator privileges to use this command.");
+        return false;
+    }
+
+    if (!await isSecuredChannel(m, securedChannels))
         return false;
 
-    if (!(await isSecuredChannel(m, securedChannels)))
-        return false;
-
-    if (!(await hasTournamentRoles(m, allowedRoles)))
+    if (!await hasTournamentRoles(m, allowedRoles))
         return false;
 
     return true;

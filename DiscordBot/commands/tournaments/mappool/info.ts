@@ -1,35 +1,39 @@
 import { Message, SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { Command } from "../../index";
-import { fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
-import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { osuClient } from "../../../../Server/osu";
 import { Beatmap as APIBeatmap, Mode } from "nodesu";
 import beatmapEmbed from "../../../functions/beatmapEmbed";
-import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import modeColour from "../../../functions/modeColour";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import respond from "../../../functions/respond";
+import getMappools from "../../../functions/dbFunctions/getMappools";
+import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
+import { extractParameters } from "../../../functions/parameterFunctions";
+import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
+import getTournament from "../../../functions/tournamentFunctions/getTournament";
+import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
+import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const tournament = await fetchTournament(m);
-    if (!tournament) 
+    const params = extractParameters<parameters>(m, [
+        { name: "pool", regex: /-p (\S+)/, regexIndex: 1, optional: true },
+        { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder, optional: true },
+    ]);
+    if (!params)
         return;
 
-    const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers]);
-    if (!allowed) 
-        return;
-
-    const poolRegex = /-p (\S+)/;
-    const slotRegex = /-s (\S+)/;
-    const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
-    const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
-    if (!poolText) {
+    const { pool, slot, order } = params;
+    if (!pool) {
         // Get a list of the tournament's mappools instead
-        const mappools = await Mappool.search(tournament, "", false, true, true);
+        const tournament = await getTournament(m);
+        if (!tournament) 
+            return;
+
+        const mappools = await getMappools(tournament, "", false, true, true)
         if (mappools.length === 0) {
             await respond(m, `No mappools found for ${tournament.name}.`);
             return;
@@ -39,7 +43,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .setTitle(`Mappools for ${tournament.name}`)
             .setFields(mappools.map(mappool => ({
                 name: `**${mappool.name}**`,
-                value: `${mappool.slots.map(slot => `${slot.name}: ${slot.maps.length}`).join("\n")}\n${mappool.isPublic || (mappool.mappackExpiry?.getTime() ?? -1) > Date.now() ? `Link: ${mappool.mappackLink}` : ""}`,
+                value: `${mappool.slots.map(slot => `${slot.name}: ${slot.maps.length}`).join("\n")}\n${mappool.isPublic ? `Link: ${mappool.mappackLink}` : ""}`,
                 inline: true,
             })))
             .setColor(modeColour(tournament.mode.ID - 1))
@@ -52,43 +56,24 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const pool = typeof poolText === "string" ? poolText : poolText[0];
-
-    const mappool = await fetchMappool(m, tournament, pool, false, slotText ? false : true, slotText ? false : true);
-    if (!mappool) 
+    const components = await mappoolComponents(m, pool, slot, order);
+    if (!components || !("mappool" in components))
         return;
+
+    const { tournament, mappool } = components;
     
-    if (!mappool.isPublic) {
-        const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard]);
-        if (!securedChannel) 
-            return;
-    }
+    if (!mappool.isPublic && !await securityChecks(m, true, false, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers]))
+        return;
 
-    if (slotText) {
-        const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
-        const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
-        if (isNaN(order)) {
-            await respond(m, `Invalid slot number **${order}**. Please use a valid slot number.`);
-            return;
-        }
+    if ("mappoolMap" in components) {
 
-        const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
-
-        const slotMod = await fetchSlot(m, mappool, slot, true);
-        if (!slotMod) 
-            return;
-        
-        const mappoolMap = slotMod.maps.find(m => m.order === order);
-        if (!mappoolMap) {
-            await respond(m, `Could not find **${mappoolSlot}**`);
-            return;
-        }
+        const { mappoolMap, mappoolSlot, slotMod } = components;
 
         if (mappoolMap.beatmap) {
             const set = (await osuClient.beatmaps.getBySetId(mappoolMap.beatmap.beatmapsetID, Mode.all, undefined, undefined, slotMod.allowedMods) as APIBeatmap[]);
             const apiMap = set.find(m => m.beatmapId === mappoolMap.beatmap!.ID)!;
 
-            const mappoolMapEmbed = await beatmapEmbed(apiMap, slotMod.acronym, set);
+            const mappoolMapEmbed = await beatmapEmbed(apiMap, modsToAcronym(slotMod.allowedMods), set);
             mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
             await respond(m, `Info for **${mappoolSlot}**:`, [mappoolMapEmbed]);
@@ -177,6 +162,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .setTimestamp();
     
     await respond(m, undefined, [embed]);
+}
+
+interface parameters {
+    pool?: string,
+    slot?: string,
+    order?: number,
 }
 
 const data = new SlashCommandBuilder()

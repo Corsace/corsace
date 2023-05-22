@@ -4,6 +4,7 @@ import { Tournament } from "../../../Models/tournaments/tournament";
 import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
 import { discordClient } from "../../../Server/discord";
 import { randomUUID } from "crypto";
+import respond from "../respond";
 
 export default async function getCustomThread (m: Message | ChatInputCommandInteraction, mappoolMap: MappoolMap, tournament: Tournament, slot: string): Promise<[ThreadChannel, Message] | boolean | undefined> {
     const content = `Map: **${mappoolMap.customBeatmap ? `${mappoolMap.customBeatmap.artist} - ${mappoolMap.customBeatmap.title} [${mappoolMap.customBeatmap.difficulty}]` : "N/A"}**\nMapper(s): **${mappoolMap.customMappers.length > 0 ? mappoolMap.customMappers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nTestplayer(s): **${mappoolMap.testplayers.length > 0 ? mappoolMap.testplayers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nDeadline: ${mappoolMap.deadline ? `<t:${mappoolMap.deadline.getTime() / 1000}:F> (<t:${mappoolMap.deadline.getTime() / 1000}:R>)` : "**N/A**"}`;
@@ -98,8 +99,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
 
     const ch = await discordClient.channels.fetch(mappoolMap.customThreadID);
     if (!ch || !(ch instanceof ThreadChannel)) {
-        if (m instanceof Message) m.reply(`Could not find thread for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
-        else m.editReply(`Could not find thread for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
+        await respond(m, `Could not find thread for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
         return;
     }
 
@@ -107,8 +107,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
     await thread.setArchived(false);
     const threadMsg = await thread.messages.fetch(mappoolMap.customMessageID!);
     if (!threadMsg) {
-        if (m instanceof Message) m.reply(`Could not find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);
-        else m.editReply(`Could not find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);
+        await respond(m, `Could not find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);
         return;
     }
 

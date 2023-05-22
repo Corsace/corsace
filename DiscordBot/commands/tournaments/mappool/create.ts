@@ -4,15 +4,17 @@ import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { StageType } from "../../../../Models/tournaments/stage";
-import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
-import { confirmCommand, fetchRound, fetchStage, fetchTournament } from "../../../functions/tournamentFunctions";
+import { Tournament, TournamentStatus, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import { filter } from "../../../functions/messageInteractionFunctions";
 import { loginResponse } from "../../../functions/loginResponse";
 import { acronymtoMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { randomUUID } from "crypto";
 import respond from "../../../functions/respond";
+import getRound from "../../../functions/tournamentFunctions/getRound";
 import getUser from "../../../functions/dbFunctions/getUser";
 import commandUser from "../../../functions/commandUser";
+import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
+import confirmCommand from "../../../functions/confirmCommand";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -27,19 +29,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const tournament = await fetchTournament(m, [TournamentStatus.NotStarted, TournamentStatus.Ongoing, TournamentStatus.Registrations], true, true, true);
-    if (!tournament) 
-        return;
-
-    const stage = await fetchStage(m, tournament);
-    if (!stage) 
-        return;
-
     const creator = await getUser(commandUser(m).id, "discord", false);
     if (!creator) {
         await loginResponse(m);
         return;
     }
+
+    const components = await mappoolComponents(m, undefined, undefined, undefined, undefined, { text: m.channelId, searchType: "channel" }, unFinishedTournaments, true);
+    if (!components || !components.stage)
+        return;
+
+    const { tournament, stage } = components;
 
     const mappool = new Mappool();
     mappool.createdBy = creator;
@@ -50,7 +50,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // If the stage is an elmination-type stage, then check if they want to make a mappool for a specific round for the stage; otherwise, just make a mappool for the stage
     if (stage.stageType === StageType.DoubleElimination || stage.stageType === StageType.SingleElimination) {
         // Ask if they want to make a mappool for a specific round, or just for the stage
-        const round = await fetchRound(m, stage);
+        const round = await getRound(m, stage);
         if (round)
             mappool.round = round;
     }

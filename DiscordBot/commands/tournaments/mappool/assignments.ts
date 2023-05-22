@@ -1,15 +1,18 @@
 import { Message, EmbedBuilder, SlashCommandBuilder, ChatInputCommandInteraction, ChannelType, TextChannel } from "discord.js";
 import { Command } from "../../index";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { fetchStaff, fetchTournament, hasTournamentRoles, isSecuredChannel } from "../../../functions/tournamentFunctions";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { Brackets } from "typeorm";
-import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
+import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
+import { extractParameters } from "../../../functions/parameterFunctions";
+import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
 import getUser from "../../../functions/dbFunctions/getUser";
 import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
+import getStaff from "../../../functions/tournamentFunctions/getStaff";
+import getTournament from "../../../functions/tournamentFunctions/getTournament";
 
 async function assignmentListDM(m: Message | ChatInputCommandInteraction) {
     // Check if they had -incfin in their text, or if they said true for the include_finished option in the slash command
@@ -90,34 +93,28 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    if (m instanceof Message ? m.content.includes("-all") : m.options.getBoolean("all")) {
+    if (m instanceof Message ? m.content.includes("-incfin") : m.options.getBoolean("include_finished")) {
         await respond(m, "You cannot use the `all` option outside of DMs, as it shows your assignments across all pools and tournaments");
         return;
     }
 
-    const tournament = await fetchTournament(m);
+    const tournament = await getTournament(m);
     if (!tournament) 
         return;
 
-    const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers]);
-    if (!allowed) 
+    // Get specific pool and user
+    const params = extractParameters<parameters>(m, [
+        { name: "pool", optional: true, regex: /-p (\S+)/, regexIndex: 1 },
+        { name: "target", optional: true, customHandler: extractTargetText(2) },
+    ]);
+    if (!params)
         return;
 
-    // Get specific pool and user
-    const poolRegex = /-p (\S+)/;
-    const userRegex = /-u (\S+)/;
-    const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
-    const userText = m instanceof Message ? m.content.match(userRegex) ?? m.content.split(" ").slice(2, m.content.split(" ").length).join(" ") : m.options.getUser("user")?.id;
+    const { target, pool } = params;
 
-    const pool = poolText ? typeof poolText === "string" ? poolText : poolText[0] : "";
-    const target = userText ? typeof userText === "string" ? userText : userText[0] : "";
-
-    let targetUser: User | null | undefined;
-    if (target !== "") {
-        targetUser = await fetchStaff(m, tournament, target, [TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]);
-        if (!targetUser)
-            return;
-    }
+    let targetUser = target ? await getStaff(m, tournament, target, [TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]) : undefined;
+    if (target && !targetUser)
+        return;
 
     const mappoolMaps = (await MappoolSlot
         .createQueryBuilder("slot")
@@ -147,25 +144,27 @@ async function run (m: Message | ChatInputCommandInteraction) {
         })).flat();
 
     if (mappoolMaps.length === 0) {
-        await respond(m, `No maps found${pool || targetUser ? ` with the given parameters: **${poolText ? `pool: \`${pool}\`` : ""} ${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`);
+        await respond(m, `No maps found${pool || targetUser ? ` with the given parameters: **${pool ? `pool: \`${pool}\`` : ""} ${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`);
         return;
     }
 
-    if (!mappoolMaps[0].slot.mappool.isPublic) {
-        const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard]);
-        if (!securedChannel) 
-            return;
-    }
+    if (mappoolMaps.some(m => !m.slot.mappool.isPublic) && !await securityChecks(m, true, false, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers]))
+        return;
 
     const embed = new EmbedBuilder()
         .setTitle("Mappool Assignments")
-        .setDescription(`Here are the current mappool assignments${pool || targetUser ? ` with the given parameters: **${poolText ? `pool: \`${pool}\` ` : ""}${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`)
+        .setDescription(`Here are the current mappool assignments${pool || targetUser ? ` with the given parameters: **${pool ? `pool: \`${pool}\` ` : ""}${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`)
         .setTimestamp(new Date())
         .setFields();
 
     let replied = false;
     for (const map of mappoolMaps) {
-        const value = `${map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]\n` : ""}${map.customMappers.length > 0 ? `Custom Mappers: **${map.customMappers.map(u => u.osu.username).join(", ")}**\n` : ""}${map.testplayers.length > 0 ? `Testplayers: **${map.testplayers.map(u => u.osu.username).join(", ")}**\n` : ""}${map.assignedBy ? `Assigned by: **${map.assignedBy.osu.username}**\n` : ""}${map.deadline ? `Deadline: <t:${map.deadline.getTime() / 1000}:F> (<t:${map.deadline.getTime() / 1000}:R>)` : ""}`;
+        const beatmapText = map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]\n` : "";
+        const customMappers = map.customMappers.length > 0 ? `Custom Mappers: **${map.customMappers.map(u => u.osu.username).join(", ")}**\n` : "";
+        const testplayers = map.testplayers.length > 0 ? `Testplayers: **${map.testplayers.map(u => u.osu.username).join(", ")}**\n` : "";
+        const assignedBy = map.assignedBy ? `Assigned by: **${map.assignedBy.osu.username}**\n` : "";
+        const deadline = map.deadline ? `Deadline: <t:${map.deadline.getTime() / 1000}:F> (<t:${map.deadline.getTime() / 1000}:R>)` : "";
+        const value = `${beatmapText}${customMappers}${testplayers}${assignedBy}${deadline}`;
         if (value.length > 0)
             embed.addFields(
                 {
@@ -174,22 +173,22 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     inline: true },
             );
 
-        if (embed.data.fields!.length === 25) {
-            if (!replied) {
-                await respond(m, undefined, [embed]);
-                replied = true;
-            } else {
-                await (m.channel as TextChannel).send({ embeds: [embed] });
-            }
-            embed.data.fields = [];
-        }
+        if (embed.data.fields!.length !== 25)
+            continue;
+
+        if (!replied) {
+            await respond(m, undefined, [embed]);
+            replied = true;
+        } else
+            await (m.channel as TextChannel).send({ embeds: [embed] });
+        embed.data.fields = [];
     }
 
     if (!replied || embed.data.fields!.length > 0) {
         if (embed.data.fields!.length === 0)
             embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters."});
         
-        await respond(m, undefined, [embed]);
+        await replied ? respond(m, undefined, [embed]) : m.channel?.send({ embeds: [embed] });
     }
 
 }
@@ -206,6 +205,11 @@ const data = new SlashCommandBuilder()
     .addUserOption(option =>
         option.setName("user")
             .setDescription("The user to see assignments of."));
+
+interface parameters {
+    target?: string,
+    pool?: string,
+}
 
 const mappoolAssignments: Command = {
     data,

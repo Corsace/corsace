@@ -3,43 +3,70 @@ import { tournamentSearchConditions } from "../dbFunctions/getTournaments";
 import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
 import getTournament from "./getTournament";
 import getMappool from "./getMappool";
-import respond from "../respond";
 import getMappoolSlot from "./getMappoolSlot";
+import getStage from "./getStage";
+import getStaff from "./getStaff";
+import respond from "../respond";
 import { Mappool } from "../../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../../Models/tournaments/mappools/mappoolSlot";
 import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
+import { User } from "../../../Models/user";
+import { TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
+import { Stage } from "../../../Models/tournaments/stage";
 
+type optionalComponents = { stage?: Stage, staff?: User };
 type TournamentOnly = { tournament: Tournament };
 type TournamentAndMappool = { tournament: Tournament, mappool: Mappool };
 type TournamentMappoolAndSlotMod = { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot };
+type TournamentMappoolSlotModAndMap = { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot, mappoolMap: MappoolMap, mappoolSlot: string };
 type AllComponents = { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot, mappoolMap: MappoolMap, mappoolSlot: string };
 
-type MappoolComponents = TournamentOnly | TournamentAndMappool | TournamentMappoolAndSlotMod | AllComponents;
+type MappoolComponents = (TournamentOnly | TournamentAndMappool | TournamentMappoolAndSlotMod | TournamentMappoolSlotModAndMap | AllComponents) & optionalComponents;
 
 export default async function mappoolComponents(
-    m: Message | ChatInputCommandInteraction, 
+    m: Message | ChatInputCommandInteraction,
     pool?: string, 
-    slot?: string,
-    order?: number,
+    slot?: string | true,
+    map?: number | true,
     checkPublic?: boolean,
-    tournamentText?: string,
-    tournamentSearchType?: keyof typeof tournamentSearchConditions,
+    tournamentSearchParameters?: {
+        text: string,
+        searchType: keyof typeof tournamentSearchConditions,
+    },
     tournamentStatusFilters?: TournamentStatus[],
     getStageRound?: boolean,
+    staffSearchParameters?: {
+        text: string,
+        roles: TournamentRoleType[],
+    },
     getJobPosts?: boolean
 ): Promise<undefined | MappoolComponents> {
-    let [tournament, mappool, slotMod, mappoolMap, mappoolSlot]: [Tournament?, Mappool?, MappoolSlot?, MappoolMap?, string?] = [];
     
     // Get tournament
-    tournament = await getTournament(m, tournamentText, tournamentSearchType, tournamentStatusFilters, getStageRound);
+    const tournament = await getTournament(m, tournamentSearchParameters?.text, tournamentSearchParameters?.searchType, tournamentStatusFilters, getStageRound);
     if (!tournament)
         return;
 
+    let stage: Stage | undefined = undefined;
+    if (getStageRound) {
+        stage = await getStage(m, tournament);
+        if (!stage)
+            return;
+    }
+
+    // Get staff
+    let staff: User | undefined = undefined;
+    if (staffSearchParameters) {
+        staff = await getStaff(m, tournament, staffSearchParameters.text, staffSearchParameters.roles);
+        if (!staff)
+            return;
+    }
+
     if (!pool)
-        return { tournament };
+        return { tournament, stage, staff };
 
     // Get mappool
-    mappool = await getMappool(m, tournament, pool, false, slot !== undefined);
+    const mappool = await getMappool(m, tournament, pool, false, slot === true, slot === true && map === true);
     if (!mappool) 
         return;
     if (checkPublic && mappool.isPublic) {
@@ -47,26 +74,26 @@ export default async function mappoolComponents(
         return;
     }
 
-    if (!slot)
+    if (typeof slot !== "string")
         return { tournament, mappool };
 
     // Get slotMod
-    slotMod = await getMappoolSlot(m, mappool, slot, false, order !== undefined, getJobPosts);
+    const slotMod = await getMappoolSlot(m, mappool, slot, false, map === true, getJobPosts);
     if (!slotMod) 
         return;
 
-    if (order === undefined)
+    if (typeof map !== "number")
         return { tournament, mappool, slotMod };
 
     // Get mappoolMap
-    mappoolMap = slotMod.maps.find(m => m.order === order);
+    const mappoolMap = slotMod.maps.find(m => m.order === map);
     if (!mappoolMap) {
         await respond(m, `Could not find map **${slot}**`);
         return;
     }
 
     // Get mappoolSlot
-    mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
+    const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${map}`;
 
-    return { tournament, mappool, slotMod, mappoolMap, mappoolSlot };
+    return { tournament, mappool, slotMod, mappoolMap, mappoolSlot, staff, stage };
 }

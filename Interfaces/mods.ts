@@ -97,8 +97,8 @@ export function acronymtoMods (text: string): ModsType | undefined {
  * @param mod An enum of the mods
  * @returns A string consisting of mods as acronyms
  */
-export function modsToAcronym (mod: ModsType): string {
-    if (mod === 0)
+export function modsToAcronym (mod?: ModsType): string {
+    if (!mod || mod === 0)
         return "NM";
     let text = "";
     for (const acronym in modAcronyms) {

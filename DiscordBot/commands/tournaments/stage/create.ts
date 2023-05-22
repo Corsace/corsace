@@ -4,11 +4,12 @@ import { profanityFilter } from "../../../../Interfaces/comment";
 import { Round } from "../../../../Models/tournaments/round";
 import { ScoringMethod, Stage, StageType } from "../../../../Models/tournaments/stage";
 import { TournamentStatus } from "../../../../Models/tournaments/tournament";
-import { confirmCommand, fetchTournament } from "../../../functions/tournamentFunctions";
 import { loginResponse } from "../../../functions/loginResponse";
 import respond from "../../../functions/respond";
 import getUser from "../../../functions/dbFunctions/getUser";
 import commandUser from "../../../functions/commandUser";
+import confirmCommand from "../../../functions/confirmCommand";
+import getTournament from "../../../functions/tournamentFunctions/getTournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -29,7 +30,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const tournament = await fetchTournament(m, [TournamentStatus.NotStarted, TournamentStatus.Registrations], true, true);
+    const tournament = await getTournament(m, m.channelId, "channel", [TournamentStatus.NotStarted, TournamentStatus.Registrations], true);
     if (!tournament) 
         return;
 

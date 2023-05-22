@@ -1,32 +1,27 @@
 import { ChatInputCommandInteraction, ForumChannel, Message, SlashCommandBuilder } from "discord.js";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
 import { loginResponse } from "../../../functions/loginResponse";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { cron } from "../../../../Server/cron";
+import { unFinishedTournaments } from "../../../../Models/tournaments/tournament";
+import { extractParameters } from "../../../functions/parameterFunctions";
+import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
+import { extractDate } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
+import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import getUser from "../../../functions/dbFunctions/getUser";
 import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
+import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
+import getCustomThread from "../../../functions/tournamentFunctions/getCustomThread";
+import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    if (!m.guild)
-        return;
-
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard]);
-    if (!securedChannel) 
-        return;
-
-    const tournament = await fetchTournament(m);
-    if (!tournament) 
-        return;
-
-    const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]);
-    if (!allowed) 
+    if (!await securityChecks(m, true, false, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
         return;
 
     const user = await getUser(commandUser(m).id, "discord", false);
@@ -35,54 +30,29 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const poolRegex = /-p (\S+)/;
-    const slotRegex = /-s (\S+)/;
-    const dateRegex = new RegExp(/-r ((?:\d{4}-\d{2}-\d{2})|\d{10})/);
-    const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
-    const slotText = m instanceof Message ? m.content.match(slotRegex) ?? m.content.split(" ")[2] : m.options.getString("slot");
-    const dateText = m instanceof Message ? m.content.match(dateRegex) ?? m.content.split(" ")[3] : m.options.getString("date");
-    if (!poolText || !slotText || !dateText) {
-        await respond(m, "Missing parameters. Please use `-p <pool> -s <slot> -d <date>` or `<pool> <slot> <date>`. If you do not use the `-` prefixes, the order of the parameters is important.");
+    const params = extractParameters<parameters>(m, [
+        { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
+        { name: "slot", regex: /-s (\S+)/, regexIndex: 2, postProcess: postProcessSlotOrder },
+        { name: "date", customHandler: extractDate(3)  },
+    ]);
+    if (!params)
         return;
-    }
-
-    const date = new Date(typeof dateText === "string" ? dateText.includes("-") ? dateText : parseInt(dateText + "000") : dateText[1].includes("-") ? dateText[1] : parseInt(dateText[1] + "000"));
-    const pool = typeof poolText === "string" ? poolText : poolText[0];
-    const order = parseInt(typeof slotText === "string" ? slotText.substring(slotText.length - 1) : slotText[1].substring(slotText[1].length - 1));
-    const slot = (typeof slotText === "string" ? slotText.substring(0, slotText.length - 1) : slotText[1].substring(0, slotText[1].length - 1)).toUpperCase();
-
+    const { pool, slot, order, date } = params;
     if (isNaN(date.getTime()) || date.getTime() < Date.now()) {
         await respond(m, "Invalid date. Please provide a valid date using either `YYYY-MM-DD` format, or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
         return;
     }
-    if (isNaN(order)) {
-        await respond(m, `Invalid slot number **${order}**. Please use a valid slot number.`);
-        return;
-    }
 
-    const mappool = await fetchMappool(m, tournament, pool, true);
-    if (!mappool) 
+    const components = await mappoolComponents(m, pool, slot, order, true, { text: m.channelId, searchType: "channel"}, unFinishedTournaments, true);
+    if (!components || !("mappoolMap" in components) || !("stage" in components))
         return;
-    if (mappool.isPublic) {
-        await respond(m, `Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
-        return;
-    }
+    const { tournament, stage, mappoolMap, mappoolSlot } = components;
 
-    if (mappool.stage.timespan.start.getTime() < date.getTime()) {
+    if (stage!.timespan.start.getTime() < date.getTime()) {
         await respond(m, "The deadline cannot be after the start of the stage. That literally makes no sense.");
         return;
     }
-    const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${order}`;
 
-    const slotMod = await fetchSlot(m, mappool, slot, true);
-    if (!slotMod) 
-        return;
-
-    const mappoolMap = slotMod.maps.find(m => m.order === order);
-    if (!mappoolMap) {
-        await respond(m, `Could not find **${mappoolSlot}**`);
-        return;
-    }
     if (!mappoolMap.customMappers || mappoolMap.customMappers.length === 0) {
         await respond(m, `**${mappoolSlot}** does not have any custom mappers`);
         return;
@@ -98,7 +68,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const customThread = await fetchCustomThread(m, mappoolMap, tournament, mappoolSlot);
+    const customThread = await getCustomThread(m, mappoolMap, tournament, mappoolSlot);
     if (!customThread)
         return;
     if (customThread !== true && m.channel?.id !== customThread[0].id) {
@@ -132,6 +102,13 @@ const data = new SlashCommandBuilder()
             .setDescription("The date (and time) to set the deadline for")
             .setRequired(true))
     .setDMPermission(false);  
+
+interface parameters {
+    pool: string,
+    slot: string,
+    order: number,
+    date: Date,
+}
 
 const mappoolDeadline: Command = {
     data,

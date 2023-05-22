@@ -20,6 +20,8 @@ export enum TournamentStatus {
     Finished,
 }
 
+export const unFinishedTournaments = [TournamentStatus.NotStarted, TournamentStatus.Registrations, TournamentStatus.Ongoing];
+
 @Entity()
 @Check(`"minTeamSize" <= "maxTeamSize"`)
 @Check(`"matchSize" <= "minTeamSize"`)

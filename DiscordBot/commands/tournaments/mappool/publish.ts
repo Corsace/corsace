@@ -1,30 +1,25 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { confirmCommand, fetchMappool, fetchTournament, hasTournamentRoles, mappoolLog } from "../../../functions/tournamentFunctions";
 import { Command } from "../../index";
 import { loginResponse } from "../../../functions/loginResponse";
 import { buckets } from "../../../../Server/s3";
 import { gets3Key } from "../../../../Server/utils/s3";
-import { createPack, deletePack } from "../../../functions/mappackFunctions";
+import { createPack, deletePack } from "../../../functions/tournamentFunctions/mappackFunctions";
+import { extractParameter } from "../../../functions/parameterFunctions";
+import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
+import { unFinishedTournaments } from "../../../../Models/tournaments/tournament";
+import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
+import confirmCommand from "../../../functions/confirmCommand";
+import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import getUser from "../../../functions/dbFunctions/getUser";
 import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    if (!m.guild)
-        return;
-
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
-    else
-        await m.react("⏳");
 
-    const tournament = await fetchTournament(m);
-    if (!tournament) 
-        return;
-
-    const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]);
-    if (!allowed) 
+    if (!await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
         return;
 
     const user = await getUser(commandUser(m).id, "discord", false);
@@ -33,21 +28,20 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const poolRegex = /-p (\S+)/;
-    const poolText = m instanceof Message ? m.content.match(poolRegex) ?? m.content.split(" ")[1] : m.options.getString("pool");
-    if (!poolText) {
-        await respond(m, "Missing parameters. Please use `-p <pool>` or `<pool>`. If you do not use the `-` prefixes, the order of the parameters is important.");
+    const pool = extractParameter(m, { name: "pool", regex: /-p (\S+)/, regexIndex: 1 }, 1);
+    if (!pool || !(typeof pool === "string")) {
+        await respond(m, "Please provide a mappool.");
         return;
     }
 
-    const pool = typeof poolText === "string" ? poolText : poolText[0];
-
-    const mappool = await fetchMappool(m, tournament, pool, true, true, true);
-    if (!mappool) 
+    const components = await mappoolComponents(m, pool, undefined, undefined, false, undefined, unFinishedTournaments, true);
+    if (!components || !("mappool" in components) || !("stage" in components))
         return;
 
+    const { tournament, mappool, stage } = components;
+
     // Confirmations
-    if (!mappool.isPublic && mappool.stage.timespan.start.getTime() - Date.now() > 1000 * 60 * 60 * 24 * 7) {
+    if (!mappool.isPublic && stage!.timespan.start.getTime() - Date.now() > 1000 * 60 * 60 * 24 * 7) {
         const confirm = await confirmCommand(m, "This mappool is more than a week away from the stage's start date. Are you sure you want to publish it?");
         if (!confirm)
             return;
@@ -57,7 +51,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (!confirm)
             return;
     }
-    if (mappool.isPublic && mappool.stage.timespan.start.getTime() < Date.now()) {
+    if (mappool.isPublic && stage!.timespan.start.getTime() < Date.now()) {
         const confirm = await confirmCommand(m, "This mappool's stage has already started. Are you sure you want to privatize it?");
         if (!confirm)
             return;
