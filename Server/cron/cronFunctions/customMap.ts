@@ -2,8 +2,8 @@ import { DiscordAPIError, ForumChannel, ThreadChannel } from "discord.js";
 import { discordClient } from "../../discord";
 import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
 import { Tournament } from "../../../Models/tournaments/tournament";
-import { mappoolLog } from "../../../DiscordBot/functions/tournamentFunctions";
 import { CronJobData, CronJobType } from "../../../Interfaces/cron";
+import mappoolLog from "../../../DiscordBot/functions/tournamentFunctions/mappoolLog";
 
 async function initialize (): Promise<CronJobData[]> {
     // Get all maps with a deadline

@@ -1,10 +1,10 @@
 import { DiscordAPIError, ForumChannel, ThreadChannel } from "discord.js";
 import { JobPost } from "../../../Models/tournaments/mappools/jobPost";
 import { discordClient } from "../../discord";
-import { mappoolLog } from "../../../DiscordBot/functions/tournamentFunctions";
 import { Tournament } from "../../../Models/tournaments/tournament";
 import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
 import { CronJobData, CronJobType } from "../../../Interfaces/cron";
+import mappoolLog from "../../../DiscordBot/functions/tournamentFunctions/mappoolLog";
 
 async function initialize (): Promise<CronJobData[]> {
     // Get all job posts with a deadline
