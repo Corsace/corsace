@@ -50,7 +50,10 @@ adminYearsRouter.post("/", validate, async (ctx) => {
         const userGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Users, mode.name === "storyboard");
         const mapGrand = categoryGenerator.createGrandAward(mca, mode, CategoryType.Beatmapsets, mode.name === "storyboard");
 
-        await Promise.all([userGrand.save(), mapGrand.save()]);
+        await Promise.all([
+            userGrand.save(),
+            mapGrand.save()
+        ]);
     }
 
     cache.del("/api/mcaInfo/front?year=" + data.year);

@@ -113,8 +113,10 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
 
     const wait = await m.channel!.send("Changing thread name... (this may take up to 10 minutes if rate limited as discord API only allows bots to change thread names ~2 times per 10 min.)");
     await thread.setName(`${slot} (${mappoolMap.customMappers.map(u => u.osu.username).join(", ")})`);
-    await wait.delete();
-    await threadMsg.edit(content);
+    await Promise.all([
+        wait.delete(),
+        threadMsg.edit(content)
+    ]);
 
     return [thread, threadMsg];
 }
