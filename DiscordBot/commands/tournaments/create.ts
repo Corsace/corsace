@@ -4,13 +4,17 @@ import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
 import { User } from "../../../Models/user";
 import { Command } from "../index";
-import { loginResponse, loginRow } from "../../functions/loginResponse";
-import { filter, stopRow } from "../../functions/messageInteractionFunctions";
+import { loginResponse } from "../../functions/loginResponse";
+import { filter, stopRow, timedOut } from "../../functions/messageInteractionFunctions";
 import { profanityFilter } from "../../../Interfaces/comment";
 import { Stage, StageType } from "../../../Models/tournaments/stage";
 import { Phase } from "../../../Models/phase";
-import { TournamentChannel, TournamentChannelType, TournamentChannelTypeRoles } from "../../../Models/tournaments/tournamentChannel";
+import { TournamentChannel, TournamentChannelType, TournamentChannelTypeRoles, forumTags } from "../../../Models/tournaments/tournamentChannel";
 import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
+import { randomUUID } from "crypto";
+import respond from "../../functions/respond";
+import commandUser from "../../functions/commandUser";
+import getUser from "../../functions/dbFunctions/getUser";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -46,9 +50,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             },
         ],
     });
-    if (serverTournaments.length === 5) {
-        if (m instanceof Message) await m.reply("You can only have 5 tournaments at a time!");
-        else await m.editReply("You can only have 5 tournaments at a time!");
+    if (serverTournaments.length === 3) {
+        await respond(m, "You can only have 3 tournaments at a time!");
         return;
     }
 
@@ -60,51 +63,29 @@ async function run (m: Message | ChatInputCommandInteraction) {
     tournament.roles = [];
 
     // Find server owner and assign them as the tournament organizer
-    let organizerTarget = m instanceof Message ? m.mentions.users.first() : m.options.getUser("organizer");
-    if (!organizerTarget)
-        organizerTarget = m instanceof Message ? m.author : m.user;
-    const organizer = await User.findOne({
-        where: {
-            discord: {
-                userID: organizerTarget.id,
-            },
-        },
-    });
-    if (!organizer) {
-        if (m instanceof Message) await m.reply({
-            content: "No user found in the corsace database for <@" + organizerTarget.id+ ">! Please have them login to the Corsace website with their discord and osu! accounts!", 
-            components: [loginRow],
-        });
-        else await m.editReply({
-            content: "No user found in the corsace database for <@" + organizerTarget.id+ ">! Please have them login to the Corsace website with their discord and osu! accounts!",
-            components: [loginRow],
-        });
-        return;
-    }
-    tournament.organizer = organizer;
-
-    const creator = await User.findOne({
-        where: {
-            discord: {
-                userID: m instanceof Message ? m.author.id : m.user.id,
-            },
-        },
-    });
+    const creator = await getUser(commandUser(m).id, "discord", false);
     if (!creator) {
         await loginResponse(m);
         return;
     }
 
+    let organizerTarget =  m instanceof Message ? m.mentions.users.first() : m.options.getUser("organizer");
+    const organizer = organizerTarget ? await getUser(organizerTarget.id, "discord", false) : creator;
+    if (!organizer) {
+        // organizerTarget exists in this case because creator cannot be null / undefined.
+        await loginResponse(m, "No user found in the corsace database for <@" + organizerTarget!.id+ ">! Please have them login to the Corsace website with their discord and osu! accounts!");
+        return;
+    }
+    tournament.organizer = organizer;
+
     // Check for name validity
     const name = m instanceof Message ? nameRegex.exec(m.content)?.[1] : m.options.getString("name");
     if (!name) {
-        if (m instanceof Message)  await m.reply("Please provide a valid name for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 32 characters long.");
-        else await m.editReply("Please provide a valid name for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 32 characters long.");
+        await respond(m, "Please provide a valid name for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 32 characters long.");
         return;
     }
     if (profanityFilter.test(name)) {
-        if (m instanceof Message) await m.reply("LMFAO! XD Shut the fuck up and give a valid name you fucking idiot (Nobody's laughing with you, fucking dumbass)");
-        else await m.editReply("LMFAO! XD Shut the fuck up and give a valid name you fucking idiot (Nobody's laughing with you, fucking dumbass)");
+        await respond(m, "LMFAO! XD Shut the fuck up and give a valid name you fucking idiot (Nobody's laughing with you, fucking dumbass)");
         return;
     }
     tournament.name = name;
@@ -112,13 +93,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for abbreviation validity
     const abbreviation = m instanceof Message ? abbreviationRegex.exec(m.content)?.[1] : m.options.getString("abbreviation");
     if (!abbreviation) {
-        if (m instanceof Message) await m.reply("Please provide a valid abbreviation for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 3 and 8 characters long.");
-        else await m.editReply("Please provide a valid abbreviation for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 3 and 8 characters long.");
+        await respond(m, "Please provide a valid abbreviation for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 3 and 8 characters long.");
         return;
     }
     if (profanityFilter.test(abbreviation)) {
-        if (m instanceof Message) await m.reply("The abbreviation is sus . Change it to something more appropriate.");
-        else await m.editReply("The abbreviation is sus . Change it to something more appropriate.");
+        await respond(m, "The abbreviation is sus . Change it to something more appropriate.");
         return;
     }
     tournament.abbreviation = abbreviation;
@@ -126,13 +105,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for description validity
     const description = m instanceof Message ? descriptionRegex.exec(m.content)?.[1] : m.options.getString("description");
     if (!description) {
-        if (m instanceof Message) await m.reply("Please provide a valid description for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The description must be between 3 and 512 characters long.");
-        else await m.editReply("Please provide a valid description for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The description must be between 3 and 512 characters long.");
+        await respond(m, "Please provide a valid description for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The description must be between 3 and 512 characters long.");
         return;
     }
     if (profanityFilter.test(description)) {
-        if (m instanceof Message) await m.reply("Write a description that doesn't sound like it was written by a 15 year old.");
-        else await m.editReply("Write a description that doesn't sound like it was written by a 15 year old.");
+        await respond(m, "Write a description that doesn't sound like it was written by a 15 year old.");
         return;
     }
     tournament.description = description;
@@ -140,8 +117,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for mode validity
     const mode = m instanceof Message ? modeRegex.exec(m.content)?.[1] : m.options.getString("mode");
     if (mode === null || mode === undefined) {
-        if (m instanceof Message) await m.reply("Please provide a valid mode for your tournament!");
-        else await m.editReply("Please provide a valid mode for your tournament!");
+        await respond(m, "Please provide a valid mode for your tournament! It is currently missing.");
         return;
     }
     let modeID = 0;
@@ -181,8 +157,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             break;
     }
     if (modeID === 0) {
-        if (m instanceof Message) await m.reply("Please provide a valid mode for your tournament!");
-        else await m.editReply("Please provide a valid mode for your tournament!");
+        await respond(m, "Please provide a valid mode for your tournament! It is currently invalid.");
         return;
     }
 
@@ -192,28 +167,23 @@ async function run (m: Message | ChatInputCommandInteraction) {
         },
     });
     if (!modeDivision) {
-        if (m instanceof Message) await m.reply("That mode does not exist!");
-        else await m.editReply("That mode does not exist!");
+        await respond(m, "That mode does not exist!");
         return;
     }
     tournament.mode = modeDivision;
 
     // Check for match size validity
-    if (m instanceof Message) {
-        const matchSize = matchSizeRegex.exec(m.content)?.[1];
-        if (!matchSize || parseInt(matchSize) > 16 || parseInt(matchSize) < 1) {
-            await m.reply("Please provide a valid match size for your tournament!");
-            return;
-        }
-        tournament.matchSize = parseInt(matchSize);
-    } else {
-        const matchSize = m.options.getInteger("players_in_match");
-        if (!matchSize || matchSize > 8 || matchSize < 1) {
-            await m.editReply("Please provide a valid match size for your tournament!");
-            return;
-        }
-        tournament.matchSize = matchSize;
+    let matchSize = m instanceof Message ? matchSizeRegex.exec(m.content)?.[1] : m.options.getInteger("players_in_match");
+    if (!matchSize) {
+        await respond(m, "Please provide a valid match size for your tournament! It is currently missing.");
+        return;
     }
+    matchSize = typeof matchSize === "string" ? parseInt(matchSize) : matchSize;
+    if (isNaN(matchSize) || matchSize < 1 || matchSize > 16) {
+        await respond(m, "Please provide a valid match size for your tournament! It is currently invalid.");
+        return;
+    }
+    tournament.matchSize = matchSize;
 
     // Check for min and max team size validity
     let minSize: number | null = 0;
@@ -235,8 +205,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
     }
     if (minSize < 1 || minSize > 16 || minSize < tournament.matchSize || maxSize > 32 || minSize > maxSize) {
-        if (m instanceof Message) await m.reply("Please provide a valid team size for your tournament!");
-        else await m.editReply("Please provide a valid team size for your tournament!");
+        await respond(m, "Please provide a valid team size for your tournament!");
         return;
     }
     tournament.minTeamSize = minSize;
@@ -246,16 +215,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const registrationStartText = m instanceof Message ? registrationRegex.exec(m.content)?.[1] : m.options.getString("registration_start");
     const registrationEndText = m instanceof Message ? registrationRegex.exec(m.content)?.[2] : m.options.getString("registration_end");
     if (!registrationStartText || !registrationEndText) {
-        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
-        else await m.editReply("Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        await respond(m, "Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
         return;
     }
 
     const registrationStart = new Date(registrationStartText.includes("-") ? registrationStartText : parseInt(registrationStartText + "000"));
     const registrationEnd = new Date(registrationEndText.includes("-") ? registrationEndText : parseInt(registrationEndText + "000"));
     if (isNaN(registrationStart.getTime()) || isNaN(registrationEnd.getTime()) || registrationStart.getTime() > registrationEnd.getTime() || registrationEnd.getTime() < Date.now()) {
-        if (m instanceof Message) await m.reply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
-        else await m.editReply("Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        await respond(m, "Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
         return;
     }
 
@@ -267,8 +234,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for registration sort order validity
     const sortOrder = m instanceof Message ? sortOrderRegex.exec(m.content)?.[1] : m.options.getString("team_sort_order");
     if (!sortOrder) {
-        if (m instanceof Message) await m.reply("Please provide a valid sort order for your tournament!");
-        else await m.editReply("Please provide a valid sort order for your tournament!");
+        await respond(m, "Please provide a valid sort order for your tournament!");
         return;
     }
     let sortOrderID = -1;
@@ -289,8 +255,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             break;
     }
     if (sortOrderID === -1) {
-        if (m instanceof Message) await m.reply("Please provide a valid sort order for your tournament!");
-        else await m.editReply("Please provide a valid sort order for your tournament!");
+        await respond(m, "Please provide a valid sort order for your tournament!");
         return;
     }
     tournament.regSortOrder = sortOrderID;
@@ -312,7 +277,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         tournament.stages = [qualifiers];
     }
 
-    const message = m instanceof Message ? await m.reply("Alright let's get started!") : await m.editReply("Alright let's get started!");
+    const message = await respond(m, "Alright let's get started!");
     if (qualifiers)
         await tournamentQualifiersPass(message, tournament, creator);
     else
@@ -321,15 +286,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
 // Function to retrieve how many teams/players pass qualifiers
 async function tournamentQualifiersPass (m: Message, tournament: Tournament, creator: User) {
+    const [id, stop] = stopRow();
     const passMessage = await m.reply({
         content: "How many teams are expected to pass qualifiers? (Please enter a number >= 2.)", 
-        components: [stopRow],
+        components: [stop],
     });
     let stopped = false;
     const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });	
     const collector = m.channel!.createMessageCollector({ filter, time: 6000000 });
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {	
-        if (i.customId === "stop") {
+        if (i.customId === id) {
             const reply = await i.reply("Tournament creation stopped.");
             setTimeout(async () => reply.delete(), 5000);
             stopped = true;
@@ -358,11 +324,7 @@ async function tournamentQualifiersPass (m: Message, tournament: Tournament, cre
         setTimeout(async () => reply.delete(), 5000);
         await tournamentRoles(m, tournament, creator);
     });
-    collector.on("end", async () => {
-        await passMessage.delete();
-        if (!stopped)
-            await m.reply("Tournament creation timed out.");
-    });
+    collector.on("end", () => timedOut(passMessage, stopped, "Tournament creation"));
 }
 
 // Function to fetch and assign roles
@@ -384,13 +346,18 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         content += `\nDesignated role \`${role.name} (${role.id})\` for \`Organizer\`.`;
     }
 
+    const ids = {
+        "role": randomUUID(),
+        "stop": randomUUID(),
+        "done": randomUUID(),
+    }
     const roleMessage = await m.reply({
         content,
         components: [
             new ActionRowBuilder<StringSelectMenuBuilder>()
                 .addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId("role")
+                        .setCustomId(ids.role)
                         .setPlaceholder("Select a role type")
                         .addOptions(
                             {
@@ -442,11 +409,11 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId("stop")
+                        .setCustomId(ids.stop)
                         .setLabel("STOP COMMAND")
                         .setStyle(ButtonStyle.Danger),
                     new ButtonBuilder()
-                        .setCustomId("done")
+                        .setCustomId(ids.done)
                         .setLabel("Done adding roles")
                         .setStyle(ButtonStyle.Success)
                 ),
@@ -460,7 +427,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         if (stopped)
             return;
 
-        if (i.customId === "stop") {
+        if (i.customId === ids.stop) {
             await i.reply("Tournament creation stopped.");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
@@ -468,7 +435,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             roleCollector.stop();
             return;
         }
-        if (i.customId === "done") {
+        if (i.customId === ids.done) {
             await i.reply("Tournament role designation has finished.");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
@@ -477,7 +444,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             await tournamentChannels(m, tournament, creator);
             return;
         }
-        if (i.customId === "role") {
+        if (i.customId === ids.role) {
             const roleString = (i as StringSelectMenuInteraction).values[0];
             const roleType = TournamentRoleType[roleString];
             if (tournament.roles!.find(r => r.roleType === roleType)) {
@@ -485,26 +452,21 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }
-            try {
-                const role = await m.guild!.roles.create({
-                    name: `${tournament.name} ${roleString}`,
-                    reason: `Created by ${m.author.tag} for tournament ${tournament.name}`,
-                    mentionable: true,
-                });
-                const tournamentRole = new TournamentRole();
-                tournamentRole.createdBy = creator;
-                tournamentRole.roleID = role.id;
-                tournamentRole.roleType = roleType;
-                tournament.roles!.push(tournamentRole);
+            const role = await m.guild!.roles.create({
+                name: `${tournament.name} ${roleString}`,
+                reason: `Created by ${m.author.tag} for tournament ${tournament.name}`,
+                mentionable: true,
+            });
+            const tournamentRole = new TournamentRole();
+            tournamentRole.createdBy = creator;
+            tournamentRole.roleID = role.id;
+            tournamentRole.roleType = roleType;
+            tournament.roles!.push(tournamentRole);
 
-                content += `\nCreated role <@&${role.id}> for \`${roleString}\`.`;
-                await roleMessage.edit(content);
-                await i.reply(`Created role <@&${role.id}> for \`${roleString}\`.`);
-                setTimeout(async () => (await i.deleteReply()), 5000);
-            } catch (e) {
-                await i.reply("Failed to create role.\n```" + e + "```");
-                setTimeout(async () => (await i.deleteReply()), 5000);
-            }
+            content += `\nCreated role <@&${role.id}> for \`${roleString}\`.`;
+            await roleMessage.edit(content);
+            await i.reply(`Created role <@&${role.id}> for \`${roleString}\`.`);
+            setTimeout(async () => (await i.deleteReply()), 5000);
         }
     });
 
@@ -552,24 +514,25 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             msg.delete();
         }, 5000);
     });
-    roleCollector.on("end", async () => {
-        await roleMessage.delete();
-        if (!stopped)
-            await m.reply("Tournament creation timed out.");
-    });
+    roleCollector.on("end", () => timedOut(roleMessage, stopped, "Tournament creation"));
 }
 
 // Function to fetch and assign channels
 async function tournamentChannels (m: Message, tournament: Tournament, creator: User) {
     let stopped = false;
     let content = "Mention/paste a channel ID, and then write the designated tournament channel type it is for. (e.g. `#general general` or `#organizers admin`).\n\nIf you want the bot to create a channel for you, select a channel type from the dropdown below.\nIf you are done, press the `done` button.\n";
+    const ids = {
+        "channel": randomUUID(),
+        "stop": randomUUID(),
+        "done": randomUUID(),
+    }
     const channelMessage = await m.reply({
         content,
         components: [
             new ActionRowBuilder<StringSelectMenuBuilder>()
                 .addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId("channel")
+                        .setCustomId(ids.channel)
                         .setPlaceholder("Select a channel type")
                         .addOptions(
                             {
@@ -641,11 +604,11 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId("stop")
+                        .setCustomId(ids.stop)
                         .setLabel("STOP COMMAND")
                         .setStyle(ButtonStyle.Danger),
                     new ButtonBuilder()
-                        .setCustomId("done")
+                        .setCustomId(ids.done)
                         .setLabel("Done adding channels")
                         .setStyle(ButtonStyle.Success)
                 ),
@@ -656,7 +619,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
     const channelCollector = m.channel!.createMessageCollector({ filter, time: 6000000 });
 
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {
-        if (i.customId === "stop") {
+        if (i.customId === ids.stop) {
             await i.reply("Tournament creation stopped.");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
@@ -664,7 +627,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             channelCollector.stop();
             return;
         }
-        if (i.customId === "done") {
+        if (i.customId === ids.done) {
             await i.reply("Tournament channel designation has finished.");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
@@ -676,7 +639,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                 await tournamentSave(m, tournament);
             return;
         }
-        if (i.customId === "channel") {
+        if (i.customId === ids.channel) {
             const channelTypeMenu = (i as StringSelectMenuInteraction).values[0];
             const tournamentChannelType = TournamentChannelType[channelTypeMenu];
             if (tournament.channels!.find(c => c.channelType === tournamentChannelType)) {
@@ -691,78 +654,73 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             else if (channelTypeMenu === "Jobboard" || channelTypeMenu === "Mappoolqa")
                 channelType = ChannelType.GuildForum;
 
-            try {
-                const tournamentChannel = new TournamentChannel();
-                tournamentChannel.channelType = tournamentChannelType;
+            const tournamentChannel = new TournamentChannel();
+            tournamentChannel.channelType = tournamentChannelType;
 
-                const channelObject: GuildChannelCreateOptions = {
-                    type: channelType,
-                    name: `${tournament.abbreviation}-${channelTypeMenu}`,
-                    topic: `Tournament ${tournament.name} channel for ${channelTypeMenu}`,
-                    reason: `${tournament.name} channel created by ${m.author.tag} for ${(i as StringSelectMenuInteraction).values[0]} purposes.`,
-                    defaultAutoArchiveDuration: 10080,
-                };
+            const channelObject: GuildChannelCreateOptions = {
+                type: channelType,
+                name: `${tournament.abbreviation}-${channelTypeMenu}`,
+                topic: `Tournament ${tournament.name} channel for ${channelTypeMenu}`,
+                reason: `${tournament.name} channel created by ${m.author.tag} for ${(i as StringSelectMenuInteraction).values[0]} purposes.`,
+                defaultAutoArchiveDuration: 10080,
+            };
 
-                const allowedRoleTypes = TournamentChannelTypeRoles[tournamentChannel.channelType];
-                if (allowedRoleTypes !== undefined) {
-                    channelObject.permissionOverwrites = [
-                        {
-                            id: m.guild!.id, // the ID of the @everyone role is the same as the guild ID
-                            deny: PermissionFlagsBits.ViewChannel,
-                        },
-                    ];
-                    const allowedRoles = tournament.roles!.filter(r => allowedRoleTypes.includes(r.roleType));
-                    channelObject.permissionOverwrites.push(...allowedRoles.map(r => {
-                        return {
-                            id: r.roleID,
-                            allow: PermissionFlagsBits.ViewChannel,
-                        };
-                    }));
-                    
+            const allowedRoleTypes = TournamentChannelTypeRoles[tournamentChannel.channelType];
+            if (allowedRoleTypes !== undefined) {
+                channelObject.permissionOverwrites = [
+                    {
+                        id: m.guild!.id, // the ID of the @everyone role is the same as the guild ID
+                        deny: PermissionFlagsBits.ViewChannel,
+                    },
+                ];
+                const allowedRoles = tournament.roles!.filter(r => allowedRoleTypes.includes(r.roleType));
+                channelObject.permissionOverwrites.push(...allowedRoles.map(r => {
+                    return {
+                        id: r.roleID,
+                        allow: PermissionFlagsBits.ViewChannel,
+                    };
+                }));
+                
 
-                    if (tournamentChannel.channelType === TournamentChannelType.Mappoollog)
-                        channelObject.permissionOverwrites[0].deny = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.SendMessages;
-                }
-
-                if (channelTypeMenu === "Mappoolqa")
-                    channelObject.availableTags = [{
-                        name: "WIP",
-                        moderated: true,
-                    },{
-                        name: "Finished",
-                        moderated: true,
-                    },{
-                        name: "Late",
-                        moderated: true,
-                    },{
-                        name: "Needs HS",
-                        moderated: true,
-                    }];
-                else if (channelTypeMenu === "Jobboard")
-                    channelObject.availableTags = [{
-                        name: "Open",
-                        moderated: true,
-                    },{
-                        name: "Closed",
-                        moderated: true,
-                    },{
-                        name: "To Assign",
-                        moderated: true,
-                    }];
-
-                const channel = await m.guild!.channels.create(channelObject);
-
-                tournamentChannel.channelID = channel.id;
-                tournament.channels!.push(tournamentChannel);
-
-                content += `\nCreated channel <#${channel.id}> for \`${channelTypeMenu}\`.`;
-                await channelMessage.edit(content);
-                await i.reply(`Created channel <#${channel.id}> for \`${channelTypeMenu}\`.`);
-                setTimeout(async () => (await i.deleteReply()), 5000);
-            } catch (e) {
-                await i.reply("Failed to create channel. If you are creating an announcement or mappool qa channel, you need to turn your server into a community server. Error below:\n```" + e + "```");
-                setTimeout(async () => (await i.deleteReply()), 5000);
+                if (tournamentChannel.channelType === TournamentChannelType.Mappoollog)
+                    channelObject.permissionOverwrites[0].deny = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.SendMessages;
             }
+
+            if (channelTypeMenu === "Mappoolqa")
+                channelObject.availableTags = [{
+                    name: "WIP",
+                    moderated: true,
+                },{
+                    name: "Finished",
+                    moderated: true,
+                },{
+                    name: "Late",
+                    moderated: true,
+                },{
+                    name: "Needs HS",
+                    moderated: true,
+                }];
+            else if (channelTypeMenu === "Jobboard")
+                channelObject.availableTags = [{
+                    name: "Open",
+                    moderated: true,
+                },{
+                    name: "Closed",
+                    moderated: true,
+                },{
+                    name: "To Assign",
+                    moderated: true,
+                }];
+
+            const channel = await m.guild!.channels.create(channelObject);
+
+            tournamentChannel.channelID = channel.id;
+            tournament.channels!.push(tournamentChannel);
+
+            content += `\nCreated channel <#${channel.id}> for \`${channelTypeMenu}\`.`;
+            await channelMessage.edit(content);
+            await i.reply(`Created channel <#${channel.id}> for \`${channelTypeMenu}\`.`);
+            setTimeout(async () => (await i.deleteReply()), 5000);
         }
     });
 
@@ -810,27 +768,13 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         tournamentChannel.channelID = channel.id;
         tournamentChannel.channelType = TournamentChannelType[channelType];
         tournament.channels!.push(tournamentChannel);
-        
-        let tags: string[] = [];
-        let forumChannel: ForumChannel | undefined = undefined;
-        if (channelType.toLowerCase() === "mappoolqa") {
-            forumChannel = channel as ForumChannel;
-            tags = ["WIP", "Finished", "Late", "Needs HS"];
-        } else if (channelType.toLowerCase() === "jobboard") {
-            forumChannel = channel as ForumChannel;
-            tags = ["Open", "Closed", "To Assign"];
-        }
 
-        if (forumChannel) {
-            const tagsToAdd = tags.filter(t => !forumChannel!.availableTags.some(at => at.name.toLowerCase() === t.toLowerCase()));
-            if (tagsToAdd.length > 0) {
-                await forumChannel.setAvailableTags(tagsToAdd.map(t => {
-                    return {
-                        name: t,
-                        moderated: true,
-                    }
-                }));
-            }
+        const tags = forumTags[tournamentChannel.channelType];
+        if (tags) {
+            const forumChannel = channel as ForumChannel;
+            const tagsToAdd = tags.filter(t => !forumChannel!.availableTags.some(at => at.name.toLowerCase() === t.name.toLowerCase()));
+            if (tagsToAdd.length > 0)
+                await forumChannel.setAvailableTags(tagsToAdd);
         }
 
         content += `\nChannel <#${channel.id}> designated for \`${channelType}\`.`;
@@ -841,20 +785,20 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             msg.delete();
         }, 5000);
     });
-    channelCollector.on("end", async () => {
-        await channelMessage.delete();
-        if (!stopped)
-            await m.reply("Tournament creation timed out.");
-        return;
-    });
+    channelCollector.on("end", () => timedOut(channelMessage, stopped, "Tournament creation"));
 }
 
 // Function to fetch and toggle corsace
 async function tournamentCorsace (m: Message, tournament: Tournament) {
+    const [stopID, stop] = stopRow();
+    const ids = {
+        "corsace": randomUUID(),
+        "stop": stopID,
+    }
     const corsaceRow = new ActionRowBuilder<StringSelectMenuBuilder>()
         .addComponents(
             new StringSelectMenuBuilder()
-                .setCustomId("corsace")
+                .setCustomId(ids.corsace)
                 .setPlaceholder("Select a corsace option")
                 .addOptions(
                     {
@@ -876,12 +820,12 @@ async function tournamentCorsace (m: Message, tournament: Tournament) {
         );
     const corsaceMessage = await m.reply({
         content: "Is this a Corsace tournament?",
-        components: [corsaceRow, stopRow],
+        components: [corsaceRow, stop],
     });
     let stopped = false;
     const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {
-        if (i.customId === "stop") {
+        if (i.customId === ids.stop) {
             stopped = true;
             componentCollector.stop();
             await i.reply("Tournament creation stopped.");
@@ -898,11 +842,7 @@ async function tournamentCorsace (m: Message, tournament: Tournament) {
         setTimeout(async () => (await i.deleteReply()), 5000);
         await tournamentSave(m, tournament);
     });
-    componentCollector.on("end", async () => {
-        await corsaceMessage.delete();
-        if (!stopped)
-            await m.reply("Tournament creation timed out.");
-    });
+    componentCollector.on("end", () => timedOut(corsaceMessage, stopped, "Tournament creation"));
 }
 
 // Function to save the tournament
@@ -927,7 +867,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Mode", value: tournament.mode.name, inline: true },
             { name: "Match Size", value: tournament.matchSize.toString(), inline: true },
             { name: "Allowed Team Size", value: `${tournament.minTeamSize} - ${tournament.maxTeamSize}`, inline: true },
-            { name: "Registration Start Date", value: `<t:${tournament.registrations.start.getTime() / 1000}>`, inline: true },
+            { name: "Registration Start Date", value: `<t:${tournament.registrations.start.getTime() / 1000}:F> (<t:${tournament.registrations.start.getTime() / 1000}:R>)`, inline: true },
             { name: "Qualifiers", value: tournament.stages.some(q => q.stageType === StageType.Qualifiers).toString(), inline: true },
             { name: "Invitational", value: tournament.invitational ? "Yes" : "No", inline: true },
             { name: "Server", value: tournament.server, inline: true }

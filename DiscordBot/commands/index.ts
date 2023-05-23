@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder, ThreadChannel } from "discord.js";
 
 import tournamentCreate from "./tournaments/create";
 import tournamentList from "./tournaments/list";
@@ -30,6 +30,11 @@ import influenceAdd from "./osu/influenceAdd";
 import influenceRemove from "./osu/influenceRemove";
 import profile from "./osu/profile";
 import recent from "./osu/recent";
+
+import { TournamentChannelType } from "../../Models/tournaments/tournamentChannel";
+import { mappoolQACreate, mappoolQADelete } from "./threadCommands/mapoolQA";
+import { jobBoardCreate, jobBoardDelete } from "./threadCommands/jobBoard";
+import { mappoolComponentsThreadType } from "../functions/tournamentFunctions/mappoolComponentsThread";
 
 interface Command {
     data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | SlashCommandSubcommandsOnlyBuilder;
@@ -81,4 +86,15 @@ commands.push(influenceRemove);
 commands.push(profile);
 commands.push(recent);
 
-export { commands, Command };
+type threadCommand = (t: ThreadChannel, components: mappoolComponentsThreadType) => Promise<void>;
+
+type threadCommands = {
+    [key in TournamentChannelType]: { create: threadCommand; delete: threadCommand; } | undefined;
+};
+
+const threadCommands = {
+    [TournamentChannelType.Mappoolqa]: { create: mappoolQACreate, delete: mappoolQADelete },
+    [TournamentChannelType.Jobboard]: { create: jobBoardCreate, delete: jobBoardDelete },
+} as threadCommands;
+
+export { commands, Command, threadCommands };

@@ -6,6 +6,9 @@ import { OAuth, User } from "../../../Models/user";
 import { applyMods, acronymtoMods, modsToAcronym } from "../../../Interfaces/mods";
 import beatmapEmbed from "../../functions/beatmapEmbed";
 import { loginResponse } from "../../functions/loginResponse";
+import getUser from "../../functions/dbFunctions/getUser";
+import commandUser from "../../functions/commandUser";
+import respond from "../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -91,13 +94,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
         user = userQ;
     } else {
-        const userQ = await User.findOne({
-            where: {
-                discord: {
-                    userID: m instanceof Message ? m.author.id : m.user.id,
-                },
-            },
-        });
+        const userQ = await getUser(commandUser(m).id, "discord", false);
         if (!userQ) {
             await loginResponse(m);
             return;
@@ -115,15 +112,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     ) {
         scores = (await osuClient.user.getBest(apiUser.userId, Mode.all, 100)) as UserScore[];
         if (scores.length < 1) {
-            if (m instanceof Message) await m.reply(`${!isOtherUser ? "you" : `**${user.osu.username}**`} has no top plays.... What are u doing`);
-            else await m.editReply(`${!isOtherUser ? "You" : `**${user.osu.username}**`} have no top plays.... What are u doing`);
+            await respond(m, `${!isOtherUser ? "you" : `**${user.osu.username}**`} has no top plays.... What are u doing`);
             return;
         }
     } else {
         scores = (await osuClient.user.getRecent(apiUser.userId, Mode.all, 50)) as UserScore[];
         if (scores.length < 1) {
-            if (m instanceof Message) m.reply(`${!isOtherUser ? "You have" : `**${user.osu.username}** has`} not played recently`);
-            else m.editReply(`${!isOtherUser ? "You have" : `**${user.osu.username}** has`} not played recently`);
+            await respond(m, `${!isOtherUser ? "You have" : `**${user.osu.username}** has`} not played recently`);
             return;
         }
     }
@@ -133,13 +128,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (mods !== "") {
         const modVal = acronymtoMods(mods);
         if (!modVal) {
-            if (m instanceof Message) m.reply(`Error parsing the mods ${mods}`);
-            else m.editReply(`Error parsing the mods ${mods}`);
+            await respond(m, `Error parsing the mods ${mods}`);
             return;
         }
         scores = scores.filter(score => (!score.enabledMods && modVal === 0) || (strict && score.enabledMods && modVal === score.enabledMods) || (!strict && score.enabledMods && (modVal & score.enabledMods) === modVal));
-        if (m instanceof Message) await m.reply(`No scores with the mod combination **${mods}** exist!`);
-        else await m.editReply(`No scores with the mod combination **${mods}** exist!`);
+        await respond(m, `No scores with the mod combination **${mods}** exist!`);
         return;
     }
 
@@ -173,24 +166,30 @@ async function run (m: Message | ChatInputCommandInteraction) {
         message.setFooter({ text: `Try #${attempt} | <t:${score.date.getTime() / 1000}:R>` });
     } else
         message.setFooter({ text: `<t:${score.date.getTime() / 1000}:R>` });
-    if (m instanceof Message) m.reply({ 
-        content: warning, 
-        embeds: [message],
-    });
-    else m.editReply({
-        content: warning,
-        embeds: [message],
-    });
+
+    await respond(m, warning, [message]);
 }
 
 const data = new SlashCommandBuilder()
     .setName("recent")
     .setDescription("Obtain your or someone else's recent score on osu!")
-    .addStringOption(option => option.setName("user").setDescription("The user to query (Default you)"))
-    .addStringOption(option => option.setName("mods").setDescription("The mods to filter by (Default all)"))
-    .addIntegerOption(option => option.setName("index").setDescription("The nth score to get (Default latest)").setMinValue(1).setMaxValue(100))
-    .addBooleanOption(option => option.setName("strict").setDescription("Whether to filter by strict mods or not (Default true)"))
-    .addBooleanOption(option => option.setName("best").setDescription("Whether to limit to top scores or not (Default false)"));
+    .addStringOption(option => 
+        option.setName("user")
+            .setDescription("The user to query (Default you)"))
+    .addStringOption(option => 
+        option.setName("mods")
+            .setDescription("The mods to filter by (Default all)"))
+    .addIntegerOption(option => 
+        option.setName("index")
+            .setDescription("The nth score to get (Default latest)")
+            .setMinValue(1)
+            .setMaxValue(100))
+    .addBooleanOption(option => 
+        option.setName("strict")
+            .setDescription("Whether to filter by strict mods or not (Default true)"))
+    .addBooleanOption(option => 
+        option.setName("best")
+            .setDescription("Whether to limit to top scores or not (Default false)"));
 
 const recent: Command = {
     data, 

@@ -1,10 +1,11 @@
 import { ChatInputCommandInteraction, Message } from "discord.js";
-import { Mappool } from "../../Models/tournaments/mappools/mappool";
+import { Mappool } from "../../../Models/tournaments/mappools/mappool";
 import { randomUUID } from "crypto";
-import { gets3Key } from "../../Server/utils/s3";
-import { buckets } from "../../Server/s3";
-import { download } from "../../Server/utils/download";
-import { zipFiles } from "../../Server/utils/zip";
+import { gets3Key } from "../../../Server/utils/s3";
+import { buckets } from "../../../Server/s3";
+import { download } from "../../../Server/utils/download";
+import { zipFiles } from "../../../Server/utils/zip";
+import respond from "../respond";
 
 export async function createPack (m: Message | ChatInputCommandInteraction, bucket: "mappacks" | "mappacksTemp", mappool: Mappool, packName: string, video: boolean = false): Promise<string | undefined> {
     const mappoolMaps = mappool.slots.flatMap(s => s.maps);
@@ -13,11 +14,10 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
     const dlLinks = filteredMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}`);
 
     if (filteredMaps.length === 0) {
-        if (m instanceof Message) m.reply(`**${mappool.name}** does not have any downloadable beatmaps.`);
-        else m.editReply(`**${mappool.name}** does not have any downloadable beatmaps.`);
+        await respond(m, `**${mappool.name}** does not have any downloadable beatmaps.`);
         return;
     }
-    const streams = dlLinks.map(m => download(m));
+    const streams = dlLinks.map(link => download(link));
     const zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
 
     const s3Key = `${randomUUID()}/${packName}.zip`;
@@ -33,8 +33,7 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
         const url = await buckets.mappacks.getPublicUrl(s3Key);
         return url;
     } catch (e) {
-        if (m instanceof Message) m.reply(`Failed to create pack. Contact VINXIS.`);
-        else m.editReply(`Failed to create pack. Contact VINXIS.`);
+        await respond(m, "Failed to create pack. Contact VINXIS.");
         console.log(e);
         return;
     }

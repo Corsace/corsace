@@ -9,6 +9,10 @@ import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { isEligibleFor } from "../../../Server/middleware/mca-ayim";
 import { loginResponse } from "../../functions/loginResponse";
+import { randomUUID } from "crypto";
+import commandUser from "../../functions/commandUser";
+import getUser from "../../functions/dbFunctions/getUser";
+import respond from "../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -24,15 +28,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const author = m instanceof Message ? m.author : m.user;
+    const authorID = commandUser(m).id;
 
-    const user = await User.findOne({
-        where: {
-            discord: {
-                userID: author.id,
-            },
-        },
-    });
+    const user = await getUser(authorID, "discord", false);
     if (!user) {
         await loginResponse(m);
         return;
@@ -88,8 +86,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mode = await ModeDivision.findOne({ where: { ID: 1 }});
 
     if (!isEligibleFor(user, mode!.ID, year)) {
-        if (m instanceof Message) await m.reply(`You did not rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date).getUTCFullYear() ? "\nFor adding influences in the current year, then if you have ranked a set, re-login to Corsace with your osu! account, and you should be able to add them after!" : ""}`);
-        else await m.editReply(`You did not rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date).getUTCFullYear() ? "\nFor adding influences in the current year, then if you have ranked a set, re-login to Corsace with your osu! account, and you should be able to add them after!" : ""}`);
+        await respond(m, `You did not rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date).getUTCFullYear() ? "\nFor adding influences in the current year, then if you have ranked a set, re-login to Corsace with your osu! account, and you should be able to add them after!" : ""}`);
         return;
     }
 
@@ -106,8 +103,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         apiUser = (await osuClient.user.get(search)) as APIUser;
 
     if (!apiUser) {
-        if (m instanceof Message) await m.reply(`No user found for **${q}**`);
-        else await m.editReply(`No user found for **${q}**`);
+        await respond(m, `No user found for **${q}**`);
         return;
     }
 
@@ -142,12 +138,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         relations: ["user", "influence"],
     });
     if (influences.length === 5) {
-        if (m instanceof Message) await m.reply(`You already have 5 influences for **${year}** in **${mode!.name}**!`);
-        else await m.editReply(`You already have 5 influences for **${year}** in **${mode!.name}**!`);
+        await respond(m, `You already have 5 influences for **${year}** in **${mode!.name}**!`);
         return;
-    } else if (influences.some(inf => inf.influence.osu.userID === influenceUser!.osu.userID)) {
-        if (m instanceof Message) await m.reply(`You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
-        else await m.editReply(`You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+    } 
+    if (influences.some(inf => inf.influence.osu.userID === influenceUser!.osu.userID)) {
+        await respond(m, `You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
         return;
     }
 
@@ -168,15 +163,19 @@ async function run (m: Message | ChatInputCommandInteraction) {
             },
         },
     });
+    const buttonIDs = {
+        true: randomUUID(),
+        false: randomUUID(),
+    }
     if (year < (mca ? mca.year : (new Date()).getUTCFullYear())) {
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId("true")
+                    .setCustomId(buttonIDs.true)
                     .setLabel("Yes")
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
-                    .setCustomId("false")
+                    .setCustomId(buttonIDs.false)
                     .setLabel("No")
                     .setStyle(ButtonStyle.Danger)
             );
@@ -186,15 +185,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
         });
         const collector = message.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10000 });
         collector.on("collect", async (i) => {
-            if (i.user.id !== author.id) {
+            if (i.user.id !== authorID) {
                 i.reply({ content: "Fack off cunt", ephemeral: true });
                 return;
             }
 
-            if (i.customId === "true") {
+            if (i.customId === buttonIDs.true) {
                 await influence.save();
-                if (m instanceof Message) await m.reply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
-                else await m.editReply(`Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+                await respond(m, `Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
             }
             await message.delete();
         });
@@ -206,8 +204,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     await influence.save();
 
-    if (m instanceof Message) await m.reply(`Added **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
-    else await m.editReply(`Added **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+    await respond(m, `Added **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
     return;
     
 }
@@ -215,16 +212,28 @@ async function run (m: Message | ChatInputCommandInteraction) {
 const data = new SlashCommandBuilder()
     .setName("add_influence")
     .setDescription("Allows you to add a mapper influence for a given year")
-    .addStringOption(option => option.setName("user").setDescription("The osu! username/ID/profile link to search for influences for").setRequired(true))
-    .addIntegerOption(option => option.setName("year").setDescription("The year to search for influences in").setMinValue(2007))
-    .addStringOption(option => option.setName("comment").setDescription("The comment to add to the influence"))
-    .addStringOption(option => option.setName("mode").setDescription("The mode to search for influences in (default: Standard)").addChoices(
-        { name: "Standard", value: "standard" },
-        { name: "Taiko", value: "taiko" },
-        { name: "Catch", value: "catch" },
-        { name: "Mania", value: "mania" },
-        { name: "Storyboard", value: "storyboard" }
-    ).setRequired(false));
+    .addStringOption(option => 
+        option.setName("user")
+            .setDescription("The osu! username/ID/profile link to search for influences for")
+            .setRequired(true))
+    .addIntegerOption(option => 
+        option.setName("year")
+            .setDescription("The year to search for influences in")
+            .setMinValue(2007))
+    .addStringOption(option => 
+        option.setName("comment")
+            .setDescription("The comment to add to the influence"))
+    .addStringOption(option => 
+        option.setName("mode")
+            .setDescription("The mode to search for influences in (default: Standard)")
+            .addChoices(
+                { name: "Standard", value: "standard" },
+                { name: "Taiko", value: "taiko" },
+                { name: "Catch", value: "catch" },
+                { name: "Mania", value: "mania" },
+                { name: "Storyboard", value: "storyboard" }
+            )
+            .setRequired(false));
 
 const influenceAdd: Command = {
     data, 

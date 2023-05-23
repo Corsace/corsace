@@ -1,6 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Message } from "discord.js";
+import respond from "./respond";
 
-export const loginRow = new ActionRowBuilder<ButtonBuilder>()
+const loginRow = new ActionRowBuilder<ButtonBuilder>()
     .addComponents(
         new ButtonBuilder()
             .setURL("https://corsace.io")
@@ -8,13 +9,6 @@ export const loginRow = new ActionRowBuilder<ButtonBuilder>()
             .setStyle(ButtonStyle.Link)
     );
 
-export async function loginResponse (m: Message | ChatInputCommandInteraction) {
-    if (m instanceof Message) m.reply({
-        content: "No user found in the corsace database for you! Please login to the Corsace website with your discord and osu! accounts!", 
-        components: [loginRow],
-    });
-    else m.editReply({
-        content: "No user found in the corsace database for you! Please login to the Corsace website with your discord and osu! accounts!", 
-        components: [loginRow],
-    });
+export async function loginResponse (m: Message | ChatInputCommandInteraction, text: string = "Please login to the Corsace website with your discord and osu! accounts!") {
+    await respond(m, text, undefined, [loginRow]);
 }

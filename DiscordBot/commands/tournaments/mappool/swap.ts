@@ -1,41 +1,35 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, ForumChannel, Message, MessageComponentInteraction, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
-import { fetchCustomThread, fetchMappool, fetchSlot, fetchTournament, hasTournamentRoles, isSecuredChannel, mappoolLog } from "../../../functions/tournamentFunctions";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
-import { User } from "../../../../Models/user";
 import { loginResponse } from "../../../functions/loginResponse";
 import { discordClient } from "../../../../Server/discord";
-import { deletePack } from "../../../functions/mappackFunctions";
+import { deletePack } from "../../../functions/tournamentFunctions/mappackFunctions";
+import { randomUUID } from "crypto";
+import getUser from "../../../functions/dbFunctions/getUser";
+import commandUser from "../../../functions/commandUser";
+import respond from "../../../functions/respond";
+import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
+import getTournament from "../../../functions/tournamentFunctions/getTournament";
+import { Tournament, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
+import getMappool from "../../../functions/tournamentFunctions/getMappool";
+import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
+import getMappoolSlot from "../../../functions/tournamentFunctions/getMappoolSlot";
+import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
+import getCustomThread from "../../../functions/tournamentFunctions/getCustomThread";
+import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
+import { User } from "../../../../Models/user";
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    if (!m.guild)
-        return;
-
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const securedChannel = await isSecuredChannel(m, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard]);
-    if (!securedChannel) 
+    if (!await securityChecks(m, true, false, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
         return;
 
-    const tournament = await fetchTournament(m);
-    if (!tournament) 
-        return;
-
-    const allowed = await hasTournamentRoles(m, tournament, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]);
-    if (!allowed) 
-        return;
-
-    const user = await User.findOne({
-        where: {
-            discord: {
-                userID: m instanceof Message ? m.author.id : m.user.id,
-            }
-        }
-    });
+    const user = await getUser(commandUser(m).id, "discord", false);
     if (!user) {
         await loginResponse(m);
         return;
@@ -50,8 +44,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const slot2Text = m instanceof Message ? m.content.match(slot2Regex) ?? m.content.split(" ")[3] : m.options.getString("slot2");
     const pool2Text = m instanceof Message ? m.content.match(pool2Regex) ?? m.content.split(" ")[4] : m.options.getString("pool2");
     if (!pool1Text || !slot1Text || !slot2Text) {
-        if (m instanceof Message) m.reply("Missing parameters. Please use `-p1 <pool> -s1 <slot> -s2 <slot> [-p2 <pool>]` or `<pool1> <slot1> <slot2> [pool2]`. If you do not use the `-` prefixes, the order of the parameters is important.");
-        else m.editReply("Missing parameters. Please use `-p1 <pool> -s1 <slot> -s2 <slot> [-p2 <pool>]` or `<pool1> <slot1> <slot2> [pool2]`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        await respond(m, "Missing parameters. Please use `-p1 <pool> -s1 <slot> -s2 <slot> [-p2 <pool>]` or `<pool1> <slot1> <slot2> [pool2]`. If you do not use the `-` prefixes, the order of the parameters is important.");
         return;
     }
 
@@ -61,85 +54,68 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const order2 = parseInt(typeof slot2Text === "string" ? slot2Text.substring(slot2Text.length - 1) : slot2Text[1].substring(slot2Text[1].length - 1));
     const slot2 = (typeof slot2Text === "string" ? slot2Text.substring(0, slot2Text.length - 1) : slot2Text[1].substring(0, slot2Text[1].length - 1)).toUpperCase();
     if (isNaN(order1) || isNaN(order2)) {
-        if (m instanceof Message) m.reply(`Invalid slot order for **${slot1Text}** or **${slot2Text}**, please provide a valid slot.`);
-        else m.editReply(`Invalid slot order for **${slot1Text}** or **${slot2Text}**, please provide a valid slot.`);
+        await respond(m, `Invalid slot order for **${slot1Text}** or **${slot2Text}**, please provide a valid slot.`);
         return;
     }
     const pool2 = !pool2Text ? pool2Text : typeof pool2Text === "string" ? pool2Text : pool2Text[0];
 
-    const mappool1 = await fetchMappool(m, tournament, pool1);
-    if (!mappool1) 
+    const tournament = await getTournament(m, m.channelId, "channel", unFinishedTournaments);
+    if (!tournament) 
         return;
-    if (mappool1.isPublic) {
-        if (m instanceof Message) m.reply(`Mappool **${mappool1.name}** is public. You cannot use this command. Please make the mappool private first.`);
-        else m.editReply(`Mappool **${mappool1.name}** is public. You cannot use this command. Please make the mappool private first.`);
-    }
-    const mappool2 = !pool2 ? mappool1 : await fetchMappool(m, tournament, pool2);
-    if (!mappool2) 
+
+    const mappools = await getMappools(m, tournament, pool1, pool2);
+    if (!mappools)
         return;
-    if (mappool2.isPublic) {
-        if (m instanceof Message) m.reply(`Mappool **${mappool2.name}** is public. You cannot use this command. Please make the mappool private first.`);
-        else m.editReply(`Mappool **${mappool2.name}** is public. You cannot use this command. Please make the mappool private first.`);
-    }
+
+    const [mappool1, mappool2] = mappools;
+
+    const maps = await getMaps(m, mappool1, mappool2, slot1, slot2, order1, order2);
+    if (!maps)
+        return;
+
+    let [mappoolMap1, mappoolMap2] = maps;
     
     const mappoolSlot1 = `${mappool1.abbreviation.toUpperCase()} ${slot1}${order1}`;
     const mappoolSlot2 = `${mappool2.abbreviation.toUpperCase()} ${slot2}${order2}`;
 
-    const slotMod1 = await fetchSlot(m, mappool1, slot1.toString(), true);
-    if (!slotMod1) 
-        return;
-
-    const slotMod2 = !pool2 ? await fetchSlot(m, mappool1, slot2.toString(), true) : await fetchSlot(m, mappool2, slot2.toString(), true);
-    if (!slotMod2) 
-        return;
-
-    const mappoolMap1 = slotMod1.maps.find(m => m.order === order1);
-    if (!mappoolMap1) {
-        if (m instanceof Message) m.reply(`Could not find **${slot1}${order1}**`);
-        else m.editReply(`Could not find **${slot1}${order1}**`);
-        return;
-    }
-    const mappoolMap2 = slotMod2.maps.find(m => m.order === order2);
-    if (!mappoolMap2) {
-        if (m instanceof Message) m.reply(`Could not find **${slot2}${order2}**`);
-        else m.editReply(`Could not find **${slot2}${order2}**`);
-        return;
-    }
-
     // Confirm swap before swapping
     const name1 = mappoolMap1.beatmap ? `${mappoolMap1.beatmap.beatmapset.artist} - ${mappoolMap1.beatmap.beatmapset.title} [${mappoolMap1.beatmap.difficulty}]` : mappoolMap1.customBeatmap ? `${mappoolMap1.customBeatmap.artist} - ${mappoolMap1.customBeatmap.title} [${mappoolMap1.customBeatmap.difficulty}]` : "Nothing";
     const name2 = mappoolMap2.beatmap ? `${mappoolMap2.beatmap.beatmapset.artist} - ${mappoolMap2.beatmap.beatmapset.title} [${mappoolMap2.beatmap.difficulty}]` : mappoolMap2.customBeatmap ? `${mappoolMap2.customBeatmap.artist} - ${mappoolMap2.customBeatmap.title} [${mappoolMap2.customBeatmap.difficulty}]` : "Nothing";
+    const ids = {
+        yes: randomUUID(),
+        no: randomUUID(),
+    }
     const confirm = await m.channel!.send({
         content: `Are you sure you want to swap **${slot1}${order1}** (${name1}) with **${slot2}${order2}** (${name2})?`,
         components: [
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId("yes")
+                        .setCustomId(ids.yes)
                         .setLabel("YES")
                         .setStyle(ButtonStyle.Success),
                     new ButtonBuilder()
-                        .setCustomId("no")
+                        .setCustomId(ids.no)
                         .setLabel("NO")
                         .setStyle(ButtonStyle.Danger)
                 ),
         ],
     });
 
-    const filter = (i: MessageComponentInteraction) => i.user.id === (m instanceof Message ? m.author.id : m.user.id);
+    const filter = (i: MessageComponentInteraction) => i.user.id === commandUser(m).id;
     const collector = confirm.createMessageComponentCollector({ filter, time: 6000000 });
 
     let stop = await new Promise<boolean>((resolve) => {
             let done = false;
             collector.on("collect", async i => {
-                if (i.customId === "yes") {
+                if (i.customId === ids.yes) {
                     done = true;
                     await i.reply("Swapping...");
                     setTimeout(async () => (await i.deleteReply()), 100);
                     collector.stop();
                     await confirm.delete();
                     return resolve(false);
-                } else if (i.customId === "no") {
+                } else if (i.customId === ids.no) {
                     done = true;
                     await i.reply("Ok");
                     setTimeout(async () => (await i.deleteReply()), 5000);
@@ -173,6 +149,69 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     log1.createdBy = log2.createdBy = user;
 
+    const swap1 = await swap(m, tournament, mappoolMap1, mappoolMap2, log1, jobPost2, beatmap1, customMappers1, testplayers1, deadline1, mappoolSlot2, user, slot1, order1, name1);
+    if (!swap1)
+        return;
+
+    ({ log: log1, mappoolMap1, mappoolMap2 } = swap1);
+
+    const swap2 = await swap(m, tournament, mappoolMap2, mappoolMap1, log2, jobPost1, beatmap2, customMappers2, testplayers2, deadline2, mappoolSlot1, user, slot2, order2, name2);
+    if (!swap2)
+        return;
+
+    ({ log: log2, mappoolMap1, mappoolMap2 } = swap2);
+
+    await saveSwap(m, mappool1, mappool2, mappoolMap1, mappoolMap2, log1, log2, jobPost1, jobPost2, beatmap1, beatmap2);
+
+    await respond(m, `Swapped **${slot1}${order1}** with **${slot2}${order2}**`);
+
+    await mappoolLog(tournament, "swap", user, `Swapped \`${slot1}${order1}\` with \`${slot2}${order2}\`\n${log2 ? `\`${slot1}${order1}\` is now ${log2.beatmap ? `\`${log2.beatmap.beatmapset.artist} - ${log2.beatmap.beatmapset.title} [${log2.beatmap.difficulty}]\`` : `\`${log2.artist} - ${log2.title} [${log2.difficulty}]`}\`` : `\`${slot1}${order1}\` is now empty`}\n${log1 ? `\`${slot2}${order2}\` is now ${log1.beatmap ? `\`${log1.beatmap.beatmapset.artist} - ${log1.beatmap.beatmapset.title} [${log1.beatmap.difficulty}]\`` : `\`${log1.artist} - ${log1.title} [${log1.difficulty}]`}\`` : `\`${slot2}${order2}\` is now empty`}`);
+}
+
+async function getMappools (m: Message | ChatInputCommandInteraction, tournament: Tournament, pool1: string, pool2: string | null): Promise<[Mappool, Mappool] | undefined> {
+    const mappool1 = await getMappool(m, tournament, pool1);
+    if (!mappool1) 
+        return;
+    if (mappool1.isPublic) {
+        await respond(m, `Mappool **${mappool1.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        return;
+    }
+    const mappool2 = !pool2 ? mappool1 : await getMappool(m, tournament, pool2);
+    if (!mappool2) 
+        return;
+    if (mappool2.isPublic) {
+        await respond(m, `Mappool **${mappool2.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        return;
+    }
+
+    return [mappool1, mappool2];
+}
+
+async function getMaps (m: Message | ChatInputCommandInteraction, mappool1: Mappool, mappool2: Mappool, slot1: string, slot2: string, order1: number, order2: number): Promise<[MappoolMap, MappoolMap] | undefined> {
+    const slotMod1 = await getMappoolSlot(m, mappool1, slot1.toString(), true);
+    if (!slotMod1) 
+        return;
+
+    const slotMod2 = await getMappoolSlot(m, mappool2, slot2.toString(), true);
+    if (!slotMod2) 
+        return;
+
+    const mappoolMap1 = slotMod1.maps.find(m => m.order === order1);
+    if (!mappoolMap1) {
+        await respond(m, `Could not find **${slot1}${order1}**`);
+        return;
+    }
+    const mappoolMap2 = slotMod2.maps.find(m => m.order === order2);
+    if (!mappoolMap2) {
+        await respond(m, `Could not find **${slot2}${order2}**`);
+        return;
+    }
+
+    return [mappoolMap1, mappoolMap2];
+}
+
+async function swap (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappoolMap1: MappoolMap, mappoolMap2: MappoolMap, log1: MappoolMapHistory, jobPost2: MappoolMap["jobPost"], beatmap1: MappoolMap["beatmap"] | MappoolMap["customBeatmap"], customMappers1: MappoolMap["customMappers"], testplayers1: MappoolMap["testplayers"], deadline1: MappoolMap["deadline"], mappoolSlot2: string, user: User, slot1: string, order1: number, name1: string) {
+    let log: MappoolMapHistory | undefined = log1;
     if (beatmap1) {
         if (jobPost2?.jobBoardThread) {
             const thread = await discordClient.channels.fetch(jobPost2.jobBoardThread) as ThreadChannel | null;
@@ -189,10 +228,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             mappoolMap2.customBeatmap = beatmap1;
             mappoolMap2.isCustom = true;
 
-            log1.artist = beatmap1.artist;
-            log1.title = beatmap1.title;
-            log1.difficulty = beatmap1.difficulty;
-            log1.link = beatmap1.link;
+            log.artist = beatmap1.artist;
+            log.title = beatmap1.title;
+            log.difficulty = beatmap1.difficulty;
+            log.link = beatmap1.link;
 
             mappoolMap1.customBeatmap = null;
             await mappoolMap1.save();
@@ -201,7 +240,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             mappoolMap2.customBeatmap = null;
             mappoolMap2.isCustom = false;
 
-            log1.beatmap = beatmap1;
+            log.beatmap = beatmap1;
         }
 
         mappoolMap2.assignedBy = user;
@@ -210,8 +249,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mappoolMap2.customBeatmap = null;
         mappoolMap2.isCustom = false;
 
-        log1 = undefined;
+        log = undefined;
     }
+
     mappoolMap2.customMappers = customMappers1;
     mappoolMap2.testplayers = testplayers1;
     mappoolMap2.deadline = deadline1 || null;
@@ -224,7 +264,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mappoolMap2.customThreadID = null;
         mappoolMap2.customMessageID = null;
     } else if (mappoolMap2.customMappers.length > 0) {
-        const customThread = await fetchCustomThread(m, mappoolMap2, tournament, mappoolSlot2);
+        const customThread = await getCustomThread(m, mappoolMap2, tournament, mappoolSlot2);
         if (!customThread)
             return;
         if (customThread !== true && m.channel?.id !== customThread[0].id) {
@@ -235,67 +275,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
     }
 
-    if (beatmap2) {
-        if (jobPost1?.jobBoardThread) {
-            const thread = await discordClient.channels.fetch(jobPost1.jobBoardThread) as ThreadChannel | null;
-            if (thread) {
-                const tag = (thread.parent as ForumChannel).availableTags.find(t => t.name.toLowerCase() === "closed")?.id;
-                if (tag) await thread.setAppliedTags([tag], "This slot is now assigned.");
-                await thread.setArchived(true, "This slot is now assigned.");
-            }
-        }
-        mappoolMap1.jobPost = null;
-        if (beatmap2 instanceof CustomBeatmap) {
-            mappoolMap1.beatmap = null;
-            mappoolMap1.customBeatmap = beatmap2;
-            mappoolMap1.isCustom = true;
+    return { log, mappoolMap1, mappoolMap2 };
+}
 
-            log2.artist = beatmap2.artist;
-            log2.title = beatmap2.title;
-            log2.difficulty = beatmap2.difficulty;
-            log2.link = beatmap2.link;
-            
-            mappoolMap2.customBeatmap = null;
-            await mappoolMap2.save();
-        } else {
-            mappoolMap1.beatmap = beatmap2;
-            mappoolMap1.customBeatmap = null;
-            mappoolMap1.isCustom = false;
-
-            log2.beatmap = beatmap2;
-        }
-
-        mappoolMap1.assignedBy = user;
-    } else {
-        mappoolMap1.beatmap = null;
-        mappoolMap1.customBeatmap = null;
-        mappoolMap1.isCustom = false;
-
-        log2 = undefined;
-    }
-    mappoolMap1.customMappers = customMappers2;
-    mappoolMap1.testplayers = testplayers2;
-    mappoolMap1.deadline = deadline2 || null;
-    if (mappoolMap1.customThreadID && mappoolMap1.customMappers.length === 0) {
-        const thread = await discordClient.channels.fetch(mappoolMap1.customThreadID) as ThreadChannel | null;
-        if (thread) {
-            await thread.setAppliedTags([], "**All mappers** are removed. The thread is now archived.");
-            await thread.setArchived(true, "**All mappers** are removed. The thread is now archived.");
-        }
-        mappoolMap1.customThreadID = null;
-        mappoolMap1.customMessageID = null;
-    } else if (mappoolMap1.customMappers.length > 0) {
-        const customThread = await fetchCustomThread(m, mappoolMap1, tournament, mappoolSlot1);
-        if (!customThread)
-            return;
-        if (customThread !== true && m.channel?.id !== customThread[0].id) {
-            const [thread, threadMsg] = customThread;
-            mappoolMap1.customThreadID = thread.id;
-            mappoolMap1.customMessageID = threadMsg.id;
-            await thread.send(`<@${user.discord.userID}> has swapped this slot with **${slot1}${order1}** (${name1})`);
-        }
-    }
-
+async function saveSwap (m: Message | ChatInputCommandInteraction, mappool1: Mappool, mappool2: Mappool, mappoolMap1: MappoolMap, mappoolMap2: MappoolMap, log1: MappoolMapHistory | undefined, log2: MappoolMapHistory | undefined, jobPost1: MappoolMap["jobPost"], jobPost2: MappoolMap["jobPost"], beatmap1: MappoolMap["beatmap"] | MappoolMap["customBeatmap"], beatmap2: MappoolMap["beatmap"] | MappoolMap["customBeatmap"]) {
     await mappoolMap1.save();
     await mappoolMap2.save();
 
@@ -311,11 +294,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
     mappool2.mappackLink = mappool2.mappackExpiry = null;
     await mappool1.save();
     await mappool2.save();
-
-    if (m instanceof Message) m.reply(`Swapped **${slot1}${order1}** with **${slot2}${order2}**`);
-    else await m.editReply(`Swapped **${slot1}${order1}** with **${slot2}${order2}**`);
-
-    await mappoolLog(tournament, "swap", user, `Swapped **${slot1}${order1}** with **${slot2}${order2}**\n${log2 ? `**${slot1}${order1}** is now ${log2.beatmap ? `${log2.beatmap.beatmapset.artist} - ${log2.beatmap.beatmapset.title} [${log2.beatmap.difficulty}]` : `${log2.artist} - ${log2.title} [${log2.difficulty}]`}` : `**${slot1}${order1}** is now empty`}\n${log1 ? `**${slot2}${order2}** is now ${log1.beatmap ? `${log1.beatmap.beatmapset.artist} - ${log1.beatmap.beatmapset.title} [${log1.beatmap.difficulty}]` : `${log1.artist} - ${log1.title} [${log1.difficulty}]`}` : `**${slot2}${order2}** is now empty`}`);
 }
 
 const data = new SlashCommandBuilder()

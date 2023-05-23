@@ -5,6 +5,9 @@ import guildMemberAdd from "./handlers/guildMemberAdd";
 import interactionCreate from "./handlers/interactionCreate";
 import guildMemberRemove from "./handlers/guildMemberRemove";
 import messageCreate from "./handlers/messageCreate";
+import threadCreate from "./handlers/threadCreate";
+import threadDelete from "./handlers/threadDelete";
+import threadUpdate from "./handlers/threadUpdate";
 import ormConfig from "../ormconfig";
 import { commands } from "./commands";
 
@@ -13,6 +16,9 @@ discordClient.on("guildMemberAdd", guildMemberAdd);
 discordClient.on("guildMemberRemove", guildMemberRemove);
 discordClient.on("messageCreate", messageCreate);
 discordClient.on("interactionCreate", interactionCreate);
+discordClient.on("threadCreate", threadCreate);
+discordClient.on("threadDelete", threadDelete);
+discordClient.on("threadUpdate", threadUpdate);
 
 // Discord command registrations
 const rest = new REST({ version: "10" }).setToken(config.discord.token);
@@ -41,4 +47,4 @@ ormConfig.initialize()
     .then((connection) => {
         console.log(`Connected to the ${connection.options.database} database!`);
     })
-    .catch((error) => console.log("An error has occurred in connecting.", error));
+    .catch((error) => console.error("An error has occurred in connecting.", error));

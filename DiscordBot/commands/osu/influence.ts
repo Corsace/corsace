@@ -1,6 +1,8 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { User } from "../../../Models/user";
 import { Command } from "../index";
+import respond from "../../functions/respond";
+import commandUser from "../../functions/commandUser";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -27,8 +29,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     } else {
         search = m.options.getString("username") ?? "";
         year = m.options.getInteger("year") ?? 0;
-        if (year < 2007)
-            year = 0;
+    }
+
+    if (year > new Date().getFullYear()) {
+        await respond(m, "U cant search for influences in the future dumbass");
+        return;
     }
 
     let query = await User
@@ -45,33 +50,34 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .orWhere("otherName.name LIKE :user")
             .setParameter("user", `%${search}%`);
     else
-        query = query.andWhere("user.discordUserid = :id", { id: m instanceof Message ? m.author.id : m.user.id });
+        query = query.andWhere("user.discordUserid = :id", { id: commandUser(m).id });
     
     const user = await query.orderBy("influence.year", "DESC")
         .getOne();
     if (!user) {
-        if (!search) {
-            if (m instanceof Message) await m.reply("You either currently do not have influences for year less than equal to the provided year, or you have not logged into Corsace!\nIf you are not logged into Corsace, please login to https://corsace.io with your discord and osu! accounts in order to obtain your influences implicitly!");
-            else await m.editReply("You either currently do not have influences for year less than equal to the provided year, or you have not logged into Corsace!\nIf you are not logged into Corsace, please login to https://corsace.io with your discord and osu! accounts in order to obtain your influences implicitly!");
-        } else {
-            if (m instanceof Message) await m.reply(`${search} does not currently contain influences found in the corsace database with the given year!`);
-            else await m.editReply(`${search} does not currently contain influences found in the corsace database with the given year!`);
-        }
+        if (!search)
+            await respond(m, "You either currently do not have influences for year less than equal to the provided year, or you have not logged into Corsace!\nIf you are not logged into Corsace, please login to https://corsace.io with your discord and osu! accounts in order to obtain your influences implicitly!");
+        else
+            await respond(m, `${search} does not currently contain influences found in the corsace database with the given year!`);
         return;
     }
     const latestYear = Math.max(...user.influences.map(inf => inf.year));
     const influences = user.influences.filter(inf => inf.year === latestYear).sort((a, b) => a.rank - b.rank);
-    if (m instanceof Message) await m.reply(`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map(inf => `${inf.rank}: **${inf.influence.osu.username}** ${inf.comment ? " - " + inf.comment : ""}`).join("\n")}`);
-    else await m.editReply(`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map(inf => `${inf.rank}: **${inf.influence.osu.username}** ${inf.comment ? " - " + inf.comment : ""}`).join("\n")}`);
+
+    await respond(m,`Mapping influences for **${user.osu.username} (${latestYear}):**\n${influences.map(inf => `${inf.rank}: **${inf.influence.osu.username}** ${inf.comment ? " - " + inf.comment : ""}`).join("\n")}`);
     return;
-    
 }
 
 const data = new SlashCommandBuilder()
     .setName("influence")
     .setDescription("Show your mapping influences or someone else's given a username and a year")
-    .addStringOption(option => option.setName("username").setDescription("The osu! username to search for influences for"))
-    .addIntegerOption(option => option.setName("year").setDescription("The year to search for influences for").setMinValue(2007));
+    .addStringOption(option => 
+        option.setName("username")
+            .setDescription("The osu! username to search for influences for"))
+    .addIntegerOption(option => 
+        option.setName("year")
+            .setDescription("The year to search for influences for")
+            .setMinValue(2007));
 
 const influence: Command = {
     data, 

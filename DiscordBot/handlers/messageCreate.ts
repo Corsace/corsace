@@ -5,6 +5,7 @@ import beatmap from "../commands/osu/beatmap";
 import profile from "../commands/osu/profile";
 import osuTimestamp from "../commandsInexplicit/osu/osuTimestamp";
 import autoSubmit from "../commandsInexplicit/tournaments/mappool/autoSubmit";
+import errorHandler from "../functions/error";
 
 export default async function messageCreate (m: Message) {
     const prefix = /^!(\S+)/i;
@@ -42,8 +43,7 @@ export default async function messageCreate (m: Message) {
             try {
                 await command.run(m);
             } catch (e) {
-                console.error(e);
-                m.reply(`Something went wrong while running the command. Please try again later.`);
+                errorHandler(e, m);
             }
         }
     }

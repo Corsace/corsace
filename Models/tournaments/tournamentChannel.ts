@@ -2,6 +2,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGenerat
 import { Tournament } from "./tournament";
 import { User } from "../user";
 import { TournamentRoleType } from "./tournamentRole";
+import { GuildForumTagData } from "discord.js";
 
 export enum TournamentChannelType {
     General,
@@ -34,6 +35,20 @@ export const TournamentChannelTypeRoles: { [key in TournamentChannelType]: Tourn
     [TournamentChannelType.Stream]: [TournamentRoleType.Organizer, TournamentRoleType.Referees, TournamentRoleType.Streamers, TournamentRoleType.Commentators],
     [TournamentChannelType.Matchresults]: undefined,
     [TournamentChannelType.Jobboard]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers],
+};
+
+export const forumTags: { [key in TournamentChannelType]?: GuildForumTagData[] } = {
+    [TournamentChannelType.Mappoolqa]: [
+        { name: "WIP", moderated: true },
+        { name: "Finished", moderated: true },
+        { name: "Late", moderated: true },
+        { name: "Needs HS", moderated: true },
+    ],
+    [TournamentChannelType.Jobboard]: [
+        { name: "Open", moderated: true },
+        { name: "Closed", moderated: true },
+        { name: "To Assign", moderated: true },
+    ],
 };
 
 @Entity()

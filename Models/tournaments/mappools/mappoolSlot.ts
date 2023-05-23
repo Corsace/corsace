@@ -39,34 +39,4 @@ export class MappoolSlot extends BaseEntity {
     @OneToMany(() => MappoolMap, poolMap => poolMap.slot)
     maps!: MappoolMap[];
 
-    static search (mappool: Mappool, slot: string = "", getRelations: boolean = false) {
-        const q = this.createQueryBuilder("slot")
-        if (getRelations) {
-            q
-                .leftJoinAndSelect("slot.mappool", "mappool")
-                .leftJoinAndSelect("slot.maps", "maps")
-                .leftJoinAndSelect("maps.beatmap", "beatmap")
-                .leftJoinAndSelect("beatmap.beatmapset", "beatmapset")
-                .leftJoinAndSelect("maps.customMappers", "customMappers")
-                .leftJoinAndSelect("maps.testplayers", "testplayers")
-                .leftJoinAndSelect("maps.customBeatmap", "customBeatmap")
-                .leftJoinAndSelect("customBeatmap.mode", "mode")
-                .leftJoinAndSelect("maps.jobPost", "jobPost")
-        } else {
-            q
-                .leftJoin("slot.mappool", "mappool")
-        }
-        return q
-            .where("mappool.ID = :mappool")
-            .andWhere(new Brackets(qb => {
-                qb.where("slot.name LIKE :criteria")
-                    .orWhere("slot.acronym LIKE :criteria");
-            }))
-            .setParameters({
-                mappool: mappool.ID,
-                criteria: `%${slot}%`,
-            })
-            .getMany();
-    }
-
 }

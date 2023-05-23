@@ -1,36 +1,42 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
-import { In, MoreThan, Not } from "typeorm";
+import { In, MoreThan } from "typeorm";
 import { Command } from "..";
 import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
+import respond from "../../functions/respond";
+import { extractParameters } from "../../functions/parameterFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const serverOnly = m instanceof Message ? /-s(erver)?/.test(m.content) : m.options.getBoolean("server");
-    const pastRegistration = m instanceof Message ? /-p(ast_)?r(egistration)?/.test(m.content) : m.options.getBoolean("past_registration");
-    const finishedTournaments = m instanceof Message ? /-f(inished)?/.test(m.content) : m.options.getBoolean("finished");
-    let mode = m instanceof Message ? /-m(ode)?\s+(.+)/.exec(m.content)?.[1] || "" : m.options.getString("mode") || "";
+    const params = extractParameters<parameters>(m, [
+        { name: "server", optional: true, paramType: "boolean", regex: /-s(erver)?/, regexIndex: 0 },
+        { name: "past_registration", optional: true, paramType: "boolean", regex: /-p(ast_)?r(egistration)?/, regexIndex: 0 },
+        { name: "finished", optional: true, paramType: "boolean", regex: /-f(inished)?/, regexIndex: 0 },
+        { name: "mode", optional: true, paramType: "string", regex: /-m(ode)?\s+(.+)/, regexIndex: 2 },
+    ]);
+    if (!params)
+        return;
 
-    if (serverOnly && !m.guild) {
-        if (m instanceof Message) m.reply("You can only use this option in a server");
-        else m.editReply("You can only use this option in a server");
+    const { server, past_registration, finished, mode } = params;
+
+    if (server && !m.guild) {
+        await respond(m, "You can only use this option in a server dude");
         return;
     }
 
     if (mode && !["osu", "taiko", "catch", "mania"].includes(mode)) {
-        if (m instanceof Message) m.reply("Invalid mode");
-        else m.editReply("Invalid mode");
+        await respond(m, "Invalid mode");
         return;
     }
 
-    const modeID = ["osu", "taiko", "catch", "mania"].indexOf(mode) + 1;
+    const modeID = mode ? ["osu", "taiko", "catch", "mania"].indexOf(mode) + 1 : 0;
 
     const findOptions = {
-        ...(serverOnly ? { server: m.guild!.id } : { }),
+        ...(server ? { server: m.guild!.id } : { }),
         ...(mode ? { mode: { ID: modeID } } : { }),
-        ...(pastRegistration ? { } : { registrations: { end: MoreThan(new Date()) } }),
-        ...(finishedTournaments ? { } : { status: In([TournamentStatus.NotStarted, TournamentStatus.Registrations, TournamentStatus.Ongoing]) }),
+        ...(past_registration ? { } : { registrations: { end: MoreThan(new Date()) } }),
+        ...(finished ? { } : { status: In([TournamentStatus.NotStarted, TournamentStatus.Registrations, TournamentStatus.Ongoing]) }),
     };
 
     const tournaments = await Tournament.find({
@@ -39,20 +45,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
     });
 
     if (tournaments.length === 0) {
-        if (m instanceof Message) m.reply("No tournaments found");
-        else m.editReply("No tournaments found");
+        await respond(m, "No tournaments found");
         return;
     }
 
     const embed = {
         title: "Tournaments",
         description: tournaments.map(t => {
-            return `**${t.name}** - ${t.mode.name} - <t:${t.registrations.start.getTime() / 1000}> - <t:${t.registrations.end.getTime() / 1000}>`;
+            return `**${t.name}** - ${t.mode.name} - <t:${t.registrations.start.getTime() / 1000}:F> - <t:${t.registrations.end.getTime() / 1000}:F> (<t:${t.registrations.start.getTime() / 1000}:R> - <t:${t.registrations.end.getTime() / 1000}:R>)`;
         }).join("\n"),
     };
 
-    if (m instanceof Message) m.reply({ embeds: [embed] });
-    else m.editReply({ embeds: [embed] });
+    await respond(m, undefined, [embed]);
 }
 
 const data = new SlashCommandBuilder()
@@ -96,6 +100,13 @@ const data = new SlashCommandBuilder()
                 }
             )
     );
+
+interface parameters {
+    server?: boolean,
+    past_registration?: boolean,
+    finished?: boolean,
+    mode?: string,
+}
 
 const tournamentList: Command = {
     data,
