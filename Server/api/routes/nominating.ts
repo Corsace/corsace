@@ -112,7 +112,7 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
                 relations: ["beatmaps"],
             });
 
-            if (beatmapset.approvedDate.getUTCFullYear() !== category.mca.year)
+            if (beatmapset.approvedDate?.getUTCFullYear() !== category.mca.year)
                 return ctx.body = {
                     error: "Mapset is ineligible for the given MCA year!",
                 };
@@ -166,7 +166,7 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
                 },
                 relations: ["beatmapset"],
             });
-            if (beatmap.beatmapset.approvedDate.getUTCFullYear() !== category.mca.year)
+            if (beatmap.beatmapset.approvedDate?.getUTCFullYear() !== category.mca.year)
                 return ctx.body = {
                     error: "Mapset is ineligible for the given MCA year!",
                 };
@@ -240,7 +240,7 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
                 });
                 const years: number[] = [];
                 for (const set of sets) 
-                    if (set.beatmaps.some(b => b.mode.ID === category.mode.ID && !isPossessive(b.difficulty)))
+                    if (set.approvedDate && set.beatmaps.some(b => b.mode.ID === category.mode.ID && !isPossessive(b.difficulty)))
                         years.push(set.approvedDate.getUTCFullYear());
                 
                 if (Math.min(...years) !== ctx.state.year)

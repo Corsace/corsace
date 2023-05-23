@@ -6,7 +6,7 @@ export interface Beatmapset {
     artist: string;
     title: string;
     submitDate: Date;
-    approvedDate: Date;
+    approvedDate?: Date | null;
     BPM: number;
     genre: string;
     language: string;

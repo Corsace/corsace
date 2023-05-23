@@ -24,8 +24,8 @@ export class Beatmapset extends BaseEntity {
     submitDate!: Date;
 
     @Index()
-    @Column()
-    approvedDate!: Date;
+    @Column({ type: "datetime", nullable: true })
+    approvedDate?: Date | null;
 
     @Column("double")
     BPM!: number;

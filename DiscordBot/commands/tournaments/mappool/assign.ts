@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, ForumChannel, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
-import { Tournament, TournamentStatus, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
+import { Tournament, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { Beatmap } from "../../../../Models/beatmap";
 import { Beatmap as APIBeatmap, Mode } from "nodesu";
@@ -108,11 +108,6 @@ async function handleBeatmapLink(m: Message | ChatInputCommandInteraction, targe
     }
     if (apiMap.mode !== tournament.mode.ID - 1) {
         await respond(m, "Beatmap mode does not match tournament mode.");
-        return;
-    }
-    // TODO: Support for maps with no approved date (e.g. graveyarded maps) https://github.com/Corsace/Corsace/issues/193
-    if (isNaN(apiMap.approvedDate.getTime())) {
-        await respond(m, "Beatmap is not ranked. Support will be added soon!\nhttps://github.com/Corsace/Corsace/issues/193");
         return;
     }
 
