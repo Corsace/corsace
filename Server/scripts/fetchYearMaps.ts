@@ -138,7 +138,14 @@ const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
 
 // Memoized method to create or fetch a BeatmapSet from DB.
 const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> => {
-    let beatmapSet = new Beatmapset;
+    let beatmapSet = await Beatmapset.findOne({
+        where: {
+            ID: beatmap.beatmapSetId,
+        },
+    });
+    if (!beatmapSet)
+        beatmapSet = new Beatmapset;
+
     beatmapSet.ID = beatmap.setId;
     beatmapSet.approvedDate = beatmap.approvedDate;
     beatmapSet.submitDate = beatmap.submitDate;
@@ -210,7 +217,15 @@ const getBNsApiCallRawData = async (beatmapSetID: BeatmapsetID): Promise<null | 
 }
 
 async function insertBeatmap (apiBeatmap: APIBeatmap) {
-    let beatmap = new Beatmap;
+    let beatmap = await Beatmap.findOne({
+        where: {
+            ID: apiBeatmap.id,
+        },
+        relations: ["beatmapset"],
+    });
+    if (!beatmap)
+        beatmap = new Beatmap;
+
     beatmap.ID = apiBeatmap.id;
     beatmap.mode = await getModeDivison(apiBeatmap.mode as number);
     beatmap.difficulty = apiBeatmap.version;
@@ -236,7 +251,7 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
 
     beatmap.beatmapset = await getBeatmapSet(apiBeatmap);
 
-    if (!isPossessive(beatmap.difficulty)) {
+    if (!isPossessive(beatmap.difficulty) && !isNaN(apiBeatmap.approvedDate.getUTCFullYear())) {
         const eligibility = await getMCAEligibility(apiBeatmap.approvedDate.getUTCFullYear(), beatmap.beatmapset.creator);
         if (!eligibility[modeList[apiBeatmap.mode as number]]) {
             eligibility[modeList[apiBeatmap.mode as number]] = true;
