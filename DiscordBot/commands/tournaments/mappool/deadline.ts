@@ -83,7 +83,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     await respond(m, `Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
 
-    await mappoolLog(tournament, "deadline", user, `Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
+    await mappoolLog(tournament, "deadline", user, `Deadline for \`${mappoolSlot}\` set to \`<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)\``);
 }
 
 const data = new SlashCommandBuilder()

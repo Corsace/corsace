@@ -6,6 +6,7 @@ import getStaff from "../../functions/tournamentFunctions/getStaff";
 import mappoolLog from "../../functions/tournamentFunctions/mappoolLog";
 import confirmCommand from "../../functions/confirmCommand";
 import { mappoolComponentsThreadType } from "../../functions/tournamentFunctions/mappoolComponentsThread";
+import respond from "../../functions/respond";
 
 export async function mappoolQACreate (t: ThreadChannel, { m, creator, tournament, mappoolMap, mappers }: mappoolComponentsThreadType) {
     const mapperUsers: User[] = [];
@@ -49,7 +50,7 @@ export async function mappoolQACreate (t: ThreadChannel, { m, creator, tournamen
     
     await mappoolMap.save();
 
-    await mappoolLog(tournament, "threadCreate", creator, `Created  QA thread for \`${t.name}\` <#${t.id}>`);
+    await mappoolLog(tournament, "threadCreate", creator, `Created QA thread for \`${t.name}\` <#${t.id}>`);
     return;
 }
 
@@ -64,9 +65,9 @@ export async function mappoolQADelete (t: ThreadChannel, { m, creator, tournamen
     await mappoolMap.save();
     if (customMap) await customMap.remove();
 
-    await mappoolLog(tournament, "threadDelete", creator, `Deleted thread for ${t.name} and the associated assignments and custom map.`);
+    await respond(m, `Deleted thread for **${t.name}** and the associated assignments and custom map.`);
 
-    m.channel.send(`Deleted thread for **${t.name}** and the associated assignments and custom map.`);
+    await mappoolLog(tournament, "threadDelete", creator, `Deleted thread for \`${t.name}\` and the associated assignments and custom map`);
 
     return;
 }

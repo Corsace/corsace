@@ -65,9 +65,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         await mappool.save();
 
-        await respond(m, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now private`);
+        await respond(m, `**${mappool.name.toUpperCase()} (${mappool.abbreviation.toUpperCase()})** is now **private**`);
 
-        await mappoolLog(tournament, "publish", user, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now private`);
+        await mappoolLog(tournament, "publish", user, `\`${mappool.name.toUpperCase()} (${mappool.abbreviation.toUpperCase()})\` is now \`private\``);
 
         return;
     }
@@ -99,9 +99,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     mappool.isPublic = true;
     await mappool.save();
 
-    await respond(m, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now public\nMappack: ${mappool.mappackLink}`);
+    await respond(m, `**${mappool.name.toUpperCase()} (${mappool.abbreviation.toUpperCase()})** is now **public**\nMappack: ${mappool.mappackLink}`);
 
-    await mappoolLog(tournament, "publish", user, `**${mappool.name.toUpperCase()}** (${mappool.abbreviation.toUpperCase()}) is now ${mappool.isPublic ? "public" : "private"}\nMappack: ${mappool.mappackLink}`);
+    await mappoolLog(tournament, "publish", user, `\`${mappool.name.toUpperCase()} (${mappool.abbreviation.toUpperCase()})\` is now \`public\`\nMappack: ${mappool.mappackLink}`);
 
     if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
 }

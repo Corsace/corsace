@@ -192,7 +192,7 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
     const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(mappoolMap.slot.allowedMods)), modsToAcronym(slot.allowedMods), set);
     mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
-    await respond(m, `Successfully submitted **${artist} - ${title} [${diff}]** to **${mappoolSlot}**`, [mappoolMapEmbed]);
+    await respond(m, `Successfully submitted \`${artist} - ${title} [${diff}]\` to \`${mappoolSlot}\``, [mappoolMapEmbed]);
 
     await mappoolLog(tournament, "submit", user, log, mappoolSlot);
 }

@@ -91,7 +91,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
                 counter++;
                 content += `Created thread for **${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${map.order}**. ${counter}/${totalThreadCount}\n`;
-                logText += `Created thread for **${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${map.order}** <#${jobBoardThread.id}>.\n`;
+                logText += `Created thread for \`${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${map.order}\` <#${jobBoardThread.id}>.\n`;
                 await threadMessage.edit(content);
             }
         }

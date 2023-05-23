@@ -231,9 +231,9 @@ async function handleUser (m: Message | ChatInputCommandInteraction, target: str
     await mappoolMap.save();
     if (jobPost) await jobPost.remove();
 
-    await respond(m, `Successfully added **${user.osu.username}** as a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
+    await respond(m, `Successfully added **${user.osu.username}** as a **${testing ? "testplayer" : "custom mapper"}** for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
 
-    await mappoolLog(tournament, "assignCustom", assigner, `**${user.osu.username}** is now a ${testing ? "testplayer" : "custom mapper"} for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
+    await mappoolLog(tournament, "assignCustomMapper", assigner, `\`${user.osu.username}\` is now a \`${testing ? "testplayer" : "custom mapper"}\` for \`${mappoolSlot}\`${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
 }
 
 const data = new SlashCommandBuilder()

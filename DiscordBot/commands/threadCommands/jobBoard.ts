@@ -62,7 +62,7 @@ export async function jobBoardCreate(t: ThreadChannel, { m, creator, tournament,
     mappoolMap.jobPost = jobPost;
     await mappoolMap.save();
 
-    await respond(m, "Please note that `job` will not be able to edit this job post. If you want to edit it, please do so manually.");
+    await respond(m, `Created job post.\nPlease note that \`job\` will not be able to edit this job post. If you want to edit it, please do so manually.`);
 
     await mappoolLog(tournament, "threadCreate", creator, `Created job post thread for \`${t.name}\` <#${t.id}>`);
     return;
@@ -79,9 +79,9 @@ export async function jobBoardDelete (t: ThreadChannel, { m, creator, tournament
         await mappoolMap.save();
         await jobPost.remove();
 
-        await mappoolLog(tournament, "threadDelete", creator, `Deleted thread for ${t.name} and the associated job board post.`);
+        await respond(m, `Deleted thread for **${t.name}** and the associated job board post.`);
 
-        await m.reply(`Deleted thread for **${t.name}** and the associated job board post.`);
+        await mappoolLog(tournament, "threadDelete", creator, `Deleted thread for \`${t.name}\` and the associated job board post`);
 
         return;
     }
@@ -89,9 +89,9 @@ export async function jobBoardDelete (t: ThreadChannel, { m, creator, tournament
     jobPost.deadline = jobPost.jobBoardThread = null;
     await jobPost.save();
 
-    await mappoolLog(tournament, "threadDelete", creator, `Deleted thread for ${t.name} and brought the associated job board post to its pre-published state.`);
+    await respond(m, `Deleted thread for **${t.name}** and brought the associated job board post to its pre-published state.`);
 
-    await respond(m, `Deleted thread for ${t.name} and brought the associated job board post to its pre-published state.`);
+    await mappoolLog(tournament, "threadDelete", creator, `Deleted thread for \`${t.name}\` and brought the associated job board post to its pre-published state`);
 
     return;
 }

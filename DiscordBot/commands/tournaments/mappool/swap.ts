@@ -165,7 +165,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     await respond(m, `Swapped **${slot1}${order1}** with **${slot2}${order2}**`);
 
-    await mappoolLog(tournament, "swap", user, `Swapped **${slot1}${order1}** with **${slot2}${order2}**\n${log2 ? `**${slot1}${order1}** is now ${log2.beatmap ? `${log2.beatmap.beatmapset.artist} - ${log2.beatmap.beatmapset.title} [${log2.beatmap.difficulty}]` : `${log2.artist} - ${log2.title} [${log2.difficulty}]`}` : `**${slot1}${order1}** is now empty`}\n${log1 ? `**${slot2}${order2}** is now ${log1.beatmap ? `${log1.beatmap.beatmapset.artist} - ${log1.beatmap.beatmapset.title} [${log1.beatmap.difficulty}]` : `${log1.artist} - ${log1.title} [${log1.difficulty}]`}` : `**${slot2}${order2}** is now empty`}`);
+    await mappoolLog(tournament, "swap", user, `Swapped \`${slot1}${order1}\` with \`${slot2}${order2}\`\n${log2 ? `\`${slot1}${order1}\` is now ${log2.beatmap ? `\`${log2.beatmap.beatmapset.artist} - ${log2.beatmap.beatmapset.title} [${log2.beatmap.difficulty}]\`` : `\`${log2.artist} - ${log2.title} [${log2.difficulty}]`}\`` : `\`${slot1}${order1}\` is now empty`}\n${log1 ? `\`${slot2}${order2}\` is now ${log1.beatmap ? `\`${log1.beatmap.beatmapset.artist} - ${log1.beatmap.beatmapset.title} [${log1.beatmap.difficulty}]\`` : `\`${log1.artist} - ${log1.title} [${log1.difficulty}]`}\`` : `\`${slot2}${order2}\` is now empty`}`);
 }
 
 async function getMappools (m: Message | ChatInputCommandInteraction, tournament: Tournament, pool1: string, pool2: string | null): Promise<[Mappool, Mappool] | undefined> {

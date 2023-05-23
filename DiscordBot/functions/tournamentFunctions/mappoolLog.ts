@@ -25,7 +25,7 @@ export default async function mappoolLog(tournament: Tournament, command: string
 
     if (logOrEvent instanceof MappoolMapHistory) {
         const log = logOrEvent;
-        embed.setDescription(`${log.link ? "Custom map" : "Beatmap" } was added to slot **${mappoolSlot!}**`);
+        embed.setDescription(`${log.link ? "Custom map" : "Beatmap" } was added to slot \`${mappoolSlot!}\``);
         embed.addFields({ name: "Map", value: log.beatmap ? `${log.beatmap.beatmapset.artist} - ${log.beatmap.beatmapset.title} [${log.beatmap.difficulty}]` : `${log.artist} - ${log.title} [${log.difficulty}]`});
         if (log.link) embed.addFields({ name: "Link", value: log.link });
         embed.setThumbnail(log.beatmap ? `https://b.ppy.sh/thumb/${log.beatmap.beatmapset.ID}l.jpg` : null);
