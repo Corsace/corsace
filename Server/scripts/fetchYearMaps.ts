@@ -148,6 +148,7 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
 
     beatmapSet.ID = beatmap.setId;
     beatmapSet.approvedDate = beatmap.approvedDate;
+    beatmapSet.rankedStatus = beatmap.approved;
     beatmapSet.submitDate = beatmap.submitDate;
     beatmapSet.BPM = beatmap.bpm;
     beatmapSet.artist = beatmap.artist;

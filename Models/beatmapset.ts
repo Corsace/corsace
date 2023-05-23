@@ -8,6 +8,16 @@ import { Nomination } from "./MCA_AYIM/nomination";
 import { Vote } from "./MCA_AYIM/vote";
 import { User } from "./user";
 
+export enum BeatmapsetRankedStatus {
+    Graveyard = -2,
+    WIP,
+    Pending,
+    Ranked,
+    Approved,
+    Qualified,
+    Loved,
+}
+
 @Entity()
 export class Beatmapset extends BaseEntity {
     
@@ -26,6 +36,9 @@ export class Beatmapset extends BaseEntity {
     @Index()
     @Column({ type: "datetime", nullable: true })
     approvedDate?: Date | null;
+
+    @Column({ type: "enum", enum: BeatmapsetRankedStatus })
+    rankedStatus!: BeatmapsetRankedStatus;
 
     @Column("double")
     BPM!: number;
