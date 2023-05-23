@@ -5,7 +5,7 @@ import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { StageType } from "../../../../Models/tournaments/stage";
 import { Tournament, TournamentStatus, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
-import { filter } from "../../../functions/messageInteractionFunctions";
+import { filter, timedOut } from "../../../functions/messageInteractionFunctions";
 import { loginResponse } from "../../../functions/loginResponse";
 import { acronymtoMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { randomUUID } from "crypto";
@@ -201,12 +201,7 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
         await mappoolSlots(m, mappool, tournament);
         return;
     });
-    mappoolNameCollector.on("end", async () => {
-        await nameMessage.delete();
-        if (!stopped)
-            await m.reply("Mappool creation timed out.");
-        return;
-    });
+    mappoolNameCollector.on("end", () => timedOut(nameMessage, stopped, "Mappool creation"));
 }
 
 // This function asks the user for slots (slotname, slottype, and # of maps) for the mappool
@@ -399,12 +394,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
         content += newSlots;
         await slotMessage.edit(content);
     });
-    slotNameCollector.on("end", async () => {
-        await slotMessage.delete();
-        if (!stopped)
-            await m.reply("Mappool creation timed out.");
-        return;
-    });
+    slotNameCollector.on("end", () => timedOut(slotMessage, stopped, "Mappool creation"));
 }
 
 async function mappoolDone (m: Message, mappool: Mappool) {

@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Message, MessageComponentInteraction } from "discord.js";
-import { stopRow } from "./messageInteractionFunctions";
+import { stopRow, timedOut } from "./messageInteractionFunctions";
 import { randomUUID } from "crypto";
 import commandUser from "./commandUser";
 import respond from "./respond";
@@ -55,12 +55,6 @@ export default async function getFromList<T extends { ID: number, name: string }
             componentCollector.stop();	
             resolve(item);	
         });	
-        componentCollector.on("end", async () => {	
-            await message.delete();	
-            if (!stopped) {	
-                await respond(m, `${listName} creation timed out.`);	
-                resolve(undefined);	
-            }	
-        });	
+        componentCollector.on("end", () => timedOut(message, stopped, `${listName} selection`));	
     });
 }

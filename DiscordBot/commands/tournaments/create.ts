@@ -5,7 +5,7 @@ import { Tournament, TournamentStatus } from "../../../Models/tournaments/tourna
 import { User } from "../../../Models/user";
 import { Command } from "../index";
 import { loginResponse } from "../../functions/loginResponse";
-import { filter, stopRow } from "../../functions/messageInteractionFunctions";
+import { filter, stopRow, timedOut } from "../../functions/messageInteractionFunctions";
 import { profanityFilter } from "../../../Interfaces/comment";
 import { Stage, StageType } from "../../../Models/tournaments/stage";
 import { Phase } from "../../../Models/phase";
@@ -324,11 +324,7 @@ async function tournamentQualifiersPass (m: Message, tournament: Tournament, cre
         setTimeout(async () => reply.delete(), 5000);
         await tournamentRoles(m, tournament, creator);
     });
-    collector.on("end", async () => {
-        await passMessage.delete();
-        if (!stopped)
-            await m.reply("Tournament creation timed out.");
-    });
+    collector.on("end", () => timedOut(passMessage, stopped, "Tournament creation"));
 }
 
 // Function to fetch and assign roles
@@ -518,11 +514,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             msg.delete();
         }, 5000);
     });
-    roleCollector.on("end", async () => {
-        await roleMessage.delete();
-        if (!stopped)
-            await m.reply("Tournament creation timed out.");
-    });
+    roleCollector.on("end", () => timedOut(roleMessage, stopped, "Tournament creation"));
 }
 
 // Function to fetch and assign channels
@@ -793,12 +785,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             msg.delete();
         }, 5000);
     });
-    channelCollector.on("end", async () => {
-        await channelMessage.delete();
-        if (!stopped)
-            await m.reply("Tournament creation timed out.");
-        return;
-    });
+    channelCollector.on("end", () => timedOut(channelMessage, stopped, "Tournament creation"));
 }
 
 // Function to fetch and toggle corsace
@@ -855,11 +842,7 @@ async function tournamentCorsace (m: Message, tournament: Tournament) {
         setTimeout(async () => (await i.deleteReply()), 5000);
         await tournamentSave(m, tournament);
     });
-    componentCollector.on("end", async () => {
-        await corsaceMessage.delete();
-        if (!stopped)
-            await m.reply("Tournament creation timed out.");
-    });
+    componentCollector.on("end", () => timedOut(corsaceMessage, stopped, "Tournament creation"));
 }
 
 // Function to save the tournament
