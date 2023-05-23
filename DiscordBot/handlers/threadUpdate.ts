@@ -1,7 +1,8 @@
 import { AuditLogEvent, ThreadChannel } from "discord.js";
 import { discordClient } from "../../Server/discord";
 import { TournamentChannel } from "../../Models/tournaments/tournamentChannel";
-import threadCommands from "../commands/threadCommands";
+import { threadCommands } from "../commands";
+import mappoolComponentsThread from "../functions/tournamentFunctions/mappoolComponentsThread";
 
 export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel) {
     // Don't need to check thread updates for anything else (currently)
@@ -20,13 +21,19 @@ export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel
     if (!channel || !threadCommands[channel.channelType]) 
         return;
 
+    const [newComponents, oldComponents] = await Promise.all([ mappoolComponentsThread(nt, log.executor), mappoolComponentsThread(ot, log.executor) ]);
+    if (!newComponents || !oldComponents)
+        return;
+
     const command = threadCommands[channel.channelType]!;
 
     if (ot.archived !== nt.archived) {
+        oldComponents.m.delete();
         if (nt.archived)
-            await command.delete(nt, log.executor);
+            await command.delete(nt, newComponents);
         else 
-            await command.create(nt, log.executor);
+            await command.create(nt, newComponents);
+        await newComponents.m.delete();
         return;
     }
 
@@ -43,10 +50,13 @@ export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel
         return;
     }
     if (!poolMatchOld) {
-        await command.create(nt, log.executor);
+        oldComponents.m.delete();
+        await command.create(nt, newComponents);
+        await newComponents.m.delete();
         return;
     }
 
-    await command.create(nt, log.executor);
-    await command.delete(ot, log.executor);
+    await Promise.all([ command.create(nt, newComponents), command.delete(ot, oldComponents) ]);
+
+    await Promise.all([ oldComponents.m.delete(), newComponents.m.delete() ]);
 }

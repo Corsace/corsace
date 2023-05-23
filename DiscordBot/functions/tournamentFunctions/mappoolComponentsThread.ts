@@ -1,11 +1,22 @@
-import { ThreadChannel, User as DiscordUser } from "discord.js";
+import { ThreadChannel, User as DiscordUser, Message, DiscordAPIError } from "discord.js";
 import { User } from "../../../Models/user";
-import { unFinishedTournaments } from "../../../Models/tournaments/tournament";
+import { Tournament, unFinishedTournaments } from "../../../Models/tournaments/tournament";
 import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
 import mappoolComponents from "./mappoolComponents";
 import respond from "../respond";
+import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
+import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
+import { discordClient } from "../../../Server/discord";
 
-export default async function mappoolComponentsThread (t: ThreadChannel, owner: DiscordUser) {
+export type mappoolComponentsThreadType = {
+    m: Message;
+    creator: User;
+    tournament: Tournament;
+    mappoolMap: MappoolMap;
+    mappers: string[];
+};
+
+export default async function mappoolComponentsThread (t: ThreadChannel, owner: DiscordUser, channel?: TournamentChannel): Promise<mappoolComponentsThreadType | undefined> {
     const creator = await User.findOne({ where: { discord: { userID: owner.id } } });
     if (!creator)
         return;
@@ -25,7 +36,33 @@ export default async function mappoolComponentsThread (t: ThreadChannel, owner: 
     const slotText = poolMatch[2].slice(0, poolMatch[2].length - 1);
     const mappers = poolMatch[4] ? poolMatch[4].split(", ") : [];
 
-    const m = await t.send("Loading...");
+    let m: Message | undefined = undefined;
+    try {
+        m = await t.send("Loading...");
+    } catch (e) {
+        if (!(e instanceof DiscordAPIError)) 
+            throw e;
+        if (!channel)
+            return;
+
+        const tournamentChannels = await TournamentChannel
+            .createQueryBuilder("channel")
+            .leftJoinAndSelect("channel.tournament", "tournament")
+            .where("tournament.ID = :id", { id: channel.tournament.ID })
+            .getMany();
+        if (tournamentChannels.length === 0)
+            return;
+
+        const adminChannel = tournamentChannels.find(c => c.channelType === TournamentChannelType.Admin);
+        if (!adminChannel)
+            return;
+
+        const adminDiscordChannel = await discordClient.channels.fetch(adminChannel.channelID);
+        if (!adminDiscordChannel || !("send" in adminDiscordChannel))
+            return;
+
+        m = await adminDiscordChannel.send("Loading...");
+    }
 
     const components = await mappoolComponents(m, poolText, slotText, order, true, { text: t.parentId!, searchType: "channel" }, unFinishedTournaments, false, undefined, true);
     if (!components || !("mappoolMap" in components)) {

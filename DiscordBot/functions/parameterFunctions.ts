@@ -37,7 +37,7 @@ interface parameterOptionsBase {
 interface messageParameterOptions extends parameterOptionsBase {
     regex: RegExp,
     regexIndex: number,
-    paramType: keyof ParamTypeMap;
+    paramType?: keyof ParamTypeMap;
     customHandler: undefined,
 };
 
@@ -50,7 +50,7 @@ export function extractParameter (m: Message | ChatInputCommandInteraction, para
     if ("regexIndex" in parameterOption) {
         if (m instanceof Message) {
             const param = m.content.match(parameterOption.regex)?.[parameterOption.regexIndex] ?? m.content.split(" ")[index];
-            return messageCommandParameterMethods[parameterOption.paramType](param);
+            return messageCommandParameterMethods[parameterOption.paramType || "string"](param);
         }
 
         if (parameterOption.paramType && slashCommandParameterMethods[parameterOption.paramType])

@@ -21,7 +21,7 @@ type TournamentMappoolAndSlotMod = { tournament: Tournament, mappool: Mappool, s
 type TournamentMappoolSlotModAndMap = { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot, mappoolMap: MappoolMap, mappoolSlot: string };
 type AllComponents = { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot, mappoolMap: MappoolMap, mappoolSlot: string };
 
-type MappoolComponents = (TournamentOnly | TournamentAndMappool | TournamentMappoolAndSlotMod | TournamentMappoolSlotModAndMap | AllComponents) & optionalComponents;
+export type MappoolComponentsType = (TournamentOnly | TournamentAndMappool | TournamentMappoolAndSlotMod | TournamentMappoolSlotModAndMap | AllComponents) & optionalComponents;
 
 export default async function mappoolComponents(
     m: Message | ChatInputCommandInteraction,
@@ -40,7 +40,7 @@ export default async function mappoolComponents(
         roles: TournamentRoleType[],
     },
     getJobPosts?: boolean
-): Promise<undefined | MappoolComponents> {
+): Promise<undefined | MappoolComponentsType> {
     
     // Get tournament
     const tournament = await getTournament(m, tournamentSearchParameters?.text, tournamentSearchParameters?.searchType, tournamentStatusFilters, getStageRound);
@@ -66,7 +66,7 @@ export default async function mappoolComponents(
         return { tournament, stage, staff };
 
     // Get mappool
-    const mappool = await getMappool(m, tournament, pool, false, slot === true, slot === true && map === true);
+    const mappool = await getMappool(m, tournament, pool, false, slot !== undefined, slot !== undefined && map !== undefined);
     if (!mappool) 
         return;
     if (checkPublic && mappool.isPublic) {
@@ -78,7 +78,7 @@ export default async function mappoolComponents(
         return { tournament, mappool };
 
     // Get slotMod
-    const slotMod = await getMappoolSlot(m, mappool, slot, false, map === true, getJobPosts);
+    const slotMod = await getMappoolSlot(m, mappool, slot, false, map !== undefined, getJobPosts);
     if (!slotMod) 
         return;
 

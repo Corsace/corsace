@@ -183,6 +183,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Please provide a valid match size for your tournament! It is currently invalid.");
         return;
     }
+    tournament.matchSize = matchSize;
 
     // Check for min and max team size validity
     let minSize: number | null = 0;

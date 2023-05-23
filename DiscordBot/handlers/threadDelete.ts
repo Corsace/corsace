@@ -1,7 +1,8 @@
 import { AuditLogEvent, ThreadChannel } from "discord.js";
 import { discordClient } from "../../Server/discord";
 import { TournamentChannel } from "../../Models/tournaments/tournamentChannel";
-import threadCommands from "../commands/threadCommands";
+import { threadCommands } from "../commands";
+import mappoolComponentsThread from "../functions/tournamentFunctions/mappoolComponentsThread";
 
 export default async function threadDelete (t: ThreadChannel) {
     const logs = await t.guild.fetchAuditLogs({ type: AuditLogEvent.ThreadDelete });
@@ -16,6 +17,11 @@ export default async function threadDelete (t: ThreadChannel) {
     if (!channel || !threadCommands[channel.channelType]) 
         return;
 
+    const components = await mappoolComponentsThread(t, log.executor, channel);
+    if (!components)
+        return;
+
     const command = threadCommands[channel.channelType]!;
-    await command.delete(t, log.executor);
+    await command.delete(t, components);
+    await components.m.delete();
 }

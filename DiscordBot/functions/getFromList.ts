@@ -19,11 +19,10 @@ export default async function getFromList<T extends { ID: number, name: string }
     }
     let row = new ActionRowBuilder<ButtonBuilder>();
     for (const item of list) {
-        let id = "";
         ids[item.ID.toString()] = randomUUID();
         row = row.addComponents(
             new ButtonBuilder()
-                .setCustomId(ids[id])
+                .setCustomId(ids[item.ID.toString()])
                 .setLabel(item.name)
                 .setStyle(ButtonStyle.Primary)
         );

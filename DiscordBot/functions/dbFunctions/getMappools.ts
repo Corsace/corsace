@@ -3,7 +3,7 @@ import { Mappool } from "../../../Models/tournaments/mappools/mappool";
 import { Tournament } from "../../../Models/tournaments/tournament";
 
 export default function getMappools (tournament: Tournament, poolText: string = "", getStageRound: boolean = false, getSlots: boolean = false, getMaps: boolean = false) {
-    const mappoolQ = Mappool.createQueryBuilder("stage");
+    const mappoolQ = Mappool.createQueryBuilder("mappool");
 
     if (getStageRound) {
         mappoolQ.leftJoinAndSelect("mappool.stage", "stage")
