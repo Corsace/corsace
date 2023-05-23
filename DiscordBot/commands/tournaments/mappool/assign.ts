@@ -3,7 +3,7 @@ import { Command } from "../../index";
 import { Tournament, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { Beatmap } from "../../../../Models/beatmap";
-import { Beatmap as APIBeatmap, Mode } from "nodesu";
+import { Beatmap as APIBeatmap } from "nodesu";
 import { osuClient } from "../../../../Server/osu";
 import { insertBeatmap } from "../../../../Server/scripts/fetchYearMaps";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
@@ -100,8 +100,8 @@ async function handleBeatmapLink(m: Message | ChatInputCommandInteraction, targe
     }
     const beatmapID = parseInt(link[3]);
     
-    const set = (await osuClient.beatmaps.getBySetId(parseInt(link[1]), Mode.all, undefined, undefined, allowedMods) as APIBeatmap[]);
-    const apiMap = set.find(m => m.beatmapId === beatmapID)
+    const set = await osuClient.beatmaps.getBySetId(parseInt(link[1])) as APIBeatmap[];
+    let apiMap = set.find(m => m.beatmapId === beatmapID);
     if (!apiMap) {
         await respond(m, "Could not find beatmap on osu!api.");
         return;
@@ -170,6 +170,8 @@ async function handleBeatmapLink(m: Message | ChatInputCommandInteraction, targe
     log.beatmap = beatmap;
     await log.save();
 
+    if (allowedMods)
+        apiMap = (await osuClient.beatmaps.getBySetId(parseInt(link[1]), undefined, undefined, undefined, allowedMods) as APIBeatmap[]).find(m => m.beatmapId === beatmapID)!;
     const mappoolMapEmbed = await beatmapEmbed(apiMap, mod, set);
     mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
