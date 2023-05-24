@@ -29,10 +29,12 @@ module.exports = {
             "named": "always",
             "asyncArrow": "always",
         }],
-        "no-constant-condition": {
-            error: true,
-            checkLoops: false,
-        },
+        "no-constant-condition": [
+            "error",
+            {
+                checkLoops: false,
+            },
+        ],
         "vue/no-v-html": "off",
         "vue/html-indent": [
             "error", 
