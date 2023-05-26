@@ -75,7 +75,7 @@ export default async function mappoolComponents(
     }
 
     if (typeof slot !== "string")
-        return { tournament, mappool };
+        return { tournament, mappool, stage, staff };
 
     // Get slotMod
     const slotMod = await getMappoolSlot(m, mappool, slot, false, map !== undefined, getJobPosts);
@@ -83,7 +83,7 @@ export default async function mappoolComponents(
         return;
 
     if (typeof map !== "number")
-        return { tournament, mappool, slotMod };
+        return { tournament, mappool, slotMod, stage, staff };
 
     // Get mappoolMap
     const mappoolMap = slotMod.maps.find(m => m.order === map);
