@@ -162,7 +162,7 @@ export default class MapperComments extends Vue {
     @mcaAyimModule.Action updateSelectedMode;
 
     user: User | null = null;
-    comments: Comment[] = []
+    comments: Comment[] = [];
     targetID = this.$route.params.mapper;
     newComment = "";
     info = "";

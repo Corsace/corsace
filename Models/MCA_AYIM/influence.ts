@@ -6,35 +6,35 @@ import { ModeDivision } from "./modeDivision";
 export class Influence extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @ManyToOne(() => User, user => user.influences, { nullable: false })
-    user!: User;
+        user!: User;
 
     @ManyToOne(() => User, user => user.influencing, { nullable: false })
-    influence!: User;
+        influence!: User;
 
     @Column({ type: "year", nullable: false })
-    year!: number;
+        year!: number;
 
     @ManyToOne(() => ModeDivision, modeDivision => modeDivision.influences, {
         nullable: false,
         eager: true,
     })
-    mode!: ModeDivision;
+        mode!: ModeDivision;
 
     @Column()
-    rank!: number;
+        rank!: number;
 
     @Column({ type: "text", nullable: true })
-    comment!: string;
+        comment!: string;
 
     @Column({ default: false })
-    isValid!: boolean;
+        isValid!: boolean;
 
     @ManyToOne(() => User, user => user.influenceReviews)
-    reviewer?: User;
+        reviewer?: User;
 
     @Column({ nullable: true })
-    lastReviewedAt?: Date;
+        lastReviewedAt?: Date;
 }

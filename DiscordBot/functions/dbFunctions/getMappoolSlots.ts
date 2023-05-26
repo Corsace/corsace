@@ -2,8 +2,8 @@ import { Brackets } from "typeorm";
 import { Mappool } from "../../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../../Models/tournaments/mappools/mappoolSlot";
 
-export default function getMappoolSlots (mappool: Mappool, slot: string = "", getMappool: boolean = false, getMaps: boolean = false, getJobPost: boolean = false) {
-    const mappoolSlotQ = MappoolSlot.createQueryBuilder("slot")
+export default function getMappoolSlots (mappool: Mappool, slot = "", getMappool = false, getMaps = false, getJobPost = false) {
+    const mappoolSlotQ = MappoolSlot.createQueryBuilder("slot");
     if (getMappool) {
         mappoolSlotQ.leftJoinAndSelect("slot.mappool", "mappool");
 
@@ -22,7 +22,7 @@ export default function getMappoolSlots (mappool: Mappool, slot: string = "", ge
                     .leftJoinAndSelect("maps.jobPost", "jobPost");
         }
     } else
-        mappoolSlotQ.leftJoin("slot.mappool", "mappool")
+        mappoolSlotQ.leftJoin("slot.mappool", "mappool");
 
     return mappoolSlotQ
         .where("mappool.ID = :mappool")

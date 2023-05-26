@@ -14,97 +14,97 @@ import { MappoolMapHistory } from "./tournaments/mappools/mappoolMapHistory";
 export class Beatmap extends BaseEntity {
 
     @PrimaryColumn()
-    ID!: number;
+        ID!: number;
 
     @Column()
-    beatmapsetID!: number;
+        beatmapsetID!: number;
 
     @ManyToOne(() => Beatmapset, beatmapset => beatmapset.beatmaps, {
         nullable: false,
     })
-    beatmapset!: Beatmapset;
+        beatmapset!: Beatmapset;
 
     @Column()
-    totalLength!: number;
+        totalLength!: number;
 
     @Column()
-    hitLength!: number;
+        hitLength!: number;
 
     @Column()
-    difficulty!: string;
+        difficulty!: string;
 
     @Column("double")
-    circleSize!: number;
+        circleSize!: number;
 
     @Column("double")
-    overallDifficulty!: number;
+        overallDifficulty!: number;
 
     @Column("double")
-    approachRate!: number;
+        approachRate!: number;
 
     @Column("double")
-    hpDrain!: number;
+        hpDrain!: number;
 
     @ManyToOne(() => ModeDivision, modeDivision => modeDivision.beatmaps, {
         nullable: false,
         eager: true,
     })
-    mode!: ModeDivision;
+        mode!: ModeDivision;
 
     @Column()
-    circles!: number;
+        circles!: number;
 
     @Column()
-    sliders!: number;
+        sliders!: number;
 
     @Column()
-    spinners!: number;
+        spinners!: number;
 
     @Column("double")
-    rating!: number;
+        rating!: number;
 
     @Column({ default: false })
-    storyboard!: boolean;
+        storyboard!: boolean;
 
     @Column({ default: false })
-    video!: boolean;
+        video!: boolean;
 
     @Column()
-    playCount!: number;
+        playCount!: number;
 
     @Column()
-    passCount!: number;
+        passCount!: number;
 
     @Column({ nullable: true })
-    packs?: string;
+        packs?: string;
 
     @Column({ nullable: true })
-    maxCombo?: number;
+        maxCombo?: number;
 
     @Column("double", { nullable: true })
-    aimSR?: number;
+        aimSR?: number;
 
     @Column("double", { nullable: true })
-    speedSR?: number;
+        speedSR?: number;
 
     @Index()
     @Column("double")
-    totalSR!: number;
+        totalSR!: number;
 
     @OneToMany(() => GuestRequest, guestRequest => guestRequest.beatmap)
-    guestRequests!: GuestRequest[];
+        guestRequests!: GuestRequest[];
 
     @OneToMany(() => Nomination, nomination => nomination.beatmap)
-    nominationsReceived!: Nomination[];
+        nominationsReceived!: Nomination[];
     
     @OneToMany(() => Vote, vote => vote.beatmap)
-    votesReceived!: Vote[];
+        votesReceived!: Vote[];
 
     @OneToMany(() => MappoolMap, mappoolMap => mappoolMap.beatmap)
-    mappoolMaps!: MappoolMap[];
+        mappoolMaps!: MappoolMap[];
 
     @OneToMany(() => MappoolMapHistory, history => history.beatmap)
-    mappoolMapHistoryEntries!: MappoolMapHistory[];
+        mappoolMapHistoryEntries!: MappoolMapHistory[];
 
     static search (year: number, modeId: number, stage: "voting" | "nominating", category: Category, query: StageQuery): Promise<[Beatmap[], number]> {
         // Initial repo setup

@@ -53,7 +53,7 @@ export default class AdminModalYear extends Vue {
         };
     }
 
-    mcaInfo = {}
+    mcaInfo = {};
 
     fields = [
         { label: "year", key: "year", type: "number" },

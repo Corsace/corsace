@@ -12,7 +12,7 @@ export function extractTargetText (index: number) {
         }
 
         return m.mentions.users.first()?.username ?? m.content.split(" ").slice(index, m.content.split(" ").length).join(" ");
-    }
+    };
 }
 
 export function extractDate (index: number) {
@@ -22,5 +22,5 @@ export function extractDate (index: number) {
             return;
 
         return new Date(date.includes("-") ? date : parseInt(date + "000"));
-    }
+    };
 }

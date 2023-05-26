@@ -69,11 +69,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    let organizerTarget =  m instanceof Message ? m.mentions.users.first() : m.options.getUser("organizer");
+    const organizerTarget =  m instanceof Message ? m.mentions.users.first() : m.options.getUser("organizer");
     const organizer = organizerTarget ? await getUser(organizerTarget.id, "discord", false) : creator;
     if (!organizer) {
         // organizerTarget exists in this case because creator cannot be null / undefined.
-        await loginResponse(m, "No user found in the corsace database for <@" + organizerTarget!.id+ ">! Please have them login to the Corsace website with their discord and osu! accounts!");
+        await loginResponse(m, "No user found in the corsace database for <@" + organizerTarget!.id + ">! Please have them login to the Corsace website with their discord and osu! accounts!");
         return;
     }
     tournament.organizer = organizer;
@@ -350,7 +350,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         "role": randomUUID(),
         "stop": randomUUID(),
         "done": randomUUID(),
-    }
+    };
     const roleMessage = await m.reply({
         content,
         components: [
@@ -525,7 +525,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         "channel": randomUUID(),
         "stop": randomUUID(),
         "done": randomUUID(),
-    }
+    };
     const channelMessage = await m.reply({
         content,
         components: [
@@ -794,7 +794,7 @@ async function tournamentCorsace (m: Message, tournament: Tournament) {
     const ids = {
         "corsace": randomUUID(),
         "stop": stopID,
-    }
+    };
     const corsaceRow = new ActionRowBuilder<StringSelectMenuBuilder>()
         .addComponents(
             new StringSelectMenuBuilder()

@@ -55,21 +55,21 @@ export const forumTags: { [key in TournamentChannelType]?: GuildForumTagData[] }
 export class TournamentChannel extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @CreateDateColumn()
-    createdAt!: Date;
+        createdAt!: Date;
 
     @ManyToOne(() => User, user => user.tournamentChannelsCreated)
-    createdBy!: User;
+        createdBy!: User;
 
     @Column()
-    channelID!: string;
+        channelID!: string;
 
     @ManyToOne(() => Tournament, tournament => tournament.channels)
-    tournament!: Tournament;
+        tournament!: Tournament;
 
     @Column({ type: "enum", enum: TournamentChannelType, default: TournamentChannelType.General })
-    channelType!: TournamentChannelType;
+        channelType!: TournamentChannelType;
 
 }

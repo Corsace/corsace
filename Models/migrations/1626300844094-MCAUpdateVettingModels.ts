@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
 export class MCAUpdateVettingModels1626300844094 implements MigrationInterface {
-    name = "MCAUpdateVettingModels1626300844094"
+    name = "MCAUpdateVettingModels1626300844094";
 
     public async up (queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query("CREATE TABLE `user_nominations_nomination` (`userID` int NOT NULL, `nominationID` int NOT NULL, INDEX `IDX_c39e90811e78d3a759f9f75e37` (`userID`), INDEX `IDX_2dc37a0c6b4f99e6e20c4903ae` (`nominationID`), PRIMARY KEY (`userID`, `nominationID`)) ENGINE=InnoDB");

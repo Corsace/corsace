@@ -52,7 +52,7 @@ export default class ModeSwitcher extends Vue {
     @mcaAyimModule.State modes!: string[];
     @mcaAyimModule.Getter phase!: Phase;
     @mcaAyimModule.Getter isEligibleFor!: (mode: string) => boolean;
-    @mcaAyimModule.Action updateSelectedMode
+    @mcaAyimModule.Action updateSelectedMode;
 
     modeShort = {
         standard: "STD",

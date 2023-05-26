@@ -83,4 +83,4 @@ async function execute () {
 export default {
     initialize,
     execute,
-}
+};

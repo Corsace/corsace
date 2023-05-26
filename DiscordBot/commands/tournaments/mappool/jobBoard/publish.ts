@@ -77,7 +77,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 const createObj: GuildForumThreadCreateOptions = {
                     name: `${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${map.order}`,
                     message: { content: map.jobPost.description },
-                }
+                };
                 const tag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "open")?.id;
                 if (tag)
                     createObj.appliedTags = [tag];

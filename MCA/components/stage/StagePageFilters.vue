@@ -116,7 +116,7 @@ export default class StagePageFilters extends Vue {
 
     beatmapOptions = ["date", "artist", "title", "favs", "creator", "sr"];
     userOptions = ["alph", "id"];
-    playedFilters = ["all", "played"]
+    playedFilters = ["all", "played"];
     orderOptions = ["asc", "desc"];
     votingOptions = ["incVote", "voteChoice"];
     orderOption = "asc";

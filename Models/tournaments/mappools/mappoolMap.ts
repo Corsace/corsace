@@ -12,63 +12,63 @@ import { JobPost } from "./jobPost";
 export class MappoolMap extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @CreateDateColumn()
-    createdAt!: Date;
+        createdAt!: Date;
     
     @ManyToOne(() => User, user => user.mappoolMapsCreated)
-    createdBy!: User;
+        createdBy!: User;
 
     @ManyToOne(() => User, user => user.mappoolMapsAssigned)
-    assignedBy?: User | null;
+        assignedBy?: User | null;
     
     @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
-    lastUpdate!: Date;
+        lastUpdate!: Date;
 
     @Column({ nullable: false })
-    order!: number;
+        order!: number;
 
     @Column({ default: false })
-    isCustom!: boolean;
+        isCustom!: boolean;
 
     @Column({ type: "datetime", nullable: true })
-    deadline?: Date | null;
+        deadline?: Date | null;
 
     @ManyToOne(() => MappoolSlot, slot => slot.maps)
-    slot!: MappoolSlot;
+        slot!: MappoolSlot;
 
     @Column({ type: "varchar", nullable: true })
-    customThreadID?: string | null;
+        customThreadID?: string | null;
 
     @Column({ type: "varchar", nullable: true })
-    customMessageID?: string | null;
+        customMessageID?: string | null;
 
     @ManyToMany(() => User, user => user.customMapsTested)
     @JoinTable()
-    testplayers!: User[];
+        testplayers!: User[];
 
     @ManyToMany(() => User, user => user.customMaps)
     @JoinTable()
-    customMappers!: User[];
+        customMappers!: User[];
 
     @OneToOne(() => JobPost, post => post.map)
     @JoinColumn()
-    jobPost?: JobPost | null;
+        jobPost?: JobPost | null;
 
     @OneToOne(() => CustomBeatmap, beatmap => beatmap.mappoolMap)
     @JoinColumn()
-    customBeatmap?: CustomBeatmap | null;
+        customBeatmap?: CustomBeatmap | null;
 
     @ManyToOne(() => Beatmap, beatmap => beatmap.mappoolMaps)
-    beatmap?: Beatmap | null;
+        beatmap?: Beatmap | null;
 
     @OneToMany(() => MappoolMapHistory, history => history.mappoolMap)
-    history!: MappoolMapHistory[];
+        history!: MappoolMapHistory[];
 
     @OneToMany(() => MappoolMapSkill, skill => skill.mappoolMap)
-    skillRatings!: MappoolMapSkill[];
+        skillRatings!: MappoolMapSkill[];
 
     @OneToMany(() => MappoolMapWeight, weight => weight.mappoolMap)
-    skillWeights!: MappoolMapWeight[];
+        skillWeights!: MappoolMapWeight[];
 }

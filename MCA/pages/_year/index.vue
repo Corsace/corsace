@@ -361,7 +361,7 @@ export default class Index extends Vue {
         var i = 1;
         var timer = setInterval(() => {
             const val = Math.round(oldVal + (newVal - oldVal) * this.easing(i / this.easingIterations));
-            this.countString = val.toString().split("").reverse()
+            this.countString = val.toString().split("").reverse();
             i++;
             if (i > this.easingIterations)
                 clearInterval(timer);

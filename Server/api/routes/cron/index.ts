@@ -48,7 +48,7 @@ const cronRouter = new Router();
 cronRouter.use(koaBasicAuth({
     name: config.interOpAuth.username,
     pass: config.interOpAuth.password,
-}))
+}));
 
 cronRouter.get("/", async (ctx) => {
     ctx.body = cron.listJobs();

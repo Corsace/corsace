@@ -22,61 +22,61 @@ export enum BeatmapsetRankedStatus {
 export class Beatmapset extends BaseEntity {
     
     @PrimaryColumn()
-    ID!: number;
+        ID!: number;
     
     @Column()
-    artist!: string;
+        artist!: string;
 
     @Column()
-    title!: string;
+        title!: string;
 
     @Column()
-    submitDate!: Date;
+        submitDate!: Date;
 
     @Index()
     @Column({ type: "datetime", nullable: true })
-    approvedDate?: Date | null;
+        approvedDate?: Date | null;
 
     @Column({ type: "enum", enum: BeatmapsetRankedStatus })
-    rankedStatus!: BeatmapsetRankedStatus;
+        rankedStatus!: BeatmapsetRankedStatus;
 
     @Column("double")
-    BPM!: number;
+        BPM!: number;
     
     @Column()
-    genre!: string;
+        genre!: string;
 
     @Column()
-    language!: string;
+        language!: string;
     
     @Column()
-    favourites!: number;
+        favourites!: number;
 
     @Column({
         type: "longtext",
         charset: "utf8mb4",
         collation: "utf8mb4_unicode_520_ci",
     })
-    tags!: string;
+        tags!: string;
     
     @OneToMany(() => Beatmap, beatmap => beatmap.beatmapset, {
         eager: true,
     })
-    beatmaps!: Beatmap[];
+        beatmaps!: Beatmap[];
 
     @ManyToOne(() => User, user => user.beatmapsets, {
         eager: true,
     })
-    creator!: User;
+        creator!: User;
     
     @OneToMany(() => Nomination, nomination => nomination.beatmapset)
-    nominationsReceived!: Nomination[];
+        nominationsReceived!: Nomination[];
     
     @OneToMany(() => Vote, vote => vote.beatmapset)
-    votesReceived!: Vote[];
+        votesReceived!: Vote[];
 
     @ManyToMany(() => User, user => user.mapsRanked)
-    rankers!: User[];
+        rankers!: User[];
 
     static search (year: number, modeId: number, stage: "voting" | "nominating", category: Category, query: StageQuery): Promise<[Beatmapset[], number]> {
         // Initial repo setup

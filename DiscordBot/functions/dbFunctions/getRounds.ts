@@ -13,7 +13,7 @@ export const roundSearchConditions = {
 };
 
 export default function getRounds (target: string | number, searchType: keyof typeof roundSearchConditions, stage?: boolean, tournament?: boolean) {
-    const roundQ = Round.createQueryBuilder("round")
+    const roundQ = Round.createQueryBuilder("round");
 
     if (stage)
         roundQ.leftJoinAndSelect("round.stage", "stage");

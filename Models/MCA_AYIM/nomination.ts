@@ -8,55 +8,55 @@ import { Beatmap } from "../beatmap";
 export class Nomination extends BaseEntity {
     
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @ManyToMany(() => User, user => user.nominations)
-    nominators!: User[];
+        nominators!: User[];
     
     @RelationId((nomination: Nomination) => nomination.category)
-    categoryID!: number;
+        categoryID!: number;
 
     @ManyToOne(() => Category, category => category.nominations, {
         nullable: false,
         eager: true,
     })
-    category!: Category;
+        category!: Category;
 
     @RelationId((nomination: Nomination) => nomination.user)
-    userID?: number;
+        userID?: number;
 
     @ManyToOne(() => User, user => user.nominationsReceived, {
         eager: true,
     })
-    user?: User;
+        user?: User;
 
     @RelationId((nomination: Nomination) => nomination.beatmapset)
-    beatmapsetID?: number;
+        beatmapsetID?: number;
     
     @ManyToOne(() => Beatmapset, Beatmapset => Beatmapset.nominationsReceived, {
         eager: true,
     })
-    beatmapset?: Beatmapset;
+        beatmapset?: Beatmapset;
 
     @RelationId((nomination: Nomination) => nomination.beatmap)
-    beatmapID?: number;
+        beatmapID?: number;
     
     @ManyToOne(() => Beatmap, Beatmap => Beatmap.nominationsReceived, {
         eager: true,
     })
-    beatmap?: Beatmap;
+        beatmap?: Beatmap;
 
     @Column({ default: false })
-    isValid!: boolean;
+        isValid!: boolean;
     
     @RelationId((nomination: Nomination) => nomination.reviewer)
-    reviewerID?: number;
+        reviewerID?: number;
     
     @ManyToOne(() => User, user => user.nominationReviews)
-    reviewer?: User;
+        reviewer?: User;
 
     @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
-    lastReviewedAt!: Date;
+        lastReviewedAt!: Date;
 
     static populate (): SelectQueryBuilder<Nomination> {
         return Nomination

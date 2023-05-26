@@ -1,6 +1,5 @@
 import { ModeDivisionType, ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
 import { queue } from "async";
-import { createConnection } from "typeorm";
 import memoizee from "memoizee";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { config } from "node-config-ts";
@@ -60,7 +59,7 @@ async function getMissingOsuUserProperties (userID: number): Promise<{ country: 
         country: userApi[0].country,
         username: userApi[0].username,
     };
-};
+}
 
 const getUser = async (targetUser: { username?: string, userID: number, country?: string }): Promise<User> => {
     let user = await User.findOne({ where: { osu: { userID: `${targetUser.userID}` }}});
@@ -134,7 +133,7 @@ const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
             }
         }
     return rankers;
-}
+};
 
 // Memoized method to create or fetch a BeatmapSet from DB.
 const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> => {
@@ -209,13 +208,13 @@ const getBNsApiCallRawData = async (beatmapSetID: BeatmapsetID): Promise<null | 
                 },
             })).data;
         } catch (err: any) {
-            console.error('An error occured while fetching BNs for beatmap set ' + beatmapSetID);
+            console.error("An error occured while fetching BNs for beatmap set " + beatmapSetID);
             console.error(err.stack);
             process.exit(1);
         }
     }
     return null;
-}
+};
 
 async function insertBeatmap (apiBeatmap: APIBeatmap) {
     let beatmap = await Beatmap.findOne({

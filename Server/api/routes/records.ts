@@ -60,7 +60,7 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
         avgSliders,
         avgSpinners,
         highestSr,
-        lowestSr
+        lowestSr,
     ] = await Promise.all([
         // Playcount
         Beatmapset

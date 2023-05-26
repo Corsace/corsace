@@ -6,7 +6,7 @@ import respond from "../../functions/respond";
 import confirmCommand from "../../functions/confirmCommand";
 import { mappoolComponentsThreadType } from "../../functions/tournamentFunctions/mappoolComponentsThread";
 
-export async function jobBoardCreate(t: ThreadChannel, { m, creator, tournament, mappoolMap }: mappoolComponentsThreadType) {
+export async function jobBoardCreate (t: ThreadChannel, { m, creator, tournament, mappoolMap }: mappoolComponentsThreadType) {
     let jobPost = new JobPost();
     if (mappoolMap.jobPost)
         jobPost = mappoolMap.jobPost;

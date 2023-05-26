@@ -5,9 +5,9 @@ import { createGunzip } from "zlib";
 import streamToString from "stream-to-string";
 
 export class MCA2021Seeding1655696966203 implements MigrationInterface {
-    name = 'MCA2021Seeding1655696966203'
+    name = "MCA2021Seeding1655696966203";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
+    public async up (queryRunner: QueryRunner): Promise<void> {
         // If .sql.gz file exists, just execute it
         const sqlGzFilePath = resolve(__dirname, "1655696966203-MCA2021seeding.sql.gz");
         if (existsSync(sqlGzFilePath)) {
@@ -19,11 +19,11 @@ export class MCA2021Seeding1655696966203 implements MigrationInterface {
             return;
         }
 
-        console.warn('MCA 2021 seeding file doesn\'t exist, skipping migration');
+        console.warn("MCA 2021 seeding file doesn't exist, skipping migration");
     }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        throw new Error('There is no going back.');
+    public async down (queryRunner: QueryRunner): Promise<void> {
+        throw new Error("There is no going back.");
     }
 
 }

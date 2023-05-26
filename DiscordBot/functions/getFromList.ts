@@ -4,7 +4,7 @@ import { randomUUID } from "crypto";
 import commandUser from "./commandUser";
 import respond from "./respond";
 
-export default async function getFromList<T extends { ID: number, name: string }>(m: Message | ChatInputCommandInteraction, list: T[], listName: string): Promise<T | undefined> {
+export default async function getFromList<T extends { ID: number, name: string }> (m: Message | ChatInputCommandInteraction, list: T[], listName: string): Promise<T | undefined> {
     if (list.length === 0) {
         await respond(m, `No ${listName} found.`);
         return;
@@ -16,7 +16,7 @@ export default async function getFromList<T extends { ID: number, name: string }
     const [stopID, stop] = stopRow();
     const ids = {
         stop: stopID,
-    }
+    };
     let row = new ActionRowBuilder<ButtonBuilder>();
     for (const item of list) {
         ids[item.ID.toString()] = randomUUID();

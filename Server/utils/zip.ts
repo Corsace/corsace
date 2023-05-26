@@ -1,8 +1,8 @@
-import archiver from 'archiver';
-import { PassThrough, Readable } from 'stream';
+import archiver from "archiver";
+import { PassThrough, Readable } from "stream";
 
-export function zipFiles(files: { content: Readable, name: string }[]): Readable {
-    const archive = archiver('zip');
+export function zipFiles (files: { content: Readable, name: string }[]): Readable {
+    const archive = archiver("zip");
     const passThrough = new PassThrough();
 
     archive.pipe(passThrough);

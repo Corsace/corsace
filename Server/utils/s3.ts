@@ -4,7 +4,7 @@ import { buckets } from "../s3";
 // Can't think of any other possible use case where we would need to use S3/R2 other than mappacks, but if we do, we can just add more overload functions and cases here.
 export function gets3Key(bucket: string, url: string | null | undefined): string | undefined
 export function gets3Key(bucket: string, mappool: Mappool): string | undefined
-export function gets3Key(bucket: string, obj?: string | null | Mappool): string | undefined {
+export function gets3Key (bucket: string, obj?: string | null | Mappool): string | undefined {
     // Checks
     let url: string | null | undefined = "";
     if (typeof obj === "string")
@@ -19,7 +19,7 @@ export function gets3Key(bucket: string, obj?: string | null | Mappool): string 
 
     // Get the path, and then get the bucket segment. The key should be the segments after.
     const urlObject = new URL(url);
-    const segments = urlObject.pathname.split('/');
+    const segments = urlObject.pathname.split("/");
 
     const s3Bucket = buckets[bucket];
     if (!s3Bucket)
@@ -35,7 +35,5 @@ export function gets3Key(bucket: string, obj?: string | null | Mappool): string 
         return;
 
     const decodedSegments = segments.slice(bucketIndex + 1).map(segment => decodeURIComponent(segment));
-    return decodedSegments.join('/');
-
-    
+    return decodedSegments.join("/");
 }

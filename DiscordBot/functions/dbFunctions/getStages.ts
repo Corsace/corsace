@@ -8,11 +8,11 @@ export const stageSearchConditions = {
     "name": new Brackets(qb => {
         qb.where("stage.name LIKE :target")
             .orWhere("stage.abbreviation LIKE :target");
-    })
+    }),
 };
 
 export default function getStages (target: string | number, searchType: keyof typeof stageSearchConditions, rounds?: boolean, tournament?: boolean) {
-    const stageQ = Stage.createQueryBuilder("stage")
+    const stageQ = Stage.createQueryBuilder("stage");
 
     if (tournament)
         stageQ.leftJoinAndSelect("stage.tournament", "tournament");

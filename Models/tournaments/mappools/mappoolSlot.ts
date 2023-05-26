@@ -1,4 +1,4 @@
-import { BaseEntity, Brackets, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Mappool } from "./mappool";
 import { MappoolMap } from "./mappoolMap";
 import { User } from "../../user";
@@ -7,36 +7,36 @@ import { User } from "../../user";
 export class MappoolSlot extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @CreateDateColumn()
-    createdAt!: Date;
+        createdAt!: Date;
 
     @ManyToOne(() => User, user => user.mappoolSlotsCreated)
-    createdBy!: User;
+        createdBy!: User;
 
     @ManyToOne(() => Mappool, mappool => mappool.slots)
-    mappool!: Mappool;
+        mappool!: Mappool;
 
     @Column()
-    name!: string;
+        name!: string;
 
     @Column()
-    acronym!: string;
+        acronym!: string;
 
     @Column({ nullable: true })
-    colour?: string;
+        colour?: string;
 
     @Column({ nullable: true })
-    allowedMods?: number;
+        allowedMods?: number;
 
     @Column({ nullable: true })
-    userModCount?: number;
+        userModCount?: number;
 
     @Column({ nullable: true })
-    uniqueModCount?: number;
+        uniqueModCount?: number;
 
     @OneToMany(() => MappoolMap, poolMap => poolMap.slot)
-    maps!: MappoolMap[];
+        maps!: MappoolMap[];
 
 }

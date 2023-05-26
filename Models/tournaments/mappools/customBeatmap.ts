@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne } from "typeorm";
 import { ModeDivision } from "../../MCA_AYIM/modeDivision";
 import { MappoolMap } from "./mappoolMap";
 
@@ -6,69 +6,69 @@ import { MappoolMap } from "./mappoolMap";
 export class CustomBeatmap extends BaseEntity {
     
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @Column({ nullable: true })
-    link?: string;
+        link?: string;
 
     @Column()
-    artist!: string;
+        artist!: string;
 
     @Column()
-    title!: string;
+        title!: string;
 
     @Column("double")
-    BPM!: number;
+        BPM!: number;
 
     @Column()
-    totalLength!: number;
+        totalLength!: number;
 
     @Column()
-    hitLength!: number;
+        hitLength!: number;
 
     @Column()
-    difficulty!: string;
+        difficulty!: string;
 
     @Column("double")
-    circleSize!: number;
+        circleSize!: number;
 
     @Column("double")
-    overallDifficulty!: number;
+        overallDifficulty!: number;
 
     @Column("double")
-    approachRate!: number;
+        approachRate!: number;
 
     @Column("double")
-    hpDrain!: number;
+        hpDrain!: number;
 
     @Column()
-    circles!: number;
+        circles!: number;
 
     @Column()
-    sliders!: number;
+        sliders!: number;
 
     @Column()
-    spinners!: number;
+        spinners!: number;
 
     @Column({ nullable: true })
-    maxCombo?: number;
+        maxCombo?: number;
 
     @Column("double", { nullable: true })
-    aimSR?: number;
+        aimSR?: number;
 
     @Column("double", { nullable: true })
-    speedSR?: number;
+        speedSR?: number;
 
     @Column("double")
-    totalSR!: number;
+        totalSR!: number;
 
     @ManyToOne(() => ModeDivision, modeDivision => modeDivision.customBeatmaps, {
         nullable: false,
         eager: true,
     })
-    mode!: ModeDivision;
+        mode!: ModeDivision;
 
     @OneToOne(() => MappoolMap, mappoolMap => mappoolMap.customBeatmap)
-    mappoolMap?: MappoolMap;
+        mappoolMap?: MappoolMap;
 
 }

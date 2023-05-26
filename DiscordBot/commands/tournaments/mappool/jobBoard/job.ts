@@ -25,7 +25,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const params = extractParameters<parameters>(m, [
         { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
         { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder },
-        { name: "description", customHandler: extractTargetText(3)}
+        { name: "description", customHandler: extractTargetText(3)},
     ]);
     if (!params)
         return;
@@ -61,7 +61,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             await respond(m, `Could not find thread for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
             return;
         }
-        const msg = await ch.fetchStarterMessage()
+        const msg = await ch.fetchStarterMessage();
         if (!msg) {
             await respond(m, `Could not find starter message for **${slot}** which should be in <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
             return;

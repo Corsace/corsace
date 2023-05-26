@@ -22,7 +22,6 @@
                 CORSACE EVENTS
             </h2>
             <div class="events">
-
                 <a
                     v-for="(event, key) in events"
                     :key="key"

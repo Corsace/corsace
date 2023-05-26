@@ -8,7 +8,7 @@ export const tournamentSearchConditions = {
     "name": new Brackets(qb => {
         qb.where("tournament.name LIKE :target")
             .orWhere("tournament.abbreviation LIKE :target");
-    })
+    }),
 };
 
 export default function getTournaments (target: string, searchType: keyof typeof tournamentSearchConditions, tournamentStatusFilters?: TournamentStatus[], stageOrRound?: boolean, mappools?: boolean, slots?: boolean, maps?: boolean, jobPosts?: boolean) {

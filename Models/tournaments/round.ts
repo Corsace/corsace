@@ -6,18 +6,18 @@ import { Stage } from "./stage";
 export class Round extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @Column()
-    name!: string;
+        name!: string;
 
     @Column()
-    abbreviation!: string;
+        abbreviation!: string;
 
     @ManyToOne(() => Stage, stage => stage.rounds)
-    stage!: Stage;
+        stage!: Stage;
 
     @OneToMany(() => Mappool, mappool => mappool.round)
-    mappool!: Mappool[];
+        mappool!: Mappool[];
 
 }

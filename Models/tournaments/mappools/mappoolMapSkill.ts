@@ -18,18 +18,18 @@ export enum MappoolMapSkillType {
 export class MappoolMapSkill extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @Column()
-    rating!: number;
+        rating!: number;
 
     @Column({ type: "enum", enum: MappoolMapSkillType, nullable: false })
-    skill!: MappoolMapSkillType;
+        skill!: MappoolMapSkillType;
 
     @ManyToOne(() => User, user => user.mappoolMapSkillRatings)
-    user!: User;
+        user!: User;
 
     @ManyToOne(() => MappoolMap, mappoolMap => mappoolMap.skillRatings)
-    mappoolMap!: MappoolMap;
+        mappoolMap!: MappoolMap;
 
 }

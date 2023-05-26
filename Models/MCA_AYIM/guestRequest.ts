@@ -9,34 +9,34 @@ import { MCA } from "./mca";
 export class GuestRequest extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @ManyToOne(() => MCA, {
         nullable: false,
         eager: true,
     })
-    mca!: MCA;
+        mca!: MCA;
 
     @ManyToOne(() => ModeDivision, modeDivision => modeDivision.guestRequests, {
         nullable: false,
         eager: true,
     })
-    mode!: ModeDivision;
+        mode!: ModeDivision;
 
     @Column({ type: "enum", enum: RequestStatus, default: RequestStatus.Pending })
-    status!: RequestStatus
+        status!: RequestStatus;
 
     @ManyToOne(() => User, user => user.guestRequests, {
         nullable: false,
     })
-    user!: User;
+        user!: User;
 
     @ManyToOne(() => Beatmap, beatmap => beatmap.guestRequests, {
         nullable: false,
         eager: true,
     })
     @JoinTable()
-    beatmap!: Beatmap;
+        beatmap!: Beatmap;
 
 }
 

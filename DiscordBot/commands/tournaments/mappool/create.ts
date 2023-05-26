@@ -4,7 +4,7 @@ import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { StageType } from "../../../../Models/tournaments/stage";
-import { Tournament, TournamentStatus, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
+import { Tournament, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import { filter, timedOut } from "../../../functions/messageInteractionFunctions";
 import { loginResponse } from "../../../functions/loginResponse";
 import { acronymtoMods, modsToAcronym } from "../../../../Interfaces/mods";
@@ -112,7 +112,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
 // This function asks for confirmation on the name and abbreviatoin of the mappool, and updates it if the user wants to
 async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament, existingMappools: Mappool[]) {
-    let content = `The name of the mappool will be **${mappool.name}** and the abbreviation will be **${mappool.abbreviation}**.\n\nIs this ok? If not, type the new name and abbreviation, with the name first, and the abbreviation after.`;
+    const content = `The name of the mappool will be **${mappool.name}** and the abbreviation will be **${mappool.abbreviation}**.\n\nIs this ok? If not, type the new name and abbreviation, with the name first, and the abbreviation after.`;
     const ids = {
         stop: randomUUID(),
         confirm: randomUUID(),
@@ -165,8 +165,8 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
             setTimeout(async () => (await reply.delete()), 5000);
             return;
         }
-        const abbreviation = split[split.length-1];
-        const name = split.slice(0, split.length-1).join(" ");
+        const abbreviation = split[split.length - 1];
+        const name = split.slice(0, split.length - 1).join(" ");
         if (name.length > 50 || name.length < 3) {
             const reply = await msg.reply("The name must be between 3 and 50 characters.");
             setTimeout(async () => (await reply.delete()), 5000);
@@ -258,13 +258,13 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
     });
 
     slotNameCollector.on("collect", async (msg: Message) => {
-        let slots = msg.content.split(";");
+        const slots = msg.content.split(";");
         const mappoolSlotsMade: MappoolSlot[] = [];
 
         let newSlots = "";
         for (let i = 0; i < slots.length; i++) {
             if (stopped) return;
-            let slotInfo = slots[i].trim().split(" ");
+            const slotInfo = slots[i].trim().split(" ");
             if (slotInfo.length < 3) {  
                 const reply = await msg.reply(`Please at least provide the slot name, followed by the slot type, and lastly the number of maps that will be in the slot for slot #${i + 1} \`${slotInfo}\`.`);
                 setTimeout(async () => {
@@ -355,7 +355,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             if (userModCount !== 0) slot.userModCount = userModCount;
             if (uniqueModCount !== 0) slot.uniqueModCount = uniqueModCount;
 
-            mappoolSlotsMade.push(slot)
+            mappoolSlotsMade.push(slot);
             newSlots += `\n${acronym} ${slotName.join(" ")} ${mapCount} maps ${modNum !== undefined ? `with ${modsToAcronym(modNum)} mods` : ""}${userModCount ? ` with ${userModCount} mod${userModCount > 1 ? "s" : ""} per user` : ""}${uniqueModCount ? ` with ${uniqueModCount} unique mod${uniqueModCount > 1 ? "s" : ""}` : ""}`;
         }
 

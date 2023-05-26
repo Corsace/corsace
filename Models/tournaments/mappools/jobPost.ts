@@ -6,24 +6,24 @@ import { User } from "../../user";
 export class JobPost extends BaseEntity {
     
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @CreateDateColumn()
-    createdAt!: Date;
+        createdAt!: Date;
     
     @ManyToOne(() => User, user => user.jobPostsCreated)
-    createdBy!: User;
+        createdBy!: User;
 
     @Column({ type: "datetime", nullable: true })
-    deadline?: Date | null;
+        deadline?: Date | null;
 
     @Column()
-    description!: string;
+        description!: string;
 
     @OneToOne(() => MappoolMap, map => map.jobPost)
-    map!: MappoolMap;
+        map!: MappoolMap;
 
     @Column({ type: "varchar", nullable: true })
-    jobBoardThread?: string | null;
+        jobBoardThread?: string | null;
 
 }

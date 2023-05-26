@@ -11,7 +11,7 @@ import { osuClient } from "../../../Server/osu";
 import { Beatmap as APIBeatmap } from "nodesu";
 import respond from "../respond";
 
-export async function createPack (m: Message | ChatInputCommandInteraction, bucket: "mappacks" | "mappacksTemp", mappool: Mappool, packName: string, video: boolean = false): Promise<string | undefined> {
+export async function createPack (m: Message | ChatInputCommandInteraction, bucket: "mappacks" | "mappacksTemp", mappool: Mappool, packName: string, video = false): Promise<string | undefined> {
     const mappoolMaps = mappool.slots.flatMap(s => s.maps);
     const filteredMaps = mappoolMaps.filter(m => (m.customBeatmap && m.customBeatmap.link) || m.beatmap);
     if (filteredMaps.length === 0) {

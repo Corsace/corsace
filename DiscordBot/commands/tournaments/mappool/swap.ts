@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, ForumChannel, Message, MessageComponentInteraction, SlashCommandBuilder, ThreadChannel } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ForumChannel, Message, MessageComponentInteraction, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
@@ -84,7 +84,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const ids = {
         yes: randomUUID(),
         no: randomUUID(),
-    }
+    };
     const confirm = await m.channel!.send({
         content: `Are you sure you want to swap **${slot1}${order1}** (${name1}) with **${slot2}${order2}** (${name2})?`,
         components: [
@@ -105,32 +105,32 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const filter = (i: MessageComponentInteraction) => i.user.id === commandUser(m).id;
     const collector = confirm.createMessageComponentCollector({ filter, time: 6000000 });
 
-    let stop = await new Promise<boolean>((resolve) => {
-            let done = false;
-            collector.on("collect", async i => {
-                if (i.customId === ids.yes) {
-                    done = true;
-                    await i.reply("Swapping...");
-                    setTimeout(async () => (await i.deleteReply()), 100);
-                    collector.stop();
-                    await confirm.delete();
-                    return resolve(false);
-                } else if (i.customId === ids.no) {
-                    done = true;
-                    await i.reply("Ok");
-                    setTimeout(async () => (await i.deleteReply()), 5000);
-                    collector.stop();
-                    await confirm.delete();
-                    return resolve(true);
-                }
-            });
-            collector.on("end", async () => {
-                if (!done) {
-                    await confirm.delete();
-                    return resolve(true);
-                }
-            });
+    const stop = await new Promise<boolean>((resolve) => {
+        let done = false;
+        collector.on("collect", async i => {
+            if (i.customId === ids.yes) {
+                done = true;
+                await i.reply("Swapping...");
+                setTimeout(async () => (await i.deleteReply()), 100);
+                collector.stop();
+                await confirm.delete();
+                return resolve(false);
+            } else if (i.customId === ids.no) {
+                done = true;
+                await i.reply("Ok");
+                setTimeout(async () => (await i.deleteReply()), 5000);
+                collector.stop();
+                await confirm.delete();
+                return resolve(true);
+            }
         });
+        collector.on("end", async () => {
+            if (!done) {
+                await confirm.delete();
+                return resolve(true);
+            }
+        });
+    });
     if (stop) 
         return;
 
@@ -282,8 +282,8 @@ async function saveSwap (m: Message | ChatInputCommandInteraction, mappool1: Map
     await mappoolMap1.save();
     await mappoolMap2.save();
 
-    if (log1) await log1.save()
-    if (log2) await log2.save()
+    if (log1) await log1.save();
+    if (log2) await log2.save();
 
     if (jobPost1 && beatmap2) await jobPost1.remove();
     if (jobPost2 && beatmap1) await jobPost2.remove();

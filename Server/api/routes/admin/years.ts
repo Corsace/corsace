@@ -52,7 +52,7 @@ adminYearsRouter.post("/", validate, async (ctx) => {
 
         await Promise.all([
             userGrand.save(),
-            mapGrand.save()
+            mapGrand.save(),
         ]);
     }
 

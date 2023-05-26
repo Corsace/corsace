@@ -70,7 +70,7 @@ export const modAcronyms = {
     "K3": Mods.Key3,
     "K2": Mods.Key2,
     "V2": Mods.ScoreV2,
-    "MR": Mods.Mirror
+    "MR": Mods.Mirror,
 };
 
 /**

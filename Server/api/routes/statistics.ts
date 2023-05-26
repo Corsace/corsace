@@ -5,7 +5,7 @@ import { Beatmapset } from "../../../Models/beatmapset";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { User } from "../../../Models/user";
 import { parseQueryParam } from "../../utils/query";
-import getHistoryStat from "../data/bnNatHistory";
+// import getHistoryStat from "../data/bnNatHistory";
 
 const statisticsRouter = new Router();
 const yearIDthresholds = [

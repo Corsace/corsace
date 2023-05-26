@@ -14,7 +14,7 @@ import respond from "../../../functions/respond";
 import getStaff from "../../../functions/tournamentFunctions/getStaff";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 
-async function assignmentListDM(m: Message | ChatInputCommandInteraction) {
+async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
     // Check if they had -incfin in their text, or if they said true for the include_finished option in the slash command
     const all = m instanceof Message ? m.content.includes("-incfin") : m.options.getBoolean("include_finished");
 
@@ -37,18 +37,19 @@ async function assignmentListDM(m: Message | ChatInputCommandInteraction) {
         .where(all ? "1 = 1" : "tournament.status != 3")
         .andWhere(new Brackets(qb => {
             qb.where("customMapper.ID = :user")
-                .orWhere("testplayer.ID = :user")
+                .orWhere("testplayer.ID = :user");
         }))
         .setParameters({
             user: user.ID,
         })
-        .getMany()).map(s => s.maps.map(m => {
+        .getMany())
+        .map(s => s.maps.map(m => {
             m.slot = s;
             return m;
         })).flat();
 
     if (mappoolMaps.length === 0) {
-        await respond(m, "No maps found for this user.")
+        await respond(m, "No maps found for this user.");
         return;
     }
 
@@ -61,7 +62,7 @@ async function assignmentListDM(m: Message | ChatInputCommandInteraction) {
     let replied = false;
     for (const map of mappoolMaps) {
         embed.addFields(
-            { name: `**${map.slot.mappool.stage.tournament.abbreviation}${map.slot.mappool.stage.tournament.year}** ${map.slot.mappool.abbreviation.toUpperCase()} ${map.slot.acronym}${map.order}`, value: `${map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]` : "No Submitted Beatmap"}\nDeadline: ${map.deadline ? `<t:${map.deadline.getTime() / 1000}:F> (<t:${map.deadline.getTime() / 1000}:R>)` : "No Deadline For Beatmap"}`, inline: true },
+            { name: `**${map.slot.mappool.stage.tournament.abbreviation}${map.slot.mappool.stage.tournament.year}** ${map.slot.mappool.abbreviation.toUpperCase()} ${map.slot.acronym}${map.order}`, value: `${map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]` : "No Submitted Beatmap"}\nDeadline: ${map.deadline ? `<t:${map.deadline.getTime() / 1000}:F> (<t:${map.deadline.getTime() / 1000}:R>)` : "No Deadline For Beatmap"}`, inline: true }
         );
 
         if (embed.data.fields!.length === 25) {
@@ -112,7 +113,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { target, pool } = params;
 
-    let targetUser = target ? await getStaff(m, tournament, target, [TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]) : undefined;
+    const targetUser = target ? await getStaff(m, tournament, target, [TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]) : undefined;
     if (target && !targetUser)
         return;
 
@@ -128,7 +129,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .where("tournament.ID = :tournament")
         .andWhere(targetUser ? new Brackets(qb => {
             qb.where(`customMapper.ID = ${targetUser!.ID}`)
-                .orWhere(`testplayer.ID = ${targetUser!.ID}`)
+                .orWhere(`testplayer.ID = ${targetUser!.ID}`);
         }) : "1 = 1")
         .andWhere(pool ? new Brackets(qb => {
             qb.where("mappool.name LIKE :criteria")
@@ -138,7 +139,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             tournament: tournament.ID,
             criteria: `%${pool}%`,
         })
-        .getMany()).map(s => s.maps.map(m => {
+        .getMany())
+        .map(s => s.maps.map(m => {
             m.slot = s;
             return m;
         })).flat();
@@ -170,7 +172,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 {
                     name: `${map.slot.mappool.abbreviation.toUpperCase()} ${map.slot.acronym}${map.order}`,
                     value,
-                    inline: true },
+                    inline: true }
             );
 
         if (embed.data.fields!.length !== 25)

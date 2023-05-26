@@ -23,7 +23,7 @@ type AllComponents = { tournament: Tournament, mappool: Mappool, slotMod: Mappoo
 
 export type MappoolComponentsType = (TournamentOnly | TournamentAndMappool | TournamentMappoolAndSlotMod | TournamentMappoolSlotModAndMap | AllComponents) & optionalComponents;
 
-export default async function mappoolComponents(
+export default async function mappoolComponents (
     m: Message | ChatInputCommandInteraction,
     pool?: string, 
     slot?: string | true,

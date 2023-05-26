@@ -52,7 +52,7 @@ export default async function autoSubmit (m: Message) {
 
     const tournament = tournaments[0];
 
-    const bypass = await bypassSubmit(m.member!.roles, tournament)
+    const bypass = await bypassSubmit(m.member!.roles, tournament);
     if (!bypass) {
         const roles = await TournamentRole.find({ where: { tournament: { ID: tournament.ID } } });
         const roleFilter = roles.filter(role => role.roleType === TournamentRoleType.Mappers);
@@ -67,7 +67,7 @@ export default async function autoSubmit (m: Message) {
     // Obtain beatmap data
     const diffRegex = /-d (.+)/;
     const diffMatch = diffRegex.exec(m.content);
-    let beatmap = await ojsamaParse(m, diffMatch?.[1] || "", link);
+    const beatmap = await ojsamaParse(m, diffMatch?.[1] || "", link);
     if (!beatmap)
         return;
 
@@ -103,6 +103,6 @@ export default async function autoSubmit (m: Message) {
         
     const mappoolSlot = `${mappoolMap.slot.mappool.abbreviation.toUpperCase()} ${mappoolMap.slot.acronym.toUpperCase()}${mappoolMap.order}`;
 
-    await ojsamaToCustom(m, tournament, mappoolMap.slot.mappool, mappoolMap.slot, mappoolMap, beatmap, link, user, mappoolSlot)
+    await ojsamaToCustom(m, tournament, mappoolMap.slot.mappool, mappoolMap.slot, mappoolMap, beatmap, link, user, mappoolSlot);
     return;
 }

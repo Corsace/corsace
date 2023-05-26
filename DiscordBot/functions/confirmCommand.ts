@@ -1,11 +1,11 @@
 import { randomUUID } from "crypto";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Message, MessageComponentInteraction } from "discord.js";
 
-export default async function confirmCommand (m: Message | ChatInputCommandInteraction, content: string, useFilter: boolean = true): Promise<boolean> {
+export default async function confirmCommand (m: Message | ChatInputCommandInteraction, content: string, useFilter = true): Promise<boolean> {
     const ids = {
         yes: randomUUID(),
         no: randomUUID(),
-    }
+    };
     const message = await m.channel!.send({
         content,
         components: [

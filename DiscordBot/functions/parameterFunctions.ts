@@ -32,14 +32,14 @@ interface parameterOptionsBase {
     optional?: boolean,
     customHandler?: customHandlerType,
     postProcess?: (parameter: string) => { [key: string]: string | number } | undefined,
-};
+}
 
 interface messageParameterOptions extends parameterOptionsBase {
     regex: RegExp,
     regexIndex: number,
     paramType?: keyof ParamTypeMap;
     customHandler: undefined,
-};
+}
 
 export type parameterOptions = parameterOptionsBase | messageParameterOptions;
 
@@ -69,7 +69,7 @@ function missingParameter (m: Message | ChatInputCommandInteraction, parameterOp
     return true;
 }
 
-export function extractParameters<T>(m: Message | ChatInputCommandInteraction, parameterOptions: parameterOptions[]) {
+export function extractParameters<T> (m: Message | ChatInputCommandInteraction, parameterOptions: parameterOptions[]) {
     const parameters: T = {} as T;
 
     let index = 1;

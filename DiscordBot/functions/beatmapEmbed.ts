@@ -7,8 +7,9 @@ import { osuClient } from "../../Server/osu";
 import modeColour from "./modeColour";
 import ppCalculator from "./ppCalculator";
 
-export default async function beatmapEmbed (beatmap: Beatmap, mods: string, user: User, missCount?: number, userScore?: UserScore, isRecent?: boolean): Promise<EmbedBuilder>
-export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set: Beatmap[], missCount?: number): Promise<EmbedBuilder>
+// TODO: Implement isRecent
+export default async function beatmapEmbed (beatmap: Beatmap, mods: string, user: User, missCount?: number, userScore?: UserScore, isRecent?: boolean): Promise<EmbedBuilder>;
+export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set: Beatmap[], missCount?: number): Promise<EmbedBuilder>;
 export default async function beatmapEmbed (beatmap: Beatmap, mods: string, setorUser: Beatmap[] | User, missCount?: number, userScore?: UserScore, isRecent?: boolean): Promise<EmbedBuilder> {
 
     const embedMsg = defaultBeatmapEmbed(beatmap, setorUser instanceof User ? false : true);

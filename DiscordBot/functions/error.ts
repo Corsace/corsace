@@ -1,7 +1,7 @@
-import {  Message, ChatInputCommandInteraction, DiscordAPIError } from "discord.js"
+import {  Message, ChatInputCommandInteraction, DiscordAPIError } from "discord.js";
 import respond from "./respond";
 
-export default function errorHandler(err: unknown, m?: Message | ChatInputCommandInteraction) {
+export default function errorHandler (err: unknown, m?: Message | ChatInputCommandInteraction) {
     if (!err)
         return false;
 

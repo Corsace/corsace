@@ -28,7 +28,7 @@ class S3Bucket {
     public readonly bucketName: string;
     public readonly publicUrl?: string;
 
-    constructor(bucketConfig: S3BucketConfig) {
+    constructor (bucketConfig: S3BucketConfig) {
         this.client = clients[bucketConfig.clientName];
         this.clientName = bucketConfig.clientName;
         this.bucketName = bucketConfig.bucketName;
@@ -36,7 +36,7 @@ class S3Bucket {
             this.publicUrl = bucketConfig.publicUrl.endsWith("/") ? bucketConfig.publicUrl.slice(0, -1) : bucketConfig.publicUrl;
     }
 
-    getPublicUrl(path: string) {
+    getPublicUrl (path: string) {
         if(!this.publicUrl) throw new Error("No public url for this bucket");
 
         if(path.startsWith("/"))
@@ -48,21 +48,21 @@ class S3Bucket {
     /**
      * @param expiresIn expiration time in seconds
      */
-    getSignedUrl(path: string, expiresIn?: number) {
+    getSignedUrl (path: string, expiresIn?: number) {
         return getSignedUrl(
             this.client,
             new GetObjectCommand({
                 Bucket: this.bucketName,
                 Key: path,
             }),
-            expiresIn !== undefined ? { expiresIn } : undefined,
+            expiresIn !== undefined ? { expiresIn } : undefined
         );
     }
 
-    putObject(
+    putObject (
         objectName: string,
         data: Buffer | Readable,
-        mimeType = 'binary/octet-stream',
+        mimeType = "binary/octet-stream"
     ) {
         return new Upload({
             client: this.client,
@@ -75,8 +75,8 @@ class S3Bucket {
         }).done();
     }
 
-    async getObject(
-        objectName: string,
+    async getObject (
+        objectName: string
     ) {
         return (await this.client.getObject({
             Bucket: this.bucketName,
@@ -84,11 +84,11 @@ class S3Bucket {
         })).Body as Readable | undefined;
     }
 
-    async copyObject(
+    async copyObject (
         objectName: string,
         sourceBucket: S3Bucket,
         sourceObjectName: string,
-        mimeType = 'binary/octet-stream',
+        mimeType = "binary/octet-stream"
     ) {
         if (this.clientName !== sourceBucket.clientName) {
             const stream = await sourceBucket.getObject(sourceObjectName);
@@ -101,13 +101,13 @@ class S3Bucket {
         return this.client.copyObject({
             Bucket: this.bucketName,
             Key: objectName,
-            CopySource: `${sourceBucket.bucketName}/${encodeURIComponent(sourceObjectName).replace(/%2F/g, '/')}`,
+            CopySource: `${sourceBucket.bucketName}/${encodeURIComponent(sourceObjectName).replace(/%2F/g, "/")}`,
             ContentType: mimeType,
         });
     }
 
-    async deleteObject(
-        objectName: string,
+    async deleteObject (
+        objectName: string
     ) {
         return this.client.deleteObject({
             Bucket: this.bucketName,

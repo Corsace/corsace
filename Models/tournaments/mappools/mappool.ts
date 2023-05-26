@@ -1,7 +1,6 @@
-import { BaseEntity, Brackets, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Round } from "../round";
 import { Stage } from "../stage";
-import { Tournament } from "../tournament";
 import { MappoolSlot } from "./mappoolSlot";
 import { User } from "../../user";
 
@@ -9,42 +8,42 @@ import { User } from "../../user";
 export class Mappool extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @CreateDateColumn()
-    createdAt!: Date;
+        createdAt!: Date;
 
     @ManyToOne(() => User, user => user.mappoolsCreated)
-    createdBy!: User;
+        createdBy!: User;
 
     @Column()
-    name!: string;
+        name!: string;
 
     @Column()
-    abbreviation!: string;
+        abbreviation!: string;
 
     @Column({ default: false })
-    isPublic!: boolean;
+        isPublic!: boolean;
 
     @Column({ type: "text", nullable: true })
-    mappackLink?: string | null;
+        mappackLink?: string | null;
 
     @Column({ type: "datetime", nullable: true })
-    mappackExpiry?: Date | null;
+        mappackExpiry?: Date | null;
 
     @Column()
-    targetSR!: number;
+        targetSR!: number;
 
     @Column()
-    order!: number;
+        order!: number;
 
     @ManyToOne(() => Stage, stage => stage.mappool)
-    stage!: Stage;
+        stage!: Stage;
 
     @ManyToOne(() => Round, round => round.mappool)
-    round?: Round;
+        round?: Round;
 
     @OneToMany(() => MappoolSlot, mappoolSlot => mappoolSlot.mappool)
-    slots!: MappoolSlot[];
+        slots!: MappoolSlot[];
 
 }

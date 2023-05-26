@@ -76,7 +76,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const forumChannel = thread.parent as ForumChannel;
         await thread.send(`<@${user.discord.userID}> has added a deadline: **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
         const lateTag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "late");
-        if (lateTag) await thread.setAppliedTags(thread.appliedTags.filter(t => t !== lateTag.id))
+        if (lateTag) await thread.setAppliedTags(thread.appliedTags.filter(t => t !== lateTag.id));
     }
 
     await mappoolMap.save();

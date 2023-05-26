@@ -28,48 +28,48 @@ export enum ScoringMethod {
 export class Stage extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
     
     @CreateDateColumn()
-    createdAt!: Date;
+        createdAt!: Date;
 
     @ManyToOne(() => User, user => user.stagesCreated)
-    createdBy!: User;
+        createdBy!: User;
 
     @Column()
-    name!: string;
+        name!: string;
 
     @Column()
-    abbreviation!: string;
+        abbreviation!: string;
 
     @Column()
-    order!: number;
+        order!: number;
 
     @Column({ type: "enum", enum: StageType, default: StageType.DoubleElimination })
-    stageType!: StageType;
+        stageType!: StageType;
 
     @Column({ type: "enum", enum: ScoringMethod, default: ScoringMethod.ScoreV2 })
-    scoringMethod!: ScoringMethod;
+        scoringMethod!: ScoringMethod;
 
     @Column(() => Phase)
-    timespan!: Phase;
+        timespan!: Phase;
 
     @ManyToOne(() => Tournament, tournament => tournament.stages)
-    tournament!: Tournament;
+        tournament!: Tournament;
 
     @OneToMany(() => Round, bracket => bracket.stage)
-    rounds!: Round[];
+        rounds!: Round[];
 
     @OneToMany(() => Mappool, mappool => mappool.stage)
-    mappool?: Mappool[];
+        mappool?: Mappool[];
 
     @Column({ default: false })
-    isFinished!: boolean;
+        isFinished!: boolean;
 
     @Column()
-    initialSize!: number;
+        initialSize!: number;
 
     @Column()
-    finalSize!: number;
+        finalSize!: number;
 
 }

@@ -62,7 +62,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return {
             name: `**${slot.name}**`,
             value: slot.maps.map(map => `**${slot.acronym}${map.order}:** ${map.jobPost && (all ? true : !map.jobPost.jobBoardThread) ? map.jobPost.description : "N/A"}`).join("\n\n"),
-        }
+        };
     }));
 
     await respond(m, undefined, [jobBoardEmbed]);

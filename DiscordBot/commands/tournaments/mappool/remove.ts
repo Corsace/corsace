@@ -74,7 +74,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
             await respond(m, `Removed **${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]** from **${mappoolSlot}**`);
             
-            await mappoolLog(tournament, "removeMap", user, `Removed \`${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]\` from \`${mappoolSlot}\``)
+            await mappoolLog(tournament, "removeMap", user, `Removed \`${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]\` from \`${mappoolSlot}\``);
             return;
         }
 
@@ -109,7 +109,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
                 await respond(m, `Removed **${staff.osu.username}** from playtesting **${mappoolSlot}**`);
 
-                await mappoolLog(tournament, "removeTester", user, `Removed \`${staff.osu.username}\` from playtesting \`${mappoolSlot}\``)
+                await mappoolLog(tournament, "removeTester", user, `Removed \`${staff.osu.username}\` from playtesting \`${mappoolSlot}\``);
                 return;
             }
 
@@ -122,7 +122,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
                 await respond(m, `Removed **${staff.osu.username}** from **${mappoolSlot}**`);
 
-                await mappoolLog(tournament, "removeCustomMapper", user, `Removed \`${staff.osu.username}\` from \`${mappoolSlot}\``)
+                await mappoolLog(tournament, "removeCustomMapper", user, `Removed \`${staff.osu.username}\` from \`${mappoolSlot}\``);
                 return;
             }
         }
@@ -136,7 +136,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
             await respond(m, `Removed **all testplayers** from **${mappoolSlot}**`);
 
-            await mappoolLog(tournament, "removeTester", user, `Removed all testplayers from \`${mappoolSlot}\``)
+            await mappoolLog(tournament, "removeTester", user, `Removed all testplayers from \`${mappoolSlot}\``);
             return;
         }
 
@@ -162,7 +162,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         await respond(m, `Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
 
-        await mappoolLog(tournament, "removeCustom", user, `Removed the custom map ${name !== "" ? "\`" + name + "\`" : ""}and mappers from \`${mappoolSlot}\``)
+        await mappoolLog(tournament, "removeCustom", user, `Removed the custom map ${name !== "" ? `\`${name}\`` : ""}and mappers from \`${mappoolSlot}\``);
         return;
     }
 
@@ -181,7 +181,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     await respond(m, `Removed all beatmaps and custom beatmaps + mappers from **${mappool.abbreviation.toUpperCase()}**`);
 
-    await mappoolLog(tournament, "removePool", user, `Removed all beatmaps and custom beatmaps + mappers from \`${mappool.abbreviation.toUpperCase()}\``)
+    await mappoolLog(tournament, "removePool", user, `Removed all beatmaps and custom beatmaps + mappers from \`${mappool.abbreviation.toUpperCase()}\``);
 } 
 
 async function resetPool (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappool: Mappool, user: User, testing: boolean | null) {
@@ -218,7 +218,7 @@ async function resetPool (m: Message | ChatInputCommandInteraction, tournament: 
     });
 }
 
-async function notifyCustomThread(m: Message | ChatInputCommandInteraction, tournament: Tournament, mappoolMap: MappoolMap, mappoolSlot: string, message: string) {
+async function notifyCustomThread (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappoolMap: MappoolMap, mappoolSlot: string, message: string) {
     const customThread = await getCustomThread(m, mappoolMap, tournament, mappoolSlot);
     if (!customThread)
         return;
@@ -247,7 +247,7 @@ const data = new SlashCommandBuilder()
     .addBooleanOption(option =>
         option.setName("tester")
             .setDescription("Whether the target(s) is/are tester(s).")
-            .setRequired(false))
+            .setRequired(false));
 
 interface parameters {
     pool: string,

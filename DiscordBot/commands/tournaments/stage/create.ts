@@ -239,7 +239,7 @@ async function stageDone (m: Message | ChatInputCommandInteraction, stage: Stage
         await s.save();
     }
 
-    await respond(m, "Congratulations on saving your new stage for your tournament! :tada:\nHere is the stage embed:")
+    await respond(m, "Congratulations on saving your new stage for your tournament! :tada:\nHere is the stage embed:");
 
     const embed = new EmbedBuilder()
         .setTitle(stage.name)

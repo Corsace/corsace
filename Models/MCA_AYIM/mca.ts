@@ -7,19 +7,19 @@ import { Category } from "./category";
 export class MCA extends BaseEntity {
 
     @PrimaryColumn({ type: "year" })
-    year!: number;
+        year!: number;
 
     @Column(() => Phase)
-    nomination!: Phase;
+        nomination!: Phase;
 
     @Column(() => Phase)
-    voting!: Phase;
+        voting!: Phase;
 
     @Column({ type: "datetime" })
-    results!: Date;
+        results!: Date;
 
     @OneToMany(() => Category, category => category.mca)
-    categories!: Category[];
+        categories!: Category[];
 
     static fillAndSave (data, mca?: MCA): Promise<MCA> {
         if (!mca) {
@@ -83,7 +83,7 @@ export class MCA extends BaseEntity {
             results: this.results,
             categories: this.categories,
         };
-    }
+    };
 
     public currentPhase (this: MCA): PhaseType {
         let phase: PhaseType = "preparation";

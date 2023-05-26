@@ -33,7 +33,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (!tournament) 
             return;
 
-        const mappools = await getMappools(tournament, "", false, true, true)
+        const mappools = await getMappools(tournament, "", false, true, true);
         if (mappools.length === 0) {
             await respond(m, `No mappools found for ${tournament.name}.`);
             return;
@@ -101,19 +101,22 @@ async function run (m: Message | ChatInputCommandInteraction) {
             "count_normal": `${mappoolMap.customBeatmap.circles}`,
             "count_slider": `${mappoolMap.customBeatmap.sliders}`,
             "count_spinner": `${mappoolMap.customBeatmap.spinners}`,
-            "submit_date": [mappoolMap.createdAt.getUTCMonth()+1,
+            "submit_date": [
+                mappoolMap.createdAt.getUTCMonth() + 1,
                 mappoolMap.createdAt.getUTCDate(),
-                mappoolMap.createdAt.getUTCFullYear()].join('/')+' '+
-               [mappoolMap.createdAt.getUTCHours(),
+                mappoolMap.createdAt.getUTCFullYear(),
+            ].join("/") + " " + [
+                mappoolMap.createdAt.getUTCHours(),
                 mappoolMap.createdAt.getUTCMinutes(),
-                mappoolMap.createdAt.getUTCSeconds()].join(':'),
+                mappoolMap.createdAt.getUTCSeconds(),
+            ].join(":"),
             "approved_date": null,
-            "last_update": [mappoolMap.lastUpdate.getUTCMonth()+1,
+            "last_update": [mappoolMap.lastUpdate.getUTCMonth() + 1,
                 mappoolMap.lastUpdate.getUTCDate(),
-                mappoolMap.lastUpdate.getUTCFullYear()].join('/')+' '+
+                mappoolMap.lastUpdate.getUTCFullYear()].join("/") + " " +
                [mappoolMap.lastUpdate.getUTCHours(),
-                mappoolMap.lastUpdate.getUTCMinutes(),
-                mappoolMap.lastUpdate.getUTCSeconds()].join(':'),
+                   mappoolMap.lastUpdate.getUTCMinutes(),
+                   mappoolMap.lastUpdate.getUTCSeconds()].join(":"),
             "artist": mappoolMap.customBeatmap.artist,
             "artist_unicode": mappoolMap.customBeatmap.artist,
             "title": mappoolMap.customBeatmap.title,

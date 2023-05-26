@@ -1,16 +1,14 @@
 import { EmbedBuilder, TextChannel } from "discord.js";
-import { Mappool } from "../../../Models/tournaments/mappools/mappool";
 import { MappoolMapHistory } from "../../../Models/tournaments/mappools/mappoolMapHistory";
-import { MappoolSlot } from "../../../Models/tournaments/mappools/mappoolSlot";
 import { Tournament } from "../../../Models/tournaments/tournament";
 import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
 import { User } from "../../../Models/user";
 import modeColour from "../modeColour";
 import { discordClient } from "../../../Server/discord";
 
-export default async function mappoolLog(tournament: Tournament, command: string, user: User, log: MappoolMapHistory, mappoolSlot: string)
-export default async function mappoolLog(tournament: Tournament, command: string, user: User, event: string)
-export default async function mappoolLog(tournament: Tournament, command: string, user: User, logOrEvent: MappoolMapHistory | string, mappoolSlot?: string) {
+export default async function mappoolLog(tournament: Tournament, command: string, user: User, log: MappoolMapHistory, mappoolSlot: string);
+export default async function mappoolLog(tournament: Tournament, command: string, user: User, event: string);
+export default async function mappoolLog (tournament: Tournament, command: string, user: User, logOrEvent: MappoolMapHistory | string, mappoolSlot?: string) {
     const tournamentChannels = await TournamentChannel.find({
         where: {
             tournament: { ID: tournament.ID },

@@ -100,7 +100,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State, namespace } from "vuex-class";
+import { State } from "vuex-class";
 
 import { UserInfo } from "../../../../../Interfaces/user";
 import AdminModalCategory from "../../../../../Assets/components/admin/AdminModalCategory.vue";

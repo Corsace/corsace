@@ -61,7 +61,7 @@ export default class InfluenceTreeLeaf extends Vue {
     
     @influencesModule.Action search;
 
-    expandedInfluencesFor: string[] = []
+    expandedInfluencesFor: string[] = [];
 
     showAndSearch (userId: string) {
         if (!this.findUser(userId)) {

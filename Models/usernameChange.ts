@@ -5,12 +5,12 @@ import { User } from "./user";
 export class UsernameChange extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @Column()
-    name!: string;
+        name!: string;
 
     @ManyToOne(() => User, user => user.otherNames)
-    user!: User;
+        user!: User;
 
 }

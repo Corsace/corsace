@@ -14,8 +14,8 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
             where: {
                 tournament: {
                     ID: tournament.ID,
-                }
-            }
+                },
+            },
         });
         const tournamentChannel = tourneyChannels.find(c => c.channelType === TournamentChannelType.Mappoolqa);
         const mappoolChannel = discordClient.channels.cache.get(tournamentChannel?.channelID ?? "");
@@ -26,7 +26,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
         const ids = {
             stop: randomUUID(),
             create: randomUUID(),
-        }
+        };
         const threadMessage = await m.channel!.send({
             content: `Is there a thread for this map already? Or should I create one in <#${forumChannel.id}>? If there already is a thread, paste the thread's ID.`,
             components: [
@@ -39,7 +39,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
                         new ButtonBuilder()
                             .setCustomId(ids.create)
                             .setLabel("Create thread")
-                            .setStyle(ButtonStyle.Primary))
+                            .setStyle(ButtonStyle.Primary)),
                         
             ],
         });
@@ -59,7 +59,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
                     const createObj = {
                         name: `${slot} (${mappoolMap.customMappers.map(u => u.osu.username).join(", ")})`,
                         message: { content },
-                    }
+                    };
                     const thread = await forumChannel.threads.create(createObj);
                     const threadMsg = await thread.fetchStarterMessage();
                     await i.deleteReply();
@@ -115,7 +115,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
     await thread.setName(`${slot} (${mappoolMap.customMappers.map(u => u.osu.username).join(", ")})`);
     await Promise.all([
         wait.delete(),
-        threadMsg.edit(content)
+        threadMsg.edit(content),
     ]);
 
     return [thread, threadMsg];

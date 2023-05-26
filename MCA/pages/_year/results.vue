@@ -105,7 +105,7 @@ export default class Results extends Vue {
         {label: "firstChoice", size: 1.5, centred: true, prio: true},
         {label: "secondThirdChoice", size: 1.5, desktopOnly: true, centred: true},
         {label: "restChoice", size: 1.5, desktopOnly: true, centred: true},
-    ]
+    ];
 
     // filter columns by breakpoint and category
     get filtCol () {

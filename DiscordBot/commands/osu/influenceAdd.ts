@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType, DiscordAPIError, Message, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType, Message, SlashCommandBuilder } from "discord.js";
 import { OAuth, User } from "../../../Models/user";
 import { Command } from "../index";
 import { User as APIUser } from "nodesu";
@@ -166,7 +166,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const buttonIDs = {
         true: randomUUID(),
         false: randomUUID(),
-    }
+    };
     if (year < (mca ? mca.year : (new Date()).getUTCFullYear())) {
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(

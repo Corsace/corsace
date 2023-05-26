@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { MappoolMap } from "./mappoolMap";
 import { Beatmap } from "../../beatmap";
 import { User } from "../../user";
@@ -7,30 +7,30 @@ import { User } from "../../user";
 export class MappoolMapHistory extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @CreateDateColumn()
-    createdAt!: Date;
+        createdAt!: Date;
 
     @ManyToOne(() => User, user => user.mappoolMapHistoryEntriesCreated)
-    createdBy!: User;
+        createdBy!: User;
 
     @ManyToOne(() => MappoolMap, mappoolMap => mappoolMap.history)
-    mappoolMap!: MappoolMap;
+        mappoolMap!: MappoolMap;
 
     @ManyToOne(() => Beatmap, beatmap => beatmap.mappoolMapHistoryEntries)
-    beatmap?: Beatmap;
+        beatmap?: Beatmap;
 
     // For custom mapping
     @Column({ nullable: true })
-    artist?: string;
+        artist?: string;
 
     @Column({ nullable: true })
-    title?: string;
+        title?: string;
 
     @Column({ nullable: true })
-    difficulty?: string;
+        difficulty?: string;
 
     @Column({ nullable: true })
-    link?: string;
+        link?: string;
 }

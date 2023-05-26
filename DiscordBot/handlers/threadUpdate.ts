@@ -23,7 +23,7 @@ export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel
 
     const [newComponents, oldComponents] = await Promise.all([ 
         mappoolComponentsThread(nt, log.executor),
-        mappoolComponentsThread(ot, log.executor)
+        mappoolComponentsThread(ot, log.executor),
     ]);
     if (!newComponents || !oldComponents)
         return;
@@ -50,7 +50,7 @@ export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel
     if (!poolMatchNew) {
         await Promise.all([
             nt.send("Invalid thread name."),
-            nt.setName(oldThreadName)
+            nt.setName(oldThreadName),
         ]);
         return;
     }
@@ -63,11 +63,11 @@ export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel
 
     await Promise.all([
         command.create(nt, newComponents),
-        command.delete(ot, oldComponents)
+        command.delete(ot, oldComponents),
     ]);
 
     await Promise.all([
         oldComponents.m.delete(),
-        newComponents.m.delete()
+        newComponents.m.delete(),
     ]);
 }

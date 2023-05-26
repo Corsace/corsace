@@ -27,7 +27,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    let link: string = "";
+    let link = "";
     if (m instanceof Message) {
         if (m.attachments.first())
             link = m.attachments.first()!.url;

@@ -11,31 +11,31 @@ import { CustomBeatmap } from "../tournaments/mappools/customBeatmap";
 export class ModeDivision extends BaseEntity {
 
     @PrimaryColumn()
-    ID!: number;
+        ID!: number;
 
     @Column()
-    name!: string;
+        name!: string;
 
     @OneToMany(() => GuestRequest, guestRequest => guestRequest.mode)
-    guestRequests!: GuestRequest[];
+        guestRequests!: GuestRequest[];
 
     @OneToMany(() => UserComment, userComment => userComment.mode)
-    userComments!: UserComment[];
+        userComments!: UserComment[];
 
     @OneToMany(() => Influence, influence => influence.mode)
-    influences!: Influence[];
+        influences!: Influence[];
 
     @OneToMany(() => Beatmap, beatmap => beatmap.mode)
-    beatmaps!: Beatmap[];
+        beatmaps!: Beatmap[];
 
     @OneToMany(() => CustomBeatmap, customBeatmap => customBeatmap.mode)
-    customBeatmaps!: CustomBeatmap[];
+        customBeatmaps!: CustomBeatmap[];
     
     @OneToMany(() => Category, category => category.mode)
-    categories!: Category[];
+        categories!: Category[];
 
     @OneToMany(() => Tournament, tournament => tournament.mode)
-    tournaments!: Tournament[];
+        tournaments!: Tournament[];
 
     static modeSelect (modeText: string): Promise<ModeDivision | null> {
         switch (modeText) {

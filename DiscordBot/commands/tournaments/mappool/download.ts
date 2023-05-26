@@ -59,7 +59,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 {
                     attachment: data,
                     name: `${mappoolSlot}.osz`,
-                }
+                },
             ]);
         } catch (e) {
             await respond(m, `Could not download **${pool}**\nosu.direct may likely be down currently. Error below:\n\`\`\`\n${e}\`\`\``);
@@ -83,7 +83,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mappool.mappackLink = url;
         mappool.mappackExpiry = new Date(Date.now() + 60 * 60 * 24 * 1000);
     } catch (e) {
-        await respond(m, `Could not download **${pool}**\nosu.direct may likely be down currently. Error below:\n\`\`\`\n${e}\`\`\``)
+        await respond(m, `Could not download **${pool}**\nosu.direct may likely be down currently. Error below:\n\`\`\`\n${e}\`\`\``);
         return;
     }
 

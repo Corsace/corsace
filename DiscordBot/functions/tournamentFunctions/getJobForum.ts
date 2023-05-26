@@ -9,8 +9,8 @@ export default async function getJobForum (m: Message | ChatInputCommandInteract
         where: {
             tournament: {
                 ID: tournament.ID,
-            }
-        }
+            },
+        },
     });
     const tournamentChannel = tourneyChannels.find(c => c.channelType === TournamentChannelType.Jobboard);
     const thread = discordClient.channels.cache.get(tournamentChannel?.channelID ?? "");

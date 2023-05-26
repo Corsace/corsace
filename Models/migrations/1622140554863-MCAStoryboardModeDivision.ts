@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
 export class MCAStoryboardModeDivision1622140554863 implements MigrationInterface {
-    name = "MCAStoryboardModeDivision1622140554863"
+    name = "MCAStoryboardModeDivision1622140554863";
 
     public async up (queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query("INSERT INTO `mode_division` VALUES (5, 'storyboard')");

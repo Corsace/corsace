@@ -7,18 +7,18 @@ import { MappoolMapSkillType } from "./mappoolMapSkill";
 export class MappoolMapWeight extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @Column()
-    weight!: number;
+        weight!: number;
 
     @Column({ type: "enum", enum: MappoolMapSkillType, nullable: false })
-    skill!: MappoolMapSkillType;
+        skill!: MappoolMapSkillType;
 
     @ManyToOne(() => User, user => user.mappoolMapSkillWeights)
-    user!: User;
+        user!: User;
 
     @ManyToOne(() => MappoolMap, mappoolMap => mappoolMap.skillWeights)
-    mappoolMap!: MappoolMap;
+        mappoolMap!: MappoolMap;
 
 }

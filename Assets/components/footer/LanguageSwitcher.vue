@@ -50,7 +50,7 @@ export default class LanguagueSwitcher extends Vue {
         "id": "indonesian",
         "jp": "japanese",
         "kr": "korean",
-    }
+    };
 
     get availableLocales (): NuxtVueI18n.Options.LocaleObject[] | null {
         const locales = this.$i18n.locales as NuxtVueI18n.Options.LocaleObject[];
