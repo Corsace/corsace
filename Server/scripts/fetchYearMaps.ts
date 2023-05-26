@@ -222,7 +222,6 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
         where: {
             ID: apiBeatmap.id,
         },
-        relations: ["beatmapset"],
     });
     if (!beatmap)
         beatmap = new Beatmap;
