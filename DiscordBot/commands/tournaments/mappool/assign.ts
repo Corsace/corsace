@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, ForumChannel, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
-import { Tournament, TournamentStatus, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
+import { Tournament, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { Beatmap } from "../../../../Models/beatmap";
-import { Beatmap as APIBeatmap, Mode } from "nodesu";
+import { Beatmap as APIBeatmap } from "nodesu";
 import { osuClient } from "../../../../Server/osu";
 import { insertBeatmap } from "../../../../Server/scripts/fetchYearMaps";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
@@ -100,19 +100,14 @@ async function handleBeatmapLink(m: Message | ChatInputCommandInteraction, targe
     }
     const beatmapID = parseInt(link[3]);
     
-    const set = (await osuClient.beatmaps.getBySetId(parseInt(link[1]), Mode.all, undefined, undefined, allowedMods) as APIBeatmap[]);
-    const apiMap = set.find(m => m.beatmapId === beatmapID)
+    const set = await osuClient.beatmaps.getBySetId(parseInt(link[1])) as APIBeatmap[];
+    let apiMap = set.find(m => m.beatmapId === beatmapID);
     if (!apiMap) {
         await respond(m, "Could not find beatmap on osu!api.");
         return;
     }
     if (apiMap.mode !== tournament.mode.ID - 1) {
         await respond(m, "Beatmap mode does not match tournament mode.");
-        return;
-    }
-    // TODO: Support for maps with no approved date (e.g. graveyarded maps) https://github.com/Corsace/Corsace/issues/193
-    if (isNaN(apiMap.approvedDate.getTime())) {
-        await respond(m, "Beatmap is not ranked. Support will be added soon!\nhttps://github.com/Corsace/Corsace/issues/193");
         return;
     }
 
@@ -175,6 +170,8 @@ async function handleBeatmapLink(m: Message | ChatInputCommandInteraction, targe
     log.beatmap = beatmap;
     await log.save();
 
+    if (allowedMods)
+        apiMap = (await osuClient.beatmaps.getBySetId(parseInt(link[1]), undefined, undefined, undefined, allowedMods) as APIBeatmap[]).find(m => m.beatmapId === beatmapID)!;
     const mappoolMapEmbed = await beatmapEmbed(apiMap, mod, set);
     mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 

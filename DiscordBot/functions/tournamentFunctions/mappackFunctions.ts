@@ -5,18 +5,40 @@ import { gets3Key } from "../../../Server/utils/s3";
 import { buckets } from "../../../Server/s3";
 import { download } from "../../../Server/utils/download";
 import { zipFiles } from "../../../Server/utils/zip";
+import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
+import { insertBeatmap } from "../../../Server/scripts/fetchYearMaps";
+import { osuClient } from "../../../Server/osu";
+import { Beatmap as APIBeatmap } from "nodesu";
 import respond from "../respond";
 
 export async function createPack (m: Message | ChatInputCommandInteraction, bucket: "mappacks" | "mappacksTemp", mappool: Mappool, packName: string, video: boolean = false): Promise<string | undefined> {
     const mappoolMaps = mappool.slots.flatMap(s => s.maps);
     const filteredMaps = mappoolMaps.filter(m => (m.customBeatmap && m.customBeatmap.link) || m.beatmap);
-    const names = filteredMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
-    const dlLinks = filteredMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}`);
-
     if (filteredMaps.length === 0) {
         await respond(m, `**${mappool.name}** does not have any downloadable beatmaps.`);
         return;
     }
+    const updatedMaps: MappoolMap[] = [];
+    for (const map of filteredMaps) {
+        let beatmap = map.beatmap;
+        if (beatmap && beatmap.beatmapset.rankedStatus <= 0) {
+            const set = await osuClient.beatmaps.getByBeatmapId(beatmap.ID) as APIBeatmap[];
+            const apiMap = set.find(m => m.beatmapId === beatmap!.ID);
+            if (!apiMap) {
+                await respond(m, "Could not find beatmap on osu!api.");
+                return;
+            }
+            beatmap = await insertBeatmap(apiMap);
+            map.beatmap = beatmap;
+            await map.save();
+        }
+
+        updatedMaps.push(map);
+    }
+
+    const names = updatedMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
+    const dlLinks = updatedMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}`);
+
     const streams = dlLinks.map(link => download(link));
     const zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
 

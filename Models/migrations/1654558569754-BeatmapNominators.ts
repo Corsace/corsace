@@ -44,7 +44,7 @@ export class BeatmapNominators1654558569754 implements MigrationInterface {
                     where,
                     order: { ID: 'ASC' },
                     take: 100,
-                })).filter(set => set.approvedDate.getUTCFullYear() < 2021);
+                })).filter(set => set.approvedDate && set.approvedDate.getUTCFullYear() < 2021);
 
                 if (sets.length === 0)
                     break;

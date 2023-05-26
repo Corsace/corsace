@@ -34,27 +34,35 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const components = await mappoolComponents(m, pool, undefined, undefined, false, undefined, unFinishedTournaments, true);
-    if (!components || !("mappool" in components) || !("stage" in components))
+    const components = await mappoolComponents(m, pool, true, true, false, undefined, unFinishedTournaments, true);
+    if (!components || !("mappool" in components) || !("stage" in components)) {
+        await respond(m, "Could not find mappool and stage. Please provide a valid mappool.");
         return;
+    }
 
     const { tournament, mappool, stage } = components;
 
     // Confirmations
     if (!mappool.isPublic && stage!.timespan.start.getTime() - Date.now() > 1000 * 60 * 60 * 24 * 7) {
         const confirm = await confirmCommand(m, "This mappool is more than a week away from the stage's start date. Are you sure you want to publish it?");
-        if (!confirm)
+        if (!confirm) {
+            await respond(m, "Ok Lol .");
             return;
+        }
     } 
     if (!mappool.isPublic && mappool.slots.some(slot => slot.maps.some(map => !map.beatmap && !map.customBeatmap))) {
         const confirm = await confirmCommand(m, "This mappool still contains empty slots. Are you sure you want to publish it?");
-        if (!confirm)
+        if (!confirm) {
+            await respond(m, "Ok Lol .");
             return;
+        }
     }
     if (mappool.isPublic && stage!.timespan.start.getTime() < Date.now()) {
         const confirm = await confirmCommand(m, "This mappool's stage has already started. Are you sure you want to privatize it?");
-        if (!confirm)
+        if (!confirm) {
+            await respond(m, "Ok Lol .");
             return;
+        }
     }
 
     if (mappool.isPublic) {
@@ -89,8 +97,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
     } else {
         const url = await createPack(m, "mappacks", mappool, `${tournament.abbreviation.toUpperCase()}${tournament.year}_${mappool.abbreviation.toUpperCase()}`);
-        if (!url)
+        if (!url){
+            await respond(m, "Something went wrong while creating the mappack and retrieving its URL. Contact VINXIS.");
             return;
+        }
 
         mappool.mappackLink = url;
     }
