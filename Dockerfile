@@ -1,6 +1,8 @@
-FROM node:16-alpine
+FROM node:16-alpine AS base
 
 WORKDIR /src
+
+FROM base AS builder
 
 COPY LICENSE package.json package-lock.json README.md tsconfig.json ormconfig.ts /src/
 
@@ -28,5 +30,11 @@ RUN npm run build:discord-bot
 
 ENV NODE_ENV=production
 RUN npm prune --production
+
+FROM base
+
+ENV NODE_ENV=production
+
+COPY --from=builder /src /src
 
 ENTRYPOINT ["npm", "run"]
