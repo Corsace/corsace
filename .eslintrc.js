@@ -31,9 +31,7 @@ module.exports = {
         }],
         "no-constant-condition": [
             "error",
-            {
-                checkLoops: false,
-            },
+            { checkLoops: false },
         ],
         "vue/no-v-html": "off",
         "vue/html-indent": [
