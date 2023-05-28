@@ -8,34 +8,34 @@ import { Beatmap } from "../beatmap";
 export class Vote extends BaseEntity {
     
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @ManyToOne(() => User, user => user.votes, {
         nullable: false,
     })
-    voter!: User;
+        voter!: User;
     
     @ManyToOne(() => Category, category => category.votes, {
         nullable: false,
         eager: true,
     })
-    category!: Category;
+        category!: Category;
 
     @ManyToOne(() => User, user => user.votesReceived, {
         eager: true,
     })
-    user?: User;
+        user?: User;
 
     @ManyToOne(() => Beatmapset, Beatmapset => Beatmapset.votesReceived, {
         eager: true,
     })
-    beatmapset?: Beatmapset;
+        beatmapset?: Beatmapset;
 
     @ManyToOne(() => Beatmap, Beatmap => Beatmap.votesReceived, {
         eager: true,
     })
-    beatmap?: Beatmap;
+        beatmap?: Beatmap;
 
     @Column()
-    choice!: number;
+        choice!: number;
 }

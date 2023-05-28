@@ -7,29 +7,29 @@ import { ModeDivisionType } from "./modeDivision";
 export class MCAEligibility extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @Index()
     @Column({ type: "year" })
-    year!: number;
+        year!: number;
 
     @Column({ default: false })
-    standard!: boolean;
+        standard!: boolean;
 
     @Column({ default: false })
-    taiko!: boolean;
+        taiko!: boolean;
 
     @Column({ default: false })
-    fruits!: boolean;
+        fruits!: boolean;
 
     @Column({ default: false })
-    mania!: boolean;
+        mania!: boolean;
 
     @Column({ default: false })
-    storyboard!: boolean;
+        storyboard!: boolean;
 
     @ManyToOne(() => User, user => user.mcaEligibility)
-    user!: User;
+        user!: User;
 
     static whereMode (modeId: number, qb?: SelectQueryBuilder<MCAEligibility>): SelectQueryBuilder<MCAEligibility> {
         const eligibilityQuery = qb || this.createQueryBuilder("eligibility");

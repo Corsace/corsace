@@ -9,6 +9,10 @@ userRouter.get("/", isLoggedIn, async (ctx) => {
     ctx.body = await ctx.state.user.getInfo();
 });
 
+userRouter.get("/mca", isLoggedIn, async (ctx) => {
+    ctx.body = await ctx.state.user.getMCAInfo();
+});
+
 userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
     const body = ctx.request.body;
     if (!body.ID || !body.username)
@@ -17,12 +21,18 @@ userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
         };
     
     const user = await User.findOneOrFail({
-        ID: body.ID,
+        where: {
+            ID: body.ID,  
+        },
     });
 
     if (user.osu.username === body.username) {
         const otherNames = await UsernameChange.find({  
-            user, 
+            where: { 
+                user: {
+                    ID: user.ID,
+                }, 
+            },
         });
         if (otherNames.length === 0) {
             return ctx.body = { 
@@ -38,9 +48,13 @@ userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
         };
     }
 
-    const name = await UsernameChange.findOneOrFail({  
-        user, 
-        name: body.username,
+    const name = await UsernameChange.findOneOrFail({
+        where: {  
+            user: {
+                ID: user.ID,
+            }, 
+            name: body.username,
+        },
     });
     await name.remove();
     return ctx.body = {

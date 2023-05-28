@@ -36,14 +36,16 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { namespace } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
 import RecordItem from "../../../components/RecordItem.vue";
-import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
+import ListTransition from "../../../../Assets/components/ListTransition.vue";
 
 import { Statistic } from "../../../../Interfaces/records";
 import { MCA } from "../../../../Interfaces/mca";
+
+const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
@@ -65,11 +67,12 @@ import { MCA } from "../../../../Interfaces/mca";
             ],
         };
     },
+    layout: "construction",
 })
 export default class MapsetStatistics extends Vue {
 
-    @State selectedMode!: string;
-    @State mca!: MCA;
+    @mcaAyimModule.State selectedMode!: string;
+    @mcaAyimModule.State mca!: MCA;
 
     statistics: Record<string, Statistic[]> = {};
 
@@ -92,10 +95,3 @@ export default class MapsetStatistics extends Vue {
 
 }
 </script>
-
-<style lang="scss">
-@import '@s-sass/_variables';
-@import '@s-sass/_mixins';
-@import '@s-sass/_partials';
-
-</style>

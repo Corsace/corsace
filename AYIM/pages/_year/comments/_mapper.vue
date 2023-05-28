@@ -65,7 +65,10 @@
             </transition>
         </template>
         
-        <div class="ayim-layout">
+        <div 
+            class="ayim-layout scroll__ayim"
+            :class="`scroll--${viewTheme}`"
+        >
             <list-transition class="ayim-comment-layout">
                 <div
                     v-for="comment in comments"
@@ -111,15 +114,17 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { State, namespace } from "vuex-class";
 
 import DisplayLayout from "../../../components/DisplayLayout.vue";
-import ListTransition from "../../../../MCA-AYIM/components/ListTransition.vue";
-import NoticeModal from "../../../../MCA-AYIM/components/NoticeModal.vue";
+import ListTransition from "../../../../Assets/components/ListTransition.vue";
+import NoticeModal from "../../../../Assets/components/NoticeModal.vue";
 
 import { Comment } from "../../../../Interfaces/comment";
-import { User, UserMCAInfo } from "../../../../Interfaces/user";
+import { User, UserInfo } from "../../../../Interfaces/user";
 import { MCA } from "../../../../Interfaces/mca";
+
+const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
@@ -145,15 +150,19 @@ import { MCA } from "../../../../Interfaces/mca";
             ],
         };
     },
+    layout: "construction",
 })
 export default class MapperComments extends Vue {
 
-    @State loggedInUser!: UserMCAInfo | null;
-    @State selectedMode!: string;
-    @State mca!: MCA;
+    @State loggedInUser!: UserInfo;
+    @State viewTheme!: "light" | "dark";
+    @mcaAyimModule.State selectedMode!: string;
+    @mcaAyimModule.State mca!: MCA;
+
+    @mcaAyimModule.Action updateSelectedMode;
 
     user: User | null = null;
-    comments: Comment[] = []
+    comments: Comment[] = [];
     targetID = this.$route.params.mapper;
     newComment = "";
     info = "";
@@ -192,7 +201,7 @@ export default class MapperComments extends Vue {
 
         if (data.error) {
             alert(data.error);
-            this.$router.push(`/${this.mca.year}/comments`);
+            this.$router.push(`/comments`);
         } else {
             this.comments = data.comments;
             this.user = data.user;
@@ -315,6 +324,7 @@ export default class MapperComments extends Vue {
     }
 
     & > .button {
+        height: 25px;
         margin-left: 10px;
     }
 }

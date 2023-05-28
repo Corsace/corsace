@@ -1,0 +1,60 @@
+.button {
+    min-width: 60px;
+    @include breakpoint(mobile) {
+        min-width: 45px;
+    }
+    @include breakpoint(tablet) {
+        min-width: 80px;
+    }
+    @include breakpoint(desktop) {
+        min-width: 100px;
+    }
+    background-color: $blue;
+
+    &--triangle {
+        margin-left: 5px;
+    }
+
+    &--light {
+        color: white;        
+    }
+    &--dark {
+        color: black;
+
+        & img {
+            filter: invert(100%);
+        }
+    }
+    font-family: 'Futura PT', sans-serif;
+    font-size: $font-base;
+    @include breakpoint(mobile) {
+        font-size: $font-sm;
+    }
+    font-weight: bold;
+    white-space: nowrap;
+
+    border: none;
+    border-radius: .25rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+
+    &__add {
+        background-color: rgba(0, 255, 0, 0.6);
+    }
+    
+    &__remove {
+        background-color: rgba(255, 0, 0, 0.6);
+    }
+
+    &:hover, &--friends {
+        background-color: var(--selected-mode);
+    }
+
+    & img {
+        height: 20px;
+    }
+}

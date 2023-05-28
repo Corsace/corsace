@@ -15,7 +15,6 @@ COPY DiscordBot/ /src/DiscordBot/
 COPY Interfaces/ /src/Interfaces/
 COPY Main/ /src/Main/
 COPY MCA/ /src/MCA/
-COPY MCA-AYIM/ /src/MCA-AYIM/
 COPY Models/ /src/Models/
 COPY Open/ /src/Open/
 COPY Server/ /src/Server/

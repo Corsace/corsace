@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
 export class MCANominateVoteBeatmaps1643610856614 implements MigrationInterface {
-    name = "MCANominateVoteBeatmaps1643610856614"
+    name = "MCANominateVoteBeatmaps1643610856614";
 
     public async up (queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE \`vote\` ADD \`beatmapID\` int NULL`);

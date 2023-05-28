@@ -74,14 +74,15 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { namespace, State } from "vuex-class";
+import { namespace } from "vuex-class";
 import { BeatmapsetInfo } from "../../../Interfaces/beatmap";
 import { UserChoiceInfo } from "../../../Interfaces/user";
 
 import { Vote } from "../../../Interfaces/vote";
-import { SectionCategory } from "../../../MCA-AYIM/store/stage";
-import BaseModal from "../../../MCA-AYIM/components/BaseModal.vue";
+import { SectionCategory } from "../../../Interfaces/category";
+import BaseModal from "../../../Assets/components/BaseModal.vue";
 
+const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
 
 @Component({
@@ -91,7 +92,8 @@ const stageModule = namespace("stage");
 })
 export default class VotingBox extends Vue {
     
-    @State selectedMode!: string;
+    @mcaAyimModule.State selectedMode!: string;
+
     @stageModule.State section!: SectionCategory;
     @stageModule.State beatmaps!: BeatmapsetInfo[];
     @stageModule.State users!: UserChoiceInfo[];
@@ -218,7 +220,7 @@ export default class VotingBox extends Vue {
     justify-content: space-between;
 
     &--dragged {
-        background-color: $gray-dark;
+        background-color: $dark-gray;
         opacity: .5;
     }
     
@@ -232,7 +234,7 @@ export default class VotingBox extends Vue {
         }
         
         &:hover {
-            background-color: $gray-dark;
+            background-color: $dark-gray;
         }
     }
 

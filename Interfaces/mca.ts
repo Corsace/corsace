@@ -21,7 +21,8 @@ export interface MCAInfo {
     categories: Category[];
 }
 
-export type PhaseType = "nominating" | "voting" | "results" | "preparation";
+export type StageType = "nominating" | "voting" | "results";
+export type PhaseType = StageType | "preparation";
 
 export interface Phase {
     phase: PhaseType;

@@ -6,7 +6,7 @@ export interface Beatmapset {
     artist: string;
     title: string;
     submitDate: Date;
-    approvedDate: Date;
+    approvedDate?: Date | null;
     BPM: number;
     genre: string;
     language: string;
@@ -47,10 +47,48 @@ export interface BeatmapsetInfo {
     artist: string;
     title: string;
     hoster: string;
+    hostID: string;
     chosen: boolean;
 }
 
 export interface BeatmapInfo extends BeatmapsetInfo {
     setID: number;
     difficulty: string;
+    sr: number;
 }
+
+export const genres = [
+    "any",
+    "unspecified",
+    "video game",
+    "anime",
+    "rock",
+    "pop",
+    "other",
+    "novelty",
+    "---",
+    "hip hop",
+    "electronic",
+    "metal",
+    "classical",
+    "folk",
+    "jazz",
+];
+
+export const langs = [
+    "any",
+    "unspecified",
+    "english",
+    "japanese",
+    "chinese",
+    "instrumental",
+    "korean",
+    "french",
+    "german",
+    "swedish",
+    "spanish",
+    "italian",
+    "russian",
+    "polish",
+    "other",
+];

@@ -9,7 +9,7 @@ import { User } from "../user";
 import { User as APIUser } from "nodesu";
 
 export class userCountries1631140092497 implements MigrationInterface {
-    name = "userCountries1631140092497"
+    name = "userCountries1631140092497";
 
     public async up (queryRunner: QueryRunner): Promise<void> {
         // Old migration code, super slow and doesn't work for restricted users

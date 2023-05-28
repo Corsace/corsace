@@ -8,12 +8,23 @@ declare module "node-config-ts" {
         ssr: boolean;
     }
 
-    interface IMappoolChannelConfig {
-        admin: string;
-        general: string;
-        update: string;
-        testing: string;
-        balancing: string;
+    interface S3ClientConfig {
+        hostname: string;
+        port?: number | string;
+        useSSL: boolean | string;
+        path?: string;
+        forcePathStyle?: boolean | string;
+        region?: string;
+        credentials: {
+            accessKeyId: string;
+            secretAccessKey: string;
+        };
+    }
+
+    interface S3BucketConfig {
+        clientName: keyof IConfig["s3"]["clients"];
+        bucketName: string;
+        publicUrl?: string;
     }
 
     interface IConfig {
@@ -36,37 +47,12 @@ declare module "node-config-ts" {
                     verified: string;
                     streamAnnouncements: string;
                 };
-                open: {
-                    participants: string;
-                    captains: string;
-                    mapper: string[];
-                    mappooler: string;
-                    testplayer: string;
-                    scheduler: string;
-                    streamManager: string;
-                    streamer: string;
-                    commentator: string;
-                    referee: string;
-                };
-                closed: {
-                    participants: string;
-                    captains: string;
-                    mapper: string[];
-                    mappooler: string;
-                    testplayer: string;
-                    scheduler: string;
-                    streamManager: string;
-                    streamer: string;
-                    commentator: string;
-                    referee: string;
-                };
                 mca: {
                     standard: string;
                     taiko: string;
                     fruits: string;
                     mania: string;
                     storyboard: string;
-                    arg: string;
                 };
             };
             token: string;
@@ -75,10 +61,7 @@ declare module "node-config-ts" {
             clientSecret: string;
             invite: string;
             logChannel: string;
-            headChannel: string;
             coreChannel: string;
-            openMappool: IMappoolChannelConfig;
-            closedMappool: IMappoolChannelConfig;
         };
 
         osu: {
@@ -91,18 +74,28 @@ declare module "node-config-ts" {
             };
         };
 
+        bn: {
+            username: string;
+            secret: string;
+        }
+
         google: {
             credentials: {
                 private_key: string;
                 client_email: string;
             };
-            sheets: {
-                todo: string;
-                openMappool: string;
-                closedMappool: string;
-                songs: string;
-            };
+            // sheets: { };
         };
+
+        s3: {
+            clients: {
+                r2: S3ClientConfig;
+            };
+            buckets: {
+                mappacks: S3BucketConfig;
+                mappacksTemp: S3BucketConfig;
+            };
+        }
 
         koaKeys: string[];
         cookiesDomain: string;
@@ -113,6 +106,12 @@ declare module "node-config-ts" {
         mca: ISubSiteConfig;
         open: ISubSiteConfig;
         api: IWebServiceConfig;
+        cronRunner: IWebServiceConfig;
+
+        interOpAuth: {
+            username: string;
+            password: string;
+        };
     }
 
     export const config: Config;

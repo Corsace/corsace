@@ -1,64 +1,63 @@
 <template>
-    <div class="staff-page">
-        <mode-switcher
-            hide-phase
-            title="nominations"
-        >
-            <div class="staff-main">
-                <div class="staff-filters">
-                    <search-bar
-                        :placeholder="$t('mca.nom_vote.search')"
-                        @update:search="text = $event"
+    <div class="admin">
+        <div class="staff-main">
+            <div class="staff-filters">
+                <search-bar
+                    :placeholder="$t('mca.nom_vote.search')"
+                    @update:search="text = $event"
+                >
+                    <button-group
+                        :options="['valid', 'invalid']"
+                        :selected-buttons="selectedViewOptions"
+                        @group-clicked="changeView"
+                    />
+                    <button
+                        v-if="!showReviewed"
+                        class="button"
+                        :class="`button--${viewTheme}`"
+                        @click="showReviewed = true"
                     >
-                        <button-group
-                            :options="['valid', 'invalid']"
-                            :selected-buttons="selectedViewOptions"
-                            @group-clicked="changeView"
-                        />
-                        <button
-                            v-if="!showReviewed"
-                            class="button"
-                            @click="showReviewed = true"
-                        >
-                            Show Reviewed
-                        </button>
-                        <button
-                            v-else-if="showReviewed"
-                            class="button"
-                            :class="{ 'button--disabled': !selectedViewOptions.includes('valid') }"
-                            @click="!selectedViewOptions.includes('valid') ? undefined : showReviewed = false"
-                        >
-                            Hide Reviewed
-                        </button>
-                    </search-bar>
-                </div>
-
-                <div class="staff-container staff-searchContainer">
-                    <div class="staff-container staff-scrollTrack">
-                        <template
-                            v-for="category in relatedCategories"
-                        >   
-                            <staff-accordion-header
-                                :key="category.id + '-acc-header'"
-                                :left="$t(`mca.categories.${category.name}.name`)"
-                                :right="category.type"
-                                :active="category.id === selectedCategoryId"
-                                @on-click="selectCategory(category.id)"
-                            />
-                            
-                            <staff-nomination-accordion
-                                v-if="category.id === selectedCategoryId"
-                                :key="category.id + '-category'"
-                                :nominations="selectedCategoryNominations"
-                                @update-nomination="updateNomination"
-                                @delete-nomination="deleteNomination"
-                            />
-                        </template>
-                    </div>
-                    <scroll-bar selector=".staff-scrollTrack" />
-                </div>
+                        Reviewed are Hidden
+                    </button>
+                    <button
+                        v-else-if="showReviewed"
+                        class="button"
+                        :class="[
+                            { 'button--disabled': !selectedViewOptions.includes('valid') },
+                            `button--${viewTheme}`,
+                        ]"
+                        @click="!selectedViewOptions.includes('valid') ? undefined : showReviewed = false"
+                    >
+                        Reviewed are Shown
+                    </button>
+                </search-bar>
             </div>
-        </mode-switcher>
+
+            <div
+                class="scroll__mca"
+                :class="`scroll--${viewTheme}`"
+            >
+                <template
+                    v-for="category in relatedCategories"
+                >   
+                    <StaffAccordianHeader
+                        :key="category.id + '-acc-header'"
+                        :left="$t(`mca.categories.${category.name}.name`)"
+                        :right="category.type"
+                        :active="category.id === selectedCategoryId"
+                        @on-click="selectCategory(category.id)"
+                    />
+                    
+                    <StaffNominationAccordion
+                        v-if="category.id === selectedCategoryId"
+                        :key="category.id + '-category'"
+                        :nominations="selectedCategoryNominations"
+                        @update-nomination="updateNomination"
+                        @delete-nomination="deleteNomination"
+                    />
+                </template>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -66,16 +65,15 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import ModeSwitcher from "../../../../MCA-AYIM/components/ModeSwitcher.vue";
-import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
-import SearchBar from "../../../../MCA-AYIM/components/SearchBar.vue";
-import ButtonGroup from "../../../../MCA-AYIM/components/ButtonGroup.vue";
-import StaffAccordionHeader from "../../../components/staff/StaffAccordionHeader.vue";
-import StaffNominationAccordion from "../../../components/staff/StaffNomAccordion.vue";
-
 import { CategoryInfo } from "../../../../Interfaces/category";
 import { StaffNomination } from "../../../../Interfaces/nomination";
 
+import ButtonGroup from "../../../../Assets/components/ButtonGroup.vue";
+import SearchBar from "../../../../Assets/components/SearchBar.vue";
+import StaffAccordianHeader from "../../../components/staff/StaffAccordionHeader.vue";
+import StaffNominationAccordion from "../../../components/staff/StaffNomAccordion.vue";
+
+const mcaAyimModule = namespace("mca-ayim");
 const staffModule = namespace("staff");
 
 interface NominationsByCategory {
@@ -85,11 +83,9 @@ interface NominationsByCategory {
 
 @Component({
     components: {
-        ModeSwitcher,
-        ScrollBar,
-        SearchBar,
         ButtonGroup,
-        StaffAccordionHeader,
+        SearchBar,
+        StaffAccordianHeader,
         StaffNominationAccordion,
     },
     head () {
@@ -100,7 +96,8 @@ interface NominationsByCategory {
 })
 export default class Nominations extends Vue {
     
-    @State selectedMode!: string;
+    @State viewTheme!: "light" | "dark";
+    @mcaAyimModule.State selectedMode!: string;
     @staffModule.State categories!: CategoryInfo[];
 
     nominations: StaffNomination[] = [];

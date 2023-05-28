@@ -1,5 +1,5 @@
 import { NuxtConfig } from "@nuxt/types";
-import nuxtConfig from "../MCA-AYIM/nuxt.base.config";
+import nuxtConfig from "../Assets/nuxt.base.config";
 
 export default {
     ...nuxtConfig("ayim"),
@@ -22,8 +22,4 @@ export default {
             { hid: "theme-color", name: "theme-color", content: "#fb2475" },
         ],
     },
-    css: [
-        "../MCA-AYIM/assets/sass/main.scss",
-        "./assets/ayim.scss",
-    ],
 } as NuxtConfig;

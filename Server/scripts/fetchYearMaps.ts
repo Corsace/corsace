@@ -1,6 +1,5 @@
 import { ModeDivisionType, ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
 import { queue } from "async";
-import { createConnection } from "typeorm";
 import memoizee from "memoizee";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { config } from "node-config-ts";
@@ -10,8 +9,12 @@ import { Beatmap } from "../../Models/beatmap";
 import { OAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
+import { RateLimiterMemory, RateLimiterQueue } from "rate-limiter-flexible";
 import { isPossessive } from "../../Models/MCA_AYIM/guestRequest";
 import { sleep } from "../utils/sleep";
+import { modeList } from "../../Interfaces/modes";
+import { genres, langs } from "../../Interfaces/beatmap";
+import ormConfig from "../../ormconfig";
 
 let bmQueued = 0; // beatmaps inserted in queue
 let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
@@ -37,7 +40,7 @@ function timeFormatter (ms: number): string {
 
 const getModeDivison = memoizee(async (modeDivisionId: number) => {
     modeDivisionId += 1;
-    let mode = await ModeDivision.findOne(modeDivisionId);
+    let mode = await ModeDivision.findOne({ where: { ID: modeDivisionId }});
     if (!mode) {
         mode = new ModeDivision;
         mode.ID = modeDivisionId;
@@ -59,7 +62,7 @@ async function getMissingOsuUserProperties (userID: number): Promise<{ country: 
 }
 
 const getUser = async (targetUser: { username?: string, userID: number, country?: string }): Promise<User> => {
-    let user = await User.findOne({ osu: { userID: `${targetUser.userID}` } });
+    let user = await User.findOne({ where: { osu: { userID: `${targetUser.userID}` }}});
     
     if (!user) {
         let country = targetUser.country;
@@ -113,11 +116,38 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
     return user;
 };
 
+const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
+    const rankers: User[] = [];
+    if (beatmapEvents.length > 0)
+        for (const bnEvent of beatmapEvents.reverse()) { 
+            // Run from rank to the last disqual/nom_reset event 
+            // (or to the beginning of list if no disqual/nom_reset)
+            if (bnEvent.type === "rank")
+                continue;
+            if (bnEvent.type === "disqualify" || bnEvent.type === "nomination_reset")
+                break;
+
+            if (!rankers.some((ranker) => ranker.osu.userID === `${bnEvent.userId}`)) {
+                const bnUser = await getUser({ userID: bnEvent.userId });
+                rankers.push(bnUser);
+            }
+        }
+    return rankers;
+};
+
 // Memoized method to create or fetch a BeatmapSet from DB.
 const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> => {
-    let beatmapSet = new Beatmapset;
+    let beatmapSet = await Beatmapset.findOne({
+        where: {
+            ID: beatmap.beatmapSetId,
+        },
+    });
+    if (!beatmapSet)
+        beatmapSet = new Beatmapset;
+
     beatmapSet.ID = beatmap.setId;
     beatmapSet.approvedDate = beatmap.approvedDate;
+    beatmapSet.rankedStatus = beatmap.approved;
     beatmapSet.submitDate = beatmap.submitDate;
     beatmapSet.BPM = beatmap.bpm;
     beatmapSet.artist = beatmap.artist;
@@ -130,6 +160,12 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
     const user = await getUser({ username: beatmap.creator, userID: beatmap.creatorId });
     beatmapSet.creator = user;
     
+    // interOp call to pishi's BN site to get the user IDs of the BNs of a beatmapset.
+    // NOTE: The BN site only has nomination data from ~mid 2019 onward.
+    const beatmapEvents = await bnsRawData.get(beatmapSet.ID);
+    bnsRawData.delete(beatmapSet.ID);
+    beatmapSet.rankers = beatmapEvents ? await getRankers(beatmapEvents) : [];
+    
     beatmapSet = await beatmapSet.save();
     bmsInserted++;
     return beatmapSet;
@@ -139,7 +175,7 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
 });
 
 const getMCAEligibility = memoizee(async function(year: number, user: User) {
-    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year, user }});
+    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year, user: { ID: user.ID }}});
     if (!eligibility) {
         eligibility = new MCAEligibility();
         eligibility.year = year;
@@ -153,8 +189,42 @@ const getMCAEligibility = memoizee(async function(year: number, user: User) {
     },
 });
 
+
+type BeatmapsetID = number;
+export type BNEvent = {
+    type: "nominate" | "qualify" | "disqualify" | "nomination_reset" | "rank";
+    userId: number;
+}
+const bnsRawData = new Map<BeatmapsetID, Promise<null | BNEvent[]>>();
+const bnFetchingLimiter = new RateLimiterQueue(new RateLimiterMemory({ points: 20, duration: 1 }));
+const getBNsApiCallRawData = async (beatmapSetID: BeatmapsetID): Promise<null | BNEvent[]> => {
+    if (config.bn.username && config.bn.secret) {
+        try {
+            await bnFetchingLimiter.removeTokens(1);
+            return (await axios.get<BNEvent[]>(`https://bn.mappersguild.com/interOp/events/${beatmapSetID}`, {
+                headers: {
+                    username: config.bn.username,
+                    secret: config.bn.secret,
+                },
+            })).data;
+        } catch (err: any) {
+            console.error("An error occured while fetching BNs for beatmap set " + beatmapSetID);
+            console.error(err.stack);
+            process.exit(1);
+        }
+    }
+    return null;
+};
+
 async function insertBeatmap (apiBeatmap: APIBeatmap) {
-    let beatmap = new Beatmap;
+    let beatmap = await Beatmap.findOne({
+        where: {
+            ID: apiBeatmap.id,
+        },
+    });
+    if (!beatmap)
+        beatmap = new Beatmap;
+
     beatmap.ID = apiBeatmap.id;
     beatmap.mode = await getModeDivison(apiBeatmap.mode as number);
     beatmap.difficulty = apiBeatmap.version;
@@ -180,7 +250,7 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
 
     beatmap.beatmapset = await getBeatmapSet(apiBeatmap);
 
-    if (!isPossessive(beatmap.difficulty)) {
+    if (!isPossessive(beatmap.difficulty) && !isNaN(apiBeatmap.approvedDate.getUTCFullYear())) {
         const eligibility = await getMCAEligibility(apiBeatmap.approvedDate.getUTCFullYear(), beatmap.beatmapset.creator);
         if (!eligibility[modeList[apiBeatmap.mode as number]]) {
             eligibility[modeList[apiBeatmap.mode as number]] = true;
@@ -206,11 +276,15 @@ async function script () {
     }
     const until = new Date(`${year + 1}-01-01`);
 
+    if (!config.bn.username || !config.bn.secret) {
+        console.warn("WARNING: No BN website username/secret provided in config. Beatmapsets rankers will not be retrieved.");
+    }
+
     console.log("This script can damage your database. Make sure to only execute this if you know what you're doing.");
     console.log("This script will automatically continue in 5 seconds. Cancel using Ctrl+C.");
     await sleep(5000);
 
-    const conn = await createConnection();
+    const conn = await ormConfig.initialize();
     // ensure schema is up-to-date
     await conn.synchronize();
     console.log("DB schema is now up-to-date!");
@@ -227,7 +301,7 @@ async function script () {
     };
     const progressInterval = setInterval(printStatus, 1000);
 
-    let since = new Date((await Beatmapset.findOne({ order: { approvedDate: "DESC" } }))?.approvedDate || new Date("2006-01-01"));
+    let since = new Date((await Beatmapset.findOne({ where: {}, order: { approvedDate: "DESC" } }))?.approvedDate || new Date("2006-01-01"));
     console.log(`Fetching all beatmaps starting from ${since.toJSON()} until ${year}-12-31...`);
     printStatus();
     const queuedBeatmapIds: number[] = [];
@@ -242,6 +316,10 @@ async function script () {
                 break;
             if(![1, 2].includes(Number(newBeatmap.approved)))
                 continue;
+
+            if (!bnsRawData.has(newBeatmap.beatmapSetId)) {
+                bnsRawData.set(newBeatmap.beatmapSetId, getBNsApiCallRawData(newBeatmap.beatmapSetId));
+            }
 
             queuedBeatmapIds.push(newBeatmap.id);
             processingQueue.push(newBeatmap);
@@ -269,47 +347,4 @@ if(module === require.main) {
         });
 }
 
-const genres = [
-    "any",
-    "unspecified",
-    "video game",
-    "anime",
-    "rock",
-    "pop",
-    "other",
-    "novelty",
-    "---",
-    "hip hop",
-    "electronic",
-    "metal",
-    "classical",
-    "folk",
-    "jazz",
-];
-
-const langs = [
-    "any",
-    "unspecified",
-    "english",
-    "japanese",
-    "chinese",
-    "instrumental",
-    "korean",
-    "french",
-    "german",
-    "swedish",
-    "spanish",
-    "italian",
-    "russian",
-    "polish",
-    "other",
-];
-
-const modeList = [
-    "standard",
-    "taiko",
-    "fruits",
-    "mania",
-];
-
-export { getUser };
+export { getUser, insertBeatmap, getBNsApiCallRawData, getRankers };

@@ -42,9 +42,15 @@ config.corsace.publicUrl + /api/login/osu/callback
 
 `config.database`
 
+##### Via Docker (Recommended)
+
+We are shipping a production-like `docker-compose.yml` file. You can start only the database service using: `docker-compose up -d database` or `npm run database`.
+
+The database will listen on `127.0.0.1:3306`, with `corsace` being the database name, username and password.
+
 ##### Manual MariaDB Setup
 
-You will need to install [MariaDB](https://mariadb.org/) and create an empty database, named whatever you like. 
+If you do not want to use Docker, you will need to install [MariaDB](https://mariadb.org/) and create an empty database, named whatever you like. 
 
 It can be as simple as running:
 ```
@@ -54,43 +60,34 @@ MySQL> create database <new_db_name>;
 
 Make sure to update `config.database` to reflect your choice of database name and credentials.
 
-##### Via Docker
-
-We are shipping a production-like `docker-compose.yml` file. You can start only the database service using: `docker-compose up -d database` or `npm run database`.
-
-The database will listen on `127.0.0.1:3306`, with `corsace` being the database name, username and password.
-
 #### Seeding the database
 
-Create and seed the whole Corsace database using: `NODE_ENV=development npm run typeorm migration:run`
-
-### Google Sheets
-
-#### Setup
-
-`config.google`
-
-Currently used only as a temporary measure for handling large-scale custom mappooling. May also be used for other spreadsheet purposes.
-
-#### Spreadsheet IDs
-
-Typically, a spreadsheet URL will look like `https://docs.google.com/spreadsheets/d/VERY LARGE ID/edit#gid=PAGE ID`. Obtain the `VERY LARGE ID` for the todo sheet you will have, and the open and/or closed mappools. 
-
-#### API Credentials
-
-Go to `https://console.cloud.google.com/` and create a project.
-After creating a project, enable the Sheets API, and create a service account.
-
-Make sure to download the json which contains the credentials. The fields with the respective fields for
-```
-config.google.credentials.private_key
-config.google.credentials.client_email
-```
-are within the JSON.
-
-After creating a service account, Google will create an email similar to `serviceName@projectName.iam.gserviceaccount.com`. Share your spreadsheets to this email.
+Create and seed the whole Corsace database using: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
 
 ### Discord
+
+### Object Storage/S3
+
+We use S3-compatible object storage for storing and serving mappacks, configured in `config.s3`.
+
+While we target Cloudflare R2, any S3 provider should work as long as they support multipart uploads and pre-signed URLs.
+
+We use two buckets:  
+- `mappacks` is a public bucket that stores public mappacks, can be served by a CDN without authentication
+- `mappacks-temp` is a private bucket that stores private mappacks that should not have public access  
+  Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.  
+  Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.  
+  Mappacks that should become public get moved to the `mappacks` bucket.
+
+#### Cloudflare R2
+
+Go to the [Cloudflare R2 dashboard page](https://dash.cloudflare.com/?to=/:account/r2). Enable your plan if you haven't already (good luck exceeding free limits).
+
+Create the `mappacks` bucket and enable its R2.dev subdomain, or associate a custom domain.
+
+Create the `mappacks-temp` bucket and add an object lifecycle rule to delete objects after 7 days (leave prefix empty).
+
+Set hostname to `<cloudflare account id>.r2.cloudflarestorage.com`, and obtain S3 credentials from https://dash.cloudflare.com/?to=/:account/r2/api-tokens.
 
 #### Setup
 
@@ -154,7 +151,7 @@ Paste it into `config.discord.token`
 
 Ensure you enable the `Server Members` and `Message Content` intents under the **Privileged Gateway Intents** subsection before usage, the bot will not start otherwise, and you will be provided a `[DISALLOWED INTENTS]` error.
 
-#### Development
+## Development
 
 Run `npm run dev`, if you only want to run one of the projects, refer to the scripts in `package.json`.
 To run the project without the api, use `npm run dev-client`.

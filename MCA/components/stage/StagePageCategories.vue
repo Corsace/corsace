@@ -29,15 +29,16 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { namespace, State } from "vuex-class";
+import { namespace } from "vuex-class";
 
-import Collapsible from "../../../MCA-AYIM/components/Collapsible.vue";
+import Collapsible from "../../../Assets/components/mca-ayim/Collapsible.vue";
 
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import { Vote } from "../../../Interfaces/vote";
 import { Nomination } from "../../../Interfaces/nomination";
-import { StageType } from "../../../MCA-AYIM/store/stage";
+import { StageType } from "../../../Interfaces/mca";
 
+const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
 
 @Component({
@@ -47,7 +48,7 @@ const stageModule = namespace("stage");
 })
 export default class StagePageCategories extends Vue {
 
-    @State selectedMode!: string;
+    @mcaAyimModule.State selectedMode!: string;
     @stageModule.State votes!: Vote[];
     @stageModule.State nominations!: Nomination[];
     @stageModule.State section!: string;
@@ -96,14 +97,18 @@ export default class StagePageCategories extends Vue {
 @import '@s-sass/_mixins';
 
 .stage-categories {
-    flex: 1 1 15%;
-
-    min-height: 265px;
-    @include breakpoint(tablet) {
-        min-height: initial;
+    display: flex;
+    flex-direction: row;
+    @include breakpoint(laptop) {
+        flex-direction: column;
     }
+    gap: 10px;
 
-    overflow-y: scroll;
+    height: fit-content;
+
+    padding-right: 10px;
+    padding-bottom: 10px;
+
     scrollbar-width: thin;
     &::-webkit-scrollbar {
         width: 7px;

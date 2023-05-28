@@ -1,6 +1,12 @@
 {
     "flag": "https://osu.ppy.sh/images/flags/GB.png",
-    "login": "LOG IN",
+    "header": {
+        "welcomeBack": "welcome back",
+        "login": "login",
+        "register": "register",
+        "changeDiscord": "change discord",
+        "logout": "logout"
+    },
     "mca_ayim": {
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
@@ -106,6 +112,7 @@
             "nominating": "nominating",
             "preparation": "preparation",
             "results": "results",
+            "timeline": "timeline",
             "mapsetsLabel": "MAPSETS",
             "mappersLabel": "MAPPERS",
             "commentsLabel": "COMMENTS",
@@ -113,12 +120,14 @@
             "statisticsLabel": "STATISTICS",
             "stage": {
                 "voting": "voting stage",
-                "nominating": "nomination stage"
+                "nominating": "nomination stage",
+                "preparation": "preparation stage",
+                "stage": "stage"
             },
             "rankedSets": "RANKED SETS",
-            "nominateNow": "nominate now !",
-            "voteNow": "vote now !",
-            "viewResults": "view results !",
+            "nominateNow": "nominate now!",
+            "voteNow": "vote now!",
+            "viewResults": "view results!",
             "daysLeft": "days left",
             "message": {
                 "2019": "<p>Mapper's Choice Awards is back for round 4 in 2019! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>Our intention is to give a new perspective on the best maps of 2019 through the eyes of the mapping community!</p><p>This year, we have gone full-on with a website so that we can make it as easy as possible for eligible voters to nominate and vote now!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 6 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event! Let VINXIS know in the corsace discord server for any bugs or issues with the website!</p>",
@@ -127,10 +136,11 @@
                 "2022": "<p>We are back for another installment of Mapper's Choice Awards! (This time almost on schedule!)</p><p>This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event!</p>"
             },
             "categories": {
+                "index": "categories",
                 "map": "map categories",
                 "user": "user categories"
             },
-            "organized": "ORGANIZED BY"
+            "organized": "ORGANIZERS"
         },
         "categories": {
             "grandAward": {
@@ -406,11 +416,6 @@
         }
     },
     "main": {
-        "header": {
-            "login": "LOG IN",
-            "register": "REGISTER",
-            "changeDiscord": "CHANGE DISCORD"
-        },
         "construction": {
             "underConstruction": "under construction",
             "sorry": "sorry for the inconvenience",

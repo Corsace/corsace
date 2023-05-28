@@ -81,7 +81,7 @@ export default class IndexPage extends Vue {
     flex-direction: column;
     justify-content: space-between;
     border-radius: 15px 0 0 15px; 
-    background-color: $bg-dark; 
+    background-color: $dark-bg; 
     padding: 30px;
     margin-bottom: 30px;
     height: 100%;

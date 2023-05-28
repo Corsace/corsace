@@ -43,6 +43,7 @@ secrets:
       clientId: ""
       clientSecret: ""
   koaKey: ""
+  interOpPassword: ""
 
 webServices:
   corsace:
@@ -84,6 +85,11 @@ webServices:
   api:
     replicaCount: 1
     command: api
+    ingress:
+      enabled: false
+  cronRunner:
+    replicaCount: 1
+    command: cron-runner
     ingress:
       enabled: false
 

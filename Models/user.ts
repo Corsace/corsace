@@ -16,32 +16,43 @@ import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
 import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Influence } from "./MCA_AYIM/influence";
+import { Tournament } from "./tournaments/tournament";
+import { MappoolMap } from "./tournaments/mappools/mappoolMap";
+import { MappoolMapSkill } from "./tournaments/mappools/mappoolMapSkill";
+import { MappoolMapWeight } from "./tournaments/mappools/mappoolMapWeight";
+import { TournamentChannel } from "./tournaments/tournamentChannel";
+import { TournamentRole } from "./tournaments/tournamentRole";
+import { Stage } from "./tournaments/stage";
+import { Mappool } from "./tournaments/mappools/mappool";
+import { MappoolSlot } from "./tournaments/mappools/mappoolSlot";
+import { MappoolMapHistory } from "./tournaments/mappools/mappoolMapHistory";
+import { JobPost } from "./tournaments/mappools/jobPost";
 
 // General middlewares
 
 export class OAuth {
 
     @Column({ default: null })
-    userID!: string;
+        userID!: string;
 
     @Index()
     @Column({ default: "" })
-    username!: string;
+        username!: string;
     
     @Column({ default: "" })
-    avatar!: string;
+        avatar!: string;
 
     @Column({ type: "longtext", nullable: true, select: false })
-    accessToken?: string;
+        accessToken?: string;
 
     @Column({ type: "longtext", nullable: true, select: false })
-    refreshToken?: string;
+        refreshToken?: string;
 
     @CreateDateColumn()
-    dateAdded!: Date;
+        dateAdded!: Date;
 
-    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-    lastVerified!: Date;
+    @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
+        lastVerified!: Date;
 
 }
 
@@ -49,83 +60,129 @@ export class OAuth {
 export class User extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @Column(() => OAuth)
-    discord!: OAuth;
+        discord!: OAuth;
     
     @Column(() => OAuth)
-    osu!: OAuth;
+        osu!: OAuth;
 
     @Column({ type: "tinytext" })
-    country!: string;
+        country!: string;
 
     @CreateDateColumn()
-    registered!: Date;
+        registered!: Date;
     
-    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-    lastLogin!: Date;
+    @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
+        lastLogin!: Date;
 
     @OneToMany(() => UsernameChange, change => change.user, {
         eager: true,
     })
-    otherNames!: UsernameChange[];
+        otherNames!: UsernameChange[];
 
     @OneToMany(() => DemeritReport, demerit => demerit.user, {
         eager: true,
     })
-    demerits!: DemeritReport[];
+        demerits!: DemeritReport[];
 
     @OneToMany(() => GuestRequest, guestRequest => guestRequest.user, {
         eager: true,
     })
-    guestRequests!: GuestRequest[];
+        guestRequests!: GuestRequest[];
 
     @OneToMany(() => MCAEligibility, eligibility => eligibility.user, {
         eager: true,
     })
     @JoinTable()
-    mcaEligibility!: MCAEligibility[];
+        mcaEligibility!: MCAEligibility[];
 
     @OneToMany(() => Beatmapset, set => set.creator)
-    beatmapsets!: Beatmapset[];
+        beatmapsets!: Beatmapset[];
 
     @OneToMany(() => UserComment, userComment => userComment.commenter)
-    commentsMade!: UserComment[];
+        commentsMade!: UserComment[];
 
     @OneToMany(() => UserComment, userComment => userComment.target)
-    commentsReceived!: UserComment[];
+        commentsReceived!: UserComment[];
 
     @OneToMany(() => UserComment, userComment => userComment.reviewer)
-    commentReviews!: UserComment[];
+        commentReviews!: UserComment[];
 
     @OneToMany(() => Nomination, userComment => userComment.reviewer)
-    nominationReviews!: Nomination[];
+        nominationReviews!: Nomination[];
 
     @Column({ default: true })
-    canComment!: boolean;
+        canComment!: boolean;
     
     @ManyToMany(() => Nomination, nomination => nomination.nominators)
     @JoinTable()
-    nominations!: Nomination[];
+        nominations!: Nomination[];
     
     @OneToMany(() => Nomination, nomination => nomination.user)
-    nominationsReceived!: Nomination[];
+        nominationsReceived!: Nomination[];
 
     @OneToMany(() => Vote, vote => vote.voter)
-    votes!: Vote[];
+        votes!: Vote[];
     
     @OneToMany(() => Vote, vote => vote.user)
-    votesReceived!: Vote[];
+        votesReceived!: Vote[];
+
+    @ManyToMany(() => Beatmapset, set => set.rankers)
+    @JoinTable()
+        mapsRanked!: Beatmapset[];
     
     @OneToMany(() => Influence, influence => influence.user)
-    influences!: Influence[];
+        influences!: Influence[];
     
     @OneToMany(() => Influence, influence => influence.influence)
-    influencing!: Influence[];
+        influencing!: Influence[];
 
     @OneToMany(() => Influence, influence => influence.reviewer)
-    influenceReviews!: Influence[];
+        influenceReviews!: Influence[];
+
+    @OneToMany(() => Tournament, tournament => tournament.organizer)
+        tournamentsOrganized!: Tournament[];
+
+    @ManyToMany(() => MappoolMap, mappoolMap => mappoolMap.customMappers)
+        customMaps!: MappoolMap[];
+
+    @ManyToMany(() => MappoolMap, mappoolMap => mappoolMap.testplayers)
+        customMapsTested!: MappoolMap[];
+
+    @OneToMany(() => MappoolMapSkill, skill => skill.user)
+        mappoolMapSkillRatings!: MappoolMapSkill[];
+
+    @OneToMany(() => MappoolMapWeight, weight => weight.user)
+        mappoolMapSkillWeights!: MappoolMapWeight[];
+
+    @OneToMany(() => TournamentChannel, channel => channel.createdBy)
+        tournamentChannelsCreated!: TournamentChannel[];
+
+    @OneToMany(() => TournamentRole, role => role.createdBy)
+        tournamentRolesCreated!: TournamentRole[];
+
+    @OneToMany(() => Stage, stage => stage.createdBy)
+        stagesCreated!: Stage[];
+
+    @OneToMany(() => Mappool, mappool => mappool.createdBy)
+        mappoolsCreated!: Mappool[];
+
+    @OneToMany(() => MappoolSlot, mappoolSlot => mappoolSlot.createdBy)
+        mappoolSlotsCreated!: MappoolSlot[];
+
+    @OneToMany(() => MappoolMap, mappoolMap => mappoolMap.createdBy)
+        mappoolMapsCreated!: MappoolMap[];
+
+    @OneToMany(() => MappoolMap, mappoolMap => mappoolMap.assignedBy)
+        mappoolMapsAssigned!: MappoolMap[];
+
+    @OneToMany(() => MappoolMapHistory, history => history.createdBy)
+        mappoolMapHistoryEntriesCreated!: MappoolMapHistory[];
+
+    @OneToMany(() => JobPost, post => post.createdBy)
+        jobPostsCreated!: JobPost[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User
@@ -269,7 +326,7 @@ export class User extends BaseEntity {
             .where(`ID = ${this.ID}`)
             .getRawOne();
         return res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"];
-    }
+    };
 
     public getCondensedInfo = function(this: User, chosen = false): UserChoiceInfo {
         return {
@@ -280,7 +337,7 @@ export class User extends BaseEntity {
             otherNames: this.otherNames.map(otherName => otherName.name),
             chosen,
         };
-    }
+    };
     
     public getInfo = async function(this: User, member?: GuildMember | undefined): Promise<UserInfo> {
         if (this.discord?.userID && !member)
@@ -308,7 +365,7 @@ export class User extends BaseEntity {
             canComment: this.canComment,
         };
         return info;
-    }
+    };
 
     public getMCAInfo = async function(this: User): Promise<UserMCAInfo> {
         let member: GuildMember | undefined;
@@ -326,5 +383,5 @@ export class User extends BaseEntity {
         };
 
         return mcaInfo;
-    }
+    };
 }

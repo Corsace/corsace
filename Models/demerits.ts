@@ -5,19 +5,19 @@ import { User } from "./user";
 export class DemeritReport extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
     
-    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-    reportDate!: Date;
+    @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
+        reportDate!: Date;
 
     @Column({ type: "longtext", nullable: true })
-    reason?: string;
+        reason?: string;
 
     @Column({ default: 0 })
-    amount!: number;
+        amount!: number;
 
     @ManyToOne(() => User, user => user.demerits)
-    user!: User;
+        user!: User;
 
     public getInfo = function(this: DemeritReport): DemeritInfo {
         const info: DemeritInfo = {
@@ -27,7 +27,7 @@ export class DemeritReport extends BaseEntity {
             amount: this.amount,
         };
         return info;
-    }
+    };
 }
 
 export class DemeritInfo {

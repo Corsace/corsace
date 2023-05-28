@@ -1,11 +1,11 @@
-import { config } from "node-config-ts";
 import { Message } from "discord.js";
 import { discordClient } from "../../Server/discord";
 import { commands } from "../commands";
 import beatmap from "../commands/osu/beatmap";
 import profile from "../commands/osu/profile";
-import mappoolSong from "../commandsInexplicit/mappool/song";
 import osuTimestamp from "../commandsInexplicit/osu/osuTimestamp";
+import autoSubmit from "../commandsInexplicit/tournaments/mappool/autoSubmit";
+import errorHandler from "../functions/error";
 
 export default async function messageCreate (m: Message) {
     const prefix = /^!(\S+)/i;
@@ -27,27 +27,36 @@ export default async function messageCreate (m: Message) {
     if (timestampRegex.test(noEmoji))
         osuTimestamp(m);
 
-    if (m.channel.id === config.discord.openMappool.songSubmission || m.channel.id === config.discord.closedMappool.songSubmission)
-        mappoolSong(m, m.channel.id === config.discord.openMappool.songSubmission);
-
     // Command checking TODO: Add custom prefix (relies on discord server model)
+    let commandRun = false;
     if (prefix.test(m.content)) {
         const commandName = prefix.exec(m.content);
         if (!commandName)
             return;
-        
+
         for (const command of commands) { 
-            if (!command.name.some(name => name === commandName[1].toLowerCase()))
+            if (command.data.name.toLowerCase() !== commandName[1].toLowerCase() && !command.alternativeNames.some(a => a.toLowerCase() === commandName[1].toLowerCase()))
                 continue;
-            await command.command(m);
+            
+            commandRun = true;
+            m.content = m.content.replace(/\s+/g, " ").trim();
+            try {
+                await command.run(m);
+            } catch (e) {
+                errorHandler(e, m);
+            }
         }
     }
 
     // Check for an osu! profile linked
-    if (profileRegex.test(m.content))
-        profile.command(m);
+    if (profileRegex.test(m.content) && !commandRun)
+        profile.run(m);
 
     // Check for an osu! beatmap linked
-    if (beatmapRegex.test(m.content))
-        beatmap.command(m);
+    if (beatmapRegex.test(m.content) && !commandRun)
+        beatmap.run(m);
+
+    // Check if a tournament map was uploaded/linked
+    if ((m.attachments.first()?.url || /https?:\/\/\S+/.test(m.content)) && !commandRun)
+        autoSubmit(m);
 }

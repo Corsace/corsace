@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
 export class initial1614220134368 implements MigrationInterface {
-    name = "initial1614220134368"
+    name = "initial1614220134368";
 
     public async up (queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query("ALTER DATABASE COLLATE = `utf8mb4_general_ci`");

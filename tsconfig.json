@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "ES5",
+        "target": "es2015",
         "module": "commonjs",
         "moduleResolution": "node",
         "outDir": "Build",
@@ -24,4 +24,7 @@
         ],
         "sourceMap": true,
     },
+    "include": [
+        "./config/Config.d.ts"
+    ],
 }

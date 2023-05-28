@@ -6,6 +6,7 @@ import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { config } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
 import { redirectToMainDomain } from "./middleware";
+import { osuV2Client } from "../../../osu";
 import { isPossessive } from "../../../../Models/MCA_AYIM/guestRequest";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
@@ -19,7 +20,11 @@ const modes = [
 ];
 
 osuRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext<any>, next) => {
-    const baseURL = ctx.query.site ? (config[ctx.query.site] ? config[ctx.query.site].publicUrl : config.corsace.publicUrl) : "";
+    const site = Array.isArray(ctx.query.site) ? ctx.query.site[0] : ctx.query.site;
+    if (!site)
+        throw new Error("No site specified");
+
+    const baseURL = ctx.query.site ? (config[site] ? config[site].publicUrl : config.corsace.publicUrl) : "";
     const params = ctx.query.redirect ?? "";
     const redirectURL = baseURL + params ?? "back";
     ctx.cookies.set("redirect", redirectURL, { overwrite: true });
@@ -42,17 +47,19 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
 }, async (ctx, next) => {
     try {
         // api v2 data
-        const res = await Axios.get("https://osu.ppy.sh/api/v2/me", {
-            headers: {
-                Authorization: `Bearer ${ctx.state.user.osu.accessToken}`,
-            },
-        });
-        const data = res.data;
+        const data = await osuV2Client.getUserInfo(ctx.state.user.osu.accessToken);
 
         // Username changes
         const usernames: string[] = data.previous_usernames;
         for (const name of usernames) {
-            let nameChange = await UsernameChange.findOne({ name, user: ctx.state.user });
+            let nameChange = await UsernameChange.findOne({ 
+                where: { 
+                    name, 
+                    user: {
+                        ID: ctx.state.user.ID,
+                    },
+                },
+            });
             if (!nameChange) {
                 nameChange = new UsernameChange;
                 nameChange.name = name;
@@ -63,8 +70,12 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
 
         // Check if current username is a previous username or not
         const currentName = await UsernameChange.findOne({
-            name: ctx.state.user.osu.username,
-            user: ctx.state.user,
+            where: {
+                name: ctx.state.user.osu.username,
+                user: {
+                    ID: ctx.state.user.ID,
+                },
+            },
         });
         if (currentName)
             await currentName.remove();
@@ -87,7 +98,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
             }
 
             for (let year = 2007; year <= (new Date).getUTCFullYear(); year++) {
-                let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: ctx.state.user }});
+                let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: { ID: ctx.state.user.ID }}});
                 if (!eligibility) {
                     eligibility = new MCAEligibility();
                     eligibility.year = year;
@@ -131,7 +142,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                 if (!isPossessive(beatmap.version) && (beatmap.approved == 2 || beatmap.approved == 1)) {
                     const date = new Date(beatmap.approved_date);
                     const year = date.getUTCFullYear();
-                    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: ctx.state.user }});
+                    let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: { ID: ctx.state.user.ID }}});
                     if (!eligibility) {
                         eligibility = new MCAEligibility();
                         eligibility.year = year;

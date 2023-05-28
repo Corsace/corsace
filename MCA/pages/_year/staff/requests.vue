@@ -1,80 +1,80 @@
 <template>
-    <div class="staff-page">
-        <div class="staff-page__title">
+    <div class="admin">
+        <div class="admin__title">
             Requests
         </div>
 
-        <div class="staff-filters">
+        <div>
             <button
                 v-if="!showValidated"
                 class="button req-filter-btn"
                 @click="showValidated = true"
             >
-                Show Validated
+                Validated are Shown
             </button>
             <button
                 v-else
                 class="button req-filter-btn"
                 @click="showValidated = false"
             >
-                Hide Validated
+                Validated are Hidden
             </button>
         </div>
 
-        <div class="staff-container">
-            <div class="staff-container staff-scrollTrack">
-                <div class="staff-request__box">
-                    <div
-                        v-for="request in requests"
-                        :key="request.ID"
+        <div 
+            class="scroll__mca"
+            :class="`scroll--${viewTheme}`"
+        >
+            <div class="staff-request__box">
+                <div
+                    v-for="request in requests"
+                    :key="request.ID"
+                >
+                    <div 
+                        v-if="showValidated || (!showValidated && getStatusName(request.status) === 'Pending')"
+                        class="staff-request"
                     >
-                        <div 
-                            v-if="showValidated || (!showValidated && getStatusName(request.status) === 'Pending')"
-                            class="staff-request"
-                        >
-                            <div class="staff-request__info">
-                                <user-avatar
-                                    avatar-location="left"
-                                    :user-id="request.userID"
-                                    :username="request.username"
-                                />
+                        <div class="staff-request__info">
+                            <user-avatar
+                                avatar-location="left"
+                                :user-id="request.userID"
+                                :username="request.username"
+                            />
 
-                                <a
-                                    :href="generateUrl(request)"
-                                    target="_blank"
-                                    class="staff-page__link staff-request__link"
-                                    :class="`staff-page__link--${request.modeName}`"
-                                >
-                                    {{ request.artist }} - {{ request.title }} [{{ request.difficulty }}]
-                                </a>
-                            </div>
-
-                            <div
-                                class="staff-request__status"
-                                :class="`staff-request__status--${getStatusName(request.status).toLowerCase()}`"
+                            <a
+                                :href="generateUrl(request)"
+                                target="_blank"
+                                class="staff-page__link staff-request__link"
+                                :class="`staff-page__link--${request.modeName}`"
                             >
-                                {{ getStatusName(request.status) }}
-                            </div>
+                                {{ request.artist }} - {{ request.title }} [{{ request.difficulty }}]
+                            </a>
+                        </div>
 
-                            <div class="staff-list__actions">
-                                <button
-                                    class="button button--small staff-list__action"
-                                    @click="accept(request.ID)"
-                                >
-                                    accept
-                                </button>
-                                <button
-                                    class="button button--small staff-request__action"
-                                    @click="reject(request.ID)"
-                                >
-                                    reject
-                                </button>
-                            </div>
+                        <div
+                            class="staff-request__status"
+                            :class="`staff-request__status--${getStatusName(request.status).toLowerCase()}`"
+                        >
+                            {{ getStatusName(request.status) }}
+                        </div>
+
+                        <div class="staff-list__actions">
+                            <button
+                                class="button button--small staff-list__action"
+                                @click="accept(request.ID)"
+                            >
+                                accept
+                            </button>
+                            <button
+                                class="button button--small staff-request__action"
+                                @click="reject(request.ID)"
+                            >
+                                reject
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <scroll-bar selector=".staff-scrollTrack" />
         </div>
     </div>
 </template>
@@ -83,19 +83,15 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 
-import ChoiceBeatmapsetCard from "../../../../MCA-AYIM/components/ChoiceBeatmapsetCard.vue";
-import ScrollBar from "../../../../MCA-AYIM/components/ScrollBar.vue";
-import UserAvatar from "../../../components/staff/UserAvatar.vue";
-
 import { StaffGuestRequest, RequestStatus } from "../../../../Interfaces/guestRequests";
 import { UpdateRequestData } from "../../../store/staff";
+
+import UserAvatar from "../../../components/staff/UserAvatar.vue";
 
 const staffModule = namespace("staff");
 
 @Component({
     components: {
-        ChoiceBeatmapsetCard,
-        ScrollBar,
         UserAvatar,
     },
     head () {
@@ -106,6 +102,7 @@ const staffModule = namespace("staff");
 })
 export default class StaffRequests extends Vue {
 
+    @State viewTheme!: "light" | "dark";
     @State modes!: string[];
     @staffModule.State requests!: StaffGuestRequest[];
     @staffModule.Action updateRequest!: (data: UpdateRequestData) => Promise<void>;
@@ -144,6 +141,7 @@ $icon-margin: 15px;
 }
 
 .staff-request {
+    margin: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;

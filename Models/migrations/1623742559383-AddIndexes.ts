@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
 export class AddIndexes1623742559383 implements MigrationInterface {
-    name = "AddIndexes1623742559383"
+    name = "AddIndexes1623742559383";
 
     public async up (queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query("CREATE INDEX `IDX_ed15bbe252c98c2434c957135c` ON `mca_eligibility` (`year`)");

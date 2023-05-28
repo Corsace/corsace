@@ -8,34 +8,34 @@ import { CategoryCondensedInfo, CategoryInfo, CategoryType } from "../../Interfa
 export class CategoryFilter {
 
     @Column({ nullable: true })
-    minLength?: number;
+        minLength?: number;
 
     @Column({ nullable: true })
-    maxLength?: number;
+        maxLength?: number;
 
     @Column({ nullable: true })
-    minBPM?: number;
+        minBPM?: number;
 
     @Column({ nullable: true })
-    maxBPM?: number;
+        maxBPM?: number;
 
     @Column({ nullable: true })
-    minSR?: number;
+        minSR?: number;
 
     @Column({ nullable: true })
-    maxSR?: number;
+        maxSR?: number;
 
     @Column({ nullable: true })
-    minCS?: number;
+        minCS?: number;
 
     @Column({ nullable: true })
-    maxCS?: number;
+        maxCS?: number;
 
     @Column({ default: false })
-    topOnly?: boolean;
+        topOnly?: boolean;
 
     @Column({ nullable: true })
-    rookie?: boolean;
+        rookie?: boolean;
 
 }
 
@@ -43,37 +43,37 @@ export class CategoryFilter {
 export class Category extends BaseEntity {
     
     @PrimaryGeneratedColumn()
-    ID!: number;
+        ID!: number;
 
     @Column()
-    name!: string;
+        name!: string;
     
     @Column()
-    maxNominations!: number;
+        maxNominations!: number;
 
     @Column(() => CategoryFilter)
-    filter?: CategoryFilter;
+        filter?: CategoryFilter;
 
     @Column({ type: "enum", enum: CategoryType, default: CategoryType.Beatmapsets })
-    type!: CategoryType;
+        type!: CategoryType;
     
     @ManyToOne(() => ModeDivision, modeDivision => modeDivision.categories, {
         nullable: false,
         eager: true,
     })
-    mode!: ModeDivision;
+        mode!: ModeDivision;
 
     @ManyToOne(() => MCA, mca => mca.categories, {
         nullable: false,
         eager: true,
     })
-    mca!: MCA;
+        mca!: MCA;
 
     @OneToMany(() => Nomination, nomination => nomination.category)
-    nominations!: Nomination[];
+        nominations!: Nomination[];
     
     @OneToMany(() => Vote, vote => vote.category)
-    votes!: Vote[];
+        votes!: Vote[];
 
     public getInfo = function(this: Category): CategoryInfo {
         return {
@@ -85,7 +85,7 @@ export class Category extends BaseEntity {
             isFiltered: this.filter && (this.filter.minLength || this.filter.maxLength || this.filter.minBPM || this.filter.maxBPM || this.filter.minSR || this.filter.maxSR || this.filter.minCS || this.filter.maxCS || this.filter.topOnly) ? true : false,
             filter: this.filter ?? undefined, 
         };
-    }
+    };
 
     public getCondensedInfo = function(this: Category): CategoryCondensedInfo {
         return {
@@ -93,7 +93,7 @@ export class Category extends BaseEntity {
             type: CategoryType[this.type],
             mode: this.mode.name,
         };
-    }
+    };
 
     public setFilter = function(this: Category, params?: CategoryFilter): void {
         if (!params)
@@ -111,7 +111,7 @@ export class Category extends BaseEntity {
         filter.topOnly = params.topOnly ?? undefined;
         filter.rookie = params.rookie ?? undefined;
         this.filter = filter;
-    }
+    };
 }
 
 export class CategoryGenerator {
@@ -131,7 +131,7 @@ export class CategoryGenerator {
             category.name = category.type === CategoryType.Beatmapsets ? "grandStoryboard" : "grandStoryboarder";
 
         return category;
-    }
+    };
 
     /**
      * Creates a regular award.
@@ -149,5 +149,5 @@ export class CategoryGenerator {
         category.setFilter(filter);
 
         return category;
-    }
+    };
 }

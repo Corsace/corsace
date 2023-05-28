@@ -20,5 +20,9 @@
     "api": {
         "host": "0.0.0.0",
         "publicUrl": "http://api:8080"
+    },
+    "cronRunner": {
+        "host": "0.0.0.0",
+        "publicUrl": "http://cron-runner:8081"
     }
 }

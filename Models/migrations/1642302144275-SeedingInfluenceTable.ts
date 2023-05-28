@@ -6,7 +6,7 @@ import { UsernameChange } from "../usernameChange";
 import output from "./1642302144275-SeedingInfluenceTable.json";
 
 export class SeedingInfluenceTable1642302144275 implements MigrationInterface {
-    name = "SeedingInfluenceTable1642302144275"
+    name = "SeedingInfluenceTable1642302144275";
 
     public async up (queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE \`influence\` (\`ID\` int NOT NULL AUTO_INCREMENT, \`year\` year NOT NULL, \`rank\` int NOT NULL, \`comment\` text NULL, \`isValid\` tinyint NOT NULL DEFAULT 0, \`lastReviewedAt\` datetime NULL, \`userID\` int NOT NULL, \`influenceID\` int NOT NULL, \`modeID\` int NOT NULL, \`reviewerID\` int NULL, PRIMARY KEY (\`ID\`)) ENGINE=InnoDB`);
@@ -71,7 +71,7 @@ export class SeedingInfluenceTable1642302144275 implements MigrationInterface {
         }
 
         const missingInfluences: any[] = [];
-        const standardMode = await ModeDivision.findOne(1);
+        const standardMode = await ModeDivision.findOne({ where: { ID: 1 }});
         if (!standardMode)
             throw "Could not find the standard mode division. There may have been an issue with a previous migration that inserts this!";
 
