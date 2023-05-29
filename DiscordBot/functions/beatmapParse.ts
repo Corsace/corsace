@@ -97,7 +97,7 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
     mappoolMap.customBeatmap.link = link;
     mappoolMap.customBeatmap.artist = artist;
     mappoolMap.customBeatmap.title = title;
-    mappoolMap.customBeatmap.BPM = bpm;
+    mappoolMap.customBeatmap.BPM = parseFloat(bpm.toFixed(2));
     mappoolMap.customBeatmap.totalLength = length;
     mappoolMap.customBeatmap.hitLength = length;
     mappoolMap.customBeatmap.difficulty = diff;
