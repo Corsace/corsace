@@ -17,7 +17,7 @@ export class JobPost extends BaseEntity {
     @Column({ type: "datetime", nullable: true })
         deadline?: Date | null;
 
-    @Column()
+    @Column("text")
         description!: string;
 
     @OneToOne(() => MappoolMap, map => map.jobPost)
