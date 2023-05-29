@@ -35,9 +35,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const testing = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("tester") : /-test Y/i.test(m.content));
+    const testing = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("tester") : /-test/i.test(m.content));
     if (testing && m instanceof Message)    
-        m.content = m.content.replace(/-test Y/i, "");
+        m.content = m.content.replace(/-test/i, "");
 
     const params = extractParameters<parameters>(m, [
         { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },

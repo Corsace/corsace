@@ -5,13 +5,13 @@ export function extractTargetText (index: number) {
     return function (m: Message | ChatInputCommandInteraction) {
         if (m instanceof ChatInputCommandInteraction) {
             if (m.options.getSubcommand(false))
-                return m.options.getSubcommand() === "custom" ? m.options.getUser("user")?.id : m.options.getString("link");
+                return m.options.getSubcommand() === "custom" ? m.options.getUser("user")?.id : m.options.getString("link")?.trim();
             if (m.options.getUser("user"))
                 return m.options.getUser("user")?.id;
-            return m.options.getString("target");
+            return m.options.getString("target")?.trim();
         }
 
-        return m.mentions.users.first()?.username ?? m.content.split(" ").slice(index, m.content.split(" ").length).join(" ");
+        return m.mentions.users.first()?.username ?? m.content.split(" ").slice(index, m.content.split(" ").length).join(" ").trim();
     };
 }
 

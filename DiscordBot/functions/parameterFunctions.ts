@@ -13,7 +13,7 @@ const slashCommandParameterMethods: { [K in keyof ParamTypeMap]: (m: ChatInputCo
     boolean: (m, name) => m.options.getBoolean(name),
     integer: (m, name) => m.options.getInteger(name),
     number: (m, name) => m.options.getNumber(name),
-    string: (m, name) => m.options.getString(name),
+    string: (m, name) => m.options.getString(name)?.trim() || null,
     // Add more methods as needed
 };
 
@@ -21,7 +21,7 @@ const messageCommandParameterMethods: { [K in keyof ParamTypeMap]: (name: string
     boolean: (name) => name ? true : false,
     integer: (name) => name ? parseInt(name) : undefined,
     number: (name) => name ? parseFloat(name) : undefined,
-    string: (name) => name,
+    string: (name) => name?.trim(),
     // Add more methods as needed
 };
 

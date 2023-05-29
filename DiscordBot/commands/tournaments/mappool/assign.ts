@@ -37,16 +37,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!check)
         return;
     
-    const testing = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("testing") : /-test Y/i.test(m.content));
+    const testing = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("testing") : /-test/i.test(m.content));
     if (testing && m instanceof Message) 
-        m.content = m.content.replace(/-test Y/i, "");
+        m.content = m.content.replace(/-test/i, "");
 
-    const replace = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("replace") : /-r Y/i.test(m.content));
+    const replace = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("replace") : /-r/i.test(m.content));
     if (replace && m instanceof Message) {
         const confirm = await confirmCommand(m, `Toggling \`replace\` will replace all ${testing ? "tesplayers" : "custom mappers"} in the slot. Are you sure you want to continue?`);
         if (!confirm)
             return;
-        m.content = m.content.replace(/-r Y/i, "");
+        m.content = m.content.replace(/-r/i, "");
     }
 
     const params = extractParameters<parameters>(m, [

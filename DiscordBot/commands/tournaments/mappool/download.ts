@@ -15,10 +15,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await m.deferReply();
 
     const params = extractParameters<parameters>(m, [
-        { name: "tournament_query", regex: /-t (\S+)/, regexIndex: 1, optional: true },
         { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
         { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder, optional: true },
-        { name: "video", regex: /-v/, regexIndex: 1, paramType: "boolean" },
+        { name: "video", regex: /-v/, regexIndex: 1, paramType: "boolean", optional: true },
     ]);
     if (!params)
         return;
@@ -101,10 +100,6 @@ const data = new SlashCommandBuilder()
         option.setName("pool")
             .setDescription("The mappool to download.")
             .setRequired(true))
-    .addStringOption(option =>
-        option.setName("tournament_query")
-            .setDescription("The tournament which has the wanted mappool.")
-            .setRequired(false))
     .addStringOption(option =>
         option.setName("slot")
             .setDescription("The slot to download.")
