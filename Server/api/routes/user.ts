@@ -1,7 +1,7 @@
 import Router from "@koa/router";
-import { User } from "../../../Models/user";
+import { OAuth, User } from "../../../Models/user";
 import { UsernameChange } from "../../../Models/usernameChange";
-import { isHeadStaff, isLoggedIn } from "../../middleware";
+import { isCorsace, isHeadStaff, isLoggedIn } from "../../middleware";
 
 const userRouter = new Router();
 
@@ -11,6 +11,49 @@ userRouter.get("/", isLoggedIn, async (ctx) => {
 
 userRouter.get("/mca", isLoggedIn, async (ctx) => {
     ctx.body = await ctx.state.user.getMCAInfo();
+});
+
+interface connectBody {
+    osu: {
+        username: string;
+        userID: string;
+    };
+    discord: {
+        username: string;
+        userID: string;
+    };
+}
+
+userRouter.post("/connect", isCorsace, async (ctx) => {
+    const body: connectBody = ctx.request.body;
+    if (!body.osu || !body.discord)
+        return ctx.body = { 
+            error: "Missing parameters",
+        };
+
+    const { osu, discord } = body;
+
+    const user = await User.findOne({ 
+        where: { 
+            osu: { 
+                userID: osu.userID,
+            },
+        },
+    });
+
+    if (!user)
+        return ctx.body = { 
+            error: "User not found",
+        };
+
+    user.discord = discord as OAuth;
+
+    await user.save();
+
+    ctx.body = {
+        success: true,
+        user,
+    };
 });
 
 userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
