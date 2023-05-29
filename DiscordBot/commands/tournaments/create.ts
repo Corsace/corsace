@@ -104,8 +104,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     // Check for description validity
     const description = m instanceof Message ? descriptionRegex.exec(m.content)?.[1] : m.options.getString("description");
-    if (!description) {
-        await respond(m, "Please provide a valid description for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The description must be between 3 and 512 characters long.");
+    if (!description || description.length > 1024 || description.length < 3) {
+        await respond(m, "Please provide a valid description for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The description must be between 3 and 1024 characters long.");
         return;
     }
     if (profanityFilter.test(description)) {
@@ -903,7 +903,7 @@ const data = new SlashCommandBuilder()
             .setDescription("The description of the tournament")
             .setRequired(true)
             .setMinLength(3)
-            .setMaxLength(512))
+            .setMaxLength(1024))
     .addStringOption(option =>
         option.setName("mode")
             .setDescription("The mode of the tournament")
