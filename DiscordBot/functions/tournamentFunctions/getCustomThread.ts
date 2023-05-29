@@ -80,6 +80,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
                         return;
                     }
                     
+                    await ch.setArchived(false);
                     const wait = await m.channel!.send("Changing thread name... (this may take a while if rate limited)");
                     await ch.setName(`${slot} (${mappoolMap.customMappers.map(u => u.osu.username).join(", ")})`);
                     await wait.delete();
