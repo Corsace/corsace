@@ -116,7 +116,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             mappoolMap.customMappers = mappoolMap.customMappers.filter(u => u.ID !== staff.ID);
 
             if (mappoolMap.customMappers.length > 0) {
-                
+                if (!await notifyCustomThread(m, tournament, mappoolMap, mappoolSlot, `<@${user.discord.userID}> has removed **${staff.osu.username}**`))
+                    return;
 
                 await mappoolMap.save();
 
@@ -133,6 +134,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (!await notifyCustomThread(m, tournament, mappoolMap, mappoolSlot, `<@${user.discord.userID}> has removed **all testplayers**`))
                 return;
 
+            await mappoolMap.save();
 
             await respond(m, `Removed **all testplayers** from **${mappoolSlot}**`);
 
