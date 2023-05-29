@@ -85,6 +85,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
                     await ch.setName(`${slot} (${mappoolMap.customMappers.map(u => u.osu.username).join(", ")})`);
                     await wait.delete();
                     const threadMsg = await ch.send(content);
+                    await threadMsg.pin();
     
                     resolve([ch, threadMsg]);
                     confirmationCollector.stop();
