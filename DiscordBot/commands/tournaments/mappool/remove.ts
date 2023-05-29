@@ -21,6 +21,7 @@ import getCustomThread from "../../../functions/tournamentFunctions/getCustomThr
 import confirmCommand from "../../../functions/confirmCommand";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
+import channelID from "../../../functions/channelID";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -49,7 +50,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, slot, order, target } = params;
 
-    const components = await mappoolComponents(m, pool, slot || true, order || true, true, { text: m.channelId, searchType: "channel" }, unFinishedTournaments, undefined, target ? { text: target, roles: [TournamentRoleType.Testplayers, TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]} : undefined);
+    const components = await mappoolComponents(m, pool, slot || true, order || true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, undefined, target ? { text: target, roles: [TournamentRoleType.Testplayers, TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]} : undefined);
     if (!components || !("mappool" in components))
         return;
 

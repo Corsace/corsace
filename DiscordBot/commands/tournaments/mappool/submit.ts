@@ -13,6 +13,7 @@ import getUser from "../../../functions/dbFunctions/getUser";
 import commandUser from "../../../functions/commandUser";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import bypassSubmit from "../../../functions/tournamentFunctions/bypassSubmit";
+import channelID from "../../../functions/channelID";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -62,7 +63,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, slot, order, difficulty } = params;
 
-    const components = await mappoolComponents(m, pool, slot, order, true, { text: m.channelId, searchType: "channel" }, unFinishedTournaments);
+    const components = await mappoolComponents(m, pool, slot, order, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments);
     if (!components || !("mappoolMap" in components))
         return;
 

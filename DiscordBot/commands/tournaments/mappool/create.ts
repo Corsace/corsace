@@ -15,6 +15,7 @@ import getUser from "../../../functions/dbFunctions/getUser";
 import commandUser from "../../../functions/commandUser";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import confirmCommand from "../../../functions/confirmCommand";
+import channelID from "../../../functions/channelID";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -35,7 +36,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const components = await mappoolComponents(m, undefined, undefined, undefined, undefined, { text: m.channelId, searchType: "channel" }, unFinishedTournaments, true);
+    const components = await mappoolComponents(m, undefined, undefined, undefined, undefined, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, true);
     if (!components || !components.stage)
         return;
 

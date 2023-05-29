@@ -16,6 +16,7 @@ import respond from "../../../functions/respond";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import getCustomThread from "../../../functions/tournamentFunctions/getCustomThread";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
+import channelID from "../../../functions/channelID";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -43,7 +44,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const components = await mappoolComponents(m, pool, slot, order, true, { text: m.channelId, searchType: "channel"}, unFinishedTournaments, true);
+    const components = await mappoolComponents(m, pool, slot, order, true, { text: channelID(m), searchType: "channel"}, unFinishedTournaments, true);
     if (!components || !("mappoolMap" in components) || !("stage" in components))
         return;
     const { tournament, stage, mappoolMap, mappoolSlot } = components;

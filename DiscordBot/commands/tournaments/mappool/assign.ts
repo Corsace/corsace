@@ -22,6 +22,7 @@ import { JobPost } from "../../../../Models/tournaments/mappools/jobPost";
 import beatmapEmbed from "../../../functions/beatmapEmbed";
 import respond from "../../../functions/respond";
 import getUser from "../../../functions/dbFunctions/getUser";
+import channelID from "../../../functions/channelID";
 import commandUser from "../../../functions/commandUser";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import confirmCommand from "../../../functions/confirmCommand";
@@ -59,7 +60,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { target, pool, slot, order } = params;
 
-    const components = await mappoolComponents(m, pool, slot, order, true, { text: m.channelId, searchType: "channel" }, unFinishedTournaments, false, undefined, true);
+    const components = await mappoolComponents(m, pool, slot, order, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, false, undefined, true);
     if (!components || !("mappoolMap" in components))
         return;
     const { tournament, mappool, slotMod, mappoolMap, mappoolSlot } = components;

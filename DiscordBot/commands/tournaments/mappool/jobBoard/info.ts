@@ -9,6 +9,7 @@ import { extractParameters } from "../../../../functions/parameterFunctions";
 import { postProcessSlotOrder } from "../../../../functions/tournamentFunctions/parameterPostProcessFunctions";
 import mappoolComponents from "../../../../functions/tournamentFunctions/mappoolComponents";
 import { unFinishedTournaments } from "../../../../../Models/tournaments/tournament";
+import channelID from "../../../../functions/channelID";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -30,7 +31,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, slot, order } = params;
 
-    const components = await mappoolComponents(m, pool, slot || true, order || true, false, { text: m.channelId, searchType: "channel" }, unFinishedTournaments, false, undefined, true);
+    const components = await mappoolComponents(m, pool, slot || true, order || true, false, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, false, undefined, true);
     if (!components || !("mappool" in components))
         return;
 
