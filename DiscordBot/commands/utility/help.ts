@@ -1,17 +1,36 @@
-import { Message, EmbedBuilder, ChatInputCommandInteraction, SlashCommandBuilder, ToAPIApplicationCommandOptions } from "discord.js";
+import { Message, EmbedBuilder, ChatInputCommandInteraction, SlashCommandBuilder, APIApplicationCommandOption } from "discord.js";
 import { Command, commands } from "..";
 import { discordClient } from "../../../Server/discord";
 
-function optionParser (options: ToAPIApplicationCommandOptions[]) {
-    return options.map(option => {
-        const o = option.toJSON();
-        if (o.type === 1)
-            return `(${o.name}|${o.options?.map(o => o.name).join("|")})`;
-        else if (o.required)
-            return `<${o.name}>`;
-        else
-            return `[${o.name}]`;
-    }).join(" ");
+function optionParser (options: APIApplicationCommandOption[] | undefined): string {
+    if (!options) return "";
+
+    const commandOptions: string[] = [];
+    const subcommandOptions: string[] = [];
+    
+    options.forEach(option => {
+        if (option.type === 1 && option.options) {
+            // This is a subcommand. Process its options as a single unit.
+            const subOptions = option.options.map(subOption => {
+                if (subOption.required) {
+                    return `<${subOption.name}>`;
+                } else {
+                    return `[${subOption.name}]`;
+                }
+            });
+            subcommandOptions.push(subOptions.join(" "));
+        } else {
+            // This is an option of the command itself.
+            if (option.required) {
+                commandOptions.push(`<${option.name}>`);
+            } else {
+                commandOptions.push(`[${option.name}]`);
+            }
+        }
+    });
+
+    // Combine command options and subcommand options.
+    return commandOptions.join(" ") + (subcommandOptions.length > 0 ? ` (${subcommandOptions.join(" | ")})` : "");
 }
 
 async function run (m: Message | ChatInputCommandInteraction) {
@@ -47,7 +66,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     } else if (commands.some(cmd => cmd.data.name.toLowerCase() === arg.toLowerCase() || cmd.alternativeNames.some(a => a.toLowerCase() === arg.toLowerCase()))) {
         const command = commands.find(cmd => cmd.data.name.toLowerCase() === arg.toLowerCase() || cmd.alternativeNames.some(a => a.toLowerCase() === arg.toLowerCase()));
         embed.setAuthor({name: `Command: ${command!.data.name}`});
-        embed.setDescription(`\`!${command!.data.name} ${optionParser(command!.data.options)}\`\n${command!.data.description}\n\n**Aliases:** ${command!.alternativeNames.map(a => `\`${a}\``).join(", ")}`);
+        embed.setDescription(`\`!${command!.data.name} ${command!.data.toJSON().options ? optionParser(command!.data.toJSON().options) : ""}\`\n${command!.data.description}\n\n**Aliases:** ${command!.alternativeNames.map(a => `\`${a}\``).join(", ")}`);
         embed.addFields(command!.data.options.map(option => {
             const o = option.toJSON();
             return {
