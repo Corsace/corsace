@@ -21,6 +21,7 @@ export default function getMappools (tournament: Tournament, poolText = "", getS
             mappoolQ.leftJoinAndSelect("mappoolMap.jobPost", "jobPost");
             mappoolQ.leftJoinAndSelect("mappoolMap.beatmap", "beatmap");
             mappoolQ.leftJoinAndSelect("beatmap.beatmapset", "beatmapset");
+            mappoolQ.leftJoinAndSelect("customBeatmap.mode", "mode");
         }
     }
 
