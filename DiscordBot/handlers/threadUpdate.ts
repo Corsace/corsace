@@ -6,7 +6,7 @@ import mappoolComponentsThread from "../functions/tournamentFunctions/mappoolCom
 
 export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel) {
     // Don't need to check thread updates for anything else (currently)
-    if (ot.name === nt.name && ot.archived === nt.archived)
+    if (ot.name === nt.name)
         return;
 
     const logs = await nt.guild.fetchAuditLogs({ type: AuditLogEvent.ThreadUpdate });
@@ -30,15 +30,6 @@ export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel
 
     const command = threadCommands[channel.channelType]!;
 
-    if (ot.archived !== nt.archived) {
-        oldComponents.m.delete();
-        if (nt.archived)
-            await command.delete(nt, newComponents);
-        else 
-            await command.create(nt, newComponents);
-        await newComponents.m.delete();
-        return;
-    }
 
     // Get the pool, slot, and mappers
     const oldThreadName = ot.name;
