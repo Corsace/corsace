@@ -15,14 +15,34 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await m.deferReply();
 
     const params = extractParameters<parameters>(m, [
-        { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
+        { name: "pool", regex: /-p (\S+)/, regexIndex: 1, optional: true },
         { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder, optional: true },
         { name: "video", regex: /-v/, regexIndex: 1, paramType: "boolean", optional: true },
     ]);
     if (!params)
         return;
 
-    const { pool, slot, order, video } = params;
+    let { pool, slot, order } = params;
+    const { video } = params;
+
+    if (!pool && m.channel?.isThread()) {
+        // User wants the specific slot the thread is made for
+        const threadNameRegex = /(\S+) (\S+)( \((.+)\))?/;
+        const threadName = m.channel.name;
+        const threadNameMatch = threadName.match(threadNameRegex);
+        if (!threadNameMatch) {
+            await respond(m, "Could not find a pool name in the thread name.");
+            return;
+        }
+
+        pool = threadNameMatch[1];
+        const slotOrder = postProcessSlotOrder(threadNameMatch[2]);
+        slot = slotOrder.slot;
+        order = slotOrder.order;
+    } else if (!pool) {
+        await respond(m, `A pool name is required outside of threads.`);
+        return;
+    }
 
     const components = await mappoolComponents(m, pool, slot, order);
     if (!components || !("mappool" in components))
@@ -99,7 +119,7 @@ const data = new SlashCommandBuilder()
     .addStringOption(option =>
         option.setName("pool")
             .setDescription("The mappool to download.")
-            .setRequired(true))
+            .setRequired(false))
     .addStringOption(option =>
         option.setName("slot")
             .setDescription("The slot to download.")
@@ -110,7 +130,7 @@ const data = new SlashCommandBuilder()
             .setRequired(false));
 
 interface parameters {
-    pool: string,
+    pool?: string,
     slot?: string,
     order?: number,
     video?: boolean,
