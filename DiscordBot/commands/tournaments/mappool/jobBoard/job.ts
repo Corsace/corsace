@@ -31,6 +31,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     
     const { pool, slot, order, description } = params;
+    if (description.length > 1024 || description.length < 10) {
+        await respond(m, `The description is too long. It must be between 10 and 1024 characters long. Your description is currently ${description.length} characters long.`);
+        return;
+    }
 
     const components = await mappoolComponents(m, pool, slot, order, true, { text: m.channelId, searchType: "channel" }, unFinishedTournaments, false, undefined, true);
     if (!components || !("mappoolMap" in components))
@@ -90,6 +94,7 @@ const data = new SlashCommandBuilder()
     .addStringOption(option =>
         option.setName("description")
             .setDescription("The description for the job post.")
+            .setMinLength(10)
             .setMaxLength(1024)
             .setRequired(true))
     .setDMPermission(false);

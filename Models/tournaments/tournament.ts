@@ -48,7 +48,7 @@ export class Tournament extends BaseEntity {
     @Column()
         abbreviation!: string;
 
-    @Column()
+    @Column("text")
         description!: string;
 
     @Column()
