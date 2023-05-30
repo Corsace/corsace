@@ -42,7 +42,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const { mappoolMap, mappoolSlot } = components;
 
         if (!mappoolMap.jobPost) {
-            await respond(m, `**${mappoolSlot}** does not have a job board post.`);
+            await respond(m, `**${mappoolSlot}** doesn't have a job board post`);
             return;
         }
 

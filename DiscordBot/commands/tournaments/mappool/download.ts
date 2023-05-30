@@ -31,14 +31,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const threadName = m.channel.name;
         const threadNameMatch = threadName.match(threadNameRegex);
         if (!threadNameMatch) {
-            await respond(m, "Could not find a pool name in the thread name.");
+            await respond(m, "Can't find a pool info from the thread name");
             return;
         }
 
         pool = threadNameMatch[1];
         ({ slot, order } = postProcessSlotOrder(threadNameMatch[2]));
     } else if (!pool) {
-        await respond(m, `A pool name is required outside of threads.`);
+        await respond(m, `A pool name is required outside of threads`);
         return;
     }
 
@@ -55,7 +55,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const { mappoolMap, mappoolSlot } = components;
 
         if (!mappoolMap.customBeatmap && !mappoolMap.beatmap) {
-            await respond(m, `**${mappoolSlot}** currently does not have a beatmap.`);
+            await respond(m, `**${mappoolSlot}** currently doesn't have a beatmap`);
             return;
         }
         
@@ -66,7 +66,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         const link = mappoolMap.beatmap ? `https://osu.direct/api/d/${mappoolMap.beatmap.beatmapsetID}` : undefined;
         if (!link) {
-            await respond(m, `**${mappoolSlot}** currently does not have a beatmap.`);
+            await respond(m, `**${mappoolSlot}** currently doesn't have a beatmap`);
             return;
         }
     
@@ -79,7 +79,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 },
             ]);
         } catch (e) {
-            await respond(m, `Could not download **${pool}**\nosu.direct may likely be down currently. Error below:\n\`\`\`\n${e}\`\`\``);
+            await respond(m, `Can't download **${pool}**\nosu.direct is proly currently down. Error below:\n\`\`\`\n${e}\`\`\``);
         }
 
         if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
@@ -100,13 +100,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mappool.mappackLink = url;
         mappool.mappackExpiry = new Date(Date.now() + 60 * 60 * 24 * 1000);
     } catch (e) {
-        await respond(m, `Could not download **${pool}**\nosu.direct may likely be down currently. Error below:\n\`\`\`\n${e}\`\`\``);
+        await respond(m, `Can't download **${pool}**\nosu.direct is proly currently down. Error below:\n\`\`\`\n${e}\`\`\``);
         return;
     }
 
     await mappool.save();
 
-    await respond(m, `Here is a temporary mappack link valid for 1 day:\n${mappool.mappackLink}`);
+    await respond(m, `Here's a temp. mappack link valid for 1 day:\n${mappool.mappackLink}`);
 
     if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
 }

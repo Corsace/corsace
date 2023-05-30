@@ -15,7 +15,7 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
     const mappoolMaps = mappool.slots.flatMap(s => s.maps);
     const filteredMaps = mappoolMaps.filter(m => (m.customBeatmap && m.customBeatmap.link) || m.beatmap);
     if (filteredMaps.length === 0) {
-        await respond(m, `**${mappool.name}** does not have any downloadable beatmaps.`);
+        await respond(m, `**${mappool.name}** doesn't have any downloadable beatmaps`);
         return;
     }
     const updatedMaps: MappoolMap[] = [];
@@ -25,7 +25,7 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
             const set = await osuClient.beatmaps.getByBeatmapId(beatmap.ID) as APIBeatmap[];
             const apiMap = set.find(m => m.beatmapId === beatmap!.ID);
             if (!apiMap) {
-                await respond(m, "Could not find beatmap on osu!api.");
+                await respond(m, "Can't find the beatmap via osu!api");
                 return;
             }
             beatmap = await insertBeatmap(apiMap);
@@ -55,7 +55,7 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
         const url = await buckets.mappacks.getPublicUrl(s3Key);
         return url;
     } catch (e) {
-        await respond(m, "Failed to create pack. Contact VINXIS.");
+        await respond(m, "Failed to create pack. Contact VINXIS");
         console.log(e);
         return;
     }

@@ -26,7 +26,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const teamCountRegex = new RegExp(/-tc (\d{1,2}) (\d{1,2})/);
     const helpRegex = new RegExp(/-h/);
     if (m instanceof Message && (helpRegex.test(m.content) || (!nameRegex.test(m.content) && !abbreviationRegex.test(m.content) && !dateRegex.test(m.content) && !typeRegex.test(m.content) && !scoringRegex.test(m.content) && !teamCountRegex.test(m.content)))) {
-        await m.reply(`Please provide all required parameters! Here is a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Date:** \`-d <start date> <end date>\`\n**Type:** \`-t <type>\`\n**Scoring Method:** \`-s <scoring method>\`\n**Team Count:** \`-tc <min> <max>\`\n\nIt is recommended to use slash commands for any \`create\` command.`);
+        await m.reply(`Provide all required parameters! Here's a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Date:** \`-d <start date> <end date>\`\n**Type:** \`-t <type>\`\n**Scoring Method:** \`-s <scoring method>\`\n**Team Count:** \`-tc <min> <max>\`\n\nIt's recommended to use slash commands for any \`create\` command`);
         return;
     }
 
@@ -37,16 +37,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for name validity
     const name = m instanceof Message ? nameRegex.exec(m.content)?.[1] : m.options.getString("name");
     if (!name) {
-        await respond(m, "Please provide a valid name for your stage! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 50 characters long.");
+        await respond(m, "Provide a valid name for ur stage, ur only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 50 characters long");
         return;
     }
     if (profanityFilter.test(name)) {
-        await respond(m, "LMFAO! XD Shut the fuck up and give a valid name you fucking idiot (Nobody's laughing with you, fucking dumbass)");
+        await respond(m, "The name is sus . Change it to something more appropriate");
         return;
     }
 
     if (tournament.stages.find(s => s.name.toLowerCase() === name.toLowerCase())) {
-        await respond(m, "A stage with that name already exists.");
+        await respond(m, "A stage with that name already exists Lol");
         return;
     }
 
@@ -57,7 +57,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     // Confirm to understand the difference between a stage and a round
-    const confirm = await confirmCommand(m, "A stage consists of multiple rounds. Rounds consist of multiple matches.\n**FOR EXAMPLE:** `Knockout 1` that consists of `Round of 16`, `Quarter Finals`, `Semi Finals`, and `Finals` would be considered a stage with multiple rounds in it.\n`Round of 16` is considered as a round WITHIN a stage.\n\nPlease make sure you understand that what you are creating right now is a **stage** and not a **round**.\nDo you understand the difference, and that you are creating a stage, that will create subsequent rounds, and **NOT** a specific round?");
+    const confirm = await confirmCommand(m, "A stage consists of multiple rounds. Rounds consist of multiple matches.\n\n**FOR EXAMPLE:** `Knockout 1` that consists of `Round of 16`, `Quarter Finals`, `Semi Finals`, and `Finals` would be considered a stage with multiple rounds in it.\n`Round of 16` is considered as a round WITHIN a stage.\n\nPleaseeeee make sure u understand that what ur creating right now is a **stage** and not a **round**.\nDo u understand the difference, and that ur creating a stage, that will create subsequent rounds, and **NOT** a specific round?");
     if (!confirm) {
         await respond(m, "Ok Lol .");
         return;
@@ -71,15 +71,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for abbreviation validity
     const abbreviation = m instanceof Message ? abbreviationRegex.exec(m.content)?.[1] : m.options.getString("abbreviation");
     if (!abbreviation) {
-        await respond(m, "Please provide a valid abbreviation for your stage! You are only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 1 and 8 characters long.");
+        await respond(m, "Provide a valid abbreviation for ur stage, ur only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 1 and 8 characters long");
         return;
     }
     if (tournament.stages.find(s => s.abbreviation.toLowerCase() === abbreviation.toLowerCase())) {
-        await respond(m, "A stage with that abbreviation already exists.");
+        await respond(m, "A stage with that abbreviation already exists");
         return;
     }
     if (profanityFilter.test(abbreviation)) {
-        await respond(m, "The abbreviation is sus . Change it to something more appropriate.");
+        await respond(m, "The abbreviation is sus . Change it to something more appropriate");
         return;
     }
     stage.abbreviation = abbreviation;
@@ -88,17 +88,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const startText = m instanceof Message ? dateRegex.exec(m.content)?.[1] : m.options.getString("start");
     const endText = m instanceof Message ? dateRegex.exec(m.content)?.[2] : m.options.getString("end");
     if (!startText || !endText) {
-        await respond(m, "Please provide a valid start and end date for your stage! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        await respond(m, "Provide a valid start and end date for ur stage! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
         return;
     }
     const start = new Date(startText.includes("-") ? startText : parseInt(startText + "000"));
     const end = new Date(endText.includes("-") ? endText : parseInt(endText + "000"));
     if (isNaN(start.getTime()) || isNaN(end.getTime()) || start.getTime() > end.getTime()) {
-        await respond(m, "Invalid timespan. Please provide 2 dates in consecutive order.\n\n(e.g. `2021-01-01 2021-01-02`)");
+        await respond(m, "Invalid timespan. Provide 2 dates in consecutive order.\n\n(e.g. `2021-01-01 2021-01-02`)");
         return;
     }
     if (start.getTime() < tournament.registrations.end.getTime() || end.getTime() < tournament.registrations.end.getTime()) {
-        await respond(m, "The stage overlaps with registrations. It's recommended to have between 2 weeks between registration end and the first stage's start in order to screen players as necessary.");
+        await respond(m, "The stage overlaps with registrations. It's recommended to have between 2 weeks between registration end and the first stage's start in order to screen players as necessary");
         return;
     }
     let order = 1;
@@ -109,7 +109,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             start.getTime() === s.timespan.start.getTime() ||
             end.getTime() === s.timespan.end.getTime()
         ) {
-            await respond(m, "The stage's timespan overlaps with another stage.");
+            await respond(m, "The stage's timespan overlaps with another stage");
             return;
         }
 
@@ -127,12 +127,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for type validity
     let stageType = m instanceof Message ? typeRegex.exec(m.content)?.[1] : m.options.getString("type");
     if (!stageType) {
-        await respond(m, "Please provide a valid type for your stage what are you doing");
+        await respond(m, "Provide a valid type for ur stage what are u doing");
         return;
     }
     stageType = stageType.replace(/\s/g, "").charAt(0).toUpperCase() + stageType.replace(/\s/g, "").slice(1);
     if (!StageType[stageType]) {
-        await respond(m, "Please provide a valid type for your stage DUDE?????");
+        await respond(m, "DUDE????? Provide a valid type for ur stage");
         return;
     }
     stage.stageType = StageType[stageType];
@@ -140,12 +140,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for scoring method validity
     let scoringMethod = m instanceof Message ? scoringRegex.exec(m.content)?.[1] : m.options.getString("scoring_method");
     if (!scoringMethod) {
-        await respond(m, "Please provide a valid scoring method for your stage how can you mess this up");
+        await respond(m, "Provide a valid scoring method for ur stage how can u mess this up");
         return;
     }
     scoringMethod = scoringMethod.replace(/\s/g, "").charAt(0).toUpperCase() + scoringMethod.replace(/\s/g, "").slice(1);
     if (ScoringMethod[scoringMethod] === undefined) {
-        await respond(m, "Please provide a valid scoring method for your stage. Come on .");
+        await respond(m, "Provide a valid scoring method for ur stage. Come on .");
         return;
     }
     stage.scoringMethod = ScoringMethod[scoringMethod];
@@ -157,7 +157,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const initialTeamCount = teamCountRegex.exec(m.content)?.[1];
         const finalTeamCount = teamCountRegex.exec(m.content)?.[2];
         if (!initialTeamCount || !finalTeamCount) {
-            await m.reply("Please provide a valid initial and final team count for your stage!");
+            await m.reply("Provide valid initial and final team counts for ur stage");
             return;
         }
         initial = parseInt(initialTeamCount);
@@ -239,7 +239,7 @@ async function stageDone (m: Message | ChatInputCommandInteraction, stage: Stage
         await s.save();
     }
 
-    await respond(m, "Congratulations on saving your new stage for your tournament! :tada:\nHere is the stage embed:");
+    await respond(m, "Wow bro nice stage\nHere's the stage embed:");
 
     const embed = new EmbedBuilder()
         .setTitle(stage.name)

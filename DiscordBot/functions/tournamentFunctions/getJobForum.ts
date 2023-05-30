@@ -15,7 +15,7 @@ export default async function getJobForum (m: Message | ChatInputCommandInteract
     const tournamentChannel = tourneyChannels.find(c => c.channelType === TournamentChannelType.Jobboard);
     const thread = discordClient.channels.cache.get(tournamentChannel?.channelID ?? "");
     if (!(thread && thread.type === ChannelType.GuildForum)) {
-        await respond(m, `Could not find job channel for tournament ${tournament.name}`);
+        await respond(m, `Can't find the job forum channel for tournament ${tournament.name}`);
         return;
     }
 

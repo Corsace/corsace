@@ -7,7 +7,7 @@ export default async function interactionCreate (interaction: Interaction) {
 
     const command = commands.find(c => c.data.name === interaction.commandName);
     if (!command) {
-        console.error(`No command matching ${interaction.commandName} was found.`);
+        console.error(`No command matching ${interaction.commandName} was found`);
         return;
     }
     try {

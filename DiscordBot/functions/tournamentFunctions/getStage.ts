@@ -12,7 +12,7 @@ export default async function getStage (m: Message | ChatInputCommandInteraction
 
     const stages = tournament.stages.length > 0 ? tournament.stages : await getStages(tournament.ID, "tournamentID", true, false);
     if (stages.length === 0) {
-        await respond(m, "This tournament currently has no stages. Please create a stage first.");
+        await respond(m, "THE TOURNAMENT HAS NO STAGES CREATE A STAGE FIRST .");
         return;
     }
 

@@ -56,9 +56,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .getOne();
     if (!user) {
         if (!search)
-            await respond(m, "You either currently do not have influences for year less than equal to the provided year, or you have not logged into Corsace!\nIf you are not logged into Corsace, please login to https://corsace.io with your discord and osu! accounts in order to obtain your influences implicitly!");
+            await respond(m, "U either currently don't have influences for year less than equal to the provided year, or u didn't logged into Corsace\nIf ur not logged into Corsace, then login to https://corsace.io with ur discord and osu! accounts in order to obtain ur influences implicitly");
         else
-            await respond(m, `${search} does not currently contain influences found in the corsace database with the given year!`);
+            await respond(m, `${search} doesn't currently contain influences found in the corsace database with the given year`);
         return;
     }
     const latestYear = Math.max(...user.influences.map(inf => inf.year));

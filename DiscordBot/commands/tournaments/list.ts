@@ -21,7 +21,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { server, past_registration, finished, mode } = params;
 
     if (server && !m.guild) {
-        await respond(m, "You can only use this option in a server dude");
+        await respond(m, "U can only use this option in a server dude");
         return;
     }
 

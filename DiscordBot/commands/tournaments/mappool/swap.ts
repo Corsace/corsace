@@ -44,7 +44,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const slot2Text = m instanceof Message ? m.content.match(slot2Regex) ?? m.content.split(" ")[3] : m.options.getString("slot2");
     const pool2Text = m instanceof Message ? m.content.match(pool2Regex) ?? m.content.split(" ")[4] : m.options.getString("pool2");
     if (!pool1Text || !slot1Text || !slot2Text) {
-        await respond(m, "Missing parameters. Please use `-p1 <pool> -s1 <slot> -s2 <slot> [-p2 <pool>]` or `<pool1> <slot1> <slot2> [pool2]`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        await respond(m, "Missing parameters. Use `-p1 <pool> -s1 <slot> -s2 <slot> [-p2 <pool>]` or `<pool1> <slot1> <slot2> [pool2]`. If u don't use the `-` prefixes, the order of the parameters is important");
         return;
     }
 
@@ -54,7 +54,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const order2 = parseInt(typeof slot2Text === "string" ? slot2Text.substring(slot2Text.length - 1) : slot2Text[1].substring(slot2Text[1].length - 1));
     const slot2 = (typeof slot2Text === "string" ? slot2Text.substring(0, slot2Text.length - 1) : slot2Text[1].substring(0, slot2Text[1].length - 1)).toUpperCase();
     if (isNaN(order1) || isNaN(order2)) {
-        await respond(m, `Invalid slot order for **${slot1Text}** or **${slot2Text}**, please provide a valid slot.`);
+        await respond(m, `Invalid slot order for **${slot1Text}** or **${slot2Text}**, provide a valid slot`);
         return;
     }
     const pool2 = !pool2Text ? pool2Text : typeof pool2Text === "string" ? pool2Text : pool2Text[0];
@@ -86,7 +86,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         no: randomUUID(),
     };
     const confirm = await m.channel!.send({
-        content: `Are you sure you want to swap **${slot1}${order1}** (${name1}) with **${slot2}${order2}** (${name2})?`,
+        content: `Are u sure u wanna swap **${slot1}${order1}** (${name1}) with **${slot2}${order2}** (${name2})?`,
         components: [
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
@@ -175,14 +175,14 @@ async function getMappools (m: Message | ChatInputCommandInteraction, tournament
     if (!mappool1) 
         return;
     if (mappool1.isPublic) {
-        await respond(m, `Mappool **${mappool1.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        await respond(m, `Mappool **${mappool1.name}** is public mate u can't use the command. Make the mappool private first`);
         return;
     }
     const mappool2 = !pool2 ? mappool1 : await getMappool(m, tournament, pool2);
     if (!mappool2) 
         return;
     if (mappool2.isPublic) {
-        await respond(m, `Mappool **${mappool2.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        await respond(m, `Mappool **${mappool2.name}** is public mate u can't use the command. Make the mappool private first`);
         return;
     }
 
@@ -200,12 +200,12 @@ async function getMaps (m: Message | ChatInputCommandInteraction, mappool1: Mapp
 
     const mappoolMap1 = slotMod1.maps.find(m => m.order === order1);
     if (!mappoolMap1) {
-        await respond(m, `Could not find **${slot1}${order1}**`);
+        await respond(m, `Can't find **${slot1}${order1}**`);
         return;
     }
     const mappoolMap2 = slotMod2.maps.find(m => m.order === order2);
     if (!mappoolMap2) {
-        await respond(m, `Could not find **${slot2}${order2}**`);
+        await respond(m, `Can't find **${slot2}${order2}**`);
         return;
     }
 

@@ -60,7 +60,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const { mappoolMap, mappoolSlot } = components;
         
         if ((testing && mappoolMap.testplayers.length === 0) || (!mappoolMap.beatmap && mappoolMap.customMappers.length === 0)) {
-            await respond(m, `**${mappoolSlot}** is currently empty.`);
+            await respond(m, `**${mappoolSlot}** is currently empty`);
             return;
         }
 
@@ -92,11 +92,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
             const { staff } = components;
 
             if (!testing && !mappoolMap.customMappers.some(u => u.ID === staff.ID)) {
-                await respond(m, `**${staff.osu.username}** is not a mapper for **${mappoolSlot}**`);
+                await respond(m, `**${staff.osu.username}** isn't a mapper for **${mappoolSlot}**`);
                 return;
             }
             if (testing && !mappoolMap.testplayers.some(u => u.ID === staff.ID)) {
-                await respond(m, `**${staff.osu.username}** is not a tester for **${mappoolSlot}**`);
+                await respond(m, `**${staff.osu.username}** isn't a tester for **${mappoolSlot}**`);
                 return;
             }
 
@@ -163,13 +163,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mappool.mappackLink = mappool.mappackExpiry = null;
         await mappool.save();
 
-        await respond(m, `Removed the custom map ${name !== "" ? "**" + name + "**" : ""}and mappers from **${mappoolSlot}**`);
+        await respond(m, `Removed the custom map ${name !== "" ? `**${name}**` : ""}and mappers from **${mappoolSlot}**`);
 
         await mappoolLog(tournament, "removeCustom", user, `Removed the custom map ${name !== "" ? `\`${name}\`` : ""}and mappers from \`${mappoolSlot}\``);
         return;
     }
 
-    const confirm = await confirmCommand(m, "Are you sure you want to remove **ALL** beatmaps, custom beatmaps and mappers from this mappool?\n**This action cannot be undone.**");
+    const confirm = await confirmCommand(m, "U sure u wanna remove **ALL** beatmaps, custom beatmaps and mappers from this mappool?\n**This action CANNOT be undone**");
     if (!confirm) {
         await respond(m, "Ok Lol");
         return;

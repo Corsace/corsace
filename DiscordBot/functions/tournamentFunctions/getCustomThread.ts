@@ -28,7 +28,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
             create: randomUUID(),
         };
         const threadMessage = await m.channel!.send({
-            content: `Is there a thread for this map already? Or should I create one in <#${forumChannel.id}>? If there already is a thread, paste the thread's ID.`,
+            content: `Is there a thread for this map already? Or should I create one in <#${forumChannel.id}>? If there already is a thread, paste the thread's ID`,
             components: [
                 new ActionRowBuilder<ButtonBuilder>()
                     .addComponents(
@@ -49,7 +49,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
             const idCollector = m.channel!.createMessageCollector({ filter, time: 6000000 });
             confirmationCollector.on("collect", async (i: MessageComponentInteraction) => {
                 if (i.customId === ids.stop) {
-                    await i.reply("Stopped command.");
+                    await i.reply("Stopped command");
                     setTimeout(async () => await i.deleteReply(), 5000);
                     confirmationCollector.stop();
                     idCollector.stop();
@@ -75,7 +75,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
                     const id = msg.content.match(/\d+/)![0];
                     const ch = await discordClient.channels.fetch(msg.content);
                     if (!ch || !(ch instanceof ThreadChannel) || ch.parentId !== forumChannel.id) {
-                        const reply = await msg.reply(`Could not find thread channel with id ${id} <#${id}> within the forum channel <#${forumChannel.id}>`);
+                        const reply = await msg.reply(`Can't find thread channel with id ${id} <#${id}> within the forum channel <#${forumChannel.id}>`);
                         setTimeout(async () => await reply.delete(), 5000);
                         return;
                     }
@@ -101,7 +101,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
 
     const ch = await discordClient.channels.fetch(mappoolMap.customThreadID);
     if (!ch || !(ch instanceof ThreadChannel)) {
-        await respond(m, `Could not find thread for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
+        await respond(m, `Can't find thread for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
         return;
     }
 
@@ -109,11 +109,11 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
     await thread.setArchived(false);
     const threadMsg = await thread.messages.fetch(mappoolMap.customMessageID!);
     if (!threadMsg) {
-        await respond(m, `Could not find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);
+        await respond(m, `Can't find thread message for **${slot}** which should be https://discord.com/channels/${thread.guild.id}/${mappoolMap.customThreadID}/${mappoolMap.customMessageID} (ID: ${mappoolMap.customMessageID})`);
         return;
     }
 
-    const wait = await m.channel!.send("Changing thread name... (this may take up to 10 minutes if rate limited as discord API only allows bots to change thread names ~2 times per 10 min.)");
+    const wait = await m.channel!.send("Changing thread name... (this may take up to 10 minutes if rate limited as discord API only allows bots to change thread names ~2 times per 10 min)");
     await thread.setName(`${slot} (${mappoolMap.customMappers.map(u => u.osu.username).join(", ")})`);
     await Promise.all([
         wait.delete(),

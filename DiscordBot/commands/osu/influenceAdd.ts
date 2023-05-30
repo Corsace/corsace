@@ -86,7 +86,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mode = await ModeDivision.findOne({ where: { ID: 1 }});
 
     if (!isEligibleFor(user, mode!.ID, year)) {
-        await respond(m, `You did not rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date).getUTCFullYear() ? "\nFor adding influences in the current year, then if you have ranked a set, re-login to Corsace with your osu! account, and you should be able to add them after!" : ""}`);
+        await respond(m, `U didnt rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date).getUTCFullYear() ? "\nFor adding influences in the current year, u need to have ranked a set, and u should re-login to Corsace with ur osu! account if it was recent. U should be able to add them after" : ""}`);
         return;
     }
 
@@ -138,11 +138,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         relations: ["user", "influence"],
     });
     if (influences.length === 5) {
-        await respond(m, `You already have 5 influences for **${year}** in **${mode!.name}**!`);
+        await respond(m, `U already have 5 influences for **${year}** in **${mode!.name}**`);
         return;
     } 
     if (influences.some(inf => inf.influence.osu.userID === influenceUser!.osu.userID)) {
-        await respond(m, `You have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+        await respond(m, `U have already marked **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**`);
         return;
     }
 
@@ -180,7 +180,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     .setStyle(ButtonStyle.Danger)
             );
         const message = await m.channel!.send({
-            content: `Are you sure you want to add **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**? You cannot remove influences for years past the currently running MCA!`,
+            content: `Are u sure u wanna add **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**? U cant remove influences for years past the currently running MCA`,
             components: [row],
         });
         const collector = message.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10000 });
@@ -192,7 +192,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
             if (i.customId === buttonIDs.true) {
                 await influence.save();
-                await respond(m, `Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+                await respond(m, `Added **${influenceUser!.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**`);
             }
             await message.delete();
         });
@@ -204,7 +204,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     await influence.save();
 
-    await respond(m, `Added **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**!`);
+    await respond(m, `Added **${influenceUser.osu.username}** as a mapping influence for **${year}** in **${mode!.name}**`);
     return;
     
 }

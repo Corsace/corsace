@@ -27,7 +27,7 @@ export async function ojsamaParse (m: Message | ChatInputCommandInteraction, dif
         const { data } = await Axios.get(link, { responseType: "stream" });
         axiosData = data;
     } catch (e) {
-        m.reply("Could not download the map. Please make sure the link is valid.");
+        m.reply("Can't download the map. Make sure the link is valid");
         return;
     }
     const zip = axiosData.pipe(Parse({ forceStream: true }));
@@ -198,7 +198,7 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
     const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slot.allowedMods)), modsToAcronym(slot.allowedMods), set);
     mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
-    await respond(m, `Successfully submitted \`${artist} - ${title} [${diff}]\` to \`${mappoolSlot}\``, [mappoolMapEmbed]);
+    await respond(m, `Submitted \`${artist} - ${title} [${diff}]\` to \`${mappoolSlot}\``, [mappoolMapEmbed]);
 
     await mappoolLog(tournament, "submit", user, log, mappoolSlot);
 }

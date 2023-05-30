@@ -18,13 +18,13 @@ export default async function guildMemberAdd (member: GuildMember) {
         if (user)
             roles.push(config.discord.roles.corsace.verified);
         else
-            member.send("Hello and welcome to Corsace.\n\nIf you want to type in the discord server, please make sure you log in on osu! and then discord at https://corsace.io to obtain the `Verified` role which gives you typing abilities");
+            member.send("Hello and welcome to Corsace.\n\nIf u wanna type in the discord server, make sure u log in on osu! and then discord at https://corsace.io to obtain the `Verified` role. That will give u typing abilities");
 
         await member.roles.add(roles);
 
         const memberUser = member.user;
         const embed = new EmbedBuilder({
-            title: `${memberUser.tag} joined!`,
+            title: `${memberUser.tag} joined`,
             description: `Users currently in server: ${member.guild.memberCount}`,
             color: 3066993,
             timestamp: new Date(),
@@ -38,7 +38,7 @@ export default async function guildMemberAdd (member: GuildMember) {
             fields: [
                 {
                     name: "Registered?",
-                    value: user ? `${memberUser.tag} is registered!` : `${memberUser.tag} is not registered!`,
+                    value: user ? `${memberUser.tag} is registered` : `${memberUser.tag} isn't registered`,
                 },
             ],
         } as EmbedData);

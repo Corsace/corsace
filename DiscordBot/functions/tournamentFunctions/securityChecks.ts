@@ -9,7 +9,7 @@ export async function hasTournamentRoles (m: Message | ChatInputCommandInteracti
 
     const memberRoles = m.member?.roles;
     if (!memberRoles) {
-        await respond(m, "Could not fetch your roles.");
+        await respond(m, "Can't fetch ur roles");
         return false;
     }
     const roleIDs = memberRoles instanceof GuildMemberRoleManager ? memberRoles.cache.map(r => r.id) : memberRoles;
@@ -20,7 +20,7 @@ export async function hasTournamentRoles (m: Message | ChatInputCommandInteracti
         .getMany();
     const allowedRoles = roles.filter(r => targetRoles.some(t => t === r.roleType));
     if (allowedRoles.length === 0) {
-        await respond(m, `You do not have any of the following roles: ${targetRoles.map(t => TournamentRoleType[t]).join(", ")}.`);
+        await respond(m, `U don't have any of the following roles: ${targetRoles.map(t => TournamentRoleType[t]).join(", ")}`);
         return false;
     }
 
@@ -37,14 +37,14 @@ export async function isSecuredChannel (m: Message | ChatInputCommandInteraction
         },
     });
     if (!channel) {
-        await respond(m, "This channel is not registered as a secured channel for any tournament. If this is a mistake, please have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type.");
+        await respond(m, "This channel isn't registered as a secured channel for any tournament. If this is a mistake, have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type");
         return false;
     }
 
     // Check if the channel type is allowed
     const allowed = targetChannels.some(t => t === channel.channelType);
     if (!allowed) {
-        await respond(m, `This channel is not any of the following channel types: ${targetChannels.map(t => TournamentChannelType[t]).join(", ")}. If this is a mistake, please have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type.`);
+        await respond(m, `This channel isn't any of the following channel types: ${targetChannels.map(t => TournamentChannelType[t]).join(", ")}. If this is a mistake, have the tournament admins/organizers add this channel as a secured channel for the tournament with the applicable channel type`);
         return false;
     }
 
@@ -53,12 +53,12 @@ export async function isSecuredChannel (m: Message | ChatInputCommandInteraction
 
 export async function securityChecks (m: Message | ChatInputCommandInteraction, inGuild: boolean, isAdmin: boolean, securedChannels: TournamentChannelType[], allowedRoles: TournamentRoleType[]): Promise<boolean> {
     if (inGuild && !m.guild) {
-        await respond(m, "This command can only be used in a server.");
+        await respond(m, "This command can only be used in a server");
         return false;
     }
 
     if (isAdmin && !(m.member?.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator)) {
-        await respond(m, "You must have a role with administrator privileges to use this command.");
+        await respond(m, "U must have a role with administrator privileges to use this command");
         return false;
     }
 

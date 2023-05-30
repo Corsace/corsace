@@ -24,5 +24,5 @@ export function stopRow (): [string, ActionRowBuilder<ButtonBuilder>]  {
 export async function timedOut (m: Message, stopped: boolean, item: string) {
     await m.delete();
     if (!stopped)
-        await m.reply(`${item} timed out.`);
+        await m.reply(`${item} timed out`);
 }

@@ -17,6 +17,6 @@ export default function errorHandler (err: unknown, m?: Message | ChatInputComma
     }
 
     console.log(err);
-    respond(m, "The command was unable to be fulfilled.\nAn error unrelated to discord occurred while executing this command. Contact VINXIS.");
+    respond(m, "The command was unable to be fulfilled.\nAn error unrelated to discord occurred while executing this command. Contact VINXIS");
     return true;
 }

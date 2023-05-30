@@ -42,7 +42,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             name: "corsace",
             iconURL: discordClient.user?.avatarURL({extension: "png", size: 2048}) as string,
         },
-        description: "**Most commands have other forms as well for convenience!**\n\n**Please do `!help <command>` for more information about the command!**\nHelp information format: `(cmd|names) <args> [optional args]`",
+        description: "**Most commands have other forms as well for convenience!**\n\n**Do `!help <command>` for more information about the command!**\nHelp information format: `(cmd|names) <args> [optional args]`",
         color: 0xFB2475,
         fields: [{
             name: "categories:",

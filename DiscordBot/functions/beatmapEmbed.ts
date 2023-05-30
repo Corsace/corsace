@@ -54,7 +54,7 @@ export default async function beatmapEmbed (beatmap: Beatmap, mods: string, seto
         // The dreaded replay data (TODO)
         let replay = "";
         if (score.replayAvailable)
-            replay = " | Replay data is not available yet!";
+            replay = " | Replay data isn't available yet";
 
         // Get pp value(s)
         let pp = "";

@@ -9,6 +9,6 @@ const loginRow = new ActionRowBuilder<ButtonBuilder>()
             .setStyle(ButtonStyle.Link)
     );
 
-export async function loginResponse (m: Message | ChatInputCommandInteraction, text = "Please login to the Corsace website with your discord and osu! accounts!") {
+export async function loginResponse (m: Message | ChatInputCommandInteraction, text = "Login to the Corsace website with ur discord and osu! accounts") {
     await respond(m, text, undefined, [loginRow]);
 }

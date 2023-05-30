@@ -33,7 +33,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
     const { pool, slot, order, description } = params;
     if (description.length > 1024 || description.length < 10) {
-        await respond(m, `The description is too long. It must be between 10 and 1024 characters long. Your description is currently ${description.length} characters long.`);
+        await respond(m, `The description's too long. It must be between 10 and 1024 characters long. Ur description is currently ${description.length} characters long`);
         return;
     }
 
@@ -44,7 +44,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { mappoolMap, mappoolSlot } = components;
 
     if ((mappoolMap.customMappers && mappoolMap.customMappers.length > 0) || mappoolMap.beatmap) {
-        await respond(m, `**${mappoolSlot}** is not a job board slot. There is no reason to create a job board post.`);
+        await respond(m, `**${mappoolSlot}** isn't a job board slot so LOGICALLY there's no reason to create a job board post`);
         return;
     }
 
@@ -63,12 +63,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (mappoolMap.jobPost.jobBoardThread) {
         const ch = await discordClient.channels.fetch(mappoolMap.jobPost.jobBoardThread);
         if (!ch || !(ch instanceof ThreadChannel)) {
-            await respond(m, `Could not find thread for **${slot}** which should be <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
+            await respond(m, `Can't find the thread for **${slot}** which is supposedly <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
             return;
         }
         const msg = await ch.fetchStarterMessage();
         if (!msg) {
-            await respond(m, `Could not find starter message for **${slot}** which should be in <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
+            await respond(m, `Can't find the starter message in the thread for **${slot}** which is supposedly <#${mappoolMap.customThreadID}> (ID: ${mappoolMap.customThreadID})`);
             return;
         }
 
@@ -78,7 +78,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await mappoolMap.jobPost.save();
     await mappoolMap.save();
 
-    await respond(m, `Successfully created/edited job post for **${mappoolSlot}**:\n${description}`);
+    await respond(m, `Created/edited job post for **${mappoolSlot}**:\n${description}`);
 }
 
 const data = new SlashCommandBuilder()

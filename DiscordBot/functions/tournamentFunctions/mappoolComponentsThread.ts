@@ -66,7 +66,7 @@ export default async function mappoolComponentsThread (t: ThreadChannel, owner: 
 
     const components = await mappoolComponents(m, poolText, slotText, order, true, { text: t.parentId!, searchType: "channel" }, unFinishedTournaments, false, undefined, true);
     if (!components || !("mappoolMap" in components)) {
-        await respond(m, "Invalid pool, slot, or order.");
+        await respond(m, "Invalid pool, slot, or order");
         return;
     }
 
@@ -80,13 +80,13 @@ export default async function mappoolComponentsThread (t: ThreadChannel, owner: 
     const targetRoles = [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers];
     const allowedRoles = roles.filter(r => targetRoles.some(t => t === r.roleType));
     if (allowedRoles.length === 0) {
-        await respond(m, `There are no valid roles for this tournament. Please add ${targetRoles.map(t => t.toString()).join(", ")} roles first.`);
+        await respond(m, `There are no valid roles for this tournament. Add ${targetRoles.map(t => t.toString()).join(", ")} roles first`);
         return;
     }
     const member = await t.guild.members.fetch(owner.id);
     const allowed = member.roles.cache.hasAny(...allowedRoles.map(r => r.roleID));
     if (!allowed) {
-        await respond(m, "You are not a mappooler or organizer for this tournament.");
+        await respond(m, "Ur not a mappooler or organizer for this tournament don't be sneaky now .");
         return;
     }
 

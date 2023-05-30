@@ -8,9 +8,9 @@ export default async function getTournament (m: Message | ChatInputCommandIntera
     const tournamentList = await getTournaments(target, searchType, tournamentStatusFilters, stageOrRound, mappools, slots, maps, jobPosts);
     if (tournamentList.length === 0) {
         if (searchType === "channel")
-            await respond(m, `Could not find any tournaments with ${searchType} in <#${target}>.`);
+            await respond(m, `Can't find any tournaments with ${searchType} in <#${target}>`);
         else
-            await respond(m, `Could not find any tournaments with ${searchType} \`${target}\` in this server.`);
+            await respond(m, `Can't find any tournaments with ${searchType} \`${target}\` in this server`);
         return;
     }
 

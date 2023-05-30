@@ -30,13 +30,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const pool = extractParameter(m, { name: "pool", regex: /-p (\S+)/, regexIndex: 1 }, 1);
     if (!pool || !(typeof pool === "string")) {
-        await respond(m, "Please provide a mappool.");
+        await respond(m, "Provide a mappool");
         return;
     }
 
     const components = await mappoolComponents(m, pool, true, true, false, undefined, unFinishedTournaments, true);
     if (!components || !("mappool" in components) || !("stage" in components)) {
-        await respond(m, "Could not find mappool and stage. Please provide a valid mappool.");
+        await respond(m, "Can't find mappool and stage. Provide a valid mappool");
         return;
     }
 
@@ -44,21 +44,21 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     // Confirmations
     if (!mappool.isPublic && stage!.timespan.start.getTime() - Date.now() > 1000 * 60 * 60 * 24 * 7) {
-        const confirm = await confirmCommand(m, "This mappool is more than a week away from the stage's start date. Are you sure you want to publish it?");
+        const confirm = await confirmCommand(m, "This mappool is more than a week away from the stage's start date u sure u wanna publish it?");
         if (!confirm) {
             await respond(m, "Ok Lol .");
             return;
         }
     } 
     if (!mappool.isPublic && mappool.slots.some(slot => slot.maps.some(map => !map.beatmap && !map.customBeatmap))) {
-        const confirm = await confirmCommand(m, "This mappool still contains empty slots. Are you sure you want to publish it?");
+        const confirm = await confirmCommand(m, "This mappool still contains empty slots u sure u wanna publish it?");
         if (!confirm) {
             await respond(m, "Ok Lol .");
             return;
         }
     }
     if (mappool.isPublic && stage!.timespan.start.getTime() < Date.now()) {
-        const confirm = await confirmCommand(m, "This mappool's stage has already started. Are you sure you want to privatize it?");
+        const confirm = await confirmCommand(m, "This mappool's stage already started u sure u wanna privatize it?");
         if (!confirm) {
             await respond(m, "Ok Lol .");
             return;
@@ -91,14 +91,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
         
             mappool.mappackLink = await buckets.mappacks.getPublicUrl(s3Key);
         } catch (err) {
-            await respond(m, "Something went wrong while copying the mappack. Contact VINXIS.");
+            await respond(m, "Something died while copying the mappack. Contact VINXIS");
             console.log(err);
             return;
         }
     } else {
         const url = await createPack(m, "mappacks", mappool, `${tournament.abbreviation.toUpperCase()}${tournament.year}_${mappool.abbreviation.toUpperCase()}`);
-        if (!url){
-            await respond(m, "Something went wrong while creating the mappack and retrieving its URL. Contact VINXIS.");
+        if (!url) {
+            await respond(m, "Something died while creating the mappack and retrieving its URL. Contact VINXIS");
             return;
         }
 

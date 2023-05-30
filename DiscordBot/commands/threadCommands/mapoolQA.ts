@@ -19,14 +19,14 @@ export async function mappoolQACreate (t: ThreadChannel, { m, creator, tournamen
     }
 
     // Check if custom mappers array is the same as mapperUsers
-    if ((mappoolMap.customMappers.length !== mapperUsers.length || mappoolMap.customMappers.some(u => !mapperUsers.some(u2 => u2.discord.userID === u.discord.userID))) && !await confirmCommand(m, `The mappers in the thread name do not match the mappers in the map. Do you want to overwrite the mappers in the map with the mappers in the thread name?\n\nThread mappers: ${mapperUsers.map(u => u.osu.username).join(", ")}\nMap mappers: ${mappoolMap.customMappers.map(u => u.osu.username).join(", ")}`, false)) {
+    if ((mappoolMap.customMappers.length !== mapperUsers.length || mappoolMap.customMappers.some(u => !mapperUsers.some(u2 => u2.discord.userID === u.discord.userID))) && !await confirmCommand(m, `The mappers in the thread name don't match the mappers in the map. Do u wanna overwrite the mappers in the map with the mappers in the thread name?\n\nThread mappers: ${mapperUsers.map(u => u.osu.username).join(", ")}\nMap mappers: ${mappoolMap.customMappers.map(u => u.osu.username).join(", ")}`, false)) {
         return;
     }
     mappoolMap.assignedBy = creator;
     mappoolMap.customMappers = mapperUsers;
     
     if (mappoolMap.customThreadID) {
-        const confirm = await confirmCommand(m, "This map already has a thread. Do you want to create a new one?", false);
+        const confirm = await confirmCommand(m, "This map already has a thread. U tryna create a new one?", false);
         if (!confirm)
             return;
 
@@ -55,7 +55,7 @@ export async function mappoolQACreate (t: ThreadChannel, { m, creator, tournamen
 }
 
 export async function mappoolQADelete (t: ThreadChannel, { m, creator, tournament, mappoolMap }: mappoolComponentsThreadType) {
-    const confirm = await confirmCommand(m, `<@${creator.discord.userID}> Do you want to remove all testplayers, mappers, and the custom beatmap associated with the map now that you deleted its thread for **${t.name}**?`, false);
+    const confirm = await confirmCommand(m, `<@${creator.discord.userID}> Do u wanna remove all testplayers, mappers, and the custom beatmap associated with the map now that u deleted its thread for **${t.name}**?`, false);
     if (!confirm)
         return;
 
@@ -65,7 +65,7 @@ export async function mappoolQADelete (t: ThreadChannel, { m, creator, tournamen
     await mappoolMap.save();
     if (customMap) await customMap.remove();
 
-    await respond(m, `Deleted thread for **${t.name}** and the associated assignments and custom map.`);
+    await respond(m, `Deleted thread for **${t.name}** and the associated assignments and custom map`);
 
     await mappoolLog(tournament, "threadDelete", creator, `Deleted thread for \`${t.name}\` and the associated assignments and custom map`);
 

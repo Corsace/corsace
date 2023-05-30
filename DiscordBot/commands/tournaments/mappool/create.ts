@@ -26,7 +26,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
     const targetSR = m instanceof Message ? parseFloat(m.content.split(" ")[1]) : m.options.getNumber("target_sr");
     if (!targetSR || isNaN(targetSR) || targetSR < 0 || targetSR > 20) {
-        await respond(m, "Invalid target SR.");
+        await respond(m, "Invalid target SR");
         return;
     }
 
@@ -49,7 +49,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     mappool.targetSR = targetSR;
 
     // If the stage is an elmination-type stage, then check if they want to make a mappool for a specific round for the stage; otherwise, just make a mappool for the stage
-    if ((stage.stageType === StageType.DoubleElimination || stage.stageType === StageType.SingleElimination) && await confirmCommand(m, `Is this for a specific round in ${stage.abbreviation}?\nIf it's for the entire stage, select No.`)) {
+    if ((stage.stageType === StageType.DoubleElimination || stage.stageType === StageType.SingleElimination) && await confirmCommand(m, `Is this for a specific round in ${stage.abbreviation}?\n**If it's for the entire stage, select No**`)) {
         // Ask if they want to make a mappool for a specific round, or just for the stage
         const round = await getRound(m, stage);
         if (round)
@@ -79,11 +79,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         });
 
     if (existingMappools.length === 13) {
-        await respond(m, "This stage/round already has 13 mappools. You cannot create any more.");
+        await respond(m, "Dyude this stage/round already has 13 mappools u can't create any more");
         return;
     }
 
-    const cont = existingMappools.length === 0 ? true : await confirmCommand(m, `This stage/round already has ${existingMappools.length} mappool${existingMappools.length === 1 ? "" : "s"}. Are you sure you want to create another?`);
+    const cont = existingMappools.length === 0 ? true : await confirmCommand(m, `This stage/round already has ${existingMappools.length} mappool${existingMappools.length === 1 ? "" : "s"} u sure u wanna create another?`);
     if (!cont) {
         await respond(m, "Ok Lol .");
         return;
@@ -107,13 +107,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
     mappool.order = existingMappools.length + 1;
 
-    const message = await respond(m, "Alright let's get started!");
+    const message = await respond(m, "Ok let's g o");
     await mappoolName(message, mappool, tournament, existingMappools);
 }
 
 // This function asks for confirmation on the name and abbreviatoin of the mappool, and updates it if the user wants to
 async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament, existingMappools: Mappool[]) {
-    const content = `The name of the mappool will be **${mappool.name}** and the abbreviation will be **${mappool.abbreviation}**.\n\nIs this ok? If not, type the new name and abbreviation, with the name first, and the abbreviation after.`;
+    const content = `The name of the mappool will be **${mappool.name}** and the abbreviation will be **${mappool.abbreviation}**.\n\nIs this ok? If not, type the new name and abbreviation, with the name first, and the abbreviation after`;
     const ids = {
         stop: randomUUID(),
         confirm: randomUUID(),
@@ -141,7 +141,7 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
 
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {	
         if (i.customId === ids.stop) {
-            await i.reply("Mappool creation stopped.");
+            await i.reply("Mappool creation stopped");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
             componentCollector.stop();
@@ -149,7 +149,7 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
             return;	
         }
         if (i.customId === ids.confirm) {
-            await i.reply("ok Cool.");
+            await i.reply("ok Cool");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
             componentCollector.stop();
@@ -162,31 +162,31 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
     mappoolNameCollector.on("collect", async (msg: Message) => {
         const split = msg.content.split(" ");
         if (split.length < 2) {
-            const reply = await msg.reply("You need to provide both a name and an abbreviation.");
+            const reply = await msg.reply("U need to provide both a name and an abbreviation");
             setTimeout(async () => (await reply.delete()), 5000);
             return;
         }
         const abbreviation = split[split.length - 1];
         const name = split.slice(0, split.length - 1).join(" ");
         if (name.length > 50 || name.length < 3) {
-            const reply = await msg.reply("The name must be between 3 and 50 characters.");
+            const reply = await msg.reply("The name must be between 3 and 50 characters");
             setTimeout(async () => (await reply.delete()), 5000);
             return;
         }
         if (abbreviation.length > 8 || abbreviation.length < 1) {
-            const reply = await msg.reply("The abbreviation must be between 1 and 8 characters.");
+            const reply = await msg.reply("The abbreviation must be between 1 and 8 characters");
             setTimeout(async () => (await reply.delete()), 5000);
             return;
         }
 
         for (const existingPool of existingMappools) {
             if (existingPool.name === name) {
-                const reply = await msg.reply("A mappool with that name already exists.");
+                const reply = await msg.reply("A mappool with that name already exists");
                 setTimeout(async () => (await reply.delete()), 5000);
                 return;
             }
             if (existingPool.abbreviation === abbreviation) {
-                const reply = await msg.reply("A mappool with that abbreviation already exists.");
+                const reply = await msg.reply("A mappool with that abbreviation already exists");
                 setTimeout(async () => (await reply.delete()), 5000);
                 return;
             }
@@ -194,7 +194,7 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
 
         mappool.name = name;
         mappool.abbreviation = abbreviation;
-        const reply = await msg.reply(`The name **${mappool.name}** and the abbreviation **${mappool.abbreviation}** are now saved.`);
+        const reply = await msg.reply(`The name **${mappool.name}** and the abbreviation **${mappool.abbreviation}** are now saved`);
         setTimeout(async () => (await reply.delete()), 5000);
         stopped = true;
         componentCollector.stop();
@@ -207,7 +207,7 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
 
 // This function asks the user for slots (slotname, slottype, and # of maps) for the mappool
 async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournament) {
-    let content = "Provide the acronym for the slot, followed by the name, and the number of maps that will be in the slot.\nFor any mod restrictions, ALSO provide a list of 2 letter acronyms of all allowed mods followed by 2 numbers, one for the number of users that require mods, one for the number of unique mods required.\nYou can choose to provide 2 numbers only and just the mod combination to allow all non-DT/HT mods for a slot.\nYou can choose to provide mods only if all users will require selecting a mod from the selection of mods.\n\n**Examples:**\nNM Nomod 6 NM: A typical nomod slot with 6 maps in it that will enforce nomod.\nDT Double Time 4 DT: A typical double time slot with 3 maps in it that will enforce double time.\nFM Freemod 3 2 2: A typical freemod slot that will enforce at least 2 unique mods per team, and at least 2 players having mods per team\nFM Freemod 3 HDHRFL 2 2: A typical freemod slot that will enforce at least 2 unique mods per team within the mods HD, HR, or FL, and at least 2 players having mods per team\nTB Tiebreaker 1 0 0 OR TB Tiebreaker 1: A typical tiebreaker slot that will allow all mods, but will not enforce any mods.\n\nYou can also separate each slot with a semicolon, like so:\nNM Nomod 6 NM; DT Double Time 4 DT; FM Freemod 3 2 2; TB Tiebreaker 1\n\nYou have a limit of 10 maps per slot, and 10 slots.\n";
+    let content = "Provide the acronym for the slot, followed by the name, and the number of maps that will be in the slot.\nFor any mod restrictions, ALSO provide a list of 2 letter acronyms of all allowed mods followed by 2 numbers, one for the number of users that require mods, one for the number of unique mods required.\nU can choose to provide 2 numbers only and just the mod combination to allow all non-DT/HT mods for a slot.\nU can choose to provide mods only if all users will require selecting a mod from the selection of mods.\n\n**Examples:**\nNM Nomod 6 NM: A typical nomod slot with 6 maps in it that will enforce nomod.\nDT Double Time 4 DT: A typical double time slot with 3 maps in it that will enforce double time.\nFM Freemod 3 2 2: A typical freemod slot that will enforce at least 2 unique mods per team, and at least 2 players having mods per team\nFM Freemod 3 HDHRFL 2 2: A typical freemod slot that will enforce at least 2 unique mods per team within the mods HD, HR, or FL, and at least 2 players having mods per team\nTB Tiebreaker 1 0 0 OR TB Tiebreaker 1: A typical tiebreaker slot that will allow all mods, but will not enforce any mods.\n\nU can also separate each slot with a semicolon, like so:\nNM Nomod 6 NM; DT Double Time 4 DT; FM Freemod 3 2 2; TB Tiebreaker 1\n\nU have a limit of 10 maps per slot, and 10 slots.\n";
     const ids = {
         stop: randomUUID(),
         done: randomUUID(),
@@ -235,7 +235,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
     
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {	
         if (i.customId === ids.stop) {
-            await i.reply("Mappool creation stopped.");
+            await i.reply("Mappool creation stopped");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
             componentCollector.stop();
@@ -244,11 +244,11 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
         }
         if (i.customId === ids.done) {
             if (mappool.slots.length === 0) {
-                await i.reply("You don't have any slots in the pool bro.");
+                await i.reply("U don't have any slots in the pool bro .");
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }
-            await i.reply("Mappool slots are created.");
+            await i.reply("Mappool slots are created");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
             componentCollector.stop();
@@ -267,7 +267,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             if (stopped) return;
             const slotInfo = slots[i].trim().split(" ");
             if (slotInfo.length < 3) {  
-                const reply = await msg.reply(`Please at least provide the slot name, followed by the slot type, and lastly the number of maps that will be in the slot for slot #${i + 1} \`${slotInfo}\`.`);
+                const reply = await msg.reply(`Provide at least the slot name, followed by the slot type, and lastly the number of maps that will be in the slot for slot #${i + 1} \`${slotInfo}\``);
                 setTimeout(async () => {
                     await reply.delete();
                     await msg.delete();
@@ -276,7 +276,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             }
             const acronym = slotInfo[0];
             if (acronym.length > 3) {
-                const reply = await msg.reply(`Please provide a valid acronym for slot #${i + 1} \`${slotInfo}\`.`);
+                const reply = await msg.reply(`Provide a valid acronym for slot #${i + 1} \`${slotInfo}\``);
                 setTimeout(async () => {
                     await reply.delete();
                     await msg.delete();
@@ -293,7 +293,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
                     if (modNum === undefined && slotInfo[j].length % 2 === 0 && isNaN(num)) {
                         const modTest = acronymtoMods(slotInfo[j]);
                         if (modTest === undefined) {
-                            const reply = await msg.reply(`**${slotInfo[j]}** is an invalid mod. Please provide a valid mod for slot #${i + 1} \`${slotInfo}\`.`);
+                            const reply = await msg.reply(`**${slotInfo[j]}** is an invalid mod. Provide a valid mod for slot #${i + 1} \`${slotInfo}\``);
                             setTimeout(async () => {
                                 await reply.delete();
                                 await msg.delete();
@@ -309,7 +309,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
                         if (userModCount === undefined) userModCount = num;
                         else if (uniqueModCount === undefined) uniqueModCount = num;
                         else {
-                            const reply = await msg.reply(`Please provide a valid mod combination for slot #${i + 1} \`${slotInfo}\`.`);
+                            const reply = await msg.reply(`Provide a valid mod combination for slot #${i + 1} \`${slotInfo}\``);
                             setTimeout(async () => {
                                 await reply.delete();
                                 await msg.delete();
@@ -324,7 +324,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             const slotName = slotInfo.slice(1, slotInfo.length - 1);
 
             if (isNaN(mapCount) || mapCount <= 0 || mapCount > 10) {
-                const reply = await msg.reply(`Please provide a valid number of maps that will be in the slot for slot #${i + 1} \`${slotInfo}\`.`);
+                const reply = await msg.reply(`Provide a valid number of maps that will be in the slot for slot #${i + 1} \`${slotInfo}\``);
                 setTimeout(async () => {
                     await reply.delete();
                     await msg.delete();
@@ -333,7 +333,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             }
 
             if (slotName.length > 15) {
-                const reply = await msg.reply(`Please provide a valid slot name for slot #${i + 1} \`${slotInfo}\`.`);
+                const reply = await msg.reply(`Provide a valid slot name for slot #${i + 1} \`${slotInfo}\``);
                 setTimeout(async () => {
                     await reply.delete();
                     await msg.delete();
@@ -366,7 +366,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
         const duplicateSlotNames = slotNames.filter((s, i) => slotNames.indexOf(s) !== i);
         const duplicateSlotAcronyms = slotAcronyms.filter((s, i) => slotAcronyms.indexOf(s) !== i);
         if (duplicateSlotNames.length > 0 || duplicateSlotAcronyms.length > 0) {
-            const reply = await msg.reply(`Please provide unique slot names and abbreviations.\nDuplicate slot names: \`${duplicateSlotNames.join(", ")}\`.\nDuplicate slot abbreviations: \`${duplicateSlotAcronyms.join(", ")}\`.`);
+            const reply = await msg.reply(`Provide unique slot names and abbreviations.\nDuplicate slot names: \`${duplicateSlotNames.join(", ")}\`.\nDuplicate slot abbreviations: \`${duplicateSlotAcronyms.join(", ")}\``);
             setTimeout(async () => {
                 await reply.delete();
                 await msg.delete();
@@ -376,7 +376,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
 
         // Check for 10 slot limit
         if (mappool.slots.length + mappoolSlotsMade.length > 10) {
-            const reply = await msg.reply(`You can only have 10 slots in a mappool. You would have ${mappool.slots.length + mappoolSlotsMade.length} slots if you added these slots.`);
+            const reply = await msg.reply(`U can only have 10 slots in a mappool. U would have ${mappool.slots.length + mappoolSlotsMade.length} slots if u added these slots`);
             setTimeout(async () => {
                 await reply.delete();
                 await msg.delete();
@@ -409,7 +409,7 @@ async function mappoolDone (m: Message, mappool: Mappool) {
         }
     }
 
-    await m.reply("Mappool created! :tada:\nHere is the mappool embed:");
+    await m.reply("U did it u made the mappool\nHere's the mappool embed:");
     const embed = new EmbedBuilder()
         .setTitle(`${mappool.name} (${mappool.abbreviation.toUpperCase()})`)
         .setDescription(`Target SR: ${mappool.targetSR}`)

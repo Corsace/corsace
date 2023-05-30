@@ -7,7 +7,7 @@ import getMappools from "../dbFunctions/getMappools";
 export default async function getMappool (m: Message | ChatInputCommandInteraction, tournament: Tournament, poolText = "", getStageRound = false, getSlots = false, getMaps = false) {
     const mappools = await getMappools(tournament, poolText, getStageRound, getSlots, getMaps);
     if (mappools.length === 0) {
-        await respond(m, `Could not find any mappools with criteria \`${poolText}\``);
+        await respond(m, `Can't find any mappools with criteria \`${poolText}\``);
         return;
     }
 

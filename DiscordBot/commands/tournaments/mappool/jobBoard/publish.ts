@@ -39,7 +39,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, end_time } = params;
     if (isNaN(end_time.getTime()) || end_time.getTime() < Date.now()) {
-        await respond(m, "Invalid end time. Please use `-p <pool> -e <end_time>` or `<pool> <end_time>`. If you do not use the `-` prefixes, the order of the parameters is important.");
+        await respond(m, "Invalid end time. Use `-p <pool> -e <end_time>` or `<pool> <end_time>`. If u don't use the `-` prefixes, the order of the parameters is important");
         return;
     }
 
@@ -51,14 +51,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const totalThreadCount = mappool.slots.map(slot => slot.maps).flat().filter(map => map.jobPost && !map.jobPost.jobBoardThread).length;
     if (totalThreadCount === 0) {
-        await respond(m, "No job board posts to publish.");
+        await respond(m, "There's literally no job board posts to publish .");
         return;
     }
 
     try {
         await cron.add(CronJobType.Jobboard, end_time);
     } catch (err) {
-        m.channel?.send(`Failed to get cron job running to close job board posts on time. Please contact VINXIS.`);
+        m.channel?.send(`Failed to get cron job running to close job board posts on time. Contact VINXIS`);
         console.log(err);
         return;
     }
@@ -97,7 +97,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             }
         }
 
-    content += "\nCreated all threads. You can close threads and assign mappers using `mappool_assign`.";
+    content += "\nCreated all threads, u can close threads and assign mappers using `mappool_assign`";
     await threadMessage.edit(content);
 
     await mappoolLog(tournament, "jobPublish", user, logText);

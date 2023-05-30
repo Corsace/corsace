@@ -36,20 +36,20 @@ async function run (m: Message | ChatInputCommandInteraction) {
             link = /https?:\/\/\S+/.exec(m.content)![0];
             m.content = m.content.replace(link, "");
         } else {
-            m.reply("Please provide a link to the map.");
+            m.reply("Provide a link to the map mannnnn");
             return;
         }
     } else {
         const attachment = m.options.getAttachment("map");
         if (!attachment) {
-            m.editReply("Please provide a link to the map.");
+            m.editReply("Provide a link to the map mannnnn");
             return;
         }
         link = attachment.url;
     }
 
     if (!link.endsWith(".osz")) {
-        await respond(m, "Please provide a proper .osz file.");
+        await respond(m, "Pleaseee provide a proper .osz file STOP TROLLING ME");
         return;
     }
 
@@ -71,14 +71,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     // Check if they are assigned to the map or if they can bypass the check
     if (!await bypassSubmit(m.member!.roles as GuildMemberRoleManager, tournament) && !mappoolMap.customMappers.some(mapper => mapper.discord.userID === commandUser(m).id)) {
-        await respond(m, "You are not assigned to this map.");
+        await respond(m, "Ur not assigned to this map");
         return;
     }
 
     // Obtain beatmap data
     const beatmap = await ojsamaParse(m, difficulty || "", link);
     if (!beatmap) {
-        await respond(m, `Could not find **${difficulty !== "" ? `[${difficulty}]` : "a single difficulty(?)"}** in your osz`);
+        await respond(m, `Can't find **${difficulty !== "" ? `[${difficulty}]` : "a single difficulty(????)"}** in ur osz`);
         return;
     }
 

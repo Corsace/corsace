@@ -15,17 +15,17 @@ export async function jobBoardCreate (t: ThreadChannel, { m, creator, tournament
 
     const starterMessage = await t.fetchStarterMessage();
     if (!starterMessage) {
-        await respond(m, "Could not obtain starter message.");
+        await respond(m, "Can't get the starter message");
         return;
     }
      
-    if (jobPost.description && !await confirmCommand(m, `This job already has a description.\n${jobPost.description}\n\n Do you want to overwrite it with the thread starter message?\n${starterMessage.content}`, false))
+    if (jobPost.description && !await confirmCommand(m, `This job already has a description.\n${jobPost.description}\n\n Do u wanna overwrite it with the thread starter message?\n${starterMessage.content}`, false))
         return;
 
     jobPost.description = starterMessage.content;
 
     if (jobPost.deadline) {
-        await m.channel.send(`This job already has a deadline. Do you want to use its deadline? If so, reply \`yes\` or \`y\` If not, provide the date in YYYY-MM-DD or a unix/epoch timestamp.\n\n${jobPost.deadline ? `<t:${jobPost.deadline.getTime() / 1000}:F> (<t:${jobPost.deadline.getTime() / 1000}:R>)` : "**N/A**"}`);
+        await m.channel.send(`This job already has a deadline. Do u wanna use its deadline? If so, reply \`yes\` or \`y\` If not, provide the date in YYYY-MM-DD or a unix/epoch timestamp.\n\n${jobPost.deadline ? `<t:${jobPost.deadline.getTime() / 1000}:F> (<t:${jobPost.deadline.getTime() / 1000}:R>)` : "**N/A**"}`);
         
         const filter = (msg: Message) => msg.author.id === creator.discord.userID;
         const collected = await m.channel.awaitMessages({ filter, max: 1, time: 60000, errors: ["time"] });
@@ -45,7 +45,7 @@ export async function jobBoardCreate (t: ThreadChannel, { m, creator, tournament
     }
 
     if (jobPost.jobBoardThread) {
-        const confirm = await confirmCommand(m, "This map already has a thread. Do you want to create a new one?", false);
+        const confirm = await confirmCommand(m, "This map already has a thread. Do u wanna to create a new one?", false);
         if (!confirm)
             return;
 
@@ -62,7 +62,7 @@ export async function jobBoardCreate (t: ThreadChannel, { m, creator, tournament
     mappoolMap.jobPost = jobPost;
     await mappoolMap.save();
 
-    await respond(m, `Created job post.\nPlease note that \`job\` will not be able to edit this job post. If you want to edit it, please do so manually.`);
+    await respond(m, `Created job post.\nNote that \`job\` will not be able to edit this job post. If u wanna edit it, then do so manually`);
 
     await mappoolLog(tournament, "threadCreate", creator, `Created job post thread for \`${t.name}\` <#${t.id}>`);
     return;
@@ -73,13 +73,13 @@ export async function jobBoardDelete (t: ThreadChannel, { m, creator, tournament
     if (!jobPost)
         return;
 
-    const confirm = await confirmCommand(m, `<@${creator.discord.userID}> Do you want to remove the job board post associated with the map now that you deleted the thread **${t.name}**? Selecting no will simply bring it back to its pre-published state.`, false);
+    const confirm = await confirmCommand(m, `<@${creator.discord.userID}> Do u wanna remove the job board post associated with the map now that u deleted the thread **${t.name}**? Selecting no will simply bring it back to its pre-published state`, false);
     if (confirm) {
         mappoolMap.jobPost = null;
         await mappoolMap.save();
         await jobPost.remove();
 
-        await respond(m, `Deleted thread for **${t.name}** and the associated job board post.`);
+        await respond(m, `Deleted thread for **${t.name}** and the associated job board post`);
 
         await mappoolLog(tournament, "threadDelete", creator, `Deleted thread for \`${t.name}\` and the associated job board post`);
 
@@ -89,7 +89,7 @@ export async function jobBoardDelete (t: ThreadChannel, { m, creator, tournament
     jobPost.deadline = jobPost.jobBoardThread = null;
     await jobPost.save();
 
-    await respond(m, `Deleted thread for **${t.name}** and brought the associated job board post to its pre-published state.`);
+    await respond(m, `Deleted thread for **${t.name}** and brought the associated job board post to its pre-published state`);
 
     await mappoolLog(tournament, "threadDelete", creator, `Deleted thread for \`${t.name}\` and brought the associated job board post to its pre-published state`);
 

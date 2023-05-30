@@ -35,7 +35,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         const mappools = await getMappools(tournament, "", false, true, true);
         if (mappools.length === 0) {
-            await respond(m, `No mappools found for ${tournament.name}.`);
+            await respond(m, `No mappools found for ${tournament.name}`);
             return;
         }
         
@@ -81,7 +81,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
 
         if (!mappoolMap.customBeatmap?.link) {
-            await respond(m, `**${mappoolSlot}** currently has no beatmap.`);
+            await respond(m, `**${mappoolSlot}** currently has no beatmap`);
             return;
         }
 

@@ -83,7 +83,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         },
     });
     if (year < (mca ? mca.year : (new Date()).getUTCFullYear())) {
-        await respond(m, "You cannot remove mapping influences for previous years!");
+        await respond(m, "U cant remove mapping influences for previous years");
         return;
     }
 
@@ -113,7 +113,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     });
 
     if (!influenceUser) {
-        await respond(m, `**${apiUser.username}** doesn't even exist in the Corsace database! You're capping!!!!!!!`);
+        await respond(m, `**${apiUser.username}** doesn't even exist in the Corsace database! Ur capping!!!!!!!`);
         return;
     }
     const influence = await Influence.findOne({
@@ -131,13 +131,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
         },
     });
     if (!influence) {
-        await respond(m, `**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** doesn't seem to exist currently!`);
+        await respond(m, `**${influenceUser.osu.username}** influencing u as a mapper for **${year}** in **${mode!.name}** doesn't seem to exist currently`);
         return;
     }
 
     await influence.remove();
 
-    await respond(m, `**${influenceUser.osu.username}** influencing you as a mapper for **${year}** in **${mode!.name}** has been removed!`);
+    await respond(m, `**${influenceUser.osu.username}** influencing u as a mapper for **${year}** in **${mode!.name}** has been removed`);
     return;
     
 }

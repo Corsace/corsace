@@ -6,7 +6,7 @@ import respond from "./respond";
 
 export default async function getFromList<T extends { ID: number, name: string }> (m: Message | ChatInputCommandInteraction, list: T[], listName: string): Promise<T | undefined> {
     if (list.length === 0) {
-        await respond(m, `No ${listName} found.`);
+        await respond(m, `No ${listName} found`);
         return;
     }
 
@@ -41,13 +41,13 @@ export default async function getFromList<T extends { ID: number, name: string }
             if (i.customId === ids.stop) {	
                 stopped = true;	
                 componentCollector.stop();	
-                await i.reply(`${listName} creation stopped.`);	
+                await i.reply(`${listName} creation stopped`);	
                 setTimeout(async () => (await i.deleteReply()), 5000);	
                 return;	
             }	
             const item = list.find(t => ids[t.ID.toString()] === i.customId);	
             if (!item) {	
-                await i.reply(`That ${listName} doesn't exist.`);	
+                await i.reply(`That ${listName} doesn't exist`);	
                 setTimeout(async () => (await i.deleteReply()), 5000);	
                 return;	
             }	

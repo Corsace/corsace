@@ -49,13 +49,13 @@ async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
         })).flat();
 
     if (mappoolMaps.length === 0) {
-        await respond(m, "No maps found for this user.");
+        await respond(m, "No maps found for this user GJ .");
         return;
     }
 
     const embed = new EmbedBuilder()
         .setTitle("Mappool Assignments")
-        .setDescription(`Here are your current mappool assignments`)
+        .setDescription(`Here are ur current mappool assignments`)
         .setTimestamp(new Date())
         .setFields();
 
@@ -78,7 +78,7 @@ async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
 
     if (!replied || embed.data.fields!.length > 0) {
         if (embed.data.fields!.length === 0)
-            embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters."});
+            embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters"});
         
         await respond(m, undefined, [embed]);
     }
@@ -95,7 +95,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (m instanceof Message ? m.content.includes("-incfin") : m.options.getBoolean("include_finished")) {
-        await respond(m, "You cannot use the `all` option outside of DMs, as it shows your assignments across all pools and tournaments");
+        await respond(m, "U cant use the `all` option outside of DMs, as it shows ur assignments across all pools and tournaments");
         return;
     }
 
@@ -188,7 +188,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     if (!replied || embed.data.fields!.length > 0) {
         if (embed.data.fields!.length === 0)
-            embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters."});
+            embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters GJ ."});
         
         await replied ? respond(m, undefined, [embed]) : m.channel?.send({ embeds: [embed] });
     }

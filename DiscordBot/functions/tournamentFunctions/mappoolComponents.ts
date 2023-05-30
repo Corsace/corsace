@@ -70,7 +70,7 @@ export default async function mappoolComponents (
     if (!mappool) 
         return;
     if (checkPublic && mappool.isPublic) {
-        await respond(m, `Mappool **${mappool.name}** is public. You cannot use this command. Please make the mappool private first.`);
+        await respond(m, `**${mappool.name}** is public so u can't use this command. Make the mappool private first`);
         return;
     }
 
@@ -88,7 +88,7 @@ export default async function mappoolComponents (
     // Get mappoolMap
     const mappoolMap = slotMod.maps.find(m => m.order === map);
     if (!mappoolMap) {
-        await respond(m, `Could not find map **${slot}**`);
+        await respond(m, `Can't find **${slot}**`);
         return;
     }
 

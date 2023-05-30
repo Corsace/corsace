@@ -8,7 +8,7 @@ export default async function getMappoolSlot (m: Message | ChatInputCommandInter
     const slots = mappool.slots && (!getMaps || (getMaps && mappool.slots[0].maps[0])) ? mappool.slots.filter(slot => slot.name.toLowerCase().includes(slotText.toLowerCase()) || slot.acronym.toLowerCase().includes(slotText.toLowerCase())) : await getMappoolSlots(mappool, slotText, getMappool, getMaps, getJobPosts);
 
     if (slots.length === 0) {
-        await respond(m, `Could not find any slots with criteria \`${slotText}\``);
+        await respond(m, `Can't find any slots with criteria \`${slotText}\``);
         return;
     }
 

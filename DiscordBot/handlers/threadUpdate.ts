@@ -40,7 +40,7 @@ export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel
     const poolMatchNew = newThreadName.match(poolRegex);
     if (!poolMatchNew) {
         await Promise.all([
-            nt.send("Invalid thread name."),
+            nt.send("Invalid thread name"),
             nt.setName(oldThreadName),
         ]);
         return;

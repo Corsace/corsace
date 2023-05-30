@@ -44,7 +44,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const replace = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("replace") : /-r/i.test(m.content));
     if (replace && m instanceof Message) {
-        const confirm = await confirmCommand(m, `Toggling \`replace\` will replace all ${testing ? "tesplayers" : "custom mappers"} in the slot. Are you sure you want to continue?`);
+        const confirm = await confirmCommand(m, `Toggling \`replace\` will replace all ${testing ? "tesplayers" : "custom mappers"} in the slot u sure u wanna continue?`);
         if (!confirm)
             return;
         m.content = m.content.replace(/-r/i, "");
@@ -96,7 +96,7 @@ async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, targ
     const linkRegex = /https?:\/\/osu.ppy.sh\/beatmapsets\/(\d+)#(osu|taiko|fruits|mania)\/(\d+)/;
     const link = target.match(linkRegex);
     if (!link) {
-        await respond(m, "Invalid link. Please use a valid osu! beatmap link that contains the set id and beatmap id (e.g. https://osu.ppy.sh/beatmapsets/1234567#osu/1234567).");
+        await respond(m, "Invalid link. Use a valid osu! beatmap link that contains the set id and beatmap id (e.g. https://osu.ppy.sh/beatmapsets/1234567#osu/1234567)");
         return;
     }
     const beatmapID = parseInt(link[3]);
@@ -104,11 +104,11 @@ async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, targ
     const set = await osuClient.beatmaps.getBySetId(parseInt(link[1])) as APIBeatmap[];
     let apiMap = set.find(m => m.beatmapId === beatmapID);
     if (!apiMap) {
-        await respond(m, "Could not find beatmap on osu!api.");
+        await respond(m, "Can't find the beatmap via osu!api");
         return;
     }
     if (apiMap.mode !== tournament.mode.ID - 1) {
-        await respond(m, "Beatmap mode does not match tournament mode.");
+        await respond(m, "Beatmap mode doesn't match tournament mode");
         return;
     }
 
@@ -130,12 +130,12 @@ async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, targ
         .where("beatmap.ID = :id", { id: beatmap.ID })
         .andWhere("tournament.ID = :tournament", { tournament: tournament.ID })
         .getExists()) {
-        await respond(m, `The beatmap you are trying to add is already in **${tournament.name}**.`);
+        await respond(m, `The beatmap ur trying to add is already in **${tournament.name}**`);
         return;
     }
 
     if (mappoolMap.beatmap && mappoolMap.beatmap.ID === beatmap.ID) {
-        await respond(m, `**${mappoolSlot}** is already set to this beatmap.`);
+        await respond(m, `**${mappoolSlot}** is already set to this beatmap`);
         return;
     }
 
@@ -176,7 +176,7 @@ async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, targ
     const mappoolMapEmbed = await beatmapEmbed(apiMap, mod, set);
     mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
-    await respond(m, `Successfully set **${mappoolSlot}** to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`, [mappoolMapEmbed]);
+    await respond(m, `Set **${mappoolSlot}** to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`, [mappoolMapEmbed]);
 
     await mappoolLog(tournament, "assignMap", assigner, log, mappoolSlot);
     return;
@@ -229,7 +229,7 @@ async function handleUser (m: Message | ChatInputCommandInteraction, target: str
     await mappoolMap.save();
     if (jobPost) await jobPost.remove();
 
-    await respond(m, `Successfully added **${user.osu.username}** as a **${testing ? "testplayer" : "custom mapper"}** for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
+    await respond(m, `Added **${user.osu.username}** as a **${testing ? "testplayer" : "custom mapper"}** for **${mappoolSlot}**${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
 
     await mappoolLog(tournament, "assignCustomMapper", assigner, `\`${user.osu.username}\` is now a \`${testing ? "testplayer" : "custom mapper"}\` for \`${mappoolSlot}\`${replace ? ` (replacing all existing ${testing ? "testplayers" : "mappers"})` : ""}`);
 }

@@ -112,13 +112,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     ) {
         scores = (await osuClient.user.getBest(apiUser.userId, Mode.all, 100)) as UserScore[];
         if (scores.length < 1) {
-            await respond(m, `${!isOtherUser ? "you" : `**${user.osu.username}**`} has no top plays.... What are u doing`);
+            await respond(m, `${!isOtherUser ? "U have" : `**${user.osu.username}** has`} no top plays.... What are u doing`);
             return;
         }
     } else {
         scores = (await osuClient.user.getRecent(apiUser.userId, Mode.all, 50)) as UserScore[];
         if (scores.length < 1) {
-            await respond(m, `${!isOtherUser ? "You have" : `**${user.osu.username}** has`} not played recently`);
+            await respond(m, `${!isOtherUser ? "U have" : `**${user.osu.username}** has`} not played recently`);
             return;
         }
     }
@@ -132,7 +132,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
         scores = scores.filter(score => (!score.enabledMods && modVal === 0) || (strict && score.enabledMods && modVal === score.enabledMods) || (!strict && score.enabledMods && (modVal & score.enabledMods) === modVal));
-        await respond(m, `No scores with the mod combination **${mods}** exist!`);
+        await respond(m, `No scores with the mod combination **${mods}** exist Lol`);
         return;
     }
 

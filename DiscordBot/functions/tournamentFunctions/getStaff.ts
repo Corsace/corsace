@@ -16,7 +16,7 @@ export default async function getStaff (m: Message | ChatInputCommandInteraction
         const members = await m.guild!.members.fetch({ query: target });
         const member = members.first();
         if (!member) {
-            m.reply(`Could not find user \`${target}\` in the server. Contact a Corsace admin if the problem persists.`);
+            m.reply(`Can't find user \`${target}\` in the server. Contact VINXIS if the problem persists`);
             return;
         }
         discordUser = member;
@@ -24,7 +24,7 @@ export default async function getStaff (m: Message | ChatInputCommandInteraction
 
     const tournamentServer = discordClient.guilds.cache.get(tournament.server);
     if (!tournamentServer) {
-        await respond(m, "Could not find the tournament's discord server. Please try again, or contact a Corsace admin if the problem persists.");
+        await respond(m, "Can't find the tournament's discord server. Try again, or contact VINXIS if the problem persists");
         return;
     }
 
@@ -35,19 +35,19 @@ export default async function getStaff (m: Message | ChatInputCommandInteraction
     });
     const roleFilter = roles.filter(role => targetRoles.some(t => t === role.roleType));
     if (roleFilter.length === 0) {
-        await respond(m, `Could not find any ${targetRoles.map(t => t.toString()).join("/")} roles. Please contact a Corsace admin.`);
+        await respond(m, `Can't find any ${targetRoles.map(t => t.toString()).join("/")} roles. Contact VINXIS`);
         return;
     }
 
     const discordMember = await tournamentServer.members.fetch(discordUser);
     if (!roleFilter.some(role => discordMember.roles.cache.has(role.roleID))) {
-        await respond(m, `User does not have any ${targetRoles.map(t => t.toString()).join("/")} roles.`);
+        await respond(m, `User doesn't have any ${targetRoles.map(t => t.toString()).join("/")} roles`);
         return;
     }
 
     const user = await getUser(discordUser.id, "discord", false);
     if (!user) {
-        await respond(m, `Could not find discord user ${discordUser.toString()} in database. Please ensure that they have logged into Corsace.`);
+        await respond(m, `Can't find discord user ${discordUser.toString()} in database. Make sure they logged into Corsace via osu! and discord BOTH`);
         return;
     }
 

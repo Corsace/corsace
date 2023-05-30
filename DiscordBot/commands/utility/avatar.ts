@@ -12,7 +12,7 @@ function getAvatar (target: User | Guild, negate: boolean) {
 }
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    let text = "There is no avatar!";
+    let text = "There's no avatar";
 
     if (m instanceof Message) { // Message
         const avatarRegex = /(quote)?(a|ava|avatar)(q|quote)?\s+(.+)/i; // General command
@@ -21,9 +21,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         
         if (serverRegex.test(m.content)) { // Server icon
             if (!m.guild)
-                text = "This is not a server!";
+                text = "This isn't a server";
             else if (m.guild.iconURL(avatarOptions))
-                text = `Here is the server avatar: ${getAvatar(m.guild, negateRegex.test(m.content))}`;
+                text = `Here's the server avatar: ${getAvatar(m.guild, negateRegex.test(m.content))}`;
         } else if (m.mentions.members && m.mentions.members.size > 0) { // Users are mentioned
             text = "";
             m.mentions.users.each((user) => {
@@ -46,7 +46,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 }
             }
         } else // Give the user their own avatar
-            text = `Your avatar is ${getAvatar(m.author, negateRegex.test(m.content))}`;
+            text = `Ur avatar is ${getAvatar(m.author, negateRegex.test(m.content))}`;
     } else { // Slash Command
         const subcommand = m.options.getSubcommand();
         if (subcommand === "user") {
@@ -55,11 +55,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (target)
                 text = `${target.username}'s avatar is ${getAvatar(target, !preview)}`;
             else
-                text = `Your avatar is ${getAvatar(m.user, !preview)}`;
+                text = `Ur avatar is ${getAvatar(m.user, !preview)}`;
         } else if (subcommand === "server") {
             const preview = m.options.getBoolean("preview");
             if (m.guild)
-                text = `Here is the server avatar: ${getAvatar(m.guild, !preview)}`;
+                text = `Here's the server avatar: ${getAvatar(m.guild, !preview)}`;
         }
     }
     

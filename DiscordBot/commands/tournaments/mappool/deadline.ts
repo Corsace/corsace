@@ -40,7 +40,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     const { pool, slot, order, date } = params;
     if (isNaN(date.getTime()) || date.getTime() < (Date.now() + 60000)) {
-        await respond(m, "Invalid date. Please provide a valid date using either `YYYY-MM-DD` format, or a unix/epoch timestamp in seconds, and also don't be stupid as hell and make the deadline within the next minute.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        await respond(m, "Invalid date. Provide a valid date using either `YYYY-MM-DD` format, or a unix/epoch timestamp in seconds, and also don't be stupid as hell and make the deadline within the next minute.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
         return;
     }
 
@@ -50,12 +50,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { tournament, stage, mappoolMap, mappoolSlot } = components;
 
     if (stage!.timespan.start.getTime() < date.getTime()) {
-        await respond(m, "The deadline cannot be after the start of the stage. That literally makes no sense.");
+        await respond(m, "The deadline cannot be after the start of the stage. That literally makes no sense????/");
         return;
     }
 
     if (!mappoolMap.customMappers || mappoolMap.customMappers.length === 0) {
-        await respond(m, `**${mappoolSlot}** does not have any custom mappers`);
+        await respond(m, `**${mappoolSlot}** doesn't have any custom mappers`);
         return;
     }
 
@@ -64,7 +64,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     try {
         await cron.add(CronJobType.Custommap, date);
     } catch (err) {
-        await respond(m, `Failed to get cron job running to apply changes at deadline. Please contact VINXIS.`);
+        await respond(m, `Failed to get cron job running to apply changes at deadline. Contact VINXIS`);
         console.log(err);
         return;
     }

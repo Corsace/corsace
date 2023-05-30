@@ -31,7 +31,7 @@ const rest = new REST({ version: "10" }).setToken(config.discord.token);
             { body: commands.map(c => c.data) }
         );
 
-        console.log(`Successfully reloaded ${commands.length} slash (/) commands.`);
+        console.log(`Successfully reloaded ${commands.length} slash (/) commands`);
     } catch (error) {
         console.error(error);
     }
@@ -39,12 +39,12 @@ const rest = new REST({ version: "10" }).setToken(config.discord.token);
 
 // Ready instance for the bot
 discordClient.once("ready", () => {
-    console.log(`Logged in as ${discordClient.user?.tag}!`);
+    console.log(`Logged in as ${discordClient.user?.tag}`);
 });
 
 // Start the bot
 ormConfig.initialize()
     .then((connection) => {
-        console.log(`Connected to the ${connection.options.database} database!`);
+        console.log(`Connected to the ${connection.options.database} database`);
     })
-    .catch((error) => console.error("An error has occurred in connecting.", error));
+    .catch((error) => console.error("An error has occurred in connecting", error));

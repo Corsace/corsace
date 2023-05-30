@@ -33,7 +33,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const sortOrderRegex = new RegExp(/-s ([a-zA-Z0-9_ ]{1,6})/);
     const helpRegex = new RegExp(/-h/);
     if (m instanceof Message && (helpRegex.test(m.content) || (!nameRegex.test(m.content) && !abbreviationRegex.test(m.content) && !descriptionRegex.test(m.content) && !modeRegex.test(m.content) && !matchSizeRegex.test(m.content) && !teamSizeRegex.test(m.content) && !registrationRegex.test(m.content) && !sortOrderRegex.test(m.content)))) {
-        await m.reply(`Please provide all required parameters! Here is a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Description:** \`-d <description>\`\n**Mode:** \`-m <mode>\`\n**Match Size (xvx, input x):** \`-ms <match size>\`\n**Team Size:** \`-ts <min> <max>\`\n**Registration Period:** \`-r <start date (YYYY-MM-DD OR unix/epoch)> <end date (YYYY-MM-DD OR unix/epoch)>\`\n**Team Sort Order:** \`-s <sort order>\`\n\nIt is recommended to use slash commands for any \`create\` command.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).`);
+        await m.reply(`Provide all required parameters. Here's a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Description:** \`-d <description>\`\n**Mode:** \`-m <mode>\`\n**Match Size (xvx, input x):** \`-ms <match size>\`\n**Team Size:** \`-ts <min> <max>\`\n**Registration Period:** \`-r <start date (YYYY-MM-DD OR unix/epoch)> <end date (YYYY-MM-DD OR unix/epoch)>\`\n**Team Sort Order:** \`-s <sort order>\`\n\nIt's recommended to use slash commands for any \`create\` command.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)`);
         return;
     }
 
@@ -51,7 +51,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         ],
     });
     if (serverTournaments.length === 3) {
-        await respond(m, "You can only have 3 tournaments at a time!");
+        await respond(m, "Dude u can only have 3 tournaments at a time stop making so many tourneys");
         return;
     }
 
@@ -73,7 +73,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const organizer = organizerTarget ? await getUser(organizerTarget.id, "discord", false) : creator;
     if (!organizer) {
         // organizerTarget exists in this case because creator cannot be null / undefined.
-        await loginResponse(m, "No user found in the corsace database for <@" + organizerTarget!.id + ">! Please have them login to the Corsace website with their discord and osu! accounts!");
+        await loginResponse(m, "No user found in the corsace database for <@" + organizerTarget!.id + ">! Have them login to the Corsace website with their discord and osu! accounts");
         return;
     }
     tournament.organizer = organizer;
@@ -81,11 +81,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for name validity
     const name = m instanceof Message ? nameRegex.exec(m.content)?.[1] : m.options.getString("name");
     if (!name) {
-        await respond(m, "Please provide a valid name for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 32 characters long.");
+        await respond(m, "Provide a valid name for ur tournament!!!!!!! Ur only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 32 characters long");
         return;
     }
     if (profanityFilter.test(name)) {
-        await respond(m, "LMFAO! XD Shut the fuck up and give a valid name you fucking idiot (Nobody's laughing with you, fucking dumbass)");
+        await respond(m, "Ur name is sus . Change it to something more appropriate");
         return;
     }
     tournament.name = name;
@@ -93,11 +93,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for abbreviation validity
     const abbreviation = m instanceof Message ? abbreviationRegex.exec(m.content)?.[1] : m.options.getString("abbreviation");
     if (!abbreviation) {
-        await respond(m, "Please provide a valid abbreviation for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 3 and 8 characters long.");
+        await respond(m, "Provide a valid abbreviation for ur tournament! Ur only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 3 and 8 characters long");
         return;
     }
     if (profanityFilter.test(abbreviation)) {
-        await respond(m, "The abbreviation is sus . Change it to something more appropriate.");
+        await respond(m, "The abbreviation is sus . Change it to something more appropriate");
         return;
     }
     tournament.abbreviation = abbreviation;
@@ -105,11 +105,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for description validity
     const description = m instanceof Message ? descriptionRegex.exec(m.content)?.[1] : m.options.getString("description");
     if (!description || description.length > 1024 || description.length < 3) {
-        await respond(m, "Please provide a valid description for your tournament! You are only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The description must be between 3 and 1024 characters long.");
+        await respond(m, "Provide a valid description for ur tournament!!!11!1 Ur only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The description must be between 3 and 1024 characters long");
         return;
     }
     if (profanityFilter.test(description)) {
-        await respond(m, "Write a description that doesn't sound like it was written by a 15 year old.");
+        await respond(m, "Write a description that doesn't sound like it was written by a 15 year old");
         return;
     }
     tournament.description = description;
@@ -117,7 +117,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for mode validity
     const mode = m instanceof Message ? modeRegex.exec(m.content)?.[1] : m.options.getString("mode");
     if (mode === null || mode === undefined) {
-        await respond(m, "Please provide a valid mode for your tournament! It is currently missing.");
+        await respond(m, "Provide a valid mode for ur tournament it's currently missing");
         return;
     }
     let modeID = 0;
@@ -157,7 +157,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             break;
     }
     if (modeID === 0) {
-        await respond(m, "Please provide a valid mode for your tournament! It is currently invalid.");
+        await respond(m, "Provide a valid mode for ur tournament it's currently invalid");
         return;
     }
 
@@ -167,7 +167,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         },
     });
     if (!modeDivision) {
-        await respond(m, "That mode does not exist!");
+        await respond(m, "That mode doesn't exist");
         return;
     }
     tournament.mode = modeDivision;
@@ -175,12 +175,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for match size validity
     let matchSize = m instanceof Message ? matchSizeRegex.exec(m.content)?.[1] : m.options.getInteger("players_in_match");
     if (!matchSize) {
-        await respond(m, "Please provide a valid match size for your tournament! It is currently missing.");
+        await respond(m, "Provide a valid match size for ur tournament it's currently missing");
         return;
     }
     matchSize = typeof matchSize === "string" ? parseInt(matchSize) : matchSize;
     if (isNaN(matchSize) || matchSize < 1 || matchSize > 16) {
-        await respond(m, "Please provide a valid match size for your tournament! It is currently invalid.");
+        await respond(m, "Provide a valid match size for ur tournament it's currently invalid");
         return;
     }
     tournament.matchSize = matchSize;
@@ -191,7 +191,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof Message) {
         const teamSize = teamSizeRegex.exec(m.content);
         if (!teamSize) {
-            await m.reply("Please provide a valid team size for your tournament!");
+            await m.reply("Provide a valid team size for ur tournament");
             return;
         }
         minSize = parseInt(teamSize[1]);
@@ -200,12 +200,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         minSize = m.options.getInteger("min_players");
         maxSize = m.options.getInteger("max_players");
         if (!minSize || !maxSize) {
-            await m.editReply("Please provide a valid team size for your tournament!");
+            await m.editReply("Provide a valid team size for ur tournament");
             return;
         }
     }
     if (minSize < 1 || minSize > 16 || minSize < tournament.matchSize || maxSize > 32 || minSize > maxSize) {
-        await respond(m, "Please provide a valid team size for your tournament!");
+        await respond(m, "Provide a valid team size for ur tournament");
         return;
     }
     tournament.minTeamSize = minSize;
@@ -215,14 +215,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const registrationStartText = m instanceof Message ? registrationRegex.exec(m.content)?.[1] : m.options.getString("registration_start");
     const registrationEndText = m instanceof Message ? registrationRegex.exec(m.content)?.[2] : m.options.getString("registration_end");
     if (!registrationStartText || !registrationEndText) {
-        await respond(m, "Please provide valid registration dates for your tournament! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        await respond(m, "Provide valid registration dates for ur tournament. The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
         return;
     }
 
     const registrationStart = new Date(registrationStartText.includes("-") ? registrationStartText : parseInt(registrationStartText + "000"));
     const registrationEnd = new Date(registrationEndText.includes("-") ? registrationEndText : parseInt(registrationEndText + "000"));
     if (isNaN(registrationStart.getTime()) || isNaN(registrationEnd.getTime()) || registrationStart.getTime() > registrationEnd.getTime() || registrationEnd.getTime() < Date.now()) {
-        await respond(m, "Please provide valid registration dates for your tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+        await respond(m, "Provide valid registration dates for ur tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
         return;
     }
 
@@ -234,7 +234,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for registration sort order validity
     const sortOrder = m instanceof Message ? sortOrderRegex.exec(m.content)?.[1] : m.options.getString("team_sort_order");
     if (!sortOrder) {
-        await respond(m, "Please provide a valid sort order for your tournament!");
+        await respond(m, "Provide a valid sort order for ur tournament");
         return;
     }
     let sortOrderID = -1;
@@ -255,7 +255,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             break;
     }
     if (sortOrderID === -1) {
-        await respond(m, "Please provide a valid sort order for your tournament!");
+        await respond(m, "Provide a valid sort order for ur tournament");
         return;
     }
     tournament.regSortOrder = sortOrderID;
@@ -277,7 +277,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         tournament.stages = [qualifiers];
     }
 
-    const message = await respond(m, "Alright let's get started!");
+    const message = await respond(m, "Ok let's g o");
     if (qualifiers)
         await tournamentQualifiersPass(message, tournament, creator);
     else
@@ -288,7 +288,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 async function tournamentQualifiersPass (m: Message, tournament: Tournament, creator: User) {
     const [id, stop] = stopRow();
     const passMessage = await m.reply({
-        content: "How many teams are expected to pass qualifiers? (Please enter a number >= 2.)", 
+        content: "How many teams are expected to pass qualifiers? (Enter a number >= 2)", 
         components: [stop],
     });
     let stopped = false;
@@ -296,7 +296,7 @@ async function tournamentQualifiersPass (m: Message, tournament: Tournament, cre
     const collector = m.channel!.createMessageCollector({ filter, time: 6000000 });
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {	
         if (i.customId === id) {
-            const reply = await i.reply("Tournament creation stopped.");
+            const reply = await i.reply("Tournament creation stopped");
             setTimeout(async () => reply.delete(), 5000);
             stopped = true;
             collector.stop();
@@ -309,7 +309,7 @@ async function tournamentQualifiersPass (m: Message, tournament: Tournament, cre
             return;
 
         if (isNaN(parseInt(msg.content)) || parseInt(msg.content) < 2) {
-            const reply = await msg.reply("Invalid number of teams to pass qualifiers.");
+            const reply = await msg.reply("Invalid number of teams to pass qualifiers");
             setTimeout(async () => reply.delete(), 5000);
             return;
         }
@@ -320,7 +320,7 @@ async function tournamentQualifiersPass (m: Message, tournament: Tournament, cre
         stopped = true;
         collector.stop();
         componentCollector.stop();
-        const reply = await msg.reply(`${tournament.stages[0].finalSize} teams to pass qualifiers saved.`);
+        const reply = await msg.reply(`${tournament.stages[0].finalSize} teams to pass qualifiers saved`);
         setTimeout(async () => reply.delete(), 5000);
         await tournamentRoles(m, tournament, creator);
     });
@@ -332,7 +332,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
     tournament.roles = [];
 
     let stopped = false;
-    let content = "Mention/paste a role ID, and then write the designated tournament role it is for. (e.g. `1024037229250744411 participants`).\n\nIf you want the bot to create a role for you, select a role type from the dropdown below.\nIf you are done, press the `done` button.\nAny roles with administrator privileges are automatically assigned as `Organizer`.\n";
+    let content = "Mention/paste a role ID, and then write the designated tournament role it's for (e.g. `1024037229250744411 participants`)\n\nIf u want the bot to create a role for u, select a role type from the dropdown below.\nIf ur done, press the `done` button.\nAny roles with administrator privileges are automatically assigned as `Organizer`\n";
 
     // Find all roles in the server and assign them as organizer tournament roles
     const roles = m.guild!.roles.cache.filter(r => r.permissions.has(PermissionFlagsBits.Administrator));
@@ -343,7 +343,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         tournamentRole.roleType = TournamentRoleType.Organizer;
         tournament.roles!.push(tournamentRole);
 
-        content += `\nDesignated role \`${role.name} (${role.id})\` for \`Organizer\`.`;
+        content += `\nDesignated role \`${role.name} (${role.id})\` for \`Organizer\``;
     }
 
     const ids = {
@@ -364,11 +364,6 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
                                 label: "Participants",
                                 value: "Participants",
                                 description: "Create a tournament participant role",
-                            },
-                            {
-                                label: "Staff",
-                                value: "Staff",
-                                description: "Create a tournament staff role",
                             },
                             {
                                 label: "Managers",
@@ -428,7 +423,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             return;
 
         if (i.customId === ids.stop) {
-            await i.reply("Tournament creation stopped.");
+            await i.reply("Tournament creation stopped");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
             componentCollector.stop();
@@ -436,7 +431,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             return;
         }
         if (i.customId === ids.done) {
-            await i.reply("Tournament role designation has finished.");
+            await i.reply("Tournament role designation has finished");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
             componentCollector.stop();
@@ -448,7 +443,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             const roleString = (i as StringSelectMenuInteraction).values[0];
             const roleType = TournamentRoleType[roleString];
             if (tournament.roles!.find(r => r.roleType === roleType)) {
-                await i.reply("A role with this type already exists.\n If you want to create another role with this type, manually create it and then mention it here.");
+                await i.reply("A role with this type already exists.\n If u wanna create another role with this type, manually create it and then mention it here");
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }
@@ -463,9 +458,9 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             tournamentRole.roleType = roleType;
             tournament.roles!.push(tournamentRole);
 
-            content += `\nCreated role <@&${role.id}> for \`${roleString}\`.`;
+            content += `\nCreated role <@&${role.id}> for \`${roleString}\``;
             await roleMessage.edit(content);
-            await i.reply(`Created role <@&${role.id}> for \`${roleString}\`.`);
+            await i.reply(`Created role <@&${role.id}> for \`${roleString}\``);
             setTimeout(async () => (await i.deleteReply()), 5000);
         }
     });
@@ -476,7 +471,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
 
         const role = msg.mentions.roles.first() || m.guild!.roles.cache.get(msg.content.split(" ")[0]);
         if (!role) {
-            const reply = await msg.reply("Invalid role.");
+            const reply = await msg.reply("Invalid role");
             setTimeout(async () => {
                 reply.delete();
                 msg.delete();
@@ -485,7 +480,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         }
         const roleType = msg.content.split(" ")[1].charAt(0).toUpperCase() + msg.content.split(" ")[1].slice(1);
         if (TournamentRoleType[roleType] === undefined) {
-            const reply = await msg.reply(`Invalid role type ${roleType}.`);
+            const reply = await msg.reply(`Invalid role type ${roleType}`);
             setTimeout(async () => {
                 reply.delete();
                 msg.delete();
@@ -494,7 +489,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         }
         const dupeRole = tournament.roles!.find(r => r.roleID === role.id);
         if (dupeRole) {
-            const reply = await msg.reply(`${role.name} (${role.id}) is already designated as \`${TournamentRoleType[dupeRole.roleType]}\`.`);
+            const reply = await msg.reply(`${role.name} (${role.id}) is already designated as \`${TournamentRoleType[dupeRole.roleType]}\``);
             setTimeout(async () => {
                 reply.delete();
                 msg.delete();
@@ -506,9 +501,9 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         tournamentRole.roleType = TournamentRoleType[roleType];
         tournament.roles!.push(tournamentRole);
 
-        content += `\nDesignated role \`${role.name} (${role.id})\` for \`${roleType}\`.`;
+        content += `\nDesignated role \`${role.name} (${role.id})\` for \`${roleType}\``;
         await roleMessage.edit(content);
-        const reply = await msg.reply(`Designated role \`${role.name} (${role.id})\` for \`${roleType}\`.`);
+        const reply = await msg.reply(`Designated role \`${role.name} (${role.id})\` for \`${roleType}\``);
         setTimeout(async () => {
             reply.delete();
             msg.delete();
@@ -520,7 +515,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
 // Function to fetch and assign channels
 async function tournamentChannels (m: Message, tournament: Tournament, creator: User) {
     let stopped = false;
-    let content = "Mention/paste a channel ID, and then write the designated tournament channel type it is for. (e.g. `#general general` or `#organizers admin`).\n\nIf you want the bot to create a channel for you, select a channel type from the dropdown below.\nIf you are done, press the `done` button.\n";
+    let content = "Mention/paste a channel ID, and then write the designated tournament channel type it's for (e.g. `#general general` or `#organizers admin`)\n\nIf u want the bot to create a channel for u, select a channel type from the dropdown below.\nIf ur done, press the `done` button\n";
     const ids = {
         "channel": randomUUID(),
         "stop": randomUUID(),
@@ -620,7 +615,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
 
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {
         if (i.customId === ids.stop) {
-            await i.reply("Tournament creation stopped.");
+            await i.reply("Tournament creation stopped");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
             componentCollector.stop();
@@ -628,7 +623,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             return;
         }
         if (i.customId === ids.done) {
-            await i.reply("Tournament channel designation has finished.");
+            await i.reply("Tournament channel designation has finished");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
             componentCollector.stop();
@@ -643,7 +638,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             const channelTypeMenu = (i as StringSelectMenuInteraction).values[0];
             const tournamentChannelType = TournamentChannelType[channelTypeMenu];
             if (tournament.channels!.find(c => c.channelType === tournamentChannelType)) {
-                await i.reply("A channel of this type has already been designated. If you want to create another channel of this type, manually create it and then mention it here.");
+                await i.reply("A channel of this type has already been designated. If u wanna create another channel of this type, manually create it and then mention it here");
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }
@@ -717,9 +712,9 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             tournamentChannel.channelID = channel.id;
             tournament.channels!.push(tournamentChannel);
 
-            content += `\nCreated channel <#${channel.id}> for \`${channelTypeMenu}\`.`;
+            content += `\nCreated channel <#${channel.id}> for \`${channelTypeMenu}\``;
             await channelMessage.edit(content);
-            await i.reply(`Created channel <#${channel.id}> for \`${channelTypeMenu}\`.`);
+            await i.reply(`Created channel <#${channel.id}> for \`${channelTypeMenu}\``);
             setTimeout(async () => (await i.deleteReply()), 5000);
         }
     });
@@ -730,7 +725,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
 
         const channel = msg.mentions.channels.first() || m.guild!.channels.cache.get(msg.content.split(" ")[0]);
         if (!channel || (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement && channel.type !== ChannelType.GuildForum)) {
-            const reply = await msg.reply("Invalid channel.");
+            const reply = await msg.reply("Invalid channel");
             setTimeout(async () => {
                 reply.delete();
                 msg.delete();
@@ -746,7 +741,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             (channelType.toLowerCase() === "jobboard" && channel.type !== ChannelType.GuildForum) ||
             (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "mappoolqa" && channelType.toLowerCase() !== "jobboard" && channel.type !== ChannelType.GuildText)
         ) {
-            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel.\nMappool QA and Job Board should be guild forum channels. All other channels should be guild text channels.`);
+            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel\nMappool QA and Job Board should be guild forum channels. All other channels should be guild text channels`);
             setTimeout(async () => {
                 reply.delete();
                 msg.delete();
@@ -755,7 +750,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         }
         const dupeChannel = tournament.channels!.find(c => c.channelID === channel.id);
         if (dupeChannel) {
-            const reply = await msg.reply(`Channel <#${channel.id}> has already been designated for \`${TournamentChannelType[dupeChannel.channelType]}\`.`);
+            const reply = await msg.reply(`Channel <#${channel.id}> has already been designated for \`${TournamentChannelType[dupeChannel.channelType]}\``);
             setTimeout(async () => {
                 reply.delete();
                 msg.delete();
@@ -777,9 +772,9 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                 await forumChannel.setAvailableTags(tagsToAdd);
         }
 
-        content += `\nChannel <#${channel.id}> designated for \`${channelType}\`.`;
+        content += `\nChannel <#${channel.id}> designated for \`${channelType}\``;
         await channelMessage.edit(content);
-        const reply = await msg.reply(`Channel <#${channel.id}> designated for \`${channelType}\`.`);
+        const reply = await msg.reply(`Channel <#${channel.id}> designated for \`${channelType}\``);
         setTimeout(async () => {
             reply.delete();
             msg.delete();
@@ -828,7 +823,7 @@ async function tournamentCorsace (m: Message, tournament: Tournament) {
         if (i.customId === ids.stop) {
             stopped = true;
             componentCollector.stop();
-            await i.reply("Tournament creation stopped.");
+            await i.reply("Tournament creation stopped");
             setTimeout(async () => (await i.deleteReply()), 5000);
             return;
         }
@@ -838,7 +833,7 @@ async function tournamentCorsace (m: Message, tournament: Tournament) {
 
         stopped = true;
         componentCollector.stop();
-        await i.reply("Corsace option of `" + corsaceType + "` saved.\n");
+        await i.reply("Corsace option of `" + corsaceType + "` saved");
         setTimeout(async () => (await i.deleteReply()), 5000);
         await tournamentSave(m, tournament);
     });
@@ -880,7 +875,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Corsace", value: tournament.isOpen ? "Open" : "Closed", inline: true }
         );
 
-    m.reply({ content: "Congratulations on saving your tournament! :tada:\nHere is the tournament embed:", embeds: [embed] });
+    m.reply({ content: "Nice u saved the tournament!!!1\nHere's the tournament embed:", embeds: [embed] });
 }
 
 const data = new SlashCommandBuilder()
