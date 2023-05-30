@@ -70,7 +70,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { tournament, mappool, slotMod, mappoolMap, mappoolSlot } = components;
 
     // Check if they are assigned to the map or if they can bypass the check
-    if (!await bypassSubmit(m.member!.roles as GuildMemberRoleManager, tournament) && !mappoolMap.customMappers.some(mapper => mapper.discord.userID !== commandUser(m).id)) {
+    if (!await bypassSubmit(m.member!.roles as GuildMemberRoleManager, tournament) && !mappoolMap.customMappers.some(mapper => mapper.discord.userID === commandUser(m).id)) {
         await respond(m, "You are not assigned to this map.");
         return;
     }

@@ -98,7 +98,7 @@ export default async function autoSubmit (m: Message) {
         return;
 
     const mappoolMap = mappoolMaps[0];
-    if (mappoolMap.slot.mappool.isPublic || (!bypass && !mappoolMap.customMappers.some(mapper => mapper.discord.userID !== commandUser(m).id)))
+    if (mappoolMap.slot.mappool.isPublic || (!bypass && !mappoolMap.customMappers.some(mapper => mapper.discord.userID === commandUser(m).id)))
         return;
         
     const mappoolSlot = `${mappoolMap.slot.mappool.abbreviation.toUpperCase()} ${mappoolMap.slot.acronym.toUpperCase()}${mappoolMap.order}`;
