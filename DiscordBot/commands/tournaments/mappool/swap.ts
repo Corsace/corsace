@@ -188,11 +188,11 @@ async function getMappools (m: Message | ChatInputCommandInteraction, tournament
 }
 
 async function getMaps (m: Message | ChatInputCommandInteraction, mappool1: Mappool, mappool2: Mappool, slot1: string, slot2: string, order1: number, order2: number): Promise<[MappoolMap, MappoolMap] | undefined> {
-    const slotMod1 = await getMappoolSlot(m, mappool1, slot1.toString(), true);
+    const slotMod1 = await getMappoolSlot(m, mappool1, slot1, true, true);
     if (!slotMod1) 
         return;
 
-    const slotMod2 = await getMappoolSlot(m, mappool2, slot2.toString(), true);
+    const slotMod2 = await getMappoolSlot(m, mappool2, slot2, true, true);
     if (!slotMod2) 
         return;
 
