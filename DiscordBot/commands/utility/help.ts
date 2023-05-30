@@ -6,7 +6,7 @@ function optionParser (options: APIApplicationCommandOption[] | undefined): stri
     if (!options) return "";
 
     const commandOptions: string[] = [];
-    const subcommandOptions: string[] = [];
+    let subcommandOptions: string[] = [];
     
     options.forEach(option => {
         if (option.type === 1 && option.options) {
@@ -29,8 +29,35 @@ function optionParser (options: APIApplicationCommandOption[] | undefined): stri
         }
     });
 
-    // Combine command options and subcommand options.
-    return commandOptions.join(" ") + (subcommandOptions.length > 0 ? ` (${subcommandOptions.join(" | ")})` : "");
+    // Change each string into an array of strings split by spaces
+    const subCommandOptionsArray = subcommandOptions.map(subcommandOption => subcommandOption.split(" "));
+
+    // See if any of the subcommand options are shared by all subcommands
+    const sharedOptions: string[] = [];
+    subCommandOptionsArray.forEach(subCommandOptionArray => {
+        if (sharedOptions.length === 0)
+            sharedOptions.push(...subCommandOptionArray);
+        else
+            sharedOptions.forEach(sharedOption => {
+                if (!subCommandOptionArray.includes(sharedOption))
+                    sharedOptions.splice(sharedOptions.indexOf(sharedOption), 1);
+            });
+    });
+
+    // Remove the shared options from the subcommand options, and add them to the command options
+    sharedOptions.forEach(sharedOption => {
+        subCommandOptionsArray.forEach(subCommandOptionArray => {
+            if (subCommandOptionArray.includes(sharedOption))
+                subCommandOptionArray.splice(subCommandOptionArray.indexOf(sharedOption), 1);
+        });
+        commandOptions.push(sharedOption);
+    });
+
+    // Combine the subcommand options back into strings, and remove any empty strings
+    subcommandOptions = subCommandOptionsArray.map(subCommandOptionArray => subCommandOptionArray.join(" ")).filter(subCommandOption => subCommandOption.length > 0);
+
+    // Combine command options and subcommand options. If there's only one substring, use square brackets instead of parentheses
+    return commandOptions.join(" ") + (subcommandOptions.length > 1 ? ` (${subcommandOptions.join(" | ")})` : subcommandOptions.length === 1 ? ` [${subcommandOptions[0]}]` : "");
 }
 
 async function run (m: Message | ChatInputCommandInteraction) {
