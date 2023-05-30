@@ -36,9 +36,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
 
         pool = threadNameMatch[1];
-        const slotOrder = postProcessSlotOrder(threadNameMatch[2]);
-        slot = slotOrder.slot;
-        order = slotOrder.order;
+        ({ slot, order } = postProcessSlotOrder(threadNameMatch[2]));
     } else if (!pool) {
         await respond(m, `A pool name is required outside of threads.`);
         return;

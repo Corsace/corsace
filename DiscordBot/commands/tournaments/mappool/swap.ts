@@ -146,22 +146,24 @@ async function run (m: Message | ChatInputCommandInteraction) {
     let log2: MappoolMapHistory | undefined = new MappoolMapHistory();
     const jobPost1 = mappoolMap1.jobPost;
     const jobPost2 = mappoolMap2.jobPost;
+    const customThread1 = mappoolMap1.customMappers.length > 0 ? await getCustomThread(m, mappoolMap1, tournament, mappoolSlot1) : undefined;
+    const customThread2 = mappoolMap2.customMappers.length > 0 ? await getCustomThread(m, mappoolMap2, tournament, mappoolSlot2) : undefined;
 
     log1.createdBy = log2.createdBy = user;
 
-    const swap1 = await swap(m, tournament, mappoolMap1, mappoolMap2, log1, jobPost2, beatmap1, customMappers1, testplayers1, deadline1, mappoolSlot2, user, slot1, order1, name1);
+    const swap1 = await swap(m, mappoolMap1, mappoolMap2, log1, jobPost2, beatmap1, customMappers1, testplayers1, deadline1, customThread1, mappoolSlot2, user, slot1, order1, name1);
     if (!swap1)
         return;
 
     ({ log: log1, mappoolMap1, mappoolMap2 } = swap1);
 
-    const swap2 = await swap(m, tournament, mappoolMap2, mappoolMap1, log2, jobPost1, beatmap2, customMappers2, testplayers2, deadline2, mappoolSlot1, user, slot2, order2, name2);
+    const swap2 = await swap(m, mappoolMap2, mappoolMap1, log2, jobPost1, beatmap2, customMappers2, testplayers2, deadline2, customThread2, mappoolSlot1, user, slot2, order2, name2);
     if (!swap2)
         return;
 
     ({ log: log2, mappoolMap1, mappoolMap2 } = swap2);
 
-    await saveSwap(m, mappool1, mappool2, mappoolMap1, mappoolMap2, log1, log2, jobPost1, jobPost2, beatmap1, beatmap2);
+    await saveSwap(mappool1, mappool2, mappoolMap1, mappoolMap2, log1, log2, jobPost1, jobPost2, beatmap1, beatmap2);
 
     await respond(m, `Swapped **${slot1}${order1}** with **${slot2}${order2}**`);
 
@@ -210,7 +212,7 @@ async function getMaps (m: Message | ChatInputCommandInteraction, mappool1: Mapp
     return [mappoolMap1, mappoolMap2];
 }
 
-async function swap (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappoolMap1: MappoolMap, mappoolMap2: MappoolMap, log1: MappoolMapHistory, jobPost2: MappoolMap["jobPost"], beatmap1: MappoolMap["beatmap"] | MappoolMap["customBeatmap"], customMappers1: MappoolMap["customMappers"], testplayers1: MappoolMap["testplayers"], deadline1: MappoolMap["deadline"], mappoolSlot2: string, user: User, slot1: string, order1: number, name1: string) {
+async function swap (m: Message | ChatInputCommandInteraction, mappoolMap1: MappoolMap, mappoolMap2: MappoolMap, log1: MappoolMapHistory, jobPost2: MappoolMap["jobPost"], beatmap1: MappoolMap["beatmap"] | MappoolMap["customBeatmap"], customMappers1: MappoolMap["customMappers"], testplayers1: MappoolMap["testplayers"], deadline1: MappoolMap["deadline"], customThread: boolean | [ThreadChannel, Message] | undefined, mappoolSlot2: string, user: User, slot1: string, order1: number, name1: string) {
     let log: MappoolMapHistory | undefined = log1;
     if (beatmap1) {
         if (jobPost2?.jobBoardThread) {
@@ -264,11 +266,17 @@ async function swap (m: Message | ChatInputCommandInteraction, tournament: Tourn
         mappoolMap2.customThreadID = null;
         mappoolMap2.customMessageID = null;
     } else if (mappoolMap2.customMappers.length > 0) {
-        const customThread = await getCustomThread(m, mappoolMap2, tournament, mappoolSlot2);
         if (!customThread)
             return;
         if (customThread !== true && m.channel?.id !== customThread[0].id) {
             const [thread, threadMsg] = customThread;
+
+            const content = `Map: **${mappoolMap2.customBeatmap ? `${mappoolMap2.customBeatmap.artist} - ${mappoolMap2.customBeatmap.title} [${mappoolMap2.customBeatmap.difficulty}]` : "N/A"}**\nMapper(s): **${mappoolMap2.customMappers.length > 0 ? mappoolMap2.customMappers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nTestplayer(s): **${mappoolMap2.testplayers.length > 0 ? mappoolMap2.testplayers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nDeadline: ${mappoolMap2.deadline ? `<t:${mappoolMap2.deadline.getTime() / 1000}:F> (<t:${mappoolMap2.deadline.getTime() / 1000}:R>)` : "**N/A**"}`;
+            
+            await Promise.all([
+                threadMsg.edit(content),
+                thread.setName(`${mappoolSlot2} (${mappoolMap2.customMappers.map(u => u.osu.username).join(", ")})`),
+            ]);
             mappoolMap2.customThreadID = thread.id;
             mappoolMap2.customMessageID = threadMsg.id;
             await thread.send(`<@${user.discord.userID}> has swapped this slot with **${slot1}${order1}** (${name1})`);
@@ -278,7 +286,7 @@ async function swap (m: Message | ChatInputCommandInteraction, tournament: Tourn
     return { log, mappoolMap1, mappoolMap2 };
 }
 
-async function saveSwap (m: Message | ChatInputCommandInteraction, mappool1: Mappool, mappool2: Mappool, mappoolMap1: MappoolMap, mappoolMap2: MappoolMap, log1: MappoolMapHistory | undefined, log2: MappoolMapHistory | undefined, jobPost1: MappoolMap["jobPost"], jobPost2: MappoolMap["jobPost"], beatmap1: MappoolMap["beatmap"] | MappoolMap["customBeatmap"], beatmap2: MappoolMap["beatmap"] | MappoolMap["customBeatmap"]) {
+async function saveSwap (mappool1: Mappool, mappool2: Mappool, mappoolMap1: MappoolMap, mappoolMap2: MappoolMap, log1: MappoolMapHistory | undefined, log2: MappoolMapHistory | undefined, jobPost1: MappoolMap["jobPost"], jobPost2: MappoolMap["jobPost"], beatmap1: MappoolMap["beatmap"] | MappoolMap["customBeatmap"], beatmap2: MappoolMap["beatmap"] | MappoolMap["customBeatmap"]) {
     await mappoolMap1.save();
     await mappoolMap2.save();
 
