@@ -872,7 +872,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Server", value: tournament.server, inline: true }
         )
         .setTimestamp(new Date)
-        .setAuthor({ name: m.author.tag, iconURL: m.author.avatarURL() ?? undefined });
+        .setAuthor({ name: m.author.tag, iconURL: m.member?.avatarURL() ?? undefined });
 
     if (tournament.isOpen || tournament.isClosed)
         embed.addFields(

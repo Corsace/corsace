@@ -1,4 +1,4 @@
-import { Message, SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import { Message, SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, GuildMember } from "discord.js";
 import { Command } from "../../index";
 import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { osuClient } from "../../../../Server/osu";
@@ -49,7 +49,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .setColor(modeColour(tournament.mode.ID - 1))
             .setFooter({
                 text: `Requested by ${m.member?.user.username}#${m.member?.user.discriminator}`,
-                iconURL: m.member?.avatar ?? undefined,
+                iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined,
             })
             .setTimestamp();
         await respond(m, undefined, [embed]);
@@ -163,7 +163,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .setColor(modeColour(tournament.mode.ID - 1))
         .setFooter({
             text: `Requested by ${m.member?.user.username}#${m.member?.user.discriminator}`,
-            iconURL: m.member?.avatar ?? undefined,
+            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined,
         })
         .setTimestamp();
     

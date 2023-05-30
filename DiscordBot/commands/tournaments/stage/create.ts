@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../..";
 import { profanityFilter } from "../../../../Interfaces/comment";
 import { Round } from "../../../../Models/tournaments/round";
@@ -254,7 +254,7 @@ async function stageDone (m: Message | ChatInputCommandInteraction, stage: Stage
             { name: "Initial → Final Team Count", value: stage.initialSize + " → " + stage.finalSize, inline: true }
         )
         .setTimestamp(new Date)
-        .setAuthor({ name: commandUser(m).tag, iconURL: commandUser(m).avatarURL() ?? undefined });
+        .setAuthor({ name: commandUser(m).tag, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined });
 
     await m.channel!.send({ embeds: [embed] });
 }

@@ -1,6 +1,5 @@
-import { Message, EmbedBuilder, ChatInputCommandInteraction, SlashCommandBuilder, APIApplicationCommandOption } from "discord.js";
+import { Message, EmbedBuilder, ChatInputCommandInteraction, SlashCommandBuilder, APIApplicationCommandOption, GuildMember } from "discord.js";
 import { Command, commands } from "..";
-import { discordClient } from "../../../Server/discord";
 
 function optionParser (options: APIApplicationCommandOption[] | undefined): string {
     if (!options) return "";
@@ -67,7 +66,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             //name: "Click here to invite Corsace!", <-- Add later when bot is public
             //url: `https://discordapp.com/oauth2/authorize?&client_id=${config.discord.clientId}&scope=bot&permissions=0`
             name: "corsace",
-            iconURL: discordClient.user?.avatarURL({extension: "png", size: 2048}) as string,
+            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined,
         },
         description: "**Most commands have other forms as well for convenience!**\n\n**Do `!help <command>` for more information about the command!**\nHelp information format: `(cmd|names) <args> [optional args]`",
         color: 0xFB2475,

@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../index";
 import { TournamentRoleType } from "../../../../../Models/tournaments/tournamentRole";
 import modeColour from "../../../../functions/modeColour";
@@ -55,7 +55,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .setColor(modeColour(tournament.mode.ID - 1))
         .setFooter({
             text: `Requested by ${m.member?.user.username}#${m.member?.user.discriminator}`,
-            iconURL: m.member?.avatar ?? undefined,
+            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined,
         })
         .setTimestamp();
 
