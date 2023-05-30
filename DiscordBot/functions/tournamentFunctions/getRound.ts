@@ -10,7 +10,7 @@ export default async function getRound (m: Message | ChatInputCommandInteraction
         return;
     }
 
-    const round = await getFromList(m, rounds, "round");
+    const round = await getFromList(m, rounds, "round", stage.name);
     if (!round)
         return;
 

@@ -3,8 +3,8 @@ import { Tournament, TournamentStatus } from "../../../Models/tournaments/tourna
 
 export const tournamentSearchConditions = {
     "ID": "tournament.ID = :target",
-    "server": "tournament.server = :target",
     "channel": "channel.channelID = :target",
+    "server": "tournament.server = :target",
     "name": new Brackets(qb => {
         qb.where("tournament.name LIKE :target")
             .orWhere("tournament.abbreviation LIKE :target");

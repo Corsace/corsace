@@ -11,7 +11,7 @@ export default async function getMappool (m: Message | ChatInputCommandInteracti
         return;
     }
 
-    const mappool = await getFromList(m, mappools, "mappool");
+    const mappool = await getFromList(m, mappools, "mappool", poolText);
     if (!mappool)
         return;
 

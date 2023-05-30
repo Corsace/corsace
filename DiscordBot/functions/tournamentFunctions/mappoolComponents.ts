@@ -49,7 +49,7 @@ export default async function mappoolComponents (
 
     let stage: Stage | undefined = undefined;
     if (getStageRound) {
-        stage = await getStage(m, tournament);
+        stage = await getStage(m, tournament, false, pool ?? tournamentSearchParameters?.text, pool ? "name" : "tournamentID");
         if (!stage)
             return;
     }

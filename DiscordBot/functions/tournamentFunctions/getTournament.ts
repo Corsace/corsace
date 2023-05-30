@@ -14,7 +14,7 @@ export default async function getTournament (m: Message | ChatInputCommandIntera
         return;
     }
 
-    const tournament = await getFromList(m, tournamentList, "tournament");
+    const tournament = await getFromList(m, tournamentList, "tournament", target);
     if (!tournament)
         return;
 

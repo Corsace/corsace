@@ -12,7 +12,7 @@ export default async function getMappoolSlot (m: Message | ChatInputCommandInter
         return;
     }
 
-    const slot = await getFromList(m, slots, "slot");
+    const slot = await getFromList(m, slots, "slot", slotText);
     if (!slot)
         return;
 
