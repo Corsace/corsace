@@ -259,15 +259,7 @@ async function swap (m: Message | ChatInputCommandInteraction, mappoolMap1: Mapp
     mappoolMap2.customMappers = customMappers1;
     mappoolMap2.testplayers = testplayers1;
     mappoolMap2.deadline = deadline1 || null;
-    if (mappoolMap2.customThreadID && mappoolMap2.customMappers.length === 0) {
-        const thread = await discordClient.channels.fetch(mappoolMap2.customThreadID) as ThreadChannel | null;
-        if (thread) {
-            await thread.setAppliedTags([], "**All mappers** are removed. The thread is now archived.");
-            await thread.setArchived(true, "**All mappers** are removed. The thread is now archived.");
-        }
-        mappoolMap2.customThreadID = null;
-        mappoolMap2.customMessageID = null;
-    } else if (mappoolMap2.customMappers.length > 0) {
+    if (mappoolMap2.customMappers.length > 0) {
         if (!customThread)
             return;
         if (customThread !== true && m.channel?.id !== customThread[0].id) {
