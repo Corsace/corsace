@@ -75,7 +75,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (customThread !== true && m.channel?.id !== customThread[0].id) {
         const [thread] = customThread;
         const forumChannel = thread.parent as ForumChannel;
-        await thread.send(`<@${user.discord.userID}> has added a deadline: **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
+        await thread.send(`**${mappoolMap.customMappers.map(c => `<@${c.discord.userID}>`).join(" ")} ATTENTION**\n<@${user.discord.userID}> has added a deadline: **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
         const lateTag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "late");
         if (lateTag) await thread.setAppliedTags(thread.appliedTags.filter(t => t !== lateTag.id));
     }
