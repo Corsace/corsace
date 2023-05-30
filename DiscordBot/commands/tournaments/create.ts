@@ -767,9 +767,13 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         const tags = forumTags[tournamentChannel.channelType];
         if (tags) {
             const forumChannel = channel as ForumChannel;
-            const tagsToAdd = tags.filter(t => !forumChannel!.availableTags.some(at => at.name.toLowerCase() === t.name.toLowerCase()));
-            if (tagsToAdd.length > 0)
-                await forumChannel.setAvailableTags(tagsToAdd);
+            const tagsToAdd = tags.map(tag => {
+                const forumTag = forumChannel.availableTags.find(t => t.name.toLowerCase() === tag.name.toLowerCase());
+                if (forumTag)
+                    return forumTag;
+                return tag;
+            });
+            await forumChannel.setAvailableTags(tagsToAdd);
         }
 
         content += `\nChannel <#${channel.id}> designated for \`${channelType}\``;

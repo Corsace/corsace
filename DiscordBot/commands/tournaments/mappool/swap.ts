@@ -163,6 +163,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     ({ log: log2, mappoolMap1, mappoolMap2 } = swap2);
 
+    await swapTags(customThread1, customThread2);
+
     await saveSwap(mappool1, mappool2, mappoolMap1, mappoolMap2, log1, log2, jobPost1, jobPost2, beatmap1, beatmap2);
 
     await respond(m, `Swapped **${slot1}${order1}** with **${slot2}${order2}**`);
@@ -284,6 +286,19 @@ async function swap (m: Message | ChatInputCommandInteraction, mappoolMap1: Mapp
     }
 
     return { log, mappoolMap1, mappoolMap2 };
+}
+
+async function swapTags (customThread1: boolean | [ThreadChannel, Message] | undefined, customThread2: boolean | [ThreadChannel, Message] | undefined) {
+    const thread1 = customThread1 === true ? null : customThread1 ? customThread1[0] : null;
+    const thread2 = customThread2 === true ? null : customThread2 ? customThread2[0] : null;
+
+    const tags1 = thread1?.appliedTags || [];
+    const tags2 = thread2?.appliedTags || [];
+
+    await Promise.all([
+        thread1?.setAppliedTags(tags2, "This slot is swapped."),
+        thread2?.setAppliedTags(tags1, "This slot is swapped."),
+    ]);
 }
 
 async function saveSwap (mappool1: Mappool, mappool2: Mappool, mappoolMap1: MappoolMap, mappoolMap2: MappoolMap, log1: MappoolMapHistory | undefined, log2: MappoolMapHistory | undefined, jobPost1: MappoolMap["jobPost"], jobPost2: MappoolMap["jobPost"], beatmap1: MappoolMap["beatmap"] | MappoolMap["customBeatmap"], beatmap2: MappoolMap["beatmap"] | MappoolMap["customBeatmap"]) {

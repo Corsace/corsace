@@ -3,7 +3,7 @@ import Axios from "axios";
 import osu from "ojsama";
 import { Entry, Parse } from "unzipper";
 import { once } from "events";
-import { ChatInputCommandInteraction, Message } from "discord.js";
+import { ChatInputCommandInteraction, ForumChannel, Message } from "discord.js";
 import { Beatmap as APIBeatmap} from "nodesu";
 import { CustomBeatmap } from "../../Models/tournaments/mappools/customBeatmap";
 import { deletePack } from "./tournamentFunctions/mappackFunctions";
@@ -19,6 +19,7 @@ import { Tournament } from "../../Models/tournaments/tournament";
 import { Mappool } from "../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../Models/tournaments/mappools/mappoolSlot";
 import { User } from "../../Models/user";
+import { discordClient } from "../../Server/discord";
 
 export async function ojsamaParse (m: Message | ChatInputCommandInteraction, diff: string, link: string) {
     let beatmap: osu.beatmap | undefined = undefined;
@@ -117,6 +118,16 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
     const customThread = await getCustomThread(m, mappoolMap, tournament, mappoolSlot);
     if (!customThread)
         return;
+    if (customThread !== true) {
+        const [ thread ] = customThread;
+        const forumChannel = await discordClient.channels.fetch(thread.parentId!) as ForumChannel;
+        const finishedTag = forumChannel.availableTags.find(tag => tag.name.toLowerCase() === "finished");
+        const wipTag = forumChannel.availableTags.find(tag => tag.name.toLowerCase() === "wip");
+        if (!thread.appliedTags.some(tag => tag === finishedTag?.id || tag === wipTag?.id)) {
+            thread.appliedTags.push(wipTag!.id);
+            await thread.setAppliedTags(thread.appliedTags);
+        }
+    }
 
     await mappoolMap.customBeatmap.save();
     await mappoolMap.save();
