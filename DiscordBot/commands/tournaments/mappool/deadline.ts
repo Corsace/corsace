@@ -39,8 +39,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!params)
         return;
     const { pool, slot, order, date } = params;
-    if (isNaN(date.getTime()) || date.getTime() < Date.now()) {
-        await respond(m, "Invalid date. Please provide a valid date using either `YYYY-MM-DD` format, or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
+    if (isNaN(date.getTime()) || date.getTime() < (Date.now() + 60000)) {
+        await respond(m, "Invalid date. Please provide a valid date using either `YYYY-MM-DD` format, or a unix/epoch timestamp in seconds, and also don't be stupid as hell and make the deadline within the next minute.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/).");
         return;
     }
 
@@ -84,7 +84,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     await respond(m, `Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
 
-    await mappoolLog(tournament, "deadline", user, `Deadline for \`${mappoolSlot}\` set to \`<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)\``);
+    await mappoolLog(tournament, "deadline", user, `Deadline for \`${mappoolSlot}\` set to <t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)`);
 }
 
 const data = new SlashCommandBuilder()
