@@ -17,6 +17,8 @@ export default async function getStage (m: Message | ChatInputCommandInteraction
             stages = tournament.stages.filter(s => s.ID === target);
         else if (searchType === "name" && typeof target === "string")
             stages = tournament.stages.filter(s => s.name.toLowerCase() === target.toLowerCase() || s.abbreviation.toLowerCase() === target.toLowerCase());
+        else
+            stages = tournament.stages;
     } else
         stages = await getStages(target || tournament.ID, searchType || "tournamentID", true, false);
 
