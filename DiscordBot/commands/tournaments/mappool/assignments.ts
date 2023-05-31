@@ -62,7 +62,7 @@ async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
     let replied = false;
     for (const map of mappoolMaps) {
         embed.addFields(
-            { name: `**${map.slot.mappool.stage.tournament.abbreviation}${map.slot.mappool.stage.tournament.year}** ${map.slot.mappool.abbreviation.toUpperCase()} ${map.slot.acronym}${map.order}`, value: `${map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]` : "No Submitted Beatmap"}\nDeadline: ${map.deadline ? `<t:${map.deadline.getTime() / 1000}:F> (<t:${map.deadline.getTime() / 1000}:R>)` : "No Deadline For Beatmap"}`, inline: true }
+            { name: `**${map.slot.mappool.stage.tournament.abbreviation}** ${map.slot.mappool.abbreviation.toUpperCase()} ${map.slot.acronym}${map.order}`, value: `${map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]` : "No Submitted Beatmap"}\nDeadline: ${map.deadline ? `<t:${map.deadline.getTime() / 1000}:F> (<t:${map.deadline.getTime() / 1000}:R>)` : "No Deadline For Beatmap"}`, inline: true }
         );
 
         if (embed.data.fields!.length === 25) {

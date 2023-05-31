@@ -95,7 +95,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
     } else {
-        const url = await createPack(m, "mappacks", mappool, `${tournament.abbreviation.toUpperCase()}${tournament.year}_${mappool.abbreviation.toUpperCase()}`);
+        const url = await createPack(m, "mappacks", mappool, `${tournament.abbreviation.toUpperCase()}_${mappool.abbreviation.toUpperCase()}`);
         if (!url) {
             await respond(m, "Something died while creating the mappack and retrieving its URL. Contact VINXIS");
             return;

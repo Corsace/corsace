@@ -107,7 +107,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     try {
         if (m instanceof Message) await m.react("⏳");
-        const url = await createPack(m, "mappacksTemp", mappool, `${tournament.abbreviation.toUpperCase()}${tournament.year}_${mappool.abbreviation.toUpperCase()}`, video);
+        const url = await createPack(m, "mappacksTemp", mappool, `${tournament.abbreviation.toUpperCase()}_${mappool.abbreviation.toUpperCase()}`, video);
         if (!url)
             return;
 
