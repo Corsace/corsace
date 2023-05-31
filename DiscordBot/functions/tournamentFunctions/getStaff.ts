@@ -35,13 +35,13 @@ export default async function getStaff (m: Message | ChatInputCommandInteraction
     });
     const roleFilter = roles.filter(role => targetRoles.some(t => t === role.roleType));
     if (roleFilter.length === 0) {
-        await respond(m, `Can't find any ${targetRoles.map(t => t.toString()).join("/")} roles. Contact VINXIS`);
+        await respond(m, `Can't find any ${targetRoles.map(t => TournamentRoleType[t]).join("/")} roles. Contact VINXIS`);
         return;
     }
 
     const discordMember = await tournamentServer.members.fetch(discordUser);
     if (!roleFilter.some(role => discordMember.roles.cache.has(role.roleID))) {
-        await respond(m, `User doesn't have any ${targetRoles.map(t => t.toString()).join("/")} roles`);
+        await respond(m, `User doesn't have any ${targetRoles.map(t => TournamentRoleType[t]).join("/")} roles`);
         return;
     }
 
