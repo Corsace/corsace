@@ -7,7 +7,9 @@ export const stageSearchConditions = {
     "server": "tournament.server = :target",
     "name": new Brackets(qb => {
         qb.where("stage.name LIKE :target")
-            .orWhere("stage.abbreviation LIKE :target");
+            .orWhere("stage.abbreviation LIKE :target")
+            .orWhere("mappool.name LIKE :target")
+            .orWhere("mappool.abbreviation LIKE :target");
     }),
 };
 
@@ -21,6 +23,9 @@ export default function getStages (target: string | number, searchType: keyof ty
 
     if (rounds)
         stageQ.leftJoinAndSelect("stage.rounds", "round");
+
+    if (searchType === "name")
+        stageQ.leftJoin("stage.mappool", "mappool");
 
     stageQ.where(stageSearchConditions[searchType], { target });
 
