@@ -43,13 +43,40 @@ interface messageParameterOptions extends parameterOptionsBase {
 
 export type parameterOptions = parameterOptionsBase | messageParameterOptions;
 
+// Separate by spaces and quotes
+export function separateArgs (str: string) {
+    const args: string[] = [];
+    let current = "";
+    let isQuoted = false;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === " " && !isQuoted) {
+            if (current !== "") {
+                args.push(current);
+                current = "";
+            }
+        } else if (str[i] === "\"" || str[i] === "'" || str[i] === "`") {
+            isQuoted = !isQuoted;
+            if (!isQuoted && current !== "") {
+                args.push(current);
+                current = "";
+            }
+        } else {
+            current += str[i];
+        }
+    }
+    if (current !== "") {
+        args.push(current);
+    }
+    return args;
+}
+
 export function extractParameter (m: Message | ChatInputCommandInteraction, parameterOption: parameterOptions, index: number) {
     if (parameterOption.customHandler)
         return parameterOption.customHandler(m);
 
     if ("regexIndex" in parameterOption) {
         if (m instanceof Message) {
-            const param = m.content.match(parameterOption.regex)?.[parameterOption.regexIndex] ?? m.content.split(" ")[index];
+            const param = m.content.match(parameterOption.regex)?.[parameterOption.regexIndex] ?? separateArgs(m.content)[index];
             return messageCommandParameterMethods[parameterOption.paramType || "string"](param);
         }
 

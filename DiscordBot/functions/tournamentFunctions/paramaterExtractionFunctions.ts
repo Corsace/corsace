@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, Message } from "discord.js";
-import { extractParameter } from "../parameterFunctions";
+import { extractParameter, separateArgs } from "../parameterFunctions";
 
 export function extractTargetText (index: number) {
     return function (m: Message | ChatInputCommandInteraction) {
@@ -11,13 +11,13 @@ export function extractTargetText (index: number) {
             return m.options.getString("target")?.trim();
         }
 
-        return m.mentions.users.first()?.username ?? m.content.split(" ").slice(index, m.content.split(" ").length).join(" ").trim();
+        return m.mentions.users.first()?.username ?? separateArgs(m.content).slice(index, separateArgs(m.content).length).join(" ").trim();
     };
 }
 
 export function extractDate (index: number) {
     return function (m: Message | ChatInputCommandInteraction) {
-        const date = extractParameter(m, { name: "date", regex: /-d ((?:\d{4}-\d{2}-\d{2})|\d{10})/, regexIndex: 1, paramType: "string" }, index);
+        const date = extractParameter(m, { name: "date", regex: /-d ((?:\d{4}-\d{2}-\d{2}(?: \d{2}:\d{2}:\d{2})?)|\d{10})/, regexIndex: 1, paramType: "string" }, index);
         if (typeof date !== "string" )
             return;
 
