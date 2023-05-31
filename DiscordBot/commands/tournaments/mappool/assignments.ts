@@ -113,7 +113,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { target, pool } = params;
 
-    const targetUser = target ? await getStaff(m, tournament, target, [TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]) : undefined;
+    const targetUser = target ? await getStaff(m, tournament, target, [TournamentRoleType.Mappers, TournamentRoleType.Testplayers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]) : undefined;
     if (target && !targetUser)
         return;
 
