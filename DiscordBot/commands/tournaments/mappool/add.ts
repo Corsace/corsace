@@ -65,14 +65,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const slots = mappool.slots;
 
     if ("slot" in params) {
-        await handleMap(m, params, mappool, slots, user, tournament);
+        await addMap(m, params, mappool, slots, user, tournament);
         return;
     }
 
-    await handleSlot(m, params, mappool, slots, user, tournament);
+    await addSlot(m, params, mappool, slots, user, tournament);
 }
 
-async function handleMap (m: Message | ChatInputCommandInteraction, params: parametersMap, mappool: Mappool, slots: MappoolSlot[], user: User, tournament: Tournament) {
+async function addMap (m: Message | ChatInputCommandInteraction, params: parametersMap, mappool: Mappool, slots: MappoolSlot[], user: User, tournament: Tournament) {
     const { slot, order } = params; 
     if (!order) {
         await respond(m, `Specify the map number with the slot, e.g. ${slot}2`);
@@ -110,15 +110,15 @@ async function handleMap (m: Message | ChatInputCommandInteraction, params: para
         await map.save();
     }
 
-    await deletePack("mappacksTemp", mappool);
-
-    await respond(m, `Added **${diff}** maps to **${slot}**`);
-
-    await mappoolLog(tournament, "addMap", user, `Added \`${diff}\` maps to \`${slot}\``);
+    await Promise.all([
+        deletePack("mappacksTemp", mappool),
+        respond(m, `Added **${diff}** maps to **${slot}**`),
+        mappoolLog(tournament, "addMap", user, `Added \`${diff}\` maps to \`${slot}\``),
+    ]);
     return;
 }
 
-async function handleSlot (m: Message | ChatInputCommandInteraction, params: parametersSlot, mappool: Mappool, slots: MappoolSlot[], user: User, tournament: Tournament) {
+async function addSlot (m: Message | ChatInputCommandInteraction, params: parametersSlot, mappool: Mappool, slots: MappoolSlot[], user: User, tournament: Tournament) {
     const { slot_name, slot_acronym, amount, mods, user_mod_count, unique_mod_count } = params;
     if (mods && mods.length % 2 !== 0) {
         await respond(m, "Invalid mods");
@@ -165,9 +165,10 @@ async function handleSlot (m: Message | ChatInputCommandInteraction, params: par
         }
     }
 
-    await respond(m, `Added **${amount}** maps to a new slot called **${slot_name} (${slot_acronym})** in **${mappool.abbreviation.toUpperCase()}**`);
-
-    await mappoolLog(tournament, "addSlot", user, `Added \`${amount}\` maps to a new slot called \`${slot_name} (${slot_acronym})\` in \`${mappool.abbreviation.toUpperCase()}\``);
+    await Promise.all ([
+        respond(m, `Added **${amount}** maps to a new slot called **${slot_name} (${slot_acronym})** in **${mappool.abbreviation.toUpperCase()}**`),
+        mappoolLog(tournament, "addSlot", user, `Added \`${amount}\` maps to a new slot called \`${slot_name} (${slot_acronym})\` in \`${mappool.abbreviation.toUpperCase()}\``),
+    ]);
 }
 
 const data = new SlashCommandBuilder()
