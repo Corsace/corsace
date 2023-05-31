@@ -133,8 +133,6 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
     await mappoolMap.save();
 
     await deletePack("mappacksTemp", mappool);
-    mappool.mappackLink = mappool.mappackExpiry = null;
-    await mappool.save();
 
     const log = new MappoolMapHistory();
     log.createdBy = user;

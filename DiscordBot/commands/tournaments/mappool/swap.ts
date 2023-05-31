@@ -291,10 +291,6 @@ async function saveSwap (mappool1: Mappool, mappool2: Mappool, mappoolMap1: Mapp
 
     await deletePack("mappacksTemp", mappool1);
     await deletePack("mappacksTemp", mappool2);
-    mappool1.mappackLink = mappool1.mappackExpiry = null;
-    mappool2.mappackLink = mappool2.mappackExpiry = null;
-    await mappool1.save();
-    await mappool2.save();
 }
 
 async function updateThreads (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappoolMap1: MappoolMap, mappoolMap2: MappoolMap, mappoolSlot1: string, mappoolSlot2: string) {

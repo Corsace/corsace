@@ -68,9 +68,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (mappool.isPublic) {
         // Reset link before making it private
         await deletePack("mappacks", mappool);
-        mappool.mappackLink = mappool.mappackExpiry = null;
-        mappool.isPublic = false;
 
+        mappool.isPublic = false;
         await mappool.save();
 
         await respond(m, `**${mappool.name.toUpperCase()} (${mappool.abbreviation.toUpperCase()})** is now **private**`);

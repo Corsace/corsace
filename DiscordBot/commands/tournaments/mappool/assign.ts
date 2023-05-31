@@ -165,8 +165,6 @@ async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, targ
     if (jobPost) await jobPost.remove();
 
     await deletePack("mappacksTemp", mappool);
-    mappool.mappackLink = mappool.mappackExpiry = null;
-    await mappool.save();
 
     const log = new MappoolMapHistory();
     log.createdBy = assigner;
@@ -215,8 +213,6 @@ async function handleUser (m: Message | ChatInputCommandInteraction, target: str
             mappoolMap.customMappers.push(user);
 
         await deletePack("mappacksTemp", mappool);
-        mappool.mappackLink = mappool.mappackExpiry = null;
-        await mappool.save();
     }
 
     const customThread = await getCustomThread(m, mappoolMap, tournament, mappoolSlot);

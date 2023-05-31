@@ -17,12 +17,13 @@ import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot
 import { acronymtoMods } from "../../../../Interfaces/mods";
 import { User } from "../../../../Models/user";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
+import { deletePack } from "../../../functions/tournamentFunctions/mappackFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    if (!await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
+    if (!await securityChecks(m, true, true, [], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
         return;
 
     const user = await getUser(commandUser(m).id, "discord", false);
@@ -64,14 +65,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const slots = mappool.slots;
 
     if ("slot" in params) {
-        await handleMap(m, params, slots, user, tournament);
+        await handleMap(m, params, mappool, slots, user, tournament);
         return;
     }
 
     await handleSlot(m, params, mappool, slots, user, tournament);
 }
 
-async function handleMap (m: Message | ChatInputCommandInteraction, params: parametersMap, slots: MappoolSlot[], user: User, tournament: Tournament) {
+async function handleMap (m: Message | ChatInputCommandInteraction, params: parametersMap, mappool: Mappool, slots: MappoolSlot[], user: User, tournament: Tournament) {
     const { slot, order } = params; 
     if (!order) {
         await respond(m, `Specify the map number with the slot, e.g. ${slot}2`);
@@ -109,9 +110,11 @@ async function handleMap (m: Message | ChatInputCommandInteraction, params: para
         await map.save();
     }
 
-    await respond(m, `Added ${diff} maps to ${slot}`);
+    await deletePack("mappacksTemp", mappool);
 
-    await mappoolLog(tournament, "addMap", user, `Added ${diff} maps to ${slot}`);
+    await respond(m, `Added **${diff}** maps to **${slot}**`);
+
+    await mappoolLog(tournament, "addMap", user, `Added \`${diff}\` maps to \`${slot}\``);
     return;
 }
 
@@ -150,6 +153,8 @@ async function handleSlot (m: Message | ChatInputCommandInteraction, params: par
     if (unique_mod_count) slot.uniqueModCount = unique_mod_count;
     mappool.slots.push(slot);
 
+    await deletePack("mappacksTemp", mappool);
+
     await mappool.save();
     for (const slot of mappool.slots) {
         slot.mappool = mappool;
@@ -160,9 +165,9 @@ async function handleSlot (m: Message | ChatInputCommandInteraction, params: par
         }
     }
 
-    await respond(m, `Added ${amount} maps to a slot called ${slot_name} (${slot_acronym}) in the ${mappool.abbreviation.toUpperCase()} pool`);
+    await respond(m, `Added **${amount}** maps to a new slot called **${slot_name} (${slot_acronym})** in **${mappool.abbreviation.toUpperCase()}**`);
 
-    await mappoolLog(tournament, "addSlot", user, `Added ${amount} maps to a slot called ${slot_name} (${slot_acronym}) in the ${mappool.abbreviation.toUpperCase()} pool`);
+    await mappoolLog(tournament, "addSlot", user, `Added \`${amount}\` maps to a new slot called \`${slot_name} (${slot_acronym})\` in \`${mappool.abbreviation.toUpperCase()}\``);
 }
 
 const data = new SlashCommandBuilder()
