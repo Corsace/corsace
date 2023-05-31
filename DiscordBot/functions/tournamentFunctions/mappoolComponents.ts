@@ -82,18 +82,18 @@ export default async function mappoolComponents (
     if (!slotMod) 
         return;
 
-    if (typeof map !== "number")
+    if (typeof map !== "number" && slotMod.maps.length > 1)
         return { tournament, mappool, slotMod, stage, staff };
 
     // Get mappoolMap
-    const mappoolMap = slotMod.maps.find(m => m.order === map);
+    const mappoolMap = map === true ? slotMod.maps[0] : slotMod.maps.find(m => m.order === map);
     if (!mappoolMap) {
-        await respond(m, `Can't find **${slot}**`);
+        await respond(m, `Can't find **${slot}${slotMod.maps.length === 1 ? "" : map}**`);
         return;
     }
 
     // Get mappoolSlot
-    const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${map}`;
+    const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot}${slotMod.maps.length === 1 ? "" : map}`;
 
     return { tournament, mappool, slotMod, mappoolMap, mappoolSlot, staff, stage };
 }

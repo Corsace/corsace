@@ -29,9 +29,9 @@ export default async function mappoolComponentsThread (t: ThreadChannel, owner: 
     if (!poolMatch)
         return;
 
-    const order = parseInt(poolMatch[2][poolMatch[2].length - 1]);
+    let order: number | true = parseInt(poolMatch[2][poolMatch[2].length - 1]);
     if (isNaN(order))
-        return;
+        order = true;
     const poolText = poolMatch[1];
     const slotText = poolMatch[2].slice(0, poolMatch[2].length - 1);
     const mappers = poolMatch[4] ? poolMatch[4].split(", ") : [];
@@ -66,7 +66,10 @@ export default async function mappoolComponentsThread (t: ThreadChannel, owner: 
 
     const components = await mappoolComponents(m, poolText, slotText, order, true, { text: t.parentId!, searchType: "channel" }, unFinishedTournaments, false, undefined, true);
     if (!components || !("mappoolMap" in components)) {
-        await respond(m, "Invalid pool, slot, or order");
+        if (components && "slotMod" in components)
+            await respond(m, "Invalid slot");
+        else
+            await respond(m, "Invalid pool, slot, or order");
         return;
     }
 

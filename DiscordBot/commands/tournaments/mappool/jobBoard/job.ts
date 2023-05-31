@@ -26,7 +26,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const params = extractParameters<parameters>(m, [
         { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
         { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder },
-        { name: "description", customHandler: extractTargetText(3)},
+        { name: "description", customHandler: extractTargetText(3) },
     ]);
     if (!params)
         return;
@@ -37,14 +37,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const components = await mappoolComponents(m, pool, slot, order, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, false, undefined, true);
-    if (!components || !("mappoolMap" in components))
+    const components = await mappoolComponents(m, pool, slot, order || true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, false, undefined, true);
+    if (!components || !("mappoolMap" in components)) {
+        if (components && "slotMod" in components)
+            await respond(m, "Invalid slot");
         return;
+    }
 
     const { mappoolMap, mappoolSlot } = components;
 
     if ((mappoolMap.customMappers && mappoolMap.customMappers.length > 0) || mappoolMap.beatmap) {
-        await respond(m, `**${mappoolSlot}** isn't a job board slot so LOGICALLY there's no reason to create a job board post`);
+        await respond(m, `**${mappoolSlot}** is already an assigned slot so LOGICALLY there's no reason to create a job board post`);
         return;
     }
 
@@ -72,7 +75,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        await msg.edit(`**${mappoolSlot}**\n${description}`);
+        await msg.edit(`**ENDS AT <t:${mappoolMap.jobPost.deadline!.getTime() / 1000}:F> (<t:${mappoolMap.jobPost.deadline!.getTime() / 1000}:R>)**\n\n${description}`);
     }
 
     await mappoolMap.jobPost.save();
@@ -103,7 +106,7 @@ const data = new SlashCommandBuilder()
 interface parameters {
     pool: string,
     slot: string,
-    order: number,
+    order?: number,
     description: string,
 }
 

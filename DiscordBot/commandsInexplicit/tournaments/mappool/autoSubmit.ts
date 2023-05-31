@@ -25,7 +25,7 @@ export default async function autoSubmit (m: Message) {
     // Check if the link is an osz file
     if (!link.endsWith(".osz"))
         return;
-    
+
     const channel = await TournamentChannel.findOne({
         where: {
             channelID: m.channel && m.channel.isThread() ? m.channel.parentId! : m.channelId,
@@ -78,6 +78,7 @@ export default async function autoSubmit (m: Message) {
         .leftJoinAndSelect("map.customBeatmap", "customBeatmap")
         .leftJoinAndSelect("customBeatmap.mode", "mode")
         .leftJoinAndSelect("map.slot", "slot")
+        .leftJoinAndSelect("slot.maps", "slotMaps")
         .leftJoinAndSelect("slot.mappool", "mappool")
         .leftJoinAndSelect("mappool.round", "round")
         .leftJoinAndSelect("mappool.stage", "stage")
@@ -86,22 +87,22 @@ export default async function autoSubmit (m: Message) {
         .andWhere(new Brackets(qb => {
             qb
                 .where(new Brackets(qb2 => {
-                    qb2.where("customBeatmap.artist LIKE :artist", { artist: `%${beatmap!.artist}%` })
-                        .andWhere("customBeatmap.title LIKE :title", { title: `%${beatmap!.title}%` })
-                        .andWhere("customBeatmap.difficulty LIKE :diff", { diff: `%${beatmap!.version}%` });
+                    qb2.where("customBeatmap.artist LIKE :artist", { artist: `%${beatmap.artist}%` })
+                        .andWhere("customBeatmap.title LIKE :title", { title: `%${beatmap.title}%` })
+                        .andWhere("customBeatmap.difficulty LIKE :diff", { diff: `%${beatmap.version}%` });
                 }))
                 .orWhere("map.customThreadID = :threadID", { threadID: m.channel.id });
         }))
         .getMany();
-    
-    if (mappoolMaps.length !== 1)
+
+    if (mappoolMaps.length !== 1 && !mappoolMaps.some(map => map.customThreadID === m.channel.id))
         return;
 
-    const mappoolMap = mappoolMaps[0];
+    const mappoolMap = mappoolMaps.length === 1 ? mappoolMaps[0] : mappoolMaps.find(map => map.customThreadID === m.channel.id)!;
     if (mappoolMap.slot.mappool.isPublic || (!bypass && !mappoolMap.customMappers.some(mapper => mapper.discord.userID === commandUser(m).id)))
         return;
         
-    const mappoolSlot = `${mappoolMap.slot.mappool.abbreviation.toUpperCase()} ${mappoolMap.slot.acronym.toUpperCase()}${mappoolMap.order}`;
+    const mappoolSlot = `${mappoolMap.slot.mappool.abbreviation.toUpperCase()} ${mappoolMap.slot.acronym.toUpperCase()}${mappoolMap.slot.maps.length === 1 ? "" : mappoolMap.order}`;
 
     await ojsamaToCustom(m, tournament, mappoolMap.slot.mappool, mappoolMap.slot, mappoolMap, beatmap, link, user, mappoolSlot);
     return;

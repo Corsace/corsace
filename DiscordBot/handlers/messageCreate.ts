@@ -39,7 +39,6 @@ export default async function messageCreate (m: Message) {
                 continue;
             
             commandRun = true;
-            m.content = m.content.replace(/\s+/g, " ").trim();
             try {
                 await command.run(m);
             } catch (e) {

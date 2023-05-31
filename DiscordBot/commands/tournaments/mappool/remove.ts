@@ -54,6 +54,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!components || !("mappool" in components))
         return;
 
+    if (!("mappoolMap" in components) && "slotMod" in components) {
+        await respond(m, "Invalid slot");
+        return;
+    }
+
     const { tournament, mappool } = components;
 
     if ("mappoolMap" in components) {
@@ -199,7 +204,7 @@ async function resetPool (m: Message | ChatInputCommandInteraction, tournament: 
             }
             map.testplayers = [];
             if (testing) {
-                if (!await notifyCustomThread(m, tournament, map, `${mappool.abbreviation.toUpperCase()} ${slot}${map.order}`, `<@${user.discord.userID}> has removed **all testplayers**`))
+                if (!await notifyCustomThread(m, tournament, map, `${mappool.abbreviation.toUpperCase()} ${slot}${slot.maps.length === 1 ? "" : map.order}`, `<@${user.discord.userID}> has removed **all testplayers**`))
                     return;
             } else {
                 map.customMappers = [];

@@ -63,9 +63,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, slot, order, difficulty } = params;
 
-    const components = await mappoolComponents(m, pool, slot, order, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments);
-    if (!components || !("mappoolMap" in components))
+    const components = await mappoolComponents(m, pool, slot, order || true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments);
+    if (!components || !("mappoolMap" in components)) {
+        if (components && "slotMod" in components)
+            await respond(m, "Invalid slot");
         return;
+    }
 
     const { tournament, mappool, slotMod, mappoolMap, mappoolSlot } = components;
 
@@ -110,7 +113,7 @@ const data = new SlashCommandBuilder()
 interface parameters {
     pool: string;
     slot: string;
-    order: number;
+    order?: number;
     difficulty?: string;
 }
 

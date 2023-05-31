@@ -44,9 +44,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const components = await mappoolComponents(m, pool, slot, order, true, { text: channelID(m), searchType: "channel"}, unFinishedTournaments, true);
-    if (!components || !("mappoolMap" in components) || !("stage" in components))
+    const components = await mappoolComponents(m, pool, slot, order || true, true, { text: channelID(m), searchType: "channel"}, unFinishedTournaments, true);
+    if (!components || !("mappoolMap" in components) || !("stage" in components)) {
+        if (components && "slotMod" in components)
+            await respond(m, "Invalid slot");
         return;
+    }
     const { tournament, stage, mappoolMap, mappoolSlot } = components;
 
     if (stage!.timespan.start.getTime() < date.getTime()) {
@@ -107,7 +110,7 @@ const data = new SlashCommandBuilder()
 interface parameters {
     pool: string,
     slot: string,
-    order: number,
+    order?: number,
     date: Date,
 }
 

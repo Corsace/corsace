@@ -76,8 +76,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         for (const map of slot.maps) {
             if (map.jobPost && !map.jobPost.jobBoardThread) {
                 const createObj: GuildForumThreadCreateOptions = {
-                    name: `${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${map.order}`,
-                    message: { content: map.jobPost.description },
+                    name: `${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${slot.maps.length === 1 ? "" : map.order}`,
+                    message: { content: `**ENDS AT <t:${map.jobPost.deadline!.getTime() / 1000}:F> (<t:${map.jobPost.deadline!.getTime() / 1000}:R>)**\n\n${map.jobPost.description}` },
                 };
                 const tag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "open")?.id;
                 if (tag)
@@ -91,8 +91,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 await map.jobPost.save();
 
                 counter++;
-                content += `Created thread for **${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${map.order}**. ${counter}/${totalThreadCount}\n`;
-                logText += `Created thread for \`${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${map.order}\` <#${jobBoardThread.id}>.\n`;
+                content += `Created thread for **${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${slot.maps.length === 1 ? "" : map.order}**. ${counter}/${totalThreadCount}\n`;
+                logText += `Created thread for \`${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${slot.maps.length === 1 ? "" : map.order}\` <#${jobBoardThread.id}>.\n`;
                 await threadMessage.edit(content);
             }
         }

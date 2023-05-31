@@ -31,7 +31,7 @@ interface parameterOptionsBase {
     name: string,
     optional?: boolean,
     customHandler?: customHandlerType,
-    postProcess?: (parameter: string) => { [key: string]: string | number } | undefined,
+    postProcess?: (parameter: string) => { [key: string]: string | number | undefined } | undefined,
 }
 
 interface messageParameterOptions extends parameterOptionsBase {

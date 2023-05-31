@@ -53,16 +53,19 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const params = extractParameters<parameters>(m, [
         { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
         { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder },
-        { name: "target", customHandler: extractTargetText(3)  },
+        { name: "target", customHandler: extractTargetText(3) },
     ]); 
     if (!params)
         return;
 
     const { target, pool, slot, order } = params;
 
-    const components = await mappoolComponents(m, pool, slot, order, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, false, undefined, true);
-    if (!components || !("mappoolMap" in components))
+    const components = await mappoolComponents(m, pool, slot, order || true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, false, undefined, true);
+    if (!components || !("mappoolMap" in components)) {
+        if (components && "slotMod" in components)
+            await respond(m, "Invalid slot");
         return;
+    }
     const { tournament, mappool, slotMod, mappoolMap, mappoolSlot } = components;
 
     const assigner = await getUser(commandUser(m).id, "discord", false);
@@ -281,7 +284,7 @@ interface parameters {
     target: string,
     pool: string,
     slot: string,
-    order: number,
+    order?: number,
 }
 
 const mappoolAssign: Command = {

@@ -35,6 +35,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!components || !("mappool" in components))
         return;
 
+    if (!("mappoolMap" in components) && "slotMod" in components) {
+        await respond(m, "Invalid slot");
+        return;
+    }
+
     const { tournament, mappool } = components;
 
     if ("mappoolMap" in components) {
@@ -62,7 +67,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     jobBoardEmbed.setFields(mappool.slots.map(slot => {
         return {
             name: `**${slot.name}**`,
-            value: slot.maps.map(map => `**${slot.acronym}${map.order}:** ${map.jobPost && (all ? true : !map.jobPost.jobBoardThread) ? map.jobPost.description : "N/A"}`).join("\n\n"),
+            value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.jobPost && (all ? true : !map.jobPost.jobBoardThread) ? map.jobPost.description : "N/A"}`).join("\n\n"),
         };
     }));
 
