@@ -4,6 +4,7 @@ import tournamentCreate from "./tournaments/create";
 import tournamentList from "./tournaments/list";
 
 import stageCreate from "./tournaments/stage/create";
+import stageDelete from "./tournaments/stage/delete";
 
 import mappoolAdd from "./tournaments/mappool/add";
 import mappoolAssign from "./tournaments/mappool/assign";
@@ -57,6 +58,7 @@ commands.push(tournamentList);
 
 // stage commands
 commands.push(stageCreate);
+commands.push(stageDelete);
 
 // mappool commands
 commands.push(mappoolAdd);
