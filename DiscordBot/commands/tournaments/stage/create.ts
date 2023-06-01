@@ -58,9 +58,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     // Confirm to understand the difference between a stage and a round
-    const confirm = await confirmCommand(m, "A stage consists of multiple rounds. Rounds consist of multiple matches.\n\n**FOR EXAMPLE:** `Knockout 1` that consists of `Round of 16`, `Quarter Finals`, `Semi Finals`, and `Finals` would be considered a stage with multiple rounds in it.\n`Round of 16` is considered as a round WITHIN a stage.\n\nPleaseeeee make sure u understand that what ur creating right now is a **stage** and not a **round**.\nDo u understand the difference, and that ur creating a stage, that will create subsequent rounds, and **NOT** a specific round?");
+    const confirm = await confirmCommand(m, "**PLEASEEE MAKE SURE U UNDERSTAND UR MAKING A STAGE AND NOT A ROUND**\nA **stage** would **encapsulate the entire bracket**\nA **round** would be considered **part of a bracket**\nRound of 16/Quarter Finals/Finals are **rounds**\nQualifiers/Round Robin/Knockout are **stages**\n\nDo u understand the difference, and that ur creating a stage, that could create rounds within it, and **NOT** a specific round?");
     if (!confirm) {
-        await respond(m, "Ok Lol .");
+        await respond(m, "Come back when u can read i guess idk...");
         return;
     }
 
