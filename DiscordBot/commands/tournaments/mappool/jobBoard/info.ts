@@ -67,7 +67,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     jobBoardEmbed.setFields(mappool.slots.map(slot => {
         return {
             name: `**${slot.name}**`,
-            value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.jobPost && (all ? true : !map.jobPost.jobBoardThread) ? map.jobPost.description : "N/A"}`).join("\n\n"),
+            value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.jobPost && (all ? true : !map.jobPost.jobBoardThread) ? map.jobPost.description : map.jobPost?.jobBoardThread ? "**PUBLISHED**" : "N/A"}`).join("\n\n"),
         };
     }));
 

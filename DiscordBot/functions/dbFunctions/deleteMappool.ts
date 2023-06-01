@@ -17,11 +17,9 @@ export default async function deleteMappool (mappool: Mappool) {
     await deleteMappoolMapHistory(mappool.slots.flatMap(slot => slot.maps.map(map => map.ID)));
     await Promise.all([...customMaps.map(customBeatmap => customBeatmap.remove()), ...jobPosts.map(jobPost => jobPost.remove())]);
 
-    const maps = mappool.slots.flatMap(slot => slot.maps.map(map => map.remove()));
-    await Promise.all(maps);
+    await Promise.all(mappool.slots.flatMap(slot => slot.maps.map(map => map.remove())));
 
-    const slots = mappool.slots.map(slot => slot.remove());
-    await Promise.all(slots);
+    await Promise.all(mappool.slots.map(slot => slot.remove()));
 
     await deletePack("mappacksTemp", mappool);
     await mappool.remove();
