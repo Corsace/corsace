@@ -65,7 +65,7 @@ export default async function mappoolComponents (
         return { tournament, stage, staff };
 
     // Get mappool
-    const mappool = await getMappool(m, tournament, pool, false, slot !== undefined, slot !== undefined && map !== undefined);
+    const mappool = await getMappool(m, tournament, pool, getStageRound, slot !== undefined, slot !== undefined && map !== undefined);
     if (!mappool) 
         return;
     if (checkPublic && mappool.isPublic) {

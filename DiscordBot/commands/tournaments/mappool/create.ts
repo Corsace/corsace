@@ -16,6 +16,7 @@ import commandUser from "../../../functions/commandUser";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import confirmCommand from "../../../functions/confirmCommand";
 import channelID from "../../../functions/channelID";
+import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -253,7 +254,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             stopped = true;
             componentCollector.stop();
             slotNameCollector.stop();
-            await mappoolDone(m, mappool);
+            await mappoolDone(m, mappool, tournament);
             return;
         }
     });
@@ -398,7 +399,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
     slotNameCollector.on("end", () => timedOut(slotMessage, stopped, "Mappool creation"));
 }
 
-async function mappoolDone (m: Message, mappool: Mappool) {
+async function mappoolDone (m: Message, mappool: Mappool, tournament: Tournament) {
     await mappool.save();
     for (const slot of mappool.slots) {
         slot.mappool = mappool;
@@ -421,7 +422,10 @@ async function mappoolDone (m: Message, mappool: Mappool) {
                 };
             }));
 
-    await m.channel!.send({ embeds: [embed] });
+    await Promise.all([
+        m.channel!.send({ embeds: [embed] }),
+        mappoolLog(tournament, "mappoolCreate", mappool.createdBy, `Created mappool ${mappool.name} (${mappool.abbreviation.toUpperCase()})`),
+    ]);
 }
 
 const data = new SlashCommandBuilder()
