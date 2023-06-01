@@ -5,9 +5,10 @@ import getFromList from "../getFromList";
 import getStages, { stageSearchConditions } from "../dbFunctions/getStages";
 import getTournament from "./getTournament";
 import { Stage } from "../../../Models/tournaments/stage";
+import channelID from "../channelID";
 
 export default async function getStage (m: Message | ChatInputCommandInteraction, tournament?: Tournament, useChannel?: boolean, target: string | number | undefined = tournament?.ID, searchType: undefined | keyof typeof stageSearchConditions = "tournamentID") {
-    tournament = tournament ?? await getTournament(m, useChannel ? m.channelId : m.guildId || "", useChannel ? "channel" : m.guild ? "server" : "ID");
+    tournament = tournament ?? await getTournament(m, useChannel ? channelID(m) : m.guildId || "", useChannel ? "channel" : m.guild ? "server" : "ID");
     if (!tournament)
         return;
 

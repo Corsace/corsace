@@ -21,6 +21,7 @@ import { JobPost } from "../../../../Models/tournaments/mappools/jobPost";
 import { discordClient } from "../../../../Server/discord";
 import { deletePack } from "../../../functions/tournamentFunctions/mappackFunctions";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
+import channelID from "../../../functions/channelID";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -44,7 +45,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, slot, order } = params;
 
-    const components = await mappoolComponents(m, pool, slot || true, order || true, true, { text: m.channelId, searchType: "channel" }, unFinishedTournaments, undefined, undefined, true);
+    const components = await mappoolComponents(m, pool, slot || true, order || true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, undefined, undefined, true);
     if (!components || !("mappool" in components))
         return;
 

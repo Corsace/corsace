@@ -18,6 +18,7 @@ import { acronymtoMods } from "../../../../Interfaces/mods";
 import { User } from "../../../../Models/user";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { deletePack } from "../../../functions/tournamentFunctions/mappackFunctions";
+import channelID from "../../../functions/channelID";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -57,7 +58,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!params)
         return;
 
-    const components = await mappoolComponents(m, params.pool, true, true, true, { text: m.channelId, searchType: "channel" }, unFinishedTournaments);
+    const components = await mappoolComponents(m, params.pool, true, true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments);
     if (!components || !("mappool" in components))
         return;
 

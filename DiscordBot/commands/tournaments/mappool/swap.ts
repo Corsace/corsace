@@ -21,6 +21,7 @@ import getCustomThread from "../../../functions/tournamentFunctions/getCustomThr
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import { User } from "../../../../Models/user";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
+import channelID from "../../../functions/channelID";
 
 async function getMappools (m: Message | ChatInputCommandInteraction, tournament: Tournament, pool1: string, pool2: string | null): Promise<[Mappool, Mappool] | undefined> {
     const mappool1 = await getMappool(m, tournament, pool1);
@@ -109,7 +110,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const pool2 = !pool2Text ? pool2Text : typeof pool2Text === "string" ? pool2Text : pool2Text[0];
 
-    const tournament = await getTournament(m, m.channelId, "channel", unFinishedTournaments);
+    const tournament = await getTournament(m, channelID(m), "channel", unFinishedTournaments);
     if (!tournament) 
         return;
 

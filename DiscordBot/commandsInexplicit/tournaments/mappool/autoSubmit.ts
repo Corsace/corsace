@@ -8,6 +8,7 @@ import getUser from "../../../functions/dbFunctions/getUser";
 import bypassSubmit from "../../../functions/tournamentFunctions/bypassSubmit";
 import { TournamentRole, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import commandUser from "../../../functions/commandUser";
+import channelID from "../../../functions/channelID";
 
 export default async function autoSubmit (m: Message) {
     if (!m.guild)
@@ -28,7 +29,7 @@ export default async function autoSubmit (m: Message) {
 
     const channel = await TournamentChannel.findOne({
         where: {
-            channelID: m.channel && m.channel.isThread() ? m.channel.parentId! : m.channelId,
+            channelID: channelID(m),
         },
     });
     if (!channel)
@@ -43,7 +44,7 @@ export default async function autoSubmit (m: Message) {
         .leftJoinAndSelect("tournament.mode", "mode")
         .leftJoin("tournament.channels", "channel")
         .where("tournament.server = :server", { server: m.guild.id })
-        .andWhere("channel.channelID = :channelID", { channelID: m.channel && m.channel.isThread() ? m.channel.parentId! : m.channelId })
+        .andWhere("channel.channelID = :channelID", { channelID: channelID(m) })
         .andWhere("tournament.status IN (:...status)", { status: [ TournamentStatus.NotStarted, TournamentStatus.Ongoing, TournamentStatus.Registrations ]})
         .getMany();
     

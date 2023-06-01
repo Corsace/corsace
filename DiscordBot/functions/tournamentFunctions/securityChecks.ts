@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, GuildMemberRoleManager, Message, Permissio
 import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
 import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
 import respond from "../respond";
+import channelID from "../channelID";
 
 export async function hasTournamentRoles (m: Message | ChatInputCommandInteraction, targetRoles: TournamentRoleType[]): Promise<boolean> {
     if (targetRoles.length === 0)
@@ -33,7 +34,7 @@ export async function isSecuredChannel (m: Message | ChatInputCommandInteraction
 
     const channel = await TournamentChannel.findOne({
         where: {
-            channelID: m.channel && m.channel.isThread() ? m.channel.parentId! : m.channelId,
+            channelID: channelID(m),
         },
     });
     if (!channel) {

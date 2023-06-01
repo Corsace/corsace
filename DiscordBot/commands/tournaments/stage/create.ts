@@ -10,6 +10,7 @@ import getUser from "../../../functions/dbFunctions/getUser";
 import commandUser from "../../../functions/commandUser";
 import confirmCommand from "../../../functions/confirmCommand";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
+import channelID from "../../../functions/channelID";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -30,7 +31,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const tournament = await getTournament(m, m.channelId, "channel", [TournamentStatus.NotStarted, TournamentStatus.Registrations], true);
+    const tournament = await getTournament(m, channelID(m), "channel", [TournamentStatus.NotStarted, TournamentStatus.Registrations], true);
     if (!tournament) 
         return;
 
