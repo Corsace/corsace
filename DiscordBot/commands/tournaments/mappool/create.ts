@@ -357,7 +357,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             if (uniqueModCount !== 0) slot.uniqueModCount = uniqueModCount;
 
             mappoolSlotsMade.push(slot);
-            newSlots += `\n${acronym} ${slotName.join(" ")} ${mapCount} maps ${modNum !== undefined ? `with ${modsToAcronym(modNum)} mods` : ""}${userModCount ? ` with ${userModCount} mod${userModCount > 1 ? "s" : ""} per user` : ""}${uniqueModCount ? ` with ${uniqueModCount} unique mod${uniqueModCount > 1 ? "s" : ""}` : ""}`;
+            newSlots += `\n${acronym} ${slotName.join(" ")} ${mapCount} map${mapCount > 1 ? "s" : ""} ${modNum !== undefined ? `with ${modsToAcronym(modNum)} mods` : ""}${userModCount ? ` with ${userModCount} mod${userModCount > 1 ? "s" : ""} per user` : ""}${uniqueModCount ? ` with ${uniqueModCount} unique mod${uniqueModCount > 1 ? "s" : ""}` : ""}`;
         }
 
         // Check for duplicate slot names/abbreviations
@@ -409,7 +409,7 @@ async function mappoolDone (m: Message, mappool: Mappool) {
         }
     }
 
-    await m.reply("U did it u made the mappool\nHere's the mappool embed:");
+    await m.reply("U did it u made a mappool\nHere's the mappool embed:");
     const embed = new EmbedBuilder()
         .setTitle(`${mappool.name} (${mappool.abbreviation.toUpperCase()})`)
         .setDescription(`Target SR: ${mappool.targetSR}`)
@@ -417,7 +417,7 @@ async function mappoolDone (m: Message, mappool: Mappool) {
             mappool.slots.map((slot) => {
                 return {
                     name: `${slot.acronym} - ${slot.name}`,
-                    value: `${slot.maps.length} maps`,
+                    value: `${slot.maps.length} map${slot.maps.length > 1 ? "s" : ""}`,
                 };
             }));
 

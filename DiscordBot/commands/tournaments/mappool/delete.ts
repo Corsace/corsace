@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
@@ -10,11 +10,14 @@ import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/par
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import { unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import channelID from "../../../functions/channelID";
-import deleteMappoolMap from "../../../functions/tournamentFunctions/deleteMappoolMap";
-import deleteMappoolSlot from "../../../functions/tournamentFunctions/deleteMappoolSlot";
-import deleteMappool from "../../../functions/tournamentFunctions/deleteMappool";
+import deleteMappoolMap from "../../../functions/dbFunctions/deleteMappoolMap";
+import deleteMappoolSlot from "../../../functions/dbFunctions/deleteMappoolSlot";
+import deleteMappool from "../../../functions/dbFunctions/deleteMappool";
 import confirmCommand from "../../../functions/confirmCommand";
 import respond from "../../../functions/respond";
+import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
+import getCustomThread from "../../../functions/tournamentFunctions/getCustomThread";
+import { discordClient } from "../../../../Server/discord";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -49,7 +52,31 @@ async function run (m: Message | ChatInputCommandInteraction) {
             await respond(m, "Ok w/e .");
             return;
         }
-        await deleteMappoolMap(m, tournament, mappool, user, components.mappoolMap, components.mappoolSlot);
+
+        await deleteMappoolMap(mappool, components.mappoolMap);
+
+        const { slotMod } = components;
+        if (order && slotMod.maps.length !== order) {
+            slotMod.maps = slotMod.maps.filter(map => map.ID !== components.mappoolMap.ID);
+            slotMod.maps.sort((a, b) => a.order - b.order);
+            slotMod.maps.forEach(async (map, index) => {
+                map.order = index + 1;
+                await map.save();
+
+                if (map.customThreadID)
+                    await getCustomThread(m, map, tournament, `${mappool.abbreviation.toUpperCase()} ${slot}${slotMod.maps.length === 1 ? "" : map.order}`);
+                if (map.jobPost?.jobBoardThread) {
+                    const ch = await discordClient.channels.fetch(map.jobPost.jobBoardThread) as ThreadChannel | null;
+                    if (ch)
+                        await ch.setName(`${mappool.abbreviation.toUpperCase()} ${slot}${slotMod.maps.length === 1 ? "" : map.order}`);
+                }
+            });
+        }
+        
+        await Promise.all([
+            respond(m, `**${components.mappoolSlot}** has been deleted ${components.mappoolMap.customBeatmap || components.mappoolMap.jobPost ? "along with the custom beatmap and/or job posts" : ""}`),
+            mappoolLog(tournament, "deleteMappoolMap", user, `\`${components.mappoolSlot}\` has been deleted ${components.mappoolMap.customBeatmap || components.mappoolMap.jobPost ? "along with the custom beatmap and/or job posts" : ""}`),
+        ]);
         return;
     }
 
@@ -58,7 +85,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
             await respond(m, "Ok w/e .");
             return;
         }
-        await deleteMappoolSlot(m, tournament, mappool, user, components.slotMod);
+        await deleteMappoolSlot(mappool, components.slotMod);
+
+        await Promise.all([  
+            respond(m, `**${components.slotMod.name.toUpperCase()} (${components.slotMod.acronym.toUpperCase()})** in **${mappool.name.toUpperCase()} (${mappool.abbreviation.toUpperCase()})** has been deleted`),
+            mappoolLog(tournament, "deleteMappoolSlot", user, `\`${components.slotMod.name.toUpperCase()} (${components.slotMod.acronym.toUpperCase()})\` in \`${mappool.name.toUpperCase()} (${mappool.abbreviation.toUpperCase()})\` has been deleted`),
+        ]);
         return;
     }
 
@@ -66,7 +98,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Ok w/e .");
         return;
     }
-    await deleteMappool(m, tournament, mappool, user);
+    await deleteMappool(mappool);
+    await Promise.all([
+        respond(m, `**${mappool.name.toUpperCase()} (${mappool.abbreviation.toUpperCase()})** has been deleted`),
+        mappoolLog(tournament, "deleteMappool", user, `\`${mappool.name.toUpperCase()} (${mappool.abbreviation.toUpperCase()})\` has been deleted`),
+    ]);
 }
 
 const data = new SlashCommandBuilder()
