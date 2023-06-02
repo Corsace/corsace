@@ -42,7 +42,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const components = await mappoolComponents(m, pool, slot || true, order || true);
+    const components = await mappoolComponents(m, pool, slot, order ?? (slot ? true : undefined));
     if (!components || !("mappool" in components))
         return;
 
@@ -79,7 +79,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 },
             ]);
         } catch (e) {
-            console.log(e);
             await respond(m, `Can't download **${pool}**\nosu.direct is proly currently down. Error below:\n\`\`\`\n${e}\`\`\``);
         }
 
@@ -115,7 +114,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mappool.mappackLink = url;
         mappool.mappackExpiry = new Date(Date.now() + 60 * 60 * 24 * 1000);
     } catch (e) {
-        console.log(e);
         await respond(m, `Can't download **${pool}**\nosu.direct is proly currently down. Error below:\n\`\`\`\n${e}\`\`\``);
         return;
     }

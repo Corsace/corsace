@@ -12,8 +12,6 @@ import { Beatmap as APIBeatmap } from "nodesu";
 import respond from "../respond";
 
 export async function createPack (m: Message | ChatInputCommandInteraction, bucket: "mappacks" | "mappacksTemp", mappool: Mappool, packName: string, video = false): Promise<string | undefined> {
-    const loadingMsg = await m.channel?.send("Getting maps...");
-
     const mappoolMaps = mappool.slots.flatMap(s => s.maps);
     const filteredMaps = mappoolMaps.filter(m => (m.customBeatmap && m.customBeatmap.link) || m.beatmap);
     if (filteredMaps.length === 0) {
@@ -41,13 +39,11 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
     const names = updatedMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
     const dlLinks = updatedMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}`);
 
-    await loadingMsg?.edit("Downloading maps...");
-    const streams = await Promise.all(dlLinks.map(link => download(link)));
+    const streams = dlLinks.map(link => download(link));
     const zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
 
     const s3Key = `${randomUUID()}/${packName}.zip`;
 
-    await loadingMsg?.edit("Uploading pack...");
     try {
         if (bucket === "mappacksTemp") {
             await buckets.mappacksTemp.putObject(s3Key, zipStream, "application/zip");
@@ -57,13 +53,9 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
 
         await buckets.mappacks.putObject(s3Key, zipStream, "application/zip");
         const url = await buckets.mappacks.getPublicUrl(s3Key);
-        await loadingMsg?.delete();
         return url;
     } catch (e) {
-        await Promise.all([
-            loadingMsg?.delete(),
-            respond(m, "Failed to create pack. Contact VINXIS"),
-        ]);
+        await respond(m, "Failed to create pack. Contact VINXIS");
         console.log(e);
         return;
     }
