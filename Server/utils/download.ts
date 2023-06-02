@@ -9,6 +9,6 @@ export function download (url: string): Readable {
             return;
         }
         res.pipe(passThrough);
-    });
+    }).on("error", (err) => passThrough.emit("error", err));
     return passThrough;
 }
