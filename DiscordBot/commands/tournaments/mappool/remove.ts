@@ -83,15 +83,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
             await mappoolLog(tournament, "removeMap", user, `Removed \`${map.beatmapset.artist} - ${map.beatmapset.title} [${map.difficulty}]\` from \`${mappoolSlot}\``);
             return;
         }
-
-        let name = "";
-        let customMap: CustomBeatmap | null = null;
-        if (mappoolMap.customBeatmap) {
-            customMap = mappoolMap.customBeatmap;
-            mappoolMap.customBeatmap = null;
-
-            name = `${customMap.artist} - ${customMap.title} [${customMap.difficulty}] `;
-        }
     
         if (components.staff) {
             const { staff } = components;
@@ -146,6 +137,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
             await mappoolLog(tournament, "removeTester", user, `Removed all testplayers from \`${mappoolSlot}\``);
             return;
+        }
+
+        let name = "";
+        let customMap: CustomBeatmap | null = null;
+        if (mappoolMap.customBeatmap) {
+            customMap = mappoolMap.customBeatmap;
+            mappoolMap.customBeatmap = null;
+
+            name = `${customMap.artist} - ${customMap.title} [${customMap.difficulty}] `;
         }
 
         mappoolMap.customMappers = [];
