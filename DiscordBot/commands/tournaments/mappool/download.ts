@@ -42,7 +42,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const components = await mappoolComponents(m, pool, slot, order ?? (slot ? true : undefined));
+    const components = await mappoolComponents(m, pool, slot || true, order || true);
     if (!components || !("mappool" in components))
         return;
 
