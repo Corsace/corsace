@@ -36,19 +36,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const testing = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("tester") : /-test/i.test(m.content));
-    if (testing && m instanceof Message)    
-        m.content = m.content.replace(/-test/i, "");
-
     const params = extractParameters<parameters>(m, [
-        { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
-        { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder, optional: true },
-        { name: "target", customHandler: extractTargetText(3), optional: true  },
+        { name: "pool", paramType: "string" },
+        { name: "slot", paramType: "string", postProcess: postProcessSlotOrder, optional: true },
+        { name: "target", paramType: "string", customHandler: extractTargetText, optional: true  },
+        { name: "testing", shortName: "t", paramType: "boolean", optional: true },
     ]);
     if (!params)
         return;
 
-    const { pool, slot, order, target } = params;
+    const { pool, slot, order, target, testing } = params;
 
     const components = await mappoolComponents(m, pool, slot || true, order || true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, undefined, target ? { text: target, roles: [TournamentRoleType.Testplayers, TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]} : undefined);
     if (!components || !("mappool" in components))
@@ -185,7 +182,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await mappoolLog(tournament, "removePool", user, `Removed all beatmaps and custom beatmaps + mappers from \`${mappool.abbreviation.toUpperCase()}\``);
 } 
 
-async function resetPool (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappool: Mappool, user: User, testing: boolean | null) {
+async function resetPool (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappool: Mappool, user: User, testing?: boolean) {
     mappool.slots.forEach(async slot => {
         slot.maps.forEach(async map => {
             let customMap: CustomBeatmap | null = null;
@@ -255,6 +252,7 @@ interface parameters {
     slot?: string,
     order?: number,
     target?: string,
+    testing?: boolean,
 }
 
 const mappoolRemove: Command = {

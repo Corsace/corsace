@@ -78,37 +78,33 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const pool1Regex = /-p1 (\S+)/;
-    const slot1Regex = /-s1 (\S+)/;
-    const slot2Regex = /-s2 (\S+)/;
-    const pool2Regex = /-p2 (\S+)/;
-    const pool1Text = m instanceof Message ? m.content.match(pool1Regex) ?? m.content.split(" ")[1] : m.options.getString("pool1");
-    const slot1Text = m instanceof Message ? m.content.match(slot1Regex) ?? m.content.split(" ")[2] : m.options.getString("slot1");
-    const slot2Text = m instanceof Message ? m.content.match(slot2Regex) ?? m.content.split(" ")[3] : m.options.getString("slot2");
-    const pool2Text = m instanceof Message ? m.content.match(pool2Regex) ?? m.content.split(" ")[4] : m.options.getString("pool2");
+    const pool1Text = m instanceof Message ? m.content.split(" ")[1] : m.options.getString("pool1");
+    const slot1Text = m instanceof Message ? m.content.split(" ")[2] : m.options.getString("slot1");
+    const slot2Text = m instanceof Message ? m.content.split(" ")[3] : m.options.getString("slot2");
+    const pool2Text = m instanceof Message ? m.content.split(" ")[4] : m.options.getString("pool2");
     if (!pool1Text || !slot1Text || !slot2Text) {
-        await respond(m, "Missing parameters. Use `-p1 <pool> -s1 <slot> -s2 <slot> [-p2 <pool>]` or `<pool1> <slot1> <slot2> [pool2]`. If u don't use the `-` prefixes, the order of the parameters is important");
+        await respond(m, "Ur missing parameters, use `<pool1> <slot1> <slot2> [pool2]`");
         return;
     }
 
-    const pool1 = typeof pool1Text === "string" ? pool1Text : pool1Text[0];
-    let order1: number | true = parseInt(typeof slot1Text === "string" ? slot1Text.substring(slot1Text.length - 1) : slot1Text[1].substring(slot1Text[1].length - 1));
-    let slot1 = (typeof slot1Text === "string" ? slot1Text.substring(0, slot1Text.length - 1) : slot1Text[1].substring(0, slot1Text[1].length - 1)).toUpperCase();
-    let order2: number | true = parseInt(typeof slot2Text === "string" ? slot2Text.substring(slot2Text.length - 1) : slot2Text[1].substring(slot2Text[1].length - 1));
-    let slot2 = (typeof slot2Text === "string" ? slot2Text.substring(0, slot2Text.length - 1) : slot2Text[1].substring(0, slot2Text[1].length - 1)).toUpperCase();
+    const pool1 = pool1Text;
+    let order1: number | true = parseInt(slot1Text.substring(slot1Text.length - 1));
+    let slot1 = (slot1Text.substring(0, slot1Text.length - 1)).toUpperCase();
+    let order2: number | true = parseInt(slot2Text.substring(slot2Text.length - 1));
+    let slot2 = (slot2Text.substring(0, slot2Text.length - 1)).toUpperCase();
     if (isNaN(order1)) {
         order1 = true;
-        slot1 = (typeof slot1Text === "string" ? slot1Text : slot1Text[1]).toUpperCase();
+        slot1 = slot1Text.toUpperCase();
     }
     if (isNaN(order2)) {
         order2 = true;
-        slot2 = (typeof slot2Text === "string" ? slot2Text : slot2Text[1]).toUpperCase();
+        slot2 = slot2Text.toUpperCase();
     }
 
     const order1Text = `${order1 === true ? "" : order1}`;
     const order2Text = `${order2 === true ? "" : order2}`;
 
-    const pool2 = !pool2Text ? pool2Text : typeof pool2Text === "string" ? pool2Text : pool2Text[0];
+    const pool2 = pool2Text || pool1Text;
 
     const tournament = await getTournament(m, channelID(m), "channel", unFinishedTournaments);
     if (!tournament) 

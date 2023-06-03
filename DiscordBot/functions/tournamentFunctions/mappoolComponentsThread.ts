@@ -7,6 +7,7 @@ import respond from "../respond";
 import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
 import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
 import { discordClient } from "../../../Server/discord";
+import { threadNameRegex } from "./getCustomThread";
 
 export type mappoolComponentsThreadType = {
     m: Message;
@@ -24,8 +25,7 @@ export default async function mappoolComponentsThread (t: ThreadChannel, owner: 
     const threadName = t.name;
 
     // Get the pool, slot, and mappers
-    const poolRegex = /(\S+) (\S+)( \((.+)\))?/;
-    const poolMatch = threadName.match(poolRegex);
+    const poolMatch = threadName.match(threadNameRegex);
     if (!poolMatch)
         return;
 

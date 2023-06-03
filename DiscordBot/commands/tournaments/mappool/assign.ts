@@ -25,10 +25,10 @@ import getUser from "../../../functions/dbFunctions/getUser";
 import channelID from "../../../functions/channelID";
 import commandUser from "../../../functions/commandUser";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
-import confirmCommand from "../../../functions/confirmCommand";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import getStaff from "../../../functions/tournamentFunctions/getStaff";
 import getCustomThread from "../../../functions/tournamentFunctions/getCustomThread";
+import confirmCommand from "../../../functions/confirmCommand";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -37,28 +37,23 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const check = await securityChecks(m, true, false, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]);
     if (!check)
         return;
-    
-    const testing = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("testing") : /-test/i.test(m.content));
-    if (testing && m instanceof Message) 
-        m.content = m.content.replace(/-test/i, "");
-
-    const replace = (m instanceof ChatInputCommandInteraction ? m.options.getBoolean("replace") : /-r/i.test(m.content));
-    if (replace && m instanceof Message) {
-        const confirm = await confirmCommand(m, `Toggling \`replace\` will replace all ${testing ? "tesplayers" : "custom mappers"} in the slot u sure u wanna continue?`);
-        if (!confirm)
-            return;
-        m.content = m.content.replace(/-r/i, "");
-    }
 
     const params = extractParameters<parameters>(m, [
-        { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
-        { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder },
-        { name: "target", customHandler: extractTargetText(3) },
+        { name: "pool", paramType: "string" },
+        { name: "slot", paramType: "string", postProcess: postProcessSlotOrder },
+        { name: "target", paramType: "string", customHandler: extractTargetText },
+        { name: "testing", shortName: "t", paramType: "boolean", optional: true },
+        { name: "replace", shortName: "r", paramType: "boolean", optional: true },
     ]); 
     if (!params)
         return;
 
-    const { target, pool, slot, order } = params;
+    const { target, pool, slot, order, testing, replace } = params;
+
+    if (replace && !await confirmCommand(m, `Toggling \`replace\` will replace all ${testing ? "tesplayers" : "custom mappers"} in the slot u sure u wanna continue?`)) {
+        await respond(m, "Make up ur mind");
+        return;
+    }
 
     const components = await mappoolComponents(m, pool, slot, order || true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, false, undefined, true);
     if (!components || !("mappoolMap" in components)) {
@@ -281,6 +276,8 @@ interface parameters {
     pool: string,
     slot: string,
     order?: number,
+    testing: boolean,
+    replace: boolean,
 }
 
 const mappoolAssign: Command = {

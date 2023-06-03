@@ -105,8 +105,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     // Get specific pool and user
     const params = extractParameters<parameters>(m, [
-        { name: "pool", optional: true, regex: /-p (\S+)/, regexIndex: 1 },
-        { name: "target", optional: true, customHandler: extractTargetText(2) },
+        { name: "pool", paramType: "string", optional: true },
+        { name: "target", paramType: "string", optional: true, customHandler: extractTargetText },
     ]);
     if (!params)
         return;

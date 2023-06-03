@@ -30,7 +30,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const pool = extractParameter(m, { name: "pool", regex: /-p (\S+)/, regexIndex: 1 }, 1);
+    const pool = extractParameter(m, { name: "pool", paramType: "string" }, 1);
     if (!pool || !(typeof pool === "string")) {
         await respond(m, "Provide a mappool");
         return;

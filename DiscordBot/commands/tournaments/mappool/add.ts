@@ -35,25 +35,22 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     let params: parametersSlot | parametersMap | undefined = undefined;
     if (
-        (m instanceof Message && 
-            (m.content.split(" ").length === 3 ||
-            (m.content.includes("-p ") && m.content.includes("-s "))) 
-        ) ||
+        (m instanceof Message && m.content.split(" ").length === 3) ||
         (m instanceof ChatInputCommandInteraction && m.options.getSubcommand() === "map")
     )
         params = extractParameters<parametersMap>(m, [
-            { name: "pool", regex: /-p ([^-]+)/, regexIndex: 1 },
-            { name: "slot", regex: /-s ([^-]+)/, regexIndex: 1, postProcess: postProcessSlotOrder },
+            { name: "pool", paramType: "string" },
+            { name: "slot", paramType: "string", postProcess: postProcessSlotOrder },
         ]);
     else
         params = extractParameters<parametersSlot>(m, [
-            { name: "pool", regex: /-p ([^-]+)/, regexIndex: 1 },
-            { name: "slot_acronym", regex: /-a ([^-]+)/, regexIndex: 1 },
-            { name: "slot_name", regex: /-n ([^-]+)/, regexIndex: 1 },
-            { name: "amount", regex: /-c (\d+)/, regexIndex: 1, paramType: "integer" },
-            { name: "mods", regex: /-m ([^-]+)/, regexIndex: 1, optional: true },
-            { name: "user_mod_count", regex: /-u (\d+)/, regexIndex: 1, paramType: "integer", optional: true },
-            { name: "unique_mod_count", regex: /-r (\d+)/, regexIndex: 1, paramType: "integer", optional: true },
+            { name: "pool", paramType: "string" },
+            { name: "slot_acronym", paramType: "string" },
+            { name: "slot_name", paramType: "string" },
+            { name: "amount", paramType: "integer" },
+            { name: "mods", paramType: "string", optional: true },
+            { name: "user_mod_count", paramType: "integer", optional: true },
+            { name: "unique_mod_count", paramType: "integer", optional: true },
         ]);
     if (!params)
         return;

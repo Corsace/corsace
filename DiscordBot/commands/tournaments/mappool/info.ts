@@ -21,8 +21,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await m.deferReply();
 
     const params = extractParameters<parameters>(m, [
-        { name: "pool", regex: /-p (\S+)/, regexIndex: 1, optional: true },
-        { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder, optional: true },
+        { name: "pool", paramType: "string", optional: true },
+        { name: "slot", paramType: "string", postProcess: postProcessSlotOrder, optional: true },
     ]);
     if (!params)
         return;
