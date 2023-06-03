@@ -19,8 +19,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const nameRegex = new RegExp(/-n ([a-zA-Z0-9_ ]{3,48})/);
-    const abbreviationRegex = new RegExp(/-a ([a-zA-Z0-9_]{1,8})/);
+    const nameRegex = new RegExp(/-n ([a-zA-Z0-9_ ]{5,48})/);
+    const abbreviationRegex = new RegExp(/-a ([a-zA-Z0-9_]{1,4})/);
     const dateRegex = new RegExp(/-d (\d{4}-\d{2}-\d{2}) (\d{4}-\d{2}-\d{2})/);
     const typeRegex = new RegExp(/-t ([a-zA-Z0-9_ ]{4,20})/);
     const scoringRegex = new RegExp(/-s ([a-zA-Z0-9_ ]{4,20})/);
@@ -38,7 +38,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for name validity
     const name = m instanceof Message ? nameRegex.exec(m.content)?.[1] : m.options.getString("name");
     if (!name) {
-        await respond(m, "Provide a valid name for ur stage, ur only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 50 characters long");
+        await respond(m, "Provide a valid name for ur stage, ur only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 5 and 48 characters long");
         return;
     }
     if (profanityFilter.test(name)) {
@@ -72,7 +72,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for abbreviation validity
     const abbreviation = m instanceof Message ? abbreviationRegex.exec(m.content)?.[1] : m.options.getString("abbreviation");
     if (!abbreviation) {
-        await respond(m, "Provide a valid abbreviation for ur stage, ur only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 1 and 8 characters long");
+        await respond(m, "Provide a valid abbreviation for ur stage, ur only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 1 and 4 characters long");
         return;
     }
     if (tournament.stages.find(s => s.abbreviation.toLowerCase() === abbreviation.toLowerCase())) {
@@ -267,14 +267,14 @@ const data = new SlashCommandBuilder()
         option.setName("name")
             .setDescription("The name of the stage.")
             .setRequired(true)
-            .setMinLength(3)
+            .setMinLength(5)
             .setMaxLength(48))
     .addStringOption((option) =>
         option.setName("abbreviation")
             .setDescription("The abbreviation of the stage.")
             .setRequired(true)
             .setMinLength(1)
-            .setMaxLength(8))
+            .setMaxLength(4))
     .addStringOption((option) =>
         option.setName("type")
             .setDescription("The type of the stage.")

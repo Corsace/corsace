@@ -169,13 +169,13 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
         }
         const abbreviation = split[split.length - 1];
         const name = split.slice(0, split.length - 1).join(" ");
-        if (name.length > 50 || name.length < 3) {
-            const reply = await msg.reply("The name must be between 3 and 50 characters");
+        if (name.length > 50 || name.length < 5) {
+            const reply = await msg.reply("The name must be between 5 and 50 characters");
             setTimeout(async () => (await reply.delete()), 5000);
             return;
         }
-        if (abbreviation.length > 8 || abbreviation.length < 1) {
-            const reply = await msg.reply("The abbreviation must be between 1 and 8 characters");
+        if (abbreviation.length > 4 || abbreviation.length < 1) {
+            const reply = await msg.reply("The abbreviation must be between 1 and 4 characters");
             setTimeout(async () => (await reply.delete()), 5000);
             return;
         }
