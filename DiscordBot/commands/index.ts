@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder, ThreadChannel } from "discord.js";
 
+import tournamentChannel from "./tournaments/channel";
 import tournamentCreate from "./tournaments/create";
 import tournamentList from "./tournaments/list";
 
@@ -55,6 +56,7 @@ const commands: Command[] = [];
 // List of commands here
 
 // tournament commands
+commands.push(tournamentChannel);
 commands.push(tournamentCreate);
 commands.push(tournamentList);
 
