@@ -40,30 +40,34 @@ interface parameterOptions {
     postProcess?: (parameter: string) => { [key: string]: string | number | undefined } | undefined,
 }
 
+const quotes = ["'", "\"", "`"];
+
 // Separate by spaces and quotes
 export function separateArgs (str: string) {
     const args: string[] = [];
     let current = "";
-    let isQuoted = false;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === " " && !isQuoted) {
-            if (current !== "") {
+    let quoteChar: string | null = null;
+
+    for (const char of str)
+        if (quoteChar) {
+            if (char === quoteChar) {
+                quoteChar = null;
                 args.push(current);
                 current = "";
-            }
-        } else if (str[i] === "\"" || str[i] === "'" || str[i] === "`") {
-            isQuoted = !isQuoted;
-            if (!isQuoted && current !== "") {
-                args.push(current);
-                current = "";
-            }
-        } else {
-            current += str[i];
+            } else
+                current += char;
+        } else if (quotes.includes(char))
+            quoteChar = char;
+        else if (char !== " ")
+            current += char;
+        else if (current !== "") {
+            args.push(current);
+            current = "";
         }
-    }
-    if (current !== "") {
+
+    if (current !== "")
         args.push(current);
-    }
+
     return args;
 }
 
