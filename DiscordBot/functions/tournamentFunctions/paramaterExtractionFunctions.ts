@@ -10,7 +10,15 @@ export function extractTargetText (m: Message | ChatInputCommandInteraction, ind
         return m.options.getString("target")?.trim();
     }
 
-    return m.mentions.users.first()?.username ?? separateArgs(m.content).slice(index, separateArgs(m.content).length).join(" ").trim();
+    if (m.mentions.users.first()?.username)
+        return m.mentions.users.first()?.username;
+
+    const args = separateArgs(m.content);
+
+    // See if every argument from index to the end has a - in front of it. If it does, then only the first argument is the target. If not, then filter out all arguments that have a - in front of them, and join the rest.
+    if (args.slice(index, args.length).every(arg => arg.startsWith("-")))
+        return args[index];
+    return args.slice(index, args.length).filter(arg => !arg.startsWith("-")).join(" ").trim();
 }
 
 export function extractDate (m: Message | ChatInputCommandInteraction, index: number) {

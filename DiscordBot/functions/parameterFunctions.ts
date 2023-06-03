@@ -86,7 +86,7 @@ export function extractParameter (m: Message | ChatInputCommandInteraction, para
         return parameterOption.customHandler(m, index);
 
     if (m instanceof Message)
-        return messageCommandParameterMethods[parameterOption.paramType](separateArgs(m.content)[index]);
+        return messageCommandParameterMethods[parameterOption.paramType](separateArgs(m.content)[index], parameterOption);
 
     if (slashCommandParameterMethods[parameterOption.paramType])
         return slashCommandParameterMethods[parameterOption.paramType](m, parameterOption.name);
