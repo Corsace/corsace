@@ -78,8 +78,8 @@ commands.push(mappoolSubmit);
 commands.push(mappoolSwap);
 
 // job board commands
-commands.push(jobDelete);
 commands.push(job);
+commands.push(jobDelete);
 commands.push(jobInfo);
 commands.push(jobPublish);
 
