@@ -8,6 +8,7 @@ interface ParamTypeMap {
     number: number | null;
     string: string | null;
     channel: string | null;
+    role: string | null;
     // Add more types as needed
 }
 
@@ -17,6 +18,7 @@ const slashCommandParameterMethods: { [K in keyof ParamTypeMap]: (m: ChatInputCo
     number: (m, name) => m.options.getNumber(name),
     string: (m, name) => m.options.getString(name)?.trim() || null,
     channel: (m, name) => m.options.getChannel(name)?.id || null,
+    role: (m, name) => m.options.getRole(name)?.id || null,
     // Add more methods as needed
 };
 
@@ -29,6 +31,7 @@ const messageCommandParameterMethods: { [K in keyof ParamTypeMap]: (name: string
     number: (name) => name ? parseFloat(name) : undefined,
     string: (name) => name?.trim(),
     channel: (name) => name?.replace(/<#|>/g, ""),
+    role: (name) => name?.replace(/<@&|>/g, ""),
     // Add more methods as needed
 };
 

@@ -12,6 +12,7 @@ export enum TournamentRoleType {
     Referees,
     Streamers,
     Commentators,
+    Staff,
 }
 
 @Entity()

@@ -3,6 +3,7 @@ import { ChatInputCommandInteraction, Message, SlashCommandBuilder, SlashCommand
 import tournamentChannel from "./tournaments/channel";
 import tournamentCreate from "./tournaments/create";
 import tournamentList from "./tournaments/list";
+import tournamentRole from "./tournaments/role";
 
 import stageCreate from "./tournaments/stage/create";
 import stageDelete from "./tournaments/stage/delete";
@@ -59,6 +60,7 @@ const commands: Command[] = [];
 commands.push(tournamentChannel);
 commands.push(tournamentCreate);
 commands.push(tournamentList);
+commands.push(tournamentRole);
 
 // stage commands
 commands.push(stageCreate);

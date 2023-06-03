@@ -366,6 +366,11 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
                                 description: "Create a tournament participant role",
                             },
                             {
+                                label: "Staff",
+                                value: "Staff",
+                                description: "Create a tournament staff role",
+                            },
+                            {
                                 label: "Managers",
                                 value: "Managers",
                                 description: "Create a team manager role",
@@ -539,6 +544,11 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                                 label: "Participants",
                                 value: "Participants",
                                 description: "Create a tournament participants channel",
+                            },
+                            {
+                                label: "Staff",
+                                value: "Staff",
+                                description: "Create a tournament staff channel",
                             },
                             {
                                 label: "Managers",
@@ -741,7 +751,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             (channelType.toLowerCase() === "jobboard" && channel.type !== ChannelType.GuildForum) ||
             (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "mappoolqa" && channelType.toLowerCase() !== "jobboard" && channel.type !== ChannelType.GuildText)
         ) {
-            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel\nMappool QA and Job Board should be guild forum channels. All other channels should be guild text channels`);
+            const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel\nMappool QA and Job Board should be guild forum channels\nAll other channels should be guild text channels`);
             setTimeout(async () => {
                 reply.delete();
                 msg.delete();

@@ -10,10 +10,15 @@ import getUser from "../../functions/dbFunctions/getUser";
 import commandUser from "../../functions/commandUser";
 import { loginResponse } from "../../functions/loginResponse";
 import confirmCommand from "../../functions/confirmCommand";
+import { securityChecks } from "../../functions/tournamentFunctions/securityChecks";
+import { TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
+
+    if (!await securityChecks(m, true, true, [], [TournamentRoleType.Organizer]))
+        return;
 
     const user = await getUser(commandUser(m).id, "discord", false);
     if (!user) {
@@ -32,7 +37,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { channel, remove, channel_type } = params;
 
     if (!remove && !channel_type) {
-        await respond(m, "Listen ur either gonna have to tell me to remove a channel, or ur gonna have to specify the channel type u want to add\n\nThe list of channel types are:\nGeneral (general)\nParticipants (participants)\nManagers (managers)\nAnnouncements (announcements)\nAdmin (admin)\nMappool (mappool)");
+        await respond(m, "Listen ur either gonna have to tell me to remove a channel, or ur gonna have to specify the channel type u want to add\n\nThe list of channel types are:\nGeneral (general)\nParticipants (participants)\nStaff (staff)\nManagers (managers)\nAnnouncements (announcements)\nAdmin (admin)\nMappool (mappool)\nMappool Log (mappoollog)\nMappool QA (mappoolqa)\nJob Board (jobboard)\nReferees (referees)\nStreamers (streamers)\nMatch Results (matchresults)\n\nExample: `!tournament_channel #general general`");
         return;
     }
 
@@ -89,7 +94,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         (channelType.toLowerCase() === "jobboard" && discordChannel.type !== ChannelType.GuildForum) ||
         (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "mappoolqa" && channelType.toLowerCase() !== "jobboard" && discordChannel.type !== ChannelType.GuildText)
     ) {
-        await respond(m, `The channel type \`${channel_type}\` is not a valid channel type`);
+        await respond(m, `The channel type \`${channel_type}\` is not a valid channel type\nAnnouncements should be a guild announcement channel\nMappool QA and Job Board should be guild forum channels\nAll other channels should be guild text channels`);
         return;
     }
 
@@ -129,7 +134,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
 const data = new SlashCommandBuilder()
     .setName("tournament_channel")
-    .setDescription("Let's you add/remove a tournament channel to a tournament")
+    .setDescription("Let's you add/remove a tournament channel to/from a tournament")
     .addChannelOption(option =>
         option.setName("channel")
             .setDescription("The channel to add/remove")
@@ -149,6 +154,10 @@ const data = new SlashCommandBuilder()
             {
                 name: "Participants",
                 value: "Participants",
+            },
+            {
+                name: "Staff",
+                value: "Staff",
             },
             {
                 name: "Managers",
