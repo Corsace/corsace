@@ -28,7 +28,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const pool = extractParameter(m, { name: "pool", regex: /-p (\S+)/, regexIndex: 1 }, 1);
+    const pool = extractParameter(m, { name: "pool", paramType: "string" }, 1);
     if (!pool || !(typeof pool === "string")) {
         await respond(m, "Provide a mappool");
         return;
@@ -68,9 +68,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (mappool.isPublic) {
         // Reset link before making it private
         await deletePack("mappacks", mappool);
-        mappool.mappackLink = mappool.mappackExpiry = null;
-        mappool.isPublic = false;
 
+        mappool.isPublic = false;
         await mappool.save();
 
         await respond(m, `**${mappool.name.toUpperCase()} (${mappool.abbreviation.toUpperCase()})** is now **private**`);

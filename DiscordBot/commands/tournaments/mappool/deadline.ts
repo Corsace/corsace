@@ -32,9 +32,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     const params = extractParameters<parameters>(m, [
-        { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
-        { name: "slot", regex: /-s (\S+)/, regexIndex: 2, postProcess: postProcessSlotOrder },
-        { name: "date", customHandler: extractDate(3)  },
+        { name: "pool", paramType: "string" },
+        { name: "slot", paramType: "string", postProcess: postProcessSlotOrder },
+        { name: "date", paramType: "string", customHandler: extractDate  },
     ]);
     if (!params)
         return;

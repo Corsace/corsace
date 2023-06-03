@@ -36,11 +36,13 @@ function optionParser (options: APIApplicationCommandOption[] | undefined): stri
     subCommandOptionsArray.forEach(subCommandOptionArray => {
         if (sharedOptions.length === 0)
             sharedOptions.push(...subCommandOptionArray);
-        else
-            sharedOptions.forEach(sharedOption => {
+        else {
+            const sharedOptionsCopy = [...sharedOptions];  // Create a copy of sharedOptions
+            sharedOptionsCopy.forEach(sharedOption => {
                 if (!subCommandOptionArray.includes(sharedOption))
                     sharedOptions.splice(sharedOptions.indexOf(sharedOption), 1);
             });
+        }
     });
 
     // Remove the shared options from the subcommand options, and add them to the command options

@@ -31,15 +31,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     const params = extractParameters<parameters>(m, [
-        { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
-        { name: "end_time", customHandler: extractDate(2)  },
+        { name: "pool", paramType: "string" },
+        { name: "end_time", paramType: "string", customHandler: extractDate  },
     ]);
     if (!params)
         return;
 
     const { pool, end_time } = params;
     if (isNaN(end_time.getTime()) || end_time.getTime() < Date.now()) {
-        await respond(m, "Invalid end time. Use `-p <pool> -e <end_time>` or `<pool> <end_time>`. If u don't use the `-` prefixes, the order of the parameters is important");
+        await respond(m, "Invalid end time, use `<pool> <end_time>`");
         return;
     }
 

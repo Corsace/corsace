@@ -1,9 +1,10 @@
 import { randomUUID } from "crypto";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Message, MessageComponentInteraction, PermissionFlagsBits, PermissionsBitField } from "discord.js";
+import commandUser from "./commandUser";
 
 // Filter to use for message and interaction collectors
 export const filter = (msg: Message | MessageComponentInteraction) => {
-    const notBot = !(msg instanceof MessageComponentInteraction ? msg.user.bot : msg.author.bot);
+    const notBot = !commandUser(msg).bot;
     const admin = (msg.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator);
     return notBot && admin;
 };

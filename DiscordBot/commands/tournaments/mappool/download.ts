@@ -15,32 +15,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await m.deferReply();
 
     const params = extractParameters<parameters>(m, [
-        { name: "pool", regex: /-p (\S+)/, regexIndex: 1, optional: true },
-        { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder, optional: true },
-        { name: "video", regex: /-v/, regexIndex: 1, paramType: "boolean", optional: true },
+        { name: "pool", paramType: "string" },
+        { name: "slot", paramType: "string", postProcess: postProcessSlotOrder, optional: true },
+        { name: "video", shortName: "v", paramType: "boolean", optional: true },
     ]);
     if (!params)
         return;
 
-    let { pool, slot, order } = params;
-    const { video } = params;
-
-    if (!pool && m.channel?.isThread()) {
-        // User wants the specific slot the thread is made for
-        const threadNameRegex = /(\S+) (\S+)( \((.+)\))?/;
-        const threadName = m.channel.name;
-        const threadNameMatch = threadName.match(threadNameRegex);
-        if (!threadNameMatch) {
-            await respond(m, "Can't find a pool info from the thread name");
-            return;
-        }
-
-        pool = threadNameMatch[1];
-        ({ slot, order } = postProcessSlotOrder(threadNameMatch[2]));
-    } else if (!pool) {
-        await respond(m, `A pool name is required outside of threads`);
-        return;
-    }
+    const { pool, slot, order, video } = params;
 
     const components = await mappoolComponents(m, pool, slot || true, order || true);
     if (!components || !("mappool" in components))

@@ -10,10 +10,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await m.deferReply();
 
     const params = extractParameters<parameters>(m, [
-        { name: "server", optional: true, paramType: "boolean", regex: /-s(erver)?/, regexIndex: 0 },
-        { name: "past_registration", optional: true, paramType: "boolean", regex: /-p(ast_)?r(egistration)?/, regexIndex: 0 },
-        { name: "finished", optional: true, paramType: "boolean", regex: /-f(inished)?/, regexIndex: 0 },
-        { name: "mode", optional: true, paramType: "string", regex: /-m(ode)?\s+(.+)/, regexIndex: 2 },
+        { name: "server", shortName: "s", optional: true, paramType: "boolean" },
+        { name: "past_registration", shortName: "pr", optional: true, paramType: "boolean" },
+        { name: "finished", shortName: "f", optional: true, paramType: "boolean" },
+        { name: "mode", optional: true, paramType: "string" },
     ]);
     if (!params)
         return;

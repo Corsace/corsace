@@ -16,6 +16,7 @@ import commandUser from "../../../functions/commandUser";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import confirmCommand from "../../../functions/confirmCommand";
 import channelID from "../../../functions/channelID";
+import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -253,7 +254,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             stopped = true;
             componentCollector.stop();
             slotNameCollector.stop();
-            await mappoolDone(m, mappool);
+            await mappoolDone(m, mappool, tournament);
             return;
         }
     });
@@ -357,7 +358,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             if (uniqueModCount !== 0) slot.uniqueModCount = uniqueModCount;
 
             mappoolSlotsMade.push(slot);
-            newSlots += `\n${acronym} ${slotName.join(" ")} ${mapCount} maps ${modNum !== undefined ? `with ${modsToAcronym(modNum)} mods` : ""}${userModCount ? ` with ${userModCount} mod${userModCount > 1 ? "s" : ""} per user` : ""}${uniqueModCount ? ` with ${uniqueModCount} unique mod${uniqueModCount > 1 ? "s" : ""}` : ""}`;
+            newSlots += `\n${acronym} ${slotName.join(" ")} ${mapCount} map${mapCount > 1 ? "s" : ""} ${modNum !== undefined ? `with ${modsToAcronym(modNum)} mods` : ""}${userModCount ? ` with ${userModCount} mod${userModCount > 1 ? "s" : ""} per user` : ""}${uniqueModCount ? ` with ${uniqueModCount} unique mod${uniqueModCount > 1 ? "s" : ""}` : ""}`;
         }
 
         // Check for duplicate slot names/abbreviations
@@ -398,7 +399,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
     slotNameCollector.on("end", () => timedOut(slotMessage, stopped, "Mappool creation"));
 }
 
-async function mappoolDone (m: Message, mappool: Mappool) {
+async function mappoolDone (m: Message, mappool: Mappool, tournament: Tournament) {
     await mappool.save();
     for (const slot of mappool.slots) {
         slot.mappool = mappool;
@@ -409,7 +410,7 @@ async function mappoolDone (m: Message, mappool: Mappool) {
         }
     }
 
-    await m.reply("U did it u made the mappool\nHere's the mappool embed:");
+    await m.reply("U did it u made a mappool\nHere's the mappool embed:");
     const embed = new EmbedBuilder()
         .setTitle(`${mappool.name} (${mappool.abbreviation.toUpperCase()})`)
         .setDescription(`Target SR: ${mappool.targetSR}`)
@@ -417,11 +418,14 @@ async function mappoolDone (m: Message, mappool: Mappool) {
             mappool.slots.map((slot) => {
                 return {
                     name: `${slot.acronym} - ${slot.name}`,
-                    value: `${slot.maps.length} maps`,
+                    value: `${slot.maps.length} map${slot.maps.length > 1 ? "s" : ""}`,
                 };
             }));
 
-    await m.channel!.send({ embeds: [embed] });
+    await Promise.all([
+        m.channel!.send({ embeds: [embed] }),
+        mappoolLog(tournament, "mappoolCreate", mappool.createdBy, `Created mappool ${mappool.name} (${mappool.abbreviation.toUpperCase()})`),
+    ]);
 }
 
 const data = new SlashCommandBuilder()
