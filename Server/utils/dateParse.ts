@@ -1,3 +1,3 @@
 export function parseDateOrTimestamp (dateString: string) {
-    return new Date(dateString.includes("-") || dateString.includes(" ") ? dateString : parseInt(dateString + "000"));
+    return new Date(/\d{10}/.test(dateString) ? parseInt(dateString + "000") : dateString);
 }
