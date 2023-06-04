@@ -9,6 +9,7 @@ import tournamentRole from "./tournaments/role";
 import stageCreate from "./tournaments/stage/create";
 import stageDelete from "./tournaments/stage/delete";
 import stageEdit from "./tournaments/stage/edit";
+import stageInfo from "./tournaments/stage/info";
 
 import mappoolAdd from "./tournaments/mappool/add";
 import mappoolAssign from "./tournaments/mappool/assign";
@@ -69,6 +70,7 @@ commands.push(tournamentRole);
 commands.push(stageCreate);
 commands.push(stageDelete);
 commands.push(stageEdit);
+commands.push(stageInfo);
 
 // mappool commands
 commands.push(mappoolAdd);
