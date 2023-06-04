@@ -39,13 +39,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     // Create a discord embed for the tournament, listing its stages
     const embed = new EmbedBuilder()
-        .setTitle(`Tournament ${tournament.name} (${tournament.abbreviation}) organized by ${organizer.osu.username} <@${organizer.discord.userID}>`)
-        .setDescription(`**ID:** ${tournament.ID}\n**Mode:** ${tournament.mode.name}\n**Registrations Start:** ${discordStringTimestamp(tournament.registrations.start)}\n**Registrations End:** ${tournament.registrations.end}\n\n**Match Size (x vs x):** ${tournament.matchSize}\n**Team Sizes:** ${tournament.minTeamSize} - ${tournament.maxTeamSize}\n\nDescription: ${tournament.description}`)
+        .setTitle(`${tournament.name} (${tournament.abbreviation})`)
+        .setDescription(`Organized by ${organizer.osu.username} <@${organizer.discord.userID}>\n\n**ID:** ${tournament.ID}\n**Mode:** ${tournament.mode.name}\n**Registrations Start:** ${discordStringTimestamp(tournament.registrations.start)}\n**Registrations End:** ${discordStringTimestamp(tournament.registrations.end)}\n\n**Match Size:** ${tournament.matchSize}v${tournament.matchSize}\n**Team Sizes:** ${tournament.maxTeamSize === tournament.minTeamSize ? `${tournament.minTeamSize}` : `${tournament.minTeamSize} - ${tournament.maxTeamSize}`} player${tournament.maxTeamSize > 1 ? "s" : ""}\n\n**Description:** ${tournament.description}`)
         .addFields(
             tournament.stages.map(s => {
                 return {
                     name: `**${s.name} (${s.abbreviation})** (${StageType[s.stageType]}) | ${discordStringTimestamp(s.timespan.start)} → ${discordStringTimestamp(s.timespan.end)}`,
-                    value: `**Rounds:**\n${s.rounds.map(r => `r.name (${r.abbreviation})`).join("\n")}\n\n**Mappools:**\n${s.mappool?.concat(s.rounds.flatMap(r => r.mappool)).map(m => `${m.name} (${m.abbreviation})`).join("\n")}`,
+                    value: `**Rounds:**\n${s.rounds.map(r => `${r.name} (${r.abbreviation})`).join("\n") || "None"}\n\n**Mappools:**\n${s.mappool?.concat(s.rounds.flatMap(r => r.mappool)).map(m => `${m.name} (${m.abbreviation})`).join("\n") || "None"}`,
+                    inline: true,
                 };
             })
         );
@@ -63,7 +64,7 @@ const data = new SlashCommandBuilder()
 
 const tournamentInfo: Command = {
     data,
-    alternativeNames: [ "info_tournament", "info-tournament","infos", "sinfo", "tournamenti", "itournament", "tournament-info", "tournamentinfo", "infotournament", "is", "si" ],
+    alternativeNames: [ "info_tournament", "info-tournament","infot", "tinfo", "tournamenti", "itournament", "tournament-info", "tournamentinfo", "infotournament", "it", "ti" ],
     category: "tournaments",
     run,
 };

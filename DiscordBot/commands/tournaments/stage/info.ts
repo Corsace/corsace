@@ -46,16 +46,24 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .leftJoinAndSelect("mappool.slots", "slot")
         .leftJoinAndSelect("slot.maps", "map")
         .where("stage.ID = :ID", { ID: stage.ID })
-        .orWhere("round.ID IN (:...IDs)", { IDs: rounds.map(round => round.ID) })
+        .orWhere(rounds.length > 0 ? "round.ID IN (:...IDs)" : "1 = 1", { IDs: rounds.map(round => round.ID) })
         .getMany();
 
     // Create a discord embed for the stage, listing its rounds and mappools
     const embed = new EmbedBuilder()
-        .setTitle(`Stage ${stage.name} (${stage.abbreviation})`)
+        .setTitle(`${stage.name} (${stage.abbreviation})`)
         .setDescription(`**ID:** ${stage.ID}\n**Type:** ${StageType[stage.stageType]}\n**Scoring Method:** ${ScoringMethod[stage.scoringMethod]}\n**Start Date:** ${discordStringTimestamp(stage.timespan.start)}\n**End Date:** ${discordStringTimestamp(stage.timespan.end)}`)
         .addFields(
-            { name: "Rounds", value: rounds.map(round => `**${round.name} (${round.abbreviation})**`).join("\n") || "None" },
-            { name: "Mappools", value: mappools.map(mappool => `**${mappool.name} (${mappool.abbreviation})**\n${mappool.slots.map(slot => `**${slot.name} (${slot.acronym})**: ${slot.maps.length} maps`).join("\n")}`).join("\n") || "None" }
+            { 
+                name: "Rounds", 
+                value: rounds.map(round => `**${round.name} (${round.abbreviation})**`).join("\n") || "None",
+                inline: true,
+            },
+            { 
+                name: "Mappools",
+                value: mappools.map(mappool => `**${mappool.name} (${mappool.abbreviation})**\n${mappool.slots.map(slot => `**${slot.name} (${slot.acronym})**: ${slot.maps.length} maps`).join("\n")}`).join("\n") || "None",
+                inline: true,
+            }
         );
 
     // Send the embed
