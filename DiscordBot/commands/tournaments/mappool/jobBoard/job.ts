@@ -15,12 +15,13 @@ import { extractTargetText } from "../../../../functions/tournamentFunctions/par
 import mappoolComponents from "../../../../functions/tournamentFunctions/mappoolComponents";
 import { unFinishedTournaments } from "../../../../../Models/tournaments/tournament";
 import channelID from "../../../../functions/channelID";
+import { discordStringTimestamp } from "../../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    if (!await securityChecks(m, true, false, [TournamentChannelType.Admin], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
+    if (!await securityChecks(m, true, false, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Jobboard], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
         return;
 
     const params = extractParameters<parameters>(m, [
@@ -75,7 +76,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        await msg.edit(`**ENDS AT <t:${mappoolMap.jobPost.deadline!.getTime() / 1000}:F> (<t:${mappoolMap.jobPost.deadline!.getTime() / 1000}:R>)**\n\n${description}`);
+        await msg.edit(`**ENDS AT ${discordStringTimestamp(mappoolMap.jobPost.deadline!)}**\n\n${description}`);
     }
 
     await mappoolMap.jobPost.save();

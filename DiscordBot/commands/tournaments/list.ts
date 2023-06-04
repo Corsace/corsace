@@ -4,6 +4,7 @@ import { Command } from "..";
 import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
 import respond from "../../functions/respond";
 import { extractParameters } from "../../functions/parameterFunctions";
+import { discordStringTimestamp } from "../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -52,7 +53,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const embed = {
         title: "Tournaments",
         description: tournaments.map(t => {
-            return `**${t.name}** - ${t.mode.name} - <t:${t.registrations.start.getTime() / 1000}:F> - <t:${t.registrations.end.getTime() / 1000}:F> (<t:${t.registrations.start.getTime() / 1000}:R> - <t:${t.registrations.end.getTime() / 1000}:R>)`;
+            return `**${t.name}** - ${t.mode.name} - ${discordStringTimestamp(t.registrations.start)} → ${discordStringTimestamp(t.registrations.end)}`;
         }).join("\n"),
     };
 

@@ -17,12 +17,16 @@ export default async function getStage (m: Message | ChatInputCommandInteraction
         if (searchType === "ID" && typeof target === "number")
             stages = tournament.stages.filter(s => s.ID === target);
         else if (searchType === "name" && typeof target === "string")
-            stages = tournament.stages.filter(s => 
-                s.name.toLowerCase().includes(target.toLowerCase()) || 
-                s.abbreviation.toLowerCase().includes(target.toLowerCase()) || 
-                target.toLowerCase().includes(s.name.toLowerCase()) || 
-                target.toLowerCase().includes(s.abbreviation.toLowerCase())
-            );
+            if (target.length <= 4)
+                stages = tournament.stages.filter(s => 
+                    s.abbreviation.toLowerCase().includes(target.toLowerCase()) ||
+                    target.toLowerCase().includes(s.abbreviation.toLowerCase())
+                );
+            else
+                stages = tournament.stages.filter(s => 
+                    s.name.toLowerCase().includes(target.toLowerCase()) ||
+                    target.toLowerCase().includes(s.name.toLowerCase())
+                );
         else
             stages = tournament.stages;
 
@@ -32,7 +36,7 @@ export default async function getStage (m: Message | ChatInputCommandInteraction
         stages = await getStages(target || tournament.ID, searchType || "tournamentID", true, false);
 
     if (stages.length === 0) {
-        await respond(m, `THE TOURNAMENT HAS NO STAGES WITH QUERY \`${target}\` QUERY TYPE \`${searchType}\` CREATE A STAGE FIRST .`);
+        await respond(m, `THE TOURNAMENT HAS NO STAGES WITH QUERY \`${target}\` QUERY TYPE \`${searchType}\` CREATE A STAGE FIRST IF UR ONE OF THE TOURNAMENT ADMINS .`);
         return;
     }
 
@@ -40,5 +44,6 @@ export default async function getStage (m: Message | ChatInputCommandInteraction
     if (!stage)
         return;
 
+    stage.tournament = tournament;
     return stage;
 }

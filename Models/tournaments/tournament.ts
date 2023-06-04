@@ -13,6 +13,24 @@ export enum SortOrder {
     BWS,
 }
 
+export const sortOrderHash = {
+    "signup": SortOrder.Signup,
+
+    "random": SortOrder.Random,
+
+    "rank": SortOrder.RankPP,
+    "pp": SortOrder.RankPP,
+    "rankpp": SortOrder.RankPP,
+
+    "bws": SortOrder.BWS,
+};
+
+export function sortTextToOrder (sort: string | null | undefined): number {
+    if (!sort)
+        return -1;
+    return sortOrderHash[sort.trim().toLowerCase()] ?? -1;
+}
+
 export enum TournamentStatus {
     NotStarted,
     Registrations,

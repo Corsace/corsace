@@ -1,11 +1,9 @@
 import { ChatInputCommandInteraction, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../index";
 import respond from "../../../functions/respond";
-import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import channelID from "../../../functions/channelID";
-import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
+import { TournamentStatus } from "../../../../Models/tournaments/tournament";
 import confirmCommand from "../../../functions/confirmCommand";
-import { Stage } from "../../../../Models/tournaments/stage";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Round } from "../../../../Models/tournaments/round";
 import deleteMappool from "../../../functions/dbFunctions/deleteMappool";
@@ -13,6 +11,8 @@ import getUser from "../../../functions/dbFunctions/getUser";
 import commandUser from "../../../functions/commandUser";
 import { loginResponse } from "../../../functions/loginResponse";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
+import getTournament from "../../../functions/tournamentFunctions/getTournament";
+import getStage from "../../../functions/tournamentFunctions/getStage";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -27,11 +27,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const components = await mappoolComponents(m, undefined, undefined, undefined, undefined, { text: channelID(m), searchType: "channel" }, [ TournamentStatus.NotStarted, TournamentStatus.Registrations ], true);
-    if (!components || !("stage" in components))
+    const tournament = await getTournament(m, channelID(m), "channel", [ TournamentStatus.NotStarted, TournamentStatus.Registrations ], true);
+    if (!tournament)
         return;
 
-    const { tournament, stage } = components as { tournament: Tournament, stage: Stage };
+    const stage = await getStage(m, tournament, false, tournament.ID, "tournamentID");
+    if (!stage)
+        return;
 
     const confirm = await confirmCommand(m, `U RLY sure u wanna delete **${stage.name}**?\nIt'll also delete all of its rounds, mappools, slots, maps, and any custom beatmaps, job posts, and map history logged and associated with them`);
     if (!confirm) {
@@ -77,7 +79,7 @@ const data = new SlashCommandBuilder()
 
 const stageDelete: Command = {
     data,
-    alternativeNames: [ "delete_stage", "delete-stage","deletes", "sdelete", "stagec", "cstage", "stage-delete", "stagedelete", "deletestage", "stage_del", "del_stage", "del-stage","dels", "sdel", "stagec", "cstage", "stage-del", "stagedel", "delstage" ],
+    alternativeNames: [ "delete_stage", "delete-stage","deletes", "sdelete", "staged", "dstage", "stage-delete", "stagedelete", "deletestage", "stage_del", "del_stage", "del-stage","dels", "sdel", "stage-del", "stagedel", "delstage" ],
     category: "tournaments",
     subCategory: "stages",
     run,

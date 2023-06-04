@@ -1,10 +1,16 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder, ThreadChannel } from "discord.js";
 
+import tournamentChannel from "./tournaments/channel";
 import tournamentCreate from "./tournaments/create";
+import tournamentEdit from "./tournaments/edit";
+import tournamentInfo from "./tournaments/info";
 import tournamentList from "./tournaments/list";
+import tournamentRole from "./tournaments/role";
 
 import stageCreate from "./tournaments/stage/create";
 import stageDelete from "./tournaments/stage/delete";
+import stageEdit from "./tournaments/stage/edit";
+import stageInfo from "./tournaments/stage/info";
 
 import mappoolAdd from "./tournaments/mappool/add";
 import mappoolAssign from "./tournaments/mappool/assign";
@@ -55,12 +61,18 @@ const commands: Command[] = [];
 // List of commands here
 
 // tournament commands
+commands.push(tournamentChannel);
 commands.push(tournamentCreate);
+commands.push(tournamentEdit);
+commands.push(tournamentInfo);
 commands.push(tournamentList);
+commands.push(tournamentRole);
 
 // stage commands
 commands.push(stageCreate);
 commands.push(stageDelete);
+commands.push(stageEdit);
+commands.push(stageInfo);
 
 // mappool commands
 commands.push(mappoolAdd);

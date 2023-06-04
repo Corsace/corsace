@@ -8,7 +8,7 @@ export default async function editProperty (m: Message, property: string, entity
         good: randomUUID(),
     };
     const message = await m.reply({
-        content: `U wanna change \`${property}\` of ${entity} from ${original}? Type out the new ${property} if so, otherwise click the buttons below`,
+        content: `U wanna change the \`${property}\` of ${entity} from ${original}? Type out the new ${property} if so, otherwise click the buttons below`,
         components: [
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(

@@ -17,6 +17,7 @@ import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import getCustomThread from "../../../functions/tournamentFunctions/getCustomThread";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import channelID from "../../../functions/channelID";
+import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -78,16 +79,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (customThread !== true && m.channel?.id !== customThread[0].id) {
         const [thread] = customThread;
         const forumChannel = thread.parent as ForumChannel;
-        await thread.send(`**${mappoolMap.customMappers.map(c => `<@${c.discord.userID}>`).join(" ")} ATTENTION**\n<@${user.discord.userID}> has added a deadline: **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
+        await thread.send(`**${mappoolMap.customMappers.map(c => `<@${c.discord.userID}>`).join(" ")} ATTENTION**\n<@${user.discord.userID}> has added a deadline: **${discordStringTimestamp(date)}**`);
         const lateTag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "late");
         if (lateTag) await thread.setAppliedTags(thread.appliedTags.filter(t => t !== lateTag.id));
     }
 
     await mappoolMap.save();
 
-    await respond(m, `Deadline for **${mappoolSlot}** set to **<t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)**`);
+    await respond(m, `Deadline for **${mappoolSlot}** set to **${discordStringTimestamp(date)}**`);
 
-    await mappoolLog(tournament, "deadline", user, `Deadline for \`${mappoolSlot}\` set to <t:${date.getTime() / 1000}:F> (<t:${date.getTime() / 1000}:R>)`);
+    await mappoolLog(tournament, "deadline", user, `Deadline for \`${mappoolSlot}\` set to ${discordStringTimestamp(date)}`);
 }
 
 const data = new SlashCommandBuilder()
