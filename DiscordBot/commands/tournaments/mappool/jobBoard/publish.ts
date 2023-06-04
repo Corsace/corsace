@@ -16,6 +16,7 @@ import { extractDate } from "../../../../functions/tournamentFunctions/paramater
 import mappoolComponents from "../../../../functions/tournamentFunctions/mappoolComponents";
 import { unFinishedTournaments } from "../../../../../Models/tournaments/tournament";
 import channelID from "../../../../functions/channelID";
+import { discordStringTimestamp } from "../../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -77,7 +78,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (map.jobPost && !map.jobPost.jobBoardThread) {
                 const createObj: GuildForumThreadCreateOptions = {
                     name: `${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${slot.maps.length === 1 ? "" : map.order}`,
-                    message: { content: `**ENDS AT <t:${end_time.getTime() / 1000}:F> (<t:${end_time.getTime() / 1000}:R>)**\n\n${map.jobPost.description}` },
+                    message: { content: `**ENDS AT ${discordStringTimestamp(end_time)}**\n\n${map.jobPost.description}` },
                 };
                 const tag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "open")?.id;
                 if (tag)

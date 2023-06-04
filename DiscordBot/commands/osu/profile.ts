@@ -7,6 +7,7 @@ import { loginResponse } from "../../functions/loginResponse";
 import getUser from "../../functions/dbFunctions/getUser";
 import commandUser from "../../functions/commandUser";
 import respond from "../../functions/respond";
+import { discordStringTimestamp } from "../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -78,7 +79,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             name: `${user.osu.username} (${user.osu.userID})`,
             iconURL: `https://osu.ppy.sh/images/flags/${user.country}.png`,
         },
-        description: `**PP:** ${apiUser.pp}\n **Rank:** #${apiUser.rank} (${user.country}#${apiUser.countryRank})\n **Acc:** ${apiUser.accuracy.toFixed(2)}%\n **Playcount:** ${apiUser.playcount}\n **SS**: ${apiUser.countRankSS} **S:** ${apiUser.countRankS} **A:** ${apiUser.countRankA}\n **Joined:** <t:${apiUser.joinDate.getTime() / 1000}:F> (<t:${apiUser.joinDate.getTime() / 1000}:R>)`,
+        description: `**PP:** ${apiUser.pp}\n **Rank:** #${apiUser.rank} (${user.country}#${apiUser.countryRank})\n **Acc:** ${apiUser.accuracy.toFixed(2)}%\n **Playcount:** ${apiUser.playcount}\n **SS**: ${apiUser.countRankSS} **S:** ${apiUser.countRankS} **A:** ${apiUser.countRankA}\n **Joined:** ${discordStringTimestamp(apiUser.joinDate)}`,
         color: 0xFB2475,
         footer: {
             text: `Corsace ID #${user.ID}`,

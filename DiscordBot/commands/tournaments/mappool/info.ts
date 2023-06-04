@@ -15,6 +15,7 @@ import getTournament from "../../../functions/tournamentFunctions/getTournament"
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import channelID from "../../../functions/channelID";
+import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -150,7 +151,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slotMod.allowedMods ?? 0)), modsToAcronym(slotMod.allowedMods ?? 0), set);
         mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
         
-        await respond(m, `Info for **${mappoolSlot}**:\n\n${mappoolMap.customThreadID ? `Thread: <#${mappoolMap.customThreadID}>\n` : ""}${mappoolMap.deadline ? `Deadline: <t:${mappoolMap.deadline!.getTime() / 1000}:F> (<t:${mappoolMap.deadline!.getTime() / 1000}:R>)` : ""}`, [mappoolMapEmbed]);
+        await respond(m, `Info for **${mappoolSlot}**:\n\n${mappoolMap.customThreadID ? `Thread: <#${mappoolMap.customThreadID}>\n` : ""}${mappoolMap.deadline ? `Deadline: ${discordStringTimestamp(mappoolMap.deadline)}` : ""}`, [mappoolMapEmbed]);
         return;
     }
 

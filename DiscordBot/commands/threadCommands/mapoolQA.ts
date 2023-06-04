@@ -7,6 +7,7 @@ import mappoolLog from "../../functions/tournamentFunctions/mappoolLog";
 import confirmCommand from "../../functions/confirmCommand";
 import { mappoolComponentsThreadType } from "../../functions/tournamentFunctions/mappoolComponentsThread";
 import respond from "../../functions/respond";
+import { discordStringTimestamp } from "../../../Server/utils/dateParse";
 
 export async function mappoolQACreate (t: ThreadChannel, { m, creator, tournament, mappoolMap, mappers }: mappoolComponentsThreadType) {
     const mapperUsers: User[] = [];
@@ -44,7 +45,7 @@ export async function mappoolQACreate (t: ThreadChannel, { m, creator, tournamen
     }
     mappoolMap.customThreadID = t.id;
 
-    const content = `Map: **${mappoolMap.customBeatmap ? `${mappoolMap.customBeatmap.artist} - ${mappoolMap.customBeatmap.title} [${mappoolMap.customBeatmap.difficulty}]` : "N/A"}**\nMapper(s): **${mappoolMap.customMappers.length > 0 ? mappoolMap.customMappers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nTestplayer(s): **${mappoolMap.testplayers.length > 0 ? mappoolMap.testplayers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nDeadline: ${mappoolMap.deadline ? `<t:${mappoolMap.deadline.getTime() / 1000}:F> (<t:${mappoolMap.deadline.getTime() / 1000}:R>)` : "**N/A**"}`;
+    const content = `Map: **${mappoolMap.customBeatmap ? `${mappoolMap.customBeatmap.artist} - ${mappoolMap.customBeatmap.title} [${mappoolMap.customBeatmap.difficulty}]` : "N/A"}**\nMapper(s): **${mappoolMap.customMappers.length > 0 ? mappoolMap.customMappers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nTestplayer(s): **${mappoolMap.testplayers.length > 0 ? mappoolMap.testplayers.map(u => `<@${u.discord.userID}>`).join(" ") : "N/A"}**\nDeadline: ${mappoolMap.deadline ? discordStringTimestamp(mappoolMap.deadline) : "**N/A**"}`;
     const threadMsg = await t.send(content);
     mappoolMap.customMessageID = threadMsg.id;
     

@@ -10,7 +10,7 @@ import respond from "../../functions/respond";
 import editProperty from "../../functions/tournamentFunctions/editProperty";
 import { profanityFilter } from "../../../Interfaces/comment";
 import { ModeDivision, ModeDivisionType, modeTextHash, modeTextToID } from "../../../Models/MCA_AYIM/modeDivision";
-import { parseDateOrTimestamp } from "../../../Server/utils/dateParse";
+import { discordStringTimestamp, parseDateOrTimestamp } from "../../../Server/utils/dateParse";
 import { StageType } from "../../../Models/tournaments/stage";
 
 async function run (m: Message | ChatInputCommandInteraction) {
@@ -278,7 +278,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Mode", value: tournament.mode.name, inline: true },
             { name: "Match Size", value: tournament.matchSize.toString(), inline: true },
             { name: "Allowed Team Size", value: `${tournament.minTeamSize} - ${tournament.maxTeamSize}`, inline: true },
-            { name: "Registration Start Date", value: `<t:${tournament.registrations.start.getTime() / 1000}:F> (<t:${tournament.registrations.start.getTime() / 1000}:R>)`, inline: true },
+            { name: "Registration Start Date", value: discordStringTimestamp(tournament.registrations.start), inline: true },
             { name: "Qualifiers", value: tournament.stages.some(q => q.stageType === StageType.Qualifiers).toString(), inline: true },
             { name: "Invitational", value: tournament.invitational ? "Yes" : "No", inline: true },
             { name: "Server", value: tournament.server, inline: true }

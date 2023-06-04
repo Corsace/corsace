@@ -11,7 +11,7 @@ import getStage from "../../../functions/tournamentFunctions/getStage";
 import { ScoringMethod, Stage, StageType } from "../../../../Models/tournaments/stage";
 import editProperty from "../../../functions/tournamentFunctions/editProperty";
 import { profanityFilter } from "../../../../Interfaces/comment";
-import { parseDateOrTimestamp } from "../../../../Server/utils/dateParse";
+import { discordStringTimestamp, parseDateOrTimestamp } from "../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -254,7 +254,7 @@ async function stageSave (m: Message, stage: Stage) {
     
     const embed = new EmbedBuilder()
         .setTitle(stage.name)
-        .setDescription(`<t:${stage.timespan.start.getTime() / 1000}:F> - <t:${stage.timespan.end.getTime() / 1000}:F> (<t:${stage.timespan.start.getTime() / 1000}:R> - <t:${stage.timespan.end.getTime() / 1000}:R>)`)
+        .setDescription(`${discordStringTimestamp(stage.timespan.start)} → ${discordStringTimestamp(stage.timespan.end)}`)
         .addFields(
             { name: "Stage ID", value: stage.ID.toString(), inline: true },
             { name: "Stage Type", value: StageType[stage.stageType], inline: true },

@@ -11,7 +11,7 @@ import commandUser from "../../../functions/commandUser";
 import confirmCommand from "../../../functions/confirmCommand";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import channelID from "../../../functions/channelID";
-import { parseDateOrTimestamp } from "../../../../Server/utils/dateParse";
+import { discordStringTimestamp, parseDateOrTimestamp } from "../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -249,7 +249,7 @@ async function stageDone (m: Message | ChatInputCommandInteraction, stage: Stage
 
     const embed = new EmbedBuilder()
         .setTitle(stage.name)
-        .setDescription(`<t:${stage.timespan.start.getTime() / 1000}:F> - <t:${stage.timespan.end.getTime() / 1000}:F> (<t:${stage.timespan.start.getTime() / 1000}:R> - <t:${stage.timespan.end.getTime() / 1000}:R>)`)
+        .setDescription(`${discordStringTimestamp(stage.timespan.start)} → ${discordStringTimestamp(stage.timespan.end)}`)
         .addFields(
             { name: "Stage ID", value: stage.ID.toString(), inline: true },
             { name: "Stage Type", value: StageType[stage.stageType], inline: true },
