@@ -181,7 +181,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     // Generate rounds if single/double elimination
     stage.rounds = [];
-    if (stage.stageType === StageType.SingleElimination || stage.stageType === StageType.DoubleElimination) {
+    if (stage.stageType === StageType.Singleelimination || stage.stageType === StageType.Doubleelimination) {
         const rounds: Round[] = [];
         let roundSize = stage.initialSize;
         if (Math.log2(roundSize) % 1 !== 0) {
@@ -210,7 +210,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
             roundSize /= 2;
 
-            if (roundSize === 1 && stage.stageType === StageType.DoubleElimination) {
+            if (roundSize === 1 && stage.stageType === StageType.Doubleelimination) {
                 const round = new Round();
                 round.name = "Grand Finals";
                 round.abbreviation = "GF";

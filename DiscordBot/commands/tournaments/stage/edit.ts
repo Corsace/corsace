@@ -104,7 +104,7 @@ async function stageType (m: Message, stage: Stage, userID: string) {
         return;
 
     if (typeof type === "string") {
-        const stageEnum = StageType[type.split(" ")[1].charAt(0).toUpperCase() + type.split(" ")[1].slice(1)];
+        const stageEnum = StageType[type.charAt(0).toUpperCase() + type.slice(1)];
         if (stageType === undefined) {
             const reply = await m.channel.send("Invalid type");
             setTimeout(async () => (await reply.delete()), 5000);
