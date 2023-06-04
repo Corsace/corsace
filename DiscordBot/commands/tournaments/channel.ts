@@ -89,10 +89,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const channelType = channel_type.toLowerCase().charAt(0).toUpperCase() + channel_type.toLowerCase().slice(1);
     if (
         TournamentChannelType[channelType] === undefined ||
-        (channelType.toLowerCase() === "announcements" && discordChannel.type !== ChannelType.GuildAnnouncement) || 
+        (channelType.toLowerCase() === "announcements" && channelType.toLowerCase() === "streamannouncements" && discordChannel.type !== ChannelType.GuildAnnouncement) || 
         (channelType.toLowerCase() === "mappoolqa" && discordChannel.type !== ChannelType.GuildForum) ||
         (channelType.toLowerCase() === "jobboard" && discordChannel.type !== ChannelType.GuildForum) ||
-        (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "mappoolqa" && channelType.toLowerCase() !== "jobboard" && discordChannel.type !== ChannelType.GuildText)
+        (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "streamannouncements" && channelType.toLowerCase() !== "mappoolqa" && channelType.toLowerCase() !== "jobboard" && discordChannel.type !== ChannelType.GuildText)
     ) {
         await respond(m, `The channel type \`${channel_type}\` is not a valid channel type\nAnnouncements should be a guild announcement channel\nMappool QA and Job Board should be guild forum channels\nAll other channels should be guild text channels`);
         return;
@@ -166,6 +166,10 @@ const data = new SlashCommandBuilder()
             {
                 name: "Announcements",
                 value: "Announcements",
+            },
+            {
+                name: "Stream Announcements",
+                value: "Streamannouncements",
             },
             {
                 name: "Admin",

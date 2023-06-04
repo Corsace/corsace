@@ -462,7 +462,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
 // Function to fetch and assign channels
 async function tournamentChannels (m: Message, tournament: Tournament, creator: User) {
     let stopped = false;
-    let content = "Mention/paste a channel ID, and then write the designated tournament channel type it's for (e.g. `#general general` or `#organizers admin`)\n\nIf u want the bot to create a channel for u, select a channel type from the dropdown below.\nIf ur done, press the `done` button\n";
+    let content = "Mention/paste a channel ID, and then write the designated tournament channel type it's for (e.g. `#general general` or `#organizers admin`)\n\nIf u want the bot to create a channel for u, select a channel type from the dropdown below.\nIf ur done, press the `done` button\n\nNote: If you put an announcement channel but no stream announcement channel, it will put the stream announcements in the announcements channel\n";
     const ids = {
         "channel": randomUUID(),
         "stop": randomUUID(),
@@ -501,6 +501,11 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                                 label: "Announcements",
                                 value: "Announcements",
                                 description: "Create a tournament announcements channel (requires a community server)",
+                            },
+                            {
+                                label: "Stream Announcements",
+                                value: "Streamannouncements",
+                                description: "Create a tournament stream announcements channel (requires a community server)",
                             },
                             {
                                 label: "Admin",
@@ -596,7 +601,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
             }
 
             let channelType = ChannelType.GuildText;
-            if (channelTypeMenu === "Announcements")
+            if (channelTypeMenu === "Announcements" || channelTypeMenu === "Streamannouncements")
                 channelType = ChannelType.GuildAnnouncement;
             else if (channelTypeMenu === "Jobboard" || channelTypeMenu === "Mappoolqa")
                 channelType = ChannelType.GuildForum;
@@ -688,10 +693,10 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         if (
             !channelType || 
             TournamentChannelType[channelType] === undefined || 
-            (channelType.toLowerCase() === "announcements" && channel.type !== ChannelType.GuildAnnouncement) || 
+            (channelType.toLowerCase() === "announcements" && channelType.toLowerCase() === "streamannouncements" && channel.type !== ChannelType.GuildAnnouncement) || 
             (channelType.toLowerCase() === "mappoolqa" && channel.type !== ChannelType.GuildForum) ||
             (channelType.toLowerCase() === "jobboard" && channel.type !== ChannelType.GuildForum) ||
-            (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "mappoolqa" && channelType.toLowerCase() !== "jobboard" && channel.type !== ChannelType.GuildText)
+            (channelType.toLowerCase() !== "announcements" && channelType.toLowerCase() !== "streamannouncements" && channelType.toLowerCase() !== "mappoolqa" && channelType.toLowerCase() !== "jobboard" && channel.type !== ChannelType.GuildText)
         ) {
             const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel\nMappool QA and Job Board should be guild forum channels\nAll other channels should be guild text channels`);
             setTimeout(async () => {
