@@ -161,7 +161,8 @@ const data = new SlashCommandBuilder()
             {
                 name: "Commentators",
                 value: "Commentators",
-            }));
+            }))
+    .setDMPermission(false);
 
 interface parameters {
     role: string,

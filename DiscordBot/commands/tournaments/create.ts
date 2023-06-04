@@ -12,6 +12,7 @@ import { Phase } from "../../../Models/phase";
 import { TournamentChannel, TournamentChannelType, TournamentChannelTypeRoles, forumTags } from "../../../Models/tournaments/tournamentChannel";
 import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
 import { randomUUID } from "crypto";
+import { parseDateOrTimestamp } from "../../../Server/utils/dateParse";
 import respond from "../../functions/respond";
 import commandUser from "../../functions/commandUser";
 import getUser from "../../functions/dbFunctions/getUser";
@@ -219,8 +220,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const registrationStart = new Date(registrationStartText.includes("-") ? registrationStartText : parseInt(registrationStartText + "000"));
-    const registrationEnd = new Date(registrationEndText.includes("-") ? registrationEndText : parseInt(registrationEndText + "000"));
+    const registrationStart = new Date(parseDateOrTimestamp(registrationStartText));
+    const registrationEnd = new Date(parseDateOrTimestamp(registrationEndText));
     if (isNaN(registrationStart.getTime()) || isNaN(registrationEnd.getTime()) || registrationStart.getTime() > registrationEnd.getTime() || registrationEnd.getTime() < Date.now()) {
         await respond(m, "Provide valid registration dates for ur tournament and make sure the registration end date is actually after today! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
         return;

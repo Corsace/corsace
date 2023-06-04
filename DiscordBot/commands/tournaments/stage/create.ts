@@ -11,6 +11,7 @@ import commandUser from "../../../functions/commandUser";
 import confirmCommand from "../../../functions/confirmCommand";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import channelID from "../../../functions/channelID";
+import { parseDateOrTimestamp } from "../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -92,8 +93,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Provide a valid start and end date for ur stage! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
         return;
     }
-    const start = new Date(startText.includes("-") ? startText : parseInt(startText + "000"));
-    const end = new Date(endText.includes("-") ? endText : parseInt(endText + "000"));
+    const start = new Date(parseDateOrTimestamp(startText));
+    const end = new Date(parseDateOrTimestamp(endText));
     if (isNaN(start.getTime()) || isNaN(end.getTime()) || start.getTime() > end.getTime()) {
         await respond(m, "Invalid timespan. Provide 2 dates in consecutive order.\n\n(e.g. `2021-01-01 2021-01-02`)");
         return;

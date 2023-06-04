@@ -32,7 +32,7 @@ export default function getStages (target: string | number, searchType: keyof ty
     if (searchType === "name")
         stageQ
             .leftJoin("stage.mappool", "mappool")
-            .where(stageSearchConditions[searchType](target), { target });
+            .where(stageSearchConditions.name(target), { target });
     else
         stageQ.where(stageSearchConditions[searchType], { target });
 

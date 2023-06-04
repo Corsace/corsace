@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, Message } from "discord.js";
 import { extractParameter, separateArgs } from "../parameterFunctions";
+import { parseDateOrTimestamp } from "../../../Server/utils/dateParse";
 
 export function extractTargetText (m: Message | ChatInputCommandInteraction, index: number) {
     if (m instanceof ChatInputCommandInteraction) {
@@ -26,5 +27,5 @@ export function extractDate (m: Message | ChatInputCommandInteraction, index: nu
     if (typeof date !== "string" )
         return;
 
-    return new Date(date.includes("-") ? date : parseInt(date + "000"));
+    return new Date(parseDateOrTimestamp(date));
 }
