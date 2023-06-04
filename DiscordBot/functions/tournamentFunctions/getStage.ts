@@ -36,7 +36,7 @@ export default async function getStage (m: Message | ChatInputCommandInteraction
         stages = await getStages(target || tournament.ID, searchType || "tournamentID", true, false);
 
     if (stages.length === 0) {
-        await respond(m, `THE TOURNAMENT HAS NO STAGES WITH QUERY \`${target}\` QUERY TYPE \`${searchType}\` CREATE A STAGE FIRST .`);
+        await respond(m, `THE TOURNAMENT HAS NO STAGES WITH QUERY \`${target}\` QUERY TYPE \`${searchType}\` CREATE A STAGE FIRST IF UR ONE OF THE TOURNAMENT ADMINS .`);
         return;
     }
 

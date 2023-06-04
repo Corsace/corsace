@@ -1,8 +1,7 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../index";
 import respond from "../../../functions/respond";
 import channelID from "../../../functions/channelID";
-import { TournamentStatus } from "../../../../Models/tournaments/tournament";
 import getUser from "../../../functions/dbFunctions/getUser";
 import commandUser from "../../../functions/commandUser";
 import { loginResponse } from "../../../functions/loginResponse";
@@ -12,11 +11,9 @@ import { ScoringMethod, StageType } from "../../../../Models/tournaments/stage";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Round } from "../../../../Models/tournaments/round";
+import { extractParameter } from "../../../functions/parameterFunctions";
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
-        return;
-
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
@@ -26,11 +23,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const tournament = await getTournament(m, channelID(m), "channel", [ TournamentStatus.NotStarted, TournamentStatus.Registrations ], true);
+    const tournament = await getTournament(m, channelID(m), "channel", undefined, true);
     if (!tournament)
         return;
 
-    const stage = await getStage(m, tournament, false, tournament.ID, "tournamentID");
+    const stageParam = extractParameter(m, { name: "stage", paramType: "string" }, 1);
+
+    const stage = await getStage(m, tournament, false, typeof stageParam === "string" ? stageParam : tournament.ID, typeof stageParam === "string" ? "name" : "tournamentID");
     if (!stage)
         return;
 
@@ -68,9 +67,8 @@ const data = new SlashCommandBuilder()
     .setDescription("Get info for a stage.")
     .addStringOption(option => 
         option.setName("stage")
-            .setDescription("The stage to get info for.")
-            .setRequired(false))
-    .setDMPermission(false);
+            .setDescription("The stage to get info for (not required).")
+            .setRequired(false));
 
 const stageInfo: Command = {
     data,
