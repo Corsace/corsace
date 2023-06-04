@@ -47,7 +47,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .leftJoinAndSelect("slot.maps", "map")
         .where("stage.ID = :ID", { ID: stage.ID });
     if (rounds.length > 0)
-        mappoolQ.orWhere(rounds.length > 0 ? "round.ID IN (:...IDs)" : "1 = 1", { IDs: rounds.map(round => round.ID) });
+        mappoolQ.orWhere("round.ID IN (:...IDs)", { IDs: rounds.map(round => round.ID) });
     
     const mappools = await mappoolQ.getMany();
 
