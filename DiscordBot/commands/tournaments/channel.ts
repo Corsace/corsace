@@ -202,7 +202,8 @@ const data = new SlashCommandBuilder()
             {
                 name: "Match Results",
                 value: "Matchresults",
-            }));
+            }))
+    .setDMPermission(false);
 
 interface parameters {
     channel: string,

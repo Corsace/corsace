@@ -16,6 +16,7 @@ import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import { User } from "../../../../Models/user";
 import getCustomThread from "../../../functions/tournamentFunctions/getCustomThread";
 import { discordClient } from "../../../../Server/discord";
+import { profanityFilter } from "../../../../Interfaces/comment";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -76,14 +77,20 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
         return;
 
     if (typeof name === "string") {
-        if (name.length > 50 || name.length < 3) {
-            const reply = await m.channel.send("The name must be between 3 and 50 characters");
+        if (name.length > 50 || name.length < 5) {
+            const reply = await m.channel.send("The name must be between 5 and 50 characters");
             setTimeout(async () => (await reply.delete()), 5000);
             await mappoolName(m, mappool, tournament, existingMappools, userID, user);
             return;
         }
         if (existingMappools.some(pool => pool.name.toLowerCase() === name.toLowerCase())) {
             const reply = await m.channel.send("A mappool with that name already exists");
+            setTimeout(async () => (await reply.delete()), 5000);
+            await mappoolName(m, mappool, tournament, existingMappools, userID, user);
+            return;
+        }
+        if (profanityFilter.test(name)) {
+            const reply = await m.channel.send("This name is sus . Choose a better name .");
             setTimeout(async () => (await reply.delete()), 5000);
             await mappoolName(m, mappool, tournament, existingMappools, userID, user);
             return;
@@ -101,14 +108,20 @@ async function mappoolAbbreviation (m: Message, mappool: Mappool, tournament: To
         return;
 
     if (typeof abbreviation === "string") {
-        if (abbreviation.length > 8 || abbreviation.length < 1) {
-            const reply = await m.channel.send("The abbreviation must be between 1 and 8 characters");
+        if (abbreviation.length > 4 || abbreviation.length < 1) {
+            const reply = await m.channel.send("The abbreviation must be between 1 and 4 characters");
             setTimeout(async () => (await reply.delete()), 5000);
             await mappoolAbbreviation(m, mappool, tournament, existingMappools, userID, user);
             return;
         }
         if (existingMappools.some(pool => pool.abbreviation.toLowerCase() === abbreviation.toLowerCase())) {
             const reply = await m.channel.send("A mappool with that abbreviation already exists");
+            setTimeout(async () => (await reply.delete()), 5000);
+            await mappoolAbbreviation(m, mappool, tournament, existingMappools, userID, user);
+            return;
+        }
+        if (profanityFilter.test(abbreviation)) {
+            const reply = await m.channel.send("This abbreviation is sus . Choose a better abbreviation .");
             setTimeout(async () => (await reply.delete()), 5000);
             await mappoolAbbreviation(m, mappool, tournament, existingMappools, userID, user);
             return;

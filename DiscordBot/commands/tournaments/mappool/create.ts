@@ -17,6 +17,7 @@ import mappoolComponents from "../../../functions/tournamentFunctions/mappoolCom
 import confirmCommand from "../../../functions/confirmCommand";
 import channelID from "../../../functions/channelID";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
+import { profanityFilter } from "../../../../Interfaces/comment";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -176,6 +177,17 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
         }
         if (abbreviation.length > 4 || abbreviation.length < 1) {
             const reply = await msg.reply("The abbreviation must be between 1 and 4 characters");
+            setTimeout(async () => (await reply.delete()), 5000);
+            return;
+        }
+
+        if (profanityFilter.test(name)) {
+            const reply = await msg.reply("The name is sus . Change it to something more appropriate");
+            setTimeout(async () => (await reply.delete()), 5000);
+            return;
+        }
+        if (profanityFilter.test(abbreviation)) {
+            const reply = await msg.reply("The abbreviation is sus . Change it to something more appropriate");
             setTimeout(async () => (await reply.delete()), 5000);
             return;
         }
