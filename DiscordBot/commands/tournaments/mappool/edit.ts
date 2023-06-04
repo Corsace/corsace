@@ -1,4 +1,4 @@
-import { Message, SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ThreadChannel } from "discord.js";
+import { Message, SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ThreadChannel, GuildMember } from "discord.js";
 import { Command } from "../../index";
 import respond from "../../../functions/respond";
 import { extractParameter } from "../../../functions/parameterFunctions";
@@ -167,7 +167,9 @@ async function mappoolSave (m: Message, mappool: Mappool, tournament: Tournament
                     name: `${slot.acronym} - ${slot.name}`,
                     value: `${slot.maps.length} map${slot.maps.length > 1 ? "s" : ""}`,
                 };
-            }));
+            }))
+        .setTimestamp(new Date)
+        .setAuthor({ name: commandUser(m).tag, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined });
 
     await Promise.all([
         m.channel!.send({ embeds: [embed] }),

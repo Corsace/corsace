@@ -2,11 +2,13 @@ import { ChatInputCommandInteraction, Message, SlashCommandBuilder, SlashCommand
 
 import tournamentChannel from "./tournaments/channel";
 import tournamentCreate from "./tournaments/create";
+import tournamentEdit from "./tournaments/edit";
 import tournamentList from "./tournaments/list";
 import tournamentRole from "./tournaments/role";
 
 import stageCreate from "./tournaments/stage/create";
 import stageDelete from "./tournaments/stage/delete";
+import stageEdit from "./tournaments/stage/edit";
 
 import mappoolAdd from "./tournaments/mappool/add";
 import mappoolAssign from "./tournaments/mappool/assign";
@@ -59,12 +61,14 @@ const commands: Command[] = [];
 // tournament commands
 commands.push(tournamentChannel);
 commands.push(tournamentCreate);
+commands.push(tournamentEdit);
 commands.push(tournamentList);
 commands.push(tournamentRole);
 
 // stage commands
 commands.push(stageCreate);
 commands.push(stageDelete);
+commands.push(stageEdit);
 
 // mappool commands
 commands.push(mappoolAdd);

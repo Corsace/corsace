@@ -115,7 +115,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        // If the timestamp is after the stage's start, the order is increased, if the timestamp is after the stage's end, break the loop
+        // If the timestamp is after the stage's start, the order is increased
         if (s.timespan.start.getTime() < start.getTime())
             order++;
     }

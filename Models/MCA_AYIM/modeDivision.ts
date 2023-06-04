@@ -64,3 +64,40 @@ export enum ModeDivisionType {
     mania,
     storyboard,
 }
+
+export const modeTextHash = {
+    "0": 1, 
+    "standard": 1,
+    "osu": 1,
+    "osu!": 1,
+    "osu!standard": 1,
+    "osu!std": 1,
+    "std": 1,
+
+    "1": 2,
+    "taiko": 2,
+    "osu!taiko": 2,
+    "osu!tko": 2,
+    "tko": 2,
+
+    "2": 3,
+    "fruits": 3,
+    "catch": 3,
+    "catch the beat": 3,
+    "osu!catch": 3,
+    "osu!fruits": 3,
+    "osu!ctb": 3,
+    "ctb": 3,
+
+    "3": 4,
+    "mania": 4,
+    "osu!mania": 4,
+    "osu!man": 4,
+    "man": 4,
+};
+
+export function modeTextToID (mode: string | null | undefined): number {
+    if (!mode)
+        return 0;
+    return modeTextHash[mode.trim().toLowerCase()] || 0;
+}

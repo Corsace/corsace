@@ -44,5 +44,6 @@ export default async function getStage (m: Message | ChatInputCommandInteraction
     if (!stage)
         return;
 
+    stage.tournament = tournament;
     return stage;
 }
