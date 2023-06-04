@@ -217,7 +217,7 @@ interface parameters {
 
 const tournamentChannel: Command = {
     data,
-    alternativeNames: [ "channel_tournaments", "channel_tournament", "tournaments_channel", "tournament_channel", "channel-tournaments", "channel-tournament", "tournaments-channel", "tournament-channel", "tournamentschannel", "tournamentchannel", "channeltournaments", "channeltournament", "channelt", "tchannel", "tournamentc", "tournamentsc", "ctournament", "ctournaments" ],
+    alternativeNames: [ "channel_tournaments", "channel_tournament", "tournaments_channel", "channel-tournaments", "channel-tournament", "tournaments-channel", "tournament-channel", "tournamentschannel", "tournamentchannel", "channeltournaments", "channeltournament", "channelt", "tchannel" ],
     category: "tournaments",
     run,
 };

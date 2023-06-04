@@ -919,7 +919,7 @@ const data = new SlashCommandBuilder()
 
 const tournamentCreate: Command = {
     data,
-    alternativeNames: ["create_tournament", "tournamentc", "ctournament", "createt", "tcreate", "createtournament", "tournamentcreate", "create-tournament", "tournament-create"],
+    alternativeNames: [ "create_tournament", "tournamentc", "ctournament", "createt", "tcreate", "createtournament", "tournamentcreate", "create-tournament", "tournament-create", "tournamentsc", "ctournaments" ],
     category: "tournaments",
     run,
 };

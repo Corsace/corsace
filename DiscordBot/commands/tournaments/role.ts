@@ -172,7 +172,7 @@ interface parameters {
 
 const tournamentRole: Command = {
     data,
-    alternativeNames: [ "role_tournaments", "role_tournament", "tournaments_role", "tournament_role", "role-tournaments", "role-tournament", "tournaments-role", "tournament-role", "tournamentsrole", "tournamentrole", "roletournaments", "roletournament", "rolet", "trole", "tournamentr", "tournamentsr", "rtournament", "rtournaments" ],
+    alternativeNames: [ "role_tournaments", "role_tournament", "tournaments_role", "role-tournaments", "role-tournament", "tournaments-role", "tournament-role", "tournamentsrole", "tournamentrole", "roletournaments", "roletournament", "rolet", "trole", "tournamentr", "tournamentsr", "rtournament", "rtournaments" ],
     category: "tournaments",
     run,
 };
