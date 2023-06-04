@@ -104,7 +104,7 @@ async function stageType (m: Message, stage: Stage, userID: string) {
         return;
 
     if (typeof type === "string") {
-        const stageType = StageType[type];
+        const stageEnum = StageType[type.split(" ")[1].charAt(0).toUpperCase() + type.split(" ")[1].slice(1)];
         if (stageType === undefined) {
             const reply = await m.channel.send("Invalid type");
             setTimeout(async () => (await reply.delete()), 5000);
@@ -112,14 +112,14 @@ async function stageType (m: Message, stage: Stage, userID: string) {
             return;
         }
 
-        if (stageType === StageType.Qualifiers && stage.tournament.stages.some(s => s.stageType === StageType.Qualifiers)) {
+        if (stageEnum === StageType.Qualifiers && stage.tournament.stages.some(s => s.stageType === StageType.Qualifiers)) {
             const reply = await m.channel.send("There is already a qualifiers stage u can't make another one Lol");
             setTimeout(async () => (await reply.delete()), 5000);
             await stageType(m, stage, userID);
             return;
         }
 
-        stage.stageType = stageType;
+        stage.stageType = stageEnum;
     }
 
     await stageTimespan(m, stage, userID, "start", stage.timespan.start);

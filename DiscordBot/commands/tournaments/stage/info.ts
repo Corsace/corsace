@@ -39,15 +39,17 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .where("stage.ID = :ID", { ID: stage.ID })
         .getMany();
 
-    const mappools = await Mappool
+    const mappoolQ = Mappool
         .createQueryBuilder("mappool")
         .leftJoin("mappool.stage", "stage")
         .leftJoin("mappool.round", "round")
         .leftJoinAndSelect("mappool.slots", "slot")
         .leftJoinAndSelect("slot.maps", "map")
-        .where("stage.ID = :ID", { ID: stage.ID })
-        .orWhere(rounds.length > 0 ? "round.ID IN (:...IDs)" : "1 = 1", { IDs: rounds.map(round => round.ID) })
-        .getMany();
+        .where("stage.ID = :ID", { ID: stage.ID });
+    if (rounds.length > 0)
+        mappoolQ.orWhere(rounds.length > 0 ? "round.ID IN (:...IDs)" : "1 = 1", { IDs: rounds.map(round => round.ID) });
+    
+    const mappools = await mappoolQ.getMany();
 
     // Create a discord embed for the stage, listing its rounds and mappools
     const embed = new EmbedBuilder()
@@ -61,7 +63,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             },
             { 
                 name: "Mappools",
-                value: mappools.map(mappool => `**${mappool.name} (${mappool.abbreviation})**\n${mappool.slots.map(slot => `**${slot.name} (${slot.acronym})**: ${slot.maps.length} maps`).join("\n")}`).join("\n") || "None",
+                value: mappools.map(mappool => `**${mappool.name} (${mappool.abbreviation})**\n${mappool.slots.map(slot => `${slot.name} (${slot.acronym}): ${slot.maps.length} map${slot.maps.length > 1 ? "s" : ""}`).join("\n")}`).join("\n\n") || "None",
                 inline: true,
             }
         );
