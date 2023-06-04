@@ -1,4 +1,3 @@
-
 import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../index";
 import respond from "../../../functions/respond";
@@ -106,8 +105,15 @@ async function stageType (m: Message, stage: Stage, userID: string) {
 
     if (typeof type === "string") {
         const stageType = StageType[type];
-        if (!stageType) {
+        if (stageType === undefined) {
             const reply = await m.channel.send("Invalid type");
+            setTimeout(async () => (await reply.delete()), 5000);
+            await stageType(m, stage, userID);
+            return;
+        }
+
+        if (stageType === StageType.Qualifiers && stage.tournament.stages.some(s => s.stageType === StageType.Qualifiers)) {
+            const reply = await m.channel.send("There is already a qualifiers stage u can't make another one Lol");
             setTimeout(async () => (await reply.delete()), 5000);
             await stageType(m, stage, userID);
             return;
@@ -145,7 +151,7 @@ async function stageTimespan (m: Message, stage: Stage, userID: string, property
                 await stageTimespan(m, stage, userID, "start", stage.timespan.start);
                 return;
             }
-            if (start.getTime() < stage.tournament.registrations.end.getTime() || end.getTime() < stage.tournament.registrations.end.getTime()) {
+            if (stage.stageType !== StageType.Qualifiers && (start.getTime() < stage.tournament.registrations.end.getTime() || end.getTime() < stage.tournament.registrations.end.getTime())) {
                 const reply = await m.channel.send("The stage overlaps with registrations. It's recommended to have between 2 weeks between registration end and the first stage's start in order to screen players as necessary");
                 setTimeout(async () => (await reply.delete()), 5000);
                 await stageTimespan(m, stage, userID, "start", stage.timespan.start);

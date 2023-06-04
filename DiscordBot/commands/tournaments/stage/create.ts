@@ -86,6 +86,23 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
     stage.abbreviation = abbreviation;
 
+    // Check for type validity
+    let stageType = m instanceof Message ? typeRegex.exec(m.content)?.[1] : m.options.getString("type");
+    if (!stageType) {
+        await respond(m, "Provide a valid type for ur stage what are u doing");
+        return;
+    }
+    stageType = stageType.replace(/\s/g, "").charAt(0).toUpperCase() + stageType.replace(/\s/g, "").slice(1);
+    if (StageType[stageType] === undefined) {
+        await respond(m, "DUDE????? Provide a valid type for ur stage");
+        return;
+    }
+    if (StageType[stageType] === StageType.Qualifiers && tournament.stages.find(s => s.stageType === StageType.Qualifiers)) {
+        await respond(m, "There can only be 1 qualifier stage and u already have 1");
+        return;
+    }
+    stage.stageType = StageType[stageType];
+
     // Check for stage date validity
     const startText = m instanceof Message ? dateRegex.exec(m.content)?.[1] : m.options.getString("start");
     const endText = m instanceof Message ? dateRegex.exec(m.content)?.[2] : m.options.getString("end");
@@ -99,7 +116,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Invalid timespan. Provide 2 dates in consecutive order.\n\n(e.g. `2021-01-01 2021-01-02`)");
         return;
     }
-    if (start.getTime() < tournament.registrations.end.getTime() || end.getTime() < tournament.registrations.end.getTime()) {
+    if (StageType[stageType] !== StageType.Qualifiers && (start.getTime() < tournament.registrations.end.getTime() || end.getTime() < tournament.registrations.end.getTime())) {
         await respond(m, "The stage overlaps with registrations. It's recommended to have between 2 weeks between registration end and the first stage's start in order to screen players as necessary");
         return;
     }
@@ -125,19 +142,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
         start,
         end,
     };
-
-    // Check for type validity
-    let stageType = m instanceof Message ? typeRegex.exec(m.content)?.[1] : m.options.getString("type");
-    if (!stageType) {
-        await respond(m, "Provide a valid type for ur stage what are u doing");
-        return;
-    }
-    stageType = stageType.replace(/\s/g, "").charAt(0).toUpperCase() + stageType.replace(/\s/g, "").slice(1);
-    if (!StageType[stageType]) {
-        await respond(m, "DUDE????? Provide a valid type for ur stage");
-        return;
-    }
-    stage.stageType = StageType[stageType];
 
     // Check for scoring method validity
     let scoringMethod = m instanceof Message ? scoringRegex.exec(m.content)?.[1] : m.options.getString("scoring_method");
@@ -280,6 +284,10 @@ const data = new SlashCommandBuilder()
         option.setName("type")
             .setDescription("The type of the stage.")
             .addChoices(
+                {
+                    name: "Qualifiers",
+                    value: "Qualifiers",
+                },
                 {
                     name: "Single Elimination",
                     value: "SingleElimination",

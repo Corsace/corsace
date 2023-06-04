@@ -186,6 +186,13 @@ async function tournamentMinMaxPlayers (m: Message, tournament: Tournament, user
         }
 
         tournament[property] = teamSize;
+    } else if (property === "maxTeamSize") {
+        if (tournament.maxTeamSize < tournament.minTeamSize) {
+            const reply = await m.channel.send("Max team size must be greater than or equal to min team size so ur other gonna have to change ur new min team size to something lower or actually change ur max team size");
+            setTimeout(async () => (await reply.delete()), 5000);
+            await tournamentMinMaxPlayers(m, tournament, userID, "minTeamSize", tournament.minTeamSize);
+            return;
+        }
     }
 
     if (property === "minTeamSize")
@@ -208,24 +215,30 @@ async function tournamentRegistrationTimespan (m: Message, tournament: Tournamen
             return;
         }
 
-        tournament.registrations[property] = date;
-
         if (property === "end") {
-            if (tournament.registrations.start.getTime() > tournament.registrations.end.getTime()) {
+            if (tournament.registrations.start.getTime() > date.getTime()) {
                 const reply = await m.channel.send("The registration end date must be after the registration start date");
                 setTimeout(async () => (await reply.delete()), 5000);
                 await tournamentRegistrationTimespan(m, tournament, userID, "start", tournament.registrations.start);
                 return;
             }
 
-            if (tournament.registrations.end.getTime() < Date.now()) {
+            if (date.getTime() < Date.now()) {
                 const reply = await m.channel.send("The registration end date must be in the future");
                 setTimeout(async () => (await reply.delete()), 5000);
                 await tournamentRegistrationTimespan(m, tournament, userID, "start", tournament.registrations.start);
                 return;
             }
+        }
 
-            tournament.year = tournament.registrations.end.getUTCFullYear();
+        tournament.registrations[property] = date;
+        tournament.year = property === "start" ? tournament.year : date.getUTCFullYear();
+    } else if (property === "end") {
+        if (tournament.registrations.end.getTime() < tournament.registrations.start.getTime()) {
+            const reply = await m.channel.send("The registration end date must be after the registration start date so ur other gonna have to change ur new start date to something higher or actually change ur end date");
+            setTimeout(async () => (await reply.delete()), 5000);
+            await tournamentRegistrationTimespan(m, tournament, userID, "start", tournament.registrations.start);
+            return;
         }
     }
 
