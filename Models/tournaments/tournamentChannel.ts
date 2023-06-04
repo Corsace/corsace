@@ -19,7 +19,7 @@ export enum TournamentChannelType {
     Matchresults,
     Jobboard,
     Staff,
-    Steamannouncements,
+    Streamannouncements,
 }
 
 // Designate an array of TournamentRoles for each channel type
@@ -38,7 +38,7 @@ export const TournamentChannelTypeRoles: { [key in TournamentChannelType]: Tourn
     [TournamentChannelType.Matchresults]: undefined,
     [TournamentChannelType.Jobboard]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers],
     [TournamentChannelType.Staff]: [TournamentRoleType.Staff],
-    [TournamentChannelType.Steamannouncements]: undefined,
+    [TournamentChannelType.Streamannouncements]: undefined,
 };
 
 export const forumTags: { [key in TournamentChannelType]?: GuildForumTagData[] } = {
