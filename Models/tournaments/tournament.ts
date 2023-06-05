@@ -1,10 +1,11 @@
-import { BaseEntity, Check, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Check, Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ModeDivision } from "../MCA_AYIM/modeDivision";
 import { Phase } from "../phase";
 import { User } from "../user";
 import { Stage } from "./stage";
 import { TournamentChannel } from "./tournamentChannel";
 import { TournamentRole } from "./tournamentRole";
+import { Team } from "./team";
 
 export enum SortOrder {
     Signup,
@@ -107,6 +108,9 @@ export class Tournament extends BaseEntity {
 
     @Column(() => Phase)
         registrations!: Phase;
+
+    @ManyToMany(() => Team, team => team.tournaments)
+        teams!: Team[];
 
     @Column({ default: false })
         publicQualifiers!: boolean;
