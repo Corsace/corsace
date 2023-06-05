@@ -2,7 +2,7 @@ import Router from "@koa/router";
 
 const osuURIRouter = new Router();
 
-osuURIRouter.get("/edit", async (ctx) => {
+osuURIRouter.get("/edit", (ctx) => {
     ctx.redirect(`osu://edit/${ctx.query.time}`);
 });
 

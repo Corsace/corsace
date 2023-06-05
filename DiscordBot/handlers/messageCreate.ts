@@ -13,7 +13,6 @@ export default async function messageCreate (m: Message) {
     const beatmapRegex = /(osu|old)\.ppy\.sh\/(s|b|beatmaps|beatmapsets)\/(\d+)(#(osu|taiko|fruits|mania)\/(\d+))?/i;
     const timestampRegex = /(\d+):(\d{2}):(\d{3})\s*(\(((\d,?)+)\))?/gmi;
     const emojiRegex = /<a?(:.+:)\d+>/gi;
-    console.log(m.content);
 
     // Don't respond to itself or other bots
     if (m.author.id === discordClient.user?.id || m.author.bot)
