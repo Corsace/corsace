@@ -15,7 +15,15 @@ export interface osuAPIV2ChatBotToken {
 
 export const scopes = ["identify", "public", "friends.read"];
 
-export const bwsFilter = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|moderation|moderating|community|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
+/* eslint-disable no-useless-escape */
+const bwsFilterString = `fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|moderation|moderating|community|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc`;
+
+export const bwsFilter = {
+    1: new RegExp(`${bwsFilterString}|taiko|catch|ctb|fruits|mania`, "gi"),
+    2: new RegExp(`${bwsFilterString}|catch|ctb|fruits|mania`, "gi"),
+    3: new RegExp(`${bwsFilterString}|taiko|mania`, "gi"),
+    4: new RegExp(`${bwsFilterString}|taiko|catch|ctb|fruits`, "gi"),
+};
 
 export class osuAPIV2 {
     private readonly clientID: string;

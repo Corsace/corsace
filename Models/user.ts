@@ -332,8 +332,11 @@ export class User extends BaseEntity {
         ]);
     }
 
-    static filterBWSBadges (badges) {
-        return badges.filter(badge => !bwsFilter.test(badge.description));
+    static filterBWSBadges (badges, modeID = 1) {
+        if (modeID < 1 || modeID > 4)
+            throw new Error("Invalid mode ID");
+
+        return badges.filter(badge => !bwsFilter[modeID].test(badge.description));
     }
 
     private async refreshOsuToken (this: User) {
@@ -371,13 +374,13 @@ export class User extends BaseEntity {
         return [userData.statistics.pp, userData.statistics.global_rank];
     }
 
-    public async getBWS () {
+    public async getBWS (modeID = 1) {
         const accessToken = this.osu.accessToken || await this.getAccessToken("osu");
         const userData = await osuV2Client.getUserInfo(accessToken);
         if (!userData.badges)
             return 0;
 
-        return Math.pow(userData.statistics.global_rank, Math.pow(0.9937, Math.pow((await User.filterBWSBadges(userData.badges)).length, 2)));
+        return Math.pow(userData.statistics.global_rank, Math.pow(0.9937, Math.pow((await User.filterBWSBadges(userData.badges, modeID)).length, 2)));
     }
 
     public getCondensedInfo (chosen = false): UserChoiceInfo {
