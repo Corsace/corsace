@@ -4,9 +4,9 @@
    "description": "Everything Corsace",
    "main": "index.ts",
    "dependencies": {
-      "@aws-sdk/client-s3": "^3.332.0",
-      "@aws-sdk/lib-storage": "^3.332.0",
-      "@aws-sdk/s3-request-presigner": "^3.332.0",
+      "@aws-sdk/client-s3": "^3.348.0",
+      "@aws-sdk/lib-storage": "^3.348.0",
+      "@aws-sdk/s3-request-presigner": "^3.348.0",
       "@koa/router": "^10.0.0",
       "@nuxtjs/axios": "^5.12.5",
       "@nuxtjs/proxy": "^2.1.0",
@@ -83,7 +83,6 @@
       "build:open": "cd ./Open && nuxt build",
       "build:api": "cross-env NODE_ENV=production tsc --project Server/tsconfig.json",
       "build:discord-bot": "cross-env NODE_ENV=production tsc --project DiscordBot/tsconfig.json",
-
       "ayim": "cd ./AYIM && nuxt start",
       "mca": "cd ./MCA && nuxt start",
       "main": "cd ./Main && nuxt start",
