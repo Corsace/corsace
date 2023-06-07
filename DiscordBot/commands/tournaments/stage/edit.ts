@@ -10,7 +10,7 @@ import getTournament from "../../../functions/tournamentFunctions/getTournament"
 import getStage from "../../../functions/tournamentFunctions/getStage";
 import { ScoringMethod, Stage, StageType } from "../../../../Models/tournaments/stage";
 import editProperty from "../../../functions/tournamentFunctions/editProperty";
-import { profanityFilter } from "../../../../Interfaces/comment";
+import { profanityFilterStrong } from "../../../../Interfaces/comment";
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
@@ -82,7 +82,7 @@ async function stageNameAbbreviation (m: Message, stage: Stage, existingStages: 
             return;
         }
 
-        if (profanityFilter.test(editValue)) {
+        if (profanityFilterStrong.test(editValue)) {
             const reply = await m.channel.send(`This ${property} is sus . Choose a better ${property} .`);
             setTimeout(async () => (await reply.delete()), 5000);
             await stageNameAbbreviation(m, stage, existingStages, userID, property);

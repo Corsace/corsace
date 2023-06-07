@@ -28,6 +28,9 @@ import { MappoolSlot } from "./tournaments/mappools/mappoolSlot";
 import { MappoolMapHistory } from "./tournaments/mappools/mappoolMapHistory";
 import { JobPost } from "./tournaments/mappools/jobPost";
 import { Team } from "./tournaments/team";
+import { osuV2Client } from "../Server/osu";
+import { bwsFilter } from "../Interfaces/osuAPIV2";
+import { TeamInvite } from "./tournaments/teamInvite";
 
 // General middlewares
 
@@ -188,6 +191,9 @@ export class User extends BaseEntity {
     @OneToMany(() => Team, team => team.manager)
         teamsManaged!: Team[];
 
+    @OneToMany(() => TeamInvite, invite => invite.user)
+        teamInvites!: TeamInvite[];
+
     @ManyToMany(() => Team, team => team.members)
         teams!: Team[];
 
@@ -326,16 +332,49 @@ export class User extends BaseEntity {
         ]);
     }
 
-    public getAccessToken = async function(this: User, tokenType: "osu" | "discord" = "osu"): Promise<string> {
+    static filterBWSBadges (badges) {
+        return badges.filter(badge => !bwsFilter.test(badge.description));
+    }
+
+    private async refreshOsuToken (this: User) {
+        const data = await osuV2Client.refreshToken(this);
+        this.osu.accessToken = data.access_token;
+        this.osu.refreshToken = data.refresh_token;
+        this.osu.lastVerified = new Date();
+        await this.save();
+
+        return data;
+    }
+
+    public async getAccessToken (tokenType: "osu" | "discord" = "osu"): Promise<string> {
+        // Check if lastVerified + 86100000 ms is less than current time (24 hours - 5 minute buffer)
+        if (tokenType === "osu" && this.osu.lastVerified.getTime() + 86100000 < Date.now()) {
+            // Refresh token
+            const data = await this.refreshOsuToken();
+            return data.access_token;
+        }
+
+        if (this[tokenType].accessToken)
+            return this[tokenType].accessToken!;
+
         const res = await User
             .createQueryBuilder("user")
             .select(tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken")
             .where(`ID = ${this.ID}`)
             .getRawOne();
         return res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"];
-    };
+    }
 
-    public getCondensedInfo = function(this: User, chosen = false): UserChoiceInfo {
+    public async getBWS () {
+        const accessToken = this.osu.accessToken || await this.getAccessToken("osu");
+        const userData = await osuV2Client.getUserInfo(accessToken);
+        if (!userData.badges)
+            return 0;
+
+        return Math.pow(userData.statistics.global_rank, Math.pow(0.9937, Math.pow((await User.filterBWSBadges(userData.badges)).length, 2)));
+    }
+
+    public getCondensedInfo (chosen = false): UserChoiceInfo {
         return {
             corsaceID: this.ID,
             avatar: this.osu.avatar,
@@ -344,9 +383,9 @@ export class User extends BaseEntity {
             otherNames: this.otherNames.map(otherName => otherName.name),
             chosen,
         };
-    };
+    }
     
-    public getInfo = async function(this: User, member?: GuildMember | undefined): Promise<UserInfo> {
+    public async getInfo (member?: GuildMember | undefined): Promise<UserInfo> {
         if (this.discord?.userID && !member)
             member = await getMember(this.discord.userID);
         const info: UserInfo = {
@@ -372,9 +411,9 @@ export class User extends BaseEntity {
             canComment: this.canComment,
         };
         return info;
-    };
+    }
 
-    public getMCAInfo = async function(this: User): Promise<UserMCAInfo> {
+    public async getMCAInfo (): Promise<UserMCAInfo> {
         let member: GuildMember | undefined;
         if (this.discord?.userID)
             member = await getMember(this.discord.userID);
@@ -390,5 +429,5 @@ export class User extends BaseEntity {
         };
 
         return mcaInfo;
-    };
+    }
 }

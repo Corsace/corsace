@@ -8,7 +8,7 @@ import channelID from "../../functions/channelID";
 import { SortOrder, Tournament, TournamentStatus, sortTextToOrder } from "../../../Models/tournaments/tournament";
 import respond from "../../functions/respond";
 import editProperty from "../../functions/tournamentFunctions/editProperty";
-import { profanityFilter } from "../../../Interfaces/comment";
+import { profanityFilterStrong } from "../../../Interfaces/comment";
 import { ModeDivision, ModeDivisionType, modeTextHash, modeTextToID } from "../../../Models/MCA_AYIM/modeDivision";
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../Server/utils/dateParse";
 import { StageType } from "../../../Models/tournaments/stage";
@@ -62,7 +62,7 @@ async function tournamentNameAbbreviationDescription (m: Message, tournament: To
             return;
         }
 
-        if (profanityFilter.test(editValue)) {
+        if (profanityFilterStrong.test(editValue)) {
             const reply = await m.channel.send(`This ${property} is sus . Choose a better ${property} .`);
             setTimeout(async () => (await reply.delete()), 5000);
             await tournamentNameAbbreviationDescription(m, tournament, userID, property);

@@ -1,6 +1,7 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 import { Tournament } from "./tournament";
+import { TeamInvite } from "./teamInvite";
 
 @Entity()
 export class Team extends BaseEntity {
@@ -24,11 +25,14 @@ export class Team extends BaseEntity {
     @JoinTable()
         members!: User[];
 
+    @OneToMany(() => TeamInvite, invite => invite.team)
+        invites?: TeamInvite[] | null;
+
     @ManyToMany(() => Tournament, tournament => tournament.teams)
         tournaments!: Tournament[];
 
-    @Column()
-        avatarURL!: string;
+    @Column({ type: "varchar", nullable: true })
+        avatarURL?: string | null;
 
     @Column()
         BWS!: number;
@@ -36,4 +40,9 @@ export class Team extends BaseEntity {
     @Column()
         rank!: number;
 
+    public async calculateBWS () {
+        this.BWS = await this.members.reduce(async (acc, member) => (await acc) + (await member.getBWS()), Promise.resolve(0));
+
+        await this.save();
+    }
 }

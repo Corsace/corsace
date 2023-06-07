@@ -3,10 +3,10 @@ import { ActionRowBuilder, ChatInputCommandInteraction, Message, PermissionFlags
 import { ModeDivision, modeTextToID } from "../../../Models/MCA_AYIM/modeDivision";
 import { Tournament, TournamentStatus, sortTextToOrder } from "../../../Models/tournaments/tournament";
 import { User } from "../../../Models/user";
-import { Command } from "../index";
+import { Command } from "../";
 import { loginResponse } from "../../functions/loginResponse";
 import { filter, stopRow, timedOut } from "../../functions/messageInteractionFunctions";
-import { profanityFilter } from "../../../Interfaces/comment";
+import { profanityFilterStrong } from "../../../Interfaces/comment";
 import { Stage, StageType } from "../../../Models/tournaments/stage";
 import { Phase } from "../../../Models/phase";
 import { TournamentChannel, TournamentChannelType, TournamentChannelTypeRoles, forumTags } from "../../../Models/tournaments/tournamentChannel";
@@ -85,7 +85,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Provide a valid name for ur tournament!!!!!!! Ur only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 50 characters long");
         return;
     }
-    if (profanityFilter.test(name)) {
+    if (profanityFilterStrong.test(name)) {
         await respond(m, "Ur name is sus . Change it to something more appropriate");
         return;
     }
@@ -97,7 +97,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Provide a valid abbreviation for ur tournament! Ur only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 2 and 8 characters long");
         return;
     }
-    if (profanityFilter.test(abbreviation)) {
+    if (profanityFilterStrong.test(abbreviation)) {
         await respond(m, "The abbreviation is sus . Change it to something more appropriate");
         return;
     }
@@ -109,7 +109,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Provide a valid description for ur tournament!!!11!1 Ur only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The description must be between 3 and 1024 characters long");
         return;
     }
-    if (profanityFilter.test(description)) {
+    if (profanityFilterStrong.test(description)) {
         await respond(m, "Write a description that doesn't sound like it was written by a 15 year old");
         return;
     }

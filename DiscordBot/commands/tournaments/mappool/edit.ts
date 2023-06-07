@@ -16,7 +16,7 @@ import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import { User } from "../../../../Models/user";
 import getCustomThread from "../../../functions/tournamentFunctions/getCustomThread";
 import { discordClient } from "../../../../Server/discord";
-import { profanityFilter } from "../../../../Interfaces/comment";
+import { profanityFilterStrong } from "../../../../Interfaces/comment";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -89,7 +89,7 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
             await mappoolName(m, mappool, tournament, existingMappools, userID, user);
             return;
         }
-        if (profanityFilter.test(name)) {
+        if (profanityFilterStrong.test(name)) {
             const reply = await m.channel.send("This name is sus . Choose a better name .");
             setTimeout(async () => (await reply.delete()), 5000);
             await mappoolName(m, mappool, tournament, existingMappools, userID, user);
@@ -120,7 +120,7 @@ async function mappoolAbbreviation (m: Message, mappool: Mappool, tournament: To
             await mappoolAbbreviation(m, mappool, tournament, existingMappools, userID, user);
             return;
         }
-        if (profanityFilter.test(abbreviation)) {
+        if (profanityFilterStrong.test(abbreviation)) {
             const reply = await m.channel.send("This abbreviation is sus . Choose a better abbreviation .");
             setTimeout(async () => (await reply.delete()), 5000);
             await mappoolAbbreviation(m, mappool, tournament, existingMappools, userID, user);

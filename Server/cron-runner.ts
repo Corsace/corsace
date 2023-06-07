@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { config } from "node-config-ts";
 import Koa from "koa";
-import BodyParser from "koa-bodyparser";
+import koaBody from "koa-body";
 import Mount from "koa-mount";
 
 import cronRouter from "./api/routes/cron";
@@ -14,7 +14,7 @@ const koa = new Koa;
 
 koa.keys = config.koaKeys;
 koa.proxy = true;
-koa.use(BodyParser());
+koa.use(koaBody());
 
 // Error handler
 koa.use(async (ctx, next) => {

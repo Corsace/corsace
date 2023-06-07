@@ -1,5 +1,6 @@
 import axios from "axios";
 import { RateLimiter } from "limiter";
+import { User } from "../Models/user";
 
 export interface osuAPIV2ChatBotOptions {
     disableRateLimiting: boolean;
@@ -11,6 +12,10 @@ export interface osuAPIV2ChatBotToken {
     token: string;
     expiresAt: Date;
 }
+
+export const scopes = ["identify", "public", "friends.read"];
+
+export const bwsFilter = /(fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|moderation|moderating|community|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc|taiko|catch|ctb|fruits|mania)/i;
 
 export class osuAPIV2 {
     private readonly clientID: string;
@@ -38,14 +43,14 @@ export class osuAPIV2 {
             });
     }
 
-    public getFavouriteBeatmaps (userID: string, accessToken: string, offset?: number) {
+    public getFavouriteBeatmaps (userID: string, accessToken?: string, offset?: number) {
         let endpoint = `/users/${userID}/beatmapsets/favourite?limit=51`;
         if (offset)
             endpoint += `&offset=${offset}`;
         return this.get(endpoint, accessToken);
     }
 
-    public getPlayedBeatmaps (accessToken: string, year?: number, cursorString?: string) {
+    public getPlayedBeatmaps (accessToken?: string, year?: number, cursorString?: string) {
         let endpoint = "/beatmapsets/search?played=played";
         if (year)
             endpoint += `&q=ranked%3D${year}`;
@@ -54,11 +59,11 @@ export class osuAPIV2 {
         return this.get(endpoint, accessToken);
     }
 
-    public getUserInfo (accessToken: string) {
+    public getUserInfo (accessToken?: string) {
         return this.get("/me", accessToken);
     }
 
-    public getUserFriends (accessToken: string) {
+    public getUserFriends (accessToken?: string) {
         return this.get("/friends", accessToken);
     }
 
@@ -101,8 +106,26 @@ export class osuAPIV2 {
         return this.chatBotToken.token;
     }
 
+    // Refresh token
+    public async refreshToken (user: User) {
+        if (!user.osu.refreshToken)
+            return;
+
+        try {
+            const { data } = await axios.post("https://osu.ppy.sh/oauth/token", {
+                grant_type: "refresh_token",
+                client_id: this.clientID,
+                client_secret: this.clientSecret,
+                refresh_token: user.osu.refreshToken,
+            });
+            return data;
+        } catch (e) {
+            if (e) throw e;
+        }
+    }
+
     // Post and get functions
-    private async post (endpoint: string, payload: any, accessToken: string) {
+    private async post (endpoint: string, payload: any, accessToken?: string) {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
         
@@ -114,7 +137,7 @@ export class osuAPIV2 {
         return data;
     }
 
-    private async get (endpoint: string, accessToken: string) {
+    private async get (endpoint: string, accessToken?: string) {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
         

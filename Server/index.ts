@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { config } from "node-config-ts";
 import Koa from "koa";
 import koaCash from "koa-cash";
-import BodyParser from "koa-bodyparser";
+import koaBody from "koa-body";
 import Mount from "koa-mount";
 import passport from "koa-passport";
 import Session from "koa-session";
@@ -38,6 +38,8 @@ import recordsRouter from "./api/routes/records";
 import statisticsRouter from "./api/routes/statistics";
 import mappersRouter from "./api/routes/mappers";
 
+import teamRouter from "./api/routes/team";
+
 import ormConfig from "../ormconfig";
 
 const koa = new Koa;
@@ -51,7 +53,14 @@ koa.use(Session({
     renew: true,
     maxAge: 60 * 24 * 60 * 60 * 1000, // 2 months
 }, koa));
-koa.use(BodyParser());
+koa.use(koaBody({ 
+    patchKoa: true,
+    multipart: true,
+    formidable: {
+        maxFileSize: 10 * 1024 * 1024, // 10MB
+        maxFields: 1,
+    },
+}));
 koa.use(passport.initialize());
 koa.use(passport.session());
 
@@ -133,6 +142,9 @@ koa.use(Mount("/api/statistics", statisticsRouter.routes()));
 koa.use(Mount("/api/mappers", mappersRouter.routes()));
 koa.use(Mount("/api/comments", commentsRouter.routes()));
 koa.use(Mount("/api/influences", influencesRouter.routes()));
+
+// Tournaments
+koa.use(Mount("/api/team", teamRouter.routes()));
 
 // Hello World!
 koa.use(Mount("/", helloWorldRouter.routes()));

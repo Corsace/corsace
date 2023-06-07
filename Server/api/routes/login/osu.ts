@@ -8,6 +8,7 @@ import { UsernameChange } from "../../../../Models/usernameChange";
 import { redirectToMainDomain } from "./middleware";
 import { osuV2Client } from "../../../osu";
 import { isPossessive } from "../../../../Models/MCA_AYIM/guestRequest";
+import { scopes } from "../../../../Interfaces/osuAPIV2";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
@@ -29,7 +30,7 @@ osuRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext<any>, 
     const redirectURL = baseURL + params ?? "back";
     ctx.cookies.set("redirect", redirectURL, { overwrite: true });
     await next();
-}, passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"] }));
+}, passport.authenticate("oauth2", { scope: scopes }));
 
 osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
     return await passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"], failureRedirect: "/" }, async (err, user) => {

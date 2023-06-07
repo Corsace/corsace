@@ -1,8 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "..";
-import getUser from "../../functions/dbFunctions/getUser";
-import commandUser from "../../functions/commandUser";
-import { loginResponse } from "../../functions/loginResponse";
 import getTournament from "../../functions/tournamentFunctions/getTournament";
 import channelID from "../../functions/channelID";
 import { extractParameter } from "../../functions/parameterFunctions";
@@ -14,12 +11,6 @@ import { StageType } from "../../../Models/tournaments/stage";
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
-
-    const user = await getUser(commandUser(m).id, "discord", false);
-    if (!user) {
-        await loginResponse(m);
-        return;
-    }
 
     const tournamentParam = extractParameter(m, { name: "tournament", paramType: "string" }, 1);
 
