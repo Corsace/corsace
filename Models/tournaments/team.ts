@@ -34,13 +34,13 @@ export class Team extends BaseEntity {
     @Column({ type: "varchar", nullable: true })
         avatarURL?: string | null;
 
-    @Column()
+    @Column("double")
         BWS!: number;
 
-    @Column()
+    @Column("double")
         rank!: number;
 
-    @Column()
+    @Column("double")
         pp!: number;
 
     public async calculateStats () {
