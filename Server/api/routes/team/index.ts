@@ -1,62 +1,13 @@
 import Router from "@koa/router";
-import { ParameterizedContext, Next } from "koa";
-import { isLoggedInDiscord } from "../../middleware";
-import { Team } from "../../../Models/tournaments/team";
-import { profanityFilterStrong } from "../../../Interfaces/comment";
+import { isLoggedInDiscord } from "../../../middleware";
+import { Team } from "../../../../Models/tournaments/team";
+import { profanityFilterStrong } from "../../../../Interfaces/comment";
 import Jimp from "jimp";
 import { promises } from "fs";
-import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
-import { User } from "../../../Models/user";
-import { TeamInvite } from "../../../Models/tournaments/teamInvite";
-
-function validateTeam (isManager?: boolean) {
-    return async function (ctx: ParameterizedContext, next: Next) {
-        const ID = ctx.request.body?.ID || ctx.params.teamID || ctx.query.ID || ctx.query.teamID;
-
-        if (ID === undefined || isNaN(parseInt(ID)) || parseInt(ID) < 1) {
-            ctx.body = {
-                success: false,
-                error: "Missing ID",
-            };
-            return;
-        }
-
-        const team = await Team
-            .createQueryBuilder("team")
-            .leftJoinAndSelect("team.manager", "manager")
-            .leftJoinAndSelect("team.members", "member")
-            .leftJoinAndSelect("team.invites", "invite")
-            .where("team.ID = :ID", { ID })
-            .getOne();
-
-        if (!team) {
-            ctx.body = {
-                success: false,
-                error: "Team not found",
-            };
-            return;
-        }
-
-        if (isManager && team.manager.ID !== ctx.state.user.ID) {
-            ctx.body = {
-                success: false,
-                error: "You are not the manager of this team",
-            };
-            return;
-        }
-        if (!isManager && !team.members.find(member => member.ID === ctx.state.user.ID)) {
-            ctx.body = {
-                success: false,
-                error: "You are not a member of this team",
-            };
-            return;
-        }
-
-        ctx.state.team = team;
-
-        await next();
-    };
-}
+import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
+import { TournamentRole, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
+import { discordClient } from "../../../discord";
+import { validateTeam } from "./middleware";
 
 const teamRouter = new Router();
 
@@ -111,7 +62,8 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
     if (ctx.body.isPlaying)
         team.members = [ctx.state.user];
 
-    await team.calculateBWS();
+    await team.calculateStats();
+    await team.save();
 
     ctx.body = { success: "Team created", team };
 });
@@ -198,6 +150,22 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
 
     const tournamentMembers = tournament.teams.flatMap(t => [t.manager,...t.members]);
     const teamMembers = [team.manager, ...team.members];
+
+    const tournamentRoles = await TournamentRole
+        .createQueryBuilder("tournamentRole")
+        .leftJoin("tournamentRole.tournament", "tournament")
+        .where("tournament.ID = :ID", { ID: tournamentID })
+        .getMany();
+    const unallowedRoles = tournamentRoles.filter(r => unallowedToPlay.includes(r.roleType));
+    for (const member of teamMembers) {
+        const tournamentServer = await discordClient.guilds.fetch(tournament.server);
+        const discordMember = await tournamentServer.members.fetch(member.discord.userID);
+        if (discordMember.roles.cache.some(r => unallowedRoles.some(tr => tr.roleID === r.id))) {
+            ctx.body = { error: `Member ${member.osu.username} is already registered in this tournament` };
+            return;
+        }
+    }
+
     const alreadyRegistered = teamMembers.filter(member => tournamentMembers.some(m => m.ID === member.ID));
     if (alreadyRegistered.length > 0) {
         ctx.body = { error: `Some members are already registered in this tournament`, members: alreadyRegistered.map(m => m.osu.username) };
@@ -206,66 +174,53 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
 
     tournament.teams.push(team);
     await tournament.save();
+    
+    await team.calculateStats();
+    await team.save();
 
     ctx.body = { success: "Team registered" };
 });
 
-teamRouter.post("/:teamID/invite", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team;
 
-    const userID = ctx.request.body?.userID;
-    const idType = ctx.request.body?.idType;
-    if (!userID) {
-        ctx.body = { error: "Missing user ID" };
-        return;
-    }
-    if (!idType) {
-        ctx.body = { error: "Missing ID type" };
-        return;
-    }
+    const tournaments = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoin("tournament.teams", "team")
+        .where("team.ID = :ID", { ID: team.ID })
+        .getMany();
 
-    let user: User | null = null;
-    if (idType === "osu")
-        user = await User.findOne({ where: { osu: { userID } } });
-    else if (idType === "discord")
-        user = await User.findOne({ where: { discord: { userID } } });
-    else if (idType === "corsace")
-        user = await User.findOne({ where: { ID: userID } });
-    else {
-        ctx.body = { error: "Invalid ID type" };
+    if (tournaments.some(t => t.status === TournamentStatus.Ongoing)) {
+        ctx.body = { error: "Team is already playing in a tournament" };
         return;
     }
 
-    if (!user) {
-        ctx.body = { error: "User not found" };
+    const userID = parseInt(ctx.params.userID);
+    if (isNaN(userID)) {
+        ctx.body = { error: "Invalid user ID" };
         return;
     }
 
-    if (team.members.some(m => m.ID === user?.ID) || team.manager.ID === user?.ID) {
-        ctx.body = { error: "User is already in the team" };
+    if (team.members.every(m => m.ID !== userID)) {
+        ctx.body = { error: "User is not in the team" };
         return;
     }
 
-    if (team.invites?.some(i => i.ID === user?.ID)) {
-        ctx.body = { error: "User is already invited" };
-        return;
-    }
+    team.members = team.members.filter(m => m.ID !== userID);
+    await team.calculateStats();
+    await team.save();
+    
 
-    const invite = new TeamInvite;
-    invite.team = team;
-    invite.user = user;
-    await invite.save();
-
-    ctx.body = { success: "User invited", invite };
+    ctx.body = { success: "User removed from the team" };
 });
 
 teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team;
-    const body: Partial<Team> = ctx.request.body;
+    const body: Partial<Team> | undefined = ctx.request.body;
 
-    if (body.name)
+    if (body?.name)
         team.name = body.name;
-    if (body.abbreviation)
+    if (body?.abbreviation)
         team.abbreviation = body.abbreviation;
     
     await team.save();
@@ -278,7 +233,5 @@ teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx)
 
     ctx.body = { success: "Team deleted" };
 });
-
-
 
 export default teamRouter;

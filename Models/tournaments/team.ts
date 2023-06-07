@@ -40,9 +40,13 @@ export class Team extends BaseEntity {
     @Column()
         rank!: number;
 
-    public async calculateBWS () {
-        this.BWS = await this.members.reduce(async (acc, member) => (await acc) + (await member.getBWS()), Promise.resolve(0));
+    @Column()
+        pp!: number;
 
-        await this.save();
+    public async calculateStats () {
+        const rankpp = await Promise.all(this.members.map(m => m.getRankPP()));
+        this.pp = rankpp.reduce((acc, rpp) => acc + rpp[0], 0);
+        this.rank = rankpp.reduce((acc, rpp) => acc + (rpp[1] || 0), 0) / rankpp.length;
+        this.BWS = await this.members.reduce(async (acc, member) => (await acc) + (await member.getBWS()), Promise.resolve(0)) / this.members.length;
     }
 }

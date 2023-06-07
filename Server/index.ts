@@ -41,6 +41,7 @@ import statisticsRouter from "./api/routes/statistics";
 import mappersRouter from "./api/routes/mappers";
 
 import teamRouter from "./api/routes/team";
+import inviteRouter from "./api/routes/team/invite";
 
 import ormConfig from "../ormconfig";
 
@@ -148,6 +149,7 @@ koa.use(Mount("/api/influences", influencesRouter.routes()));
 
 // Tournaments
 koa.use(Mount("/api/team", teamRouter.routes()));
+koa.use(Mount("/api/team/invite", inviteRouter.routes()));
 
 // Hello World!
 koa.use(Mount("/", helloWorldRouter.routes()));

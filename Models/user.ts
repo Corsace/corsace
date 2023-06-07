@@ -365,6 +365,12 @@ export class User extends BaseEntity {
         return res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"];
     }
 
+    public async getRankPP (): Promise<[number, number?]> {
+        const accessToken = this.osu.accessToken || await this.getAccessToken("osu");
+        const userData = await osuV2Client.getUserInfo(accessToken);
+        return [userData.statistics.pp, userData.statistics.global_rank];
+    }
+
     public async getBWS () {
         const accessToken = this.osu.accessToken || await this.getAccessToken("osu");
         const userData = await osuV2Client.getUserInfo(accessToken);
