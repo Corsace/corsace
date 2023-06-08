@@ -30,7 +30,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     const link = getLink(m, "map");
-    if (!link || !link.endsWith(".osz")) {
+    if (!link)
+        return;
+
+    if (!link.endsWith(".osz")) {
         await respond(m, "Pleaseee provide a proper .osz file STOP TROLLING ME");
         return;
     }

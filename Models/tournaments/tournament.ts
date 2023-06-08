@@ -1,4 +1,4 @@
-import { BaseEntity, Check, Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Check, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ModeDivision } from "../MCA_AYIM/modeDivision";
 import { Phase } from "../phase";
 import { User } from "../user";
@@ -110,6 +110,7 @@ export class Tournament extends BaseEntity {
         registrations!: Phase;
 
     @ManyToMany(() => Team, team => team.tournaments)
+    @JoinTable()
         teams!: Team[];
 
     @Column({ default: false })

@@ -7,11 +7,6 @@ import tournamentInfo from "./tournaments/info";
 import tournamentList from "./tournaments/list";
 import tournamentRole from "./tournaments/role";
 
-import stageCreate from "./tournaments/stage/create";
-import stageDelete from "./tournaments/stage/delete";
-import stageEdit from "./tournaments/stage/edit";
-import stageInfo from "./tournaments/stage/info";
-
 import mappoolAdd from "./tournaments/mappool/add";
 import mappoolAssign from "./tournaments/mappool/assign";
 import mappoolAssignments from "./tournaments/mappool/assignments";
@@ -30,6 +25,14 @@ import jobDelete from "./tournaments/mappool/jobBoard/delete";
 import job from "./tournaments/mappool/jobBoard/job";
 import jobInfo from "./tournaments/mappool/jobBoard/info";
 import jobPublish from "./tournaments/mappool/jobBoard/publish";
+
+import stageCreate from "./tournaments/stage/create";
+import stageDelete from "./tournaments/stage/delete";
+import stageEdit from "./tournaments/stage/edit";
+import stageInfo from "./tournaments/stage/info";
+
+import teamAvatar from "./tournaments/team/avatar";
+import teamList from "./tournaments/team/list";
 
 import avatar from "./utility/avatar";
 import help from "./utility/help";
@@ -68,12 +71,6 @@ commands.push(tournamentInfo);
 commands.push(tournamentList);
 commands.push(tournamentRole);
 
-// stage commands
-commands.push(stageCreate);
-commands.push(stageDelete);
-commands.push(stageEdit);
-commands.push(stageInfo);
-
 // mappool commands
 commands.push(mappoolAdd);
 commands.push(mappoolAssign);
@@ -94,6 +91,16 @@ commands.push(job);
 commands.push(jobDelete);
 commands.push(jobInfo);
 commands.push(jobPublish);
+
+// stage commands
+commands.push(stageCreate);
+commands.push(stageDelete);
+commands.push(stageEdit);
+commands.push(stageInfo);
+
+// team commands
+commands.push(teamAvatar);
+commands.push(teamList);
 
 // general utility commands
 commands.push(avatar);
