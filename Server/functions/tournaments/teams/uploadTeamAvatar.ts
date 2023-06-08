@@ -3,7 +3,7 @@ import { promises } from "fs";
 import { Team } from "../../../../Models/tournaments/team";
 
 
-export async function saveTeamAvatar (team: Team, filepath: string) {
+export async function uploadTeamAvatar (team: Team, filepath: string) {
     // Make the file size 256x256
     const image = await Jimp.read(filepath);
     const size = Math.min(Math.min(image.getWidth(), image.getHeight()), 256);

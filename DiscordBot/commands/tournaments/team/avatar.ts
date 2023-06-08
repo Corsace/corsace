@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../";
 import { extractParameter } from "../../../functions/parameterFunctions";
-import { saveTeamAvatar } from "../../../../Server/functions/tournaments/teams/saveTeamAvatar";
+import { uploadTeamAvatar } from "../../../../Server/functions/tournaments/teams/uploadTeamAvatar";
 import respond from "../../../functions/respond";
 import { getLink } from "../../../functions/getLink";
 import commandUser from "../../../functions/commandUser";
@@ -11,8 +11,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
         
-    const link = getLink(m, "map");
-    if (!link || !link.endsWith(".png") && !link.endsWith(".jpg") && !link.endsWith(".jpeg")) {
+    const link = getLink(m, "avatar");
+    if (!link)
+        return;
+
+    if (!link.endsWith(".png") && !link.endsWith(".jpg") && !link.endsWith(".jpeg") && !link.endsWith(".gif")) {
         await respond(m, "Pleaseee provide a proper image OHG MYGODDD");
         return;
     }
@@ -28,7 +31,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
 
     try {
-        const avatarPath = await saveTeamAvatar(team, link);
+        const avatarPath = await uploadTeamAvatar(team, link);
         
         // Update the team
         team.avatarURL = avatarPath;
