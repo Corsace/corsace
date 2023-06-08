@@ -9,6 +9,7 @@ import { redirectToMainDomain } from "./middleware";
 import { osuV2Client } from "../../../osu";
 import { isPossessive } from "../../../../Models/MCA_AYIM/guestRequest";
 import { scopes } from "../../../../Interfaces/osuAPIV2";
+import { parseQueryParam } from "../../../utils/query";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
@@ -21,7 +22,7 @@ const modes = [
 ];
 
 osuRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext<any>, next) => {
-    const site = Array.isArray(ctx.query.site) ? ctx.query.site[0] : ctx.query.site;
+    const site = parseQueryParam(ctx.query.site);
     if (!site)
         throw new Error("No site specified");
 

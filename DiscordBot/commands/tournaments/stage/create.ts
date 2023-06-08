@@ -6,7 +6,7 @@ import { ScoringMethod, Stage, StageType } from "../../../../Models/tournaments/
 import { TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { loginResponse } from "../../../functions/loginResponse";
 import respond from "../../../functions/respond";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import confirmCommand from "../../../functions/confirmCommand";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";

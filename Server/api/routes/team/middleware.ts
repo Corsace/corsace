@@ -1,5 +1,5 @@
 import { Next, ParameterizedContext } from "koa";
-import { Team } from "../../../../Models/tournaments/team";
+import getTeams, { teamSearchConditions } from "../../../functions/get/getTeams";
 
 export function validateTeam (isManager?: boolean, invites?: boolean) {
     return async function (ctx: ParameterizedContext, next: Next) {
@@ -13,17 +13,25 @@ export function validateTeam (isManager?: boolean, invites?: boolean) {
             return;
         }
 
-        const teamQ = Team
-            .createQueryBuilder("team")
-            .leftJoinAndSelect("team.manager", "manager")
-            .leftJoinAndSelect("team.members", "member");
+        const targets: (string | number)[] = [parseInt(ID), ctx.state.user.ID];
+        const searchTypes: (keyof typeof teamSearchConditions)[] = ["ID"];
 
-        if (invites)
-            teamQ.leftJoinAndSelect("team.invites", "invite");
+        if (isManager)
+            searchTypes.push("managerCorsaceID");
+        else
+            searchTypes.push("memberCorsaceID");
+
+        const teams = await getTeams(targets, searchTypes, invites);
+
+        if (teams.length !== 1) {
+            ctx.body = {
+                success: false,
+                error: "Team not found",
+            };
+            return;
+        }
             
-        const team = await teamQ
-            .where("team.ID = :ID", { ID })
-            .getOne();
+        const team = teams[0];
 
         if (!team) {
             ctx.body = {

@@ -11,7 +11,7 @@ import { isEligibleFor } from "../../../Server/middleware/mca-ayim";
 import { loginResponse } from "../../functions/loginResponse";
 import { randomUUID } from "crypto";
 import commandUser from "../../functions/commandUser";
-import getUser from "../../functions/dbFunctions/getUser";
+import getUser from "../../../Server/functions/get/getUser";
 import respond from "../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {

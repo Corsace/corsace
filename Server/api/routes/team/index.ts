@@ -2,12 +2,12 @@ import Router from "@koa/router";
 import { isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
 import { profanityFilterStrong } from "../../../../Interfaces/comment";
-import Jimp from "jimp";
-import { promises } from "fs";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { TournamentRole, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
 import { validateTeam } from "./middleware";
+import { parseQueryParam } from "../../../utils/query";
+import { saveTeamAvatar } from "../../../functions/tournaments/teams/saveTeamAvatar";
 
 const teamRouter = new Router();
 
@@ -20,6 +20,30 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
         .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
         .getMany();
     
+    ctx.body = teams.map(team => {
+        return {
+            ID: team.ID,
+            name: team.name,
+            abbreviation: team.abbreviation,
+            manager: `${team.manager.osu.username} (${team.manager.osu.userID})`,
+            members: team.members.map(member => `${member.osu.username} (${member.osu.userID})`),
+        };
+    });
+});
+
+teamRouter.get("/all", async (ctx) => {
+    const teamQ = Team
+        .createQueryBuilder("team")
+        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member");
+    
+    if (parseQueryParam(ctx.query.offset) && !isNaN(parseInt(parseQueryParam(ctx.query.offset)!)))
+        teamQ.skip(parseInt(parseQueryParam(ctx.query.offset)!));
+    if (parseQueryParam(ctx.query.limit) && !isNaN(parseInt(parseQueryParam(ctx.query.limit)!)))
+        teamQ.take(parseInt(parseQueryParam(ctx.query.limit)!));
+
+    const teams = await teamQ.getMany();
+
     ctx.body = teams.map(team => {
         return {
             ID: team.ID,
@@ -45,7 +69,7 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
             abbreviation = abbreviation.replace(/^t/i, "");
     }
 
-    if (name.length > 20 || name.length < 3 || profanityFilterStrong.test(name)) {
+    if (name.length > 20 || name.length < 5 || profanityFilterStrong.test(name)) {
         ctx.body = { error: "Invalid name" };
         return;
     }
@@ -87,33 +111,17 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
         return;
     }
 
-    // Make the file size 256x256
-    const image = await Jimp.read(file.filepath);
-    const size = Math.min(Math.min(image.getWidth(), image.getHeight()), 256);
-    image
-        .contain(size, size)
-        .deflateLevel(3)
-        .quality(75);
+    try {
+        const avatarPath = await saveTeamAvatar(team, file.filepath);
+        
+        // Update the team
+        team.avatarURL = avatarPath;
+        await team.save();
 
-    // Remove previous avatar if it exists
-    if (team.avatarURL) {
-        try {
-            await promises.unlink(team.avatarURL);
-        } catch (err) {
-            ctx.body = { error: "Failed to remove previous avatar\n" + err };
-            return;
-        }
+        ctx.body = { success: "Avatar updated", avatar: avatarPath };
+    } catch (e) {
+        ctx.body = { error: `Error saving avatar\n${e}` };
     }
-
-    // Save the image
-    const avatarPath = `./public/avatars/${team.ID}.png?${Date.now()}`;
-    await image.writeAsync(avatarPath);
-
-    // Update the team
-    team.avatarURL = avatarPath;
-    await team.save();
-
-    ctx.body = { success: "Avatar updated", avatar: avatarPath };
 });
 
 teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), async (ctx) => {

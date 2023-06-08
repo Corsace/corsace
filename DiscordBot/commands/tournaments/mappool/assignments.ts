@@ -8,7 +8,7 @@ import { loginResponse } from "../../../functions/loginResponse";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import { extractParameters } from "../../../functions/parameterFunctions";
 import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
 import getStaff from "../../../functions/tournamentFunctions/getStaff";

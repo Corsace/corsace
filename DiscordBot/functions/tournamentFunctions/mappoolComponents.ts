@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, Message } from "discord.js";
-import { tournamentSearchConditions } from "../dbFunctions/getTournaments";
+import { tournamentSearchConditions } from "../../../Server/functions/get/getTournaments";
 import { Tournament, TournamentStatus } from "../../../Models/tournaments/tournament";
 import getTournament from "./getTournament";
 import getMappool from "./getMappool";

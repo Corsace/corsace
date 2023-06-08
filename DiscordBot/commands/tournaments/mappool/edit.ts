@@ -4,7 +4,7 @@ import respond from "../../../functions/respond";
 import { extractParameter } from "../../../functions/parameterFunctions";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import { loginResponse } from "../../../functions/loginResponse";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";

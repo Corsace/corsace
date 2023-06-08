@@ -11,7 +11,7 @@ import { acronymtoMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { randomUUID } from "crypto";
 import respond from "../../../functions/respond";
 import getRound from "../../../functions/tournamentFunctions/getRound";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import confirmCommand from "../../../functions/confirmCommand";

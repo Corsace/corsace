@@ -6,7 +6,7 @@ import { once } from "events";
 import { ChatInputCommandInteraction, ForumChannel, Message } from "discord.js";
 import { Beatmap as APIBeatmap} from "nodesu";
 import { CustomBeatmap } from "../../Models/tournaments/mappools/customBeatmap";
-import { deletePack } from "./tournamentFunctions/mappackFunctions";
+import { deletePack } from "../../Server/functions/tournaments/mappool/mappackFunctions";
 import { MappoolMapHistory } from "../../Models/tournaments/mappools/mappoolMapHistory";
 import { BeatmapParser } from "../../Server/beatmapParser";
 import getCustomThread from "./tournamentFunctions/getCustomThread";

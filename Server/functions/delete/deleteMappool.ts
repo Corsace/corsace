@@ -1,10 +1,10 @@
-import { Mappool } from "../../../Models/tournaments/mappools/mappool";
-import { deletePack } from "../tournamentFunctions/mappackFunctions";
+import archiveMapThreads from "../../../DiscordBot/functions/tournamentFunctions/archiveMapThreads";
+import { deletePack } from "../tournaments/mappool/mappackFunctions";
 import { CustomBeatmap } from "../../../Models/tournaments/mappools/customBeatmap";
 import { JobPost } from "../../../Models/tournaments/mappools/jobPost";
+import { Mappool } from "../../../Models/tournaments/mappools/mappool";
+import unlinkMap from "../tournaments/mappool/unlinkMap";
 import deleteMappoolMapHistory from "./deleteMappoolMapHistory";
-import unlinkMap from "../tournamentFunctions/unlinkMap";
-import archiveMapThreads from "../tournamentFunctions/archiveMapThreads";
 
 export default async function deleteMappool (mappool: Mappool) {
     await Promise.all(mappool.slots.flatMap(slot => slot.maps.map(map => archiveMapThreads(map))));

@@ -4,14 +4,14 @@ import { Command } from "../../index";
 import { loginResponse } from "../../../functions/loginResponse";
 import { buckets } from "../../../../Server/s3";
 import { gets3Key } from "../../../../Server/utils/s3";
-import { createPack, deletePack } from "../../../functions/tournamentFunctions/mappackFunctions";
+import { createPack, deletePack } from "../../../../Server/functions/tournaments/mappool/mappackFunctions";
 import { extractParameter } from "../../../functions/parameterFunctions";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import { unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import confirmCommand from "../../../functions/confirmCommand";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
 

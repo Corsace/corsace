@@ -7,7 +7,7 @@ import { securityChecks } from "../../../functions/tournamentFunctions/securityC
 import { Tournament, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import confirmCommand from "../../../functions/confirmCommand";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
 import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
@@ -17,7 +17,7 @@ import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot
 import { acronymtoMods } from "../../../../Interfaces/mods";
 import { User } from "../../../../Models/user";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
-import { deletePack } from "../../../functions/tournamentFunctions/mappackFunctions";
+import { deletePack } from "../../../../Server/functions/tournaments/mappool/mappackFunctions";
 import channelID from "../../../functions/channelID";
 
 async function run (m: Message | ChatInputCommandInteraction) {

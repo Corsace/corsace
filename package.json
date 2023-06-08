@@ -83,6 +83,7 @@
       "build:open": "cd ./Open && nuxt build",
       "build:api": "cross-env NODE_ENV=production tsc --project Server/tsconfig.json",
       "build:discord-bot": "cross-env NODE_ENV=production tsc --project DiscordBot/tsconfig.json",
+
       "ayim": "cd ./AYIM && nuxt start",
       "mca": "cd ./MCA && nuxt start",
       "main": "cd ./Main && nuxt start",

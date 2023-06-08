@@ -6,7 +6,7 @@ import { unFinishedTournaments } from "../../../Models/tournaments/tournament";
 import getTournament from "../../functions/tournamentFunctions/getTournament";
 import channelID from "../../functions/channelID";
 import { TournamentChannel, TournamentChannelType, forumTags } from "../../../Models/tournaments/tournamentChannel";
-import getUser from "../../functions/dbFunctions/getUser";
+import getUser from "../../../Server/functions/get/getUser";
 import commandUser from "../../functions/commandUser";
 import { loginResponse } from "../../functions/loginResponse";
 import confirmCommand from "../../functions/confirmCommand";

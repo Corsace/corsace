@@ -1,10 +1,10 @@
 
 import { Mappool } from "../../../Models/tournaments/mappools/mappool";
-import { deletePack } from "../tournamentFunctions/mappackFunctions";
 import deleteMappoolMapHistory from "./deleteMappoolMapHistory";
-import unlinkMap from "../tournamentFunctions/unlinkMap";
-import archiveMapThreads from "../tournamentFunctions/archiveMapThreads";
 import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
+import archiveMapThreads from "../../../DiscordBot/functions/tournamentFunctions/archiveMapThreads";
+import unlinkMap from "../tournaments/mappool/unlinkMap";
+import { deletePack } from "../tournaments/mappool/mappackFunctions";
 
 export default async function deleteMappoolMap (mappool: Mappool, mappoolMap: MappoolMap) {
     await archiveMapThreads(mappoolMap);

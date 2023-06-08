@@ -1,11 +1,11 @@
 import { Mappool } from "../../../Models/tournaments/mappools/mappool";
-import { deletePack } from "../tournamentFunctions/mappackFunctions";
 import { CustomBeatmap } from "../../../Models/tournaments/mappools/customBeatmap";
 import { JobPost } from "../../../Models/tournaments/mappools/jobPost";
 import deleteMappoolMapHistory from "./deleteMappoolMapHistory";
-import unlinkMap from "../tournamentFunctions/unlinkMap";
-import archiveMapThreads from "../tournamentFunctions/archiveMapThreads";
 import { MappoolSlot } from "../../../Models/tournaments/mappools/mappoolSlot";
+import archiveMapThreads from "../../../DiscordBot/functions/tournamentFunctions/archiveMapThreads";
+import unlinkMap from "../tournaments/mappool/unlinkMap";
+import { deletePack } from "../tournaments/mappool/mappackFunctions";
 
 export default async function deleteMappoolSlot (mappool: Mappool, slotMod: MappoolSlot) {
     await Promise.all(slotMod.maps.map(map => archiveMapThreads(map)));

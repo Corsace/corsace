@@ -7,7 +7,7 @@ import beatmapEmbed from "../../../functions/beatmapEmbed";
 import modeColour from "../../../functions/modeColour";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import respond from "../../../functions/respond";
-import getMappools from "../../../functions/dbFunctions/getMappools";
+import getMappools from "../../../../Server/functions/get/getMappools";
 import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
 import { extractParameters } from "../../../functions/parameterFunctions";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";

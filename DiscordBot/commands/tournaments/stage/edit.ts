@@ -3,7 +3,7 @@ import { Command } from "../../index";
 import respond from "../../../functions/respond";
 import channelID from "../../../functions/channelID";
 import { TournamentStatus } from "../../../../Models/tournaments/tournament";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import { loginResponse } from "../../../functions/loginResponse";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
