@@ -109,8 +109,8 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
     // if files is an array, get the first 
     const file = Array.isArray(files) ? files[0] : files;
     
-    // Check if the file is an image
-    if (!file.mimetype?.startsWith("image/")) {
+    // Check if the file is an image and not a gif
+    if (!file.mimetype?.startsWith("image/") || file.mimetype === "image/gif") {
         ctx.body = { error: "Invalid file type" };
         return;
     }

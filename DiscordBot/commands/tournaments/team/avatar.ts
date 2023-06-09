@@ -15,7 +15,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!link)
         return;
 
-    if (!link.endsWith(".png") && !link.endsWith(".jpg") && !link.endsWith(".jpeg") && !link.endsWith(".gif")) {
+    if (!link.endsWith(".png") && !link.endsWith(".jpg") && !link.endsWith(".jpeg")) {
         await respond(m, "Pleaseee provide a proper image OHG MYGODDD");
         return;
     }
