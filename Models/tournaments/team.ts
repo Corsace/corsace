@@ -49,6 +49,13 @@ export class Team extends BaseEntity {
             const pps = memberDatas.map(data => data.statistics.pp);
             const ranks = memberDatas.map(data => data.statistics.global_rank);
 
+            if (ranks.length === 0 || memberDatas.length === 0) {
+                this.pp = 0;
+                this.rank = 0;
+                this.BWS = 0;
+                return true;
+            }
+
             this.pp = pps.reduce((acc, rpp) => acc + rpp, 0);
             this.rank = ranks.reduce((acc, rpp) => acc + (rpp || 0), 0) / ranks.length;
             this.BWS = await memberDatas.reduce(async (acc, data) => {

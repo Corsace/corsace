@@ -25,10 +25,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .leftJoinAndSelect("team.tournaments", "tournament");
 
     if (!all) {
-        if (manager)
-            teamQ.where("manager.discordUserid = :discordUserID", { discordUserID: commandUser(m).id });
-        else
-            teamQ.where("member.discordUserid = :discordUserID", { discordUserID: commandUser(m).id });
+        teamQ.where("manager.discordUserid = :discordUserID", { discordUserID: commandUser(m).id });
+        if (!manager)
+            teamQ.orWhere("member.discordUserid = :discordUserID", { discordUserID: commandUser(m).id });
     }
 
     const teams = await teamQ.getMany();

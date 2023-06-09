@@ -173,7 +173,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         const tournamentServer = await discordClient.guilds.fetch(tournament.server);
         const discordMember = await tournamentServer.members.fetch(member.discord.userID);
         if (discordMember.roles.cache.some(r => unallowedRoles.some(tr => tr.roleID === r.id))) {
-            ctx.body = { error: `Member ${member.osu.username} is already registered in this tournament` };
+            ctx.body = { error: `Member ${member.osu.username} is not allowed to play in this tournament` };
             return;
         }
     }

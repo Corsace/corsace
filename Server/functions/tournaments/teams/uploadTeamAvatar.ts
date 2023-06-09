@@ -2,15 +2,23 @@ import Jimp from "jimp";
 import { promises } from "fs";
 import { Team } from "../../../../Models/tournaments/team";
 
+const SIZE_RESTRICTION = 256;
 
 export async function uploadTeamAvatar (team: Team, filepath: string) {
-    // Make the file size 256x256
+    // First resize the image where the smaller side is SIZE_RESTRICTIONpx if the image is larger than SIZE_RESTRICTIONpx
     const image = await Jimp.read(filepath);
-    const size = Math.min(Math.min(image.getWidth(), image.getHeight()), 256);
-    image
-        .contain(size, size)
-        .deflateLevel(3)
-        .quality(75);
+    if (image.getWidth() > SIZE_RESTRICTION || image.getHeight() > SIZE_RESTRICTION) {
+        if (image.getWidth() > image.getHeight())
+            image.resize(SIZE_RESTRICTION, Jimp.AUTO);
+        else
+            image.resize(Jimp.AUTO, SIZE_RESTRICTION);
+    }
+
+    // Then crop it to a SIZE_RESTRICTIONxSIZE_RESTRICTION square
+    const size = Math.min(Math.min(image.getWidth(), image.getHeight()), SIZE_RESTRICTION);
+    const x = Math.round((image.getWidth() - size) / 2);
+    const y = Math.round((image.getHeight() - size) / 2);
+    image.crop(x, y, size, size);
 
     // Check if any avatar in the public folder exists with the team's ID
     const oldAvatars = await promises.readdir("./public/avatars");
