@@ -26,7 +26,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const team = await getTeam(m, [name, commandUser(m).id], ["name", "managerDiscordID"]);
+    const team = await getTeam(m, name, "name", commandUser(m).id);
     if (!team)
         return;
 

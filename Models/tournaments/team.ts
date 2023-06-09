@@ -43,10 +43,27 @@ export class Team extends BaseEntity {
     @Column("double")
         pp!: number;
 
-    public async calculateStats () {
-        const rankpp = await Promise.all(this.members.map(m => m.getRankPP()));
-        this.pp = rankpp.reduce((acc, rpp) => acc + rpp[0], 0);
-        this.rank = rankpp.reduce((acc, rpp) => acc + (rpp[1] || 0), 0) / rankpp.length;
-        this.BWS = await this.members.reduce(async (acc, member) => (await acc) + (await member.getBWS()), Promise.resolve(0)) / this.members.length;
+    public async calculateStats (modeID = 1) {
+        try {
+            const memberDatas = await Promise.all(this.members.map(m => m.getOsuAPIV2Data()));
+            const pps = memberDatas.map(data => data.statistics.pp);
+            const ranks = memberDatas.map(data => data.statistics.global_rank);
+
+            this.pp = pps.reduce((acc, rpp) => acc + rpp, 0);
+            this.rank = ranks.reduce((acc, rpp) => acc + (rpp || 0), 0) / ranks.length;
+            this.BWS = await memberDatas.reduce(async (acc, data) => {
+                const memberBWS = Math.pow(data.statistics.global_rank, Math.pow(0.9937, Math.pow((await User.filterBWSBadges(data.badges, modeID)).length, 2)));
+                return (await acc) + memberBWS;
+            }, Promise.resolve(0)) / memberDatas.length;
+
+            return true;
+        } catch (e) {
+            this.pp = 0;
+            this.rank = 0;
+            this.BWS = 0;
+            console.log(e);
+            return false;
+        }
+            
     }
 }

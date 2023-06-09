@@ -57,6 +57,7 @@ teamRouter.get("/all", async (ctx) => {
 
 teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
     let { name, abbreviation } = ctx.request.body;
+    const isPlaying = ctx.request.body?.isPlaying;
 
     if (!name || !abbreviation) {
         ctx.body = { error: "Missing parameters" };
@@ -83,13 +84,16 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
     team.name = name;
     team.abbreviation = abbreviation;
     team.manager = ctx.state.user;
-    if (ctx.body.isPlaying)
+    team.members = [];
+    if (isPlaying)
         team.members = [ctx.state.user];
 
-    await team.calculateStats();
+    const err = await team.calculateStats();
     await team.save();
-
-    ctx.body = { success: "Team created", team };
+    if (!err)
+        ctx.body = { success: "Team created, but there was an error calculating stats. Please contact VINXIS", team, error: !err };
+    else
+        ctx.body = { success: "Team created", team, error: !err };
 });
 
 teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async (ctx) => {

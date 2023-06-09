@@ -368,19 +368,9 @@ export class User extends BaseEntity {
         return res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"];
     }
 
-    public async getRankPP (): Promise<[number, number?]> {
+    public async getOsuAPIV2Data () {
         const accessToken = this.osu.accessToken || await this.getAccessToken("osu");
-        const userData = await osuV2Client.getUserInfo(accessToken);
-        return [userData.statistics.pp, userData.statistics.global_rank];
-    }
-
-    public async getBWS (modeID = 1) {
-        const accessToken = this.osu.accessToken || await this.getAccessToken("osu");
-        const userData = await osuV2Client.getUserInfo(accessToken);
-        if (!userData.badges)
-            return 0;
-
-        return Math.pow(userData.statistics.global_rank, Math.pow(0.9937, Math.pow((await User.filterBWSBadges(userData.badges, modeID)).length, 2)));
+        return osuV2Client.getUserInfo(accessToken);
     }
 
     public getCondensedInfo (chosen = false): UserChoiceInfo {

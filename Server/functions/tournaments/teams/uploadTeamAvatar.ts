@@ -12,12 +12,13 @@ export async function uploadTeamAvatar (team: Team, filepath: string) {
         .deflateLevel(3)
         .quality(75);
 
-    // Remove previous avatar if it exists
-    if (team.avatarURL)
-        await promises.unlink(team.avatarURL);
+    // Check if any avatar in the public folder exists with the team's ID
+    const oldAvatars = await promises.readdir("./public/avatars");
+    const oldAvatar = oldAvatars.filter(avatar => avatar.startsWith(`${team.ID}_`));
+    await Promise.all(oldAvatar.map(avatar => promises.unlink(`./public/avatars/${avatar}`)));
 
     // Save the image
-    const avatarPath = `./public/avatars/${team.ID}.png?${Date.now()}`;
+    const avatarPath = `./public/avatars/${team.ID}_${Date.now()}.${image.getExtension()}`;
     await image.writeAsync(avatarPath);
 
     return avatarPath;

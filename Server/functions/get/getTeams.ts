@@ -21,7 +21,7 @@ export const teamSearchConditions = {
     },
 };
 
-export default async function getTeams (target: (string | number)[], searchType: (keyof typeof teamSearchConditions)[], getInvites?: boolean, getTournaments?: boolean) {
+export default async function getTeams (target: string | number, searchType: keyof typeof teamSearchConditions, getInvites?: boolean, getTournaments?: boolean) {
     const teamQ = Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
@@ -32,18 +32,14 @@ export default async function getTeams (target: (string | number)[], searchType:
 
     if (getTournaments)
         teamQ.leftJoinAndSelect("team.tournaments", "tournament");
-
-    if (target.length === 0 || searchType.length === 0 || target.length !== searchType.length)
-        return [];
         
-    for (let i = 0; i < target.length; i++)
-        if (searchType[i] === "name")
-            teamQ.andWhere(teamSearchConditions.name(target[i]), { target: `%${target[i]}%` });
-        else if (searchType[i] === "memberCorsaceID" || searchType[i] === "memberDiscordID") {
-            const type = searchType[i] as "memberCorsaceID" | "memberDiscordID";
-            teamQ.andWhere(teamSearchConditions[type](), { target: target[i] });
-        } else
-            teamQ.andWhere(teamSearchConditions[searchType[i]], { target: target[i] });
+    if (searchType === "name")
+        teamQ.andWhere(teamSearchConditions.name(target), { target: `%${target}%` });
+    else if (searchType === "memberCorsaceID" || searchType === "memberDiscordID") {
+        const type = searchType as "memberCorsaceID" | "memberDiscordID";
+        teamQ.andWhere(teamSearchConditions[type](), { target: target });
+    } else
+        teamQ.andWhere(teamSearchConditions[searchType], { target: target });
 
     return teamQ.getMany();
 }

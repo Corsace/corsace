@@ -44,6 +44,8 @@ import teamRouter from "./api/routes/team";
 import inviteRouter from "./api/routes/team/invite";
 
 import ormConfig from "../ormconfig";
+import serve from "koa-static";
+import path from "path";
 
 const koa = new Koa;
 
@@ -84,9 +86,8 @@ koa.use(koaCash({
 // Error handler
 koa.use(async (ctx, next) => {
     try {
-        if (ctx.originalUrl !== "/favicon.ico" && process.env.NODE_ENV === "development") {
+        if (ctx.originalUrl !== "/favicon.ico" && process.env.NODE_ENV === "development")
             console.log("\x1b[33m%s\x1b[0m", ctx.originalUrl);
-        }
 
         await next();
     } catch (err: any) {
@@ -107,6 +108,9 @@ koa.use(async (ctx, next) => {
         };
     }
 });
+
+// Public
+koa.use(Mount("/public", serve(path.join(__dirname, "../public"))));
 
 // General
 koa.use(Mount("/api/osuuri", osuURIRouter.routes()));

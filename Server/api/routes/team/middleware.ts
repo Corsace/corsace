@@ -1,5 +1,5 @@
 import { Next, ParameterizedContext } from "koa";
-import getTeams, { teamSearchConditions } from "../../../functions/get/getTeams";
+import getTeams from "../../../functions/get/getTeams";
 
 export function validateTeam (isManager?: boolean, invites?: boolean) {
     return async function (ctx: ParameterizedContext, next: Next) {
@@ -13,15 +13,7 @@ export function validateTeam (isManager?: boolean, invites?: boolean) {
             return;
         }
 
-        const targets: (string | number)[] = [parseInt(ID), ctx.state.user.ID];
-        const searchTypes: (keyof typeof teamSearchConditions)[] = ["ID"];
-
-        if (isManager)
-            searchTypes.push("managerCorsaceID");
-        else
-            searchTypes.push("memberCorsaceID");
-
-        const teams = await getTeams(targets, searchTypes, invites);
+        const teams = await getTeams(parseInt(ID), "ID", invites);
 
         if (teams.length !== 1) {
             ctx.body = {
