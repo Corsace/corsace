@@ -6,10 +6,18 @@ import getTeam from "../../../../functions/tournamentFunctions/getTeam";
 import commandUser from "../../../../functions/commandUser";
 import { inviteAcceptChecks } from "../../../../../Server/functions/tournaments/teams/inviteFunctions";
 import getTeamInvites from "../../../../../Server/functions/get/getTeamInvites";
+import getUser from "../../../../../Server/functions/get/getUser";
+import { loginResponse } from "../../../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
+
+    const user = await getUser(commandUser(m).id, "discord", false);
+    if (!user) {
+        await loginResponse(m);
+        return;
+    }
 
     const name = extractParameter(m, { name: "name", paramType: "string" }, 1);
     if (!name || typeof name !== "string") {
@@ -17,11 +25,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const team = await getTeam(m, name, "name", commandUser(m).id);
+    const team = await getTeam(m, name, "name", user.ID);
     if (!team)
         return;
 
-    const invites = await getTeamInvites(team.ID, "teamID", commandUser(m).id, "userID", true, true, true);
+    const invites = await getTeamInvites(team.ID, "teamID", user.ID, "userID", true, true, true);
     if (invites.length === 0) {
         await respond(m, `U haven't been invited to \`${team.name}\``);
         return;

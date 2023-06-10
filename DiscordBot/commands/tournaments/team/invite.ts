@@ -8,11 +8,19 @@ import getTeam from "../../../functions/tournamentFunctions/getTeam";
 import { User } from "../../../../Models/user";
 import getFromList from "../../../functions/getFromList";
 import { invitePlayer } from "../../../../Server/functions/tournaments/teams/inviteFunctions";
+import { loginResponse } from "../../../functions/loginResponse";
+import getUser from "../../../../Server/functions/get/getUser";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
         
+    const cmdUser = await getUser(commandUser(m).id, "discord", false);
+    if (!cmdUser) {
+        await loginResponse(m);
+        return;
+    }
+
     const params = extractParameters<parameters>(m, [
         { name: "team", paramType: "string", optional: true },
         { name: "user", paramType: "string", customHandler: extractTargetText },
@@ -22,7 +30,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { user, team } = params;
 
-    const tournamentTeam = await getTeam(m, team || commandUser(m).id, team ? "name" : "managerDiscordID", commandUser(m).id, true, true);
+    const tournamentTeam = await getTeam(m, team || cmdUser.ID, team ? "name" : "managerID", cmdUser.ID, true, true);
     if (!tournamentTeam)
         return;
     

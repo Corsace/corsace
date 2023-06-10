@@ -4,6 +4,8 @@ import { extractParameters } from "../../../functions/parameterFunctions";
 import { Team } from "../../../../Models/tournaments/team";
 import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
+import getUser from "../../../../Server/functions/get/getUser";
+import { loginResponse } from "../../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -25,9 +27,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .leftJoinAndSelect("team.tournaments", "tournament");
 
     if (!all) {
-        teamQ.where("manager.discordUserid = :discordUserID", { discordUserID: commandUser(m).id });
+        const user = await getUser(commandUser(m).id, "discord", false);
+        if (!user) {
+            await loginResponse(m);
+            return;
+        }
+
+        teamQ.where("manager.ID = :userID", { userID: user.ID });
         if (!manager)
-            teamQ.orWhere("member.discordUserid = :discordUserID", { discordUserID: commandUser(m).id });
+            teamQ.orWhere("member.ID = :userID", { userID: user.ID });
     }
 
     const teams = await teamQ.getMany();
@@ -47,7 +55,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
 const data = new SlashCommandBuilder()
     .setName("list_teams")
-    .setDescription("Lists tournament teams, default lists all teams you are in/")
+    .setDescription("Lists tournament teams, default lists all teams you are in")
     .addBooleanOption(option => 
         option.setName("all")
             .setDescription("List all tournament teams that exist (Default false)")

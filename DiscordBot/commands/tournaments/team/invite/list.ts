@@ -3,12 +3,20 @@ import { Command } from "../../../";
 import commandUser from "../../../../functions/commandUser";
 import respond from "../../../../functions/respond";
 import getTeamInvites from "../../../../../Server/functions/get/getTeamInvites";
+import getUser from "../../../../../Server/functions/get/getUser";
+import { loginResponse } from "../../../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const invites = await getTeamInvites(commandUser(m).id, "discordUserID", undefined, undefined, false, false, false, true);
+    const user = await getUser(commandUser(m).id, "discord", false);
+    if (!user) {
+        await loginResponse(m);
+        return;
+    }
+
+    const invites = await getTeamInvites(user.ID, "userID", undefined, undefined, false, false, false, true);
 
     const embed = new EmbedBuilder()
         .setTitle("Team Invites")

@@ -6,10 +6,18 @@ import respond from "../../../functions/respond";
 import { getLink } from "../../../functions/getLink";
 import commandUser from "../../../functions/commandUser";
 import getTeam from "../../../functions/tournamentFunctions/getTeam";
+import getUser from "../../../../Server/functions/get/getUser";
+import { loginResponse } from "../../../functions/loginResponse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
+
+    const user = await getUser(commandUser(m).id, "discord", false);
+    if (!user) {
+        await loginResponse(m);
+        return;
+    }
         
     const link = getLink(m, "avatar");
     if (!link)
@@ -26,7 +34,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const team = await getTeam(m, name, "name", commandUser(m).id);
+    const team = await getTeam(m, name, "name", user.ID);
     if (!team)
         return;
 
