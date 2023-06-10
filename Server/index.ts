@@ -62,7 +62,7 @@ koa.use(koaBody({
     patchKoa: true,
     multipart: true,
     formidable: {
-        maxFileSize: 10 * 1024 * 1024, // 10MB
+        maxFileSize: 5 * 1024 * 1024, // 5MB
         maxFields: 1,
     },
 }));
