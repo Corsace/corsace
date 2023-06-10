@@ -59,7 +59,7 @@ const data = new SlashCommandBuilder()
 
 const teamAvatar: Command = {
     data,
-    alternativeNames: ["avatar_team", "teams_avatar", "team_avatar", "avatar-teams", "avatar-team", "teams-avatar", "team-avatar", "teamsavatar", "teamavatar", "avatarteams", "avatarteam", "avatart", "tavatar", "teama", "teamsa", "ateam", "ateams", "ta", "at"],
+    alternativeNames: ["avatar_team", "teams_avatar", "avatar-teams", "avatar-team", "teams-avatar", "team-avatar", "teamsavatar", "teamavatar", "avatarteams", "avatarteam", "avatart", "tavatar", "teama", "teamsa", "ateam", "ateams", "ta", "at"],
     category: "tournaments",
     subCategory: "teams",
     run,

@@ -3,25 +3,31 @@ import { validateTeam } from "./middleware";
 import { isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
 import { User } from "../../../../Models/user";
-import { TeamInvite } from "../../../../Models/tournaments/teamInvite";
-import { TournamentStatus } from "../../../../Models/tournaments/tournament";
+import { inviteAcceptChecks, invitePlayer } from "../../../functions/tournaments/teams/inviteFunctions";
+import getTeamInvites from "../../../functions/get/getTeamInvites";
+
+type idType = "osu" | "discord" | "corsace";
+
+function isIdType (value: any): value is idType {
+    return value === "osu" || value === "discord" || value === "corsace";
+}
 
 const inviteRouter = new Router();
 
 inviteRouter.get("/:teamID", isLoggedInDiscord, validateTeam(false), async (ctx) => {
     const team: Team = ctx.state.team;
 
-    const invites = await TeamInvite
-        .createQueryBuilder("invite")
-        .leftJoin("invite.team", "team")
-        .leftJoinAndSelect("invite.user", "user")
-        .where("team.ID = :ID", { ID: team.ID })
-        .getMany();
+    const invites = await getTeamInvites(team.ID, "teamID");
 
-    ctx.body = { invites };
+    ctx.body = { invites: invites.map(i => {
+        return {
+            ...i,
+            team: undefined, // Redundant info
+        };
+    }) };
 });
 
-inviteRouter.post("/:teamID/invite", isLoggedInDiscord, validateTeam(true, true), async (ctx) => {
+inviteRouter.post("/:teamID", isLoggedInDiscord, validateTeam(true, true), async (ctx) => {
     const team: Team = ctx.state.team;
 
     const userID = ctx.request.body?.userID;
@@ -34,6 +40,10 @@ inviteRouter.post("/:teamID/invite", isLoggedInDiscord, validateTeam(true, true)
         ctx.body = { error: "Missing ID type" };
         return;
     }
+    if (!isIdType(idType)) {
+        ctx.body = { error: "Invalid ID type. Must be one of: osu, discord, corsace" };
+        return;
+    }
 
     let user: User | null = null;
     if (idType === "osu")
@@ -42,29 +52,18 @@ inviteRouter.post("/:teamID/invite", isLoggedInDiscord, validateTeam(true, true)
         user = await User.findOne({ where: { discord: { userID } } });
     else if (idType === "corsace")
         user = await User.findOne({ where: { ID: userID } });
-    else {
-        ctx.body = { error: "Invalid ID type" };
-        return;
-    }
 
     if (!user) {
         ctx.body = { error: "User not found" };
         return;
     }
 
-    if (team.members.some(m => m.ID === user?.ID) || team.manager.ID === user?.ID) {
-        ctx.body = { error: "User is already in the team" };
+    const invite = await invitePlayer(team, user);
+    if (typeof invite === "string") {
+        ctx.body = { error: invite };
         return;
     }
 
-    if (team.invites?.some(i => i.ID === user?.ID)) {
-        ctx.body = { error: "User is already invited" };
-        return;
-    }
-
-    const invite = new TeamInvite;
-    invite.team = team;
-    invite.user = user;
     await invite.save();
 
     ctx.body = { success: "User invited", invite };
@@ -72,35 +71,25 @@ inviteRouter.post("/:teamID/invite", isLoggedInDiscord, validateTeam(true, true)
 
 inviteRouter.post("/:teamID/accept", isLoggedInDiscord, async (ctx) => {
     const user: User = ctx.state.user;
-    const invite = await TeamInvite
-        .createQueryBuilder("invite")
-        .leftJoinAndSelect("invite.team", "team")
-        .leftJoinAndSelect("team.members", "member")
-        .leftJoinAndSelect("team.tournaments", "tournament")
-        .leftJoinAndSelect("tournament.roles", "role")
-        .leftJoin("invite.user", "user")
-        .where("team.ID = :ID", { ID: ctx.params.teamID })
-        .andWhere("user.discordUserid = :discordUserID", { discordUserID: user.discord.userID })
-        .getOne();
-
-    if (!invite) {
-        ctx.body = { error: "Invite not found" };
+    const invites = await getTeamInvites(ctx.params.teamID, "teamID", user.ID, "userID", true, true, true);
+    if (invites.length === 0) {
+        ctx.body = { error: "No invite found from this team to you" };
+        return;
+    }
+    if (invites.length > 1) {
+        ctx.body = { error: "Multiple invites found from this team to you. Contact VINXIS" };
         return;
     }
 
-    // Check if user is staff in any tournament the team is in, and if the team is in any tournament past the registration phase
-    const teamTournaments = invite.team.tournaments;
-    if (teamTournaments.some(t => t.status === TournamentStatus.Ongoing)) {
-        ctx.body = { error: "Team is already in an ongoing tournament" };
+    const invite = invites[0];
+
+    const check = await inviteAcceptChecks(invite);
+    if (check !== true) {
+        ctx.body = { error: check };
         return;
     }
 
     const team = invite.team;
-    if (team.members.length === 16) {
-        ctx.body = { error: "Team is full" };
-        return;
-    }
-
     team.members.push(user);
     await team.save();
 
@@ -111,20 +100,17 @@ inviteRouter.post("/:teamID/accept", isLoggedInDiscord, async (ctx) => {
 
 inviteRouter.post("/:teamID/decline", isLoggedInDiscord, async (ctx) => {
     const user: User = ctx.state.user;
-    const invite = await TeamInvite
-        .createQueryBuilder("invite")
-        .leftJoinAndSelect("invite.team", "team")
-        .leftJoinAndSelect("team.members", "member")
-        .leftJoin("invite.user", "user")
-        .where("team.ID = :ID", { ID: ctx.params.teamID })
-        .andWhere("user.discordUserid = :discordUserID", { discordUserID: user.discord.userID })
-        .getOne();
-
-    if (!invite) {
-        ctx.body = { error: "Invite not found" };
+    const invites = await getTeamInvites(ctx.params.teamID, "teamID", user.ID, "userID");
+    if (invites.length === 0) {
+        ctx.body = { error: "No invite found from this team to you" };
+        return;
+    }
+    if (invites.length > 1) {
+        ctx.body = { error: "Multiple invites found from this team to you. Contact VINXIS" };
         return;
     }
 
+    const invite = invites[0];
     await invite.remove();
 
     ctx.body = { success: "Invite declined" };
@@ -139,19 +125,17 @@ inviteRouter.post("/:teamID/cancel/:userID", isLoggedInDiscord, validateTeam(tru
         return;
     }
 
-    const invite = await TeamInvite
-        .createQueryBuilder("invite")
-        .leftJoin("invite.team", "team")
-        .leftJoin("invite.user", "user")
-        .where("team.ID = :ID", { ID: team.ID })
-        .andWhere("user.ID = :userID", { userID })
-        .getOne();
-
-    if (!invite) {
-        ctx.body = { error: "Invite not found" };
+    const invites = await getTeamInvites(team.ID, "teamID", userID, "userID");
+    if (invites.length === 0) {
+        ctx.body = { error: "No invite found from this team to this user" };
+        return;
+    }
+    if (invites.length > 1) {
+        ctx.body = { error: "Multiple invites found from this team to this user. Contact VINXIS" };
         return;
     }
 
+    const invite = invites[0];
     await invite.remove();
 
     ctx.body = { success: "Invite removed" };

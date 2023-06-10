@@ -40,7 +40,7 @@ export function validateTeam (isManager?: boolean, invites?: boolean) {
             };
             return;
         }
-        if (!isManager && !team.members.find(member => member.ID === ctx.state.user.ID)) {
+        if (!isManager && team.manager.ID !== ctx.state.user.ID && !team.members.find(member => member.ID === ctx.state.user.ID)) {
             ctx.body = {
                 success: false,
                 error: "You are not a member of this team",

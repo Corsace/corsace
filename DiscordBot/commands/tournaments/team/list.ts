@@ -21,7 +21,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const teamQ = Team
         .createQueryBuilder("team")
         .innerJoinAndSelect("team.manager", "manager")
-        .innerJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("team.tournaments", "tournament");
 
     if (!all) {

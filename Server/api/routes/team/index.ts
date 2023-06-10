@@ -160,6 +160,18 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         return;
     }
 
+    // Check if team member count is within the tournament's limits
+    if (tournament.maxTeamSize < team.members.length) {
+        ctx.body = { error: `Team has too many members (${team.members.length}). Maximum is ${tournament.maxTeamSize}` };
+        return;
+    } 
+    
+    if (tournament.minTeamSize > team.members.length) {
+        ctx.body = { error: `Team has too few members (${team.members.length}). Minimum is ${tournament.minTeamSize}` };
+        return;
+    }
+
+    // Role checks
     const tournamentMembers = tournament.teams.flatMap(t => [t.manager,...t.members]);
     const teamMembers = [team.manager, ...team.members];
 
@@ -203,7 +215,7 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
         .getMany();
 
     if (tournaments.some(t => t.status === TournamentStatus.Ongoing)) {
-        ctx.body = { error: "Team is already playing in a tournament" };
+        ctx.body = { error: "Team is currently playing in a tournament" };
         return;
     }
 

@@ -1,0 +1,88 @@
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
+import { Command } from "../../";
+import { extractParameters } from "../../../functions/parameterFunctions";
+import commandUser from "../../../functions/commandUser";
+import respond from "../../../functions/respond";
+import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
+import getTeam from "../../../functions/tournamentFunctions/getTeam";
+import { User } from "../../../../Models/user";
+import getFromList from "../../../functions/getFromList";
+import { invitePlayer } from "../../../../Server/functions/tournaments/teams/inviteFunctions";
+
+async function run (m: Message | ChatInputCommandInteraction) {
+    if (m instanceof ChatInputCommandInteraction)
+        await m.deferReply();
+        
+    const params = extractParameters<parameters>(m, [
+        { name: "team", paramType: "string", optional: true },
+        { name: "user", paramType: "string", customHandler: extractTargetText },
+    ]);
+    if (!params)
+        return;
+
+    const { user, team } = params;
+
+    const tournamentTeam = await getTeam(m, team || commandUser(m).id, team ? "name" : "managerDiscordID", commandUser(m).id, true, true);
+    if (!tournamentTeam)
+        return;
+    
+    const users = await User
+        .createQueryBuilder("user")
+        .where("user.osuUsername LIKE :username", { username: user })
+        .orWhere("user.osuUserID = :userID", { userID: user })
+        .getMany();
+
+    const baseUsers = users.map(u => {
+        return {
+            ID: u.ID,
+            name: u.osu.username,
+        };
+    });
+    const baseUser = await getFromList(m, baseUsers, "user", user);
+    if (!baseUser)
+        return;
+
+    const targetUser = users.find(u => u.ID === baseUser.ID);
+    if (!targetUser) {
+        await respond(m, "Something went wrong, this should never happen, contact VINXIS");
+        return;
+    }
+
+    const invite = await invitePlayer(tournamentTeam, targetUser);
+    if (typeof invite === "string") {
+        await respond(m, invite);
+        return;
+    }
+
+    await invite.save();
+    await respond(m, `Invited \`${targetUser.osu.username}\` to \`${tournamentTeam.name}\``);
+}
+
+const data = new SlashCommandBuilder()
+    .setName("team_invite")
+    .setDescription("Invite a player to your team")
+    .addStringOption(option => 
+        option.setName("user")
+            .setDescription("The osu! username you want to invite to the team")
+            .setRequired(true)
+    )
+    .addStringOption(option => 
+        option.setName("team")
+            .setDescription("The team you want to invite the player to")
+            .setRequired(false)
+    );
+
+interface parameters {
+    user: string,
+    team?: string,
+}
+
+const teamInvite: Command = {
+    data,
+    alternativeNames: ["invite_team", "teams_invite", "invite_teams", "invite-teams", "invite-team", "teams-invite", "team-invite", "teamsinvite", "teaminvite", "inviteteams", "inviteteam", "invitet", "tinvite", "teami", "teamsi", "iteam", "iteams"],
+    category: "tournaments",
+    subCategory: "teams",
+    run,
+};
+
+export default teamInvite;
