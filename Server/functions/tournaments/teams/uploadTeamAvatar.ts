@@ -1,6 +1,7 @@
 import Jimp from "jimp";
 import { promises } from "fs";
 import { Team } from "../../../../Models/tournaments/team";
+import { config } from "node-config-ts";
 
 const SIZE_RESTRICTION = 256;
 
@@ -26,8 +27,8 @@ export async function uploadTeamAvatar (team: Team, filepath: string) {
     await Promise.all(oldAvatar.map(avatar => promises.unlink(`./public/avatars/${avatar}`)));
 
     // Save the image
-    const avatarPath = `./public/avatars/${team.ID}_${Date.now()}.${image.getExtension()}`;
-    await image.writeAsync(avatarPath);
+    const avatarPath = `/public/avatars/${team.ID}_${Date.now()}.${image.getExtension()}`;
+    await image.writeAsync(`.${avatarPath}`);
 
-    return avatarPath;
+    return `${config.api.publicUrl}${avatarPath}`;
 }
