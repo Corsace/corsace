@@ -10,6 +10,8 @@ import getUser from "../../../functions/dbFunctions/getUser";
 import commandUser from "../../../functions/commandUser";
 import confirmCommand from "../../../functions/confirmCommand";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
+import channelID from "../../../functions/channelID";
+import { discordStringTimestamp, parseDateOrTimestamp } from "../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -18,8 +20,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const nameRegex = new RegExp(/-n ([a-zA-Z0-9_ ]{3,48})/);
-    const abbreviationRegex = new RegExp(/-a ([a-zA-Z0-9_]{1,8})/);
+    const nameRegex = new RegExp(/-n ([a-zA-Z0-9_ ]{5,48})/);
+    const abbreviationRegex = new RegExp(/-a ([a-zA-Z0-9_]{1,4})/);
     const dateRegex = new RegExp(/-d (\d{4}-\d{2}-\d{2}) (\d{4}-\d{2}-\d{2})/);
     const typeRegex = new RegExp(/-t ([a-zA-Z0-9_ ]{4,20})/);
     const scoringRegex = new RegExp(/-s ([a-zA-Z0-9_ ]{4,20})/);
@@ -30,14 +32,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const tournament = await getTournament(m, m.channelId, "channel", [TournamentStatus.NotStarted, TournamentStatus.Registrations], true);
+    const tournament = await getTournament(m, channelID(m), "channel", [TournamentStatus.NotStarted, TournamentStatus.Registrations], true);
     if (!tournament) 
         return;
 
     // Check for name validity
     const name = m instanceof Message ? nameRegex.exec(m.content)?.[1] : m.options.getString("name");
     if (!name) {
-        await respond(m, "Provide a valid name for ur stage, ur only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 3 and 50 characters long");
+        await respond(m, "Provide a valid name for ur stage, ur only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 5 and 48 characters long");
         return;
     }
     if (profanityFilter.test(name)) {
@@ -57,9 +59,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     // Confirm to understand the difference between a stage and a round
-    const confirm = await confirmCommand(m, "A stage consists of multiple rounds. Rounds consist of multiple matches.\n\n**FOR EXAMPLE:** `Knockout 1` that consists of `Round of 16`, `Quarter Finals`, `Semi Finals`, and `Finals` would be considered a stage with multiple rounds in it.\n`Round of 16` is considered as a round WITHIN a stage.\n\nPleaseeeee make sure u understand that what ur creating right now is a **stage** and not a **round**.\nDo u understand the difference, and that ur creating a stage, that will create subsequent rounds, and **NOT** a specific round?");
+    const confirm = await confirmCommand(m, "**PLEASEEE MAKE SURE U UNDERSTAND UR MAKING A STAGE AND NOT A ROUND**\nA **stage** would **encapsulate the entire bracket**\nA **round** would be considered **part of a bracket**\nRound of 16/Quarter Finals/Finals are **rounds**\nQualifiers/Round Robin/Knockout are **stages**\n\nDo u understand the difference, and that ur creating a stage, that could create rounds within it, and **NOT** a specific round?");
     if (!confirm) {
-        await respond(m, "Ok Lol .");
+        await respond(m, "Come back when u can read i guess idk...");
         return;
     }
 
@@ -71,7 +73,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Check for abbreviation validity
     const abbreviation = m instanceof Message ? abbreviationRegex.exec(m.content)?.[1] : m.options.getString("abbreviation");
     if (!abbreviation) {
-        await respond(m, "Provide a valid abbreviation for ur stage, ur only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 1 and 8 characters long");
+        await respond(m, "Provide a valid abbreviation for ur stage, ur only allowed the following characters: a-z, A-Z, 0-9, and _. The abbreviation must be between 1 and 4 characters long");
         return;
     }
     if (tournament.stages.find(s => s.abbreviation.toLowerCase() === abbreviation.toLowerCase())) {
@@ -84,6 +86,23 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
     stage.abbreviation = abbreviation;
 
+    // Check for type validity
+    let stageType = m instanceof Message ? typeRegex.exec(m.content)?.[1] : m.options.getString("type");
+    if (!stageType) {
+        await respond(m, "Provide a valid type for ur stage what are u doing");
+        return;
+    }
+    stageType = stageType.replace(/\s/g, "").charAt(0).toUpperCase() + stageType.replace(/\s/g, "").slice(1);
+    if (StageType[stageType] === undefined) {
+        await respond(m, "DUDE????? Provide a valid type for ur stage");
+        return;
+    }
+    if (StageType[stageType] === StageType.Qualifiers && tournament.stages.find(s => s.stageType === StageType.Qualifiers)) {
+        await respond(m, "There can only be 1 qualifier stage and u already have 1");
+        return;
+    }
+    stage.stageType = StageType[stageType];
+
     // Check for stage date validity
     const startText = m instanceof Message ? dateRegex.exec(m.content)?.[1] : m.options.getString("start");
     const endText = m instanceof Message ? dateRegex.exec(m.content)?.[2] : m.options.getString("end");
@@ -91,13 +110,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Provide a valid start and end date for ur stage! The format is `YYYY-MM-DD` or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
         return;
     }
-    const start = new Date(startText.includes("-") ? startText : parseInt(startText + "000"));
-    const end = new Date(endText.includes("-") ? endText : parseInt(endText + "000"));
+    const start = new Date(parseDateOrTimestamp(startText));
+    const end = new Date(parseDateOrTimestamp(endText));
     if (isNaN(start.getTime()) || isNaN(end.getTime()) || start.getTime() > end.getTime()) {
         await respond(m, "Invalid timespan. Provide 2 dates in consecutive order.\n\n(e.g. `2021-01-01 2021-01-02`)");
         return;
     }
-    if (start.getTime() < tournament.registrations.end.getTime() || end.getTime() < tournament.registrations.end.getTime()) {
+    if (StageType[stageType] !== StageType.Qualifiers && (start.getTime() < tournament.registrations.end.getTime() || end.getTime() < tournament.registrations.end.getTime())) {
         await respond(m, "The stage overlaps with registrations. It's recommended to have between 2 weeks between registration end and the first stage's start in order to screen players as necessary");
         return;
     }
@@ -113,7 +132,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        // If the timestamp is after the stage's start, the order is increased, if the timestamp is after the stage's end, break the loop
+        // If the timestamp is after the stage's start, the order is increased
         if (s.timespan.start.getTime() < start.getTime())
             order++;
     }
@@ -123,19 +142,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
         start,
         end,
     };
-
-    // Check for type validity
-    let stageType = m instanceof Message ? typeRegex.exec(m.content)?.[1] : m.options.getString("type");
-    if (!stageType) {
-        await respond(m, "Provide a valid type for ur stage what are u doing");
-        return;
-    }
-    stageType = stageType.replace(/\s/g, "").charAt(0).toUpperCase() + stageType.replace(/\s/g, "").slice(1);
-    if (!StageType[stageType]) {
-        await respond(m, "DUDE????? Provide a valid type for ur stage");
-        return;
-    }
-    stage.stageType = StageType[stageType];
 
     // Check for scoring method validity
     let scoringMethod = m instanceof Message ? scoringRegex.exec(m.content)?.[1] : m.options.getString("scoring_method");
@@ -175,7 +181,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     // Generate rounds if single/double elimination
     stage.rounds = [];
-    if (stage.stageType === StageType.SingleElimination || stage.stageType === StageType.DoubleElimination) {
+    if (stage.stageType === StageType.Singleelimination || stage.stageType === StageType.Doubleelimination) {
         const rounds: Round[] = [];
         let roundSize = stage.initialSize;
         if (Math.log2(roundSize) % 1 !== 0) {
@@ -204,7 +210,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
             roundSize /= 2;
 
-            if (roundSize === 1 && stage.stageType === StageType.DoubleElimination) {
+            if (roundSize === 1 && stage.stageType === StageType.Doubleelimination) {
                 const round = new Round();
                 round.name = "Grand Finals";
                 round.abbreviation = "GF";
@@ -243,7 +249,7 @@ async function stageDone (m: Message | ChatInputCommandInteraction, stage: Stage
 
     const embed = new EmbedBuilder()
         .setTitle(stage.name)
-        .setDescription(`<t:${stage.timespan.start.getTime() / 1000}:F> - <t:${stage.timespan.end.getTime() / 1000}:F> (<t:${stage.timespan.start.getTime() / 1000}:R> - <t:${stage.timespan.end.getTime() / 1000}:R>)`)
+        .setDescription(`${discordStringTimestamp(stage.timespan.start)} → ${discordStringTimestamp(stage.timespan.end)}`)
         .addFields(
             { name: "Stage ID", value: stage.ID.toString(), inline: true },
             { name: "Stage Type", value: StageType[stage.stageType], inline: true },
@@ -266,18 +272,22 @@ const data = new SlashCommandBuilder()
         option.setName("name")
             .setDescription("The name of the stage.")
             .setRequired(true)
-            .setMinLength(3)
+            .setMinLength(5)
             .setMaxLength(48))
     .addStringOption((option) =>
         option.setName("abbreviation")
             .setDescription("The abbreviation of the stage.")
             .setRequired(true)
             .setMinLength(1)
-            .setMaxLength(8))
+            .setMaxLength(4))
     .addStringOption((option) =>
         option.setName("type")
             .setDescription("The type of the stage.")
             .addChoices(
+                {
+                    name: "Qualifiers",
+                    value: "Qualifiers",
+                },
                 {
                     name: "Single Elimination",
                     value: "SingleElimination",

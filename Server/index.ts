@@ -9,6 +9,8 @@ import Session from "koa-session";
 import { cache } from "./cache";
 import { setupPassport } from "./passportFunctions";
 
+import osuURIRouter from "./api/routes/osuuri";
+
 import logoutRouter from "./api/routes/login/logout";
 import discordRouter from "./api/routes/login/discord";
 import osuRouter from "./api/routes/login/osu";
@@ -97,6 +99,7 @@ koa.use(async (ctx, next) => {
 });
 
 // General
+koa.use(Mount("/api/osuuri", osuURIRouter.routes()));
 
 /// Login
 koa.use(Mount("/api/login/discord", discordRouter.routes()));

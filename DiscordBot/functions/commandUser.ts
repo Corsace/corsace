@@ -1,6 +1,6 @@
-import { ChatInputCommandInteraction, Message } from "discord.js";
+import { ChatInputCommandInteraction, Message, MessageComponentInteraction } from "discord.js";
 
-export default function commandUser (m: Message | ChatInputCommandInteraction) {
+export default function commandUser (m: Message | ChatInputCommandInteraction | MessageComponentInteraction) {
     if (m instanceof Message)
         return m.author;
     else

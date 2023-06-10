@@ -14,14 +14,16 @@ import mappoolComponents from "../../../functions/tournamentFunctions/mappoolCom
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
+import channelID from "../../../functions/channelID";
+import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
     const params = extractParameters<parameters>(m, [
-        { name: "pool", regex: /-p (\S+)/, regexIndex: 1, optional: true },
-        { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder, optional: true },
+        { name: "pool", paramType: "string", optional: true },
+        { name: "slot", paramType: "string", postProcess: postProcessSlotOrder, optional: true },
     ]);
     if (!params)
         return;
@@ -29,7 +31,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { pool, slot, order } = params;
     if (!pool) {
         // Get a list of the tournament's mappools instead
-        const tournament = await getTournament(m);
+        const tournament = await getTournament(m, channelID(m), "channel");
         if (!tournament) 
             return;
 
@@ -56,7 +58,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const components = await mappoolComponents(m, pool, slot || true, order || true, undefined, undefined, undefined, undefined, undefined, true);
+    const components = await mappoolComponents(m, pool, slot || true, order || true, undefined, { text: channelID(m), searchType: "channel" }, undefined, undefined, undefined, true);
     if (!components || !("mappool" in components))
         return;
 
@@ -149,7 +151,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slotMod.allowedMods ?? 0)), modsToAcronym(slotMod.allowedMods ?? 0), set);
         mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
         
-        await respond(m, `Info for **${mappoolSlot}**:\n\n${mappoolMap.customThreadID ? `Thread: <#${mappoolMap.customThreadID}>\n` : ""}${mappoolMap.deadline ? `Deadline: <t:${mappoolMap.deadline!.getTime() / 1000}:F> (<t:${mappoolMap.deadline!.getTime() / 1000}:R>)` : ""}`, [mappoolMapEmbed]);
+        await respond(m, `Info for **${mappoolSlot}**:\n\n${mappoolMap.customThreadID ? `Thread: <#${mappoolMap.customThreadID}>\n` : ""}${mappoolMap.deadline ? `Deadline: ${discordStringTimestamp(mappoolMap.deadline)}` : ""}`, [mappoolMapEmbed]);
         return;
     }
 

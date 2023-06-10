@@ -15,18 +15,19 @@ import { extractTargetText } from "../../../../functions/tournamentFunctions/par
 import mappoolComponents from "../../../../functions/tournamentFunctions/mappoolComponents";
 import { unFinishedTournaments } from "../../../../../Models/tournaments/tournament";
 import channelID from "../../../../functions/channelID";
+import { discordStringTimestamp } from "../../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    if (!await securityChecks(m, true, false, [TournamentChannelType.Admin], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
+    if (!await securityChecks(m, true, false, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Jobboard], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
         return;
 
     const params = extractParameters<parameters>(m, [
-        { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
-        { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder },
-        { name: "description", customHandler: extractTargetText(3) },
+        { name: "pool", paramType: "string" },
+        { name: "slot", paramType: "string", postProcess: postProcessSlotOrder },
+        { name: "description", paramType: "string", customHandler: extractTargetText },
     ]);
     if (!params)
         return;
@@ -75,7 +76,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        await msg.edit(`**ENDS AT <t:${mappoolMap.jobPost.deadline!.getTime() / 1000}:F> (<t:${mappoolMap.jobPost.deadline!.getTime() / 1000}:R>)**\n\n${description}`);
+        await msg.edit(`**ENDS AT ${discordStringTimestamp(mappoolMap.jobPost.deadline!)}**\n\n${description}`);
     }
 
     await mappoolMap.jobPost.save();
@@ -112,7 +113,7 @@ interface parameters {
 
 const job: Command = {
     data,
-    alternativeNames: [ "job_mappool", "mappool-job", "job-mappool", "mappooljob", "jobmappool", "jobp", "pjob", "pool_job", "job_pool", "pool-job", "job-pool", "pooljob", "jobpool", "mappool_j", "j_mappool", "mappool-j", "j-mappool", "mappoolj", "jmappool", "jp", "pj", "pool_j", "j_pool", "pool-j", "j-pool", "poolj", "jpool", "job_add", "add_job", "job-add", "add-job", "jobadd", "addjob", "addj", "jadd", "job_a", "a_job", "job-a", "a-job", "joba", "ajob", "aj", "ja", "job", "j", "job_edit", "edit_job", "job-edit", "edit-job", "jobedit", "editjob", "editj", "jedit", "job_e", "e_job", "job-e", "e-job", "jobe", "ejob", "ej", "je", "job", "j" ],
+    alternativeNames: [ "job_mappool", "mappool-job", "job-mappool", "mappooljob", "jobmappool", "jobp", "pjob", "pool_job", "job_pool", "pool-job", "job-pool", "pooljob", "jobpool", "mappool_j", "j_mappool", "mappool-j", "j-mappool", "mappoolj", "jmappool", "jp", "pj", "pool_j", "j_pool", "pool-j", "j-pool", "poolj", "jpool", "job_add", "add_job", "job-add", "add-job", "jobadd", "addjob", "addj", "jadd", "job_a", "a_job", "job-a", "a-job", "joba", "ajob", "aj", "ja", "j", "job_edit", "edit_job", "job-edit", "edit-job", "jobedit", "editjob", "editj", "jedit", "job_e", "e_job", "job-e", "e-job", "jobe", "ejob", "ej", "je" ],
     category: "tournaments",
     subCategory: "mappools/jobs",
     run,

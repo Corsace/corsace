@@ -107,6 +107,7 @@
       "lintfix": "eslint --fix --ext .ts,.vue --ignore-path .gitignore .",
 
       "concatNoms": "ts-node ./Server/scripts/concatNoms.ts",
+      "duplicateCommands": "ts-node ./Server/scripts/duplicateCommands.ts",
       "updateLanguages": "ts-node ./Server/scripts/updateLanguages.ts",
       "fetchMaps": "ts-node ./Server/scripts/fetchYearMaps.ts",
 

@@ -36,11 +36,13 @@ function optionParser (options: APIApplicationCommandOption[] | undefined): stri
     subCommandOptionsArray.forEach(subCommandOptionArray => {
         if (sharedOptions.length === 0)
             sharedOptions.push(...subCommandOptionArray);
-        else
-            sharedOptions.forEach(sharedOption => {
+        else {
+            const sharedOptionsCopy = [...sharedOptions];  // Create a copy of sharedOptions
+            sharedOptionsCopy.forEach(sharedOption => {
                 if (!subCommandOptionArray.includes(sharedOption))
                     sharedOptions.splice(sharedOptions.indexOf(sharedOption), 1);
             });
+        }
     });
 
     // Remove the shared options from the subcommand options, and add them to the command options
@@ -68,7 +70,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             name: "corsace",
             iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined,
         },
-        description: "**Most commands have other forms as well for convenience!**\n\n**Do `!help <command>` for more information about the command!**\nHelp information format: `(cmd|names) <args> [optional args]`",
+        description: "**Most commands have other forms as well for convenience!**\n\n**Do `!help <command>` for more information about the command!**\nHelp information format: `(cmd|names) <args> [optional args]`\n\nWrap args around in quotes if they have spaces within them.\n**Example:** `\"2024-01-01 3:00:00\"`",
         color: 0xFB2475,
         fields: [{
             name: "categories:",

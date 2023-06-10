@@ -5,6 +5,7 @@ import mappoolLog from "../../functions/tournamentFunctions/mappoolLog";
 import respond from "../../functions/respond";
 import confirmCommand from "../../functions/confirmCommand";
 import { mappoolComponentsThreadType } from "../../functions/tournamentFunctions/mappoolComponentsThread";
+import { parseDateOrTimestamp, discordStringTimestamp } from "../../../Server/utils/dateParse";
 
 export async function jobBoardCreate (t: ThreadChannel, { m, creator, tournament, mappoolMap }: mappoolComponentsThreadType) {
     let jobPost = new JobPost();
@@ -25,7 +26,7 @@ export async function jobBoardCreate (t: ThreadChannel, { m, creator, tournament
     jobPost.description = starterMessage.content;
 
     if (jobPost.deadline) {
-        await m.channel.send(`This job already has a deadline. Do u wanna use its deadline? If so, reply \`yes\` or \`y\` If not, provide the date in YYYY-MM-DD or a unix/epoch timestamp.\n\n${jobPost.deadline ? `<t:${jobPost.deadline.getTime() / 1000}:F> (<t:${jobPost.deadline.getTime() / 1000}:R>)` : "**N/A**"}`);
+        await m.channel.send(`This job already has a deadline. Do u wanna use its deadline? If so, reply \`yes\` or \`y\` If not, provide the date in YYYY-MM-DD or a unix/epoch timestamp.\n\n${jobPost.deadline ? discordStringTimestamp(jobPost.deadline) : "**N/A**"}`);
         
         const filter = (msg: Message) => msg.author.id === creator.discord.userID;
         const collected = await m.channel.awaitMessages({ filter, max: 1, time: 60000, errors: ["time"] });
@@ -34,7 +35,7 @@ export async function jobBoardCreate (t: ThreadChannel, { m, creator, tournament
             return;
         
         if (response.content.toLowerCase() === "yes" || response.content.toLowerCase() === "y") {
-            const date = new Date(response.content.includes("-") ? response.content : parseInt(response.content + "000"));
+            const date = new Date(parseDateOrTimestamp(response.content));
             if (isNaN(date.getTime()) || date.getTime() < Date.now()) {
                 m.channel.send("Invalid date.");
                 return;

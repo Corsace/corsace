@@ -22,7 +22,7 @@ The values in your personal `config/user/$USER.json` config file will be referre
 
 `config.osu.v1.apiKey`
 
-You can obtain your osu! API V1 key at [https://osu.ppy.sh/p/api/]
+You can obtain your osu! API V1 key [here](https://osu.ppy.sh/p/api/)
 
 ```
 config.osu.v2.clientId

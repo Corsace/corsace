@@ -28,8 +28,10 @@ export default function getMappools (tournament: Tournament, poolText = "", getS
     return mappoolQ
         .where("stage.tournament = :tournament")
         .andWhere(new Brackets(qb => {
-            qb.where("mappool.name LIKE :criteria")
-                .orWhere("mappool.abbreviation LIKE :criteria");
+            if (poolText.length <= 4)
+                qb.where("mappool.abbreviation LIKE :criteria");
+            else
+                qb.where("mappool.name LIKE :criteria");
         }))
         .setParameters({
             tournament: tournament.ID,

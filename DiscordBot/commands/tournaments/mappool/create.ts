@@ -16,6 +16,8 @@ import commandUser from "../../../functions/commandUser";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import confirmCommand from "../../../functions/confirmCommand";
 import channelID from "../../../functions/channelID";
+import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
+import { profanityFilter } from "../../../../Interfaces/comment";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -49,7 +51,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     mappool.targetSR = targetSR;
 
     // If the stage is an elmination-type stage, then check if they want to make a mappool for a specific round for the stage; otherwise, just make a mappool for the stage
-    if ((stage.stageType === StageType.DoubleElimination || stage.stageType === StageType.SingleElimination) && await confirmCommand(m, `Is this for a specific round in ${stage.abbreviation}?\n**If it's for the entire stage, select No**`)) {
+    if ((stage.stageType === StageType.Doubleelimination || stage.stageType === StageType.Singleelimination) && await confirmCommand(m, `Is this for a specific round in ${stage.abbreviation}?\n**If it's for the entire stage, select No**`)) {
         // Ask if they want to make a mappool for a specific round, or just for the stage
         const round = await getRound(m, stage);
         if (round)
@@ -168,13 +170,24 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
         }
         const abbreviation = split[split.length - 1];
         const name = split.slice(0, split.length - 1).join(" ");
-        if (name.length > 50 || name.length < 3) {
-            const reply = await msg.reply("The name must be between 3 and 50 characters");
+        if (name.length > 50 || name.length < 5) {
+            const reply = await msg.reply("The name must be between 5 and 50 characters");
             setTimeout(async () => (await reply.delete()), 5000);
             return;
         }
-        if (abbreviation.length > 8 || abbreviation.length < 1) {
-            const reply = await msg.reply("The abbreviation must be between 1 and 8 characters");
+        if (abbreviation.length > 4 || abbreviation.length < 1) {
+            const reply = await msg.reply("The abbreviation must be between 1 and 4 characters");
+            setTimeout(async () => (await reply.delete()), 5000);
+            return;
+        }
+
+        if (profanityFilter.test(name)) {
+            const reply = await msg.reply("The name is sus . Change it to something more appropriate");
+            setTimeout(async () => (await reply.delete()), 5000);
+            return;
+        }
+        if (profanityFilter.test(abbreviation)) {
+            const reply = await msg.reply("The abbreviation is sus . Change it to something more appropriate");
             setTimeout(async () => (await reply.delete()), 5000);
             return;
         }
@@ -253,7 +266,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             stopped = true;
             componentCollector.stop();
             slotNameCollector.stop();
-            await mappoolDone(m, mappool);
+            await mappoolDone(m, mappool, tournament);
             return;
         }
     });
@@ -357,7 +370,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             if (uniqueModCount !== 0) slot.uniqueModCount = uniqueModCount;
 
             mappoolSlotsMade.push(slot);
-            newSlots += `\n${acronym} ${slotName.join(" ")} ${mapCount} maps ${modNum !== undefined ? `with ${modsToAcronym(modNum)} mods` : ""}${userModCount ? ` with ${userModCount} mod${userModCount > 1 ? "s" : ""} per user` : ""}${uniqueModCount ? ` with ${uniqueModCount} unique mod${uniqueModCount > 1 ? "s" : ""}` : ""}`;
+            newSlots += `\n${acronym} ${slotName.join(" ")} ${mapCount} map${mapCount > 1 ? "s" : ""} ${modNum !== undefined ? `with ${modsToAcronym(modNum)} mods` : ""}${userModCount ? ` with ${userModCount} mod${userModCount > 1 ? "s" : ""} per user` : ""}${uniqueModCount ? ` with ${uniqueModCount} unique mod${uniqueModCount > 1 ? "s" : ""}` : ""}`;
         }
 
         // Check for duplicate slot names/abbreviations
@@ -398,7 +411,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
     slotNameCollector.on("end", () => timedOut(slotMessage, stopped, "Mappool creation"));
 }
 
-async function mappoolDone (m: Message, mappool: Mappool) {
+async function mappoolDone (m: Message, mappool: Mappool, tournament: Tournament) {
     await mappool.save();
     for (const slot of mappool.slots) {
         slot.mappool = mappool;
@@ -409,7 +422,7 @@ async function mappoolDone (m: Message, mappool: Mappool) {
         }
     }
 
-    await m.reply("U did it u made the mappool\nHere's the mappool embed:");
+    await m.reply("U did it u made a mappool\nHere's the mappool embed:");
     const embed = new EmbedBuilder()
         .setTitle(`${mappool.name} (${mappool.abbreviation.toUpperCase()})`)
         .setDescription(`Target SR: ${mappool.targetSR}`)
@@ -417,11 +430,14 @@ async function mappoolDone (m: Message, mappool: Mappool) {
             mappool.slots.map((slot) => {
                 return {
                     name: `${slot.acronym} - ${slot.name}`,
-                    value: `${slot.maps.length} maps`,
+                    value: `${slot.maps.length} map${slot.maps.length > 1 ? "s" : ""}`,
                 };
             }));
 
-    await m.channel!.send({ embeds: [embed] });
+    await Promise.all([
+        m.channel!.send({ embeds: [embed] }),
+        mappoolLog(tournament, "mappoolCreate", mappool.createdBy, `Created mappool ${mappool.name} (${mappool.abbreviation.toUpperCase()})`),
+    ]);
 }
 
 const data = new SlashCommandBuilder()

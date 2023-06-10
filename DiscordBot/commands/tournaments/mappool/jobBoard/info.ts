@@ -15,7 +15,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    if (!await securityChecks(m, true, false, [TournamentChannelType.Admin], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
+    if (!await securityChecks(m, true, false, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Jobboard], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
         return;
 
     const all = m instanceof Message ? m.content.includes("-a") : m.options.getBoolean("all");
@@ -23,8 +23,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         m.content = m.content.replace("-a", "");
 
     const params = extractParameters<parameters>(m, [
-        { name: "pool", regex: /-p (\S+)/, regexIndex: 1 },
-        { name: "slot", regex: /-s (\S+)/, regexIndex: 1, postProcess: postProcessSlotOrder, optional: true },
+        { name: "pool", paramType: "string" },
+        { name: "slot", paramType: "string", postProcess: postProcessSlotOrder, optional: true },
     ]);
     if (!params)
         return;
@@ -67,7 +67,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     jobBoardEmbed.setFields(mappool.slots.map(slot => {
         return {
             name: `**${slot.name}**`,
-            value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.jobPost && (all ? true : !map.jobPost.jobBoardThread) ? map.jobPost.description : "N/A"}`).join("\n\n"),
+            value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.jobPost && (all ? true : !map.jobPost.jobBoardThread) ? map.jobPost.description : map.jobPost?.jobBoardThread ? "**PUBLISHED**" : "N/A"}`).join("\n\n"),
         };
     }));
 

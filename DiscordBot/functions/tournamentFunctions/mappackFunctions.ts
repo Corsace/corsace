@@ -62,7 +62,13 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
 }
 
 export async function deletePack (bucket: "mappacks" | "mappacksTemp", mappool: Mappool) {
+    if (!mappool.mappackLink)
+        return;
+
     const s3Key = gets3Key(bucket, mappool);
     if (s3Key)
         await buckets[bucket].deleteObject(s3Key);
+    
+    mappool.mappackLink = mappool.mappackExpiry = null;
+    await mappool.save();
 }

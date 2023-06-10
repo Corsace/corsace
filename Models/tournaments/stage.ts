@@ -7,9 +7,9 @@ import { User } from "../user";
 
 export enum StageType {
     Qualifiers,
-    SingleElimination,
-    DoubleElimination,
-    RoundRobin,
+    Singleelimination,
+    Doubleelimination,
+    Roundrobin,
     Swiss,
 }
 
@@ -45,7 +45,7 @@ export class Stage extends BaseEntity {
     @Column()
         order!: number;
 
-    @Column({ type: "enum", enum: StageType, default: StageType.DoubleElimination })
+    @Column({ type: "enum", enum: StageType, default: StageType.Doubleelimination })
         stageType!: StageType;
 
     @Column({ type: "enum", enum: ScoringMethod, default: ScoringMethod.ScoreV2 })

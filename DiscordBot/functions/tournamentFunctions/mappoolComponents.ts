@@ -18,10 +18,9 @@ type optionalComponents = { stage?: Stage, staff?: User };
 type TournamentOnly = { tournament: Tournament };
 type TournamentAndMappool = { tournament: Tournament, mappool: Mappool };
 type TournamentMappoolAndSlotMod = { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot };
-type TournamentMappoolSlotModAndMap = { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot, mappoolMap: MappoolMap, mappoolSlot: string };
 type AllComponents = { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot, mappoolMap: MappoolMap, mappoolSlot: string };
 
-export type MappoolComponentsType = (TournamentOnly | TournamentAndMappool | TournamentMappoolAndSlotMod | TournamentMappoolSlotModAndMap | AllComponents) & optionalComponents;
+export type MappoolComponentsType = (TournamentOnly | TournamentAndMappool | TournamentMappoolAndSlotMod | AllComponents) & optionalComponents;
 
 export default async function mappoolComponents (
     m: Message | ChatInputCommandInteraction,
@@ -49,7 +48,7 @@ export default async function mappoolComponents (
 
     let stage: Stage | undefined = undefined;
     if (getStageRound) {
-        stage = await getStage(m, tournament, false, pool ?? tournamentSearchParameters?.text, pool ? "name" : "tournamentID");
+        stage = await getStage(m, tournament, false, pool ?? tournament.ID, pool ? "name" : "tournamentID");
         if (!stage)
             return;
     }
@@ -66,7 +65,7 @@ export default async function mappoolComponents (
         return { tournament, stage, staff };
 
     // Get mappool
-    const mappool = await getMappool(m, tournament, pool, false, slot !== undefined, slot !== undefined && map !== undefined);
+    const mappool = await getMappool(m, tournament, pool, getStageRound, slot !== undefined, slot !== undefined && map !== undefined);
     if (!mappool) 
         return;
     if (checkPublic && mappool.isPublic) {

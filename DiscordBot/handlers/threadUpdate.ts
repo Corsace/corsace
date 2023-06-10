@@ -3,6 +3,7 @@ import { discordClient } from "../../Server/discord";
 import { TournamentChannel } from "../../Models/tournaments/tournamentChannel";
 import { threadCommands } from "../commands";
 import mappoolComponentsThread from "../functions/tournamentFunctions/mappoolComponentsThread";
+import { threadNameRegex } from "../functions/tournamentFunctions/getCustomThread";
 
 export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel) {
     // Don't need to check thread updates for anything else (currently)
@@ -35,9 +36,8 @@ export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel
     const oldThreadName = ot.name;
     const newThreadName = nt.name;
 
-    const poolRegex = /(\S+) (\S+)( \((.+)\))?/;
-    const poolMatchOld = oldThreadName.match(poolRegex)!;
-    const poolMatchNew = newThreadName.match(poolRegex);
+    const poolMatchOld = oldThreadName.match(threadNameRegex)!;
+    const poolMatchNew = newThreadName.match(threadNameRegex);
     if (!poolMatchNew) {
         await Promise.all([
             nt.send("Invalid thread name"),
