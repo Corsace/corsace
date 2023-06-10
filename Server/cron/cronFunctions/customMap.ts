@@ -16,7 +16,7 @@ async function initialize (): Promise<CronJobData[]> {
     // For each map, create a cron job with the deadline as the date.
     let cronJobs: CronJobData[] = maps.map(map => ({
         type: CronJobType.Custommap,
-        date: map.deadline!,
+        date: map.deadline,
     }));
 
     // If any dates are in the past, remove them and add a job to start instantly.
@@ -31,11 +31,11 @@ async function initialize (): Promise<CronJobData[]> {
     return cronJobs;
 }
 
-async function execute () {
+async function execute (job: CronJobData) {
     // Get all mappoolMaps where their deadline has passed.
     const maps = await MappoolMap
         .createQueryBuilder("map")
-        .where("map.deadline <= :date", { date: new Date() })
+        .where("map.deadline <= :date", { date: job.date })
         .getMany();
 
     // For each job, add the Late tag to QA their respective QA thread, and remove the deadline from the database.

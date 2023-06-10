@@ -2,7 +2,6 @@ import { TeamInvite } from "../../../Models/tournaments/teamInvite";
 
 export const inviteSearchConditions = {
     "teamID": "team.ID = :target",
-    "discordUserID": "user.discordUserid = :target",
     "userID": "user.ID = :target",
 };
 

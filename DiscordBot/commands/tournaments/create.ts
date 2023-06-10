@@ -16,6 +16,8 @@ import { discordStringTimestamp, parseDateOrTimestamp } from "../../../Server/ut
 import respond from "../../functions/respond";
 import commandUser from "../../functions/commandUser";
 import getUser from "../../../Server/functions/get/getUser";
+import { cron } from "../../../Server/cron";
+import { CronJobType } from "../../../Interfaces/cron";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -62,6 +64,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     tournament.stages = [];
     tournament.channels = [];
     tournament.roles = [];
+    tournament.status = TournamentStatus.NotStarted;
 
     // Find server owner and assign them as the tournament organizer
     const creator = await getUser(commandUser(m).id, "discord", false);
@@ -192,6 +195,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     tournament.registrations.start = registrationStart;
     tournament.registrations.end = registrationEnd;
     tournament.year = registrationEnd.getUTCFullYear();
+
+    if (tournament.registrations.start.getTime() < Date.now())
+        tournament.status = TournamentStatus.Registrations;
 
     // Check for registration sort order validity
     const sortOrder = m instanceof Message ? sortOrderRegex.exec(m.content)?.[1] : m.options.getString("team_sort_order");
@@ -816,6 +822,10 @@ async function tournamentSave (m: Message, tournament: Tournament) {
         r.tournament = tournament;
         return r.save();
     }));
+    await cron.add(CronJobType.TournamentRegistrationEnd, tournament.registrations.end);
+    if (tournament.registrations.start.getTime() < Date.now())
+        await cron.add(CronJobType.TournamentRegistrationStart, tournament.registrations.start);
+
     const embed = new EmbedBuilder()
         .setTitle(tournament.name)
         .setDescription(tournament.description)

@@ -17,7 +17,7 @@ async function initialize (): Promise<CronJobData[]> {
     // For each job post, create a cron job with the deadline as the date.
     let cronJobs: CronJobData[] = jobs.map(job => ({
         type: CronJobType.Jobboard,
-        date: job.deadline!,
+        date: job.deadline,
     }));
 
     // If any dates are in the past, remove them and add a job to start instantly.
@@ -32,12 +32,12 @@ async function initialize (): Promise<CronJobData[]> {
     return cronJobs;
 }
 
-async function execute () {
+async function execute (job: CronJobData) {
     // Get all jobs where their deadline has passed
     const maps = await MappoolMap
         .createQueryBuilder("map")
         .leftJoinAndSelect("map.jobPost", "jobPost")
-        .where("jobPost.deadline <= :date", { date: new Date() })
+        .where("jobPost.deadline <= :date", { date: job.date })
         .getMany();
 
     // For each job, add To Assign and Closed tags to the thread, close the thread, and remove the job from the database
