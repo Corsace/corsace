@@ -18,7 +18,7 @@ async function initialize (): Promise<CronJobData[]> {
     if (cronJobs.some(j => j.date.getTime() < Date.now())) {
         cronJobs = cronJobs.filter(j => j.date.getTime() > Date.now());
         cronJobs.push({
-            type: CronJobType.Jobboard,
+            type: CronJobType.TournamentRegistrationEnd,
             date: new Date(Date.now() + 60 * 1000), // 1 minute delay to avoid Date in past error
         });
     }
@@ -31,7 +31,7 @@ async function execute (job: CronJobData) {
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
         .where("tournament.registrationsEnd <= :date", { date: job.date })
-        .andWhere("tournament.status = 1")
+        .andWhere("tournament.status <= 1")
         .getMany();
 
     // For each tournament, set their status to ongoing
