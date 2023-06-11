@@ -181,13 +181,14 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getMany();
     const unallowedRoles = tournamentRoles.filter(r => unallowedToPlay.includes(r.roleType));
-    for (const member of teamMembers) {
-        const tournamentServer = await discordClient.guilds.fetch(tournament.server);
+    const tournamentServer = await discordClient.guilds.fetch(tournament.server);
+    const memberStaff = teamMembers.filter(async (member) => {
         const discordMember = await tournamentServer.members.fetch(member.discord.userID);
-        if (discordMember.roles.cache.some(r => unallowedRoles.some(tr => tr.roleID === r.id))) {
-            ctx.body = { error: `Member ${member.osu.username} is not allowed to play in this tournament` };
-            return;
-        }
+        return discordMember.roles.cache.some(r => unallowedRoles.some(tr => tr.roleID === r.id));
+    });
+    if (memberStaff.length > 0) {
+        ctx.body = { error: `Some members are staffing and are thus not allowed to play in this tournament`, members: memberStaff.map(m => m.osu.username) };
+        return;
     }
 
     const alreadyRegistered = teamMembers.filter(member => tournamentMembers.some(m => m.ID === member.ID));

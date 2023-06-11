@@ -1,6 +1,7 @@
+import { Brackets } from "typeorm";
 import { Team } from "../../../../Models/tournaments/team";
 import { TeamInvite } from "../../../../Models/tournaments/teamInvite";
-import { TournamentStatus } from "../../../../Models/tournaments/tournament";
+import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { User } from "../../../../Models/user";
 import getTeamInvites from "../../get/getTeamInvites";
 
@@ -27,6 +28,20 @@ export async function inviteAcceptChecks (invite: TeamInvite) {
     const registrationTournaments = teamTournaments.filter(t => t.status === TournamentStatus.Registrations);
     if (registrationTournaments.some(t => invite.team.members.length + 1 > t.maxTeamSize))
         return "Team is too big for a tournament it's currently registered for";
+
+    const alreadyInTeam = await Tournament
+        .createQueryBuilder("tournament")
+        .innerJoinAndSelect("tournament.teams", "team")
+        .innerJoinAndSelect("team.members", "member")
+        .innerJoinAndSelect("team.manager", "manager")
+        .where("tournament.ID IN (:...tournaments)", { tournaments: registrationTournaments.map(t => t.ID) })
+        .andWhere(new Brackets(qb => {
+            qb.where("member.ID = :userID", { userID: invite.user.ID })
+                .orWhere("manager.ID = :userID", { userID: invite.user.ID });
+        }))
+        .getExists();
+    if (alreadyInTeam)
+        return "User is already in a team for a tournament this team is registered for";
 
     const team = invite.team;
     if (team.members.length === 16)
