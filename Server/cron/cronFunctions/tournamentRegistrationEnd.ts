@@ -6,6 +6,7 @@ async function initialize (): Promise<CronJobData[]> {
     const dates: { registrationsEnd: Date }[] = await Tournament
         .createQueryBuilder("tournament")
         .select("distinct registrationsEnd")
+        .where("tournament.status <= 1")
         .getRawMany();
 
     // For each date, create a cron job with the end as the date.
