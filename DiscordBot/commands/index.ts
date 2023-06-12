@@ -33,6 +33,7 @@ import stageEdit from "./tournaments/stage/edit";
 import stageInfo from "./tournaments/stage/info";
 
 import teamAvatar from "./tournaments/team/avatar";
+import teamInvite from "./tournaments/team/invite";
 import teamList from "./tournaments/team/list";
 
 import avatar from "./utility/avatar";
@@ -102,6 +103,7 @@ commands.push(stageInfo);
 
 // team commands
 commands.push(teamAvatar);
+commands.push(teamInvite);
 commands.push(teamList);
 
 // general utility commands
