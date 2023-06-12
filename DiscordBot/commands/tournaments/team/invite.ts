@@ -36,21 +36,23 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
     const users = await User
         .createQueryBuilder("user")
-        .where("user.osuUsername LIKE :username", { username: user })
+        .select("user.ID")
+        .addSelect("user.osuUsername")
+        .where("user.osuUsername LIKE :username", { username: `%${user}%` })
         .orWhere("user.osuUserID = :userID", { userID: user })
-        .getMany();
+        .getRawMany() as { user_ID: number, osuUsername: string }[];
 
     const baseUsers = users.map(u => {
         return {
-            ID: u.ID,
-            name: u.osu.username,
+            ID: u.user_ID,
+            name: u.osuUsername,
         };
     });
     const baseUser = await getFromList(m, baseUsers, "user", user);
     if (!baseUser)
         return;
 
-    const targetUser = users.find(u => u.ID === baseUser.ID);
+    const targetUser = await User.findOne({ where: { ID: baseUser.ID }});
     if (!targetUser) {
         await respond(m, "Something went wrong, this should never happen, contact VINXIS");
         return;

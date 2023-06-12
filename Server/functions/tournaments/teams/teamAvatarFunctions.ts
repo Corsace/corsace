@@ -1,9 +1,9 @@
 import Jimp from "jimp";
-import { promises } from "fs";
+import { gets3Key } from "../../../utils/s3";
+import { buckets } from "../../../s3";
 import { Team } from "../../../../Models/tournaments/team";
-import { config } from "node-config-ts";
 
-const SIZE_RESTRICTION = 256;
+const SIZE_RESTRICTION = 512;
 
 export async function uploadTeamAvatar (team: Team, filepath: string) {
     // First resize the image where the smaller side is SIZE_RESTRICTIONpx if the image is larger than SIZE_RESTRICTIONpx
@@ -21,14 +21,22 @@ export async function uploadTeamAvatar (team: Team, filepath: string) {
     const y = Math.round((image.getHeight() - size) / 2);
     image.crop(x, y, size, size);
 
-    // Check if any avatar in the public folder exists with the team's ID
-    const oldAvatars = await promises.readdir("./public/avatars");
-    const oldAvatar = oldAvatars.filter(avatar => avatar.startsWith(`${team.ID}_`));
-    await Promise.all(oldAvatar.map(avatar => promises.unlink(`./public/avatars/${avatar}`)));
+    const s3Key = `${team.ID}_${Date.now()}.${image.getExtension()}`;
+    const imgBuffer = await image.getBufferAsync(image.getMIME());
 
-    // Save the image
-    const avatarPath = `/public/avatars/${team.ID}_${Date.now()}.${image.getExtension()}`;
-    await image.writeAsync(`.${avatarPath}`);
+    await buckets.teamAvatars.putObject(s3Key, imgBuffer, image.getMIME());
+    const url = await buckets.teamAvatars.getPublicUrl(s3Key);
+    return url;
+}
 
-    return `${config.api.publicUrl}${avatarPath}`;
+export async function deleteTeamAvatar (team: Team) {
+    if (!team.avatarURL)
+        return;
+
+    const s3Key = gets3Key("teamAvatars", team.avatarURL);
+    if (s3Key)
+        await buckets.teamAvatars.deleteObject(s3Key);
+
+    team.avatarURL = null;
+    await team.save();
 }

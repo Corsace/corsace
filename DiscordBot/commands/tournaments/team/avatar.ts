@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../";
 import { extractParameter } from "../../../functions/parameterFunctions";
-import { uploadTeamAvatar } from "../../../../Server/functions/tournaments/teams/uploadTeamAvatar";
+import { deleteTeamAvatar, uploadTeamAvatar } from "../../../../Server/functions/tournaments/teams/teamAvatarFunctions";
 import respond from "../../../functions/respond";
 import { getLink } from "../../../functions/getLink";
 import commandUser from "../../../functions/commandUser";
@@ -24,7 +24,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
 
     if (!link.endsWith(".png") && !link.endsWith(".jpg") && !link.endsWith(".jpeg")) {
-        await respond(m, "Pleaseee provide a proper image OHG MYGODDD");
+        await respond(m, "Pleaseee provide a proper image OHG MYGODDD (png, jpg, jpeg)");
         return;
     }
 
@@ -39,13 +39,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
 
     try {
+        await deleteTeamAvatar(team);
         const avatarPath = await uploadTeamAvatar(team, link);
         
         // Update the team
         team.avatarURL = avatarPath;
         await team.save();
 
-        await respond(m, "Avatar updated");
+        await respond(m, `Avatar updated for ${team.name}: ${avatarPath}`);
     } catch (err) {
         await respond(m, `Error saving avatar:\n${err}`);
     }
@@ -61,7 +62,7 @@ const data = new SlashCommandBuilder()
     )
     .addAttachmentOption(option => 
         option.setName("avatar")
-            .setDescription("The avatar")
+            .setDescription("The avatar (png recommended)")
             .setRequired(true)
     );
 

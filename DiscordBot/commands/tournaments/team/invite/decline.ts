@@ -45,20 +45,20 @@ async function run (m: Message | ChatInputCommandInteraction) {
 }
 
 const data = new SlashCommandBuilder()
-    .setName("invite_accept")
-    .setDescription("Invite a player to your team")
+    .setName("invite_decline")
+    .setDescription("Decline an invite to a team")
     .addStringOption(option => 
         option.setName("team")
-            .setDescription("The team you want to invite the player to")
+            .setDescription("The team you want to decline the invite to")
             .setRequired(true)
     );
 
-const teamInvite: Command = {
+const inviteDecline: Command = {
     data,
-    alternativeNames: ["invite_accept", "accept_invite", "invite-accept", "accept-invite", "acceptinvite", "inviteaccept", "invitet", "tinvite", "accepti", "iaccept"],
+    alternativeNames: ["invite_decline", "decline_invite", "invite-decline", "decline-invite", "declineinvite", "invitedecline", "invited", "dinvite", "declinei", "idecline"],
     category: "tournaments",
     subCategory: "teams/invites",
     run,
 };
 
-export default teamInvite;
+export default inviteDecline;

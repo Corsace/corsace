@@ -7,7 +7,7 @@ import { TournamentRole, unallowedToPlay } from "../../../../Models/tournaments/
 import { discordClient } from "../../../discord";
 import { validateTeam } from "./middleware";
 import { parseQueryParam } from "../../../utils/query";
-import { uploadTeamAvatar } from "../../../functions/tournaments/teams/uploadTeamAvatar";
+import { deleteTeamAvatar, uploadTeamAvatar } from "../../../functions/tournaments/teams/teamAvatarFunctions";
 
 const teamRouter = new Router();
 
@@ -116,6 +116,7 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
     }
 
     try {
+        await deleteTeamAvatar(team);
         const avatarPath = await uploadTeamAvatar(team, file.filepath);
         
         // Update the team

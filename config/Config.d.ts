@@ -94,6 +94,7 @@ declare module "node-config-ts" {
             buckets: {
                 mappacks: S3BucketConfig;
                 mappacksTemp: S3BucketConfig;
+                teamAvatars: S3BucketConfig;
             };
         }
 
