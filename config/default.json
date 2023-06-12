@@ -115,6 +115,11 @@
             "mappacksTemp": {
                 "clientName": "r2",
                 "bucketName": "mappacks-temp"
+            },
+            "teamAvatars": {
+                "clientName": "r2",
+                "bucketName": "team-avatars",
+                "publicUrl": "set custom domain or enable r2.dev url in bucket settings"
             }
         }
     },
