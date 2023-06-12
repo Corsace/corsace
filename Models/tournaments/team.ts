@@ -2,6 +2,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, Ma
 import { User } from "../user";
 import { Tournament } from "./tournament";
 import { TeamInvite } from "./teamInvite";
+import { Match } from "./match";
 
 @Entity()
 export class Team extends BaseEntity {
@@ -42,6 +43,15 @@ export class Team extends BaseEntity {
 
     @Column("double")
         pp!: number;
+
+    @OneToMany(() => Match, match => match.team1)
+        matchesAsTeam1!: Match[];
+
+    @OneToMany(() => Match, match => match.team2)
+        matchesAsTeam2!: Match[];
+
+    @OneToMany(() => Match, match => match.winner)
+        wins!: Match[];
 
     public async calculateStats (modeID = 1) {
         try {

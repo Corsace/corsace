@@ -7,6 +7,7 @@ import { MappoolMapWeight } from "./mappoolMapWeight";
 import { MappoolSlot } from "./mappoolSlot";
 import { CustomBeatmap } from "./customBeatmap";
 import { JobPost } from "./jobPost";
+import { MatchMap } from "../matchMap";
 
 @Entity()
 export class MappoolMap extends BaseEntity {
@@ -71,4 +72,7 @@ export class MappoolMap extends BaseEntity {
 
     @OneToMany(() => MappoolMapWeight, weight => weight.mappoolMap)
         skillWeights!: MappoolMapWeight[];
+
+    @OneToMany(() => MatchMap, map => map.map)
+        matchMaps!: MatchMap[];
 }

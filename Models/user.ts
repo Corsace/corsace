@@ -31,6 +31,8 @@ import { Team } from "./tournaments/team";
 import { osuV2Client } from "../Server/osu";
 import { bwsFilter } from "../Interfaces/osuAPIV2";
 import { TeamInvite } from "./tournaments/teamInvite";
+import { Match } from "./tournaments/match";
+import { MatchScore } from "./tournaments/matchScore";
 
 // General middlewares
 
@@ -196,6 +198,18 @@ export class User extends BaseEntity {
 
     @ManyToMany(() => Team, team => team.members)
         teams!: Team[];
+
+    @OneToMany(() => Match, match => match.referee)
+        matchesRefereed!: Match[];
+
+    @ManyToMany(() => Match, match => match.commentators)
+        matchesCommentated!: Match[];
+
+    @OneToMany(() => Match, match => match.streamer)
+        matchesStreamed!: Match[];
+
+    @OneToMany(() => MatchScore, score => score.user)
+        matchScores!: MatchScore[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User

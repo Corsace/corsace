@@ -4,6 +4,7 @@ import { Round } from "./round";
 import { Mappool } from "./mappools/mappool";
 import { Tournament } from "./tournament";
 import { User } from "../user";
+import { Match } from "./match";
 
 export enum StageType {
     Qualifiers,
@@ -71,5 +72,8 @@ export class Stage extends BaseEntity {
 
     @Column()
         finalSize!: number;
+
+    @OneToMany(() => Match, match => match.stage)
+        matches!: Match[];
 
 }
