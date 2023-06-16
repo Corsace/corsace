@@ -32,11 +32,6 @@
                     class="header-login__username"
                 >
                     {{ loggedInUser.osu.username }} 
-                    <span 
-                        class="header-login__line" 
-                        :class="`header-login__line--${site}`"
-                    >|</span>
-                    {{ loggedInUser.discord.username }}
                 </div>
                 <div
                     v-else-if="loggedInUser.osu.username && !isSmall"
