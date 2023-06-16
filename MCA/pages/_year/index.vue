@@ -191,14 +191,14 @@
                         class="portal__ayim--offset"
                         :class="`index--${viewTheme}`"
                     >
-                        LET'S LOOK BACK <br> AT {{ $route.params.year }}
+                    <span v-html="$t('mca.main.banner')"></span> {{ $route.params.year }}
                     </div>
                     <div class="portal__ayim--right">
                         <img
                             :src="require(`../../../Assets/img/site/mca-ayim/year/${$route.params.year}-${viewTheme}-ayim.png`)" 
                         >
                         <div class="portal__desc--right">
-                        CLICK HERE TO ENTER
+                            {{ $t('mca.main.click') }}
                         </div>
                     </div>
                 </div>
@@ -213,7 +213,7 @@
                         shop.<span class="bold">corsace</span>.io
                     </div>
                     <div class="portal__desc">
-                        OFFICIAL MERCHANDISE STORE
+                        {{ $t('mca_ayim.banner.merch') }}
                     </div>
                 </a>
                 <a 
@@ -225,18 +225,18 @@
                         <span class="bold">corsace</span>.io
                     </div>
                     <div class="portal__desc">
-                        MAIN EVENT HUB
+                        {{ $t('mca_ayim.banner.corsace') }}
                     </div>
                 </a>
             </div>
             <hr class = "dividerMain">
             <div class="welcomeBack">
                 <div>
-                    WELCOME TO MCA
+                    <span v-html="$t('mca.main.welcome')"></span>
                 </div>
             </div>
-            <div class="textBody">
-                We are back for another installment of Mapper's Choice Awards! (This time almost on schedule!)<br>This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!
+            <div class="textBody" >
+                <span v-html="$t('mca.main.message.2022')"></span>
             </div>
             <br>
             
