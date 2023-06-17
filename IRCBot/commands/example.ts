@@ -8,6 +8,7 @@ async function run(message: BanchoMessage, ...args: string[]) {
 const example: Command = {
     name: "example",
     aliases: ["test"],
+    multiplayerCommand: false,
     run
 };
 
