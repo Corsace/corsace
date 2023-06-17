@@ -28,7 +28,7 @@ commands.push(exampleMulti);
 async function handleGlobalCommand(commandName: string, message: BanchoMessage, ...args: string[]) {
     const command = commands.find(
         (cmd) => (cmd.name == commandName.toLowerCase()
-            || cmd.aliases?.includes(commandName.toLowerCase()) && !cmd.multiplayerCommand)
+            || cmd.aliases?.includes(commandName.toLowerCase())) && !cmd.multiplayerCommand
     ) as GlobalCommand | undefined;
 
     if (!command)
