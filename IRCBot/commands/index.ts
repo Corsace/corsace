@@ -40,8 +40,8 @@ async function handleGlobalCommand(commandName: string, message: BanchoMessage, 
 
 async function handleMultiplayerCommand(commandName: string, message: BanchoMessage, multi: Multi, ...args: string[]) {
     const command = commands.find(
-        (cmd) => (cmd.name == commandName.toLowerCase()
-            || cmd.aliases?.includes(commandName.toLowerCase()))
+        (cmd) => cmd.name == commandName.toLowerCase()
+            || cmd.aliases?.includes(commandName.toLowerCase())
     );
 
     if (!command)
