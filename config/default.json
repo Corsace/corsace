@@ -45,7 +45,8 @@
         },
         "irc": {
             "username": "bot account username, use your own for dev",
-            "ircPassword": "obtain from https://osu.ppy.sh/home/account/edit#irc"
+            "ircPassword": "obtain from https://osu.ppy.sh/home/account/edit#irc",
+            "botAccount": "true/false, false if using personal account"
         }
     },
     "bn": {

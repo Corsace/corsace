@@ -2,7 +2,7 @@ import { BanchoClient } from "bancho.js";
 import { config } from "node-config-ts";
 import { handleCommand } from "./commands";
 
-const banchoClient = new BanchoClient({ username: config.osu.irc.username, password: config.osu.irc.ircPassword });
+const banchoClient = new BanchoClient({ username: config.osu.irc.username, password: config.osu.irc.ircPassword, botAccount: config.osu.irc.botAccount });
 
 async function main() {
     await banchoClient.connect();
