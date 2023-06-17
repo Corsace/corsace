@@ -87,6 +87,7 @@
       "build:api": "cross-env NODE_ENV=production tsc --project Server/tsconfig.json",
       "build:discord-bot": "cross-env NODE_ENV=production tsc --project DiscordBot/tsconfig.json",
       "build:irc-bot": "cross-env NODE_ENV=production tsc --project IRCBot/tsconfig.json",
+
       "ayim": "cd ./AYIM && nuxt start",
       "mca": "cd ./MCA && nuxt start",
       "main": "cd ./Main && nuxt start",
@@ -95,6 +96,7 @@
       "discord-bot": "cd DiscordBot && node dist/DiscordBot/index.js",
       "irc-bot": "cd IRCBot && node dist/IRCBot/index.js",
       "cron-runner": "cd Server && node dist/Server/cron-runner.js",
+
       "ayim-dev": "cd ./AYIM && nuxt",
       "mca-dev": "cd ./MCA && nuxt",
       "main-dev": "cd ./Main && nuxt",
@@ -105,12 +107,15 @@
       "irc-bot-dev": "cross-env NODE_ENV=development ts-node-dev --project IRCBot/tsconfig.json --respawn IRCBot/index.ts",
       "dev": "concurrently -n MCA,AYIM,MAIN,OPEN,API -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold,black.bgYellow.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\" \"npm:api-dev\"",
       "dev-client": "concurrently -n MCA,AYIM,MAIN,OPEN -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\"",
+
       "lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",
       "lintfix": "eslint --fix --ext .ts,.vue --ignore-path .gitignore .",
+
       "concatNoms": "ts-node ./Server/scripts/concatNoms.ts",
       "duplicateCommands": "ts-node ./Server/scripts/duplicateCommands.ts",
       "updateLanguages": "ts-node ./Server/scripts/updateLanguages.ts",
       "fetchMaps": "ts-node ./Server/scripts/fetchYearMaps.ts",
+
       "database": "docker-compose up -d database",
       "mariadb": "docker-compose exec database mariadb -u corsace -p",
       "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
