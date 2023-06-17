@@ -1,6 +1,6 @@
 import { BanchoClient } from "bancho.js";
 import { config } from "node-config-ts";
-import { handleGlobalCommand, handleMultiplayerCommand } from "./commands";
+import { handleCommand } from "./commands";
 import { Multi } from "nodesu";
 
 const banchoClient = new BanchoClient({ username: config.osu.irc.username, password: config.osu.irc.ircPassword, botAccount: config.osu.irc.botAccount });
@@ -24,8 +24,7 @@ async function main() {
             // remove !command from args
             args.shift();
 
-            // null is optional match object
-            await handleGlobalCommand(commandName, message, ...args)
+            await handleCommand(commandName, message, ...args)
         }
     });
 
@@ -51,7 +50,7 @@ async function main() {
         const multiId = parseInt(message.channel.name.substring("#mp_".length));
         const multiplayer = await banchoClient.osuApi.multi.getMatch(multiId) as Multi;
 
-        await handleMultiplayerCommand(commandName, message, multiplayer, ...args)
+        await handleCommand(commandName, message, multiplayer, ...args)
     });
 }
 
