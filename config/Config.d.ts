@@ -72,6 +72,11 @@ declare module "node-config-ts" {
                 clientId: string;
                 clientSecret: string;
             };
+            irc: {
+                username: string;
+                ircPassword: string;
+                botAccount: boolean;
+            };
         };
 
         bn: {

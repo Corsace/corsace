@@ -11,7 +11,9 @@
             "corsace": {
                 "corsace": "role ID",
                 "core": "role ID",
-                "headStaff": ["role IDs"],
+                "headStaff": [
+                    "role IDs"
+                ],
                 "staff": "role ID",
                 "writer": "role ID",
                 "verified": "role ID",
@@ -40,6 +42,11 @@
         "v2": {
             "clientId": "obtain from https://osu.ppy.sh/home/account/edit",
             "clientSecret": "obtain from https://osu.ppy.sh/home/account/edit"
+        },
+        "irc": {
+            "username": "bot account username, use your own for dev",
+            "ircPassword": "obtain from https://osu.ppy.sh/home/account/edit#irc",
+            "botAccount": "true/false, false if using personal account"
         }
     },
     "bn": {
@@ -52,7 +59,9 @@
             "client_email": "Create a service account"
         }
     },
-    "koaKeys": [""],
+    "koaKeys": [
+        ""
+    ],
     "cookiesDomain": "localhost",
     "ayim": {
         "host": "localhost",
