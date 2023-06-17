@@ -11,8 +11,8 @@ async function main() {
     console.log(`osu! IRC Bot connected as ${self.ircUsername}`);
 
     banchoClient.on("PM", async (message) => {
-        // ignore PMs from ourself (happens from responses)
-        if (message.user.ircUsername == self.ircUsername)
+        // ignore PMs from our own user
+        if (message.self)
             return;
 
         // all commands will be prefixed with !
