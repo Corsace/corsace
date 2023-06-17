@@ -105,6 +105,7 @@
       "cron-runner-dev": "cross-env NODE_ENV=development ts-node-dev --project Server/tsconfig.json --respawn Server/cron-runner.ts",
       "discord-bot-dev": "cross-env NODE_ENV=development ts-node-dev --project DiscordBot/tsconfig.json --respawn DiscordBot/index.ts",
       "irc-bot-dev": "cross-env NODE_ENV=development ts-node-dev --project IRCBot/tsconfig.json --respawn IRCBot/index.ts",
+
       "dev": "concurrently -n MCA,AYIM,MAIN,OPEN,API -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold,black.bgYellow.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\" \"npm:api-dev\"",
       "dev-client": "concurrently -n MCA,AYIM,MAIN,OPEN -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\"",
 
