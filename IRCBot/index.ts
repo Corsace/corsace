@@ -8,7 +8,7 @@ async function main() {
     await banchoClient.connect();
 
     const self = banchoClient.getSelf();
-    console.log(`osu! IRC Bot connected on ${self.ircUsername}`);
+    console.log(`osu! IRC Bot connected as ${self.ircUsername}`);
 
     banchoClient.on("PM", async (message) => {
         // ignore PMs from ourself (happens from responses)
