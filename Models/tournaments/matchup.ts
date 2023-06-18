@@ -1,12 +1,12 @@
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
-import { MatchMap } from "./matchMap";
+import { MatchupMap } from "./matchupMap";
 import { Round } from "./round";
 import { Stage } from "./stage";
 import { Team } from "./team";
 
 @Entity()
-export class Match extends BaseEntity {
+export class Matchup extends BaseEntity {
 
     @PrimaryGeneratedColumn()
         ID!: number;
@@ -15,10 +15,10 @@ export class Match extends BaseEntity {
         mp?: number | null;
 
     @ManyToOne(() => Round, round => round.matches)
-        round!: Round;
+        round?: Round | null;
 
     @ManyToOne(() => Stage, stage => stage.matches)
-        stage!: Stage;
+        stage?: Stage | null;
 
     @ManyToOne(() => Team, team => team.matchesAsTeam1)
         team1!: Team;
@@ -35,8 +35,8 @@ export class Match extends BaseEntity {
     @ManyToOne(() => Team, team => team.wins)
         winner!: Team;
 
-    @ManyToOne(() => MatchMap, map => map.matches)
-        maps!: MatchMap[];
+    @ManyToOne(() => MatchupMap, map => map.matches)
+        maps!: MatchupMap[];
 
     @Column({ type: "boolean", default: false })
         potential!: boolean;
@@ -60,11 +60,13 @@ export class Match extends BaseEntity {
     @ManyToOne(() => User, user => user.matchesStreamed)
         streamer!: User;
 
-    @ManyToMany(() => Match, match => match.nextMatches)
+    @ManyToMany(() => Matchup, match => match.nextMatches)
     @JoinTable()
-        previousMatches?: Match[] | null;
+        previousMatches?: Matchup[] | null;
 
-    @ManyToMany(() => Match, match => match.previousMatches)
-        nextMatches?: Match[] | null;
+    @ManyToMany(() => Matchup, match => match.previousMatches)
+        nextMatches?: Matchup[] | null;
 
+    @Column("mediumtext", { nullable: true })
+        log?: string | null;
 }

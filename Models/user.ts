@@ -31,8 +31,8 @@ import { Team } from "./tournaments/team";
 import { osuV2Client } from "../Server/osu";
 import { bwsFilter } from "../Interfaces/osuAPIV2";
 import { TeamInvite } from "./tournaments/teamInvite";
-import { Match } from "./tournaments/match";
-import { MatchScore } from "./tournaments/matchScore";
+import { Matchup } from "./tournaments/matchup";
+import { MatchupScore } from "./tournaments/matchupScore";
 
 // General middlewares
 
@@ -199,17 +199,17 @@ export class User extends BaseEntity {
     @ManyToMany(() => Team, team => team.members)
         teams!: Team[];
 
-    @OneToMany(() => Match, match => match.referee)
-        matchesRefereed!: Match[];
+    @OneToMany(() => Matchup, match => match.referee)
+        matchesRefereed!: Matchup[];
 
-    @ManyToMany(() => Match, match => match.commentators)
-        matchesCommentated!: Match[];
+    @ManyToMany(() => Matchup, match => match.commentators)
+        matchesCommentated!: Matchup[];
 
-    @OneToMany(() => Match, match => match.streamer)
-        matchesStreamed!: Match[];
+    @OneToMany(() => Matchup, match => match.streamer)
+        matchesStreamed!: Matchup[];
 
-    @OneToMany(() => MatchScore, score => score.user)
-        matchScores!: MatchScore[];
+    @OneToMany(() => MatchupScore, score => score.user)
+        matchScores!: MatchupScore[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User

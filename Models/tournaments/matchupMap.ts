@@ -1,7 +1,7 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { MappoolMap } from "./mappools/mappoolMap";
-import { Match } from "./match";
-import { MatchScore } from "./matchScore";
+import { Matchup } from "./matchup";
+import { MatchupScore } from "./matchupScore";
 import { Team } from "./team";
 
 export enum MapStatus {
@@ -11,7 +11,7 @@ export enum MapStatus {
 }
 
 @Entity()
-export class MatchMap extends BaseEntity {
+export class MatchupMap extends BaseEntity {
 
     @PrimaryGeneratedColumn()
         ID!: number;
@@ -31,12 +31,12 @@ export class MatchMap extends BaseEntity {
     @Column({ type: "int", nullable: true })
         team2Score?: number | null;
 
-    @OneToMany(() => MatchScore, score => score.map)
-        scores!: MatchScore[];
+    @OneToMany(() => MatchupScore, score => score.map)
+        scores!: MatchupScore[];
 
     @ManyToOne(() => Team, team => team.wins)
         winner!: Team;
 
-    @OneToMany(() => Match, match => match.maps)
-        matches!: Match[];
+    @OneToMany(() => Matchup, match => match.maps)
+        matches!: Matchup[];
 }

@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { MapStatus } from "./matchMap";
+import { MapStatus } from "./matchupMap";
 import { Round } from "./round";
 import { Stage } from "./stage";
 
@@ -9,8 +9,14 @@ export class MapOrder extends BaseEntity {
     @PrimaryGeneratedColumn()
         ID!: number;
 
+    @Column({ default: 1 })
+        set!: number;
+    
     @Column()
         order!: number;
+
+    @Column()
+        team!: number;
 
     @ManyToOne(() => Stage, stage => stage.mapOrder)
         stage?: Stage | null;

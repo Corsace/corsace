@@ -4,7 +4,7 @@ import { Round } from "./round";
 import { Mappool } from "./mappools/mappool";
 import { Tournament } from "./tournament";
 import { User } from "../user";
-import { Match } from "./match";
+import { Matchup } from "./matchup";
 import { MapOrder } from "./mapOrder";
 
 export enum StageType {
@@ -53,6 +53,18 @@ export class Stage extends BaseEntity {
     @Column({ type: "enum", enum: ScoringMethod, default: ScoringMethod.ScoreV2 })
         scoringMethod!: ScoringMethod;
 
+    @Column("boolean", { nullable: true })
+        isDraft?: boolean | null;
+    
+    @Column({ default: 1 })
+        setsBestOf!: number;
+
+    @Column("integer", { nullable: true })
+        bestOf?: number | null;
+
+    @Column("boolean", { nullable: true })
+        qualifierTeamChooseOrder?: boolean | null;
+
     @Column(() => Phase)
         timespan!: Phase;
 
@@ -74,10 +86,10 @@ export class Stage extends BaseEntity {
     @Column()
         finalSize!: number;
 
-    @OneToMany(() => Match, match => match.stage)
-        matches!: Match[];
+    @OneToMany(() => Matchup, match => match.stage)
+        matches!: Matchup[];
 
     @OneToMany(() => MapOrder, mapOrder => mapOrder.stage)
-        mapOrder!: MapOrder[];
+        mapOrder?: MapOrder[] | null;
 
 }

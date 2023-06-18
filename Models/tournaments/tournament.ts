@@ -29,7 +29,7 @@ export const sortOrderHash = {
 export function sortTextToOrder (sort: string | null | undefined): number {
     if (!sort)
         return -1;
-    return sortOrderHash[sort.trim().toLowerCase()] ?? -1;
+    return sortOrderHash[sort.trim().toLowerCase()] || -1;
 }
 
 export enum TournamentStatus {
@@ -111,6 +111,12 @@ export class Tournament extends BaseEntity {
 
     @Column("integer", { nullable: true })
         readyTimer?: number | null;
+
+    @Column("integer", { nullable: true })
+        abortThreshold?: number | null;
+
+    @Column("integer", { nullable: true, default: 1 })
+        teamAbortLimit?: number | null;
 
     @OneToMany(() => Stage, stage => stage.tournament)
         stages!: Stage[];
