@@ -27,9 +27,15 @@ export class Matches1687046689630 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`match_commentators_user\` ADD CONSTRAINT \`FK_2b6371f5e6a23a491be129b9d0e\` FOREIGN KEY (\`userID\`) REFERENCES \`user\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`match_previous_matches_match\` ADD CONSTRAINT \`FK_069abfcd2735ed2af38a4fcc518\` FOREIGN KEY (\`matchID_1\`) REFERENCES \`match\`(\`ID\`) ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE \`match_previous_matches_match\` ADD CONSTRAINT \`FK_db01c27fdec91c41501f983b469\` FOREIGN KEY (\`matchID_2\`) REFERENCES \`match\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`CREATE TABLE \`map_order\` (\`ID\` int NOT NULL AUTO_INCREMENT, \`order\` int NOT NULL, \`status\` enum ('0', '1', '2') NOT NULL DEFAULT '2', \`stageID\` int NULL, \`roundID\` int NULL, PRIMARY KEY (\`ID\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`ALTER TABLE \`map_order\` ADD CONSTRAINT \`FK_4fd0088a1e312128306df40569b\` FOREIGN KEY (\`stageID\`) REFERENCES \`stage\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`map_order\` ADD CONSTRAINT \`FK_7f406e9323eca3f1d71abe4df01\` FOREIGN KEY (\`roundID\`) REFERENCES \`round\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down (queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE \`map_order\` DROP FOREIGN KEY \`FK_7f406e9323eca3f1d71abe4df01\``);
+        await queryRunner.query(`ALTER TABLE \`map_order\` DROP FOREIGN KEY \`FK_4fd0088a1e312128306df40569b\``);
+        await queryRunner.query(`DROP TABLE \`map_order\``);
         await queryRunner.query(`ALTER TABLE \`match_previous_matches_match\` DROP FOREIGN KEY \`FK_db01c27fdec91c41501f983b469\``);
         await queryRunner.query(`ALTER TABLE \`match_previous_matches_match\` DROP FOREIGN KEY \`FK_069abfcd2735ed2af38a4fcc518\``);
         await queryRunner.query(`ALTER TABLE \`match_commentators_user\` DROP FOREIGN KEY \`FK_2b6371f5e6a23a491be129b9d0e\``);

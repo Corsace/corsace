@@ -5,6 +5,7 @@ import { Mappool } from "./mappools/mappool";
 import { Tournament } from "./tournament";
 import { User } from "../user";
 import { Match } from "./match";
+import { MapOrder } from "./mapOrder";
 
 export enum StageType {
     Qualifiers,
@@ -75,5 +76,8 @@ export class Stage extends BaseEntity {
 
     @OneToMany(() => Match, match => match.stage)
         matches!: Match[];
+
+    @OneToMany(() => MapOrder, mapOrder => mapOrder.stage)
+        mapOrder!: MapOrder[];
 
 }

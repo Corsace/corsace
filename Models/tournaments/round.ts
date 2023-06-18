@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { MapOrder } from "./mapOrder";
 import { Mappool } from "./mappools/mappool";
 import { Match } from "./match";
 import { Stage } from "./stage";
@@ -23,5 +24,8 @@ export class Round extends BaseEntity {
 
     @OneToMany(() => Match, match => match.round)
         matches!: Match[];
+
+    @OneToMany(() => MapOrder, mapOrder => mapOrder.stage)
+        mapOrder!: MapOrder[];
 
 }
