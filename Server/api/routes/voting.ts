@@ -4,7 +4,7 @@ import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase }
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
-import stageSearch from "./stageSearch";
+import mcaSearch from "./mcaSearch";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
 import { MoreThan, Not } from "typeorm";
@@ -41,7 +41,7 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
     };
 });
 
-votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), stageSearch("voting", async (ctx, category) => {
+votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), mcaSearch("voting", async (ctx, category) => {
     let votes = await Vote.find({
         where: {
             voter: ctx.state.user,

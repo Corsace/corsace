@@ -7,7 +7,7 @@ import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
 import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear } from "../../middleware/mca-ayim";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
-import stageSearch from "./stageSearch";
+import mcaSearch from "./mcaSearch";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { isPossessive } from "../../../Models/MCA_AYIM/guestRequest";
 
@@ -42,7 +42,7 @@ nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"),
     };
 });
 
-nominatingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), stageSearch("nominating", async (ctx, category) => {
+nominatingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), mcaSearch("nominating", async (ctx, category) => {
     return await Nomination
         .userNominations({
             userID: ctx.state.user.ID,

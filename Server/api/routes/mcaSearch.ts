@@ -9,12 +9,12 @@ import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { User } from "../../../Models/user";
-import { isEligibleFor } from "../../../Server/middleware/mca-ayim";
-import { parseQueryParam } from "../../../Server/utils/query";
+import { isEligibleFor } from "../../middleware/mca-ayim";
+import { parseQueryParam } from "../../utils/query";
 import { Beatmap } from "../../../Models/beatmap";
-import { osuV2Client } from "../../../Server/osu";
+import { osuV2Client } from "../../osu";
 
-export default function stageSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
+export default function mcaSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
     return async (ctx: ParameterizedContext) => {
         if (!ctx.query.category)
             return ctx.body = {

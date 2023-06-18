@@ -60,4 +60,11 @@ export class Match extends BaseEntity {
     @ManyToOne(() => User, user => user.matchesStreamed)
         streamer!: User;
 
+    @ManyToMany(() => Match, match => match.nextMatches)
+    @JoinTable()
+        previousMatches?: Match[] | null;
+
+    @ManyToMany(() => Match, match => match.previousMatches)
+        nextMatches?: Match[] | null;
+
 }

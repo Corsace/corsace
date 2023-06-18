@@ -103,6 +103,15 @@ export class Tournament extends BaseEntity {
     @Column()
         maxTeamSize!: number;
 
+    @Column({ default: false })
+        warmups!: boolean;
+
+    @Column("integer", { nullable: true })
+        mapTimer?: number | null;
+
+    @Column("integer", { nullable: true })
+        readyTimer?: number | null;
+
     @OneToMany(() => Stage, stage => stage.tournament)
         stages!: Stage[];
 
