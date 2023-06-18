@@ -823,7 +823,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
         return r.save();
     }));
     await cron.add(CronJobType.TournamentRegistrationEnd, tournament.registrations.end);
-    if (tournament.registrations.start.getTime() < Date.now())
+    if (tournament.registrations.start.getTime() > Date.now())
         await cron.add(CronJobType.TournamentRegistrationStart, tournament.registrations.start);
 
     const embed = new EmbedBuilder()

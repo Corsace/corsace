@@ -29,7 +29,7 @@ export const sortOrderHash = {
 export function sortTextToOrder (sort: string | null | undefined): number {
     if (!sort)
         return -1;
-    return sortOrderHash[sort.trim().toLowerCase()] || -1;
+    return sortOrderHash[sort.trim().toLowerCase()] ?? -1;
 }
 
 export enum TournamentStatus {
