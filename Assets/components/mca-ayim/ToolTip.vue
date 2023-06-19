@@ -3,6 +3,7 @@
         <span class="tooltiptext"><slot></slot></span>
     </div>
 </template>
+</script>
 
 <style lang="scss">
 .tooltip {
@@ -13,7 +14,7 @@
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 50px;
-  background-color: #F24141;
+  background-color: #5BBCFA;
   color: #fff;
   text-align: center;
   padding: 5px 0px;
@@ -39,7 +40,7 @@
   margin-left: -12px;
   border-width: 12px;
   border-style: solid;
-  border-color: #F24141 transparent transparent transparent;
+  border-color: #5BBCFA transparent transparent transparent;
 }
 
 .tooltip:hover .tooltiptext {

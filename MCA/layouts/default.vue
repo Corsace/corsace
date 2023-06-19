@@ -28,7 +28,6 @@
         <the-footer class="mcaayim__footer">
             <div 
                 class="socials"
-                :class="`socials--${viewTheme}`"
             >
                 <ToolTip>
                     <template v-slot:icon>
@@ -39,6 +38,7 @@
                         >
                             <img
                                 class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
                                 src="../../Assets/img/site/mca-ayim/corsace_logo.png"
                                 alt=""
                             >
@@ -55,6 +55,7 @@
                         >
                             <img
                                 class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
                                 src="../../Assets/img/social/twitter.png"
                                 alt=""
                             >
@@ -71,6 +72,7 @@
                         >
                             <img
                                 class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
                                 src="../../Assets/img/social/discord.png"
                                 alt=""
                             >
@@ -87,6 +89,7 @@
                         >
                             <img
                                 class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
                                 src="../../Assets/img/social/twitch.png"
                                 alt=""
                             >
@@ -103,6 +106,7 @@
                         >
                             <img
                                 class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
                                 src="../../Assets/img/social/youtube.png"
                                 alt=""
                             >
@@ -266,12 +270,12 @@ export default class Default extends Vue {
             margin-right: 10px;
             height: 30px;   
         }
-    }
-    &--light {
-        filter: invert(1);
-    }
-    &--dark {
-        color: $gray;
+        &--light {
+            filter: invert(1);
+        }
+        &--dark {
+            color: white;
+        }
     }
 }
 
