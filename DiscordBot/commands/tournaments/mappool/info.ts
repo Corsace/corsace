@@ -50,7 +50,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             })))
             .setColor(modeColour(tournament.mode.ID - 1))
             .setFooter({
-                text: `Requested by ${m.member?.user.username}#${m.member?.user.discriminator}`,
+                text: `Requested by ${m.member?.user.username}`,
                 iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined,
             })
             .setTimestamp();
@@ -180,7 +180,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         })))
         .setColor(modeColour(tournament.mode.ID - 1))
         .setFooter({
-            text: `Requested by ${m.member?.user.username}#${m.member?.user.discriminator}`,
+            text: `Requested by ${m.member?.user.username}`,
             iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined,
         })
         .setTimestamp();

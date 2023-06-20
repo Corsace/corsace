@@ -109,24 +109,24 @@ async function tournamentMode (m: Message, tournament: Tournament, userID: strin
         tournament.mode = modeDivision;
     }
 
-    await tournamentPlayersInMatch(m, tournament, userID);
+    await tournamentPlayersInMatchup(m, tournament, userID);
 }
 
-async function tournamentPlayersInMatch (m: Message, tournament: Tournament, userID: string) {
-    const editValue = await editProperty(m, "players in match (the x in x vs x)", "tournament", tournament.matchSize.toString(), userID);
+async function tournamentPlayersInMatchup (m: Message, tournament: Tournament, userID: string) {
+    const editValue = await editProperty(m, "players in match (the x in x vs x)", "tournament", tournament.matchupSize.toString(), userID);
     if (!editValue)
         return;
 
     if (typeof editValue === "string") {
-        const matchSize = parseInt(editValue);
-        if (isNaN(matchSize) || matchSize < 1 || matchSize > 16) {
+        const matchupSize = parseInt(editValue);
+        if (isNaN(matchupSize) || matchupSize < 1 || matchupSize > 16) {
             const reply = await m.channel.send("Invalid match size. Must be a number between 1 and 16");
             setTimeout(async () => (await reply.delete()), 5000);
-            await tournamentPlayersInMatch(m, tournament, userID);
+            await tournamentPlayersInMatchup(m, tournament, userID);
             return;
         }
 
-        tournament.matchSize = matchSize;
+        tournament.matchupSize = matchupSize;
     }
 
     await tournamentMinMaxPlayers(m, tournament, userID, "minTeamSize", tournament.minTeamSize);
@@ -154,7 +154,7 @@ async function tournamentMinMaxPlayers (m: Message, tournament: Tournament, user
                 return;
             }
 
-            if (teamSize < tournament.matchSize) {
+            if (teamSize < tournament.matchupSize) {
                 const reply = await m.channel.send("Min team size must be greater than or equal to match size");
                 setTimeout(async () => (await reply.delete()), 5000);
                 await tournamentMinMaxPlayers(m, tournament, userID, property, value);
@@ -276,7 +276,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
         .setDescription(tournament.description)
         .addFields(
             { name: "Mode", value: tournament.mode.name, inline: true },
-            { name: "Match Size", value: tournament.matchSize.toString(), inline: true },
+            { name: "Match Size", value: tournament.matchupSize.toString(), inline: true },
             { name: "Allowed Team Size", value: `${tournament.minTeamSize} - ${tournament.maxTeamSize}`, inline: true },
             { name: "Registration Start Date", value: discordStringTimestamp(tournament.registrations.start), inline: true },
             { name: "Qualifiers", value: tournament.stages.some(q => q.stageType === StageType.Qualifiers).toString(), inline: true },

@@ -316,7 +316,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
                         modNum = modTest;
                         slotInfo.splice(j, 1);
                         break;
-                    } else if (!isNaN(num) && num <= tournament.matchSize && num >= 0 && (userModCount === undefined || uniqueModCount === undefined)) {
+                    } else if (!isNaN(num) && num <= tournament.matchupSize && num >= 0 && (userModCount === undefined || uniqueModCount === undefined)) {
                         slotInfo.splice(j, 1);
 
                         if (userModCount === undefined) userModCount = num;

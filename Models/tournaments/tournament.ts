@@ -43,7 +43,7 @@ export const unFinishedTournaments = [TournamentStatus.NotStarted, TournamentSta
 
 @Entity()
 @Check(`"minTeamSize" <= "maxTeamSize"`)
-@Check(`"matchSize" <= "minTeamSize"`)
+@Check(`"matchupSize" <= "minTeamSize"`)
 export class Tournament extends BaseEntity {
 
     @PrimaryGeneratedColumn()
@@ -83,7 +83,7 @@ export class Tournament extends BaseEntity {
         year!: number;
 
     @Column()
-        matchSize!: number;
+        matchupSize!: number;
 
     @Column({ type: "enum", enum: SortOrder, default: SortOrder.Signup })
         regSortOrder!: SortOrder;
@@ -102,6 +102,21 @@ export class Tournament extends BaseEntity {
 
     @Column()
         maxTeamSize!: number;
+
+    @Column({ default: false })
+        warmups!: boolean;
+
+    @Column("integer", { nullable: true })
+        mapTimer?: number | null;
+
+    @Column("integer", { nullable: true })
+        readyTimer?: number | null;
+
+    @Column("integer", { nullable: true })
+        abortThreshold?: number | null;
+
+    @Column("integer", { nullable: true, default: 1 })
+        teamAbortLimit?: number | null;
 
     @OneToMany(() => Stage, stage => stage.tournament)
         stages!: Stage[];

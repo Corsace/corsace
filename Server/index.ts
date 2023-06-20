@@ -40,6 +40,7 @@ import recordsRouter from "./api/routes/records";
 import statisticsRouter from "./api/routes/statistics";
 import mappersRouter from "./api/routes/mappers";
 
+import matchupRouter from "./api/routes/matchup";
 import teamRouter from "./api/routes/team";
 import inviteRouter from "./api/routes/team/invite";
 
@@ -152,6 +153,7 @@ koa.use(Mount("/api/comments", commentsRouter.routes()));
 koa.use(Mount("/api/influences", influencesRouter.routes()));
 
 // Tournaments
+koa.use(Mount("/api/matchup", matchupRouter.routes()));
 koa.use(Mount("/api/team", teamRouter.routes()));
 koa.use(Mount("/api/team/invite", inviteRouter.routes()));
 

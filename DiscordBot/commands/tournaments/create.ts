@@ -30,13 +30,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const abbreviationRegex = new RegExp(/-a ([a-zA-Z0-9_]{2,8})/);
     const descriptionRegex = new RegExp(/-d ([a-zA-Z0-9_ ]{3,512})/);
     const modeRegex = new RegExp(/-m ([a-zA-Z0-9_ ]{1,14})/);
-    const matchSizeRegex = new RegExp(/-ms ([a-zA-Z0-9_ ]{1,3})/);
+    const matchupSizeRegex = new RegExp(/-ms ([a-zA-Z0-9_ ]{1,3})/);
     const teamSizeRegex = new RegExp(/-ts (\d+) (\d+)/);
     const registrationRegex = new RegExp(/-r ((?:\d{4}-\d{2}-\d{2})|\d{10}) ((?:\d{4}-\d{2}-\d{2})|\d{10})/);
     const sortOrderRegex = new RegExp(/-s ([a-zA-Z0-9_ ]{1,6})/);
     const helpRegex = new RegExp(/-h/);
-    if (m instanceof Message && (helpRegex.test(m.content) || (!nameRegex.test(m.content) && !abbreviationRegex.test(m.content) && !descriptionRegex.test(m.content) && !modeRegex.test(m.content) && !matchSizeRegex.test(m.content) && !teamSizeRegex.test(m.content) && !registrationRegex.test(m.content) && !sortOrderRegex.test(m.content)))) {
-        await m.reply(`Provide all required parameters. Here's a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Description:** \`-d <description>\`\n**Mode:** \`-m <mode>\`\n**Match Size (xvx, input x):** \`-ms <match size>\`\n**Team Size:** \`-ts <min> <max>\`\n**Registration Period:** \`-r <start date (YYYY-MM-DD OR unix/epoch)> <end date (YYYY-MM-DD OR unix/epoch)>\`\n**Team Sort Order:** \`-s <sort order>\`\n\nIt's recommended to use slash commands for any \`create\` command.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)`);
+    if (m instanceof Message && (helpRegex.test(m.content) || (!nameRegex.test(m.content) && !abbreviationRegex.test(m.content) && !descriptionRegex.test(m.content) && !modeRegex.test(m.content) && !matchupSizeRegex.test(m.content) && !teamSizeRegex.test(m.content) && !registrationRegex.test(m.content) && !sortOrderRegex.test(m.content)))) {
+        await m.reply(`Provide all required parameters. Here's a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Description:** \`-d <description>\`\n**Mode:** \`-m <mode>\`\n**Matchup Size (xvx, input x):** \`-ms <matchup size>\`\n**Team Size:** \`-ts <min> <max>\`\n**Registration Period:** \`-r <start date (YYYY-MM-DD OR unix/epoch)> <end date (YYYY-MM-DD OR unix/epoch)>\`\n**Team Sort Order:** \`-s <sort order>\`\n\nIt's recommended to use slash commands for any \`create\` command.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)`);
         return;
     }
 
@@ -137,18 +137,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
     tournament.mode = modeDivision;
 
-    // Check for match size validity
-    let matchSize = m instanceof Message ? matchSizeRegex.exec(m.content)?.[1] : m.options.getInteger("players_in_match");
-    if (!matchSize) {
-        await respond(m, "Provide a valid match size for ur tournament it's currently missing");
+    // Check for matchup size validity
+    let matchupSize = m instanceof Message ? matchupSizeRegex.exec(m.content)?.[1] : m.options.getInteger("players_in_match");
+    if (!matchupSize) {
+        await respond(m, "Provide a valid matchup size for ur tournament it's currently missing");
         return;
     }
-    matchSize = typeof matchSize === "string" ? parseInt(matchSize) : matchSize;
-    if (isNaN(matchSize) || matchSize < 1 || matchSize > 16) {
-        await respond(m, "Provide a valid match size for ur tournament it's currently invalid");
+    matchupSize = typeof matchupSize === "string" ? parseInt(matchupSize) : matchupSize;
+    if (isNaN(matchupSize) || matchupSize < 1 || matchupSize > 16) {
+        await respond(m, "Provide a valid matchup size for ur tournament it's currently invalid");
         return;
     }
-    tournament.matchSize = matchSize;
+    tournament.matchupSize = matchupSize;
 
     // Check for min and max team size validity
     let minSize: number | null = 0;
@@ -169,7 +169,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
     }
-    if (minSize < 1 || minSize > 16 || minSize < tournament.matchSize || maxSize > 32 || minSize > maxSize) {
+    if (minSize < 1 || minSize > 16 || minSize < tournament.matchupSize || maxSize > 32 || minSize > maxSize) {
         await respond(m, "Provide a valid team size for ur tournament");
         return;
     }
@@ -554,9 +554,9 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                                 description: "Create a tournament streamer channel",
                             },
                             {
-                                label: "Match Results",
-                                value: "Matchresults",
-                                description: "Create a channel to log tournament match results",
+                                label: "Matchup Results",
+                                value: "Matchupresults",
+                                description: "Create a channel to log tournament matchup results",
                             })
                 ),
             new ActionRowBuilder<ButtonBuilder>()
@@ -823,7 +823,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
         return r.save();
     }));
     await cron.add(CronJobType.TournamentRegistrationEnd, tournament.registrations.end);
-    if (tournament.registrations.start.getTime() < Date.now())
+    if (tournament.registrations.start.getTime() > Date.now())
         await cron.add(CronJobType.TournamentRegistrationStart, tournament.registrations.start);
 
     const embed = new EmbedBuilder()
@@ -831,7 +831,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
         .setDescription(tournament.description)
         .addFields(
             { name: "Mode", value: tournament.mode.name, inline: true },
-            { name: "Match Size", value: tournament.matchSize.toString(), inline: true },
+            { name: "Matchup Size", value: tournament.matchupSize.toString(), inline: true },
             { name: "Allowed Team Size", value: `${tournament.minTeamSize} - ${tournament.maxTeamSize}`, inline: true },
             { name: "Registration Start Date", value: discordStringTimestamp(tournament.registrations.start), inline: true },
             { name: "Qualifiers", value: tournament.stages.some(q => q.stageType === StageType.Qualifiers).toString(), inline: true },
@@ -881,8 +881,8 @@ const data = new SlashCommandBuilder()
                 { name: "Mania", value: "man" }
             ))
     .addIntegerOption(option =>
-        option.setName("players_in_match")
-            .setDescription("The amount of players from each team in a given match (4v4 = 4)")
+        option.setName("players_in_matchup")
+            .setDescription("The amount of players from each team in a given matchup (4v4 = 4)")
             .setRequired(true)
             .setMinValue(1)
             .setMaxValue(16))
