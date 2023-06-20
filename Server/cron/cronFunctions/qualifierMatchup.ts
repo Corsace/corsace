@@ -38,6 +38,9 @@ async function execute (job: CronJobData) {
         .createQueryBuilder("matchup")
         .innerJoinAndSelect("matchup.stage", "stage")
         .innerJoinAndSelect("stage.tournament", "tournament")
+        .leftJoinAndSelect("matchup.teams", "team")
+        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member")
         .where("matchup.date <= :now", { now: futureDate })
         .andWhere("matchup.mp IS NULL")
         .getMany();

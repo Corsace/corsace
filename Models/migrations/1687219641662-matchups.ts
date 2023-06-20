@@ -45,9 +45,17 @@ export class Matchups1687219641662 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`matchup_commentators_user\` ADD CONSTRAINT \`FK_78f3f290b3e57bf2efd8634ce9e\` FOREIGN KEY (\`userID\`) REFERENCES \`user\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`matchup_previous_matchups_matchup\` ADD CONSTRAINT \`FK_6627631cc3285362a1483684bfb\` FOREIGN KEY (\`matchupID_1\`) REFERENCES \`matchup\`(\`ID\`) ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE \`matchup_previous_matchups_matchup\` ADD CONSTRAINT \`FK_5d4718758c212b06afb974f0d6d\` FOREIGN KEY (\`matchupID_2\`) REFERENCES \`matchup\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`CREATE TABLE \`matchup_teams_team\` (\`matchupID\` int NOT NULL, \`teamID\` int NOT NULL, INDEX \`IDX_2f145a86b26d92719084d0f302\` (\`matchupID\`), INDEX \`IDX_4c1dc4678358176678d92089fb\` (\`teamID\`), PRIMARY KEY (\`matchupID\`, \`teamID\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`ALTER TABLE \`matchup_teams_team\` ADD CONSTRAINT \`FK_2f145a86b26d92719084d0f302d\` FOREIGN KEY (\`matchupID\`) REFERENCES \`matchup\`(\`ID\`) ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE \`matchup_teams_team\` ADD CONSTRAINT \`FK_4c1dc4678358176678d92089fb0\` FOREIGN KEY (\`teamID\`) REFERENCES \`team\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down (queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE \`matchup_teams_team\` DROP FOREIGN KEY \`FK_4c1dc4678358176678d92089fb0\``);
+        await queryRunner.query(`ALTER TABLE \`matchup_teams_team\` DROP FOREIGN KEY \`FK_2f145a86b26d92719084d0f302d\``);
+        await queryRunner.query(`DROP INDEX \`IDX_4c1dc4678358176678d92089fb\` ON \`matchup_teams_team\``);
+        await queryRunner.query(`DROP INDEX \`IDX_2f145a86b26d92719084d0f302\` ON \`matchup_teams_team\``);
+        await queryRunner.query(`DROP TABLE \`matchup_teams_team\``);
         await queryRunner.query(`ALTER TABLE \`matchup_previous_matchups_matchup\` DROP FOREIGN KEY \`FK_5d4718758c212b06afb974f0d6d\``);
         await queryRunner.query(`ALTER TABLE \`matchup_previous_matchups_matchup\` DROP FOREIGN KEY \`FK_6627631cc3285362a1483684bfb\``);
         await queryRunner.query(`ALTER TABLE \`matchup_commentators_user\` DROP FOREIGN KEY \`FK_78f3f290b3e57bf2efd8634ce9e\``);

@@ -56,6 +56,9 @@ export class Team extends BaseEntity {
     @OneToMany(() => Matchup, matchup => matchup.winner)
         wins!: Matchup[];
 
+    @ManyToMany(() => Matchup, matchup => matchup.teams)
+        matchupGroup!: Matchup[];
+
     public async calculateStats (modeID = 1) {
         try {
             const memberDatas = await Promise.all(this.members.map(m => m.getOsuAPIV2Data()));

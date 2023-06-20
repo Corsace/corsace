@@ -24,6 +24,10 @@ export class Matchup extends BaseEntity {
     @Column({ type: "boolean", default: false })
         isLowerBracket!: boolean;
 
+    @ManyToMany(() => Team, team => team.matchupGroup)
+    @JoinTable()
+        teams?: Team[] | null;
+
     @ManyToOne(() => Team, team => team.matchupsAsTeam1)
         team1?: Team | null;
 
