@@ -228,22 +228,6 @@ export default class Default extends Vue {
     }
 }
 
-
-/* not used */
-.corsace__icon {
-    object-fit: contain;
-    margin-right: 3px;
-        height: 20px;
-        @include breakpoint(tablet) {
-            margin-right: 5px;
-            height: 25px;   
-        }
-        @include breakpoint(laptop) {
-            margin-right: 10px;
-            height: 30px;   
-        }
-}
-
 .socials {
     height: 100%;
     display: flex;
