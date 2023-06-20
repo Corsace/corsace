@@ -3,6 +3,7 @@ export enum CronJobType {
     Custommap,
     TournamentRegistrationStart,
     TournamentRegistrationEnd,
+    QualifierMatchup,
 }
 
 export interface CronJobData {
