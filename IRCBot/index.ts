@@ -5,7 +5,7 @@ import { Multi } from "nodesu";
 
 const banchoClient = new BanchoClient({ username: config.osu.irc.username, password: config.osu.irc.ircPassword, botAccount: config.osu.irc.botAccount });
 
-async function main() {
+async function main () {
     await banchoClient.connect();
 
     const self = banchoClient.getSelf();
@@ -24,7 +24,7 @@ async function main() {
             // remove !command from args
             args.shift();
 
-            await handleCommand(commandName, message, ...args)
+            await handleCommand(commandName, message, ...args);
         }
     });
 
@@ -50,7 +50,7 @@ async function main() {
         const multiId = parseInt(message.channel.name.substring("#mp_".length));
         const multiplayer = await banchoClient.osuApi.multi.getMatch(multiId) as Multi;
 
-        await handleCommand(commandName, message, multiplayer, ...args)
+        await handleCommand(commandName, message, multiplayer, ...args);
     });
 }
 

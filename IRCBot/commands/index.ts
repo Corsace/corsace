@@ -38,7 +38,7 @@ function handleCommand(
     ...args: string[]
 ): Promise<void>;
 
-async function handleCommand(commandName: string, message: BanchoMessage, multiOrArg?: Multi | string, ...args: string[]) {
+async function handleCommand (commandName: string, message: BanchoMessage, multiOrArg?: Multi | string, ...args: string[]) {
     const command = commands.find(
         (cmd) => cmd.name == commandName.toLowerCase()
             || cmd.aliases?.includes(commandName.toLowerCase())
