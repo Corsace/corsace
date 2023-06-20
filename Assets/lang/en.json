@@ -8,9 +8,9 @@
         "logout": "logout"
     },
     "mca_ayim": {
-		"banner":{
-			"merch": "OFFICIAL MERCHANDISE STORE",
-			"corsace": "MAIN EVENT HUB"
+        "banner":{
+            "merch": "OFFICIAL MERCHANDISE STORE",
+            "corsace": "MAIN EVENT HUB"
 		},
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
@@ -112,9 +112,9 @@
     },
     "mca": {
         "main": {
-			"banner": "LET'S LOOK BACK <br> AT",
-			"click": "CLICK HERE TO ENTER",
-			"welcome": "WELCOME TO MCA",
+            "banner": "LET'S LOOK BACK <br> AT",
+            "click": "CLICK HERE TO ENTER",
+            "welcome": "WELCOME TO MCA",
             "voting": "voting",
             "nominating": "nominating",
             "preparation": "preparation",
