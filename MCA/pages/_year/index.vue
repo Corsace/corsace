@@ -878,7 +878,7 @@ export default class Index extends Vue {
         background-color: $dark;
     }
     &--light, &--dark {
-        color: $altblue;
+        color: $alt-blue;
         border: 1px $blue solid; 
     }
 
@@ -915,7 +915,7 @@ export default class Index extends Vue {
                 right: 0;
                 top: -3rem;
             }
-            left: calc(-1 * $font-titlelarge/2);
+            left: calc(-1 * $font-title-large/2);
             
             @include breakpoint(mobile) {
                 width: 100%;
@@ -923,16 +923,16 @@ export default class Index extends Vue {
             width: calc(3 * $font-xl);
             @include breakpoint(tablet) {
                 width: calc(3 * $font-xxl);
-                margin-left: calc(1 * $font-titlelarge);
+                margin-left: calc(1 * $font-title-large);
             }
             @include breakpoint(laptop) {
                 width: calc(3 * $font-xxxl);
-                margin-left: calc(1 * $font-titlelarge);
+                margin-left: calc(1 * $font-title-large);
             }
             @include breakpoint(desktop) {
-                font-size: $font-titlelarge;
-                width: calc(5 * $font-titlelarge);
-                margin-left: calc(1 * $font-titlelarge);
+                font-size: $font-title-large;
+                width: calc(5 * $font-title-large);
+                margin-left: calc(1 * $font-title-large);
                 line-height: 4rem;
                 letter-spacing: 3px;
             }
