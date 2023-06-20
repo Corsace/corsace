@@ -8,7 +8,7 @@ export function validateTeam (isManager?: boolean, invites?: boolean) {
         if (ID === undefined || isNaN(parseInt(ID)) || parseInt(ID) < 1) {
             ctx.body = {
                 success: false,
-                error: "Missing ID",
+                error: "Missing team ID",
             };
             return;
         }

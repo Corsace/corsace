@@ -199,17 +199,17 @@ export class User extends BaseEntity {
     @ManyToMany(() => Team, team => team.members)
         teams!: Team[];
 
-    @OneToMany(() => Matchup, match => match.referee)
-        matchesRefereed!: Matchup[];
+    @OneToMany(() => Matchup, matchup => matchup.referee)
+        matchupsRefereed!: Matchup[];
 
-    @ManyToMany(() => Matchup, match => match.commentators)
-        matchesCommentated!: Matchup[];
+    @ManyToMany(() => Matchup, matchup => matchup.commentators)
+        matchupsCommentated!: Matchup[];
 
-    @OneToMany(() => Matchup, match => match.streamer)
-        matchesStreamed!: Matchup[];
+    @OneToMany(() => Matchup, matchup => matchup.streamer)
+        matchupsStreamed!: Matchup[];
 
     @OneToMany(() => MatchupScore, score => score.user)
-        matchScores!: MatchupScore[];
+        matchupScores!: MatchupScore[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User

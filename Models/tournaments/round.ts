@@ -31,8 +31,8 @@ export class Round extends BaseEntity {
     @OneToMany(() => Mappool, mappool => mappool.round)
         mappool!: Mappool[];
 
-    @OneToMany(() => Matchup, match => match.round)
-        matches!: Matchup[];
+    @OneToMany(() => Matchup, matchup => matchup.round)
+        matchups!: Matchup[];
 
     @OneToMany(() => MapOrder, mapOrder => mapOrder.stage)
         mapOrder?: MapOrder[] | null;

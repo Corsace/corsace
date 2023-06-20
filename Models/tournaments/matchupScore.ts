@@ -8,7 +8,7 @@ export class MatchupScore extends BaseEntity {
     @PrimaryGeneratedColumn()
         ID!: number;
 
-    @ManyToOne(() => User, user => user.matchScores)
+    @ManyToOne(() => User, user => user.matchupScores)
         user!: User;
 
     @OneToMany(() => MatchupMap, map => map.scores)

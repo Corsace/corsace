@@ -1,5 +1,6 @@
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
+import { Mappool } from "./mappools/mappool";
 import { MatchupMap } from "./matchupMap";
 import { Round } from "./round";
 import { Stage } from "./stage";
@@ -14,16 +15,19 @@ export class Matchup extends BaseEntity {
     @Column({ type: "int", nullable: true })
         mp?: number | null;
 
-    @ManyToOne(() => Round, round => round.matches)
+    @ManyToOne(() => Round, round => round.matchups)
         round?: Round | null;
 
-    @ManyToOne(() => Stage, stage => stage.matches)
+    @ManyToOne(() => Stage, stage => stage.matchups)
         stage?: Stage | null;
 
-    @ManyToOne(() => Team, team => team.matchesAsTeam1)
+    @Column({ type: "boolean", default: false })
+        isLowerBracket!: boolean;
+
+    @ManyToOne(() => Team, team => team.matchupsAsTeam1)
         team1!: Team;
 
-    @ManyToOne(() => Team, team => team.matchesAsTeam2)
+    @ManyToOne(() => Team, team => team.matchupsAsTeam2)
         team2!: Team;
 
     @Column({ type: "int", default: 0 })
@@ -35,8 +39,12 @@ export class Matchup extends BaseEntity {
     @ManyToOne(() => Team, team => team.wins)
         winner!: Team;
 
-    @ManyToOne(() => MatchupMap, map => map.matches)
+    @ManyToOne(() => MatchupMap, map => map.matchups)
         maps!: MatchupMap[];
+
+    @ManyToMany(() => Mappool, mappool => mappool.bannedInMatchups)
+    @JoinTable()
+        mappoolsBanned?: Mappool[] | null;
 
     @Column({ type: "boolean", default: false })
         potential!: boolean;
@@ -50,23 +58,28 @@ export class Matchup extends BaseEntity {
     @Column("datetime")
         date!: Date;
 
-    @ManyToOne(() => User, user => user.matchesRefereed)
-        referee!: User;
+    @ManyToOne(() => User, user => user.matchupsRefereed)
+        referee?: User | null;
 
-    @ManyToMany(() => User, user => user.matchesCommentated)
+    @ManyToMany(() => User, user => user.matchupsCommentated)
     @JoinTable()
-        commentators!: User[];
+        commentators?: User[] | null;
 
-    @ManyToOne(() => User, user => user.matchesStreamed)
-        streamer!: User;
+    @ManyToOne(() => User, user => user.matchupsStreamed)
+        streamer?: User | null;
 
-    @ManyToMany(() => Matchup, match => match.nextMatches)
+    @ManyToMany(() => Matchup, matchup => matchup.nextMatchups)
     @JoinTable()
-        previousMatches?: Matchup[] | null;
+        previousMatchups?: Matchup[] | null;
 
-    @ManyToMany(() => Matchup, match => match.previousMatches)
-        nextMatches?: Matchup[] | null;
+    @ManyToMany(() => Matchup, matchup => matchup.previousMatchups)
+        nextMatchups?: Matchup[] | null;
 
     @Column("mediumtext", { nullable: true })
         log?: string | null;
+
+    constructor (parents?: Matchup[]) {
+        super();
+        this.nextMatchups = parents;
+    }
 }

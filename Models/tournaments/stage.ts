@@ -86,8 +86,8 @@ export class Stage extends BaseEntity {
     @Column()
         finalSize!: number;
 
-    @OneToMany(() => Matchup, match => match.stage)
-        matches!: Matchup[];
+    @OneToMany(() => Matchup, matchup => matchup.stage)
+        matchups!: Matchup[];
 
     @OneToMany(() => MapOrder, mapOrder => mapOrder.stage)
         mapOrder?: MapOrder[] | null;

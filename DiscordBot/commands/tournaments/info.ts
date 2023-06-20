@@ -31,7 +31,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // Create a discord embed for the tournament, listing its stages
     const embed = new EmbedBuilder()
         .setTitle(`${tournament.name} (${tournament.abbreviation})`)
-        .setDescription(`Organized by ${organizer.osu.username} <@${organizer.discord.userID}>\n\n**ID:** ${tournament.ID}\n**Mode:** ${tournament.mode.name}\n**Registrations Start:** ${discordStringTimestamp(tournament.registrations.start)}\n**Registrations End:** ${discordStringTimestamp(tournament.registrations.end)}\n\n**Match Size:** ${tournament.matchSize}v${tournament.matchSize}\n**Team Sizes:** ${tournament.maxTeamSize === tournament.minTeamSize ? `${tournament.minTeamSize}` : `${tournament.minTeamSize} - ${tournament.maxTeamSize}`} player${tournament.maxTeamSize > 1 ? "s" : ""}\n\n**Description:** ${tournament.description}`)
+        .setDescription(`Organized by ${organizer.osu.username} <@${organizer.discord.userID}>\n\n**ID:** ${tournament.ID}\n**Mode:** ${tournament.mode.name}\n**Registrations Start:** ${discordStringTimestamp(tournament.registrations.start)}\n**Registrations End:** ${discordStringTimestamp(tournament.registrations.end)}\n\n**Matchup Size:** ${tournament.matchupSize}v${tournament.matchupSize}\n**Team Sizes:** ${tournament.maxTeamSize === tournament.minTeamSize ? `${tournament.minTeamSize}` : `${tournament.minTeamSize} - ${tournament.maxTeamSize}`} player${tournament.maxTeamSize > 1 ? "s" : ""}\n\n**Description:** ${tournament.description}`)
         .addFields(
             tournament.stages.map(s => {
                 return {

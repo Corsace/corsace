@@ -43,7 +43,7 @@ export const unFinishedTournaments = [TournamentStatus.NotStarted, TournamentSta
 
 @Entity()
 @Check(`"minTeamSize" <= "maxTeamSize"`)
-@Check(`"matchSize" <= "minTeamSize"`)
+@Check(`"matchupSize" <= "minTeamSize"`)
 export class Tournament extends BaseEntity {
 
     @PrimaryGeneratedColumn()
@@ -83,7 +83,7 @@ export class Tournament extends BaseEntity {
         year!: number;
 
     @Column()
-        matchSize!: number;
+        matchupSize!: number;
 
     @Column({ type: "enum", enum: SortOrder, default: SortOrder.Signup })
         regSortOrder!: SortOrder;

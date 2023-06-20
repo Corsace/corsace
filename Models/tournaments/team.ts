@@ -44,13 +44,13 @@ export class Team extends BaseEntity {
     @Column("double")
         pp!: number;
 
-    @OneToMany(() => Matchup, match => match.team1)
-        matchesAsTeam1!: Matchup[];
+    @OneToMany(() => Matchup, matchup => matchup.team1)
+        matchupsAsTeam1!: Matchup[];
 
-    @OneToMany(() => Matchup, match => match.team2)
-        matchesAsTeam2!: Matchup[];
+    @OneToMany(() => Matchup, matchup => matchup.team2)
+        matchupsAsTeam2!: Matchup[];
 
-    @OneToMany(() => Matchup, match => match.winner)
+    @OneToMany(() => Matchup, matchup => matchup.winner)
         wins!: Matchup[];
 
     public async calculateStats (modeID = 1) {

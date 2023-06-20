@@ -37,6 +37,6 @@ export class MatchupMap extends BaseEntity {
     @ManyToOne(() => Team, team => team.wins)
         winner!: Team;
 
-    @OneToMany(() => Matchup, match => match.maps)
-        matches!: Matchup[];
+    @OneToMany(() => Matchup, matchup => matchup.maps)
+        matchups!: Matchup[];
 }
