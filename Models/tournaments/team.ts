@@ -50,6 +50,9 @@ export class Team extends BaseEntity {
     @OneToMany(() => Matchup, matchup => matchup.team2)
         matchupsAsTeam2!: Matchup[];
 
+    @OneToMany(() => Matchup, matchup => matchup.first)
+        matchupsFirst!: Matchup[];
+
     @OneToMany(() => Matchup, matchup => matchup.winner)
         wins!: Matchup[];
 

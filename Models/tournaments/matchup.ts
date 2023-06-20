@@ -25,10 +25,10 @@ export class Matchup extends BaseEntity {
         isLowerBracket!: boolean;
 
     @ManyToOne(() => Team, team => team.matchupsAsTeam1)
-        team1!: Team;
+        team1?: Team | null;
 
     @ManyToOne(() => Team, team => team.matchupsAsTeam2)
-        team2!: Team;
+        team2?: Team | null;
 
     @Column({ type: "int", default: 0 })
         team1Score!: number;
@@ -36,8 +36,11 @@ export class Matchup extends BaseEntity {
     @Column({ type: "int", default: 0 })
         team2Score!: number;
 
+    @ManyToOne(() => Team, team => team.matchupsFirst)
+        first?: Team | null;
+
     @ManyToOne(() => Team, team => team.wins)
-        winner!: Team;
+        winner?: Team | null;
 
     @ManyToOne(() => MatchupMap, map => map.matchups)
         maps!: MatchupMap[];
