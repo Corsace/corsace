@@ -36,6 +36,14 @@ The callback URL should be set to:
 config.corsace.publicUrl + /api/login/osu/callback
 ```
 
+```
+config.osu.irc
+```
+
+You can obtain your osu IRC password from the same place as the osu OAuth Application at https://osu.ppy.sh/home/account/edit#irc.
+
+If your account is a bot account, then make sure to have `botAccount` set to true; otherwise, make set it to false.
+
 ### Database
 
 #### Setup
