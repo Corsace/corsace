@@ -186,12 +186,12 @@
                 href="https://ayim.corsace.io" 
                 class="portal__ayim"
             >
-                <div :class="`portal__ayim--container portal--${viewTheme}`">
+                <div :class="`portal__ayim--container portal--${viewTheme} portal__ayim--container--${viewTheme}`">
                     <div 
                         class="portal__ayim--offset"
                         :class="`index--${viewTheme}`"
                     >
-                    <span v-html="$t('mca.main.banner')"></span> {{ $route.params.year }}
+                        <span v-html="$t('mca.main.banner')"></span> {{ $route.params.year }}
                     </div>
                     <div class="portal__ayim--right">
                         <img
@@ -900,8 +900,12 @@ export default class Index extends Vue {
             justify-content: space-between;
 
             position: relative; 
-
-            background-image: url("../../../Assets/img/site/mca-ayim/blue-line.png");
+            &--light{
+                background-image: url("../../../Assets/img/site/mca-ayim/light-blue-line.png");
+            }
+            &--dark{
+                background-image: url("../../../Assets/img/site/mca-ayim/dark-blue-line.png");
+            }
             background-repeat: no-repeat;
             background-position-y: 5%;
             background-position-x: 33%;
