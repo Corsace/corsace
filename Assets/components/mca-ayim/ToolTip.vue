@@ -37,7 +37,6 @@ export default class TheHeader extends Vue {
 .tooltip {
   position: relative;
   display: flex;
-
 }
 
 .tooltip .tooltiptext {
@@ -86,5 +85,4 @@ export default class TheHeader extends Vue {
 .tooltip:hover .tooltiptext {
   opacity: 1;
 }
-
 </style>

@@ -132,7 +132,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component} from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
@@ -158,6 +158,7 @@ const mcaAyimModule = namespace("mca-ayim");
     middleware: "mca",
 })
 export default class Default extends Vue {
+    
     @State viewTheme!: "light" | "dark";
     @mcaAyimModule.State loggedInMCAUser!: null | UserMCAInfo;
     @mcaAyimModule.State selectedMode!: string;
