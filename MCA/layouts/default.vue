@@ -27,7 +27,7 @@
         
         <the-footer class="mcaayim__footer">
             <div class="socials">
-                <ToolTip
+                <Tooltip
                     :site="'mca'">
                     <template #icon>
                         <a 
@@ -44,8 +44,8 @@
                         </a>
                     </template>
                     CORSACE
-                </ToolTip>
-                <ToolTip
+                </Tooltip>
+                <Tooltip
                     :site="'mca'">
                     <template #icon>
                         <a
@@ -62,8 +62,8 @@
                         </a>
                     </template>
                     TWITTER
-                </ToolTip>
-                <ToolTip
+                </Tooltip>
+                <Tooltip
                     :site="'mca'">
                     <template #icon>
                         <a
@@ -80,8 +80,8 @@
                         </a>
                     </template>
                     DISCORD
-                </ToolTip>
-                <ToolTip
+                </Tooltip>
+                <Tooltip
                     :site="'mca'">
                     <template #icon>
                         <a
@@ -98,8 +98,8 @@
                         </a>
                     </template>
                     TWITCH
-                </ToolTip>
-                <ToolTip
+                </Tooltip>
+                <Tooltip
                     :site="'mca'">
                     <template #icon>
                         <a
@@ -116,7 +116,7 @@
                         </a>
                     </template>
                     YOUTUBE
-                </ToolTip>
+                </Tooltip>
             </div>
             <year-switcher 
                 v-if="!isSmall"
@@ -140,7 +140,7 @@ import ModeSwitcher from "../../Assets/components/mca-ayim/ModeSwitcher.vue";
 import YearSwitcher from "../../Assets/components/mca-ayim/YearSwitcher.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
 import GuestDifficultyModal from "../../Assets/components/mca-ayim/GuestDifficultyModal.vue";
-import ToolTip from "../../Assets/components/mca-ayim/ToolTip.vue";
+import Tooltip from "../../Assets/components/mca-ayim/Tooltip.vue";
 
 import { UserMCAInfo } from "../../Interfaces/user";
 
@@ -153,7 +153,7 @@ const mcaAyimModule = namespace("mca-ayim");
         YearSwitcher,
         TheFooter,
         GuestDifficultyModal,
-        ToolTip,
+        Tooltip,
     },
     middleware: "mca",
 })
