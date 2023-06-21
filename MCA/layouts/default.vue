@@ -26,11 +26,10 @@
         />
         
         <the-footer class="mcaayim__footer">
-            <div 
-                class="socials"
-            >
-                <ToolTip>
-                    <template v-slot:icon>
+            <div class="socials">
+                <ToolTip
+                    :site="'mca'">
+                    <template #icon>
                         <a 
                             class="socials__link" 
                             href="https://corsace.io"
@@ -46,8 +45,9 @@
                     </template>
                     CORSACE
                 </ToolTip>
-                <ToolTip>
-                    <template v-slot:icon>
+                <ToolTip
+                    :site="'mca'">
+                    <template #icon>
                         <a
                             class="socials__link"
                             href="https://twitter.com/corsace_"
@@ -63,8 +63,9 @@
                     </template>
                     TWITTER
                 </ToolTip>
-                <ToolTip>
-                    <template v-slot:icon>
+                <ToolTip
+                    :site="'mca'">
+                    <template #icon>
                         <a
                             class="socials__link"
                             href="https://discord.gg/Z6vEMsr"
@@ -80,8 +81,9 @@
                     </template>
                     DISCORD
                 </ToolTip>
-                <ToolTip>
-                    <template v-slot:icon>
+                <ToolTip
+                    :site="'mca'">
+                    <template #icon>
                         <a
                             class="socials__link"
                             href="https://www.twitch.tv/corsace"
@@ -97,8 +99,9 @@
                     </template>
                     TWITCH
                 </ToolTip>
-                <ToolTip>
-                    <template v-slot:icon>
+                <ToolTip
+                    :site="'mca'">
+                    <template #icon>
                         <a
                             class="socials__link"
                             href="https://youtube.com/corsace"
@@ -129,7 +132,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component} from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
@@ -155,7 +158,6 @@ const mcaAyimModule = namespace("mca-ayim");
     middleware: "mca",
 })
 export default class Default extends Vue {
-
     @State viewTheme!: "light" | "dark";
     @mcaAyimModule.State loggedInMCAUser!: null | UserMCAInfo;
     @mcaAyimModule.State selectedMode!: string;
