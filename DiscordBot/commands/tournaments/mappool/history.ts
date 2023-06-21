@@ -9,6 +9,7 @@ import respond from "../../../functions/respond";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
 import { Command } from "../..";
 import modeColour from "../../../functions/modeColour";
+import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -40,6 +41,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .leftJoinAndSelect("history.mappoolMap", "mappoolMap")
         .leftJoinAndSelect("history.createdBy", "createdBy")
         .leftJoinAndSelect("history.beatmap", "beatmap")
+        .leftJoinAndSelect("beatmap.beatmapset", "beatmapset")
         .where("mappoolMap.ID = :mappoolMapID", { mappoolMapID: mappoolMap.ID })
         .orderBy("history.createdAt", "DESC")
         .getMany();
@@ -53,9 +55,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     let replied = false;
     for (const h of history) {
         embed.addFields({
-            name: `${h.createdAt.toLocaleString("en-GB", { timeZone: "UTC" })} by ${h.createdBy.osu.username}`,
-            value: h.beatmap ? `**Beatmap:** ${h.beatmap.beatmapset.artist} - ${h.beatmap.beatmapset.title} [${h.beatmap.difficulty}]` : h.artist ? `**Custom:** ${h.artist} - ${h.title} [${h.difficulty}]\n${h.link}` : "No map(? Shouldn't happen tell VINXIS)",
-            inline: true,
+            name: `Added by ${h.createdBy.osu.username}`,
+            value: discordStringTimestamp(h.createdAt) + "\n" + (h.beatmap ? `**Beatmap:** ${h.beatmap.beatmapset.artist} - ${h.beatmap.beatmapset.title} [${h.beatmap.difficulty}]` : h.artist ? `**Custom:** ${h.artist} - ${h.title} [${h.difficulty}]\n${h.link}` : "No map(? Shouldn't happen tell VINXIS)"),
         });
 
         if (embed.data.fields!.length === 25) {
