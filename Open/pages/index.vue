@@ -1,5 +1,6 @@
 <template>
-    <div>heyyyy lol</div>
+    <div>Corsace Open 2023
+    </div>
 </template>
 
 <script lang="ts">
