@@ -12,20 +12,9 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
-export default class TheHeader extends Vue {
+export default class Tooltip extends Vue {
 
     @Prop({ type: String, required: true }) readonly site!: string;
-
-    isSmall = false;
-
-    mounted () {
-        if (process.client) {
-            this.isSmall = window.innerWidth < 992;
-            window.addEventListener("resize", () => {
-                this.isSmall = window.innerWidth < 992;
-            });
-        }
-    }
 
 }
 </script>
