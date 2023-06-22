@@ -26,97 +26,65 @@
         />
         
         <the-footer class="mcaayim__footer">
-            <div class="socials">
-                <ToolTip
-                    :site="'mca'">
-                    <template #icon>
-                        <a 
-                            class="socials__link" 
-                            href="https://corsace.io"
-                            target="_blank"
-                        >
-                            <img
-                                class="socials__icon"
-                                :class="`socials__icon--${viewTheme}`"
-                                src="../../Assets/img/site/mca-ayim/corsace_logo.png"
-                                alt=""
-                            >
-                        </a>
-                    </template>
-                    CORSACE
-                </ToolTip>
-                <ToolTip
-                    :site="'mca'">
-                    <template #icon>
-                        <a
-                            class="socials__link"
-                            href="https://twitter.com/corsace_"
-                            target="_blank"
-                        >
-                            <img
-                                class="socials__icon"
-                                :class="`socials__icon--${viewTheme}`"
-                                src="../../Assets/img/social/twitter.png"
-                                alt=""
-                            >
-                        </a>
-                    </template>
-                    TWITTER
-                </ToolTip>
-                <ToolTip
-                    :site="'mca'">
-                    <template #icon>
-                        <a
-                            class="socials__link"
-                            href="https://discord.gg/Z6vEMsr"
-                            target="_blank"
-                        >
-                            <img
-                                class="socials__icon"
-                                :class="`socials__icon--${viewTheme}`"
-                                src="../../Assets/img/social/discord.png"
-                                alt=""
-                            >
-                        </a>
-                    </template>
-                    DISCORD
-                </ToolTip>
-                <ToolTip
-                    :site="'mca'">
-                    <template #icon>
-                        <a
-                            class="socials__link"
-                            href="https://www.twitch.tv/corsace"
-                            target="_blank"
-                        >
-                            <img
-                                class="socials__icon"
-                                :class="`socials__icon--${viewTheme}`"
-                                src="../../Assets/img/social/twitch.png"
-                                alt=""
-                            >
-                        </a>
-                    </template>
-                    TWITCH
-                </ToolTip>
-                <ToolTip
-                    :site="'mca'">
-                    <template #icon>
-                        <a
-                            class="socials__link"
-                            href="https://youtube.com/corsace"
-                            target="_blank"
-                        >
-                            <img
-                                class="socials__icon"
-                                :class="`socials__icon--${viewTheme}`"
-                                src="../../Assets/img/social/youtube.png"
-                                alt=""
-                            >
-                        </a>
-                    </template>
-                    YOUTUBE
-                </ToolTip>
+            <a 
+                class="footer-nav__brand-name" 
+                :class="`footer-nav__brand-name--${viewTheme}`"
+                href="https://corsace.io"
+            >
+                <img
+                    class="corsace__icon"
+                    src="../../Assets/img/site/mca-ayim/corsace_text.png"
+                    alt=""
+                >
+            </a>
+            <div 
+                class="socials"
+                :class="`socials--${viewTheme}`"
+            >
+                <a
+                    class="socials__link"
+                    href="https://twitter.com/corsace_"
+                    target="_blank"
+                >
+                    <img
+                        class="socials__icon"
+                        src="../../Assets/img/social/twitter.png"
+                        alt=""
+                    >
+                </a>
+                <a
+                    class="socials__link"
+                    href="https://discord.gg/Z6vEMsr"
+                    target="_blank"
+                >
+                    <img
+                        class="socials__icon"
+                        src="../../Assets/img/social/discord.png"
+                        alt=""
+                    >
+                </a>
+                <a
+                    class="socials__link"
+                    href="https://www.twitch.tv/corsace"
+                    target="_blank"
+                >
+                    <img
+                        class="socials__icon"
+                        src="../../Assets/img/social/twitch.png"
+                        alt=""
+                    >
+                </a>
+                <a
+                    class="socials__link"
+                    href="https://youtube.com/corsace"
+                    target="_blank"
+                >
+                    <img
+                        class="socials__icon"
+                        src="../../Assets/img/social/youtube.png"
+                        alt=""
+                    >
+                </a>
             </div>
             <year-switcher 
                 v-if="!isSmall"
@@ -140,7 +108,6 @@ import ModeSwitcher from "../../Assets/components/mca-ayim/ModeSwitcher.vue";
 import YearSwitcher from "../../Assets/components/mca-ayim/YearSwitcher.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
 import GuestDifficultyModal from "../../Assets/components/mca-ayim/GuestDifficultyModal.vue";
-import ToolTip from "../../Assets/components/mca-ayim/ToolTip.vue";
 
 import { UserMCAInfo } from "../../Interfaces/user";
 
@@ -153,7 +120,6 @@ const mcaAyimModule = namespace("mca-ayim");
         YearSwitcher,
         TheFooter,
         GuestDifficultyModal,
-        ToolTip,
     },
     middleware: "mca",
 })
