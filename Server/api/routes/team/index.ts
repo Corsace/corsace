@@ -10,7 +10,6 @@ import { parseQueryParam } from "../../../utils/query";
 import { deleteTeamAvatar, uploadTeamAvatar } from "../../../functions/tournaments/teams/teamAvatarFunctions";
 import { StageType } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import e from "express";
 
 const teamRouter = new Router();
 
