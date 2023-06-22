@@ -24,7 +24,7 @@ export default class Default extends Vue {
     @State loggedInUser!: UserInfo;
 
     get avatarURL (): string  {
-        return this.loggedInUser?.osu?.avatar || "";
+        return this.loggedInUser?.osu.avatar || "";
     }
 
     async mounted () {
