@@ -1,8 +1,10 @@
 <template>
-    <div class="tooltip"><slot name="icon"/>
+    <div class="tooltip">
+        <slot name="icon" />
         <span
-            class="tooltiptext"
-            :class="`tooltiptext--${site}`">
+            class="tooltip-text"
+            :class="`tooltip-text--${site}`"
+        >
             <slot />
         </span>
     </div>
@@ -28,7 +30,7 @@ export default class Tooltip extends Vue {
   display: flex;
 }
 
-.tooltip .tooltiptext {
+.tooltip .tooltip-text {
     &--mca, &--ayim {
       background-color: $alt-blue;
       --set-color: #{$alt-blue};

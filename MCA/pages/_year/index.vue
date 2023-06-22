@@ -191,7 +191,7 @@
                         class="portal__ayim--offset"
                         :class="`index--${viewTheme}`"
                     >
-                        <span v-html="$t('mca.main.banner')"></span> {{ $route.params.year }}
+                        <span v-html="$t('mca.main.banner')" /> {{ $route.params.year }}
                     </div>
                     <div class="portal__ayim--right">
                         <img
@@ -229,17 +229,16 @@
                     </div>
                 </a>
             </div>
-            <hr class = "dividerMain">
+            <hr class="dividerMain">
             <div class="welcomeBack">
                 <div>
-                    <span v-html="$t('mca.main.welcome')"></span>
+                    <span v-html="$t('mca.main.welcome')" />
                 </div>
             </div>
-            <div class="textBody" >
-                <span v-html="$t('mca.main.message.2022')"></span>
+            <div class="textBody">
+                <span v-html="$t('mca.main.message.2022')" />
             </div>
             <br>
-            
         </div>
         <div 
             v-else

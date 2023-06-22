@@ -28,7 +28,8 @@
         <the-footer class="mcaayim__footer">
             <div class="socials">
                 <Tooltip
-                    :site="'mca'">
+                    :site="'mca'"
+                >
                     <template #icon>
                         <a 
                             class="socials__link" 
@@ -46,7 +47,8 @@
                     CORSACE
                 </Tooltip>
                 <Tooltip
-                    :site="'mca'">
+                    :site="'mca'"
+                >
                     <template #icon>
                         <a
                             class="socials__link"
@@ -64,7 +66,8 @@
                     TWITTER
                 </Tooltip>
                 <Tooltip
-                    :site="'mca'">
+                    :site="'mca'"
+                >
                     <template #icon>
                         <a
                             class="socials__link"
@@ -82,7 +85,8 @@
                     DISCORD
                 </Tooltip>
                 <Tooltip
-                    :site="'mca'">
+                    :site="'mca'"
+                >
                     <template #icon>
                         <a
                             class="socials__link"
@@ -100,7 +104,8 @@
                     TWITCH
                 </Tooltip>
                 <Tooltip
-                    :site="'mca'">
+                    :site="'mca'"
+                >
                     <template #icon>
                         <a
                             class="socials__link"
@@ -139,8 +144,8 @@ import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import ModeSwitcher from "../../Assets/components/mca-ayim/ModeSwitcher.vue";
 import YearSwitcher from "../../Assets/components/mca-ayim/YearSwitcher.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
+import Tooltip from "../../Assets/components/footer/Tooltip.vue";
 import GuestDifficultyModal from "../../Assets/components/mca-ayim/GuestDifficultyModal.vue";
-import Tooltip from "../../Assets/components/mca-ayim/Tooltip.vue";
 
 import { UserMCAInfo } from "../../Interfaces/user";
 
