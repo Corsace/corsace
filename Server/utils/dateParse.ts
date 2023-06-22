@@ -3,6 +3,6 @@ export function parseDateOrTimestamp (dateString: string) {
 }
 
 export function discordStringTimestamp (date: Date) {
-    const seconds = date.getTime() / 1000;
+    const seconds = Math.round(date.getTime() / 1000);
     return `<t:${seconds}:F> (<t:${seconds}:R>)`;
 }

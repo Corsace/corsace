@@ -44,7 +44,7 @@
                 >
                     {{ loggedInUser.osu.username }}
                 </div>
-                <div 
+                <div  
                     class="header-login__welcome"
                     :class="`header-login__welcome--${viewTheme}`"
                 >

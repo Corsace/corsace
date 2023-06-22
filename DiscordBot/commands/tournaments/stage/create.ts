@@ -290,11 +290,11 @@ const data = new SlashCommandBuilder()
                 },
                 {
                     name: "Single Elimination",
-                    value: "SingleElimination",
+                    value: "Singleelimination",
                 },
                 {
                     name: "Double Elimination",
-                    value: "DoubleElimination",
+                    value: "Doubleelimination",
                 },
                 {
                     name: "Round Robin",

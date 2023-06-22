@@ -186,19 +186,19 @@
                 href="https://ayim.corsace.io" 
                 class="portal__ayim"
             >
-                <div :class="`portal__ayim--container portal--${viewTheme}`">
+                <div :class="`portal__ayim--container portal--${viewTheme} portal__ayim--container--${viewTheme}`">
                     <div 
                         class="portal__ayim--offset"
                         :class="`index--${viewTheme}`"
                     >
-                        LET'S LOOK BACK AT {{ $route.params.year }}
+                        <span v-html="$t('mca.main.banner')"></span> {{ $route.params.year }}
                     </div>
-                    <div class="portal__ayim--centre">
+                    <div class="portal__ayim--right">
                         <img
-                            :src="require(`../../../Assets/img/site/mca-ayim/year/${$route.params.year}-${viewTheme}-ayim.png`)" 
+                            :src="require(`../../../Assets/img/site/mca-ayim/year/${$route.params.year}-${viewTheme}-mca.png`)" 
                         >
-                        <div class="portal__desc">
-                            CLICK HERE TO ENTER
+                        <div class="portal__desc--right">
+                            {{ $t('mca.main.click') }}
                         </div>
                     </div>
                 </div>
@@ -213,7 +213,7 @@
                         shop.<span class="bold">corsace</span>.io
                     </div>
                     <div class="portal__desc">
-                        OFFICIAL MERCHANDISE STORE
+                        {{ $t('mca_ayim.banner.merch') }}
                     </div>
                 </a>
                 <a 
@@ -225,29 +225,21 @@
                         <span class="bold">corsace</span>.io
                     </div>
                     <div class="portal__desc">
-                        MAIN EVENT HUB
+                        {{ $t('mca_ayim.banner.corsace') }}
                     </div>
                 </a>
             </div>
+            <hr class = "dividerMain">
             <div class="welcomeBack">
                 <div>
-                    WELCOME TO MCA
+                    <span v-html="$t('mca.main.welcome')"></span>
                 </div>
-                <div>
-                    THE YEARLY VOTE 
-                </div>
-                <div>
-                    OF THE BEST MAPS AND MAPPERS
-                </div>
-                <div>
-                    DECIDED BY MAPPERS
-                </div>
-                <br>
-                <div>
-                    CLICK ON A MODE TO GET STARTED
-                </div>
-                <br>
             </div>
+            <div class="textBody" >
+                <span v-html="$t('mca.main.message.2022')"></span>
+            </div>
+            <br>
+            
         </div>
         <div 
             v-else
@@ -886,7 +878,7 @@ export default class Index extends Vue {
         background-color: $dark;
     }
     &--light, &--dark {
-        color: $blue;
+        color: $alt-blue;
         border: 1px $blue solid; 
     }
 
@@ -894,7 +886,7 @@ export default class Index extends Vue {
         width: 75vw;
         margin: 50px 0;
         @include breakpoint(laptop) {
-            margin: 80px 0;
+            margin: 60px 0px 5px 0px;
         }
         padding: 0 25px;
 
@@ -905,45 +897,58 @@ export default class Index extends Vue {
         &--container {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
 
             position: relative; 
-
-            background-image: url("../../../Assets/img/site/mca-ayim/blue-line.png");
+            &--light{
+                background-image: url("../../../Assets/img/site/mca-ayim/light-blue-line.png");
+            }
+            &--dark{
+                background-image: url("../../../Assets/img/site/mca-ayim/dark-blue-line.png");
+            }
             background-repeat: no-repeat;
             background-position-y: 5%;
             background-position-x: 33%;
         }
-
+        
+        /* lets look back at 2022*/
         &--offset {
-            position: absolute;
+
             @include breakpoint(mobile) {
                 left: 0;
                 right: 0;
                 top: -3rem;
             }
-            left: calc(-1 * $font-title/2);
+            left: calc(-1 * $font-title-large/2);
             
             @include breakpoint(mobile) {
                 width: 100%;
             }
-            width: calc(4 * $font-xl);
+            width: calc(3 * $font-xl);
             @include breakpoint(tablet) {
-                width: calc(4 * $font-xxl);
+                width: calc(3 * $font-xxl);
+                margin-left: calc(1 * $font-title-large);
             }
             @include breakpoint(laptop) {
-                width: calc(4 * $font-xxxl);
+                width: calc(3 * $font-xxxl);
+                margin-left: calc(1 * $font-title-large);
             }
             @include breakpoint(desktop) {
-                width: calc(4 * $font-title);
+                font-size: $font-title-large;
+                width: calc(5 * $font-title-large);
+                margin-left: calc(1 * $font-title-large);
+                line-height: 4rem;
+                letter-spacing: 3px;
             }
             line-height: 2.5rem;
             letter-spacing: 3px;
+            margin-bottom: 15px;
 
             font-style: italic;
             font-weight: bold;
-        }
 
+        }
+        /* old */
         &--centre {
             display: flex;
             flex-direction: column;
@@ -960,6 +965,26 @@ export default class Index extends Vue {
                 margin: 25px 0;
             }
         }
+        /* logo new */
+        &--right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            padding: 15px 0;
+
+            & > img {
+                @include breakpoint(mobile) {
+                    height: 40px;
+                }
+                height: 70px;
+                margin-top: 25px;
+                margin-bottom: 25px;
+                /* desktop */
+                margin-right: calc(1 * $font-title);
+            }
+        }
     }
 
     &__desc {
@@ -971,12 +996,29 @@ export default class Index extends Vue {
             font-size: $font-base;
         }
         font-weight: bold;
+        text-align: center;
+
+        &--right {
+            font-size: $font-xsm;
+            @include breakpoint(laptop) {
+                font-size: $font-sm;
+            }
+            @include breakpoint(desktop) {
+                font-size: $font-base;
+            }
+        display: flex;
+        font-weight: bold;
+        margin-left: auto; 
+        /* desktop */
+        margin-right: calc(1 * $font-title);;
+        }
     }
 
     &__link {
         font-family: "CocoGoose Pro", 'sans-serif';
         font-size: $font-lg;
         line-height: $font-lg;
+        text-align: center;
         @include breakpoint(laptop) {
             font-size: $font-xl;
             line-height: $font-xl;
@@ -985,6 +1027,8 @@ export default class Index extends Vue {
             font-size: $font-xxxl;
             line-height: $font-xxxl;
         }
+
+        margin: 15px;
     }
 
     &__other {
@@ -1019,6 +1063,27 @@ export default class Index extends Vue {
 .welcomeBack {
     font-weight: bold;
     line-height: $font-xl;
+    @include breakpoint(tablet) {
+        line-height: $font-xxl;
+    }
+    @include breakpoint(laptop) {
+        line-height: $font-xxxl;
+    }
+    @include breakpoint(desktop) {
+        line-height: $font-title;
+    }
+}
+
+.dividerMain {
+    border: 1px solid $blue;
+    width: 15vw;
+}
+
+.textBody {
+    font-size: $font-xl;
+    line-height: $font-xl;
+    width: 70vw;
+    text-align: center;
     @include breakpoint(tablet) {
         line-height: $font-xxl;
     }
