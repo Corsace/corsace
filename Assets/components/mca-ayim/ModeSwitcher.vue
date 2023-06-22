@@ -44,7 +44,7 @@ const mcaAyimModule = namespace("mca-ayim");
 export default class ModeSwitcher extends Vue {
 
     @Prop(Boolean) readonly enableModeEligibility!: boolean;
-    @Prop({ type: Array, default: () => [] }) readonly ignoreModes!: string[];
+    @Prop({ type: Array }) readonly ignoreModes?: string[];
 
     @State viewTheme!: "light" | "dark";
 
@@ -64,7 +64,7 @@ export default class ModeSwitcher extends Vue {
     isSmall = false;
 
     get availableModes () {
-        return this.modes.filter(m => !this.ignoreModes.includes(m));
+        return this.modes.filter(m => !this.ignoreModes?.includes(m));
     }
 
     setMode (mode): void {

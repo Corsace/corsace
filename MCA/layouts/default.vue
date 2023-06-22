@@ -36,7 +36,7 @@
                             <img
                                 class="socials__icon"
                                 :class="`socials__icon--${viewTheme}`"
-                                src="../../Assets/img/site/mca-ayim/corsace_logo.png"
+                                src="../../Assets/img/corsace.png"
                                 alt=""
                             >
                         </a>

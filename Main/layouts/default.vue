@@ -176,7 +176,7 @@ export default class Default extends Vue {
         width: 100%;
         height: 100%;
         background-size: contain;
-        background-image: url('../../Assets/img/site/mca-ayim/corsace_logo.png');
+        background-image: url('../../Assets/img/corsace.png');
         &--light {
             filter: invert(1);
         }
