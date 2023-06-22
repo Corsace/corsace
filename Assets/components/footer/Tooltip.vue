@@ -11,12 +11,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
+import { State } from "vuex-class";
 
 @Component
 export default class Tooltip extends Vue {
 
-    @Prop({ type: String, required: true }) readonly site!: string;
+    @State site!: string;
 
 }
 </script>

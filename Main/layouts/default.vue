@@ -1,7 +1,6 @@
 <template>
     <div class="layout layout--corsace">
-        <the-header 
-            :site="'corsace'"
+        <the-header
             class="main__header"
         >
             <a 

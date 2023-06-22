@@ -1,7 +1,6 @@
 <template>
     <div class="layout layout--mca">
-        <the-header 
-            :site="'mca'"
+        <the-header
             class="mcaayim__header"
         >
             <a 

@@ -1,7 +1,6 @@
 <template>
     <div class="layout layout--mca">
-        <the-header 
-            :site="'mca'"
+        <the-header
             class="mcaayim__header"
         >
             <a 
@@ -27,9 +26,7 @@
         
         <the-footer class="mcaayim__footer">
             <div class="socials">
-                <Tooltip
-                    :site="'mca'"
-                >
+                <Tooltip>
                     <template #icon>
                         <a 
                             class="socials__link" 
@@ -46,9 +43,7 @@
                     </template>
                     CORSACE
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'"
-                >
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
@@ -65,9 +60,7 @@
                     </template>
                     TWITTER
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'"
-                >
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
@@ -84,9 +77,7 @@
                     </template>
                     DISCORD
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'"
-                >
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
@@ -103,9 +94,7 @@
                     </template>
                     TWITCH
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'"
-                >
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
