@@ -93,6 +93,55 @@
     src: url("../fonts/Swis721_Cn_BT_Roman.ttf");
 }
 
+@font-face {
+    font-family: gg sans;
+    src: url("../fonts/gg_sans_Normal.ttf");
+}
+
+@font-face {
+    font-family: gg sans;
+    src: url("../fonts/gg_sans_Bold.ttf");
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: gg sans;
+    src: url("../fonts/gg_sans_Normal_Italic.ttf");
+    font-style: italic;
+}
+
+@font-face {
+    font-family: gg sans;
+    src: url("../fonts/gg_sans_Bold_Italic.ttf");
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: gg sans;
+    src: url("../fonts/gg_sans_Medium.ttf");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: gg sans;
+    src: url("../fonts/gg_sans_Medium_Italic.ttf");
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: gg sans;
+    src: url("../fonts/gg_sans_Extrabold.ttf");
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: gg sans;
+    src: url("../fonts/gg_sans_Semibold.ttf");
+    font-weight: 600;
+}
+
 :root {
     --standard: #fb2475;
     --taiko: #ff890a;
@@ -123,6 +172,9 @@ body {
     }
     &--mca, &--ayim {
         font-family: 'Futura PT', 'sans-serif';
+    }
+    &--open {
+        font-family: 'gg sans', 'sans-serif';
     }
     height: 100%;
     display: flex;

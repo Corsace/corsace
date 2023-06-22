@@ -150,13 +150,14 @@ export default class TheHeader extends Vue {
     top: 0;
 
     width: 100%;
-    height: 70px;
+    height: 90px;
     @include breakpoint(mobile) {
         height: 55px;
     }
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 .header-login {

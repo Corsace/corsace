@@ -1,15 +1,13 @@
 <template>
-    <div class="layout layout--mca">
+    <div class="layout layout--open">
         <the-header
-            class="mcaayim__header"
+            class="open__header"
         >
-            <a 
-                :href="`/${$route.params.year}`"
-            >          
+            <a href="/">          
                 <img
-                    :src="require(`../../Assets/img/corsace.png`)"
-                    class="mcaayim__logo"
-                    :class="`mcaayim__logo--${viewTheme}`"
+                    src="../../Assets/img/site/open/logo.png"
+                    class="open__logo"
+                    :class="`open__logo--${viewTheme}`"
                 >
             </a>
         </the-header>
@@ -152,6 +150,34 @@ export default class Default extends Vue {
 <style lang="scss">
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
+
+.open {
+    &__header {
+        border-bottom: 1px solid $open-red;
+
+        background-image: url("../../Assets/img/site/open/checkers.svg");
+        background-repeat: no-repeat;
+        background-position: left center;
+    }
+
+    &__logo {
+
+        padding-left: 6px;
+        @include breakpoint(tablet) {
+            padding-left: 7px;
+        }
+        @include breakpoint(laptop) {
+            padding-left: 9px;
+        }
+        @include breakpoint(desktop) {
+            padding-left: 130px;
+        }
+    }
+
+    &__footer {
+        border-top: 1px solid $open-red;
+    }
+}
 
 .footer-nav {
     &__brand {
