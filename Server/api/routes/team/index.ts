@@ -8,6 +8,8 @@ import { discordClient } from "../../../discord";
 import { validateTeam } from "./middleware";
 import { parseQueryParam } from "../../../utils/query";
 import { deleteTeamAvatar, uploadTeamAvatar } from "../../../functions/tournaments/teams/teamAvatarFunctions";
+import { StageType } from "../../../../Models/tournaments/stage";
+import { Matchup } from "../../../../Models/tournaments/matchup";
 
 const teamRouter = new Router();
 
@@ -19,7 +21,7 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
         .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
         .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
         .getMany();
-    
+
     ctx.body = teams.map(team => {
         return {
             ID: team.ID,
@@ -36,7 +38,7 @@ teamRouter.get("/all", async (ctx) => {
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member");
-    
+
     if (parseQueryParam(ctx.query.offset) && !isNaN(parseInt(parseQueryParam(ctx.query.offset)!)))
         teamQ.skip(parseInt(parseQueryParam(ctx.query.offset)!));
     if (parseQueryParam(ctx.query.limit) && !isNaN(parseInt(parseQueryParam(ctx.query.limit)!)))
@@ -105,10 +107,10 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
         ctx.body = { error: "Missing avatar" };
         return;
     }
-    
+
     // if files is an array, get the first 
     const file = Array.isArray(files) ? files[0] : files;
-    
+
     // Check if the file is an image and not a gif
     if (!file.mimetype?.startsWith("image/") || file.mimetype === "image/gif") {
         ctx.body = { error: "Invalid file type" };
@@ -118,7 +120,7 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
     try {
         await deleteTeamAvatar(team);
         const avatarPath = await uploadTeamAvatar(team, file.filepath);
-        
+
         // Update the team
         team.avatarURL = avatarPath;
         await team.save();
@@ -145,12 +147,11 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         .leftJoinAndSelect("team.members", "member")
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getOne();
-    
+
     if (!tournament) {
         ctx.body = { error: "Tournament not found" };
         return;
     }
-
     if (tournament.status !== TournamentStatus.Registrations) {
         ctx.body = { error: "Tournament is not in registration phase" };
         return;
@@ -165,15 +166,15 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     if (tournament.maxTeamSize < team.members.length) {
         ctx.body = { error: `Team has too many members (${team.members.length}). Maximum is ${tournament.maxTeamSize}` };
         return;
-    } 
-    
+    }
+
     if (tournament.minTeamSize > team.members.length) {
         ctx.body = { error: `Team has too few members (${team.members.length}). Minimum is ${tournament.minTeamSize}` };
         return;
     }
 
     // Role checks
-    const tournamentMembers = tournament.teams.flatMap(t => [t.manager,...t.members]);
+    const tournamentMembers = tournament.teams.flatMap(t => [t.manager, ...t.members]);
     const teamMembers = [team.manager, ...team.members];
 
     const tournamentRoles = await TournamentRole
@@ -198,9 +199,37 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         return;
     }
 
+    const qualifierStage = tournament.stages.find(s => s.stageType === StageType.Qualifiers);
+    if (qualifierStage) {
+        const qualifierAt = ctx.request.body?.qualifierAt;
+        if (!qualifierAt) {
+            ctx.body = { error: "Missing qualifier date" };
+            return;
+        }
+
+        const qualifierDate = new Date(qualifierAt);
+
+        const maxTeams = Math.floor(16 / tournament.matchupSize);
+        const existingMatchup = qualifierStage.matchups.find(m => m.teams!.length < maxTeams
+            && m.date === qualifierDate);
+        if (existingMatchup) {
+            existingMatchup.teams!.push(team);
+            await existingMatchup.save();
+        } else {
+            const matchup = new Matchup;
+            matchup.date = qualifierDate;
+            matchup.teams = [team];
+            await matchup.save();
+
+            qualifierStage.matchups.push(matchup);
+            await qualifierStage.save();
+        }
+    }
+
+
     tournament.teams.push(team);
     await tournament.save();
-    
+
     await team.calculateStats();
     await team.save();
 
@@ -235,7 +264,7 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
     team.members = team.members.filter(m => m.ID !== userID);
     await team.calculateStats();
     await team.save();
-    
+
 
     ctx.body = { success: "User removed from the team" };
 });
@@ -248,12 +277,12 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
         team.name = body.name;
     if (body?.abbreviation)
         team.abbreviation = body.abbreviation;
-    
+
     await team.save();
 
     ctx.body = { success: "Team updated", name: team.name, abbreviation: team.abbreviation };
 });
-          
+
 teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     await ctx.state.team.remove();
 
