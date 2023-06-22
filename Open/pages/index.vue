@@ -1,5 +1,6 @@
 <template>
-    <div>Corsace Open 2023
+    <div>
+        Corsace Open 2023
     </div>
 </template>
 
