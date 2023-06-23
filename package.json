@@ -86,7 +86,7 @@
       "build:open": "cd ./Open && nuxt build",
       "build:api": "cross-env NODE_ENV=production tsc --project Server/tsconfig.json",
       "build:discord-bot": "cross-env NODE_ENV=production tsc --project DiscordBot/tsconfig.json",
-      "build:irc-bot": "cross-env NODE_ENV=production tsc --project IRCBot/tsconfig.json",
+      "build:bancho-bot": "cross-env NODE_ENV=production tsc --project BanchoBot/tsconfig.json",
 
       "ayim": "cd ./AYIM && nuxt start",
       "mca": "cd ./MCA && nuxt start",
@@ -94,7 +94,7 @@
       "open": "cd ./Open && nuxt start",
       "api": "cd Server && node dist/Server/index.js",
       "discord-bot": "cd DiscordBot && node dist/DiscordBot/index.js",
-      "irc-bot": "cd IRCBot && node dist/IRCBot/index.js",
+      "bancho-bot": "cd BanchoBot && node dist/BanchoBot/index.js",
       "cron-runner": "cd Server && node dist/Server/cron-runner.js",
 
       "ayim-dev": "cd ./AYIM && nuxt",
@@ -104,7 +104,7 @@
       "api-dev": "cross-env NODE_ENV=development ts-node-dev --project Server/tsconfig.json --respawn Server/index.ts",
       "cron-runner-dev": "cross-env NODE_ENV=development ts-node-dev --project Server/tsconfig.json --respawn Server/cron-runner.ts",
       "discord-bot-dev": "cross-env NODE_ENV=development ts-node-dev --project DiscordBot/tsconfig.json --respawn DiscordBot/index.ts",
-      "irc-bot-dev": "cross-env NODE_ENV=development ts-node-dev --project IRCBot/tsconfig.json --respawn IRCBot/index.ts",
+      "bancho-bot-dev": "cross-env NODE_ENV=development ts-node-dev --project BanchoBot/tsconfig.json --respawn BanchoBot/index.ts",
 
       "dev": "concurrently -n MCA,AYIM,MAIN,OPEN,API -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold,black.bgYellow.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\" \"npm:api-dev\"",
       "dev-client": "concurrently -n MCA,AYIM,MAIN,OPEN -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\"",

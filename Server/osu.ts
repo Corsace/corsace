@@ -1,6 +1,7 @@
 import { config } from "node-config-ts";
 import { Client } from "nodesu";
 import { osuAPIV2 } from "../Interfaces/osuAPIV2";
+import { BanchoClient } from "bancho.js";
 
 // API v1
 const osuClient = new Client(config.osu.v1.apiKey, { parseData: true });
@@ -8,4 +9,10 @@ const osuClient = new Client(config.osu.v1.apiKey, { parseData: true });
 // API v2
 const osuV2Client = new osuAPIV2(config.osu.v2.clientId, config.osu.v2.clientSecret);
 
-export { osuClient, osuV2Client };
+// Bancho Client
+const banchoClient = new BanchoClient({ username: config.osu.irc.username, password: config.osu.irc.ircPassword, botAccount: config.osu.irc.botAccount });
+banchoClient.connect().catch(err => {
+    if (err) throw err;
+});
+
+export { osuClient, osuV2Client, banchoClient };
