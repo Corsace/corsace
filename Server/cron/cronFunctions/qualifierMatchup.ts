@@ -1,5 +1,9 @@
 import { CronJobData, CronJobType } from "../../../Interfaces/cron";
 import { Matchup } from "../../../Models/tournaments/matchup";
+import runMatch from "../../../BanchoBot/tournaments/runMatch";
+import { discordClient } from "../../discord";
+import { config } from "node-config-ts";
+import { TextChannel } from "discord.js";
 
 async function initialize (): Promise<CronJobData[]> {
     // Get all tournament registration ends
@@ -30,8 +34,7 @@ async function initialize (): Promise<CronJobData[]> {
 }
 
 async function execute (job: CronJobData) {
-    const futureDate = new Date();
-    futureDate.setMinutes(futureDate.getMinutes() + 15);
+    const futureDate = new Date(job.date.getTime() + 15 * 60 * 1000);
 
     // Get all matchups that are in the past and have not been played
     const matchups = await Matchup
@@ -45,7 +48,16 @@ async function execute (job: CronJobData) {
         .andWhere("matchup.mp IS NULL")
         .getMany();
 
-    // TODO: For each matchup, create and run a multiplayer match
+    matchups.forEach(matchup => {
+        runMatch(matchup).catch(err => {
+            if (err) {
+                console.log(err);
+                const channel = discordClient.channels.cache.get(config.discord.coreChannel);
+                if (channel instanceof TextChannel)
+                    channel.send(`Error running match: ${err}`);
+            }
+        });
+    });
 }
 
 export default {

@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 import { Mappool } from "./mappools/mappool";
 import { MatchupMap } from "./matchupMap";
@@ -46,7 +46,7 @@ export class Matchup extends BaseEntity {
     @ManyToOne(() => Team, team => team.wins)
         winner?: Team | null;
 
-    @ManyToOne(() => MatchupMap, map => map.matchups)
+    @OneToMany(() => MatchupMap, map => map.matchup)
         maps?: MatchupMap[] | null;
 
     @ManyToMany(() => Mappool, mappool => mappool.bannedInMatchups)

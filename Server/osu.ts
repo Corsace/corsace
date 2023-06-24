@@ -10,7 +10,7 @@ const osuClient = new Client(config.osu.v1.apiKey, { parseData: true });
 const osuV2Client = new osuAPIV2(config.osu.v2.clientId, config.osu.v2.clientSecret);
 
 // Bancho Client
-const banchoClient = new BanchoClient({ username: config.osu.irc.username, password: config.osu.irc.ircPassword, botAccount: config.osu.irc.botAccount });
+const banchoClient = new BanchoClient({ username: config.osu.bancho.username, password: config.osu.bancho.ircPassword, botAccount: config.osu.bancho.botAccount });
 banchoClient.connect().catch(err => {
     if (err) throw err;
 });
