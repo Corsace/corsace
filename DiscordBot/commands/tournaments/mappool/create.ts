@@ -80,6 +80,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
             },
         });
 
+    if (existingMappools.length === 1 && mappool.stage.stageType === StageType.Qualifiers) {
+        await respond(m, "Qualifiers can only have 1 pool Lol");
+        return;
+    }
+
     if (existingMappools.length === 13) {
         await respond(m, "Dyude this stage/round already has 13 mappools u can't create any more");
         return;
