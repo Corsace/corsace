@@ -72,7 +72,7 @@ declare module "node-config-ts" {
                 clientId: string;
                 clientSecret: string;
             };
-            irc: {
+            bancho: {
                 username: string;
                 ircPassword: string;
                 botAccount: boolean;

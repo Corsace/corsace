@@ -43,7 +43,7 @@
             "clientId": "obtain from https://osu.ppy.sh/home/account/edit",
             "clientSecret": "obtain from https://osu.ppy.sh/home/account/edit"
         },
-        "irc": {
+        "bancho": {
             "username": "bot account username, use your own for dev",
             "ircPassword": "obtain from https://osu.ppy.sh/home/account/edit#irc",
             "botAccount": "true/false, false if using personal account"
