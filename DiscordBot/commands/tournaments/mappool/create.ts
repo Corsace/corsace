@@ -341,7 +341,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             const mapCount = parseInt(slotInfo[slotInfo.length - 1]);
             const slotName = slotInfo.slice(1, slotInfo.length - 1);
 
-            if (isNaN(mapCount) || mapCount <= 0 || mapCount > 10) {
+            if (isNaN(mapCount) || mapCount <= 0 || mapCount >= 10) {
                 const reply = await msg.reply(`Provide a valid number of maps that will be in the slot for slot #${i + 1} \`${slotInfo}\``);
                 setTimeout(async () => {
                     await reply.delete();
