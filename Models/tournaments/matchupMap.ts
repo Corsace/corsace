@@ -44,6 +44,5 @@ export class MatchupMap extends BaseEntity {
         super();
         this.matchup = matchup;
         this.map = beatmap;
-        this.scores = [];
     }
 }
