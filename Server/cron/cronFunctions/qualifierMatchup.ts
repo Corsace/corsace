@@ -1,9 +1,9 @@
 import { CronJobData, CronJobType } from "../../../Interfaces/cron";
 import { Matchup } from "../../../Models/tournaments/matchup";
-import runMatch from "../../../BanchoBot/tournaments/runMatch";
 import { discordClient } from "../../discord";
 import { config } from "node-config-ts";
 import { TextChannel } from "discord.js";
+import runMatch from "../../../BanchoBot/tournaments/runMatch";
 
 async function initialize (): Promise<CronJobData[]> {
     // Get all tournament registration ends
