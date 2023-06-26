@@ -147,6 +147,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         .createQueryBuilder("tournament")
         .leftJoinAndSelect("tournament.stages", "stage")
         .leftJoinAndSelect("stage.matchups", "matchup")
+        .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .leftJoinAndSelect("tournament.teams", "team")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
