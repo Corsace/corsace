@@ -12,7 +12,8 @@ async function initialize (): Promise<CronJobData[]> {
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
         .select("distinct matchup.date")
-        .where("stage.stageType = 0")
+        .where("stage.stageType = 1")
+        .andWhere("matchup.mp IS NULL")
         .getRawMany();
 
     // For each date, create a cron job with the end as the date.
@@ -39,8 +40,15 @@ async function execute (job: CronJobData) {
     // Get all matchups that are in the past and have not been played
     const matchups = await Matchup
         .createQueryBuilder("matchup")
+        .leftJoinAndSelect("matchup.referee", "referee")
+        .leftJoinAndSelect("matchup.streamer", "streamer")
         .innerJoinAndSelect("matchup.stage", "stage")
+        .innerJoinAndSelect("stage.mappool", "mappool")
+        .innerJoinAndSelect("mappool.slots", "slot")
+        .innerJoinAndSelect("slot.maps", "map")
+        .innerJoinAndSelect("map.beatmap", "beatmap")
         .innerJoinAndSelect("stage.tournament", "tournament")
+        .innerJoinAndSelect("tournament.organizer", "organizer")
         .leftJoinAndSelect("matchup.teams", "team")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")

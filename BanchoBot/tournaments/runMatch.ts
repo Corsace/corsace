@@ -3,7 +3,7 @@ import { ScoringMethod } from "../../Models/tournaments/stage";
 import { Matchup } from "../../Models/tournaments/matchup";
 import { StageType } from "../../Models/tournaments/stage";
 import { banchoClient, osuClient } from "../../Server/osu";
-import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions } from "bancho.js";
+import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions, BanchoMods } from "bancho.js";
 import { convertDateToDDDHH } from "../../Server/utils/dateParse";
 import { MappoolMap } from "../../Models/tournaments/mappools/mappoolMap";
 import { MatchupMap } from "../../Models/tournaments/matchupMap";
@@ -20,6 +20,10 @@ const winConditions = {
     [ScoringMethod.Accuracy]:   BanchoLobbyWinConditions.Accuracy,
     [ScoringMethod.Combo]:      BanchoLobbyWinConditions.Combo,
 };
+
+function log (matchup: Matchup, message: string) {
+    console.log(`[Matchup ${matchup.ID}] ${message}`);
+}
 
 function runMatchCheck (matchup: Matchup, replace: boolean) {
     if (!matchup.stage)
@@ -48,21 +52,24 @@ function isPlayerInMatchup (matchup: Matchup, playerID: string, checkManager: bo
         return isPlayerInTeam(matchup.team1!) || isPlayerInTeam(matchup.team2!);
 }
 
-async function loadNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, pools: Mappool[]): Promise<Beatmap | null> {
+async function loadNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, pools: Mappool[]): Promise<[Beatmap, number | null | undefined, boolean] | null> {
     return new Promise((resolve, reject) => {
         if (matchup.stage!.stageType === StageType.Qualifiers) {
             const pool = pools[0];
             if (!matchup.stage!.qualifierTeamChooseOrder) {
-                const beatmaps = pool.slots.flatMap(slot => slot.maps).filter(map => !matchup.maps!.some(matchMap => matchMap.map.ID === map.beatmap?.ID));
+                const beatmaps = pool.slots.flatMap(slot => slot.maps).filter(map => !matchup.maps!.some(matchMap => matchMap.map.beatmap?.ID === map.beatmap?.ID));
                 if (beatmaps.length === 0)
                     return resolve(null);
 
                 if (!beatmaps[0].beatmap)
                     return reject("Beatmap is not loaded");
 
-                return resolve(beatmaps[0].beatmap);
+                const slotMod = pool.slots.find(slot => slot.maps.some(map => map.beatmap?.ID === beatmaps[0].beatmap?.ID))!;
+                return resolve([beatmaps[0].beatmap, slotMod.allowedMods, slotMod.uniqueModCount === undefined || slotMod.userModCount === undefined]);
             }
 
+            mpChannel.sendMessage("It's time to pick a map!!11!1");
+            mpLobby.startTimer(matchup.stage!.tournament.mapTimer || 90);
             mpChannel.on("message", async (message) => {
                 const isManagerMessage = (
                     matchup.stage?.stageType === StageType.Qualifiers &&
@@ -100,7 +107,8 @@ async function loadNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChanne
                 if (!map.beatmap) 
                     return reject("Map is missing beatmap CONTACT CORSACE IMMEDIATELY");
             
-                return resolve(map.beatmap);
+                const slotMod = pool.slots.find(slot => slot.maps.some(map => map.beatmap?.ID === map.beatmap?.ID))!;
+                return resolve([map.beatmap, slotMod.allowedMods, slotMod.uniqueModCount === undefined || slotMod.userModCount === undefined]);
             });
         } else {
             // TODO: implement this
@@ -146,19 +154,21 @@ async function runMatchListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChan
             return;
         }
 
+        log(matchup, `Player ${newPlayer.user.username} joined the lobby`);
         if (started || mpLobby.playing)
             return;
 
         playersInLobby.push(newPlayer);
-        const members = Array.from(mpChannel.channelMembers, ([, member]) => member);
+
         if (
             (
                 matchup.stage!.stageType === StageType.Qualifiers &&
-                matchup.teams!.some(team => !members.some(m => m.user.id.toString() === team.manager.osu.userID))
+                matchup.teams!.some(team => !mpLobby.slots.some(m => m.user.id.toString() === team.manager.osu.userID))
             ) ||
             (
-                !members.some(m => m.user.id.toString() === matchup.team1!.manager.osu.userID) &&
-                !members.some(m => m.user.id.toString() === matchup.team2!.manager.osu.userID)
+                matchup.stage!.stageType !== StageType.Qualifiers &&
+                !mpLobby.slots.some(m => m.user.id?.toString() === matchup.team1!.manager.osu.userID) &&
+                !mpLobby.slots.some(m => m.user.id?.toString() === matchup.team2!.manager.osu.userID)
             )
         ) {
             await mpChannel.sendMessage(`Yo ${newPlayer.user.username} we're just waiting for all the ${matchup.stage!.tournament.matchupSize === 1 ? "players" : "managers"} to be in here and then we'll start the match`);
@@ -169,21 +179,30 @@ async function runMatchListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChan
         await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go");
 
         try {
-            const beatmap = await loadNextBeatmap(matchup, mpLobby, mpChannel, pools);
-            if (!beatmap) {
-                await mpChannel.sendMessage("No maps found? If this was a mistake CONTACT CORSACE IMMEDIATELY");
+            log(matchup, "Picking map");
+            const nextBeatmapInfo = await loadNextBeatmap(matchup, mpLobby, mpChannel, pools);
+            if (!nextBeatmapInfo) {
+                await mpChannel.sendMessage("No maps found? This is probably a mistake CONTACT CORSACE IMMEDIATELY");
+                log(matchup, "No maps found at beginning of matchup");
                 return;
             }
 
-            await mpLobby.setMap(beatmap.ID);
+            await mpLobby.setMap(nextBeatmapInfo[0].ID);
+            await mpLobby.setMods(BanchoMods.parseBitFlags(nextBeatmapInfo[1] || 1, true).concat(BanchoMods.NoFail), nextBeatmapInfo[2]);
+            await mpLobby.startTimer(matchup.stage!.tournament.readyTimer || 90);
+            log(matchup, `Map picked: ${nextBeatmapInfo[0].ID} with mods ${nextBeatmapInfo[1]}`);
         } catch (ex) {
-            if (ex) await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
+            if (ex) {
+                await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
+                log(matchup, `Error loading beatmap: ${ex}`);
+            }
         }
     });
 
     // Player left event
     mpLobby.on("playerLeft", async (player) => {
-        
+        log(matchup, `Player ${player.user.username} left the lobby`);
+
         if (
             mpLobby.playing &&
             playersInLobby.some(p => p.user.id === player.user.id)
@@ -214,46 +233,53 @@ async function runMatchListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChan
         if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId))
             return;
         
+        log(matchup, "All players readied up for the next map");
         if (
             (
                 matchup.stage!.stageType === StageType.Qualifiers &&
                 !matchup.teams!.map(team => 
-                    team.members.filter(m => 
-                        playersInLobby.some(p => p.user.id.toString() === m.osu.userID)
-                    ).length
+                    team.members.filter(m => playersInLobby.some(p => p.user.id.toString() === m.osu.userID)).length
                 ).every(n => n === matchup.stage!.tournament.matchupSize)
             ) ||
             (
-                matchup.team1!.members.filter(m =>
-                    playersInLobby.some(p => p.user.id.toString() === m.osu.userID)
-                ).length !== matchup.stage!.tournament.matchupSize ||
-                matchup.team2!.members.filter(m =>
-                    playersInLobby.some(p => p.user.id.toString() === m.osu.userID)
-                ).length !== matchup.stage!.tournament.matchupSize
+                matchup.stage!.stageType !== StageType.Qualifiers &&
+                (
+                    matchup.team1!.members.filter(m =>
+                        playersInLobby.some(p => p.user.id.toString() === m.osu.userID)
+                    ).length !== matchup.stage!.tournament.matchupSize ||
+                    matchup.team2!.members.filter(m =>
+                        playersInLobby.some(p => p.user.id.toString() === m.osu.userID)
+                    ).length !== matchup.stage!.tournament.matchupSize
+                )
             ) 
         ) {
-            await mpChannel.sendMessage("bruh just cuz ur all ready doesnt mean anything if not enough players in each team to start yet hrur y up");
+            await mpChannel.sendMessage("bruh just cuz ur all ready doesnt mean anything if not enough players are in each team to start yet hrur y up");
             return;
         }
     
-        await mpLobby.startMatch(10);
+        await mpLobby.startMatch(5);
     });
 
     mpLobby.on("matchAborted", async () => {
+        log(matchup, "Match aborted");
         mapsPlayed = mapsPlayed.filter(m => m.beatmap!.ID !== mpLobby.beatmapId);
     });
 
     mpLobby.on("matchStarted", async () => {
+        log(matchup, "Match started");
         const beatmap = pools.flatMap(pool => pool.slots.flatMap(slot => slot.maps)).find(map => map.beatmap!.ID === mpLobby.beatmapId);
         if (!beatmap) {
             await mpLobby.abortMatch();
             await mpChannel.sendMessage("YO HOLD UP I can't find the map in the pool(s) for some reason GET CORSACE STAFF IMNMEDIATRELY");
+            await mpLobby.startTimer(matchup.stage!.tournament.readyTimer || 90);
+            log(matchup, `Couldn't find map ${mpLobby.beatmapId} in the pools`);
             return;
         }
         mapsPlayed.push(beatmap);
     });
 
     mpLobby.on("matchFinished", async () => {
+        log(matchup, "Match finished");
         const beatmap = mapsPlayed[mapsPlayed.length - 1];
         const matchupMap = new MatchupMap(matchup, beatmap);
         matchupMap.order = mapsPlayed.length;
@@ -275,6 +301,7 @@ async function runMatchListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChan
             matchupScore.mods = score.enabledMods || 0;
             matchupScore.misses = score.countMiss;
             matchupScore.combo = score.maxCombo;
+            matchupScore.fail = !score.pass;
             matchupScore.accuracy = (score.count50 + 2 * score.count100 + 6 * score.count300) / (6 * (score.count50 + score.count100 + score.count300));
             matchupScore.fullCombo = score.perfect || score.maxCombo === beatmap.beatmap!.maxCombo;
             return matchupScore.save();
@@ -284,38 +311,55 @@ async function runMatchListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChan
         matchup.maps!.push(matchupMap);
         await matchup.save();
 
-        try {
-            const beatmap = await loadNextBeatmap(matchup, mpLobby, mpChannel, pools);
-            if (!beatmap) {
-                await mpChannel.sendMessage("No more maps to play, closing lobby in 15 seconds");
-                setTimeout(async () => {
-                    await mpLobby.closeLobby();
-                }, 15 * 1000);
-                return;
-            }
+        log(matchup, `Matchup map and scores saved with matchupMap ID ${matchupMap.ID}`);
 
-            await mpLobby.setMap(beatmap.ID);
-        } catch (ex) {
-            if (ex) await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
-        }
+        setTimeout(async () => {
+            try {
+                log(matchup, "Picking map");
+
+                const nextBeatmapInfo = await loadNextBeatmap(matchup, mpLobby, mpChannel, pools);
+                if (!nextBeatmapInfo) {
+                    await mpChannel.sendMessage("No more maps to play, closing lobby in 15 seconds");
+                    setTimeout(async () => {
+                        await mpLobby.closeLobby();
+                        matchup.mp = mpLobby.id;
+                        await matchup.save();
+                    }, 15 * 1000);
+                    return;
+                }
+
+                await mpLobby.setMap(nextBeatmapInfo[0].ID);
+                await mpLobby.setMods(BanchoMods.parseBitFlags(nextBeatmapInfo[1] || 1, true).concat(BanchoMods.NoFail), nextBeatmapInfo[2]);
+                log(matchup, `Map picked: ${nextBeatmapInfo[0].ID} with mods ${nextBeatmapInfo[1]}`);
+            } catch (ex) {
+                if (ex) {
+                    await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
+                    log(matchup, `Error loading beatmap: ${ex}`);
+                }
+            }
+        }, matchup.streamer ? 30 * 1000 : 0);
     });
 }
 
 export default async function runMatch (matchup: Matchup, replace = false) {
     runMatchCheck(matchup, replace);
+    console.log(matchup);
 
     let lobbyName = `${matchup.stage!.tournament.abbreviation}: (${matchup.team1?.name} vs ${matchup.team2?.name})`;
     if (matchup.stage!.stageType === StageType.Qualifiers)
         lobbyName = `${matchup.stage!.tournament.abbreviation}: ${convertDateToDDDHH(matchup.date)} Qualifiers`;
 
+    log(matchup, `Creating lobby with name ${lobbyName}`);
     const mpChannel = await banchoClient.createLobby(lobbyName, false);
     const mpLobby = mpChannel.lobby;
+    log(matchup, `Created lobby with name ${lobbyName} and ID ${mpLobby.id}`);
 
     matchup.log = "";
     matchup.maps = [];
 
     const requiredPlayerAmount = Math.min(16, 1 + matchup.stage!.tournament.matchupSize * (matchup.teams?.length || 2));
 
+    log(matchup, `Setting lobby settings, password and adding refs`);
     await Promise.all([
         mpLobby.setPassword(randomUUID()),
         mpLobby.setSettings(
@@ -325,16 +369,17 @@ export default async function runMatch (matchup: Matchup, replace = false) {
         ),
         mpLobby.addRef([matchup.stage!.tournament.organizer.osu.userID, matchup.referee?.osu.userID || "", matchup.streamer?.osu.userID || ""]),
     ]);
+    log(matchup, `Set lobby settings, password and added refs`);
 
-    if (matchup.stage!.stageType === StageType.Qualifiers)
-        await Promise.all(matchup.teams!.flatMap(team => team.members.map(m => mpLobby.invitePlayer(m.osu.userID)).concat(mpLobby.invitePlayer(team.manager.osu.userID))));
-    else
-        await Promise.all(
-            matchup.team1!.members.map(m => mpLobby.invitePlayer(m.osu.userID))
-                .concat(mpLobby.invitePlayer(matchup.team1!.manager.osu.userID))
-                .concat(matchup.team2!.members.map(m => mpLobby.invitePlayer(m.osu.userID)))
-                .concat(mpLobby.invitePlayer(matchup.team2!.manager.osu.userID))
-        );
+    log(matchup, `Inviting players`);
+    if (matchup.stage!.stageType === StageType.Qualifiers) {
+        const users = matchup.teams!.flatMap(team => team.members.concat(team.manager).filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i));
+        await Promise.all(users.map(user => mpLobby.invitePlayer(`#${user.osu.userID}`)));
+    } else {
+        const users = matchup.team1!.members.concat(matchup.team1!.manager).concat(matchup.team2!.members).concat(matchup.team2!.manager).filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
+        await Promise.all(users.map(m => mpLobby.invitePlayer(`#${m.osu.userID}`)));
+    }
+    log(matchup, `Invited players`);
 
     await runMatchListeners(matchup, mpLobby, mpChannel);
 }
