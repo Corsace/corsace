@@ -57,30 +57,22 @@
                     </div>
                     <!--- MIDDLE: middle-->
                     <div class="portal-section">
-                        <div class="portal-button">
-                            <div class="portal-button-content">
-                                <div class="portal-button-content__xl">
-                                    QUALIFIERS MAPPOOL
-                                </div>
-                                <hr class="red">
-                                Mappool download and statistics
-                            </div>
-                        </div>
-                        <div class="portal-button-racing">
-                            <img src="https://i.imgur.com/vwahC3E.png" style="height: 90px; width: 400px;">
-                        </div>                 
+                        <OpenButton>
+                            <template #title>
+                                QUALIFIERS MAPPOOL
+                            </template>
+                            Mappool download and statistics
+                        </OpenButton>
+                        <div class="portal-button-racing" />               
                     </div>
                     <!-- RIGHT: register your team-->
                     <div class="portal-section">
-                        <div class="portal-button">
-                            <div class="portal-button-content">
-                                <div class="portal-button-content__xl">
-                                    REGISTER YOUR TEAM
-                                </div>
-                                <hr class="red">
-                                Registrations end July 30 23:59 0UTC
-                            </div>
-                        </div>
+                        <OpenButton>
+                            <template #title>
+                                REGISTER YOUR TEAM
+                            </template>
+                            Registrations end July 30 23:59 0UTC
+                        </OpenButton>
                         <div class="portal-text-content">
                             CORSACE OPEN 23 IS PRESENTED BY 
                             <hr class="red-nospace">
@@ -102,8 +94,11 @@ import { State } from "vuex-class";
 
 import { UserInfo } from "../../Interfaces/user";
 
+import OpenButton from "../../Assets/components/open/OpenButton.vue";
+
 @Component({
     components: {
+        OpenButton,
     },
     head () {
         return {
@@ -244,38 +239,16 @@ ul.portal-schedule-content li:before {
     overflow: hidden;
 }
 
-.portal-button {
-    margin: 50px 0px;
-    background-image: url('../../Assets/img/site/open/checkers-bg.png'), linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
-    background-repeat: no-repeat;
-    background-position: right;
-    border-radius: 9px;
-    border: 1px solid;
-    max-height: 110px;
-    border-color: #EBEBEB;
-    box-shadow: 0px 4px 4px 0px #00000040;
-
-}
-
 .portal-button-racing {
     margin: 50px 0px;
+    background: url('https://i.imgur.com/vwahC3E.png');
     background-repeat: no-repeat;
     border-radius: 9px;
     border: 1px solid;
-    max-height: 110px;
+    min-height: 110px;
     border-color: #EBEBEB;
     box-shadow: 0px 4px 4px 0px #00000040;
 
-}
-
-.portal-button-content {
-    color: #EBEBEB;
-    padding: 20px 20px;
-    text-align: start;
-    &__xl {
-        font-size: $font-xl;
-        font-weight: bold;
-    }
 }
 
 .portal-image-row {
