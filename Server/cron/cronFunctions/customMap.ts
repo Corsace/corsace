@@ -24,7 +24,7 @@ async function initialize (): Promise<CronJobData[]> {
         cronJobs = cronJobs.filter(j => j.date.getTime() > Date.now());
         cronJobs.push({
             type: CronJobType.Custommap,
-            date: new Date(Date.now() + 1000), // 1 second delay to avoid Date in past error
+            date: new Date(Date.now() + 10 * 1000), // 10 second delay to avoid Date in past error
         });
     }
 

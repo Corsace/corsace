@@ -20,7 +20,7 @@ async function initialize (): Promise<CronJobData[]> {
         cronJobs = cronJobs.filter(j => j.date.getTime() > Date.now());
         cronJobs.push({
             type: CronJobType.TournamentRegistrationStart,
-            date: new Date(Date.now() + 60 * 1000), // 1 minute delay to avoid Date in past error
+            date: new Date(Date.now() + 10 * 1000), // 10 second delay to avoid Date in past error
         });
     }
 
