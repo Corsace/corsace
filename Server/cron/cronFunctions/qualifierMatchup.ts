@@ -53,6 +53,7 @@ async function execute (job: CronJobData) {
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
         .where("matchup.date <= :now", { now: futureDate })
+        .andWhere("stage.stageType = 1")
         .andWhere("matchup.mp IS NULL")
         .getMany();
 
@@ -62,7 +63,7 @@ async function execute (job: CronJobData) {
                 console.log(err);
                 const channel = discordClient.channels.cache.get(config.discord.coreChannel);
                 if (channel instanceof TextChannel)
-                    channel.send(`Error running match: ${err}`);
+                    channel.send(`Error running match GHIVE THIS IMMEDIATE ATTENTION:\n\`\`\`\n${err}\n\`\`\``);
             }
         });
     });
