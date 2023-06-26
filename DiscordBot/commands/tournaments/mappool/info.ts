@@ -72,10 +72,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const { mappoolMap, mappoolSlot, slotMod } = components;
 
         if (mappoolMap.beatmap) {
-            const set = (await osuClient.beatmaps.getBySetId(mappoolMap.beatmap.beatmapsetID, Mode.all, undefined, undefined, slotMod.allowedMods) as APIBeatmap[]);
+            const set = (await osuClient.beatmaps.getBySetId(mappoolMap.beatmap.beatmapsetID, Mode.all, undefined, undefined, slotMod.allowedMods || 0) as APIBeatmap[]);
             const apiMap = set.find(m => m.beatmapId === mappoolMap.beatmap!.ID)!;
 
-            const mappoolMapEmbed = await beatmapEmbed(apiMap, modsToAcronym(slotMod.allowedMods), set);
+            const mappoolMapEmbed = await beatmapEmbed(apiMap, modsToAcronym(slotMod.allowedMods || 0), set);
             mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
             await respond(m, `Info for **${mappoolSlot}**:`, [mappoolMapEmbed]);
@@ -160,7 +160,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         const embed = new EmbedBuilder()
             .setTitle(`Info for ${slotMod.name}`)
-            .setDescription(`**Acronym:** ${modsToAcronym(slotMod.allowedMods)}\n**Mode:** ${tournament.mode.name}\n**Mappool:** ${mappool.name} (${mappool.abbreviation.toUpperCase()})\n**Allowed Mods:** ${modsToAcronym(slotMod.allowedMods)}`)
+            .setDescription(`**Acronym:** ${modsToAcronym(slotMod.allowedMods || 0)}\n**Mode:** ${tournament.mode.name}\n**Mappool:** ${mappool.name} (${mappool.abbreviation.toUpperCase()})\n**Allowed Mods:** ${modsToAcronym(slotMod.allowedMods || 0)}`)
             .setFields(slotMod.maps.map(map => ({
                 name: `**${slotMod.acronym}${slotMod.maps.length === 1 ? "" : map.order}**`,
                 value: map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap && map.customBeatmap.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]` : "No beatmap",

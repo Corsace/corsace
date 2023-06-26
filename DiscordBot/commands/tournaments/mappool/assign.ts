@@ -90,7 +90,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await handleUser(m, target, testing, replace, tournament, mappool, mappoolSlot, mappoolMap, assigner, jobPost);
 }
 
-async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, target: string, allowedMods: number | undefined, tournament: Tournament, mappool: Mappool, mappoolSlot: string, mappoolMap: MappoolMap, mod: string, assigner: User, jobPost?: JobPost | null) {
+async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, target: string, allowedMods: number | null | undefined, tournament: Tournament, mappool: Mappool, mappoolSlot: string, mappoolMap: MappoolMap, mod: string, assigner: User, jobPost?: JobPost | null) {
     const linkRegex = /https?:\/\/osu.ppy.sh\/beatmapsets\/(\d+)#(osu|taiko|fruits|mania)\/(\d+)/;
     const link = target.match(linkRegex);
     if (!link) {

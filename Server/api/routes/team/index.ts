@@ -12,6 +12,7 @@ import { StageType } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { cron } from "../../../cron";
 import { CronJobType } from "../../../../Interfaces/cron";
+import { parseDateOrTimestamp } from "../../../utils/dateParse";
 
 const teamRouter = new Router();
 
@@ -179,7 +180,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
 
     // Role checks
     const tournamentMembers = tournament.teams.flatMap(t => [t.manager, ...t.members]);
-    const teamMembers = [team.manager, ...team.members];
+    const teamMembers = [team.manager, ...team.members].filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
 
     const tournamentRoles = await TournamentRole
         .createQueryBuilder("tournamentRole")
@@ -211,7 +212,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
             return;
         }
 
-        const qualifierDate = new Date(qualifierAt);
+        const qualifierDate = parseDateOrTimestamp(qualifierAt);
         if (isNaN(qualifierDate.getTime())) {
             ctx.body = { error: "Invalid qualifier date" };
             return;
