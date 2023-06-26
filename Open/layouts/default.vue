@@ -10,6 +10,45 @@
                     :class="`open__logo--${viewTheme}`"
                 >
             </a>
+
+            <div class="header_nav">
+                <NuxtLink
+                    to="/info"
+                    class="header-nav item"
+                >
+                    INFO
+                </NuxtLink>
+                <NuxtLink
+                    to="/qualifiers" 
+                    class="header-nav item"
+                >
+                    QUALIFIERS
+                </NuxtLink>
+                <NuxtLink
+                    to="/teams" 
+                    class="header-nav item"
+                >
+                    TEAMS
+                </NuxtLink>
+                <NuxtLink
+                    to="/schedule" 
+                    class="header-nav item"
+                >
+                    SCHEDULE
+                </NuxtLink>
+                <NuxtLink
+                    to="/mappool" 
+                    class="header-nav item"
+                >
+                    MAPPOOL
+                </NuxtLink>
+                <NuxtLink
+                    to="/staff" 
+                    class="header-nav item"
+                >
+                    STAFF
+                </NuxtLink>
+            </div>
         </the-header>
 
         <nuxt 
@@ -17,7 +56,7 @@
             :class="`main--${viewTheme}`"
         />
         
-        <the-footer class="">
+        <the-footer class="open__footer">
             <div class="socials">
                 <Tooltip>
                     <template #icon>
@@ -105,6 +144,10 @@
                     YOUTUBE
                 </Tooltip>
             </div>
+            <div 
+                name="temp"
+                style="width: 85%;"
+            />
         </the-footer>
     </div>
 </template>
@@ -155,14 +198,17 @@ export default class Default extends Vue {
     &__header {
         border-bottom: 1px solid $open-red;
 
-        background-image: url("../../Assets/img/site/open/checkers.svg");
+        background-image: url("../../Assets/img/site/open/checkers.svg"), linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
         background-repeat: no-repeat;
         background-position: left center;
+        width: 100vw;
+        position: relative;
     }
 
     &__logo {
 
         padding-left: 6px;
+        margin-top: 15px;
         @include breakpoint(tablet) {
             padding-left: 7px;
         }
@@ -176,6 +222,7 @@ export default class Default extends Vue {
 
     &__footer {
         border-top: 1px solid $open-red;
+        background: linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
     }
 }
 
@@ -231,12 +278,44 @@ export default class Default extends Vue {
 .main {
     overflow: hidden;
     &--light {
-        background-color: white;
         background-size: cover;
     }
     &--dark {
-        background-color: $darker-gray;
         background-size: cover;
     }
+}
+
+.header_nav {
+    position:absolute;
+    left:calc(50% - 20vw);
+    display: flex;
+    width: 40vw;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header_nav .item {
+        text-decoration: none;
+    }
+
+.header_nav .item:hover {
+        color: $open-red;
+    }
+
+.header_nav .item.active {
+        color: $open-red;
+        position: relative;
+        display: inline-block;
+    }
+
+.header_nav .item.active::after {
+    content: "";
+    position: absolute;
+    left: calc(50% - 4.5px/2);
+    bottom: -7px; 
+    width: 4.5px;
+    height: 4.5px;
+    transform: rotate(-45deg);
+    background-color: $open-red;
 }
 </style>
