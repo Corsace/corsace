@@ -237,7 +237,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
             qualifierStage.matchups.push(matchup);
             await qualifierStage.save();
 
-            await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - 15 * 60 * 1000, Date.now() + 60 * 1000)));
+            await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - 15 * 60 * 1000, Date.now() + 10 * 1000)));
         }
     }
 
