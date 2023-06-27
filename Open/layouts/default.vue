@@ -302,13 +302,13 @@ export default class Default extends Vue {
         color: $open-red;
     }
 
-.header_nav .item.active {
+.header_nav .item.nuxt-link-exact-active {
         color: $open-red;
         position: relative;
         display: inline-block;
     }
 
-.header_nav .item.active::after {
+.header_nav .item.nuxt-link-exact-active::after {
     content: "";
     position: absolute;
     left: calc(50% - 4.5px/2);
