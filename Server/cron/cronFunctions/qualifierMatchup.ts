@@ -3,7 +3,7 @@ import { Matchup } from "../../../Models/tournaments/matchup";
 import { discordClient } from "../../discord";
 import { config } from "node-config-ts";
 import { TextChannel } from "discord.js";
-import runMatch from "../../../BanchoBot/tournaments/runMatch";
+import runMatchup from "../../../BanchoBot/functions/tournaments/matchup/runMatchup";
 
 async function initialize (): Promise<CronJobData[]> {
     // Get all tournament registration ends
@@ -58,7 +58,7 @@ async function execute (job: CronJobData) {
         .getMany();
 
     matchups.forEach(matchup => {
-        runMatch(matchup).catch(err => {
+        runMatchup(matchup).catch(err => {
             if (err) {
                 console.log(err);
                 const channel = discordClient.channels.cache.get(config.discord.coreChannel);

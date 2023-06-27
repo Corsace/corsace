@@ -26,6 +26,8 @@ export enum ScoringMethod {
     CountMiss,
 }
 
+export const leniencyTime = 10 * 1000;
+
 @Entity()
 export class Stage extends BaseEntity {
 
