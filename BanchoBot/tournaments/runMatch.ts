@@ -54,6 +54,15 @@ function isPlayerInMatchup (matchup: Matchup, playerID: string, checkManager: bo
         return isPlayerInTeam(matchup.team1!) || isPlayerInTeam(matchup.team2!);
 }
 
+function allPlayersInLobby (matchup: Matchup, playersInLobby: BanchoLobbyPlayer[]) {
+    const numMembersInLobby = (team: Team) => team.members.filter(m => playersInLobby.some(p => p.user.id.toString() === m.osu.userID)).length;
+    if (matchup.stage!.stageType === StageType.Qualifiers)
+        return matchup.teams!.map(numMembersInLobby).every(n => n === matchup.stage!.tournament.matchupSize);
+
+    return numMembersInLobby(matchup.team1!) === matchup.stage!.tournament.matchupSize &&
+        numMembersInLobby(matchup.team2!) === matchup.stage!.tournament.matchupSize;
+}
+
 async function loadNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, pools: Mappool[]): Promise<[Beatmap, number | null | undefined, boolean] | null> {
     return new Promise((resolve, reject) => {
         if (matchup.stage!.stageType === StageType.Qualifiers) {
@@ -158,8 +167,10 @@ async function runMatchListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChan
     const aborts = new Map<number, number>();
     const autoStart = async (message: BanchoMessage) => {
         if (message.user.ircUsername === "BanchoBot" && (message.content === "All players are ready" || message.content === "Countdown finished")) {
-            mpChannel.removeListener("message", autoStart);
-            if (message.content === "Countdown finished") {
+            if (message.content === "All players are ready" && allPlayersInLobby(matchup, playersInLobby))
+                mpChannel.removeListener("message", autoStart);
+            else if (message.content === "Countdown finished") {
+                mpChannel.removeListener("message", autoStart);
                 await mpChannel.sendMessage("u guys are taking WAY TOO LONG TO READY UP im starting the match now");          
                 setTimeout(async () => {
                     await mpLobby.startMatch(5);
@@ -286,25 +297,7 @@ async function runMatchListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChan
         if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId))
             return;
         
-        if (
-            (
-                matchup.stage!.stageType === StageType.Qualifiers &&
-                !matchup.teams!.map(team => 
-                    team.members.filter(m => playersInLobby.some(p => p.user.id.toString() === m.osu.userID)).length
-                ).every(n => n === matchup.stage!.tournament.matchupSize)
-            ) ||
-            (
-                matchup.stage!.stageType !== StageType.Qualifiers &&
-                (
-                    matchup.team1!.members.filter(m =>
-                        playersInLobby.some(p => p.user.id.toString() === m.osu.userID)
-                    ).length !== matchup.stage!.tournament.matchupSize ||
-                    matchup.team2!.members.filter(m =>
-                        playersInLobby.some(p => p.user.id.toString() === m.osu.userID)
-                    ).length !== matchup.stage!.tournament.matchupSize
-                )
-            ) 
-        ) {
+        if (!allPlayersInLobby(matchup, playersInLobby)) {
             await mpChannel.sendMessage("bruh just cuz ur all ready doesnt mean anything if not enough players are in each team to start yet hrur y up");
             return;
         }
