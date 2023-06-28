@@ -27,6 +27,6 @@
     },
     "banchoBot": {
         "host": "0.0.0.0",
-        "publicUrl": "http://cron-runner:8082"
+        "publicUrl": "http://bancho-bot:8082"
     }
 }
