@@ -7,10 +7,19 @@ export function discordStringTimestamp (date: Date) {
     return `<t:${seconds}:F> (<t:${seconds}:R>)`;
 }
 
-export function convertDateToDDDHH (date) {
+export function convertDateToDDDHH (date: Date) {
     const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
     const day = days[date.getUTCDay()];
-    let hour = date.getUTCHours();
-    hour = hour < 10 ? "0" + hour : hour; // add leading zero if needed
-    return `${day}-${hour}`;
+    const hour = date.getUTCHours();
+    const hourString = hour < 10 ? "0" + hour : hour; // add leading zero if needed
+    return `${day}-${hourString}`;
+}
+
+export function osuLogTimestamp (date: Date) {
+    const year = date.getFullYear().toString();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2); // months are 0-based in JavaScript
+    const day = ("0" + date.getDate()).slice(-2);
+    const hours = ("0" + date.getHours()).slice(-2);
+    const minutes = ("0" + date.getMinutes()).slice(-2);
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
 }

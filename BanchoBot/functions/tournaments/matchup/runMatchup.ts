@@ -4,7 +4,7 @@ import { Matchup } from "../../../../Models/tournaments/matchup";
 import { StageType } from "../../../../Models/tournaments/stage";
 import { banchoClient, osuClient } from "../../../../Server/osu";
 import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions } from "bancho.js";
-import { convertDateToDDDHH } from "../../../../Server/utils/dateParse";
+import { convertDateToDDDHH, osuLogTimestamp } from "../../../../Server/utils/dateParse";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../../Models/tournaments/matchupScore";
@@ -68,7 +68,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);
 
     mpChannel.on("message", async (message) => {
-        matchup.log += `${message.content}\n`;
+        matchup.log += `${osuLogTimestamp(new Date)} ${message.user.ircUsername}: ${message.content}\n`;
         await matchup.save();
 
         if (message.self)
