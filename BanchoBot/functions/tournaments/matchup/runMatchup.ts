@@ -13,7 +13,7 @@ import { Multi } from "nodesu";
 import allPlayersInLobby from "./allPlayersInLobby";
 import areAllPlayersInAssignedSlots from "./areAllPlayersInAssignedSlots";
 import doAllPlayersHaveCorrectMods from "./doAllPlayersHaveCorrectMods";
-import getStageMods from "./getStageMods";
+import getMappoolSlotMods from "./getMappoolSlotMods";
 import invitePlayersToLobby from "./invitePlayersToLobby";
 import isPlayerInMatchup from "./isPlayerInMatchup";
 import loadNextBeatmap from "./loadNextBeatmap";
@@ -203,7 +203,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return;
         }
         if (!doAllPlayersHaveCorrectMods(mpLobby, slotMod)) {
-            await mpChannel.sendMessage(`SOMEEONEEE HAS THE WRONG MODS ON . Allowed mods for this slot are ${getStageMods(slotMod.allowedMods).map(m => `${m.longMod} (${m.shortMod})`).join(", ")}`);
+            await mpChannel.sendMessage(`SOMEEONEEE HAS THE WRONG MODS ON . Allowed mods for this slot are ${getMappoolSlotMods(slotMod.allowedMods).map(m => `${m.longMod} (${m.shortMod})`).join(", ")}`);
             return;
         }
 

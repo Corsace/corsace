@@ -1,12 +1,12 @@
 import { BanchoLobby } from "bancho.js";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
-import getStageMods from "./getStageMods";
+import getMappoolSlotMods from "./getMappoolSlotMods";
 
 export default function doAllPlayersHaveCorrectMods (mpLobby: BanchoLobby, slotMod: MappoolSlot) {
     if (typeof slotMod.userModCount !== "number" && typeof slotMod.uniqueModCount !== "number")
         return true;
 
-    const allowedMods = getStageMods(slotMod.allowedMods);
+    const allowedMods = getMappoolSlotMods(slotMod.allowedMods);
     if (
         mpLobby.slots.some(slot => 
             slot.mods.some(mod => 
