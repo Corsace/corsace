@@ -113,6 +113,7 @@ declare module "node-config-ts" {
         open: ISubSiteConfig;
         api: IWebServiceConfig;
         cronRunner: IWebServiceConfig;
+        banchoBot: IWebServiceConfig;
 
         interOpAuth: {
             username: string;

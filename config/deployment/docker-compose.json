@@ -24,5 +24,9 @@
     "cronRunner": {
         "host": "0.0.0.0",
         "publicUrl": "http://cron-runner:8081"
+    },
+    "banchoBot": {
+        "host": "0.0.0.0",
+        "publicUrl": "http://cron-runner:8082"
     }
 }

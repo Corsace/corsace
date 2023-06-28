@@ -103,6 +103,11 @@
         "port": 8081,
         "publicUrl": "http://localhost:8081"
     },
+    "banchoBot": {
+        "host": "localhost",
+        "port": 8082,
+        "publicUrl": "http://localhost:8082"
+    },
     "s3": {
         "clients": {
             "r2": {

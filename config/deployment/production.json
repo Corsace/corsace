@@ -82,6 +82,11 @@
         "port": 80,
         "publicUrl": "@@CRONRUNNER_PUBLICURL"
     },
+    "banchoBot": {
+        "host": "0.0.0.0",
+        "port": 80,
+        "publicUrl": "@@BANCHOBOT_PUBLICURL"
+    },
     "s3": {
         "clients": {
             "r2": {

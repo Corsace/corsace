@@ -1,9 +1,7 @@
 import { CronJobData, CronJobType } from "../../../Interfaces/cron";
 import { Matchup } from "../../../Models/tournaments/matchup";
-import { discordClient } from "../../discord";
 import { config } from "node-config-ts";
-import { TextChannel } from "discord.js";
-import runMatchup from "../../../BanchoBot/functions/tournaments/matchup/runMatchup";
+import Axios from "axios";
 
 async function initialize (): Promise<CronJobData[]> {
     // Get all tournament registration ends
@@ -35,38 +33,16 @@ async function initialize (): Promise<CronJobData[]> {
 }
 
 async function execute (job: CronJobData) {
-    const futureDate = new Date(job.date.getTime() + 15 * 60 * 1000);
-
-    // Get all matchups that are in the past and have not been played
-    const matchups = await Matchup
-        .createQueryBuilder("matchup")
-        .leftJoinAndSelect("matchup.referee", "referee")
-        .leftJoinAndSelect("matchup.streamer", "streamer")
-        .innerJoinAndSelect("matchup.stage", "stage")
-        .innerJoinAndSelect("stage.mappool", "mappool")
-        .innerJoinAndSelect("mappool.slots", "slot")
-        .innerJoinAndSelect("slot.maps", "map")
-        .innerJoinAndSelect("map.beatmap", "beatmap")
-        .innerJoinAndSelect("stage.tournament", "tournament")
-        .innerJoinAndSelect("tournament.organizer", "organizer")
-        .leftJoinAndSelect("matchup.teams", "team")
-        .leftJoinAndSelect("team.manager", "manager")
-        .leftJoinAndSelect("team.members", "member")
-        .where("matchup.date <= :now", { now: futureDate })
-        .andWhere("stage.stageType = 1")
-        .andWhere("matchup.mp IS NULL")
-        .getMany();
-
-    matchups.forEach(matchup => {
-        runMatchup(matchup).catch(err => {
-            if (err) {
-                console.log(err);
-                const channel = discordClient.channels.cache.get(config.discord.coreChannel);
-                if (channel instanceof TextChannel)
-                    channel.send(`Error running match GHIVE THIS IMMEDIATE ATTENTION:\n\`\`\`\n${err}\n\`\`\``);
-            }
-        });
+    const { data } = await Axios.post(`${config.banchoBot.publicUrl}/api/bancho/runMatchups`, {
+        time: job.date.getTime(),
+    }, {
+        auth: config.interOpAuth,
     });
+    if (data.success)
+        return;
+
+    console.log("Error starting matchup cron execution");
+    console.log(data);
 }
 
 export default {

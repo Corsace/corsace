@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { config } from "node-config-ts";
-import Koa from "koa";
+import baseServer from "./baseServer";
 import koaCash from "koa-cash";
 import koaBody from "koa-body";
 import Mount from "koa-mount";
@@ -15,7 +15,6 @@ import logoutRouter from "./api/routes/login/logout";
 import discordRouter from "./api/routes/login/discord";
 import osuRouter from "./api/routes/login/osu";
 import userRouter from "./api/routes/user";
-import helloWorldRouter from "./api/routes/helloWorld";
 
 import mcaRouter from "./api/routes/mca";
 import adminRouter from "./api/routes/admin";
@@ -48,10 +47,8 @@ import ormConfig from "../ormconfig";
 import serve from "koa-static";
 import path from "path";
 
-const koa = new Koa;
+const koa = baseServer;
 
-koa.keys = config.koaKeys;
-koa.proxy = true;
 koa.use(Session({
     domain: config.cookiesDomain,
     secure: process.env.NODE_ENV !== "development",
@@ -83,32 +80,6 @@ koa.use(koaCash({
         return Promise.resolve();
     },
 }));
-
-// Error handler
-koa.use(async (ctx, next) => {
-    try {
-        if (ctx.originalUrl !== "/favicon.ico" && process.env.NODE_ENV === "development")
-            console.log("\x1b[33m%s\x1b[0m", ctx.originalUrl);
-
-        await next();
-    } catch (err: any) {
-        ctx.status = err.status || 500;
-
-        if (ctx.status >= 500) {
-            ctx.body = { 
-                error: "Something went wrong!",
-                status: ctx.status,
-            };            
-            console.log(err);
-            return;
-        }
-
-        ctx.body = { 
-            error: err.message,
-            status: ctx.status,
-        };
-    }
-});
 
 // Public
 koa.use(Mount("/public", serve(path.join(__dirname, "../public"))));
@@ -156,10 +127,6 @@ koa.use(Mount("/api/influences", influencesRouter.routes()));
 koa.use(Mount("/api/matchup", matchupRouter.routes()));
 koa.use(Mount("/api/team", teamRouter.routes()));
 koa.use(Mount("/api/team/invite", inviteRouter.routes()));
-
-// Hello World!
-koa.use(Mount("/", helloWorldRouter.routes()));
-koa.use(Mount("/api", helloWorldRouter.routes()));
 
 ormConfig.initialize()
     .then(async (connection) => {
