@@ -285,7 +285,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         setTimeout(async () => {
             try {
                 log(matchup, "Picking map");
-                await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, true);
+                const end = await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, true);
+                if (end)
+                    return;
                 log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods.map(m => m.shortMod).join(", ")}`);
                 autoStart = true;
             } catch (ex) {

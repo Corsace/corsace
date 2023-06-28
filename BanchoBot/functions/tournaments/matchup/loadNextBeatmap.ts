@@ -102,7 +102,7 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
     });
 }
 
-export default async function loadNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, pools: Mappool[], possibleEnd: boolean): Promise<void> {
+export default async function loadNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, pools: Mappool[], possibleEnd: boolean): Promise<boolean> {
     const nextBeatmapInfo = await getNextBeatmap(matchup, mpLobby, mpChannel, pools);
     if (!nextBeatmapInfo) {
         if (!possibleEnd)
@@ -114,7 +114,7 @@ export default async function loadNextBeatmap (matchup: Matchup, mpLobby: Bancho
             matchup.mp = mpLobby.id;
             await matchup.save();
         }, leniencyTime);
-        return;
+        return true;
     }
 
     const mods = getMappoolSlotMods(nextBeatmapInfo[1]);
@@ -123,4 +123,5 @@ export default async function loadNextBeatmap (matchup: Matchup, mpLobby: Bancho
         mpLobby.setMods(mods, nextBeatmapInfo[2]),
     ]);
     await mpLobby.startTimer(matchup.stage!.tournament.readyTimer || 90);
+    return false;
 }
