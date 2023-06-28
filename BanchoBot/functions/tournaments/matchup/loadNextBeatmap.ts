@@ -17,7 +17,7 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
                     return resolve(null);
 
                 if (!beatmaps[0].beatmap)
-                    return reject("Beatmap doesn't exist CONTACT CORSACE IMMEDIATELY");
+                    return reject(new Error("Beatmap doesn't exist CONTACT CORSACE IMMEDIATELY"));
 
                 const slotMod = pool.slots.find(slot => slot.maps.some(map => map.beatmap?.ID === beatmaps[0].beatmap?.ID))!;
                 return resolve([beatmaps[0].beatmap, slotMod.allowedMods, typeof slotMod.allowedMods !== "number" || typeof slotMod.uniqueModCount === "number" || typeof slotMod.userModCount === "number"]);
@@ -31,7 +31,7 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
                         if (beatmaps.length === 0)
                             return resolve(null);
                         if (!beatmaps[0].beatmap)
-                            return reject("Beatmap doesn't exist CONTACT CORSACE IMMEDIATELY");
+                            return reject(new Error("Beatmap doesn't exist CONTACT CORSACE IMMEDIATELY"));
 
                         mpChannel.sendMessage("OK U GUYS ARE TAKING TOO LON g im picking a random map for all of u to play now GL");
                         const slotMod = pool.slots.find(slot => slot.maps.some(map => map.beatmap?.ID === beatmaps[0].beatmap?.ID))!;
@@ -80,7 +80,7 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
                 if (!map)
                     return await mpChannel.sendMessage("The map ID or slot provided is INVALID .");
                 if (!map.beatmap)
-                    return reject("Map is missing beatmap CONTACT CORSACE IMMEDIATELY");
+                    return reject(new Error("Map is missing beatmap CONTACT CORSACE IMMEDIATELY"));
 
                 const slotMod = pool.slots.find(slot => slot.maps.some(slotMap => slotMap.beatmap!.ID === map!.beatmap!.ID))!;
 
@@ -97,12 +97,12 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
             mpChannel.on("message", messageHandler);
         } else {
             // TODO: implement this
-            reject("Not implemented");
+            reject(new Error("Not implemented"));
         }
     });
 }
 
-export default async function loadNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, pools: Mappool[], autoStart: (message: BanchoMessage) => void, possibleEnd: boolean): Promise<void> {
+export default async function loadNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, pools: Mappool[], possibleEnd: boolean): Promise<void> {
     const nextBeatmapInfo = await getNextBeatmap(matchup, mpLobby, mpChannel, pools);
     if (!nextBeatmapInfo) {
         if (!possibleEnd)
@@ -123,5 +123,4 @@ export default async function loadNextBeatmap (matchup: Matchup, mpLobby: Bancho
         mpLobby.setMods(mods, nextBeatmapInfo[2]),
     ]);
     await mpLobby.startTimer(matchup.stage!.tournament.readyTimer || 90);
-    mpChannel.on("message", autoStart);
 }

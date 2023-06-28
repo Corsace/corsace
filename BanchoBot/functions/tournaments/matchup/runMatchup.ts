@@ -3,16 +3,17 @@ import { leniencyTime, ScoringMethod } from "../../../../Models/tournaments/stag
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { StageType } from "../../../../Models/tournaments/stage";
 import { banchoClient, osuClient } from "../../../../Server/osu";
-import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions, BanchoMessage } from "bancho.js";
+import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions } from "bancho.js";
 import { convertDateToDDDHH } from "../../../../Server/utils/dateParse";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../../Models/tournaments/matchupScore";
 import { Multi } from "nodesu";
 import allPlayersInLobby from "./allPlayersInLobby";
-import consistentPlayers from "./consistentPlayers";
+import areAllPlayersInAssignedSlots from "./areAllPlayersInAssignedSlots";
+import doAllPlayersHaveCorrectMods from "./doAllPlayersHaveCorrectMods";
 import getStageMods from "./getStageMods";
-import hasAllMods from "./hasAllMods";
+import invitePlayersToLobby from "./invitePlayersToLobby";
 import isPlayerInMatchup from "./isPlayerInMatchup";
 import loadNextBeatmap from "./loadNextBeatmap";
 
@@ -44,30 +45,15 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
 }
 
 async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel) {
-    const pools = matchup.round?.mappool || matchup.stage!.mappool!;
+    let autoStart = false;
+    let mapsPlayed: MappoolMap[] = [];
+    let mapTimerStarted = false;
+    let matchStart: Date | undefined = undefined;
     let playersInLobby: BanchoLobbyPlayer[] = [];
     let playersPlaying: BanchoLobbyPlayer[] | undefined = undefined;
-    let mapsPlayed: MappoolMap[] = [];
     let started = false;
-    let matchStart: Date | undefined = undefined;
     const aborts = new Map<number, number>();
-    const autoStart = async (message: BanchoMessage) => {
-        if (message.user.ircUsername === "BanchoBot" && (message.content === "All players are ready" || message.content === "Countdown finished")) {
-            if (
-                message.content === "All players are ready" &&
-                allPlayersInLobby(matchup, playersInLobby) &&
-                consistentPlayers(mpLobby, playersPlaying)
-            )
-                mpChannel.removeListener("message", autoStart);
-            else if (message.content === "Countdown finished") {
-                mpChannel.removeListener("message", autoStart);
-                await mpChannel.sendMessage("u guys are taking WAY TOO LONG TO READY UP im starting the match now");
-                setTimeout(async () => {
-                    await mpLobby.startMatch(5);
-                }, leniencyTime);
-            }
-        }
-    };
+    const pools = matchup.round?.mappool || matchup.stage!.mappool!;
 
     // Close lobby 15 minutes after matchup time if not all managers had joined
     setTimeout(async () => {
@@ -82,11 +68,30 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);
 
     mpChannel.on("message", async (message) => {
-        matchup.log += `\n${message.content}`;
+        matchup.log += `${message.content}\n`;
         await matchup.save();
 
         if (message.self)
             return;
+
+        if (message.user.ircUsername === "BanchoBot") { 
+            if (
+                message.content === "All players are ready" &&
+                allPlayersInLobby(matchup, playersInLobby) &&
+                areAllPlayersInAssignedSlots(mpLobby, playersPlaying)
+            )
+                autoStart = false;
+            else if (
+                message.content === "Countdown finished" && autoStart
+            ) {
+                await mpChannel.sendMessage("u guys are taking WAY TOO LONG TO READY UP im starting the match now");
+                setTimeout(async () => {
+                    await mpLobby.startMatch(5);
+                    mapTimerStarted = true;
+                    autoStart = false;
+                }, leniencyTime);
+            }
+        }
     });
 
     // Player joined event
@@ -95,10 +100,12 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         const newPlayerID = newPlayer.user.id.toString();
         if (!isPlayerInMatchup(matchup, newPlayerID, true)) {
             await Promise.all([
-                mpLobby.kickPlayer(newPlayer.user.ircUsername),
+                mpLobby.banPlayer(newPlayer.user.ircUsername),
                 mpLobby.setPassword(randomUUID()),
                 (await banchoClient.getUserById(newPlayer.user.id)).sendMessage("Bruh u aint part of this matchup"),
             ]);
+            await invitePlayersToLobby(matchup, mpLobby),
+            await mpChannel.sendMessage(`Changed the password and resent invites to everyone in the matchup due to ${newPlayer.user.ircUsername} joining when they shouldn't have (who leaked .)`);
             return;
         }
 
@@ -128,8 +135,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         try {
             log(matchup, "Picking map");
-            await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, autoStart, false);
+            await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, false);
             log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods.map(mod => mod.shortMod).join(", ")}`);
+            autoStart = true;
         } catch (ex) {
             await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
             log(matchup, `Error loading beatmap: ${ex}`);
@@ -139,6 +147,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     // Player left event
     mpLobby.on("playerLeft", async (player) => {
         log(matchup, `Player ${player.user.username} left the lobby`);
+
+        if (mapTimerStarted)
+            await mpLobby.abortTimer();
 
         if (
             mpLobby.playing &&
@@ -170,6 +181,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     // All players ready event
     mpLobby.on("allPlayersReady", async () => {
+        await mpLobby.updateSettings();
+
         if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId))
             return;
 
@@ -178,7 +191,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return;
         }
 
-        if (!consistentPlayers(mpLobby, playersPlaying)) {
+        if (!areAllPlayersInAssignedSlots(mpLobby, playersPlaying)) {
             await mpChannel.sendMessage("u are so sneaky!!1!! Now get the same players that were in the map before the abort in here or else .");
             return;
         }
@@ -188,19 +201,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             await mpChannel.sendMessage("bruh this map isnt in any of the pools??? COINTACT CORSACE IMMEDIATELY");
             return;
         }
-        if (!hasAllMods(mpLobby, slotMod)) {
+        if (!doAllPlayersHaveCorrectMods(mpLobby, slotMod)) {
             await mpChannel.sendMessage(`SOMEEONEEE HAS THE WRONG MODS ON . Allowed mods for this slot are ${getStageMods(slotMod.allowedMods).map(m => `${m.longMod} (${m.shortMod})`).join(", ")}`);
             return;
         }
 
         log(matchup, "All players readied up for the next map");
         await mpLobby.startMatch(5);
-
-        const abort = async () => {
-            await mpLobby.abortTimer();
-            await mpLobby.removeListener("playerLeft", abort);
-        };
-        mpLobby.on("playerLeft", abort);
+        mapTimerStarted = true;
     });
 
     mpLobby.on("matchAborted", async () => {
@@ -209,14 +217,15 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         mapsPlayed = mapsPlayed.filter(m => m.beatmap!.ID !== mpLobby.beatmapId);
 
         setTimeout(async () => {
-            await mpChannel.sendMessage("Get ur shit together and ready up u got 30 seconds");
+            await mpChannel.sendMessage("Get urselves together and ready up u got 30 seconds");
             await mpLobby.startTimer(30);
-            mpChannel.on("message", autoStart);
+            autoStart = true;
         }, leniencyTime);
     });
 
     mpLobby.on("matchStarted", async () => {
         log(matchup, "Match started");
+        mapTimerStarted = false;
         matchStart = new Date();
         const beatmap = pools.flatMap(pool => pool.slots.flatMap(slot => slot.maps)).find(map => map.beatmap!.ID === mpLobby.beatmapId);
         if (!beatmap) {
@@ -275,8 +284,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         setTimeout(async () => {
             try {
                 log(matchup, "Picking map");
-                await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, autoStart, true);
+                await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, true);
                 log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods.map(m => m.shortMod).join(", ")}`);
+                autoStart = true;
             } catch (ex) {
                 await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
                 log(matchup, `Error loading beatmap: ${ex}`);
@@ -315,13 +325,7 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
     log(matchup, `Set lobby settings, password and added refs`);
 
     log(matchup, `Inviting players`);
-    if (matchup.stage!.stageType === StageType.Qualifiers) {
-        const users = matchup.teams!.flatMap(team => team.members.concat(team.manager).filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i));
-        await Promise.all(users.map(user => mpLobby.invitePlayer(`#${user.osu.userID}`)));
-    } else {
-        const users = matchup.team1!.members.concat(matchup.team1!.manager).concat(matchup.team2!.members).concat(matchup.team2!.manager).filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
-        await Promise.all(users.map(m => mpLobby.invitePlayer(`#${m.osu.userID}`)));
-    }
+    await invitePlayersToLobby(matchup, mpLobby);
     log(matchup, `Invited players`);
 
     await runMatchupListeners(matchup, mpLobby, mpChannel);

@@ -1,5 +1,5 @@
 import { BanchoLobby, BanchoLobbyPlayer } from "bancho.js";
 
-export default function consistentPlayers (mpLobby: BanchoLobby, playersPlaying: BanchoLobbyPlayer[] | undefined) {
+export default function areAllPlayersInAssignedSlots (mpLobby: BanchoLobby, playersPlaying: BanchoLobbyPlayer[] | undefined) {
     return !playersPlaying || playersPlaying.every(p => mpLobby.slots.some(s => s !== null && s.user.id === p.user.id));
 }
