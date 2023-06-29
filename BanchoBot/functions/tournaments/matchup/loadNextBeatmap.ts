@@ -11,7 +11,14 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
     return new Promise((resolve, reject) => {
         if (matchup.stage!.stageType === StageType.Qualifiers) {
             const pool = pools[0];
-            const beatmaps = pool.slots.flatMap(slot => slot.maps).filter(map => !matchup.maps!.some(matchMap => matchMap.map.beatmap?.ID === map.beatmap?.ID));
+            const beatmaps = pool.slots
+                .flatMap(slot => slot.maps
+                    .sort((a, b) => a.order - b.order)
+                )
+                .filter(map => !matchup.maps!
+                    .some(matchMap => matchMap.map.beatmap?.ID === map.beatmap?.ID)
+                );
+
             if (!matchup.stage!.qualifierTeamChooseOrder || beatmaps.length === 1) {
                 if (beatmaps.length === 0)
                     return resolve(null);

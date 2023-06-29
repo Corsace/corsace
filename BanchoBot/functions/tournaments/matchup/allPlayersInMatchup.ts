@@ -3,7 +3,7 @@ import { Matchup } from "../../../../Models/tournaments/matchup";
 import { StageType } from "../../../../Models/tournaments/stage";
 import { Team } from "../../../../Models/tournaments/team";
 
-export default function allPlayersInLobby (matchup: Matchup, playersInLobby: BanchoLobbyPlayer[]) {
+export default function allPlayersInMatchup (matchup: Matchup, playersInLobby: BanchoLobbyPlayer[]) {
     const numMembersInLobby = (team: Team) => team.members.filter(m => 
         playersInLobby.some(p => p.user.id.toString() === m.osu.userID)
     ).length;

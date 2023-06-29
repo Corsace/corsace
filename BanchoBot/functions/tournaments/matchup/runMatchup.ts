@@ -10,7 +10,8 @@ import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../../Models/tournaments/matchupScore";
 import { Multi } from "nodesu";
-import allPlayersInLobby from "./allPlayersInLobby";
+import allAllowedUsersForMatchup from "./allAllowedUsersForMatchup";
+import allPlayersInMatchup from "./allPlayersInMatchup";
 import areAllPlayersInAssignedSlots from "./areAllPlayersInAssignedSlots";
 import doAllPlayersHaveCorrectMods from "./doAllPlayersHaveCorrectMods";
 import getMappoolSlotMods from "./getMappoolSlotMods";
@@ -57,6 +58,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     let started = false;
     const aborts = new Map<number, number>();
     const pools = matchup.round?.mappool || matchup.stage!.mappool!;
+    const users = await allAllowedUsersForMatchup(matchup);
 
     // Close lobby 15 minutes after matchup time if not all managers had joined
     setTimeout(async () => {
@@ -74,7 +76,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     setInterval(async () => await Promise.all(matchup.messages!.map(message => message.save())), 15 * 1000);
 
     mpChannel.on("message", async (message) => {
-        const user = await getUserInMatchup(message, matchup);
+        const user = await getUserInMatchup(users, message);
         const matchupMessage = new MatchupMessage();
         matchupMessage.content = message.content;
         matchupMessage.matchup = matchup;
@@ -87,7 +89,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (message.user.ircUsername === "BanchoBot") { 
             if (
                 message.content === "All players are ready" &&
-                allPlayersInLobby(matchup, playersInLobby) &&
+                allPlayersInMatchup(matchup, playersInLobby) &&
                 areAllPlayersInAssignedSlots(mpLobby, playersPlaying)
             )
                 autoStart = false;
@@ -196,7 +198,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId))
             return;
 
-        if (!allPlayersInLobby(matchup, playersInLobby)) {
+        if (!allPlayersInMatchup(matchup, playersInLobby)) {
             await mpChannel.sendMessage("bruh just cuz ur all ready doesnt mean anything if not enough players are in each team to start yet hrur y up");
             return;
         }
@@ -266,7 +268,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchupMap.order = mapsPlayed.length;
         await matchupMap.save();
 
-        const users = matchup.stage!.stageType === StageType.Qualifiers ? matchup.teams!.flatMap(team => team.members) : matchup.team1!.members.concat(matchup.team2!.members);
         matchupMap.scores = await Promise.all(scores.map(async (score) => {
             const user = users.find(u => u.osu.userID === score.userId.toString());
             if (!user) {
@@ -319,7 +320,8 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
     const mpLobby = mpChannel.lobby;
     log(matchup, `Created lobby with name ${lobbyName} and ID ${mpLobby.id}`);
 
-    matchup.messages = matchup.maps = [];
+    matchup.messages = [];
+    matchup.maps = [];
 
     const requiredPlayerAmount = Math.min(16, 1 + matchup.stage!.tournament.matchupSize * (matchup.teams?.length || 2));
 
