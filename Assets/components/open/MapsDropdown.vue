@@ -1,7 +1,12 @@
 <template>
-    <div class="maps-dropdown">
-        <div class="maps-triangle" />
-        <slot />
+    <div class="maps-dropdown-main">
+        <a class="maps-dropdown">
+            <div class="maps-triangle" />
+            <slot />
+        </a>
+        <div class="dropdown-content">
+            <slot name="content" />
+        </div>
     </div>
 </template>
 
@@ -40,5 +45,17 @@ export default class MapsDropdown extends Vue {
     margin-top: 5px;
     margin-right: 10px;
 }
+
+.dropdown-content {
+    background-color: grey;
+    overflow:hidden;
+    height: auto;
+    max-height: 30vh;
+}
+
+.dropdown-content.collapse {
+    max-height: 0;
+}
+
 
 </style>

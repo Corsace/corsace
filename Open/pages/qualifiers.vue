@@ -30,6 +30,9 @@
             <div class="mappool-content">
                 <MapsDropdown>
                     NOMOD
+                    <template #content>
+                        <MapsBanner />
+                    </template>
                 </MapsDropdown>
                 <MapsDropdown>
                     HIDDEN
@@ -56,8 +59,8 @@ import { Vue, Component } from "vue-property-decorator";
 
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import QualifiersSubheader from "../../Assets/components/open/QualifiersSubheader.vue";
-import MapsDropdown from "../../Assets/components/open/MapsDropdown.vue";
 import MapsBanner from "../../Assets/components/open/MapsBanner.vue";
+import MapsDropdown from "../../Assets/components/open/MapsDropdown.vue";
 
 @Component({
     components: {
