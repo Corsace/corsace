@@ -109,12 +109,12 @@ export default async function loadNextBeatmap (matchup: Matchup, mpLobby: Bancho
             throw new Error("No maps found? This is probably a mistake CONTACT CORSACE IMMEDIATELY");
 
         await mpChannel.sendMessage(`No more maps to play, closing lobby in ${leniencyTime / 1000} seconds`);
-        setTimeout(async () => {
-            await mpLobby.closeLobby();
-            matchup.mp = mpLobby.id;
-            await matchup.save();
-        }, leniencyTime);
-        return true;
+        return new Promise(resolve => {
+            setTimeout(async () => {
+                await mpLobby.closeLobby();
+                resolve(true);
+            }, leniencyTime);
+        });
     }
 
     const mods = getMappoolSlotMods(nextBeatmapInfo[1]);

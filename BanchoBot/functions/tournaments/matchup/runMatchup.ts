@@ -61,8 +61,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (started)
             return;
 
-        await mpLobby.closeLobby();
         await mpChannel.sendMessage("Matchup lobby closed due to managers not joining");
+        await mpLobby.closeLobby();
 
         matchup.mp = mpLobby.id;
         await matchup.save();
@@ -70,7 +70,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     mpChannel.on("message", async (message) => {
         matchup.log += `${osuLogTimestamp(new Date)} ${message.user.ircUsername}: ${message.content}\n`;
-        await matchup.save();
 
         if (message.self)
             return;
@@ -275,10 +274,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             matchupScore.fullCombo = score.perfect || score.maxCombo === beatmap.beatmap!.maxCombo;
             return matchupScore.save();
         }));
-
-        await matchupMap.save();
         matchup.maps!.push(matchupMap);
-        await matchup.save();
 
         log(matchup, `Matchup map and scores saved with matchupMap ID ${matchupMap.ID}`);
 
@@ -286,8 +282,11 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             try {
                 log(matchup, "Picking map");
                 const end = await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, true);
-                if (end)
+                if (end) {
+                    matchup.mp = mpLobby.id;
+                    await matchup.save();
                     return;
+                }
                 log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods.map(m => m.shortMod).join(", ")}`);
                 autoStart = true;
             } catch (ex) {
