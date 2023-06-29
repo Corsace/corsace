@@ -12,7 +12,7 @@ export class MatchupMessage extends BaseEntity {
         timestamp!: Date;
 
     @ManyToOne(() => User, user => user.matchupMessages)
-        user!: User | null;
+        user!: User;
 
     @ManyToOne(() => Matchup, matchup => matchup.messages)
         matchup!: Matchup;

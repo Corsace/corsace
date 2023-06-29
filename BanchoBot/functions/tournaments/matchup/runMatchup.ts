@@ -5,7 +5,7 @@ import { Matchup } from "../../../../Models/tournaments/matchup";
 import { StageType } from "../../../../Models/tournaments/stage";
 import { osuClient } from "../../../../Server/osu";
 import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions } from "bancho.js";
-import { convertDateToDDDHH, osuLogTimestamp } from "../../../../Server/utils/dateParse";
+import { convertDateToDDDHH } from "../../../../Server/utils/dateParse";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../../Models/tournaments/matchupScore";
@@ -14,9 +14,11 @@ import allPlayersInLobby from "./allPlayersInLobby";
 import areAllPlayersInAssignedSlots from "./areAllPlayersInAssignedSlots";
 import doAllPlayersHaveCorrectMods from "./doAllPlayersHaveCorrectMods";
 import getMappoolSlotMods from "./getMappoolSlotMods";
+import getUserInMatchup from "./getUserInMatchup";
 import invitePlayersToLobby from "./invitePlayersToLobby";
 import isPlayerInMatchup from "./isPlayerInMatchup";
 import loadNextBeatmap from "./loadNextBeatmap";
+import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
 
 const winConditions = {
     [ScoringMethod.ScoreV2]: BanchoLobbyWinConditions.ScoreV2,
@@ -68,8 +70,16 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         await matchup.save();
     }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);
 
+    // Periodically save messages every 15 seconds
+    setInterval(async () => await Promise.all(matchup.messages!.map(message => message.save())), 15 * 1000);
+
     mpChannel.on("message", async (message) => {
-        matchup.log += `${osuLogTimestamp(new Date)} ${message.user.ircUsername}: ${message.content}\n`;
+        const user = await getUserInMatchup(message, matchup);
+        const matchupMessage = new MatchupMessage();
+        matchupMessage.content = message.content;
+        matchupMessage.matchup = matchup;
+        matchupMessage.user = user;
+        matchup.messages!.push(matchupMessage);
 
         if (message.self)
             return;
@@ -309,8 +319,7 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
     const mpLobby = mpChannel.lobby;
     log(matchup, `Created lobby with name ${lobbyName} and ID ${mpLobby.id}`);
 
-    matchup.log = "";
-    matchup.maps = [];
+    matchup.messages = matchup.maps = [];
 
     const requiredPlayerAmount = Math.min(16, 1 + matchup.stage!.tournament.matchupSize * (matchup.teams?.length || 2));
 
