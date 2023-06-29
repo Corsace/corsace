@@ -33,6 +33,7 @@ import { bwsFilter } from "../Interfaces/osuAPIV2";
 import { TeamInvite } from "./tournaments/teamInvite";
 import { Matchup } from "./tournaments/matchup";
 import { MatchupScore } from "./tournaments/matchupScore";
+import { MatchupMessage } from "./tournaments/matchupMessage";
 
 // General middlewares
 
@@ -210,6 +211,9 @@ export class User extends BaseEntity {
 
     @OneToMany(() => MatchupScore, score => score.user)
         matchupScores!: MatchupScore[];
+
+    @OneToMany(() => MatchupMessage, message => message.user)
+        matchupMessages!: MatchupMessage[];
 
     static basicSearch (query: MapperQuery) {
         const queryBuilder = User

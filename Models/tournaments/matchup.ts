@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany
 import { User } from "../user";
 import { Mappool } from "./mappools/mappool";
 import { MatchupMap } from "./matchupMap";
+import { MatchupMessage } from "./matchupMessage";
 import { Round } from "./round";
 import { Stage } from "./stage";
 import { Team } from "./team";
@@ -82,8 +83,8 @@ export class Matchup extends BaseEntity {
     @ManyToMany(() => Matchup, matchup => matchup.previousMatchups)
         nextMatchups?: Matchup[] | null;
 
-    @Column("mediumtext", { nullable: true })
-        log?: string | null;
+    @OneToMany(() => MatchupMessage, message => message.matchup)
+        messages?: MatchupMessage[] | null;
 
     constructor (parents?: Matchup[]) {
         super();
