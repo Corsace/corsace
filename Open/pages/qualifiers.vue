@@ -27,6 +27,26 @@
             </div>
             <hr class="red-bottom-space">
             <hr class="red-bottom-space">
+            <div class="mappool-content">
+                <MapsDropdown>
+                    NOMOD
+                </MapsDropdown>
+                <MapsDropdown>
+                    HIDDEN
+                </MapsDropdown>
+                <MapsDropdown>
+                    DOUBLETIME
+                </MapsDropdown>
+                <MapsDropdown>
+                    HARDROCK
+                </MapsDropdown>
+                <MapsDropdown>
+                    FREEMOD
+                </MapsDropdown>
+                <MapsDropdown>
+                    TIEBREAKER
+                </MapsDropdown>
+            </div>
         </div>
     </div>
 </template>
@@ -36,11 +56,15 @@ import { Vue, Component } from "vue-property-decorator";
 
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import QualifiersSubheader from "../../Assets/components/open/QualifiersSubheader.vue";
+import MapsDropdown from "../../Assets/components/open/MapsDropdown.vue";
+import MapsBanner from "../../Assets/components/open/MapsBanner.vue";
 
 @Component({
     components: {
         OpenButton,
         QualifiersSubheader,
+        MapsDropdown,
+        MapsBanner,
     },
     head () {
         return {
@@ -112,5 +136,9 @@ hr.red-bottom-space {
     border: 1px solid $open-red;
     box-shadow: 0px 4px 4px 0px #00000040;
     margin: 0 0 4.5px 0;
+}
+
+.mappool-content {
+    padding-top: 20px;
 }
 </style>
