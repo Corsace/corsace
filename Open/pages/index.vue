@@ -61,7 +61,9 @@
                         </template>
                         Mappool download and statistics
                     </OpenButton>
-                    <div class="index_portal__button--racing" />               
+                    <OpenButton>
+                        <div class="index_portal__button--racing" />
+                    </OpenButton>         
                 </div>
                 <!-- RIGHT: register your team-->
                 <div class="index_portal__section">
@@ -74,7 +76,7 @@
                     <div class="index_portal__text-content">
                         CORSACE OPEN 23 IS PRESENTED BY 
                         <hr class="line--red line--no-space">
-                        <div class="index_portal__image--row">
+                        <div class="index_portal__image index_portal__image--row">
                             <img src="../../Assets/img/partners/momokai.png">
                             <img src="../../Assets/img/corsace-full.png">
                         </div>
@@ -168,14 +170,13 @@ export default class Default extends Vue {
 
         &__button {
             &--racing {
-                margin: 50px 0px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
                 background: url('https://i.imgur.com/vwahC3E.png');
                 background-repeat: no-repeat;
-                border-radius: 9px;
-                border: 1px solid;
-                min-height: 110px;
-                border-color: #EBEBEB;
-                box-shadow: 0px 4px 4px 0px #00000040;
             }
         }
 
@@ -184,6 +185,11 @@ export default class Default extends Vue {
                 display: flex;
                 justify-content: space-between;
                 padding: 25px 50px;
+            }
+
+            & img {
+                height: 38px;
+                width: auto;
             }
         }
     }
