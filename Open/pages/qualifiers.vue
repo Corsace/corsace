@@ -136,7 +136,8 @@ export default class Qualifiers extends Vue {
 }
 
 hr.red-bottom-space {
-    border: 1px solid $open-red;
+    border: 0;
+    border-top: 1px solid $open-red;
     box-shadow: 0px 4px 4px 0px #00000040;
     margin: 0 0 4.5px 0;
 }

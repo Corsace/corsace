@@ -81,7 +81,8 @@ img {
 }
 
 hr.red-banner {
-    border: 1px solid $open-red;
+    border: 0;
+    border-top: 1px solid $open-red;
 }
 
 .song-data {
@@ -106,7 +107,7 @@ hr.red-banner {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 3px 15px 5px 0px;
+    padding: 4px 15px 5px 0px;
     width: 50%;
 }
 

@@ -174,12 +174,14 @@ export default class Default extends Vue {
 }
 
 hr.red {
-    border: 1px solid $open-red;
+    border: 0;
+    border-top: 1px solid $open-red;
     box-shadow: 0px 4px 4px 0px #00000040;
 }
 
 hr.red-nospace {
-    border: 1px solid $open-red;
+    border: 0;
+    border-top: 1px solid $open-red;
     box-shadow: 0px 4px 4px 0px #00000040;
     margin: 0;
 }
