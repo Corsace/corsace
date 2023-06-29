@@ -1,10 +1,10 @@
 <template>
-    <div class="portal-button">
-        <div class="portal-button-content">
-            <div class="portal-button-content__xl">
+    <div class="open_button">
+        <div class="open_button__content">
+            <div class="open_button__content--xl">
                 <slot name="title" />
             </div>
-            <hr class="red">
+            <hr class="line--red">
             <slot />
         </div>
     </div>
@@ -23,7 +23,7 @@ export default class OpenButton extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
-.portal-button {
+.open_button {
     margin: 50px 0px;
     background-image: url('../../img/site/open/checkers-bg.png'), linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
     background-repeat: no-repeat;
@@ -34,14 +34,15 @@ export default class OpenButton extends Vue {
     border-color: #EBEBEB;
     box-shadow: 0px 4px 4px 0px #00000040;
 
-}
-.portal-button-content {
-    color: #EBEBEB;
+    &__content {
+        color: #EBEBEB;
     padding: 20px 20px;
     text-align: start;
-    &__xl {
-        font-size: $font-xl;
-        font-weight: bold;
+        &--xl {
+            font-size: $font-xl;
+            font-weight: bold;
+        }
     }
+
 }
 </style>

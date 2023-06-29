@@ -1,50 +1,50 @@
 <template>
     <div class="layout layout--open">
         <the-header
-            class="open__header"
+            class="header"
         >
             <a href="/">          
                 <img
                     src="../../Assets/img/site/open/logo.png"
-                    class="open__logo"
-                    :class="`open__logo--${viewTheme}`"
+                    class="header__logo"
+                    :class="`header__logo--${viewTheme}`"
                 >
             </a>
 
-            <div class="header_nav">
+            <div class="header__nav">
                 <NuxtLink
                     to="/info"
-                    class="header-nav item"
+                    class="header__nav-item"
                 >
                     INFO
                 </NuxtLink>
                 <NuxtLink
                     to="/qualifiers" 
-                    class="header-nav item"
+                    class="header__nav-item"
                 >
                     QUALIFIERS
                 </NuxtLink>
                 <NuxtLink
                     to="/teams" 
-                    class="header-nav item"
+                    class="header__nav-item"
                 >
                     TEAMS
                 </NuxtLink>
                 <NuxtLink
                     to="/schedule" 
-                    class="header-nav item"
+                    class="header__nav-item"
                 >
                     SCHEDULE
                 </NuxtLink>
                 <NuxtLink
                     to="/mappool" 
-                    class="header-nav item"
+                    class="header__nav-item"
                 >
                     MAPPOOL
                 </NuxtLink>
                 <NuxtLink
                     to="/staff" 
-                    class="header-nav item"
+                    class="header__nav-item"
                 >
                     STAFF
                 </NuxtLink>
@@ -56,7 +56,7 @@
             :class="`main--${viewTheme}`"
         />
         
-        <the-footer class="open__footer">
+        <the-footer class="footer">
             <div class="socials">
                 <Tooltip>
                     <template #icon>
@@ -194,19 +194,16 @@ export default class Default extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
-.open {
-    &__header {
-        border-bottom: 1px solid $open-red;
+.header {
+    border-bottom: 1px solid $open-red;
 
-        background-image: url("../../Assets/img/site/open/checkers.svg"), linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
-        background-repeat: no-repeat;
-        background-position: left center;
-        width: 100vw;
-        position: relative;
-    }
+    background-image: url("../../Assets/img/site/open/checkers.svg"), linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
+    background-repeat: no-repeat;
+    background-position: left center;
+    width: 100vw;
+    position: relative;
 
     &__logo {
-
         padding-left: 6px;
         margin-top: 15px;
         @include breakpoint(tablet) {
@@ -220,24 +217,44 @@ export default class Default extends Vue {
         }
     }
 
-    &__footer {
-        border-top: 1px solid $open-red;
-        background: linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
-    }
-}
+    &__nav {
+        position:absolute;
+        left:calc(50% - 20vw);
+        display: flex;
+        width: 40vw;
+        justify-content: space-between;
+        align-items: center;
 
-.footer-nav {
-    &__brand {
+        &-item {
+            text-decoration: none;
 
-        &-name {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            &--light {
-                filter: invert(1);
+            &:hover {
+                color: $open-red;
+            }
+
+            &.nuxt-link-exact-active {
+                color: $open-red;
+                position: relative;
+                display: inline-block;
+            }
+
+            &.nuxt-link-exact-active::after {
+                content: "";
+                position: absolute;
+                left: calc(50% - 4.5px/2);
+                bottom: -7px; 
+                width: 4.5px;
+                height: 4.5px;
+                transform: rotate(-45deg);
+                background-color: $open-red;
             }
         }
     }
+}
+
+.footer {
+    border-top: 1px solid $open-red;
+    background: linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
 }
 
 .socials {
@@ -277,45 +294,6 @@ export default class Default extends Vue {
 
 .main {
     overflow: hidden;
-    &--light {
-        background-size: cover;
-    }
-    &--dark {
-        background-size: cover;
-    }
-}
-
-.header_nav {
-    position:absolute;
-    left:calc(50% - 20vw);
-    display: flex;
-    width: 40vw;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header_nav .item {
-        text-decoration: none;
-    }
-
-.header_nav .item:hover {
-        color: $open-red;
-    }
-
-.header_nav .item.nuxt-link-exact-active {
-        color: $open-red;
-        position: relative;
-        display: inline-block;
-    }
-
-.header_nav .item.nuxt-link-exact-active::after {
-    content: "";
-    position: absolute;
-    left: calc(50% - 4.5px/2);
-    bottom: -7px; 
-    width: 4.5px;
-    height: 4.5px;
-    transform: rotate(-45deg);
-    background-color: $open-red;
+    background-size: cover;
 }
 </style>
