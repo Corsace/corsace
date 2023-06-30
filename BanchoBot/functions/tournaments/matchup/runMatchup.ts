@@ -91,6 +91,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpChannel.on("message", async (message) => {
         const user = await getUserInMatchup(users, message);
         const matchupMessage = new MatchupMessage();
+        matchupMessage.timestamp = new Date();
         matchupMessage.content = message.content;
         matchupMessage.matchup = matchup;
         matchupMessage.user = user;
