@@ -32,7 +32,7 @@ export default class MapsDropdown extends Vue {
     border-bottom: 1px solid $open-red;
     padding: 10px;
     margin: 10px 0px;
-    color: #EBEBEB;
+    color: $white;
     font-weight:600;
 }
 

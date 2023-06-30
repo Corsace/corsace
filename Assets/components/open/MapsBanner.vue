@@ -127,7 +127,7 @@ hr.red-banner {
 }
 
 .diff-decorator {
-    background-color: #EBEBEB;
+    background-color: $white;
     font-family: $font-swis721;
     font-weight: 700;
     color: #131313;

@@ -4,7 +4,7 @@
             autoplay
             muted
             loop
-            class="video"
+            class="index__video"
         >
             <source 
                 src="https://cdn.discordapp.com/attachments/461588387854417922/1121109155277721641/output.mp4"
@@ -116,16 +116,6 @@ export default class Default extends Vue {
 <style lang="scss">
 @import '@s-sass/_variables';
 
-.video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    object-fit: cover;
-    height: 100%;
-    width: 100%;
-    mask-image: linear-gradient(180deg, rgba(19,19,19,1) 0%, rgba(19,19,19,0.75) 5%, rgba(19,19,19,0.5) 10%, rgba(19,19,19,0.25) 20%, rgba(19,19,19,0) 55%);
-}
-
 .index {
     background: $dark;
     position: relative;
@@ -137,6 +127,16 @@ export default class Default extends Vue {
     height: 100%;
 
     font-weight: 600;
+
+    &__video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+        mask-image: linear-gradient(180deg, rgba(19,19,19,1) 0%, rgba(19,19,19,0.75) 5%, rgba(19,19,19,0.5) 10%, rgba(19,19,19,0.25) 20%, rgba(19,19,19,0) 55%);
+    }
 
     &__content {
         position: relative;

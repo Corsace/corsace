@@ -1,33 +1,60 @@
 <template>
     <div class="qualifiers">
-        <QualifiersSubheader />
-        <div class="main-content">
-            <div class="title-line">
-                <div class="subtitle">
+        <div class="qualifiers__sub_header">
+            <div
+                class="qualifiers__sub_header_item"
+                :class="{ 'qualifiers__sub_header_item--active': page === 'mappool' }"
+                @click="page = 'mappool'"
+            >
+                MAPPOOL
+            </div>
+            <div
+                class="qualifiers__sub_header_item"
+                :class="{ 'qualifiers__sub_header_item--active': page === 'qualifiers' }"
+                @click="page = 'qualifiers'"
+            >
+                QUALIFIERS
+            </div>
+            <div
+                class="qualifiers__sub_header_item"
+                :class="{ 'qualifiers__sub_header_item--active': page === 'scores' }"
+                @click="page = 'scores'"
+            >
+                SCORES
+            </div>
+        </div>
+        <div class="qualifiers__main_content">
+            <div class="qualifiers__title_group">
+                <div class="qualifiers__title">
                     QUALIFIERS
                 </div>
-                <div class="button-group">
-                    <div class="qualifier-button">
-                        <div class="qualifier-button-text">
+                <div class="qualifiers__button_group">
+                    <div class="qualifiers__button">
+                        <div class="qualifiers__button_text">
                             SHEETS
                         </div>
-                        <div class="qualifier-button-ico">
-                            <img src="../../Assets/img/site/open/sheets-ico.svg">
-                        </div>
+                        <img 
+                            class="qualifiers__button_ico" 
+                            src="../../Assets/img/site/open/sheets-ico.svg"
+                        >
                     </div>
-                    <div class="qualifier-button">
-                        <div class="qualifier-button-text">
+                    <div class="qualifiers__button">
+                        <div class="qualifiers__button_text">
                             MAPPOOL
                         </div>
-                        <div class="qualifier-button-ico">
-                            <img src="../../Assets/img/site/open/dl-ico.svg">
-                        </div>
+                        <img 
+                            class="qualifiers__button_ico"
+                            src="../../Assets/img/site/open/dl-ico.svg"
+                        >
                     </div>
                 </div>
             </div>
-            <hr class="red-bottom-space">
-            <hr class="red-bottom-space">
-            <div class="mappool-content">
+            <hr class="line--red line--bottom-space">
+            <hr class="line--red line--bottom-space">
+            <div 
+                v-if="page === 'mappool'"
+                class="qualifiers_mappool"
+            >
                 <MapsDropdown>
                     NOMOD
                     <template #content>
@@ -58,14 +85,12 @@
 import { Vue, Component } from "vue-property-decorator";
 
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
-import QualifiersSubheader from "../../Assets/components/open/QualifiersSubheader.vue";
 import MapsBanner from "../../Assets/components/open/MapsBanner.vue";
 import MapsDropdown from "../../Assets/components/open/MapsDropdown.vue";
 
 @Component({
     components: {
         OpenButton,
-        QualifiersSubheader,
         MapsDropdown,
         MapsBanner,
     },
@@ -76,6 +101,8 @@ import MapsDropdown from "../../Assets/components/open/MapsDropdown.vue";
     },
 })
 export default class Qualifiers extends Vue {
+
+    page: "mappool" | "qualifiers" | "scores" = "mappool";
 
     async mounted () {
         await this.$store.dispatch("setInitialData", "open");
@@ -89,60 +116,89 @@ export default class Qualifiers extends Vue {
 
 .qualifiers {
     background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
-}
 
-.main-content {
-    align-self: center;
-    width: 65vw;
-    height: 100%;
-    padding: 35px;
-    background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
-}
+    &__sub_header {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        top: 0px;
+        background-color: $open-red;
+        color: $open-dark;
 
-.title-line {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
+        &_item {
+            position: relative;
+            display: flex;
+            justify-content: center;
 
-.button-group {
-    display: flex;
-    flex-direction: row;
-}
+            cursor: pointer;
+            width: auto;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 90px;
 
-.subtitle {
-    font-size: $font-title;
-    font-weight: bold;
-}
+            &:hover, &--active {
+                color: $white;
+            }
 
-.qualifier-button {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row-reverse;
-    background-color: $open-red;
-    margin: 15px 0px 15px 20px;
-    min-width: 150px;
-    height: 30px;
-    padding: 5px;
-}
+            &--active::after {
+                content: "";
+                position: absolute;
+                top: calc(50% - 4.5px/2);
+                right: calc(100% - 4.5em);
+                width: 4.5px;
+                height: 4.5px;
+                transform: rotate(-45deg);
+                background-color: $white;
+            }
+        }
+    }
 
-.qualifier-button-text {
-    color: $open-dark;
-    font-weight: bold;
-}
+    &__main_content {
+        align-self: center;
+        width: 65vw;
+        height: 100%;
+        padding: 35px;
+        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
+    }
 
-.qualifier-button-ico img {
-    vertical-align: -10%;
-}
+    &__title {
+        &_group {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        
+        font-size: $font-title;
+        font-weight: bold;
+    }
 
-hr.red-bottom-space {
-    border: 0;
-    border-top: 1px solid $open-red;
-    box-shadow: 0px 4px 4px 0px #00000040;
-    margin: 0 0 4.5px 0;
-}
+    &__button {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row-reverse;
+        background-color: $open-red;
+        margin: 15px 0px 15px 20px;
+        min-width: 150px;
+        height: 30px;
+        padding: 5px;
 
-.mappool-content {
-    padding-top: 20px;
+        &_group {
+            display: flex;
+            flex-direction: row;
+        }
+
+        &_text {
+            color: $open-dark;
+            font-weight: bold;
+        }
+
+        &_ico {
+        vertical-align: -10%;
+        }
+    }
+
+    &__mappool {
+        padding-top: 20px;
+    }
 }
 </style>

@@ -43,7 +43,7 @@ export default class OpenButton extends Vue {
 
     &__content {
         position: relative;
-        color: #EBEBEB;
+        color: $white;
         padding: 20px 20px;
         text-align: start;
         font-weight: 600;
