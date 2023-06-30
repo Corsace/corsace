@@ -58,9 +58,9 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import MappoolView from "../../Assets/components/open/MappoolView.vue";
 
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
+import MappoolView from "../../Assets/components/open/MappoolView.vue";
 
 @Component({
     components: {
@@ -146,6 +146,7 @@ export default class Qualifiers extends Vue {
     }
 
     &__button {
+        cursor: pointer;
         display: flex;
         justify-content: space-between;
         flex-direction: row-reverse;

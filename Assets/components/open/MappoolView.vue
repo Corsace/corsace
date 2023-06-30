@@ -1,38 +1,38 @@
 <template>
     <div class="mappool_view">
-        <MapsDropdown>
+        <MappoolSlotDropdown>
             NOMOD
             <template #content>
-                <MapsBanner />
+                <MappoolMapBanner />
             </template>
-        </MapsDropdown>
-        <MapsDropdown>
+        </MappoolSlotDropdown>
+        <MappoolSlotDropdown>
             HIDDEN
-        </MapsDropdown>
-        <MapsDropdown>
+        </MappoolSlotDropdown>
+        <MappoolSlotDropdown>
             DOUBLETIME
-        </MapsDropdown>
-        <MapsDropdown>
+        </MappoolSlotDropdown>
+        <MappoolSlotDropdown>
             HARDROCK
-        </MapsDropdown>
-        <MapsDropdown>
+        </MappoolSlotDropdown>
+        <MappoolSlotDropdown>
             FREEMOD
-        </MapsDropdown>
-        <MapsDropdown>
+        </MappoolSlotDropdown>
+        <MappoolSlotDropdown>
             TIEBREAKER
-        </MapsDropdown>
+        </MappoolSlotDropdown>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import MapsDropdown from "./MapsDropdown.vue";
-import MapsBanner from "./MapsBanner.vue";
+import MappoolSlotDropdown from "./MappoolSlotDropdown.vue";
+import MappoolMapBanner from "./MappoolMapBanner.vue";
 
 @Component({
     components: {
-        MapsDropdown,
-        MapsBanner,
+        MappoolSlotDropdown,
+        MappoolMapBanner,
     },
 })
 export default class MappoolView extends Vue {

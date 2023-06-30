@@ -8,7 +8,7 @@
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
-export default class MapsData extends Vue {
+export default class MappoolMapData extends Vue {
 
 }
 </script>
