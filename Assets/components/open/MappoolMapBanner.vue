@@ -1,12 +1,16 @@
 <template>
     <div class="mappool_map_banner">
-        <div>
+        <div class="mappool_map_banner__img_container">
             <!--- replace with slot-->
             <img 
-                class="mappool_map_banner__img"
+                class="mappool_map_banner__img_container__img"
                 src="https://i.ibb.co/4WJHt0C/Mask-group-1.png"
             >
+            <div class="mappool_map_banner__text">
+                NM1
+            </div>
         </div>
+
         <div class="mappool_map_banner__info">
             <!--- replace with slot-->
             <div class="mappool_map_banner__song_data">
@@ -69,10 +73,34 @@ export default class MappoolMapBanner extends Vue {
     min-height: 100px;
     background: linear-gradient(0deg, #131313, #131313);
 
-    &__img {
-        display: block;
+    &__img_container  {
+        position: relative;
+        min-width: 25%;
+        padding: 0px;
+        overflow: hidden;
+
+        &__img {
+        position: relative;
         min-height: 100%;
+        text-align: center;
+        
+        }
     }
+
+    &__text {
+        font-family: $font-swis721;
+        font-weight: 700;
+        font-size: $font-title;
+        text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+        text-align: center;
+        position: absolute;
+        top: 25%;
+        vertical-align: middle;
+        width: 100%;
+        height: 100%;
+        left: 0;
+    }
+    
 
     &__info {
         background: #171B1E;
