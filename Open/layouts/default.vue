@@ -231,6 +231,7 @@ export default class Default extends Vue {
 
             &:hover {
                 color: $open-red;
+                text-decoration: none;
             }
 
             &.nuxt-link-exact-active {

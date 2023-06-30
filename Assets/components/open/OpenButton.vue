@@ -35,7 +35,7 @@ export default class OpenButton extends Vue {
     &__child {
         background-image: url('../../img/site/open/checkers-bg.png'), linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
         background-repeat: no-repeat;
-        background-position: right;
+        background-position: bottom 0px right 0px;
         border-radius: 8px; /* reduce radius to keep within parent div */
         max-height: 110px;
         box-shadow: 0px 4px 4px 0px #00000040;
