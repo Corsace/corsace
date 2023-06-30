@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 import { Matchup } from "./matchup";
 
@@ -8,7 +8,7 @@ export class MatchupMessage extends BaseEntity {
     @PrimaryGeneratedColumn()
         ID!: number;
 
-    @CreateDateColumn()
+    @Column("datetime")
         timestamp!: Date;
 
     @ManyToOne(() => User, user => user.matchupMessages)

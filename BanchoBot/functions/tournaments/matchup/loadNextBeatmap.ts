@@ -115,10 +115,6 @@ export default async function loadNextBeatmap (matchup: Matchup, mpLobby: Bancho
         if (!possibleEnd)
             throw new Error("No maps found? This is probably a mistake CONTACT CORSACE IMMEDIATELY");
 
-        await mpChannel.sendMessage(`No more maps to play, closing lobby in ${leniencyTime / 1000} seconds`);
-        const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-        await pause(leniencyTime);
-        await mpLobby.closeLobby();
         return true;
     }
 

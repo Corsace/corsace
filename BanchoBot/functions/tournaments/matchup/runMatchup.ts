@@ -56,9 +56,23 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     let playersInLobby: BanchoLobbyPlayer[] = [];
     let playersPlaying: BanchoLobbyPlayer[] | undefined = undefined;
     let started = false;
+    let lastMessageSaved = Date.now();
     const aborts = new Map<number, number>();
     const pools = matchup.round?.mappool || matchup.stage!.mappool!;
     const users = await allAllowedUsersForMatchup(matchup);
+    const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    // Periodically save messages every 15 seconds
+    const messageSaver = setInterval(async () => {
+        const messagesToSave = matchup.messages!.filter((message) => message.timestamp.getTime() > lastMessageSaved);
+        await MatchupMessage
+            .createQueryBuilder("message")
+            .insert()
+            .values(messagesToSave)
+            .execute();
+
+        lastMessageSaved = matchup.messages![matchup.messages!.length - 1].timestamp.getTime();
+    }, 15 * 1000);
 
     // Close lobby 15 minutes after matchup time if not all managers had joined
     setTimeout(async () => {
@@ -70,10 +84,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         matchup.mp = mpLobby.id;
         await matchup.save();
-    }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);
 
-    // Periodically save messages every 15 seconds
-    setInterval(async () => await Promise.all(matchup.messages!.map(message => message.save())), 15 * 1000);
+        clearInterval(messageSaver);
+    }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);
 
     mpChannel.on("message", async (message) => {
         const user = await getUserInMatchup(users, message);
@@ -294,8 +307,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 log(matchup, "Picking map");
                 const end = await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, true);
                 if (end) {
+                    await mpChannel.sendMessage(`No more maps to play, closing lobby in ${leniencyTime / 1000} seconds`);
+                    await pause(leniencyTime);
+                    await mpLobby.closeLobby();
+
                     matchup.mp = mpLobby.id;
                     await matchup.save();
+
+                    clearInterval(messageSaver);
                     return;
                 }
                 log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods.map(m => m.shortMod).join(", ")}`);
