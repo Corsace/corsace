@@ -51,48 +51,21 @@
             </div>
             <hr class="line--red line--bottom-space">
             <hr class="line--red line--bottom-space">
-            <div 
-                v-if="page === 'mappool'"
-                class="qualifiers_mappool"
-            >
-                <MapsDropdown>
-                    NOMOD
-                    <template #content>
-                        <MapsBanner />
-                    </template>
-                </MapsDropdown>
-                <MapsDropdown>
-                    HIDDEN
-                </MapsDropdown>
-                <MapsDropdown>
-                    DOUBLETIME
-                </MapsDropdown>
-                <MapsDropdown>
-                    HARDROCK
-                </MapsDropdown>
-                <MapsDropdown>
-                    FREEMOD
-                </MapsDropdown>
-                <MapsDropdown>
-                    TIEBREAKER
-                </MapsDropdown>
-            </div>
+            <MappoolView v-if="page === 'mappool'" />
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import MappoolView from "../../Assets/components/open/MappoolView.vue";
 
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
-import MapsBanner from "../../Assets/components/open/MapsBanner.vue";
-import MapsDropdown from "../../Assets/components/open/MapsDropdown.vue";
 
 @Component({
     components: {
         OpenButton,
-        MapsDropdown,
-        MapsBanner,
+        MappoolView,
     },
     head () {
         return {
@@ -195,10 +168,6 @@ export default class Qualifiers extends Vue {
         &_ico {
         vertical-align: -10%;
         }
-    }
-
-    &__mappool {
-        padding-top: 20px;
     }
 }
 </style>
