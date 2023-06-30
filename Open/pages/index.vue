@@ -136,6 +136,8 @@ export default class Default extends Vue {
     justify-content: center;
     height: 100%;
 
+    font-weight: 600;
+
     &__content {
         position: relative;
         display: flex;

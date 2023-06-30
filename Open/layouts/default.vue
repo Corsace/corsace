@@ -226,6 +226,7 @@ export default class Default extends Vue {
         align-items: center;
 
         &-item {
+            font-weight: 600;
             text-decoration: none;
 
             &:hover {
