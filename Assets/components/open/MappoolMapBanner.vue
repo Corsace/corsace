@@ -1,7 +1,7 @@
 <template>
     <div class="mappool_map_banner">
         <div class="mappool_map_banner__img_container">
-            <!--- replace with slot-->
+            <!-- replace with slot -->
             <img 
                 class="mappool_map_banner__img_container__img"
                 src="https://i.ibb.co/4WJHt0C/Mask-group-1.png"
@@ -12,12 +12,12 @@
         </div>
 
         <div class="mappool_map_banner__info">
-            <!--- replace with slot-->
+            <!-- replace with slot -->
             <div class="mappool_map_banner__song_data">
                 <div class="mappool_map_banner__title">
                     Song Title
                 </div>
-                <!--- replace with slot-->
+                <!-- replace with slot -->
                 <div class="mappool_map_banner__artist">
                     Song Artist
                 </div>
@@ -28,14 +28,14 @@
                     <div class="mappool_map_banner__osu_data_text--mapper">
                         MAPPER
                     </div>
-                    <!--- replace with slot-->
+                    <!-- replace with slot -->
                     Mapper Name
                 </div>
                 <div class="mappool_map_banner__osu_data_text">
                     <div class="mappool_map_banner__osu_data_text--difficulty">
                         DIFFICULTY
                     </div>
-                    <!--- replace with slot-->
+                    <!-- replace with slot -->
                     Diff Name
                 </div>
             </div>
