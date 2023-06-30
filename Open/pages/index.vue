@@ -25,30 +25,14 @@
                         </div>
                         <hr class="line--red line--no-space">
                         <ul class="index_schedule__content">
-                            <li class="index_schedule__group">
-                                <span class="index_schedule__event">REGISTRATION</span>
-                                <span class="index_schedule__time">NOW - July 30</span>
-                            </li>
-                            <li class="index_schedule__group">
-                                <span class="index_schedule__event">QUALIFIERS</span>
-                                <span class="index_schedule__time">August 5 - 6</span>
-                            </li>
-
-                            <li class="index_schedule__group">
-                                <span class="index_schedule__event">ROUND ROBIN</span>
-                                <span class="index_schedule__time">August 12 - 13</span>
-                            </li>
-                            <li class="index_schedule__group">
-                                <span class="index_schedule__event">ROUND OF 32</span>
-                                <span class="index_schedule__time">August 19 - 20</span>
-                            </li>
-                            <li class="index_schedule__group">
-                                <span class="index_schedule__event">KNOCKOUT 1</span>
-                                <span class="index_schedule__time">August 26 - 27</span>
-                            </li>
-                            <li class="index_schedule__group">
-                                <span class="index_schedule__event">KNOCKOUT 2</span>
-                                <span class="index_schedule__time">September 2-3</span>
+                            <li 
+                                v-for="round in roundData"
+                                :key="round.name"
+                                class="index_schedule__group"
+                            >
+                                <span class="index_schedule__event">{{ round.name }}</span>
+                                <span class="index_schedule__line" />
+                                <span class="index_schedule__time">{{ round.dates }}</span>
                             </li>
                         </ul>
                     </div>
@@ -108,6 +92,15 @@ import OpenButton from "../../Assets/components/open/OpenButton.vue";
 export default class Default extends Vue {
 
     @State loggedInUser!: UserInfo;
+
+    roundData = [
+        { name: "REGISTRATION", dates: "NOW - July 30" },
+        { name: "QUALIFIERS", dates: "August 5 - 6" },
+        { name: "ROUND ROBIN", dates: "August 12 - 13" },
+        { name: "ROUND OF 32", dates: "August 19 - 20" },
+        { name: "KNOCKOUT 1", dates: "August 26 - 27" },
+        { name: "KNOCKOUT 2", dates: "September 2 - 3"},
+    ];
 
     get avatarURL (): string  {
         return this.loggedInUser?.osu.avatar || "";
@@ -208,39 +201,37 @@ export default class Default extends Vue {
         }
 
         &__content {
-            color: $white;
-            width: auto;
-            list-style: none;
             padding: 0;
-            overflow: hidden;
-            margin: 5px 0;
-
-            & li:before {
-                float: left;
-                color: $gray;
-                width: 0;
-                white-space: nowrap;
-                content:
-                ". . . . . . . . . . . . . . . . . . . . "
-                ". . . . . . . . . . . . . . . . . . . . "
-                ". . . . . . . . . . . . . . . . . . . . "
-                ". . . . . . . . . . . . . . . . . . . . "
-            }
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: stretch;
         }
 
         &__group {
-            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
         }
 
         &__event {
+            text-align: left;
             padding-right: 0.2em;
-            float: left;
+        }
+
+        &__line {
+            flex-grow: 1;
+            height: 1px;
+            background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjEiPgogIDxsaW5lIHgxPSIyIiB5MT0iMSIgeDI9IjQiIHkyPSIxIiBzdHlsZT0ic3Ryb2tlOiM2OTY5Njk7IHN0cm9rZS13aWR0aDoxIiAvPgo8L3N2Zz4K");
+            background-repeat: repeat-x;
+            margin: 0 0.2em;
         }
 
         &__time {
+            text-align: right;
+            white-space: nowrap;
             padding-left: 0.2em;
-            float: right;
-            overflow: hidden;
         }
     }
 }
