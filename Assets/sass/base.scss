@@ -142,6 +142,11 @@
     font-weight: 600;
 }
 
+@font-face {
+    font-family: Commuters Sans;
+    src: url("../fonts/CommutersSans-Regular.ttf");
+}
+
 :root {
     --standard: #fb2475;
     --taiko: #ff890a;

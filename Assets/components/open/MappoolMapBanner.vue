@@ -36,25 +36,19 @@
                 </div>
             </div>
         </div>
-        <div class="mappool_map_banner__stats">
-            <MappoolMapData />
-            <MappoolMapData />
-            <MappoolMapData />
-            <MappoolMapData />
-            <MappoolMapData />
-            <MappoolMapData />
-            <MappoolMapData />
-        </div>
+        <MappoolMapStats />
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import MappoolMapData from "./MappoolMapData.vue";
+import MappoolMapStats from "./MappoolMapStats.vue";
 
 @Component({
     components: {
         MappoolMapData,
+        MappoolMapStats,
     },
 })
 
@@ -68,12 +62,16 @@ export default class MappoolMapBanner extends Vue {
 @import '@s-sass/_variables';
 
 .mappool_map_banner {
+    font-family: $font-ggsans;
+    margin: 5px 0px;
     display: flex;
     flex-direction: row;
     min-height: 100px;
+    background: linear-gradient(0deg, #131313, #131313);
 
     &__img {
         display: block;
+        min-height: 100%;
     }
 
     &__info {
@@ -101,13 +99,15 @@ export default class MappoolMapBanner extends Vue {
     &__osu_data {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: flex-start;
         padding: 4px 15px 5px 0px;
-        width: 50%;
+        min-width: 30%;
 
         &_text {
             display: flex;
             flex-direction: row;
+            padding-right: 5vw;
+            font-weight: 500;
 
             &--mapper {
                 background-color: $open-red;

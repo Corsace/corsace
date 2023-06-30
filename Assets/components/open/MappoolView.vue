@@ -4,10 +4,16 @@
             NOMOD
             <template #content>
                 <MappoolMapBanner />
+                <MappoolMapBanner />
+                <MappoolMapBanner />
             </template>
         </MappoolSlotDropdown>
         <MappoolSlotDropdown>
             HIDDEN
+            <template #content>
+                <MappoolMapBanner />
+                <MappoolMapBanner />
+            </template>
         </MappoolSlotDropdown>
         <MappoolSlotDropdown>
             DOUBLETIME

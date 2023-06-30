@@ -28,7 +28,10 @@
                 <div class="qualifiers__title">
                     QUALIFIERS
                 </div>
-                <div class="qualifiers__button_group">
+                <div
+                    v-if="page === 'mappool'"
+                    class="qualifiers__button_group"
+                >
                     <div class="qualifiers__button">
                         <div class="qualifiers__button_text">
                             SHEETS
@@ -38,7 +41,10 @@
                             src="../../Assets/img/site/open/sheets-ico.svg"
                         >
                     </div>
-                    <div class="qualifiers__button">
+                    <div 
+                        v-if="page === 'mappool'"
+                        class="qualifiers__button"
+                    >
                         <div class="qualifiers__button_text">
                             MAPPOOL
                         </div>
@@ -106,7 +112,7 @@ export default class Qualifiers extends Vue {
             cursor: pointer;
             width: auto;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 700;
             padding: 5px 90px;
 
             &:hover, &--active {
@@ -140,9 +146,9 @@ export default class Qualifiers extends Vue {
             flex-direction: row;
             justify-content: space-between;
         }
-        
+        font-family: $font-communterssans;
         font-size: $font-title;
-        font-weight: bold;
+        font-weight: 400;
     }
 
     &__button {
@@ -162,8 +168,9 @@ export default class Qualifiers extends Vue {
         }
 
         &_text {
+            font-family: $font-ggsans;
             color: $open-dark;
-            font-weight: bold;
+            font-weight: 600;
         }
 
         &_ico {

@@ -224,10 +224,11 @@ export default class Default extends Vue {
 
         &__line {
             flex-grow: 1;
-            height: 1px;
+            height: 1rem;
             background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjEiPgogIDxsaW5lIHgxPSIyIiB5MT0iMSIgeDI9IjQiIHkyPSIxIiBzdHlsZT0ic3Ryb2tlOiM2OTY5Njk7IHN0cm9rZS13aWR0aDoxIiAvPgo8L3N2Zz4K");
             background-repeat: repeat-x;
             margin: 0 0.2em;
+            background-position: bottom;
         }
 
         &__time {

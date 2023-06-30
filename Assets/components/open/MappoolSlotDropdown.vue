@@ -1,10 +1,16 @@
 <template>
     <div class="mappool_slot_dropdown">
-        <a class="mappool_slot_dropdown__header">
+        <a 
+            class="mappool_slot_dropdown__header"
+            @click="toggleAccordion()"
+        >
             <div class="mappool_slot_dropdown__triangle" />
             <slot />
         </a>
-        <div class="mappool_slot_dropdown__content">
+        <div
+            v-show="isOpen" 
+            class="mappool_slot_dropdown__content"
+        >
             <slot name="content" />
         </div>
     </div>
@@ -13,9 +19,17 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-@Component
+@Component({
+    components: {},
+})
 export default class MappoolSlotDropdown extends Vue {
 
+    isOpen = false;
+
+    toggleAccordion () {
+        this.isOpen = !this.isOpen;
+    }
+    
 }
 </script>
 
@@ -24,6 +38,7 @@ export default class MappoolSlotDropdown extends Vue {
 @import '@s-sass/_variables';
 
 .mappool_slot_dropdown {
+    font-family: $font-ggsans;
     &__header {
         cursor: pointer;
         display: flex;
@@ -35,7 +50,11 @@ export default class MappoolSlotDropdown extends Vue {
         padding: 10px;
         margin: 10px 0px;
         color: $white;
-        font-weight:600;
+        font-weight: 600;
+
+        &:hover {
+            text-decoration: none;
+        }
     }
 
     &__triangle {
@@ -49,14 +68,7 @@ export default class MappoolSlotDropdown extends Vue {
     }
 
     &__content {  
-        background-color: grey;
-        overflow:hidden;
         height: auto;
-        max-height: 30vh;
-
-        &.collapse {
-            max-height: 0;
-        }
     }
 }
 
