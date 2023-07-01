@@ -117,10 +117,11 @@ export default class MappoolSlotDropdown extends Vue {
     &__triangle {
         margin-top: 5px;
         margin-right: 10px;
+        color: $open-red;
 
         &--active {       
             border-top: none;
-            border-bottom: 10px solid $open-red;
+            border-bottom: 10px solid;
             transform: rotate(90deg);
         }
     }
