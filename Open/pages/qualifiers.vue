@@ -168,13 +168,12 @@ export default class Qualifiers extends Vue {
         }
 
         &_text {
-            font-family: $font-ggsans;
             color: $open-dark;
             font-weight: 600;
         }
 
         &_ico {
-        vertical-align: -10%;
+            vertical-align: -10%;
         }
     }
 }

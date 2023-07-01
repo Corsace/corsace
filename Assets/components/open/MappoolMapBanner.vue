@@ -66,7 +66,6 @@ export default class MappoolMapBanner extends Vue {
 @import '@s-sass/_variables';
 
 .mappool_map_banner {
-    font-family: $font-ggsans;
     margin: 5px 0px;
     display: flex;
     flex-direction: row;

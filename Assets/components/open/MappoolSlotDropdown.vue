@@ -4,15 +4,20 @@
             class="mappool_slot_dropdown__header"
             @click="toggleAccordion()"
         >
-            <div class="mappool_slot_dropdown__triangle" />
+            <div 
+                class="triangle mappool_slot_dropdown__triangle" 
+                :class="{ 'mappool_slot_dropdown__triangle--active': isOpen }"
+            />
             <slot />
         </a>
-        <div
-            v-show="isOpen" 
-            class="mappool_slot_dropdown__content"
-        >
-            <slot name="content" />
-        </div>
+        <transition name="collapsible">
+            <div
+                v-show="isOpen" 
+                class="mappool_slot_dropdown__content"
+            >
+                <slot name="content" />
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -38,7 +43,6 @@ export default class MappoolSlotDropdown extends Vue {
 @import '@s-sass/_variables';
 
 .mappool_slot_dropdown {
-    font-family: $font-ggsans;
     &__header {
         cursor: pointer;
         display: flex;
@@ -58,17 +62,17 @@ export default class MappoolSlotDropdown extends Vue {
     }
 
     &__triangle {
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 12px 7.5px 0 7.5px;
-        border-color: $open-red transparent transparent transparent;
         margin-top: 5px;
         margin-right: 10px;
+
+        &--active {       
+            border-top: none;
+            border-bottom: 10px solid $open-red;
+        }
     }
 
-    &__content {  
-        height: auto;
+    &__content {
+        overflow: hidden;
     }
 }
 
