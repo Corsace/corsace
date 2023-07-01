@@ -16,10 +16,10 @@
             </template>
         </MappoolSlotDropdown>
         <MappoolSlotDropdown>
-            DOUBLETIME
+            HARD ROCK
         </MappoolSlotDropdown>
         <MappoolSlotDropdown>
-            HARDROCK
+            DOUBLE TIME
         </MappoolSlotDropdown>
         <MappoolSlotDropdown>
             FREEMOD
