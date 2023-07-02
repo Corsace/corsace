@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 import { MatchupMap } from "./matchupMap";
 
@@ -11,7 +11,7 @@ export class MatchupScore extends BaseEntity {
     @ManyToOne(() => User, user => user.matchupScores)
         user!: User;
 
-    @OneToMany(() => MatchupMap, map => map.scores)
+    @ManyToOne(() => MatchupMap, map => map.scores)
         map!: MatchupMap;
 
     @Column("int")
@@ -34,4 +34,9 @@ export class MatchupScore extends BaseEntity {
 
     @Column()
         fail!: boolean;
+
+    constructor (user: User) {
+        super();
+        this.user = user;
+    }
 }

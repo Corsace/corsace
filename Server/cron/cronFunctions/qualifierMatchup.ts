@@ -1,5 +1,7 @@
 import { CronJobData, CronJobType } from "../../../Interfaces/cron";
 import { Matchup } from "../../../Models/tournaments/matchup";
+import { config } from "node-config-ts";
+import Axios from "axios";
 
 async function initialize (): Promise<CronJobData[]> {
     // Get all tournament registration ends
@@ -8,7 +10,8 @@ async function initialize (): Promise<CronJobData[]> {
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
         .select("distinct matchup.date")
-        .where("stage.stageType = 0")
+        .where("stage.stageType = 1")
+        .andWhere("matchup.mp IS NULL")
         .getRawMany();
 
     // For each date, create a cron job with the end as the date.
@@ -22,7 +25,7 @@ async function initialize (): Promise<CronJobData[]> {
         cronJobs = cronJobs.filter(j => j.date.getTime() > Date.now());
         cronJobs.push({
             type: CronJobType.QualifierMatchup,
-            date: new Date(Date.now() + 60 * 1000), // 1 minute delay to avoid Date in past error
+            date: new Date(Date.now() + 10 * 1000), // 10 second delay to avoid Date in past error
         });
     }
 
@@ -30,22 +33,16 @@ async function initialize (): Promise<CronJobData[]> {
 }
 
 async function execute (job: CronJobData) {
-    const futureDate = new Date();
-    futureDate.setMinutes(futureDate.getMinutes() + 15);
+    const { data } = await Axios.post(`${config.banchoBot.publicUrl}/api/bancho/runMatchups`, {
+        time: job.date.getTime(),
+    }, {
+        auth: config.interOpAuth,
+    });
+    if (data.success)
+        return;
 
-    // Get all matchups that are in the past and have not been played
-    const matchups = await Matchup
-        .createQueryBuilder("matchup")
-        .innerJoinAndSelect("matchup.stage", "stage")
-        .innerJoinAndSelect("stage.tournament", "tournament")
-        .leftJoinAndSelect("matchup.teams", "team")
-        .leftJoinAndSelect("team.manager", "manager")
-        .leftJoinAndSelect("team.members", "member")
-        .where("matchup.date <= :now", { now: futureDate })
-        .andWhere("matchup.mp IS NULL")
-        .getMany();
-
-    // TODO: For each matchup, create and run a multiplayer match
+    console.log("Error starting matchup cron execution");
+    console.log(data);
 }
 
 export default {

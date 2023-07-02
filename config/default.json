@@ -43,7 +43,7 @@
             "clientId": "obtain from https://osu.ppy.sh/home/account/edit",
             "clientSecret": "obtain from https://osu.ppy.sh/home/account/edit"
         },
-        "irc": {
+        "bancho": {
             "username": "bot account username, use your own for dev",
             "ircPassword": "obtain from https://osu.ppy.sh/home/account/edit#irc",
             "botAccount": "true/false, false if using personal account"
@@ -102,6 +102,11 @@
         "host": "localhost",
         "port": 8081,
         "publicUrl": "http://localhost:8081"
+    },
+    "banchoBot": {
+        "host": "localhost",
+        "port": 8082,
+        "publicUrl": "http://localhost:8082"
     },
     "s3": {
         "clients": {

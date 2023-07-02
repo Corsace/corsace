@@ -72,7 +72,7 @@ declare module "node-config-ts" {
                 clientId: string;
                 clientSecret: string;
             };
-            irc: {
+            bancho: {
                 username: string;
                 ircPassword: string;
                 botAccount: boolean;
@@ -113,6 +113,7 @@ declare module "node-config-ts" {
         open: ISubSiteConfig;
         api: IWebServiceConfig;
         cronRunner: IWebServiceConfig;
+        banchoBot: IWebServiceConfig;
 
         interOpAuth: {
             username: string;

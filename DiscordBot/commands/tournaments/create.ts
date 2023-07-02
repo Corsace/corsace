@@ -138,7 +138,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     tournament.mode = modeDivision;
 
     // Check for matchup size validity
-    let matchupSize = m instanceof Message ? matchupSizeRegex.exec(m.content)?.[1] : m.options.getInteger("players_in_match");
+    let matchupSize = m instanceof Message ? matchupSizeRegex.exec(m.content)?.[1] : m.options.getInteger("players_in_matchup");
     if (!matchupSize) {
         await respond(m, "Provide a valid matchup size for ur tournament it's currently missing");
         return;

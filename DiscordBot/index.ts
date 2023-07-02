@@ -39,7 +39,7 @@ const rest = new REST({ version: "10" }).setToken(config.discord.token);
 
 // Ready instance for the bot
 discordClient.once("ready", () => {
-    console.log(`Logged in as ${discordClient.user?.tag}`);
+    console.log(`Logged into discord as ${discordClient.user?.tag}`);
 });
 
 // Start the bot

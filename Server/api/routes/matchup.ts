@@ -71,7 +71,7 @@ stageRouter.post("/create", validateTournament, validateStageOrRound, isLoggedIn
             if (idToMatchup.has(matchup.ID)) {
                 dbMatchup = idToMatchup.get(matchup.ID)!;
                 if (dbMatchup.isLowerBracket !== matchup.isLowerBracket)
-                    return Promise.reject(`Matchup ${matchup.ID} is already created with isLowerBracket ${dbMatchup.isLowerBracket}, but you provided ${matchup.isLowerBracket}`);
+                    return Promise.reject(new Error(`Matchup ${matchup.ID} is already created with isLowerBracket ${dbMatchup.isLowerBracket}, but you provided ${matchup.isLowerBracket}`));
             }
 
             if (matchup.date)
@@ -82,7 +82,7 @@ stageRouter.post("/create", validateTournament, validateStageOrRound, isLoggedIn
                 dbMatchup.date = ctx.state.stage.timespan.start;
 
             if (dbMatchup.date.getTime() < ctx.state.stage.timespan.start.getTime())
-                return Promise.reject(`Matchup ${matchup.ID} date is before stage start`);
+                return Promise.reject(new Error(`Matchup ${matchup.ID} date is before stage start`));
 
             if (parent)
                 dbMatchup.nextMatchups?.push(parent);

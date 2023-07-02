@@ -80,6 +80,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
             },
         });
 
+    if (existingMappools.length === 1 && mappool.stage.stageType === StageType.Qualifiers) {
+        await respond(m, "Qualifiers can only have 1 pool Lol");
+        return;
+    }
+
     if (existingMappools.length === 13) {
         await respond(m, "Dyude this stage/round already has 13 mappools u can't create any more");
         return;
@@ -220,7 +225,7 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
 
 // This function asks the user for slots (slotname, slottype, and # of maps) for the mappool
 async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournament) {
-    let content = "Provide the acronym for the slot, followed by the name, and the number of maps that will be in the slot.\nFor any mod restrictions, ALSO provide a list of 2 letter acronyms of all allowed mods followed by 2 numbers, one for the number of users that require mods, one for the number of unique mods required.\nU can choose to provide 2 numbers only and just the mod combination to allow all non-DT/HT mods for a slot.\nU can choose to provide mods only if all users will require selecting a mod from the selection of mods.\n\n**Examples:**\nNM Nomod 6 NM: A typical nomod slot with 6 maps in it that will enforce nomod.\nDT Double Time 4 DT: A typical double time slot with 3 maps in it that will enforce double time.\nFM Freemod 3 2 2: A typical freemod slot that will enforce at least 2 unique mods per team, and at least 2 players having mods per team\nFM Freemod 3 HDHRFL 2 2: A typical freemod slot that will enforce at least 2 unique mods per team within the mods HD, HR, or FL, and at least 2 players having mods per team\nTB Tiebreaker 1 0 0 OR TB Tiebreaker 1: A typical tiebreaker slot that will allow all mods, but will not enforce any mods.\n\nU can also separate each slot with a semicolon, like so:\nNM Nomod 6 NM; DT Double Time 4 DT; FM Freemod 3 2 2; TB Tiebreaker 1\n\nU have a limit of 10 maps per slot, and 10 slots.\n";
+    let content = "Provide the acronym for the slot, followed by the name, and the number of maps that will be in the slot.\nFor any mod restrictions, ALSO provide a list of 2 letter acronyms of all allowed mods followed by 2 numbers, one for the number of users that require mods, one for the number of unique mods required.\nU can choose to provide 2 numbers only and just the mod combination to allow all non-DT/HT mods for a slot.\nU can choose to provide mods only if all users will require selecting a mod from the selection of mods.\n\n**Examples:**\nNM Nomod 6 NM: A typical nomod slot with 6 maps in it that will enforce nomod.\nDT Double Time 4 DT: A typical double time slot with 3 maps in it that will enforce double time.\nFM Freemod 3 2 2: A typical freemod slot that will enforce at least 2 unique mods per team, and at least 2 players having mods per team\nFM Freemod 3 HDHRFL 2 2: A typical freemod slot that will enforce at least 2 unique mods per team within the mods HD, HR, or FL, and at least 2 players having mods per team\nTB Tiebreaker 1 0 0 OR TB Tiebreaker 1: A typical tiebreaker slot that will allow all mods, but will not enforce any mods.\n\nU can also separate each slot with a semicolon, like so:\nNM Nomod 6 NM; DT Double Time 4 DT; FM Freemod 3 2 2; TB Tiebreaker 1\n\nU have a limit of 9 maps per slot, and 10 slots.\n";
     const ids = {
         stop: randomUUID(),
         done: randomUUID(),
@@ -336,7 +341,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
             const mapCount = parseInt(slotInfo[slotInfo.length - 1]);
             const slotName = slotInfo.slice(1, slotInfo.length - 1);
 
-            if (isNaN(mapCount) || mapCount <= 0 || mapCount > 10) {
+            if (isNaN(mapCount) || mapCount <= 0 || mapCount >= 10) {
                 const reply = await msg.reply(`Provide a valid number of maps that will be in the slot for slot #${i + 1} \`${slotInfo}\``);
                 setTimeout(async () => {
                     await reply.delete();

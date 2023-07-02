@@ -1,7 +1,8 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
 import { Mappool } from "./mappools/mappool";
 import { MatchupMap } from "./matchupMap";
+import { MatchupMessage } from "./matchupMessage";
 import { Round } from "./round";
 import { Stage } from "./stage";
 import { Team } from "./team";
@@ -46,7 +47,7 @@ export class Matchup extends BaseEntity {
     @ManyToOne(() => Team, team => team.wins)
         winner?: Team | null;
 
-    @ManyToOne(() => MatchupMap, map => map.matchups)
+    @OneToMany(() => MatchupMap, map => map.matchup)
         maps?: MatchupMap[] | null;
 
     @ManyToMany(() => Mappool, mappool => mappool.bannedInMatchups)
@@ -82,8 +83,8 @@ export class Matchup extends BaseEntity {
     @ManyToMany(() => Matchup, matchup => matchup.previousMatchups)
         nextMatchups?: Matchup[] | null;
 
-    @Column("mediumtext", { nullable: true })
-        log?: string | null;
+    @OneToMany(() => MatchupMessage, message => message.matchup)
+        messages?: MatchupMessage[] | null;
 
     constructor (parents?: Matchup[]) {
         super();

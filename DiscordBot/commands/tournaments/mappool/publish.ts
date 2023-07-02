@@ -50,12 +50,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
     } 
-    if (!mappool.isPublic && mappool.slots.some(slot => slot.maps.some(map => !map.beatmap && !map.customBeatmap))) {
-        const confirm = await confirmCommand(m, "This mappool still contains empty slots u sure u wanna publish it?");
-        if (!confirm) {
-            await respond(m, "Ok Lol .");
-            return;
-        }
+    if (!mappool.isPublic && mappool.slots.some(slot => slot.maps.some(map => !map.beatmap))) {
+        await respond(m, "The mappool still contains unfinished customs/empty slots add all uploaded maps first");
+        return;
     }
     if (mappool.isPublic && stage!.timespan.start.getTime() < Date.now()) {
         const confirm = await confirmCommand(m, "This mappool's stage already started u sure u wanna privatize it?");

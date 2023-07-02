@@ -37,7 +37,7 @@ config.corsace.publicUrl + /api/login/osu/callback
 ```
 
 ```
-config.osu.irc
+config.osu.bancho
 ```
 
 You can obtain your osu IRC password from the same place as the osu OAuth Application at https://osu.ppy.sh/home/account/edit#irc.

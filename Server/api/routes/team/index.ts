@@ -10,6 +10,9 @@ import { parseQueryParam } from "../../../utils/query";
 import { deleteTeamAvatar, uploadTeamAvatar } from "../../../functions/tournaments/teams/teamAvatarFunctions";
 import { StageType } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
+import { cron } from "../../../cron";
+import { CronJobType } from "../../../../Interfaces/cron";
+import { parseDateOrTimestamp } from "../../../utils/dateParse";
 
 const teamRouter = new Router();
 
@@ -142,6 +145,9 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
+        .leftJoinAndSelect("tournament.stages", "stage")
+        .leftJoinAndSelect("stage.matchups", "matchup")
+        .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .leftJoinAndSelect("tournament.teams", "team")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
@@ -175,7 +181,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
 
     // Role checks
     const tournamentMembers = tournament.teams.flatMap(t => [t.manager, ...t.members]);
-    const teamMembers = [team.manager, ...team.members];
+    const teamMembers = [team.manager, ...team.members].filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
 
     const tournamentRoles = await TournamentRole
         .createQueryBuilder("tournamentRole")
@@ -207,12 +213,19 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
             return;
         }
 
-        const qualifierDate = new Date(qualifierAt);
+        const qualifierDate = parseDateOrTimestamp(qualifierAt);
+        if (isNaN(qualifierDate.getTime())) {
+            ctx.body = { error: "Invalid qualifier date" };
+            return;
+        }
+        if (qualifierDate.getTime() < qualifierStage.timespan.start.getTime() || qualifierDate.getTime() > qualifierStage.timespan.end.getTime()) {
+            ctx.body = { error: "Qualifier date is not within the qualifier stage" };
+            return;
+        }
 
         const maxTeams = Math.floor(16 / tournament.matchupSize);
-        const existingMatchup = qualifierStage.matchups.find(m => m.teams!.length < maxTeams
-            && m.date === qualifierDate);
-        if (existingMatchup) {
+        const existingMatchup = qualifierStage.matchups.find(m => m.teams!.length < maxTeams && m.date.getTime() === qualifierDate.getTime());
+        if (existingMatchup && !qualifierStage.qualifierTeamChooseOrder) {
             existingMatchup.teams!.push(team);
             await existingMatchup.save();
         } else {
@@ -223,9 +236,10 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
 
             qualifierStage.matchups.push(matchup);
             await qualifierStage.save();
+
+            await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - 15 * 60 * 1000, Date.now() + 10 * 1000)));
         }
     }
-
 
     tournament.teams.push(team);
     await tournament.save();
