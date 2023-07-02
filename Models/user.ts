@@ -29,7 +29,7 @@ import { MappoolMapHistory } from "./tournaments/mappools/mappoolMapHistory";
 import { JobPost } from "./tournaments/mappools/jobPost";
 import { Team } from "./tournaments/team";
 import { osuV2Client } from "../Server/osu";
-import { bwsFilter } from "../Interfaces/osuAPIV2";
+import { bwsFilter, osuV2UserBadge } from "../Interfaces/osuAPIV2";
 import { TeamInvite } from "./tournaments/teamInvite";
 import { Matchup } from "./tournaments/matchup";
 import { MatchupScore } from "./tournaments/matchupScore";
@@ -350,7 +350,7 @@ export class User extends BaseEntity {
         ]);
     }
 
-    static filterBWSBadges (badges, modeID = 1) {
+    static filterBWSBadges (badges: osuV2UserBadge[], modeID = 1) {
         if (modeID < 1 || modeID > 4)
             throw new Error("Invalid mode ID");
 
