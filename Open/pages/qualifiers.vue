@@ -95,6 +95,7 @@ export default class Qualifiers extends Vue {
 
 .qualifiers {
     background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
+    overflow: auto;
 
     &__sub_header {
         display: flex;

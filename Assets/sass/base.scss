@@ -179,6 +179,7 @@ body {
         font-family: 'Futura PT', 'sans-serif';
     }
     &--open {
+        background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
         font-family: 'gg sans', 'sans-serif';
     }
     height: 100%;
@@ -190,12 +191,6 @@ body {
     display: flex;
     flex-direction: column;
     flex: 1;
-    &--light {
-        background-color: $gray;
-    }
-    &--dark {
-        background-color: $darker-gray;
-    }
 }
 
 a {
