@@ -68,7 +68,7 @@
                         QUALIFIERS 
                         <span class="info_stage_title--red">(QL)</span> 
                         <div class="info_stage_title__status">
-                            <MatchStatus class="status not_started">
+                            <MatchStatus class="status status--not_started">
                                 NOT STARTED
                             </MatchStatus>
                         </div>
