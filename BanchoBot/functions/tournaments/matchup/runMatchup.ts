@@ -5,18 +5,21 @@ import { Matchup } from "../../../../Models/tournaments/matchup";
 import { StageType } from "../../../../Models/tournaments/stage";
 import { osuClient } from "../../../../Server/osu";
 import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions } from "bancho.js";
-import { convertDateToDDDHH, osuLogTimestamp } from "../../../../Server/utils/dateParse";
+import { convertDateToDDDHH } from "../../../../Server/utils/dateParse";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../../Models/tournaments/matchupScore";
 import { Multi } from "nodesu";
-import allPlayersInLobby from "./allPlayersInLobby";
+import allAllowedUsersForMatchup from "./allAllowedUsersForMatchup";
+import allPlayersInMatchup from "./allPlayersInMatchup";
 import areAllPlayersInAssignedSlots from "./areAllPlayersInAssignedSlots";
 import doAllPlayersHaveCorrectMods from "./doAllPlayersHaveCorrectMods";
 import getMappoolSlotMods from "./getMappoolSlotMods";
+import getUserInMatchup from "./getUserInMatchup";
 import invitePlayersToLobby from "./invitePlayersToLobby";
 import isPlayerInMatchup from "./isPlayerInMatchup";
 import loadNextBeatmap from "./loadNextBeatmap";
+import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
 
 const winConditions = {
     [ScoringMethod.ScoreV2]: BanchoLobbyWinConditions.ScoreV2,
@@ -53,8 +56,23 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     let playersInLobby: BanchoLobbyPlayer[] = [];
     let playersPlaying: BanchoLobbyPlayer[] | undefined = undefined;
     let started = false;
+    let lastMessageSaved = Date.now();
     const aborts = new Map<number, number>();
     const pools = matchup.round?.mappool || matchup.stage!.mappool!;
+    const users = await allAllowedUsersForMatchup(matchup);
+    const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    // Periodically save messages every 15 seconds
+    const messageSaver = setInterval(async () => {
+        const messagesToSave = matchup.messages!.filter((message) => message.timestamp.getTime() > lastMessageSaved);
+        await MatchupMessage
+            .createQueryBuilder("message")
+            .insert()
+            .values(messagesToSave)
+            .execute();
+
+        lastMessageSaved = matchup.messages![matchup.messages!.length - 1].timestamp.getTime();
+    }, 15 * 1000);
 
     // Close lobby 15 minutes after matchup time if not all managers had joined
     setTimeout(async () => {
@@ -66,10 +84,18 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         matchup.mp = mpLobby.id;
         await matchup.save();
+
+        clearInterval(messageSaver);
     }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);
 
     mpChannel.on("message", async (message) => {
-        matchup.log += `${osuLogTimestamp(new Date)} ${message.user.ircUsername}: ${message.content}\n`;
+        const user = await getUserInMatchup(users, message);
+        const matchupMessage = new MatchupMessage();
+        matchupMessage.timestamp = new Date();
+        matchupMessage.content = message.content;
+        matchupMessage.matchup = matchup;
+        matchupMessage.user = user;
+        matchup.messages!.push(matchupMessage);
 
         if (message.self)
             return;
@@ -77,7 +103,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (message.user.ircUsername === "BanchoBot") { 
             if (
                 message.content === "All players are ready" &&
-                allPlayersInLobby(matchup, playersInLobby) &&
+                allPlayersInMatchup(matchup, playersInLobby) &&
                 areAllPlayersInAssignedSlots(mpLobby, playersPlaying)
             )
                 autoStart = false;
@@ -186,7 +212,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId))
             return;
 
-        if (!allPlayersInLobby(matchup, playersInLobby)) {
+        if (!allPlayersInMatchup(matchup, playersInLobby)) {
             await mpChannel.sendMessage("bruh just cuz ur all ready doesnt mean anything if not enough players are in each team to start yet hrur y up");
             return;
         }
@@ -256,7 +282,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchupMap.order = mapsPlayed.length;
         await matchupMap.save();
 
-        const users = matchup.stage!.stageType === StageType.Qualifiers ? matchup.teams!.flatMap(team => team.members) : matchup.team1!.members.concat(matchup.team2!.members);
         matchupMap.scores = await Promise.all(scores.map(async (score) => {
             const user = users.find(u => u.osu.userID === score.userId.toString());
             if (!user) {
@@ -283,8 +308,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 log(matchup, "Picking map");
                 const end = await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, true);
                 if (end) {
+                    await mpChannel.sendMessage(`No more maps to play, closing lobby in ${leniencyTime / 1000} seconds`);
+                    await pause(leniencyTime);
+                    await mpLobby.closeLobby();
+
                     matchup.mp = mpLobby.id;
                     await matchup.save();
+
+                    clearInterval(messageSaver);
                     return;
                 }
                 log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods.map(m => m.shortMod).join(", ")}`);
@@ -309,7 +340,7 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
     const mpLobby = mpChannel.lobby;
     log(matchup, `Created lobby with name ${lobbyName} and ID ${mpLobby.id}`);
 
-    matchup.log = "";
+    matchup.messages = [];
     matchup.maps = [];
 
     const requiredPlayerAmount = Math.min(16, 1 + matchup.stage!.tournament.matchupSize * (matchup.teams?.length || 2));
