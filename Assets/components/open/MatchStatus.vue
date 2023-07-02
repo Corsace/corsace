@@ -27,17 +27,17 @@ export default class MatchStatus extends Vue {
     font-weight: 700;
     padding: 1.75px 3px;
     width: 75px;
-}
 
-.status.not_started {
-    background-color: #545454;
-}
+    &--not_started {
+        background-color: #545454;
+    }
 
-.status.completed {
-    background-color: $open-red;
-}
+    &--completed {
+        background-color: $open-red;
+    }
 
-.status.ongoing {
-    background-color: #EBEBEB;
+    &--ongoing {
+        background-color: #EBEBEB;
+    }
 }
 </style>
