@@ -6,14 +6,12 @@ export const stageSearchConditions = {
     "tournamentID": "tournament.ID = :target",
     "server": "tournament.server = :target",
     "name": (target: string | number) => new Brackets(qb => {
-        if (typeof target === "string") {
-            if (target.length <= 4) {
-                qb.where("stage.abbreviation LIKE :target")
-                    .orWhere("mappool.abbreviation LIKE :target");
-            } else {
-                qb.where("stage.name LIKE :target")
-                    .orWhere("mappool.name LIKE :target");
-            }
+        if (target.toString().length <= 4) {
+            qb.where("stage.abbreviation LIKE :target")
+                .orWhere("mappool.abbreviation LIKE :target");
+        } else {
+            qb.where("stage.name LIKE :target")
+                .orWhere("mappool.name LIKE :target");
         }
     }),
 };
@@ -32,7 +30,7 @@ export default function getStages (target: string | number, searchType: keyof ty
     if (searchType === "name")
         stageQ
             .leftJoin("stage.mappool", "mappool")
-            .where(stageSearchConditions.name(target), { target });
+            .where(stageSearchConditions.name(target), { target: `%${target}%` });
     else
         stageQ.where(stageSearchConditions[searchType], { target });
 

@@ -10,7 +10,7 @@ import { extractParameters } from "../../../functions/parameterFunctions";
 import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
 import { extractDate } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";

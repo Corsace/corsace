@@ -6,7 +6,7 @@ import { once } from "events";
 import { ChatInputCommandInteraction, ForumChannel, Message } from "discord.js";
 import { Beatmap as APIBeatmap} from "nodesu";
 import { CustomBeatmap } from "../../Models/tournaments/mappools/customBeatmap";
-import { deletePack } from "./tournamentFunctions/mappackFunctions";
+import { deletePack } from "../../Server/functions/tournaments/mappool/mappackFunctions";
 import { MappoolMapHistory } from "../../Models/tournaments/mappools/mappoolMapHistory";
 import { BeatmapParser } from "../../Server/beatmapParser";
 import getCustomThread from "./tournamentFunctions/getCustomThread";
@@ -90,7 +90,7 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
         bpm = timingPoints.reduce((acc, curr) => acc + curr.length * curr.bpm, 0) / timingPoints.reduce((acc, curr) => acc + curr.length, 0);
 
     // Obtaining star rating
-    const calc = new osu.std_diff().calc({map: beatmap, mods: slot.allowedMods});
+    const calc = new osu.std_diff().calc({map: beatmap, mods: slot.allowedMods || 0});
     const aimSR = calc.aim;
     const speedSR = calc.speed;
     const sr = calc.total;
@@ -204,7 +204,7 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
         "difficultyrating": `${mappoolMap.customBeatmap.totalSR}`,
     });
     const set = [apiBeatmap];
-    const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slot.allowedMods)), modsToAcronym(slot.allowedMods), set);
+    const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slot.allowedMods || 0)), modsToAcronym(slot.allowedMods || 0), set);
     mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
     await respond(m, `Submitted \`${artist} - ${title} [${diff}]\` to \`${mappoolSlot}\``, [mappoolMapEmbed]);

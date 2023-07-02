@@ -20,10 +20,6 @@ discordClient.login(config.discord.token).catch(err => {
     if (err) throw err;
 });
 
-discordClient.on("ready", () => {
-    console.log(`Logged into discord as ${discordClient.user?.tag}`);
-});
-
 discordClient.on("error", err => {
     console.error(err);
 });

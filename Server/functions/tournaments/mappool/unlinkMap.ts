@@ -1,4 +1,4 @@
-import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
+import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 
 export default async function unlinkMap (map: MappoolMap) {
     map.customBeatmap = null;

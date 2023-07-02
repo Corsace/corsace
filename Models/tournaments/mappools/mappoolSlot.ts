@@ -27,14 +27,14 @@ export class MappoolSlot extends BaseEntity {
     @Column({ nullable: true })
         colour?: string;
 
-    @Column({ nullable: true })
-        allowedMods?: number;
+    @Column("int", { nullable: true })
+        allowedMods?: number | null;
 
-    @Column({ nullable: true })
-        userModCount?: number;
+    @Column("int", { nullable: true })
+        userModCount?: number | null;
 
-    @Column({ nullable: true })
-        uniqueModCount?: number;
+    @Column("int", { nullable: true })
+        uniqueModCount?: number | null;
 
     @OneToMany(() => MappoolMap, poolMap => poolMap.slot)
         maps!: MappoolMap[];

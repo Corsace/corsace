@@ -4,7 +4,7 @@ import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tou
 import { Brackets } from "typeorm";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { ojsamaParse, ojsamaToCustom } from "../../../functions/beatmapParse";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import bypassSubmit from "../../../functions/tournamentFunctions/bypassSubmit";
 import { TournamentRole, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import commandUser from "../../../functions/commandUser";

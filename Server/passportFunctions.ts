@@ -82,7 +82,7 @@ export async function osuPassport (accessToken: string, refreshToken: string, pr
         let user = await User.findOne({
             where: {
                 osu: {
-                    userID: userProfile.id,
+                    userID: userProfile.id.toString(),
                 },
             },
         });
@@ -109,7 +109,7 @@ export async function osuPassport (accessToken: string, refreshToken: string, pr
         }
 
         user.country = userProfile.country_code;
-        user.osu.userID = userProfile.id;
+        user.osu.userID = userProfile.id.toString();
         user.osu.username = userProfile.username;
         user.osu.avatar = userProfile.avatar_url;
         user.osu.accessToken = accessToken;

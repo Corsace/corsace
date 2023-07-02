@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "disco
 import { Command } from "..";
 import { securityChecks } from "../../functions/tournamentFunctions/securityChecks";
 import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
-import getUser from "../../functions/dbFunctions/getUser";
+import getUser from "../../../Server/functions/get/getUser";
 import commandUser from "../../functions/commandUser";
 import { loginResponse } from "../../functions/loginResponse";
 import { extractParameters } from "../../functions/parameterFunctions";

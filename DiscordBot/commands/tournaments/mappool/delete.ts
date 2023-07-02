@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, Message, SlashCommandBuilder, ThreadChanne
 import { Command } from "../../index";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import { loginResponse } from "../../../functions/loginResponse";
 import { extractParameters } from "../../../functions/parameterFunctions";
@@ -10,9 +10,9 @@ import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/par
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import { unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import channelID from "../../../functions/channelID";
-import deleteMappoolMap from "../../../functions/dbFunctions/deleteMappoolMap";
-import deleteMappoolSlot from "../../../functions/dbFunctions/deleteMappoolSlot";
-import deleteMappool from "../../../functions/dbFunctions/deleteMappool";
+import deleteMappoolMap from "../../../../Server/functions/delete/deleteMappoolMap";
+import deleteMappoolSlot from "../../../../Server/functions/delete/deleteMappoolSlot";
+import deleteMappool from "../../../../Server/functions/delete/deleteMappool";
 import confirmCommand from "../../../functions/confirmCommand";
 import respond from "../../../functions/respond";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
