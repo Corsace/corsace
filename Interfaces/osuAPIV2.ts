@@ -1,3 +1,5 @@
+import { Mode } from "./modes";
+
 export const scopes = ["identify", "public", "friends.read"];
 
 /* eslint-disable no-useless-escape */
@@ -40,14 +42,21 @@ export interface osuV2UserBadge {
     image_url: string;
 }
 
+export interface osuV2UserGroup {
+    id: number;
+    playmodes: Mode[];
+}
+
 export interface osuV2User {
     id: number;
     username: string;
+    playmode: Mode;
     country_code: string;
     avatar_url: string;
     previous_usernames: string[];
     statistics: osuV2UserStatistics;
     badges: osuV2UserBadge[];
+    groups: osuV2UserGroup[];
 }
 
 export interface osuV2Friend {
