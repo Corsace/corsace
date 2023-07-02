@@ -75,17 +75,17 @@ export default function mcaSearch (stage: "nominating" | "voting", initialCall: 
             if (ctx.query.played === "true") { // Played filter
                 let cursorString = "";
                 while (true) {
-                    const res = await osuV2Client.getPlayedBeatmaps(accessToken, ctx.state.year, cursorString);
+                    const data = await osuV2Client.getPlayedBeatmaps(accessToken, ctx.state.year, cursorString);
 
-                    if (!cursorString && res.data.beatmapsets.length === 0) break;
+                    if (!cursorString && data.beatmapsets.length === 0) break;
 
-                    const sets = res.data.beatmapsets.map(set => set.id);
+                    const sets = data.beatmapsets.map(set => set.id);
 
                     playedIDs.push(...sets);
 
                     if (sets.length < 50) break;
 
-                    cursorString = res.data.cursor_string;
+                    cursorString = data.cursor_string;
                 }
             }
 

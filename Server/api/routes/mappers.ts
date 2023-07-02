@@ -3,7 +3,7 @@ import Axios from "axios";
 import { User } from "../../../Models/user";
 import { MapperQuery } from "../../../Interfaces/queries";
 import { parseQueryParam } from "../../../Server/utils/query";
-import { osuV2Client } from "../../../Server/osu";
+import { osuV2Client } from "../../osu";
 
 const mappersRouter = new Router();
 

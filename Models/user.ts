@@ -354,7 +354,7 @@ export class User extends BaseEntity {
         if (modeID < 1 || modeID > 4)
             throw new Error("Invalid mode ID");
 
-        return badges.filter(badge => !bwsFilter[modeID].test(badge.description));
+        return badges.filter(badge => !bwsFilter[modeID].test(badge.description) || !bwsFilter[modeID].test(badge.image_url));
     }
 
     private async refreshOsuToken (this: User) {
@@ -383,6 +383,10 @@ export class User extends BaseEntity {
             .select(tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken")
             .where(`ID = ${this.ID}`)
             .getRawOne();
+
+        if (!res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"])
+            throw new Error("No access token found");
+
         return res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"];
     }
 

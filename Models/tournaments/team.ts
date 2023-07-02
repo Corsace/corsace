@@ -84,7 +84,7 @@ export class Team extends BaseEntity {
             this.pp = 0;
             this.rank = 0;
             this.BWS = 0;
-            console.log(e);
+            console.warn("Error in calculating team stats:\n", e);
             return false;
         }
             

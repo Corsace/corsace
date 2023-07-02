@@ -6,7 +6,7 @@ import { Category } from "../../../Models/MCA_AYIM/category";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import { parseQueryParam } from "../../../Server/utils/query";
-import { osuV2Client } from "../../../Server/osu";
+import { osuV2Client } from "../../osu";
 
 const resultsRouter = new Router();
 
