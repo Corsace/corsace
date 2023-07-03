@@ -50,16 +50,16 @@
             </div>
             <div class="info_stages">
                 <div class="info_stage_selector">
-                    <ContentButton class="qualifiers_button--active right_margin">
+                    <ContentButton class="qualifiers_button--active qualifiers_button--right_margin">
                         STAGE 1
                     </ContentButton>
-                    <ContentButton class="right_margin">
+                    <ContentButton class="qualifiers_button--right_margin">
                         STAGE 2
                     </ContentButton>
-                    <ContentButton class="right_margin">
+                    <ContentButton class="qualifiers_button--right_margin">
                         STAGE 3
                     </ContentButton>
-                    <ContentButton class="right_margin">
+                    <ContentButton class="qualifiers_button--right_margin">
                         STAGE 4
                     </ContentButton>
                 </div>
@@ -138,16 +138,16 @@
                     <div class="info_stage_data--bottom_padding">
                         <div class="info_stage_data__content">
                             <div class="info_stage_data_mappools_selector">
-                                <ContentButton class="qualifiers_button--active bottom_margin">
+                                <ContentButton class="qualifiers_button--active qualifiers_button--bottom_margin">
                                     Knockout 1A (KO1A)
                                 </ContentButton>
-                                <ContentButton class="bottom_margin">
+                                <ContentButton class="qualifiers_button--bottom_margin">
                                     Knockout 1B (KO1B)
                                 </ContentButton>
-                                <ContentButton class="bottom_margin">
+                                <ContentButton class="qualifiers_button--bottom_margin">
                                     Knockout 1C (KO1C)
                                 </ContentButton>
-                                <ContentButton class="bottom_margin">
+                                <ContentButton class="qualifiers_button--bottom_margin">
                                     Knockout 1 (KO1)
                                 </ContentButton>
                             </div>
@@ -168,10 +168,10 @@
                                 </div>
                             </div>
                             <div class="info_stage_data_button_group">
-                                <ContentButton class="red right_margin_bottom">
+                                <ContentButton class="qualifiers_button--red qualifiers_button--right_margin_bottom">
                                     MAPPOOL INFO
                                 </ContentButton>
-                                <ContentButton class="red right_margin_bottom disabled">
+                                <ContentButton class="qualifiers_button--right_margin_bottom qualifiers_button--disabled">
                                     UNAVAILABLE
                                 </ContentButton>
                             </div>

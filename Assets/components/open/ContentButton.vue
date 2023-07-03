@@ -44,45 +44,45 @@ export default class ContentButton extends Vue {
         text-align: center;
         font-weight: 600;
     }
-}
 
-.qualifiers_button.right_margin {
-    margin: 15px 0px 15px 10px;
-}
+    &--right_margin {
+        margin: 15px 0px 15px 10px;
+    }
 
-.qualifiers_button.right_margin_bottom{
-    margin: 15px 0px 0px 10px;
-}
+    &--right_margin_bottom{
+        margin: 15px 0px 0px 10px;
+    }
 
-.qualifiers_button.bottom_margin {
-    flex-grow: 0;
-    margin: 0px 0px 15px 0px;
-}
+    &--bottom_margin {
+        flex-grow: 0;
+        margin: 0px 0px 15px 0px;
+    }
 
-.qualifiers_button.bottom_margin:last-child {
-    margin: 0px 0 0 0;
-}
+    &--bottom_margin:last-child {
+        margin: 0px 0 0 0;
+    }
 
-.qualifiers_button.red {
-    color: #181818;
-    background-color: $open-red;
-}
+    &--red {
+        color: #181818;
+        background-color: $open-red;
+    }
 
-.qualifiers_button.red:hover {
-    color: #EBEBEB;
-}
+    &--red:hover {
+        color: #EBEBEB;
+    }
 
-.qualifiers_button.disabled {
-    cursor: not-allowed;
-    color: #545454;
-    background-color: rgba(0, 0, 0, 0);
-    border: 1px solid #545454
-}
+    &--disabled {
+        cursor: not-allowed;
+        color: #545454;
+        background-color: rgba(0, 0, 0, 0);
+        border: 1px solid #545454
+    }
 
-.qualifiers_button.disabled:hover {
-    cursor: not-allowed;
-    color: #545454;
-    background-color: rgba(0, 0, 0, 0);
-    border: 1px solid #545454
+    &--disabled:hover {
+        cursor: not-allowed;
+        color: #545454;
+        background-color: rgba(0, 0, 0, 0);
+        border: 1px solid #545454
+    }
 }
 </style>

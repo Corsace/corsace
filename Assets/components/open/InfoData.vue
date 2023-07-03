@@ -47,9 +47,9 @@ export default class InfoData extends Vue {
         text-align: right;
         float: right;
     }
-}
 
-.data:first-child {
-    margin: 0 0 0 0;
+    &:first-child {
+            margin: 0 0 0 0;
+    }
 }
 </style>
