@@ -36,10 +36,9 @@ export default class ContentButton extends Vue {
     &:hover, &--active {
             background-color: $open-red;
             color: #181818;
-        }
+    }
 
     &_text {
-        line-height: 30px;
         vertical-align: middle;
         text-align: center;
         font-weight: 600;
@@ -69,6 +68,23 @@ export default class ContentButton extends Vue {
 
     &--red:hover {
         color: #EBEBEB;
+    }
+
+    &--red_outline {
+        background-color: rgba(0, 0, 0, 0);
+        border: 1px solid $open-red;
+        color: $open-red;
+    }
+
+    &--red_outline:hover {
+        color: #181818;
+    }
+
+    &--header_button {
+        margin: 15px 0px 15px 20px;
+        min-width: 150px;
+        height: 30px;
+        padding: 5px;
     }
 
     &--disabled {

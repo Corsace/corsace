@@ -54,10 +54,25 @@
                         >
                     </div>
                 </div>
+                <div
+                    v-if="page === 'scores'"
+                    class="qualifiers__button_group"
+                >
+                    <div class="qualifiers__header_subtext">
+                        <span>CATEGORY</span><span>SELECT</span>
+                    </div>
+                    <ContentButton class="qualifiers_button--header_button qualifiers_button--red_outline">
+                        PLAYERS
+                    </ContentButton>
+                    <ContentButton class="qualifiers_button--header_button qualifiers_button--red">
+                        TEAMS
+                    </ContentButton>
+                </div>
             </div>
             <hr class="line--red line--bottom-space">
             <hr class="line--red line--bottom-space">
             <MappoolView v-if="page === 'mappool'" />
+            <ScoresView class="qualifiers__scores"v-if="page === 'scores'" />
         </div>
     </div>
 </template>
@@ -67,11 +82,15 @@ import { Vue, Component } from "vue-property-decorator";
 
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
+import ContentButton from "../../Assets/components/open/ContentButton.vue";
+import ScoresView from "../../Assets/components/open/ScoresView.vue";
 
 @Component({
     components: {
         OpenButton,
         MappoolView,
+        ContentButton,
+        ScoresView,
     },
     head () {
         return {
@@ -135,10 +154,16 @@ export default class Qualifiers extends Vue {
 
     &__main_content {
         align-self: center;
+        position: relative;
         width: 65vw;
         height: 100%;
         padding: 35px;
         background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
+    }
+
+    &__scores {
+        height: 95%;
+        overflow: hidden;
     }
 
     &__title {
@@ -176,6 +201,17 @@ export default class Qualifiers extends Vue {
         &_ico {
             vertical-align: -10%;
         }
+    }
+
+    &__header_subtext {
+        font-family: $font-swis721;
+        font-weight: 400;
+        font-size: $font-sm;
+        text-align: right;
+        margin-top: 15px;
+        color: #909090;
+        display: flex;
+        flex-direction: column;
     }
 }
 </style>
