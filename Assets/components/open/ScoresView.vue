@@ -146,6 +146,7 @@ export default class ScoresView extends Vue {
     &__wrapper {
         padding: 0;
         height: 100%;
+        margin-top: 15px;
         border-left: 1px solid #383838;
         border-right: 1px solid #383838;
         overflow: scroll;
@@ -161,7 +162,6 @@ export default class ScoresView extends Vue {
         width: 100%;
         border-collapse: collapse;
         box-sizing: border-box;
-        margin-top: 15px;
 
         &--highlight{
             color: #FBBA20;
