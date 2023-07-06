@@ -7,6 +7,15 @@ tournamentRouter.get("/open/:year", async (ctx) => {
     if (await ctx.cashed())
         return;
 
+    const year = parseInt(ctx.params.year);
+    if (isNaN(year)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid year",
+        };
+        return;
+    }
+
     const tournament = await Tournament
         .createQueryBuilder("tournament")
         .leftJoinAndSelect("tournament.stages", "stages")
@@ -19,7 +28,7 @@ tournamentRouter.get("/open/:year", async (ctx) => {
         .leftJoinAndSelect("slots.maps", "maps")
         .leftJoinAndSelect("roundMappools.slots", "roundSlots")
         .leftJoinAndSelect("roundSlots.maps", "roundMaps")
-        .where("tournament.year = :year", { year: ctx.params.year })
+        .where("tournament.year = :year", { year })
         .andWhere("tournament.isOpen = true")
         .getOne();
 
