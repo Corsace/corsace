@@ -30,6 +30,22 @@ tournamentRouter.get("/open/:year", async (ctx) => {
         };
         return;
     }
+    tournament.stages.forEach(stage => {
+        stage.rounds.forEach(round => {
+            round.mappool.forEach(mappool => {
+                if (!mappool.isPublic) {
+                    mappool.mappackLink = null;
+                    mappool.mappackExpiry = null;
+                }
+            });
+        });
+        stage.mappool?.forEach(mappool => {
+            if (!mappool.isPublic) {
+                mappool.mappackLink = null;
+                mappool.mappackExpiry = null;
+            }
+        });
+    });
 
     ctx.body = tournament;
 });
