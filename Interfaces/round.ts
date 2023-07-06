@@ -1,3 +1,5 @@
+import { Mappool } from "./mappool";
+
 export const roundAcronyms = [
     "ql",
     "ro128",
@@ -55,3 +57,13 @@ export const roundNames = [
     "knockout 2",
     "knockout 3",
 ];
+
+export interface Round {
+    ID:           number;
+    name:         string;
+    abbreviation: string;
+    isDraft:      null;
+    setsBestOf:   number;
+    bestOf:       null;
+    mappool:      Mappool[];
+}

@@ -17,7 +17,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import { Phase } from "../../../Interfaces/mca";
+import { MCAPhase } from "../../../Interfaces/mca";
 
 const mcaAyimModule = namespace("mca-ayim");
 
@@ -25,7 +25,7 @@ const mcaAyimModule = namespace("mca-ayim");
 export default class StateContent extends Vue {
 
     @mcaAyimModule.State selectedMode!: string;
-    @mcaAyimModule.Getter phase!: Phase | null;
+    @mcaAyimModule.Getter phase!: MCAPhase | null;
 
     get remainingDays (): string {
         if (this.phase) {

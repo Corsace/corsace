@@ -118,7 +118,7 @@ import NoticeModal from "../../../../Assets/components/NoticeModal.vue";
 import ListTransition from "../../../../Assets/components/ListTransition.vue";
 
 import { User, UserInfo } from "../../../../Interfaces/user";
-import { MCA, Phase } from "../../../../Interfaces/mca";
+import { MCA, MCAPhase } from "../../../../Interfaces/mca";
 
 const mcaAyimModule = namespace("mca-ayim");
 
@@ -152,7 +152,7 @@ export default class Comments extends Vue {
     @mcaAyimModule.State mca!: MCA;
     @mcaAyimModule.State selectedMode!: string;
 
-    @mcaAyimModule.Getter phase!: Phase | null;
+    @mcaAyimModule.Getter phase!: MCAPhase | null;
 
     @mcaAyimModule.Action updateSelectedMode;
 

@@ -410,7 +410,7 @@ export class User extends BaseEntity {
         if (this.discord?.userID && !member)
             member = await getMember(this.discord.userID);
         const info: UserInfo = {
-            corsaceID: this.ID,
+            ID: this.ID,
             discord: {
                 avatar: "https://cdn.discordapp.com/avatars/" + this.discord.userID + "/" + this.discord.avatar + ".png",
                 userID: this.discord.userID,
@@ -427,6 +427,7 @@ export class User extends BaseEntity {
                 headStaff: member ? config.discord.roles.corsace.headStaff.some(r => member!.roles.cache.has(r)) : false,
                 staff: member ? member.roles.cache.has(config.discord.roles.corsace.staff) : false,
             },
+            country: this.country,
             joinDate: this.registered,
             lastLogin: this.lastLogin,
             canComment: this.canComment,
