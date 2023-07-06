@@ -7,7 +7,7 @@ import { securityChecks } from "../../../functions/tournamentFunctions/securityC
 import { Tournament, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import confirmCommand from "../../../functions/confirmCommand";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
 import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
@@ -17,7 +17,7 @@ import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot
 import { acronymtoMods } from "../../../../Interfaces/mods";
 import { User } from "../../../../Models/user";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
-import { deletePack } from "../../../functions/tournamentFunctions/mappackFunctions";
+import { deletePack } from "../../../../Server/functions/tournaments/mappool/mappackFunctions";
 import channelID from "../../../functions/channelID";
 
 async function run (m: Message | ChatInputCommandInteraction) {
@@ -88,6 +88,11 @@ async function addMap (m: Message | ChatInputCommandInteraction, params: paramet
         return;
     }
 
+    if (order >= 10) {
+        await respond(m, `The maximum amount of maps in a slot is 9`);
+        return;
+    }
+
     const diff = order - slotMod.maps.length;
 
     if (!await confirmCommand(m, `Are u sure u wanna add ${diff} maps to ${slot}? There's currently ${slotMod.maps.length} maps in the slot`)) {
@@ -127,6 +132,11 @@ async function addSlot (m: Message | ChatInputCommandInteraction, params: parame
     let slot = slots.find(s => slot_name.toLowerCase() === s.name.toLowerCase() || slot_acronym.toLowerCase() === s.acronym.toLowerCase());
     if (slot) {
         await respond(m, `Slot \`${slot_name} ${slot_acronym}\` already exists`);
+        return;
+    }
+
+    if (amount >= 10) {
+        await respond(m, `The maximum amount of maps in a slot is 9`);
         return;
     }
 

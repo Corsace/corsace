@@ -2,7 +2,7 @@ import { Beatmap } from "../../../Models/beatmap";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { isPossessive } from "../../../Models/MCA_AYIM/guestRequest";
 import { modeList } from "../../../Interfaces/modes";
-import { osuClient } from "../../../Server/osu";
+import { osuClient } from "../../osu";
 import getBeatmapset from "./getBeatmapset";
 import getMCAEligibility from "./getMCAEligibility";
 import getModeDivison from "./getModeDivision";

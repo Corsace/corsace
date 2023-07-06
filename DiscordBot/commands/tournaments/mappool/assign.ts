@@ -11,7 +11,7 @@ import { loginResponse } from "../../../functions/loginResponse";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
 import { discordClient } from "../../../../Server/discord";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
-import { deletePack } from "../../../functions/tournamentFunctions/mappackFunctions";
+import { deletePack } from "../../../../Server/functions/tournaments/mappool/mappackFunctions";
 import { extractParameters } from "../../../functions/parameterFunctions";
 import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
 import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
@@ -21,7 +21,7 @@ import { User } from "../../../../Models/user";
 import { JobPost } from "../../../../Models/tournaments/mappools/jobPost";
 import beatmapEmbed from "../../../functions/beatmapEmbed";
 import respond from "../../../functions/respond";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import channelID from "../../../functions/channelID";
 import commandUser from "../../../functions/commandUser";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
@@ -90,7 +90,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await handleUser(m, target, testing, replace, tournament, mappool, mappoolSlot, mappoolMap, assigner, jobPost);
 }
 
-async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, target: string, allowedMods: number | undefined, tournament: Tournament, mappool: Mappool, mappoolSlot: string, mappoolMap: MappoolMap, mod: string, assigner: User, jobPost?: JobPost | null) {
+async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, target: string, allowedMods: number | null | undefined, tournament: Tournament, mappool: Mappool, mappoolSlot: string, mappoolMap: MappoolMap, mod: string, assigner: User, jobPost?: JobPost | null) {
     const linkRegex = /https?:\/\/osu.ppy.sh\/beatmapsets\/(\d+)#(osu|taiko|fruits|mania)\/(\d+)/;
     const link = target.match(linkRegex);
     if (!link) {

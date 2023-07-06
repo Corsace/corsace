@@ -6,11 +6,7 @@ import tournamentEdit from "./tournaments/edit";
 import tournamentInfo from "./tournaments/info";
 import tournamentList from "./tournaments/list";
 import tournamentRole from "./tournaments/role";
-
-import stageCreate from "./tournaments/stage/create";
-import stageDelete from "./tournaments/stage/delete";
-import stageEdit from "./tournaments/stage/edit";
-import stageInfo from "./tournaments/stage/info";
+import tournamentTeams from "./tournaments/teams";
 
 import mappoolAdd from "./tournaments/mappool/add";
 import mappoolAssign from "./tournaments/mappool/assign";
@@ -31,6 +27,19 @@ import jobDelete from "./tournaments/mappool/jobBoard/delete";
 import job from "./tournaments/mappool/jobBoard/job";
 import jobInfo from "./tournaments/mappool/jobBoard/info";
 import jobPublish from "./tournaments/mappool/jobBoard/publish";
+
+import stageCreate from "./tournaments/stage/create";
+import stageDelete from "./tournaments/stage/delete";
+import stageEdit from "./tournaments/stage/edit";
+import stageInfo from "./tournaments/stage/info";
+
+import teamAvatar from "./tournaments/team/avatar";
+import teamInvite from "./tournaments/team/invite";
+import teamList from "./tournaments/team/list";
+
+import inviteAccept from "./tournaments/team/invite/accept";
+import inviteDecline from "./tournaments/team/invite/decline";
+import inviteList from "./tournaments/team/invite/list";
 
 import avatar from "./utility/avatar";
 import help from "./utility/help";
@@ -68,12 +77,7 @@ commands.push(tournamentEdit);
 commands.push(tournamentInfo);
 commands.push(tournamentList);
 commands.push(tournamentRole);
-
-// stage commands
-commands.push(stageCreate);
-commands.push(stageDelete);
-commands.push(stageEdit);
-commands.push(stageInfo);
+commands.push(tournamentTeams);
 
 // mappool commands
 commands.push(mappoolAdd);
@@ -96,6 +100,22 @@ commands.push(job);
 commands.push(jobDelete);
 commands.push(jobInfo);
 commands.push(jobPublish);
+
+// stage commands
+commands.push(stageCreate);
+commands.push(stageDelete);
+commands.push(stageEdit);
+commands.push(stageInfo);
+
+// team commands
+commands.push(teamAvatar);
+commands.push(teamInvite);
+commands.push(teamList);
+
+// invite commands
+commands.push(inviteAccept);
+commands.push(inviteDecline);
+commands.push(inviteList);
 
 // general utility commands
 commands.push(avatar);

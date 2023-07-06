@@ -9,12 +9,12 @@ import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { User } from "../../../Models/user";
-import { isEligibleFor } from "../../../Server/middleware/mca-ayim";
-import { parseQueryParam } from "../../../Server/utils/query";
+import { isEligibleFor } from "../../middleware/mca-ayim";
+import { parseQueryParam } from "../../utils/query";
 import { Beatmap } from "../../../Models/beatmap";
-import { osuV2Client } from "../../../Server/osu";
+import { osuV2Client } from "../../osu";
 
-export default function stageSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
+export default function mcaSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
     return async (ctx: ParameterizedContext) => {
         if (!ctx.query.category)
             return ctx.body = {
@@ -75,17 +75,17 @@ export default function stageSearch (stage: "nominating" | "voting", initialCall
             if (ctx.query.played === "true") { // Played filter
                 let cursorString = "";
                 while (true) {
-                    const res = await osuV2Client.getPlayedBeatmaps(accessToken, ctx.state.year, cursorString);
+                    const data = await osuV2Client.getPlayedBeatmaps(accessToken, ctx.state.year, cursorString);
 
-                    if (!cursorString && res.data.beatmapsets.length === 0) break;
+                    if (!cursorString && data.beatmapsets.length === 0) break;
 
-                    const sets = res.data.beatmapsets.map(set => set.id);
+                    const sets = data.beatmapsets.map(set => set.id);
 
                     playedIDs.push(...sets);
 
                     if (sets.length < 50) break;
 
-                    cursorString = res.data.cursor_string;
+                    cursorString = data.cursor_string;
                 }
             }
 

@@ -92,6 +92,11 @@ webServices:
     command: cron-runner
     ingress:
       enabled: false
+  banchoBot:
+    replicaCount: 1
+    command: bancho-bot
+    ingress:
+      enabled: false
 
 bot:
   enabled: true

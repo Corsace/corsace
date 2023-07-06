@@ -39,6 +39,14 @@ The callback URL should be set to:
 config.corsace.publicUrl + /api/login/osu/callback
 ```
 
+```
+config.osu.bancho
+```
+
+You can obtain your osu IRC password from the same place as the osu OAuth Application at https://osu.ppy.sh/home/account/edit#irc.
+
+If your account is a bot account, then make sure to have `botAccount` set to true; otherwise, make set it to false.
+
 ### Database
 
 #### Setup
@@ -75,7 +83,8 @@ We use S3-compatible object storage for storing and serving mappacks, configured
 
 While we target Cloudflare R2, any S3 provider should work as long as they support multipart uploads and pre-signed URLs.
 
-We use two buckets:  
+We use three buckets:
+- `team-avatars` is a public bucket that stores team avatars, can be served by a CDN without authentication
 - `mappacks` is a public bucket that stores public mappacks, can be served by a CDN without authentication
 - `mappacks-temp` is a private bucket that stores private mappacks that should not have public access  
   Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.  
@@ -86,7 +95,7 @@ We use two buckets:
 
 Go to the [Cloudflare R2 dashboard page](https://dash.cloudflare.com/?to=/:account/r2). Enable your plan if you haven't already (good luck exceeding free limits).
 
-Create the `mappacks` bucket and enable its R2.dev subdomain, or associate a custom domain.
+Create the `mappacks` and `team-avatars` buckets and enable their R2.dev subdomains, or associate a custom domain for each.
 
 Create the `mappacks-temp` bucket and add an object lifecycle rule to delete objects after 7 days (leave prefix empty).
 

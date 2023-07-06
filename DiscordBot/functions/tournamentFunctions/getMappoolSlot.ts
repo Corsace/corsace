@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, Message } from "discord.js";
-import getMappoolSlots from "../dbFunctions/getMappoolSlots";
+import getMappoolSlots from "../../../Server/functions/get/getMappoolSlots";
 import getFromList from "../getFromList";
 import respond from "../respond";
 import { Mappool } from "../../../Models/tournaments/mappools/mappool";

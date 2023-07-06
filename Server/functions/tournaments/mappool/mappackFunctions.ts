@@ -1,15 +1,15 @@
 import { ChatInputCommandInteraction, Message } from "discord.js";
-import { Mappool } from "../../../Models/tournaments/mappools/mappool";
+import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { randomUUID } from "crypto";
-import { gets3Key } from "../../../Server/utils/s3";
-import { buckets } from "../../../Server/s3";
-import { download } from "../../../Server/utils/download";
-import { zipFiles } from "../../../Server/utils/zip";
-import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
-import { insertBeatmap } from "../../../Server/scripts/fetchYearMaps";
-import { osuClient } from "../../../Server/osu";
+import { gets3Key } from "../../../utils/s3";
+import { buckets } from "../../../s3";
+import { download } from "../../../utils/download";
+import { zipFiles } from "../../../utils/zip";
+import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
+import { insertBeatmap } from "../../../scripts/fetchYearMaps";
+import { osuClient } from "../../../osu";
 import { Beatmap as APIBeatmap } from "nodesu";
-import respond from "../respond";
+import respond from "../../../../DiscordBot/functions/respond";
 
 export async function createPack (m: Message | ChatInputCommandInteraction, bucket: "mappacks" | "mappacksTemp", mappool: Mappool, packName: string, video = false): Promise<string | undefined> {
     const mappoolMaps = mappool.slots.flatMap(s => s.maps);

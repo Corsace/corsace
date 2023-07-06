@@ -5,9 +5,9 @@ import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRol
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
 import { loginResponse } from "../../../functions/loginResponse";
 import { discordClient } from "../../../../Server/discord";
-import { deletePack } from "../../../functions/tournamentFunctions/mappackFunctions";
+import { deletePack } from "../../../../Server/functions/tournaments/mappool/mappackFunctions";
 import { randomUUID } from "crypto";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";

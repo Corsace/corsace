@@ -3,7 +3,7 @@ import { TournamentChannelType } from "../../../../Models/tournaments/tournament
 import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { download } from "../../../../Server/utils/download";
 import { Command } from "../../index";
-import { createPack } from "../../../functions/tournamentFunctions/mappackFunctions";
+import { createPack } from "../../../../Server/functions/tournaments/mappool/mappackFunctions";
 import respond from "../../../functions/respond";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";

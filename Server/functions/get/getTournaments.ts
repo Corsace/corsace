@@ -11,7 +11,7 @@ export const tournamentSearchConditions = {
     }),
 };
 
-export default function getTournaments (target: string, searchType: keyof typeof tournamentSearchConditions, tournamentStatusFilters?: TournamentStatus[], stageOrRound?: boolean, mappools?: boolean, slots?: boolean, maps?: boolean, jobPosts?: boolean) {
+export default async function getTournaments (target: string, searchType: keyof typeof tournamentSearchConditions, tournamentStatusFilters?: TournamentStatus[], stageOrRound?: boolean, mappools?: boolean, slots?: boolean, maps?: boolean, jobPosts?: boolean) {
     const tournamentQ = Tournament.createQueryBuilder("tournament")
         .leftJoinAndSelect("tournament.mode", "mode")
         .leftJoin("tournament.channels", "channel");
@@ -47,8 +47,10 @@ export default function getTournaments (target: string, searchType: keyof typeof
 
     tournamentQ.where(tournamentSearchConditions[searchType], { target });
 
-    if (tournamentStatusFilters)
-        tournamentQ.andWhere("tournament.status IN (:...status)", { status: tournamentStatusFilters });
+    const tournaments = await tournamentQ.getMany();
 
-    return tournamentQ.getMany();
+    if (tournamentStatusFilters)
+        return tournaments.filter(tournament => tournamentStatusFilters.includes(tournament.status));
+    
+    return tournaments;
 }

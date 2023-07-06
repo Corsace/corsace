@@ -8,6 +8,7 @@ import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { FindOptionsWhere } from "typeorm";
 import { isLoggedIn } from "../../middleware";
 import { parseQueryParam } from "../../utils/query";
+import { profanityFilter } from "../../../Interfaces/comment";
 
 async function canComment (ctx: ParameterizedContext, next: Next): Promise<any> {
     if (!ctx.state.user.canComment) {
@@ -183,6 +184,12 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
     if (!isEligibleFor(target, modeID, year)) {
         return ctx.body = {
             error: `User wasn't active for the selected mode`,
+        };
+    }
+
+    if (profanityFilter.test(newComment)) {
+        return ctx.body = {
+            error: "Comment is TERRIBLE .",
         };
     }
 

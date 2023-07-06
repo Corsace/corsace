@@ -1,13 +1,14 @@
 import jobBoardExecute from "./jobBoard";
 import customMapExecute from "./customMap";
-import { CronJobData, CronJobType } from "../../../Interfaces/cron";
+import tournamentRegistrationStartExecute from "./tournamentRegistrationStart";
+import tournamentRegistrationEndExecute from "./tournamentRegistrationEnd";
+import qualifierMatchupExecute from "./qualifierMatchup";
+import { CronJobType } from "../../../Interfaces/cron";
 
 export default {
     [CronJobType.Jobboard]: jobBoardExecute,
     [CronJobType.Custommap]: customMapExecute,
-} as { 
-    [key in CronJobType]: { 
-        execute: (job: CronJobData) => Promise<void>,
-        initialize: () => Promise<CronJobData[]>,
-    } 
+    [CronJobType.TournamentRegistrationStart]: tournamentRegistrationStartExecute,
+    [CronJobType.TournamentRegistrationEnd]: tournamentRegistrationEndExecute,
+    [CronJobType.QualifierMatchup]: qualifierMatchupExecute,
 };

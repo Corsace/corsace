@@ -15,6 +15,14 @@ export enum TournamentRoleType {
     Staff,
 }
 
+export const unallowedToPlay = [
+    TournamentRoleType.Organizer,
+    TournamentRoleType.Mappoolers,
+    TournamentRoleType.Mappers,
+    TournamentRoleType.Testplayers,
+    TournamentRoleType.Referees,
+];
+
 @Entity()
 export class TournamentRole extends BaseEntity {
 
