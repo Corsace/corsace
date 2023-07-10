@@ -1,7 +1,7 @@
 <template>
     <div class="info">
         <div class="info__header">
-            INFORMATION
+            {{ $t('open.info.title') }}
             <hr class="line--red line--bottom-space">
             <hr class="line--red line--bottom-space">
         </div>
@@ -12,25 +12,25 @@
                 </div>
                 <hr class="line--gray line--no-fill">
                 <div class="info_desc__text">
-                    The 2023 edition of Corsace Open, one of osu!'s most prestigious unofficial 4v4 tournaments. Organized by Corsace, this open rank tournament gathers some of the most talented players from around the world, serving as a testament to the skill, strategy, and teamwork inherent in the rhythm game community. I SWEAR I WILL I18N THIS LATER
+                    {{ $t('open.info.description') }}
                 </div>
                 <hr class="line--gray line--no-fill">
                 <div class="info_match">
                     <MatchBox>
                         <template #title>
-                            MATCH SIZE
+                            {{ $t('open.info.matchInfo.matchSize') }}
                         </template>
                         4v4
                     </MatchBox>
                     <MatchBox>
                         <template #title>
-                            MIN. PLAYERS
+                            {{ $t('open.info.matchInfo.minPlayers') }}
                         </template>
                         6
                     </MatchBox>
                     <MatchBox>
                         <template #title>
-                            MAX. PLAYERS
+                            {{ $t('open.info.matchInfo.maxPlayers') }}
                         </template>
                         8
                     </MatchBox>
@@ -51,25 +51,25 @@
             <div class="info_stages">
                 <div class="info_stage_selector">
                     <ContentButton class="qualifiers_button--active qualifiers_button--right_margin">
-                        STAGE 1
+                        {{ $t('open.info.headings.stage') }} 1
                     </ContentButton>
                     <ContentButton class="qualifiers_button--right_margin">
-                        STAGE 2
+                        {{ $t('open.info.headings.stage') }} 2
                     </ContentButton>
                     <ContentButton class="qualifiers_button--right_margin">
-                        STAGE 3
+                        {{ $t('open.info.headings.stage') }} 3
                     </ContentButton>
                     <ContentButton class="qualifiers_button--right_margin">
-                        STAGE 4
+                        {{ $t('open.info.headings.stage') }} 4
                     </ContentButton>
                 </div>
                 <div class="info_stage_panel">
                     <div class="info_stage_title">
-                        QUALIFIERS 
-                        <span class="info_stage_title--red">(QL)</span> 
+                        {{ $t('open.info.headings.qualifiers') }} 
+                        <span class="info_stage_title--red"> {{ $t('open.info.headings.ql') }}</span> 
                         <div class="info_stage_title__status">
                             <MatchStatus class="status status--not_started">
-                                NOT STARTED
+                                {{ $t('open.info.status.notStarted') }}
                             </MatchStatus>
                         </div>
                         <hr class="line--gray line--bottom-space-default">
