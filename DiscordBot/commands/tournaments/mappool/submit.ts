@@ -6,10 +6,11 @@ import { loginResponse } from "../../../functions/loginResponse";
 import { unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import { extractParameters } from "../../../functions/parameterFunctions";
+import { getLink } from "../../../functions/getLink";
 import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
 import { ojsamaParse, ojsamaToCustom } from "../../../functions/beatmapParse";
 import respond from "../../../functions/respond";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import bypassSubmit from "../../../functions/tournamentFunctions/bypassSubmit";
@@ -28,25 +29,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    let link = "";
-    if (m instanceof Message) {
-        if (m.attachments.first())
-            link = m.attachments.first()!.url;
-        else if (/https?:\/\/\S+/.test(m.content)) {
-            link = /https?:\/\/\S+/.exec(m.content)![0];
-            m.content = m.content.replace(link, "");
-        } else {
-            m.reply("Provide a link to the map mannnnn");
-            return;
-        }
-    } else {
-        const attachment = m.options.getAttachment("map");
-        if (!attachment) {
-            m.editReply("Provide a link to the map mannnnn");
-            return;
-        }
-        link = attachment.url;
-    }
+    const link = getLink(m, "map");
+    if (!link)
+        return;
 
     if (!link.endsWith(".osz")) {
         await respond(m, "Pleaseee provide a proper .osz file STOP TROLLING ME");

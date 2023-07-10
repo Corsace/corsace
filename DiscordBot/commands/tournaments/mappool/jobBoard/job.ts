@@ -6,7 +6,7 @@ import { loginResponse } from "../../../../functions/loginResponse";
 import { JobPost } from "../../../../../Models/tournaments/mappools/jobPost";
 import { discordClient } from "../../../../../Server/discord";
 import respond from "../../../../functions/respond";
-import getUser from "../../../../functions/dbFunctions/getUser";
+import getUser from "../../../../../Server/functions/get/getUser";
 import commandUser from "../../../../functions/commandUser";
 import { securityChecks } from "../../../../functions/tournamentFunctions/securityChecks";
 import { extractParameters } from "../../../../functions/parameterFunctions";

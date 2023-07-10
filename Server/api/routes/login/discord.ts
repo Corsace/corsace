@@ -4,13 +4,14 @@ import { discordGuild } from "../../../discord";
 import { config } from "node-config-ts";
 import { ParameterizedContext } from "koa";
 import { redirectToMainDomain } from "./middleware";
+import { parseQueryParam } from "../../../utils/query";
 
 // If you are looking for discord passport info then go to Server > passportFunctions.ts
 
 const discordRouter = new Router();
 
 discordRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext<any>, next) => {
-    const site = Array.isArray(ctx.query.site) ? ctx.query.site[0] : ctx.query.site;
+    const site = parseQueryParam(ctx.query.site);
     if (!site)
         throw new Error("No site specified");
 

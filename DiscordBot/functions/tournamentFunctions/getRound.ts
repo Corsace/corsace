@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, Message } from "discord.js";
 import { Stage } from "../../../Models/tournaments/stage";
-import getRounds from "../dbFunctions/getRounds";
+import getRounds from "../../../Server/functions/get/getRounds";
 import getFromList from "../getFromList";
 
 export default async function getRound (m: Message | ChatInputCommandInteraction, stage: Stage) {

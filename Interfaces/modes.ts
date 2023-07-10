@@ -9,3 +9,5 @@ export const modeList = [
     "fruits",
     "mania",
 ];
+
+export type Mode = "standard" | "taiko" | "fruits" | "mania";

@@ -1,5 +1,16 @@
-import axios from "axios";
-import { RateLimiter } from "limiter";
+import { Mode } from "./modes";
+
+export const scopes = ["identify", "public", "friends.read"];
+
+/* eslint-disable no-useless-escape */
+const bwsFilterString = `fanart|fan\sart|idol|voice|nominator|nominating|mapper|mapping|moderation|moderating|community|contributor|contribution|contribute|organize|organizing|pending|spotlights|aspire|newspaper|jabc|omc`;
+
+export const bwsFilter = {
+    1: new RegExp(`${bwsFilterString}|taiko|catch|ctb|fruits|mania`, "gi"),
+    2: new RegExp(`${bwsFilterString}|catch|ctb|fruits|mania`, "gi"),
+    3: new RegExp(`${bwsFilterString}|taiko|mania`, "gi"),
+    4: new RegExp(`${bwsFilterString}|taiko|catch|ctb|fruits`, "gi"),
+};
 
 export interface osuAPIV2ChatBotOptions {
     disableRateLimiting: boolean;
@@ -12,117 +23,58 @@ export interface osuAPIV2ChatBotToken {
     expiresAt: Date;
 }
 
-export class osuAPIV2 {
-    private readonly clientID: string;
-    private readonly clientSecret: string;
+export interface osuV2Token {
+    token_type: string;
+    expires_in: number;
+    access_token: string;
+    refresh_token?: string;
+}
 
-    private readonly disableRateLimiting: boolean;
-    private readonly requestsPerMinute: number;
-    private readonly baseURL: string;
+// All interfaces/types below can be expanded upon as needed for the project to work.
+// What is there currently are only the properties that are used or needed.
+export interface osuV2UserStatistics {
+    pp: number;
+    global_rank: number;
+}
 
-    private bucket?: RateLimiter;
+export interface osuV2UserBadge {
+    description: string;
+    image_url: string;
+}
 
-    private chatBotToken?: osuAPIV2ChatBotToken;
+export interface osuV2UserGroup {
+    id: number;
+    playmodes: Mode[];
+}
 
-    constructor (clientID: string, clientSecret: string, options?: osuAPIV2ChatBotOptions) {
-        this.clientID = clientID;
-        this.clientSecret = clientSecret;
-        this.disableRateLimiting = options?.disableRateLimiting || false;
-        this.requestsPerMinute = options?.requestsPerMinute || 60;
-        this.baseURL = options?.baseURL || "https://osu.ppy.sh/api/v2";
-        
-        if (!this.disableRateLimiting)
-            this.bucket = new RateLimiter({
-                tokensPerInterval: this.requestsPerMinute, 
-                interval: "minute",
-            });
-    }
+export interface osuV2User {
+    id: number;
+    username: string;
+    playmode: Mode;
+    country_code: string;
+    avatar_url: string;
+    previous_usernames: string[];
+    statistics: osuV2UserStatistics;
+    badges: osuV2UserBadge[];
+    groups: osuV2UserGroup[];
+}
 
-    public getFavouriteBeatmaps (userID: string, accessToken: string, offset?: number) {
-        let endpoint = `/users/${userID}/beatmapsets/favourite?limit=51`;
-        if (offset)
-            endpoint += `&offset=${offset}`;
-        return this.get(endpoint, accessToken);
-    }
+export interface osuV2Friend {
+    id: number;
+}
 
-    public getPlayedBeatmaps (accessToken: string, year?: number, cursorString?: string) {
-        let endpoint = "/beatmapsets/search?played=played";
-        if (year)
-            endpoint += `&q=ranked%3D${year}`;
-        if (cursorString)
-            endpoint += `&cursor_string=${cursorString}`;
-        return this.get(endpoint, accessToken);
-    }
+export interface osuV2Beatmapset {
+    id: number;
+    beatmaps: osuV2Beatmap[];
+}
 
-    public getUserInfo (accessToken: string) {
-        return this.get("/me", accessToken);
-    }
+export interface osuV2Beatmap {
+    id: number;
+}
 
-    public getUserFriends (accessToken: string) {
-        return this.get("/friends", accessToken);
-    }
+export interface osuV2PlayedBeatmaps {
+    beatmapsets: osuV2Beatmapset[];
+    cursor_string: string;
+    total: number;
 
-    public async sendMessage (userID: string, message: string): Promise<boolean> {
-        try {
-            const token = await this.getchatBotToken();
-            await this.post("/chat/new", {
-                target_id: userID,
-                message,
-                is_action: false,
-            }, token);
-        } catch (e) {
-            if (e) return false;
-        }
-        return true;
-    }
-
-    private async getchatBotToken (): Promise<string> {
-        if (this.chatBotToken && (this.chatBotToken.expiresAt.getTime() - (new Date()).getTime()) / 1000 > 300)
-            return this.chatBotToken.token;
-
-        let res: any;
-        try {
-            const { data } = await axios.post("https://osu.ppy.sh/oauth/token", {
-                grant_type: "client_credentials",
-                client_id: this.clientID,
-                client_secret: this.clientSecret,
-                scope: "delegate chat.write",
-            });
-            res = data;
-        } catch (e) {
-            if (e) throw e;
-        }
-
-        this.chatBotToken = {
-            token: res.access_token,
-            expiresAt: new Date(Date.now() + res.expires_in * 1000),
-        };
-
-        return this.chatBotToken.token;
-    }
-
-    // Post and get functions
-    private async post (endpoint: string, payload: any, accessToken: string) {
-        if (this.bucket) 
-            await this.bucket.removeTokens(1);
-        
-        const { data } = await axios.post(this.baseURL + endpoint, payload, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
-        return data;
-    }
-
-    private async get (endpoint: string, accessToken: string) {
-        if (this.bucket) 
-            await this.bucket.removeTokens(1);
-        
-        const { data } = await axios.get(this.baseURL + endpoint, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
-        return data;
-    }
 }

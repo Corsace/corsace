@@ -7,7 +7,7 @@ import { loginResponse } from "../../../../functions/loginResponse";
 import { cron } from "../../../../../Server/cron";
 import { securityChecks } from "../../../../functions/tournamentFunctions/securityChecks";
 import getJobForum from "../../../../functions/tournamentFunctions/getJobForum";
-import getUser from "../../../../functions/dbFunctions/getUser";
+import getUser from "../../../../../Server/functions/get/getUser";
 import commandUser from "../../../../functions/commandUser";
 import respond from "../../../../functions/respond";
 import mappoolLog from "../../../../functions/tournamentFunctions/mappoolLog";

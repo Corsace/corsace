@@ -87,7 +87,7 @@ import { namespace, State } from "vuex-class";
 import { StageType } from "../../../Interfaces/mca";
 import { Vote } from "../../../Interfaces/vote";
 import { Nomination } from "../../../Interfaces/nomination";
-import { Phase } from "../../../Interfaces/mca";
+import { MCAPhase } from "../../../Interfaces/mca";
 
 const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
@@ -101,7 +101,7 @@ export default class BaseChoiceCard extends Vue {
 
     @State viewTheme!: "light" | "dark";
 
-    @mcaAyimModule.Getter phase!: Phase | null;
+    @mcaAyimModule.Getter phase!: MCAPhase | null;
 
     @stageModule.State selected!: boolean;
     @stageModule.State stage!: StageType;

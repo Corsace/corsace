@@ -5,7 +5,7 @@ import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRol
 import { loginResponse } from "../../../functions/loginResponse";
 import { CustomBeatmap } from "../../../../Models/tournaments/mappools/customBeatmap";
 import { discordClient } from "../../../../Server/discord";
-import { deletePack } from "../../../functions/tournamentFunctions/mappackFunctions";
+import { deletePack } from "../../../../Server/functions/tournaments/mappool/mappackFunctions";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
 import { extractParameters } from "../../../functions/parameterFunctions";
 import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
@@ -13,7 +13,7 @@ import { extractTargetText } from "../../../functions/tournamentFunctions/parama
 import { Tournament, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { User } from "../../../../Models/user";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";

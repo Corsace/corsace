@@ -172,7 +172,7 @@ export default class MapperComments extends Vue {
     }
 
     get ownCommentIndex (): number {
-        return this.comments.findIndex(c => c.commenter.ID === this.loggedInUser?.corsaceID);
+        return this.comments.findIndex(c => c.commenter.ID === this.loggedInUser?.ID);
     }
 
     get ownComment (): Comment | undefined {

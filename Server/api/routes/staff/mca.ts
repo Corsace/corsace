@@ -7,7 +7,7 @@ import { User as APIUser } from "nodesu";
 import { isCorsace } from "../../../../Server/middleware";
 import { OAuth, User } from "../../../../Models/user";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
-import { osuClient } from "../../../../Server/osu";
+import { osuClient } from "../../../osu";
 
 const staffRouter = new Router;
 

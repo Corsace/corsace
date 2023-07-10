@@ -16,7 +16,7 @@ export interface UserMCAInfo extends UserInfo {
 }
 
 export interface UserInfo {
-    corsaceID: number;
+    ID: number;
     discord: {
         avatar: string;
         userID: string;
@@ -33,6 +33,7 @@ export interface UserInfo {
         headStaff: boolean;
         staff: boolean;
     };
+    country: string;
     joinDate: Date;
     lastLogin: Date;
     canComment: boolean;

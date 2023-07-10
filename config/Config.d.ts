@@ -72,6 +72,11 @@ declare module "node-config-ts" {
                 clientId: string;
                 clientSecret: string;
             };
+            bancho: {
+                username: string;
+                ircPassword: string;
+                botAccount: boolean;
+            };
         };
 
         bn: {
@@ -94,6 +99,7 @@ declare module "node-config-ts" {
             buckets: {
                 mappacks: S3BucketConfig;
                 mappacksTemp: S3BucketConfig;
+                teamAvatars: S3BucketConfig;
             };
         }
 
@@ -107,6 +113,7 @@ declare module "node-config-ts" {
         open: ISubSiteConfig;
         api: IWebServiceConfig;
         cronRunner: IWebServiceConfig;
+        banchoBot: IWebServiceConfig;
 
         interOpAuth: {
             username: string;

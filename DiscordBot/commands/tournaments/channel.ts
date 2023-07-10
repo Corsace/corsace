@@ -6,7 +6,7 @@ import { unFinishedTournaments } from "../../../Models/tournaments/tournament";
 import getTournament from "../../functions/tournamentFunctions/getTournament";
 import channelID from "../../functions/channelID";
 import { TournamentChannel, TournamentChannelType, forumTags } from "../../../Models/tournaments/tournamentChannel";
-import getUser from "../../functions/dbFunctions/getUser";
+import getUser from "../../../Server/functions/get/getUser";
 import commandUser from "../../functions/commandUser";
 import { loginResponse } from "../../functions/loginResponse";
 import confirmCommand from "../../functions/confirmCommand";
@@ -37,7 +37,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { channel, remove, channel_type } = params;
 
     if (!remove && !channel_type) {
-        await respond(m, "Listen ur either gonna have to tell me to remove a channel, or ur gonna have to specify the channel type u want to add\n\nThe list of channel types are:\nGeneral (general)\nParticipants (participants)\nStaff (staff)\nManagers (managers)\nAnnouncements (announcements)\nAdmin (admin)\nMappool (mappool)\nMappool Log (mappoollog)\nMappool QA (mappoolqa)\nJob Board (jobboard)\nReferees (referees)\nStreamers (streamers)\nMatch Results (matchresults)\n\nExample: `!tournament_channel #general general`");
+        await respond(m, "Listen ur either gonna have to tell me to remove a channel, or ur gonna have to specify the channel type u want to add\n\nThe list of channel types are:\nGeneral (general)\nParticipants (participants)\nStaff (staff)\nManagers (managers)\nAnnouncements (announcements)\nAdmin (admin)\nMappool (mappool)\nMappool Log (mappoollog)\nMappool QA (mappoolqa)\nJob Board (jobboard)\nReferees (referees)\nStreamers (streamers)\nMatchup Results (matchupresults)\n\nExample: `!tournament_channel #general general`");
         return;
     }
 
@@ -204,8 +204,8 @@ const data = new SlashCommandBuilder()
                 value: "Streamers",
             },
             {
-                name: "Match Results",
-                value: "Matchresults",
+                name: "Matchup Results",
+                value: "Matchupresults",
             }))
     .setDMPermission(false);
 

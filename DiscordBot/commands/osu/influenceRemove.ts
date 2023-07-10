@@ -9,7 +9,7 @@ import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { loginResponse } from "../../functions/loginResponse";
 import commandUser from "../../functions/commandUser";
-import getUser from "../../functions/dbFunctions/getUser";
+import getUser from "../../../Server/functions/get/getUser";
 import respond from "../../functions/respond";
 
 async function run (m: Message | ChatInputCommandInteraction) {

@@ -1,12 +1,12 @@
 import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../..";
-import { profanityFilter } from "../../../../Interfaces/comment";
+import { profanityFilterStrong } from "../../../../Interfaces/comment";
 import { Round } from "../../../../Models/tournaments/round";
 import { ScoringMethod, Stage, StageType } from "../../../../Models/tournaments/stage";
 import { TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { loginResponse } from "../../../functions/loginResponse";
 import respond from "../../../functions/respond";
-import getUser from "../../../functions/dbFunctions/getUser";
+import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import confirmCommand from "../../../functions/confirmCommand";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
@@ -42,7 +42,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Provide a valid name for ur stage, ur only allowed the following characters: a-z, A-Z, 0-9, _, and spaces. The name must be between 5 and 48 characters long");
         return;
     }
-    if (profanityFilter.test(name)) {
+    if (profanityFilterStrong.test(name)) {
         await respond(m, "The name is sus . Change it to something more appropriate");
         return;
     }
@@ -80,7 +80,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "A stage with that abbreviation already exists");
         return;
     }
-    if (profanityFilter.test(abbreviation)) {
+    if (profanityFilterStrong.test(abbreviation)) {
         await respond(m, "The abbreviation is sus . Change it to something more appropriate");
         return;
     }

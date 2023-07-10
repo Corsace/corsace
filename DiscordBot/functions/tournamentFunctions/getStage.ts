@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, Message } from "discord.js";
 import { Tournament } from "../../../Models/tournaments/tournament";
 import respond from "../respond";
 import getFromList from "../getFromList";
-import getStages, { stageSearchConditions } from "../dbFunctions/getStages";
+import getStages, { stageSearchConditions } from "../../../Server/functions/get/getStages";
 import getTournament from "./getTournament";
 import { Stage } from "../../../Models/tournaments/stage";
 import channelID from "../channelID";

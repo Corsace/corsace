@@ -4,7 +4,7 @@ import { Command } from "../index";
 import { User as APIUser } from "nodesu";
 import { osuClient } from "../../../Server/osu";
 import { loginResponse } from "../../functions/loginResponse";
-import getUser from "../../functions/dbFunctions/getUser";
+import getUser from "../../../Server/functions/get/getUser";
 import commandUser from "../../functions/commandUser";
 import respond from "../../functions/respond";
 import { discordStringTimestamp } from "../../../Server/utils/dateParse";

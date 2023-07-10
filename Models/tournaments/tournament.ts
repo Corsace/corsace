@@ -1,10 +1,11 @@
-import { BaseEntity, Check, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Check, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ModeDivision } from "../MCA_AYIM/modeDivision";
 import { Phase } from "../phase";
 import { User } from "../user";
 import { Stage } from "./stage";
 import { TournamentChannel } from "./tournamentChannel";
 import { TournamentRole } from "./tournamentRole";
+import { Team } from "./team";
 
 export enum SortOrder {
     Signup,
@@ -42,7 +43,7 @@ export const unFinishedTournaments = [TournamentStatus.NotStarted, TournamentSta
 
 @Entity()
 @Check(`"minTeamSize" <= "maxTeamSize"`)
-@Check(`"matchSize" <= "minTeamSize"`)
+@Check(`"matchupSize" <= "minTeamSize"`)
 export class Tournament extends BaseEntity {
 
     @PrimaryGeneratedColumn()
@@ -82,7 +83,7 @@ export class Tournament extends BaseEntity {
         year!: number;
 
     @Column()
-        matchSize!: number;
+        matchupSize!: number;
 
     @Column({ type: "enum", enum: SortOrder, default: SortOrder.Signup })
         regSortOrder!: SortOrder;
@@ -102,11 +103,30 @@ export class Tournament extends BaseEntity {
     @Column()
         maxTeamSize!: number;
 
+    @Column({ default: false })
+        warmups!: boolean;
+
+    @Column("integer", { nullable: true })
+        mapTimer?: number | null;
+
+    @Column("integer", { nullable: true })
+        readyTimer?: number | null;
+
+    @Column("integer", { nullable: true })
+        abortThreshold?: number | null;
+
+    @Column("integer", { nullable: true, default: 1 })
+        teamAbortLimit?: number | null;
+
     @OneToMany(() => Stage, stage => stage.tournament)
         stages!: Stage[];
 
     @Column(() => Phase)
         registrations!: Phase;
+
+    @ManyToMany(() => Team, team => team.tournaments)
+    @JoinTable()
+        teams!: Team[];
 
     @Column({ default: false })
         publicQualifiers!: boolean;

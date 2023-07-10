@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { ActionTree, MutationTree, GetterTree } from "vuex";
-import { MCA, MCAInfo, Phase, PhaseType } from "../../Interfaces/mca";
+import { MCA, MCAInfo, MCAPhase, PhaseType } from "../../Interfaces/mca";
 import { UserMCAInfo } from "../../Interfaces/user";
 import { GuestRequest } from "../../Interfaces/guestRequests";
 
@@ -92,7 +92,7 @@ export const mutations: MutationTree<RootState> = {
 };
 
 export const getters: GetterTree<RootState, RootState> = {
-    phase (state): Phase | undefined {
+    phase (state): MCAPhase | undefined {
         if (!state.mca) return undefined;
 
         let phase: PhaseType = "preparation";

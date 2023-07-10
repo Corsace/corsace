@@ -260,7 +260,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
 import { CategoryInfo } from "../../../Interfaces/category";
-import { MCA, Phase } from "../../../Interfaces/mca";
+import { MCA, MCAPhase } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
 import Collapsible from "../../../Assets/components/mca-ayim/Collapsible.vue";
@@ -307,7 +307,7 @@ export default class Index extends Vue {
     @mcaAyimModule.State loggedInMCAUser!: null | UserMCAInfo;
     @mcaAyimModule.State mca!: MCA;
     @mcaAyimModule.State selectedMode!: string;
-    @mcaAyimModule.Getter phase!: Phase;
+    @mcaAyimModule.Getter phase!: MCAPhase | null;
     @mcaAyimModule.Getter isEligibleFor!: (mode: string) => boolean;
     @mcaAyimModule.Mutation toggleGuestDifficultyModal!: boolean;
 
