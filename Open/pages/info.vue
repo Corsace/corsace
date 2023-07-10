@@ -42,7 +42,7 @@
                     </MatchBox>
                     <MatchBox>
                         <template #title>
-                            FUNNY TEXT
+                            SAMPLE TEXT
                         </template>
                         727
                     </MatchBox>
