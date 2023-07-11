@@ -15,24 +15,24 @@
         <div class="index__content">
             <div class="index__banner">
                 <img src="../../Assets/img/site/open/banner.png">
-                <div>osu!standard 4v4 tournament featuring the lorem ipsums and lorem ipsums</div>
+                <div>{{ $t('open.home.description') }}</div>
             </div>
             <div class="index_portal">
                 <div class="index_portal__section">
                     <div class="index_schedule">
                         <div class="index_schedule--xl">
-                            TIMELINE
+                            {{ $t('open.home.timeline') }}
                         </div>
                         <hr class="line--red line--no-space">
                         <ul class="index_schedule__content">
                             <li 
-                                v-for="round in roundData"
+                                v-for="round in tournament?.stages"
                                 :key="round.name"
                                 class="index_schedule__group"
                             >
-                                <span class="index_schedule__event">{{ round.name }}</span>
+                                <span class="index_schedule__event"> {{ round.name }} </span>
                                 <span class="index_schedule__line" />
-                                <span class="index_schedule__time">{{ round.dates }}</span>
+                                <span class="index_schedule__time">{{ new Date(round.timespan.start || "").toLocaleString('en-US', optionsRange) }} - {{ new Date(round.timespan.end || "").toLocaleString('en-US', optionsRange) }}</span>
                             </li>
                         </ul>
                     </div>
@@ -41,9 +41,9 @@
                 <div class="index_portal__section">
                     <OpenButton>
                         <template #title>
-                            QUALIFIERS MAPPOOL
+                            {{ $t('open.home.button.qualifiersMappool') }}
                         </template>
-                        Mappool download and statistics
+                        {{ $t('open.home.button.mappoolDownload') }}
                     </OpenButton>
                     <OpenButton>
                         <div class="index_portal__button--racing" />
@@ -53,12 +53,12 @@
                 <div class="index_portal__section">
                     <OpenButton>
                         <template #title>
-                            REGISTER YOUR TEAM
+                            {{ $t('open.home.button.register') }}
                         </template>
-                        Registrations end July 30 23:59 0UTC
+                        {{ $t('open.home.button.registrationsEnd') }} {{ new Date(tournament?.registrations.end || "").toLocaleString('en-US', options) }}
                     </OpenButton>
                     <div class="index_portal__text-content">
-                        CORSACE OPEN 23 IS PRESENTED BY 
+                        {{ $t('open.home.presentedBy') }}
                         <hr class="line--red line--no-space">
                         <div class="index_portal__image index_portal__image--row">
                             <img src="../../Assets/img/partners/momokai.png">
@@ -73,11 +73,14 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { State, namespace } from "vuex-class";
 
 import { UserInfo } from "../../Interfaces/user";
 
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
+import { Tournament } from "../../Interfaces/tournament";
+
+const openModule = namespace("open");
 
 @Component({
     components: {
@@ -91,16 +94,23 @@ import OpenButton from "../../Assets/components/open/OpenButton.vue";
 })
 export default class Default extends Vue {
 
-    @State loggedInUser!: UserInfo;
+    options: Intl.DateTimeFormatOptions = {
+        month: "long", // Full month name (e.g., "July")
+        day: "numeric", // Day of the month (e.g., "30")
+        hour: "2-digit", // Two-digit hour (e.g., "23")
+        minute: "2-digit", // Two-digit minute (e.g., "59")
+        timeZone: "UTC", // Set the time zone to UTC
+        timeZoneName: "short", // Abbreviated time zone name (e.g., "UTC")
+    };
 
-    roundData = [
-        { name: "REGISTRATION", dates: "NOW - July 30" },
-        { name: "QUALIFIERS", dates: "August 5 - 6" },
-        { name: "ROUND ROBIN", dates: "August 12 - 13" },
-        { name: "ROUND OF 32", dates: "August 19 - 20" },
-        { name: "KNOCKOUT 1", dates: "August 26 - 27" },
-        { name: "KNOCKOUT 2", dates: "September 2 - 3"},
-    ];
+    optionsRange: Intl.DateTimeFormatOptions = {
+        month: "long", // Full month name (e.g., "July")
+        day: "numeric", // Day of the month (e.g., "01")
+    };
+
+    @openModule.State tournament!: Tournament | null;
+
+    @State loggedInUser!: UserInfo;
 
     get avatarURL (): string  {
         return this.loggedInUser?.osu.avatar || "";

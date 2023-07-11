@@ -423,6 +423,17 @@
         }
     },
     "open": {
+        "home": {
+            "description": "osu!standard 4v4 tournament featuring the lorem ipsums and lorem ipsums",
+            "timeline": "TIMELINE",
+            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "button": {
+                "qualifiersMappool": "QUALIFIERS MAPPOOLS",
+                "mappoolDownload": "Mappool download and statistics",
+                "register": "REGISTER YOUR TEAM",
+                "registrationsEnd": "Registrations end"
+            }
+        },
         "info": {
             "title": "INFORMATION",
             "description": "The 2023 edition of Corsace Open, one of osu!'s most prestigious unofficial 4v4 tournaments. Organized by Corsace, this open rank tournament gathers some of the most talented players from around the world, serving as a testament to the skill, strategy, and teamwork inherent in the rhythm game community.",
