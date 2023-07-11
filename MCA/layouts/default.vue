@@ -1,7 +1,6 @@
 <template>
     <div class="layout layout--mca">
-        <the-header 
-            :site="'mca'"
+        <the-header
             class="mcaayim__header"
         >
             <a 
@@ -27,8 +26,7 @@
         
         <the-footer class="mcaayim__footer">
             <div class="socials">
-                <Tooltip
-                    :site="'mca'">
+                <Tooltip>
                     <template #icon>
                         <a 
                             class="socials__link" 
@@ -38,15 +36,14 @@
                             <img
                                 class="socials__icon"
                                 :class="`socials__icon--${viewTheme}`"
-                                src="../../Assets/img/site/mca-ayim/corsace_logo.png"
+                                src="../../Assets/img/corsace.png"
                                 alt=""
                             >
                         </a>
                     </template>
                     CORSACE
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'">
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
@@ -63,8 +60,7 @@
                     </template>
                     TWITTER
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'">
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
@@ -81,8 +77,7 @@
                     </template>
                     DISCORD
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'">
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
@@ -99,8 +94,7 @@
                     </template>
                     TWITCH
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'">
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
@@ -139,8 +133,8 @@ import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import ModeSwitcher from "../../Assets/components/mca-ayim/ModeSwitcher.vue";
 import YearSwitcher from "../../Assets/components/mca-ayim/YearSwitcher.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
+import Tooltip from "../../Assets/components/footer/Tooltip.vue";
 import GuestDifficultyModal from "../../Assets/components/mca-ayim/GuestDifficultyModal.vue";
-import Tooltip from "../../Assets/components/mca-ayim/Tooltip.vue";
 
 import { UserMCAInfo } from "../../Interfaces/user";
 

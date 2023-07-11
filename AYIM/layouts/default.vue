@@ -1,7 +1,6 @@
 <template>
     <div class="layout layout--mca">
-        <the-header 
-            :site="'ayim'"
+        <the-header
             class="mcaayim__header"
         >   
             <a 
@@ -27,70 +26,97 @@
         />
         
         <the-footer class="mcaayim__footer">
-            <a 
-                class="footer-nav__brand-name" 
-                :class="`footer-nav__brand-name--${viewTheme}`"
-                href="https://corsace.io"
-            >
-                <img
-                    class="corsace__icon"
-                    src="../../Assets/img/site/mca-ayim/corsace_text.png"
-                    alt=""
-                >
-            </a>
-            <div 
-                class="socials"
-                :class="`socials--${viewTheme}`"
-            >
-                <a
-                    class="socials__link"
-                    href="https://twitter.com/corsace_"
-                    target="_blank"
-                >
-                    <img
-                        class="socials__icon"
-                        src="../../Assets/img/social/twitter.png"
-                        alt=""
-                    >
-                </a>
-                <a
-                    class="socials__link"
-                    href="https://discord.gg/Z6vEMsr"
-                    target="_blank"
-                >
-                    <img
-                        class="socials__icon"
-                        src="../../Assets/img/social/discord.png"
-                        alt=""
-                    >
-                </a>
-                <a
-                    class="socials__link"
-                    href="https://www.twitch.tv/corsace"
-                    target="_blank"
-                >
-                    <img
-                        class="socials__icon"
-                        src="../../Assets/img/social/twitch.png"
-                        alt=""
-                    >
-                </a>
-                <a
-                    class="socials__link"
-                    href="https://youtube.com/corsace"
-                    target="_blank"
-                >
-                    <img
-                        class="socials__icon"
-                        src="../../Assets/img/social/youtube.png"
-                        alt=""
-                    >
-                </a>
+            <div class="socials">
+                <Tooltip>
+                    <template #icon>
+                        <a 
+                            class="socials__link" 
+                            href="https://corsace.io"
+                            target="_blank"
+                        >
+                            <img
+                                class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
+                                src="../../Assets/img/corsace.png"
+                                alt=""
+                            >
+                        </a>
+                    </template>
+                    CORSACE
+                </Tooltip>
+                <Tooltip>
+                    <template #icon>
+                        <a
+                            class="socials__link"
+                            href="https://twitter.com/corsace_"
+                            target="_blank"
+                        >
+                            <img
+                                class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
+                                src="../../Assets/img/social/twitter.png"
+                                alt=""
+                            >
+                        </a>
+                    </template>
+                    TWITTER
+                </Tooltip>
+                <Tooltip>
+                    <template #icon>
+                        <a
+                            class="socials__link"
+                            href="https://discord.gg/Z6vEMsr"
+                            target="_blank"
+                        >
+                            <img
+                                class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
+                                src="../../Assets/img/social/discord.png"
+                                alt=""
+                            >
+                        </a>
+                    </template>
+                    DISCORD
+                </Tooltip>
+                <Tooltip>
+                    <template #icon>
+                        <a
+                            class="socials__link"
+                            href="https://www.twitch.tv/corsace"
+                            target="_blank"
+                        >
+                            <img
+                                class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
+                                src="../../Assets/img/social/twitch.png"
+                                alt=""
+                            >
+                        </a>
+                    </template>
+                    TWITCH
+                </Tooltip>
+                <Tooltip>
+                    <template #icon>
+                        <a
+                            class="socials__link"
+                            href="https://youtube.com/corsace"
+                            target="_blank"
+                        >
+                            <img
+                                class="socials__icon"
+                                :class="`socials__icon--${viewTheme}`"
+                                src="../../Assets/img/social/youtube.png"
+                                alt=""
+                            >
+                        </a>
+                    </template>
+                    YOUTUBE
+                </Tooltip>
             </div>
-            <year-switcher 	
-                v-if="!isSmall"	
-            />	
-        </the-footer>	
+            <year-switcher 
+                v-if="!isSmall"
+            />
+        </the-footer>
         <year-switcher 	
             v-if="isSmall"	
         />

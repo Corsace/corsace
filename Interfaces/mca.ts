@@ -1,22 +1,18 @@
 import { Category } from "./category";
-
-interface InternalPhase {
-    start: Date;
-    end: Date;
-}
+import { Phase } from "./phase";
 
 export interface MCA {
     year: number;
-    nomination: InternalPhase;
-    voting: InternalPhase;
+    nomination: Phase;
+    voting: Phase;
     results: Date;
 }
 
 export interface MCAInfo {
     name: number;
     phase: PhaseType;
-    nomination: InternalPhase;
-    voting: InternalPhase;
+    nomination: Phase;
+    voting: Phase;
     results: Date;
     categories: Category[];
 }
@@ -24,7 +20,7 @@ export interface MCAInfo {
 export type StageType = "nominating" | "voting" | "results";
 export type PhaseType = StageType | "preparation";
 
-export interface Phase {
+export interface MCAPhase {
     phase: PhaseType;
     startDate: Date;
     endDate: Date;

@@ -39,7 +39,10 @@ import recordsRouter from "./api/routes/records";
 import statisticsRouter from "./api/routes/statistics";
 import mappersRouter from "./api/routes/mappers";
 
+import tournamentRouter from "./api/routes/tournament";
+
 import matchupRouter from "./api/routes/matchup";
+
 import teamRouter from "./api/routes/team";
 import inviteRouter from "./api/routes/team/invite";
 
@@ -124,9 +127,15 @@ koa.use(Mount("/api/comments", commentsRouter.routes()));
 koa.use(Mount("/api/influences", influencesRouter.routes()));
 
 // Tournaments
-koa.use(Mount("/api/matchup", matchupRouter.routes()));
+/// Tournament
+koa.use(Mount("/api/tournament", tournamentRouter.routes()));
+
+/// Team
 koa.use(Mount("/api/team", teamRouter.routes()));
 koa.use(Mount("/api/team/invite", inviteRouter.routes()));
+
+/// Matchup
+koa.use(Mount("/api/matchup", matchupRouter.routes()));
 
 ormConfig.initialize()
     .then(async (connection) => {

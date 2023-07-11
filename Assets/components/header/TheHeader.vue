@@ -104,7 +104,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 import { UserInfo } from "../../../Interfaces/user";
@@ -112,8 +112,7 @@ import { UserInfo } from "../../../Interfaces/user";
 @Component
 export default class TheHeader extends Vue {
 
-    @Prop({ type: String, required: true }) readonly site!: string;
-
+    @State site!: string;
     @State loggedInUser!: UserInfo;
     @State viewTheme!: "light" | "dark";
 
@@ -151,13 +150,14 @@ export default class TheHeader extends Vue {
     top: 0;
 
     width: 100%;
-    height: 70px;
+    height: 90px;
     @include breakpoint(mobile) {
         height: 55px;
     }
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 .header-login {

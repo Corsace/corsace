@@ -1,7 +1,6 @@
 <template>
     <div class="layout layout--corsace">
-        <the-header 
-            :site="'corsace'"
+        <the-header
             class="main__header"
         >
             <a 
@@ -151,8 +150,8 @@ export default class Default extends Vue {
 
     &__brand {
         &-container {
-            width: 70px;
-            height: 70px;
+            width: 90px;
+            height: 90px;
             @include breakpoint(mobile) {
                 width: 55px;
                 height: 55px;
@@ -177,7 +176,7 @@ export default class Default extends Vue {
         width: 100%;
         height: 100%;
         background-size: contain;
-        background-image: url('../../Assets/img/site/mca-ayim/corsace_logo.png');
+        background-image: url('../../Assets/img/corsace.png');
         &--light {
             filter: invert(1);
         }
