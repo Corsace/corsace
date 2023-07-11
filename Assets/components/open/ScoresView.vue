@@ -2,19 +2,19 @@
     <div class="scores">
         <div class="scores__sub_header">
             <div class="scores__sub_header_subtext">
-                FILTERS
+                {{ $t('open.qualifiers.scores.nav.filters') }}
             </div>
             <div class="scores__sub_header_item scores__sub_header_item--active">
-                AVERAGE
+                {{ $t('open.qualifiers.scores.nav.average') }}
             </div>
             <div class="scores__sub_header_item">
-                SUM
+                {{ $t('open.qualifiers.scores.nav.sum') }}
             </div>
             <div class="scores__sub_header_item">
-                %AVG
+                {{ $t('open.qualifiers.scores.nav.%avg') }}
             </div>
             <div class="scores__sub_header_item">
-                SEEDING
+                {{ $t('open.qualifiers.scores.nav.seedings') }}
             </div>
         </div>
         <hr class="line--red line--bottom-space">
