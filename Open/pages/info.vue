@@ -1,7 +1,7 @@
 <template>
     <div class="info">
         <div class="info__header">
-            INFORMATION
+            {{ $t('open.info.title') }}
             <hr class="line--red line--bottom-space">
             <hr class="line--red line--bottom-space">
         </div>
@@ -21,31 +21,31 @@
                 <div class="info_match">
                     <MatchBox>
                         <template #title>
-                            MATCH SIZE
+                            {{ $t('open.info.matchInfo.matchSize') }}
                         </template>
                         {{ tournament.matchupSize }}v{{ tournament.matchupSize }}
                     </MatchBox>
                     <MatchBox>
                         <template #title>
-                            MIN. PLAYERS
+                            {{ $t('open.info.matchInfo.minPlayers') }}
                         </template>
                         {{ tournament.minTeamSize }}
                     </MatchBox>
                     <MatchBox>
                         <template #title>
-                            MAX. PLAYERS
+                            {{ $t('open.info.matchInfo.maxPlayers') }}
                         </template>
                         {{ tournament.maxTeamSize }}
                     </MatchBox>
                     <MatchBox>
                         <template #title>
-                            MAP PICK TIMER
+                            {{ $t('open.info.matchInfo.pickTimer') }}
                         </template>
                         {{ tournament.mapTimer || 90 }} s
                     </MatchBox>
                     <MatchBox>
                         <template #title>
-                            READY TIMER
+                            {{ $t('open.info.matchInfo.readyTimer') }}
                         </template>
                         {{ tournament.readyTimer || 90 }} s
                     </MatchBox>
@@ -73,7 +73,10 @@
                         {{ stage.name }} 
                         <span class="info_stage_title--red">({{ stage.abbreviation }})</span> 
                         <div class="info_stage_title__status">
-                            <MatchStatus class="status status--not_started">
+                            <MatchStatus 
+                                class="status"
+                                :class="{ 'status--not_started': stageStatus === 'NOT STARTED', 'status--ongoing': stageStatus === 'ONGOING', 'status--completed': stageStatus === 'COMPLETED' }"
+                            >
                                 {{ stageStatus }}
                             </MatchStatus>
                         </div>
@@ -91,7 +94,7 @@
                             </InfoData>
                             <InfoData>
                                 <template #title>
-                                    SCORING METHOD
+                                    {{ $t('open.info.matchInfo.scoringMethod') }}
                                 </template>
                                 <template #value>
                                     {{ stage.scoringMethod.toString() }}
@@ -99,7 +102,7 @@
                             </InfoData>
                             <InfoData>
                                 <template #title>
-                                    TYPE
+                                    {{ $t('open.info.matchInfo.type') }}
                                 </template>
                                 <template #value>
                                     {{ stage.stageType.toString() }}
@@ -110,7 +113,7 @@
                         <div class="info_stage_data__content">
                             <InfoData>
                                 <template #title>
-                                    START DATE
+                                    {{ $t('open.info.matchInfo.startDate') }}
                                 </template>
                                 <template #value>
                                     {{ stage.timespan.start.toUTCString() }}
@@ -118,7 +121,7 @@
                             </InfoData>
                             <InfoData>
                                 <template #title>
-                                    END DATE
+                                    {{ $t('open.info.matchInfo.endDate') }}
                                 </template>
                                 <template #value>
                                     {{ stage.timespan.end.toUTCString() }}
@@ -126,7 +129,7 @@
                             </InfoData>
                             <InfoData>
                                 <template #title>
-                                    ROUNDS
+                                    {{ $t('open.info.matchInfo.rounds') }}
                                 </template>
                                 <template #value>
                                     {{ stage.rounds.length ? `${stage.rounds.length} rounds` : "N/A" }}

@@ -1,19 +1,19 @@
 <template>
     <div 
-        v-if="qualifiersStage"
+        v-if="mappool"
         class="mappool_view"
     >
         <MappoolSlotDropdown
-            v-for="mods in qualifiersStage.mappool[0].slots"
-            :key="mods.ID"
+            v-for="slot in mappool.slots"
+            :key="slot.ID"
         >
-            {{ mods.name.toUpperCase() }}
+            {{ slot.name.toUpperCase() }}
             <template #content>
                 <MappoolMapBanner
-                    v-for="maps in mods.maps"
-                    :key="maps.ID"
-                    :mappool-map="maps"
-                    :slot-acronym="mods.acronym.toUpperCase()"
+                    v-for="map in slot.maps"
+                    :key="map.ID"
+                    :mappool-map="map"
+                    :slot-acronym="slot.acronym.toUpperCase()"
                 />
             </template>
         </MappoolSlotDropdown>
@@ -21,9 +21,10 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import MappoolSlotDropdown from "./MappoolSlotDropdown.vue";
 import MappoolMapBanner from "./MappoolMapBanner.vue";
+import { Mappool } from "../../../Interfaces/mappool";
 
 @Component({
     components: {
@@ -32,7 +33,7 @@ import MappoolMapBanner from "./MappoolMapBanner.vue";
     },
 })
 export default class MappoolView extends Vue {
-
+    @Prop({ type: Object }) mappool: Mappool | undefined;
 }
 </script>
 

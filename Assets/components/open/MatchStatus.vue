@@ -23,12 +23,14 @@ export default class MatchStatus extends Vue {
 .status {
     font-family: $font-swis721;
     font-size: $font-sm;
+    color: $darkest-gray;
     text-align: center;
     font-weight: 700;
     padding: 1.75px 3px;
     width: 75px;
 
     &--not_started {
+        color: $white;
         background-color: #545454;
     }
 
@@ -37,7 +39,7 @@ export default class MatchStatus extends Vue {
     }
 
     &--ongoing {
-        background-color: #EBEBEB;
+        background-color: $white;
     }
 }
 </style>
