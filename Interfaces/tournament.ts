@@ -19,9 +19,9 @@ export interface Tournament {
     minTeamSize:      number;
     maxTeamSize:      number;
     warmups:          boolean;
-    mapTimer:         null;
-    readyTimer:       null;
-    abortThreshold:   null;
+    mapTimer:         number | null;
+    readyTimer:       number | null;
+    abortThreshold:   number | null;
     teamAbortLimit:   number;
     stages:           Stage[];
     registrations:    Phase;

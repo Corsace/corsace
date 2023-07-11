@@ -1,3 +1,4 @@
+import { ScoringMethod, StageType } from "../Models/tournaments/stage";
 import { Mappool } from "./mappool";
 import { Phase } from "./phase";
 import { Round } from "./round";
@@ -8,8 +9,8 @@ export interface Stage {
     name:                     string;
     abbreviation:             string;
     order:                    number;
-    stageType:                number;
-    scoringMethod:            number;
+    stageType:                StageType;
+    scoringMethod:            ScoringMethod;
     isDraft:                  null;
     setsBestOf:               number;
     bestOf:                   null;

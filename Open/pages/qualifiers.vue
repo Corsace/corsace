@@ -72,7 +72,8 @@
             <hr class="line--red line--bottom-space">
             <hr class="line--red line--bottom-space">
             <MappoolView 
-                v-if="page === 'mappool'" 
+                v-if="page === 'mappool'"
+                :mappool="qualifiersStage?.mappool?.[0]"
             />
             <ScoresView
                 v-if="page === 'scores'"
@@ -89,9 +90,10 @@ import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
-import { Stage } from "../../../Interfaces/stage";
+import { Stage } from "../../Interfaces/stage";
 import { namespace } from "vuex-class";
-import { Tournament } from "../../../Interfaces/tournament";
+import { Tournament } from "../../Interfaces/tournament";
+import { Mappool } from "../../Interfaces/mappool";
 
 const openModule = namespace("open");
 

@@ -1,6 +1,6 @@
 <template>
     <div class="index">
-        <video 
+        <!-- <video 
             autoplay
             muted
             loop
@@ -10,7 +10,7 @@
                 src="https://cdn.discordapp.com/attachments/461588387854417922/1121109155277721641/output.mp4"
                 type="video/mp4"
             >
-        </video>
+        </video> -->
 
         <div class="index__content">
             <div class="index__banner">
