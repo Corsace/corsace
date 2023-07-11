@@ -453,7 +453,35 @@
                 "complete": "COMPLETE",
                 "ongoing": "ONGOING"
             }
-        }       
+        },
+        "qualifiers": {
+            "nav": {
+                "mappool": "MAPPOOL",
+                "qualifiers": "QUALIFIERS",
+                "scores": "SCORES"
+            },
+            "mappool": {
+                "sheets": "SHEETS",
+                "mappool": "MAPPOOL",
+                "banner": {
+                    "mapper": "MAPPER",
+                    "difficulty": "DIFFICULTY"
+                }
+            },
+            "scores" : {
+                "nav": {
+                    "filters": "FILTERS",
+                    "average": "AVERAGE",
+                    "sum": "SUM",
+                    "%avg": "%AVG",
+                    "seedings": "SEEDING"
+                },
+                "category": "CATEGORY",
+                "select": "SELECT",
+                "players": "PLAYERS",
+                "teams": "TEAMS"
+            }
+        }
     },
     "main": {
         "construction": {

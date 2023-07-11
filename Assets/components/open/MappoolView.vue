@@ -1,31 +1,21 @@
 <template>
-    <div class="mappool_view">
-        <MappoolSlotDropdown>
-            NOMOD
+    <div 
+        v-if="qualifiersStage"
+        class="mappool_view"
+    >
+        <MappoolSlotDropdown
+            v-for="mods in qualifiersStage.mappool[0].slots"
+            :key="mods.ID"
+        >
+            {{ mods.name.toUpperCase() }}
             <template #content>
-                <MappoolMapBanner />
-                <MappoolMapBanner />
-                <MappoolMapBanner />
+                <MappoolMapBanner
+                    v-for="maps in mods.maps"
+                    :key="maps.ID"
+                    :mappool-map="maps"
+                    :slot-acronym="mods.acronym.toUpperCase()"
+                />
             </template>
-        </MappoolSlotDropdown>
-        <MappoolSlotDropdown>
-            HIDDEN
-            <template #content>
-                <MappoolMapBanner />
-                <MappoolMapBanner />
-            </template>
-        </MappoolSlotDropdown>
-        <MappoolSlotDropdown>
-            HARD ROCK
-        </MappoolSlotDropdown>
-        <MappoolSlotDropdown>
-            DOUBLE TIME
-        </MappoolSlotDropdown>
-        <MappoolSlotDropdown>
-            FREEMOD
-        </MappoolSlotDropdown>
-        <MappoolSlotDropdown>
-            TIEBREAKER
         </MappoolSlotDropdown>
     </div>
 </template>

@@ -6,27 +6,27 @@
                 :class="{ 'qualifiers__sub_header_item--active': page === 'mappool' }"
                 @click="page = 'mappool'"
             >
-                MAPPOOL
+                {{ $t('open.qualifiers.nav.mappool') }}
             </div>
             <div
                 class="qualifiers__sub_header_item"
                 :class="{ 'qualifiers__sub_header_item--active': page === 'qualifiers' }"
                 @click="page = 'qualifiers'"
             >
-                QUALIFIERS
+                {{ $t('open.qualifiers.nav.qualifiers') }}
             </div>
             <div
                 class="qualifiers__sub_header_item"
                 :class="{ 'qualifiers__sub_header_item--active': page === 'scores' }"
                 @click="page = 'scores'"
             >
-                SCORES
+                {{ $t('open.qualifiers.nav.scores') }}
             </div>
         </div>
         <div class="qualifiers__main_content">
             <div class="qualifiers__title_group">
                 <div class="qualifiers__title">
-                    QUALIFIERS
+                    {{ $t('open.qualifiers.nav.qualifiers') }}
                 </div>
                 <div
                     v-if="page === 'mappool'"
@@ -34,7 +34,7 @@
                 >
                     <div class="qualifiers__button">
                         <div class="qualifiers__button_text">
-                            SHEETS
+                            {{ $t('open.qualifiers.mappool.sheets') }}
                         </div>
                         <img 
                             class="qualifiers__button_ico" 
@@ -46,7 +46,7 @@
                         class="qualifiers__button"
                     >
                         <div class="qualifiers__button_text">
-                            MAPPOOL
+                            {{ $t('open.qualifiers.mappool.mappool') }}
                         </div>
                         <img 
                             class="qualifiers__button_ico"
@@ -59,20 +59,25 @@
                     class="qualifiers__button_group"
                 >
                     <div class="qualifiers__header_subtext">
-                        <span>CATEGORY</span><span>SELECT</span>
+                        <span>{{ $t('open.qualifiers.scores.category') }}</span><span>{{ $t('open.qualifiers.scores.select') }}</span>
                     </div>
                     <ContentButton class="qualifiers_button--header_button qualifiers_button--red_outline">
-                        PLAYERS
+                        {{ $t('open.qualifiers.scores.players') }}
                     </ContentButton>
                     <ContentButton class="qualifiers_button--header_button qualifiers_button--red">
-                        TEAMS
+                        {{ $t('open.qualifiers.scores.teams') }}
                     </ContentButton>
                 </div>
             </div>
             <hr class="line--red line--bottom-space">
             <hr class="line--red line--bottom-space">
-            <MappoolView v-if="page === 'mappool'" />
-            <ScoresView class="qualifiers__scores"v-if="page === 'scores'" />
+            <MappoolView 
+                v-if="page === 'mappool'" 
+            />
+            <ScoresView
+                v-if="page === 'scores'"
+                class="qualifiers__scores"
+            />
         </div>
     </div>
 </template>
@@ -84,6 +89,11 @@ import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
+import { Stage } from "../../../Interfaces/stage";
+import { namespace } from "vuex-class";
+import { Tournament } from "../../../Interfaces/tournament";
+
+const openModule = namespace("open");
 
 @Component({
     components: {
@@ -102,9 +112,13 @@ export default class Qualifiers extends Vue {
 
     page: "mappool" | "qualifiers" | "scores" = "mappool";
 
-    async mounted () {
-        await this.$store.dispatch("setInitialData", "open");
+    @openModule.State tournament!: Tournament | null;
+
+    get qualifiersStage (): Stage | null {
+        return this.tournament?.stages.find(s => s.stageType === 0) || null;
     }
+
+
     
 }
 </script>

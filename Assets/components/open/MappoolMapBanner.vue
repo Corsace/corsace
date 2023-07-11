@@ -1,5 +1,8 @@
 <template>
-    <div class="mappool_map_banner">
+    <div
+        v-if="mappoolMap" 
+        class="mappool_map_banner"
+    >
         <div class="mappool_map_banner__img_container">
             <!-- replace with slot -->
             <img 
@@ -7,7 +10,7 @@
                 src="https://i.ibb.co/4WJHt0C/Mask-group-1.png"
             >
             <div class="mappool_map_banner__text">
-                NM1
+                {{ slotAcronym }}{{ mappoolMap.order }}
             </div>
         </div>
 
@@ -45,9 +48,10 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import MappoolMapData from "./MappoolMapData.vue";
 import MappoolMapStats from "./MappoolMapStats.vue";
+import { MappoolMap } from "../../../Interfaces/mappool";
 
 @Component({
     components: {
@@ -57,7 +61,8 @@ import MappoolMapStats from "./MappoolMapStats.vue";
 })
 
 export default class MappoolMapBanner extends Vue {
-
+    @Prop({ type: Object }) readonly mappoolMap: MappoolMap | undefined;
+    @Prop({ type: String, default: "" }) readonly slotAcronym!: string;
 }
 </script>
 
