@@ -15,13 +15,13 @@
         <div class="index__content">
             <div class="index__banner">
                 <img src="../../Assets/img/site/open/banner.png">
-                <div>osu!standard 4v4 tournament featuring the lorem ipsums and lorem ipsums</div>
+                <div>{{ $t('open.home.description') }}</div>
             </div>
             <div class="index_portal">
                 <div class="index_portal__section">
                     <div class="index_schedule">
                         <div class="index_schedule--xl">
-                            TIMELINE
+                            {{ $t('open.home.timeline') }}
                         </div>
                         <hr class="line--red line--no-space">
                         <ul class="index_schedule__content">
@@ -41,9 +41,9 @@
                 <div class="index_portal__section">
                     <OpenButton>
                         <template #title>
-                            QUALIFIERS MAPPOOL
+                            {{ $t('open.home.button.qualifiersMappool') }}
                         </template>
-                        Mappool download and statistics
+                        {{ $t('open.home.button.mappoolDownload') }}
                     </OpenButton>
                     <OpenButton>
                         <div class="index_portal__button--racing" />
@@ -53,12 +53,12 @@
                 <div class="index_portal__section">
                     <OpenButton>
                         <template #title>
-                            REGISTER YOUR TEAM
+                            {{ $t('open.home.button.register') }}
                         </template>
-                        Registrations end July 30 23:59 0UTC
+                        {{ $t('open.home.button.registrationsEnd') }} July 30 23:59 0UTC
                     </OpenButton>
                     <div class="index_portal__text-content">
-                        CORSACE OPEN 23 IS PRESENTED BY 
+                        {{ $t('open.home.presentedBy') }}
                         <hr class="line--red line--no-space">
                         <div class="index_portal__image index_portal__image--row">
                             <img src="../../Assets/img/partners/momokai.png">
