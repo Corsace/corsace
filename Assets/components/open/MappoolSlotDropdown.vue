@@ -2,12 +2,13 @@
     <div class="mappool_slot_dropdown">
         <a 
             class="mappool_slot_dropdown__header"
-            :style="{ color: slotMod }"
+            :style="{ color: slotMod, borderColor: slotMod }"
             @click="toggleAccordion()"
         >
             <div 
                 class="triangle mappool_slot_dropdown__triangle" 
                 :class="{ 'mappool_slot_dropdown__triangle--active': isOpen }"
+                :style="{ color: slotMod }"
             />
             <slot />
         </a>
@@ -23,7 +24,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
+import { MappoolSlot } from "../../../Interfaces/mappool";
 
 // RGB values for different mod slots
 const freemod: [number, number, number] = [30, 250, 122];
@@ -47,27 +49,24 @@ const mods: {
 @Component
 export default class MappoolSlotDropdown extends Vue {
 
-    isOpen = false;
+    @PropSync("slot", { default: null }) readonly slotData!: MappoolSlot | null;
 
-    allowedMods = 1; // TODO: Remove this once store is made
-    userModCount = null; // TODO: Remove this once store is made
-    uniqueModsCount = null; // TODO: Remove this once store is made
+    isOpen = false;
 
     toggleAccordion () {
         this.isOpen = !this.isOpen;
     }
 
-    // TODO: Remove this. variables once store is made
     get slotMod (): string {
-        if (this.allowedMods === null && this.userModCount === null && this.uniqueModsCount === null)
+        if (this.slotData?.allowedMods === null && this.slotData?.userModCount === null && this.slotData?.uniqueModCount === null)
             return this.RGBValuesToRGBCSS(freemodButFreer);
 
-        if (this.userModCount !== null || this.uniqueModsCount !== null)
+        if (this.slotData?.userModCount !== null || this.slotData?.uniqueModCount !== null)
             return this.RGBValuesToRGBCSS(freemod);
 
         let colours: [number, number, number][] = [];
         for (let mod in mods) {
-            if (this.allowedMods & parseInt(mod)) {
+            if (this.slotData?.allowedMods && (this.slotData?.allowedMods & parseInt(mod))) {
                 colours.push(mods[mod]);
             }
         }

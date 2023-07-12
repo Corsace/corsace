@@ -1,75 +1,36 @@
 <template>
     <div class="mappool_map_stats">
-        <!--- replace all numbers with slot-->
-        <table class="mappool_map_stats-table">
-            <tbody>
-                <tr class="mappool_map_stats-table__row">
-                    <td>
-                        <img
-                            src="../../img/site/open/LEN.svg"
-                            class="mappool_map_stats-table__img"
-                        >
-                        LEN
-                    </td>
-                    <td>
-                        <img
-                            src="../../img/site/open/CS.svg"
-                            class="mappool_map_stats-table__img"
-                        >
-                        CS
-                    </td>
-                    <td>
-                        <img
-                            src="../../img/site/open/HP.svg"
-                            class="mappool_map_stats-table__img"
-                        >
-                        HP
-                    </td>
-                </tr>
-                <tr class="mappool_map_stats-table__row">
-                    <td>
-                        <img
-                            src="../../img/site/open/BPM.svg"
-                            class="mappool_map_stats-table__img"
-                        >
-                        BPM
-                    </td>
-                    <td>
-                        <img
-                            src="../../img/site/open/AR.svg"
-                            class="mappool_map_stats-table__img"
-                        >
-                        AR
-                    </td>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr class="mappool_map_stats-table__row">
-                    <td>
-                        <img
-                            src="../../img/site/open/FAVS.svg"
-                            class="mappool_map_stats-table__img"
-                        >
-                        FAV
-                    </td>
-                    <td>
-                        <img
-                            src="../../img/site/open/OD.svg"
-                            class="mappool_map_stats-table__img"
-                        >
-                        OD
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div
+            v-for="stat in stats"
+            :key="stat.property"
+            class="mappool_map_stats__stat"
+        >
+            <img
+                :src="require(`../../img/site/open/${stat.image}.svg`)"
+                class="mappool_map_stats-table__img"
+            >
+            {{ map?.beatmap?.[stat.property]?.toFixed(stat.decimals) || map?.beatmap?.beatmapset?.[stat.property]?.toFixed(stat.decimals) || "" }}
+        </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
+import { MappoolMap } from "../../../Interfaces/mappool";
 
 @Component
 export default class MappoolMapStats extends Vue {
+    @PropSync("mappoolMap", { default: null }) readonly map!: MappoolMap | null;
 
+    stats = [
+        { image: "LEN", property: "totalLength", decimals: 0 },
+        { image: "BPM", property: "BPM", decimals: 0 },
+        { image: "SR", property: "totalSR", decimals: 2 },
+        { image: "CS", property: "circleSize", decimals: 1 },
+        { image: "AR", property: "approachRate", decimals: 1 },
+        { image: "OD", property: "overallDifficulty", decimals: 1 },
+        { image: "HP", property: "hpDrain", decimals: 1 },
+    ];
 }
 </script>
 
@@ -83,20 +44,30 @@ export default class MappoolMapStats extends Vue {
     background-repeat: no-repeat;
     background-position: bottom 0px right 0px;
     min-width: 30%;
+
+    padding: 8px 20px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    &__stat {
+        flex: 1 0 25%;
+    }
 }
 
 .mappool_map_stats-table {
-        width: 100%;
-        height: 100%;
-        padding: 5px 5px;
+    width: 100%;
+    height: 100%;
+    padding: 5px 5px;
 
-        &__row {
-            font-weight: 500;
-            text-align: center;
-        }
+    &__row {
+        font-weight: 500;
+        text-align: center;
+    }
 
-        &__img {
-            vertical-align: -10%;
-        }
+    &__img {
+        vertical-align: -10%;
+    }
 }
 </style>

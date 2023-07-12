@@ -220,7 +220,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage } from "../../Interfaces/stage";
@@ -260,22 +260,28 @@ export default class Info extends Vue {
     selectedMappool = 0;
 
     get stageList (): {ID: number; name: string}[] {
-        const list = this.tournament?.stages.map(s => {
+        return this.tournament?.stages.map(s => {
             return {
                 ID: s.ID,
                 name: s.name,
             };
         }) || [];
+    }
+
+    @Watch("stageList", { immediate: true })
+    onstageListChanged (list: {ID: number; name: string}[]) {
         if (list.length > 0)
             this.selectedStage = list[0].ID;
-        return list;
     }
 
     get stage (): Stage | null {
-        const stage = this.tournament?.stages.find(s => s.ID === this.selectedStage) || null;
+        return this.tournament?.stages.find(s => s.ID === this.selectedStage) || null;
+    }
+
+    @Watch("stage", { immediate: true })
+    onStageChanged (stage: Stage | null) {
         if (stage)
             this.selectedMappool = stage.mappool[0].ID;
-        return stage;
     }
 
     get stageStatus (): StageStatus {

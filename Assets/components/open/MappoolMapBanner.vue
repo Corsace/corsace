@@ -1,28 +1,28 @@
 <template>
-    <div
-        v-if="mappoolMap" 
+    <a
+        v-if="mappoolMap"
+        :href="`https://osu.ppy.sh/b/${mappoolMap.beatmap?.ID || ''}`" 
         class="mappool_map_banner"
+        target="_blank"
+        rel="noopener noreferrer"
     >
         <div class="mappool_map_banner__img_container">
-            <!-- replace with slot -->
             <img 
                 class="mappool_map_banner__img_container__img"
-                src="https://i.ibb.co/4WJHt0C/Mask-group-1.png"
+                :src="`https://assets.ppy.sh/beatmaps/${mappoolMap.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg`"
             >
             <div class="mappool_map_banner__text">
-                {{ slotAcronym }}{{ mappoolMap.order }}
+                {{ slotAcronym }}{{ onlyMap ? "" : mappoolMap.order }}
             </div>
         </div>
 
         <div class="mappool_map_banner__info">
-            <!-- replace with slot -->
             <div class="mappool_map_banner__song_data">
                 <div class="mappool_map_banner__title">
-                    Song Title
+                    {{ mappoolMap.beatmap?.beatmapset?.title || '' }}
                 </div>
-                <!-- replace with slot -->
                 <div class="mappool_map_banner__artist">
-                    Song Artist
+                    {{ mappoolMap.beatmap?.beatmapset?.artist || '' }}
                 </div>
             </div>
             <hr class="line--red line--banner">
@@ -31,31 +31,33 @@
                     <div class="mappool_map_banner__osu_data_text--mapper">
                         MAPPER
                     </div>
-                    <!-- replace with slot -->
-                    Mapper Name
+                    <div class="mappool_map_banner__osu_data_text--truncated">
+                        {{ mappoolMap.beatmap?.beatmapset?.creator?.osu.username || '' }}
+                    </div>
                 </div>
                 <div class="mappool_map_banner__osu_data_text">
                     <div class="mappool_map_banner__osu_data_text--difficulty">
                         DIFFICULTY
                     </div>
-                    <!-- replace with slot -->
-                    Diff Name
+                    <div class="mappool_map_banner__osu_data_text--truncated">
+                        {{ mappoolMap.beatmap?.difficulty || '' }}
+                    </div>
                 </div>
             </div>
         </div>
-        <MappoolMapStats />
-    </div>
+        <MappoolMapStats 
+            :mappool-map="mappoolMap"
+        />
+    </a>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import MappoolMapData from "./MappoolMapData.vue";
 import MappoolMapStats from "./MappoolMapStats.vue";
 import { MappoolMap } from "../../../Interfaces/mappool";
 
 @Component({
     components: {
-        MappoolMapData,
         MappoolMapStats,
     },
 })
@@ -63,6 +65,7 @@ import { MappoolMap } from "../../../Interfaces/mappool";
 export default class MappoolMapBanner extends Vue {
     @Prop({ type: Object }) readonly mappoolMap: MappoolMap | undefined;
     @Prop({ type: String, default: "" }) readonly slotAcronym!: string;
+    @Prop({ type: Boolean, default: false }) readonly onlyMap!: boolean;
 }
 </script>
 
@@ -74,8 +77,12 @@ export default class MappoolMapBanner extends Vue {
     margin: 5px 0px;
     display: flex;
     flex-direction: row;
-    min-height: 100px;
+    height: 106px;
     background: linear-gradient(0deg, #131313, #131313);
+
+    &:hover {
+        text-decoration: none;
+    }
 
     &__img_container  {
         position: relative;
@@ -84,10 +91,8 @@ export default class MappoolMapBanner extends Vue {
         overflow: hidden;
 
         &__img {
-        position: relative;
-        min-height: 100%;
-        text-align: center;
-        
+            position: relative;
+            text-align: center;
         }
     }
 
@@ -138,27 +143,32 @@ export default class MappoolMapBanner extends Vue {
         &_text {
             display: flex;
             flex-direction: row;
-            padding-right: 5vw;
+            gap: 10px;
             font-weight: 500;
+            width: 205px;
 
-            &--mapper {
-                background-color: $open-red;
+            &--mapper, &--difficulty {
                 font-family: $font-swis721;
                 font-weight: 700;
                 color: #131313;
-                padding: 1.75px 3.5px 1.75px 3.5px;
+                padding: 1.75px 3.5px;
                 font-size: $font-sm;
-                margin-right: 10px;
+
+            }
+
+            &--mapper {
+                background-color: $open-red;
             }
 
             &--difficulty {
                 background-color: $white;
-                font-family: $font-swis721;
-                font-weight: 700;
-                color: #131313;
-                padding: 1.75px 3.5px 1.75px 3.5px;
-                font-size: $font-sm;
-                margin-right: 10px;
+            }
+
+            &--truncated { 
+                min-width: 0px; 
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
             }
         }
     }
