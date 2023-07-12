@@ -58,11 +58,11 @@
                     <ContentButton 
                         v-for="stage in stageList"
                         :key="stage.ID"
-                        class="qualifiers_button--right_margin"
-                        :class="{ 'qualifiers_button--active': selectedStage === stage.ID }"
+                        class="content_button--right_margin"
+                        :class="{ 'content_button--active': selectedStage === stage.ID }"
                         @click.native="selectedStage = stage.ID"
                     >
-                        {{ stage.name }}
+                        {{ stage.name.toUpperCase() }}
                     </ContentButton>
                 </div>
                 <div
@@ -70,8 +70,8 @@
                     class="info_stage_panel"
                 >
                     <div class="info_stage_title">
-                        {{ stage.name }} 
-                        <span class="info_stage_title--red">({{ stage.abbreviation }})</span> 
+                        {{ stage.name.toUpperCase() }} 
+                        <span class="info_stage_title--red">({{ stage.abbreviation.toUpperCase() }})</span> 
                         <div class="info_stage_title__status">
                             <MatchStatus 
                                 class="status"
@@ -149,11 +149,11 @@
                                 <ContentButton 
                                     v-for="mappool in stageMappoolsList"
                                     :key="mappool.ID"
-                                    class="qualifiers_button--bottom_margin"
-                                    :class="{ 'qualifiers_button--active': selectedMappool === mappool.ID }"
+                                    class="content_button--bottom_margin"
+                                    :class="{ 'content_button--active': selectedMappool === mappool.ID }"
                                     @click.native="selectedMappool = mappool.ID"
                                 >
-                                    {{ mappool.name }}
+                                    {{ mappool.name.toUpperCase() }}
                                 </ContentButton>
                             </div>
                         </div>
@@ -164,7 +164,7 @@
                         >
                             <div class="info_stage_data_text">
                                 <div class="info_stage_data_text__title">
-                                    {{ mappool.name }}
+                                    {{ mappool.name.toUpperCase() }}
                                 </div>
                                 <div>
                                     <ul>
@@ -179,20 +179,21 @@
                             </div>
                             <div class="info_stage_data_button_group">
                                 <ContentButton 
-                                    class="qualifiers_button--right_margin_bottom"
+                                    class="content_button--right_margin_bottom"
                                     :class="{ 
-                                        'qualifiers_button--red': mappool.isPublic,
-                                        'qualifiers_button--disabled': !mappool.isPublic,
+                                        'content_button--red': mappool.isPublic,
+                                        'content_button--disabled': !mappool.isPublic,
                                     }"
                                 >
                                     {{ mappool.isPublic ? "MAPPOOL INFO" : "MAPPOOL NOT AVAILABLE" }}
                                 </ContentButton>
                                 <ContentButton 
-                                    class="qualifiers_button--right_margin_bottom"
+                                    class="content_button--right_margin_bottom"
                                     :class="{ 
-                                        'qualifiers_button--red': mappool.isPublic,
-                                        'qualifiers_button--disabled': !mappool.isPublic,
+                                        'content_button--red': mappool.isPublic,
+                                        'content_button--disabled': !mappool.isPublic,
                                     }"
+                                    :link="mappool.isPublic ? mappool.mappackLink || '' : ''"
                                 >
                                     {{ mappool.isPublic ? "DOWNLOAD MAP PACK" : "MAP PACK NOT AVAILABLE" }}
                                 </ContentButton>
@@ -220,7 +221,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage } from "../../Interfaces/stage";
@@ -260,22 +261,28 @@ export default class Info extends Vue {
     selectedMappool = 0;
 
     get stageList (): {ID: number; name: string}[] {
-        const list = this.tournament?.stages.map(s => {
+        return this.tournament?.stages.map(s => {
             return {
                 ID: s.ID,
                 name: s.name,
             };
         }) || [];
+    }
+
+    @Watch("stageList", { immediate: true })
+    onstageListChanged (list: {ID: number; name: string}[]) {
         if (list.length > 0)
             this.selectedStage = list[0].ID;
-        return list;
     }
 
     get stage (): Stage | null {
-        const stage = this.tournament?.stages.find(s => s.ID === this.selectedStage) || null;
+        return this.tournament?.stages.find(s => s.ID === this.selectedStage) || null;
+    }
+
+    @Watch("stage", { immediate: true })
+    onStageChanged (stage: Stage | null) {
         if (stage)
             this.selectedMappool = stage.mappool[0].ID;
-        return stage;
     }
 
     get stageStatus (): StageStatus {

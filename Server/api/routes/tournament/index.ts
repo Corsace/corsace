@@ -26,8 +26,13 @@ tournamentRouter.get("/open/:year", async (ctx) => {
         .leftJoinAndSelect("rounds.mappool", "roundMappools")
         .leftJoinAndSelect("mappools.slots", "slots")
         .leftJoinAndSelect("slots.maps", "maps")
+        .leftJoinAndSelect("maps.beatmap", "beatmaps", "mappools.isPublic = true")
+        .leftJoinAndSelect("beatmaps.beatmapset", "beatmapsets")
+        .leftJoinAndSelect("beatmapsets.creator", "beatmapsetCreator")
         .leftJoinAndSelect("roundMappools.slots", "roundSlots")
         .leftJoinAndSelect("roundSlots.maps", "roundMaps")
+        .leftJoinAndSelect("roundMaps.beatmap", "roundBeatmaps", "roundMappools.isPublic = true")
+        .leftJoinAndSelect("roundMaps.customBeatmap", "roundCustomBeatmaps", "roundMappools.isPublic = true")
         .where("tournament.year = :year", { year })
         .andWhere("tournament.isOpen = true")
         .getOne();

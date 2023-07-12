@@ -1,3 +1,5 @@
+import { Beatmap } from "./beatmap";
+
 export interface Mappool {
     ID:            number;
     createdAt:     Date;
@@ -32,4 +34,6 @@ export interface MappoolMap {
     deadline:        Date | null;
     customThreadID:  string | null;
     customMessageID: string | null;
+    customBeatmap:   null;
+    beatmap:         Beatmap | null;
 }

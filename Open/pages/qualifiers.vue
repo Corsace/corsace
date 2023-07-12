@@ -29,10 +29,10 @@
                     {{ $t('open.qualifiers.nav.qualifiers') }}
                 </div>
                 <div
-                    v-if="page === 'mappool'"
+                    v-if="page === 'mappool' && qualifiersStage?.mappool?.[0].isPublic"
                     class="qualifiers__button_group"
                 >
-                    <div class="qualifiers__button">
+                    <a class="qualifiers__button">
                         <div class="qualifiers__button_text">
                             {{ $t('open.qualifiers.mappool.sheets') }}
                         </div>
@@ -40,9 +40,10 @@
                             class="qualifiers__button_ico" 
                             src="../../Assets/img/site/open/sheets-ico.svg"
                         >
-                    </div>
-                    <div 
+                    </a>
+                    <a 
                         v-if="page === 'mappool'"
+                        :href="qualifiersStage?.mappool?.[0].mappackLink || ''"
                         class="qualifiers__button"
                     >
                         <div class="qualifiers__button_text">
@@ -52,19 +53,20 @@
                             class="qualifiers__button_ico"
                             src="../../Assets/img/site/open/dl-ico.svg"
                         >
-                    </div>
+                    </a>
                 </div>
                 <div
                     v-if="page === 'scores'"
                     class="qualifiers__button_group"
                 >
                     <div class="qualifiers__header_subtext">
-                        <span>{{ $t('open.qualifiers.scores.category') }}</span><span>{{ $t('open.qualifiers.scores.select') }}</span>
+                        <span>{{ $t('open.qualifiers.scores.category') }}</span>
+                        <span>{{ $t('open.qualifiers.scores.select') }}</span>
                     </div>
-                    <ContentButton class="qualifiers_button--header_button qualifiers_button--red_outline">
+                    <ContentButton class="content_button--header_button content_button--red_outline">
                         {{ $t('open.qualifiers.scores.players') }}
                     </ContentButton>
-                    <ContentButton class="qualifiers_button--header_button qualifiers_button--red">
+                    <ContentButton class="content_button--header_button content_button--red">
                         {{ $t('open.qualifiers.scores.teams') }}
                     </ContentButton>
                 </div>
@@ -72,11 +74,17 @@
             <hr class="line--red line--bottom-space">
             <hr class="line--red line--bottom-space">
             <MappoolView 
-                v-if="page === 'mappool'"
-                :mappool="qualifiersStage?.mappool?.[0]"
+                v-if="page === 'mappool' && qualifiersStage?.mappool?.[0].isPublic"
+                :pool="qualifiersStage.mappool[0]"
             />
+            <div
+                v-else-if="page === 'mappool'"
+                class="qualifiers__button_group"
+            >
+                Mappool not available yet
+            </div>
             <ScoresView
-                v-if="page === 'scores'"
+                v-else-if="page === 'scores'"
                 class="qualifiers__scores"
             />
         </div>
@@ -93,7 +101,6 @@ import ScoresView from "../../Assets/components/open/ScoresView.vue";
 import { Stage } from "../../Interfaces/stage";
 import { namespace } from "vuex-class";
 import { Tournament } from "../../Interfaces/tournament";
-import { Mappool } from "../../Interfaces/mappool";
 
 const openModule = namespace("open");
 
@@ -172,7 +179,6 @@ export default class Qualifiers extends Vue {
         align-self: center;
         position: relative;
         width: 65vw;
-        height: 100%;
         padding: 35px;
         background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
     }
@@ -203,6 +209,10 @@ export default class Qualifiers extends Vue {
         min-width: 150px;
         height: 30px;
         padding: 5px;
+
+        &:hover {
+            text-decoration: none;
+        }
 
         &_group {
             display: flex;

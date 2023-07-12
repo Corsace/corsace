@@ -1,13 +1,16 @@
 <template>
-    <div class="qualifiers_button">
-        <div class="qualifiers_button_text">
+    <a 
+        :href="linkSync"
+        class="content_button"
+    >
+        <div class="content_button_text">
             <slot />
         </div>
-    </div>
+    </a>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
 
 @Component({
     components: {
@@ -15,14 +18,14 @@ import { Vue, Component } from "vue-property-decorator";
 })
 
 export default class ContentButton extends Vue {
-
+    @PropSync("link", { type: String, default: "#" }) linkSync!: string;
 }
 </script>
 
 <style lang="scss">
 @import '@s-sass/_variables';
 
-.qualifiers_button {
+.content_button {
     cursor: pointer;
     display: flex;
     flex-grow: 1;
@@ -34,8 +37,12 @@ export default class ContentButton extends Vue {
     padding: 5px;
 
     &:hover, &--active {
-            background-color: $open-red;
-            color: #181818;
+        background-color: $open-red;
+        color: #181818;
+    }
+
+    &:hover {
+        text-decoration: none;
     }
 
     &_text {
