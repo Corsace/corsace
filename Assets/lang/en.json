@@ -475,7 +475,7 @@
                     "difficulty": "DIFFICULTY"
                 }
             },
-            "scores" : {
+            "scores": {
                 "nav": {
                     "filters": "FILTERS",
                     "average": "AVERAGE",
@@ -488,6 +488,27 @@
                 "players": "PLAYERS",
                 "teams": "TEAMS"
             }
+        },
+        "register": {
+            "title": "REGISTER YOUR TEAM",
+            "info1": "Registrations will end on",
+            "info2": "Please ensure all information is correct before finalizing.",
+            "teamName": "TEAM NAME",
+            "maxCharacters": "max 20 characters",
+            "teamBanner": "TEAM BANNER",
+            "upload": "UPLOAD",
+            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
+            "fileSizeError": "file size too big! please upload a smaller image",
+            "preview": "PREVIEW",
+            "bannersInfo1": "Captains can modify team names and banners before registrations close.",
+            "bannersInfo2": "All names and banners have to be approved by staff.",
+            "bannersInfo3": "If deemed inappropriate, you will be notified to make changes.",
+            "teamManagement": "TEAM MANAGEMENT",
+            "teamCaptains": "Team <span>captains</span> are able to play in matches but occupy one player slot.",
+            "teamManagers": "<div>Team <span>managers</span> cannot play in matches but do not occupy player slots, therefore</div><div>a team can have one manager and up to 6 players.</div>",
+            "selectManager": "Select this checkbox if you are acting as the team <span>manager</span>.",
+            "confirmManager": "<div>I am a manager for this team and I understand I will not be able to participate</div> <div>any matches.</div>",
+            "continue": "CONTINUE TO NEXT STEP"
         }
     },
     "main": {

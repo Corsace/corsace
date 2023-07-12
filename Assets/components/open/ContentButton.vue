@@ -73,6 +73,23 @@ export default class ContentButton extends Vue {
         background-color: $open-red;
     }
 
+    &--red_sm {
+        color: #181818;
+        background-color: $open-red;
+        max-width: 7.5rem;
+        margin: 10px 0px 10px 0px;
+    }
+
+    &--red_lg {
+        color: #181818;
+        background-color: $open-red;
+        font-family: $font-communterssans;
+        font-size: $font-lg;
+        font-weight: 400;
+        line-height: 2rem;
+        vertical-align: middle;
+    }
+
     &--red:hover {
         color: #EBEBEB;
     }

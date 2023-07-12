@@ -126,7 +126,6 @@ export default class Qualifiers extends Vue {
     get qualifiersStage (): Stage | null {
         return this.tournament?.stages.find(s => s.stageType === 0) || null;
     }
-    
 }
 </script>
 
