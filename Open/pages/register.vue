@@ -106,8 +106,10 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { State, namespace } from "vuex-class";
+
 import { Tournament } from "../../Interfaces/tournament";
+import { UserInfo } from "../../Interfaces/user";
 
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 
@@ -134,6 +136,14 @@ export default class Register extends Vue {
     };
 
     @openModule.State tournament!: Tournament | null;
+
+    @State loggedInUser!: null | UserInfo;
+
+    mounted () {
+        if (!this.loggedInUser) {
+            this.$router.push("/");
+        }
+    }
 }
 </script>
 
