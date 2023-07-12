@@ -1,10 +1,8 @@
 <template>
     <div class="info">
-        <div class="info__header">
+        <OpenTitle>
             {{ $t('open.info.title') }}
-            <hr class="line--red line--bottom-space">
-            <hr class="line--red line--bottom-space">
-        </div>
+        </OpenTitle>
         <div 
             v-if="tournament"
             class="info_main"
@@ -185,7 +183,7 @@
                                         'content_button--disabled': !mappool.isPublic,
                                     }"
                                 >
-                                    {{ mappool.isPublic ? "MAPPOOL INFO" : "MAPPOOL NOT AVAILABLE" }}
+                                    {{ mappool.isPublic ? $t('open.info.mappools.info') : $t('open.info.mappools.notAvailable') }}
                                 </ContentButton>
                                 <ContentButton 
                                     class="content_button--right_margin_bottom"
@@ -195,7 +193,7 @@
                                     }"
                                     :link="mappool.isPublic ? mappool.mappackLink || '' : ''"
                                 >
-                                    {{ mappool.isPublic ? "DOWNLOAD MAP PACK" : "MAP PACK NOT AVAILABLE" }}
+                                    {{ mappool.isPublic ? $t('open.info.mappools.mappackDownload') : $t('open.info.mappools.mappacknotAvailable') }}
                                 </ContentButton>
                             </div>
                         </div>
@@ -231,6 +229,7 @@ import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import MatchBox from "../../Assets/components/open/InfoMatchBox.vue";
 import InfoData from "../../Assets/components/open/InfoData.vue";
 import MatchStatus from "../../Assets/components/open/MatchStatus.vue";
+import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 
 const openModule = namespace("open");
 
@@ -246,6 +245,7 @@ enum StageStatus {
         MatchBox,
         InfoData,
         MatchStatus,
+        OpenTitle,
     },
     head () {
         return {
@@ -328,12 +328,6 @@ export default class Info extends Vue {
     display: flex;
     flex-direction: column;
     position: relative;
-
-    &__header {
-        font-family: $font-communterssans;
-        font-weight: 400;
-        font-size: $font-title;
-    }
 
     &_main {
         display: flex;

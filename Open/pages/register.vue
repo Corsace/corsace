@@ -1,10 +1,8 @@
 <template>
     <div class="register">
-        <div class="register__header">
+        <OpenTitle>
             {{ $t('open.register.title') }}
-            <hr class="line--red line--bottom-space">
-            <hr class="line--red line--bottom-space">
-        </div>
+        </OpenTitle>
         <div class="register_textblock">
             {{ $t('open.register.info1') }} {{ new Date(tournament?.registrations.end || "").toLocaleString('en-US', options) }}. {{ $t('open.register.info2') }}
         </div>
@@ -110,12 +108,14 @@ import { namespace } from "vuex-class";
 import { Tournament } from "../../Interfaces/tournament";
 
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
+import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 
 const openModule = namespace("open");
 
 @Component({
     components: {
         ContentButton,
+        OpenTitle,
     },
     head () {
         return {
@@ -150,12 +150,6 @@ export default class Register extends Vue {
     flex-direction: column;
     position: relative;
     padding: 50px 45px 30px 45px;
-
-    &__header {
-        font-family: $font-communterssans;
-        font-weight: 400;
-        font-size: $font-title;
-    }
 
     &_textblock {
         font-family: $font-ggsans;

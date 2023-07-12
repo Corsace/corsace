@@ -459,6 +459,12 @@
                 "notStarted": "NOT STARTED",
                 "complete": "COMPLETE",
                 "ongoing": "ONGOING"
+            },
+            "mappools": {
+                "info": "MAPPOOL INFO",
+                "notAvailable": "INFO NOT AVAILABLE",
+                "mappackDownload": "DOWNLOAD MAP PACK",
+                "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
             }
         },
         "qualifiers": {
@@ -509,6 +515,9 @@
             "selectManager": "Select this checkbox if you are acting as the team <span>manager</span>.",
             "confirmManager": "<div>I am a manager for this team and I understand I will not be able to participate</div> <div>any matches.</div>",
             "continue": "CONTINUE TO NEXT STEP"
+        },
+        "mappool": {
+            "title": "MAPPOOL"
         }
     },
     "main": {
