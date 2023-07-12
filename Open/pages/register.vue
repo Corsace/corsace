@@ -30,7 +30,7 @@
                     </div>
                     <div class="register_fields_block">
                         <div class="register_fields_block--inline">
-                            <ContentButton class="qualifiers_button--red_sm">
+                            <ContentButton class="content_button--red_sm">
                                 {{ $t('open.register.upload') }}
                             </ContentButton>
                             <div class="register_fields__finetext--center">
@@ -97,7 +97,7 @@
             </div>
         </div>
         <div class="register_submit">
-            <ContentButton class="qualifiers_button qualifiers_button--red_lg">
+            <ContentButton class="content_button content_button--red_lg">
                 {{ $t('open.register.continue') }}
             </ContentButton>
         </div>
