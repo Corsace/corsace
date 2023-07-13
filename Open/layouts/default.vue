@@ -55,6 +55,44 @@
                     STAFF
                 </NuxtLink> -->
             </div>
+            <div 
+                v-if="loggedInUser"
+                class="header__manage_teams"
+            >
+                <NuxtLink 
+                    to="/teams/id"
+                    class="header__manage_teams_item"
+                >
+                    MY TEAM
+                </NuxtLink>
+                <a 
+                    class="header__manage_teams_item"
+                    @click="togglePopup()"
+                >
+                    INVITATIONS
+                </a>
+            </div>
+            <div 
+                v-show="isOpen"
+                class="header__popup"
+            >
+                <div class="header__popup_title">
+                    TEAM INVITES
+                </div>
+                <hr class="line--red line--no-space">
+                <ul>
+                    <li> 
+                        TEAM 727<div class="header_popup_accept">
+                            <a>ACCEPT</a> | <a>DECLINE</a>
+                        </div>
+                    </li>
+                    <li> 
+                        LONG ASS TEAM NAME FOR TESTING<div class="header_popup_accept">
+                            <a>ACCEPT</a> | <a>DECLINE</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </the-header>
 
         <nuxt 
@@ -162,23 +200,34 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
+import { UserInfo } from "../../Interfaces/user";
+
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
 import Tooltip from "../../Assets/components/footer/Tooltip.vue";
+import ContentButton from "../../Assets/components/open/ContentButton.vue";
 
 @Component({
     components: {
         TheHeader,
         TheFooter,
         Tooltip,
+        ContentButton,
     },
     middleware: "index",
 })
 export default class Default extends Vue {
     
     @State viewTheme!: "light" | "dark";
+    @State loggedInUser!: null | UserInfo;
 
     isSmall = false;
+
+    isOpen = false;
+
+    togglePopup () {
+        this.isOpen = !this.isOpen;
+    }
 
     async mounted () {
         if (process.client) {
@@ -209,9 +258,86 @@ export default class Default extends Vue {
     width: 100vw;
     position: relative;
 
+    /*temp */
+    &__popup {
+        padding: 5px;
+        position: fixed;
+        opacity: 1;
+        top: calc(20vh - 100px);
+        left: calc(100% - 20vw - 100px);
+        z-index: 1;
+        border: 1px solid $open-red;
+        background-color: $open-dark;
+        min-height: 200px;
+        min-width: 300px;
+        filter: drop-shadow(0 0 0.75rem $open-red);
+
+        &_title {
+            font-family: $font-communterssans;
+            margin-bottom: 5px;
+        }
+
+        & ul {
+            padding-left: 0;
+            list-style-type: none;
+            font-family: $font-ggsans;
+            font-weight: 500;
+            
+            & li {
+                padding-bottom: 3px;
+            }
+
+            & a {
+                font-family: $font-ggsans;
+                font-size: $font-sm;
+                text-decoration: none;
+                cursor: pointer;
+                color: $gray;
+
+                &:hover {
+                    color: white;
+                }
+            }
+        }
+    }
+    /*temp*/
+    &__manage_teams {
+        position:absolute;
+        left:calc(100% - 20vw);
+        align-self: center;
+        display: flex;
+        flex-direction: column;
+
+        &_item {
+            display: flex;
+            position: relative;
+            padding: 0 5px;
+            font-family: $font-ggsans;
+            font-weight: 500;
+            text-decoration: none;
+
+            &:hover{
+                text-decoration: none;
+                cursor: pointer;
+                color: $open-red;
+            }
+        
+            &:after {
+                content: "";
+                position: absolute;
+                left: -10px;
+                bottom: 8px; 
+                width: 4.5px;
+                height: 4.5px;
+                transform: rotate(-45deg);
+                background-color: $open-red;
+            }
+        }
+    }
+
     &__logo {
         padding-left: 6px;
-        margin-top: 15px;
+        margin-top: 27.5px;
         @include breakpoint(tablet) {
             padding-left: 7px;
         }
@@ -226,6 +352,7 @@ export default class Default extends Vue {
     &__nav {
         position:absolute;
         left:calc(50% - 20vw);
+        align-self: center;
         display: flex;
         width: 40vw;
         justify-content: space-between;
