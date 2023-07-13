@@ -17,15 +17,13 @@
 
 <script lang="ts">
 import { Vue } from "vue-property-decorator";
-
-export default class Header extends Vue {
+export default class OpenTitle extends Vue {
 }
 </script>
 
 <style lang="scss">
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
-
 .open_title {
     &_group {
         display: flex;
@@ -37,7 +35,6 @@ export default class Header extends Vue {
             font-weight: 400;
             font-size: $font-title;
         }
-
         &__button {
             cursor: pointer;
             display: flex;
@@ -48,21 +45,17 @@ export default class Header extends Vue {
             min-width: 150px;
             height: 30px;
             padding: 5px;
-
             &:hover {
                 text-decoration: none;
             }
-
             &_group {
                 display: flex;
                 flex-direction: row;
             }
-
             &_text {
                 color: $open-dark;
                 font-weight: 600;
             }
-
             &_ico {
                 vertical-align: -10%;
             }

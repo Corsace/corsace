@@ -24,55 +24,53 @@
             </div>
         </div>
         <div class="qualifiers__main_content">
-            <div class="qualifiers__title_group">
-                <div class="qualifiers__title">
-                    {{ $t('open.qualifiers.nav.qualifiers') }}
-                </div>
-                <div
-                    v-if="page === 'mappool' && qualifiersStage?.mappool?.[0].isPublic"
-                    class="qualifiers__button_group"
-                >
-                    <a class="qualifiers__button">
-                        <div class="qualifiers__button_text">
-                            {{ $t('open.qualifiers.mappool.sheets') }}
-                        </div>
-                        <img 
-                            class="qualifiers__button_ico" 
-                            src="../../Assets/img/site/open/sheets-ico.svg"
-                        >
-                    </a>
-                    <a 
-                        v-if="page === 'mappool'"
-                        :href="qualifiersStage?.mappool?.[0].mappackLink || ''"
-                        class="qualifiers__button"
+            <OpenTitle>
+                {{ $t('open.qualifiers.nav.qualifiers') }}
+                <template #buttons>
+                    <div
+                        v-if="page === 'mappool' && qualifiersStage?.mappool?.[0].isPublic"
+                        class="qualifiers__button_group"
                     >
-                        <div class="qualifiers__button_text">
-                            {{ $t('open.qualifiers.mappool.mappool') }}
-                        </div>
-                        <img 
-                            class="qualifiers__button_ico"
-                            src="../../Assets/img/site/open/dl-ico.svg"
+                        <a class="qualifiers__button">
+                            <div class="qualifiers__button_text">
+                                {{ $t('open.qualifiers.mappool.sheets') }}
+                            </div>
+                            <img 
+                                class="qualifiers__button_ico" 
+                                src="../../Assets/img/site/open/sheets-ico.svg"
+                            >
+                        </a>
+                        <a 
+                            v-if="page === 'mappool'"
+                            :href="qualifiersStage?.mappool?.[0].mappackLink || ''"
+                            class="qualifiers__button"
                         >
-                    </a>
-                </div>
-                <div
-                    v-if="page === 'scores'"
-                    class="qualifiers__button_group"
-                >
-                    <div class="qualifiers__header_subtext">
-                        <span>{{ $t('open.qualifiers.scores.category') }}</span>
-                        <span>{{ $t('open.qualifiers.scores.select') }}</span>
+                            <div class="qualifiers__button_text">
+                                {{ $t('open.qualifiers.mappool.mappool') }}
+                            </div>
+                            <img 
+                                class="qualifiers__button_ico"
+                                src="../../Assets/img/site/open/dl-ico.svg"
+                            >
+                        </a>
                     </div>
-                    <ContentButton class="content_button--header_button content_button--red_outline">
-                        {{ $t('open.qualifiers.scores.players') }}
-                    </ContentButton>
-                    <ContentButton class="content_button--header_button content_button--red">
-                        {{ $t('open.qualifiers.scores.teams') }}
-                    </ContentButton>
-                </div>
-            </div>
-            <hr class="line--red line--bottom-space">
-            <hr class="line--red line--bottom-space">
+                    <div
+                        v-if="page === 'scores'"
+                        class="qualifiers__button_group"
+                    >
+                        <div class="qualifiers__header_subtext">
+                            <span>{{ $t('open.qualifiers.scores.category') }}</span>
+                            <span>{{ $t('open.qualifiers.scores.select') }}</span>
+                        </div>
+                        <ContentButton class="content_button--header_button content_button--red_outline">
+                            {{ $t('open.qualifiers.scores.players') }}
+                        </ContentButton>
+                        <ContentButton class="content_button--header_button content_button--red">
+                            {{ $t('open.qualifiers.scores.teams') }}
+                        </ContentButton>
+                    </div>
+                </template>
+            </OpenTitle>
             <MappoolView 
                 v-if="page === 'mappool' && qualifiersStage?.mappool?.[0].isPublic"
                 :pool="qualifiersStage.mappool[0]"
@@ -98,6 +96,8 @@ import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
+import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
+
 import { Stage } from "../../Interfaces/stage";
 import { namespace } from "vuex-class";
 import { Tournament } from "../../Interfaces/tournament";
@@ -110,6 +110,7 @@ const openModule = namespace("open");
         MappoolView,
         ContentButton,
         ScoresView,
+        OpenTitle,
     },
     head () {
         return {
@@ -134,7 +135,6 @@ export default class Qualifiers extends Vue {
 
 .qualifiers {
     background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
-    overflow: auto;
 
     &__sub_header {
         display: flex;
@@ -183,17 +183,6 @@ export default class Qualifiers extends Vue {
     &__scores {
         height: 95%;
         overflow: hidden;
-    }
-
-    &__title {
-        &_group {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-        }
-        font-family: $font-communterssans;
-        font-size: $font-title;
-        font-weight: 400;
     }
 
     &__button {

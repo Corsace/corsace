@@ -6,14 +6,11 @@
         target="_blank"
         rel="noopener noreferrer"
     >
-        <div class="mappool_map_banner__img_container">
-            <img 
-                class="mappool_map_banner__img_container__img"
-                :src="`https://assets.ppy.sh/beatmaps/${mappoolMap.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg`"
-            >
-            <div class="mappool_map_banner__text">
-                {{ slotAcronym }}{{ onlyMap ? "" : mappoolMap.order }}
-            </div>
+        <div 
+            class="mappool_map_banner__text"
+            :style="`background-image: url(https://assets.ppy.sh/beatmaps/${mappoolMap.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)`"
+        >
+            {{ slotAcronym }}{{ onlyMap ? "" : mappoolMap.order }}
         </div>
 
         <div class="mappool_map_banner__info">
@@ -84,30 +81,22 @@ export default class MappoolMapBanner extends Vue {
         text-decoration: none;
     }
 
-    &__img_container  {
-        position: relative;
-        min-width: 25%;
-        padding: 0px;
-        overflow: hidden;
-
-        &__img {
-            position: relative;
-            text-align: center;
-        }
-    }
-
     &__text {
         font-family: $font-swis721;
         font-weight: 700;
         font-size: $font-title;
         text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
         text-align: center;
-        position: absolute;
-        top: 25%;
         vertical-align: middle;
-        width: 100%;
-        height: 100%;
-        left: 0;
+        position: relative;
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
     }
     
 

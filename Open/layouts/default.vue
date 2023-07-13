@@ -13,6 +13,12 @@
 
             <div class="header__nav">
                 <NuxtLink
+                    to="/"
+                    class="header__nav-item"
+                >
+                    HOME
+                </NuxtLink>
+                <NuxtLink
                     to="/info"
                     class="header__nav-item"
                 >
@@ -30,24 +36,24 @@
                 >
                     TEAMS
                 </NuxtLink>
-                <NuxtLink
+                <!-- <NuxtLink
                     to="/schedule" 
                     class="header__nav-item"
                 >
                     SCHEDULE
-                </NuxtLink>
+                </NuxtLink> -->
                 <NuxtLink
                     to="/mappool" 
                     class="header__nav-item"
                 >
                     MAPPOOL
                 </NuxtLink>
-                <NuxtLink
+                <!-- <NuxtLink
                     to="/staff" 
                     class="header__nav-item"
                 >
                     STAFF
-                </NuxtLink>
+                </NuxtLink> -->
             </div>
         </the-header>
 
@@ -295,7 +301,7 @@ export default class Default extends Vue {
 }
 
 .main {
-    overflow: hidden;
     background-size: cover;
+    overflow-x: hidden;
 }
 </style>

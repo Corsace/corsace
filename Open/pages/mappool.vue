@@ -70,18 +70,16 @@ export default class Mappool extends Vue {
 
 <style lang="scss">
 @import '@s-sass/_variables';
-
 .mappool {
     background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
     overflow: auto;
-
     &__temp_wrapper {
         display: flex;
         flex-direction: row;
         align-self: center;
         align-items: center;
-
         &_left {
+            cursor: pointer;
             position: fixed;
             top: 50%;
             left: 5%;
@@ -93,8 +91,8 @@ export default class Mappool extends Vue {
             border-style: solid;
             filter: drop-shadow(0 0 0.75rem $open-red);
         }
-
         &_right {
+            cursor: pointer;
             position: fixed;
             top: 50%;
             right: 5%;
@@ -107,7 +105,6 @@ export default class Mappool extends Vue {
             filter: drop-shadow(0 0 0.75rem $open-red);
         }
     }
-
     &__main_content {
         align-self: center;
         position: relative;
@@ -115,7 +112,6 @@ export default class Mappool extends Vue {
         padding: 35px;
         background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
     }
-
 }
 </style>
 ```

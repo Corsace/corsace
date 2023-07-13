@@ -113,7 +113,7 @@ import { UserInfo } from "../../../Interfaces/user";
 export default class TheHeader extends Vue {
 
     @State site!: string;
-    @State loggedInUser!: UserInfo;
+    @State loggedInUser!: null | UserInfo;
     @State viewTheme!: "light" | "dark";
 
     get avatarURL (): string  {

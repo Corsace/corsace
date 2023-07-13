@@ -55,7 +55,7 @@ export default class ContentButton extends Vue {
         margin: 15px 0px 15px 10px;
     }
 
-    &--right_margin_bottom{
+    &--right_margin_bottom {
         margin: 15px 0px 0px 10px;
     }
 
