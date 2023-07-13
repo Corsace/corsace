@@ -295,7 +295,7 @@ export default class Default extends Vue {
 }
 
 .main {
-    overflow: hidden;
     background-size: cover;
+    overflow-x: hidden;
 }
 </style>
