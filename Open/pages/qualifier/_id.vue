@@ -14,7 +14,7 @@ import { Vue, Component } from "vue-property-decorator";
         };
     },
 })
-export default class QualifierWithID extends Vue {
+export default class Qualifier extends Vue {
 
 }
 </script>

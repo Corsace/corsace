@@ -9,14 +9,16 @@
                     <div class="team_fields_row">
                         <div class="team_fields_block--label">
                             {{ $t('open.create.teamName') }}
+                            <a>edit team name</a>
                         </div>
                         <div class="team_fields_block">
-                            TEAM GUNGA NAME
+                            GUNGA TEAM NAME
                         </div>
                     </div>
                     <div class="team_fields_row">
                         <div class="team_fields_block--label">
                             {{ $t('open.create.teamAcronym') }}
+                            <a>edit team acronym</a>
                         </div>
                         <div class="team_fields_block">
                             GTN
@@ -25,6 +27,7 @@
                     <div class="team_fields_row">
                         <div class="team_fields_block--label">
                             {{ $t('open.create.teamAvatar') }}
+                            <a>edit team avatar</a>
                         </div>
                         <div class="team_fields_block">
                             <div class="team_fields_block--inline">
@@ -35,6 +38,8 @@
                     <div class="team_fields_row">
                         <div class="team_fields_block--label team_fields_block--force-center">
                             TEAM MEMBERS
+                            <a>edit team members</a>
+                            <a>invite team members</a>
                         </div>
                         <div class="team_fields_block">
                             <ul>
@@ -47,6 +52,8 @@
                     <div class="team_fields_row">
                         <div class="team_fields_block--label team_fields_block--force-center">
                             TEAM MANAGER
+                            <a>edit team manager</a>
+                            <a>invite a team manager</a>
                         </div>
                         <div class="team_fields_block">
                             the manager
@@ -72,7 +79,7 @@ import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
         };
     },
 })
-export default class TeamWithID extends Vue {
+export default class Team extends Vue {
 
 }
 </script>
@@ -105,7 +112,8 @@ export default class TeamWithID extends Vue {
         margin-top: 30px;
         margin-left: 5px;
         margin-bottom: 25px;
-        font-size: $font-lg;
+        font-size: $font-xl;
+        align-self: center;
     }
 
     &_submit {
@@ -151,6 +159,20 @@ export default class TeamWithID extends Vue {
                 text-align: right;
                 min-width: 20vw;
                 vertical-align: middle;
+
+                & a {
+                    display: block;
+                    font-weight: 400;
+                    font-size: $font-sm;
+                    color: $gray;
+                    margin-top: -5px;
+
+                    &:hover {
+                        text-decoration: none;
+                        color: $white;
+                        cursor: pointer;
+                    }
+                }
             }
 
             &--force-center {
