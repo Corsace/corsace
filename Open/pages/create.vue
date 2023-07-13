@@ -1,11 +1,9 @@
 <template>
     <div class="create">
         <div class="create__container">
-            <div class="create__header">
+            <OpenTitle>
                 {{ $t('open.create.title') }}
-                <hr class="line--red line--bottom-space">
-                <hr class="line--red line--bottom-space">
-            </div>
+            </OpenTitle>
             <div class="create_textblock">
                 {{ $t('open.create.info1') }} {{ new Date(tournament?.registrations.end || "").toLocaleString('en-US', options) }}. {{ $t('open.create.info2') }}
             </div>
@@ -161,12 +159,14 @@ import { UserInfo } from "../../Interfaces/user";
 import { profanityFilterStrong } from "../../Interfaces/comment";
 
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
+import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 
 const openModule = namespace("open");
 
 @Component({
     components: {
         ContentButton,
+        OpenTitle,
     },
     head () {
         return {
@@ -253,12 +253,6 @@ export default class Create extends Vue {
         width: 75vw;
         padding: 0 43px;
         padding-top: 50px;
-    }
-
-    &__header {
-        font-family: $font-communterssans;
-        font-weight: 400;
-        font-size: $font-title;
     }
 
     &_textblock {
