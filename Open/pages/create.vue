@@ -18,6 +18,8 @@
                                 v-model="name"
                                 class="create_fields__input" 
                                 type="text"
+                                minlength="5"
+                                maxlength="20"
                             >
                             <div class="create_fields__finetext">
                                 {{ $t('open.create.teamLength') }}
@@ -30,9 +32,11 @@
                         </div>
                         <div class="create_fields_block">
                             <input
-                                v-model="acronym"
+                                v-model="abbreviation"
                                 class="create_fields__input" 
                                 type="text"
+                                minlength="2"
+                                maxlength="4"
                             >
                             <div class="create_fields__finetext">
                                 {{ $t('open.create.acronymLength') }}
@@ -129,8 +133,9 @@
                                     class="create_fields_block__checkbox"
                                     type="checkbox"
                                 >
-                                <div 
-                                    class="create_fields__finetext create_fields__finetext--spaced"
+                                <div
+                                    class="create_fields__finetext create_fields__finetext--spaced create_fields__finetext--clickable"
+                                    @click="isNotPlaying = !isNotPlaying" 
                                     v-html="$t('open.create.confirmManager')" 
                                 />
                             </div>
@@ -141,9 +146,9 @@
             <div class="create_submit">
                 <ContentButton 
                     class="content_button content_button--red_lg"
-                    @click.native="next"
+                    @click.native="create"
                 >
-                    {{ $t('open.create.continue') }}
+                    {{ $t('open.create.create') }}
                 </ContentButton>
             </div>
         </div>
@@ -189,31 +194,32 @@ export default class Create extends Vue {
     @State loggedInUser!: null | UserInfo;
 
     name = "";
-    acronym = "";
+    abbreviation = "";
     isNotPlaying = false;
 
     sizeError = false;
     typeError = false;
     previewBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAABkCAQAAACWCMVLAAAAxklEQVR42u3SMQ0AAAzDsJU/6aGo1MOGECUHBZEAY2EsjAXGwlgYC4yFsTAWGAtjYSwwFsbCWGAsjIWxwFgYC2OBsTAWxgJjYSyMBcbCWBgLjIWxMBYYC2NhLDAWxsJYYCyMhbHAWBgLY4GxMBbGAmNhLIwFxsJYGAuMhbEwFhgLY2EsMBbGwlhgLIyFscBYGAtjgbEwFsYCY2EsjAXGwlgYC4yFsTAWGAtjYSwwFsbCWBgLjIWxMBYYC2NhLDAWxsJYYCy2PT0vAGXiVAUcAAAAAElFTkSuQmCC";
+    image = undefined as File | undefined;
 
     uploadAvatar (e: Event) {
         this.sizeError = false;
         this.typeError = false;
         const target = e.target as HTMLInputElement;
-        const file = target.files?.[0];
+        this.image = target.files?.[0];
 
-        if (!file) {
+        if (!this.image) {
             return;
         }
 
         // 5 MB limit
-        if (file.size > 5 * 1024 * 1024) {
+        if (this.image.size > 5 * 1024 * 1024) {
             this.sizeError = true;
             return;
         }
 
         // File type check
-        if (!file.type.startsWith("image/jpeg") && !file.type.startsWith("image/png")) {
+        if (!this.image.type.startsWith("image/jpeg") && !this.image.type.startsWith("image/png")) {
             this.typeError = true;
             return;
         }
@@ -223,7 +229,7 @@ export default class Create extends Vue {
         reader.onload = (e) => {
             this.previewBase64 = e.target?.result as string;
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(this.image);
     }
 
     mounted () {
@@ -232,8 +238,48 @@ export default class Create extends Vue {
         // }
     }
 
-    next () {
-        console.log(this.name, this.acronym, this.isNotPlaying);
+    async create () {
+        if (/^team\s?/i.test(this.name)) {
+            this.name = this.name.replace(/^team\s?/i, "");
+            if (/^t/i.test(this.abbreviation))
+                this.abbreviation = this.abbreviation.replace(/^t/i, "");
+        }
+
+        if (this.name.length > 20 || this.name.length < 5 || profanityFilterStrong.test(this.name)) {
+            alert("Team name is invalid. Ensure the team name is between 5 and 20 characters and does not contain any profanity.");
+            return;
+        }
+
+        if (this.abbreviation.length > 4 || this.abbreviation.length < 2 || profanityFilterStrong.test(this.abbreviation)) {
+            alert("Team abbreviation is invalid. Ensure the team abbreviation is between 2 and 4 characters and does not contain any profanity.");
+            return;
+        }
+
+        const { data: res } = await this.$axios.post("/api/team/create", {
+            name: this.name,
+            abbreviation: this.abbreviation,
+            isPlaying: !this.isNotPlaying,
+        });
+
+        if (res.success) {
+            if (this.image) {
+                const formData = new FormData();
+                formData.append("avatar", this.image, this.image.name);
+                const { data: resAvatar } = await this.$axios.post(`/api/team/${res.teamID}/avatar`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+                if (resAvatar.error)
+                    alert(resAvatar.error);
+            }
+
+            if (res.error)
+                alert(res.error);
+
+            this.$router.push(`/team/${res.teamID}`);
+        } else
+            alert(res.error);
     }
 }
 </script>
@@ -334,6 +380,7 @@ export default class Create extends Vue {
             }
 
             &__checkbox {
+                cursor: pointer;
                 appearance: initial;
                 border: 1px solid #696969;
                 background: rgba(0, 0, 0, 0.0);
@@ -378,6 +425,10 @@ export default class Create extends Vue {
             min-width: 50%;
             caret-color: $open-red;
 
+            &:invalid {
+                color: $open-red;
+            }
+
             &:focus {
                 border: 1px solid $open-red;
             }
@@ -392,7 +443,7 @@ export default class Create extends Vue {
 
             &--center {
                 font-size: $font-sm;
-                margin-left: 25px;
+                margin-left: 10px;
                 display: flex;
                 align-items: center;
                 font-family: $font-ggsans;
@@ -401,7 +452,11 @@ export default class Create extends Vue {
             }
 
             &--spaced {
-                margin-left: 15px;
+                padding-left: 15px;
+            }
+
+            &--clickable {
+                cursor: pointer;
             }
 
             &--error {
@@ -412,7 +467,7 @@ export default class Create extends Vue {
                 font-style: italic;
             }
 
-            &--diamonds{
+            &--diamonds {
                 display: block;
                 font-family: $font-ggsans;
                 font-weight: 500;

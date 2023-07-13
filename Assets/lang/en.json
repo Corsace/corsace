@@ -500,9 +500,9 @@
             "info1": "Registrations will end on",
             "info2": "Please ensure all information is correct before finalizing.",
             "teamName": "TEAM NAME",
-            "teamLength": "5 - 20 characters",
+            "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
             "teamAcronym": "TEAM ACRONYM",
-            "acronymLength": "2 - 4 characters",
+            "acronymLength": "2 - 4 characters. Profanity will be checked.",
             "teamAvatar": "TEAM AVATAR",
             "upload": "UPLOAD",
             "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
@@ -517,7 +517,7 @@
             "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
             "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
             "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
-            "continue": "CONTINUE TO NEXT STEP"
+            "create": "CREATE TEAM"
         },
         "mappool": {
             "title": "MAPPOOL"

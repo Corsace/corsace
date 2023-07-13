@@ -93,12 +93,12 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
     if (isPlaying)
         team.members = [ctx.state.user];
 
-    const err = await team.calculateStats();
+    const noErr = await team.calculateStats();
     await team.save();
-    if (!err)
-        ctx.body = { success: "Team created, but there was an error calculating stats. Please contact VINXIS", team, error: !err };
+    if (!noErr)
+        ctx.body = { success: "Team created, but there was an error calculating stats. Please contact VINXIS", team, error: !noErr };
     else
-        ctx.body = { success: "Team created", team, error: !err };
+        ctx.body = { success: "Team created", team, error: !noErr };
 });
 
 teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async (ctx) => {
