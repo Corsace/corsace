@@ -13,6 +13,7 @@ import { Matchup } from "../../../../Models/tournaments/matchup";
 import { cron } from "../../../cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { parseDateOrTimestamp } from "../../../utils/dateParse";
+import getTeamInvites from "../../../functions/get/getTeamInvites";
 
 const teamRouter = new Router();
 
@@ -300,6 +301,10 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
 });
 
 teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team: Team = ctx.state.team;
+    const invites = await getTeamInvites(team.ID, "teamID");
+    await Promise.all(invites.map(i => i.remove()));
+
     await ctx.state.team.remove();
 
     ctx.body = { success: "Team deleted" };

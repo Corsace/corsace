@@ -1,8 +1,12 @@
 import { profanityFilterStrong } from "./comment";
+import { Match } from "./match";
 
-export interface Team {
+export interface BaseTeam {
     ID: number;
     name: string;
+}
+
+export interface Team extends BaseTeam {
     abbreviation: string;
     avatarURL?: string;
     rank: number;
@@ -10,17 +14,18 @@ export interface Team {
     manager: TeamMember;
     members: TeamMember[];
     invites?: TeamUser[];
+    qualifier?: Match;
 }
 
-interface TeamUser {
+export interface TeamUser {
     ID: number;
     username: string;
     osuID: string;
-    BWS: number;
 }
 
 export interface TeamMember extends TeamUser {
     isManager: boolean;
+    BWS: number;
 }
 
 // TODO: Add TeamInvite interface as needed

@@ -10,11 +10,11 @@
                         class="team__title_avatar"
                         :src="teamData.avatarURL || require('../../../Assets/img/site/open/team/default.png')"
                     > 
-                    <span>{{ teamData.name.toUpperCase() }}</span>
-                    <span class="team--acronym">({{ teamData.abbreviation.toUpperCase() }})</span>
+                    <span>{{ teamData.name }}</span>
+                    <span class="team--acronym">({{ teamData.abbreviation }})</span>
                 </div>
                 <div
-                    v-if="teamData.manager.ID === loggedInUser?.ID"
+                    v-if="isManager"
                     class="team_fields--clickable"
                     @click="edit = !edit"
                 >
@@ -66,13 +66,12 @@
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
                         TEAM MEMBERS
-                        <div v-if="teamData.ID === team?.ID">
-                            <div class="team_fields--clickable">
-                                edit team members
-                            </div>
-                            <div class="team_fields--clickable">
-                                invite team members
-                            </div>
+                        <div 
+                            v-if="isManager && teamData.members.filter(m => !m.isManager).length > 0"
+                            class="team_fields--clickable"
+                            @click="editMembers = !editMembers"
+                        >
+                            {{ !editMembers ? "edit team members" : "close team members edit" }}
                         </div>
                     </div>
                     <div class="team_fields_block team__member_list">
@@ -104,48 +103,95 @@
                         </a>
                     </div>
                 </div>
-                <div class="team_fields_row">
+                <div 
+                    v-if="teamData.ID === team?.ID"
+                    class="team_fields_row"
+                >
                     <div class="team_fields_block--label">
                         TEAM INVITES
-                        <div v-if="teamData.ID === team?.ID">
-                            <div class="team_fields--clickable">
-                                add team invite
-                            </div>
-                            <div class="team_fields--clickable">
-                                removed team invite
-                            </div>
+                        <div 
+                            v-if="isManager"
+                            class="team_fields--clickable"
+                            @click="editInvites = !editInvites"
+                        >
+                            {{ !editInvites ? "edit team invites" : "close team invites edit" }}
                         </div>
                     </div>
                     <div class="team_fields_block team__member_list">
-                        <a
+                        <div
                             v-for="member in teamData.invites"
                             :key="member.ID"
-                            class="team__member"
-                            :href="'https://osu.ppy.sh/users/' + member.osuID"
+                            class="team__member_invite"
                         >
-                            <div class="team__member_manager" />
-                            <img 
-                                class="team__member_avatar"
-                                :src="`https://a.ppy.sh/${member.osuID}`"
+                            <a   
+                                :href="'https://osu.ppy.sh/users/' + member.osuID"
+                                class="team__member"
                             >
-                            <div class="team__member_name">
-                                {{ member.username }}
+                                <div class="team__member_manager" />
+                                <img 
+                                    class="team__member_avatar"
+                                    :src="`https://a.ppy.sh/${member.osuID}`"
+                                >
+                                <div class="team__member_name">
+                                    {{ member.username }}
+                                </div>
+                            </a>
+                            <div
+                                v-if="isManager && editInvites" 
+                                class="team__member_x"
+                                @click="removeInvite(member)"
+                            >
+                                X
                             </div>
-                            <div class="team__member_bws">
-                                {{ member.BWS }} BWS
+                        </div>
+                        <div class="team__member_manager" />
+                        <div v-if="isManager && editInvites">
+                            <SearchBar
+                                :placeholder="'osu! username (must have corsace account)'"
+                                style="min-width: 500px;"
+                                @update:search="search($event)"
+                            />
+                            <div 
+                                v-for="user in users"
+                                :key="user.ID"
+                                class="team__member team__member--search"
+                                @click="inviteUser(user)"
+                            >
+                                <div class="team__member_manager" />
+                                <img 
+                                    class="team__member_avatar"
+                                    :src="`https://a.ppy.sh/${user.osu.userID}`"
+                                >
+                                <div class="team__member_name">
+                                    {{ user.osu.username }}
+                                </div>
                             </div>
-                        </a>
+                        </div>
                     </div>
                 </div>
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
                         QUALIFIER
-                        <div v-if="teamData.ID === team?.ID">
-                            <div class="team_fields--clickable">
+                        <div 
+                            v-if="isManager && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length"
+                            @click="editQualifier = !editQualifier"
+                        >
+                            <div
+                                v-if="teamData.qualifier" 
+                                class="team_fields--clickable"
+                            >
+                                edit qualifier time
+                            </div>
+                            <div
+                                v-else
+                                class="team_fields--clickable"
+                            >
                                 create/join qualifier
                             </div>
+                        </div>
+                        <div v-else-if="isManager && tournament">
                             <div class="team_fields--clickable">
-                                edit qualifier time
+                                {{ tournament.minTeamSize === tournament.maxTeamSize ? `You need exactly ${tournament.minTeamSize} team members to register and join a qualifier` : `You need within ${tournament.minTeamSize} to ${tournament.maxTeamSize} team members to register and join a qualifier` }}
                             </div>
                         </div>
                     </div>
@@ -285,13 +331,15 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
-import { Team as TeamInterface, validateTeamText } from "../../../Interfaces/team";
-import { UserInfo } from "../../../Interfaces/user";
+import { Team as TeamInterface, TeamUser, validateTeamText } from "../../../Interfaces/team";
+import { User, UserInfo } from "../../../Interfaces/user";
 
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenInput from "../../../Assets/components/open/OpenInput.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 import BaseModal from "../../../Assets/components/BaseModal.vue";
+import SearchBar from "../../../Assets/components/SearchBar.vue";
+import { Tournament } from "../../../Interfaces/tournament";
 
 const openModule = namespace("open");
 
@@ -301,6 +349,7 @@ const openModule = namespace("open");
         OpenInput,
         OpenTitle,
         BaseModal,
+        SearchBar,
     },
     head () {
         return {
@@ -313,9 +362,15 @@ const openModule = namespace("open");
 })
 export default class Team extends Vue {
     @State loggedInUser!: null | UserInfo;
+
+    @openModule.State tournament!: Tournament | null;
     @openModule.State team!: TeamInterface | null;
 
     edit = false;
+    editMembers = false;
+    editInvites = false;
+    editQualifier = false;
+
     loading = false;
     teamData: TeamInterface | null = null;
 
@@ -326,6 +381,8 @@ export default class Team extends Vue {
     typeError = false;
     previewBase64: string | null = null;
     image = undefined as File | undefined;
+
+    users: User[] = [];
 
     async getTeam (refresh: boolean): Promise<TeamInterface | null> {
         this.loading = true;
@@ -346,6 +403,10 @@ export default class Team extends Vue {
         this.name = this.teamData?.name || "";
         this.abbreviation = this.teamData?.abbreviation || "";
         this.previewBase64 = this.teamData?.avatarURL || null;
+    }
+
+    get isManager (): boolean {
+        return this.teamData?.ID === this.team?.ID && this.teamData?.manager.ID === this.loggedInUser?.ID;
     }
 
     uploadAvatar (e: Event) {
@@ -389,7 +450,7 @@ export default class Team extends Vue {
         }
 
         const validate = validateTeamText(this.name, this.abbreviation);
-        if (validate.error) {
+        if ("error" in validate) {
             alert(validate.error);
             return;
         }
@@ -442,6 +503,53 @@ export default class Team extends Vue {
         } else
             alert(res.error);
     }
+
+    async search (userSearch: string) {
+        try {
+            const { data } = await this.$axios.get(`/api/users/search?user=${userSearch}`);
+
+            if (!data.error)
+                this.users = data;
+            else
+                alert(data.error);
+        } catch (error) {
+            alert("Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I.");
+            console.error(error);
+        }
+    }
+
+    async inviteUser (user: User) {
+        if (!this.teamData)
+            return;
+
+        if (!confirm(`Are you sure you want to invite ${user.osu.username} to your team?`))
+            return;
+
+        const { data: res } = await this.$axios.post(`/api/team/invite/${this.teamData.ID}`, {
+            userID: user.ID,
+            idType: "corsace",
+        });
+
+        if (res.success)
+            this.teamData = await this.getTeam(true);
+        else
+            alert(res.error);
+    }
+
+    async removeInvite (user: TeamUser) {
+        if (!this.teamData)
+            return;
+
+        if (!confirm(`Are you sure you want to remove ${user.username}'s invite to your team?`))
+            return;
+
+        const { data: res } = await this.$axios.post(`/api/team/invite/${this.teamData.ID}/cancel/${user.ID}`);
+
+        if (res.success)
+            this.teamData = await this.getTeam(true);
+        else
+            alert(res.error);
+    }
 }
 </script>
 
@@ -461,6 +569,8 @@ export default class Team extends Vue {
         justify-content: center;
         align-items: center;
         gap: 20px;
+
+        text-transform: uppercase;
 
         &_avatar {
             border: 1px solid $gray;
@@ -599,6 +709,24 @@ export default class Team extends Vue {
         &_manager {
             width: 20px;
             height: 20px;
+        }
+
+        &_invite {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        &_x {
+            cursor: pointer;
+            font-family: $font-ggsans;
+            font-weight: 700;
+            font-size: $font-lg;
+            color: $open-red;
+            margin-bottom: 10px;
+        }
+
+        &--search {
+            cursor: pointer;
         }
     }
 

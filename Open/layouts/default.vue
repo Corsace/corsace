@@ -78,7 +78,7 @@
                     class="header__manage_teams_item"
                     @click="togglePopup()"
                 >
-                    INVITATIONS
+                    INVITATIONS ({{ teamInvites?.length || 0 }})
                 </a>
             </div>
             <div 
@@ -89,18 +89,20 @@
                     TEAM INVITES
                 </div>
                 <hr class="line--red line--no-space">
-                <ul>
-                    <li> 
-                        TEAM 727<div class="header_popup_accept">
-                            <a>ACCEPT</a> | <a>DECLINE</a>
-                        </div>
-                    </li>
-                    <li> 
-                        LONG ASS TEAM NAME FOR TESTING<div class="header_popup_accept">
-                            <a>ACCEPT</a> | <a>DECLINE</a>
+                <ul v-if="teamInvites">
+                    <li
+                        v-for="invite in teamInvites"
+                        :key="invite.ID"
+                    > 
+                        {{ invite.name }}
+                        <div class="header_popup_accept">
+                            <a @click="inviteAction(invite.ID, 'accept')">ACCEPT</a> | <a @click="inviteAction(invite.ID, 'decline')">DECLINE</a>
                         </div>
                     </li>
                 </ul>
+                <div v-else>
+                    You currently have no invites
+                </div>
             </div>
         </the-header>
 
@@ -210,7 +212,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
 import { UserInfo } from "../../Interfaces/user";
-import { Team } from "../../Interfaces/team";
+import { BaseTeam, Team } from "../../Interfaces/team";
 
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
@@ -234,6 +236,7 @@ export default class Default extends Vue {
     @State loggedInUser!: null | UserInfo;
 
     @openModule.State team!: Team | null;
+    @openModule.State teamInvites!: BaseTeam[] | null;
 
     isSmall = false;
 
@@ -255,7 +258,17 @@ export default class Default extends Vue {
             this.$store.dispatch("setViewTheme"),
         ]);
     }
-    
+
+    async inviteAction (inviteID: number, action: "accept" | "decline") {
+        try {
+            await this.$axios.post(`api/team/invite/${inviteID}/${action}`);
+            await this.$store.dispatch("open/setTeam");
+            await this.$store.dispatch("open/setInvites");
+        } catch (e) {
+            alert("Something went wrong. Contact VINXIS. Error is in console, which can be accessed by pressing F12.");
+            console.log(e);
+        }
+    }
 }
 </script>
 

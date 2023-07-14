@@ -146,7 +146,7 @@
                     class="content_button content_button--red_lg"
                     @click.native="create"
                 >
-                    {{ $t('open.create.create') }}
+                    {{ loading ? "Loading..." : $t('open.create.create') }}
                 </ContentButton>
             </div>
         </div>
@@ -198,6 +198,7 @@ export default class Create extends Vue {
     abbreviation = "";
     isNotPlaying = false;
 
+    loading = false;
     sizeError = false;
     typeError = false;
     previewBase64: string | null = null;
@@ -241,14 +242,17 @@ export default class Create extends Vue {
     }
 
     async create () {
+        this.loading = true;
         if (this.typeError || this.sizeError) {
             alert("Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.");
+            this.loading = false;
             return;
         }
 
         const validate = validateTeamText(this.name, this.abbreviation);
-        if (validate.error) {
+        if ("error" in validate) {
             alert(validate.error);
+            this.loading = false;
             return;
         }
 
@@ -276,6 +280,8 @@ export default class Create extends Vue {
             if (res.error)
                 alert(`Error making team:\n${res.error}`);
 
+            this.loading = false;
+            this.$store.dispatch("open/setTeam");
             this.$router.push(`/team/${res.team.ID}`);
         } else
             alert(res.error);

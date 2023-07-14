@@ -5,6 +5,7 @@ import { Team } from "../../../../Models/tournaments/team";
 import { User } from "../../../../Models/user";
 import { inviteAcceptChecks, invitePlayer } from "../../../functions/tournaments/teams/inviteFunctions";
 import getTeamInvites from "../../../functions/get/getTeamInvites";
+import { BaseTeam, TeamUser } from "../../../../Interfaces/team";
 
 type idType = "osu" | "discord" | "corsace";
 
@@ -14,17 +15,31 @@ function isIdType (value: any): value is idType {
 
 const inviteRouter = new Router();
 
+inviteRouter.get("/user", isLoggedInDiscord, async (ctx) => {
+    const user: User = ctx.state.user;
+
+    const invites = await getTeamInvites(user.ID, "userID");
+
+    ctx.body = invites.map<BaseTeam>(i => {
+        return {
+            ID: i.team.ID,
+            name: i.team.name,
+        };
+    });
+});
+
 inviteRouter.get("/:teamID", isLoggedInDiscord, validateTeam(false), async (ctx) => {
     const team: Team = ctx.state.team;
 
     const invites = await getTeamInvites(team.ID, "teamID");
 
-    ctx.body = { invites: invites.map(i => {
+    ctx.body = invites.map<TeamUser>(i => {
         return {
-            ...i,
-            team: undefined, // Redundant info
+            ID: i.user.ID,
+            username: i.user.osu.username,
+            osuID: i.user.osu.userID,
         };
-    }) };
+    });
 });
 
 inviteRouter.post("/:teamID", isLoggedInDiscord, validateTeam(true, true), async (ctx) => {
@@ -127,7 +142,7 @@ inviteRouter.post("/:teamID/cancel/:userID", isLoggedInDiscord, validateTeam(tru
 
     const invites = await getTeamInvites(team.ID, "teamID", userID, "userID");
     if (invites.length === 0) {
-        ctx.body = { error: "No invite found from this team to this user" };
+        ctx.body = { error: "No invite found from this team to this user. MAke sure the user ID is a Corsace ID" };
         return;
     }
     if (invites.length > 1) {

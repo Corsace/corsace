@@ -1,17 +1,19 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { Tournament } from "../../Interfaces/tournament";
-import { Team } from "../../Interfaces/team";
+import { BaseTeam, Team, TeamUser } from "../../Interfaces/team";
 
 export interface OpenState {
     site: string;
     tournament: Tournament | null;
     team: Team | null;
+    teamInvites: BaseTeam[] | null;
 }
 
 export const state = (): OpenState => ({
     site: "",
     tournament: null,
     team: null,
+    teamInvites: null,
 });
 
 export const mutations: MutationTree<OpenState> = {
@@ -60,8 +62,15 @@ export const mutations: MutationTree<OpenState> = {
                 })),
             };
     },
-    setTeam (state, teams: Team[] | undefined) {
+    async setTeam (state, teams: Team[] | undefined) {
         state.team = teams?.[0] || null;
+    },
+    async setTeamInvites (state, invites: TeamUser[] | undefined) {
+        if (state.team)
+            state.team.invites = invites;
+    },
+    async setInvites (state, invites: BaseTeam[] | undefined) {
+        state.teamInvites = invites || null;
     },
 };
 
@@ -76,15 +85,35 @@ export const actions: ActionTree<OpenState, OpenState> = {
             commit("setTournament", data);
         }
     },
-    async setTeam ({ commit }) {
+    async setTeam ({ commit, dispatch }) {
         const { data } = await this.$axios.get(`/api/team`);
 
-        if (!data.error) {
+        if (!data.error)
             commit("setTeam", data);
-        }
+        
+        await dispatch("setInvites");
+    },
+    async setTeamInvites ({ commit }) {
+        const team = (this.state as any).open.team;
+        if (!team)
+            return;
+
+        const { data } = await this.$axios.get(`/api/team/invite/${team.ID}`);
+
+        if (!data.error)
+            commit("setTeamInvites", data);
+    },
+    async setInvites ({ commit }) {
+        const { data } = await this.$axios.get(`/api/team/invite/user`);
+
+        if (!data.error)
+            commit("setInvites", data);
     },
     async setInitialData ({ dispatch }, year) {
-        await dispatch("setTournament", year);
-        await dispatch("setTeam");
+        await Promise.all([
+            dispatch("setTournament", year),
+            await dispatch("setTeam"),
+            await dispatch("setInvites"),
+        ]);
     },
 };
