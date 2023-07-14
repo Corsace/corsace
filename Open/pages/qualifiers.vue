@@ -69,6 +69,29 @@
                             {{ $t('open.qualifiers.scores.teams') }}
                         </ContentButton>
                     </div>
+                    <div
+                        v-if="page === 'qualifiers'"
+                        class="qualifiers__button_group"
+                    >
+                        <ContentButton 
+                            class="content_button--header_button content_button--disabled"
+                            @click.native="togglePopup()"
+                        >
+                            CREATE
+                        </ContentButton>
+                        <ContentButton class="content_button--header_button content_button--red_outline">
+                            JOIN
+                        </ContentButton>
+                        <div 
+                            v-show="isOpen"
+                            @click="togglePopup()"
+                        >
+                            <ErrorPopup>
+                                <span>You cannot create/join a qualifier until you have X players!</span>
+                                <span>Press anywhere to close</span>
+                            </ErrorPopup>
+                        </div>
+                    </div>
                 </template>
             </OpenTitle>
             <MappoolView 
@@ -85,6 +108,10 @@
                 v-else-if="page === 'scores'"
                 class="qualifiers__scores"
             />
+            <QualifiersView
+                v-else-if="page === 'qualifiers'"
+                class="qualifiers__qualifiers"
+            />
         </div>
     </div>
 </template>
@@ -97,7 +124,9 @@ import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
+import QualifiersView from "../../Assets/components/open/QualifiersView.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
+import ErrorPopup from "../../Assets/components/open/ErrorPopup.vue";
 
 import { Stage } from "../../Interfaces/stage";
 import { Tournament } from "../../Interfaces/tournament";
@@ -111,6 +140,8 @@ const openModule = namespace("open");
         ContentButton,
         ScoresView,
         OpenTitle,
+        QualifiersView,
+        ErrorPopup,
     },
     head () {
         return {
@@ -119,6 +150,10 @@ const openModule = namespace("open");
     },
 })
 export default class Qualifiers extends Vue {
+    isOpen = false;
+    togglePopup () {
+        this.isOpen = !this.isOpen;
+    }
 
     page: "mappool" | "qualifiers" | "scores" = "mappool";
 
@@ -183,6 +218,10 @@ export default class Qualifiers extends Vue {
     &__scores {
         height: 95%;
         overflow: hidden;
+    }
+
+    &__qualifiers {
+        overflow: auto;
     }
 
     &__button {
