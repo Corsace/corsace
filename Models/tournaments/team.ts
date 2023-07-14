@@ -92,6 +92,13 @@ export class Team extends BaseEntity {
     }
 
     public async teamInterface (): Promise<TeamInterface> {
+        const qualifier = await Matchup
+            .createQueryBuilder("matchup")
+            .innerJoin("matchup.teams", "team")
+            .innerJoin("matchup.stage", "stage")
+            .where("team.ID = :teamID", { teamID: this.ID })
+            .andWhere("stage.stageType = 0")
+            .getOne();
         return {
             ID: this.ID,
             name: this.name,
@@ -115,6 +122,20 @@ export class Team extends BaseEntity {
             })),
             BWS: this.BWS,
             rank: this.rank,
+            tournaments: this.tournaments?.map(t => ({
+                ID: t.ID,
+                name: t.name,
+            })) || await Tournament
+                .createQueryBuilder("tournament")
+                .innerJoin("tournament.teams", "team")
+                .where("team.ID = :teamID", { teamID: this.ID })
+                .select(["tournament.ID", "tournament.name"])
+                .getMany(),
+            qualifier: qualifier ? {
+                ID: qualifier.ID,
+                date: qualifier.date,
+                mp: qualifier.mp || undefined,
+            } : undefined,
         };
     }
 }

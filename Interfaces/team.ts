@@ -1,5 +1,6 @@
 import { profanityFilterStrong } from "./comment";
-import { Match } from "./match";
+import { Matchup } from "./matchup";
+import { BaseTournament } from "./tournament";
 
 export interface BaseTeam {
     ID: number;
@@ -14,7 +15,8 @@ export interface Team extends BaseTeam {
     manager: TeamMember;
     members: TeamMember[];
     invites?: TeamUser[];
-    qualifier?: Match;
+    qualifier?: Matchup;
+    tournaments?: BaseTournament[];
 }
 
 export interface TeamUser {

@@ -2,11 +2,14 @@ import { Phase } from "./phase";
 import { Stage } from "./stage";
 import { UserInfo } from "./user";
 
-export interface Tournament {
-    ID:               number;
+export interface BaseTournament {
+    ID: number;
+    name: string;
+}
+
+export interface Tournament extends BaseTournament {
     createdAt:        Date;
     organizer:        UserInfo;
-    name:             string;
     abbreviation:     string;
     description:      string;
     server:           string;

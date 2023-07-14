@@ -258,6 +258,23 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
         return;
     }
 
+    if (tournaments.some(t => t.status === TournamentStatus.Registrations)) {
+        const qualifierMatches = await Matchup
+            .createQueryBuilder("matchup")
+            .innerJoin("matchup.stage", "stage")
+            .innerJoin("stage.tournament", "tournament")
+            .innerJoin("matchup.teams", "team")
+            .where("tournament.ID = :ID", { ID: tournaments[0].ID })
+            .andWhere("stage.stageType = 0")
+            .andWhere("team.ID = :teamID", { teamID: team.ID })
+            .getMany();
+
+        if (qualifierMatches.length > 0) {
+            ctx.body = { error: "Team is currently registered in a tournament where they have already played a qualifier match" };
+            return;
+        }
+    }
+
     const userID = parseInt(ctx.params.userID);
     if (isNaN(userID)) {
         ctx.body = { error: "Invalid user ID" };

@@ -24,9 +24,25 @@
             <div class="team_fields">
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
+                        TOURNAMENTS
+                    </div>
+                    <div class="team_fields_block">
+                        <div v-if="(teamData.tournaments?.length ?? -1) > 0">
+                            {{ teamData.tournaments?.map(t => t.name).join(", ") }}
+                        </div>
+                        <div v-else>
+                            Registered in no tournaments
+                            <br>
+                            To play in Corsace Open, get 6 members, and choose a qualifier date and time below
+                        </div>
+                    </div>
+                </div>
+                <div class="team_fields_row">
+                    <div class="team_fields_block--label">
                         TEAM STATS
                     </div>
                     <div class="team_fields_block">
+                        <div>Team ID #{{ teamData.ID }}</div>
                         <div>{{ teamData.members.length }} member{{ teamData.members.length === 1 ? "" : "s" }}</div>
                         <div>{{ teamData.BWS }} Average BWS</div>
                         <div>#{{ teamData.rank }} Average Rank</div>
@@ -75,32 +91,43 @@
                         </div>
                     </div>
                     <div class="team_fields_block team__member_list">
-                        <a
+                        <div
                             v-for="member in teamData.members"
                             :key="member.ID"
-                            class="team__member"
-                            :href="'https://osu.ppy.sh/users/' + member.osuID"
+                            class="team__member_invite"
                         >
-                            <img
-                                v-if="member.isManager"
-                                class="team__member_manager"
-                                src="../../../Assets/img/site/open/team/manager.svg"
+                            <a   
+                                :href="'https://osu.ppy.sh/users/' + member.osuID"
+                                class="team__member"
                             >
-                            <div 
-                                v-else 
-                                class="team__member_manager"
-                            />
-                            <img 
-                                class="team__member_avatar"
-                                :src="`https://a.ppy.sh/${member.osuID}`"
+                                <img
+                                    v-if="member.isManager"
+                                    class="team__member_manager"
+                                    src="../../../Assets/img/site/open/team/manager.svg"
+                                >
+                                <div 
+                                    v-else 
+                                    class="team__member_manager"
+                                />
+                                <img 
+                                    class="team__member_avatar"
+                                    :src="`https://a.ppy.sh/${member.osuID}`"
+                                >
+                                <div class="team__member_name">
+                                    {{ member.username }}
+                                </div>
+                                <div class="team__member_bws">
+                                    {{ member.BWS }} BWS
+                                </div>
+                            </a>
+                            <div
+                                v-if="!member.isManager && isManager && editMembers" 
+                                class="team__member_x"
+                                @click="removeMember(member)"
                             >
-                            <div class="team__member_name">
-                                {{ member.username }}
+                                X
                             </div>
-                            <div class="team__member_bws">
-                                {{ member.BWS }} BWS
-                            </div>
-                        </a>
+                        </div>
                     </div>
                 </div>
                 <div 
@@ -195,10 +222,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="team_fields_block">
-                        <div>your mom</div>
-                        <div>your mom2</div>
-                        <div>your dad</div>
+                    <NuxtLink 
+                        v-if="team?.qualifier"
+                        class="team_fields_block"
+                        style="text-decoration: none;"
+                        :to="'/qualifiers/' + team.qualifier.ID"
+                    >
+                        <div>Qualifier ID #{{ team.qualifier.ID }}</div>
+                        <div>{{ team.qualifier.date.toLocaleString('en-US', options) }}</div>
+                    </NuxtLink>
+                    <div 
+                        v-else
+                        class="team_fields_block"
+                    >
+                        Currently not registered in Corsace Open.
                     </div>
                 </div>
             </div>
@@ -231,6 +268,7 @@
                 </div>
             </OpenTitle>
         </div>
+        <!-- Team Edit Modal -->
         <BaseModal
             v-if="edit && teamData && teamData.manager.ID === loggedInUser?.ID"
             @close="edit = false"
@@ -324,6 +362,11 @@
                 DELETE TEAM
             </ContentButton>
         </BaseModal>
+        <!-- Qualifier Edit Modal -->
+        <QualifierModal
+            v-if="editQualifier && teamData && teamData.manager.ID === loggedInUser?.ID"
+            @close="closeQualifierEdit"
+        />
     </div>
 </template>
 
@@ -333,13 +376,14 @@ import { State, namespace } from "vuex-class";
 
 import { Team as TeamInterface, TeamUser, validateTeamText } from "../../../Interfaces/team";
 import { User, UserInfo } from "../../../Interfaces/user";
+import { Tournament } from "../../../Interfaces/tournament";
 
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenInput from "../../../Assets/components/open/OpenInput.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 import BaseModal from "../../../Assets/components/BaseModal.vue";
 import SearchBar from "../../../Assets/components/SearchBar.vue";
-import { Tournament } from "../../../Interfaces/tournament";
+import QualifierModal from "../../../Assets/components/open/QualifierModal.vue";
 
 const openModule = namespace("open");
 
@@ -350,6 +394,7 @@ const openModule = namespace("open");
         OpenTitle,
         BaseModal,
         SearchBar,
+        QualifierModal,
     },
     head () {
         return {
@@ -365,6 +410,15 @@ export default class Team extends Vue {
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State team!: TeamInterface | null;
+
+    options: Intl.DateTimeFormatOptions = {
+        month: "long", // Full month name (e.g., "July")
+        day: "numeric", // Day of the month (e.g., "30")
+        hour: "2-digit", // Two-digit hour (e.g., "23")
+        minute: "2-digit", // Two-digit minute (e.g., "59")
+        timeZone: "UTC", // Set the time zone to UTC
+        timeZoneName: "short", // Abbreviated time zone name (e.g., "UTC")
+    };
 
     edit = false;
     editMembers = false;
@@ -504,6 +558,21 @@ export default class Team extends Vue {
             alert(res.error);
     }
 
+    async removeMember (user: TeamUser) {
+        if (!this.teamData)
+            return;
+
+        if (!confirm(`Are you sure you want to remove ${user.username} from your team?`))
+            return;
+
+        const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/remove/${user.ID}`);
+
+        if (res.success)
+            this.teamData = await this.getTeam(true);
+        else
+            alert(res.error);
+    }
+
     async search (userSearch: string) {
         try {
             const { data } = await this.$axios.get(`/api/users/search?user=${userSearch}`);
@@ -549,6 +618,12 @@ export default class Team extends Vue {
             this.teamData = await this.getTeam(true);
         else
             alert(res.error);
+    }
+
+    async closeQualifierEdit (get: boolean) {
+        this.editQualifier = false;
+        if (get)
+            this.teamData = await this.getTeam(true);
     }
 }
 </script>

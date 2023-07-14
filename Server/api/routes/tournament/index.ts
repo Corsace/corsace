@@ -1,5 +1,7 @@
 import Router from "@koa/router";
+import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Tournament } from "../../../../Models/tournaments/tournament";
+import { BaseQualifier } from "../../../../Interfaces/qualifier";
 
 const tournamentRouter = new Router();
 
@@ -62,6 +64,35 @@ tournamentRouter.get("/open/:year", async (ctx) => {
     });
 
     ctx.body = tournament;
+});
+
+tournamentRouter.get("/qualifiers/:tournamentID", async (ctx) => {
+    const ID = parseInt(ctx.params.tournamentID);
+    if (isNaN(ID)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid tournament ID",
+        };
+        return;
+    }
+
+    const qualifiers = await Matchup
+        .createQueryBuilder("matchup")
+        .leftJoin("matchup.teams", "team")
+        .innerJoin("matchup.stage", "stage")
+        .innerJoin("stage.tournament", "tournament")
+        .where("tournament.ID = :ID", { ID })
+        .andWhere("stage.stageType = 0")
+        .getMany();
+    
+    ctx.body = qualifiers.map<BaseQualifier>(q => ({
+        ID: q.ID,
+        date: q.date,
+        team: q.teams?.[0] ? {
+            name: q.teams[0].name,
+            avatarURL: q.teams[0].avatarURL,
+        } : undefined,
+    }));
 });
 
 export default tournamentRouter;

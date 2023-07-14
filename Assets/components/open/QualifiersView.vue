@@ -1,149 +1,98 @@
 <template>
     <div class="qualifiers_view">
-        <div class="qualifiers_view_day">
+        <div
+            v-for="qualifierGroupedByDate in qualifiersGroupedByDate"
+            :key="qualifierGroupedByDate.date.getTime()"
+            class="qualifiers_view_day"
+        >
             <div class="qualifiers_views_day__date">
                 <div class="qualifiers_view_day__date_text">
-                    AUGUST 11
+                    {{ qualifierGroupedByDate.date.toLocaleString('en-US', { month: 'long', day: 'numeric' }) }}
                 </div>
             </div>
             <hr class="line--even-space line--red">
-            <div class="qualifiers_view_day__team">
+            <NuxtLink
+                v-for="qualifier in qualifierGroupedByDate.qualifiers" 
+                :key="qualifier.ID"
+                :to="`/qualifier/${qualifier.ID}`"
+                class="qualifiers_view_day__team"
+            >
                 <div class="qualifiers_view_day__team_name">
-                    <img src="https://seeklogo.com/images/D/dota-2-logo-A8CAC9B4C9-seeklogo.com.png">
-                    <div>better lol</div>
+                    <img 
+                        :src="qualifier.team?.avatarURL || require('../../img/site/open/team/default.png')"
+                    >
+                    <div>{{ qualifier.team?.name || "NO TEAM" }}</div>
                 </div>
                 <div class="qualifiers_view_day__team_time">
                     <div class="qualifiers_view_day__team_time__element">
-                        1:00 UTC
+                        {{ qualifier.date.getUTCHours() }}:{{ qualifier.date.getUTCMinutes() < 10 ? `0${qualifier.date.getUTCMinutes()}` : qualifier.date.getUTCMinutes() }} UTC
                     </div>
                     <div class="qualifiers_view_day__team_time__button">
-                        <ContentButton 
+                        <!-- <ContentButton 
                             class="content_button content_button--disabled"
                             @click.native="togglePopup()"
                         >
                             JOIN
-                        </ContentButton>
+                        </ContentButton> -->
                     </div>
                 </div>
-            </div>
-            <div class="qualifiers_view_day__team">
-                <div class="qualifiers_view_day__team_name">
-                    <img src="https://open.corsace.io/avatars/62cc0c8de116dcc335fd1e14.png?1657539728833.jpg">
-                    <div>CERES FAUNA FAN CLUB</div>
-                </div>
-                <div class="qualifiers_view_day__team_time">
-                    <div class="qualifiers_view_day__team_time__element">
-                        11:00 UTC
-                    </div>
-                    <div class="qualifiers_view_day__team_time__button">
-                        <ContentButton class="content_button content_button--red_outline">
-                            JOIN
-                        </ContentButton>
-                    </div>
-                </div>
-            </div>
-            <div class="qualifiers_view_day__team">
-                <div class="qualifiers_view_day__team_name">
-                    <img src="../../../Assets/img/corsace.png">
-                    <div>EMPTY SLOT</div>
-                </div>
-                <div class="qualifiers_view_day__team_time">
-                    <div class="qualifiers_view_day__team_time__element">
-                        12:00 UTC
-                    </div>
-                    <div class="qualifiers_view_day__team_time__button">
-                        <ContentButton class="content_button content_button--red_outline">
-                            JOIN
-                        </ContentButton>
-                    </div>
-                </div>
-            </div>
+            </NuxtLink>
         </div>
-        <div class="qualifiers_view_day">
-            <div class="qualifiers_views_day__date">
-                <div class="qualifiers_view_day__date_text">
-                    AUGUST 11
-                </div>
-            </div>
-            <hr class="line--even-space line--red">
-            <div class="qualifiers_view_day__team">
-                <div class="qualifiers_view_day__team_name">
-                    <img src="https://seeklogo.com/images/D/dota-2-logo-A8CAC9B4C9-seeklogo.com.png">
-                    <div>better lol</div>
-                </div>
-                <div class="qualifiers_view_day__team_time">
-                    <div class="qualifiers_view_day__team_time__element">
-                        1:00 UTC
-                    </div>
-                    <div class="qualifiers_view_day__team_time__button">
-                        <ContentButton class="content_button content_button--red_outline">
-                            JOIN
-                        </ContentButton>
-                    </div>
-                </div>
-            </div>
-            <div class="qualifiers_view_day__team">
-                <div class="qualifiers_view_day__team_name">
-                    <img src="https://open.corsace.io/avatars/62cc0c8de116dcc335fd1e14.png?1657539728833.jpg">
-                    <div>CERES FAUNA FAN CLUB</div>
-                </div>
-                <div class="qualifiers_view_day__team_time">
-                    <div class="qualifiers_view_day__team_time__element">
-                        11:00 UTC
-                    </div>
-                    <div class="qualifiers_view_day__team_time__button">
-                        <ContentButton class="content_button content_button--red_outline">
-                            JOIN
-                        </ContentButton>
-                    </div>
-                </div>
-            </div>
-            <div class="qualifiers_view_day__team">
-                <div class="qualifiers_view_day__team_name">
-                    <img src="../../../Assets/img/corsace.png">
-                    <div>EMPTY SLOT</div>
-                </div>
-                <div class="qualifiers_view_day__team_time">
-                    <div class="qualifiers_view_day__team_time__element">
-                        12:00 UTC
-                    </div>
-                    <div class="qualifiers_view_day__team_time__button">
-                        <ContentButton class="content_button content_button--red_outline">
-                            JOIN
-                        </ContentButton>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div 
-            v-show="isOpen"
-            @click="togglePopup()"
+        <BaseModal
+            v-if="isOpen"
+            @click.native="togglePopup()"
         >
-            <ErrorPopup>
-                <span>You cannot create/join a qualifier until you have X players!</span>
-                <span>Press anywhere to close</span>
-            </ErrorPopup>
-        </div>
+            <span>You cannot create/join a qualifier until you have X players!</span>
+            <span>Press anywhere to close</span>
+        </BaseModal>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
-import ContentButton from "./ContentButton.vue";
-import ErrorPopup from "./ErrorPopup.vue";
+
 import { Mappool } from "../../../Interfaces/mappool";
+import { BaseQualifier } from "../../../Interfaces/qualifier";
+
+import BaseModal from "../BaseModal.vue";
+import ContentButton from "./ContentButton.vue";
+import { namespace } from "vuex-class";
+
+const openModule = namespace("open");
 
 @Component({
     components: {
         ContentButton,
-        ErrorPopup,
+        BaseModal,
     },
 })
 export default class QualifiersView extends Vue {
+    @openModule.State qualifiers!: BaseQualifier[] | null;
+
     @PropSync("pool", { default: null }) readonly poolData!: Mappool | null;
+
     isOpen = false;
+
     togglePopup () {
         this.isOpen = !this.isOpen;
+    }
+    
+    get qualifiersGroupedByDate (): { date: Date, qualifiers: BaseQualifier[] }[] {
+        if (!this.qualifiers) return [];
+        const qualifiersGroupedByDate: { date: Date, qualifiers: BaseQualifier[] }[] = [];
+        this.qualifiers.forEach((qualifier) => {
+            const date = new Date(qualifier.date);
+            const qualifiersGroupedByDateIndex = qualifiersGroupedByDate.findIndex((qualifiersGroupedByDate) => qualifiersGroupedByDate.date.getTime() === date.getTime());
+            if (qualifiersGroupedByDateIndex === -1) {
+                qualifiersGroupedByDate.push({
+                    date,
+                    qualifiers: [qualifier],
+                });
+            } else {
+                qualifiersGroupedByDate[qualifiersGroupedByDateIndex].qualifiers.push(qualifier);
+            }
+        });
+        return qualifiersGroupedByDate;
     }
 }
 </script>

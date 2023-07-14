@@ -74,7 +74,6 @@
                     CREATE TEAM
                 </NuxtLink>
                 <a
-                    v-if="team" 
                     class="header__manage_teams_item"
                     @click="togglePopup()"
                 >
@@ -255,7 +254,7 @@ export default class Default extends Vue {
         }
 
         await Promise.all([
-            this.$store.dispatch("setViewTheme"),
+            this.$store.dispatch("setViewTheme", "dark"),
         ]);
     }
 

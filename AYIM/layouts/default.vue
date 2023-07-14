@@ -169,7 +169,7 @@ export default class Default extends Vue {
         }
 
         await Promise.all([
-            this.$store.dispatch("setViewTheme"),
+            this.$store.dispatch("setViewTheme", "light"),
             this.$store.dispatch("mca-ayim/setSelectedMode"),
         ]);
     }

@@ -74,23 +74,20 @@
                         class="qualifiers__button_group"
                     >
                         <ContentButton 
+                            v-if="team && loggedInUser && team.manager.ID === loggedInUser.ID"
                             class="content_button--header_button content_button--disabled"
+                            :class="{ 'content_button--disabled': !team || !tournament || tournament.minTeamSize > team.members.length || tournament.maxTeamSize < team.members.length }"
                             @click.native="togglePopup()"
                         >
                             CREATE
                         </ContentButton>
-                        <ContentButton class="content_button--header_button content_button--red_outline">
-                            JOIN
-                        </ContentButton>
-                        <div 
-                            v-show="isOpen"
-                            @click="togglePopup()"
+                        <BaseModal
+                            v-if="isOpen"
+                            @click.native="togglePopup()"
                         >
-                            <ErrorPopup>
-                                <span>You cannot create/join a qualifier until you have X players!</span>
-                                <span>Press anywhere to close</span>
-                            </ErrorPopup>
-                        </div>
+                            <span>You cannot create/join a qualifier until you have {{ tournament?.minTeamSize === tournament?.maxTeamSize ? tournament?.minTeamSize : tournament?.minTeamSize + " to " + tournament?.maxTeamSize }} players!</span>
+                            <span>Press anywhere to close</span>
+                        </BaseModal>
                     </div>
                 </template>
             </OpenTitle>
@@ -113,12 +110,16 @@
                 class="qualifiers__qualifiers"
             />
         </div>
+        <QualifierModal
+            v-if="editQualifier && team && team.manager.ID === loggedInUser?.ID"
+            @close="closeQualifierEdit"
+        />
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { State, namespace } from "vuex-class";
 
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
@@ -126,10 +127,13 @@ import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
 import QualifiersView from "../../Assets/components/open/QualifiersView.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
-import ErrorPopup from "../../Assets/components/open/ErrorPopup.vue";
+import BaseModal from "../../Assets/components/BaseModal.vue";
 
 import { Stage } from "../../Interfaces/stage";
 import { Tournament } from "../../Interfaces/tournament";
+import { BaseQualifier } from "../../Interfaces/qualifier";
+import { Team } from "../../Interfaces/team";
+import { UserInfo } from "../../Interfaces/user";
 
 const openModule = namespace("open");
 
@@ -141,7 +145,7 @@ const openModule = namespace("open");
         ScoresView,
         OpenTitle,
         QualifiersView,
-        ErrorPopup,
+        BaseModal,
     },
     head () {
         return {
@@ -151,16 +155,33 @@ const openModule = namespace("open");
 })
 export default class Qualifiers extends Vue {
     isOpen = false;
+    page: "mappool" | "qualifiers" | "scores" = "qualifiers";
+    editQualifier = false;
+
+    @State loggedInUser!: UserInfo | null;
+
+    @openModule.State tournament!: Tournament | null;
+    @openModule.State team!: Team | null;
+    @openModule.State qualifiers!: BaseQualifier[] | null;
+
+    get qualifiersStage (): Stage | null {
+        return this.tournament?.stages.find(s => s.stageType === 0) || null;
+    }
+
     togglePopup () {
         this.isOpen = !this.isOpen;
     }
 
-    page: "mappool" | "qualifiers" | "scores" = "mappool";
+    async mounted (): Promise<void> {
+        if (!this.qualifiers) {
+            await this.$store.dispatch("open/setQualifiers", this.tournament?.ID);
+        }
+    }
 
-    @openModule.State tournament!: Tournament | null;
-
-    get qualifiersStage (): Stage | null {
-        return this.tournament?.stages.find(s => s.stageType === 0) || null;
+    async closeQualifierEdit (get: boolean) {
+        this.editQualifier = false;
+        if (get)
+            await this.$store.dispatch("open/setTeam");
     }
 }
 </script>
