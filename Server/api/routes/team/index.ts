@@ -1,8 +1,7 @@
 import Router from "@koa/router";
 import { isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
-import { Team as TeamInterface } from "../../../../Interfaces/team";
-import { profanityFilterStrong } from "../../../../Interfaces/comment";
+import { Team as TeamInterface, validateTeamText } from "../../../../Interfaces/team";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { TournamentRole, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
@@ -70,21 +69,14 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
         return;
     }
 
-    if (/^team /i.test(name)) {
-        name = name.replace(/^team /i, "");
-        if (/^t/i.test(abbreviation))
-            abbreviation = abbreviation.replace(/^t/i, "");
-    }
-
-    if (name.length > 20 || name.length < 5 || profanityFilterStrong.test(name) || /[^\w]/i.test(name)) {
-        ctx.body = { error: "Invalid name" };
+    const res = validateTeamText(name, abbreviation);
+    if ("error" in res) {
+        ctx.body = res;
         return;
     }
 
-    if (abbreviation.length > 4 || abbreviation.length < 2 || profanityFilterStrong.test(abbreviation) || /[^\w]/i.test(abbreviation)) {
-        ctx.body = { error: "Invalid abbreviation" };
-        return;
-    }
+    name = res.name;
+    abbreviation = res.abbreviation;
 
     const team = new Team;
     team.name = name;
@@ -292,6 +284,15 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
         team.name = body.name;
     if (body?.abbreviation)
         team.abbreviation = body.abbreviation;
+
+    const res = validateTeamText(team.name, team.abbreviation);
+    if ("error" in res) {
+        ctx.body = res;
+        return;
+    }
+
+    team.name = res.name;
+    team.abbreviation = res.abbreviation;
 
     await team.save();
 

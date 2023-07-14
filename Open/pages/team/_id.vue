@@ -8,7 +8,7 @@
                 <div class="team__title">
                     <img 
                         class="team__title_avatar"
-                        :src="teamData.avatarURL || require('../../../Assets/img/corsace.png')"
+                        :src="teamData.avatarURL || require('../../../Assets/img/site/open/team/default.png')"
                     > 
                     <span>{{ teamData.name.toUpperCase() }}</span>
                     <span class="team--acronym">({{ teamData.abbreviation.toUpperCase() }})</span>
@@ -29,7 +29,7 @@
                     <div class="team_fields_block">
                         <div>{{ teamData.members.length }} member{{ teamData.members.length === 1 ? "" : "s" }}</div>
                         <div>{{ teamData.BWS }} Average BWS</div>
-                        <div>#{{ teamData.rank }} Average</div>
+                        <div>#{{ teamData.rank }} Average Rank</div>
                     </div>
                 </div>
                 <div class="team_fields_row">
@@ -186,10 +186,97 @@
             </OpenTitle>
         </div>
         <BaseModal
-            v-if="edit"
+            v-if="edit && teamData && teamData.manager.ID === loggedInUser?.ID"
             @close="edit = false"
         >
-            <OpenInput />
+            <div class="team_fields">
+                <div class="team_fields_row">
+                    <div class="team_fields_block--label team_fields_block--edit">
+                        TEAM NAME
+                    </div>
+                    <div class="team_fields_block">
+                        <OpenInput 
+                            :min="5"
+                            :max="20"
+                            :placeholder="'name'"
+                            :text="name"
+                            class="team__input"
+                            @input="name = $event"
+                        />
+                    </div>
+                </div>
+                <div class="team_fields_row">
+                    <div class="team_fields_block--label team_fields_block--edit">
+                        TEAM ABBREVIATION
+                    </div>
+                    <div class="team_fields_block">
+                        <OpenInput 
+                            :min="2"
+                            :max="4"
+                            :placeholder="'abbreviation'"
+                            :text="abbreviation"
+                            class="team__input"
+                            @input="abbreviation = $event"
+                        />
+                    </div>
+                </div>
+                <div class="team_fields_row">
+                    <div class="team_fields_block--label team_fields_block--edit">
+                        TEAM AVATAR
+                    </div>
+                    <div class="team_fields_block team_fields_block__avatar_block">
+                        <label 
+                            for="avatar"
+                            class="content_button content_button--red content_button--red_sm content_button_text team_fields_block--edit"
+                        >
+                            {{ $t('open.create.upload') }}
+                        </label>
+                        <input 
+                            id="avatar"
+                            type="file"
+                            accept=".jpg, .jpeg, .png"
+                            class="team__input_avatar"
+                            @change="uploadAvatar"
+                        >
+
+                        <img 
+                            class="team__title_avatar"
+                            :src="previewBase64 || require('../../../Assets/img/site/open/team/default.png')"
+                        >
+
+                        <div class="team_fields_block--edit">
+                            {{ image?.name }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="team_fields_block">
+                <div 
+                    v-if="sizeError" 
+                    class="team_fields_block--edit"
+                >
+                    Image is too large. Ensure the image is less than 5MB.
+                </div>
+                <div 
+                    v-if="typeError"
+                    class="team_fields_block--edit"
+                >
+                    Invalid image file. Ensure the image is a PNG or JPG.
+                </div>
+            </div>
+            <ContentButton
+                class="content_button--red content_button--red_sm team_fields_block--edit"
+                @click.native="saveEdit"
+            >
+                SAVE
+            </ContentButton>
+            <ContentButton
+                class="content_button--red content_button--red_sm team_fields_block--edit"
+                @click.native="deleteTeam"
+            >
+                DELETE TEAM
+            </ContentButton>
         </BaseModal>
     </div>
 </template>
@@ -198,9 +285,10 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
-import { Team as TeamInterface } from "../../../Interfaces/team";
+import { Team as TeamInterface, validateTeamText } from "../../../Interfaces/team";
 import { UserInfo } from "../../../Interfaces/user";
 
+import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenInput from "../../../Assets/components/open/OpenInput.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 import BaseModal from "../../../Assets/components/BaseModal.vue";
@@ -209,6 +297,7 @@ const openModule = namespace("open");
 
 @Component({
     components: {
+        ContentButton,
         OpenInput,
         OpenTitle,
         BaseModal,
@@ -230,9 +319,19 @@ export default class Team extends Vue {
     loading = false;
     teamData: TeamInterface | null = null;
 
-    async getTeam (): Promise<TeamInterface | null> {
+    name = "";
+    abbreviation = "";
+
+    sizeError = false;
+    typeError = false;
+    previewBase64: string | null = null;
+    image = undefined as File | undefined;
+
+    async getTeam (refresh: boolean): Promise<TeamInterface | null> {
         this.loading = true;
         if (!this.$route.params.id || parseInt(this.$route.params.id) === this.team?.ID) {
+            if (refresh)
+                await this.$store.dispatch("open/setTeam");
             this.loading = false;
             return this.team;
         }
@@ -243,7 +342,105 @@ export default class Team extends Vue {
     }
 
     async mounted () {
-        this.teamData = await this.getTeam();
+        this.teamData = await this.getTeam(false);
+        this.name = this.teamData?.name || "";
+        this.abbreviation = this.teamData?.abbreviation || "";
+        this.previewBase64 = this.teamData?.avatarURL || null;
+    }
+
+    uploadAvatar (e: Event) {
+        this.sizeError = false;
+        this.typeError = false;
+        const target = e.target as HTMLInputElement;
+        this.image = target.files?.[0];
+
+        if (!this.image) {
+            return;
+        }
+
+        // 5 MB limit
+        if (this.image.size > 5 * 1024 * 1024) {
+            this.sizeError = true;
+            return;
+        }
+
+        // File type check
+        if (!this.image.type.startsWith("image/jpeg") && !this.image.type.startsWith("image/png")) {
+            this.typeError = true;
+            return;
+        }
+
+        // Get image and put into previewBase64
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.previewBase64 = e.target?.result as string;
+        };
+        reader.readAsDataURL(this.image);
+    }
+
+    async saveEdit () {
+        if (!this.teamData || (!this.image && this.name === this.teamData.name && this.abbreviation === this.teamData.abbreviation)) {
+            return;
+        }
+
+        if (this.typeError || this.sizeError) {
+            alert("Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.");
+            return;
+        }
+
+        const validate = validateTeamText(this.name, this.abbreviation);
+        if (validate.error) {
+            alert(validate.error);
+            return;
+        }
+
+        ({ name: this.name, abbreviation: this.abbreviation } = validate);
+
+        const { data: res } = await this.$axios.patch(`/api/team/${this.teamData.ID}`, {
+            name: this.name,
+            abbreviation: this.abbreviation,
+        });
+
+        if (res.success) {
+            if (this.image) {
+                const formData = new FormData();
+                formData.append("avatar", this.image, this.image.name);
+                const { data: resAvatar } = await this.$axios.post(`/api/team/${this.teamData.ID}/avatar`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+                this.image = undefined;
+                if (resAvatar.error) {
+                    alert(`Error adding team avatar:\n${resAvatar.error}`);
+                    this.teamData = await this.getTeam(true);
+                    return;
+                }
+            }
+        } else
+            alert(res.error);
+
+        this.teamData = await this.getTeam(true);
+        this.edit = false;
+    }
+
+    async deleteTeam () {
+        if (!this.teamData)
+            return;
+
+        if (!confirm("Are you sure you want to delete this team?"))
+            return;
+
+        if (!confirm("Are you REALLY sure you want to delete this team? This can't be undone!"))
+            return;
+
+        const { data: res } = await this.$axios.delete(`/api/team/${this.teamData.ID}`);
+
+        if (res.success) {
+            await this.$store.dispatch("open/setTeam");
+            this.$router.push("/team/create");
+        } else
+            alert(res.error);
     }
 }
 </script>
@@ -266,10 +463,9 @@ export default class Team extends Vue {
         gap: 20px;
 
         &_avatar {
-            border-radius: 50%;
             border: 1px solid $gray;
-            width: 50px;
-            height: 50px;
+            width: 9rem;
+            height: 3rem;
             object-fit: cover;
 
             &_input {
@@ -294,6 +490,7 @@ export default class Team extends Vue {
 
         &_row {
             display: flex;
+            margin-bottom: 2.5rem
         }
 
         &_block {
@@ -304,14 +501,23 @@ export default class Team extends Vue {
             font-weight: 700;
             font-size: $font-lg;
 
+            &__avatar_block {
+                display: flex;
+                gap: 20px;
+                align-items: center;
+            }
+
             &--label {
                 width: 250px;
                 padding-right: 60px;
-                padding-bottom: 2.5em;
                 color: $open-red;
                 font-family: $font-ggsans;
                 font-weight: 700;
                 font-size: $font-lg;
+            }
+
+            &--edit {
+                text-shadow: none;
             }
 
             &--image {
@@ -353,27 +559,6 @@ export default class Team extends Vue {
                 cursor: pointer;
             }
         }
-
-        &__input {
-            color: $white;
-            outline: none;
-            font-family: $font-ggsans;
-            font-size: $font-xl;
-            font-weight: 800;
-            border: 1px solid #696969;
-            background: linear-gradient(0deg, #2B2B2B, #2B2B2B), linear-gradient(0deg, #F24141, #F24141);
-            height: 2rem;
-            min-width: 50%;
-            caret-color: $open-red;
-
-            &:invalid {
-                color: $open-red;
-            }
-
-            &:focus {
-                border: 1px solid $open-red;
-            }
-        }
     }
 
     &__member {
@@ -392,7 +577,6 @@ export default class Team extends Vue {
         }
 
         &_avatar {
-            border-radius: 50%;
             border: 1px solid $gray;
             width: 50px;
             height: 50px;
@@ -415,6 +599,15 @@ export default class Team extends Vue {
         &_manager {
             width: 20px;
             height: 20px;
+        }
+    }
+
+    &__input {
+        display: flex;
+        margin: 5px 0;
+
+        &_avatar {
+            display: none;
         }
     }
 }

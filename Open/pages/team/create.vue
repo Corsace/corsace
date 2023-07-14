@@ -51,7 +51,7 @@
                             <div class="create_fields_block--inline">
                                 <label 
                                     for="avatar"
-                                    class="content_button content_button--red_sm content_button_text"
+                                    class="content_button content_button--red content_button--red_sm content_button_text"
                                 >
                                     {{ $t('open.create.upload') }}
                                 </label>
@@ -91,7 +91,7 @@
                         <div class="create_fields_block">
                             <img 
                                 class="create_fields_block--image"
-                                :src="previewBase64"
+                                :src="previewBase64 || require('../../../Assets/img/site/open/team/default.png')"
                             >
                             <div class="create_fields__finetext--diamonds">
                                 {{ $t('open.create.avatarInfo1') }}
@@ -157,10 +157,9 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
-import { Team } from "../../../Interfaces/team";
+import { Team, validateTeamText } from "../../../Interfaces/team";
 import { Tournament } from "../../../Interfaces/tournament";
 import { UserInfo } from "../../../Interfaces/user";
-import { profanityFilterStrong } from "../../../Interfaces/comment";
 
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenInput from "../../../Assets/components/open/OpenInput.vue";
@@ -201,7 +200,7 @@ export default class Create extends Vue {
 
     sizeError = false;
     typeError = false;
-    previewBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAABkCAQAAACWCMVLAAAAxklEQVR42u3SMQ0AAAzDsJU/6aGo1MOGECUHBZEAY2EsjAXGwlgYC4yFsTAWGAtjYSwwFsbCWGAsjIWxwFgYC2OBsTAWxgJjYSyMBcbCWBgLjIWxMBYYC2NhLDAWxsJYYCyMhbHAWBgLY4GxMBbGAmNhLIwFxsJYGAuMhbEwFhgLY2EsMBbGwlhgLIyFscBYGAtjgbEwFsYCY2EsjAXGwlgYC4yFsTAWGAtjYSwwFsbCWBgLjIWxMBYYC2NhLDAWxsJYYCy2PT0vAGXiVAUcAAAAAElFTkSuQmCC";
+    previewBase64: string | null = null;
     image = undefined as File | undefined;
 
     uploadAvatar (e: Event) {
@@ -219,8 +218,6 @@ export default class Create extends Vue {
             this.sizeError = true;
             return;
         }
-
-        console.log(this.image);
 
         // File type check
         if (!this.image.type.startsWith("image/jpeg") && !this.image.type.startsWith("image/png")) {
@@ -244,28 +241,24 @@ export default class Create extends Vue {
     }
 
     async create () {
-        if (/^team\s?/i.test(this.name)) {
-            this.name = this.name.replace(/^team\s?/i, "");
-            if (/^t/i.test(this.abbreviation))
-                this.abbreviation = this.abbreviation.replace(/^t/i, "");
-        }
-
-        if (this.name.length > 20 || this.name.length < 5 || profanityFilterStrong.test(this.name) || /[^\w]/i.test(this.name)) {
-            alert("Team name is invalid. Ensure the team name is between 5 and 20 characters and does not contain any profanity.");
+        if (this.typeError || this.sizeError) {
+            alert("Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.");
             return;
         }
 
-        if (this.abbreviation.length > 4 || this.abbreviation.length < 2 || profanityFilterStrong.test(this.abbreviation) || /[^\w]/i.test(this.abbreviation)) {
-            alert("Team abbreviation is invalid. Ensure the team abbreviation is between 2 and 4 characters and does not contain any profanity.");
+        const validate = validateTeamText(this.name, this.abbreviation);
+        if (validate.error) {
+            alert(validate.error);
             return;
         }
+
+        ({ name: this.name, abbreviation: this.abbreviation } = validate);
 
         const { data: res } = await this.$axios.post("/api/team/create", {
             name: this.name,
             abbreviation: this.abbreviation,
             isPlaying: !this.isNotPlaying,
         });
-        console.log(res);
 
         if (res.success) {
             if (this.image) {
@@ -276,7 +269,6 @@ export default class Create extends Vue {
                         "Content-Type": "multipart/form-data",
                     },
                 });
-                console.log(resAvatar);
                 if (resAvatar.error)
                     alert(`Error adding team avatar:\n${resAvatar.error}\n\nYou can try adding a team avatar again on the team page`);
             }
@@ -357,8 +349,8 @@ export default class Create extends Vue {
             &--image {
                 border: 1px solid $gray;
                 margin: 5px 0px;
-                max-width: 512px;
-                max-height: 512px;
+                max-width: 9rem;
+                max-height: 3rem;
             }
 
             &--highlight {

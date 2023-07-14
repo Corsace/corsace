@@ -5,7 +5,7 @@ import { Team } from "../../../../Models/tournaments/team";
 
 const SIZE_RESTRICTION = 512;
 
-export async function uploadTeamAvatar (team: Team, filepath: string) {
+export async function createTeamImage (filepath: string) {
     // First resize the image where the smaller side is SIZE_RESTRICTIONpx if the image is larger than SIZE_RESTRICTIONpx
     const image = await Jimp.read(filepath);
     if (image.getWidth() > SIZE_RESTRICTION || image.getHeight() > SIZE_RESTRICTION) {
@@ -20,6 +20,12 @@ export async function uploadTeamAvatar (team: Team, filepath: string) {
     const x = Math.round((image.getWidth() - size) / 2);
     const y = Math.round((image.getHeight() - size) / 2);
     image.crop(x, y, size, size);
+
+    return image;
+}
+
+export async function uploadTeamAvatar (team: Team, filepath: string) {
+    const image = await createTeamImage(filepath);
 
     const s3Key = `${team.ID}_${Date.now()}.${image.getExtension()}`;
     const imgBuffer = await image.getBufferAsync(image.getMIME());
