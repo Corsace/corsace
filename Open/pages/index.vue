@@ -7,7 +7,7 @@
             class="index__video"
         >
             <source 
-                src="https://cdn.discordapp.com/attachments/461588387854417922/1121109155277721641/output.mp4"
+                src=""
                 type="video/mp4"
             >
         </video> -->
@@ -53,9 +53,9 @@
                         </template>
                         {{ $t('open.home.button.mappoolDownload') }}
                     </OpenButton>
-                    <OpenButton>
+                    <!-- <OpenButton>
                         <div class="index_portal__button--racing" />
-                    </OpenButton>         
+                    </OpenButton>          -->
                 </div>
                 <!-- RIGHT: register your team-->
                 <div class="index_portal__section">
