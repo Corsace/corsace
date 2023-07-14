@@ -14,6 +14,13 @@
                             {{ $t('open.create.teamName') }}
                         </div>
                         <div class="create_fields_block">
+                            <OpenInput 
+                                :min="5"
+                                :max="20"
+                                :placeholder="'name'"
+                                :text="name"
+                                @input="name = $event"
+                            />
                             <div class="create_fields__finetext">
                                 {{ $t('open.create.teamLength') }}
                             </div>
@@ -24,13 +31,13 @@
                             {{ $t('open.create.teamAcronym') }}
                         </div>
                         <div class="create_fields_block">
-                            <input
-                                v-model="abbreviation"
-                                class="create_fields__input" 
-                                type="text"
-                                minlength="2"
-                                maxlength="4"
-                            >
+                            <OpenInput 
+                                :min="2"
+                                :max="4"
+                                :placeholder="'abbreviation'"
+                                :text="abbreviation"
+                                @input="abbreviation = $event"
+                            />
                             <div class="create_fields__finetext">
                                 {{ $t('open.create.acronymLength') }}
                             </div>
@@ -156,6 +163,7 @@ import { UserInfo } from "../../../Interfaces/user";
 import { profanityFilterStrong } from "../../../Interfaces/comment";
 
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
+import OpenInput from "../../../Assets/components/open/OpenInput.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 
 const openModule = namespace("open");
@@ -163,6 +171,7 @@ const openModule = namespace("open");
 @Component({
     components: {
         ContentButton,
+        OpenInput,
         OpenTitle,
     },
     head () {
@@ -228,10 +237,10 @@ export default class Create extends Vue {
     }
 
     mounted () {
-        if (!this.loggedInUser?.discord.userID)
-            this.$router.push("/");
-        else if (this.team)
-            this.$router.push(`/team`);
+        // if (!this.loggedInUser?.discord.userID)
+        //     this.$router.push("/");
+        // else if (this.team)
+        //     this.$router.push(`/team`);
     }
 
     async create () {

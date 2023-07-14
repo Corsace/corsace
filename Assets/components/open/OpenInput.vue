@@ -24,7 +24,7 @@ export default class OpenInput extends Vue {
     @PropSync("text", { type: String, default: "" }) textVal!: string;
 
     updateText (e) {
-        this.$emit("update:search", e.target.value);
+        this.$emit("input", e.target.value);
     }
 }
 </script>
