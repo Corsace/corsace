@@ -1,14 +1,17 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { Tournament } from "../../Interfaces/tournament";
+import { Team } from "../../Interfaces/team";
 
 export interface OpenState {
     site: string;
     tournament: Tournament | null;
+    team: Team | null;
 }
 
 export const state = (): OpenState => ({
     site: "",
     tournament: null,
+    team: null,
 });
 
 export const mutations: MutationTree<OpenState> = {
@@ -57,17 +60,31 @@ export const mutations: MutationTree<OpenState> = {
                 })),
             };
     },
+    setTeam (state, teams: Team[] | undefined) {
+        state.team = teams?.[0] || null;
+    },
 };
 
 export const getters: GetterTree<OpenState, OpenState> = {
 };
 
 export const actions: ActionTree<OpenState, OpenState> = {
-    async setInitialData ({ commit }, year) {
+    async setTournament ({ commit }, year) {
         const { data } = await this.$axios.get(`/api/tournament/open/${year}`);
 
         if (!data.error) {
             commit("setTournament", data);
         }
+    },
+    async setTeam ({ commit }) {
+        const { data } = await this.$axios.get(`/api/team`);
+
+        if (!data.error) {
+            commit("setTeam", data);
+        }
+    },
+    async setInitialData ({ dispatch }, year) {
+        await dispatch("setTournament", year);
+        await dispatch("setTeam");
     },
 };

@@ -182,6 +182,7 @@
                                         'content_button--red': mappool.isPublic,
                                         'content_button--disabled': !mappool.isPublic,
                                     }"
+                                    :link="`/mappool`"
                                 >
                                     {{ mappool.isPublic ? $t('open.info.mappools.info') : $t('open.info.mappools.notAvailable') }}
                                 </ContentButton>

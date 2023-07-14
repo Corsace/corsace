@@ -1,6 +1,7 @@
 import Router from "@koa/router";
 import { isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
+import { Team as TeamInterface } from "../../../../Interfaces/team";
 import { profanityFilterStrong } from "../../../../Interfaces/comment";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { TournamentRole, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
@@ -25,15 +26,7 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
         .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
         .getMany();
 
-    ctx.body = teams.map(team => {
-        return {
-            ID: team.ID,
-            name: team.name,
-            abbreviation: team.abbreviation,
-            manager: `${team.manager.osu.username} (${team.manager.osu.userID})`,
-            members: team.members.map(member => `${member.osu.username} (${member.osu.userID})`),
-        };
-    });
+    ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface()));
 });
 
 teamRouter.get("/all", async (ctx) => {
@@ -49,15 +42,23 @@ teamRouter.get("/all", async (ctx) => {
 
     const teams = await teamQ.getMany();
 
-    ctx.body = teams.map(team => {
-        return {
-            ID: team.ID,
-            name: team.name,
-            abbreviation: team.abbreviation,
-            manager: `${team.manager.osu.username} (${team.manager.osu.userID})`,
-            members: team.members.map(member => `${member.osu.username} (${member.osu.userID})`),
-        };
-    });
+    ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface()));
+});
+
+teamRouter.get("/:teamID", async (ctx) => {
+    const team = await Team
+        .createQueryBuilder("team")
+        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member")
+        .where("team.ID = :ID", { ID: ctx.params.teamID })
+        .getOne();
+
+    if (!team) {
+        ctx.body = { error: "Team not found" };
+        return;
+    }
+
+    ctx.body = await team.teamInterface();
 });
 
 teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
@@ -75,12 +76,12 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
             abbreviation = abbreviation.replace(/^t/i, "");
     }
 
-    if (name.length > 20 || name.length < 5 || profanityFilterStrong.test(name)) {
+    if (name.length > 20 || name.length < 5 || profanityFilterStrong.test(name) || /[^\w]/i.test(name)) {
         ctx.body = { error: "Invalid name" };
         return;
     }
 
-    if (abbreviation.length > 4 || abbreviation.length < 2 || profanityFilterStrong.test(abbreviation)) {
+    if (abbreviation.length > 4 || abbreviation.length < 2 || profanityFilterStrong.test(abbreviation) || /[^\w]/i.test(abbreviation)) {
         ctx.body = { error: "Invalid abbreviation" };
         return;
     }

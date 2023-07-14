@@ -26,6 +26,14 @@
                         <hr class="line--red line--no-space">
                         <ul class="index_schedule__content">
                             <li 
+                                v-if="tournament"
+                                class="index_schedule__group"
+                            >
+                                <span class="index_schedule__event"> Registrations </span>
+                                <span class="index_schedule__line" />
+                                <span class="index_schedule__time">{{ new Date(tournament.registrations.start || "").toLocaleString('en-US', optionsRange) }} - {{ new Date(tournament.registrations.end || "").toLocaleString('en-US', optionsRange) }}</span>
+                            </li>
+                            <li 
                                 v-for="round in tournament?.stages"
                                 :key="round.name"
                                 class="index_schedule__group"
