@@ -3,7 +3,7 @@ import { Command } from "../..";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
-import { StageType } from "../../../../Models/tournaments/stage";
+import { StageType } from "../../../../Interfaces/stage";
 import { Tournament, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import { filter, timedOut } from "../../../functions/messageInteractionFunctions";
 import { loginResponse } from "../../../functions/loginResponse";

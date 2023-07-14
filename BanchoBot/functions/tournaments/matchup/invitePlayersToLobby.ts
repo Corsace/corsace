@@ -1,6 +1,6 @@
 import { BanchoLobby } from "bancho.js";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { StageType } from "../../../../Models/tournaments/stage";
+import { StageType } from "../../../../Interfaces/stage";
 
 export default async function invitePlayersToLobby (matchup: Matchup, mpLobby: BanchoLobby) {
     if (matchup.stage!.stageType === StageType.Qualifiers) {

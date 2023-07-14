@@ -1,10 +1,11 @@
 import { BanchoChannel, BanchoLobby, BanchoMessage } from "bancho.js";
+import { StageType } from "../../../../Interfaces/stage";
 import { Beatmap } from "../../../../Models/beatmap";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { leniencyTime, StageType } from "../../../../Models/tournaments/stage";
+import { leniencyTime } from "../../../../Models/tournaments/stage";
 import getMappoolSlotMods from "./getMappoolSlotMods";
 
 async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, pools: Mappool[]): Promise<[Beatmap, number | null | undefined, boolean] | null> {

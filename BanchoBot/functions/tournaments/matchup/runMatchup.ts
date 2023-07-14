@@ -1,8 +1,8 @@
 import { randomUUID } from "crypto";
 import { banchoClient } from "../../..";
-import { leniencyTime, ScoringMethod } from "../../../../Models/tournaments/stage";
+import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { StageType } from "../../../../Models/tournaments/stage";
+import { StageType, ScoringMethod } from "../../../../Interfaces/stage";
 import { osuClient } from "../../../../Server/osu";
 import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions } from "bancho.js";
 import { convertDateToDDDHH } from "../../../../Server/utils/dateParse";

@@ -6,25 +6,7 @@ import { Tournament } from "./tournament";
 import { User } from "../user";
 import { Matchup } from "./matchup";
 import { MapOrder } from "./mapOrder";
-
-export enum StageType {
-    Qualifiers,
-    Singleelimination,
-    Doubleelimination,
-    Roundrobin,
-    Swiss,
-}
-
-export enum ScoringMethod {
-    ScoreV1,
-    ScoreV2,
-    Accuracy,
-    Combo,
-    Count300,
-    Count100,
-    Count50,
-    CountMiss,
-}
+import { ScoringMethod, StageType } from "../../Interfaces/stage";
 
 export const leniencyTime = 10 * 1000;
 

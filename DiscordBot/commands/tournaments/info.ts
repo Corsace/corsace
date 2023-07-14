@@ -6,7 +6,7 @@ import { extractParameter } from "../../functions/parameterFunctions";
 import { discordStringTimestamp } from "../../../Server/utils/dateParse";
 import { User } from "../../../Models/user";
 import respond from "../../functions/respond";
-import { StageType } from "../../../Models/tournaments/stage";
+import { StageType } from "../../../Interfaces/stage";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

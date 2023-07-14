@@ -1,5 +1,5 @@
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { StageType } from "../../../../Models/tournaments/stage";
+import { StageType } from "../../../../Interfaces/stage";
 import { Team } from "../../../../Models/tournaments/team";
 
 export default function isPlayerInMatchup (matchup: Matchup, playerID: string, checkManager: boolean): boolean {

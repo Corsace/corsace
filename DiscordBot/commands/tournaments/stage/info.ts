@@ -7,7 +7,7 @@ import commandUser from "../../../functions/commandUser";
 import { loginResponse } from "../../../functions/loginResponse";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import getStage from "../../../functions/tournamentFunctions/getStage";
-import { ScoringMethod, StageType } from "../../../../Models/tournaments/stage";
+import { ScoringMethod, StageType } from "../../../../Interfaces/stage";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Round } from "../../../../Models/tournaments/round";

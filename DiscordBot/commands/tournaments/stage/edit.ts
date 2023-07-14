@@ -8,10 +8,11 @@ import commandUser from "../../../functions/commandUser";
 import { loginResponse } from "../../../functions/loginResponse";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import getStage from "../../../functions/tournamentFunctions/getStage";
-import { ScoringMethod, Stage, StageType } from "../../../../Models/tournaments/stage";
+import { Stage } from "../../../../Models/tournaments/stage";
 import editProperty from "../../../functions/tournamentFunctions/editProperty";
 import { profanityFilterStrong } from "../../../../Interfaces/comment";
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../../Server/utils/dateParse";
+import { ScoringMethod, StageType } from "../../../../Interfaces/stage";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))

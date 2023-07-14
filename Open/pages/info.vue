@@ -95,7 +95,7 @@
                                     {{ $t('open.info.matchInfo.scoringMethod') }}
                                 </template>
                                 <template #value>
-                                    {{ stage.scoringMethod.toString() }}
+                                    {{ scoringMethod }}
                                 </template>
                             </InfoData>
                             <InfoData>
@@ -103,7 +103,7 @@
                                     {{ $t('open.info.matchInfo.type') }}
                                 </template>
                                 <template #value>
-                                    {{ stage.stageType.toString() }}
+                                    {{ stageType }}
                                 </template>
                             </InfoData>
                         </div>
@@ -223,7 +223,7 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { Tournament } from "../../Interfaces/tournament";
-import { Stage } from "../../Interfaces/stage";
+import { ScoringMethod, Stage, StageType } from "../../Interfaces/stage";
 import { Mappool } from "../../Interfaces/mappool";
 
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
@@ -278,6 +278,18 @@ export default class Info extends Vue {
 
     get stage (): Stage | null {
         return this.tournament?.stages.find(s => s.ID === this.selectedStage) || null;
+    }
+
+    get stageType () {
+        if (this.stage)
+            return StageType[this.stage.stageType];
+        return "";
+    }
+
+    get scoringMethod () {
+        if (this.stage)
+            return ScoringMethod[this.stage.scoringMethod];
+        return "";
     }
 
     @Watch("stage", { immediate: true })
