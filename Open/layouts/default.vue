@@ -212,8 +212,6 @@ import { State, namespace } from "vuex-class";
 import { UserInfo } from "../../Interfaces/user";
 import { Team } from "../../Interfaces/team";
 
-import { UserInfo } from "../../Interfaces/user";
-
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
 import Tooltip from "../../Assets/components/footer/Tooltip.vue";

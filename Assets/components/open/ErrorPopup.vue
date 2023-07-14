@@ -7,19 +7,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, PropSync } from "vue-property-decorator";
-import MappoolSlotDropdown from "./MappoolSlotDropdown.vue";
-import MappoolMapBanner from "./MappoolMapBanner.vue";
-import { Mappool } from "../../../Interfaces/mappool";
+import { Vue, Component } from "vue-property-decorator";
 
 @Component({
     components: {
-        MappoolSlotDropdown,
-        MappoolMapBanner,
     },
 })
-export default class MappoolView extends Vue {
-    @PropSync("pool", { default: null }) readonly poolData!: Mappool | null;
+export default class ErrorPopup extends Vue {
+
 }
 </script>
 
