@@ -37,7 +37,7 @@
                             </div>
                             <img 
                                 class="qualifiers__button_ico" 
-                                src="../../Assets/img/site/open/sheets-ico.svg"
+                                src="../../Assets/img/site/open/mappool/sheets-ico.svg"
                             >
                         </a>
                         <a 
@@ -50,7 +50,7 @@
                             </div>
                             <img 
                                 class="qualifiers__button_ico"
-                                src="../../Assets/img/site/open/dl-ico.svg"
+                                src="../../Assets/img/site/open/mappool/dl-ico.svg"
                             >
                         </a>
                     </div>
@@ -91,6 +91,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
@@ -99,7 +100,6 @@ import ScoresView from "../../Assets/components/open/ScoresView.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 
 import { Stage } from "../../Interfaces/stage";
-import { namespace } from "vuex-class";
 import { Tournament } from "../../Interfaces/tournament";
 
 const openModule = namespace("open");

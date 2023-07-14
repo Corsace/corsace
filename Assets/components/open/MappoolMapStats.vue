@@ -6,7 +6,7 @@
             class="mappool_map_stats__stat"
         >
             <img
-                :src="require(`../../img/site/open/${stat.image}.svg`)"
+                :src="require(`../../img/site/open/mappool/${stat.image}.svg`)"
                 class="mappool_map_stats-table__img"
             >
             {{ map?.beatmap?.[stat.property]?.toFixed(stat.decimals) || map?.beatmap?.beatmapset?.[stat.property]?.toFixed(stat.decimals) || "" }}

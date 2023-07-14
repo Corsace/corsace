@@ -14,13 +14,13 @@
                             {{ $t('open.create.teamName') }}
                         </div>
                         <div class="create_fields_block">
-                            <input
-                                v-model="name"
-                                class="create_fields__input" 
-                                type="text"
-                                minlength="5"
-                                maxlength="20"
-                            >
+                            <OpenInput 
+                                :min="5"
+                                :max="20"
+                                :placeholder="'name'"
+                                :text="name"
+                                @input="name = $event"
+                            />
                             <div class="create_fields__finetext">
                                 {{ $t('open.create.teamLength') }}
                             </div>
@@ -31,13 +31,13 @@
                             {{ $t('open.create.teamAcronym') }}
                         </div>
                         <div class="create_fields_block">
-                            <input
-                                v-model="abbreviation"
-                                class="create_fields__input" 
-                                type="text"
-                                minlength="2"
-                                maxlength="4"
-                            >
+                            <OpenInput 
+                                :min="2"
+                                :max="4"
+                                :placeholder="'abbreviation'"
+                                :text="abbreviation"
+                                @input="abbreviation = $event"
+                            />
                             <div class="create_fields__finetext">
                                 {{ $t('open.create.acronymLength') }}
                             </div>
@@ -108,37 +108,35 @@
             </div>
             <hr class="line--gray line--nofill line--even-space">
             <div class="create_fields">
-                <div class="create_fields_body">
-                    <div class="create_fields_row">
-                        <div class="create_fields_block--label">
-                            {{ $t('open.create.teamManagement') }}
-                        </div>
-                        <div class="create_fields_block">
-                            <div 
-                                class="create_fields_block--highlight"
-                                v-html="$t('open.create.teamManagers')" 
+                <div class="create_fields_row">
+                    <div class="create_fields_block--label">
+                        {{ $t('open.create.teamManagement') }}
+                    </div>
+                    <div class="create_fields_block">
+                        <div 
+                            class="create_fields_block--highlight"
+                            v-html="$t('open.create.teamManagers')" 
+                        />
+                        <div 
+                            class="create_fields_block--highlight"
+                            v-html="$t('open.create.teamManagersFree')"
+                        />
+                        <br>
+                        <div 
+                            class="create_fields_block--highlight"
+                            v-html="$t('open.create.selectManager')" 
+                        />
+                        <div class="create_fields_block--spaced create_fields_block--inline">
+                            <input 
+                                v-model="isNotPlaying"
+                                class="create_fields_block__checkbox"
+                                type="checkbox"
+                            >
+                            <div
+                                class="create_fields__finetext create_fields__finetext--spaced create_fields__finetext--clickable"
+                                @click="isNotPlaying = !isNotPlaying" 
+                                v-html="$t('open.create.confirmManager')" 
                             />
-                            <div 
-                                class="create_fields_block--highlight"
-                                v-html="$t('open.create.teamManagersFree')"
-                            />
-                            <br>
-                            <div 
-                                class="create_fields_block--highlight"
-                                v-html="$t('open.create.selectManager')" 
-                            />
-                            <div class="create_fields_block--spaced create_fields_block--inline">
-                                <input 
-                                    v-model="isNotPlaying"
-                                    class="create_fields_block__checkbox"
-                                    type="checkbox"
-                                >
-                                <div
-                                    class="create_fields__finetext create_fields__finetext--spaced create_fields__finetext--clickable"
-                                    @click="isNotPlaying = !isNotPlaying" 
-                                    v-html="$t('open.create.confirmManager')" 
-                                />
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -159,18 +157,21 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
-import { Tournament } from "../../Interfaces/tournament";
-import { UserInfo } from "../../Interfaces/user";
-import { profanityFilterStrong } from "../../Interfaces/comment";
+import { Team } from "../../../Interfaces/team";
+import { Tournament } from "../../../Interfaces/tournament";
+import { UserInfo } from "../../../Interfaces/user";
+import { profanityFilterStrong } from "../../../Interfaces/comment";
 
-import ContentButton from "../../Assets/components/open/ContentButton.vue";
-import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
+import ContentButton from "../../../Assets/components/open/ContentButton.vue";
+import OpenInput from "../../../Assets/components/open/OpenInput.vue";
+import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 
 const openModule = namespace("open");
 
 @Component({
     components: {
         ContentButton,
+        OpenInput,
         OpenTitle,
     },
     head () {
@@ -190,6 +191,7 @@ export default class Create extends Vue {
     };
 
     @openModule.State tournament!: Tournament | null;
+    @openModule.State team!: Team | null;
 
     @State loggedInUser!: null | UserInfo;
 
@@ -218,6 +220,8 @@ export default class Create extends Vue {
             return;
         }
 
+        console.log(this.image);
+
         // File type check
         if (!this.image.type.startsWith("image/jpeg") && !this.image.type.startsWith("image/png")) {
             this.typeError = true;
@@ -233,9 +237,10 @@ export default class Create extends Vue {
     }
 
     mounted () {
-        // if (!this.loggedInUser) {
-        //     this.$router.push("/");
-        // }
+        if (!this.loggedInUser?.discord.userID)
+            this.$router.push("/");
+        else if (this.team)
+            this.$router.push(`/team`);
     }
 
     async create () {
@@ -245,12 +250,12 @@ export default class Create extends Vue {
                 this.abbreviation = this.abbreviation.replace(/^t/i, "");
         }
 
-        if (this.name.length > 20 || this.name.length < 5 || profanityFilterStrong.test(this.name)) {
+        if (this.name.length > 20 || this.name.length < 5 || profanityFilterStrong.test(this.name) || /[^\w]/i.test(this.name)) {
             alert("Team name is invalid. Ensure the team name is between 5 and 20 characters and does not contain any profanity.");
             return;
         }
 
-        if (this.abbreviation.length > 4 || this.abbreviation.length < 2 || profanityFilterStrong.test(this.abbreviation)) {
+        if (this.abbreviation.length > 4 || this.abbreviation.length < 2 || profanityFilterStrong.test(this.abbreviation) || /[^\w]/i.test(this.abbreviation)) {
             alert("Team abbreviation is invalid. Ensure the team abbreviation is between 2 and 4 characters and does not contain any profanity.");
             return;
         }
@@ -260,24 +265,26 @@ export default class Create extends Vue {
             abbreviation: this.abbreviation,
             isPlaying: !this.isNotPlaying,
         });
+        console.log(res);
 
         if (res.success) {
             if (this.image) {
                 const formData = new FormData();
                 formData.append("avatar", this.image, this.image.name);
-                const { data: resAvatar } = await this.$axios.post(`/api/team/${res.teamID}/avatar`, formData, {
+                const { data: resAvatar } = await this.$axios.post(`/api/team/${res.team.ID}/avatar`, formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
                 });
+                console.log(resAvatar);
                 if (resAvatar.error)
-                    alert(resAvatar.error);
+                    alert(`Error adding team avatar:\n${resAvatar.error}\n\nYou can try adding a team avatar again on the team page`);
             }
 
             if (res.error)
-                alert(res.error);
+                alert(`Error making team:\n${res.error}`);
 
-            this.$router.push(`/team/${res.teamID}`);
+            this.$router.push(`/team/${res.team.ID}`);
         } else
             alert(res.error);
     }
@@ -317,25 +324,18 @@ export default class Create extends Vue {
     }
 
     &_fields {
-        display: table;
         align-self: center;
 
-        &_body {
-            display: table-row-group;
-        }
-
         &_row {
-            display: table-row;
+            display: flex;
         }
 
         &_block {
-            display: table-cell;
             padding: 3px 0px;
             position: relative;
             min-width: 40vw;
 
             &--label {
-                display: table-cell;
                 padding-right: 60px;
                 color: $open-red;
                 font-family: $font-ggsans;
@@ -355,7 +355,7 @@ export default class Create extends Vue {
             }
 
             &--image {
-                border: 1px solid #A0A0A0;
+                border: 1px solid $gray;
                 margin: 5px 0px;
                 max-width: 512px;
                 max-height: 512px;
@@ -411,27 +411,6 @@ export default class Create extends Vue {
 
         &__avatar_input {
             display: none;
-        }
-
-        &__input {
-            color: $white;
-            outline: none;
-            font-family: $font-ggsans;
-            font-size: $font-xl;
-            font-weight: 800;
-            border: 1px solid #696969;
-            background: linear-gradient(0deg, #2B2B2B, #2B2B2B), linear-gradient(0deg, #F24141, #F24141);
-            height: 2rem;
-            min-width: 50%;
-            caret-color: $open-red;
-
-            &:invalid {
-                color: $open-red;
-            }
-
-            &:focus {
-                border: 1px solid $open-red;
-            }
         }
 
         &__finetext {

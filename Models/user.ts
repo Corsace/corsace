@@ -395,6 +395,13 @@ export class User extends BaseEntity {
         return osuV2Client.getUserInfo(accessToken);
     }
 
+    public async calculateBWS (modeID = 1) {
+        const data = await this.getOsuAPIV2Data();
+        const badges = User.filterBWSBadges(data.badges, modeID);
+        const bws = Math.pow(data.statistics.global_rank, Math.pow(0.9937, Math.pow(badges.length, 2)));
+        return bws;
+    }
+
     public getCondensedInfo (chosen = false): UserChoiceInfo {
         return {
             corsaceID: this.ID,

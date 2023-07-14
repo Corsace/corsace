@@ -12,7 +12,7 @@
                             </div>
                             <img 
                                 class="qualifiers__button_ico" 
-                                src="../../Assets/img/site/open/sheets-ico.svg"
+                                src="../../Assets/img/site/open/mappool/sheets-ico.svg"
                             >
                         </a>
                         <a class="qualifiers__button">
@@ -21,13 +21,14 @@
                             </div>
                             <img 
                                 class="qualifiers__button_ico"
-                                src="../../Assets/img/site/open/dl-ico.svg"
+                                src="../../Assets/img/site/open/mappool/dl-ico.svg"
                             >
                         </a>
                     </template>
                 </OpenTitle>
-                <MappoolView 
-                    :pool="qualifiersStage?.mappool[0]"
+                <MappoolView
+                    v-if="qualifiersStage?.mappool?.[0].isPublic"
+                    :pool="qualifiersStage.mappool[0]"
                 />
             </div>
             <div class="mappool__temp_wrapper_right" />

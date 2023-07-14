@@ -56,16 +56,25 @@
                 </NuxtLink> -->
             </div>
             <div 
-                v-if="loggedInUser"
+                v-if="loggedInUser?.discord.userID"
                 class="header__manage_teams"
             >
-                <NuxtLink 
-                    to="/teams/id"
+                <NuxtLink
+                    v-if="team"
+                    :to="`/team/${team.ID}`"
                     class="header__manage_teams_item"
                 >
-                    MY TEAM
+                    {{ team.abbreviation.toUpperCase() }}
                 </NuxtLink>
-                <a 
+                <NuxtLink
+                    v-else
+                    to="/team/create"
+                    class="header__manage_teams_item"
+                >
+                    CREATE TEAM
+                </NuxtLink>
+                <a
+                    v-if="team" 
                     class="header__manage_teams_item"
                     @click="togglePopup()"
                 >
@@ -198,7 +207,10 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { State, namespace } from "vuex-class";
+
+import { UserInfo } from "../../Interfaces/user";
+import { Team } from "../../Interfaces/team";
 
 import { UserInfo } from "../../Interfaces/user";
 
@@ -206,6 +218,8 @@ import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
 import Tooltip from "../../Assets/components/footer/Tooltip.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
+
+const openModule = namespace("open");
 
 @Component({
     components: {
@@ -220,6 +234,8 @@ export default class Default extends Vue {
     
     @State viewTheme!: "light" | "dark";
     @State loggedInUser!: null | UserInfo;
+
+    @openModule.State team!: Team | null;
 
     isSmall = false;
 
@@ -303,7 +319,7 @@ export default class Default extends Vue {
     /*temp*/
     &__manage_teams {
         position:absolute;
-        left:calc(100% - 20vw);
+        left:calc(100% - 21vw);
         align-self: center;
         display: flex;
         flex-direction: column;
