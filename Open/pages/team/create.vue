@@ -237,10 +237,10 @@ export default class Create extends Vue {
     }
 
     mounted () {
-        // if (!this.loggedInUser?.discord.userID)
-        //     this.$router.push("/");
-        // else if (this.team)
-        //     this.$router.push(`/team`);
+        if (!this.loggedInUser?.discord.userID)
+            this.$router.push("/");
+        else if (this.team)
+            this.$router.push(`/team`);
     }
 
     async create () {
