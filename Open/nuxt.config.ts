@@ -11,7 +11,8 @@ export default {
         ],
         meta: [
             { charset: "utf-8" },
-            { name: "viewport", content: "width=device-width, initial-scale=1" },
+            { name: "viewport", content: "width=1024" },
+            // { name: "viewport", content: "width=device-width, initial-scale=1" }, TODO: Fix mobile
             { hid: "description", name: "description", content: "Corsace Open is one of the largest 4v4 tournaments in osu! Hailing great competition and entertaining matches." },
             { hid: "og:title", property: "og:title", content: "Corsace Open" },
             { hid: "og:type", property: "og:type", content: "website" },

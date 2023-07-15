@@ -357,7 +357,7 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
             .innerJoin("stage.tournament", "tournament")
             .innerJoin("matchup.teams", "team")
             .where("tournament.ID = :ID", { ID: tournaments[0].ID })
-            .andWhere("stage.stageType = 0")
+            .andWhere("stage.stageType = 1")
             .andWhere("team.ID = :teamID", { teamID: team.ID })
             .getMany();
 

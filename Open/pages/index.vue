@@ -62,8 +62,8 @@
                 <!-- RIGHT: register your team-->
                 <div class="index_portal__section">
                     <OpenButton
-                        :link="loggedInUser ? '/team/create' : '/api/login/osu?site=open&redirect=/team/create'"
-                        :external="loggedInUser ? false : true"
+                        :link="loggedInUser ? loggedInUser.discord.username ? '/team/create' : '/api/login/osu?site=discord&redirect=/team/create' : '/api/login/osu?site=open&redirect=/'"
+                        :external="loggedInUser?.discord.username ? false : true"
                     >
                         <template #title>
                             {{ $t('open.home.button.register') }}
@@ -74,8 +74,18 @@
                         {{ $t('open.home.presentedBy') }}
                         <hr class="line--red line--no-space">
                         <div class="index_portal__image index_portal__image--row">
-                            <img src="../../Assets/img/partners/momokai.png">
-                            <img src="../../Assets/img/corsace-full.png">
+                            <a 
+                                href="http://momokai.com/corsace" 
+                                target="_blank"
+                            >
+                                <img src="../../Assets/img/partners/momokai.png">
+                            </a>
+                            <a 
+                                href="http://corsace.io"
+                                target="_blank"
+                            >
+                                <img src="../../Assets/img/corsace-full.png">
+                            </a>
                         </div>
                     </div>                
                 </div>
