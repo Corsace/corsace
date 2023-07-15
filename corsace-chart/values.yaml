@@ -42,6 +42,10 @@ secrets:
     v2:
       clientId: ""
       clientSecret: ""
+    bancho:
+      username: ""
+      ircPassword: ""
+      botAccount: "true"
   koaKey: ""
   interOpPassword: ""
 

@@ -44,6 +44,11 @@
         "v2": {
             "clientId": "@@OSU_V2_CLIENTID",
             "clientSecret": "@@OSU_V2_CLIENTSECRET"
+        },
+        "bancho": {
+            "username": "@@OSU_BANCHO_USERNAME",
+            "ircPassword": "@@OSU_BANCHO_IRC_PASSWORD",
+            "botAccount": "@@OSU_BANCHO_BOT_ACCOUNT"
         }
     },
     "google": {

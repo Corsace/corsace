@@ -127,6 +127,21 @@ Shared environment by deployments
     secretKeyRef:
       name: {{ include "corsace-chart.fullname" $ }}
       key: osuv2ClientSecret
+- name: OSU_BANCHO_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: osuBanchoUsername
+- name: OSU_BANCHO_IRC_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: osuBanchoIRCPassword
+- name: OSU_BANCHO_BOT_ACCOUNT
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: osuBanchoBotAccount
 - name: KOA_KEY
   valueFrom:
     secretKeyRef:
