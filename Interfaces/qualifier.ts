@@ -14,6 +14,7 @@ export interface QualifierScore {
     userID: number;
     score: number;
     map: string;
+    mapID: number;
 }
 
 export interface QualifierScoreView {
@@ -21,6 +22,7 @@ export interface QualifierScoreView {
     name: string;
     scores: {
         map: string;
+        mapID: number;
         score: number;
         isBest: boolean;
     }[];

@@ -2,6 +2,7 @@ import Router from "@koa/router";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { BaseQualifier, QualifierScore } from "../../../../Interfaces/qualifier";
+import { Stage } from "../../../../Models/tournaments/stage";
 
 const tournamentRouter = new Router();
 
@@ -78,11 +79,11 @@ tournamentRouter.get("/qualifiers/:tournamentID", async (ctx) => {
 
     const qualifiers = await Matchup
         .createQueryBuilder("matchup")
-        .innerJoin("matchup.teams", "team")
+        .innerJoinAndSelect("matchup.teams", "team")
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
         .where("tournament.ID = :ID", { ID })
-        .andWhere("stage.stageType = 0")
+        .andWhere("stage.stageType = 1")
         .getMany();
     
     ctx.body = qualifiers.map<BaseQualifier>(q => ({
@@ -105,18 +106,40 @@ tournamentRouter.get("/qualifiers/:tournamentID/scores", async (ctx) => {
         return;
     }
 
+    const tournament = await Tournament
+        .createQueryBuilder("tournament")
+        .where("tournament.ID = :ID", { ID })
+        .getOne();
+
+    if (!tournament) {
+        ctx.body = {
+            success: false,
+            error: "Tournament not found",
+        };
+        return;
+    }
+
+    if (!tournament.publicQualifiers) {
+        ctx.body = {
+            success: false,
+            error: "Tournament does not have public qualifiers",
+        };
+        return;
+    }
+
     const qualifiers = await Matchup
         .createQueryBuilder("matchup")
-        .innerJoin("matchup.teams", "team")
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
+        .innerJoinAndSelect("matchup.teams", "team")
+        .innerJoinAndSelect("team.members", "member")
         .innerJoinAndSelect("matchup.maps", "map")
         .innerJoinAndSelect("map.map", "mappoolMap")
         .innerJoinAndSelect("mappoolMap.slot", "slot")
         .innerJoinAndSelect("map.scores", "score")
         .innerJoinAndSelect("score.user", "user")
         .where("tournament.ID = :ID", { ID })
-        .andWhere("stage.stageType = 0")
+        .andWhere("stage.stageType = 1")
         .getMany();
 
     ctx.body = qualifiers.flatMap<QualifierScore>(q => q.maps?.flatMap(m => m.scores?.map(s => ({
@@ -126,6 +149,7 @@ tournamentRouter.get("/qualifiers/:tournamentID/scores", async (ctx) => {
         userID: s.user!.ID,
         score: s.score,
         map: `${m.map!.slot!.acronym}${m.map!.order}`,
+        mapID: parseInt(`${m.map!.slot.ID}${m.map!.order}`),
     })) ?? []) ?? []);
 });
 

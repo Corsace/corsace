@@ -26,17 +26,12 @@
                         <th>BEST</th>
                         <th>WORST</th>
                         <th>AVG.</th>
-                        <th>NM1</th>
-                        <th>NM2</th>
-                        <th>NM3</th>
-                        <th>NM4</th>
-                        <th>NM5</th>
-                        <th>HD1</th>
-                        <th>HD2</th>
-                        <th>HR1</th>
-                        <th>HR2</th>
-                        <th>DT1</th>
-                        <th>DT2</th>
+                        <th
+                            v-for="map in mapNames"
+                            :key="map"
+                        >
+                            {{ map }}
+                        </th>
                     </tr>
                     <tr
                         v-for="row in shownQualifierScoreViews"
@@ -80,6 +75,19 @@ export default class ScoresView extends Vue {
         await this.$store.dispatch("open/setQualifierScores", this.tournament?.ID);
     }
 
+    get mapNames (): string[] {
+        if (!this.qualifierScores)
+            return [];
+
+        const mapNames = this.qualifierScores.map(s => ({
+            map: s.map,
+            mapID: s.mapID,
+        })).filter((v, i, a) => a.findIndex(t => (t.map === v.map && t.mapID === v.mapID)) === i);
+        mapNames.sort((a, b) => a.mapID - b.mapID);
+
+        return mapNames.map(s => s.map);
+    }
+
     get shownQualifierScoreViews (): QualifierScoreView[] {
         return this.syncView === "players" ? this.playerQualifierScoreViews : this.teamQualifierScoreViews;
     }
@@ -98,13 +106,15 @@ export default class ScoresView extends Vue {
                 name: playerScores[0].username,
                 scores: playerScores.map(s => ({
                     map: s.map,
+                    mapID: s.mapID,
                     score: s.score,
                     isBest: s.score === playerScores.filter(a => a.map === s.map).reduce((a, b) => a.score > b.score ? a : b).score,
                 })),
                 best: playerScores.reduce((a, b) => a.score > b.score ? a : b).map,
                 worst: playerScores.reduce((a, b) => a.score < b.score ? a : b).map,
-                average: playerScores.reduce((a, b) => a + b.score, 0) / playerScores.length,
+                average: Math.round(playerScores.reduce((a, b) => a + b.score, 0) / (playerScores.length || 1)),
             };
+            playerScoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
             qualifierScoreViews.push(playerScoreView);
         }
@@ -128,13 +138,15 @@ export default class ScoresView extends Vue {
                 name: teamScores[0].teamName,
                 scores: teamScores.map(s => ({
                     map: s.map,
+                    mapID: s.mapID,
                     score: s.score,
                     isBest: s.score === teamScores.filter(a => a.map === s.map).reduce((a, b) => a.score > b.score ? a : b).score,
                 })),
                 best: teamScores.reduce((a, b) => a.score > b.score ? a : b).map,
                 worst: teamScores.reduce((a, b) => a.score < b.score ? a : b).map,
-                average: teamScores.reduce((a, b) => a + b.score, 0) / teamScores.length,
+                average: Math.round(teamScores.reduce((a, b) => a + b.score, 0) / (teamScores.length || 1)),
             };
+            teamScoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
             qualifierScoreViews.push(teamScoreView);
         }

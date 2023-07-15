@@ -139,6 +139,10 @@ export default class QualifiersView extends Vue {
             justify-content: space-between;
             margin-bottom: 10px;
 
+            &:hover {
+                text-decoration: none;
+            }
+
             &_name {
                 display: flex;
                 flex-direction: row;
