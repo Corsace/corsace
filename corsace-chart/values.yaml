@@ -90,11 +90,13 @@ webServices:
   cronRunner:
     replicaCount: 1
     command: cron-runner
+    strategyType: Recreate
     ingress:
       enabled: false
   banchoBot:
     replicaCount: 1
     command: bancho-bot
+    strategyType: Recreate
     ingress:
       enabled: false
 
