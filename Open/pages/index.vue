@@ -47,19 +47,24 @@
                 </div>
                 <!--- MIDDLE: middle-->
                 <div class="index_portal__section">
-                    <OpenButton>
+                    <OpenButton
+                        :link="'/qualifiers'"
+                    >
                         <template #title>
                             {{ $t('open.home.button.qualifiersMappool') }}
                         </template>
                         {{ $t('open.home.button.mappoolDownload') }}
                     </OpenButton>
-                    <!-- <OpenButton>
-                        <div class="index_portal__button--racing" />
-                    </OpenButton>          -->
+                    <OpenButton 
+                        disabled
+                    />         
                 </div>
                 <!-- RIGHT: register your team-->
                 <div class="index_portal__section">
-                    <OpenButton>
+                    <OpenButton
+                        :link="loggedInUser ? '/team/create' : '/api/login/osu?site=open&redirect=/team/create'"
+                        :external="loggedInUser ? false : true"
+                    >
                         <template #title>
                             {{ $t('open.home.button.register') }}
                         </template>
@@ -118,7 +123,7 @@ export default class Default extends Vue {
 
     @openModule.State tournament!: Tournament | null;
 
-    @State loggedInUser!: UserInfo;
+    @State loggedInUser!: UserInfo | null;
 
     get avatarURL (): string  {
         return this.loggedInUser?.osu.avatar || "";
@@ -179,18 +184,6 @@ export default class Default extends Vue {
 
         &__section {
             width: 25vw;
-        }
-
-        &__button {
-            &--racing {
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 100%;
-                width: 100%;
-                background: url('https://i.imgur.com/vwahC3E.png');
-                background-repeat: no-repeat;
-            }
         }
 
         &__image {

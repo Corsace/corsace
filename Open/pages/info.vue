@@ -85,10 +85,10 @@
                             <div class="info_stage_data__content">
                                 <InfoData>
                                     <template #title>
-                                        ID
+                                        ORDER
                                     </template>
                                     <template #value>
-                                        {{ stage.ID }}
+                                        {{ stage.order }}
                                     </template>
                                 </InfoData>
                                 <InfoData>
@@ -263,13 +263,24 @@ export default class Info extends Vue {
     selectedStage = 0;
     selectedMappool = 0;
 
-    get stageList (): {ID: number; name: string}[] {
-        return this.tournament?.stages.map(s => {
+    get stageList (): {
+        ID: number; 
+        name: string; 
+        order: number;
+    }[] {
+        const stages = this.tournament?.stages.map<{
+            ID: number; 
+            name: string; 
+            order: number;
+        }>(s => {
             return {
                 ID: s.ID,
                 name: s.name,
+                order: s.order,
             };
         }) || [];
+
+        return stages;
     }
 
     @Watch("stageList", { immediate: true })
