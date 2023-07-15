@@ -1,5 +1,5 @@
 <template>
-    <div class="layout layout--mca">
+    <div class="layout layout--mca-ayim">
         <DevBanner 
             v-if="devBanner"
             @close="devBanner = false"

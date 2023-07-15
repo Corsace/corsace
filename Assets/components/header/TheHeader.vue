@@ -216,7 +216,7 @@ export default class TheHeader extends Vue {
         &--corsace {
             color: $pink;
         }
-        &--mca, &--ayim{
+        &--mca-ayim {
             color: $blue;
         }
         padding: 0 2.5px;
