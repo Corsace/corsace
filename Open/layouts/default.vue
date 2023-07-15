@@ -1,6 +1,9 @@
 <template>
     <div class="layout layout--open">
-        <DevBanner />
+        <DevBanner 
+            v-if="devBanner"
+            @close="devBanner = false"
+        />
         <the-header
             class="header"
         >
@@ -240,8 +243,8 @@ export default class Default extends Vue {
     @openModule.State team!: Team | null;
     @openModule.State teamInvites!: BaseTeam[] | null;
 
+    devBanner = true;
     isSmall = false;
-
     isOpen = false;
 
     togglePopup () {

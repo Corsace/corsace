@@ -1,6 +1,9 @@
 <template>
     <div class="layout layout--mca">
-        <DevBanner />
+        <DevBanner 
+            v-if="devBanner"
+            @close="devBanner = false"
+        />
         <the-header
             class="mcaayim__header"
         >
@@ -162,6 +165,7 @@ export default class Default extends Vue {
 
     @mcaAyimModule.Action updateSelectedMode;
 
+    devBanner = true;
     isSmall = false;
 
     async mounted () {

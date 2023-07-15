@@ -2,6 +2,7 @@
     <div 
         class="dev_banner"
         :class="`dev_banner--${site}_${viewTheme}`"
+        @click="$emit('close')"
     >
         This site is a work in progress! Please be patient as we work to improve it, add features, and fix bugs as they arise. 😃
     </div>
@@ -22,6 +23,7 @@ export default class DevBanner extends Vue {
 @import '@s-sass/_variables';
 
 .dev_banner {
+    cursor: pointer;
     padding: 20px;
     display: flex;
     justify-content: center;
@@ -31,11 +33,19 @@ export default class DevBanner extends Vue {
         &_light {
             background-color: white;
             color: $alt-blue;
+
+            &:hover {
+                background-color: $white;
+            }
         }
 
         &_dark {
             background-color: $dark;
             color: $blue;
+
+            &:hover {
+                background-color: $darker-gray;
+            }
         }
     }
 
@@ -43,11 +53,19 @@ export default class DevBanner extends Vue {
         &_light {
             background-color: #2F2F2F;
             color: $white;
+
+            &:hover {
+                background-color: $dark;
+            }
         }
 
         &_dark {
             background-color: #2F2F2F;
             color: $white;
+
+            &:hover {
+                background-color: $dark;
+            }
         }
     }
 }
