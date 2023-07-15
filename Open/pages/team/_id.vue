@@ -226,10 +226,10 @@
                         v-if="team?.qualifier"
                         class="team_fields_block"
                         style="text-decoration: none;"
-                        :to="'/qualifiers/' + team.qualifier.ID"
+                        :to="'/qualifier/' + team.qualifier.ID"
                     >
                         <div>Qualifier ID #{{ team.qualifier.ID }}</div>
-                        <div>{{ team.qualifier.date.toLocaleString('en-US', options) }}</div>
+                        <div>{{ team.qualifier.date.toLocaleString('en-US', optionsUTC) }} ({{ team.qualifier.date.toLocaleString('en-US', options) }})</div>
                     </NuxtLink>
                     <div 
                         v-else
@@ -411,12 +411,19 @@ export default class Team extends Vue {
     @openModule.State tournament!: Tournament | null;
     @openModule.State team!: TeamInterface | null;
 
-    options: Intl.DateTimeFormatOptions = {
+    optionsUTC: Intl.DateTimeFormatOptions = {
         month: "long", // Full month name (e.g., "July")
         day: "numeric", // Day of the month (e.g., "30")
         hour: "2-digit", // Two-digit hour (e.g., "23")
         minute: "2-digit", // Two-digit minute (e.g., "59")
         timeZone: "UTC", // Set the time zone to UTC
+        timeZoneName: "short", // Abbreviated time zone name (e.g., "UTC")
+    };
+    options: Intl.DateTimeFormatOptions = {
+        month: "long", // Full month name (e.g., "July")
+        day: "numeric", // Day of the month (e.g., "30")
+        hour: "2-digit", // Two-digit hour (e.g., "23")
+        minute: "2-digit", // Two-digit minute (e.g., "59")
         timeZoneName: "short", // Abbreviated time zone name (e.g., "UTC")
     };
 

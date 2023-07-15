@@ -4,6 +4,7 @@ import { Tournament } from "./tournament";
 import { TeamInvite } from "./teamInvite";
 import { Matchup } from "./matchup";
 import { Team as TeamInterface, TeamMember } from "../../Interfaces/team";
+import { BaseTournament } from "../../Interfaces/tournament";
 
 @Entity()
 export class Team extends BaseEntity {
@@ -97,8 +98,20 @@ export class Team extends BaseEntity {
             .innerJoin("matchup.teams", "team")
             .innerJoin("matchup.stage", "stage")
             .where("team.ID = :teamID", { teamID: this.ID })
-            .andWhere("stage.stageType = 0")
+            .andWhere("stage.stageType = 1")
             .getOne();
+        const tournaments: BaseTournament[] = this.tournaments?.map(t => ({
+            ID: t.ID,
+            name: t.name,
+        })) || (await Tournament
+            .createQueryBuilder("tournament")
+            .innerJoin("tournament.teams", "team")
+            .where("team.ID = :teamID", { teamID: this.ID })
+            .select(["tournament.ID", "tournament.name"])
+            .getMany()).map(t => ({
+            ID: t.ID,
+            name: t.name,
+        }));
         return {
             ID: this.ID,
             name: this.name,
@@ -122,19 +135,11 @@ export class Team extends BaseEntity {
             })),
             BWS: this.BWS,
             rank: this.rank,
-            tournaments: this.tournaments?.map(t => ({
-                ID: t.ID,
-                name: t.name,
-            })) || await Tournament
-                .createQueryBuilder("tournament")
-                .innerJoin("tournament.teams", "team")
-                .where("team.ID = :teamID", { teamID: this.ID })
-                .select(["tournament.ID", "tournament.name"])
-                .getMany(),
+            tournaments,
             qualifier: qualifier ? {
                 ID: qualifier.ID,
                 date: qualifier.date,
-                mp: qualifier.mp || undefined,
+                mp: qualifier.mp,
             } : undefined,
         };
     }

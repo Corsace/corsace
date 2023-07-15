@@ -14,6 +14,7 @@ import { cron } from "../../../cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { parseDateOrTimestamp } from "../../../utils/dateParse";
 import getTeamInvites from "../../../functions/get/getTeamInvites";
+import { User } from "../../../../Models/user";
 
 const teamRouter = new Router();
 
@@ -139,12 +140,12 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
-        .leftJoinAndSelect("tournament.stages", "stage")
-        .leftJoinAndSelect("stage.matchups", "matchup")
-        .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .leftJoinAndSelect("tournament.teams", "team")
+        .leftJoinAndSelect("tournament.stages", "stage")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("stage.matchups", "matchup")
+        .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getOne();
 
@@ -174,7 +175,6 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     }
 
     // Role checks
-    const tournamentMembers = tournament.teams.flatMap(t => [t.manager, ...t.members]);
     const teamMembers = [team.manager, ...team.members].filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
 
     const tournamentRoles = await TournamentRole
@@ -184,15 +184,21 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         .getMany();
     const unallowedRoles = tournamentRoles.filter(r => unallowedToPlay.includes(r.roleType));
     const tournamentServer = await discordClient.guilds.fetch(tournament.server);
-    const memberStaff = teamMembers.filter(async (member) => {
-        const discordMember = await tournamentServer.members.fetch(member.discord.userID);
-        return discordMember.roles.cache.some(r => unallowedRoles.some(tr => tr.roleID === r.id));
-    });
+    const memberStaff: User[] = [];
+    for (const teamMember of teamMembers) {
+        const discordMember = await tournamentServer.members.fetch(teamMember.discord.userID);
+        if (discordMember.roles.cache.some(r => unallowedRoles.some(tr => tr.roleID === r.id)))
+            memberStaff.push(teamMember);
+    }
     if (memberStaff.length > 0) {
-        ctx.body = { error: `Some members are staffing and are thus not allowed to play in this tournament`, members: memberStaff.map(m => m.osu.username) };
+        ctx.body = { 
+            error: `Some members are staffing and are thus not allowed to play in this tournament`, 
+            members: memberStaff.map(m => m.osu.username),
+        };
         return;
     }
 
+    const tournamentMembers = tournament.teams.flatMap(t => [t.manager, ...t.members]);
     const alreadyRegistered = teamMembers.filter(member => tournamentMembers.some(m => m.ID === member.ID));
     if (alreadyRegistered.length > 0) {
         ctx.body = { error: `Some members are already registered in this tournament`, members: alreadyRegistered.map(m => m.osu.username) };
@@ -242,6 +248,92 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     await team.save();
 
     ctx.body = { success: "Team registered" };
+});
+
+teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team: Team = ctx.state.team;
+
+    const tournamentID = ctx.request.body?.tournamentID;
+    if (!tournamentID) {
+        ctx.body = { error: "Missing tournament ID" };
+        return;
+    }
+
+    const tournament = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoinAndSelect("tournament.teams", "team")
+        .leftJoinAndSelect("tournament.stages", "stage")
+        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("stage.matchups", "matchup")
+        .leftJoinAndSelect("matchup.teams", "matchupTeam")
+        .where("tournament.ID = :ID", { ID: tournamentID })
+        .getOne();
+
+    if (!tournament) {
+        ctx.body = { error: "Tournament not found" };
+        return;
+    }
+    if (tournament.status !== TournamentStatus.Registrations) {
+        ctx.body = { error: "Tournament is not in registration phase" };
+        return;
+    }
+
+    if (!tournament.teams.find(t => t.ID === team.ID)) {
+        ctx.body = { error: "Team not registered" };
+        return;
+    }
+
+    const qualifierStage = tournament.stages.find(s => s.stageType === StageType.Qualifiers);
+    if (!qualifierStage) {
+        ctx.body = { error: "Tournament does not have a qualifier stage" };
+        return;
+    }
+
+    const qualifierAt = ctx.request.body?.qualifierAt;
+    if (!qualifierAt) {
+        ctx.body = { error: "Missing qualifier date" };
+        return;
+    }
+
+    const qualifierDate = parseDateOrTimestamp(qualifierAt);
+    if (isNaN(qualifierDate.getTime())) {
+        ctx.body = { error: "Invalid qualifier date" };
+        return;
+    }
+
+    if (qualifierDate.getTime() < qualifierStage.timespan.start.getTime() || qualifierDate.getTime() > qualifierStage.timespan.end.getTime()) {
+        ctx.body = { error: "Qualifier date is not within the qualifier stage" };
+        return;
+    }
+
+    const previousMatch = qualifierStage.matchups.find(m => m.teams!.some(t => t.ID === team.ID));
+    if (previousMatch) {
+        previousMatch.teams = previousMatch.teams!.filter(t => t.ID !== team.ID);
+        if (previousMatch.teams.length === 0)
+            await previousMatch.remove();   
+        else
+            await previousMatch.save(); 
+    } 
+
+    const maxTeams = Math.floor(16 / tournament.matchupSize);
+    const existingMatchup = qualifierStage.matchups.find(m => m.teams!.length < maxTeams && m.date.getTime() === qualifierDate.getTime());
+    if (existingMatchup && !qualifierStage.qualifierTeamChooseOrder) {
+        existingMatchup.teams!.push(team);
+        await existingMatchup.save();
+    } else {
+        const matchup = new Matchup;
+        matchup.date = qualifierDate;
+        matchup.teams = [team];
+        await matchup.save();
+        
+        qualifierStage.matchups.push(matchup);
+        await qualifierStage.save();
+
+        await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - 15 * 60 * 1000, Date.now() + 10 * 1000)));
+    }
+
+    ctx.body = { success: "Qualifier date set" };
 });
 
 teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {

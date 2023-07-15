@@ -72,6 +72,11 @@ export const mutations: MutationTree<OpenState> = {
     },
     async setTeam (state, teams: Team[] | undefined) {
         state.team = teams?.[0] || null;
+        if (state.team?.qualifier)
+            state.team.qualifier = {
+                ...state.team.qualifier,
+                date: new Date(state.team.qualifier.date),
+            };
     },
     async setTeamInvites (state, invites: TeamUser[] | undefined) {
         if (state.team)
