@@ -11,6 +11,8 @@ spec:
   {{- if not $.Values.autoscaling.enabled }}
   replicas: {{ $webService.replicaCount }}
   {{- end }}
+  strategy:
+    type: {{ default "RollingUpdate" $webService.strategyType }}
   selector:
     matchLabels:
       webServiceName: {{ $webServiceName }}

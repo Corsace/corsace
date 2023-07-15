@@ -127,6 +127,21 @@ Shared environment by deployments
     secretKeyRef:
       name: {{ include "corsace-chart.fullname" $ }}
       key: osuv2ClientSecret
+- name: OSU_BANCHO_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: osuBanchoUsername
+- name: OSU_BANCHO_IRC_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: osuBanchoIRCPassword
+- name: OSU_BANCHO_BOT_ACCOUNT
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: osuBanchoBotAccount
 - name: KOA_KEY
   valueFrom:
     secretKeyRef:
@@ -137,6 +152,31 @@ Shared environment by deployments
     secretKeyRef:
       name: {{ include "corsace-chart.fullname" $ }}
       key: interOpPassword
+- name: BN_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: bnUsername
+- name: BN_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: bnSecret
+- name: CLOUDFLARE_R2_HOSTNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: cloudflareR2Hostname
+- name: CLOUDFLARE_R2_ACCESS_KEY_ID
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: cloudflareR2AccessKeyId
+- name: CLOUDFLARE_R2_SECRET_ACCESS_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: cloudflareR2SecretAccessKey
 - name: API_PUBLICURL
   value: {{ default (printf "%s%s%s" "http://" (include "corsace-chart.fullname" $) "-api") $.Values.webServices.api.publicUrl }}
 - name: CRONRUNNER_PUBLICURL
