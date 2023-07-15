@@ -2,7 +2,6 @@ import Router from "@koa/router";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { BaseQualifier, QualifierScore } from "../../../../Interfaces/qualifier";
-import { Stage } from "../../../../Models/tournaments/stage";
 
 const tournamentRouter = new Router();
 

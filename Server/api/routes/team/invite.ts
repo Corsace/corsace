@@ -6,6 +6,7 @@ import { User } from "../../../../Models/user";
 import { inviteAcceptChecks, invitePlayer } from "../../../functions/tournaments/teams/inviteFunctions";
 import getTeamInvites from "../../../functions/get/getTeamInvites";
 import { BaseTeam, TeamUser } from "../../../../Interfaces/team";
+import { TeamInvite } from "../../../../Models/tournaments/teamInvite";
 
 type idType = "osu" | "discord" | "corsace";
 
@@ -73,34 +74,50 @@ inviteRouter.post("/:teamID", isLoggedInDiscord, validateTeam(true, true), async
         return;
     }
 
-    const invite = await invitePlayer(team, user);
-    if (typeof invite === "string") {
-        ctx.body = { error: invite };
+    try {
+        const invite = await invitePlayer(team, user);
+        if (typeof invite === "string") {
+            ctx.body = { error: invite };
+            return;
+        }
+
+        await invite.save();
+
+        ctx.body = { success: "User invited", invite };
+    } catch (e) {
+        ctx.body = { error: `Error inviting user. Contact VINXIS.\n${e}` };
         return;
     }
-
-    await invite.save();
-
-    ctx.body = { success: "User invited", invite };
 });
 
 inviteRouter.post("/:teamID/accept", isLoggedInDiscord, async (ctx) => {
     const user: User = ctx.state.user;
-    const invites = await getTeamInvites(ctx.params.teamID, "teamID", user.ID, "userID", true, true, true);
-    if (invites.length === 0) {
-        ctx.body = { error: "No invite found from this team to you" };
+    let invite: TeamInvite;
+    try {
+        const invites = await getTeamInvites(ctx.params.teamID, "teamID", user.ID, "userID", true, true, true);
+        if (invites.length === 0) {
+            ctx.body = { error: "No invite found from this team to you" };
+            return;
+        }
+        if (invites.length > 1) {
+            ctx.body = { error: "Multiple invites found from this team to you. Contact VINXIS" };
+            return;
+        }
+
+        invite = invites[0];
+    } catch (e) {
+        ctx.body = { error: `Error getting invites. Contact VINXIS.\n${e}` };
         return;
     }
-    if (invites.length > 1) {
-        ctx.body = { error: "Multiple invites found from this team to you. Contact VINXIS" };
-        return;
-    }
-
-    const invite = invites[0];
-
-    const check = await inviteAcceptChecks(invite);
-    if (check !== true) {
-        ctx.body = { error: check };
+    
+    try {
+        const check = await inviteAcceptChecks(invite);
+        if (check !== true) {
+            ctx.body = { error: check };
+            return;
+        }
+    } catch (e) {
+        ctx.body = { error: `Error checking invite. Contact VINXIS.\n${e}` };
         return;
     }
 
@@ -115,17 +132,24 @@ inviteRouter.post("/:teamID/accept", isLoggedInDiscord, async (ctx) => {
 
 inviteRouter.post("/:teamID/decline", isLoggedInDiscord, async (ctx) => {
     const user: User = ctx.state.user;
-    const invites = await getTeamInvites(ctx.params.teamID, "teamID", user.ID, "userID");
-    if (invites.length === 0) {
-        ctx.body = { error: "No invite found from this team to you" };
-        return;
-    }
-    if (invites.length > 1) {
-        ctx.body = { error: "Multiple invites found from this team to you. Contact VINXIS" };
+    let invite: TeamInvite;
+    try {
+        const invites = await getTeamInvites(ctx.params.teamID, "teamID", user.ID, "userID", true, true, true);
+        if (invites.length === 0) {
+            ctx.body = { error: "No invite found from this team to you" };
+            return;
+        }
+        if (invites.length > 1) {
+            ctx.body = { error: "Multiple invites found from this team to you. Contact VINXIS" };
+            return;
+        }
+
+        invite = invites[0];
+    } catch (e) {
+        ctx.body = { error: `Error getting invites. Contact VINXIS.\n${e}` };
         return;
     }
 
-    const invite = invites[0];
     await invite.remove();
 
     ctx.body = { success: "Invite declined" };
@@ -140,17 +164,24 @@ inviteRouter.post("/:teamID/cancel/:userID", isLoggedInDiscord, validateTeam(tru
         return;
     }
 
-    const invites = await getTeamInvites(team.ID, "teamID", userID, "userID");
-    if (invites.length === 0) {
-        ctx.body = { error: "No invite found from this team to this user. MAke sure the user ID is a Corsace ID" };
-        return;
-    }
-    if (invites.length > 1) {
-        ctx.body = { error: "Multiple invites found from this team to this user. Contact VINXIS" };
+    let invite: TeamInvite;
+    try {
+        const invites = await getTeamInvites(team.ID, "teamID", userID, "userID", true, true, true);
+        if (invites.length === 0) {
+            ctx.body = { error: "No invite found from this team to you" };
+            return;
+        }
+        if (invites.length > 1) {
+            ctx.body = { error: "Multiple invites found from this team to you. Contact VINXIS" };
+            return;
+        }
+
+        invite = invites[0];
+    } catch (e) {
+        ctx.body = { error: `Error getting invites. Contact VINXIS.\n${e}` };
         return;
     }
 
-    const invite = invites[0];
     await invite.remove();
 
     ctx.body = { success: "Invite removed" };
