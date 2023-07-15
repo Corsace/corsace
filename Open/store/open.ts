@@ -1,7 +1,7 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { Tournament } from "../../Interfaces/tournament";
 import { BaseTeam, Team, TeamUser } from "../../Interfaces/team";
-import { BaseQualifier } from "../../Interfaces/qualifier";
+import { BaseQualifier, QualifierScore } from "../../Interfaces/qualifier";
 
 export interface OpenState {
     site: string;
@@ -9,6 +9,7 @@ export interface OpenState {
     team: Team | null;
     teamInvites: BaseTeam[] | null;
     qualifiers: BaseQualifier[] | null;
+    qualifierScores: QualifierScore[] | null;
 }
 
 export const state = (): OpenState => ({
@@ -17,6 +18,7 @@ export const state = (): OpenState => ({
     team: null,
     teamInvites: null,
     qualifiers: null,
+    qualifierScores: null,
 });
 
 export const mutations: MutationTree<OpenState> = {
@@ -81,6 +83,9 @@ export const mutations: MutationTree<OpenState> = {
             date: new Date(q.date),
         })) || null;
     },
+    async setQualifierScores (state, scores: QualifierScore[] | undefined) {
+        state.qualifierScores = scores || null;
+    },
 };
 
 export const getters: GetterTree<OpenState, OpenState> = {
@@ -123,6 +128,12 @@ export const actions: ActionTree<OpenState, OpenState> = {
 
         if (!data.error)
             commit("setQualifiers", data);
+    },
+    async setQualifierScores ({ commit }, tournamentID) {
+        const { data } = await this.$axios.get(`/api/tournament/qualifiers/${tournamentID}/scores`);
+
+        if (!data.error)
+            commit("setQualifierScores", data);
     },
     async setInitialData ({ dispatch }, year) {
         await Promise.all([

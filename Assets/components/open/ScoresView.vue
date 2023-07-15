@@ -7,7 +7,7 @@
             <div class="scores__sub_header_item scores__sub_header_item--active">
                 {{ $t('open.qualifiers.scores.nav.average') }}
             </div>
-            <div class="scores__sub_header_item">
+            <!-- <div class="scores__sub_header_item">
                 {{ $t('open.qualifiers.scores.nav.sum') }}
             </div>
             <div class="scores__sub_header_item">
@@ -15,7 +15,7 @@
             </div>
             <div class="scores__sub_header_item">
                 {{ $t('open.qualifiers.scores.nav.seedings') }}
-            </div>
+            </div> -->
         </div>
         <hr class="line--red line--bottom-space">
         <div class="scores__wrapper">
@@ -27,8 +27,8 @@
                         <th>WORST</th>
                         <th>AVG.</th>
                         <th>NM1</th>
-                        <th style="width: 15.5px;">NM2</th>
-                        <th style="width: 14.5px;">NM3</th>
+                        <th>NM2</th>
+                        <th>NM3</th>
                         <th>NM4</th>
                         <th>NM5</th>
                         <th>HD1</th>
@@ -38,39 +38,21 @@
                         <th>DT1</th>
                         <th>DT2</th>
                     </tr>
-                    <tr>
-                        <td>WHISPERING ALMOND</td>
-                        <td>DT1</td>
-                        <td>NM4</td>
-                        <td>999999</td>
-                        <td class="scores__table--highlight">999999</td>
-                        <td>999999</td>
-                        <td class="scores__table--highlight">999999</td>
-                        <td class="scores__table--highlight">999999</td>
-                        <td class="scores__table--highlight">999999</td>
-                        <td>999999</td>
-                        <td>999999</td>
-                        <td>999999</td>
-                        <td>999999</td>
-                        <td>999999</td>
-                        <td>999999</td>
-                    </tr>
-                    <tr>
-                        <td>WHISPERING ALMOND</td>
-                        <td>DT1</td>
-                        <td>NM4</td>
-                        <td>999999</td>
-                        <td class="scores__table--highlight">999999</td>
-                        <td>999999</td>
-                        <td class="scores__table--highlight">999999</td>
-                        <td class="scores__table--highlight">999999</td>
-                        <td class="scores__table--highlight">999999</td>
-                        <td>999999</td>
-                        <td>999999</td>
-                        <td>999999</td>
-                        <td>999999</td>
-                        <td>999999</td>
-                        <td>999999</td>
+                    <tr
+                        v-for="row in shownQualifierScoreViews"
+                        :key="row.ID"
+                    >
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.best }}</td>
+                        <td>{{ row.worst }}</td>
+                        <td>{{ row.average }}</td>
+                        <td 
+                            v-for="score in row.scores"
+                            :key="score.map"
+                            :class="{ 'scores__table--highlight': score.isBest }"
+                        >
+                            {{ score.score }}
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -79,16 +61,101 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { QualifierScore, QualifierScoreView } from "../../../Interfaces/qualifier";
+import { Tournament } from "../../../Interfaces/tournament";
 
+const openModule = namespace("open");
 
-@Component({
-    components: {
-
-    },
-})
+@Component
 export default class ScoresView extends Vue {
 
+    @PropSync("view", { type: String }) syncView!: "players" | "teams";
+
+    @openModule.State tournament!: Tournament | null;
+    @openModule.State qualifierScores!: QualifierScore[] | null;
+
+    async mounted () {
+        await this.$store.dispatch("open/setQualifierScores", this.tournament?.ID);
+    }
+
+    get shownQualifierScoreViews (): QualifierScoreView[] {
+        return this.syncView === "players" ? this.playerQualifierScoreViews : this.teamQualifierScoreViews;
+    }
+
+    get playerQualifierScoreViews (): QualifierScoreView[] {
+        if (!this.qualifierScores)
+            return [];
+
+        const qualifierScoreViews: QualifierScoreView[] = [];
+        const playerIDs = this.qualifierScores.map(s => s.userID).filter((v, i, a) => a.indexOf(v) === i);
+
+        for (const playerID of playerIDs) {
+            const playerScores = this.qualifierScores.filter(s => s.userID === playerID);
+            const playerScoreView: QualifierScoreView = {
+                ID: playerID,
+                name: playerScores[0].username,
+                scores: playerScores.map(s => ({
+                    map: s.map,
+                    score: s.score,
+                    isBest: s.score === playerScores.filter(a => a.map === s.map).reduce((a, b) => a.score > b.score ? a : b).score,
+                })),
+                best: playerScores.reduce((a, b) => a.score > b.score ? a : b).map,
+                worst: playerScores.reduce((a, b) => a.score < b.score ? a : b).map,
+                average: playerScores.reduce((a, b) => a + b.score, 0) / playerScores.length,
+            };
+
+            qualifierScoreViews.push(playerScoreView);
+        }
+
+        qualifierScoreViews.sort((a, b) => b.average - a.average);
+
+        return qualifierScoreViews;
+    }
+
+    get teamQualifierScoreViews (): QualifierScoreView[] {
+        if (!this.qualifierScores)
+            return [];
+
+        const qualifierScoreViews: QualifierScoreView[] = [];
+        const teamIDs = this.qualifierScores.map(s => s.teamID).filter((v, i, a) => a.indexOf(v) === i);
+
+        for (const teamID of teamIDs) {
+            const teamScores = this.qualifierScores.filter(s => s.teamID === teamID);
+            const teamScoreView: QualifierScoreView = {
+                ID: teamID,
+                name: teamScores[0].teamName,
+                scores: teamScores.map(s => ({
+                    map: s.map,
+                    score: s.score,
+                    isBest: s.score === teamScores.filter(a => a.map === s.map).reduce((a, b) => a.score > b.score ? a : b).score,
+                })),
+                best: teamScores.reduce((a, b) => a.score > b.score ? a : b).map,
+                worst: teamScores.reduce((a, b) => a.score < b.score ? a : b).map,
+                average: teamScores.reduce((a, b) => a + b.score, 0) / teamScores.length,
+            };
+
+            qualifierScoreViews.push(teamScoreView);
+        }
+
+        qualifierScoreViews.sort((a, b) => b.average - a.average);
+
+        return qualifierScoreViews;
+    }
+
+    get teamGroupedScores (): QualifierScore[][] {
+        if (!this.qualifierScores)
+            return [];
+
+        const groupedScores: QualifierScore[][] = [];
+        const teamIDs = this.qualifierScores.map(s => s.teamID).filter((v, i, a) => a.indexOf(v) === i);
+
+        for (const teamID of teamIDs)
+            groupedScores.push(this.qualifierScores.filter(s => s.teamID === teamID));
+
+        return groupedScores;
+    }
 }
 </script>
 

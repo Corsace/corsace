@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Tournament } from "../../../../Models/tournaments/tournament";
-import { BaseQualifier } from "../../../../Interfaces/qualifier";
+import { BaseQualifier, QualifierScore } from "../../../../Interfaces/qualifier";
 
 const tournamentRouter = new Router();
 
@@ -78,7 +78,7 @@ tournamentRouter.get("/qualifiers/:tournamentID", async (ctx) => {
 
     const qualifiers = await Matchup
         .createQueryBuilder("matchup")
-        .leftJoin("matchup.teams", "team")
+        .innerJoin("matchup.teams", "team")
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
         .where("tournament.ID = :ID", { ID })
@@ -93,6 +93,40 @@ tournamentRouter.get("/qualifiers/:tournamentID", async (ctx) => {
             avatarURL: q.teams[0].avatarURL,
         } : undefined,
     }));
+});
+
+tournamentRouter.get("/qualifiers/:tournamentID/scores", async (ctx) => {
+    const ID = parseInt(ctx.params.tournamentID);
+    if (isNaN(ID)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid tournament ID",
+        };
+        return;
+    }
+
+    const qualifiers = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoin("matchup.teams", "team")
+        .innerJoin("matchup.stage", "stage")
+        .innerJoin("stage.tournament", "tournament")
+        .innerJoinAndSelect("matchup.maps", "map")
+        .innerJoinAndSelect("map.map", "mappoolMap")
+        .innerJoinAndSelect("mappoolMap.slot", "slot")
+        .innerJoinAndSelect("map.scores", "score")
+        .innerJoinAndSelect("score.user", "user")
+        .where("tournament.ID = :ID", { ID })
+        .andWhere("stage.stageType = 0")
+        .getMany();
+
+    ctx.body = qualifiers.flatMap<QualifierScore>(q => q.maps?.flatMap(m => m.scores?.map(s => ({
+        teamID: q.teams!.find(t => t.members.some(m => m.ID === s.user!.ID))!.ID,
+        teamName: q.teams!.find(t => t.members.some(m => m.ID === s.user!.ID))!.name,
+        username: s.user!.osu.username,
+        userID: s.user!.ID,
+        score: s.score,
+        map: `${m.map!.slot!.acronym}${m.map!.order}`,
+    })) ?? []) ?? []);
 });
 
 export default tournamentRouter;

@@ -103,7 +103,7 @@
             </div>
             <ScoresView
                 v-else-if="page === 'scores'"
-                class="qualifiers__scores"
+                :view="scoreView"
             />
             <QualifiersView
                 v-else-if="page === 'qualifiers'"
@@ -155,8 +155,9 @@ const openModule = namespace("open");
 })
 export default class Qualifiers extends Vue {
     isOpen = false;
-    page: "mappool" | "qualifiers" | "scores" = "qualifiers";
     editQualifier = false;
+    page: "mappool" | "qualifiers" | "scores" = "qualifiers";
+    scoreView: "players" | "teams" = "players";
 
     @State loggedInUser!: UserInfo | null;
 
@@ -234,11 +235,6 @@ export default class Qualifiers extends Vue {
         width: 65vw;
         padding: 35px;
         background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
-    }
-
-    &__scores {
-        height: 95%;
-        overflow: hidden;
     }
 
     &__qualifiers {
