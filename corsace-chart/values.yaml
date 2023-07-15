@@ -82,6 +82,17 @@ webServices:
         - host: ayim.corsace.io
           paths:
             - path: /
+  open:
+    replicaCount: 1
+    command: open
+    publicUrl: https://open.corsace.io
+    ssr: true
+    ingress:
+      enabled: true
+      hosts:
+        - host: open.corsace.io
+          paths:
+            - path: /
   api:
     replicaCount: 1
     command: api
