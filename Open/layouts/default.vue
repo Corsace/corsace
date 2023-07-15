@@ -277,7 +277,6 @@ export default class Default extends Vue {
 
 .header {
     border-bottom: 1px solid $open-red;
-
     background-image: url("../../Assets/img/site/open/checkers.svg"), linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
     background-repeat: no-repeat;
     background-position: left center;
@@ -329,7 +328,8 @@ export default class Default extends Vue {
     /*temp*/
     &__manage_teams {
         position:absolute;
-        left:calc(100% - 21vw);
+        width: 150px;
+        right: 325px;
         align-self: center;
         display: flex;
         flex-direction: column;
