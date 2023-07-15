@@ -62,8 +62,8 @@
                 <!-- RIGHT: register your team-->
                 <div class="index_portal__section">
                     <OpenButton
-                        :link="loggedInUser ? '/team/create' : '/api/login/osu?site=open&redirect=/team/create'"
-                        :external="loggedInUser ? false : true"
+                        :link="loggedInUser ? loggedInUser.discord.username ? '/team/create' : '/api/login/osu?site=discord&redirect=/team/create' : '/api/login/osu?site=open&redirect=/'"
+                        :external="loggedInUser?.discord.username ? false : true"
                     >
                         <template #title>
                             {{ $t('open.home.button.register') }}
