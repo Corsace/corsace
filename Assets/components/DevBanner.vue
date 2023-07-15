@@ -28,6 +28,7 @@ export default class DevBanner extends Vue {
     display: flex;
     justify-content: center;
     align-items: center;
+    border-bottom: 1px solid $open-red;
 
     &--mca-ayim {
         &_light {
