@@ -1,5 +1,9 @@
 <template>
-    <div class="layout layout--mca">
+    <div class="layout layout--mca-ayim">
+        <DevBanner 
+            v-if="devBanner"
+            @close="devBanner = false"
+        />
         <the-header
             class="mcaayim__header"
         >
@@ -113,6 +117,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
+import DevBanner from "../../Assets/components/DevBanner.vue";
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import ModeSwitcher from "../../Assets/components/mca-ayim/ModeSwitcher.vue";
 import YearSwitcher from "../../Assets/components/mca-ayim/YearSwitcher.vue";
@@ -125,6 +130,7 @@ const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
+        DevBanner,
         TheHeader,
         ModeSwitcher,
         YearSwitcher,
@@ -141,6 +147,7 @@ export default class UnderConstruction extends Vue {
 
     @mcaAyimModule.Action updateSelectedMode;
 
+    devBanner = true;
     isSmall = false;
 
     async mounted () {

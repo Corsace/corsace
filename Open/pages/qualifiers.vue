@@ -74,8 +74,8 @@
                         class="qualifiers__button_group"
                     >
                         <ContentButton 
-                            v-if="team && loggedInUser && team.manager.ID === loggedInUser.ID"
-                            class="content_button--header_button content_button--disabled"
+                            v-if="team && loggedInUser && team.manager.ID === loggedInUser.ID && !team.qualifier"
+                            class="content_button--header_button"
                             :class="{ 'content_button--disabled': !team || !tournament || tournament.minTeamSize > team.members.length || tournament.maxTeamSize < team.members.length }"
                             @click.native="togglePopup()"
                         >
@@ -103,7 +103,7 @@
             </div>
             <ScoresView
                 v-else-if="page === 'scores'"
-                class="qualifiers__scores"
+                :view="scoreView"
             />
             <QualifiersView
                 v-else-if="page === 'qualifiers'"
@@ -125,6 +125,7 @@ import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
+import QualifierModal from "../../Assets/components/open/QualifierModal.vue";
 import QualifiersView from "../../Assets/components/open/QualifiersView.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import BaseModal from "../../Assets/components/BaseModal.vue";
@@ -144,6 +145,7 @@ const openModule = namespace("open");
         ContentButton,
         ScoresView,
         OpenTitle,
+        QualifierModal,
         QualifiersView,
         BaseModal,
     },
@@ -155,8 +157,9 @@ const openModule = namespace("open");
 })
 export default class Qualifiers extends Vue {
     isOpen = false;
-    page: "mappool" | "qualifiers" | "scores" = "qualifiers";
     editQualifier = false;
+    page: "mappool" | "qualifiers" | "scores" = "qualifiers";
+    scoreView: "players" | "teams" = "players";
 
     @State loggedInUser!: UserInfo | null;
 
@@ -169,7 +172,11 @@ export default class Qualifiers extends Vue {
     }
 
     togglePopup () {
-        this.isOpen = !this.isOpen;
+        if (!this.team || !this.tournament || this.tournament.minTeamSize > this.team.members.length || this.tournament.maxTeamSize < this.team.members.length) {
+            this.isOpen = !this.isOpen;
+            return;
+        }
+        this.editQualifier = true;
     }
 
     async mounted (): Promise<void> {
@@ -234,11 +241,6 @@ export default class Qualifiers extends Vue {
         width: 65vw;
         padding: 35px;
         background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
-    }
-
-    &__scores {
-        height: 95%;
-        overflow: hidden;
     }
 
     &__qualifiers {

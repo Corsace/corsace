@@ -1,219 +1,221 @@
 <template>
     <div class="info">
-        <OpenTitle>
-            {{ $t('open.info.title') }}
-        </OpenTitle>
-        <div 
-            v-if="tournament"
-            class="info_main"
-        >
-            <div class="info_desc">
-                <div>
-                    <img src="../../Assets/img/site/open/banner.png">
+        <div class="info_wrapper">
+            <OpenTitle>
+                {{ $t('open.info.title') }}
+            </OpenTitle>
+            <div 
+                v-if="tournament"
+                class="info_main"
+            >
+                <div class="info_desc">
+                    <div>
+                        <img src="../../Assets/img/site/open/banner.png">
+                    </div>
+                    <hr class="line--gray line--no-fill">
+                    <div class="info_desc__text">
+                        {{ tournament.description }}
+                    </div>
+                    <hr class="line--gray line--no-fill">
+                    <div class="info_match">
+                        <MatchBox>
+                            <template #title>
+                                {{ $t('open.info.matchInfo.matchSize') }}
+                            </template>
+                            {{ tournament.matchupSize }}v{{ tournament.matchupSize }}
+                        </MatchBox>
+                        <MatchBox>
+                            <template #title>
+                                {{ $t('open.info.matchInfo.minPlayers') }}
+                            </template>
+                            {{ tournament.minTeamSize }}
+                        </MatchBox>
+                        <MatchBox>
+                            <template #title>
+                                {{ $t('open.info.matchInfo.maxPlayers') }}
+                            </template>
+                            {{ tournament.maxTeamSize }}
+                        </MatchBox>
+                        <MatchBox>
+                            <template #title>
+                                {{ $t('open.info.matchInfo.pickTimer') }}
+                            </template>
+                            {{ tournament.mapTimer || 90 }} s
+                        </MatchBox>
+                        <MatchBox>
+                            <template #title>
+                                {{ $t('open.info.matchInfo.readyTimer') }}
+                            </template>
+                            {{ tournament.readyTimer || 90 }} s
+                        </MatchBox>
+                    </div>
                 </div>
-                <hr class="line--gray line--no-fill">
-                <div class="info_desc__text">
-                    {{ tournament.description }}
-                </div>
-                <hr class="line--gray line--no-fill">
-                <div class="info_match">
-                    <MatchBox>
-                        <template #title>
-                            {{ $t('open.info.matchInfo.matchSize') }}
-                        </template>
-                        {{ tournament.matchupSize }}v{{ tournament.matchupSize }}
-                    </MatchBox>
-                    <MatchBox>
-                        <template #title>
-                            {{ $t('open.info.matchInfo.minPlayers') }}
-                        </template>
-                        {{ tournament.minTeamSize }}
-                    </MatchBox>
-                    <MatchBox>
-                        <template #title>
-                            {{ $t('open.info.matchInfo.maxPlayers') }}
-                        </template>
-                        {{ tournament.maxTeamSize }}
-                    </MatchBox>
-                    <MatchBox>
-                        <template #title>
-                            {{ $t('open.info.matchInfo.pickTimer') }}
-                        </template>
-                        {{ tournament.mapTimer || 90 }} s
-                    </MatchBox>
-                    <MatchBox>
-                        <template #title>
-                            {{ $t('open.info.matchInfo.readyTimer') }}
-                        </template>
-                        {{ tournament.readyTimer || 90 }} s
-                    </MatchBox>
+                <div 
+                    class="info_stages"
+                >
+                    <div class="info_stage_selector">
+                        <ContentButton 
+                            v-for="stage in stageList"
+                            :key="stage.ID"
+                            class="content_button--right_margin"
+                            :class="{ 'content_button--active': selectedStage === stage.ID }"
+                            @click.native="selectedStage = stage.ID"
+                        >
+                            {{ stage.name.toUpperCase() }}
+                        </ContentButton>
+                    </div>
+                    <div
+                        v-if="stage"
+                        class="info_stage_panel"
+                    >
+                        <div class="info_stage_title">
+                            {{ stage.name.toUpperCase() }} 
+                            <span class="info_stage_title--red">({{ stage.abbreviation.toUpperCase() }})</span> 
+                            <div class="info_stage_title__status">
+                                <MatchStatus 
+                                    class="status"
+                                    :class="{ 'status--not_started': stageStatus === 'NOT STARTED', 'status--ongoing': stageStatus === 'ONGOING', 'status--completed': stageStatus === 'COMPLETED' }"
+                                >
+                                    {{ stageStatus }}
+                                </MatchStatus>
+                            </div>
+                            <hr class="line--gray line--bottom-space-default">
+                        </div>
+                        <div class="info_stage_data">
+                            <div class="info_stage_data__content">
+                                <InfoData>
+                                    <template #title>
+                                        ORDER
+                                    </template>
+                                    <template #value>
+                                        {{ stage.order }}
+                                    </template>
+                                </InfoData>
+                                <InfoData>
+                                    <template #title>
+                                        {{ $t('open.info.matchInfo.scoringMethod') }}
+                                    </template>
+                                    <template #value>
+                                        {{ scoringMethod }}
+                                    </template>
+                                </InfoData>
+                                <InfoData>
+                                    <template #title>
+                                        {{ $t('open.info.matchInfo.type') }}
+                                    </template>
+                                    <template #value>
+                                        {{ stageType }}
+                                    </template>
+                                </InfoData>
+                            </div>
+                            <div class="line--vertical_gray" />
+                            <div class="info_stage_data__content">
+                                <InfoData>
+                                    <template #title>
+                                        {{ $t('open.info.matchInfo.startDate') }}
+                                    </template>
+                                    <template #value>
+                                        {{ stage.timespan.start.toUTCString() }}
+                                    </template>
+                                </InfoData>
+                                <InfoData>
+                                    <template #title>
+                                        {{ $t('open.info.matchInfo.endDate') }}
+                                    </template>
+                                    <template #value>
+                                        {{ stage.timespan.end.toUTCString() }}
+                                    </template>
+                                </InfoData>
+                                <InfoData>
+                                    <template #title>
+                                        {{ $t('open.info.matchInfo.rounds') }}
+                                    </template>
+                                    <template #value>
+                                        {{ stage.rounds.length ? `${stage.rounds.length} rounds` : "N/A" }}
+                                    </template>
+                                </InfoData>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info_stage_panel">
+                        <div class="info_stage_title">
+                            MAPPOOLS 
+                        </div>
+                        <hr class="line--gray line--bottom-space-default">
+                        <div class="info_stage_data--bottom_padding">
+                            <div class="info_stage_data__content">
+                                <div class="info_stage_data_mappools_selector">
+                                    <ContentButton 
+                                        v-for="mappool in stageMappoolsList"
+                                        :key="mappool.ID"
+                                        class="content_button--bottom_margin"
+                                        :class="{ 'content_button--active': selectedMappool === mappool.ID }"
+                                        @click.native="selectedMappool = mappool.ID"
+                                    >
+                                        {{ mappool.name.toUpperCase() }}
+                                    </ContentButton>
+                                </div>
+                            </div>
+                            <div class="line--vertical_gray" />
+                            <div 
+                                v-if="mappool"
+                                class="info_stage_data__mappool_data"
+                            >
+                                <div class="info_stage_data_text">
+                                    <div class="info_stage_data_text__title">
+                                        {{ mappool.name.toUpperCase() }}
+                                    </div>
+                                    <div>
+                                        <ul>
+                                            <li
+                                                v-for="slot in mappool.slots"
+                                                :key="slot.ID"
+                                            >
+                                                {{ slot.name }} ({{ slot.acronym }}): {{ slot.maps.length }} maps
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="info_stage_data_button_group">
+                                    <ContentButton 
+                                        class="content_button--right_margin_bottom"
+                                        :class="{ 
+                                            'content_button--red': mappool.isPublic,
+                                            'content_button--disabled': !mappool.isPublic,
+                                        }"
+                                        :link="`/mappool`"
+                                    >
+                                        {{ mappool.isPublic ? $t('open.info.mappools.info') : $t('open.info.mappools.notAvailable') }}
+                                    </ContentButton>
+                                    <ContentButton 
+                                        class="content_button--right_margin_bottom"
+                                        :class="{ 
+                                            'content_button--red': mappool.isPublic,
+                                            'content_button--disabled': !mappool.isPublic,
+                                        }"
+                                        :link="mappool.isPublic ? mappool.mappackLink || '' : ''"
+                                    >
+                                        {{ mappool.isPublic ? $t('open.info.mappools.mappackDownload') : $t('open.info.mappools.mappacknotAvailable') }}
+                                    </ContentButton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div 
-                class="info_stages"
+                v-else
+                class="info_main"
             >
-                <div class="info_stage_selector">
-                    <ContentButton 
-                        v-for="stage in stageList"
-                        :key="stage.ID"
-                        class="content_button--right_margin"
-                        :class="{ 'content_button--active': selectedStage === stage.ID }"
-                        @click.native="selectedStage = stage.ID"
-                    >
-                        {{ stage.name.toUpperCase() }}
-                    </ContentButton>
-                </div>
-                <div
-                    v-if="stage"
-                    class="info_stage_panel"
-                >
-                    <div class="info_stage_title">
-                        {{ stage.name.toUpperCase() }} 
-                        <span class="info_stage_title--red">({{ stage.abbreviation.toUpperCase() }})</span> 
-                        <div class="info_stage_title__status">
-                            <MatchStatus 
-                                class="status"
-                                :class="{ 'status--not_started': stageStatus === 'NOT STARTED', 'status--ongoing': stageStatus === 'ONGOING', 'status--completed': stageStatus === 'COMPLETED' }"
-                            >
-                                {{ stageStatus }}
-                            </MatchStatus>
-                        </div>
-                        <hr class="line--gray line--bottom-space-default">
-                    </div>
-                    <div class="info_stage_data">
-                        <div class="info_stage_data__content">
-                            <InfoData>
-                                <template #title>
-                                    ID
-                                </template>
-                                <template #value>
-                                    {{ stage.ID }}
-                                </template>
-                            </InfoData>
-                            <InfoData>
-                                <template #title>
-                                    {{ $t('open.info.matchInfo.scoringMethod') }}
-                                </template>
-                                <template #value>
-                                    {{ scoringMethod }}
-                                </template>
-                            </InfoData>
-                            <InfoData>
-                                <template #title>
-                                    {{ $t('open.info.matchInfo.type') }}
-                                </template>
-                                <template #value>
-                                    {{ stageType }}
-                                </template>
-                            </InfoData>
-                        </div>
-                        <div class="line--vertical_gray" />
-                        <div class="info_stage_data__content">
-                            <InfoData>
-                                <template #title>
-                                    {{ $t('open.info.matchInfo.startDate') }}
-                                </template>
-                                <template #value>
-                                    {{ stage.timespan.start.toUTCString() }}
-                                </template>
-                            </InfoData>
-                            <InfoData>
-                                <template #title>
-                                    {{ $t('open.info.matchInfo.endDate') }}
-                                </template>
-                                <template #value>
-                                    {{ stage.timespan.end.toUTCString() }}
-                                </template>
-                            </InfoData>
-                            <InfoData>
-                                <template #title>
-                                    {{ $t('open.info.matchInfo.rounds') }}
-                                </template>
-                                <template #value>
-                                    {{ stage.rounds.length ? `${stage.rounds.length} rounds` : "N/A" }}
-                                </template>
-                            </InfoData>
-                        </div>
+                <div class="info_desc">
+                    <div class="info_desc__text">
+                        Could not find tournament
                     </div>
                 </div>
-                <div class="info_stage_panel">
-                    <div class="info_stage_title">
-                        MAPPOOLS 
-                    </div>
-                    <hr class="line--gray line--bottom-space-default">
-                    <div class="info_stage_data--bottom_padding">
-                        <div class="info_stage_data__content">
-                            <div class="info_stage_data_mappools_selector">
-                                <ContentButton 
-                                    v-for="mappool in stageMappoolsList"
-                                    :key="mappool.ID"
-                                    class="content_button--bottom_margin"
-                                    :class="{ 'content_button--active': selectedMappool === mappool.ID }"
-                                    @click.native="selectedMappool = mappool.ID"
-                                >
-                                    {{ mappool.name.toUpperCase() }}
-                                </ContentButton>
-                            </div>
-                        </div>
-                        <div class="line--vertical_gray" />
-                        <div 
-                            v-if="mappool"
-                            class="info_stage_data__mappool_data"
-                        >
-                            <div class="info_stage_data_text">
-                                <div class="info_stage_data_text__title">
-                                    {{ mappool.name.toUpperCase() }}
-                                </div>
-                                <div>
-                                    <ul>
-                                        <li
-                                            v-for="slot in mappool.slots"
-                                            :key="slot.ID"
-                                        >
-                                            {{ slot.name }} ({{ slot.acronym }}): {{ slot.maps.length }} maps
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="info_stage_data_button_group">
-                                <ContentButton 
-                                    class="content_button--right_margin_bottom"
-                                    :class="{ 
-                                        'content_button--red': mappool.isPublic,
-                                        'content_button--disabled': !mappool.isPublic,
-                                    }"
-                                    :link="`/mappool`"
-                                >
-                                    {{ mappool.isPublic ? $t('open.info.mappools.info') : $t('open.info.mappools.notAvailable') }}
-                                </ContentButton>
-                                <ContentButton 
-                                    class="content_button--right_margin_bottom"
-                                    :class="{ 
-                                        'content_button--red': mappool.isPublic,
-                                        'content_button--disabled': !mappool.isPublic,
-                                    }"
-                                    :link="mappool.isPublic ? mappool.mappackLink || '' : ''"
-                                >
-                                    {{ mappool.isPublic ? $t('open.info.mappools.mappackDownload') : $t('open.info.mappools.mappacknotAvailable') }}
-                                </ContentButton>
-                            </div>
-                        </div>
-                    </div>
+                <div class="info_stages">
+                    <div class="info_stage_selector" />
+                    <div class="info_stage_panel" />
                 </div>
-            </div>
-        </div>
-        <div 
-            v-else
-            class="info_main"
-        >
-            <div class="info_desc">
-                <div class="info_desc__text">
-                    Could not find tournament
-                </div>
-            </div>
-            <div class="info_stages">
-                <div class="info_stage_selector" />
-                <div class="info_stage_panel" />
             </div>
         </div>
     </div>
@@ -261,13 +263,24 @@ export default class Info extends Vue {
     selectedStage = 0;
     selectedMappool = 0;
 
-    get stageList (): {ID: number; name: string}[] {
-        return this.tournament?.stages.map(s => {
+    get stageList (): {
+        ID: number; 
+        name: string; 
+        order: number;
+    }[] {
+        const stages = this.tournament?.stages.map<{
+            ID: number; 
+            name: string; 
+            order: number;
+        }>(s => {
             return {
                 ID: s.ID,
                 name: s.name,
+                order: s.order,
             };
         }) || [];
+
+        return stages;
     }
 
     @Watch("stageList", { immediate: true })
@@ -335,12 +348,16 @@ export default class Info extends Vue {
 @import '@s-sass/_variables';
 
 .info {
-    width: 75vw;
-    align-self: center;
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+    width: 100%;
+
+    &_wrapper {
+        width: 75vw;
+        align-self: center;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
 
     &_main {
         display: flex;

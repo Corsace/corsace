@@ -6,7 +6,8 @@ export default {
     head: {
         title: "Corsace Open",
         link: [
-            { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+            { rel: "icon", type: "image/x-icon", href: "/open/favicon.ico" },
+            { rel: "icon", type: "image/x-icon", href: "/open/favicon.png" },
         ],
         meta: [
             { charset: "utf-8" },

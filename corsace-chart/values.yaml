@@ -42,6 +42,10 @@ secrets:
     v2:
       clientId: ""
       clientSecret: ""
+    bancho:
+      username: ""
+      ircPassword: ""
+      botAccount: "true"
   koaKey: ""
   interOpPassword: ""
 
@@ -82,6 +86,17 @@ webServices:
         - host: ayim.corsace.io
           paths:
             - path: /
+  open:
+    replicaCount: 1
+    command: open
+    publicUrl: https://open.corsace.io
+    ssr: true
+    ingress:
+      enabled: true
+      hosts:
+        - host: open.corsace.io
+          paths:
+            - path: /
   api:
     replicaCount: 1
     command: api
@@ -90,11 +105,13 @@ webServices:
   cronRunner:
     replicaCount: 1
     command: cron-runner
+    strategyType: Recreate
     ingress:
       enabled: false
   banchoBot:
     replicaCount: 1
     command: bancho-bot
+    strategyType: Recreate
     ingress:
       enabled: false
 

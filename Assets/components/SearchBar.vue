@@ -100,7 +100,7 @@ export default class SearchBar extends Vue {
     color: $blue;
     padding: 7px 0;
     
-    &--mca {
+    &--mca-ayim {
         border: 2px solid $blue;
     }
 
@@ -139,7 +139,7 @@ export default class SearchBar extends Vue {
             background-size: 1rem 1rem;
             font-size: $font-xl;
 
-            &--mca {
+            &--mca-ayim {
                 color: $blue;
             }
 
@@ -178,7 +178,7 @@ export default class SearchBar extends Vue {
             font-style: italic;
         }
 
-        &--mca { 
+        &--mca-ayim { 
             color: $blue;
             &::placeholder, &:placeholder-shown {
                 color: $blue;

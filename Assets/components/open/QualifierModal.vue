@@ -11,7 +11,7 @@
                     class="qualifier_modal__label--no_shadow"
                     style="text-align: left;"
                 >
-                    Choose a date and time for your team to play qualifiers:
+                    Choose a date and time (IN YOUR LOCAL TIMEZONE {{ timeZone }}) for your team to play their qualifiers. You can change this later if you need to.
                 </div>
                 <input 
                     v-model="qualifierAt"
@@ -23,10 +23,18 @@
             </div>
         </div>
         <ContentButton
-            class="content_button--red content_button--red_sm qualifier_modal__label--no_shadow"
+            v-if="!team?.qualifier"
+            class="content_button--red qualifier_modal__label--no_shadow"
             @click.native="registerTeam"
         >
             REGISTER TEAM TO CORSACE OPEN
+        </ContentButton>
+        <ContentButton
+            v-else
+            class="content_button--red qualifier_modal__label--no_shadow"
+            @click.native="editQualifier"
+        >
+            EDIT QUALIFIER TIME
         </ContentButton>
     </BaseModal>
 </template>
@@ -39,6 +47,7 @@ import ContentButton from "./ContentButton.vue";
 import { namespace } from "vuex-class";
 import { Tournament } from "../../../Interfaces/tournament";
 import { Team } from "../../../Interfaces/team";
+import { toLocalISOString } from "../../../Server/utils/dateParse";
 
 const openModule = namespace("open");
 
@@ -57,11 +66,16 @@ export default class QualifierModal extends Vue {
         return this.tournament?.stages.find(s => s.stageType === 0) || null;
     }
 
+    get timeZone () {
+        const dateString = new Date().toLocaleString("en-US", { timeZoneName: "shortOffset" }).split(" ");
+        return dateString[dateString.length - 1];
+    }
+
     get minDate () {
         return this.qualifierStage && Date.now() >= this.qualifierStage.timespan.start.getTime() ? new Date() : this.qualifierStage?.timespan.start || new Date();
     }
 
-    qualifierAt = (new Date).toISOString().slice(0, 16);
+    qualifierAt = toLocalISOString(new Date).slice(0, 16);
 
     async registerTeam () {
         if (!this.team)
@@ -80,6 +94,30 @@ export default class QualifierModal extends Vue {
             return;
 
         const { data: res } = await this.$axios.post(`/api/team/${this.team.ID}/register`, {
+            tournamentID: this.tournament?.ID,
+            qualifierAt: date.getTime(),
+        });
+
+        if (res.success)
+            this.$emit("close", true);
+        else
+            alert(res.error);
+    }
+
+    async editQualifier () {
+        if (!this.team)
+            return;
+
+        const date = new Date(this.qualifierAt);
+        if (isNaN(date.getTime())) {
+            alert("Invalid date/time");
+            return;
+        }
+
+        if (!confirm(`Are you sure your team wants to now play their qualifiers at the UTC time ${date.toUTCString()}?`))
+            return;
+
+        const { data: res } = await this.$axios.post(`/api/team/${this.team.ID}/qualifier`, {
             tournamentID: this.tournament?.ID,
             qualifierAt: date.getTime(),
         });

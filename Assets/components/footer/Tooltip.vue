@@ -31,7 +31,7 @@ export default class Tooltip extends Vue {
     display: flex;
 
     &__text {
-        &--mca, &--ayim {
+        &--mca-ayim {
             background-color: $alt-blue;
             &::after {
                 border-top-color: $alt-blue;
