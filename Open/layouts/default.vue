@@ -1,5 +1,6 @@
 <template>
     <div class="layout layout--open">
+        <DevBanner />
         <the-header
             class="header"
         >
@@ -213,6 +214,7 @@ import { State, namespace } from "vuex-class";
 import { UserInfo } from "../../Interfaces/user";
 import { BaseTeam, Team } from "../../Interfaces/team";
 
+import DevBanner from "../../Assets/components/DevBanner.vue";
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
 import Tooltip from "../../Assets/components/footer/Tooltip.vue";
@@ -222,6 +224,7 @@ const openModule = namespace("open");
 
 @Component({
     components: {
+        DevBanner,
         TheHeader,
         TheFooter,
         Tooltip,

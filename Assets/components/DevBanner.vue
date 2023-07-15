@@ -1,0 +1,54 @@
+<template>
+    <div 
+        class="dev_banner"
+        :class="`dev_banner--${site}_${viewTheme}`"
+    >
+        This site is a work in progress! Please be patient as we work to improve it, add features, and fix bugs as they arise. 😃
+    </div>
+</template>
+
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+import { State } from "vuex-class";
+
+@Component
+export default class DevBanner extends Vue {
+    @State viewTheme!: "light" | "dark";
+    @State site!: string;
+}
+</script>
+
+<style lang="scss">
+@import '@s-sass/_variables';
+
+.dev_banner {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &--mca-ayim {
+        &_light {
+            background-color: white;
+            color: $alt-blue;
+        }
+
+        &_dark {
+            background-color: $dark;
+            color: $blue;
+        }
+    }
+
+    &--open {
+        &_light {
+            background-color: #2F2F2F;
+            color: $white;
+        }
+
+        &_dark {
+            background-color: #2F2F2F;
+            color: $white;
+        }
+    }
+}
+</style>
