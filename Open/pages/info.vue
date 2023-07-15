@@ -340,7 +340,7 @@ export default class Info extends Vue {
     width: 100%;
 
     &_wrapper {
-        width: 75wv;
+        width: 75vw;
         align-self: center;
         margin-top: 20px;
         display: flex;
