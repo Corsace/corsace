@@ -44,6 +44,11 @@
         "v2": {
             "clientId": "@@OSU_V2_CLIENTID",
             "clientSecret": "@@OSU_V2_CLIENTSECRET"
+        },
+        "bancho": {
+            "username": "@@OSU_BANCHO_USERNAME",
+            "ircPassword": "@@OSU_BANCHO_IRC_PASSWORD",
+            "botAccount": "@@OSU_BANCHO_BOT_ACCOUNT"
         }
     },
     "google": {
@@ -71,6 +76,12 @@
         "port": 80,
         "publicUrl": "@@MCA_PUBLICURL",
         "ssr": "@@MCA_SSR"
+    },
+    "open": {
+        "host": "0.0.0.0",
+        "port": 80,
+        "publicUrl": "@@OPEN_PUBLICURL",
+        "ssr": "@@OPEN_SSR"
     },
     "api": {
         "host": "0.0.0.0",
