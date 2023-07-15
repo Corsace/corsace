@@ -23,7 +23,7 @@ export const state = (): OpenState => ({
 
 export const mutations: MutationTree<OpenState> = {
     setTournament (state, tournament: Tournament | undefined) {
-        if (tournament)
+        if (tournament) {
             state.tournament = {
                 ...tournament,
                 createdAt: new Date(tournament.createdAt),
@@ -66,6 +66,9 @@ export const mutations: MutationTree<OpenState> = {
                     })),
                 })),
             };
+
+            state.tournament.stages.sort((a, b) => a.order - b.order);
+        }
     },
     async setTeam (state, teams: Team[] | undefined) {
         state.team = teams?.[0] || null;
