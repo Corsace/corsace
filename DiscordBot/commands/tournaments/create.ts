@@ -7,7 +7,7 @@ import { Command } from "../";
 import { loginResponse } from "../../functions/loginResponse";
 import { filter, stopRow, timedOut } from "../../functions/messageInteractionFunctions";
 import { profanityFilterStrong } from "../../../Interfaces/comment";
-import { Stage, StageType } from "../../../Models/tournaments/stage";
+import { Stage } from "../../../Models/tournaments/stage";
 import { Phase } from "../../../Models/phase";
 import { TournamentChannel, TournamentChannelType, TournamentChannelTypeRoles, forumTags } from "../../../Models/tournaments/tournamentChannel";
 import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
@@ -18,6 +18,7 @@ import commandUser from "../../functions/commandUser";
 import getUser from "../../../Server/functions/get/getUser";
 import { cron } from "../../../Server/cron";
 import { CronJobType } from "../../../Interfaces/cron";
+import { StageType } from "../../../Interfaces/stage";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))

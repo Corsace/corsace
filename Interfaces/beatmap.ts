@@ -18,7 +18,7 @@ export interface Beatmapset {
 export interface Beatmap {
     ID: number;
     beatmapsetID: number;
-    beatmapset: Beatmapset;
+    beatmapset?: Beatmapset;
     totalLength: number;
     hitLength: number;
     difficulty: string;
@@ -26,7 +26,7 @@ export interface Beatmap {
     overallDifficulty: number;
     approachRate: number;
     hpDrain: number;
-    mode: ModeDivision;
+    mode?: ModeDivision;
     circles: number;
     sliders: number;
     spinners: number;

@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, Message, Permis
 import { Command } from "../..";
 import { profanityFilterStrong } from "../../../../Interfaces/comment";
 import { Round } from "../../../../Models/tournaments/round";
-import { ScoringMethod, Stage, StageType } from "../../../../Models/tournaments/stage";
+import { Stage } from "../../../../Models/tournaments/stage";
 import { TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { loginResponse } from "../../../functions/loginResponse";
 import respond from "../../../functions/respond";
@@ -12,6 +12,7 @@ import confirmCommand from "../../../functions/confirmCommand";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import channelID from "../../../functions/channelID";
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../../Server/utils/dateParse";
+import { ScoringMethod, StageType } from "../../../../Interfaces/stage";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))

@@ -1,5 +1,5 @@
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { StageType } from "../../../../Models/tournaments/stage";
+import { StageType } from "../../../../Interfaces/stage";
 import getUser from "../../../../Server/functions/get/getUser";
 
 export default async function allAllowedUsersForMatchup (matchup: Matchup) {

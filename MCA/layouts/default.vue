@@ -1,7 +1,10 @@
 <template>
-    <div class="layout layout--mca">
-        <the-header 
-            :site="'mca'"
+    <div class="layout layout--mca-ayim">
+        <DevBanner 
+            v-if="devBanner"
+            @close="devBanner = false"
+        />
+        <the-header
             class="mcaayim__header"
         >
             <a 
@@ -27,8 +30,7 @@
         
         <the-footer class="mcaayim__footer">
             <div class="socials">
-                <Tooltip
-                    :site="'mca'">
+                <Tooltip>
                     <template #icon>
                         <a 
                             class="socials__link" 
@@ -38,15 +40,14 @@
                             <img
                                 class="socials__icon"
                                 :class="`socials__icon--${viewTheme}`"
-                                src="../../Assets/img/site/mca-ayim/corsace_logo.png"
+                                src="../../Assets/img/corsace.png"
                                 alt=""
                             >
                         </a>
                     </template>
                     CORSACE
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'">
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
@@ -63,8 +64,7 @@
                     </template>
                     TWITTER
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'">
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
@@ -81,8 +81,7 @@
                     </template>
                     DISCORD
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'">
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
@@ -99,8 +98,7 @@
                     </template>
                     TWITCH
                 </Tooltip>
-                <Tooltip
-                    :site="'mca'">
+                <Tooltip>
                     <template #icon>
                         <a
                             class="socials__link"
@@ -135,12 +133,13 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
+import DevBanner from "../../Assets/components/DevBanner.vue";
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import ModeSwitcher from "../../Assets/components/mca-ayim/ModeSwitcher.vue";
 import YearSwitcher from "../../Assets/components/mca-ayim/YearSwitcher.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
+import Tooltip from "../../Assets/components/footer/Tooltip.vue";
 import GuestDifficultyModal from "../../Assets/components/mca-ayim/GuestDifficultyModal.vue";
-import Tooltip from "../../Assets/components/mca-ayim/Tooltip.vue";
 
 import { UserMCAInfo } from "../../Interfaces/user";
 
@@ -148,6 +147,7 @@ const mcaAyimModule = namespace("mca-ayim");
 
 @Component({
     components: {
+        DevBanner,
         TheHeader,
         ModeSwitcher,
         YearSwitcher,
@@ -165,6 +165,7 @@ export default class Default extends Vue {
 
     @mcaAyimModule.Action updateSelectedMode;
 
+    devBanner = true;
     isSmall = false;
 
     async mounted () {
@@ -176,7 +177,7 @@ export default class Default extends Vue {
         }
 
         await Promise.all([
-            this.$store.dispatch("setViewTheme"),
+            this.$store.dispatch("setViewTheme", "light"),
             this.$store.dispatch("mca-ayim/setSelectedMode"),
         ]);
     }

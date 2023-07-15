@@ -422,6 +422,107 @@
             "resultsOverlay": "Hello! This is possibly the first time you have navigated to the results page! <br> These results show the final placements of the beatmaps/users using <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> alongside the amount of times the beatmap/user was a first choice, and the total number of appearances!<br> Hopefully these results for MCA [YEAR] are to your liking! Can't wait to see you all for next MCA!"
         }
     },
+    "open": {
+        "home": {
+            "description": "osu!standard 4v4 tournament featuring the lorem ipsums and lorem ipsums",
+            "timeline": "TIMELINE",
+            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "button": {
+                "qualifiersMappool": "QUALIFIERS MAPPOOLS",
+                "mappoolDownload": "Mappool download and statistics",
+                "register": "REGISTER YOUR TEAM",
+                "registrationsEnd": "Registrations end"
+            }
+        },
+        "info": {
+            "title": "INFORMATION",
+            "error": "Could not find tournament",
+            "matchInfo": {
+                "matchSize": "MATCH SIZE",
+                "minPlayers": "MIN. PLAYERS",
+                "maxPlayers": "MAX. PLAYERS",
+                "pickTimer": "MAP PICK TIMER",
+                "readyTimer": "READY TIMER",
+                "scoringMethod": "SCORING METHOD",
+                "type": "TYPE",
+                "startDate": "START DATE",
+                "endDate": "END DATE",
+                "rounds": "ROUNDS"
+            },
+            "headings": {
+                "qualifiers": "QUALIFIERS",
+                "ql": "(QL)",
+                "mappools": "MAPPOOLS",
+                "stage": "STAGE"
+            },
+            "status": {
+                "notStarted": "NOT STARTED",
+                "complete": "COMPLETE",
+                "ongoing": "ONGOING"
+            },
+            "mappools": {
+                "info": "MAPPOOL INFO",
+                "notAvailable": "INFO NOT AVAILABLE",
+                "mappackDownload": "DOWNLOAD MAP PACK",
+                "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
+            }
+        },
+        "qualifiers": {
+            "nav": {
+                "mappool": "MAPPOOL",
+                "qualifiers": "QUALIFIERS",
+                "scores": "SCORES"
+            },
+            "mappool": {
+                "sheets": "SHEETS",
+                "mappool": "MAPPOOL",
+                "banner": {
+                    "mapper": "MAPPER",
+                    "difficulty": "DIFFICULTY"
+                }
+            },
+            "scores": {
+                "nav": {
+                    "filters": "FILTERS",
+                    "average": "AVERAGE",
+                    "sum": "SUM",
+                    "%avg": "%AVG",
+                    "seedings": "SEEDING"
+                },
+                "category": "CATEGORY",
+                "select": "SELECT",
+                "players": "PLAYERS",
+                "teams": "TEAMS"
+            }
+        },
+        "create": {
+            "title": "CREATE A TEAM",
+            "info1": "Registrations will end on",
+            "info2": "Please ensure all information is correct before finalizing.",
+            "teamName": "TEAM NAME",
+            "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
+            "teamAcronym": "TEAM ACRONYM",
+            "acronymLength": "2 - 4 characters. Profanity will be checked.",
+            "teamAvatar": "TEAM AVATAR",
+            "upload": "UPLOAD",
+            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
+            "fileSizeError": "file size too big! please upload a smaller image",
+            "fileTypeError": "incorrect file type! please upload a .jpg or .png",
+            "preview": "PREVIEW",
+            "avatarInfo1": "Captains can modify team names and avatars before registrations close.",
+            "avatarInfo2": "All names and avatars will be approved by staff.",
+            "avatarInfo3": "If deemed inappropriate, you will be notified to make changes.",
+            "teamManagement": "TEAM MANAGEMENT",
+            "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
+            "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
+            "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
+            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "create": "CREATE TEAM"
+        },
+        "mappool": {
+            "title": "MAPPOOL"
+        }
+    },
     "main": {
         "construction": {
             "underConstruction": "under construction",

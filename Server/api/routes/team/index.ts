@@ -1,18 +1,19 @@
 import Router from "@koa/router";
 import { isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
-import { profanityFilterStrong } from "../../../../Interfaces/comment";
+import { Team as TeamInterface, validateTeamText } from "../../../../Interfaces/team";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { TournamentRole, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
 import { validateTeam } from "./middleware";
 import { parseQueryParam } from "../../../utils/query";
 import { deleteTeamAvatar, uploadTeamAvatar } from "../../../functions/tournaments/teams/teamAvatarFunctions";
-import { StageType } from "../../../../Models/tournaments/stage";
+import { StageType } from "../../../../Interfaces/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { cron } from "../../../cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { parseDateOrTimestamp } from "../../../utils/dateParse";
+import getTeamInvites from "../../../functions/get/getTeamInvites";
 
 const teamRouter = new Router();
 
@@ -25,15 +26,7 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
         .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
         .getMany();
 
-    ctx.body = teams.map(team => {
-        return {
-            ID: team.ID,
-            name: team.name,
-            abbreviation: team.abbreviation,
-            manager: `${team.manager.osu.username} (${team.manager.osu.userID})`,
-            members: team.members.map(member => `${member.osu.username} (${member.osu.userID})`),
-        };
-    });
+    ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface()));
 });
 
 teamRouter.get("/all", async (ctx) => {
@@ -49,15 +42,23 @@ teamRouter.get("/all", async (ctx) => {
 
     const teams = await teamQ.getMany();
 
-    ctx.body = teams.map(team => {
-        return {
-            ID: team.ID,
-            name: team.name,
-            abbreviation: team.abbreviation,
-            manager: `${team.manager.osu.username} (${team.manager.osu.userID})`,
-            members: team.members.map(member => `${member.osu.username} (${member.osu.userID})`),
-        };
-    });
+    ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface()));
+});
+
+teamRouter.get("/:teamID", async (ctx) => {
+    const team = await Team
+        .createQueryBuilder("team")
+        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member")
+        .where("team.ID = :ID", { ID: ctx.params.teamID })
+        .getOne();
+
+    if (!team) {
+        ctx.body = { error: "Team not found" };
+        return;
+    }
+
+    ctx.body = await team.teamInterface();
 });
 
 teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
@@ -69,21 +70,14 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
         return;
     }
 
-    if (/^team /i.test(name)) {
-        name = name.replace(/^team /i, "");
-        if (/^t/i.test(abbreviation))
-            abbreviation = abbreviation.replace(/^t/i, "");
-    }
-
-    if (name.length > 20 || name.length < 5 || profanityFilterStrong.test(name)) {
-        ctx.body = { error: "Invalid name" };
+    const res = validateTeamText(name, abbreviation);
+    if ("error" in res) {
+        ctx.body = res;
         return;
     }
 
-    if (abbreviation.length > 4 || abbreviation.length < 2 || profanityFilterStrong.test(abbreviation)) {
-        ctx.body = { error: "Invalid abbreviation" };
-        return;
-    }
+    name = res.name;
+    abbreviation = res.abbreviation;
 
     const team = new Team;
     team.name = name;
@@ -93,12 +87,12 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
     if (isPlaying)
         team.members = [ctx.state.user];
 
-    const err = await team.calculateStats();
+    const noErr = await team.calculateStats();
     await team.save();
-    if (!err)
-        ctx.body = { success: "Team created, but there was an error calculating stats. Please contact VINXIS", team, error: !err };
+    if (!noErr)
+        ctx.body = { success: "Team created, but there was an error calculating stats. Please contact VINXIS", team, error: !noErr };
     else
-        ctx.body = { success: "Team created", team, error: !err };
+        ctx.body = { success: "Team created", team, error: !noErr };
 });
 
 teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async (ctx) => {
@@ -264,6 +258,23 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
         return;
     }
 
+    if (tournaments.some(t => t.status === TournamentStatus.Registrations)) {
+        const qualifierMatches = await Matchup
+            .createQueryBuilder("matchup")
+            .innerJoin("matchup.stage", "stage")
+            .innerJoin("stage.tournament", "tournament")
+            .innerJoin("matchup.teams", "team")
+            .where("tournament.ID = :ID", { ID: tournaments[0].ID })
+            .andWhere("stage.stageType = 0")
+            .andWhere("team.ID = :teamID", { teamID: team.ID })
+            .getMany();
+
+        if (qualifierMatches.length > 0) {
+            ctx.body = { error: "Team is currently registered in a tournament where they have already played a qualifier match" };
+            return;
+        }
+    }
+
     const userID = parseInt(ctx.params.userID);
     if (isNaN(userID)) {
         ctx.body = { error: "Invalid user ID" };
@@ -292,12 +303,25 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
     if (body?.abbreviation)
         team.abbreviation = body.abbreviation;
 
+    const res = validateTeamText(team.name, team.abbreviation);
+    if ("error" in res) {
+        ctx.body = res;
+        return;
+    }
+
+    team.name = res.name;
+    team.abbreviation = res.abbreviation;
+
     await team.save();
 
     ctx.body = { success: "Team updated", name: team.name, abbreviation: team.abbreviation };
 });
 
 teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team: Team = ctx.state.team;
+    const invites = await getTeamInvites(team.ID, "teamID");
+    await Promise.all(invites.map(i => i.remove()));
+
     await ctx.state.team.remove();
 
     ctx.body = { success: "Team deleted" };

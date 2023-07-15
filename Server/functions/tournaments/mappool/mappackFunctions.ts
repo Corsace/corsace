@@ -39,12 +39,12 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
     const names = updatedMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
     const dlLinks = updatedMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}`);
 
-    const streams = dlLinks.map(link => download(link));
-    const zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
-
-    const s3Key = `${randomUUID()}/${packName}.zip`;
-
     try {
+        const streams = dlLinks.map(link => download(link));
+        const zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
+    
+        const s3Key = `${randomUUID()}/${packName}.zip`;
+
         if (bucket === "mappacksTemp") {
             await buckets.mappacksTemp.putObject(s3Key, zipStream, "application/zip");
             const url = await buckets.mappacksTemp.getSignedUrl(s3Key, 60 * 60 * 24);

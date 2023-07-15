@@ -32,7 +32,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
 import { SectionCategory } from "../../../Interfaces/category";
-import { MCAInfo, Phase, StageType } from "../../../Interfaces/mca";
+import { MCAInfo, MCAPhase, StageType } from "../../../Interfaces/mca";
 import { ResultColumn } from "../../../Interfaces/result";
 
 import ResultsFilters from "../../components/results/ResultsFilters.vue";
@@ -70,7 +70,7 @@ const mcaAyimModule = namespace("mca-ayim");
 export default class Results extends Vue {
     @mcaAyimModule.State allMCA!: MCAInfo[];
 
-    @mcaAyimModule.Getter phase!: Phase | null;
+    @mcaAyimModule.Getter phase!: MCAPhase | null;
     @mcaAyimModule.Getter isMCAStaff!: boolean;
 
     @mcaAyimModule.Mutation toggleGuestDifficultyModal;

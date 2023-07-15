@@ -36,7 +36,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
-import { Phase } from "../../../Interfaces/mca";
+import { MCAPhase } from "../../../Interfaces/mca";
 
 const mcaAyimModule = namespace("mca-ayim");
 
@@ -50,7 +50,7 @@ export default class ModeSwitcher extends Vue {
 
     @mcaAyimModule.State selectedMode!: string;
     @mcaAyimModule.State modes!: string[];
-    @mcaAyimModule.Getter phase!: Phase;
+    @mcaAyimModule.Getter phase!: MCAPhase;
     @mcaAyimModule.Getter isEligibleFor!: (mode: string) => boolean;
     @mcaAyimModule.Action updateSelectedMode;
 

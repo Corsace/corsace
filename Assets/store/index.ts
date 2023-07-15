@@ -19,11 +19,13 @@ export const mutations: MutationTree<BaseState> = {
     setLoggedInUser (state, user) {
         state.loggedInUser = user;
     },
-    setViewTheme (state) {
+    setViewTheme (state, defaultTheme: "light" | "dark") {
         const localTheme = localStorage.getItem("theme");
 
         if (localTheme && themeRegex.test(localTheme))
             state.viewTheme = localTheme as "light" | "dark";
+        else
+            state.viewTheme = defaultTheme;
     },
     updateViewTheme (state, theme) {
         if (themeRegex.test(theme)) {
@@ -53,8 +55,8 @@ export const actions: ActionTree<BaseState, BaseState> = {
             commit("setLoggedInUser", data);
         }
     },
-    async setViewTheme ({ commit }) {
-        commit("setViewTheme");
+    async setViewTheme ({ commit }, defaultTheme: "light" | "dark") {
+        commit("setViewTheme", defaultTheme);
     },
     async updateViewTheme ({ commit }, theme) {
         commit("updateViewTheme", theme);

@@ -191,7 +191,7 @@
                         class="portal__ayim--offset"
                         :class="`index--${viewTheme}`"
                     >
-                        <span v-html="$t('mca.main.banner')"></span> {{ $route.params.year }}
+                        <span v-html="$t('mca.main.banner')" /> {{ $route.params.year }}
                     </div>
                     <div class="portal__ayim--right">
                         <img
@@ -229,17 +229,16 @@
                     </div>
                 </a>
             </div>
-            <hr class = "dividerMain">
+            <hr class="dividerMain">
             <div class="welcomeBack">
                 <div>
-                    <span v-html="$t('mca.main.welcome')"></span>
+                    <span v-html="$t('mca.main.welcome')" />
                 </div>
             </div>
-            <div class="textBody" >
-                <span v-html="$t('mca.main.message.2022')"></span>
+            <div class="textBody">
+                <span v-html="$t('mca.main.message.2022')" />
             </div>
             <br>
-            
         </div>
         <div 
             v-else
@@ -261,7 +260,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
 import { CategoryInfo } from "../../../Interfaces/category";
-import { MCA, Phase } from "../../../Interfaces/mca";
+import { MCA, MCAPhase } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
 import Collapsible from "../../../Assets/components/mca-ayim/Collapsible.vue";
@@ -308,7 +307,7 @@ export default class Index extends Vue {
     @mcaAyimModule.State loggedInMCAUser!: null | UserMCAInfo;
     @mcaAyimModule.State mca!: MCA;
     @mcaAyimModule.State selectedMode!: string;
-    @mcaAyimModule.Getter phase!: Phase;
+    @mcaAyimModule.Getter phase!: MCAPhase | null;
     @mcaAyimModule.Getter isEligibleFor!: (mode: string) => boolean;
     @mcaAyimModule.Mutation toggleGuestDifficultyModal!: boolean;
 

@@ -25,12 +25,7 @@ export default class ListTransition extends Vue {
         transition: all .4s ease-in-out;
     }
 
-    &-enter-active {
-        transition: all .2s ease-out;
-    }
-
     &-leave-active {
-        transition: all .2s ease-out;
         position: absolute !important;
     }
 

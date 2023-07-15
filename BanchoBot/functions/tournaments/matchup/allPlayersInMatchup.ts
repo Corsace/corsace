@@ -1,6 +1,6 @@
 import { BanchoLobbyPlayer } from "bancho.js";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { StageType } from "../../../../Models/tournaments/stage";
+import { StageType } from "../../../../Interfaces/stage";
 import { Team } from "../../../../Models/tournaments/team";
 
 export default function allPlayersInMatchup (matchup: Matchup, playersInLobby: BanchoLobbyPlayer[]) {

@@ -31,7 +31,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
-import { MCA, Phase } from "../../../Interfaces/mca";
+import { MCA, MCAPhase } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
 import StagePage from "../../components/stage/StagePage.vue";
@@ -74,7 +74,7 @@ export default class Stage extends Vue {
     @mcaAyimModule.State selectedMode!: string;
     @mcaAyimModule.State loggedInMCAUser!: UserMCAInfo | null;
     @mcaAyimModule.State mca!: MCA | null;
-    @mcaAyimModule.Getter phase!: Phase | null;
+    @mcaAyimModule.Getter phase!: MCAPhase | null;
     @mcaAyimModule.Mutation toggleGuestDifficultyModal;
     
     mounted () {

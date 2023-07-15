@@ -3,6 +3,7 @@ import { User } from "../user";
 import { Tournament } from "./tournament";
 import { TeamInvite } from "./teamInvite";
 import { Matchup } from "./matchup";
+import { Team as TeamInterface, TeamMember } from "../../Interfaces/team";
 
 @Entity()
 export class Team extends BaseEntity {
@@ -75,7 +76,7 @@ export class Team extends BaseEntity {
             this.pp = pps.reduce((acc, rpp) => acc + rpp, 0);
             this.rank = ranks.reduce((acc, rpp) => acc + (rpp || 0), 0) / ranks.length;
             this.BWS = await memberDatas.reduce(async (acc, data) => {
-                const memberBWS = Math.pow(data.statistics.global_rank, Math.pow(0.9937, Math.pow((await User.filterBWSBadges(data.badges, modeID)).length, 2)));
+                const memberBWS = Math.pow(data.statistics.global_rank, Math.pow(0.9937, Math.pow(User.filterBWSBadges(data.badges, modeID).length, 2)));
                 return (await acc) + memberBWS;
             }, Promise.resolve(0)) / memberDatas.length;
 
@@ -88,5 +89,53 @@ export class Team extends BaseEntity {
             return false;
         }
             
+    }
+
+    public async teamInterface (): Promise<TeamInterface> {
+        const qualifier = await Matchup
+            .createQueryBuilder("matchup")
+            .innerJoin("matchup.teams", "team")
+            .innerJoin("matchup.stage", "stage")
+            .where("team.ID = :teamID", { teamID: this.ID })
+            .andWhere("stage.stageType = 0")
+            .getOne();
+        return {
+            ID: this.ID,
+            name: this.name,
+            abbreviation: this.abbreviation,
+            avatarURL: this.avatarURL || undefined,
+            manager: {
+                ID: this.manager.ID,
+                username: this.manager.osu.username,
+                osuID: this.manager.osu.userID,
+                BWS: await this.manager.calculateBWS(),
+                isManager: true,
+            },
+            members: await Promise.all(this.members.map<Promise<TeamMember>>(async member => {
+                return {
+                    ID: member.ID,
+                    username: member.osu.username,
+                    osuID: member.osu.userID,
+                    BWS: await member.calculateBWS(),
+                    isManager: member.ID === this.manager.ID,
+                };
+            })),
+            BWS: this.BWS,
+            rank: this.rank,
+            tournaments: this.tournaments?.map(t => ({
+                ID: t.ID,
+                name: t.name,
+            })) || await Tournament
+                .createQueryBuilder("tournament")
+                .innerJoin("tournament.teams", "team")
+                .where("team.ID = :teamID", { teamID: this.ID })
+                .select(["tournament.ID", "tournament.name"])
+                .getMany(),
+            qualifier: qualifier ? {
+                ID: qualifier.ID,
+                date: qualifier.date,
+                mp: qualifier.mp || undefined,
+            } : undefined,
+        };
     }
 }

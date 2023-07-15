@@ -1,32 +1,40 @@
 // Per page nuxt auto transition
-.page-enter-active, .page-leave-active {
-  transition: opacity 0.2s ease-out;
+.page {
+    &-enter, &-leave-to {
+        opacity: 0;
+    }
 }
 
-.page-enter, .page-leave-to {
-  opacity: 0;
+.fade {
+    &-enter, &-leave-to {
+        overflow: hidden;
+        max-height: 0px;
+        opacity: 0;
+    }
+
+    &-enter-to, &-leave {
+        overflow: hidden;
+        max-height: 100px;
+        opacity: 1;
+    }
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: all 0.2s ease-out;
+.simple-fade {
+    &-enter, &-leave-to {
+        opacity: 0;
+    }
 }
 
-.fade-enter, .fade-leave-to {
-  overflow: hidden;
-  max-height: 0px;
-  opacity: 0;
-}
+.collapsible {
+    &-enter, &-leave-to {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+    }
 
-.fade-enter-to, .fade-leave {
-  overflow: hidden;
-  max-height: 100px;
-  opacity: 1;
-}
-
-.simple-fade-enter-active, .simple-fade-leave-active {
-  transition: all 0.2s ease-out;
-}
-
-.simple-fade-enter, .simple-fade-leave-to {
-  opacity: 0;
+    &-enter-to, &-leave {
+        overflow: hidden;
+        max-height: 1000px;
+        opacity: 1;
+    }
 }

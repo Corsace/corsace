@@ -1,71 +1,23 @@
-import { config } from "node-config-ts";
-import * as fs from "fs";
-import path from "path";
-
-const locales: any[] = [];
-
-fs.readdirSync("../Assets/lang").forEach(file => {
-    if (file !== "example.json" && file !== "flagCodes.json" && file !== "index.js")
-        locales.push({
-            code: file.split(".")[0],
-            file,
-        });
-});
+import { NuxtConfig } from "@nuxt/types";
+import nuxtConfig from "../Assets/nuxt.base.config";
 
 export default {
-    server: {
-        host: config.open.host,
-        port: config.open.port,
-    },
-    ssr: config.open.ssr,
+    ...nuxtConfig("open"),
     head: {
+        title: "Corsace Open",
         link: [
-            { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&display=swap" },
-            { rel: "stylesheet", href: "https://fonts.googleapis.com/css?family=Lexend+Peta&display=swap" },
             { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
         ],
         meta: [
             { charset: "utf-8" },
             { name: "viewport", content: "width=device-width, initial-scale=1" },
-            {
-                hid: "description",
-                name: "description",
-                content: "Corsace Open",
-            },
+            { hid: "description", name: "description", content: "Corsace Open is one of the largest 4v4 tournaments in osu! Hailing great competition and entertaining matches." },
+            { hid: "og:title", property: "og:title", content: "Corsace Open" },
+            { hid: "og:type", property: "og:type", content: "website" },
+            { hid: "og:url", property: "og:url", content: "https://open.corsace.io" },
+            { hid: "og:description", property: "og:description", content: "Corsace Open is one of the largest 4v4 tournaments in osu! Hailing great competition and entertaining matches." },
+            { hid: "og:site_name", property: "og:site_name", content: "CO" },
+            { hid: "theme-color", name: "theme-color", content: "#F24141" },
         ],
     },
-    buildModules: ["@nuxt/typescript-build"],
-    modules: [
-        "@nuxtjs/axios",
-        [
-            "nuxt-i18n",
-            {
-                locales,
-                defaultLocale: "en",
-                strategy: "no_prefix",
-                lazy: true,
-                langDir: "../Assets/lang/",
-                vueI18n: {
-                    fallbackLocale: "en",
-                },
-            },
-        ],
-    ],
-    css: [
-        "./assets/main.scss",
-    ],
-    build: {
-        extend (config) {
-            config.resolve.alias["@s-sass"] = path.join(__dirname, "../MCA-AYIM/assets/sass");
-        },
-    },
-    dir: {
-        static: "../Assets/static",
-    },
-    axios: {
-        proxy: true,
-    },
-    proxy: {
-        "/api/": config.api.publicUrl,
-    },
-};
+} as NuxtConfig;
