@@ -10,6 +10,8 @@ import { osuV2Client } from "../../../osu";
 import { isPossessive } from "../../../../Models/MCA_AYIM/guestRequest";
 import { scopes } from "../../../../Interfaces/osuAPIV2";
 import { parseQueryParam } from "../../../utils/query";
+import { ModeDivisionType } from "../../../../Models/MCA_AYIM/modeDivision";
+import { UserStatistics } from "../../../../Models/userStatistics";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
@@ -50,6 +52,17 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
     try {
         // api v2 data
         const data = await osuV2Client.getUserInfo(ctx.state.user.osu.accessToken);
+
+        // User Statistics
+        ctx.state.user.userStatistics = await UserStatistics
+            .createQueryBuilder("userStatistics")
+            .innerJoinAndSelect("userStatistics.user", "user")
+            .innerJoinAndSelect("userStatistics.modeDivision", "mode")
+            .where("user.ID = :ID", { ID: ctx.state.user.ID })
+            .getMany();
+        await Promise.all(Object.values(ModeDivisionType)
+            .filter(mode => typeof mode !== "string")
+            .map(modeID => ctx.state.user.refreshStatistics(modeID, data)));
 
         // Username changes
         const usernames: string[] = data.previous_usernames;

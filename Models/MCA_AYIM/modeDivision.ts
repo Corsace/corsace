@@ -6,6 +6,7 @@ import { Category } from "./category";
 import { Influence } from "./influence";
 import { Tournament } from "../tournaments/tournament";
 import { CustomBeatmap } from "../tournaments/mappools/customBeatmap";
+import { UserStatistics } from "../userStatistics";
 
 @Entity()
 export class ModeDivision extends BaseEntity {
@@ -37,22 +38,14 @@ export class ModeDivision extends BaseEntity {
     @OneToMany(() => Tournament, tournament => tournament.mode)
         tournaments!: Tournament[];
 
+    @OneToMany(() => UserStatistics, userStatistics => userStatistics.modeDivision)
+        userStatistics!: UserStatistics[];
+
     static modeSelect (modeText: string): Promise<ModeDivision | null> {
-        switch (modeText) {
-            case "standard" || "std": {
-                return ModeDivision.findOne({ where: { ID: 1 }});
-            } case "taiko" || "tko": {
-                return ModeDivision.findOne({ where: { ID: 2 }});
-            } case "catch" || "ctb": {
-                return ModeDivision.findOne({ where: { ID: 3 }});
-            } case "mania" || "man": {
-                return ModeDivision.findOne({ where: { ID: 4 }});
-            } case "storyboard" || "sb": {
-                return ModeDivision.findOne({ where: { ID: 5 }});
-            } default: {
-                return Promise.resolve(null);
-            }
-        }
+        const ID = modeTextHash[modeText.trim().toLowerCase()];
+        if (!ID)
+            return Promise.resolve(null);
+        return ModeDivision.findOne({ where: { ID }});
     }
 
 }

@@ -503,6 +503,8 @@
             "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
             "teamAcronym": "TEAM ACRONYM",
             "acronymLength": "2 - 4 characters. Profanity will be checked.",
+            "teamTimezone": "TEAM TIMEZONE",
+            "timezoneText": "We will assume your team can play between <span class='bold'>10:00 to 22:00</span> in the selected timezone.",
             "teamAvatar": "TEAM AVATAR",
             "upload": "UPLOAD",
             "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",

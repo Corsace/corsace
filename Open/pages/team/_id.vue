@@ -51,6 +51,14 @@
                 </div>
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
+                        TIMEZONE
+                    </div>
+                    <div class="team_fields_block">
+                        <div>UTC{{ teamData.timezoneOffset >= 0 ? "+" : "" }}{{ teamData.timezoneOffset }}:00</div>
+                    </div>
+                </div>
+                <div class="team_fields_row">
+                    <div class="team_fields_block--label">
                         TEAM MANAGER
                     </div>
                     <div class="team_fields_block team__member_list">
@@ -73,9 +81,6 @@
                             >
                             <div class="team__member_name">
                                 {{ teamData.manager.username }}
-                            </div>
-                            <div class="team__member_bws">
-                                {{ Math.round(teamData.manager.BWS) }} BWS
                             </div>
                         </a>
                     </div>
@@ -307,6 +312,19 @@
                 </div>
                 <div class="team_fields_row">
                     <div class="team_fields_block--label team_fields_block--edit">
+                        TIMEZONE
+                    </div>
+                    <div class="team_fields_block">
+                        <OpenSelect
+                            class="team__input"
+                            :value="timezone"
+                            :options="timezones"
+                            @change="timezone = $event"
+                        />
+                    </div>
+                </div>
+                <div class="team_fields_row">
+                    <div class="team_fields_block--label team_fields_block--edit">
                         TEAM AVATAR
                     </div>
                     <div class="team_fields_block team_fields_block__avatar_block">
@@ -384,10 +402,12 @@ import { Tournament } from "../../../Interfaces/tournament";
 
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenInput from "../../../Assets/components/open/OpenInput.vue";
+import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 import BaseModal from "../../../Assets/components/BaseModal.vue";
 import SearchBar from "../../../Assets/components/SearchBar.vue";
 import QualifierModal from "../../../Assets/components/open/QualifierModal.vue";
+import { getTimezoneOffset } from "../../../Server/utils/dateParse";
 
 const openModule = namespace("open");
 
@@ -395,6 +415,7 @@ const openModule = namespace("open");
     components: {
         ContentButton,
         OpenInput,
+        OpenSelect,
         OpenTitle,
         BaseModal,
         SearchBar,
@@ -441,6 +462,7 @@ export default class Team extends Vue {
 
     name = "";
     abbreviation = "";
+    timezone = "";
 
     sizeError = false;
     typeError = false;
@@ -448,6 +470,21 @@ export default class Team extends Vue {
     image = undefined as File | undefined;
 
     users: User[] = [];
+
+    get timezones () {
+        let zones: {
+            value: string;
+            text: string;
+        }[] = [];
+        for (let i = -12; i <= 14; i++) {
+            let prefix = i >= 0 ? "+" : "";
+            zones.push({
+                value: i.toString(),
+                text: `UTC${prefix}${i}:00`,
+            });
+        }
+        return zones;
+    }
 
     async getTeam (refresh: boolean): Promise<TeamInterface | null> {
         this.loading = true;
@@ -470,6 +507,7 @@ export default class Team extends Vue {
         this.teamData = await this.getTeam(false);
         this.name = this.teamData?.name || "";
         this.abbreviation = this.teamData?.abbreviation || "";
+        this.timezone = this.teamData?.timezoneOffset.toString() || getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone).toString();
         this.previewBase64 = this.teamData?.avatarURL || null;
     }
 
@@ -508,12 +546,20 @@ export default class Team extends Vue {
     }
 
     async saveEdit () {
-        if (!this.teamData || (!this.image && this.name === this.teamData.name && this.abbreviation === this.teamData.abbreviation)) {
+        if (!this.teamData || (!this.image && this.name === this.teamData.name && this.abbreviation === this.teamData.abbreviation && parseInt(this.timezone) === this.teamData.timezoneOffset)) {
+            this.edit = false;
             return;
         }
 
         if (this.typeError || this.sizeError) {
             alert("Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.");
+            return;
+        }
+
+        const timezone = parseInt(this.timezone);
+        if (isNaN(timezone) || timezone < -12 || timezone > 14) {
+            alert("Invalid timezone.");
+            this.loading = false;
             return;
         }
 
@@ -528,6 +574,7 @@ export default class Team extends Vue {
         const { data: res } = await this.$axios.patch(`/api/team/${this.teamData.ID}`, {
             name: this.name,
             abbreviation: this.abbreviation,
+            timezoneOffset: timezone,
         });
 
         if (res.success) {

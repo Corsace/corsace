@@ -22,6 +22,8 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
     const teams = await Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode")
         .leftJoinAndSelect("team.manager", "manager")
         .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
         .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
@@ -34,7 +36,9 @@ teamRouter.get("/all", async (ctx) => {
     const teamQ = Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
-        .leftJoinAndSelect("team.members", "member");
+        .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode");
 
     if (parseQueryParam(ctx.query.offset) && !isNaN(parseInt(parseQueryParam(ctx.query.offset)!)))
         teamQ.skip(parseInt(parseQueryParam(ctx.query.offset)!));
@@ -51,6 +55,8 @@ teamRouter.get("/:teamID", async (ctx) => {
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode")
         .where("team.ID = :ID", { ID: ctx.params.teamID })
         .getOne();
 
@@ -63,12 +69,20 @@ teamRouter.get("/:teamID", async (ctx) => {
 });
 
 teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
-    let { name, abbreviation } = ctx.request.body;
+    let { name, abbreviation, timezoneOffset } = ctx.request.body;
     const isPlaying = ctx.request.body?.isPlaying;
 
-    if (!name || !abbreviation) {
+    if (!name || !abbreviation || !timezoneOffset) {
         ctx.body = { error: "Missing parameters" };
         return;
+    }
+
+    if (typeof timezoneOffset !== "number") {
+        timezoneOffset = parseInt(timezoneOffset);
+        if (isNaN(timezoneOffset) || timezoneOffset < -12 || timezoneOffset > 14) {
+            ctx.body = { error: "Invalid timezone" };
+            return;
+        }
     }
 
     const res = validateTeamText(name, abbreviation);
@@ -83,6 +97,7 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
     const team = new Team;
     team.name = name;
     team.abbreviation = abbreviation;
+    team.timezoneOffset = timezoneOffset;
     team.manager = ctx.state.user;
     team.members = [];
     if (isPlaying)
@@ -144,6 +159,8 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         .leftJoinAndSelect("tournament.stages", "stage")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode")
         .leftJoinAndSelect("stage.matchups", "matchup")
         .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .where("tournament.ID = :ID", { ID: tournamentID })
@@ -265,6 +282,8 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         .leftJoinAndSelect("tournament.stages", "stage")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode")
         .leftJoinAndSelect("stage.matchups", "matchup")
         .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .leftJoinAndSelect("matchup.maps", "map")
@@ -388,7 +407,6 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
     await team.calculateStats();
     await team.save();
 
-
     ctx.body = { success: "User removed from the team" };
 });
 
@@ -400,6 +418,13 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
         team.name = body.name;
     if (body?.abbreviation)
         team.abbreviation = body.abbreviation;
+    if (body?.timezoneOffset) {
+        if (typeof body.timezoneOffset !== "number" || body.timezoneOffset < -12 || body.timezoneOffset > 14) {
+            ctx.body = { error: "Invalid timezone" };
+            return;
+        }
+        team.timezoneOffset = body.timezoneOffset;
+    }
 
     const res = validateTeamText(team.name, team.abbreviation);
     if ("error" in res) {
