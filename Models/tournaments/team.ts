@@ -5,6 +5,7 @@ import { TeamInvite } from "./teamInvite";
 import { Matchup } from "./matchup";
 import { Team as TeamInterface, TeamMember } from "../../Interfaces/team";
 import { BaseTournament } from "../../Interfaces/tournament";
+import { ModeDivisionType } from "../MCA_AYIM/modeDivision";
 
 @Entity()
 export class Team extends BaseEntity {
@@ -64,13 +65,16 @@ export class Team extends BaseEntity {
     @ManyToMany(() => Matchup, matchup => matchup.teams)
         matchupGroup!: Matchup[];
 
-    public async calculateStats (modeID: 1 | 2 | 3 | 4 = 1) {
+    public async calculateStats (modeID: ModeDivisionType = 1) {
+        if (modeID === ModeDivisionType.storyboard)
+            return false;
+
         try {
             const userStatistics = await Promise.all(this.members.map(async member => member.refreshStatistics(modeID)));
 
-            const BWS = userStatistics.reduce((acc, cur) => acc + cur.BWS, 0);
-            const pp = userStatistics.reduce((acc, cur) => acc + cur.pp, 0);
-            const rank = userStatistics.reduce((acc, cur) => acc + cur.rank, 0);
+            const BWS = userStatistics.reduce((acc, cur) => acc + cur!.BWS, 0);
+            const pp = userStatistics.reduce((acc, cur) => acc + cur!.pp, 0);
+            const rank = userStatistics.reduce((acc, cur) => acc + cur!.rank, 0);
 
             this.BWS = BWS / this.members.length;
             this.pp = pp / this.members.length;
