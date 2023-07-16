@@ -15,7 +15,10 @@
                                 src="../../Assets/img/site/open/mappool/sheets-ico.svg"
                             >
                         </a>
-                        <a class="qualifiers__button">
+                        <a
+                            :href="qualifiersStage?.mappool?.[0].mappackLink || ''"
+                            class="qualifiers__button"
+                        >
                             <div class="qualifiers__button_text">
                                 {{ $t('open.qualifiers.mappool.mappool') }}
                             </div>
