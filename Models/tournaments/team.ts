@@ -74,7 +74,7 @@ export class Team extends BaseEntity {
                 return true;
             }
 
-            this.pp = pps.reduce((acc, rpp) => acc + rpp, 0);
+            this.pp = pps.reduce((acc, rpp) => acc + rpp, 0) / pps.length;
             this.rank = ranks.reduce((acc, rpp) => acc + (rpp || 0), 0) / ranks.length;
             this.BWS = await memberDatas.reduce(async (acc, data) => {
                 const memberBWS = Math.pow(data.statistics.global_rank, Math.pow(0.9937, Math.pow(User.filterBWSBadges(data.badges, modeID).length, 2)));
@@ -98,7 +98,7 @@ export class Team extends BaseEntity {
             .innerJoin("matchup.teams", "team")
             .innerJoin("matchup.stage", "stage")
             .where("team.ID = :teamID", { teamID: this.ID })
-            .andWhere("stage.stageType = 1")
+            .andWhere("stage.stageType = '0'")
             .getOne();
         const tournaments: BaseTournament[] = this.tournaments?.map(t => ({
             ID: t.ID,
