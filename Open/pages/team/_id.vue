@@ -329,7 +329,10 @@
                             :src="previewBase64 || require('../../../Assets/img/site/open/team/default.png')"
                         >
 
-                        <div class="team_fields_block--edit">
+                        <div
+                            v-if="image" 
+                            class="team_fields_block--edit"
+                        >
                             {{ image?.name }}
                         </div>
                     </div>
