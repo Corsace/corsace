@@ -2,6 +2,24 @@ import Router from "@koa/router";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { BaseQualifier, QualifierScore } from "../../../../Interfaces/qualifier";
+import { Next, ParameterizedContext } from "koa";
+import { TeamList, TeamMember } from "../../../../Interfaces/team";
+import { Team } from "../../../../Models/tournaments/team";
+
+async function validateID (ctx: ParameterizedContext, next: Next) {
+    const ID = parseInt(ctx.params.tournamentID);
+    if (isNaN(ID)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid tournament ID",
+        };
+        return;
+    }
+
+    ctx.state.ID = ID;
+
+    await next();
+}
 
 const tournamentRouter = new Router();
 
@@ -66,15 +84,53 @@ tournamentRouter.get("/open/:year", async (ctx) => {
     ctx.body = tournament;
 });
 
-tournamentRouter.get("/qualifiers/:tournamentID", async (ctx) => {
-    const ID = parseInt(ctx.params.tournamentID);
-    if (isNaN(ID)) {
+tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
+    // TODO: Use tournament ID and only bring registered teams
+    const ID: number = ctx.state.ID;
+
+    const tournament = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoinAndSelect("tournament.teams", "teams")
+        .where("tournament.ID = :ID", { ID })
+        .getOne();
+
+    if (!tournament) {
         ctx.body = {
             success: false,
-            error: "Invalid tournament ID",
+            error: "Tournament not found",
         };
         return;
     }
+
+    const teams = await Team
+        .createQueryBuilder("team")
+        .innerJoinAndSelect("team.manager", "manager")
+        .innerJoinAndSelect("team.members", "members")
+        .getMany();
+
+    ctx.body = await Promise.all(teams.map<Promise<TeamList>>(async t => ({
+        ID: t.ID,
+        name: t.name,
+        avatarURL: t.avatarURL,
+        pp: t.pp,
+        BWS: t.BWS,
+        rank: t.rank,
+        members: await Promise.all(
+            [t.manager, ...t.members]
+                .filter((v, i, a) => a.findIndex(m => m.ID === v.ID) === i)
+                .map<Promise<TeamMember>>(async m => ({
+                    ID: m.ID,
+                    username: m.osu.username,
+                    osuID: m.osu.userID,
+                    BWS: await m.calculateBWS(),
+                    isManager: m.ID === t.manager.ID,
+                }))),
+        isRegistered: tournament.teams.some(team => team.ID === t.ID),
+    })));
+});
+
+tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
+    const ID: number = ctx.state.ID;
 
     const qualifiers = await Matchup
         .createQueryBuilder("matchup")
@@ -95,15 +151,8 @@ tournamentRouter.get("/qualifiers/:tournamentID", async (ctx) => {
     }));
 });
 
-tournamentRouter.get("/qualifiers/:tournamentID/scores", async (ctx) => {
-    const ID = parseInt(ctx.params.tournamentID);
-    if (isNaN(ID)) {
-        ctx.body = {
-            success: false,
-            error: "Invalid tournament ID",
-        };
-        return;
-    }
+tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx) => {
+    const ID: number = ctx.state.ID;
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")

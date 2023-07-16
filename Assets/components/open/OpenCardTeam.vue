@@ -1,10 +1,16 @@
 <template>
-    <div class="open_card_team">
+    <NuxtLink
+        :to="`/open/team/${teamSync.ID}`"
+        class="open_card_team"
+    >
         <div class="open_card_team__img">
-            <slot name="team_banner" />
+            <img
+                :src="teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')"
+                :alt="teamSync.name"
+            >
         </div>
         <div class="open_card_team__name">
-            <slot name="team_name" />
+            {{ teamSync.name }}
         </div>
         <div class="open_card_team__text">
             <div class="open_card_team__text_group">
@@ -12,7 +18,7 @@
                     RANK
                 </div>
                 <div class="open_card_team__text_group_data">
-                    <slot name="team_rank" />
+                    {{ Math.round(teamSync.rank) }}
                 </div>
             </div>
             <div class="open_card_team__text_group">
@@ -20,29 +26,30 @@
                     TEAM BWS AVG
                 </div>
                 <div class="open_card_team__text_group_data">
-                    <slot name="team_avg_bws" />
+                    {{ Math.round(teamSync.BWS) }}
                 </div>
                 <div class="open_card_team__text_group_label--vertical">
                     BWS
                 </div>
             </div>
         </div>
-    </div>
+    </NuxtLink>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
+import { TeamList } from "../../../Interfaces/team";
 
 @Component
 export default class OpenCardTeam extends Vue {
-
+    @PropSync("team", { type: Object }) teamSync!: TeamList;
 }
 </script>
 
 <style lang="scss">
 @import '@s-sass/_variables';
 .open_card_team {
-    margin-right: calc(100% - 384px*3);
+    flex: 1 0 31%;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -51,8 +58,8 @@ export default class OpenCardTeam extends Vue {
     height: 200px;
     background: #171B1E;
 
-    &:last-child {
-        margin-right: 0;
+    &:hover {
+        text-decoration: none;
     }
 
     &__img {

@@ -367,6 +367,22 @@ export class User extends BaseEntity {
         return data;
     }
 
+    public async getRefreshToken (tokenType: "osu" | "discord" = "osu"): Promise<string> {
+        if (this[tokenType].refreshToken)
+            return this[tokenType].refreshToken!;
+
+        const res = await User
+            .createQueryBuilder("user")
+            .select(tokenType === "osu" ? "osuRefreshtoken" : "discordRefreshtoken")
+            .where(`ID = ${this.ID}`)
+            .getRawOne();
+
+        if (!res[tokenType === "osu" ? "osuRefreshtoken" : "discordRefreshtoken"])
+            throw new Error("User does not have a refresh token");
+
+        return res[tokenType === "osu" ? "osuRefreshtoken" : "discordRefreshtoken"];
+    }
+
     public async getAccessToken (tokenType: "osu" | "discord" = "osu"): Promise<string> {
         // Check if lastVerified + 86100000 ms is less than current time (24 hours - 5 minute buffer)
         if (tokenType === "osu" && this.osu.lastVerified.getTime() + 86100000 < Date.now()) {
@@ -385,7 +401,7 @@ export class User extends BaseEntity {
             .getRawOne();
 
         if (!res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"])
-            throw new Error("No access token found");
+            throw new Error("User does not have an access token");
 
         return res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"];
     }

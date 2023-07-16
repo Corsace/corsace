@@ -410,6 +410,17 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
 });
 
 teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const tournaments = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoin("tournament.teams", "team")
+        .where("team.ID = :ID", { ID: ctx.state.team.ID })
+        .getMany();
+
+    if (tournaments.some(t => t.status !== TournamentStatus.NotStarted)) {
+        ctx.body = { error: "Team is currently playing in a tournament" };
+        return;
+    }
+
     const team: Team = ctx.state.team;
     const invites = await getTeamInvites(team.ID, "teamID");
     await Promise.all(invites.map(i => i.remove()));
