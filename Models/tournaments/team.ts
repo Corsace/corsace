@@ -133,6 +133,7 @@ export class Team extends BaseEntity {
                     isManager: member.ID === this.manager.ID,
                 };
             })),
+            pp: this.pp,
             BWS: this.BWS,
             rank: this.rank,
             tournaments,

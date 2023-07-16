@@ -123,6 +123,7 @@ inviteRouter.post("/:teamID/accept", isLoggedInDiscord, async (ctx) => {
 
     const team = invite.team;
     team.members.push(user);
+    await team.calculateStats();
     await team.save();
 
     await invite.remove();
