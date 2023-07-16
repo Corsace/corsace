@@ -35,7 +35,7 @@ async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
         .leftJoinAndSelect("maps.beatmap", "beatmap")
         .leftJoinAndSelect("maps.customMappers", "customMapper")
         .leftJoinAndSelect("maps.testplayers", "testplayer")
-        .where(all ? "1 = 1" : "tournament.status != 3")
+        .where(all ? "1 = 1" : "tournament.status != '3'")
         .andWhere(new Brackets(qb => {
             qb.where("customMapper.ID = :user")
                 .orWhere("testplayer.ID = :user");

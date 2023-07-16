@@ -75,5 +75,4 @@ export class TournamentChannel extends BaseEntity {
 
     @Column({ type: "enum", enum: TournamentChannelType, default: TournamentChannelType.General })
         channelType!: TournamentChannelType;
-
 }
