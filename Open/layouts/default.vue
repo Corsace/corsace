@@ -295,7 +295,7 @@ export default class Default extends Vue {
     /*temp */
     &__popup {
         padding: 5px;
-        position: fixed;
+        position: absolute;
         opacity: 1;
         top: calc(20vh - 100px);
         left: calc(100% - 20vw - 100px);

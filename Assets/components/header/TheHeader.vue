@@ -161,6 +161,7 @@ export default class TheHeader extends Vue {
 }
 
 .header-login {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
