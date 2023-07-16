@@ -109,14 +109,18 @@
                                 class="create_fields_block--image"
                                 :src="previewBase64 || require('../../../Assets/img/site/open/team/default.png')"
                             >
-                            <div class="create_fields__finetext--diamonds">
-                                {{ $t('open.create.avatarInfo1') }}
-                            </div>
+                            <div
+                                class="create_fields__finetext create_fields__finetext--diamonds"
+                                v-html="$t('open.create.avatarInfo1')"
+                            />
                             <div class="create_fields__finetext">
                                 {{ $t('open.create.avatarInfo2') }}
                             </div>
                             <div class="create_fields__finetext">
                                 {{ $t('open.create.avatarInfo3') }}
+                            </div>
+                            <div class="create_fields__finetext">
+                                {{ $t('open.create.avatarInfo4') }}
                             </div>
                         </div>
                     </div>
