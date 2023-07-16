@@ -9,7 +9,7 @@ export interface OpenState {
     teamList: TeamList[] | null;
     team: Team | null;
     teamInvites: BaseTeam[] | null;
-    qualifiers: BaseQualifier[] | null;
+    qualifierList: BaseQualifier[] | null;
     qualifierScores: QualifierScore[] | null;
 }
 
@@ -19,7 +19,7 @@ export const state = (): OpenState => ({
     teamList: null,
     team: null,
     teamInvites: null,
-    qualifiers: null,
+    qualifierList: null,
     qualifierScores: null,
 });
 
@@ -94,8 +94,8 @@ export const mutations: MutationTree<OpenState> = {
     async setInvites (state, invites: BaseTeam[] | undefined) {
         state.teamInvites = invites || null;
     },
-    async setQualifiers (state, qualifiers: BaseQualifier[] | undefined) {
-        state.qualifiers = qualifiers?.map(q => ({
+    async setQualifierList (state, qualifiers: BaseQualifier[] | undefined) {
+        state.qualifierList = qualifiers?.map(q => ({
             ...q,
             date: new Date(q.date),
         })) || null;
@@ -146,11 +146,11 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (!data.error)
             commit("setInvites", data);
     },
-    async setQualifiers ({ commit }, tournamentID) {
+    async setQualifierList ({ commit }, tournamentID) {
         const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/qualifiers`);
 
         if (!data.error)
-            commit("setQualifiers", data);
+            commit("setQualifierList", data);
     },
     async setQualifierScores ({ commit }, tournamentID) {
         const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/qualifiers/scores`);

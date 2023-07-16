@@ -50,13 +50,14 @@
 
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 
 import { Mappool } from "../../../Interfaces/mappool";
 import { BaseQualifier } from "../../../Interfaces/qualifier";
+import { Tournament } from "../../../Interfaces/tournament";
 
 import BaseModal from "../BaseModal.vue";
 import ContentButton from "./ContentButton.vue";
-import { namespace } from "vuex-class";
 
 const openModule = namespace("open");
 
@@ -67,7 +68,8 @@ const openModule = namespace("open");
     },
 })
 export default class QualifiersView extends Vue {
-    @openModule.State qualifiers!: BaseQualifier[] | null;
+    @openModule.State tournament!: Tournament | null;
+    @openModule.State qualifierList!: BaseQualifier[] | null;
 
     @PropSync("pool", { default: null }) readonly poolData!: Mappool | null;
 
@@ -76,11 +78,15 @@ export default class QualifiersView extends Vue {
     togglePopup () {
         this.isOpen = !this.isOpen;
     }
+
+    async mounted () {
+        await this.$store.dispatch("open/setQualifierScores", this.tournament?.ID);
+    }
     
     get qualifiersGroupedByDate (): { date: Date, qualifiers: BaseQualifier[] }[] {
-        if (!this.qualifiers) return [];
+        if (!this.qualifierList) return [];
         const qualifiersGroupedByDate: { date: Date, qualifiers: BaseQualifier[] }[] = [];
-        this.qualifiers.forEach((qualifier) => {
+        this.qualifierList.forEach((qualifier) => {
             const date = new Date(qualifier.date);
             const qualifiersGroupedByDateIndex = qualifiersGroupedByDate.findIndex((qualifiersGroupedByDate) => qualifiersGroupedByDate.date.getTime() === date.getTime());
             if (qualifiersGroupedByDateIndex === -1) {

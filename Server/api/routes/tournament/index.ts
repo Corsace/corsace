@@ -5,6 +5,7 @@ import { BaseQualifier, QualifierScore } from "../../../../Interfaces/qualifier"
 import { Next, ParameterizedContext } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { Team } from "../../../../Models/tournaments/team";
+import { Brackets } from "typeorm";
 
 async function validateID (ctx: ParameterizedContext, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
@@ -167,19 +168,12 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         return;
     }
 
-    if (!tournament.publicQualifiers) {
-        ctx.body = {
-            success: false,
-            error: "Tournament does not have public qualifiers",
-        };
-        return;
-    }
-
-    const qualifiers = await Matchup
+    const q = Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
         .innerJoinAndSelect("matchup.teams", "team")
+        .innerJoinAndSelect("team.manager", "manager")
         .innerJoinAndSelect("team.members", "member")
         .innerJoinAndSelect("matchup.maps", "map")
         .innerJoinAndSelect("map.map", "mappoolMap")
@@ -187,10 +181,27 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         .innerJoinAndSelect("map.scores", "score")
         .innerJoinAndSelect("score.user", "user")
         .where("tournament.ID = :ID", { ID })
-        .andWhere("stage.stageType = '0'")
-        .getMany();
+        .andWhere("stage.stageType = '0'");
 
-    ctx.body = qualifiers.flatMap<QualifierScore>(q => q.maps?.flatMap(m => m.scores?.map(s => ({
+    if (!tournament.publicQualifiers) {
+        if (!ctx.state.user) {
+            ctx.body = {
+                success: false,
+                error: "Tournament does not have public qualifiers and you are not logged in to view your scores",
+            };
+            return;
+        }
+
+        q.andWhere(
+            new Brackets(qb => {
+                qb
+                    .where("manager.ID = :userID")
+                    .orWhere("member.ID = :userID");
+            })
+        ).setParameter("userID", ctx.state.user.ID);
+    }
+
+    ctx.body = (await q.getMany()).flatMap<QualifierScore>(q => q.maps?.flatMap(m => m.scores?.map(s => ({
         teamID: q.teams!.find(t => t.members.some(m => m.ID === s.user!.ID))!.ID,
         teamName: q.teams!.find(t => t.members.some(m => m.ID === s.user!.ID))!.name,
         username: s.user!.osu.username,

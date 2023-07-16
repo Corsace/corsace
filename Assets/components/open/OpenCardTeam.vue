@@ -103,7 +103,7 @@ export default class OpenCardTeam extends Vue {
             &_label {
                 color: #131313;
                 font-family: $font-swis721;
-                font-size: 0.85rem;
+                font-size: 10px;
                 font-weight: 700;
                 text-align: left;
                 height: inherit;

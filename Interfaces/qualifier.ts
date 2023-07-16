@@ -9,6 +9,10 @@ export interface BaseQualifier {
 
 export interface Qualifier extends BaseQualifier {
     scores: QualifierScore[];
+    referee?: {
+        ID: number;
+        username: string;
+    }
 }
 
 export interface QualifierScore {

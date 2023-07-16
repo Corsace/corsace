@@ -1,7 +1,7 @@
 <template>
     <div class="qualifier">
         <div 
-            v-if="!qualifierData"
+            v-if="qualifierData"
             class="qualifier__wrapper"
         >
             <div class="qualifier__main_content">
@@ -29,7 +29,7 @@
                             REFEREES: 
                         </div>
                         <div class="qualifier__info_bar_group__data">
-                            RISEN
+                            {{ qualifierData.referee?.username || "N/A" }}
                         </div>
                     </div>
                     <div class="qualifier__info_bar_group">
@@ -37,11 +37,11 @@
                             TEAM: 
                         </div>
                         <div class="qualifier__info_bar_group__data">
-                            LEAGUE OF LEGEND
+                            {{ qualifierData.team?.name || "N/A" }}
                         </div>
                     </div>
                     <div class="qualifier__info_bar_time qualifier__info_bar_group__title">
-                        AUG 11 22:00 UTC
+                        {{ qualifierData.date.toLocaleString("en-US", options).toUpperCase() }}
                     </div>
                 </div>
                 <div class="qualifier__switch">
@@ -98,8 +98,9 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import { BaseQualifier } from "../../../Interfaces/qualifier";
+import { Qualifier as QualifierInterface } from "../../../Interfaces/qualifier";
 import { Tournament } from "../../../Interfaces/tournament";
+import { Team } from "../../../Interfaces/team";
 
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
@@ -129,9 +130,41 @@ export default class Qualifier extends Vue {
     scoreView: "teams" | "players"  = "teams";
 
     @openModule.State tournament!: Tournament | null;
+    @openModule.State team!: Team | null;
 
     loading = false;
-    qualifierData: BaseQualifier | null = null;
+    qualifierData: QualifierInterface | null = null;
+
+    options: Intl.DateTimeFormatOptions = {
+        month: "short",   // Short month name (e.g., "AUG")
+        day: "numeric",   // Numeric day (e.g., "11")
+        hour: "2-digit",  // Two-digit hour (e.g., "22")
+        minute: "2-digit",// Two-digit minute (e.g., "00")
+        timeZone: "UTC",   // Time zone (e.g., "UTC")
+    };
+
+    async getQualifier (): Promise<QualifierInterface | null> {
+        this.loading = true;
+        let ID = 0;
+        if (!this.$route.params.id || parseInt(this.$route.params.id) === this.team?.qualifier?.ID) {
+            if (!this.team?.qualifier?.ID) {
+                this.loading = false;
+                return null;
+            }
+            
+            ID = this.team.qualifier.ID;
+        }
+
+        const { data: qualifierData } = await this.$axios.get(`/api/qualifier/${ID}`);
+        this.loading = false;
+        return qualifierData.error ? null : qualifierData;
+    }
+
+    async mounted () {
+        this.qualifierData = await this.getQualifier();
+        if (this.qualifierData)
+            this.$store.commit("open/setQualifier", this.qualifierData.scores);
+    }
 
     isOpen = false;
     togglePopup () {

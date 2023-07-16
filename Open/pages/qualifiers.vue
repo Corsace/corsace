@@ -146,7 +146,6 @@ import BaseModal from "../../Assets/components/BaseModal.vue";
 
 import { Stage } from "../../Interfaces/stage";
 import { Tournament } from "../../Interfaces/tournament";
-import { BaseQualifier } from "../../Interfaces/qualifier";
 import { Team } from "../../Interfaces/team";
 import { UserInfo } from "../../Interfaces/user";
 
@@ -179,7 +178,6 @@ export default class Qualifiers extends Vue {
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State team!: Team | null;
-    @openModule.State qualifiers!: BaseQualifier[] | null;
 
     get qualifiersStage (): Stage | null {
         return this.tournament?.stages.find(s => s.stageType === 0) || null;
@@ -191,12 +189,6 @@ export default class Qualifiers extends Vue {
             return;
         }
         this.editQualifier = true;
-    }
-
-    async mounted (): Promise<void> {
-        if (!this.qualifiers) {
-            await this.$store.dispatch("open/setQualifiers", this.tournament?.ID);
-        }
     }
 
     async closeQualifierEdit (get: boolean) {
