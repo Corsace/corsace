@@ -403,8 +403,9 @@ export default class Create extends Vue {
             &--image {
                 border: 1px solid $gray;
                 margin: 5px 0px;
-                max-width: 9rem;
-                max-height: 3rem;
+                width: 9rem;
+                height: 3rem;
+                object-fit: cover;
             }
 
             &--highlight {

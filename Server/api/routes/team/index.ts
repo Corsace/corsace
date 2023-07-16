@@ -497,6 +497,7 @@ teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx)
     }
 
     const team: Team = ctx.state.team;
+    await deleteTeamAvatar(team);
     const invites = await getTeamInvites(team.ID, "teamID");
     await Promise.all(invites.map(i => i.remove()));
 

@@ -323,6 +323,10 @@
                         />
                     </div>
                 </div>
+                <div
+                    class="team_fields_block--edit"
+                    v-html="$t('open.create.avatarInfo1')"
+                />
                 <div class="team_fields_row">
                     <div class="team_fields_block--label team_fields_block--edit">
                         TEAM AVATAR
@@ -769,8 +773,9 @@ export default class Team extends Vue {
             &--image {
                 border: 1px solid #A0A0A0;
                 margin: 5px 0px;
-                max-width: 512px;
-                max-height: 512px;
+                width: 9rem;
+                height: 3rem;
+                object-fit: cover;
             }
 
             &--highlight {
