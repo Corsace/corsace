@@ -10,6 +10,7 @@
             class="header-login"
         >
             <div class="header-login__welcome-container">
+                <slot name="login" />
                 <img 
                     :src="avatarURL"
                     class="header-login__avatar"
