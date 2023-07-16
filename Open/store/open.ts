@@ -1,23 +1,25 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { Tournament } from "../../Interfaces/tournament";
-import { BaseTeam, Team, TeamUser } from "../../Interfaces/team";
+import { BaseTeam, Team, TeamList, TeamUser } from "../../Interfaces/team";
 import { BaseQualifier, QualifierScore } from "../../Interfaces/qualifier";
 
 export interface OpenState {
     site: string;
     tournament: Tournament | null;
+    teamList: TeamList[] | null;
     team: Team | null;
     teamInvites: BaseTeam[] | null;
-    qualifiers: BaseQualifier[] | null;
+    qualifierList: BaseQualifier[] | null;
     qualifierScores: QualifierScore[] | null;
 }
 
 export const state = (): OpenState => ({
     site: "",
     tournament: null,
+    teamList: null,
     team: null,
     teamInvites: null,
-    qualifiers: null,
+    qualifierList: null,
     qualifierScores: null,
 });
 
@@ -70,6 +72,13 @@ export const mutations: MutationTree<OpenState> = {
             state.tournament.stages.sort((a, b) => a.order - b.order);
         }
     },
+    async setTeamList (state, teams: TeamList[] | undefined) {
+        state.teamList = teams || null;
+        if (state.teamList)
+            state.teamList
+                .sort((a, b) => a.BWS - b.BWS)
+                .sort((a, b) => (a.isRegistered ? 0 : 1) - (b.isRegistered ? 0 : 1));
+    },
     async setTeam (state, teams: Team[] | undefined) {
         state.team = teams?.[0] || null;
         if (state.team?.qualifier)
@@ -85,8 +94,8 @@ export const mutations: MutationTree<OpenState> = {
     async setInvites (state, invites: BaseTeam[] | undefined) {
         state.teamInvites = invites || null;
     },
-    async setQualifiers (state, qualifiers: BaseQualifier[] | undefined) {
-        state.qualifiers = qualifiers?.map(q => ({
+    async setQualifierList (state, qualifiers: BaseQualifier[] | undefined) {
+        state.qualifierList = qualifiers?.map(q => ({
             ...q,
             date: new Date(q.date),
         })) || null;
@@ -106,6 +115,12 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (!data.error) {
             commit("setTournament", data);
         }
+    },
+    async setTeamList ({ commit }, tournamentID) {
+        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/teams`);
+
+        if (!data.error)
+            commit("setTeamList", data);
     },
     async setTeam ({ commit, dispatch }) {
         const { data } = await this.$axios.get(`/api/team`);
@@ -131,14 +146,14 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (!data.error)
             commit("setInvites", data);
     },
-    async setQualifiers ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get(`/api/tournament/qualifiers/${tournamentID}`);
+    async setQualifierList ({ commit }, tournamentID) {
+        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/qualifiers`);
 
         if (!data.error)
-            commit("setQualifiers", data);
+            commit("setQualifierList", data);
     },
     async setQualifierScores ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get(`/api/tournament/qualifiers/${tournamentID}/scores`);
+        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/qualifiers/scores`);
 
         if (!data.error)
             commit("setQualifierScores", data);

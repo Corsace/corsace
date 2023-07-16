@@ -267,6 +267,7 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("stage.matchups", "matchup")
         .leftJoinAndSelect("matchup.teams", "matchupTeam")
+        .leftJoinAndSelect("matchup.maps", "map")
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getOne();
 
@@ -309,6 +310,11 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
 
     const previousMatch = qualifierStage.matchups.find(m => m.teams!.some(t => t.ID === team.ID));
     if (previousMatch) {
+        if (previousMatch.mp || (previousMatch.maps?.length || 0) > 0) {
+            ctx.body = { error: "Team has already played a qualifier match" };
+            return;
+        }
+
         previousMatch.teams = previousMatch.teams!.filter(t => t.ID !== team.ID);
         if (previousMatch.teams.length === 0)
             await previousMatch.remove();   
@@ -410,6 +416,17 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
 });
 
 teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const tournaments = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoin("tournament.teams", "team")
+        .where("team.ID = :ID", { ID: ctx.state.team.ID })
+        .getMany();
+
+    if (tournaments.some(t => t.status !== TournamentStatus.NotStarted)) {
+        ctx.body = { error: "Team is currently playing in a tournament" };
+        return;
+    }
+
     const team: Team = ctx.state.team;
     const invites = await getTeamInvites(team.ID, "teamID");
     await Promise.all(invites.map(i => i.remove()));

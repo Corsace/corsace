@@ -6,7 +6,7 @@ async function initialize (): Promise<CronJobData[]> {
     const dates: { registrationsEnd: Date }[] = await Tournament
         .createQueryBuilder("tournament")
         .select("distinct registrationsEnd")
-        .where("tournament.status NOT IN ('0','1')")
+        .where("tournament.status != '0'")
         .getRawMany();
 
     // For each date, create a cron job with the end as the date.
@@ -31,8 +31,11 @@ async function execute (job: CronJobData) {
     // Get all tournaments where their registration end has passed and their current status is registrations
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
+        .leftJoinAndSelect("tournament.teams", "team")
+        .leftJoinAndSelect("team.members", "member")
         .where("tournament.registrationsEnd <= :date", { date: job.date })
-        .andWhere("tournament.status NOT IN ('0','1')")
+        .andWhere("tournament.status != '0'")
+
         .getMany();
 
     // For each tournament, set their status to ongoing
@@ -40,6 +43,9 @@ async function execute (job: CronJobData) {
         t.status = TournamentStatus.Ongoing;
         return t.save();
     }));
+
+    const teams = tournaments.flatMap(t => t.teams).filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
+    await Promise.all(teams.map(t => t.calculateStats()));
 }
 
 export default {

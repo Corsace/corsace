@@ -7,87 +7,28 @@
             <OpenTitle>
                 TEAMS LIST
             </OpenTitle>
-            <div class="teams_list__main_content_row">
-                <OpenCardTeam>
-                    <template #team_banner>
-                        <img src="https://cdn.akamai.steamstatic.com/apps/csgo/images/csgo_react/social/cs2.jpg">
-                    </template>
-                    <template #team_name>
-                        counter strike
-                    </template>
-                    <template #team_rank>
-                        69
-                    </template>
-                    <template #team_avg_bws>
-                        42
-                    </template>
-                </OpenCardTeam>
-                <OpenCardTeam>
-                    <template #team_banner>
-                        <img src="https://i.imgur.com/k9COyEz.png">
-                    </template>
-                    <template #team_name>
-                        the vtuber in the picture is
-                    </template>
-                    <template #team_rank>
-                        1
-                    </template>
-                    <template #team_avg_bws>
-                        99
-                    </template>
-                </OpenCardTeam>
-                <OpenCardTeam>
-                    <template #team_banner>
-                        <img src="https://i.imgur.com/Jof2nBJ.png">
-                    </template>
-                    <template #team_name>
-                        ceres fauna fanclub
-                    </template>
-                    <template #team_rank>
-                        69
-                    </template>
-                    <template #team_avg_bws>
-                        69
-                    </template>
-                </OpenCardTeam>
+            <div class="teams_list__main_content_list">
+                <OpenCardTeam
+                    v-for="team in teamList"
+                    :key="team.ID"
+                    :team="team"
+                />
             </div>
-            <div class="teams_list__main_content_row">
-                <OpenCardTeam>
-                    <template #team_banner>
-                        <img src="https://cdna.artstation.com/p/assets/images/images/001/207/466/large/suke-22.jpg?1442249023">
-                    </template>
-                    <template #team_name>
-                        legal legends
-                    </template>
-                    <template #team_rank>
-                        99
-                    </template>
-                    <template #team_avg_bws>
-                        77
-                    </template>
-                </OpenCardTeam>
-                <OpenCardTeam>
-                    <template #team_banner>
-                        <img src="https://i.pinimg.com/originals/47/77/bc/4777bc26067bc7eb94715f1b9624f647.png">
-                    </template>
-                    <template #team_name>
-                        coolest man alive
-                    </template>
-                    <template #team_rank>
-                        1
-                    </template>
-                    <template #team_avg_bws>
-                        88
-                    </template>
-                </OpenCardTeam>
-            </div>
+        </div>
+        <div
+            v-else-if="loading"
+            class="teams_list__main_content"
+        >
+            <OpenTitle>
+                LOADING...
+            </OpenTitle>
         </div>
         <div
             v-else 
             class="teams_list__main_content"
         >
             <OpenTitle>
-                THIS PAGE IS A WORK IN PROGRESS
+                COULD NOT GET TEAM LIST...
             </OpenTitle>
         </div>
     </div>
@@ -95,11 +36,15 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 
-import { BaseTeam } from "../../Interfaces/team";
+import { Tournament } from "../../Interfaces/tournament";
+import { TeamList } from "../../Interfaces/team";
 
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import OpenCardTeam from "../../Assets/components/open/OpenCardTeam.vue";
+
+const openModule = namespace("open");
 
 @Component({
     components: {
@@ -113,7 +58,17 @@ import OpenCardTeam from "../../Assets/components/open/OpenCardTeam.vue";
     },
 })
 export default class Teams extends Vue {
-    teamList: BaseTeam[] | null = null;
+    @openModule.State tournament!: Tournament | null;
+    @openModule.State teamList!: TeamList[] | null;
+
+    loading = true;
+
+    async mounted () {
+        this.loading = true;
+        if (this.tournament)
+            await this.$store.dispatch("open/setTeamList", this.tournament.ID);
+        this.loading = false;
+    }
 }
 </script>
 
@@ -130,9 +85,10 @@ export default class Teams extends Vue {
         padding: 35px;
         background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
 
-        &_row {
+        &_list {
             display: flex;
-            flex-direction: row;
+            gap: 20px;
+            flex-wrap: wrap;
             justify-content: flex-start;
             margin-top: 25px;
         }

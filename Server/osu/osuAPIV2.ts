@@ -82,11 +82,8 @@ export class osuAPIV2 {
         return this.chatBotToken.token;
     }
 
-    public refreshToken (user: User): Promise<osuV2Token> {
-        if (!user.osu.refreshToken)
-            throw new Error("User does not have a refresh token");
-
-        return this.getToken("refresh_token", undefined, user.osu.refreshToken);
+    public async refreshToken (user: User): Promise<osuV2Token> {
+        return this.getToken("refresh_token", undefined, await user.getRefreshToken("osu"));
     }
 
     private async getToken (grant_type: string, scope?: string, refresh_token?: string): Promise<osuV2Token> {
