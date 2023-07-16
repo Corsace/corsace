@@ -106,7 +106,7 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
     const teams = await Team
         .createQueryBuilder("team")
         .innerJoinAndSelect("team.manager", "manager")
-        .innerJoinAndSelect("team.members", "members")
+        .leftJoinAndSelect("team.members", "members")
         .getMany();
 
     ctx.body = await Promise.all(teams.map<Promise<TeamList>>(async t => ({
