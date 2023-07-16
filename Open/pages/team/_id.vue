@@ -44,8 +44,9 @@
                     <div class="team_fields_block">
                         <div>Team ID #{{ teamData.ID }}</div>
                         <div>{{ teamData.members.length }} member{{ teamData.members.length === 1 ? "" : "s" }}</div>
-                        <div>{{ teamData.BWS }} Average BWS</div>
-                        <div>#{{ teamData.rank }} Average Rank</div>
+                        <div>{{ Math.round(teamData.BWS) }} Average BWS</div>
+                        <div>#{{ Math.round(teamData.rank) }} Average Rank</div>
+                        <div>{{ Math.round(teamData.pp) }} Average PP</div>
                     </div>
                 </div>
                 <div class="team_fields_row">
@@ -74,7 +75,7 @@
                                 {{ teamData.manager.username }}
                             </div>
                             <div class="team__member_bws">
-                                {{ teamData.manager.BWS }} BWS
+                                {{ Math.round(teamData.manager.BWS) }} BWS
                             </div>
                         </a>
                     </div>
@@ -117,7 +118,7 @@
                                     {{ member.username }}
                                 </div>
                                 <div class="team__member_bws">
-                                    {{ member.BWS }} BWS
+                                    {{ Math.round(member.BWS) }} BWS
                                 </div>
                             </a>
                             <div
@@ -223,13 +224,13 @@
                         </div>
                     </div>
                     <NuxtLink 
-                        v-if="team?.qualifier"
+                        v-if="teamData?.qualifier"
                         class="team_fields_block"
                         style="text-decoration: none;"
-                        :to="'/qualifier/' + team.qualifier.ID"
+                        :to="'/qualifier/' + teamData.qualifier.ID"
                     >
-                        <div>Qualifier ID #{{ team.qualifier.ID }}</div>
-                        <div>{{ team.qualifier.date.toLocaleString('en-US', optionsUTC) }} ({{ team.qualifier.date.toLocaleString('en-US', options) }})</div>
+                        <div>Qualifier ID #{{ teamData.qualifier.ID }}</div>
+                        <div>{{ teamData.qualifier.date.toLocaleString('en-US', optionsUTC) }} ({{ teamData.qualifier.date.toLocaleString('en-US', options) }})</div>
                     </NuxtLink>
                     <div 
                         v-else
@@ -248,7 +249,7 @@
                 <div class="team__title">
                     <img 
                         class="team__title_avatar"
-                        src="../../../Assets/img/corsace.png"
+                        src="../../../Assets/img/site/open/team/default.png"
                     > 
                     <span>LOADING...</span>
                 </div>
@@ -262,7 +263,7 @@
                 <div class="team__title">
                     <img 
                         class="team__title_avatar"
-                        src="../../../Assets/img/corsace.png"
+                        src="../../../Assets/img/site/open/team/default.png"
                     > 
                     <span>NO TEAM FOUND</span>
                 </div>
@@ -328,7 +329,10 @@
                             :src="previewBase64 || require('../../../Assets/img/site/open/team/default.png')"
                         >
 
-                        <div class="team_fields_block--edit">
+                        <div
+                            v-if="image" 
+                            class="team_fields_block--edit"
+                        >
                             {{ image?.name }}
                         </div>
                     </div>

@@ -82,7 +82,7 @@ tournamentRouter.get("/qualifiers/:tournamentID", async (ctx) => {
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
         .where("tournament.ID = :ID", { ID })
-        .andWhere("stage.stageType = 1")
+        .andWhere("stage.stageType = '0'")
         .getMany();
     
     ctx.body = qualifiers.map<BaseQualifier>(q => ({
@@ -138,7 +138,7 @@ tournamentRouter.get("/qualifiers/:tournamentID/scores", async (ctx) => {
         .innerJoinAndSelect("map.scores", "score")
         .innerJoinAndSelect("score.user", "user")
         .where("tournament.ID = :ID", { ID })
-        .andWhere("stage.stageType = 1")
+        .andWhere("stage.stageType = '0'")
         .getMany();
 
     ctx.body = qualifiers.flatMap<QualifierScore>(q => q.maps?.flatMap(m => m.scores?.map(s => ({

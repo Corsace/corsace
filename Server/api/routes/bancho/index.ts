@@ -62,7 +62,7 @@ banchoRouter.post("/runMatchups", validateData, async (ctx) => {
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
         .where("matchup.date <= :now", { now: ctx.state.matchupDate })
-        .andWhere("stage.stageType = 1")
+        .andWhere("stage.stageType = '0'")
         .andWhere("matchup.mp IS NULL")
         .getMany();
 

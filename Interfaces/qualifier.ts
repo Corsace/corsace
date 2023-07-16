@@ -7,6 +7,10 @@ export interface BaseQualifier {
     };
 }
 
+export interface Qualifier extends BaseQualifier {
+    scores: QualifierScore[];
+}
+
 export interface QualifierScore {
     teamID: number;
     teamName: string;

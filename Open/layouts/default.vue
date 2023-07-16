@@ -78,6 +78,7 @@
                     CREATE TEAM
                 </NuxtLink>
                 <a
+                    v-if="!team"
                     class="header__manage_teams_item"
                     @click="togglePopup()"
                 >
@@ -92,7 +93,7 @@
                     TEAM INVITES
                 </div>
                 <hr class="line--red line--no-space">
-                <ul v-if="teamInvites">
+                <ul v-if="!team && teamInvites">
                     <li
                         v-for="invite in teamInvites"
                         :key="invite.ID"

@@ -30,6 +30,7 @@ export default class ContentButton extends Vue {
     display: flex;
     flex-grow: 1;
     justify-content: center;
+    align-items: center;
     background-color: #545454;
     color: #FFFFFF;
     margin: 15px 0px 15px 0px;

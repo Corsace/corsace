@@ -62,10 +62,24 @@
                             <span>{{ $t('open.qualifiers.scores.category') }}</span>
                             <span>{{ $t('open.qualifiers.scores.select') }}</span>
                         </div>
-                        <ContentButton class="content_button--header_button content_button--red_outline">
+                        <ContentButton 
+                            class="content_button--header_button"
+                            :class="{
+                                'content_button--red': scoreView === 'players',
+                                'content_button--red_outline': scoreView !== 'players',
+                            }"
+                            @click.native="scoreView = 'players'"
+                        >
                             {{ $t('open.qualifiers.scores.players') }}
                         </ContentButton>
-                        <ContentButton class="content_button--header_button content_button--red">
+                        <ContentButton 
+                            class="content_button--header_button"
+                            :class="{
+                                'content_button--red': scoreView === 'teams',
+                                'content_button--red_outline': scoreView !== 'teams',
+                            }"
+                            @click.native="scoreView = 'teams'"
+                        >
                             {{ $t('open.qualifiers.scores.teams') }}
                         </ContentButton>
                     </div>
@@ -159,7 +173,7 @@ export default class Qualifiers extends Vue {
     isOpen = false;
     editQualifier = false;
     page: "mappool" | "qualifiers" | "scores" = "qualifiers";
-    scoreView: "players" | "teams" = "players";
+    scoreView: "players" | "teams" = "teams";
 
     @State loggedInUser!: UserInfo | null;
 

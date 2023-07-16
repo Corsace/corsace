@@ -10,7 +10,7 @@ async function initialize (): Promise<CronJobData[]> {
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
         .select("distinct matchup.date")
-        .where("stage.stageType = 1")
+        .where("stage.stageType = '0'")
         .andWhere("matchup.mp IS NULL")
         .getRawMany();
 

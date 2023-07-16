@@ -1,75 +1,112 @@
 <template>
-    <div class="qualifier_id">
-        <div class="qualifier_id__main_content">
-            <OpenTitle>
-                QUALIFIERS
-                <template #buttons>
+    <div class="qualifier">
+        <div 
+            v-if="!qualifierData"
+            class="qualifier__wrapper"
+        >
+            <div class="qualifier__main_content">
+                <OpenTitle>
+                    QUALIFIERS
+                    <template #buttons>
+                        <!-- <ContentButton 
+                            class="content_button--header_button content_button--disabled"
+                            @click.native="togglePopup()"
+                        >
+                            JOIN
+                        </ContentButton> -->
+                        <BaseModal
+                            v-if="isOpen"
+                            @click.native="togglePopup()"
+                        >
+                            <span>You cannot create/join a qualifier until you have {{ tournament?.minTeamSize === tournament?.maxTeamSize ? tournament?.minTeamSize : tournament?.minTeamSize + " to " + tournament?.maxTeamSize }} players!</span>
+                            <span>Press anywhere to close</span>
+                        </BaseModal>
+                    </template>
+                </OpenTitle>
+                <div class="qualifier__info_bar">
+                    <div class="qualifier__info_bar_group">
+                        <div class="qualifier__info_bar_group__title">
+                            REFEREES: 
+                        </div>
+                        <div class="qualifier__info_bar_group__data">
+                            RISEN
+                        </div>
+                    </div>
+                    <div class="qualifier__info_bar_group">
+                        <div class="qualifier__info_bar_group__title">
+                            TEAM: 
+                        </div>
+                        <div class="qualifier__info_bar_group__data">
+                            LEAGUE OF LEGEND
+                        </div>
+                    </div>
+                    <div class="qualifier__info_bar_time qualifier__info_bar_group__title">
+                        AUG 11 22:00 UTC
+                    </div>
+                </div>
+                <div class="qualifier__switch">
                     <ContentButton 
-                        class="content_button--header_button content_button--disabled"
-                        @click.native="togglePopup()"
+                        class="content_button--header_button content_button--red_sm"
+                        :class="{
+                            'content_button--red': scoreView === 'players',
+                            'content_button--red_outline': scoreView !== 'players',
+                        }"
+                        @click.native="scoreView = 'players'"
                     >
-                        JOIN
+                        {{ $t('open.qualifiers.scores.players') }}
                     </ContentButton>
-                    <BaseModal
-                        v-if="isOpen"
-                        @click.native="togglePopup()"
+                    <ContentButton 
+                        class="content_button--header_button content_button--red_sm"
+                        :class="{
+                            'content_button--red': scoreView === 'teams',
+                            'content_button--red_outline': scoreView !== 'teams',
+                        }"
+                        @click.native="scoreView = 'teams'"
                     >
-                        <span>You cannot create/join a qualifier until you have {{ tournament?.minTeamSize === tournament?.maxTeamSize ? tournament?.minTeamSize : tournament?.minTeamSize + " to " + tournament?.maxTeamSize }} players!</span>
-                        <span>Press anywhere to close</span>
-                    </BaseModal>
-                </template>
-            </OpenTitle>
-            <div class="qualifier_id__info_bar">
-                <div class="qualifier_id__info_bar_group">
-                    <div class="qualifier_id__info_bar_group__title">
-                        REFEREES: 
-                    </div>
-                    <div class="qualifier_id__info_bar_group__data">
-                        RISEN
-                    </div>
+                        {{ $t('open.qualifiers.scores.teams') }}
+                    </ContentButton>
                 </div>
-                <div class="qualifier_id__info_bar_group">
-                    <div class="qualifier_id__info_bar_group__title">
-                        TEAM: 
-                    </div>
-                    <div class="qualifier_id__info_bar_group__data">
-                        LEAGUE OF LEGEND
-                    </div>
-                </div>
-                <div class="qualifier_id__info_bar_time qualifier_id__info_bar_group__title">
-                    AUG 11 22:00 UTC
-                </div>
+                <ScoresView
+                    :view="scoreView"
+                />
             </div>
-            <div class="qualifier_id__switch">
-                <div 
-                    class="qualifier_id__switch_item"
-                    :class="{ 'qualifier_id__switch_item--active': page === 'teams' }"
-                    @click="page = 'teams'"
-                >
-                    TEAMS
-                </div>
-                <div 
-                    class="qualifier_id__switch_item"
-                    :class="{ 'qualifier_id__switch_item--active': page === 'players' }"
-                    @click="page = 'players'"
-                >
-                    PLAYERS
-                </div>
+        </div>
+        <div 
+            v-else-if="loading"
+            class="qualifier__wrapper"
+        >
+            <div class="qualifier__main_content">
+                <OpenTitle>
+                    LOADING...
+                </OpenTitle>
             </div>
-            <ScoresView
-                v-if="page === 'teams'"
-                class="qualifier_id__scores"
-            />
-            <ScoresView
-                v-if="page === 'players'"
-                class="qualifier_id__scores"
-            />
+        </div>
+        <div 
+            v-else
+            class="qualifier__wrapper"
+        >
+            <div class="qualifier__main_content">
+                <OpenTitle>
+                    THIS PAGE IS A WORK IN PROGRESS
+                </OpenTitle>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+
+import { BaseQualifier } from "../../../Interfaces/qualifier";
+import { Tournament } from "../../../Interfaces/tournament";
+
+import ContentButton from "../../Assets/components/open/ContentButton.vue";
+import ScoresView from "../../Assets/components/open/ScoresView.vue";
+import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
+import BaseModal from "../../Assets/components/BaseModal.vue";
+
+const openModule = namespace("open");
 
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
@@ -88,10 +125,18 @@ import BaseModal from "../../Assets/components/BaseModal.vue";
             title: "Corsace Open",
         };
     },
+    validate ({ params }) {
+        return !params.id || !isNaN(parseInt(params.id));
+    },
 })
 export default class Qualifier extends Vue {
 
-    page: "teams" | "players"  = "teams";
+    scoreView: "teams" | "players"  = "teams";
+
+    @openModule.State tournament!: Tournament | null;
+
+    loading = false;
+    qualifierData: BaseQualifier | null = null;
 
     isOpen = false;
     togglePopup () {
@@ -104,11 +149,15 @@ export default class Qualifier extends Vue {
 <style lang="scss">
 @import '@s-sass/_variables';
 
-.qualifier_id {
-    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
+.qualifier {
+    &__wrapper {
+        background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
+        display: flex;
+        justify-content: center;
+        height: 100%;
+    }
 
     &__main_content {
-        align-self: center;
         position: relative;
         width: 65vw;
         padding: 35px;
@@ -123,7 +172,7 @@ export default class Qualifier extends Vue {
         display: flex;
         flex-direction: row;
 
-        &_group{
+        &_group {
             display: flex;
             margin-right: 25px;
             &__title {
@@ -165,7 +214,6 @@ export default class Qualifier extends Vue {
     }
     
     &__scores {
-        height: 95%;
         overflow: hidden;
     }
 }
