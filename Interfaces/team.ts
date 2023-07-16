@@ -18,6 +18,7 @@ export interface TeamList extends BaseTeam {
 
 export interface Team extends TeamList {
     abbreviation: string;
+    timezoneOffset: number;
     manager: TeamMember;
     invites?: TeamUser[];
     qualifier?: Matchup;

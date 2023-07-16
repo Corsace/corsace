@@ -45,6 +45,22 @@
                     </div>
                     <div class="create_fields_row">
                         <div class="create_fields_block--label">
+                            {{ $t('open.create.teamTimezone') }}
+                        </div>
+                        <div class="create_fields_block">
+                            <OpenSelect
+                                :value="timezone"
+                                :options="timezones"
+                                @change="timezone = $event"
+                            />
+                            <div
+                                class="create_fields__finetext"
+                                v-html="$t('open.create.timezoneText')" 
+                            />
+                        </div>
+                    </div>
+                    <div class="create_fields_row">
+                        <div class="create_fields_block--label">
                             {{ $t('open.create.teamAvatar') }}
                         </div>
                         <div class="create_fields_block">
@@ -93,14 +109,18 @@
                                 class="create_fields_block--image"
                                 :src="previewBase64 || require('../../../Assets/img/site/open/team/default.png')"
                             >
-                            <div class="create_fields__finetext--diamonds">
-                                {{ $t('open.create.avatarInfo1') }}
-                            </div>
+                            <div
+                                class="create_fields__finetext create_fields__finetext--diamonds"
+                                v-html="$t('open.create.avatarInfo1')"
+                            />
                             <div class="create_fields__finetext">
                                 {{ $t('open.create.avatarInfo2') }}
                             </div>
                             <div class="create_fields__finetext">
                                 {{ $t('open.create.avatarInfo3') }}
+                            </div>
+                            <div class="create_fields__finetext">
+                                {{ $t('open.create.avatarInfo4') }}
                             </div>
                         </div>
                     </div>
@@ -160,9 +180,11 @@ import { State, namespace } from "vuex-class";
 import { Team, validateTeamText } from "../../../Interfaces/team";
 import { Tournament } from "../../../Interfaces/tournament";
 import { UserInfo } from "../../../Interfaces/user";
+import { getTimezoneOffset } from "../../../Server/utils/dateParse";
 
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenInput from "../../../Assets/components/open/OpenInput.vue";
+import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 
 const openModule = namespace("open");
@@ -171,6 +193,7 @@ const openModule = namespace("open");
     components: {
         ContentButton,
         OpenInput,
+        OpenSelect,
         OpenTitle,
     },
     head () {
@@ -201,6 +224,23 @@ export default class Create extends Vue {
     loading = false;
     sizeError = false;
     typeError = false;
+
+    timezone = getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone).toString();
+    get timezones () {
+        let zones: {
+            value: string;
+            text: string;
+        }[] = [];
+        for (let i = -12; i <= 14; i++) {
+            let prefix = i >= 0 ? "+" : "";
+            zones.push({
+                value: i.toString(),
+                text: `UTC${prefix}${i}:00`,
+            });
+        }
+        return zones;
+    }
+
     previewBase64: string | null = null;
     image = undefined as File | undefined;
 
@@ -249,6 +289,13 @@ export default class Create extends Vue {
             return;
         }
 
+        const timezone = parseInt(this.timezone);
+        if (isNaN(timezone) || timezone < -12 || timezone > 14) {
+            alert("Invalid timezone.");
+            this.loading = false;
+            return;
+        }
+
         const validate = validateTeamText(this.name, this.abbreviation);
         if ("error" in validate) {
             alert(validate.error);
@@ -262,6 +309,7 @@ export default class Create extends Vue {
             name: this.name,
             abbreviation: this.abbreviation,
             isPlaying: !this.isNotPlaying,
+            timezoneOffset: timezone,
         });
 
         if (res.success) {
@@ -355,8 +403,9 @@ export default class Create extends Vue {
             &--image {
                 border: 1px solid $gray;
                 margin: 5px 0px;
-                max-width: 9rem;
-                max-height: 3rem;
+                width: 9rem;
+                height: 3rem;
+                object-fit: cover;
             }
 
             &--highlight {
@@ -366,7 +415,6 @@ export default class Create extends Vue {
                 & span {
                     display: inline-block;
                     font-weight: 700;
-                    font-family: $font-ggsans;
                     font-style: italic;
                     color: $open-red;
                 }
@@ -472,6 +520,12 @@ export default class Create extends Vue {
                 height: 4.5px;
                 transform: rotate(-45deg);
                 background-color: $open-red;
+            }
+
+            & span {
+                font-weight: 700;
+                font-style: italic;
+                color: $open-red;
             }
         }
     }

@@ -46,8 +46,8 @@ export class osuAPIV2 {
         return this.get<osuV2PlayedBeatmaps>(endpoint, accessToken);
     }
 
-    public getUserInfo (accessToken: string): Promise<osuV2User> {
-        return this.get<osuV2User>("/me", accessToken);
+    public getUserInfo (accessToken: string, mode?: "osu" | "taiko" | "fruits" | "mania"): Promise<osuV2User> {
+        return this.get<osuV2User>(`/me${mode ? `/${mode}` : ""}`, accessToken);
     }
 
     public getUserFriends (accessToken: string): Promise<osuV2Friend[]> {

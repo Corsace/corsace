@@ -1,9 +1,36 @@
 import { EmbedBuilder, EmbedData, GuildMember, TextChannel } from "discord.js";
 import { config } from "node-config-ts";
+import { Brackets } from "typeorm";
+import { TournamentRole, TournamentRoleType } from "../../Models/tournaments/tournamentRole";
 import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
 
 export default async function guildMemberAdd (member: GuildMember) {
+    const tournamentRolesToAdd = await TournamentRole
+        .createQueryBuilder("role")
+        .leftJoinAndSelect("role.tournament", "tournament")
+        .leftJoinAndSelect("tournament.teams", "team")
+        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member")
+        .where("tournament.server = :server", { server: member.guild.id })
+        .andWhere(new Brackets(qb => {
+            qb.where("role.roleType = '1'")
+                .orWhere("role.roleType = '2'");
+        }))
+        .andWhere(new Brackets(qb => {
+            qb.where("manager.discordUserid = :discord", { discord: member.id })
+                .orWhere("member.discordUserid = :discord", { discord: member.id });
+        }))
+        .getMany();
+    for (const role of tournamentRolesToAdd)
+        if (
+            role.tournament.teams.some(t => t.manager.discord.userID === member.id) ||
+            (
+                role.roleType === TournamentRoleType.Participants &&
+                role.tournament.teams.some(t => t.members.some(m => m.discord.userID === member.id))
+            )
+        )
+            await member.roles.add(role.roleID);
 
     // If this is a user joining the corsace server, add the streamannouncements and verified role as applicable
     if (member.guild.id === config.discord.guild) {

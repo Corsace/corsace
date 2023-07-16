@@ -14,7 +14,7 @@ import { getMember } from "../Server/discord";
 import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
-import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
+import { ModeDivision, ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Influence } from "./MCA_AYIM/influence";
 import { Tournament } from "./tournaments/tournament";
 import { MappoolMap } from "./tournaments/mappools/mappoolMap";
@@ -29,11 +29,12 @@ import { MappoolMapHistory } from "./tournaments/mappools/mappoolMapHistory";
 import { JobPost } from "./tournaments/mappools/jobPost";
 import { Team } from "./tournaments/team";
 import { osuV2Client } from "../Server/osu";
-import { bwsFilter, osuV2UserBadge } from "../Interfaces/osuAPIV2";
+import { bwsFilter, modeName, osuV2User, osuV2UserBadge, osuV2UserStatistics } from "../Interfaces/osuAPIV2";
 import { TeamInvite } from "./tournaments/teamInvite";
 import { Matchup } from "./tournaments/matchup";
 import { MatchupScore } from "./tournaments/matchupScore";
 import { MatchupMessage } from "./tournaments/matchupMessage";
+import { UserStatistics } from "./userStatistics";
 
 // General middlewares
 
@@ -60,9 +61,7 @@ export class OAuth {
 
     @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
         lastVerified!: Date;
-
 }
-
 @Entity()
 export class User extends BaseEntity {
 
@@ -78,6 +77,9 @@ export class User extends BaseEntity {
     @Column({ type: "tinytext" })
         country!: string;
 
+    @OneToMany(() => UserStatistics, userStatistics => userStatistics.user)
+        userStatistics!: UserStatistics[] | null;
+     
     @CreateDateColumn()
         registered!: Date;
     
@@ -412,11 +414,36 @@ export class User extends BaseEntity {
         return osuV2Client.getUserInfo(accessToken);
     }
 
-    public async calculateBWS (modeID = 1) {
-        const data = await this.getOsuAPIV2Data();
+    public async refreshStatistics (modeID: ModeDivisionType = 1, osuV2Data?: osuV2User) {
+        if (modeID === ModeDivisionType.storyboard)
+            return;
+
+        const data = osuV2Data || await this.getOsuAPIV2Data();
+        const statistics = data.statistics_rulesets[modeName[modeID]] as osuV2UserStatistics;
         const badges = User.filterBWSBadges(data.badges, modeID);
-        const bws = Math.pow(data.statistics.global_rank, Math.pow(0.9937, Math.pow(badges.length, 2)));
-        return bws;
+
+        const userStatistics = 
+            this.userStatistics?.find(stat => stat.modeDivision.ID === modeID) || 
+            (await UserStatistics
+                .createQueryBuilder("stats")
+                .innerJoinAndSelect("stats.user", "user")
+                .innerJoinAndSelect("stats.modeDivision", "mode")
+                .where("user.ID = :userID", { userID: this.ID })
+                .andWhere("mode.ID = :modeID", { modeID })
+                .getOne()) ||
+            new UserStatistics();
+
+        userStatistics.rank = statistics.global_rank || 0;
+        userStatistics.pp = statistics.pp;
+        userStatistics.BWS = Math.pow(userStatistics.rank, Math.pow(0.9937, Math.pow(badges.length, 2)));
+        if (!this.userStatistics?.find(stat => stat.modeDivision.ID === modeID)) {
+            userStatistics.user = this;
+            userStatistics.modeDivision = (await ModeDivision.modeSelect(modeName[modeID]))!;
+        }
+
+        await userStatistics.save();
+
+        return userStatistics;
     }
 
     public getCondensedInfo (chosen = false): UserChoiceInfo {

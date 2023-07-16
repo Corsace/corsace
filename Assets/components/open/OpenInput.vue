@@ -39,7 +39,7 @@ export default class OpenInput extends Vue {
     font-size: $font-xl;
     font-weight: 800;
     border: 1px solid #696969;
-    background: linear-gradient(0deg, #2B2B2B, #2B2B2B), linear-gradient(0deg, #F24141, #F24141);
+    background-color: #2B2B2B;
     height: 2rem;
     min-width: 50%;
     caret-color: $open-red;

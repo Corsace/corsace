@@ -6,7 +6,11 @@
                 <OpenTitle>
                     {{ $t('open.mappool.title') }}
                     <template #buttons>
-                        <a class="qualifiers__button">
+                        <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
+                        <a 
+                            href="https://docs.google.com/spreadsheets/d/1Bl-G_jKyxxMrTtgEJ6j2uYnHtDoPz8uG_flSKWkc734/edit#gid=2089223782"
+                            class="qualifiers__button"
+                        >
                             <div class="qualifiers__button_text">
                                 {{ $t('open.qualifiers.mappool.sheets') }}
                             </div>
@@ -15,7 +19,10 @@
                                 src="../../Assets/img/site/open/mappool/sheets-ico.svg"
                             >
                         </a>
-                        <a class="qualifiers__button">
+                        <a
+                            :href="qualifiersStage?.mappool?.[0].mappackLink || ''"
+                            class="qualifiers__button"
+                        >
                             <div class="qualifiers__button_text">
                                 {{ $t('open.qualifiers.mappool.mappool') }}
                             </div>

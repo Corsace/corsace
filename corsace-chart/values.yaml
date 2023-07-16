@@ -36,6 +36,9 @@ secrets:
       openMappool: ""
       closedMappool: ""
       songs: ""
+  bn:
+    username: ""
+    secret: ""
   osu:
     v1:
       apiKey: ""
@@ -47,6 +50,13 @@ secrets:
       ircPassword: ""
       botAccount: "true"
   koaKey: ""
+  s3:
+    clients:
+      r2:
+        hostname: ""
+        credentials:
+          accessKeyId: ""
+          secretAccessKey: ""
   interOpPassword: ""
 
 webServices:

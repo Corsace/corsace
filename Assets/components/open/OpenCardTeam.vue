@@ -1,6 +1,6 @@
 <template>
     <NuxtLink
-        :to="`/open/team/${teamSync.ID}`"
+        :to="`/team/${teamSync.ID}`"
         class="open_card_team"
     >
         <div class="open_card_team__img">

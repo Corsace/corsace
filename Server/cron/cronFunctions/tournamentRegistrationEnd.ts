@@ -31,11 +31,12 @@ async function execute (job: CronJobData) {
     // Get all tournaments where their registration end has passed and their current status is registrations
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
-        .leftJoinAndSelect("tournament.teams", "team")
-        .leftJoinAndSelect("team.members", "member")
+        .innerJoinAndSelect("tournament.teams", "team")
+        .innerJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "statMode")
         .where("tournament.registrationsEnd <= :date", { date: job.date })
         .andWhere("tournament.status != '0'")
-
         .getMany();
 
     // For each tournament, set their status to ongoing

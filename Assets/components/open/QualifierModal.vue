@@ -98,10 +98,11 @@ export default class QualifierModal extends Vue {
             qualifierAt: date.getTime(),
         });
 
+        if (res.error)
+            alert(res.error);
+
         if (res.success)
             this.$emit("close", true);
-        else
-            alert(res.error);
     }
 
     async editQualifier () {

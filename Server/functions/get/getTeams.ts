@@ -20,7 +20,9 @@ export default async function getTeams (target: string | number, searchType: key
     const teamQ = Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
-        .leftJoinAndSelect("team.members", "member");
+        .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "statMode");
 
     if (getInvites)
         teamQ.leftJoinAndSelect("team.invites", "invite");

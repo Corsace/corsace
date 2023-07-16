@@ -3,7 +3,7 @@ import { isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
 import { Team as TeamInterface, validateTeamText } from "../../../../Interfaces/team";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
-import { TournamentRole, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
+import { TournamentRole, unallowedToPlay, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
 import { validateTeam } from "./middleware";
 import { parseQueryParam } from "../../../utils/query";
@@ -15,16 +15,32 @@ import { CronJobType } from "../../../../Interfaces/cron";
 import { parseDateOrTimestamp } from "../../../utils/dateParse";
 import getTeamInvites from "../../../functions/get/getTeamInvites";
 import { User } from "../../../../Models/user";
+import { Brackets } from "typeorm";
 
 const teamRouter = new Router();
 
 teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
-    const teams = await Team
+    const teamIDs = await Team
         .createQueryBuilder("team")
-        .leftJoinAndSelect("team.members", "member")
-        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoin("team.manager", "manager")
+        .leftJoin("team.members", "member")
         .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
         .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
+        .select("team.ID", "ID")
+        .getRawMany();
+
+    if (teamIDs.length === 0) {
+        ctx.body = [];
+        return;
+    }
+
+    const teams = await Team
+        .createQueryBuilder("team")
+        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode")
+        .where("team.ID IN (:...teamIDs)", { teamIDs: teamIDs.map(t => t.ID) })
         .getMany();
 
     ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface()));
@@ -34,7 +50,9 @@ teamRouter.get("/all", async (ctx) => {
     const teamQ = Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
-        .leftJoinAndSelect("team.members", "member");
+        .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode");
 
     if (parseQueryParam(ctx.query.offset) && !isNaN(parseInt(parseQueryParam(ctx.query.offset)!)))
         teamQ.skip(parseInt(parseQueryParam(ctx.query.offset)!));
@@ -51,6 +69,8 @@ teamRouter.get("/:teamID", async (ctx) => {
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode")
         .where("team.ID = :ID", { ID: ctx.params.teamID })
         .getOne();
 
@@ -63,12 +83,20 @@ teamRouter.get("/:teamID", async (ctx) => {
 });
 
 teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
-    let { name, abbreviation } = ctx.request.body;
+    let { name, abbreviation, timezoneOffset } = ctx.request.body;
     const isPlaying = ctx.request.body?.isPlaying;
 
-    if (!name || !abbreviation) {
+    if (!name || !abbreviation || !timezoneOffset) {
         ctx.body = { error: "Missing parameters" };
         return;
+    }
+
+    if (typeof timezoneOffset !== "number") {
+        timezoneOffset = parseInt(timezoneOffset);
+        if (isNaN(timezoneOffset) || timezoneOffset < -12 || timezoneOffset > 14) {
+            ctx.body = { error: "Invalid timezone" };
+            return;
+        }
     }
 
     const res = validateTeamText(name, abbreviation);
@@ -83,6 +111,7 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
     const team = new Team;
     team.name = name;
     team.abbreviation = abbreviation;
+    team.timezoneOffset = timezoneOffset;
     team.manager = ctx.state.user;
     team.members = [];
     if (isPlaying)
@@ -144,6 +173,8 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         .leftJoinAndSelect("tournament.stages", "stage")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode")
         .leftJoinAndSelect("stage.matchups", "matchup")
         .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .where("tournament.ID = :ID", { ID: tournamentID })
@@ -241,13 +272,43 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         }
     }
 
+    const playerRoles = await TournamentRole
+        .createQueryBuilder("tournamentRole")
+        .leftJoin("tournamentRole.tournament", "tournament")
+        .where("tournament.ID = :ID", { ID: tournamentID })
+        .andWhere(new Brackets(qb => {
+            qb.where("tournamentRole.roleType = '1'")
+                .orWhere("tournamentRole.roleType = '2'");
+        }))
+        .getMany();
+
+    let err: any = undefined;
+    try {
+        for (const role of playerRoles) {
+            const discordRole = await tournamentServer.roles.fetch(role.roleID);
+            if (!discordRole)
+                continue;
+            if (role.roleType === TournamentRoleType.Participants) {
+                for (const teamMember of teamMembers) {
+                    const discordMember = await tournamentServer.members.fetch(teamMember.discord.userID);
+                    await discordMember.roles.add(discordRole);
+                }
+            }
+
+            const discordMember = await tournamentServer.members.fetch(team.manager.discord.userID);
+            await discordMember.roles.add(discordRole);
+        }
+    } catch (e) {
+        err = e;
+    }
+
     tournament.teams.push(team);
     await tournament.save();
 
     await team.calculateStats();
     await team.save();
 
-    ctx.body = { success: "Team registered" };
+    ctx.body = { success: "Team registered", error: err };
 });
 
 teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), async (ctx) => {
@@ -265,6 +326,8 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         .leftJoinAndSelect("tournament.stages", "stage")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode")
         .leftJoinAndSelect("stage.matchups", "matchup")
         .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .leftJoinAndSelect("matchup.maps", "map")
@@ -388,7 +451,6 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
     await team.calculateStats();
     await team.save();
 
-
     ctx.body = { success: "User removed from the team" };
 });
 
@@ -400,6 +462,13 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
         team.name = body.name;
     if (body?.abbreviation)
         team.abbreviation = body.abbreviation;
+    if (body?.timezoneOffset) {
+        if (typeof body.timezoneOffset !== "number" || body.timezoneOffset < -12 || body.timezoneOffset > 14) {
+            ctx.body = { error: "Invalid timezone" };
+            return;
+        }
+        team.timezoneOffset = body.timezoneOffset;
+    }
 
     const res = validateTeamText(team.name, team.abbreviation);
     if ("error" in res) {
@@ -428,6 +497,7 @@ teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx)
     }
 
     const team: Team = ctx.state.team;
+    await deleteTeamAvatar(team);
     const invites = await getTeamInvites(team.ID, "teamID");
     await Promise.all(invites.map(i => i.remove()));
 
