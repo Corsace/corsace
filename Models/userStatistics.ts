@@ -8,9 +8,7 @@ export class UserStatistics extends BaseEntity {
     @PrimaryGeneratedColumn()
         ID!: number;
 
-    @ManyToOne(() => ModeDivision, modeDivision => modeDivision.userStatistics, {
-        eager: true,
-    })
+    @ManyToOne(() => ModeDivision, modeDivision => modeDivision.userStatistics)
         modeDivision!: ModeDivision;
 
     @ManyToOne(() => User, user => user.userStatistics)

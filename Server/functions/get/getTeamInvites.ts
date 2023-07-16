@@ -14,7 +14,7 @@ export default async function getTeamInvites (target: string | number, searchTyp
     if (getMembers) {
         inviteQ.leftJoinAndSelect("team.members", "member");
         inviteQ.leftJoinAndSelect("member.userStatistics", "stats");
-        inviteQ.innerJoinAndSelect("stats.modeDivision", "statMode");
+        inviteQ.leftJoinAndSelect("stats.modeDivision", "statMode");
     }
 
     if (getTournaments)

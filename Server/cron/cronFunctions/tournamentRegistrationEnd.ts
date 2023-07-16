@@ -34,7 +34,7 @@ async function execute (job: CronJobData) {
         .innerJoinAndSelect("tournament.teams", "team")
         .innerJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
-        .innerJoinAndSelect("stats.modeDivision", "statMode")
+        .leftJoinAndSelect("stats.modeDivision", "statMode")
         .where("tournament.registrationsEnd <= :date", { date: job.date })
         .andWhere("tournament.status != '0'")
         .getMany();

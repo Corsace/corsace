@@ -22,7 +22,7 @@ export default async function getTeams (target: string | number, searchType: key
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
-        .innerJoinAndSelect("stats.modeDivision", "statMode");
+        .leftJoinAndSelect("stats.modeDivision", "statMode");
 
     if (getInvites)
         teamQ.leftJoinAndSelect("team.invites", "invite");

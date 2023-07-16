@@ -77,9 +77,7 @@ export class User extends BaseEntity {
     @Column({ type: "tinytext" })
         country!: string;
 
-    @OneToMany(() => UserStatistics, userStatistics => userStatistics.user, {
-        eager: true,
-    })
+    @OneToMany(() => UserStatistics, userStatistics => userStatistics.user)
         userStatistics!: UserStatistics[] | null;
      
     @CreateDateColumn()
@@ -416,12 +414,24 @@ export class User extends BaseEntity {
         return osuV2Client.getUserInfo(accessToken);
     }
 
-    public async refreshStatistics (modeID: 1 | 2 | 3 | 4 = 1, osuV2Data?: osuV2User) {
+    public async refreshStatistics (modeID: ModeDivisionType = 1, osuV2Data?: osuV2User) {
+        if (modeID === ModeDivisionType.storyboard)
+            return;
+
         const data = osuV2Data || await this.getOsuAPIV2Data();
         const statistics = data.statistics_rulesets[modeName[modeID]] as osuV2UserStatistics;
         const badges = User.filterBWSBadges(data.badges, modeID);
 
-        const userStatistics = this.userStatistics?.find(stat => stat.modeDivision.ID === modeID) || new UserStatistics();
+        const userStatistics = 
+            this.userStatistics?.find(stat => stat.modeDivision.ID === modeID) || 
+            (await UserStatistics
+                .createQueryBuilder("stats")
+                .innerJoinAndSelect("stats.user", "user")
+                .innerJoinAndSelect("stats.modeDivision", "mode")
+                .where("user.ID = :userID", { userID: this.ID })
+                .andWhere("mode.ID = :modeID", { modeID })
+                .getOne()) ||
+            new UserStatistics();
 
         userStatistics.rank = statistics.global_rank || 0;
         userStatistics.pp = statistics.pp;
