@@ -10,6 +10,7 @@ export interface BaseTeam {
 export interface Team extends BaseTeam {
     abbreviation: string;
     avatarURL?: string;
+    pp: number;
     rank: number;
     BWS: number;
     manager: TeamMember;

@@ -44,8 +44,9 @@
                     <div class="team_fields_block">
                         <div>Team ID #{{ teamData.ID }}</div>
                         <div>{{ teamData.members.length }} member{{ teamData.members.length === 1 ? "" : "s" }}</div>
-                        <div>{{ teamData.BWS }} Average BWS</div>
-                        <div>#{{ teamData.rank }} Average Rank</div>
+                        <div>{{ Math.round(teamData.BWS) }} Average BWS</div>
+                        <div>#{{ Math.round(teamData.rank) }} Average Rank</div>
+                        <div>{{ Math.round(teamData.pp) }} Average PP</div>
                     </div>
                 </div>
                 <div class="team_fields_row">
@@ -74,7 +75,7 @@
                                 {{ teamData.manager.username }}
                             </div>
                             <div class="team__member_bws">
-                                {{ teamData.manager.BWS }} BWS
+                                {{ Math.round(teamData.manager.BWS) }} BWS
                             </div>
                         </a>
                     </div>
@@ -117,7 +118,7 @@
                                     {{ member.username }}
                                 </div>
                                 <div class="team__member_bws">
-                                    {{ member.BWS }} BWS
+                                    {{ Math.round(member.BWS) }} BWS
                                 </div>
                             </a>
                             <div
