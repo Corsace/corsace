@@ -20,14 +20,27 @@ import { Brackets } from "typeorm";
 const teamRouter = new Router();
 
 teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
+    const teamIDs = await Team
+        .createQueryBuilder("team")
+        .leftJoin("team.manager", "manager")
+        .leftJoin("team.members", "member")
+        .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
+        .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
+        .select("team.ID", "ID")
+        .getRawMany();
+
+    if (teamIDs.length === 0) {
+        ctx.body = [];
+        return;
+    }
+
     const teams = await Team
         .createQueryBuilder("team")
+        .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
         .leftJoinAndSelect("stats.modeDivision", "mode")
-        .leftJoinAndSelect("team.manager", "manager")
-        .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
-        .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
+        .where("team.ID IN (:...teamIDs)", { teamIDs: teamIDs.map(t => t.ID) })
         .getMany();
 
     ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface()));
