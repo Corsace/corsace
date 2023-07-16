@@ -69,12 +69,20 @@ teamRouter.get("/:teamID", async (ctx) => {
 });
 
 teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
-    let { name, abbreviation } = ctx.request.body;
+    let { name, abbreviation, timezoneOffset } = ctx.request.body;
     const isPlaying = ctx.request.body?.isPlaying;
 
-    if (!name || !abbreviation) {
+    if (!name || !abbreviation || !timezoneOffset) {
         ctx.body = { error: "Missing parameters" };
         return;
+    }
+
+    if (typeof timezoneOffset !== "number") {
+        timezoneOffset = parseInt(timezoneOffset);
+        if (isNaN(timezoneOffset) || timezoneOffset < -12 || timezoneOffset > 14) {
+            ctx.body = { error: "Invalid timezone" };
+            return;
+        }
     }
 
     const res = validateTeamText(name, abbreviation);
@@ -89,6 +97,7 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
     const team = new Team;
     team.name = name;
     team.abbreviation = abbreviation;
+    team.timezoneOffset = timezoneOffset;
     team.manager = ctx.state.user;
     team.members = [];
     if (isPlaying)
@@ -409,6 +418,13 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
         team.name = body.name;
     if (body?.abbreviation)
         team.abbreviation = body.abbreviation;
+    if (body?.timezoneOffset) {
+        if (typeof body.timezoneOffset !== "number" || body.timezoneOffset < -12 || body.timezoneOffset > 14) {
+            ctx.body = { error: "Invalid timezone" };
+            return;
+        }
+        team.timezoneOffset = body.timezoneOffset;
+    }
 
     const res = validateTeamText(team.name, team.abbreviation);
     if ("error" in res) {
