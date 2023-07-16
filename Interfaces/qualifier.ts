@@ -7,6 +7,10 @@ export interface BaseQualifier {
     };
 }
 
+export interface Qualifier extends BaseQualifier {
+    scores: QualifierScore[];
+}
+
 export interface QualifierScore {
     teamID: number;
     teamName: string;
@@ -14,6 +18,7 @@ export interface QualifierScore {
     userID: number;
     score: number;
     map: string;
+    mapID: number;
 }
 
 export interface QualifierScoreView {
@@ -21,6 +26,7 @@ export interface QualifierScoreView {
     name: string;
     scores: {
         map: string;
+        mapID: number;
         score: number;
         isBest: boolean;
     }[];
