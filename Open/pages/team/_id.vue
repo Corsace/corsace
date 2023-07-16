@@ -248,7 +248,7 @@
                 <div class="team__title">
                     <img 
                         class="team__title_avatar"
-                        src="../../../Assets/img/corsace.png"
+                        src="../../../Assets/img/site/open/team/default.png"
                     > 
                     <span>LOADING...</span>
                 </div>
@@ -262,7 +262,7 @@
                 <div class="team__title">
                     <img 
                         class="team__title_avatar"
-                        src="../../../Assets/img/corsace.png"
+                        src="../../../Assets/img/site/open/team/default.png"
                     > 
                     <span>NO TEAM FOUND</span>
                 </div>

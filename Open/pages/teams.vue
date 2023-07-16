@@ -79,12 +79,18 @@
                 </OpenCardTeam>
             </div>
         </div>
-    </div>
+        <div class="teams_list__main_content">
+            <OpenTitle>
+                THIS PAGE IS A WORK IN PROGRESS
+            </OpenTitle>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+
+import { BaseTeam } from "../../Interfaces/team";
 
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import OpenCardTeam from "../../Assets/components/open/OpenCardTeam.vue";
@@ -101,7 +107,7 @@ import OpenCardTeam from "../../Assets/components/open/OpenCardTeam.vue";
     },
 })
 export default class Teams extends Vue {
-
+    teamList: BaseTeam[] | null = null;
 }
 </script>
 
