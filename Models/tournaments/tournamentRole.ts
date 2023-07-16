@@ -43,5 +43,4 @@ export class TournamentRole extends BaseEntity {
 
     @Column({ type: "enum", enum: TournamentRoleType })
         roleType!: TournamentRoleType;
-
 }

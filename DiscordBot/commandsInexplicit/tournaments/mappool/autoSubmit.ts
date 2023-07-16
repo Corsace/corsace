@@ -45,7 +45,7 @@ export default async function autoSubmit (m: Message) {
         .leftJoin("tournament.channels", "channel")
         .where("tournament.server = :server", { server: m.guild.id })
         .andWhere("channel.channelID = :channelID", { channelID: channelID(m) })
-        .andWhere("tournament.status IN (:...status)", { status: [ TournamentStatus.NotStarted, TournamentStatus.Ongoing, TournamentStatus.Registrations ]})
+        .andWhere("tournament.status IN (:...status)", { status: [ TournamentStatus.NotStarted.toString(), TournamentStatus.Ongoing.toString(), TournamentStatus.Registrations.toString() ]})
         .getMany();
     
     if (tournaments.length !== 1)
