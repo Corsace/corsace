@@ -111,6 +111,9 @@
         "buckets": {
             "mappacks": {
                 "publicUrl": "https://mappacks.corsace.io"
+            },
+            "teamAvatars": {
+                "publicUrl": "https://tournament-team-avatars.corsace.io"
             }
         }
     },
