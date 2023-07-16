@@ -10,6 +10,7 @@
             class="header-login"
         >
             <div class="header-login__welcome-container">
+                <slot name="login" />
                 <img 
                     :src="avatarURL"
                     class="header-login__avatar"
@@ -160,6 +161,7 @@ export default class TheHeader extends Vue {
 }
 
 .header-login {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-end;

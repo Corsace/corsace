@@ -3,7 +3,7 @@ import { isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
 import { Team as TeamInterface, validateTeamText } from "../../../../Interfaces/team";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
-import { TournamentRole, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
+import { TournamentRole, unallowedToPlay, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
 import { validateTeam } from "./middleware";
 import { parseQueryParam } from "../../../utils/query";
@@ -15,18 +15,32 @@ import { CronJobType } from "../../../../Interfaces/cron";
 import { parseDateOrTimestamp } from "../../../utils/dateParse";
 import getTeamInvites from "../../../functions/get/getTeamInvites";
 import { User } from "../../../../Models/user";
+import { Brackets } from "typeorm";
 
 const teamRouter = new Router();
 
 teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
+    const teamIDs = await Team
+        .createQueryBuilder("team")
+        .leftJoin("team.manager", "manager")
+        .leftJoin("team.members", "member")
+        .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
+        .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
+        .select("team.ID", "ID")
+        .getRawMany();
+
+    if (teamIDs.length === 0) {
+        ctx.body = [];
+        return;
+    }
+
     const teams = await Team
         .createQueryBuilder("team")
+        .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
         .leftJoinAndSelect("stats.modeDivision", "mode")
-        .leftJoinAndSelect("team.manager", "manager")
-        .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
-        .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
+        .where("team.ID IN (:...teamIDs)", { teamIDs: teamIDs.map(t => t.ID) })
         .getMany();
 
     ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface()));
@@ -258,13 +272,43 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         }
     }
 
+    const playerRoles = await TournamentRole
+        .createQueryBuilder("tournamentRole")
+        .leftJoin("tournamentRole.tournament", "tournament")
+        .where("tournament.ID = :ID", { ID: tournamentID })
+        .andWhere(new Brackets(qb => {
+            qb.where("tournamentRole.roleType = '1'")
+                .orWhere("tournamentRole.roleType = '2'");
+        }))
+        .getMany();
+
+    let err: any = undefined;
+    try {
+        for (const role of playerRoles) {
+            const discordRole = await tournamentServer.roles.fetch(role.roleID);
+            if (!discordRole)
+                continue;
+            if (role.roleType === TournamentRoleType.Participants) {
+                for (const teamMember of teamMembers) {
+                    const discordMember = await tournamentServer.members.fetch(teamMember.discord.userID);
+                    await discordMember.roles.add(discordRole);
+                }
+            }
+
+            const discordMember = await tournamentServer.members.fetch(team.manager.discord.userID);
+            await discordMember.roles.add(discordRole);
+        }
+    } catch (e) {
+        err = e;
+    }
+
     tournament.teams.push(team);
     await tournament.save();
 
     await team.calculateStats();
     await team.save();
 
-    ctx.body = { success: "Team registered" };
+    ctx.body = { success: "Team registered", error: err };
 });
 
 teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), async (ctx) => {
@@ -453,6 +497,7 @@ teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx)
     }
 
     const team: Team = ctx.state.team;
+    await deleteTeamAvatar(team);
     const invites = await getTeamInvites(team.ID, "teamID");
     await Promise.all(invites.map(i => i.remove()));
 
