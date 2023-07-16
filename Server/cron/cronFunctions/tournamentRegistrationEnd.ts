@@ -31,6 +31,8 @@ async function execute (job: CronJobData) {
     // Get all tournaments where their registration end has passed and their current status is registrations
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
+        .leftJoinAndSelect("tournament.teams", "team")
+        .leftJoinAndSelect("team.members", "member")
         .where("tournament.registrationsEnd <= :date", { date: job.date })
         .andWhere("tournament.status != '0'")
         .getMany();
@@ -40,6 +42,9 @@ async function execute (job: CronJobData) {
         t.status = TournamentStatus.Ongoing;
         return t.save();
     }));
+
+    const teams = tournaments.flatMap(t => t.teams).filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
+    await Promise.all(teams.map(t => t.calculateStats()));
 }
 
 export default {
