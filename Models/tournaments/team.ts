@@ -76,9 +76,9 @@ export class Team extends BaseEntity {
             const pp = userStatistics.reduce((acc, cur) => acc + cur!.pp, 0);
             const rank = userStatistics.reduce((acc, cur) => acc + cur!.rank, 0);
 
-            this.BWS = BWS / this.members.length;
-            this.pp = pp / this.members.length;
-            this.rank = rank / this.members.length;
+            this.BWS = BWS / (this.members.length || 1);
+            this.pp = pp / (this.members.length || 1);
+            this.rank = rank / (this.members.length || 1);
 
             return true;
         } catch (e) {
