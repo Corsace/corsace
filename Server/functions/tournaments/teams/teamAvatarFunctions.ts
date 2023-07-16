@@ -15,11 +15,12 @@ export async function createTeamImage (filepath: string) {
             image.resize(Jimp.AUTO, SIZE_RESTRICTION);
     }
 
-    // Then crop it to a SIZE_RESTRICTIONxSIZE_RESTRICTION square
-    const size = Math.min(Math.min(image.getWidth(), image.getHeight()), SIZE_RESTRICTION);
-    const x = Math.round((image.getWidth() - size) / 2);
-    const y = Math.round((image.getHeight() - size) / 2);
-    image.crop(x, y, size, size);
+    // // Then crop it to a SIZE_RESTRICTIONxSIZE_RESTRICTION square
+    // It has been noted by Kaetwo that we are not making 1:1 images anymore, so this is currently not needed
+    // const size = Math.min(Math.min(image.getWidth(), image.getHeight()), SIZE_RESTRICTION);
+    // const x = Math.round((image.getWidth() - size) / 2);
+    // const y = Math.round((image.getHeight() - size) / 2);
+    // image.crop(x, y, size, size);
 
     return image;
 }

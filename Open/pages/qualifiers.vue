@@ -31,7 +31,11 @@
                         v-if="page === 'mappool' && qualifiersStage?.mappool?.[0].isPublic"
                         class="qualifiers__button_group"
                     >
-                        <a class="qualifiers__button">
+                        <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
+                        <a 
+                            href="https://docs.google.com/spreadsheets/d/1Bl-G_jKyxxMrTtgEJ6j2uYnHtDoPz8uG_flSKWkc734/edit#gid=2089223782"
+                            class="qualifiers__button"
+                        >
                             <div class="qualifiers__button_text">
                                 {{ $t('open.qualifiers.mappool.sheets') }}
                             </div>
