@@ -35,6 +35,7 @@ async function execute (job: CronJobData) {
         .leftJoinAndSelect("team.members", "member")
         .where("tournament.registrationsEnd <= :date", { date: job.date })
         .andWhere("tournament.status != '0'")
+
         .getMany();
 
     // For each tournament, set their status to ongoing
