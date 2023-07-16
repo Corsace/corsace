@@ -74,6 +74,10 @@ export const mutations: MutationTree<OpenState> = {
     },
     async setTeamList (state, teams: TeamList[] | undefined) {
         state.teamList = teams || null;
+        if (state.teamList)
+            state.teamList
+                .sort((a, b) => a.BWS - b.BWS)
+                .sort((a, b) => (a.isRegistered ? 0 : 1) - (b.isRegistered ? 0 : 1));
     },
     async setTeam (state, teams: Team[] | undefined) {
         state.team = teams?.[0] || null;

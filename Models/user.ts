@@ -406,6 +406,7 @@ export class User extends BaseEntity {
         return res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"];
     }
 
+    // TODO: Cache osu! API data because this is a lot of API calls
     public async getOsuAPIV2Data () {
         const accessToken = this.osu.accessToken || await this.getAccessToken("osu");
         return osuV2Client.getUserInfo(accessToken);

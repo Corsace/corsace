@@ -10,7 +10,7 @@
             >
         </div>
         <div class="open_card_team__name">
-            {{ teamSync.name }}
+            {{ teamSync.name }} {{ teamSync.isRegistered ? "" : "(UNREGISTERED)" }}
         </div>
         <div class="open_card_team__text">
             <div class="open_card_team__text_group">
