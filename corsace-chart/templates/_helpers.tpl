@@ -184,7 +184,7 @@ Shared environment by deployments
 - name: BANCHOBOT_PUBLICURL
   value: {{ default (lower (printf "%s%s%s" "http://" (include "corsace-chart.fullname" $) "-banchoBot")) $.Values.webServices.banchoBot.publicUrl }}
 {{- range $webServiceName, $webService := $.Values.webServices }}
-{{- if and (ne $webServiceName "api") (ne $webServiceName "cronRunner") }}
+{{- if and (ne $webServiceName "api") (ne $webServiceName "cronRunner") (ne $webServiceName "banchoBot") }}
 - name: {{ $webServiceName | upper }}_PUBLICURL
   value: {{ $webService.publicUrl }}
 - name: {{ $webServiceName | upper }}_SSR
