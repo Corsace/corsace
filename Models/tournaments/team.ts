@@ -70,7 +70,7 @@ export class Team extends BaseEntity {
             return false;
 
         try {
-            const userStatistics = await Promise.all(this.members.map(async member => member.refreshStatistics(modeID)));
+            const userStatistics = await Promise.all(this.members.map(member => member.refreshStatistics(modeID)));
 
             const BWS = userStatistics.reduce((acc, cur) => acc + cur!.BWS, 0);
             const pp = userStatistics.reduce((acc, cur) => acc + cur!.pp, 0);
@@ -124,7 +124,7 @@ export class Team extends BaseEntity {
                 BWS: this.manager.userStatistics?.find(s => s.modeDivision.ID === 1)?.BWS ?? 0,
                 isManager: true,
             },
-            members: await Promise.all(this.members.map<Promise<TeamMember>>(async member => {
+            members: this.members.map<TeamMember>(member => {
                 return {
                     ID: member.ID,
                     username: member.osu.username,
@@ -132,7 +132,7 @@ export class Team extends BaseEntity {
                     BWS: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.BWS ?? 0,
                     isManager: member.ID === this.manager.ID,
                 };
-            })),
+            }),
             pp: this.pp,
             BWS: this.BWS,
             rank: this.rank,
