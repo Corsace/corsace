@@ -51,6 +51,9 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         // api v2 data
         const data = await osuV2Client.getUserInfo(ctx.state.user.osu.accessToken);
 
+        // User Statistics
+        [1, 2, 3, 4].map(modeID => ctx.state.user.refreshStatistics(modeID, data));
+
         // Username changes
         const usernames: string[] = data.previous_usernames;
         for (const name of usernames) {

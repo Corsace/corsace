@@ -21,6 +21,9 @@ export class Team extends BaseEntity {
     @Column()
         abbreviation!: string;
 
+    @Column({ type: "int", default: 0 })
+        timezoneOffset!: number;
+
     @ManyToOne(() => User, user => user.teamsManaged)
         manager!: User;
 
@@ -61,25 +64,17 @@ export class Team extends BaseEntity {
     @ManyToMany(() => Matchup, matchup => matchup.teams)
         matchupGroup!: Matchup[];
 
-    public async calculateStats (modeID = 1) {
+    public async calculateStats (modeID: 1 | 2 | 3 | 4 = 1) {
         try {
-            const memberDatas = await Promise.all(this.members.map(m => m.getOsuAPIV2Data()));
-            const pps = memberDatas.map(data => data.statistics.pp);
-            const ranks = memberDatas.map(data => data.statistics.global_rank);
+            const userStatistics = await Promise.all(this.members.map(async member => member.refreshStatistics(modeID)));
 
-            if (ranks.length === 0 || memberDatas.length === 0) {
-                this.pp = 0;
-                this.rank = 0;
-                this.BWS = 0;
-                return true;
-            }
+            const BWS = userStatistics.reduce((acc, cur) => acc + cur.BWS, 0);
+            const pp = userStatistics.reduce((acc, cur) => acc + cur.pp, 0);
+            const rank = userStatistics.reduce((acc, cur) => acc + cur.rank, 0);
 
-            this.pp = pps.reduce((acc, rpp) => acc + rpp, 0) / pps.length;
-            this.rank = ranks.reduce((acc, rpp) => acc + (rpp || 0), 0) / ranks.length;
-            this.BWS = await memberDatas.reduce(async (acc, data) => {
-                const memberBWS = Math.pow(data.statistics.global_rank, Math.pow(0.9937, Math.pow(User.filterBWSBadges(data.badges, modeID).length, 2)));
-                return (await acc) + memberBWS;
-            }, Promise.resolve(0)) / memberDatas.length;
+            this.BWS = BWS / this.members.length;
+            this.pp = pp / this.members.length;
+            this.rank = rank / this.members.length;
 
             return true;
         } catch (e) {
@@ -121,7 +116,7 @@ export class Team extends BaseEntity {
                 ID: this.manager.ID,
                 username: this.manager.osu.username,
                 osuID: this.manager.osu.userID,
-                BWS: await this.manager.calculateBWS(),
+                BWS: this.manager.userStatistics?.find(s => s.modeDivision.ID === 1)?.BWS ?? 0,
                 isManager: true,
             },
             members: await Promise.all(this.members.map<Promise<TeamMember>>(async member => {
@@ -129,7 +124,7 @@ export class Team extends BaseEntity {
                     ID: member.ID,
                     username: member.osu.username,
                     osuID: member.osu.userID,
-                    BWS: await member.calculateBWS(),
+                    BWS: member.userStatistics?.find(s => s.modeDivision.ID === 1)?.BWS ?? 0,
                     isManager: member.ID === this.manager.ID,
                 };
             })),

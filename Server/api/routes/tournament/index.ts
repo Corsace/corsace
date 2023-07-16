@@ -92,6 +92,7 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
     const tournament = await Tournament
         .createQueryBuilder("tournament")
         .leftJoinAndSelect("tournament.teams", "teams")
+        .leftJoinAndSelect("tournament.mode", "mode")
         .where("tournament.ID = :ID", { ID })
         .getOne();
 
@@ -106,7 +107,9 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
     const teams = await Team
         .createQueryBuilder("team")
         .innerJoinAndSelect("team.manager", "manager")
-        .leftJoinAndSelect("team.members", "members")
+        .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .innerJoinAndSelect("stats.modeDivision", "mode")
         .getMany();
 
     ctx.body = await Promise.all(teams.map<Promise<TeamList>>(async t => ({
@@ -123,7 +126,7 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
                     ID: m.ID,
                     username: m.osu.username,
                     osuID: m.osu.userID,
-                    BWS: await m.calculateBWS(),
+                    BWS: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.BWS ?? 0,
                     isManager: m.ID === t.manager.ID,
                 }))),
         isRegistered: tournament.teams.some(team => team.ID === t.ID),

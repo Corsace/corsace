@@ -22,6 +22,8 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
     const teams = await Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .innerJoinAndSelect("stats.modeDivision", "mode")
         .leftJoinAndSelect("team.manager", "manager")
         .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
         .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
@@ -34,7 +36,9 @@ teamRouter.get("/all", async (ctx) => {
     const teamQ = Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
-        .leftJoinAndSelect("team.members", "member");
+        .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .innerJoinAndSelect("stats.modeDivision", "mode");
 
     if (parseQueryParam(ctx.query.offset) && !isNaN(parseInt(parseQueryParam(ctx.query.offset)!)))
         teamQ.skip(parseInt(parseQueryParam(ctx.query.offset)!));
@@ -51,6 +55,8 @@ teamRouter.get("/:teamID", async (ctx) => {
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .innerJoinAndSelect("stats.modeDivision", "mode")
         .where("team.ID = :ID", { ID: ctx.params.teamID })
         .getOne();
 
@@ -144,6 +150,8 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         .leftJoinAndSelect("tournament.stages", "stage")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .innerJoinAndSelect("stats.modeDivision", "mode")
         .leftJoinAndSelect("stage.matchups", "matchup")
         .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .where("tournament.ID = :ID", { ID: tournamentID })
@@ -265,6 +273,8 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         .leftJoinAndSelect("tournament.stages", "stage")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .innerJoinAndSelect("stats.modeDivision", "mode")
         .leftJoinAndSelect("stage.matchups", "matchup")
         .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .leftJoinAndSelect("matchup.maps", "map")
@@ -387,7 +397,6 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
     team.members = team.members.filter(m => m.ID !== userID);
     await team.calculateStats();
     await team.save();
-
 
     ctx.body = { success: "User removed from the team" };
 });

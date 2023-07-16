@@ -74,9 +74,6 @@
                             <div class="team__member_name">
                                 {{ teamData.manager.username }}
                             </div>
-                            <div class="team__member_bws">
-                                {{ Math.round(teamData.manager.BWS) }} BWS
-                            </div>
                         </a>
                     </div>
                 </div>
@@ -509,6 +506,7 @@ export default class Team extends Vue {
 
     async saveEdit () {
         if (!this.teamData || (!this.image && this.name === this.teamData.name && this.abbreviation === this.teamData.abbreviation)) {
+            this.edit = false;
             return;
         }
 
