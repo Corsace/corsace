@@ -108,11 +108,6 @@ import BaseModal from "../../Assets/components/BaseModal.vue";
 
 const openModule = namespace("open");
 
-import ContentButton from "../../Assets/components/open/ContentButton.vue";
-import ScoresView from "../../Assets/components/open/ScoresView.vue";
-import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
-import BaseModal from "../../Assets/components/BaseModal.vue";
-
 @Component({
     components: {
         ContentButton,
