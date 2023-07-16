@@ -87,7 +87,7 @@
         >
             <div class="qualifier__main_content">
                 <OpenTitle>
-                    THIS PAGE IS A WORK IN PROGRESS
+                    NO QUALIFIER FOUND
                 </OpenTitle>
             </div>
         </div>
