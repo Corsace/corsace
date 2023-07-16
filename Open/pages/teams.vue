@@ -1,6 +1,9 @@
 <template>
     <div class="teams_list">
-        <div class="teams_list__main_content">
+        <div 
+            v-if="teamList"
+            class="teams_list__main_content"
+        >
             <OpenTitle>
                 TEAMS LIST
             </OpenTitle>
@@ -79,7 +82,10 @@
                 </OpenCardTeam>
             </div>
         </div>
-        <div class="teams_list__main_content">
+        <div
+            v-else 
+            class="teams_list__main_content"
+        >
             <OpenTitle>
                 THIS PAGE IS A WORK IN PROGRESS
             </OpenTitle>
