@@ -93,8 +93,6 @@ export default class MappoolSlotDropdown extends Vue {
             }
         }
 
-        console.log(colours);
-
         if (colours.length === 0)
             return this.RGBValuesToRGBCSS(mods[0]);
 

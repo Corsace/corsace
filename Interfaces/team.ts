@@ -7,14 +7,18 @@ export interface BaseTeam {
     name: string;
 }
 
-export interface Team extends BaseTeam {
-    abbreviation: string;
-    avatarURL?: string;
+export interface TeamList extends BaseTeam {
+    avatarURL?: string | null;
     pp: number;
     rank: number;
     BWS: number;
-    manager: TeamMember;
     members: TeamMember[];
+    isRegistered?: boolean;
+}
+
+export interface Team extends TeamList {
+    abbreviation: string;
+    manager: TeamMember;
     invites?: TeamUser[];
     qualifier?: Matchup;
     tournaments?: BaseTournament[];
