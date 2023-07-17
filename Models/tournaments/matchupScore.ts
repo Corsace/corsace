@@ -26,7 +26,7 @@ export class MatchupScore extends BaseEntity {
     @Column()
         combo!: number;
 
-    @Column()
+    @Column("double")
         accuracy!: number;
 
     @Column()

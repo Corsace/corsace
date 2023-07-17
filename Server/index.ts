@@ -41,6 +41,7 @@ import mappersRouter from "./api/routes/mappers";
 
 import tournamentRouter from "./api/routes/tournament";
 
+import qualifierRouter from "./api/routes/qualifier";
 import matchupRouter from "./api/routes/matchup";
 
 import teamRouter from "./api/routes/team";
@@ -135,6 +136,7 @@ koa.use(Mount("/api/team", teamRouter.routes()));
 koa.use(Mount("/api/team/invite", inviteRouter.routes()));
 
 /// Matchup
+koa.use(Mount("/api/qualifier", qualifierRouter.routes()));
 koa.use(Mount("/api/matchup", matchupRouter.routes()));
 
 ormConfig.initialize()
