@@ -73,7 +73,7 @@ usersRouter.get("/deepSearch", isLoggedInDiscord, isCorsace, async (ctx) => {
         .createQueryBuilder("user")
         .leftJoinAndSelect("user.otherNames", "otherName")
         .leftJoinAndSelect("user.userStatistics", "stats")
-        .leftJoinAndSelect("stats.mode", "mode")
+        .leftJoinAndSelect("stats.modeDivision", "mode")
         .leftJoinAndSelect("user.teams", "team")
         .leftJoinAndSelect("team.tournaments", "tournament")
         .leftJoinAndSelect("user.mcaEligibility", "mcaEligibility")
