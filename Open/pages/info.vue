@@ -3,6 +3,15 @@
         <div class="info_wrapper">
             <OpenTitle>
                 {{ $t('open.info.title') }}
+                <template #buttons>
+                    <ContentButton 
+                        class="content_button--red"
+                        link="https://docs.google.com/document/d/14kmw2Rtc0tasVDoZN5fCoCNp2nmyc2v9IxniUwEfyYg"
+                        external
+                    >
+                        DETAILED RULES DOCUMENT
+                    </ContentButton>
+                </template>
             </OpenTitle>
             <div 
                 v-if="tournament"
@@ -200,6 +209,7 @@
                                             'content_button--disabled': !mappool.isPublic,
                                         }"
                                         :link="`/mappool`"
+                                        external
                                     >
                                         {{ mappool.isPublic ? $t('open.info.mappools.info') : $t('open.info.mappools.notAvailable') }}
                                     </ContentButton>
@@ -210,6 +220,7 @@
                                             'content_button--disabled': !mappool.isPublic,
                                         }"
                                         :link="mappool.isPublic ? mappool.mappackLink || '' : ''"
+                                        external
                                     >
                                         {{ mappool.isPublic ? $t('open.info.mappools.mappackDownload') : $t('open.info.mappools.mappacknotAvailable') }}
                                     </ContentButton>
