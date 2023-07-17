@@ -4,7 +4,7 @@ import { Matchup } from "../../../Models/tournaments/matchup";
 import { MatchupMap } from "../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../Models/tournaments/matchupScore";
 import { TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
-import { isLoggedInDiscord } from "../../middleware";
+import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { validateTournament, hasRoles, validateStageOrRound } from "../../middleware/tournament";
 import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
@@ -124,7 +124,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
     }
 });
 
-matchupRouter.post("/qualifier/mp", async (ctx) => {
+matchupRouter.post("/qualifier/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
     const mpID = ctx.request.body?.mpID;
     if (!mpID || isNaN(parseInt(mpID))) {
         ctx.body = {
@@ -164,12 +164,14 @@ matchupRouter.post("/qualifier/mp", async (ctx) => {
 
     const mpData = await osuClient.multi.getMatch(mpID) as Multi;
     const maps: MatchupMap[] = [];
-    mpData.games.forEach(game => {
+    mpData.games.forEach((game, i) => {
         const beatmap = matchup.stage!.mappool![0].slots.find(slot => slot.maps.some(map => map.beatmap!.ID === game.beatmapId))!.maps.find(map => map.beatmap!.ID === game.beatmapId);
         if (!beatmap)
             return;
 
         const map = new MatchupMap(matchup, beatmap);
+        map.order = i + 1;
+        map.scores = [];
         game.scores.forEach(score => {
             const user = matchup.teams!.flatMap(team => team.members).find(member => member.osu.userID === score.userId.toString());
             if (!user)
@@ -183,6 +185,8 @@ matchupRouter.post("/qualifier/mp", async (ctx) => {
             matchupScore.fail = !score.pass;
             matchupScore.accuracy = (score.count50 + 2 * score.count100 + 6 * score.count300) / Math.max(6 * (score.count50 + score.count100 + score.count300), 1);
             matchupScore.fullCombo = score.perfect || score.maxCombo === beatmap.beatmap!.maxCombo;
+
+            map.scores.push(matchupScore);
         });
         maps.push(map);
     });
@@ -194,10 +198,10 @@ matchupRouter.post("/qualifier/mp", async (ctx) => {
 
     maps.forEach(async map => {
         await map.save();
-
-        map.scores?.forEach(async score => {
-            await score.save();
-        });
+        await Promise.all(map.scores?.map(score => {
+            score.map = map;
+            return score.save();
+        }) || []);
     });
 
     matchup.maps = maps;

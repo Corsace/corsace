@@ -3,7 +3,7 @@ import Axios from "axios";
 import { User } from "../../../Models/user";
 import { MapperQuery } from "../../../Interfaces/queries";
 import { parseQueryParam } from "../../utils/query";
-import { isCorsace } from "../../middleware";
+import { isCorsace, isLoggedInDiscord } from "../../middleware";
 
 const usersRouter = new Router();
 
@@ -67,7 +67,7 @@ usersRouter.get("/advSearch", async (ctx) => {
     ctx.body = await User.basicSearch(query);
 });
 
-usersRouter.get("/deepSearch", isCorsace, async (ctx) => {
+usersRouter.get("/deepSearch", isLoggedInDiscord, isCorsace, async (ctx) => {
     const userSearch = ctx.query.user;
     const users = await User
         .createQueryBuilder("user")
