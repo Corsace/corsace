@@ -21,7 +21,7 @@
                     {{ Math.round(teamSync.rank) }}
                 </div>
             </div>
-            <div class="open_card_team__text_group">
+            <div class="open_card_team__text_group open_card_team__text_group--right">
                 <div class="open_card_team__text_group_label">
                     TEAM BWS AVG
                 </div>
@@ -48,8 +48,12 @@ export default class OpenCardTeam extends Vue {
 
 <style lang="scss">
 @import '@s-sass/_variables';
+@import '@s-sass/_mixins';
+
 .open_card_team {
-    flex: 1 0 31%;
+    flex: 0 1 calc(33% - 9.5px);
+    margin-right: 20px;
+    margin-bottom: 20px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -57,6 +61,15 @@ export default class OpenCardTeam extends Vue {
     width: 375px;
     height: 200px;
     background: #171B1E;
+
+    &:nth-child(3n+3) {
+        margin-right: 0;
+    }
+
+    @include breakpoint(mobile) {
+        flex-grow: 1;
+        margin-right: 0;
+    }
 
     &:hover {
         text-decoration: none;
@@ -99,6 +112,10 @@ export default class OpenCardTeam extends Vue {
             display: flex;
             flex-direction: row;
             align-items: center;
+
+            &--right {
+                padding: 0 10px 0 0;
+            }
 
             &_label {
                 color: #131313;
