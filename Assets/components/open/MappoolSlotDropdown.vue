@@ -142,7 +142,6 @@ export default class MappoolSlotDropdown extends Vue {
         &--active {       
             border-top: none;
             border-bottom: 10px solid;
-            transform: rotate(90deg);
             transform: rotate(180deg);
         }
     }
