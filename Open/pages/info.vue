@@ -107,6 +107,14 @@
                                         {{ stageType }}
                                     </template>
                                 </InfoData>
+                                <InfoData>
+                                    <template #title>
+                                        {{ $t('open.info.matchInfo.initialSize') }}
+                                    </template>
+                                    <template #value>
+                                        {{ stage.initialSize }}
+                                    </template>
+                                </InfoData>
                             </div>
                             <div class="line--vertical_gray" />
                             <div class="info_stage_data__content">
@@ -132,6 +140,14 @@
                                     </template>
                                     <template #value>
                                         {{ stage.rounds.length ? `${stage.rounds.length} rounds` : "N/A" }}
+                                    </template>
+                                </InfoData>
+                                <InfoData>
+                                    <template #title>
+                                        {{ $t('open.info.matchInfo.finalSize') }}
+                                    </template>
+                                    <template #value>
+                                        {{ stage.finalSize }}
                                     </template>
                                 </InfoData>
                             </div>

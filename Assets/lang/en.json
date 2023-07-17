@@ -447,7 +447,9 @@
                 "type": "TYPE",
                 "startDate": "START DATE",
                 "endDate": "END DATE",
-                "rounds": "ROUNDS"
+                "rounds": "ROUNDS",
+                "initialSize": "INITIAL SIZE",
+                "finalSize": "FINAL SIZE"
             },
             "headings": {
                 "qualifiers": "QUALIFIERS",
