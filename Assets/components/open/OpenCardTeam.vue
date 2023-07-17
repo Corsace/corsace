@@ -3,6 +3,34 @@
         :to="`/team/${teamSync.ID}`"
         class="open_card_team"
     >
+        <div class="open_card_team_overlay">
+            <ul class="open_card_team_overlay__list">
+                <li class="open_card_team_overlay__list_item open_card_team_overlay__list_item--leader">
+                    <div class="open_card_team_overlay__list_item_text">
+                        team leader
+                    </div>
+                    <div class="open_card_team_overlay__list_item_text open_card_team_overlay__list_item_text--bws">
+                        7 BWS
+                    </div>
+                </li>
+                <li class="open_card_team_overlay__list_item">
+                    <div class="open_card_team_overlay__list_item_text">
+                        team member
+                    </div>
+                    <div class="open_card_team_overlay__list_item_text open_card_team_overlay__list_item_text--bws">
+                        7 BWS
+                    </div>
+                </li>                
+                <li class="open_card_team_overlay__list_item">
+                    <div class="open_card_team_overlay__list_item_text">
+                        vinxis
+                    </div>
+                    <div class="open_card_team_overlay__list_item_text open_card_team_overlay__list_item_text--bws">
+                        7 BWS
+                    </div>
+                </li>
+            </ul>
+        </div>
         <div class="open_card_team__img">
             <img
                 :src="teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')"
@@ -21,7 +49,7 @@
                     {{ Math.round(teamSync.rank) }}
                 </div>
             </div>
-            <div class="open_card_team__text_group">
+            <div class="open_card_team__text_group open_card_team__text_group--right">
                 <div class="open_card_team__text_group_label">
                     TEAM BWS AVG
                 </div>
@@ -48,8 +76,12 @@ export default class OpenCardTeam extends Vue {
 
 <style lang="scss">
 @import '@s-sass/_variables';
+@import '@s-sass/_mixins';
+
 .open_card_team {
-    flex: 1 0 31%;
+    flex: 0 1 calc(33% - 9.5px);
+    margin-right: 20px;
+    margin-bottom: 20px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -57,6 +89,66 @@ export default class OpenCardTeam extends Vue {
     width: 375px;
     height: 200px;
     background: #171B1E;
+
+    &:nth-child(3n+3) {
+        margin-right: 0;
+    }
+
+    @include breakpoint(mobile) {
+        flex-grow: 1;
+        margin-right: 0;
+    }
+
+    &_overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #131313F0;
+        z-index: 1;
+        opacity: 0;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        &__list {
+            padding: 20px 80px 20px 80px;
+            &_item {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+
+                &--leader {
+                    position: relative;
+                    &:after{
+                        content: "";
+                        background-image: url('../../img/site/open/team/manager.svg');
+                        background-size: 100%;
+                        width: 15px;
+                        height: 10px;
+                        background-repeat: no-repeat;
+                        position: absolute;
+                        left: -25px;
+                        top: 5px;
+                    }
+                }
+
+                &_text {
+                font-family: $font-ggsans;
+                font-weight: 500;
+                list-style: none;
+
+                    &--bws {
+                        color: $open-red;
+                        font-family: $font-swis721;
+                        font-weight: 700;
+                    }
+                }
+            }
+        }
+    }
 
     &:hover {
         text-decoration: none;
@@ -99,6 +191,10 @@ export default class OpenCardTeam extends Vue {
             display: flex;
             flex-direction: row;
             align-items: center;
+
+            &--right {
+                padding: 0 10px 0 0;
+            }
 
             &_label {
                 color: #131313;

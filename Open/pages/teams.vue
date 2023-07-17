@@ -87,7 +87,6 @@ export default class Teams extends Vue {
 
         &_list {
             display: flex;
-            gap: 20px;
             flex-wrap: wrap;
             justify-content: flex-start;
             margin-top: 25px;
