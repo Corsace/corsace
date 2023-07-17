@@ -500,11 +500,10 @@ export default class Team extends Vue {
         }
 
         const { data: teamData } = await this.$axios.get(`/api/team/${this.$route.params.id}`);
+        if (teamData?.qualifier)
+            teamData.qualifier.date = new Date(teamData.qualifier.date);
         this.loading = false;
-        return teamData.error ? null : {
-            ...teamData,
-            date: new Date(teamData.date),
-        };
+        return teamData.error ? null : teamData;
     }
 
     async mounted () {
