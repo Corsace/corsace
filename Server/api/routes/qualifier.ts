@@ -48,9 +48,11 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
     const tournament = qualifier.stage!.tournament;
     if (
         tournament.publicQualifiers || 
-        tournament.organizer.ID === ctx.state.user?.ID || 
-        qualifier.referee?.ID === ctx.state.user?.ID ||
-        qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user?.ID) || team.manager.ID === ctx.state.user?.ID)
+        ctx.state.user && (
+            tournament.organizer.ID === ctx.state.user.ID || 
+            qualifier.referee?.ID === ctx.state.user.ID ||
+            qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user.ID) || team.manager.ID === ctx.state.user.ID)
+        )
     )
         scores.push(
             ...qualifier.maps?.flatMap(m => m.scores?.map(s => ({

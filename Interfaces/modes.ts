@@ -10,4 +10,4 @@ export const modeList = [
     "mania",
 ];
 
-export type Mode = "standard" | "taiko" | "fruits" | "mania";
+export type Mode = "osu" | "taiko" | "fruits" | "mania";
