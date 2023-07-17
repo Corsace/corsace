@@ -147,8 +147,6 @@ export default class OpenCardTeam extends Vue {
                     }
                 }
             }
-
-
         }
     }
 
