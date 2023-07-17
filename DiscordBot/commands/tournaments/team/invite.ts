@@ -71,7 +71,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 const data = new SlashCommandBuilder()
     .setName("team_invite")
     .setDescription("Invite a player to your team")
-    .addStringOption(option => 
+    .addUserOption(option => 
         option.setName("user")
             .setDescription("The osu! username you want to invite to the team")
             .setRequired(true)

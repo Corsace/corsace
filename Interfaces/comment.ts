@@ -5,7 +5,7 @@ const profanityFilterString = "n(i|1)g|f(4|a)?gg?(0|o)?t|f(4|a)g|r(3|e)t(4|a)rd|
 
 export const profanityFilter = new RegExp(`${profanityFilterString}`, "gi");
 
-export const profanityFilterStrong = new RegExp(`${profanityFilterString}|fuck|sh(i|1)t|p(i|1)ss|(4|a)ss`, "gi");
+export const profanityFilterStrong = new RegExp(`${profanityFilterString}|fuck|sh(i|1)t|p(i|1)ss|(4|a)ss|s(e|3)x"`, "gi");
 
 export interface Comment {
     ID: number;

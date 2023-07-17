@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import { OAuth, User } from "../../../Models/user";
 import { UsernameChange } from "../../../Models/usernameChange";
-import { isCorsace, isHeadStaff, isLoggedIn } from "../../middleware";
+import { isCorsace, isHeadStaff, isLoggedIn, isLoggedInDiscord } from "../../middleware";
 
 const userRouter = new Router();
 
@@ -24,7 +24,7 @@ interface connectBody {
     };
 }
 
-userRouter.post("/connect", isCorsace, async (ctx) => {
+userRouter.post("/connect", isLoggedInDiscord, isCorsace, async (ctx) => {
     const body: connectBody = ctx.request.body;
     if (!body.osu || !body.discord)
         return ctx.body = { 

@@ -23,23 +23,25 @@ export enum TournamentChannelType {
 }
 
 // Designate an array of TournamentRoles for each channel type
-export const TournamentChannelTypeRoles: { [key in TournamentChannelType]: TournamentRoleType[] | undefined } = {
-    [TournamentChannelType.General]: undefined,
-    [TournamentChannelType.Participants]: Object.values(TournamentRoleType).filter((role) => typeof role === "number") as TournamentRoleType[],
-    [TournamentChannelType.Managers]: Object.values(TournamentRoleType).filter((role) => typeof role === "number").filter(role => role !== 1) as TournamentRoleType[],
-    [TournamentChannelType.Announcements]: undefined,
-    [TournamentChannelType.Admin]: [TournamentRoleType.Organizer],
-    [TournamentChannelType.Mappool]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers],
-    [TournamentChannelType.Mappoollog]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers],
-    [TournamentChannelType.Mappoolqa]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers],
-    [TournamentChannelType.Testplayers]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers],
-    [TournamentChannelType.Referee]: [TournamentRoleType.Organizer, TournamentRoleType.Referees],
-    [TournamentChannelType.Stream]: [TournamentRoleType.Organizer, TournamentRoleType.Referees, TournamentRoleType.Streamers, TournamentRoleType.Commentators],
-    [TournamentChannelType.Matchupresults]: undefined,
-    [TournamentChannelType.Jobboard]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers],
-    [TournamentChannelType.Staff]: [TournamentRoleType.Staff],
-    [TournamentChannelType.Streamannouncements]: undefined,
-};
+export function getTournamentChannelTypeRoles () {
+    return {
+        [TournamentChannelType.General]: undefined,
+        [TournamentChannelType.Participants]: Object.values(TournamentRoleType).filter((role) => typeof role === "number") as TournamentRoleType[],
+        [TournamentChannelType.Managers]: Object.values(TournamentRoleType).filter((role) => typeof role === "number").filter(role => role !== 1) as TournamentRoleType[],
+        [TournamentChannelType.Announcements]: undefined,
+        [TournamentChannelType.Admin]: [TournamentRoleType.Organizer],
+        [TournamentChannelType.Mappool]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers],
+        [TournamentChannelType.Mappoollog]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers],
+        [TournamentChannelType.Mappoolqa]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers],
+        [TournamentChannelType.Testplayers]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers],
+        [TournamentChannelType.Referee]: [TournamentRoleType.Organizer, TournamentRoleType.Referees],
+        [TournamentChannelType.Stream]: [TournamentRoleType.Organizer, TournamentRoleType.Referees, TournamentRoleType.Streamers, TournamentRoleType.Commentators],
+        [TournamentChannelType.Matchupresults]: undefined,
+        [TournamentChannelType.Jobboard]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers],
+        [TournamentChannelType.Staff]: [TournamentRoleType.Staff],
+        [TournamentChannelType.Streamannouncements]: undefined,
+    } as { [key in TournamentChannelType]: TournamentRoleType[] | undefined };
+}
 
 export const forumTags: { [key in TournamentChannelType]?: GuildForumTagData[] } = {
     [TournamentChannelType.Mappoolqa]: [
