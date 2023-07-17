@@ -48,21 +48,30 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
     const tournament = qualifier.stage!.tournament;
     if (
         tournament.publicQualifiers || 
-        tournament.organizer.ID === ctx.state.user?.ID || 
-        qualifier.referee?.ID === ctx.state.user?.ID ||
-        qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user?.ID) || team.manager.ID === ctx.state.user?.ID)
-    )
-        scores.push(
-            ...qualifier.maps?.flatMap(m => m.scores?.map(s => ({
-                teamID: qualifier.teams!.find(t => t.members.some(m => m.ID === s.user!.ID))!.ID,
-                teamName: qualifier.teams!.find(t => t.members.some(m => m.ID === s.user!.ID))!.name,
-                username: s.user!.osu.username,
-                userID: s.user!.ID,
-                score: s.score,
-                map: `${m.map!.slot!.acronym}${m.map!.order}`,
-                mapID: parseInt(`${m.map!.slot.ID}${m.map!.order}`),
-            })) ?? []) ?? []
-        );
+        ctx.state.user && (
+            tournament.organizer.ID === ctx.state.user.ID || 
+            qualifier.referee?.ID === ctx.state.user.ID ||
+            qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user.ID) || team.manager.ID === ctx.state.user.ID)
+        )
+    ) {
+        for (const matchupMap of qualifier.maps ?? []) {
+            for (const score of matchupMap.scores ?? []) {
+                const team = qualifier.teams?.find(t => t.members.some(m => m.ID === score.user?.ID));
+                if (!team)
+                    continue;
+
+                scores.push({
+                    teamID: team.ID,
+                    teamName: team.name,
+                    username: score.user!.osu.username,
+                    userID: score.user!.ID,
+                    score: score.score,
+                    map: `${matchupMap.map!.slot!.acronym}${matchupMap.map!.order}`,
+                    mapID: parseInt(`${matchupMap.map!.slot.ID}${matchupMap.map!.order}`),
+                });
+            }
+        }
+    }
 
     const qualifierData: Qualifier = {
         ID: qualifier.ID,

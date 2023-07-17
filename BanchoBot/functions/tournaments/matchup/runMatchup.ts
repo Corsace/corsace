@@ -267,7 +267,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpLobby.on("matchFinished", async () => {
         const beatmap = mapsPlayed[mapsPlayed.length - 1];
         const mp = await osuClient.multi.getMatch(mpLobby.id) as Multi;
-        const scores = mp.games[mp.games.length - 1].scores;
+        const game = mp.games[mp.games.length - 1];
+        const scores = game.scores;
 
         if (scores.length === 0 || (scores.length === 1 && scores[0].count300 + scores[0].count100 + scores[0].count50 + scores[0].countMiss < (beatmap.beatmap!.maxCombo || 0) && Date.now() - matchStart!.getTime() < (matchup.stage!.tournament.abortThreshold || 15) * 1000)) {
             mpLobby.emit("matchAborted");
@@ -291,7 +292,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             const matchupScore = new MatchupScore(user);
             matchupScore.map = matchupMap;
             matchupScore.score = score.score;
-            matchupScore.mods = score.enabledMods || 0;
+            matchupScore.mods = ((score.enabledMods || game.mods) | 1) ^ 1; // Remove NF from mods (the OR 1 is to ensure NM is 0 after XOR)
             matchupScore.misses = score.countMiss;
             matchupScore.combo = score.maxCombo;
             matchupScore.fail = !score.pass;

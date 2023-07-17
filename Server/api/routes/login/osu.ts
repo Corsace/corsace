@@ -65,7 +65,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
             .map(modeID => ctx.state.user.refreshStatistics(modeID, data)));
 
         // Username changes
-        const usernames: string[] = data.previous_usernames;
+        const usernames: string[] = data.previous_usernames || [];
         for (const name of usernames) {
             let nameChange = await UsernameChange.findOne({ 
                 where: { 
@@ -96,7 +96,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
             await currentName.remove();
 
         // Check if BN/NAT/DEV/SPT/PPY
-        if (data.groups.some(group => [11, 22, 33, 28, 32, 7, 31].some(num => group.id === num))) {
+        if (data.groups?.some(group => [11, 22, 33, 28, 32, 7, 31].some(num => group.id === num))) {
             let eligibleModes: string[] = [];
             if (data.groups.some(group => [11, 22, 33].some(num => group.id === num))) // DEV, SPT, PPY groups
                 eligibleModes = ["standard", "taiko", "fruits", "mania"];

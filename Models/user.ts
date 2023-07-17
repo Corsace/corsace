@@ -396,16 +396,18 @@ export class User extends BaseEntity {
         if (this[tokenType].accessToken)
             return this[tokenType].accessToken!;
 
+        const sqlCol = tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken";
+
         const res = await User
             .createQueryBuilder("user")
-            .select(tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken")
+            .select(sqlCol)
             .where(`ID = ${this.ID}`)
             .getRawOne();
 
-        if (!res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"])
+        if (!res[sqlCol])
             throw new Error("User does not have an access token");
 
-        return res[tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken"];
+        return res[sqlCol];
     }
 
     // TODO: Cache osu! API data because this is a lot of API calls
@@ -419,8 +421,8 @@ export class User extends BaseEntity {
             return;
 
         const data = osuV2Data || await this.getOsuAPIV2Data();
-        const statistics = data.statistics_rulesets[modeName[modeID]] as osuV2UserStatistics;
-        const badges = User.filterBWSBadges(data.badges, modeID);
+        const statistics = data.statistics_rulesets?.[modeName[modeID]] || data.playmode == modeName[modeID] ? data.statistics || undefined : undefined;
+        const badges = User.filterBWSBadges(data.badges || [], modeID);
 
         const userStatistics = 
             this.userStatistics?.find(stat => stat.modeDivision.ID === modeID) || 
@@ -433,8 +435,8 @@ export class User extends BaseEntity {
                 .getOne()) ||
             new UserStatistics();
 
-        userStatistics.rank = statistics.global_rank || 0;
-        userStatistics.pp = statistics.pp;
+        userStatistics.rank = statistics?.global_rank || 0;
+        userStatistics.pp = statistics?.pp || 0;
         userStatistics.BWS = Math.pow(userStatistics.rank, Math.pow(0.9937, Math.pow(badges.length, 2)));
         if (!this.userStatistics?.find(stat => stat.modeDivision.ID === modeID)) {
             userStatistics.user = this;
