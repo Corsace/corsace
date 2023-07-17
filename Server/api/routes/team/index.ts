@@ -414,11 +414,6 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
         .where("team.ID = :ID", { ID: team.ID })
         .getMany();
 
-    if (tournaments.some(t => t.status === TournamentStatus.Ongoing)) {
-        ctx.body = { error: "Team is currently playing in a tournament" };
-        return;
-    }
-
     if (tournaments.some(t => t.status === TournamentStatus.Registrations)) {
         const qualifierMatches = await Matchup
             .createQueryBuilder("matchup")
@@ -434,6 +429,11 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
             ctx.body = { error: "Team is currently registered in a tournament where they have already played a qualifier match" };
             return;
         }
+    }
+
+    if (tournaments.some(t => t.status !== TournamentStatus.Registrations && t.status !== TournamentStatus.NotStarted)) {
+        ctx.body = { error: "Team cannot be deleted" };
+        return;
     }
 
     const userID = parseInt(ctx.params.userID);

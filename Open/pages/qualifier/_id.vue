@@ -146,14 +146,15 @@ export default class Qualifier extends Vue {
     async getQualifier (): Promise<QualifierInterface | null> {
         this.loading = true;
         let ID = 0;
-        if (!this.$route.params.id || parseInt(this.$route.params.id) === this.team?.qualifier?.ID) {
+        if (!this.$route.params.id) {
             if (!this.team?.qualifier?.ID) {
                 this.loading = false;
                 return null;
             }
             
             ID = this.team.qualifier.ID;
-        }
+        } else
+            ID = parseInt(this.$route.params.id);
 
         const { data: qualifierData } = await this.$axios.get(`/api/qualifier/${ID}`);
         this.loading = false;

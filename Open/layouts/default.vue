@@ -224,7 +224,6 @@ import DevBanner from "../../Assets/components/DevBanner.vue";
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
 import Tooltip from "../../Assets/components/footer/Tooltip.vue";
-import ContentButton from "../../Assets/components/open/ContentButton.vue";
 
 const openModule = namespace("open");
 
@@ -234,7 +233,6 @@ const openModule = namespace("open");
         TheHeader,
         TheFooter,
         Tooltip,
-        ContentButton,
     },
     middleware: "index",
 })

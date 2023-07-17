@@ -2,9 +2,9 @@ import { Beatmap as APIBeatmap } from "nodesu";
 import { MCAEligibility } from "../../../Models/MCA_AYIM/mcaEligibility";
 import { User } from "../../../Models/user";
 
-export default async function getMCAEligibility (apiBeatmap: APIBeatmap, user: User, save: boolean);
-export default async function getMCAEligibility (year: number, user: User);
-export default async function getMCAEligibility (beatmapOrYear: APIBeatmap | number, user: User, save?: boolean) {
+export default async function getMCAEligibility (apiBeatmap: APIBeatmap, user: User, save: boolean): Promise<MCAEligibility | undefined>;
+export default async function getMCAEligibility (year: number, user: User): Promise<MCAEligibility | undefined>;
+export default async function getMCAEligibility (beatmapOrYear: APIBeatmap | number, user: User, save?: boolean): Promise<MCAEligibility | undefined> {
     const mapYear = beatmapOrYear instanceof APIBeatmap ? beatmapOrYear.approvedDate.getUTCFullYear() : beatmapOrYear;
     let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: mapYear, user: { ID: user.ID }}});
     if (eligibility)

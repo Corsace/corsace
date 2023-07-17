@@ -60,16 +60,16 @@ export interface osuV2User {
     playmode: Mode;
     country_code: string;
     avatar_url: string;
-    previous_usernames: string[];
-    statistics: osuV2UserStatistics;
-    statistics_rulesets: {
+    previous_usernames?: string[];
+    statistics?: osuV2UserStatistics;
+    statistics_rulesets?: {
         "osu": osuV2UserStatistics;
         "taiko": osuV2UserStatistics;
         "fruits": osuV2UserStatistics;
         "mania": osuV2UserStatistics;
     }
-    badges: osuV2UserBadge[];
-    groups: osuV2UserGroup[];
+    badges?: osuV2UserBadge[];
+    groups?: osuV2UserGroup[];
 }
 
 export interface osuV2Friend {

@@ -160,6 +160,7 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
+        .innerJoinAndSelect("tournament.organizer", "organizer")
         .where("tournament.ID = :ID", { ID })
         .getOne();
 
@@ -178,15 +179,15 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         .innerJoinAndSelect("matchup.teams", "team")
         .innerJoinAndSelect("team.manager", "manager")
         .innerJoinAndSelect("team.members", "member")
-        .innerJoinAndSelect("matchup.maps", "map")
-        .innerJoinAndSelect("map.map", "mappoolMap")
+        .innerJoinAndSelect("matchup.maps", "matchupMap")
+        .innerJoinAndSelect("matchupMap.map", "mappoolMap")
         .innerJoinAndSelect("mappoolMap.slot", "slot")
-        .innerJoinAndSelect("map.scores", "score")
+        .innerJoinAndSelect("matchupMap.scores", "score")
         .innerJoinAndSelect("score.user", "user")
         .where("tournament.ID = :ID", { ID })
         .andWhere("stage.stageType = '0'");
 
-    if (!tournament.publicQualifiers) {
+    if (!tournament.publicQualifiers && tournament.organizer.ID !== ctx.state.user?.ID) {
         if (!ctx.state.user) {
             ctx.body = {
                 success: false,
@@ -204,15 +205,29 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         ).setParameter("userID", ctx.state.user.ID);
     }
 
-    ctx.body = (await q.getMany()).flatMap<QualifierScore>(q => q.maps?.flatMap(m => m.scores?.map(s => ({
-        teamID: q.teams!.find(t => t.members.some(m => m.ID === s.user!.ID))!.ID,
-        teamName: q.teams!.find(t => t.members.some(m => m.ID === s.user!.ID))!.name,
-        username: s.user!.osu.username,
-        userID: s.user!.ID,
-        score: s.score,
-        map: `${m.map!.slot!.acronym}${m.map!.order}`,
-        mapID: parseInt(`${m.map!.slot.ID}${m.map!.order}`),
-    })) ?? []) ?? []);
+    const qualifiers = await q.getMany();
+    const scores: QualifierScore[] = [];
+    for (const qualifier of qualifiers) {
+        for (const matchupMap of qualifier.maps ?? []) {
+            for (const score of matchupMap.scores ?? []) {
+                const team = qualifier.teams?.find(t => t.members.some(m => m.ID === score.user?.ID));
+                if (!team)
+                    continue;
+
+                scores.push({
+                    teamID: team.ID,
+                    teamName: team.name,
+                    username: score.user!.osu.username,
+                    userID: score.user!.ID,
+                    score: score.score,
+                    map: `${matchupMap.map!.slot!.acronym}${matchupMap.map!.order}`,
+                    mapID: parseInt(`${matchupMap.map!.slot.ID}${matchupMap.map!.order}`),
+                });
+            }
+        }
+    }
+
+    ctx.body = scores;
 });
 
 export default tournamentRouter;
