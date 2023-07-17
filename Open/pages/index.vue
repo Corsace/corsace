@@ -1,16 +1,16 @@
 <template>
     <div class="index">
-        <!-- <video 
+        <video 
             autoplay
             muted
             loop
             class="index__video"
         >
             <source 
-                src=""
+                src="https://static-assets.corsace.io/open-2023/landing-page-background-video.webm"
                 type="video/mp4"
             >
-        </video> -->
+        </video>
 
         <div class="index__content">
             <div class="index__banner">
@@ -98,10 +98,10 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
+import { Tournament } from "../../Interfaces/tournament";
 import { UserInfo } from "../../Interfaces/user";
 
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
-import { Tournament } from "../../Interfaces/tournament";
 
 const openModule = namespace("open");
 

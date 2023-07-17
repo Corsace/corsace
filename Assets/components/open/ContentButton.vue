@@ -1,6 +1,7 @@
 <template>
     <a 
         :href="linkSync"
+        :target="externalSync ? '_blank' : '_self'"
         class="content_button"
     >
         <div class="content_button_text">
@@ -19,6 +20,7 @@ import { Vue, Component, PropSync } from "vue-property-decorator";
 
 export default class ContentButton extends Vue {
     @PropSync("link", { type: String, default: "#" }) linkSync!: string;
+    @PropSync("external", { type: Boolean, default: false }) externalSync!: boolean;
 }
 </script>
 

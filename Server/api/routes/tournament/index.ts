@@ -160,6 +160,7 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
+        .innerJoinAndSelect("tournament.organizer", "organizer")
         .where("tournament.ID = :ID", { ID })
         .getOne();
 
@@ -186,7 +187,7 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         .where("tournament.ID = :ID", { ID })
         .andWhere("stage.stageType = '0'");
 
-    if (!tournament.publicQualifiers) {
+    if (!tournament.publicQualifiers && tournament.organizer.ID !== ctx.state.user?.ID) {
         if (!ctx.state.user) {
             ctx.body = {
                 success: false,

@@ -1,12 +1,8 @@
 import Router from "@koa/router";
-import { Multi } from "nodesu";
 import { Matchup } from "../../../Models/tournaments/matchup";
-import { MatchupMap } from "../../../Models/tournaments/matchupMap";
-import { MatchupScore } from "../../../Models/tournaments/matchupScore";
 import { TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
-import { isCorsace, isLoggedInDiscord } from "../../middleware";
+import { isLoggedInDiscord } from "../../middleware";
 import { validateTournament, hasRoles, validateStageOrRound } from "../../middleware/tournament";
-import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
 
 const matchupRouter = new Router();
@@ -122,95 +118,6 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
             error: err,
         };
     }
-});
-
-matchupRouter.post("/qualifier/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
-    const mpID = ctx.request.body?.mpID;
-    if (!mpID || isNaN(parseInt(mpID))) {
-        ctx.body = {
-            error: "No mpID provided",
-        };
-        return;
-    }
-    const matchID = ctx.request.body?.matchID;
-    if (!matchID || isNaN(parseInt(matchID))) {
-        ctx.body = {
-            error: "No matchID provided",
-        };
-        return;
-    }
-
-    const matchup = await Matchup
-        .createQueryBuilder("matchup")
-        .innerJoinAndSelect("matchup.stage", "stage")
-        .innerJoinAndSelect("stage.mappool", "mappool")
-        .innerJoinAndSelect("mappool.slots", "slot")
-        .innerJoinAndSelect("slot.maps", "map")
-        .innerJoinAndSelect("map.beatmap", "beatmap")
-        .leftJoinAndSelect("matchup.teams", "team")
-        .leftJoinAndSelect("team.manager", "manager")
-        .leftJoinAndSelect("team.members", "member")
-        .leftJoinAndSelect("matchup.maps", "matchupMap")
-        .leftJoinAndSelect("matchupMap.scores", "score")
-        .where("matchup.ID = :matchID", { matchID })
-        .andWhere("stage.stageType = '0'")
-        .getOne();
-    if (!matchup) {
-        ctx.body = {
-            error: "Matchup not found",
-        };
-        return;
-    }
-
-    const mpData = await osuClient.multi.getMatch(mpID) as Multi;
-    const maps: MatchupMap[] = [];
-    mpData.games.forEach((game, i) => {
-        const beatmap = matchup.stage!.mappool![0].slots.find(slot => slot.maps.some(map => map.beatmap!.ID === game.beatmapId))!.maps.find(map => map.beatmap!.ID === game.beatmapId);
-        if (!beatmap)
-            return;
-
-        const map = new MatchupMap(matchup, beatmap);
-        map.order = i + 1;
-        map.scores = [];
-        game.scores.forEach(score => {
-            const user = matchup.teams!.flatMap(team => team.members).find(member => member.osu.userID === score.userId.toString());
-            if (!user)
-                return;
-
-            const matchupScore = new MatchupScore(user);
-            matchupScore.score = score.score;
-            matchupScore.mods = score.enabledMods || 0;
-            matchupScore.misses = score.countMiss;
-            matchupScore.combo = score.maxCombo;
-            matchupScore.fail = !score.pass;
-            matchupScore.accuracy = (score.count50 + 2 * score.count100 + 6 * score.count300) / Math.max(6 * (score.count50 + score.count100 + score.count300), 1);
-            matchupScore.fullCombo = score.perfect || score.maxCombo === beatmap.beatmap!.maxCombo;
-
-            map.scores.push(matchupScore);
-        });
-        maps.push(map);
-    });
-
-    matchup.maps?.forEach(async map => {
-        await Promise.all(map.scores.map(score => score.remove()));
-        await map.remove();
-    });
-
-    maps.forEach(async map => {
-        await map.save();
-        await Promise.all(map.scores?.map(score => {
-            score.map = map;
-            return score.save();
-        }) || []);
-    });
-
-    matchup.maps = maps;
-    matchup.mp = mpID;
-    await matchup.save();
-
-    ctx.body = {
-        success: true,
-    };
 });
 
 export default matchupRouter;
