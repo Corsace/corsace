@@ -9,7 +9,7 @@ import { filter, stopRow, timedOut } from "../../functions/messageInteractionFun
 import { profanityFilterStrong } from "../../../Interfaces/comment";
 import { Stage } from "../../../Models/tournaments/stage";
 import { Phase } from "../../../Models/phase";
-import { TournamentChannel, TournamentChannelType, TournamentChannelTypeRoles, forumTags } from "../../../Models/tournaments/tournamentChannel";
+import { TournamentChannel, TournamentChannelType, getTournamentChannelTypeRoles, forumTags } from "../../../Models/tournaments/tournamentChannel";
 import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
 import { randomUUID } from "crypto";
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../Server/utils/dateParse";
@@ -624,7 +624,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                 defaultAutoArchiveDuration: 10080,
             };
 
-            const allowedRoleTypes = TournamentChannelTypeRoles[tournamentChannel.channelType];
+            const allowedRoleTypes = getTournamentChannelTypeRoles()[tournamentChannel.channelType];
             if (allowedRoleTypes !== undefined) {
                 channelObject.permissionOverwrites = [
                     {

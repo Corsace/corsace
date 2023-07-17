@@ -59,55 +59,57 @@
                     STAFF
                 </NuxtLink> -->
             </div>
-            <div 
-                v-if="loggedInUser?.discord.userID"
-                class="header__manage_teams"
-            >
-                <NuxtLink
-                    v-if="team"
-                    :to="`/team/${team.ID}`"
-                    class="header__manage_teams_item"
+            <template #login>         
+                <div 
+                    v-if="loggedInUser?.discord.userID"
+                    class="header__manage_teams"
                 >
-                    {{ team.abbreviation.toUpperCase() }}
-                </NuxtLink>
-                <NuxtLink
-                    v-else
-                    to="/team/create"
-                    class="header__manage_teams_item"
-                >
-                    CREATE TEAM
-                </NuxtLink>
-                <a
-                    v-if="!team"
-                    class="header__manage_teams_item"
-                    @click="togglePopup()"
-                >
-                    INVITATIONS ({{ teamInvites?.length || 0 }})
-                </a>
-            </div>
-            <div 
-                v-show="isOpen"
-                class="header__popup"
-            >
-                <div class="header__popup_title">
-                    TEAM INVITES
+                    <NuxtLink
+                        v-if="team"
+                        :to="`/team/${team.ID}`"
+                        class="header__manage_teams_item"
+                    >
+                        {{ team.abbreviation.toUpperCase() }}
+                    </NuxtLink>
+                    <NuxtLink
+                        v-else
+                        to="/team/create"
+                        class="header__manage_teams_item"
+                    >
+                        CREATE TEAM
+                    </NuxtLink>
+                    <a
+                        v-if="!team"
+                        class="header__manage_teams_item"
+                        @click="togglePopup()"
+                    >
+                        INVITATIONS ({{ teamInvites?.length || 0 }})
+                    </a>
                 </div>
-                <hr class="line--red line--no-space">
-                <ul v-if="!team && teamInvites">
-                    <li
-                        v-for="invite in teamInvites"
-                        :key="invite.ID"
-                    > 
-                        {{ invite.name }}
-                        <div class="header_popup_accept">
-                            <a @click="inviteAction(invite.ID, 'accept')">ACCEPT</a> | <a @click="inviteAction(invite.ID, 'decline')">DECLINE</a>
-                        </div>
-                    </li>
-                </ul>
-                <div v-else>
-                    You currently have no invites
+                <div 
+                    v-show="isOpen"
+                    class="header__popup"
+                >
+                    <div class="header__popup_title">
+                        TEAM INVITES
+                    </div>
+                    <hr class="line--red line--no-space">
+                    <ul v-if="!team && teamInvites">
+                        <li
+                            v-for="invite in teamInvites"
+                            :key="invite.ID"
+                        > 
+                            {{ invite.name }}
+                            <div class="header_popup_accept">
+                                <a @click="inviteAction(invite.ID, 'accept')">ACCEPT</a> | <a @click="inviteAction(invite.ID, 'decline')">DECLINE</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <div v-else>
+                        You currently have no invites
+                    </div>
                 </div>
-            </div>
+            </template>
         </the-header>
 
         <nuxt 
@@ -293,7 +295,7 @@ export default class Default extends Vue {
     /*temp */
     &__popup {
         padding: 5px;
-        position: fixed;
+        position: absolute;
         opacity: 1;
         top: calc(20vh - 100px);
         left: calc(100% - 20vw - 100px);
@@ -334,9 +336,7 @@ export default class Default extends Vue {
     }
     /*temp*/
     &__manage_teams {
-        position:absolute;
         width: 150px;
-        right: 325px;
         align-self: center;
         display: flex;
         flex-direction: column;
@@ -349,7 +349,7 @@ export default class Default extends Vue {
             font-weight: 500;
             text-decoration: none;
 
-            &:hover{
+            &:hover {
                 text-decoration: none;
                 cursor: pointer;
                 color: $open-red;
@@ -383,8 +383,8 @@ export default class Default extends Vue {
     }
 
     &__nav {
-        position:absolute;
-        left:calc(50% - 20vw);
+        position: relative;
+        left: calc(30vw - 265px);
         align-self: center;
         display: flex;
         width: 40vw;

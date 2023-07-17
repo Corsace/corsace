@@ -40,7 +40,7 @@ staffRouter.get("/categories/:year", validatePhaseYear, async (ctx) => {
 });
 
 // Endpoint for granting direct MCA nom/vote access to users
-staffRouter.post("/grant/:year", isCorsace, validatePhaseYear, async (ctx) => {
+staffRouter.post("/grant/:year", isLoggedInDiscord, isCorsace, validatePhaseYear, async (ctx) => {
     if (!ctx.request.body.user)
         return ctx.body = { error: "No user ID given!" };
     if (!ctx.request.body.mode)

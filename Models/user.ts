@@ -1,15 +1,16 @@
 
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, Index, ManyToMany } from "typeorm";
+import { bwsFilter, modeName, osuV2User, osuV2UserBadge, osuV2UserStatistics } from "../Interfaces/osuAPIV2";
 import { DemeritReport } from "./demerits";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
 import { UserComment } from "./MCA_AYIM/userComments";
-import { UsernameChange } from "./usernameChange";
 import { Nomination } from "./MCA_AYIM/nomination";
 import { Vote } from "./MCA_AYIM/vote";
 import { Beatmapset } from "./beatmapset";
 import { config } from "node-config-ts";
 import { GuildMember } from "discord.js";
+import { UsernameChange } from "./usernameChange";
 import { getMember } from "../Server/discord";
 import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
@@ -29,7 +30,6 @@ import { MappoolMapHistory } from "./tournaments/mappools/mappoolMapHistory";
 import { JobPost } from "./tournaments/mappools/jobPost";
 import { Team } from "./tournaments/team";
 import { osuV2Client } from "../Server/osu";
-import { bwsFilter, modeName, osuV2User, osuV2UserBadge, osuV2UserStatistics } from "../Interfaces/osuAPIV2";
 import { TeamInvite } from "./tournaments/teamInvite";
 import { Matchup } from "./tournaments/matchup";
 import { MatchupScore } from "./tournaments/matchupScore";
