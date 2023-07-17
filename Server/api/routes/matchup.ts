@@ -1,8 +1,12 @@
 import Router from "@koa/router";
+import { Multi } from "nodesu";
 import { Matchup } from "../../../Models/tournaments/matchup";
+import { MatchupMap } from "../../../Models/tournaments/matchupMap";
+import { MatchupScore } from "../../../Models/tournaments/matchupScore";
 import { TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
-import { isLoggedInDiscord } from "../../middleware";
+import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { validateTournament, hasRoles, validateStageOrRound } from "../../middleware/tournament";
+import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
 
 const matchupRouter = new Router();
