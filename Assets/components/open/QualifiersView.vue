@@ -80,7 +80,7 @@ export default class QualifiersView extends Vue {
     }
 
     async mounted () {
-        await this.$store.dispatch("open/setQualifierScores", this.tournament?.ID);
+        await this.$store.dispatch("open/setQualifierList", this.tournament?.ID);
     }
     
     get qualifiersGroupedByDate (): { date: Date, qualifiers: BaseQualifier[] }[] {

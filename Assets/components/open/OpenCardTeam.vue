@@ -3,14 +3,32 @@
         :to="`/team/${teamSync.ID}`"
         class="open_card_team"
     >
-        <div class="open_card_team__img">
+        <div class="open_card_team_overlay">
+            <ul class="open_card_team_overlay__list">
+                <li 
+                    v-for="member in teamSync.members"
+                    :key="member.ID"
+                    class="open_card_team_overlay__list_item"
+                    :class="{ 'open_card_team_overlay__list_item--leader': member.isManager }"
+                >
+                    <div class="open_card_team_overlay__list_item_text">
+                        {{ member.username }}
+                    </div>
+                    <div class="open_card_team_overlay__list_item_text open_card_team_overlay__list_item_text--bws">
+                        {{ member.BWS }} BWS
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div>
             <img
+                class="open_card_team__img"
                 :src="teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')"
                 :alt="teamSync.name"
             >
         </div>
         <div class="open_card_team__name">
-            {{ teamSync.name }} {{ teamSync.isRegistered ? "" : "(UNREGISTERED)" }}
+            {{ teamSync.name }} <span v-if="!teamSync.isRegistered">(UNREGISTERED)</span>
         </div>
         <div class="open_card_team__text">
             <div class="open_card_team__text_group">
@@ -48,8 +66,11 @@ export default class OpenCardTeam extends Vue {
 
 <style lang="scss">
 @import '@s-sass/_variables';
+@import '@s-sass/_mixins';
+
 .open_card_team {
-    flex: 1 0 31%;
+    flex-basis: calc(33% - 11px);
+    margin-bottom: 20px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -58,17 +79,71 @@ export default class OpenCardTeam extends Vue {
     height: 200px;
     background: #171B1E;
 
+    &_overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #131313F0;
+        z-index: 1;
+        opacity: 0;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        &__list {
+
+            padding: 20px 80px 20px 80px;
+
+            &_item {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+
+                &--leader {
+
+                    position: relative;
+
+                    &:after{
+                        content: "";
+                        background-image: url('../../img/site/open/team/manager.svg');
+                        background-size: 100%;
+                        width: 15px;
+                        height: 10px;
+                        background-repeat: no-repeat;
+                        position: absolute;
+                        left: -25px;
+                        top: 5px;
+                    }
+                }
+
+                &_text {
+
+                font-family: $font-ggsans;
+                font-weight: 500;
+                list-style: none;
+
+                    &--bws {
+
+                        color: $open-red;
+                        font-family: $font-swis721;
+                        font-weight: 700;
+                    }
+                }
+            }
+        }
+    }
+
     &:hover {
         text-decoration: none;
     }
 
     &__img {
-        & img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            overflow: hidden;
-        }
+        width: 100%;
+        object-fit: cover;
+        overflow: hidden;
     }
 
     &__name {
@@ -80,12 +155,18 @@ export default class OpenCardTeam extends Vue {
         color: $white;
         margin-left: 15px;
         margin-top: -35px;
+
+        & span {
+            color: $open-red;
+            font-size: $font-base;
+        }
     }
 
     &__text {
         height: 57px;
         background: #131313;
         border-top: 1px solid $open-red;
+        padding: 0 10px;
         position: relative;
         display: flex;
         align-items: center;
@@ -95,7 +176,6 @@ export default class OpenCardTeam extends Vue {
         background-position: bottom 0px right -5px;
 
         &_group {
-            padding: 0 10px 0 10px;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -123,7 +203,7 @@ export default class OpenCardTeam extends Vue {
 
             &_data {
                 font-family: $font-swis721;
-                font-size: $font-xxxl;
+                font-size: $font-xl;
                 font-weight: 700;
                 font-style: italic;
                 margin: 0px 10px 0px 10px

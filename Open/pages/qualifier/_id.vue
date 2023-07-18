@@ -36,9 +36,12 @@
                         <div class="qualifier__info_bar_group__title">
                             TEAM: 
                         </div>
-                        <div class="qualifier__info_bar_group__data">
+                        <NuxtLink
+                            class="qualifier__info_bar_group__data"
+                            :to="`/team/${qualifierData.team?.ID}`"
+                        >
                             {{ qualifierData.team?.name || "N/A" }}
-                        </div>
+                        </NuxtLink>
                     </div>
                     <div class="qualifier__info_bar_time qualifier__info_bar_group__title">
                         {{ qualifierData.date.toLocaleString("en-US", options).toUpperCase() }}
@@ -163,8 +166,10 @@ export default class Qualifier extends Vue {
 
     async mounted () {
         this.qualifierData = await this.getQualifier();
-        if (this.qualifierData)
-            this.$store.commit("open/setQualifier", this.qualifierData.scores);
+        if (this.qualifierData) {
+            this.$store.commit("open/setQualifierScores", this.qualifierData.scores);
+            this.qualifierData.date = new Date(this.qualifierData.date);
+        }
     }
 
     isOpen = false;
@@ -204,6 +209,7 @@ export default class Qualifier extends Vue {
         &_group {
             display: flex;
             margin-right: 25px;
+
             &__title {
                 font-family: $font-ggsans;
                 font-weight: 700;
@@ -215,7 +221,11 @@ export default class Qualifier extends Vue {
                 font-family: $font-ggsans;
                 font-weight: 700;
                 font-size: $font-xl;
-                color: $open-red
+                color: $open-red;
+
+                &:hover {
+                    text-decoration: none;
+                }
             }
         }
 
