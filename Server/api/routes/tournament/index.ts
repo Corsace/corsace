@@ -195,18 +195,20 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         .where("tournament.ID = :ID", { ID })
         .andWhere("stage.stageType = '0'");
 
+    // For when tournaments don't have their qualifier scores public
     if (
         !tournament.publicQualifiers && 
         tournament.organizer.ID !== ctx.state.user?.ID
     ) {
-        if (!ctx.state.user?.discord.userID) {
+        if (ctx.state.user?.discord.userID) {
             ctx.body = {
                 success: false,
-                error: "Tournament does not have public qualifiers and you are not logged in to view your scores",
+                error: "Tournament does not have public qualifiers and you are not logged in to view this tournament's scores",
             };
             return;
         }
 
+        // Checking if they have privileged roles or not
         try {
             const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
             const tournamentServer = await discordClient.guilds.fetch(tournament.server);
@@ -225,14 +227,6 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
             };
             return;
         }
-
-        q.andWhere(
-            new Brackets(qb => {
-                qb
-                    .where("manager.ID = :userID")
-                    .orWhere("member.ID = :userID");
-            })
-        ).setParameter("userID", ctx.state.user.ID);
     }
 
     const qualifiers = await q.getMany();

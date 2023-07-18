@@ -71,10 +71,6 @@ export default class ScoresView extends Vue {
     @openModule.State tournament!: Tournament | null;
     @openModule.State qualifierScores!: QualifierScore[] | null;
 
-    async mounted () {
-        await this.$store.dispatch("open/setQualifierScores", this.tournament?.ID);
-    }
-
     get mapNames (): string[] {
         if (!this.qualifierScores)
             return [];

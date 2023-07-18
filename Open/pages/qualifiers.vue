@@ -18,7 +18,7 @@
             <div
                 class="qualifiers__sub_header_item"
                 :class="{ 'qualifiers__sub_header_item--active': page === 'scores' }"
-                @click="page = 'scores'"
+                @click="page = 'scores'; $store.dispatch('open/setQualifierScores', tournament?.ID);"
             >
                 {{ $t('open.qualifiers.nav.scores') }}
             </div>
