@@ -199,7 +199,7 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         !tournament.publicQualifiers && 
         tournament.organizer.ID !== ctx.state.user?.ID
     ) {
-        if (ctx.state.user?.discord.userID) {
+        if (!ctx.state.user?.discord.userID) {
             ctx.body = {
                 success: false,
                 error: "Tournament does not have public qualifiers and you are not logged in to view this tournament's scores",
