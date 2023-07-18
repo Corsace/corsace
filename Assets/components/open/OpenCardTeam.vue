@@ -76,8 +76,6 @@ export default class OpenCardTeam extends Vue {
 
     &_overlay {
         position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
         background: #131313F0;
@@ -89,19 +87,25 @@ export default class OpenCardTeam extends Vue {
         }
 
         &__list {
-
-            padding: 20px 80px 20px 80px;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
 
             &_item {
                 display: flex;
-                flex-direction: row;
                 justify-content: space-between;
+                width: 50%;
 
                 &--leader {
 
                     position: relative;
 
-                    &:after{
+                    &:after {
                         content: "";
                         background-image: url('../../img/site/open/team/manager.svg');
                         background-size: 100%;
