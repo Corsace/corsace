@@ -282,6 +282,9 @@ export default class Create extends Vue {
     }
 
     async create () {
+        if (this.loading)
+            return;
+
         this.loading = true;
         if (this.typeError || this.sizeError) {
             alert("Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.");

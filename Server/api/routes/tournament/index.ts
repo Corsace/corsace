@@ -89,6 +89,7 @@ tournamentRouter.get("/open/:year", async (ctx) => {
 
 tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
     // TODO: Use tournament ID and only bring registered teams
+    // TODO: Effectively, we also removed isRegistered from the response
     const ID: number = ctx.state.ID;
 
     const tournament = await Tournament
@@ -114,25 +115,28 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
         .leftJoinAndSelect("stats.modeDivision", "mode")
         .getMany();
 
-    ctx.body = await Promise.all(teams.map<Promise<TeamList>>(async t => ({
-        ID: t.ID,
-        name: t.name,
-        avatarURL: t.avatarURL,
-        pp: t.pp,
-        BWS: t.BWS,
-        rank: t.rank,
-        members: await Promise.all(
-            [t.manager, ...t.members]
-                .filter((v, i, a) => a.findIndex(m => m.ID === v.ID) === i)
-                .map<Promise<TeamMember>>(async m => ({
+    ctx.body = await Promise.all(teams.map<Promise<TeamList>>(async t => {
+        const members = t.members;
+        if (!members.some(m => m.ID === t.manager.ID))
+            members.push(t.manager);
+        return {
+            ID: t.ID,
+            name: t.name,
+            avatarURL: t.avatarURL,
+            pp: t.pp,
+            BWS: t.BWS,
+            rank: t.rank,
+            members: members
+                .map<TeamMember>(m => ({
                     ID: m.ID,
                     username: m.osu.username,
                     osuID: m.osu.userID,
                     BWS: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.BWS ?? 0,
                     isManager: m.ID === t.manager.ID,
-                }))),
-        isRegistered: tournament.teams.some(team => team.ID === t.ID),
-    })));
+                })),
+            isRegistered: tournament.teams.some(team => team.ID === t.ID),
+        };
+    }));
 });
 
 tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
