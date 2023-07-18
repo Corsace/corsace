@@ -22,7 +22,7 @@
                     `search--${viewTheme} search__input--${site}`
                 ]"
                 :disabled="disabled"
-                :placeholder="placeholder"
+                :placeholder="placeholderVal"
                 maxlength="50"
                 @input="updateText($event)"
             >
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, PropSync } from "vue-property-decorator";
 import _ from "lodash";
 import { State } from "vuex-class";
 
@@ -51,7 +51,7 @@ export default class SearchBar extends Vue {
     @State viewTheme!: "light" | "dark";
     @State site!: string;
 
-    @Prop({ type: String, required: true }) readonly placeholder!: string;
+    @PropSync("placeholder", { type: String, required: true }) readonly placeholderVal!: string;
     @Prop({ type: Boolean, default: false }) readonly disabled!: boolean;
 
     showActions = false;
