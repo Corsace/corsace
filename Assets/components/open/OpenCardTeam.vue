@@ -5,40 +5,30 @@
     >
         <div class="open_card_team_overlay">
             <ul class="open_card_team_overlay__list">
-                <li class="open_card_team_overlay__list_item open_card_team_overlay__list_item--leader">
+                <li 
+                    v-for="member in teamSync.members"
+                    :key="member.ID"
+                    class="open_card_team_overlay__list_item"
+                    :class="{ 'open_card_team_overlay__list_item--leader': member.isManager }"
+                >
                     <div class="open_card_team_overlay__list_item_text">
-                        team leader
+                        {{ member.username }}
                     </div>
                     <div class="open_card_team_overlay__list_item_text open_card_team_overlay__list_item_text--bws">
-                        7 BWS
-                    </div>
-                </li>
-                <li class="open_card_team_overlay__list_item">
-                    <div class="open_card_team_overlay__list_item_text">
-                        team member
-                    </div>
-                    <div class="open_card_team_overlay__list_item_text open_card_team_overlay__list_item_text--bws">
-                        7 BWS
-                    </div>
-                </li>                
-                <li class="open_card_team_overlay__list_item">
-                    <div class="open_card_team_overlay__list_item_text">
-                        vinxis
-                    </div>
-                    <div class="open_card_team_overlay__list_item_text open_card_team_overlay__list_item_text--bws">
-                        7 BWS
+                        {{ member.BWS }} BWS
                     </div>
                 </li>
             </ul>
         </div>
-        <div class="open_card_team__img">
+        <div>
             <img
+                class="open_card_team__img"
                 :src="teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')"
                 :alt="teamSync.name"
             >
         </div>
         <div class="open_card_team__name">
-            {{ teamSync.name }} {{ teamSync.isRegistered ? "" : "(UNREGISTERED)" }}
+            {{ teamSync.name }} <span v-if="!teamSync.isRegistered">(UNREGISTERED)</span>
         </div>
         <div class="open_card_team__text">
             <div class="open_card_team__text_group">
@@ -49,7 +39,7 @@
                     {{ Math.round(teamSync.rank) }}
                 </div>
             </div>
-            <div class="open_card_team__text_group open_card_team__text_group--right">
+            <div class="open_card_team__text_group">
                 <div class="open_card_team__text_group_label">
                     TEAM BWS AVG
                 </div>
@@ -79,8 +69,7 @@ export default class OpenCardTeam extends Vue {
 @import '@s-sass/_mixins';
 
 .open_card_team {
-    flex: 0 1 calc(33% - 9.5px);
-    margin-right: 20px;
+    flex-basis: calc(33% - 11px);
     margin-bottom: 20px;
     position: relative;
     display: flex;
@@ -89,15 +78,6 @@ export default class OpenCardTeam extends Vue {
     width: 375px;
     height: 200px;
     background: #171B1E;
-
-    &:nth-child(3n+3) {
-        margin-right: 0;
-    }
-
-    @include breakpoint(mobile) {
-        flex-grow: 1;
-        margin-right: 0;
-    }
 
     &_overlay {
         position: absolute;
@@ -114,14 +94,18 @@ export default class OpenCardTeam extends Vue {
         }
 
         &__list {
+
             padding: 20px 80px 20px 80px;
+
             &_item {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
 
                 &--leader {
+
                     position: relative;
+
                     &:after{
                         content: "";
                         background-image: url('../../img/site/open/team/manager.svg');
@@ -136,11 +120,13 @@ export default class OpenCardTeam extends Vue {
                 }
 
                 &_text {
+
                 font-family: $font-ggsans;
                 font-weight: 500;
                 list-style: none;
 
                     &--bws {
+
                         color: $open-red;
                         font-family: $font-swis721;
                         font-weight: 700;
@@ -155,12 +141,9 @@ export default class OpenCardTeam extends Vue {
     }
 
     &__img {
-        & img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            overflow: hidden;
-        }
+        width: 100%;
+        object-fit: cover;
+        overflow: hidden;
     }
 
     &__name {
@@ -172,12 +155,18 @@ export default class OpenCardTeam extends Vue {
         color: $white;
         margin-left: 15px;
         margin-top: -35px;
+
+        & span {
+            color: $open-red;
+            font-size: $font-base;
+        }
     }
 
     &__text {
         height: 57px;
         background: #131313;
         border-top: 1px solid $open-red;
+        padding: 0 10px;
         position: relative;
         display: flex;
         align-items: center;
@@ -187,14 +176,9 @@ export default class OpenCardTeam extends Vue {
         background-position: bottom 0px right -5px;
 
         &_group {
-            padding: 0 10px 0 10px;
             display: flex;
             flex-direction: row;
             align-items: center;
-
-            &--right {
-                padding: 0 10px 0 0;
-            }
 
             &_label {
                 color: #131313;
@@ -219,7 +203,7 @@ export default class OpenCardTeam extends Vue {
 
             &_data {
                 font-family: $font-swis721;
-                font-size: $font-xxxl;
+                font-size: $font-xl;
                 font-weight: 700;
                 font-style: italic;
                 margin: 0px 10px 0px 10px

@@ -2,6 +2,7 @@ export interface BaseQualifier {
     ID: number;
     date: Date;
     team?: {
+        ID: number;
         name: string;
         avatarURL?: string | null;
     };

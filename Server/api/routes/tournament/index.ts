@@ -6,6 +6,8 @@ import { Next, ParameterizedContext } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { Team } from "../../../../Models/tournaments/team";
 import { Brackets } from "typeorm";
+import { unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
+import { discordClient } from "../../../discord";
 
 async function validateID (ctx: ParameterizedContext, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
@@ -149,6 +151,7 @@ tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
         ID: q.ID,
         date: q.date,
         team: q.teams?.[0] ? {
+            ID: q.teams[0].ID,
             name: q.teams[0].name,
             avatarURL: q.teams[0].avatarURL,
         } : undefined,
@@ -160,6 +163,7 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
+        .leftJoinAndSelect("tournament.roles", "roles")
         .innerJoinAndSelect("tournament.organizer", "organizer")
         .where("tournament.ID = :ID", { ID })
         .getOne();
@@ -187,11 +191,33 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         .where("tournament.ID = :ID", { ID })
         .andWhere("stage.stageType = '0'");
 
-    if (!tournament.publicQualifiers && tournament.organizer.ID !== ctx.state.user?.ID) {
-        if (!ctx.state.user) {
+    if (
+        !tournament.publicQualifiers && 
+        tournament.organizer.ID !== ctx.state.user?.ID
+    ) {
+        if (!ctx.state.user?.discord.userID) {
             ctx.body = {
                 success: false,
                 error: "Tournament does not have public qualifiers and you are not logged in to view your scores",
+            };
+            return;
+        }
+
+        try {
+            const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+            const tournamentServer = await discordClient.guilds.fetch(tournament.server);
+            const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
+            if (!privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID))) {
+                ctx.body = {
+                    success: false,
+                    error: "Tournament does not have public qualifiers and you do not have the required role to view scores",
+                };
+                return;
+            }
+        } catch (e) {
+            ctx.body = {
+                success: false,
+                error: `Tournament does not have public qualifiers and you may not be in the discord server to view scores.\n${e}`,
             };
             return;
         }

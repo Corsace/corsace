@@ -4,7 +4,7 @@
         :class="`dev_banner--${site}_${viewTheme}`"
         @click="$emit('close')"
     >
-        This site is a work in progress! Please be patient as we work to improve it, add features, and fix bugs as they arise. 😃
+        This site is a work in progress! Please be patient as we work to improve it, add features, and fix bugs as they arise. 😃 <span>X</span>
     </div>
 </template>
 
@@ -29,10 +29,22 @@ export default class DevBanner extends Vue {
     justify-content: center;
     align-items: center;
 
+    & span {
+        position: relative;
+        bottom: 10px;
+        left: 10px;
+        font-size: $font-xxl;
+        font-weight: bold;
+    }
+
     &--mca-ayim {
         &_light {
             background-color: white;
             color: $alt-blue;
+
+            & span {
+                color: $dark;
+            }
 
             &:hover {
                 background-color: $white;
@@ -42,6 +54,10 @@ export default class DevBanner extends Vue {
         &_dark {
             background-color: $dark;
             color: $blue;
+
+            & span {
+                color: white;
+            }
 
             &:hover {
                 background-color: $darker-gray;
@@ -54,6 +70,10 @@ export default class DevBanner extends Vue {
             background-color: #2F2F2F;
             color: $white;
 
+            & span {
+                color: $open-red;
+            }
+
             &:hover {
                 background-color: $dark;
             }
@@ -62,6 +82,10 @@ export default class DevBanner extends Vue {
         &_dark {
             background-color: #2F2F2F;
             color: $white;
+
+            & span {
+                color: $open-red;
+            }
 
             &:hover {
                 background-color: $dark;

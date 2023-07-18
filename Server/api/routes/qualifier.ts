@@ -1,9 +1,11 @@
 import Router from "@koa/router";
 import { Multi } from "nodesu";
-import { Qualifier, QualifierScore } from "../../../Interfaces/qualifier";
+import { Qualifier } from "../../../Interfaces/qualifier";
 import { Matchup } from "../../../Models/tournaments/matchup";
 import { MatchupMap } from "../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../Models/tournaments/matchupScore";
+import { unallowedToPlay } from "../../../Models/tournaments/tournamentRole";
+import { discordClient } from "../../discord";
 import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { osuClient } from "../../osu";
 
@@ -24,6 +26,7 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
         .innerJoinAndSelect("matchup.stage", "stage")
         .innerJoinAndSelect("stage.tournament", "tournament")
         .innerJoinAndSelect("tournament.organizer", "organizer")
+        .leftJoinAndSelect("tournament.roles", "roles")
         .leftJoinAndSelect("matchup.referee", "referee")
         .leftJoinAndSelect("matchup.teams", "team")
         .leftJoinAndSelect("team.members", "member")
@@ -44,23 +47,50 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
         return;
     }
 
-    const scores: QualifierScore[] = [];
+    const qualifierData: Qualifier = {
+        ID: qualifier.ID,
+        date: qualifier.date,
+        referee: qualifier.referee ? {
+            ID: qualifier.referee.ID,
+            username: qualifier.referee.osu.username,
+        } : undefined,
+        team: qualifier.teams?.[0] ? {
+            ID: qualifier.teams[0].ID,
+            name: qualifier.teams[0].name,
+            avatarURL: qualifier.teams[0].avatarURL,
+        } : undefined,
+        scores: [],
+    };
+
     const tournament = qualifier.stage!.tournament;
-    if (
-        tournament.publicQualifiers || 
-        ctx.state.user && (
-            tournament.organizer.ID === ctx.state.user.ID || 
-            qualifier.referee?.ID === ctx.state.user.ID ||
-            qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user.ID) || team.manager.ID === ctx.state.user.ID)
+    let getScores = false;
+    try {
+        const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+        const tournamentServer = await discordClient.guilds.fetch(tournament.server);
+        const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
+
+        if (privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID)))
+            getScores = true;
+    } catch (e) {
+        if (
+            tournament.publicQualifiers || 
+            ctx.state.user && (
+                tournament.organizer.ID === ctx.state.user.ID || 
+                qualifier.referee?.ID === ctx.state.user.ID ||
+                qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user.ID) || team.manager.ID === ctx.state.user.ID)
+            )
         )
-    ) {
+            getScores = true;
+    }
+
+    if (getScores) {
         for (const matchupMap of qualifier.maps ?? []) {
             for (const score of matchupMap.scores ?? []) {
                 const team = qualifier.teams?.find(t => t.members.some(m => m.ID === score.user?.ID));
                 if (!team)
                     continue;
 
-                scores.push({
+                qualifierData.scores.push({
                     teamID: team.ID,
                     teamName: team.name,
                     username: score.user!.osu.username,
@@ -72,20 +102,6 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
             }
         }
     }
-
-    const qualifierData: Qualifier = {
-        ID: qualifier.ID,
-        date: qualifier.date,
-        referee: qualifier.referee ? {
-            ID: qualifier.referee.ID,
-            username: qualifier.referee.osu.username,
-        } : undefined,
-        team: qualifier.teams?.[0] ? {
-            name: qualifier.teams[0].name,
-            avatarURL: qualifier.teams[0].avatarURL,
-        } : undefined,
-        scores,
-    };
 
     ctx.body = qualifierData;
 });
