@@ -28,9 +28,9 @@
                         <th>AVG.</th>
                         <th
                             v-for="map in mapNames"
-                            :key="map"
+                            :key="map.mapID"
                         >
-                            {{ map }}
+                            {{ map.map }}
                         </th>
                     </tr>
                     <tr
