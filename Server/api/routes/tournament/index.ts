@@ -5,7 +5,6 @@ import { BaseQualifier, QualifierScore } from "../../../../Interfaces/qualifier"
 import { Next, ParameterizedContext } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { Team } from "../../../../Models/tournaments/team";
-import { Brackets } from "typeorm";
 import { unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
 
@@ -89,6 +88,7 @@ tournamentRouter.get("/open/:year", async (ctx) => {
 
 tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
     // TODO: Use tournament ID and only bring registered teams
+    // TODO: Effectively, we also removed isRegistered from the response
     const ID: number = ctx.state.ID;
 
     const tournament = await Tournament
@@ -114,25 +114,28 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
         .leftJoinAndSelect("stats.modeDivision", "mode")
         .getMany();
 
-    ctx.body = await Promise.all(teams.map<Promise<TeamList>>(async t => ({
-        ID: t.ID,
-        name: t.name,
-        avatarURL: t.avatarURL,
-        pp: t.pp,
-        BWS: t.BWS,
-        rank: t.rank,
-        members: await Promise.all(
-            [t.manager, ...t.members]
-                .filter((v, i, a) => a.findIndex(m => m.ID === v.ID) === i)
-                .map<Promise<TeamMember>>(async m => ({
+    ctx.body = await Promise.all(teams.map<Promise<TeamList>>(async t => {
+        const members = t.members;
+        if (!members.some(m => m.ID === t.manager.ID))
+            members.push(t.manager);
+        return {
+            ID: t.ID,
+            name: t.name,
+            avatarURL: t.avatarURL,
+            pp: t.pp,
+            BWS: t.BWS,
+            rank: t.rank,
+            members: members
+                .map<TeamMember>(m => ({
                     ID: m.ID,
                     username: m.osu.username,
                     osuID: m.osu.userID,
                     BWS: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.BWS ?? 0,
                     isManager: m.ID === t.manager.ID,
-                }))),
-        isRegistered: tournament.teams.some(team => team.ID === t.ID),
-    })));
+                })),
+            isRegistered: tournament.teams.some(team => team.ID === t.ID),
+        };
+    }));
 });
 
 tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
@@ -191,6 +194,7 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         .where("tournament.ID = :ID", { ID })
         .andWhere("stage.stageType = '0'");
 
+    // For when tournaments don't have their qualifier scores public
     if (
         !tournament.publicQualifiers && 
         tournament.organizer.ID !== ctx.state.user?.ID
@@ -198,11 +202,12 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         if (!ctx.state.user?.discord.userID) {
             ctx.body = {
                 success: false,
-                error: "Tournament does not have public qualifiers and you are not logged in to view your scores",
+                error: "Tournament does not have public qualifiers and you are not logged in to view this tournament's scores",
             };
             return;
         }
 
+        // Checking if they have privileged roles or not
         try {
             const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
             const tournamentServer = await discordClient.guilds.fetch(tournament.server);
@@ -221,14 +226,6 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
             };
             return;
         }
-
-        q.andWhere(
-            new Brackets(qb => {
-                qb
-                    .where("manager.ID = :userID")
-                    .orWhere("member.ID = :userID");
-            })
-        ).setParameter("userID", ctx.state.user.ID);
     }
 
     const qualifiers = await q.getMany();

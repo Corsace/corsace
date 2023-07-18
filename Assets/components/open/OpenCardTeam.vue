@@ -15,18 +15,15 @@
                         {{ member.username }}
                     </div>
                     <div class="open_card_team_overlay__list_item_text open_card_team_overlay__list_item_text--bws">
-                        {{ member.BWS }} BWS
+                        {{ Math.round(member.BWS) }} BWS
                     </div>
                 </li>
             </ul>
         </div>
-        <div>
-            <img
-                class="open_card_team__img"
-                :src="teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')"
-                :alt="teamSync.name"
-            >
-        </div>
+        <div
+            class="open_card_team__img"
+            :style="{ 'backgroundImage': `url(${teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
+        />
         <div class="open_card_team__name">
             {{ teamSync.name }} <span v-if="!teamSync.isRegistered">(UNREGISTERED)</span>
         </div>
@@ -69,15 +66,13 @@ export default class OpenCardTeam extends Vue {
 @import '@s-sass/_mixins';
 
 .open_card_team {
-    flex-basis: calc(33% - 11px);
-    margin-bottom: 20px;
+    flex-basis: calc(100% / 3 - 20px);
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 375px;
-    height: 200px;
     background: #171B1E;
+    height: 198px;
 
     &_overlay {
         position: absolute;
@@ -141,9 +136,13 @@ export default class OpenCardTeam extends Vue {
     }
 
     &__img {
+        height: 81%;
         width: 100%;
         object-fit: cover;
         overflow: hidden;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 
     &__name {
@@ -154,7 +153,6 @@ export default class OpenCardTeam extends Vue {
         text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
         color: $white;
         margin-left: 15px;
-        margin-top: -35px;
 
         & span {
             color: $open-red;
@@ -182,6 +180,7 @@ export default class OpenCardTeam extends Vue {
 
             &_label {
                 color: #131313;
+                white-space: nowrap;
                 font-family: $font-swis721;
                 font-size: 10px;
                 font-weight: 700;

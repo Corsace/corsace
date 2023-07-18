@@ -223,8 +223,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     }
     if (memberStaff.length > 0) {
         ctx.body = { 
-            error: `Some members are staffing and are thus not allowed to play in this tournament`, 
-            members: memberStaff.map(m => m.osu.username),
+            error: `Some members are staffing and are thus not allowed to play in this tournament:\n${memberStaff.map(m => m.osu.username).join(", ")}}`,
         };
         return;
     }
@@ -232,7 +231,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     const tournamentMembers = tournament.teams.flatMap(t => [t.manager, ...t.members]);
     const alreadyRegistered = teamMembers.filter(member => tournamentMembers.some(m => m.ID === member.ID));
     if (alreadyRegistered.length > 0) {
-        ctx.body = { error: `Some members are already registered in this tournament`, members: alreadyRegistered.map(m => m.osu.username) };
+        ctx.body = { error: `Some members are already registered in this tournament:\n${alreadyRegistered.map(m => m.osu.username).join(", ")}` };
         return;
     }
 
