@@ -46,7 +46,7 @@
                             :key="score.map"
                             :class="{ 'scores__table--highlight': score.isBest }"
                         >
-                            {{ score.score }}
+                            {{ score.score === 0 ? "" : score.score }}
                         </td>
                     </tr>
                 </tbody>
@@ -71,7 +71,10 @@ export default class ScoresView extends Vue {
     @openModule.State tournament!: Tournament | null;
     @openModule.State qualifierScores!: QualifierScore[] | null;
 
-    get mapNames (): string[] {
+    get mapNames (): {
+        map: string;
+        mapID: number;
+    }[] {
         if (!this.qualifierScores)
             return [];
 
@@ -81,7 +84,7 @@ export default class ScoresView extends Vue {
         })).filter((v, i, a) => a.findIndex(t => (t.map === v.map && t.mapID === v.mapID)) === i);
         mapNames.sort((a, b) => a.mapID - b.mapID);
 
-        return mapNames.map(s => s.map);
+        return mapNames;
     }
 
     get shownQualifierScoreViews (): QualifierScoreView[] {
@@ -100,12 +103,15 @@ export default class ScoresView extends Vue {
             const playerScoreView: QualifierScoreView = {
                 ID: playerID,
                 name: playerScores[0].username,
-                scores: playerScores.map(s => ({
-                    map: s.map,
-                    mapID: s.mapID,
-                    score: s.score,
-                    isBest: s.score === playerScores.filter(a => a.map === s.map).reduce((a, b) => a.score > b.score ? a : b).score,
-                })),
+                scores: this.mapNames.map(map => {
+                    const mapScores = playerScores.filter(s => s.mapID === map.mapID);
+                    return {
+                        map: map.map,
+                        mapID: map.mapID,
+                        score: Math.round(mapScores.reduce((a, b) => a + b.score, 0) / (mapScores.length || 1)),
+                        isBest: false,
+                    };
+                }),
                 best: playerScores.reduce((a, b) => a.score > b.score ? a : b).map,
                 worst: playerScores.reduce((a, b) => a.score < b.score ? a : b).map,
                 average: Math.round(playerScores.reduce((a, b) => a + b.score, 0) / (playerScores.length || 1)),
@@ -114,6 +120,13 @@ export default class ScoresView extends Vue {
 
             qualifierScoreViews.push(playerScoreView);
         }
+
+        qualifierScoreViews.forEach(score => {
+            score.scores.forEach(s => {
+                if (s.score === Math.max(...qualifierScoreViews.map(v => v.scores.find(t => t.mapID === s.mapID)?.score || 0)))
+                    s.isBest = true;
+            });
+        });
 
         qualifierScoreViews.sort((a, b) => b.average - a.average);
 
@@ -132,12 +145,15 @@ export default class ScoresView extends Vue {
             const teamScoreView: QualifierScoreView = {
                 ID: teamID,
                 name: teamScores[0].teamName,
-                scores: teamScores.map(s => ({
-                    map: s.map,
-                    mapID: s.mapID,
-                    score: s.score,
-                    isBest: s.score === teamScores.filter(a => a.map === s.map).reduce((a, b) => a.score > b.score ? a : b).score,
-                })),
+                scores: this.mapNames.map(map => {
+                    const mapScores = teamScores.filter(s => s.mapID === map.mapID);
+                    return {
+                        map: map.map,
+                        mapID: map.mapID,
+                        score: Math.round(mapScores.reduce((a, b) => a + b.score, 0) / (mapScores.length || 1)),
+                        isBest: false,
+                    };
+                }),
                 best: teamScores.reduce((a, b) => a.score > b.score ? a : b).map,
                 worst: teamScores.reduce((a, b) => a.score < b.score ? a : b).map,
                 average: Math.round(teamScores.reduce((a, b) => a + b.score, 0) / (teamScores.length || 1)),
@@ -146,6 +162,13 @@ export default class ScoresView extends Vue {
 
             qualifierScoreViews.push(teamScoreView);
         }
+
+        qualifierScoreViews.forEach(score => {
+            score.scores.forEach(s => {
+                if (s.score === Math.max(...qualifierScoreViews.map(v => v.scores.find(t => t.mapID === s.mapID)?.score || 0)))
+                    s.isBest = true;
+            });
+        });
 
         qualifierScoreViews.sort((a, b) => b.average - a.average);
 

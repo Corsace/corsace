@@ -5,7 +5,6 @@ import { BaseQualifier, QualifierScore } from "../../../../Interfaces/qualifier"
 import { Next, ParameterizedContext } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { Team } from "../../../../Models/tournaments/team";
-import { Brackets } from "typeorm";
 import { unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
 

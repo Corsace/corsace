@@ -65,12 +65,14 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
     const tournament = qualifier.stage!.tournament;
     let getScores = false;
     try {
-        const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
-        const tournamentServer = await discordClient.guilds.fetch(tournament.server);
-        const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
+        if (ctx.state.user) {
+            const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+            const tournamentServer = await discordClient.guilds.fetch(tournament.server);
+            const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
 
-        if (privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID)))
-            getScores = true;
+            if (privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID)))
+                getScores = true;
+        }
     } catch (e) {
         if (
             tournament.publicQualifiers || 
