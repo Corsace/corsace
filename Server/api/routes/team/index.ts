@@ -218,6 +218,11 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     try {
         const tournamentServer = await discordClient.guilds.fetch(tournament.server);
         const discordMembers = teamMembers.map(m => tournamentServer.members.resolve(m.discord.userID));
+        if (!discordMembers.some(m => team.manager.discord.userID === m?.id)) {
+            ctx.body = { error: "Team managers are required to be in the discord server" };
+            return;
+        }
+
         const memberStaff: GuildMember[] = [];
         for (const discordMember of discordMembers) {
             if (!discordMember)
