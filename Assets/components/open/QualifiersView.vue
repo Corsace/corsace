@@ -151,11 +151,11 @@ export default class QualifiersView extends Vue {
 
             &_name {
                 display: flex;
-                flex-direction: row;
+                align-items: center;
 
                 & img {
-                    height: 3.5rem;
-                    width: 3.5rem;
+                    height: 2rem;
+                    width: 6rem;
                     object-fit: cover;
                 }
 
