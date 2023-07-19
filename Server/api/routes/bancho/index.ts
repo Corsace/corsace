@@ -66,16 +66,14 @@ banchoRouter.post("/runMatchups", validateData, async (ctx) => {
         .andWhere("matchup.mp IS NULL")
         .getMany();
 
-    matchups.forEach(matchup => {
-        runMatchup(matchup).catch(err => {
-            if (err) {
-                console.log(err);
-                const channel = discordClient.channels.cache.get(config.discord.coreChannel);
-                if (channel instanceof TextChannel)
-                    channel.send(`Error running match GHIVE THIS IMMEDIATE ATTENTION:\n\`\`\`\n${err}\n\`\`\``);
-            }
+    for (const matchup of matchups) {
+        await runMatchup(matchup).catch(err => {
+            console.error(err);
+            const channel = discordClient.channels.cache.get(config.discord.coreChannel);
+            if (channel instanceof TextChannel)
+                channel.send(`Error running match GHIVE THIS IMMEDIATE ATTENTION:\n\`\`\`\n${err}\n\`\`\``);
         });
-    });
+    }
 });
 
 export default banchoRouter;
