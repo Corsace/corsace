@@ -147,7 +147,6 @@ webServices:
       - dist/BanchoBot/index.js
     workingDir: /src/BanchoBot
     terminationGracePeriodSeconds: 21600
-    strategyType: Recreate
     ingress:
       enabled: false
 
