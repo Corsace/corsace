@@ -7,6 +7,12 @@ import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { Team } from "../../../../Models/tournaments/team";
 import { unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
+import { osuClient } from "../../../osu";
+import { Beatmap, Mode } from "nodesu";
+import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
+import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
+import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
+import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 
 async function validateID (ctx: ParameterizedContext, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
@@ -66,23 +72,51 @@ tournamentRouter.get("/open/:year", async (ctx) => {
         };
         return;
     }
+    
+    const updateBeatmapData = async (mappool: Mappool, slot: MappoolSlot, map: MappoolMap) => {
+        if (!mappool.isPublic) {
+            mappool.mappackLink = null;
+            mappool.mappackExpiry = null;
+        }
+
+        if (!slot.allowedMods || !map.beatmap)
+            return;
+
+        const set = await osuClient.beatmaps.getByBeatmapId(map.beatmap.ID, Mode.all, undefined, undefined, slot.allowedMods) as Beatmap[];
+        if (set.length === 0)
+            return;
+
+        const beatmap = applyMods(set[0], modsToAcronym(slot.allowedMods));
+        map.beatmap.totalLength = beatmap.totalLength;
+        map.beatmap.totalSR = beatmap.difficultyRating;
+        map.beatmap.circleSize = beatmap.circleSize;
+        map.beatmap.overallDifficulty = beatmap.overallDifficulty;
+        map.beatmap.approachRate = beatmap.approachRate;
+        map.beatmap.hpDrain = beatmap.hpDrain;
+        map.beatmap.beatmapset.BPM = beatmap.bpm;
+    };
+    
+    const beatmapPromises: Promise<void>[] = [];
     tournament.stages.forEach(stage => {
         stage.rounds.forEach(round => {
             round.mappool.forEach(mappool => {
-                if (!mappool.isPublic) {
-                    mappool.mappackLink = null;
-                    mappool.mappackExpiry = null;
-                }
+                mappool.slots.forEach(slot => {
+                    slot.maps.forEach(map => {
+                        beatmapPromises.push(updateBeatmapData(mappool, slot, map));
+                    });
+                });
             });
         });
         stage.mappool?.forEach(mappool => {
-            if (!mappool.isPublic) {
-                mappool.mappackLink = null;
-                mappool.mappackExpiry = null;
-            }
+            mappool.slots.forEach(slot => {
+                slot.maps.forEach(map => {
+                    beatmapPromises.push(updateBeatmapData(mappool, slot, map));
+                });
+            });
         });
     });
 
+    await Promise.all(beatmapPromises);
     ctx.body = tournament;
 });
 

@@ -317,6 +317,10 @@
                         />
                     </div>
                 </div>
+                <div
+                    class="team_fields_block--edit"
+                    v-html="$t('open.create.timezoneText')" 
+                />
                 <div class="team_fields_row">
                     <div class="team_fields_block--label team_fields_block--edit">
                         TIMEZONE

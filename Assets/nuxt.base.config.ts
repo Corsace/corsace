@@ -61,4 +61,12 @@ export default (subSite: string): Partial<NuxtConfig> => ({
     proxy: {
         "/api/": config.api.publicUrl,
     },
+    router: {
+        scrollBehavior: function (to, from, savedPosition) {
+            if (savedPosition)
+                return savedPosition;
+            else
+                return { x: 0, y: 0 };
+        },
+    },
 });
