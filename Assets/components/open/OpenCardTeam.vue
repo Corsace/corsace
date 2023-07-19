@@ -99,7 +99,7 @@ export default class OpenCardTeam extends Vue {
             &_item {
                 display: flex;
                 justify-content: space-between;
-                width: 50%;
+                width: 75%;
 
                 &--leader {
 
