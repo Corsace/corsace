@@ -20,6 +20,11 @@ discordClient.login(config.discord.token).catch(err => {
     if (err) throw err;
 });
 
+// Ready instance for the bot
+discordClient.once("ready", () => {
+    console.log(`Logged into discord as ${discordClient.user?.tag}`);
+});
+
 discordClient.on("error", err => {
     console.error(err);
 });
