@@ -95,6 +95,13 @@
                         >
                             {{ !editMembers ? "edit team members" : "close team members edit" }}
                         </div>
+                        <div 
+                            v-if="isManager"
+                            class="team_fields--clickable"
+                            @click="managerToggle"
+                        >
+                            {{ teamData.members.some(m => m.isManager) ? "become manager only" : "become a member and play as well" }}
+                        </div>
                     </div>
                     <div class="team_fields_block team__member_list">
                         <div
@@ -480,6 +487,7 @@ export default class Team extends Vue {
             value: string;
             text: string;
         }[] = [];
+
         for (let i = -12; i <= 14; i++) {
             let prefix = i >= 0 ? "+" : "";
             zones.push({
@@ -487,6 +495,7 @@ export default class Team extends Vue {
                 text: `UTC${prefix}${i}:00`,
             });
         }
+
         return zones;
     }
 
@@ -630,6 +639,18 @@ export default class Team extends Vue {
             return;
 
         const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/remove/${user.ID}`);
+
+        if (res.success)
+            this.teamData = await this.getTeam(true);
+        else
+            alert(res.error);
+    }
+
+    async managerToggle () {
+        if (!this.isManager || !this.teamData)
+            return;
+
+        const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/manager`);
 
         if (res.success)
             this.teamData = await this.getTeam(true);

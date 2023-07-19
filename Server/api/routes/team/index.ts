@@ -1,5 +1,5 @@
 import Router from "@koa/router";
-import { isLoggedInDiscord } from "../../../middleware";
+import { isCorsace, isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
 import { Team as TeamInterface, validateTeamText } from "../../../../Interfaces/team";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
@@ -404,6 +404,93 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
     ctx.body = { success: "Qualifier date set" };
 });
 
+teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team: Team = ctx.state.team;
+
+    const tournaments = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoin("tournament.teams", "team")
+        .where("team.ID = :ID", { ID: team.ID })
+        .getMany();
+
+    if (tournaments.some(t => t.status !== TournamentStatus.Registrations && t.status !== TournamentStatus.NotStarted)) {
+        ctx.body = { error: "Team is currently playing/has played in a tournament" };
+        return;
+    }
+
+    if (tournaments.some(t => t.status === TournamentStatus.Registrations)) {
+        const qualifierMatches = await Matchup
+            .createQueryBuilder("matchup")
+            .innerJoin("matchup.stage", "stage")
+            .innerJoin("stage.tournament", "tournament")
+            .innerJoin("matchup.teams", "team")
+            .where("tournament.ID = :ID", { ID: tournaments.filter(t => t.status === TournamentStatus.Registrations)[0].ID })
+            .andWhere("stage.stageType = '0'")
+            .andWhere("team.ID = :teamID", { teamID: team.ID })
+            .getMany();
+
+        if (qualifierMatches.length > 0) {
+            ctx.body = { error: "Team is currently registered in a tournament where they have already played a qualifier match" };
+            return;
+        }
+    }
+
+    if (team.members.some(m => m.ID === ctx.state.user.ID)) {
+        if (tournaments.some(t => team.members.length - 1 < t.minTeamSize)) {
+            ctx.body = { error: "Team cannot have less than the minimum amount of players for the tournaments the team is in." };
+            return;
+        }
+
+        team.members = team.members.filter(m => m.ID !== ctx.state.user.ID);
+        await team.calculateStats();
+        await team.save();
+
+        ctx.body = { success: "Manager removed from the team" };
+    } else {
+        if (tournaments.some(t => team.members.length + 1 > t.maxTeamSize)) {
+            ctx.body = { error: "Team cannot have more than the maximum amount of players for the tournaments the team is in." };
+            return;
+        }
+
+        team.members.push(ctx.state.user);
+        await team.calculateStats();
+        await team.save();
+
+        ctx.body = { success: "Manager added to the team" };
+    }
+});
+
+teamRouter.post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team: Team = ctx.state.team;
+
+    const userID = parseInt(ctx.params.userID);
+    if (isNaN(userID)) {
+        ctx.body = { error: "Invalid user ID" };
+        return;
+    }
+
+    if (team.manager.ID === userID) {
+        ctx.body = { error: "User is already the manager" };
+        return;
+    }
+
+    if (team.members.every(m => m.ID !== userID)) {
+        ctx.body = { error: "User is not in the team" };
+        return;
+    }
+
+    team.manager = team.members.find(m => m.ID === userID)!;
+
+    if (!team.members.some(m => m.ID === ctx.state.user.ID)) {
+        team.members.push(ctx.state.user);
+        team.members = team.members.filter(m => m.ID !== userID);
+    }
+    
+    await team.save();
+
+    ctx.body = { success: "Manager changed" };
+});
+
 teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team;
 
@@ -419,7 +506,7 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
             .innerJoin("matchup.stage", "stage")
             .innerJoin("stage.tournament", "tournament")
             .innerJoin("matchup.teams", "team")
-            .where("tournament.ID = :ID", { ID: tournaments[0].ID })
+            .where("tournament.ID = :ID", { ID: tournaments.filter(t => t.status === TournamentStatus.Registrations)[0].ID })
             .andWhere("stage.stageType = '0'")
             .andWhere("team.ID = :teamID", { teamID: team.ID })
             .getMany();
@@ -457,6 +544,17 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
     const team: Team = ctx.state.team;
     const body: Partial<Team> | undefined = ctx.request.body;
 
+    const tournaments = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoin("tournament.teams", "team")
+        .where("team.ID = :ID", { ID: ctx.state.team.ID })
+        .getMany();
+
+    if (tournaments.some(t => t.status !== TournamentStatus.NotStarted)) {
+        ctx.body = { error: "Team is currently playing/has played in a tournament" };
+        return;
+    }
+
     if (body?.name)
         team.name = body.name;
     if (body?.abbreviation)
@@ -483,6 +581,53 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
     ctx.body = { success: "Team updated", name: team.name, abbreviation: team.abbreviation };
 });
 
+teamRouter.patch("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => {
+    const team = await Team
+        .createQueryBuilder("team")
+        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("member.userStatistics", "stats")
+        .leftJoinAndSelect("stats.modeDivision", "mode")
+        .where("team.ID = :ID", { ID: ctx.params.teamID })
+        .getOne();
+
+    if (!team) {
+        ctx.body = { error: "Team not found" };
+        return;
+    }
+
+    const body: (Partial<Team> & { deleteAvatar: boolean }) | undefined = ctx.request.body;
+
+    if (body?.name)
+        team.name = body.name;
+    if (body?.abbreviation)
+        team.abbreviation = body.abbreviation;
+    if (body?.timezoneOffset) {
+        if (typeof body.timezoneOffset !== "number" || body.timezoneOffset < -12 || body.timezoneOffset > 14) {
+            ctx.body = { error: "Invalid timezone" };
+            return;
+        }
+        team.timezoneOffset = body.timezoneOffset;
+    }
+    if (body?.deleteAvatar) {
+        await deleteTeamAvatar(team);
+        team.avatarURL = null;
+    }
+
+    const res = validateTeamText(team.name, team.abbreviation);
+    if ("error" in res) {
+        ctx.body = res;
+        return;
+    }
+
+    team.name = res.name;
+    team.abbreviation = res.abbreviation;
+
+    await team.save();
+
+    ctx.body = { success: "Team updated", name: team.name, abbreviation: team.abbreviation };
+});
+
 teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
@@ -491,7 +636,7 @@ teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx)
         .getMany();
 
     if (tournaments.some(t => t.status !== TournamentStatus.NotStarted)) {
-        ctx.body = { error: "Team is currently playing in a tournament" };
+        ctx.body = { error: "Team is currently playing/has played in a tournament" };
         return;
     }
 

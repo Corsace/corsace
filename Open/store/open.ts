@@ -129,7 +129,7 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (!data.error)
             commit("setTeam", data);
         
-        await dispatch("setInvites");
+        await dispatch("setTeamInvites");
     },
     async setTeamInvites ({ commit }) {
         const team = (this.state as any).open.team;
