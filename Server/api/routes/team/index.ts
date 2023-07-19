@@ -436,12 +436,22 @@ teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async
     }
 
     if (team.members.some(m => m.ID === ctx.state.user.ID)) {
+        if (tournaments.some(t => team.members.length - 1 < t.minTeamSize)) {
+            ctx.body = { error: "Team cannot have less than the minimum amount of players for the tournaments the team is in." };
+            return;
+        }
+
         team.members = team.members.filter(m => m.ID !== ctx.state.user.ID);
         await team.calculateStats();
         await team.save();
 
         ctx.body = { success: "Manager removed from the team" };
     } else {
+        if (tournaments.some(t => team.members.length + 1 > t.maxTeamSize)) {
+            ctx.body = { error: "Team cannot have more than the maximum amount of players for the tournaments the team is in." };
+            return;
+        }
+
         team.members.push(ctx.state.user);
         await team.calculateStats();
         await team.save();
