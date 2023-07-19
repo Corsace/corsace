@@ -86,9 +86,9 @@ export default class QualifiersView extends Vue {
     get qualifiersGroupedByDate (): { date: Date, qualifiers: BaseQualifier[] }[] {
         if (!this.qualifierList) return [];
         const qualifiersGroupedByDate: { date: Date, qualifiers: BaseQualifier[] }[] = [];
-        this.qualifierList.forEach((qualifier) => {
+        for (const qualifier of this.qualifierList) {
             const date = new Date(qualifier.date);
-            const qualifiersGroupedByDateIndex = qualifiersGroupedByDate.findIndex((qualifiersGroupedByDate) => qualifiersGroupedByDate.date.getTime() === date.getTime());
+            const qualifiersGroupedByDateIndex = qualifiersGroupedByDate.findIndex((qualifiersGroupedByDate) => qualifiersGroupedByDate.date.getDate() === date.getDate() && qualifiersGroupedByDate.date.getMonth() === date.getMonth() && qualifiersGroupedByDate.date.getFullYear() === date.getFullYear());
             if (qualifiersGroupedByDateIndex === -1) {
                 qualifiersGroupedByDate.push({
                     date,
@@ -96,9 +96,10 @@ export default class QualifiersView extends Vue {
                 });
             } else {
                 qualifiersGroupedByDate[qualifiersGroupedByDateIndex].qualifiers.push(qualifier);
+                qualifiersGroupedByDate[qualifiersGroupedByDateIndex].qualifiers.sort((a, b) => a.date.getTime() - b.date.getTime());
             }
-        });
-        return qualifiersGroupedByDate;
+        }
+        return qualifiersGroupedByDate.sort((a, b) => a.date.getTime() - b.date.getTime());
     }
 }
 </script>

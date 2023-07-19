@@ -198,7 +198,7 @@ export default class Qualifiers extends Vue {
     async closeQualifierEdit (get: boolean) {
         this.editQualifier = false;
         if (get)
-            await this.$store.dispatch("open/setTeam");
+            await this.$store.dispatch("open/setQualifierList", this.tournament?.ID);
     }
 }
 </script>
