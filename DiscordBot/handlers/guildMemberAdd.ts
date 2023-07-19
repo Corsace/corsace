@@ -3,7 +3,7 @@ import { config } from "node-config-ts";
 import { Brackets } from "typeorm";
 import { TournamentRole, TournamentRoleType } from "../../Models/tournaments/tournamentRole";
 import { User } from "../../Models/user";
-import { discordClient } from "../../Server/discord";
+import { discordClient, discordGuild } from "../../Server/discord";
 
 export default async function guildMemberAdd (member: GuildMember) {
     const tournamentRolesToAdd = await TournamentRole
@@ -47,7 +47,12 @@ export default async function guildMemberAdd (member: GuildMember) {
         else
             member.send("Hello and welcome to Corsace.\n\nIf u wanna type in the discord server, make sure u log in on osu! and then discord at https://corsace.io to obtain the `Verified` role. That will give u typing abilities");
 
-        await member.roles.add(roles);
+        try {
+            await member.roles.add(roles);
+        } catch (err) {
+            const ch = await (await discordGuild()).channels.fetch(config.discord.coreChannel);
+            (ch as TextChannel).send(`Failed to add roles to ${member.user.tag} (${member.id})\n\`\`\`${err}\`\`\``);
+        }       
 
         const memberUser = member.user;
         const embed = new EmbedBuilder({

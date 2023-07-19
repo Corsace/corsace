@@ -14,8 +14,7 @@ import { cron } from "../../../cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { parseDateOrTimestamp } from "../../../utils/dateParse";
 import getTeamInvites from "../../../functions/get/getTeamInvites";
-import { User } from "../../../../Models/user";
-import { Brackets } from "typeorm";
+import { GuildMember } from "discord.js";
 
 const teamRouter = new Router();
 
@@ -213,18 +212,41 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         .leftJoin("tournamentRole.tournament", "tournament")
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getMany();
+    const pariticipantRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Participants);
+    const managerRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Managers);
     const unallowedRoles = tournamentRoles.filter(r => unallowedToPlay.includes(r.roleType));
-    const tournamentServer = await discordClient.guilds.fetch(tournament.server);
-    const memberStaff: User[] = [];
-    for (const teamMember of teamMembers) {
-        const discordMember = await tournamentServer.members.fetch(teamMember.discord.userID);
-        if (discordMember.roles.cache.some(r => unallowedRoles.some(tr => tr.roleID === r.id)))
-            memberStaff.push(teamMember);
-    }
-    if (memberStaff.length > 0) {
-        ctx.body = { 
-            error: `Some members are staffing and are thus not allowed to play in this tournament:\n${memberStaff.map(m => m.osu.username).join(", ")}}`,
-        };
+    try {
+        const tournamentServer = await discordClient.guilds.fetch(tournament.server);
+        const discordMembers = teamMembers.map(m => tournamentServer.members.resolve(m.discord.userID));
+        if (!discordMembers.some(m => team.manager.discord.userID === m?.id)) {
+            ctx.body = { error: "Team managers are required to be in the discord server" };
+            return;
+        }
+
+        const memberStaff: GuildMember[] = [];
+        for (const discordMember of discordMembers) {
+            if (!discordMember)
+                continue;
+            if (discordMember.roles.cache.some(r => unallowedRoles.some(tr => tr.roleID === r.id)))
+                memberStaff.push(discordMember);
+        }
+        if (memberStaff.length > 0) {
+            ctx.body = { 
+                error: `Some members are staffing and are thus not allowed to play in this tournament:\n${memberStaff.map(m => m.displayName).join(", ")}}`,
+            };
+            return;
+        }
+
+        for (const discordMember of discordMembers) {
+            if (!discordMember)
+                continue;
+            if (team.manager.discord.userID === discordMember.id)
+                discordMember.roles.add([...managerRoles.map(r => r.roleID), ...pariticipantRoles.map(r => r.roleID)]);
+            else
+                discordMember.roles.add(pariticipantRoles.map(r => r.roleID));
+        }
+    } catch (e) {
+        ctx.body = { error: `Error fetching tournament server. The bot may not be in the server anymore. Contact the tournament's organizers to readd the bot to the server.\n${e}` };
         return;
     }
 
@@ -271,43 +293,13 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         }
     }
 
-    const playerRoles = await TournamentRole
-        .createQueryBuilder("tournamentRole")
-        .leftJoin("tournamentRole.tournament", "tournament")
-        .where("tournament.ID = :ID", { ID: tournamentID })
-        .andWhere(new Brackets(qb => {
-            qb.where("tournamentRole.roleType = '1'")
-                .orWhere("tournamentRole.roleType = '2'");
-        }))
-        .getMany();
-
-    let err: any = undefined;
-    try {
-        for (const role of playerRoles) {
-            const discordRole = await tournamentServer.roles.fetch(role.roleID);
-            if (!discordRole)
-                continue;
-            if (role.roleType === TournamentRoleType.Participants) {
-                for (const teamMember of teamMembers) {
-                    const discordMember = await tournamentServer.members.fetch(teamMember.discord.userID);
-                    await discordMember.roles.add(discordRole);
-                }
-            }
-
-            const discordMember = await tournamentServer.members.fetch(team.manager.discord.userID);
-            await discordMember.roles.add(discordRole);
-        }
-    } catch (e) {
-        err = e;
-    }
-
     tournament.teams.push(team);
     await tournament.save();
 
     await team.calculateStats();
     await team.save();
 
-    ctx.body = { success: "Team registered", error: err };
+    ctx.body = { success: "Team registered" };
 });
 
 teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), async (ctx) => {

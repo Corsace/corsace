@@ -86,6 +86,12 @@
                         INVITATIONS ({{ teamInvites?.length || 0 }})
                     </a>
                 </div>
+                <div
+                    v-else
+                    class="header__manage_teams"
+                >
+                    LOGIN DISCORD TO MANAGE TEAMS/INVITES
+                </div>
                 <div 
                     v-show="isOpen"
                     class="header__popup"
