@@ -1,5 +1,6 @@
 const state = {
     shuttingDown: false,
+    httpServerShutDown: false,
     runningMatchups: 0,
 };
 

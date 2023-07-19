@@ -61,6 +61,7 @@ ormConfig.initialize()
         httpShutdown = gracefulShutdown(server, {
             signals: "", // leave signals handling to us
             onShutdown: async () => {
+                state.httpServerShutDown = true;
                 console.log("Done handling all API requests.");
                 maybeShutdown();
             },
@@ -69,7 +70,7 @@ ormConfig.initialize()
     .catch((error) => console.log("An error has occurred in connecting.", error));
 
 const maybeShutdown = () => {
-    if (!state.shuttingDown)
+    if (!state.shuttingDown || !state.httpServerShutDown)
         return;
 
     if (state.runningMatchups > 0) {
