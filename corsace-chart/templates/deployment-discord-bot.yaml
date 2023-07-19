@@ -37,7 +37,7 @@ spec:
           command:
             - node
             - dist/DiscordBot/index.js
-          workingDir: /srv/DiscordBot
+          workingDir: /src/DiscordBot
           resources:
             {{- toYaml $.Values.resources | nindent 12 }}
           env:
