@@ -41,9 +41,10 @@ spec:
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           command:
-            - npm
-            - run
-            - {{ $webService.command }}
+            {{- $webService.command | toYaml | nindent 12 }}
+          {{- with $webService.workingDir }}
+          workingDir: {{ . | quote }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 80
@@ -60,7 +61,9 @@ spec:
             {{- toYaml $.Values.resources | nindent 12 }}
           env:
             {{- include "corsace-chart.env" $ | nindent 12 }}
-
+      {{- with $webService.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
+      {{- end }}
       {{- with $.Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

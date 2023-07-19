@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
-import { banchoClient } from "../../..";
+import { banchoClient, maybeShutdown } from "../../..";
+import state from "../../../state";
 import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { StageType, ScoringMethod } from "../../../../Interfaces/stage";
@@ -49,6 +50,8 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
 }
 
 async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel) {
+    state.runningMatchups++;
+
     let autoStart = false;
     let mapsPlayed: MappoolMap[] = [];
     let mapTimerStarted = false;
@@ -81,11 +84,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         await mpChannel.sendMessage("Matchup lobby closed due to managers not joining");
         await mpLobby.closeLobby();
-
-        matchup.mp = mpLobby.id;
-        await matchup.save();
-
-        clearInterval(messageSaver);
     }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);
 
     mpChannel.on("message", async (message) => {
@@ -312,11 +310,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     await mpChannel.sendMessage(`No more maps to play, closing lobby in ${leniencyTime / 1000} seconds`);
                     await pause(leniencyTime);
                     await mpLobby.closeLobby();
-
-                    matchup.mp = mpLobby.id;
-                    await matchup.save();
-
-                    clearInterval(messageSaver);
                     return;
                 }
                 log(matchup, `Map picked: ${mpLobby.beatmapId} with mods ${mpLobby.mods.map(m => m.shortMod).join(", ")}`);
@@ -326,6 +319,19 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 log(matchup, `Error loading beatmap: ${ex}`);
             }
         }, matchup.streamer ? 30 * 1000 : 0);
+    });
+
+    mpLobby.channel.on("PART", async (member) => {
+        if (member.user.isClient()) {
+            // Lobby is closed
+            matchup.mp = mpLobby.id;
+            await matchup.save();
+    
+            clearInterval(messageSaver);
+
+            state.runningMatchups--;
+            maybeShutdown();
+        }
     });
 }
 

@@ -62,7 +62,11 @@ secrets:
 webServices:
   corsace:
     replicaCount: 1
-    command: main
+    command:
+      - npx
+      - nuxt
+      - start
+    workingDir: /src/Main
     publicUrl: https://corsace.io
     ssr: true
     ingress:
@@ -76,7 +80,11 @@ webServices:
             - path: /
   mca:
     replicaCount: 1
-    command: mca
+    command:
+      - npx
+      - nuxt
+      - start
+    workingDir: /src/MCA
     publicUrl: https://mca.corsace.io
     ssr: true
     ingress:
@@ -87,7 +95,11 @@ webServices:
             - path: /
   ayim:
     replicaCount: 1
-    command: ayim
+    command:
+      - npx
+      - nuxt
+      - start
+    workingDir: /src/AYIM
     publicUrl: https://ayim.corsace.io
     ssr: true
     ingress:
@@ -98,7 +110,11 @@ webServices:
             - path: /
   open:
     replicaCount: 1
-    command: open
+    command:
+      - npx
+      - nuxt
+      - start
+    workingDir: /src/Open
     publicUrl: https://open.corsace.io
     ssr: true
     ingress:
@@ -109,18 +125,28 @@ webServices:
             - path: /
   api:
     replicaCount: 1
-    command: api
+    command:
+      - node
+      - dist/Server/index.js
+    workingDir: /src/Server
     ingress:
       enabled: false
   cronRunner:
     replicaCount: 1
-    command: cron-runner
+    command:
+      - node
+      - dist/Server/cron-runner.js
+    workingDir: /src/Server
     strategyType: Recreate
     ingress:
       enabled: false
   banchoBot:
     replicaCount: 1
-    command: bancho-bot
+    command:
+      - node
+      - dist/BanchoBot/index.js
+    workingDir: /src/BanchoBot
+    terminationGracePeriodSeconds: 21600
     strategyType: Recreate
     ingress:
       enabled: false
