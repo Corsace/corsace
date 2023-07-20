@@ -1,4 +1,6 @@
 export function parseDateOrTimestamp (dateString: string) {
+    if (!/^\d{10}$/.test(dateString) && !dateString.includes("UTC"))
+        dateString += " UTC";
     return new Date(/^\d{10}$/.test(dateString) ? parseInt(dateString + "000") : dateString);
 }
 
@@ -24,7 +26,7 @@ export function osuLogTimestamp (date: Date) {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 
-export function toLocalISOString (date) {
+export function toLocalISOString (date: Date) {
     const tzo = -date.getTimezoneOffset(),
         dif = tzo >= 0 ? "+" : "-",
         pad = function(num) {

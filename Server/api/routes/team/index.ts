@@ -212,11 +212,12 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         .leftJoin("tournamentRole.tournament", "tournament")
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getMany();
-    const pariticipantRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Participants);
+    const participantRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Participants);
     const managerRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Managers);
     const unallowedRoles = tournamentRoles.filter(r => unallowedToPlay.includes(r.roleType));
     try {
         const tournamentServer = await discordClient.guilds.fetch(tournament.server);
+        await tournamentServer.members.fetch();
         const discordMembers = teamMembers.map(m => tournamentServer.members.resolve(m.discord.userID));
         if (!discordMembers.some(m => team.manager.discord.userID === m?.id)) {
             ctx.body = { error: "Team managers are required to be in the discord server" };
@@ -240,10 +241,11 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         for (const discordMember of discordMembers) {
             if (!discordMember)
                 continue;
+
             if (team.manager.discord.userID === discordMember.id)
-                discordMember.roles.add([...managerRoles.map(r => r.roleID), ...pariticipantRoles.map(r => r.roleID)]);
+                await discordMember.roles.add([...managerRoles.map(r => r.roleID), ...participantRoles.map(r => r.roleID)]);
             else
-                discordMember.roles.add(pariticipantRoles.map(r => r.roleID));
+                await discordMember.roles.add(participantRoles.map(r => r.roleID));
         }
     } catch (e) {
         ctx.body = { error: `Error fetching tournament server. The bot may not be in the server anymore. Contact the tournament's organizers to readd the bot to the server.\n${e}` };
@@ -364,7 +366,7 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
 
     const previousMatch = qualifierStage.matchups.find(m => m.teams!.some(t => t.ID === team.ID));
     if (previousMatch) {
-        if (previousMatch.mp || (previousMatch.maps?.length || 0) > 0) {
+        if (previousMatch.mp) {
             ctx.body = { error: "Team has already played a qualifier match" };
             return;
         }
@@ -405,11 +407,6 @@ teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async
         .where("team.ID = :ID", { ID: team.ID })
         .getMany();
 
-    if (tournaments.some(t => t.status !== TournamentStatus.Registrations && t.status !== TournamentStatus.NotStarted)) {
-        ctx.body = { error: "Team is currently playing/has played in a tournament" };
-        return;
-    }
-
     if (tournaments.some(t => t.status === TournamentStatus.Registrations)) {
         const qualifierMatches = await Matchup
             .createQueryBuilder("matchup")
@@ -425,6 +422,11 @@ teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async
             ctx.body = { error: "Team is currently registered in a tournament where they have already played a qualifier match" };
             return;
         }
+    }
+
+    if (tournaments.some(t => t.status !== TournamentStatus.Registrations && t.status !== TournamentStatus.NotStarted)) {
+        ctx.body = { error: "Team cannot change lineup" };
+        return;
     }
 
     if (team.members.some(m => m.ID === ctx.state.user.ID)) {
@@ -454,6 +456,34 @@ teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async
 
 teamRouter.post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team;
+
+    const tournaments = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoin("tournament.teams", "team")
+        .where("team.ID = :ID", { ID: team.ID })
+        .getMany();
+
+    if (tournaments.some(t => t.status === TournamentStatus.Registrations)) {
+        const qualifierMatches = await Matchup
+            .createQueryBuilder("matchup")
+            .innerJoin("matchup.stage", "stage")
+            .innerJoin("stage.tournament", "tournament")
+            .innerJoin("matchup.teams", "team")
+            .where("tournament.ID = :ID", { ID: tournaments.filter(t => t.status === TournamentStatus.Registrations)[0].ID })
+            .andWhere("stage.stageType = '0'")
+            .andWhere("team.ID = :teamID", { teamID: team.ID })
+            .getMany();
+
+        if (qualifierMatches.length > 0) {
+            ctx.body = { error: "Team is currently registered in a tournament where they have already played a qualifier match" };
+            return;
+        }
+    }
+
+    if (tournaments.some(t => t.status !== TournamentStatus.Registrations && t.status !== TournamentStatus.NotStarted)) {
+        ctx.body = { error: "Team cannot change lineup" };
+        return;
+    }
 
     const userID = parseInt(ctx.params.userID);
     if (isNaN(userID)) {
@@ -510,7 +540,7 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
     }
 
     if (tournaments.some(t => t.status !== TournamentStatus.Registrations && t.status !== TournamentStatus.NotStarted)) {
-        ctx.body = { error: "Team cannot be deleted" };
+        ctx.body = { error: "Team cannot change lineup" };
         return;
     }
 

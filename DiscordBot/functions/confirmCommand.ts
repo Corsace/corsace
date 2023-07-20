@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Message, MessageComponentInteraction } from "discord.js";
 import commandUser from "./commandUser";
 
-export default async function confirmCommand (m: Message | ChatInputCommandInteraction, content: string, useFilter = true): Promise<boolean> {
+export default async function confirmCommand (m: Message | ChatInputCommandInteraction, content: string, useFilter = true, targetFilter = commandUser(m).id): Promise<boolean> {
     const ids = {
         yes: randomUUID(),
         no: randomUUID(),
@@ -24,7 +24,7 @@ export default async function confirmCommand (m: Message | ChatInputCommandInter
     });
 
     return new Promise<boolean>(resolve => {
-        const filter = (i: MessageComponentInteraction) => i.user.id === commandUser(m).id;
+        const filter = (i: MessageComponentInteraction) => i.user.id === targetFilter;
         const confirmationCollector = m.channel!.createMessageComponentCollector({ filter: useFilter ? filter : undefined, time: 6000000 });
         confirmationCollector.on("collect", async (i: MessageComponentInteraction) => {
             if (i.customId === ids.yes) {
