@@ -3,7 +3,7 @@ import koaBasicAuth from "koa-basic-auth";
 import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
 import { ParameterizedContext, Next } from "koa";
 import { config } from "node-config-ts";
-import { Matchup } from "../../../../Models/tournaments/matchup";
+import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
 import { TextChannel } from "discord.js";
 import { discordClient } from "../../../discord";
 
@@ -20,7 +20,7 @@ async function validateData (ctx: ParameterizedContext, next: Next) {
         
     const time: number = body.time;
 
-    const targetTime = new Date(time + 15 * 60 * 1000);
+    const targetTime = new Date(time + preInviteTime);
     if (isNaN(targetTime.getTime()) || targetTime.getTime() < Date.now()) {
         ctx.body = {
             success: false,

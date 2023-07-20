@@ -9,7 +9,7 @@ import { validateTeam } from "./middleware";
 import { parseQueryParam } from "../../../utils/query";
 import { deleteTeamAvatar, uploadTeamAvatar } from "../../../functions/tournaments/teams/teamAvatarFunctions";
 import { StageType } from "../../../../Interfaces/stage";
-import { Matchup } from "../../../../Models/tournaments/matchup";
+import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
 import { cron } from "../../../cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { parseDateOrTimestamp } from "../../../utils/dateParse";
@@ -291,7 +291,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
             qualifierStage.matchups.push(matchup);
             await qualifierStage.save();
 
-            await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - 15 * 60 * 1000, Date.now() + 10 * 1000)));
+            await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
         }
     }
 
@@ -392,7 +392,7 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         qualifierStage.matchups.push(matchup);
         await qualifierStage.save();
 
-        await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - 15 * 60 * 1000, Date.now() + 10 * 1000)));
+        await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
     }
 
     ctx.body = { success: "Qualifier date set" };

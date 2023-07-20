@@ -17,7 +17,7 @@ import { extractParameters } from "../../../functions/parameterFunctions";
 import respond from "../../../functions/respond";
 import confirmCommand from "../../../functions/confirmCommand";
 import { Tournament } from "../../../../Models/tournaments/tournament";
-import { Matchup } from "../../../../Models/tournaments/matchup";
+import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
 import { StageType } from "../../../../Interfaces/stage";
 import { cron } from "../../../../Server/cron";
 import { CronJobType } from "../../../../Interfaces/cron";
@@ -326,7 +326,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await matchup.save();
 
     try {
-        await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(date.getTime() - 15 * 60 * 1000, Date.now() + 10 * 1000)));
+        await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(date.getTime() - preInviteTime, Date.now() + 10 * 1000)));
     } catch (err) {
         await respond(m, `Failed to get cron job running to apply changes at deadline. Contact VINXIS`);
         return;
