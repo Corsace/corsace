@@ -7,7 +7,7 @@
         <the-header
             class="mcaayim__header"
         >
-            <a 
+            <!-- <a 
                 :href="`/${$route.params.year}`"
                 @click="updateSelectedMode('')"
             >          
@@ -20,7 +20,7 @@
 
             <mode-switcher 
                 :enable-mode-eligibility="$route.name === 'year-stage'"
-            />
+            /> -->
         </the-header>
         <div 
             class="main"
