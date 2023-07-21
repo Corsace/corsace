@@ -368,7 +368,7 @@ const data = new SlashCommandBuilder()
             .setRequired(true))
     .addBooleanOption((option) =>
         option.setName("team_choose_qualifier_order")
-            .setDescription("Let teams choose their qualifier map order.")
+            .setDescription("Let teams choose their qualifier map order (for qual stages only).")
             .setRequired(false))
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .setDMPermission(false);
