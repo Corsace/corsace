@@ -107,7 +107,7 @@ export function extractParameter (m: Message | ChatInputCommandInteraction, para
 function missingParameter (m: Message | ChatInputCommandInteraction, parameterOption: parameterOptions) {
     if (parameterOption.optional)
         return false;
-    respond(m, `Missing parameter \`${parameterOption.name}\``);
+    respond(m, `Missing or invalid parameter \`${parameterOption.name}\``);
     return true;
 }
 

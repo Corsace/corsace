@@ -1,5 +1,5 @@
 import { CronJobData, CronJobType } from "../../../Interfaces/cron";
-import { Matchup } from "../../../Models/tournaments/matchup";
+import { Matchup, preInviteTime } from "../../../Models/tournaments/matchup";
 import { config } from "node-config-ts";
 import Axios from "axios";
 
@@ -17,7 +17,7 @@ async function initialize (): Promise<CronJobData[]> {
     // For each date, create a cron job with the end as the date.
     let cronJobs: CronJobData[] = dates.map(date => ({
         type: CronJobType.QualifierMatchup,
-        date: new Date(date.date.getTime() - 15 * 60 * 1000), // Go back 15 minutes
+        date: new Date(date.date.getTime() - preInviteTime), // Go back preInviteTime to allow for invites to be sent before matchup starts
     }));
 
     // If any dates are in the past, remove them and add a job to start instantly.

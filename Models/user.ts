@@ -1,6 +1,6 @@
 
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, Index, ManyToMany } from "typeorm";
-import { bwsFilter, modeName, osuV2User, osuV2UserBadge, osuV2UserStatistics } from "../Interfaces/osuAPIV2";
+import { bwsFilter, modeName, osuV2User, osuV2UserBadge } from "../Interfaces/osuAPIV2";
 import { DemeritReport } from "./demerits";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";

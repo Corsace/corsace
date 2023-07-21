@@ -36,6 +36,7 @@ import stageInfo from "./tournaments/stage/info";
 import teamAvatar from "./tournaments/team/avatar";
 import teamInvite from "./tournaments/team/invite";
 import teamList from "./tournaments/team/list";
+import teamSchedule from "./tournaments/team/schedule";
 
 import inviteAccept from "./tournaments/team/invite/accept";
 import inviteDecline from "./tournaments/team/invite/decline";
@@ -111,6 +112,7 @@ commands.push(stageInfo);
 commands.push(teamAvatar);
 commands.push(teamInvite);
 commands.push(teamList);
+commands.push(teamSchedule);
 
 // invite commands
 commands.push(inviteAccept);

@@ -360,7 +360,7 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
             winConditions[matchup.stage!.stageType] || BanchoLobbyWinConditions.ScoreV2,
             requiredPlayerAmount
         ),
-        mpLobby.addRef([matchup.stage!.tournament.organizer.osu.userID, matchup.referee?.osu.userID || "", matchup.streamer?.osu.userID || ""]),
+        mpLobby.addRef([`#${matchup.stage!.tournament.organizer.osu.userID}`, `#${matchup.referee?.osu.userID || ""}`, `#${matchup.streamer?.osu.userID || ""}`]),
     ]);
     log(matchup, `Set lobby settings, password and added refs`);
 
