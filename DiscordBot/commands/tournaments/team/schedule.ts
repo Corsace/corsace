@@ -43,7 +43,7 @@ async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommand
     team.tournaments = [];
 
     const usernameSplit = user.osu.username.split(" ");
-    team.abbreviation = usernameSplit.length < 2 && usernameSplit.length > 4 ? 
+    team.abbreviation = usernameSplit.length < 2 || usernameSplit.length > 4 ? 
         usernameSplit[0].slice(0, Math.min(usernameSplit[0].length, 4)) : 
         usernameSplit.map(n => n[0]).join("");
     
