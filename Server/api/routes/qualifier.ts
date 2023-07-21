@@ -30,6 +30,7 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
         .leftJoinAndSelect("matchup.referee", "referee")
         .leftJoinAndSelect("matchup.teams", "team")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("matchup.maps", "map")
         .leftJoinAndSelect("map.map", "mappoolMap")
         .leftJoinAndSelect("mappoolMap.slot", "slot")
@@ -78,10 +79,9 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
             if (ctx.state.user?.discord.userID) {
                 const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
                 const tournamentServer = await discordClient.guilds.fetch(tournament.server);
-                await tournamentServer.members.fetch();
+                const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
 
-                const discordMember = tournamentServer.members.resolve(ctx.state.user.discord.userID);
-                if (discordMember && privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID)))
+                if (privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID)))
                     getScores = true;
             }
         } catch (e) {
