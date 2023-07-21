@@ -127,6 +127,7 @@ webServices:
     replicaCount: 1
     command:
       - node
+      - --enable-source-maps
       - dist/Server/index.js
     workingDir: /src/Server
     ingress:
@@ -135,6 +136,7 @@ webServices:
     replicaCount: 1
     command:
       - node
+      - --enable-source-maps
       - dist/Server/cron-runner.js
     workingDir: /src/Server
     strategyType: Recreate
@@ -144,6 +146,7 @@ webServices:
     replicaCount: 1
     command:
       - node
+      - --enable-source-maps
       - dist/BanchoBot/index.js
     workingDir: /src/BanchoBot
     terminationGracePeriodSeconds: 21600

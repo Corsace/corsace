@@ -36,6 +36,7 @@ spec:
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           command:
             - node
+            - --enable-source-maps
             - dist/DiscordBot/index.js
           workingDir: /src/DiscordBot
           resources:
