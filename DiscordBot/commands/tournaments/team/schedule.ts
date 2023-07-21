@@ -114,7 +114,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             const users = await User
                 .createQueryBuilder("user")
                 .leftJoinAndSelect("user.otherNames", "otherName")
-                .where("user.osuUserid = :userId", { userId: target })
+                .where("user.osuUserid = :user")
                 .orWhere("user.osuUsername LIKE :user")
                 .orWhere("otherName.name LIKE :user")
                 .setParameter("user", `%${target}%`)
@@ -149,7 +149,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
     } 
     
-    // Rerun for when the target is a userm or if there was no target at all
+    // Rerun for when the target is a user or if there was no target at all
     if (!team) {
         const teams = await Team
             .createQueryBuilder("team")
