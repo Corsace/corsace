@@ -270,6 +270,9 @@ async function stageDone (m: Message | ChatInputCommandInteraction, stage: Stage
         .setTimestamp(new Date)
         .setAuthor({ name: commandUser(m).tag, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined });
 
+    if (stage.stageType === StageType.Qualifiers)
+        embed.addFields({ name: "Team Qualifier Choose Order", value: stage.qualifierTeamChooseOrder ? "Yes" : "No", inline: true });
+
     await m.channel!.send({ embeds: [embed] });
 }
 
