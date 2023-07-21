@@ -338,9 +338,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 export default async function runMatchup (matchup: Matchup, replace = false) {
     runMatchupCheck(matchup, replace);
 
-    let lobbyName = `${matchup.stage!.tournament.abbreviation}: (${matchup.team1?.name} vs ${matchup.team2?.name})`;
+    let lobbyName = `${matchup.stage!.tournament.abbreviation}: (${matchup.team1?.name}) vs (${matchup.team2?.name})`;
     if (matchup.stage!.stageType === StageType.Qualifiers)
-        lobbyName = `${matchup.stage!.tournament.abbreviation}: ${convertDateToDDDHH(matchup.date)} Qualifiers`;
+        lobbyName = `${matchup.stage!.tournament.abbreviation}: (${convertDateToDDDHH(matchup.date)} QL) vs (${matchup.teams?.map(team => team.abbreviation).join(", ")})`;
 
     log(matchup, `Creating lobby with name ${lobbyName}`);
     const mpChannel = await banchoClient.createLobby(lobbyName, false);
