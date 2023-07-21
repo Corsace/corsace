@@ -216,7 +216,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .innerJoinAndSelect("matchup.teams", "team")
             .innerJoinAndSelect("matchup.stage", "stage")
             .innerJoinAndSelect("stage.tournament", "tournament")
-            .leftJoinAndSelect("matchups.messages", "message")
+            .leftJoinAndSelect("matchup.messages", "message")
             .leftJoinAndSelect("matchup.maps", "map")
             .leftJoinAndSelect("map.scores", "score")
             .where("tournament.ID = :ID", { ID: tournament.ID })
