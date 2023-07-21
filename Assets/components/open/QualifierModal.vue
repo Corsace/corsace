@@ -13,6 +13,12 @@
                 >
                     Choose a date and time (IN YOUR LOCAL TIMEZONE {{ timeZone }}) for your team to play their qualifiers. You can change this later if you need to.
                 </div>
+                <div 
+                    class="qualifier_modal__label--no_shadow"
+                    style="text-align: right;"
+                >
+                    Please note that the lobby will start when the manager joins.<br>If the manager is not a member, they cannot play qualifiers.
+                </div>
                 <input 
                     v-model="qualifierAt"
                     type="datetime-local"

@@ -7,7 +7,7 @@ import { Round } from "./round";
 import { Stage } from "./stage";
 import { Team } from "./team";
 
-export const preInviteTime = 10 * 60 * 1000; // Time to invite before matchup starts for players to come in
+export const preInviteTime = 5 * 60 * 1000; // Time to invite before matchup starts for players to come in
 
 @Entity()
 export class Matchup extends BaseEntity {
