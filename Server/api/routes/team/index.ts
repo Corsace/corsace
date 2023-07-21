@@ -37,6 +37,7 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("team.tournaments", "tournament")
         .leftJoinAndSelect("member.userStatistics", "stats")
         .leftJoinAndSelect("stats.modeDivision", "mode")
         .where("team.ID IN (:...teamIDs)", { teamIDs: teamIDs.map(t => t.ID) })
@@ -51,7 +52,8 @@ teamRouter.get("/all", async (ctx) => {
         .leftJoinAndSelect("team.manager", "manager")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("member.userStatistics", "stats")
-        .leftJoinAndSelect("stats.modeDivision", "mode");
+        .leftJoinAndSelect("stats.modeDivision", "mode")
+        .leftJoinAndSelect("team.tournaments", "tournament");
 
     if (parseQueryParam(ctx.query.offset) && !isNaN(parseInt(parseQueryParam(ctx.query.offset)!)))
         teamQ.skip(parseInt(parseQueryParam(ctx.query.offset)!));
