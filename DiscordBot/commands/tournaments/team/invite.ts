@@ -49,8 +49,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         };
     });
     const baseUser = await getFromList(m, baseUsers, "user", user);
-    if (!baseUser)
+    if (!baseUser) {
+        await respond(m, "Could not find a user with that name");
         return;
+    }
 
     const targetUser = await User.findOne({ where: { ID: baseUser.ID }});
     if (!targetUser) {
