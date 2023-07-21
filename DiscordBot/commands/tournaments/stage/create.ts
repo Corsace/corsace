@@ -28,6 +28,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const scoringRegex = new RegExp(/-s ([a-zA-Z0-9_ ]{4,20})/);
     const teamCountRegex = new RegExp(/-tc (\d{1,2}) (\d{1,2})/);
     const helpRegex = new RegExp(/-h/);
+    const teamQualifierChooseRegex = new RegExp(/-tqc/);
     if (m instanceof Message && (helpRegex.test(m.content) || (!nameRegex.test(m.content) && !abbreviationRegex.test(m.content) && !dateRegex.test(m.content) && !typeRegex.test(m.content) && !scoringRegex.test(m.content) && !teamCountRegex.test(m.content)))) {
         await m.reply(`Provide all required parameters! Here's a list of them:\n**Name:** \`-n <name>\`\n**Abbreviation:** \`-a <abbreviation>\`\n**Date:** \`-d <start date> <end date>\`\n**Type:** \`-t <type>\`\n**Scoring Method:** \`-s <scoring method>\`\n**Team Count:** \`-tc <min> <max>\`\n\nIt's recommended to use slash commands for any \`create\` command`);
         return;
@@ -180,6 +181,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     stage.initialSize = initial;
     stage.finalSize = final;
 
+    // Check team qualifier choose order
+    if (stage.stageType === StageType.Qualifiers) {
+        const chooseOrder = m instanceof Message ? teamQualifierChooseRegex.test(m.content) : m.options.getBoolean("team_choose_qualifier_order");
+        stage.qualifierTeamChooseOrder = chooseOrder;
+    }
+
     // Generate rounds if single/double elimination
     stage.rounds = [];
     if (stage.stageType === StageType.Singleelimination || stage.stageType === StageType.Doubleelimination) {
@@ -262,6 +269,9 @@ async function stageDone (m: Message | ChatInputCommandInteraction, stage: Stage
         )
         .setTimestamp(new Date)
         .setAuthor({ name: commandUser(m).tag, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined });
+
+    if (stage.stageType === StageType.Qualifiers)
+        embed.addFields({ name: "Team Qualifier Choose Order", value: stage.qualifierTeamChooseOrder ? "Yes" : "No", inline: true });
 
     await m.channel!.send({ embeds: [embed] });
 }
@@ -359,6 +369,10 @@ const data = new SlashCommandBuilder()
         option.setName("final")
             .setDescription("The final number of teams in the stage.")
             .setRequired(true))
+    .addBooleanOption((option) =>
+        option.setName("team_choose_qualifier_order")
+            .setDescription("Let teams choose their qualifier map order (for qual stages only).")
+            .setRequired(false))
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .setDMPermission(false);
 

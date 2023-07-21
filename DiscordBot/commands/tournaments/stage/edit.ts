@@ -237,8 +237,36 @@ async function stageTeamSize (m: Message, stage: Stage, userID: string, property
 
     if (property === "initialSize")
         await stageTeamSize(m, stage, userID, "finalSize", stage.finalSize);
+    else if (stage.stageType === StageType.Qualifiers)
+        await stageQualifierTeamChoose(m, stage, userID);
     else
         await stageSave(m, stage);
+}
+
+async function stageQualifierTeamChoose (m: Message, stage: Stage, userID: string) {
+    const chooseOrder = await editProperty(m, "qualifierTeamChooseOrder", "stage", `${stage.qualifierTeamChooseOrder || false}`, userID);
+    if (!chooseOrder)
+        return;
+
+    if (typeof chooseOrder === "string") {
+        if (
+            chooseOrder.toLowerCase() !== "true" && 
+            chooseOrder.toLowerCase() !== "yes" && 
+            chooseOrder.toLowerCase() !== "y" &&
+            chooseOrder.toLowerCase() !== "false" &&
+            chooseOrder.toLowerCase() !== "no" &&
+            chooseOrder.toLowerCase() !== "n"
+        ) {
+            const reply = await m.channel.send("Invalid choice. Use the following: `true`, `yes`, `y`, `false`, `no`, `n`");
+            setTimeout(async () => (await reply.delete()), 5000);
+            await stageQualifierTeamChoose(m, stage, userID);
+            return;
+        }
+
+        stage.qualifierTeamChooseOrder = chooseOrder.toLowerCase() === "true" || chooseOrder.toLowerCase() === "yes" || chooseOrder.toLowerCase() === "y";
+    }
+
+    await stageSave(m, stage);
 }
 
 async function stageSave (m: Message, stage: Stage) {
@@ -267,6 +295,9 @@ async function stageSave (m: Message, stage: Stage) {
         )
         .setTimestamp(new Date)
         .setAuthor({ name: commandUser(m).tag, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined });
+
+    if (stage.stageType === StageType.Qualifiers)
+        embed.addFields({ name: "Team Qualifier Choose Order", value: stage.qualifierTeamChooseOrder ? "Yes" : "No", inline: true });
 
     await m.channel.send({ embeds: [ embed ] });
 }
