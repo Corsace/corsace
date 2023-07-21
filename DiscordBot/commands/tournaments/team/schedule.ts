@@ -22,6 +22,9 @@ import { StageType } from "../../../../Interfaces/stage";
 import { cron } from "../../../../Server/cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { discordClient } from "../../../../Server/discord";
+import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
+import { MatchupScore } from "../../../../Models/tournaments/matchupScore";
+import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 
 // TODO: Merge the functionality in this command with the team create and register and qualifier API endpoints
 async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommandInteraction, user: User, tournament: Tournament) {
@@ -216,6 +219,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .innerJoinAndSelect("matchup.teams", "team")
             .innerJoinAndSelect("matchup.stage", "stage")
             .innerJoinAndSelect("stage.tournament", "tournament")
+            .leftJoinAndSelect("matchups.messages", "message")
+            .leftJoinAndSelect("matchup.maps", "map")
+            .leftJoinAndSelect("map.scores", "score")
             .where("tournament.ID = :ID", { ID: tournament.ID })
             .andWhere("stage.stageType = '0'")
             .andWhere("team.ID = :teamID", { teamID: team.ID })
@@ -223,7 +229,30 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         if (matchup) {
             if (matchup.mp) {
-                await respond(m, `\`${team.name}\` has already played`);
+                if (!await confirmCommand(m, `\`${team.name}\` already has a scheduled match with an mp ID on ${discordStringTimestamp(matchup.date)}. Do you want to reset and reschedule?`)) {
+                    await respond(m, "Ok Lol");
+                    return;
+                }
+
+                matchup.mp = undefined;
+                if (matchup.messages) {
+                    await Promise.all(matchup.messages.map(m => m.remove()));
+                    matchup.messages = [];
+                }
+                if (matchup.maps) {
+                    await Promise.all(matchup.maps.flatMap(map => map.scores.map(s => s.remove())));
+                    await Promise.all(matchup.maps.map(m => m.remove()));
+                    matchup.maps = [];
+                }
+
+                matchup.date = date;
+                try {
+                    await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(date.getTime() - preInviteTime, Date.now() + 10 * 1000)));
+                } catch (err) {
+                    await respond(m, `Failed to get cron job running to run qualifier match at specified time. Contact VINXIS`);
+                    return;
+                }
+                await respond(m, `The qualifier for \`${team.name}\` is now ${discordStringTimestamp(date)}`);
                 return;
             }
             if (matchup.date.getTime() === date.getTime()) {
@@ -236,11 +265,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     return;
                 }
             }
-            if (matchup.teams?.length === 1)
-                await matchup.remove();   
+            if (matchup.teams?.length === 1 && !matchup.mp)
+                await matchup.remove();
             else {
                 matchup.teams = matchup.teams?.filter(t => t.ID !== team!.ID);
-                await matchup.save(); 
+                await matchup.save();
             }
         }
     } else {
@@ -339,7 +368,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     try {
         await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(date.getTime() - preInviteTime, Date.now() + 10 * 1000)));
     } catch (err) {
-        await respond(m, `Failed to get cron job running to apply changes at deadline. Contact VINXIS`);
+        await respond(m, `Failed to get cron job running to run qualifier match at specified time. Contact VINXIS`);
         return;
     }
 
