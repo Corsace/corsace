@@ -8,7 +8,7 @@ export default async function guildMemberRemove (member: GuildMember | PartialGu
     const user = await discordClient.users.fetch(member.id);
     if (member.guild.id === config.discord.guild) {
         const embed = new EmbedBuilder({
-            title: `${user ? user.tag : "A user"} left`,
+            title: `${user ? user.username : "A user"} left`,
             description: `Users currently in server: ${member.guild.memberCount}`,
             color: 15277667,
             timestamp: new Date(),

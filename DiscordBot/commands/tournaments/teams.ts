@@ -31,7 +31,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 return `**${team.name}** (${team.abbreviation})\n**Manager:** ${team.manager.osu.username} <@${team.manager.discord.userID}>\n**Members:** ${team.members.map(m => m.osu.username).join(", ")}`;
             }).join("\n\n"))
         .setFooter({
-            text: `Requested by ${m instanceof Message ? m.author.tag : m.user.tag}`,
+            text: `Requested by ${m instanceof Message ? m.author.username : m.user.username}`,
             iconURL: (m instanceof Message ? m.author.avatarURL() : m.user.avatarURL()) || undefined,
         });
 
