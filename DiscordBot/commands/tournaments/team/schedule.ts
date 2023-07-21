@@ -22,9 +22,6 @@ import { StageType } from "../../../../Interfaces/stage";
 import { cron } from "../../../../Server/cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { discordClient } from "../../../../Server/discord";
-import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
-import { MatchupScore } from "../../../../Models/tournaments/matchupScore";
-import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 
 // TODO: Merge the functionality in this command with the team create and register and qualifier API endpoints
 async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommandInteraction, user: User, tournament: Tournament) {
