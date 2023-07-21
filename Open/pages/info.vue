@@ -6,7 +6,7 @@
                 <template #buttons>
                     <ContentButton 
                         class="content_button--red"
-                        link="https://docs.google.com/document/d/14kmw2Rtc0tasVDoZN5fCoCNp2nmyc2v9IxniUwEfyYg"
+                        link="https://docs.google.com/document/d/1DJQVtfoZAspnHbhEpuua77vu1I9Rc0wkG6eXicKFI5k"
                         external
                     >
                         DETAILED RULES DOCUMENT
