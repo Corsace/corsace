@@ -26,7 +26,7 @@ import { discordClient } from "../../../../Server/discord";
 // TODO: Merge the functionality in this command with the team create and register and qualifier API endpoints
 async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommandInteraction, user: User, tournament: Tournament) {
     if (tournament.minTeamSize !== 1) {
-        await respond(m, `User ${user.osu.username} is not in this tournament`);
+        await respond(m, `User ${user.osu.username} is not in this tournament or is not a team manager`);
         return;
     }
 
@@ -103,8 +103,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const teams = await getTeams(target, "name", false, true);
         if (teams.length > 0) {
             team = await getFromList(m, teams, "team", target);
-            if (!team)
+            if (!team) {
+                await respond(m, `Can't find team \`${target}\``);
                 return;
+            }
         }
 
         // Target may be user
@@ -118,8 +120,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 .setParameter("user", `%${target}%`)
                 .getMany();
             const userList = await getFromList(m, users.map(u => ({ ID: u.ID, name: u.osu.username })), "user", target);
-            if (!userList)
+            if (!userList) {
+                await respond(m, `Can't find user \`${target}\``);
                 return;
+            }
 
             user = users.find(u => u.ID === userList.ID);
             if (!user) {
@@ -171,8 +175,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     const onePlayerTeam = teams.filter(t => t.members.length === 1 && t.members[0].ID === user!.ID);
                     if (onePlayerTeam.length > 1) {
                         team = await getFromList(m, onePlayerTeam, "team", user.osu.username);
-                        if (!team)
+                        if (!team) {
+                            await respond(m, `Could not find team for user \`${user.osu.username}\``);
                             return;
+                        }
                     } else if (onePlayerTeam.length === 1)
                         team = onePlayerTeam[0];
                     else {
@@ -184,8 +190,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     const eligibleTeams = teams.filter(t => t.members.length <= tournament.maxTeamSize && t.members.length >= tournament.minTeamSize);
                     if (eligibleTeams.length > 1) {
                         team = await getFromList(m, eligibleTeams, "team", user.osu.username);
-                        if (!team)
+                        if (!team) {
+                            await respond(m, `Could not find team for user \`${user.osu.username}\``);
                             return;
+                        }
                     } else if (eligibleTeams.length === 1)
                         team = eligibleTeams[0];
                     else {
@@ -351,7 +359,8 @@ const data = new SlashCommandBuilder()
     .addStringOption(option => 
         option.setName("target")
             .setDescription("The user/team to schedule (only works for tournament organizers)")
-            .setRequired(false));
+            .setRequired(false))
+    .setDMPermission(false);
 
 interface parameters {
     date: Date,
