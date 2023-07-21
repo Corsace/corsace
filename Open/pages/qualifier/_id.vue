@@ -44,7 +44,7 @@
                         </NuxtLink>
                     </div>
                     <div class="qualifier__info_bar_time qualifier__info_bar_group__title">
-                        {{ qualifierData.date.toLocaleString("en-US", options).toUpperCase() }}
+                        {{ qualifierData.date.toLocaleString('en-US', optionsUTC) }} ({{ qualifierData.date.toLocaleString('en-US', options) }})
                     </div>
                 </div>
                 <div class="qualifier__switch">
@@ -138,12 +138,20 @@ export default class Qualifier extends Vue {
     loading = false;
     qualifierData: QualifierInterface | null = null;
 
+    optionsUTC: Intl.DateTimeFormatOptions = {
+        month: "long", // Full month name (e.g., "July")
+        day: "numeric", // Day of the month (e.g., "30")
+        hour: "2-digit", // Two-digit hour (e.g., "23")
+        minute: "2-digit", // Two-digit minute (e.g., "59")
+        timeZone: "UTC", // Set the time zone to UTC
+        timeZoneName: "short", // Abbreviated time zone name (e.g., "UTC")
+    };
     options: Intl.DateTimeFormatOptions = {
-        month: "short",   // Short month name (e.g., "AUG")
-        day: "numeric",   // Numeric day (e.g., "11")
-        hour: "2-digit",  // Two-digit hour (e.g., "22")
-        minute: "2-digit",// Two-digit minute (e.g., "00")
-        timeZone: "UTC",   // Time zone (e.g., "UTC")
+        month: "long", // Full month name (e.g., "July")
+        day: "numeric", // Day of the month (e.g., "30")
+        hour: "2-digit", // Two-digit hour (e.g., "23")
+        minute: "2-digit", // Two-digit minute (e.g., "59")
+        timeZoneName: "short", // Abbreviated time zone name (e.g., "UTC")
     };
 
     async getQualifier (): Promise<QualifierInterface | null> {
