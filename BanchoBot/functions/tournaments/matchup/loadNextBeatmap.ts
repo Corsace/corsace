@@ -20,10 +20,10 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
                     .some(matchMap => matchMap.map.beatmap?.ID === map.beatmap?.ID)
                 );
 
-            if (!matchup.stage!.qualifierTeamChooseOrder || beatmaps.length === 1) {
-                if (beatmaps.length === 0)
-                    return resolve(null);
+            if (beatmaps.length === 0)
+                return resolve(null);        
 
+            if (!matchup.stage!.qualifierTeamChooseOrder || beatmaps.length === 1) {
                 if (!beatmaps[0].beatmap)
                     return reject(new Error("Beatmap doesn't exist CONTACT CORSACE IMMEDIATELY"));
 

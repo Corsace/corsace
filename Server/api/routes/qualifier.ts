@@ -78,9 +78,10 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
             if (ctx.state.user?.discord.userID) {
                 const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
                 const tournamentServer = await discordClient.guilds.fetch(tournament.server);
-                const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
+                await tournamentServer.members.fetch();
 
-                if (privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID)))
+                const discordMember = tournamentServer.members.resolve(ctx.state.user.discord.userID);
+                if (discordMember && privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID)))
                     getScores = true;
             }
         } catch (e) {
