@@ -89,14 +89,14 @@
                     <div class="team_fields_block--label">
                         TEAM MEMBERS
                         <div 
-                            v-if="isManager && teamData.members.filter(m => !m.isManager).length > 0"
+                            v-if="isManager && teamData.members.filter(m => !m.isManager).length > 0 && !teamData.qualifier?.mp"
                             class="team_fields--clickable"
                             @click="editMembers = !editMembers"
                         >
                             {{ !editMembers ? "edit team members" : "close team members edit" }}
                         </div>
                         <div 
-                            v-if="isManager"
+                            v-if="isManager && !teamData.qualifier?.mp"
                             class="team_fields--clickable"
                             @click="managerToggle"
                         >
@@ -144,7 +144,7 @@
                     </div>
                 </div>
                 <div 
-                    v-if="teamData.ID === team?.ID"
+                    v-if="teamData.ID === team?.ID && !teamData.qualifier?.mp"
                     class="team_fields_row"
                 >
                     <div class="team_fields_block--label">
@@ -213,7 +213,7 @@
                     <div class="team_fields_block--label">
                         QUALIFIER
                         <div 
-                            v-if="isManager && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length"
+                            v-if="isManager && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length && !teamData.qualifier?.mp"
                             @click="editQualifier = !editQualifier"
                         >
                             <div
@@ -393,6 +393,7 @@
                 SAVE
             </ContentButton>
             <ContentButton
+                v-if="!teamData.qualifier?.mp"
                 class="content_button--red content_button--red_sm team_fields_block--edit"
                 @click.native="deleteTeam"
             >

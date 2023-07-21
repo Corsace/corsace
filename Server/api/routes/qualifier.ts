@@ -64,25 +64,28 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
 
     const tournament = qualifier.stage!.tournament;
     let getScores = false;
-    try {
-        if (ctx.state.user?.discord.userID) {
-            const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
-            const tournamentServer = await discordClient.guilds.fetch(tournament.server);
-            const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
+    // Redundant ifs solely to make it (slightly) easier to read
+    if (tournament.publicQualifiers)
+        getScores = true;
+    else if (ctx.state.user && (
+        tournament.organizer.ID === ctx.state.user.ID || 
+        qualifier.referee?.ID === ctx.state.user.ID ||
+        qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user.ID) || team.manager.ID === ctx.state.user.ID)
+    ))
+        getScores = true;
+    else {
+        try {
+            if (ctx.state.user?.discord.userID) {
+                const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+                const tournamentServer = await discordClient.guilds.fetch(tournament.server);
+                const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
 
-            if (privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID)))
-                getScores = true;
+                if (privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID)))
+                    getScores = true;
+            }
+        } catch (e) {
+            getScores = false;
         }
-    } catch (e) {
-        if (
-            tournament.publicQualifiers || 
-            ctx.state.user && (
-                tournament.organizer.ID === ctx.state.user.ID || 
-                qualifier.referee?.ID === ctx.state.user.ID ||
-                qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user.ID) || team.manager.ID === ctx.state.user.ID)
-            )
-        )
-            getScores = true;
     }
 
     if (getScores) {
