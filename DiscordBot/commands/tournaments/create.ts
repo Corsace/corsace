@@ -403,7 +403,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             }
             const role = await m.guild!.roles.create({
                 name: `${tournament.name} ${roleString}`,
-                reason: `Created by ${m.author.tag} for tournament ${tournament.name}`,
+                reason: `Created by ${m.author.username} for tournament ${tournament.name}`,
                 mentionable: true,
             });
             const tournamentRole = new TournamentRole();
@@ -620,7 +620,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                 type: channelType,
                 name: `${tournament.abbreviation}-${channelTypeMenu}`,
                 topic: `Tournament ${tournament.name} channel for ${channelTypeMenu}`,
-                reason: `${tournament.name} channel created by ${m.author.tag} for ${(i as StringSelectMenuInteraction).values[0]} purposes.`,
+                reason: `${tournament.name} channel created by ${m.author.username} for ${(i as StringSelectMenuInteraction).values[0]} purposes.`,
                 defaultAutoArchiveDuration: 10080,
             };
 
@@ -840,7 +840,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Server", value: tournament.server, inline: true }
         )
         .setTimestamp(new Date)
-        .setAuthor({ name: m.author.tag, iconURL: m.member?.avatarURL() ?? undefined });
+        .setAuthor({ name: m.author.username, iconURL: m.member?.avatarURL() ?? undefined });
 
     if (tournament.isOpen || tournament.isClosed)
         embed.addFields(

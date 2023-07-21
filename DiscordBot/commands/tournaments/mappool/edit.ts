@@ -169,7 +169,7 @@ async function mappoolSave (m: Message, mappool: Mappool, tournament: Tournament
                 };
             }))
         .setTimestamp(new Date)
-        .setAuthor({ name: commandUser(m).tag, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined });
+        .setAuthor({ name: commandUser(m).username, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined });
 
     await Promise.all([
         m.channel!.send({ embeds: [embed] }),

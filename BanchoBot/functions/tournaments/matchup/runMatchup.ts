@@ -82,6 +82,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (started)
             return;
 
+        matchup.mp = mpLobby.id;
+        await matchup.save();
         await mpChannel.sendMessage("Matchup lobby closed due to managers not joining");
         await mpLobby.closeLobby();
     }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);

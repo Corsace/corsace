@@ -44,19 +44,25 @@ export default async function guildMemberAdd (member: GuildMember) {
         });
         if (user)
             roles.push(config.discord.roles.corsace.verified);
-        else
-            member.send("Hello and welcome to Corsace.\n\nIf u wanna type in the discord server, make sure u log in on osu! and then discord at https://corsace.io to obtain the `Verified` role. That will give u typing abilities");
+        else {
+            try {
+                member.send("Hello and welcome to Corsace.\n\nIf u wanna type in the discord server, make sure u log in on osu! and then discord at https://corsace.io to obtain the `Verified` role. That will give u typing abilities");
+            } catch (err) {
+                const ch = await (await discordGuild()).channels.fetch(config.discord.coreChannel);
+                (ch as TextChannel).send(`Failed to DM ${member.user.username} (${member.id})\n\`\`\`${err}\`\`\``);
+            }
+        }
 
         try {
             await member.roles.add(roles);
         } catch (err) {
             const ch = await (await discordGuild()).channels.fetch(config.discord.coreChannel);
-            (ch as TextChannel).send(`Failed to add roles to ${member.user.tag} (${member.id})\n\`\`\`${err}\`\`\``);
+            (ch as TextChannel).send(`Failed to add roles to ${member.user.username} (${member.id})\n\`\`\`${err}\`\`\``);
         }       
 
         const memberUser = member.user;
         const embed = new EmbedBuilder({
-            title: `${memberUser.tag} joined`,
+            title: `${memberUser.username} joined`,
             description: `Users currently in server: ${member.guild.memberCount}`,
             color: 3066993,
             timestamp: new Date(),
@@ -70,7 +76,7 @@ export default async function guildMemberAdd (member: GuildMember) {
             fields: [
                 {
                     name: "Registered?",
-                    value: user ? `${memberUser.tag} is registered` : `${memberUser.tag} isn't registered`,
+                    value: user ? `${memberUser.username} is registered` : `${memberUser.username} isn't registered`,
                 },
             ],
         } as EmbedData);

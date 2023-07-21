@@ -81,6 +81,8 @@ export const mutations: MutationTree<OpenState> = {
                 .sort((a, b) => (a.isRegistered ? 0 : 1) - (b.isRegistered ? 0 : 1));
     },
     async setTeam (state, teams: Team[] | undefined) {
+        teams = teams?.filter(team => !team.tournaments || !team.tournaments.some(tournament => tournament.ID !== state.tournament?.ID)); // TODO: Remove this when the website supports multiple teams for a user
+
         state.team = teams?.[0] || null;
         if (state.team?.qualifier)
             state.team.qualifier = {
