@@ -283,6 +283,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const tournamentTeams = await Team
             .createQueryBuilder("team")
             .leftJoinAndSelect("team.tournaments", "tournament")
+            .leftJoinAndSelect("team.manager", "manager")
+            .leftJoinAndSelect("team.members", "members")
             .where("tournament.ID = :ID", { ID: tournament.ID })
             .getMany();
 
