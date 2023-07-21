@@ -1,6 +1,4 @@
 export function parseDateOrTimestamp (dateString: string) {
-    if (!/^\d{10}$/.test(dateString) && !dateString.includes("UTC"))
-        dateString += " UTC";
     return new Date(/^\d{10}$/.test(dateString) ? parseInt(dateString + "000") : dateString);
 }
 
