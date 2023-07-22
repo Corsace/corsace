@@ -78,6 +78,7 @@ export const mutations: MutationTree<OpenState> = {
             state.teamList
                 .sort((a, b) => a.BWS - b.BWS)
                 .sort((a, b) => (a.BWS === 0 ? 1 : 0) - (b.BWS === 0 ? 1 : 0))
+                .sort((a, b) => b.members.length - a.members.length)
                 .sort((a, b) => (a.isRegistered ? 0 : 1) - (b.isRegistered ? 0 : 1));
     },
     async setTeam (state, teams: Team[] | undefined) {
