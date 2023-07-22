@@ -50,7 +50,11 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
 }
 
 async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel) {
+    // Save and store match instance
     state.runningMatchups++;
+    matchup.mp = mpLobby.id;
+    await matchup.save();
+    log(matchup, `Saved matchup lobby to db with ID ${mpLobby.id}`);
 
     let autoStart = false;
     let mapsPlayed: MappoolMap[] = [];
@@ -82,8 +86,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (started)
             return;
 
-        matchup.mp = mpLobby.id;
-        await matchup.save();
         await mpChannel.sendMessage("Matchup lobby closed due to managers not joining");
         await mpLobby.closeLobby();
     }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);
@@ -326,7 +328,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpLobby.channel.on("PART", async (member) => {
         if (member.user.isClient()) {
             // Lobby is closed
-            matchup.mp = mpLobby.id;
             await matchup.save();
     
             clearInterval(messageSaver);
