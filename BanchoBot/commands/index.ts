@@ -1,7 +1,10 @@
 import { BanchoMessage } from "bancho.js";
-import example from "./example";
-import exampleMulti from "./multiplayer/example";
 import { Multi } from "nodesu";
+
+import example from "./example";
+
+import exampleMulti from "./multiplayer/example";
+import panic from "./multiplayer/panic";
 
 interface GlobalCommand {
     name: string;
@@ -21,9 +24,14 @@ type Command = GlobalCommand | MultiplayerCommand;
 
 const commands: Command[] = [];
 
-// all commands
+/// all commands
+
+// general commands
 commands.push(example);
+
+// multiplayer commands
 commands.push(exampleMulti);
+commands.push(panic);
 
 function handleCommand(
     commandName: string,
