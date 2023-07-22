@@ -45,7 +45,7 @@ export default async function invitePlayersToLobby (matchup: Matchup, mpLobby: B
         return;
     
     const invMessage = await discordChannel.send({
-        content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n Lobby has been created for your match. If you need to be reinvited, press the button below.`,
+        content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n Lobby has been created for your match. If you need to be reinvited, press the button below.\n\nMake sure you have non-friends DMs allowed on osu!`,
         components: [row],
     });
 
