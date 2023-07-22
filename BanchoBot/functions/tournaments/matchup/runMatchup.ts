@@ -59,7 +59,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     matchup.mp = mpLobby.id;
     matchup.ip = ip;
     await matchup.save();
-    log(matchup, `Saved matchup lobby to db with ID ${mpLobby.id}`);
+    log(matchup, `Saved matchup lobby to DB with ID ${mpLobby.id}`);
 
     let autoStart = false;
     let mapsPlayed: MappoolMap[] = [];

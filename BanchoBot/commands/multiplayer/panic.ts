@@ -8,7 +8,7 @@ import { TextChannel } from "discord.js";
 import state from "../../state";
 
 async function run (message: BanchoMessage, multi: Multi, ...args: string[]) {
-    if (!state.matchups[multi.match.id])
+    if (!state.matchups[multi.match.id] || !state.matchups[multi.match.id].autoRunning)
         return;
 
     const matchup = await Matchup
