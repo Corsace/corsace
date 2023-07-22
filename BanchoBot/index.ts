@@ -6,6 +6,7 @@ import baseServer from "../Server/baseServer";
 import koaBody from "koa-body";
 import Mount from "koa-mount";
 import gracefulShutdown from "http-graceful-shutdown";
+import os from "os";
 
 import banchoRouter from "../Server/api/routes/bancho";
 
@@ -105,4 +106,11 @@ const onTerminationSignal = (signal: NodeJS.Signals) => {
 process.on("SIGTERM", () => onTerminationSignal("SIGTERM"));
 process.on("SIGINT", () => onTerminationSignal("SIGINT"));
 
-export { banchoClient, maybeShutdown };
+const ipSearch = Object.values(os.networkInterfaces()).flatMap(i => i).find(i => i?.family === "IPv4" && !i.internal)?.address;
+if (!ipSearch) {
+    console.error("Failed to find non-internal IP address. This is required for the bot to work.");
+    process.exit(1);
+}
+const ip = ipSearch; // Typing for export :3
+
+export { banchoClient, maybeShutdown, ip };

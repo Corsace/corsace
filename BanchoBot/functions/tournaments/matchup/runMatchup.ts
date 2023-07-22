@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { banchoClient, maybeShutdown } from "../../..";
+import { banchoClient, ip, maybeShutdown } from "../../..";
 import state from "../../../state";
 import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
@@ -52,7 +52,12 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
 async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel) {
     // Save and store match instance
     state.runningMatchups++;
+    state.matchups[matchup.ID] = {
+        lobby: mpLobby,
+        autoRunning: true,
+    };
     matchup.mp = mpLobby.id;
+    matchup.ip = ip;
     await matchup.save();
     log(matchup, `Saved matchup lobby to db with ID ${mpLobby.id}`);
 
@@ -73,17 +78,17 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     const messageSaver = setInterval(async () => {
         const messagesToSave = matchup.messages!.filter((message) => message.timestamp.getTime() > lastMessageSaved);
         await MatchupMessage
-            .createQueryBuilder("message")
+            .createQueryBuilder()
             .insert()
             .values(messagesToSave)
             .execute();
 
-        lastMessageSaved = matchup.messages![matchup.messages!.length - 1].timestamp.getTime();
+        lastMessageSaved = messagesToSave[messagesToSave.length - 1].timestamp.getTime();
     }, 15 * 1000);
 
     // Close lobby 15 minutes after matchup time if not all managers had joined
     setTimeout(async () => {
-        if (started)
+        if (started || !state.matchups[matchup.ID].autoRunning)
             return;
 
         await mpChannel.sendMessage("Matchup lobby closed due to managers not joining");
@@ -99,7 +104,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchupMessage.user = user;
         matchup.messages!.push(matchupMessage);
 
-        if (message.self)
+        if (message.self || !state.matchups[matchup.ID].autoRunning)
             return;
 
         if (message.user.ircUsername === "BanchoBot") { 
@@ -124,6 +129,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     // Player joined event
     mpLobby.on("playerJoined", async (joinInfo) => {
+
         const newPlayer = joinInfo.player;
         const newPlayerID = newPlayer.user.id.toString();
         if (!isPlayerInMatchup(matchup, newPlayerID, true)) {
@@ -140,7 +146,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         playersInLobby.push(newPlayer);
         log(matchup, `Player ${newPlayer.user.username} joined the lobby`);
 
-        if (started || mpLobby.playing)
+        if (started || mpLobby.playing || !state.matchups[matchup.ID].autoRunning)
             return;
 
         if (
@@ -175,6 +181,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     // Player left event
     mpLobby.on("playerLeft", async (player) => {
         log(matchup, `Player ${player.user.username} left the lobby`);
+
+        if (!state.matchups[matchup.ID].autoRunning)
+            return;
 
         if (mapTimerStarted)
             await mpLobby.abortTimer();
@@ -211,7 +220,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpLobby.on("allPlayersReady", async () => {
         await mpLobby.updateSettings();
 
-        if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId))
+        if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId) || !state.matchups[matchup.ID].autoRunning)
             return;
 
         if (!allPlayersInMatchup(matchup, playersInLobby)) {
@@ -241,6 +250,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     mpLobby.on("matchAborted", async () => {
         log(matchup, "Match aborted");
+        if (!state.matchups[matchup.ID].autoRunning)
+            return;
+
         matchStart = undefined;
         mapsPlayed = mapsPlayed.filter(m => m.beatmap!.ID !== mpLobby.beatmapId);
 
@@ -333,6 +345,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             clearInterval(messageSaver);
 
             state.runningMatchups--;
+            delete state.matchups[matchup.ID];
             maybeShutdown();
         }
     });

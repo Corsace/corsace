@@ -88,6 +88,9 @@ export class Matchup extends BaseEntity {
     @OneToMany(() => MatchupMessage, message => message.matchup)
         messages?: MatchupMessage[] | null;
 
+    @Column({ type: "varchar", length: 15, nullable: true, select: false })
+        ip?: string | null;
+
     constructor (parents?: Matchup[]) {
         super();
         this.nextMatchups = parents;
