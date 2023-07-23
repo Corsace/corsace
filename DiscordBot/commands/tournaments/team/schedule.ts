@@ -243,6 +243,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 }
 
                 matchup.date = date;
+                await matchup.save();
                 try {
                     await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(date.getTime() - preInviteTime, Date.now() + 10 * 1000)));
                 } catch (err) {
