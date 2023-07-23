@@ -42,9 +42,11 @@ secrets:
   osu:
     v1:
       apiKey: ""
+      baseUrl: ""
     v2:
       clientId: ""
       clientSecret: ""
+      baseUrl: ""
     bancho:
       username: ""
       ircPassword: ""
