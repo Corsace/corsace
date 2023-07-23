@@ -435,7 +435,7 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
             new ButtonBuilder()
                 .setCustomId(inviteID)
                 .setLabel("Resend invite")
-                .setStyle(ButtonStyle.Link)
+                .setStyle(ButtonStyle.Primary)
         );
     if (!generalChannel)
         return;
