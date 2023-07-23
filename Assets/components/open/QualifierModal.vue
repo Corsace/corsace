@@ -17,7 +17,7 @@
                     class="qualifier_modal__label--no_shadow"
                     style="text-align: right;"
                 >
-                    Please note that the lobby will start when the manager joins.<br>If the manager is not a member, they cannot play qualifiers.
+                    Please note that the lobby will start when the manager joins.<br>If the manager is not a member, they cannot play qualifiers.<br>The manager can leave immediately after the bot selects the first map.
                 </div>
                 <input 
                     v-model="qualifierAt"

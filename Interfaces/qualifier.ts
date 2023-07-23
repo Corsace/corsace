@@ -14,6 +14,7 @@ export interface Qualifier extends BaseQualifier {
         ID: number;
         username: string;
     }
+    mp?: number | null;
 }
 
 export interface QualifierScore {

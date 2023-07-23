@@ -6,6 +6,7 @@ import { config } from "node-config-ts";
 import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
 import { TextChannel } from "discord.js";
 import { discordClient } from "../../../discord";
+import state from "../../../../BanchoBot/state";
 
 async function validateData (ctx: ParameterizedContext, next: Next) {
     const body = ctx.request.body;
@@ -74,6 +75,31 @@ banchoRouter.post("/runMatchups", validateData, async (ctx) => {
                 channel.send(`Error running match GHIVE THIS IMMEDIATE ATTENTION:\n\`\`\`\n${err}\n\`\`\``);
         });
     }
+});
+
+banchoRouter.post("/stopAutoLobby", async (ctx) => {
+    const matchupID = ctx.request.body.matchupID;
+    if (!matchupID || typeof matchupID !== "number" || isNaN(matchupID)) {
+        ctx.body = {
+            success: false,
+            error: "Missing matchupID",
+        };
+        return;
+    }
+
+    if (!state.matchups[matchupID]) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    state.matchups[matchupID].autoRunning = false;
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 export default banchoRouter;

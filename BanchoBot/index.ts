@@ -1,21 +1,27 @@
 import { BanchoClient } from "bancho.js";
 import { config } from "node-config-ts";
-import { handleCommand } from "./commands";
 
 import baseServer from "../Server/baseServer";
 import koaBody from "koa-body";
 import Mount from "koa-mount";
 import gracefulShutdown from "http-graceful-shutdown";
+import os from "os";
 
 import banchoRouter from "../Server/api/routes/bancho";
 
 import ormConfig from "../ormconfig";
 
+import messageHandler from "./handlers/messageHandler";
 import state from "./state";
 import { discordClient } from "../Server/discord";
 
 // Bancho Client
-const banchoClient = new BanchoClient({ username: config.osu.bancho.username, password: config.osu.bancho.ircPassword, botAccount: config.osu.bancho.botAccount, apiKey: config.osu.v1.apiKey });
+const banchoClient = new BanchoClient({
+    username: config.osu.bancho.username,
+    password: config.osu.bancho.ircPassword,
+    botAccount: config.osu.bancho.botAccount,
+    apiKey: config.osu.v1.apiKey,
+});
 banchoClient.connect().catch(err => {
     if (err) throw err;
 });
@@ -24,25 +30,9 @@ banchoClient.on("connected", () => {
     console.log(`Logged into Bancho as ${banchoClient.getSelf().ircUsername}`);
 });
 
-banchoClient.on("PM", async (message) => {
-    if (state.shuttingDown)
-        return;
+banchoClient.on("PM", messageHandler);
 
-    // ignore messages from our own user
-    if (message.self)
-        return;
-
-    // all commands will be prefixed with !
-    if (message.message.startsWith("!")) {
-        const commandName = message.message.substring(1);
-        const args = message.message.split(" ");
-
-        // remove !command from args
-        args.shift();
-
-        await handleCommand(commandName, message, ...args);
-    }
-});
+banchoClient.on("CM", messageHandler);
 
 const koa = baseServer;
 
@@ -105,4 +95,12 @@ const onTerminationSignal = (signal: NodeJS.Signals) => {
 process.on("SIGTERM", () => onTerminationSignal("SIGTERM"));
 process.on("SIGINT", () => onTerminationSignal("SIGINT"));
 
-export { banchoClient, maybeShutdown };
+const ip = Object.values(os.networkInterfaces()).flatMap(i => i).find(i => i?.family === "IPv4" && !i.internal)?.address;
+if (!ip) {
+    console.error("Failed to find non-internal IP address. This is required for the bot to work.");
+    process.exit(1);
+}
+
+const baseURL = `http://${ip}:${config.banchoBot.port}`;
+
+export { banchoClient, maybeShutdown, baseURL };

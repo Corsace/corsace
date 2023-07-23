@@ -8,6 +8,13 @@
                 <OpenTitle>
                     QUALIFIERS
                     <template #buttons>
+                        <ContentButton
+                            v-if="qualifierData.mp"
+                            class="content_button--red content_button--red_sm"
+                            :link="`https://osu.ppy.sh/community/matches/${qualifierData.mp}`"
+                        >
+                            osu! MP LINK
+                        </ContentButton>
                         <!-- <ContentButton 
                             class="content_button--header_button content_button--disabled"
                             @click.native="togglePopup()"

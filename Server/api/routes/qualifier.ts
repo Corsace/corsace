@@ -90,6 +90,7 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
     }
 
     if (getScores) {
+        qualifierData.mp = qualifier.mp;
         for (const matchupMap of qualifier.maps ?? []) {
             for (const score of matchupMap.scores ?? []) {
                 const team = qualifier.teams?.find(t => t.members.some(m => m.ID === score.user?.ID));

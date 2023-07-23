@@ -1,11 +1,11 @@
 import { randomUUID } from "crypto";
-import { banchoClient, maybeShutdown } from "../../..";
+import { banchoClient, baseURL, maybeShutdown } from "../../..";
 import state from "../../../state";
 import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { StageType, ScoringMethod } from "../../../../Interfaces/stage";
 import { osuClient } from "../../../../Server/osu";
-import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions } from "bancho.js";
+import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions, BanchoUser } from "bancho.js";
 import { convertDateToDDDHH } from "../../../../Server/utils/dateParse";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
@@ -21,6 +21,9 @@ import invitePlayersToLobby from "./invitePlayersToLobby";
 import isPlayerInMatchup from "./isPlayerInMatchup";
 import loadNextBeatmap from "./loadNextBeatmap";
 import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
+import { TournamentChannel } from "../../../../Models/tournaments/tournamentChannel";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionCollector, MessageComponentInteraction, TextChannel } from "discord.js";
+import { discordClient } from "../../../../Server/discord";
 
 const winConditions = {
     [ScoringMethod.ScoreV2]: BanchoLobbyWinConditions.ScoreV2,
@@ -49,12 +52,18 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
         throw new Error("Matchup is missing mappool");
 }
 
-async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel) {
+async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, discordMessageCollector: InteractionCollector<any>) {
     // Save and store match instance
     state.runningMatchups++;
+    state.matchups[matchup.ID] = {
+        matchup,
+        lobby: mpLobby,
+        autoRunning: true,
+    };
     matchup.mp = mpLobby.id;
+    matchup.baseURL = baseURL;
     await matchup.save();
-    log(matchup, `Saved matchup lobby to db with ID ${mpLobby.id}`);
+    log(matchup, `Saved matchup lobby to DB with ID ${mpLobby.id}`);
 
     let autoStart = false;
     let mapsPlayed: MappoolMap[] = [];
@@ -72,23 +81,57 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     // Periodically save messages every 15 seconds
     const messageSaver = setInterval(async () => {
         const messagesToSave = matchup.messages!.filter((message) => message.timestamp.getTime() > lastMessageSaved);
-        await MatchupMessage
-            .createQueryBuilder("message")
-            .insert()
-            .values(messagesToSave)
-            .execute();
+        if (messagesToSave.length > 0) {
+            await MatchupMessage
+                .createQueryBuilder()
+                .insert()
+                .values(messagesToSave)
+                .execute();
 
-        lastMessageSaved = matchup.messages![matchup.messages!.length - 1].timestamp.getTime();
+            lastMessageSaved = messagesToSave[messagesToSave.length - 1].timestamp.getTime();
+        }
     }, 15 * 1000);
 
     // Close lobby 15 minutes after matchup time if not all managers had joined
     setTimeout(async () => {
-        if (started)
+        if (started || !state.matchups[matchup.ID].autoRunning)
             return;
 
         await mpChannel.sendMessage("Matchup lobby closed due to managers not joining");
         await mpLobby.closeLobby();
     }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);
+
+    // Functionality to abort the map
+    const abortMap = async (player: BanchoLobbyPlayer | BanchoUser) => {
+        const id = player instanceof BanchoLobbyPlayer ? player.user.id.toString() : player.id.toString();
+        const username = player instanceof BanchoLobbyPlayer ? player.user.username : player.username;
+        const team = matchup.teams!.find(team => team.members.some(m => m.osu.userID === id));
+        if (
+            (team &&
+                (
+                    aborts.get(team.ID) === undefined ||
+                    typeof matchup.stage!.tournament.teamAbortLimit !== "number" ||
+                    aborts.get(team.ID)! < matchup.stage!.tournament.teamAbortLimit
+                )
+            ) && (
+                matchStart &&
+                Date.now() - matchStart.getTime() < (matchup.stage!.tournament.abortThreshold ?? 30) * 1000
+            )
+        ) {
+            const abortCount = (aborts.get(team.ID) || 0) + 1;
+            await Promise.all([
+                mpLobby.abortMatch(),
+                mpChannel.sendMessage(`${username} has triggered an abort${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? `, they now have ${matchup.stage!.tournament.teamAbortLimit - abortCount} aborts left` : ""}`),
+            ]);
+            aborts.set(team.ID, abortCount);
+        } else if (
+            team && 
+            typeof matchup.stage!.tournament.teamAbortLimit === "number" && 
+            aborts.get(team.ID) && 
+            aborts.get(team.ID)! >= matchup.stage!.tournament.teamAbortLimit
+        )
+            await mpChannel.sendMessage(`${username} has triggered an abort but the team has reached their abort limit`);
+    };
 
     mpChannel.on("message", async (message) => {
         const user = await getUserInMatchup(users, message);
@@ -99,7 +142,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchupMessage.user = user;
         matchup.messages!.push(matchupMessage);
 
-        if (message.self)
+        if (message.self || !state.matchups[matchup.ID].autoRunning)
             return;
 
         if (message.user.ircUsername === "BanchoBot") { 
@@ -119,11 +162,24 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     autoStart = false;
                 }, leniencyTime);
             }
+
+            return;
         }
+
+        if (
+            (
+                message.message === "!abort" || 
+                message.message === "!stop"
+            ) && 
+            mpLobby.playing &&
+            playersInLobby.some(p => p.user.id === message.user.id)
+        )
+            await abortMap(message.user);
     });
 
     // Player joined event
     mpLobby.on("playerJoined", async (joinInfo) => {
+
         const newPlayer = joinInfo.player;
         const newPlayerID = newPlayer.user.id.toString();
         if (!isPlayerInMatchup(matchup, newPlayerID, true)) {
@@ -140,7 +196,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         playersInLobby.push(newPlayer);
         log(matchup, `Player ${newPlayer.user.username} joined the lobby`);
 
-        if (started || mpLobby.playing)
+        if (started || mpLobby.playing || !state.matchups[matchup.ID].autoRunning)
             return;
 
         if (
@@ -176,33 +232,17 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpLobby.on("playerLeft", async (player) => {
         log(matchup, `Player ${player.user.username} left the lobby`);
 
+        if (!state.matchups[matchup.ID].autoRunning)
+            return;
+
         if (mapTimerStarted)
             await mpLobby.abortTimer();
 
         if (
             mpLobby.playing &&
             playersInLobby.some(p => p.user.id === player.user.id)
-        ) {
-            const team = matchup.teams!.find(team => team.members.some(m => m.osu.userID === player.user.id.toString()));
-            if (
-                (team &&
-                    (
-                        aborts.get(team.ID) === undefined ||
-                        !matchup.stage!.tournament.teamAbortLimit ||
-                        aborts.get(team.ID)! <= matchup.stage!.tournament.teamAbortLimit
-                    )
-                ) && (
-                    matchStart &&
-                    Date.now() - matchStart.getTime() < (matchup.stage!.tournament.abortThreshold || 30) * 1000
-                )
-            ) {
-                await Promise.all([
-                    mpLobby.abortMatch(),
-                    mpChannel.sendMessage(`${player.user.username} left the match so we're aborting`),
-                ]);
-                aborts.set(team.ID, (aborts.get(team.ID) || 0) + 1);
-            }
-        }
+        )
+            await abortMap(player);
 
         playersInLobby = playersInLobby.filter(p => p.user.id !== player.user.id);
     });
@@ -211,7 +251,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpLobby.on("allPlayersReady", async () => {
         await mpLobby.updateSettings();
 
-        if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId))
+        if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId) || !state.matchups[matchup.ID].autoRunning)
             return;
 
         if (!allPlayersInMatchup(matchup, playersInLobby)) {
@@ -241,6 +281,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     mpLobby.on("matchAborted", async () => {
         log(matchup, "Match aborted");
+        if (!state.matchups[matchup.ID].autoRunning)
+            return;
+
         matchStart = undefined;
         mapsPlayed = mapsPlayed.filter(m => m.beatmap!.ID !== mpLobby.beatmapId);
 
@@ -253,6 +296,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     mpLobby.on("matchStarted", async () => {
         log(matchup, "Match started");
+        if (!state.matchups[matchup.ID].autoRunning)
+            return;
+
         mapTimerStarted = false;
         matchStart = new Date();
         const beatmap = pools.flatMap(pool => pool.slots.flatMap(slot => slot.maps)).find(map => map.beatmap!.ID === mpLobby.beatmapId);
@@ -306,6 +352,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         log(matchup, `Matchup map and scores saved with matchupMap ID ${matchupMap.ID}`);
 
+        if (!state.matchups[matchup.ID].autoRunning)
+            return;
+
         setTimeout(async () => {
             try {
                 log(matchup, "Picking map");
@@ -328,11 +377,13 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpLobby.channel.on("PART", async (member) => {
         if (member.user.isClient()) {
             // Lobby is closed
+            discordMessageCollector.stop();
             await matchup.save();
     
             clearInterval(messageSaver);
 
             state.runningMatchups--;
+            delete state.matchups[matchup.ID];
             maybeShutdown();
         }
     });
@@ -368,8 +419,55 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
     log(matchup, `Set lobby settings, password and added refs`);
 
     log(matchup, `Inviting players`);
-    await invitePlayersToLobby(matchup, mpLobby);
+    const IDs = await invitePlayersToLobby(matchup, mpLobby);
     log(matchup, `Invited players`);
 
-    await runMatchupListeners(matchup, mpLobby, mpChannel);
+    const generalChannel = await TournamentChannel
+        .createQueryBuilder("channel")
+        .innerJoinAndSelect("channel.tournament", "tournament")
+        .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
+        .andWhere("channel.channelType = '0'")
+        .getOne();
+
+    const inviteID = randomUUID();
+    const row = new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(
+            new ButtonBuilder()
+                .setCustomId(inviteID)
+                .setLabel("Resend invite")
+                .setStyle(ButtonStyle.Link)
+        );
+    if (!generalChannel)
+        return;
+
+    const discordChannel = discordClient.channels.cache.get(generalChannel.channelID);
+    if (!(discordChannel instanceof TextChannel))
+        return;
+    
+    const invMessage = await discordChannel.send({
+        content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n\nLobby has been created for ur match, if u need to be reinvited, press the button below.\n\nMake sure u have non-friends DMs allowed on osu!\n\nIf ur not part of the matchup, the button wont work for u .`,
+        components: [row],
+    });
+
+    // Allow the message to stay up and send invites until the lobby closes
+    const componentCollector = invMessage.createMessageComponentCollector();
+    componentCollector.on("collect", async (i: MessageComponentInteraction) => {
+        if (i.customId !== inviteID)
+            return;
+        const osuID = IDs.find(id => id.discord === i.user.id)?.osu;
+        if (!osuID) {
+            await i.reply({ content: "What did i tell u .", ephemeral: true });
+            return;
+        }
+        await mpLobby.invitePlayer(`#${osuID}`);
+        await i.reply({ content: "Invite sent", ephemeral: true });
+    });
+    componentCollector.on("end", async () => {
+        if (!invMessage.deletable)
+            return;
+        await invMessage.delete();
+    });
+    log(matchup, `Created invite message for ${IDs.length} players`);
+
+    await runMatchupListeners(matchup, mpLobby, mpChannel, componentCollector);
 }
