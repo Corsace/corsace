@@ -56,6 +56,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     // Save and store match instance
     state.runningMatchups++;
     state.matchups[matchup.ID] = {
+        matchup,
         lobby: mpLobby,
         autoRunning: true,
     };

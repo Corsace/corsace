@@ -1,30 +1,20 @@
-import { BanchoMessage } from "bancho.js";
+import { ChannelMessage, PrivateMessage } from "bancho.js";
 import { Command } from "../index";
-import { Multi } from "nodesu";
-import { Matchup } from "../../../Models/tournaments/matchup";
 import { discordClient } from "../../../Server/discord";
 import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
 import { TextChannel } from "discord.js";
 import state from "../../state";
 
-async function run (message: BanchoMessage, multi: Multi, ...args: string[]) {
-    if (!state.matchups[multi.match.id] || !state.matchups[multi.match.id].autoRunning)
+async function run (message: PrivateMessage | ChannelMessage) {
+    if (!(message instanceof ChannelMessage) || !/#mp_(\d+)/.test(message.message))
         return;
 
-    const matchup = await Matchup
-        .createQueryBuilder("matchup")
-        .leftJoinAndSelect("matchup.referee", "referee")
-        .leftJoinAndSelect("matchup.streamer", "streamer")
-        .innerJoinAndSelect("matchup.stage", "stage")
-        .innerJoinAndSelect("stage.tournament", "tournament")
-        .innerJoinAndSelect("tournament.organizer", "organizer")
-        .where("matchup.ID = :ID", { ID: multi.match.id })
-        .getOne();
-
-    if (!matchup) {
-        await message.user.sendMessage(`couldn't find this matchup in the DB`);
+    const mpID = parseInt(message.message.match(/#mp_(\d+)/)![1]);
+    
+    if (isNaN(mpID) || !state.matchups[mpID] || !state.matchups[mpID].autoRunning)
         return;
-    }
+
+    const matchup = state.matchups[mpID].matchup;
 
     const channels = await TournamentChannel
         .createQueryBuilder("channel")
@@ -45,9 +35,9 @@ async function run (message: BanchoMessage, multi: Multi, ...args: string[]) {
         return;
     }
 
-    await discordChannel.send(`@here <@${matchup.stage!.tournament.organizer.discord.userID}> ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message.user.username} is PANICING for the matchup ${multi.match.name} Omggg go helkp them`);
+    await discordChannel.send(`@here <@${matchup.stage!.tournament.organizer.discord.userID}> ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message.user.username} is PANICING for the matchup Omggg go helkp them`);
 
-    state.matchups[multi.match.id].autoRunning = false;
+    state.matchups[mpID].autoRunning = false;
 
     await message.user.sendMessage(`ok i notified the refs and organizer(s) of the tourney and stopped the auto lobby for u`);
 }
@@ -55,7 +45,6 @@ async function run (message: BanchoMessage, multi: Multi, ...args: string[]) {
 const panic: Command = {
     name: "panic",
     aliases: ["alert"],
-    multiplayerCommand: true,
     run,
 };
 
