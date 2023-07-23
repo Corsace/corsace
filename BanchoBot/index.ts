@@ -55,6 +55,7 @@ ormConfig.initialize()
                 console.log("Done handling all API requests.");
                 maybeShutdown();
             },
+            forceExit: false,
         });
     })
     .catch((error) => console.log("An error has occurred in connecting.", error));
