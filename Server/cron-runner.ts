@@ -22,22 +22,25 @@ koa.use(koaBody());
 koa.use(Mount("/api/cron", cronRouter.routes()));
 
 let httpShutdown: () => Promise<void> | undefined;
-ormConfig.initialize()
-    .then(async (connection) => {
-        console.log(`Connected to the ${connection.options.database} database!`);
-        await cron.initialize();
-        const server = koa.listen(config.cronRunner.port);
-        httpShutdown = gracefulShutdown(server, {
-            signals: "", // leave signals handling to us
-            onShutdown: async () => {
-                state.httpServerShutDown = true;
-                console.log("Done handling all API requests.");
-                maybeShutdown();
-            },
-            forceExit: false,
-        });
-    })
-    .catch((error) => console.log("An error has occurred in connecting.", error));
+
+// Only start listening if this file is the entry point.
+if(require.main === module)
+    ormConfig.initialize()
+        .then(async (connection) => {
+            console.log(`Connected to the ${connection.options.database} database!`);
+            await cron.initialize();
+            const server = koa.listen(config.cronRunner.port);
+            httpShutdown = gracefulShutdown(server, {
+                signals: "", // leave signals handling to us
+                onShutdown: async () => {
+                    state.httpServerShutDown = true;
+                    console.log("Done handling all API requests.");
+                    maybeShutdown();
+                },
+                forceExit: false,
+            });
+        })
+        .catch((error) => console.log("An error has occurred in connecting.", error));
 
 const maybeShutdown = () => {
     if (!state.shuttingDown || !state.httpServerShutDown)
