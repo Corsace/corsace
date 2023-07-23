@@ -59,7 +59,7 @@ export default async function guildMemberAdd (member: GuildMember) {
         } catch (err) {
             const channel = discordClient.channels.cache.get(config.discord.coreChannel);
             if (channel instanceof TextChannel)
-                channel.send(`Failed to add roles to ${member.user.username} (${member.id})\n\`\`\`${err}\`\`\``);
+                await channel.send(`Failed to add roles to ${member.user.username} (${member.id})\n\`\`\`${err}\`\`\``);
         }       
 
         const memberUser = member.user;
