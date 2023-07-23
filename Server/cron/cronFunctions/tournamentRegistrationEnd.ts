@@ -6,7 +6,7 @@ async function initialize (): Promise<CronJobData[]> {
     const dates: { registrationsEnd: Date }[] = await Tournament
         .createQueryBuilder("tournament")
         .select("distinct registrationsEnd")
-        .where("tournament.status != '0'")
+        .where("tournament.status = '1'")
         .getRawMany();
 
     // For each date, create a cron job with the end as the date.
@@ -36,7 +36,7 @@ async function execute (job: CronJobData) {
         .leftJoinAndSelect("member.userStatistics", "stats")
         .leftJoinAndSelect("stats.modeDivision", "statMode")
         .where("tournament.registrationsEnd <= :date", { date: job.date })
-        .andWhere("tournament.status != '0'")
+        .andWhere("tournament.status = '1'")
         .getMany();
 
     // For each tournament, set their status to ongoing
