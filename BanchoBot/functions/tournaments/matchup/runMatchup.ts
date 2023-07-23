@@ -21,6 +21,9 @@ import invitePlayersToLobby from "./invitePlayersToLobby";
 import isPlayerInMatchup from "./isPlayerInMatchup";
 import loadNextBeatmap from "./loadNextBeatmap";
 import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
+import { TournamentChannel } from "../../../../Models/tournaments/tournamentChannel";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionCollector, MessageComponentInteraction, TextChannel } from "discord.js";
+import { discordClient } from "../../../../Server/discord";
 
 const winConditions = {
     [ScoringMethod.ScoreV2]: BanchoLobbyWinConditions.ScoreV2,
@@ -49,7 +52,7 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
         throw new Error("Matchup is missing mappool");
 }
 
-async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel) {
+async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, discordMessageCollector: InteractionCollector<any>) {
     // Save and store match instance
     state.runningMatchups++;
     state.matchups[matchup.ID] = {
@@ -342,6 +345,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpLobby.channel.on("PART", async (member) => {
         if (member.user.isClient()) {
             // Lobby is closed
+            discordMessageCollector.stop();
             await matchup.save();
     
             clearInterval(messageSaver);
@@ -383,8 +387,55 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
     log(matchup, `Set lobby settings, password and added refs`);
 
     log(matchup, `Inviting players`);
-    await invitePlayersToLobby(matchup, mpLobby);
+    const IDs = await invitePlayersToLobby(matchup, mpLobby);
     log(matchup, `Invited players`);
 
-    await runMatchupListeners(matchup, mpLobby, mpChannel);
+    const generalChannel = await TournamentChannel
+        .createQueryBuilder("channel")
+        .innerJoinAndSelect("channel.tournament", "tournament")
+        .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
+        .andWhere("channel.channelType = '0'")
+        .getOne();
+
+    const inviteID = randomUUID();
+    const row = new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(
+            new ButtonBuilder()
+                .setCustomId(inviteID)
+                .setLabel("Resend invite")
+                .setStyle(ButtonStyle.Link)
+        );
+    if (!generalChannel)
+        return;
+
+    const discordChannel = discordClient.channels.cache.get(generalChannel.channelID);
+    if (!(discordChannel instanceof TextChannel))
+        return;
+    
+    const invMessage = await discordChannel.send({
+        content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n\nLobby has been created for ur match, if u need to be reinvited, press the button below.\n\nMake sure u have non-friends DMs allowed on osu!\n\nIf ur not part of the matchup, the button wont work for u .`,
+        components: [row],
+    });
+
+    // Allow the message to stay up and send invites until the lobby closes
+    const componentCollector = invMessage.createMessageComponentCollector();
+    componentCollector.on("collect", async (i: MessageComponentInteraction) => {
+        if (i.customId !== inviteID)
+            return;
+        const osuID = IDs.find(id => id.discord === i.user.id)?.osu;
+        if (!osuID) {
+            await i.reply({ content: "What did i tell u .", ephemeral: true });
+            return;
+        }
+        await mpLobby.invitePlayer(`#${osuID}`);
+        await i.reply({ content: "Invite sent", ephemeral: true });
+    });
+    componentCollector.on("end", async () => {
+        if (!invMessage.deletable)
+            return;
+        await invMessage.delete();
+    });
+    log(matchup, `Created invite message for ${IDs.length} players`);
+
+    await runMatchupListeners(matchup, mpLobby, mpChannel, componentCollector);
 }
