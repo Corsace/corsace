@@ -271,6 +271,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     mpLobby.on("matchStarted", async () => {
         log(matchup, "Match started");
+        if (!state.matchups[matchup.ID].autoRunning)
+            return;
+
         mapTimerStarted = false;
         matchStart = new Date();
         const beatmap = pools.flatMap(pool => pool.slots.flatMap(slot => slot.maps)).find(map => map.beatmap!.ID === mpLobby.beatmapId);
@@ -323,6 +326,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchup.maps!.push(matchupMap);
 
         log(matchup, `Matchup map and scores saved with matchupMap ID ${matchupMap.ID}`);
+
+        if (!state.matchups[matchup.ID].autoRunning)
+            return;
 
         setTimeout(async () => {
             try {
