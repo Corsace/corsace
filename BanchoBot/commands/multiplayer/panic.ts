@@ -6,10 +6,10 @@ import { TextChannel } from "discord.js";
 import state from "../../state";
 
 async function run (message: PrivateMessage | ChannelMessage) {
-    if (!(message instanceof ChannelMessage) || !/#mp_(\d+)/.test(message.message))
+    if (!(message instanceof ChannelMessage) || !/#mp_(\d+)/.test(message.channel.name))
         return;
 
-    const mpID = parseInt(message.message.match(/#mp_(\d+)/)![1]);
+    const mpID = parseInt(message.channel.name.match(/#mp_(\d+)/)![1]);
     
     if (isNaN(mpID) || !state.matchups[mpID] || !state.matchups[mpID].autoRunning)
         return;
