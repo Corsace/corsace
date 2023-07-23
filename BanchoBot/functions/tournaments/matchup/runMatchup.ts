@@ -76,14 +76,15 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     // Periodically save messages every 15 seconds
     const messageSaver = setInterval(async () => {
-        const messagesToSave = matchup.messages!.filter((message) => message.timestamp.getTime() > lastMessageSaved);
-        await MatchupMessage
-            .createQueryBuilder()
-            .insert()
-            .values(messagesToSave)
-            .execute();
+        const messagesToSave = matchup.messages!.filter((message) => message.timestamp.getTime() > lastMessageSaved);if (messagesToSave.length > 0) {
+            await MatchupMessage
+                .createQueryBuilder()
+                .insert()
+                .values(messagesToSave)
+                .execute();
 
-        lastMessageSaved = messagesToSave[messagesToSave.length - 1].timestamp.getTime();
+            lastMessageSaved = messagesToSave[messagesToSave.length - 1].timestamp.getTime();
+        }
     }, 15 * 1000);
 
     // Close lobby 15 minutes after matchup time if not all managers had joined
