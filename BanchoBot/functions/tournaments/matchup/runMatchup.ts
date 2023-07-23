@@ -5,7 +5,7 @@ import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { StageType, ScoringMethod } from "../../../../Interfaces/stage";
 import { osuClient } from "../../../../Server/osu";
-import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions } from "bancho.js";
+import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions, BanchoUser } from "bancho.js";
 import { convertDateToDDDHH } from "../../../../Server/utils/dateParse";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
@@ -101,6 +101,31 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         await mpLobby.closeLobby();
     }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);
 
+    // Functionality to abort the map
+    const abortMap = async (player: BanchoLobbyPlayer | BanchoUser) => {
+        const id = player instanceof BanchoLobbyPlayer ? player.user.id.toString() : player.id.toString();
+        const username = player instanceof BanchoLobbyPlayer ? player.user.username : player.username;
+        const team = matchup.teams!.find(team => team.members.some(m => m.osu.userID === id));
+        if (
+            (team &&
+                (
+                    aborts.get(team.ID) === undefined ||
+                    !matchup.stage!.tournament.teamAbortLimit ||
+                    aborts.get(team.ID)! <= matchup.stage!.tournament.teamAbortLimit
+                )
+            ) && (
+                matchStart &&
+                Date.now() - matchStart.getTime() < (matchup.stage!.tournament.abortThreshold ?? 30) * 1000
+            )
+        ) {
+            await Promise.all([
+                mpLobby.abortMatch(),
+                mpChannel.sendMessage(`${username} has triggered an abort`),
+            ]);
+            aborts.set(team.ID, (aborts.get(team.ID) || 0) + 1);
+        }
+    };
+
     mpChannel.on("message", async (message) => {
         const user = await getUserInMatchup(users, message);
         const matchupMessage = new MatchupMessage();
@@ -130,7 +155,19 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     autoStart = false;
                 }, leniencyTime);
             }
+
+            return;
         }
+
+        if (
+            (
+                message.message === "!abort" || 
+                message.message === "!stop"
+            ) && 
+            mpLobby.playing &&
+            playersInLobby.some(p => p.user.id === message.user.id)
+        )
+            await abortMap(message.user);
     });
 
     // Player joined event
@@ -197,27 +234,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (
             mpLobby.playing &&
             playersInLobby.some(p => p.user.id === player.user.id)
-        ) {
-            const team = matchup.teams!.find(team => team.members.some(m => m.osu.userID === player.user.id.toString()));
-            if (
-                (team &&
-                    (
-                        aborts.get(team.ID) === undefined ||
-                        !matchup.stage!.tournament.teamAbortLimit ||
-                        aborts.get(team.ID)! <= matchup.stage!.tournament.teamAbortLimit
-                    )
-                ) && (
-                    matchStart &&
-                    Date.now() - matchStart.getTime() < (matchup.stage!.tournament.abortThreshold || 30) * 1000
-                )
-            ) {
-                await Promise.all([
-                    mpLobby.abortMatch(),
-                    mpChannel.sendMessage(`${player.user.username} left the match so we're aborting`),
-                ]);
-                aborts.set(team.ID, (aborts.get(team.ID) || 0) + 1);
-            }
-        }
+        )
+            await abortMap(player);
 
         playersInLobby = playersInLobby.filter(p => p.user.id !== player.user.id);
     });
