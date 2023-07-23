@@ -39,11 +39,13 @@
     },
     "osu": {
         "v1": {
-            "apiKey": "@@OSU_V1_APIKEY"
+            "apiKey": "@@OSU_V1_APIKEY",
+            "baseUrl": "@@OSU_V1_BASEURL"
         },
         "v2": {
             "clientId": "@@OSU_V2_CLIENTID",
-            "clientSecret": "@@OSU_V2_CLIENTSECRET"
+            "clientSecret": "@@OSU_V2_CLIENTSECRET",
+            "baseUrl": "@@OSU_V2_BASEURL"
         },
         "bancho": {
             "username": "@@OSU_BANCHO_USERNAME",

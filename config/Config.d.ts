@@ -67,10 +67,12 @@ declare module "node-config-ts" {
         osu: {
             v1: {
                 apiKey: string;
+                baseUrl: string | undefined;
             };
             v2: {
                 clientId: string;
                 clientSecret: string;
+                baseUrl: string | undefined;
             };
             bancho: {
                 username: string;

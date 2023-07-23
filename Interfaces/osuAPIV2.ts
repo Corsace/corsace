@@ -20,9 +20,9 @@ export const modeName = {
 };
 
 export interface osuAPIV2ChatBotOptions {
-    disableRateLimiting: boolean;
-    requestsPerMinute: number;
-    baseURL: string;
+    disableRateLimiting?: boolean;
+    requestsPerMinute?: number;
+    baseURL?: string;
 }
 
 export interface osuAPIV2ChatBotToken {
