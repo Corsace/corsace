@@ -106,11 +106,12 @@ const onTerminationSignal = (signal: NodeJS.Signals) => {
 process.on("SIGTERM", () => onTerminationSignal("SIGTERM"));
 process.on("SIGINT", () => onTerminationSignal("SIGINT"));
 
-const ipSearch = Object.values(os.networkInterfaces()).flatMap(i => i).find(i => i?.family === "IPv4" && !i.internal)?.address;
-if (!ipSearch) {
+const ip = Object.values(os.networkInterfaces()).flatMap(i => i).find(i => i?.family === "IPv4" && !i.internal)?.address;
+if (!ip) {
     console.error("Failed to find non-internal IP address. This is required for the bot to work.");
     process.exit(1);
 }
-const ip = ipSearch; // Typing for export :3
 
-export { banchoClient, maybeShutdown, ip };
+const baseURL = `http://${ip}:${config.banchoBot.port}`;
+
+export { banchoClient, maybeShutdown, baseURL };

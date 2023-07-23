@@ -21,20 +21,19 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const matchupIP = await Matchup
+    const matchup = await Matchup
         .createQueryBuilder("matchup")
         .where("matchup.ID = :ID", { ID })
-        .select("matchup.ip", "ip")
-        .getRawOne();
+        .getOne();
 
-    if (!matchupIP?.ip) {
-        await respond(m, "Invalid matchup ID");
+    if (!matchup?.baseURL) {
+        await respond(m, "Invalid matchup ID OR the matchup isnt even running OR the matchup doesnt ahve a bancho web service associated with it either way it wont work");
         return;
     }
 
-    const ip = matchupIP.ip;
+    const baseUrl = matchup.baseURL;
     
-    const { data } = await Axios.post(`${ip}/api/bancho/stopAutoLobby`, {
+    const { data } = await Axios.post(`${baseUrl}/api/bancho/stopAutoLobby`, {
         matchupID: ID,
     }, {
         auth: config.interOpAuth,

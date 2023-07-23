@@ -88,8 +88,8 @@ export class Matchup extends BaseEntity {
     @OneToMany(() => MatchupMessage, message => message.matchup)
         messages?: MatchupMessage[] | null;
 
-    @Column({ type: "varchar", length: 15, nullable: true, select: false })
-        ip?: string | null;
+    @Column({ type: "varchar", length: `http://255.255.255.255:65565`.length, nullable: true })
+        baseURL?: string | null;
 
     constructor (parents?: Matchup[]) {
         super();

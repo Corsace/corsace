@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { banchoClient, ip, maybeShutdown } from "../../..";
+import { banchoClient, baseURL, maybeShutdown } from "../../..";
 import state from "../../../state";
 import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
@@ -57,7 +57,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         autoRunning: true,
     };
     matchup.mp = mpLobby.id;
-    matchup.ip = ip;
+    matchup.baseURL = baseURL;
     await matchup.save();
     log(matchup, `Saved matchup lobby to DB with ID ${mpLobby.id}`);
 
