@@ -76,7 +76,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     // Periodically save messages every 15 seconds
     const messageSaver = setInterval(async () => {
-        const messagesToSave = matchup.messages!.filter((message) => message.timestamp.getTime() > lastMessageSaved);if (messagesToSave.length > 0) {
+        const messagesToSave = matchup.messages!.filter((message) => message.timestamp.getTime() > lastMessageSaved);
+        if (messagesToSave.length > 0) {
             await MatchupMessage
                 .createQueryBuilder()
                 .insert()
