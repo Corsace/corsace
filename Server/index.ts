@@ -6,8 +6,10 @@ import koaBody from "koa-body";
 import Mount from "koa-mount";
 import passport from "koa-passport";
 import Session from "koa-session";
+import gracefulShutdown from "http-graceful-shutdown";
 import { cache } from "./cache";
 import { setupPassport } from "./passportFunctions";
+import { discordClient } from "./discord";
 
 import osuURIRouter from "./api/routes/osuuri";
 
@@ -143,6 +145,15 @@ ormConfig.initialize()
     .then(async (connection) => {
         console.log(`Connected to the ${connection.options.database} database!`);
         setupPassport();
-        koa.listen(config.api.port);
+        const server = koa.listen(config.api.port);
+        gracefulShutdown(server, {
+            timeout: 25000,
+            development: process.env.NODE_ENV === "development",
+            onShutdown: async () => {
+                ormConfig.destroy();
+                discordClient.destroy();
+            },
+            forceExit: true,
+        });
     })
     .catch((error) => console.log("An error has occurred in connecting.", error));
