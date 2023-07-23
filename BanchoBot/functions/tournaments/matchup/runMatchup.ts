@@ -110,20 +110,27 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             (team &&
                 (
                     aborts.get(team.ID) === undefined ||
-                    !matchup.stage!.tournament.teamAbortLimit ||
-                    aborts.get(team.ID)! <= matchup.stage!.tournament.teamAbortLimit
+                    typeof matchup.stage!.tournament.teamAbortLimit !== "number" ||
+                    aborts.get(team.ID)! < matchup.stage!.tournament.teamAbortLimit
                 )
             ) && (
                 matchStart &&
                 Date.now() - matchStart.getTime() < (matchup.stage!.tournament.abortThreshold ?? 30) * 1000
             )
         ) {
+            const abortCount = (aborts.get(team.ID) || 0) + 1;
             await Promise.all([
                 mpLobby.abortMatch(),
-                mpChannel.sendMessage(`${username} has triggered an abort`),
+                mpChannel.sendMessage(`${username} has triggered an abort${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? `, they now have ${matchup.stage!.tournament.teamAbortLimit - abortCount} aborts left` : ""}`),
             ]);
-            aborts.set(team.ID, (aborts.get(team.ID) || 0) + 1);
-        }
+            aborts.set(team.ID, abortCount);
+        } else if (
+            team && 
+            typeof matchup.stage!.tournament.teamAbortLimit === "number" && 
+            aborts.get(team.ID) && 
+            aborts.get(team.ID)! >= matchup.stage!.tournament.teamAbortLimit
+        )
+            await mpChannel.sendMessage(`${username} has triggered an abort but the team has reached their abort limit`);
     };
 
     mpChannel.on("message", async (message) => {
