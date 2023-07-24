@@ -5,6 +5,8 @@ export default async function respond (m: Message | ChatInputCommandInteraction,
         return await m.reply({ content, embeds, components, files });
     else if (m.replied || m.deferred)
         return await m.editReply({ content, embeds, components, files });
-    else
-        return await m.reply({ content, embeds, components, files });
+    else {
+        await m.reply({ content, embeds, components, files });
+        return await m.fetchReply();
+    }
 }
