@@ -1,10 +1,10 @@
 import Router from "@koa/router";
 import Axios from "axios";
-import { config } from "node-config-ts";
 import { User } from "../../../Models/user";
 import { MapperQuery } from "../../../Interfaces/queries";
 import { parseQueryParam } from "../../utils/query";
 import { isCorsace, isLoggedInDiscord } from "../../middleware";
+import { osuV2Client } from "../../osu";
 
 const usersRouter = new Router();
 
@@ -50,14 +50,9 @@ usersRouter.get("/advSearch", async (ctx) => {
         if (!ctx.state.user)
             return ctx.body = { error: "Please login via osu! to use the friends filter!" };
         try {
-            // TODO: Move to appropriate service (with rate-limiter etc)
             const accessToken: string = await ctx.state.user.getAccessToken("osu");
-            const res = await Axios.get(`${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/api/v2/friends`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
-            query.friends = res.data.map(friend => friend.id);
+            const friends = await osuV2Client.getUserFriends(accessToken);
+            query.friends = friends.map(friend => friend.id);
         } catch (e) {
             if (Axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) 
                 return ctx.body = { error: "Please re-login via osu! again in order to use the friends filter! If you logged in again via osu! and it still isn't working, contact VINXIS!" };
