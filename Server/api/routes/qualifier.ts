@@ -9,6 +9,23 @@ import { discordClient } from "../../discord";
 import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { osuClient } from "../../osu";
 
+function requiredNumberFields<T extends Record<string, any>>(obj: Partial<T>, fields: (keyof T)[]): string | Record<keyof T, number> {
+    const result: Record<string, number> = {};
+
+    for (const field of fields) {
+        if (!obj[field]) 
+            return `Field ${String(field)} is missing`;
+
+        const value = typeof obj[field] === 'string' ? parseInt(obj[field]!) : obj[field];
+        if (typeof value !== 'number' || isNaN(value)) 
+            return `Field ${String(field)} is invalid`;
+
+        result[field as string] = value;
+    }
+
+    return result as Record<keyof T, number>;
+}
+
 const qualifierRouter = new Router();
 
 qualifierRouter.get("/:qualifierID", async (ctx) => {
@@ -114,20 +131,22 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
 });
 
 qualifierRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
-    const mpID = ctx.request.body?.mpID;
-    if (!mpID || isNaN(parseInt(mpID))) {
+    if (!ctx.request.body) {
         ctx.body = {
-            error: "No mpID provided",
+            error: "No request body",
         };
         return;
     }
-    const matchID = ctx.request.body?.matchID;
-    if (!matchID || isNaN(parseInt(matchID))) {
+
+    const obj = requiredNumberFields(ctx.request.body, ["mpID", "matchID"]);
+    if (typeof obj === "string") {
         ctx.body = {
-            error: "No matchID provided",
+            error: obj,
         };
         return;
     }
+
+    const { mpID, matchID } = obj;
 
     const matchup = await Matchup
         .createQueryBuilder("matchup")
@@ -203,29 +222,83 @@ qualifierRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
 });
 
 qualifierRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
-    const matchID = ctx.request.body?.matchID;
-    if (!matchID || isNaN(parseInt(matchID))) {
+    if (!ctx.request.body) {
         ctx.body = {
-            error: "No matchID provided",
+            error: "No request body",
         };
         return;
     }
-    const teamID = ctx.request.body?.teamID;
-    if (!teamID || isNaN(parseInt(teamID))) {
+
+    const obj = requiredNumberFields(ctx.request.body, ["matchID", "teamID", "mapOrder", "userID", "score", "mods", "misses", "combo", "accuracy"]);
+    if (typeof obj === "string") {
         ctx.body = {
-            error: "No teamID provided",
+            error: obj,
         };
         return;
     }
-    const mapOrder = ctx.request.body?.mapOrder;
-    if (!mapOrder || isNaN(parseInt(mapOrder))) {
+
+    const { matchID, teamID, mapOrder, userID, score, mods, misses, combo, accuracy } = obj;
+
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoinAndSelect("matchup.stage", "stage")
+        .innerJoinAndSelect("stage.mappool", "mappool")
+        .innerJoinAndSelect("mappool.slots", "slot")
+        .innerJoinAndSelect("slot.maps", "map")
+        .innerJoinAndSelect("map.beatmap", "beatmap")
+        .leftJoinAndSelect("matchup.teams", "team")
+        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("matchup.maps", "matchupMap")
+        .leftJoinAndSelect("matchupMap.scores", "score")
+        .where("matchup.ID = :matchID", { matchID })
+        .andWhere("stage.stageType = '0'")
+        .getOne();
+    if (!matchup) {
         ctx.body = {
-            error: "No mapOrder provided",
+            error: "Matchup not found",
         };
         return;
     }
-    const score = ctx.request.body?.score;
-    if (!score || isNaN(parseInt(score))) {
-        
+
+    const map = matchup.maps?.find(map => map.order === mapOrder);
+    if (!map) {
+        ctx.body = {
+            error: "Map not found",
+        };
+        return;
+    }
+
+    const team = matchup.teams?.find(team => team.ID === teamID);
+    if (!team) {
+        ctx.body = {
+            error: "Team not found",
+        };
+        return;
+    }
+
+    const user = team.members.find(member => member.ID === userID);
+    if (!user) {
+        ctx.body = {
+            error: "User not found",
+        };
+        return;
+    }
+
+    const matchupScore = new MatchupScore(user);
+    matchupScore.score = score;
+    matchupScore.mods = mods;
+    matchupScore.misses = misses;
+    matchupScore.combo = combo;
+    matchupScore.fail = ctx.request.body.fail || false;
+    matchupScore.accuracy = accuracy;
+    matchupScore.fullCombo = ctx.request.body.fullCombo || false;
+    matchupScore.map = map;
+    await matchupScore.save();
+
+    ctx.body = {
+        success: true,
+    };
+});     
 
 export default qualifierRouter;
