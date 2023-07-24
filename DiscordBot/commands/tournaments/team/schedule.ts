@@ -65,7 +65,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { date, target, tournament: tournamentParam } = params;
 
     if (isNaN(date.getTime())) {
-        await respond(m, "Invalid date. Provide a valid date using either `YYYY-MM-DD HH:MM:SS UTC` format, or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
+        await respond(m, "Invalid date. Provide a valid date using either `YYYY-MM-DD HH:MM UTC` format, or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
         return;
     }
 
@@ -226,12 +226,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         if (matchup) {
             if (matchup.mp) {
+                if (!await securityChecks(m, true, true, [], [TournamentRoleType.Organizer]))
+                    return;
+
                 if (!await confirmCommand(m, `\`${team.name}\` already has a scheduled match with an mp ID on ${discordStringTimestamp(matchup.date)}. Do you want to reset and reschedule?`)) {
                     await respond(m, "Ok Lol");
                     return;
                 }
 
-                matchup.mp = undefined;
+                matchup.date = date;
+                matchup.mp = null;
                 if (matchup.messages) {
                     await Promise.all(matchup.messages.map(m => m.remove()));
                     matchup.messages = [];
@@ -242,7 +246,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     matchup.maps = [];
                 }
 
-                matchup.date = date;
                 await matchup.save();
                 try {
                     await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(date.getTime() - preInviteTime, Date.now() + 10 * 1000)));
