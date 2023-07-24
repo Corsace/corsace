@@ -1,6 +1,6 @@
 import axios from "axios";
 import { RateLimiter } from "limiter";
-import { osuV2Token, osuAPIV2ChatBotOptions, osuAPIV2ClientCredentials, osuV2Beatmapset, osuV2PlayedBeatmaps, osuV2User, osuV2Friend } from "../../Interfaces/osuAPIV2";
+import { osuV2Token, osuAPIV2ChatBotOptions, osuAPIV2ClientCredentials, osuV2Beatmapset, osuV2PlayedBeatmaps, osuV2User, osuV2Friend, osuV2Me } from "../../Interfaces/osuAPIV2";
 import { User } from "../../Models/user";
 
 // For any properties missing in the typings, go to Interfaces/osuAPIV2.ts and add only the properties you need there.
@@ -32,14 +32,14 @@ export class osuAPIV2 {
             });
     }
 
-    public getFavouriteBeatmaps (userID: string, accessToken: string, offset?: number): Promise<osuV2Beatmapset[]> {
+    public async getFavouriteBeatmaps (userID: string, accessToken?: string, offset?: number): Promise<osuV2Beatmapset[]> {
         let endpoint = `/users/${userID}/beatmapsets/favourite?limit=51`;
         if (offset)
             endpoint += `&offset=${offset}`;
-        return this.get<osuV2Beatmapset[]>(endpoint, accessToken);
+        return this.get<osuV2Beatmapset[]>(endpoint, accessToken || await this.getClientCredentials());
     }
 
-    public getPlayedBeatmaps (accessToken: string, year?: number, cursorString?: string): Promise<osuV2PlayedBeatmaps> {
+    public async getPlayedBeatmaps (accessToken: string, year?: number, cursorString?: string): Promise<osuV2PlayedBeatmaps> {
         let endpoint = "/beatmapsets/search?played=played";
         if (year)
             endpoint += `&q=ranked%3D${year}`;
@@ -48,7 +48,11 @@ export class osuAPIV2 {
         return this.get<osuV2PlayedBeatmaps>(endpoint, accessToken);
     }
 
-    public getUserInfo (accessToken: string, mode?: "osu" | "taiko" | "fruits" | "mania"): Promise<osuV2User> {
+    public async getUser (userID: string, mode?: "osu" | "taiko" | "fruits" | "mania", accessToken?: string): Promise<osuV2User> {
+        return this.get<osuV2User>(`/users/${userID}${mode ? `/${mode}` : ""}`, accessToken || await this.getClientCredentials());
+    }
+
+    public getMe (accessToken: string, mode?: "osu" | "taiko" | "fruits" | "mania"): Promise<osuV2Me> {
         return this.get<osuV2User>(`/me${mode ? `/${mode}` : ""}`, accessToken);
     }
 

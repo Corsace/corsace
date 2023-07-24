@@ -58,7 +58,9 @@ export enum ModeDivisionType {
     storyboard,
 }
 
-export const modeTextHash = {
+export const modeTextHash: {
+    [key: string]: ModeDivisionType;
+} = {
     "0": 1, 
     "standard": 1,
     "osu": 1,

@@ -51,7 +51,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
 }, async (ctx, next) => {
     try {
         // api v2 data
-        const data = await osuV2Client.getUserInfo(ctx.state.user.osu.accessToken);
+        const data = await osuV2Client.getMe(ctx.state.user.osu.accessToken);
 
         // User Statistics
         ctx.state.user.userStatistics = await UserStatistics

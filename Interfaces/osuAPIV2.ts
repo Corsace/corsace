@@ -12,13 +12,6 @@ export const bwsFilter = {
     4: new RegExp(`${bwsFilterString}|taiko|catch|ctb|fruits`, "gi"),
 };
 
-export const modeName = {
-    1: "osu",
-    2: "taiko",
-    3: "fruits",
-    4: "mania",
-};
-
 export interface osuAPIV2ChatBotOptions {
     disableRateLimiting?: boolean;
     requestsPerMinute?: number;
@@ -62,14 +55,17 @@ export interface osuV2User {
     avatar_url: string;
     previous_usernames?: string[];
     statistics?: osuV2UserStatistics;
+    badges?: osuV2UserBadge[];
+    groups?: osuV2UserGroup[];
+}
+
+export interface osuV2Me extends osuV2User {
     statistics_rulesets?: {
         "osu": osuV2UserStatistics;
         "taiko": osuV2UserStatistics;
         "fruits": osuV2UserStatistics;
         "mania": osuV2UserStatistics;
     }
-    badges?: osuV2UserBadge[];
-    groups?: osuV2UserGroup[];
 }
 
 export interface osuV2Friend {
