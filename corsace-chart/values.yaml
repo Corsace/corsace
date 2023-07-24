@@ -40,13 +40,12 @@ secrets:
     username: ""
     secret: ""
   osu:
+    proxyBaseUrl: ""
     v1:
       apiKey: ""
-      baseUrl: ""
     v2:
       clientId: ""
       clientSecret: ""
-      baseUrl: ""
     bancho:
       username: ""
       ircPassword: ""

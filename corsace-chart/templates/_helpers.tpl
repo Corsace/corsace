@@ -112,16 +112,16 @@ Shared environment by deployments
     secretKeyRef:
       name: {{ include "corsace-chart.fullname" $ }}
       key: googleSheetsSongs
+- name: OSU_PROXY_BASEURL
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: osuProxyBaseUrl
 - name: OSU_V1_APIKEY
   valueFrom:
     secretKeyRef:
       name: {{ include "corsace-chart.fullname" $ }}
       key: osuv1ApiKey
-- name: OSU_V1_BASEURL
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "corsace-chart.fullname" $ }}
-      key: osuv1BaseUrl
 - name: OSU_V2_CLIENTID
   valueFrom:
     secretKeyRef:
@@ -132,11 +132,6 @@ Shared environment by deployments
     secretKeyRef:
       name: {{ include "corsace-chart.fullname" $ }}
       key: osuv2ClientSecret
-- name: OSU_V2_BASEURL
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "corsace-chart.fullname" $ }}
-      key: osuv2BaseUrl
 - name: OSU_BANCHO_USERNAME
   valueFrom:
     secretKeyRef:

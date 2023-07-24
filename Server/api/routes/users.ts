@@ -1,5 +1,6 @@
 import Router from "@koa/router";
 import Axios from "axios";
+import { config } from "node-config-ts";
 import { User } from "../../../Models/user";
 import { MapperQuery } from "../../../Interfaces/queries";
 import { parseQueryParam } from "../../utils/query";
@@ -49,8 +50,9 @@ usersRouter.get("/advSearch", async (ctx) => {
         if (!ctx.state.user)
             return ctx.body = { error: "Please login via osu! to use the friends filter!" };
         try {
+            // TODO: Move to appropriate service (with rate-limiter etc)
             const accessToken: string = await ctx.state.user.getAccessToken("osu");
-            const res = await Axios.get("https://osu.ppy.sh/api/v2/friends", {
+            const res = await Axios.get(`${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/api/v2/friends`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },

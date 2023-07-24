@@ -38,14 +38,13 @@
         "secret": "@@BN_SECRET"
     },
     "osu": {
+        "proxyBaseUrl": "@@OSU_PROXY_BASEURL",
         "v1": {
-            "apiKey": "@@OSU_V1_APIKEY",
-            "baseUrl": "@@OSU_V1_BASEURL"
+            "apiKey": "@@OSU_V1_APIKEY"
         },
         "v2": {
             "clientId": "@@OSU_V2_CLIENTID",
-            "clientSecret": "@@OSU_V2_CLIENTSECRET",
-            "baseUrl": "@@OSU_V2_BASEURL"
+            "clientSecret": "@@OSU_V2_CLIENTSECRET"
         },
         "bancho": {
             "username": "@@OSU_BANCHO_USERNAME",
