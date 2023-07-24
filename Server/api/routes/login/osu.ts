@@ -151,6 +151,8 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
 }, async ctx => {
     try {
         // MCA data
+        ctx.state.user.mcaEligibility = ctx.state.user.mcaEligibility || [];
+
         // TODO: Move to appropriate service (with rate-limiter etc)
         const beatmaps = (await Axios.get(`${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&u=${ctx.state.user.osu.userID}`)).data;
         if (beatmaps.length != 0) {
