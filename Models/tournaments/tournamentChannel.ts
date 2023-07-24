@@ -43,19 +43,21 @@ export function getTournamentChannelTypeRoles () {
     } as { [key in TournamentChannelType]: TournamentRoleType[] | undefined };
 }
 
-export const forumTags: { [key in TournamentChannelType]?: GuildForumTagData[] } = {
-    [TournamentChannelType.Mappoolqa]: [
-        { name: "WIP", moderated: true },
-        { name: "Finished", moderated: true },
-        { name: "Late", moderated: true },
-        { name: "Needs HS", moderated: true },
-    ],
-    [TournamentChannelType.Jobboard]: [
-        { name: "Open", moderated: true },
-        { name: "Closed", moderated: true },
-        { name: "To Assign", moderated: true },
-    ],
-};
+export function forumTags () {
+    return {
+        [TournamentChannelType.Mappoolqa]: [
+            { name: "WIP", moderated: true },
+            { name: "Finished", moderated: true },
+            { name: "Late", moderated: true },
+            { name: "Needs HS", moderated: true },
+        ],
+        [TournamentChannelType.Jobboard]: [
+            { name: "Open", moderated: true },
+            { name: "Closed", moderated: true },
+            { name: "To Assign", moderated: true },
+        ],
+    } as { [key in TournamentChannelType]?: GuildForumTagData[] };
+}
 
 @Entity()
 export class TournamentChannel extends BaseEntity {

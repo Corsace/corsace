@@ -114,7 +114,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     tournamentChannel.channelID = discordChannel.id;
     tournamentChannel.channelType = TournamentChannelType[channelType];
 
-    const tags = forumTags[tournamentChannel.channelType];
+    const tags = forumTags()[tournamentChannel.channelType];
     if (tags) {
         const forumChannel = discordChannel as ForumChannel;
         const tagsToAdd = tags.map(tag => {
