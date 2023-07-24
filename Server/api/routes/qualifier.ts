@@ -299,6 +299,34 @@ qualifierRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
     ctx.body = {
         success: true,
     };
-});     
+}); 
+
+qualifierRouter.delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (ctx) => {
+    const scoreID = parseInt(ctx.params.scoreID);
+    if (isNaN(scoreID)) {
+        ctx.body = {
+            error: "Invalid score ID",
+        };
+        return;
+    }
+
+    const score = await MatchupScore
+        .createQueryBuilder("score")
+        .where("score.ID = :scoreID", { scoreID })
+        .getOne();
+    if (!score) {
+        ctx.body = {
+            error: "Score not found",
+        };
+        return;
+    }
+
+    await score.remove();
+
+    ctx.body = {
+        success: true,
+    };
+});
+
 
 export default qualifierRouter;
