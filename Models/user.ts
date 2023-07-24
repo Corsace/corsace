@@ -420,7 +420,7 @@ export class User extends BaseEntity {
         } catch (e) {
             // Invalid access token or it's not found
             if (Axios.isAxiosError(e) && e.code === "401" || e instanceof Error)
-                return osuV2Client.getUser(this.osu.userID, modeIDToMode[modeID]);
+                return osuV2Client.getUser(this.osu.userID, modeIDToMode()[modeID]);
             throw e;
         }
     }
@@ -432,7 +432,7 @@ export class User extends BaseEntity {
         const data: osuV2Me | osuV2User = osuV2Data || await this.getOsuAPIV2Data(modeID);
         let statistics: osuV2UserStatistics | undefined = undefined;
         if ("statistics_rulesets" in data)
-            statistics = data.statistics_rulesets?.[modeIDToMode[modeID]] || data.playmode == modeIDToMode[modeID] ? data.statistics || undefined : undefined;
+            statistics = data.statistics_rulesets?.[modeIDToMode()[modeID]] || data.playmode == modeIDToMode()[modeID] ? data.statistics || undefined : undefined;
         else
             statistics = data.statistics || undefined;
 
@@ -454,7 +454,7 @@ export class User extends BaseEntity {
         userStatistics.BWS = Math.pow(userStatistics.rank, Math.pow(0.9937, Math.pow(badges.length, 2)));
         if (!this.userStatistics?.find(stat => stat.modeDivision.ID === modeID)) {
             userStatistics.user = this;
-            userStatistics.modeDivision = (await ModeDivision.modeSelect(modeIDToMode[modeID]))!;
+            userStatistics.modeDivision = (await ModeDivision.modeSelect(modeIDToMode()[modeID]))!;
         }
 
         await userStatistics.save();

@@ -23,6 +23,7 @@ export enum TournamentChannelType {
 }
 
 // Designate an array of TournamentRoles for each channel type
+// Having this as a function instead of a constant avoids possible circular dependencies and undefined errors on instance startup
 export function getTournamentChannelTypeRoles () {
     return {
         [TournamentChannelType.General]: undefined,
@@ -43,19 +44,22 @@ export function getTournamentChannelTypeRoles () {
     } as { [key in TournamentChannelType]: TournamentRoleType[] | undefined };
 }
 
-export const forumTags: { [key in TournamentChannelType]?: GuildForumTagData[] } = {
-    [TournamentChannelType.Mappoolqa]: [
-        { name: "WIP", moderated: true },
-        { name: "Finished", moderated: true },
-        { name: "Late", moderated: true },
-        { name: "Needs HS", moderated: true },
-    ],
-    [TournamentChannelType.Jobboard]: [
-        { name: "Open", moderated: true },
-        { name: "Closed", moderated: true },
-        { name: "To Assign", moderated: true },
-    ],
-};
+// Having this as a function instead of a constant avoids possible circular dependencies and undefined errors on instance startup
+export function forumTags () {
+    return {
+        [TournamentChannelType.Mappoolqa]: [
+            { name: "WIP", moderated: true },
+            { name: "Finished", moderated: true },
+            { name: "Late", moderated: true },
+            { name: "Needs HS", moderated: true },
+        ],
+        [TournamentChannelType.Jobboard]: [
+            { name: "Open", moderated: true },
+            { name: "Closed", moderated: true },
+            { name: "To Assign", moderated: true },
+        ],
+    } as { [key in TournamentChannelType]?: GuildForumTagData[] };
+}
 
 @Entity()
 export class TournamentChannel extends BaseEntity {

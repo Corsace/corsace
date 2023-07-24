@@ -728,7 +728,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         tournamentChannel.channelType = TournamentChannelType[channelType];
         tournament.channels!.push(tournamentChannel);
 
-        const tags = forumTags[tournamentChannel.channelType];
+        const tags = forumTags()[tournamentChannel.channelType];
         if (tags) {
             const forumChannel = channel as ForumChannel;
             const tagsToAdd = tags.map(tag => {
