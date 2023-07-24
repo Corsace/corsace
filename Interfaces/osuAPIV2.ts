@@ -25,7 +25,7 @@ export interface osuAPIV2ChatBotOptions {
     baseURL?: string;
 }
 
-export interface osuAPIV2ChatBotToken {
+export interface osuAPIV2ClientCredentials {
     token: string;
     expiresAt: Date;
 }
