@@ -12,7 +12,7 @@ export const bwsFilter = {
     4: new RegExp(`${bwsFilterString}|taiko|catch|ctb|fruits`, "gi"),
 };
 
-export interface osuAPIV2ChatBotOptions {
+export interface osuAPIV2Options {
     disableRateLimiting?: boolean;
     requestsPerMinute?: number;
     baseURL?: string;

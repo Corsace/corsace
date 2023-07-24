@@ -1,6 +1,6 @@
 import axios from "axios";
 import { RateLimiter } from "limiter";
-import { osuV2Token, osuAPIV2ChatBotOptions, osuAPIV2ClientCredentials, osuV2Beatmapset, osuV2PlayedBeatmaps, osuV2User, osuV2Friend, osuV2Me } from "../../Interfaces/osuAPIV2";
+import { osuV2Token, osuAPIV2Options, osuAPIV2ClientCredentials, osuV2Beatmapset, osuV2PlayedBeatmaps, osuV2User, osuV2Friend, osuV2Me } from "../../Interfaces/osuAPIV2";
 import { User } from "../../Models/user";
 
 // For any properties missing in the typings, go to Interfaces/osuAPIV2.ts and add only the properties you need there.
@@ -17,7 +17,7 @@ export class osuAPIV2 {
 
     private clientCredentials?: osuAPIV2ClientCredentials;
 
-    constructor (clientID: string, clientSecret: string, options?: osuAPIV2ChatBotOptions) {
+    constructor (clientID: string, clientSecret: string, options?: osuAPIV2Options) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.disableRateLimiting = options?.disableRateLimiting || false;
