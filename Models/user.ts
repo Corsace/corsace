@@ -1,6 +1,7 @@
 
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, JoinTable, Brackets, Index, ManyToMany } from "typeorm";
-import { bwsFilter, modeName, osuV2User, osuV2UserBadge } from "../Interfaces/osuAPIV2";
+import Axios from "axios";
+import { bwsFilter, osuV2Me, osuV2User, osuV2UserBadge, osuV2UserStatistics } from "../Interfaces/osuAPIV2";
 import { DemeritReport } from "./demerits";
 import { MCAEligibility } from "./MCA_AYIM/mcaEligibility";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
@@ -35,6 +36,7 @@ import { Matchup } from "./tournaments/matchup";
 import { MatchupScore } from "./tournaments/matchupScore";
 import { MatchupMessage } from "./tournaments/matchupMessage";
 import { UserStatistics } from "./userStatistics";
+import { modeIDToMode } from "../Interfaces/modes";
 
 // General middlewares
 
@@ -411,17 +413,29 @@ export class User extends BaseEntity {
     }
 
     // TODO: Cache osu! API data because this is a lot of API calls
-    public async getOsuAPIV2Data () {
-        const accessToken = this.osu.accessToken || await this.getAccessToken("osu");
-        return osuV2Client.getUserInfo(accessToken);
+    public async getOsuAPIV2Data (modeID: ModeDivisionType = 1): Promise<osuV2Me | osuV2User> {
+        try {
+            const accessToken = this.osu.accessToken || await this.getAccessToken("osu");
+            return osuV2Client.getMe(accessToken);
+        } catch (e) {
+            // Invalid access token or it's not found
+            if (Axios.isAxiosError(e) && e.code === "401" || e instanceof Error)
+                return osuV2Client.getUser(this.osu.userID, modeIDToMode[modeID]);
+            throw e;
+        }
     }
 
-    public async refreshStatistics (modeID: ModeDivisionType = 1, osuV2Data?: osuV2User) {
+    public async refreshStatistics (modeID: ModeDivisionType = 1, osuV2Data?: osuV2Me): Promise<UserStatistics | undefined> {
         if (modeID === ModeDivisionType.storyboard)
             return;
 
-        const data = osuV2Data || await this.getOsuAPIV2Data();
-        const statistics = data.statistics_rulesets?.[modeName[modeID]] || data.playmode == modeName[modeID] ? data.statistics || undefined : undefined;
+        const data: osuV2Me | osuV2User = osuV2Data || await this.getOsuAPIV2Data(modeID);
+        let statistics: osuV2UserStatistics | undefined = undefined;
+        if ("statistics_rulesets" in data)
+            statistics = data.statistics_rulesets?.[modeIDToMode[modeID]] || data.playmode == modeIDToMode[modeID] ? data.statistics || undefined : undefined;
+        else
+            statistics = data.statistics || undefined;
+
         const badges = User.filterBWSBadges(data.badges || [], modeID);
 
         const userStatistics = 
@@ -440,7 +454,7 @@ export class User extends BaseEntity {
         userStatistics.BWS = Math.pow(userStatistics.rank, Math.pow(0.9937, Math.pow(badges.length, 2)));
         if (!this.userStatistics?.find(stat => stat.modeDivision.ID === modeID)) {
             userStatistics.user = this;
-            userStatistics.modeDivision = (await ModeDivision.modeSelect(modeName[modeID]))!;
+            userStatistics.modeDivision = (await ModeDivision.modeSelect(modeIDToMode[modeID]))!;
         }
 
         await userStatistics.save();

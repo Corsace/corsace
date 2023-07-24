@@ -78,7 +78,7 @@ export async function discordPassport (accessToken: string, refreshToken: string
 
 export async function osuPassport (accessToken: string, refreshToken: string, profile: any, done: OAuth2Strategy.VerifyCallback): Promise<void> {
     try {
-        const userProfile = await osuV2Client.getUserInfo(accessToken);
+        const userProfile = await osuV2Client.getMe(accessToken);
         let user = await User.findOne({
             where: {
                 osu: {
