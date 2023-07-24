@@ -52,7 +52,7 @@ const getModeDivison = memoizee(async (modeDivisionId: number) => {
 
 // API call to fetch a user's country.
 async function getMissingOsuUserProperties (userID: number): Promise<{ country: string; username: string; }> {
-    const userApi = (await axios.get(`https://osu.ppy.sh/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`)).data as any[];
+    const userApi = (await axios.get(`${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`)).data as any[];
     if (userApi.length === 0)
         return { country: "", username: "" };
     return {
@@ -306,7 +306,7 @@ async function script () {
     printStatus();
     const queuedBeatmapIds: number[] = [];
     while (since.getTime() < until.getTime()) {
-        const newBeatmapsApi = (await axios.get(`https://osu.ppy.sh/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${(new Date(since.getTime() - 1000)).toJSON().slice(0,19).replace("T", " ")}`)).data as any[];
+        const newBeatmapsApi = (await axios.get(`${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${(new Date(since.getTime() - 1000)).toJSON().slice(0,19).replace("T", " ")}`)).data as any[];
         for(const newBeatmapApi of newBeatmapsApi) {
             const newBeatmap = new APIBeatmap(newBeatmapApi);
             if(queuedBeatmapIds.includes(newBeatmap.id))
