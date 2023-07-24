@@ -43,14 +43,3 @@ ormConfig.initialize()
         console.log(`Connected to the ${connection.options.database} database`);
     })
     .catch((error) => console.error("An error has occurred in connecting", error));
-
-const onTerminationSignal = (signal: NodeJS.Signals) => {
-    console.log(`Received shutdown signal (${signal}), initiating shutdown sequence.`);
-
-    ormConfig.destroy();
-    discordClient.destroy();
-    process.exit();
-};
-
-process.on("SIGTERM", () => onTerminationSignal("SIGTERM"));
-process.on("SIGINT", () => onTerminationSignal("SIGINT"));
