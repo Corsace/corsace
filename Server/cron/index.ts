@@ -3,6 +3,8 @@ import { config } from "node-config-ts";
 import { CronJob } from "cron";
 import cronFunctions from "./cronFunctions";
 import { CronJobData, CronJobType } from "../../Interfaces/cron";
+import state from "./state";
+import { maybeShutdown } from "../cron-runner";
 
 class Cron {
 
@@ -10,11 +12,25 @@ class Cron {
     private jobs: CronJob[] = [];
     private initialized = false;
 
+    private async runJob (job: CronJobData) {
+        state.runningJobs++;
+        try {
+            await cronFunctions[job.type].execute(job);
+        } catch (err) {
+            console.error(`An unhandled error occured while executing job ${job.type}`, err);
+        }
+        state.runningJobs--;
+        maybeShutdown();
+    }
+
     public async initialize () {
         const data = await Promise.all(Object.values(cronFunctions).map(async func => await func.initialize()));
 
+        if (state.shuttingDown)
+            return;
+
         this.data = data.flat();
-        this.jobs = this.data.map(job => new CronJob(job.date, async () => await cronFunctions[job.type].execute(job), undefined, true));
+        this.jobs = this.data.map(job => new CronJob(job.date, () => this.runJob(job), undefined, true));
 
         this.initialized = true;
         console.log("Cron runner initialized!");
@@ -38,7 +54,7 @@ class Cron {
             return;
 
         this.data.push(job);
-        this.jobs.push(new CronJob(date, async () => await cronFunctions[job.type].execute(job), undefined, true));
+        this.jobs.push(new CronJob(date, () => this.runJob(job), undefined, true));
     }
 
     public async remove (type: CronJobType, date: Date) {
@@ -65,6 +81,10 @@ class Cron {
 
     public listJobs () {
         return this.data;
+    }
+
+    public stopAllJobs () {
+        this.jobs.forEach(job => job.stop());
     }
 }
 
