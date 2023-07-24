@@ -46,7 +46,7 @@ export default async function guildMemberAdd (member: GuildMember) {
             roles.push(config.discord.roles.corsace.verified);
         else {
             try {
-                member.send("Hello and welcome to Corsace.\n\nIf u wanna type in the discord server, make sure u log in on osu! and then discord at https://corsace.io to obtain the `Verified` role. That will give u typing abilities");
+                await member.send("Hello and welcome to Corsace.\n\nIf u wanna type in the discord server, make sure u log in on osu! and then discord at https://corsace.io to obtain the `Verified` role. That will give u typing abilities");
             } catch (err) {
                 const channel = discordClient.channels.cache.get(config.discord.coreChannel);
                 if (channel instanceof TextChannel)

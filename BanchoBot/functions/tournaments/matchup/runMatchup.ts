@@ -445,7 +445,7 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
         return;
     
     const invMessage = await discordChannel.send({
-        content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n\nLobby has been created for ur match, if u need to be reinvited, press the button below.\n\nMake sure u have non-friends DMs allowed on osu!\n\nIf ur not part of the matchup, the button wont work for u .`,
+        content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n\nLobby has been created for ur match, if u need to be reinvited, press the button below.\n\nMake sure u have non-friends DMs allowed on osu!\n\n\`!panic\` will notify organizers/refs if anything goes absurdly wrong\n\`!abort\` allows u to abort a map within the allowed time after a map start, and for the allowed amount of times a team is allowed to abort\n\nIf ur not part of the matchup, the button wont work for u .`,
         components: [row],
     });
 
