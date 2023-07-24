@@ -23,6 +23,7 @@ export enum TournamentChannelType {
 }
 
 // Designate an array of TournamentRoles for each channel type
+// Having this as a function instead of a constant avoids possible circular dependencies and undefined errors on instance startup
 export function getTournamentChannelTypeRoles () {
     return {
         [TournamentChannelType.General]: undefined,
@@ -43,6 +44,7 @@ export function getTournamentChannelTypeRoles () {
     } as { [key in TournamentChannelType]: TournamentRoleType[] | undefined };
 }
 
+// Having this as a function instead of a constant avoids possible circular dependencies and undefined errors on instance startup
 export function forumTags () {
     return {
         [TournamentChannelType.Mappoolqa]: [

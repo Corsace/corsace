@@ -12,6 +12,7 @@ export const modeList = [
     "mania",
 ];
 
+// Having this as a function instead of a constant avoids possible circular dependencies and undefined errors on instance startup
 export function modeIDToMode () {
     return {
         [ModeDivisionType.standard]: "osu",
