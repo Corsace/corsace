@@ -202,4 +202,30 @@ qualifierRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
     };
 });
 
+qualifierRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
+    const matchID = ctx.request.body?.matchID;
+    if (!matchID || isNaN(parseInt(matchID))) {
+        ctx.body = {
+            error: "No matchID provided",
+        };
+        return;
+    }
+    const teamID = ctx.request.body?.teamID;
+    if (!teamID || isNaN(parseInt(teamID))) {
+        ctx.body = {
+            error: "No teamID provided",
+        };
+        return;
+    }
+    const mapOrder = ctx.request.body?.mapOrder;
+    if (!mapOrder || isNaN(parseInt(mapOrder))) {
+        ctx.body = {
+            error: "No mapOrder provided",
+        };
+        return;
+    }
+    const score = ctx.request.body?.score;
+    if (!score || isNaN(parseInt(score))) {
+        
+
 export default qualifierRouter;
