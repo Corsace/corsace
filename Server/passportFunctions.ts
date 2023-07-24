@@ -35,7 +35,7 @@ export function setupPassport () {
     }, discordPassport));
 
     passport.use(new OAuth2Strategy({
-        authorizationURL: `${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/oauth/authorize`,
+        authorizationURL: "https://osu.ppy.sh/oauth/authorize",
         tokenURL: `${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/oauth/token`,
         clientID: config.osu.v2.clientId,
         clientSecret: config.osu.v2.clientSecret,
