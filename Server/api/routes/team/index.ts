@@ -287,11 +287,9 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         } else {
             const matchup = new Matchup;
             matchup.date = qualifierDate;
-            matchup.teams = [team];
+            matchup.teams = [ team ];
+            matchup.stage = qualifierStage;
             await matchup.save();
-
-            qualifierStage.matchups.push(matchup);
-            await qualifierStage.save();
 
             await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
         }
@@ -388,11 +386,9 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
     } else {
         const matchup = new Matchup;
         matchup.date = qualifierDate;
-        matchup.teams = [team];
+        matchup.teams = [ team ];
+        matchup.stage = qualifierStage;
         await matchup.save();
-        
-        qualifierStage.matchups.push(matchup);
-        await qualifierStage.save();
 
         await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
     }
