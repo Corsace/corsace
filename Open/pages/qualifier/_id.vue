@@ -44,10 +44,12 @@
                             TEAM: 
                         </div>
                         <NuxtLink
+                            v-for="team in qualifierData.teams"
+                            :key="team.ID"
                             class="qualifier__info_bar_group__data"
-                            :to="`/team/${qualifierData.team?.ID}`"
+                            :to="`/team/${team.ID}`"
                         >
-                            {{ qualifierData.team?.name || "N/A" }}
+                            {{ team.name || "N/A" }}
                         </NuxtLink>
                     </div>
                     <div class="qualifier__info_bar_time qualifier__info_bar_group__title">
@@ -149,6 +151,7 @@ export default class Qualifier extends Vue {
         month: "long", // Full month name (e.g., "July")
         day: "numeric", // Day of the month (e.g., "30")
         hour: "2-digit", // Two-digit hour (e.g., "23")
+        hour12: false, // 24-hour format hour
         minute: "2-digit", // Two-digit minute (e.g., "59")
         timeZone: "UTC", // Set the time zone to UTC
         timeZoneName: "short", // Abbreviated time zone name (e.g., "UTC")
@@ -157,6 +160,7 @@ export default class Qualifier extends Vue {
         month: "long", // Full month name (e.g., "July")
         day: "numeric", // Day of the month (e.g., "30")
         hour: "2-digit", // Two-digit hour (e.g., "23")
+        hour12: false, // 24-hour format hour
         minute: "2-digit", // Two-digit minute (e.g., "59")
         timeZoneName: "short", // Abbreviated time zone name (e.g., "UTC")
     };
@@ -199,11 +203,12 @@ export default class Qualifier extends Vue {
 @import '@s-sass/_variables';
 
 .qualifier {
+    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
+    height: 100%;
+
     &__wrapper {
-        background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
         display: flex;
         justify-content: center;
-        height: 100%;
     }
 
     &__main_content {

@@ -7,7 +7,7 @@
         >
             <div class="qualifiers_views_day__date">
                 <div class="qualifiers_view_day__date_text">
-                    {{ qualifierGroupedByDate.date.toLocaleString('en-US', { month: 'long', day: 'numeric' }) }}
+                    {{ qualifierGroupedByDate.date.toLocaleString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' }) }}
                 </div>
             </div>
             <hr class="line--even-space line--red">
