@@ -40,9 +40,4 @@ export class MatchupMap extends BaseEntity {
     @ManyToOne(() => Matchup, matchup => matchup.maps)
         matchup!: Matchup;
 
-    constructor (matchup: Matchup, beatmap: MappoolMap) {
-        super();
-        this.matchup = matchup;
-        this.map = beatmap;
-    }
 }

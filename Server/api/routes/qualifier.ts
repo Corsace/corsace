@@ -9,15 +9,15 @@ import { discordClient } from "../../discord";
 import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { osuClient } from "../../osu";
 
-function requiredNumberFields<T extends Record<string, any>>(obj: Partial<T>, fields: (keyof T)[]): string | Record<keyof T, number> {
+function requiredNumberFields<T extends Record<string, any>> (obj: Partial<T>, fields: (keyof T)[]): string | Record<keyof T, number> {
     const result: Record<string, number> = {};
 
     for (const field of fields) {
         if (!obj[field]) 
             return `Field ${String(field)} is missing`;
 
-        const value = typeof obj[field] === 'string' ? parseInt(obj[field]!) : obj[field];
-        if (typeof value !== 'number' || isNaN(value)) 
+        const value = typeof obj[field] === "string" ? parseInt(obj[field]!) : obj[field];
+        if (typeof value !== "number" || isNaN(value)) 
             return `Field ${String(field)} is invalid`;
 
         result[field as string] = value;
@@ -177,7 +177,9 @@ qualifierRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
         if (!beatmap)
             return;
 
-        const map = new MatchupMap(matchup, beatmap);
+        const map = new MatchupMap;
+        map.matchup = matchup;
+        map.map = beatmap;
         map.order = i + 1;
         map.scores = [];
         game.scores.forEach(score => {
@@ -185,7 +187,8 @@ qualifierRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
             if (!user)
                 return;
 
-            const matchupScore = new MatchupScore(user);
+            const matchupScore = new MatchupScore;
+            matchupScore.user = user;
             matchupScore.score = score.score;
             matchupScore.mods = ((score.enabledMods || game.mods) | 1) ^ 1; // Remove NF from mods (the OR 1 is to ensure NM is 0 after XOR)
             matchupScore.misses = score.countMiss;
@@ -285,7 +288,8 @@ qualifierRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
         return;
     }
 
-    const matchupScore = new MatchupScore(user);
+    const matchupScore = new MatchupScore;
+    matchupScore.user = user;
     matchupScore.score = score;
     matchupScore.mods = mods;
     matchupScore.misses = misses;
@@ -328,5 +332,33 @@ qualifierRouter.delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (c
     };
 });
 
+qualifierRouter.delete("/map/:mapID", isLoggedInDiscord, isCorsace, async (ctx) => {
+    const mapID = parseInt(ctx.params.mapID);
+    if (isNaN(mapID)) {
+        ctx.body = {
+            error: "Invalid map ID",
+        };
+        return;
+    }
+
+    const map = await MatchupMap
+        .createQueryBuilder("map")
+        .leftJoinAndSelect("map.scores", "score")
+        .where("map.ID = :mapID", { mapID })
+        .getOne();
+    if (!map) {
+        ctx.body = {
+            error: "Map not found",
+        };
+        return;
+    }
+
+    await Promise.all(map.scores.map(score => score.remove()));
+    await map.remove();
+
+    ctx.body = {
+        success: true,
+    };
+});
 
 export default qualifierRouter;
