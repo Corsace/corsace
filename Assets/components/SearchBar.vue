@@ -105,7 +105,10 @@ export default class SearchBar extends Vue {
     }
 
     &--open {
-        border: 2px solid $open-red;
+        outline: 2px solid #696969;
+        &:focus-within {
+            outline: 2px solid $open-red;
+        }
     }
 
     &--light {
@@ -186,9 +189,13 @@ export default class SearchBar extends Vue {
         }
 
         &--open {
-            color: $open-red;
+            color: $white;
+            font-family: $font-ggsans;
+            font-style: italic;
+            font-weight: 500;
+
             &::placeholder, &:placeholder-shown {
-                color: $open-red;
+                color: $white;
             }
         }
 
