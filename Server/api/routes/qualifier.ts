@@ -13,7 +13,7 @@ function requiredNumberFields<T extends Record<string, any>> (obj: Partial<T>, f
     const result: Record<string, number> = {};
 
     for (const field of fields) {
-        if (!obj[field]) 
+        if (!obj[field] && obj[field] !== 0) 
             return `Field ${String(field)} is missing`;
 
         const value = typeof obj[field] === "string" ? parseInt(obj[field]!) : obj[field];
@@ -194,7 +194,7 @@ qualifierRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
             matchupScore.misses = score.countMiss;
             matchupScore.combo = score.maxCombo;
             matchupScore.fail = !score.pass;
-            matchupScore.accuracy = (score.count50 + 2 * score.count100 + 6 * score.count300) / Math.max(6 * (score.count50 + score.count100 + score.count300), 1);
+            matchupScore.accuracy = (score.count50 + 2 * score.count100 + 6 * score.count300) / Math.max(6 * (score.countMiss + score.count50 + score.count100 + score.count300), 1);
             matchupScore.fullCombo = score.perfect || score.maxCombo === beatmap.beatmap!.maxCombo;
 
             map.scores.push(matchupScore);

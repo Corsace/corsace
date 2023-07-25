@@ -347,7 +347,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             matchupScore.misses = score.countMiss;
             matchupScore.combo = score.maxCombo;
             matchupScore.fail = !score.pass;
-            matchupScore.accuracy = (score.count50 + 2 * score.count100 + 6 * score.count300) / Math.max(6 * (score.count50 + score.count100 + score.count300), 1);
+            matchupScore.accuracy = (score.count50 + 2 * score.count100 + 6 * score.count300) / Math.max(6 * (score.countMiss + score.count50 + score.count100 + score.count300), 1);
             matchupScore.fullCombo = score.perfect || score.maxCombo === beatmap.beatmap!.maxCombo;
             return matchupScore.save();
         }));
