@@ -37,9 +37,20 @@ export interface QualifierScoreView {
         map: string;
         mapID: number;
         score: number;
+        relMax: number;
+        percentMax: number;
+        relAvg: number;
+        percentAvg: number;
+        zScore: number;
         isBest: boolean;
     }[];
     best: string;
     worst: string;
+    sum: number;
     average: number;
+    relMax: number;
+    percentMax: number;
+    relAvg: number;
+    percentAvg: number;
+    zScore: number;
 }

@@ -485,11 +485,14 @@
             },
             "scores": {
                 "nav": {
-                    "filters": "FILTERS",
+                    "sort": "SORT",
                     "average": "AVERAGE",
                     "sum": "SUM",
-                    "%avg": "%AVG",
-                    "seedings": "SEEDING"
+                    "percentAvg": "%AVG",
+                    "relAvg": "REL. AVG",
+                    "percentMax": "%MAX",
+                    "relMax": "REL. MAX",
+                    "zScore": "Z-SCORE"
                 },
                 "category": "CATEGORY",
                 "select": "SELECT",
