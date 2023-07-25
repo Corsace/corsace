@@ -225,6 +225,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .getOne();
 
         if (matchup) {
+            if (matchup.date.getTime() === date.getTime()) {
+                await respond(m, `\`${team.name}\` is already scheduled for this date`);
+                return;
+            }
             if (matchup.mp) {
                 if (!await securityChecks(m, true, true, [], [TournamentRoleType.Organizer]))
                     return;
@@ -254,10 +258,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     return;
                 }
                 await respond(m, `The qualifier for \`${team.name}\` is now ${discordStringTimestamp(date)}`);
-                return;
-            }
-            if (matchup.date.getTime() === date.getTime()) {
-                await respond(m, `\`${team.name}\` is already scheduled for this date`);
                 return;
             }
             if (team.manager.discord.userID !== commandUser(m).id) {
