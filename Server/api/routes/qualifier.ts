@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import { Multi } from "nodesu";
-import { Qualifier } from "../../../Interfaces/qualifier";
+import { Qualifier, QualifierTeam } from "../../../Interfaces/qualifier";
 import { Matchup } from "../../../Models/tournaments/matchup";
 import { MatchupMap } from "../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../Models/tournaments/matchupScore";
@@ -72,11 +72,11 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
             ID: qualifier.referee.ID,
             username: qualifier.referee.osu.username,
         } : undefined,
-        team: qualifier.teams?.[0] ? {
-            ID: qualifier.teams[0].ID,
-            name: qualifier.teams[0].name,
-            avatarURL: qualifier.teams[0].avatarURL,
-        } : undefined,
+        teams: qualifier.teams?.map<QualifierTeam>(t => ({
+            ID: t.ID,
+            name: t.name,
+            avatarURL: t.avatarURL,
+        })) || [],
         scores: [],
     };
 

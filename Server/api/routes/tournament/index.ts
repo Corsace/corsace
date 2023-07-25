@@ -184,15 +184,23 @@ tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
         .andWhere("stage.stageType = '0'")
         .getMany();
     
-    ctx.body = qualifiers.map<BaseQualifier>(q => ({
-        ID: q.ID,
-        date: q.date,
-        team: q.teams?.[0] ? {
-            ID: q.teams[0].ID,
-            name: q.teams[0].name,
-            avatarURL: q.teams[0].avatarURL,
-        } : undefined,
-    }));
+    ctx.body = qualifiers.flatMap<BaseQualifier>(q => {
+        const qualData = {
+            ID: q.ID,
+            date: q.date,
+        };
+        if (!q.teams)
+            return [qualData];
+
+        return q.teams.map<BaseQualifier>(t => ({
+            ...qualData,
+            team: {
+                ID: t.ID,
+                name: t.name,
+                avatarURL: t.avatarURL,
+            },
+        }));
+    });
 });
 
 tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx) => {

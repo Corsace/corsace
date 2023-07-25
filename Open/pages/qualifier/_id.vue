@@ -44,10 +44,12 @@
                             TEAM: 
                         </div>
                         <NuxtLink
+                            v-for="team in qualifierData.teams"
+                            :key="team.ID"
                             class="qualifier__info_bar_group__data"
-                            :to="`/team/${qualifierData.team?.ID}`"
+                            :to="`/team/${team.ID}`"
                         >
-                            {{ qualifierData.team?.name || "N/A" }}
+                            {{ team.name || "N/A" }}
                         </NuxtLink>
                     </div>
                     <div class="qualifier__info_bar_time qualifier__info_bar_group__title">

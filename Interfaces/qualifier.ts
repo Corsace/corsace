@@ -1,11 +1,7 @@
 export interface BaseQualifier {
     ID: number;
     date: Date;
-    team?: {
-        ID: number;
-        name: string;
-        avatarURL?: string | null;
-    };
+    team?: QualifierTeam;
 }
 
 export interface Qualifier extends BaseQualifier {
@@ -14,7 +10,14 @@ export interface Qualifier extends BaseQualifier {
         ID: number;
         username: string;
     }
+    teams: QualifierTeam[];
     mp?: number | null;
+}
+
+export interface QualifierTeam {
+    ID: number;
+    name: string;
+    avatarURL?: string | null;
 }
 
 export interface QualifierScore {
