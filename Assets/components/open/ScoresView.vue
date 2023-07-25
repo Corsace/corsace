@@ -2,20 +2,17 @@
     <div class="scores">
         <div class="scores__sub_header">
             <div class="scores__sub_header_subtext">
-                {{ $t('open.qualifiers.scores.nav.filters') }}
+                {{ $t('open.qualifiers.scores.nav.sort') }}
             </div>
-            <div class="scores__sub_header_item scores__sub_header_item--active">
-                {{ $t('open.qualifiers.scores.nav.average') }}
+            <div 
+                v-for="filter in filters"
+                :key="filter"
+                class="scores__sub_header_item"
+                :class="{ 'scores__sub_header_item--active': currentFilter === filter }"
+                @click="currentFilter = filter"
+            >
+                {{ $t(`open.qualifiers.scores.nav.${filter}`) }}
             </div>
-            <!-- <div class="scores__sub_header_item">
-                {{ $t('open.qualifiers.scores.nav.sum') }}
-            </div>
-            <div class="scores__sub_header_item">
-                {{ $t('open.qualifiers.scores.nav.%avg') }}
-            </div>
-            <div class="scores__sub_header_item">
-                {{ $t('open.qualifiers.scores.nav.seedings') }}
-            </div> -->
         </div>
         <hr class="line--red line--bottom-space">
         <div class="scores__wrapper">
@@ -25,7 +22,7 @@
                         <th>TEAM</th>
                         <th>BEST</th>
                         <th>WORST</th>
-                        <th>AVG.</th>
+                        <th>{{ $t(`open.qualifiers.scores.nav.${currentFilter}`) }}</th>
                         <th
                             v-for="map in mapNames"
                             :key="map.mapID"
@@ -40,13 +37,13 @@
                         <td>{{ row.name }}</td>
                         <td>{{ row.best }}</td>
                         <td>{{ row.worst }}</td>
-                        <td>{{ row.average }}</td>
+                        <td>{{ row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}</td>
                         <td 
                             v-for="score in row.scores"
                             :key="score.map"
                             :class="{ 'scores__table--highlight': score.isBest }"
                         >
-                            {{ score.score === 0 ? "" : score.score }}
+                            {{ currentFilter === "sum" || currentFilter === "average" ? score.score : score[currentFilter].toFixed(2) }}{{ currentFilter.includes("percent") ? "%" : "" }}
                         </td>
                     </tr>
                 </tbody>
@@ -63,6 +60,10 @@ import { Tournament } from "../../../Interfaces/tournament";
 
 const openModule = namespace("open");
 
+const filters = ["zScore", "relMax", "percentMax", "relAvg", "percentAvg", "sum", "average"];
+
+type sortType = typeof filters[number];
+
 @Component
 export default class ScoresView extends Vue {
 
@@ -70,6 +71,9 @@ export default class ScoresView extends Vue {
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State qualifierScores!: QualifierScore[] | null;
+
+    currentFilter: sortType = "zScore";
+    filters: sortType[] = filters;
 
     get mapNames (): {
         map: string;
@@ -91,88 +95,83 @@ export default class ScoresView extends Vue {
         return this.syncView === "players" ? this.playerQualifierScoreViews : this.teamQualifierScoreViews;
     }
 
-    get playerQualifierScoreViews (): QualifierScoreView[] {
+    computeQualifierScoreViews (idNameAccessor: (score: any) => { id: number, name: string }): QualifierScoreView[] {
         if (!this.qualifierScores)
             return [];
 
         const qualifierScoreViews: QualifierScoreView[] = [];
-        const playerIDs = this.qualifierScores.map(s => s.userID).filter((v, i, a) => a.indexOf(v) === i);
+        const idNames = this.qualifierScores.map(idNameAccessor).filter((v, i, a) => a.findIndex(t => (t.id === v.id && t.name === v.name)) === i);
 
-        for (const playerID of playerIDs) {
-            const playerScores = this.qualifierScores.filter(s => s.userID === playerID);
-            const playerScoreView: QualifierScoreView = {
-                ID: playerID,
-                name: playerScores[0].username,
+        for (const idName of idNames) {
+            const scores = this.qualifierScores.filter(s => idNameAccessor(s).id === idName.id);
+            const scoreView: QualifierScoreView = {
+                ID: idName.id,
+                name: idName.name,
                 scores: this.mapNames.map(map => {
-                    const mapScores = playerScores.filter(s => s.mapID === map.mapID);
+                    const mapScores = scores.filter(s => s.mapID === map.mapID);
                     return {
                         map: map.map,
                         mapID: map.mapID,
                         score: Math.round(mapScores.reduce((a, b) => a + b.score, 0) / (mapScores.length || 1)),
+                        relMax: 0,
+                        percentMax: 0,
+                        relAvg: 0,
+                        percentAvg: 0,
+                        zScore: 0,
                         isBest: false,
                     };
                 }),
-                best: playerScores.reduce((a, b) => a.score > b.score ? a : b).map,
-                worst: playerScores.reduce((a, b) => a.score < b.score ? a : b).map,
-                average: Math.round(playerScores.reduce((a, b) => a + b.score, 0) / (playerScores.length || 1)),
+                best: scores.reduce((a, b) => a.score > b.score ? a : b).map,
+                worst: scores.reduce((a, b) => a.score < b.score ? a : b).map,
+                sum: scores.reduce((a, b) => a + b.score, 0),
+                average: Math.round(scores.reduce((a, b) => a + b.score, 0) / (scores.length || 1)),
+                relMax: 0,
+                percentMax: 0,
+                relAvg: 0,
+                percentAvg: 0,
+                zScore: 0,
             };
-            playerScoreView.scores.sort((a, b) => a.mapID - b.mapID);
+            scoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
-            qualifierScoreViews.push(playerScoreView);
+            qualifierScoreViews.push(scoreView);
         }
 
         qualifierScoreViews.forEach(score => {
             score.scores.forEach(s => {
-                if (s.score === Math.max(...qualifierScoreViews.map(v => v.scores.find(t => t.mapID === s.mapID)?.score || 0)))
+                const mapsScores = qualifierScoreViews.flatMap(v => v.scores.filter(t => t.mapID === s.mapID));
+                const max = Math.max(...mapsScores.map(score => score.score));
+                const avg = mapsScores.reduce((a, b) => a + b.score, 0) / (mapsScores.length || 1);
+                const stddev = Math.sqrt(mapsScores.reduce((a, b) => a + Math.pow(b.score - avg, 2), 0) / (mapsScores.length || 1));
+
+                if (s.score === max)
                     s.isBest = true;
+
+                s.relMax = s.score / (max || 1);
+                s.percentMax = Math.round(s.relMax * 100);
+
+                s.relAvg = s.score / (avg || 1);
+                s.percentAvg = Math.round(s.relAvg * 100);
+
+                s.zScore = (s.score - avg) / (stddev || 1);
             });
+            score.relMax = score.scores.reduce((a, b) => a + b.relMax, 0);
+            score.percentMax = Math.round(score.scores.reduce((a, b) => a + b.percentMax, 0) / (score.scores.length || 1));
+            score.relAvg = score.scores.reduce((a, b) => a + b.relAvg, 0);
+            score.percentAvg = Math.round(score.scores.reduce((a, b) => a + b.percentAvg, 0) / (score.scores.length || 1));
+            score.zScore = score.scores.reduce((a, b) => a + b.zScore, 0);    
         });
 
-        qualifierScoreViews.sort((a, b) => b.average - a.average);
+        qualifierScoreViews.sort((a, b) => b[this.currentFilter] - a[this.currentFilter]);
 
         return qualifierScoreViews;
     }
 
+    get playerQualifierScoreViews (): QualifierScoreView[] {
+        return this.computeQualifierScoreViews(score => ({ id: score.userID, name: score.username }));
+    }
+
     get teamQualifierScoreViews (): QualifierScoreView[] {
-        if (!this.qualifierScores)
-            return [];
-
-        const qualifierScoreViews: QualifierScoreView[] = [];
-        const teamIDs = this.qualifierScores.map(s => s.teamID).filter((v, i, a) => a.indexOf(v) === i);
-
-        for (const teamID of teamIDs) {
-            const teamScores = this.qualifierScores.filter(s => s.teamID === teamID);
-            const teamScoreView: QualifierScoreView = {
-                ID: teamID,
-                name: teamScores[0].teamName,
-                scores: this.mapNames.map(map => {
-                    const mapScores = teamScores.filter(s => s.mapID === map.mapID);
-                    return {
-                        map: map.map,
-                        mapID: map.mapID,
-                        score: Math.round(mapScores.reduce((a, b) => a + b.score, 0) / (mapScores.length || 1)),
-                        isBest: false,
-                    };
-                }),
-                best: teamScores.reduce((a, b) => a.score > b.score ? a : b).map,
-                worst: teamScores.reduce((a, b) => a.score < b.score ? a : b).map,
-                average: Math.round(teamScores.reduce((a, b) => a + b.score, 0) / (teamScores.length || 1)),
-            };
-            teamScoreView.scores.sort((a, b) => a.mapID - b.mapID);
-
-            qualifierScoreViews.push(teamScoreView);
-        }
-
-        qualifierScoreViews.forEach(score => {
-            score.scores.forEach(s => {
-                if (s.score === Math.max(...qualifierScoreViews.map(v => v.scores.find(t => t.mapID === s.mapID)?.score || 0)))
-                    s.isBest = true;
-            });
-        });
-
-        qualifierScoreViews.sort((a, b) => b.average - a.average);
-
-        return qualifierScoreViews;
+        return this.computeQualifierScoreViews(score => ({ id: score.teamID, name: score.teamName }));
     }
 
     get teamGroupedScores (): QualifierScore[][] {
