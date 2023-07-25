@@ -33,14 +33,14 @@
             class="content_button--red qualifier_modal__label--no_shadow"
             @click.native="registerTeam"
         >
-            REGISTER TEAM TO CORSACE OPEN
+            {{ loading ? "LOADING..." : "REGISTER TEAM TO CORSACE OPEN" }}
         </ContentButton>
         <ContentButton
             v-else
             class="content_button--red qualifier_modal__label--no_shadow"
             @click.native="editQualifier"
         >
-            EDIT QUALIFIER TIME
+            {{ loading ? "LOADING..." : "EDIT QUALIFIER TIME" }}
         </ContentButton>
     </BaseModal>
 </template>
@@ -82,22 +82,29 @@ export default class QualifierModal extends Vue {
     }
 
     qualifierAt = toLocalISOString(new Date).slice(0, 16);
+    loading = false;
 
     async registerTeam () {
-        if (!this.team)
+        if (!this.team || this.loading)
             return;
 
+        this.loading = true;
         const date = new Date(this.qualifierAt);
         if (isNaN(date.getTime())) {
             alert("Invalid date/time");
+            this.loading = false;
             return;
         }
 
-        if (!confirm(`Are you sure your team wants to play their qualifiers at the UTC time ${date.toUTCString()}?`))
+        if (!confirm(`Are you sure your team wants to play their qualifiers at the UTC time ${date.toUTCString()}?`)) {
+            this.loading = false;
             return;
+        }
 
-        if (!confirm(`Are you sure you want to register ${this.team.name} to the Corsace Open?\nAny player or manager in this team will not be able to join another team and register for this tournament.\nYour roster is considered set after you play the qualifier.`))
+        if (!confirm(`Are you sure you want to register ${this.team.name} to the Corsace Open?\nAny player or manager in this team will not be able to join another team and register for this tournament.\nYour roster is considered set after you play the qualifier.`)) {
+            this.loading = false;
             return;
+        }
 
         const { data: res } = await this.$axios.post(`/api/team/${this.team.ID}/register`, {
             tournamentID: this.tournament?.ID,
@@ -107,32 +114,41 @@ export default class QualifierModal extends Vue {
         if (res.error)
             alert(res.error);
 
+        this.loading = false;
+
         if (res.success)
             this.$emit("close", true);
     }
 
     async editQualifier () {
-        if (!this.team)
+        if (!this.team || this.loading)
             return;
 
+        this.loading = true;
         const date = new Date(this.qualifierAt);
         if (isNaN(date.getTime())) {
             alert("Invalid date/time");
+            this.loading = false;
             return;
         }
 
-        if (!confirm(`Are you sure your team wants to now play their qualifiers at the UTC time ${date.toUTCString()}?`))
+        if (!confirm(`Are you sure your team wants to now play their qualifiers at the UTC time ${date.toUTCString()}?`)) {
+            this.loading = false;
             return;
+        }
 
         const { data: res } = await this.$axios.post(`/api/team/${this.team.ID}/qualifier`, {
             tournamentID: this.tournament?.ID,
             qualifierAt: date.getTime(),
         });
+        
+        if (res.error)
+            alert(res.error);
 
+        this.loading = false;
+        
         if (res.success)
             this.$emit("close", true);
-        else
-            alert(res.error);
     }
 }
 
