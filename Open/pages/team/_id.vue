@@ -456,6 +456,7 @@ export default class Team extends Vue {
         month: "long", // Full month name (e.g., "July")
         day: "numeric", // Day of the month (e.g., "30")
         hour: "2-digit", // Two-digit hour (e.g., "23")
+        hour12: false, // 24-hour format hour
         minute: "2-digit", // Two-digit minute (e.g., "59")
         timeZone: "UTC", // Set the time zone to UTC
         timeZoneName: "short", // Abbreviated time zone name (e.g., "UTC")
@@ -464,6 +465,7 @@ export default class Team extends Vue {
         month: "long", // Full month name (e.g., "July")
         day: "numeric", // Day of the month (e.g., "30")
         hour: "2-digit", // Two-digit hour (e.g., "23")
+        hour12: false, // 24-hour format hour
         minute: "2-digit", // Two-digit minute (e.g., "59")
         timeZoneName: "short", // Abbreviated time zone name (e.g., "UTC")
     };
