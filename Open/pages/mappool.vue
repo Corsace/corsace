@@ -10,7 +10,7 @@
                             STAGE
                         </template>
                         <template #bottom_text>
-                            SELECTOR
+                            SELECT
                         </template>
 
                         <template #stage>
