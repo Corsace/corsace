@@ -6,7 +6,9 @@
             `theme__${getMode()}`
         ]"
         @click="setTheme()"
-    />
+    >
+        <div class="theme__border_left" />
+    </div>
 </template>
 
 <script lang="ts">
@@ -42,11 +44,13 @@ export default class ThemeSwitcher extends Vue {
     background-repeat: no-repeat;
     background-size: 40px;
     width: 40px;
-    @include breakpoint(laptop) {
-        background-size: 50px;
-        width: 70px;
-    }
+    position: relative;
 
+    @include breakpoint(laptop) {
+        background-size: 19.8px;
+        width: 50px;
+    }
+    
     @each $mode in $modes {
         &__#{$mode} {
             &:hover {
@@ -54,11 +58,18 @@ export default class ThemeSwitcher extends Vue {
             }
         }
     }
-
+    
     &__corsace {
         &:hover {
             background-color: $pink;
         }
+    }
+    
+    &__border_left {
+        position: absolute;
+        top: 20%;
+        bottom: 20%;
+        border-left: 1px solid rgba(217, 217, 217, 0.15);
     }
 
     &--light {
