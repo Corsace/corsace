@@ -201,11 +201,12 @@ export default class Qualifier extends Vue {
 @import '@s-sass/_variables';
 
 .qualifier {
+    background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
+    height: 100%;
+
     &__wrapper {
-        background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
         display: flex;
         justify-content: center;
-        height: 100%;
     }
 
     &__main_content {
