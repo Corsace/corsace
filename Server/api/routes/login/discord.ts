@@ -13,8 +13,10 @@ const discordRouter = new Router();
 
 discordRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext<any>, next) => {
     const site = parseQueryParam(ctx.query.site);
-    if (!site)
-        throw new Error("No site specified");
+    if (!site) {
+        ctx.body = "No site specified";
+        return;
+    }
 
     const baseURL = ctx.query.site ? (config[site] ? config[site].publicUrl : config.corsace.publicUrl) : "";
     const params = ctx.query.redirect ?? "";
