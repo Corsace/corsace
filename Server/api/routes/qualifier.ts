@@ -9,6 +9,23 @@ import { discordClient } from "../../discord";
 import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { osuClient } from "../../osu";
 
+function requiredNumberFields<T extends Record<string, any>> (obj: Partial<T>, fields: (keyof T)[]): string | Record<keyof T, number> {
+    const result: Record<string, number> = {};
+
+    for (const field of fields) {
+        if (!obj[field]) 
+            return `Field ${String(field)} is missing`;
+
+        const value = typeof obj[field] === "string" ? parseInt(obj[field]!) : obj[field];
+        if (typeof value !== "number" || isNaN(value)) 
+            return `Field ${String(field)} is invalid`;
+
+        result[field as string] = value;
+    }
+
+    return result as Record<keyof T, number>;
+}
+
 const qualifierRouter = new Router();
 
 qualifierRouter.get("/:qualifierID", async (ctx) => {
@@ -114,20 +131,22 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
 });
 
 qualifierRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
-    const mpID = ctx.request.body?.mpID;
-    if (!mpID || isNaN(parseInt(mpID))) {
+    if (!ctx.request.body) {
         ctx.body = {
-            error: "No mpID provided",
+            error: "No request body",
         };
         return;
     }
-    const matchID = ctx.request.body?.matchID;
-    if (!matchID || isNaN(parseInt(matchID))) {
+
+    const obj = requiredNumberFields(ctx.request.body, ["mpID", "matchID"]);
+    if (typeof obj === "string") {
         ctx.body = {
-            error: "No matchID provided",
+            error: obj,
         };
         return;
     }
+
+    const { mpID, matchID } = obj;
 
     const matchup = await Matchup
         .createQueryBuilder("matchup")
@@ -158,7 +177,9 @@ qualifierRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
         if (!beatmap)
             return;
 
-        const map = new MatchupMap(matchup, beatmap);
+        const map = new MatchupMap;
+        map.matchup = matchup;
+        map.map = beatmap;
         map.order = i + 1;
         map.scores = [];
         game.scores.forEach(score => {
@@ -166,7 +187,8 @@ qualifierRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
             if (!user)
                 return;
 
-            const matchupScore = new MatchupScore(user);
+            const matchupScore = new MatchupScore;
+            matchupScore.user = user;
             matchupScore.score = score.score;
             matchupScore.mods = ((score.enabledMods || game.mods) | 1) ^ 1; // Remove NF from mods (the OR 1 is to ensure NM is 0 after XOR)
             matchupScore.misses = score.countMiss;
@@ -196,6 +218,143 @@ qualifierRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
     matchup.maps = maps;
     matchup.mp = mpID;
     await matchup.save();
+
+    ctx.body = {
+        success: true,
+    };
+});
+
+qualifierRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
+    if (!ctx.request.body) {
+        ctx.body = {
+            error: "No request body",
+        };
+        return;
+    }
+
+    const obj = requiredNumberFields(ctx.request.body, ["matchID", "teamID", "mapOrder", "userID", "score", "mods", "misses", "combo", "accuracy"]);
+    if (typeof obj === "string") {
+        ctx.body = {
+            error: obj,
+        };
+        return;
+    }
+
+    const { matchID, teamID, mapOrder, userID, score, mods, misses, combo, accuracy } = obj;
+
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoinAndSelect("matchup.stage", "stage")
+        .innerJoinAndSelect("stage.mappool", "mappool")
+        .innerJoinAndSelect("mappool.slots", "slot")
+        .innerJoinAndSelect("slot.maps", "map")
+        .innerJoinAndSelect("map.beatmap", "beatmap")
+        .leftJoinAndSelect("matchup.teams", "team")
+        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member")
+        .leftJoinAndSelect("matchup.maps", "matchupMap")
+        .leftJoinAndSelect("matchupMap.scores", "score")
+        .where("matchup.ID = :matchID", { matchID })
+        .andWhere("stage.stageType = '0'")
+        .getOne();
+    if (!matchup) {
+        ctx.body = {
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    const map = matchup.maps?.find(map => map.order === mapOrder);
+    if (!map) {
+        ctx.body = {
+            error: "Map not found",
+        };
+        return;
+    }
+
+    const team = matchup.teams?.find(team => team.ID === teamID);
+    if (!team) {
+        ctx.body = {
+            error: "Team not found",
+        };
+        return;
+    }
+
+    const user = team.members.find(member => member.ID === userID);
+    if (!user) {
+        ctx.body = {
+            error: "User not found",
+        };
+        return;
+    }
+
+    const matchupScore = new MatchupScore;
+    matchupScore.user = user;
+    matchupScore.score = score;
+    matchupScore.mods = mods;
+    matchupScore.misses = misses;
+    matchupScore.combo = combo;
+    matchupScore.fail = ctx.request.body.fail || false;
+    matchupScore.accuracy = accuracy;
+    matchupScore.fullCombo = ctx.request.body.fullCombo || false;
+    matchupScore.map = map;
+    await matchupScore.save();
+
+    ctx.body = {
+        success: true,
+    };
+}); 
+
+qualifierRouter.delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (ctx) => {
+    const scoreID = parseInt(ctx.params.scoreID);
+    if (isNaN(scoreID)) {
+        ctx.body = {
+            error: "Invalid score ID",
+        };
+        return;
+    }
+
+    const score = await MatchupScore
+        .createQueryBuilder("score")
+        .where("score.ID = :scoreID", { scoreID })
+        .getOne();
+    if (!score) {
+        ctx.body = {
+            error: "Score not found",
+        };
+        return;
+    }
+
+    await score.remove();
+
+    ctx.body = {
+        success: true,
+    };
+});
+
+qualifierRouter.delete("/map/:mapID", isLoggedInDiscord, isCorsace, async (ctx) => {
+    const mapID = parseInt(ctx.params.mapID);
+    if (isNaN(mapID)) {
+        ctx.body = {
+            error: "Invalid map ID",
+        };
+        return;
+    }
+
+    const map = await MatchupMap
+        .createQueryBuilder("map")
+        .leftJoinAndSelect("map.scores", "score")
+        .where("map.ID = :mapID", { mapID })
+        .getOne();
+    if (!map) {
+        ctx.body = {
+            error: "Map not found",
+        };
+        return;
+    }
+
+    await Promise.all(map.scores.map(score => score.remove()));
+    await map.remove();
 
     ctx.body = {
         success: true,

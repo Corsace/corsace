@@ -57,23 +57,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
             const team = teams.find(team => team.members.some(member => member.ID === score.user?.ID))?.name || "N/A";
             const mp = matchups.find(matchup => matchup.maps?.some(map => map.scores?.some(s => s.ID === score.ID)) ?? false)?.mp || "N/A";
 
-            // Create an object to hold the scores for each map
-            const mapScores: { [key: string]: number | undefined } = {};
-            
-            mapNames.forEach(mapName => {
-                // Find the corresponding score for each map and user
-                const map = maps.find(map => map.scores.some(s => s.ID === score.ID));
-
-                // If a score is found, add it to the mapScores object
-                if (map) 
-                    mapScores[mapName] = score.score;
-            });
+            // Obtain map name
+            const map = maps.find(map => map.scores?.some(s => s.ID === score.ID));
+            const mapName = mapNames.find(mapName => mapName === `${map?.map?.slot?.acronym}${map?.map?.order}`) || "N/A";
 
             // Return the combined data
-            return `${user},${team},${mp},${mapNames.map(mapName => mapScores[mapName] ?? "").join(",")}`;
+            return `${user},${team},${mp},${mapName},${score.score}`;
         });
 
-    const csv = `user,team,mp,${mapNames.join(",")}\n${scores.join("\n")}`;
+    const csv = `user,team,mp,mapName,score\n${scores.join("\n")}`;
 
     await m.reply({
         content: "Here's the scores for this stage/matchup.",

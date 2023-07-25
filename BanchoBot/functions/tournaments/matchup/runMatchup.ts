@@ -327,7 +327,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         playersPlaying = undefined;
         matchStart = undefined;
 
-        const matchupMap = new MatchupMap(matchup, beatmap);
+        const matchupMap = new MatchupMap;
+        matchupMap.matchup = matchup;
+        matchupMap.map = beatmap;
         matchupMap.order = mapsPlayed.length;
         await matchupMap.save();
 
@@ -337,7 +339,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await mpChannel.sendMessage(`YO I CAN'T FIND THE USER IN SLOT ${score.slot} (ID ${score.userId}) IN THE MATCHUP GET CORSACE STAFF IMMEDIATELY`);
                 throw new Error("User not found");
             }
-            const matchupScore = new MatchupScore(user);
+            const matchupScore = new MatchupScore;
+            matchupScore.user = user;
             matchupScore.map = matchupMap;
             matchupScore.score = score.score;
             matchupScore.mods = ((score.enabledMods || game.mods) | 1) ^ 1; // Remove NF from mods (the OR 1 is to ensure NM is 0 after XOR)

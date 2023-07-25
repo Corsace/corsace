@@ -35,8 +35,4 @@ export class MatchupScore extends BaseEntity {
     @Column()
         fail!: boolean;
 
-    constructor (user: User) {
-        super();
-        this.user = user;
-    }
 }
