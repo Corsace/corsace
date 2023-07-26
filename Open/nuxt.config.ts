@@ -13,7 +13,6 @@ export default {
             { charset: "utf-8" },
             { name: "viewport", content: "width=1024" },
             // { name: "viewport", content: "width=device-width, initial-scale=1" }, TODO: Fix mobile
-
             { property: "og:site_name", content: "Corsace Open" },
             { hid: "theme-color", name: "theme-color", content: "#F24141" },
 
@@ -30,7 +29,6 @@ export default {
             { property: "og:locale:alternate", content: "ja_JP" },
             { property: "og:locale:alternate", content: "ko_KR" },
             { property: "og:locale:alternate", content: "nl_NL" },
-
             
             { hid: "og:image:width", property: "og:image:width", content: "547" },
             { hid: "og:image:height", property: "og:image:height", content: "223" },
