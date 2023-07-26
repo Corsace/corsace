@@ -6,6 +6,7 @@ import { MapStatus } from "../../../../Models/tournaments/matchupMap";
 import { Team } from "../../../../Models/tournaments/team";
 import { unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
 import channelID from "../../../functions/channelID";
+import respond from "../../../functions/respond";
 import getStage from "../../../functions/tournamentFunctions/getStage";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
@@ -67,13 +68,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const csv = `user,team,mp,mapName,score\n${scores.join("\n")}`;
 
-    await m.reply({
-        content: "Here's the scores for this stage/matchup.",
-        files: [{
-            name: `${tournament.name} - ${stage.name} - Scores.csv`,
-            attachment: Buffer.from(csv),
-        }],
-    });
+    await respond(m, "Here's the scores for this stage/matchup.", undefined, undefined, [{
+        name: `${tournament.name} - ${stage.name} - Scores.csv`,
+        attachment: Buffer.from(csv),
+    }]);
 }
 
 const data = new SlashCommandBuilder()
