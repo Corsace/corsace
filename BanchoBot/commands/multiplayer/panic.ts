@@ -6,8 +6,10 @@ import { TextChannel } from "discord.js";
 import state from "../../state";
 
 async function run (message: PrivateMessage | ChannelMessage) {
-    if (!(message instanceof ChannelMessage) || !/#mp_(\d+)/.test(message.channel.name))
+    if (!(message instanceof ChannelMessage) || !/#mp_(\d+)/.test(message.channel.name)) {
+        await message.user.sendMessage(`This command can only be used in a multiplayer channel`);
         return;
+    }
 
     const mpID = parseInt(message.channel.name.match(/#mp_(\d+)/)![1]);
     
@@ -39,7 +41,7 @@ async function run (message: PrivateMessage | ChannelMessage) {
 
     state.matchups[mpID].autoRunning = false;
 
-    await message.user.sendMessage(`ok i notified the refs and organizer(s) of the tourney and stopped the auto lobby for u`);
+    await message.channel.sendMessage(`ok i notified the refs and organizer(s) of the tourney and stopped the auto lobby for u`);
 }
 
 const panic: Command = {
