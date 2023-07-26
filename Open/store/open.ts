@@ -168,7 +168,7 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (!data.error)
             commit("setQualifierScores", data);
     },
-    async setInitialData ({ commit, dispatch }, year) {
+    async setInitialData ({ dispatch }, year) {
         await Promise.all([
             dispatch("setTournament", year),
             await dispatch("setTeam"),
