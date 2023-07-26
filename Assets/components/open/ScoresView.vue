@@ -37,13 +37,13 @@
                         <td>{{ row.name }}</td>
                         <td>{{ row.best }}</td>
                         <td>{{ row.worst }}</td>
-                        <td>{{ row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}</td>
+                        <td>{{ row[currentFilter] === -100 ? "" : row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}</td>
                         <td 
                             v-for="score in row.scores"
                             :key="score.map"
                             :class="{ 'scores__table--highlight': score.isBest }"
                         >
-                            {{ currentFilter === "sum" || currentFilter === "average" ? score.score : score[currentFilter].toFixed(2) }}{{ currentFilter.includes("percent") ? "%" : "" }}
+                            {{ currentFilter === "sum" || currentFilter === "average" ? score.score || "" : score[currentFilter] === -100 ? "" : score[currentFilter].toFixed(2) }}{{ currentFilter.includes("percent") && score[currentFilter] !== -100 ? "%" : "" }}
                         </td>
                     </tr>
                 </tbody>
@@ -95,7 +95,7 @@ export default class ScoresView extends Vue {
         return this.syncView === "players" ? this.playerQualifierScoreViews : this.teamQualifierScoreViews;
     }
 
-    computeQualifierScoreViews (idNameAccessor: (score: any) => { id: number, name: string }): QualifierScoreView[] {
+    computeQualifierScoreViews (idNameAccessor: (score: QualifierScore) => { id: number, name: string }): QualifierScoreView[] {
         if (!this.qualifierScores)
             return [];
 
@@ -113,23 +113,23 @@ export default class ScoresView extends Vue {
                         map: map.map,
                         mapID: map.mapID,
                         score: Math.round(mapScores.reduce((a, b) => a + b.score, 0) / (mapScores.length || 1)),
-                        relMax: 0,
-                        percentMax: 0,
-                        relAvg: 0,
-                        percentAvg: 0,
-                        zScore: 0,
+                        relMax: -100,
+                        percentMax: -100,
+                        relAvg: -100,
+                        percentAvg: -100,
+                        zScore: -100,
                         isBest: false,
                     };
                 }),
                 best: scores.reduce((a, b) => a.score > b.score ? a : b).map,
-                worst: scores.reduce((a, b) => a.score < b.score ? a : b).map,
+                worst: scores.filter(score => score.score !== 0).reduce((a, b) => a.score < b.score ? a : b).map,
                 sum: scores.reduce((a, b) => a + b.score, 0),
-                average: Math.round(scores.reduce((a, b) => a + b.score, 0) / (scores.length || 1)),
-                relMax: 0,
-                percentMax: 0,
-                relAvg: 0,
-                percentAvg: 0,
-                zScore: 0,
+                average: Math.round(scores.filter(score => score.score !== 0).reduce((a, b) => a + b.score, 0) / (scores.filter(score => score.score !== 0).length || 1)),
+                relMax: -100,
+                percentMax: -100,
+                relAvg: -100,
+                percentAvg: -100,
+                zScore: -100,
             };
             scoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
@@ -138,6 +138,9 @@ export default class ScoresView extends Vue {
 
         qualifierScoreViews.forEach(score => {
             score.scores.forEach(s => {
+                if (s.score === 0)
+                    return;
+
                 const mapsScores = qualifierScoreViews.flatMap(v => v.scores.filter(t => t.mapID === s.mapID));
                 const max = Math.max(...mapsScores.map(score => score.score));
                 const avg = mapsScores.reduce((a, b) => a + b.score, 0) / (mapsScores.length || 1);
@@ -154,11 +157,11 @@ export default class ScoresView extends Vue {
 
                 s.zScore = (s.score - avg) / (stddev || 1);
             });
-            score.relMax = score.scores.reduce((a, b) => a + b.relMax, 0);
-            score.percentMax = Math.round(score.scores.reduce((a, b) => a + b.percentMax, 0) / (score.scores.length || 1));
-            score.relAvg = score.scores.reduce((a, b) => a + b.relAvg, 0);
-            score.percentAvg = Math.round(score.scores.reduce((a, b) => a + b.percentAvg, 0) / (score.scores.length || 1));
-            score.zScore = score.scores.reduce((a, b) => a + b.zScore, 0);    
+            score.relMax = score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.relMax, 0);
+            score.percentMax = Math.round(score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.percentMax, 0) / (score.scores.filter(score => score.score !== 0).length || 1));
+            score.relAvg = score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.relAvg, 0);
+            score.percentAvg = Math.round(score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.percentAvg, 0) / (score.scores.filter(score => score.score !== 0).length || 1));
+            score.zScore = score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.zScore, 0);    
         });
 
         qualifierScoreViews.sort((a, b) => b[this.currentFilter] - a[this.currentFilter]);
