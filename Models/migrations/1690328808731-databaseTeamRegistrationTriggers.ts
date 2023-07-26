@@ -4,6 +4,10 @@ export class DatabaseTeamRegistrationTriggers1690328808731 implements MigrationI
     name = "DatabaseTeamRegistrationTriggers1690328808731";
 
     public async up (queryRunner: QueryRunner): Promise<void> {
+        /*
+            This trigger prevents a team from joining another matchup in a qualifier stage if they already have a matchup in a qualifier stage.
+            This is to prevent a team from joining multiple qualifier matchups in the same qualifier stage.
+        */
         await queryRunner.query(`
             CREATE TRIGGER validate_qualifier_matchup
             BEFORE INSERT ON matchup_teams_team
@@ -17,11 +21,14 @@ export class DatabaseTeamRegistrationTriggers1690328808731 implements MigrationI
                 WHERE matchup_teams_team.teamID = NEW.teamID
                 AND stage.stageType = '0';
                 IF matchupCount > 0 THEN
-                    DELETE FROM matchup WHERE matchup.ID = NEW.matchupID;
                     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Team already has a qualifier matchup';
                 END IF;
             END
         `);
+        /*
+            This trigger prevents a team from creating a team with the same name as another team in the last 10 minutes.
+            This is to prevent server-side click spamming from creating multiple teams with the same name
+        */
         await queryRunner.query(`
             CREATE TRIGGER avoid_duplicate_team
             BEFORE INSERT ON team
