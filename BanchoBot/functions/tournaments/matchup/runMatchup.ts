@@ -22,8 +22,11 @@ import isPlayerInMatchup from "./isPlayerInMatchup";
 import loadNextBeatmap from "./loadNextBeatmap";
 import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
 import { TournamentChannel } from "../../../../Models/tournaments/tournamentChannel";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionCollector, MessageComponentInteraction, TextChannel } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, GuildMemberRoleManager, InteractionCollector, MessageComponentInteraction, TextChannel } from "discord.js";
 import { discordClient } from "../../../../Server/discord";
+import { User } from "../../../../Models/user";
+import { loginRow } from "../../../../DiscordBot/functions/loginResponse";
+import { TournamentRole, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
 
 const winConditions = {
     [ScoringMethod.ScoreV2]: BanchoLobbyWinConditions.ScoreV2,
@@ -441,21 +444,47 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
         const discordChannel = discordClient.channels.cache.get(refChannel.channelID);
         if (discordChannel instanceof TextChannel) {
             const refMessage = await discordChannel.send({
-                content: `Lobby has been created for \`${lobbyName}\`, if u need to be readded as a ref, press the button below.\nMake sure u are online on osu! for the addref to work`,
+                content: `Lobby has been created for \`${lobbyName}\`, if u need to be added or readded as a ref, and u have a role considered unallowed to play, press the button below.\nMake sure u are online on osu! for the addref to work`,
                 components: [row],
             });
 
             // Allow the message to stay up until lobby closes
+            const roles = await TournamentRole
+                .createQueryBuilder("role")
+                .innerJoinAndSelect("role.tournament", "tournament")
+                .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
+                .getMany();
+            const refRoles = roles.filter(role => unallowedToPlay.includes(role.roleType));
             refCollector = refMessage.createMessageComponentCollector();
             refCollector.on("collect", async (i: MessageComponentInteraction) => {
                 if (i.customId !== refID)
                     return;
-                const osuID = [matchup.stage!.tournament.organizer, matchup.referee, matchup.streamer].find(user => user && user.osu.userID === i.user.id)?.osu.userID;
-                if (!osuID) {
-                    await i.reply({ content: "What did i tell u .", ephemeral: true });
+                if (!i.member) {
+                    await i.reply({ content: "couldnt receive ur member info", ephemeral: true });
                     return;
                 }
-                await mpLobby.addRef([`#${osuID}`]);
+                if (
+                    (
+                        i.member.roles instanceof GuildMemberRoleManager &&
+                        !i.member.roles.cache.some(role => refRoles.some(refRole => refRole.roleID === role.id))
+                    ) ||
+                    (
+                        !(i.member.roles instanceof GuildMemberRoleManager) &&
+                        !i.member.roles.some(role => refRoles.some(refRole => refRole.roleID === role))
+                    )
+                ) {
+                    await i.reply({ content: "ur not allowed to ref .", ephemeral: true });
+                    return;
+                }
+                const user = await User
+                    .createQueryBuilder("user")
+                    .where("user.discord.userID = :discord", { discord: i.user.id })
+                    .getOne();
+                if (!user) {
+                    await i.reply({ content: "couldnt find u in the database make sure u are logged in .", ephemeral: true, components: [loginRow] });
+                    return;
+                }
+                await mpLobby.addRef([`#${user.osu.userID}`]);
                 await i.reply({ content: "Addreffed", ephemeral: true });
             });
             refCollector.on("end", async () => {
