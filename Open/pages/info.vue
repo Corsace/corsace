@@ -26,6 +26,13 @@
                         {{ tournament.description }}
                     </div>
                     <hr class="line--gray line--no-fill">
+                    <ContentButton 
+                        class="content_button--red info_report_button"
+                        link="https://pif.ephemeral.ink/tournament-reports"
+                        external
+                    >
+                        REPORT TOURNAMENTS HERE
+                    </ContentButton>
                     <div class="info_match">
                         <MatchBox>
                             <template #title>
@@ -313,7 +320,7 @@ export default class Info extends Vue {
     @Watch("stageList", { immediate: true })
     onstageListChanged (list: {ID: number; name: string}[]) {
         if (list.length > 0)
-            this.selectedStage = list[0].ID;
+            this.selectedStage = list[0]?.ID || 0;
     }
 
     get stage (): Stage | null {
@@ -335,7 +342,7 @@ export default class Info extends Vue {
     @Watch("stage", { immediate: true })
     onStageChanged (stage: Stage | null) {
         if (stage)
-            this.selectedMappool = stage.mappool[0].ID;
+            this.selectedMappool = stage.mappool[0]?.ID || 0;
     }
 
     get stageStatus (): StageStatus {
