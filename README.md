@@ -99,7 +99,7 @@ Create the `mappacks` and `team-avatars` buckets and enable their R2.dev subdoma
 
 Create the `mappacks-temp` bucket and add an object lifecycle rule to delete objects after 7 days (leave prefix empty).
 
-Set hostname to `<cloudflare account id>.r2.cloudflarestorage.com`, and obtain S3 credentials from https://dash.cloudflare.com/?to=/:account/r2/api-tokens.
+Set hostname to `<cloudflare account id>.r2.cloudflarestorage.com`, and obtain S3 credentials from https://dash.cloudflare.com/?to=/:account/r2/api-tokens. **Make sure you give the token `Edit` permissions instead of the default `Read` permissions.**
 
 #### Setup
 
