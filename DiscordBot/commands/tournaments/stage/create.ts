@@ -309,7 +309,7 @@ const data = new SlashCommandBuilder()
                 },
                 {
                     name: "Round Robin",
-                    value: "RoundRobin",
+                    value: "Roundrobin",
                 },
                 {
                     name: "Swiss",
