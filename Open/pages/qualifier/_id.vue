@@ -43,14 +43,19 @@
                         <div class="qualifier__info_bar_group__title">
                             TEAM: 
                         </div>
-                        <NuxtLink
-                            v-for="team in qualifierData.teams"
-                            :key="team.ID"
-                            class="qualifier__info_bar_group__data"
-                            :to="`/team/${team.ID}`"
+                        <div 
+                            class="qualifier__info_bar_group"
+                            style="flex-direction: column;"
                         >
-                            {{ team.name || "N/A" }}
-                        </NuxtLink>
+                            <NuxtLink
+                                v-for="team in qualifierData.teams"
+                                :key="team.ID"
+                                class="qualifier__info_bar_group__data"
+                                :to="`/team/${team.ID}`"
+                            >
+                                {{ team.name || "N/A" }}
+                            </NuxtLink>
+                        </div>
                     </div>
                     <div class="qualifier__info_bar_time qualifier__info_bar_group__title">
                         {{ qualifierData.date.toLocaleString('en-US', optionsUTC) }} ({{ qualifierData.date.toLocaleString('en-US', options) }})

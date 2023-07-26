@@ -4,6 +4,11 @@
             <div class="open_title_group__text">
                 <slot />
             </div>
+            <div class="open_title_group__selector">
+                <slot 
+                    name="selector" 
+                />
+            </div>
             <div class="open_title_group__button_group">
                 <slot 
                     name="buttons"

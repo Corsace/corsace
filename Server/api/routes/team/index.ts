@@ -163,7 +163,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     const team: Team = ctx.state.team;
 
     const tournamentID = ctx.request.body?.tournamentID;
-    if (!tournamentID) {
+    if (!tournamentID || isNaN(parseInt(tournamentID))) {
         ctx.body = { error: "Missing tournament ID" };
         return;
     }
@@ -304,11 +304,70 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     ctx.body = { success: "Team registered" };
 });
 
+teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team: Team = ctx.state.team;
+
+    const tournamentID = ctx.request.body?.tournamentID;
+    if (!tournamentID || isNaN(parseInt(tournamentID))) {
+        ctx.body = { error: "Missing tournament ID" };
+        return;
+    }
+
+    const tournament = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoinAndSelect("tournament.teams", "team")
+        .leftJoinAndSelect("tournament.stages", "stage")
+        .leftJoinAndSelect("stage.matchups", "matchup")
+        .leftJoinAndSelect("matchup.teams", "matchupTeam")
+        .where("tournament.ID = :ID", { ID: tournamentID })
+        .getOne();
+
+    if (!tournament) {
+        ctx.body = { error: "Tournament not found" };
+        return;
+    }
+
+    if (!tournament.teams.find(t => t.ID === team.ID)) {
+        ctx.body = { error: "Team not registered" };
+        return;
+    }
+
+    if (tournament.status !== TournamentStatus.Registrations) {
+        ctx.body = { error: "Tournament is not in registration phase" };
+        return;
+    }
+
+    const qualifierStage = tournament.stages.find(s => s.stageType === StageType.Qualifiers);
+    if (qualifierStage) {
+        const qualifier = qualifierStage.matchups.find(m => m.teams?.some(t => t.ID === team.ID));
+        if (!qualifier) {
+            ctx.body = { error: "No qualifier found assigned to this team" };
+            return;
+        }
+        
+        if (qualifier.mp) {
+            ctx.body = { error: "Team has already played a qualifier match" };
+            return;
+        }
+
+        qualifier.teams = qualifier.teams!.filter(t => t.ID !== team.ID);
+        if (qualifier.teams.length === 0)
+            await qualifier.remove();
+        else
+            await qualifier.save();
+    }
+
+    tournament.teams = tournament.teams.filter(t => t.ID !== team.ID);
+    await tournament.save();
+
+    ctx.body = { success: "Team unregistered" };
+});
+
 teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team;
 
     const tournamentID = ctx.request.body?.tournamentID;
-    if (!tournamentID) {
+    if (!tournamentID || isNaN(parseInt(tournamentID))) {
         ctx.body = { error: "Missing tournament ID" };
         return;
     }

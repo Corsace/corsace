@@ -212,18 +212,25 @@
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
                         QUALIFIER
+                        <div
+                            v-if="isManager && teamData.qualifier && !teamData.qualifier.mp"
+                            class="team_fields--clickable"
+                            @click="unregister"
+                        >
+                            delete qualifier/unregister team
+                        </div>
                         <div 
                             v-if="isManager && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length && !teamData.qualifier?.mp"
                             @click="editQualifier = !editQualifier"
                         >
                             <div
-                                v-if="teamData.qualifier" 
+                                v-if="teamData.qualifier && !teamData.qualifier.mp" 
                                 class="team_fields--clickable"
                             >
                                 edit qualifier time
                             </div>
                             <div
-                                v-else
+                                v-else-if="!teamData.qualifier"
                                 class="team_fields--clickable"
                             >
                                 create/join qualifier
@@ -720,6 +727,23 @@ export default class Team extends Vue {
             return;
 
         const { data: res } = await this.$axios.post(`/api/team/invite/${this.teamData.ID}/cancel/${user.ID}`);
+
+        if (res.success)
+            this.teamData = await this.getTeam(true);
+        else
+            alert(res.error);
+    }
+
+    async unregister () {
+        if (!this.teamData || !this.tournament)
+            return;
+
+        if (!confirm("Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."))
+            return;
+
+        const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/unregister`, {
+            tournamentID: this.tournament.ID,
+        });
 
         if (res.success)
             this.teamData = await this.getTeam(true);

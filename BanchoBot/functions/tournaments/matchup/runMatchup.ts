@@ -22,8 +22,11 @@ import isPlayerInMatchup from "./isPlayerInMatchup";
 import loadNextBeatmap from "./loadNextBeatmap";
 import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
 import { TournamentChannel } from "../../../../Models/tournaments/tournamentChannel";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionCollector, MessageComponentInteraction, TextChannel } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, GuildMemberRoleManager, InteractionCollector, MessageComponentInteraction, TextChannel } from "discord.js";
 import { discordClient } from "../../../../Server/discord";
+import { User } from "../../../../Models/user";
+import { loginRow } from "../../../../DiscordBot/functions/loginResponse";
+import { TournamentRole, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
 
 const winConditions = {
     [ScoringMethod.ScoreV2]: BanchoLobbyWinConditions.ScoreV2,
@@ -52,7 +55,7 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
         throw new Error("Matchup is missing mappool");
 }
 
-async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, discordMessageCollector: InteractionCollector<any>) {
+async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, invCollector?: InteractionCollector<any>, refCollector?: InteractionCollector<any>) {
     // Save and store match instance
     state.runningMatchups++;
     state.matchups[matchup.ID] = {
@@ -380,7 +383,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpLobby.channel.on("PART", async (member) => {
         if (member.user.isClient()) {
             // Lobby is closed
-            discordMessageCollector.stop();
+            invCollector?.stop();
+            refCollector?.stop();
             await matchup.save();
     
             clearInterval(messageSaver);
@@ -420,6 +424,77 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
         mpLobby.addRef([`#${matchup.stage!.tournament.organizer.osu.userID}`, `#${matchup.referee?.osu.userID || ""}`, `#${matchup.streamer?.osu.userID || ""}`]),
     ]);
     log(matchup, `Set lobby settings, password and added refs`);
+    const refChannel = await TournamentChannel
+        .createQueryBuilder("channel")
+        .innerJoinAndSelect("channel.tournament", "tournament")
+        .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
+        .andWhere("channel.channelType = '9'")
+        .getOne();
+    let refCollector: InteractionCollector<any> | undefined = undefined;
+    if (refChannel) {
+        const refID = randomUUID();
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(refID)
+                    .setLabel("Re-addref")
+                    .setStyle(ButtonStyle.Primary)
+            );
+            
+        const discordChannel = discordClient.channels.cache.get(refChannel.channelID);
+        if (discordChannel instanceof TextChannel) {
+            const refMessage = await discordChannel.send({
+                content: `Lobby has been created for \`${lobbyName}\`, if u need to be added or readded as a ref, and u have a role considered unallowed to play, press the button below.\nMake sure u are online on osu! for the addref to work`,
+                components: [row],
+            });
+
+            // Allow the message to stay up until lobby closes
+            const roles = await TournamentRole
+                .createQueryBuilder("role")
+                .innerJoinAndSelect("role.tournament", "tournament")
+                .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
+                .getMany();
+            const refRoles = roles.filter(role => unallowedToPlay.includes(role.roleType));
+            refCollector = refMessage.createMessageComponentCollector();
+            refCollector.on("collect", async (i: MessageComponentInteraction) => {
+                if (i.customId !== refID)
+                    return;
+                if (!i.member) {
+                    await i.reply({ content: "couldnt receive ur member info", ephemeral: true });
+                    return;
+                }
+                if (
+                    (
+                        i.member.roles instanceof GuildMemberRoleManager &&
+                        !i.member.roles.cache.some(role => refRoles.some(refRole => refRole.roleID === role.id))
+                    ) ||
+                    (
+                        !(i.member.roles instanceof GuildMemberRoleManager) &&
+                        !i.member.roles.some(role => refRoles.some(refRole => refRole.roleID === role))
+                    )
+                ) {
+                    await i.reply({ content: "ur not allowed to ref .", ephemeral: true });
+                    return;
+                }
+                const user = await User
+                    .createQueryBuilder("user")
+                    .where("user.discord.userID = :discord", { discord: i.user.id })
+                    .getOne();
+                if (!user) {
+                    await i.reply({ content: "couldnt find u in the database make sure u are logged in .", ephemeral: true, components: [loginRow] });
+                    return;
+                }
+                await mpLobby.addRef([`#${user.osu.userID}`]);
+                await i.reply({ content: "Addreffed", ephemeral: true });
+            });
+            refCollector.on("end", async () => {
+                if (!refMessage.deletable)
+                    return;
+                await refMessage.delete();
+            });
+            log(matchup, `Created addref message`);
+        }
+    }
 
     log(matchup, `Inviting players`);
     const IDs = await invitePlayersToLobby(matchup, mpLobby);
@@ -431,46 +506,45 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
         .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
         .andWhere("channel.channelType = '0'")
         .getOne();
-
-    const inviteID = randomUUID();
-    const row = new ActionRowBuilder<ButtonBuilder>()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId(inviteID)
-                .setLabel("Resend invite")
-                .setStyle(ButtonStyle.Primary)
-        );
-    if (!generalChannel)
-        return;
-
-    const discordChannel = discordClient.channels.cache.get(generalChannel.channelID);
-    if (!(discordChannel instanceof TextChannel))
-        return;
+    let invCollector: InteractionCollector<any> | undefined = undefined;
+    if (generalChannel) {
+        const inviteID = randomUUID();
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(inviteID)
+                    .setLabel("Resend invite")
+                    .setStyle(ButtonStyle.Primary)
+            );
     
-    const invMessage = await discordChannel.send({
-        content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n\nLobby has been created for ur match, if u need to be reinvited, press the button below.\n\nMake sure u have non-friends DMs allowed on osu!\n\n\`!panic\` will notify organizers/refs if anything goes absurdly wrong\n\`!abort\` allows u to abort a map within the allowed time after a map start, and for the allowed amount of times a team is allowed to abort\n\nIf ur not part of the matchup, the button wont work for u .`,
-        components: [row],
-    });
+        const discordChannel = discordClient.channels.cache.get(generalChannel.channelID);
+        if (discordChannel instanceof TextChannel) {
+            const invMessage = await discordChannel.send({
+                content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n\nLobby has been created for ur match, if u need to be reinvited, press the button below.\n\nMake sure u have non-friends DMs allowed on osu!\n\nThe following commands work in lobby:\n\`!panic\` will notify organizers/currently assigned refs if anything goes absurdly wrong and stop auto-running the lobby\n\`!abort\` allows u to abort a map within the allowed time after a map start, and for the allowed amount of times a team is allowed to abort\n\nIf ur not part of the matchup, the button wont work for u .`,
+                components: [row],
+            });
 
-    // Allow the message to stay up and send invites until the lobby closes
-    const componentCollector = invMessage.createMessageComponentCollector();
-    componentCollector.on("collect", async (i: MessageComponentInteraction) => {
-        if (i.customId !== inviteID)
-            return;
-        const osuID = IDs.find(id => id.discord === i.user.id)?.osu;
-        if (!osuID) {
-            await i.reply({ content: "What did i tell u .", ephemeral: true });
-            return;
+            // Allow the message to stay up and send invites until the lobby closes
+            invCollector = invMessage.createMessageComponentCollector();
+            invCollector.on("collect", async (i: MessageComponentInteraction) => {
+                if (i.customId !== inviteID)
+                    return;
+                const osuID = IDs.find(id => id.discord === i.user.id)?.osu;
+                if (!osuID) {
+                    await i.reply({ content: "What did i tell u .", ephemeral: true });
+                    return;
+                }
+                await mpLobby.invitePlayer(`#${osuID}`);
+                await i.reply({ content: "Invite sent", ephemeral: true });
+            });
+            invCollector.on("end", async () => {
+                if (!invMessage.deletable)
+                    return;
+                await invMessage.delete();
+            });
+            log(matchup, `Created invite message for ${IDs.length} players`);
         }
-        await mpLobby.invitePlayer(`#${osuID}`);
-        await i.reply({ content: "Invite sent", ephemeral: true });
-    });
-    componentCollector.on("end", async () => {
-        if (!invMessage.deletable)
-            return;
-        await invMessage.delete();
-    });
-    log(matchup, `Created invite message for ${IDs.length} players`);
+    }
 
-    await runMatchupListeners(matchup, mpLobby, mpChannel, componentCollector);
+    await runMatchupListeners(matchup, mpLobby, mpChannel, invCollector, refCollector);
 }

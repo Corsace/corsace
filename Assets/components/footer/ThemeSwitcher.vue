@@ -3,10 +3,13 @@
         class="theme"
         :class="[
             `theme--${viewTheme}`,
+            `theme__${getMode()}--${viewTheme}`,
             `theme__${getMode()}`
         ]"
         @click="setTheme()"
-    />
+    >
+        <div :class="`theme__${getMode()}__border_left`" />
+    </div>
 </template>
 
 <script lang="ts">
@@ -42,6 +45,8 @@ export default class ThemeSwitcher extends Vue {
     background-repeat: no-repeat;
     background-size: 40px;
     width: 40px;
+    position: relative;
+
     @include breakpoint(laptop) {
         background-size: 50px;
         width: 70px;
@@ -67,6 +72,26 @@ export default class ThemeSwitcher extends Vue {
 
     &--dark {
         background-image: url("../../img/moon.png");
+    }
+
+    &__open {
+        background-size: 19.8px;
+        width: 50px;
+
+        &__border_left {
+            position: absolute;
+            top: 20%;
+            bottom: 20%;
+            border-left: 1px solid rgba(217, 217, 217, 0.15);
+        }
+
+        &--light {
+            background-image: url("../../img/open-sun.png");
+        }
+
+        &--dark {
+            background-image: url("../../img/open-moon.png");
+        }
     }
 }
 </style>
