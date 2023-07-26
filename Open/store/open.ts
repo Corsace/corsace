@@ -5,6 +5,7 @@ import { BaseQualifier, QualifierScore } from "../../Interfaces/qualifier";
 
 export interface OpenState {
     site: string;
+    title: string;
     tournament: Tournament | null;
     teamList: TeamList[] | null;
     team: Team | null;
@@ -15,6 +16,7 @@ export interface OpenState {
 
 export const state = (): OpenState => ({
     site: "",
+    title: "",
     tournament: null,
     teamList: null,
     team: null,
@@ -113,6 +115,9 @@ export const mutations: MutationTree<OpenState> = {
     async setQualifierScores (state, scores: QualifierScore[] | undefined) {
         state.qualifierScores = scores || null;
     },
+    async setTitle (state, year: number | undefined) {
+        state.title = `Corsace Open - ${year}` || "";
+    },
 };
 
 export const getters: GetterTree<OpenState, OpenState> = {
@@ -168,9 +173,10 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (!data.error)
             commit("setQualifierScores", data);
     },
-    async setInitialData ({ dispatch }, year) {
+    async setInitialData ({ commit, dispatch }, year) {
         await Promise.all([
             dispatch("setTournament", year),
+            commit("setTitle", year),
             await dispatch("setTeam"),
             await dispatch("setInvites"),
         ]);
