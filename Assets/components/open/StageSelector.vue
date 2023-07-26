@@ -18,7 +18,6 @@
     </div>
 </template>
 
-
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
@@ -62,13 +61,13 @@ export default class StageSelector extends Vue {
             border-color: transparent $open-red transparent transparent;
             border-radius: 2px;
         }
-        
+
         &__selected {
             font-size: $font-base;
             font-weight: 700;
             color: $open-red;
         }
-        
+
         &__right {
             cursor: pointer;
             width: 0;
