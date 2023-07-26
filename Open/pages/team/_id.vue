@@ -452,9 +452,7 @@ const openModule = namespace("open");
                 {name: "twitter:title", content: this.$store.state["open"].title},
                 {name: "twitter:description", content: this.$store.state["open"].tournament.description},
                 {name: "twitter:image", content: require("../../../Assets/img/site/open/banner.png")},
-                {name: "twitter:image:src", content: require("../../../Assets/img/site/open/banner.png")},
-                
-                
+                {name: "twitter:image:src", content: require("../../../Assets/img/site/open/banner.png")},  
             ],
             link: [{rel: "canonical", hid: "canonical", href: `https://open.corsace.io${this.$route.path}`}],
         };
