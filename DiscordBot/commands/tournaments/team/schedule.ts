@@ -211,19 +211,19 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (team.tournaments.some(t => t.ID === tournament.ID)) {
-        const matchup = await Matchup
+        const matchups = await Matchup
             .createQueryBuilder("matchup")
-            .innerJoinAndSelect("matchup.teams", "team")
             .innerJoinAndSelect("matchup.stage", "stage")
             .innerJoinAndSelect("stage.tournament", "tournament")
+            .leftJoinAndSelect("matchup.teams", "team")
             .leftJoinAndSelect("matchup.messages", "message")
             .leftJoinAndSelect("matchup.maps", "map")
             .leftJoinAndSelect("map.scores", "score")
             .where("tournament.ID = :ID", { ID: tournament.ID })
             .andWhere("stage.stageType = '0'")
-            .andWhere("team.ID = :teamID", { teamID: team.ID })
-            .getOne();
+            .getMany();
 
+        const matchup = matchups.find(m => m.teams!.some(t => t.ID === team!.ID));
         if (matchup) {
             if (matchup.date.getTime() === date.getTime()) {
                 await respond(m, `\`${team.name}\` is already scheduled for this date`);
