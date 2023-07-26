@@ -15,6 +15,7 @@ import { CronJobType } from "../../../../Interfaces/cron";
 import { parseDateOrTimestamp } from "../../../utils/dateParse";
 import getTeamInvites from "../../../functions/get/getTeamInvites";
 import { GuildMember } from "discord.js";
+import { QueryFailedError } from "typeorm";
 
 const teamRouter = new Router();
 
@@ -119,7 +120,15 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
         team.members = [ctx.state.user];
 
     const noErr = await team.calculateStats();
-    await team.save();
+    try {
+        await team.save();
+    } catch (e) {
+        if (e instanceof QueryFailedError && e.driverError.sqlState === "45000")
+            ctx.body = { error: "Team already exists, you may have double clicked" };
+        else
+            ctx.body = { error: `Error creating team\n${e}` };
+        return;
+    }
     if (!noErr)
         ctx.body = { success: "Team created, but there was an error calculating stats. Please contact VINXIS", team, error: !noErr };
     else
@@ -285,11 +294,19 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
             existingMatchup.teams!.push(team);
             await existingMatchup.save();
         } else {
-            const matchup = new Matchup;
-            matchup.date = qualifierDate;
-            matchup.teams = [ team ];
-            matchup.stage = qualifierStage;
-            await matchup.save();
+            try {
+                const matchup = new Matchup;
+                matchup.date = qualifierDate;
+                matchup.teams = [ team ];
+                matchup.stage = qualifierStage;
+                await matchup.save();
+            } catch (e) {
+                if (e instanceof QueryFailedError && e.driverError.sqlState === "45000")
+                    ctx.body = { error: "Team already has a qualifier matchup, you may have double clicked" };
+                else
+                    ctx.body = { error: `Error creating qualifier matchup\n${e}` };
+                return;
+            }
 
             await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
         }
