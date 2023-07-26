@@ -48,9 +48,10 @@ export default class ThemeSwitcher extends Vue {
     position: relative;
 
     @include breakpoint(laptop) {
+        background-size: 50px;
         width: 70px;
     }
-    
+
     @each $mode in $modes {
         &__#{$mode} {
             &:hover {
@@ -58,7 +59,7 @@ export default class ThemeSwitcher extends Vue {
             }
         }
     }
-    
+
     &__corsace {
         &:hover {
             background-color: $pink;
