@@ -118,7 +118,6 @@ export const mutations: MutationTree<OpenState> = {
     async setTitle (state, year: number | undefined) {
         state.title = `Corsace Open - ${year}` || "";
     },
-    
 };
 
 export const getters: GetterTree<OpenState, OpenState> = {
