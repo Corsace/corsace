@@ -105,9 +105,9 @@ export default class SearchBar extends Vue {
     }
 
     &--open {
-        outline: 2px solid #696969;
+        border: 2px solid #696969;
         &:focus-within {
-            outline: 2px solid $open-red;
+            border: 2px solid $open-red;
         }
     }
 
