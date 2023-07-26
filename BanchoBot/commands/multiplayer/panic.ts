@@ -35,7 +35,7 @@ async function run (message: PrivateMessage | ChannelMessage) {
         return;
     }
 
-    await discordChannel.send(`@here <@${matchup.stage!.tournament.organizer.discord.userID}> ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message.user.username} is PANICING for the matchup Omggg go helkp them`);
+    await discordChannel.send(`@here <@${matchup.stage!.tournament.organizer.discord.userID}> ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message.user.username} is PANICING for the matchup Omggg go helkp them\n\nAuto-running lobby has stopped`);
 
     state.matchups[mpID].autoRunning = false;
 

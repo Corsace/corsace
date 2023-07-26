@@ -381,7 +381,7 @@ const data = new SlashCommandBuilder()
     .setDescription("Schedule your team (or a team if you are an organizer) to play qualifiers")
     .addStringOption(option =>
         option.setName("date")
-            .setDescription("The UTC date and/or time (E.g. YYYY-MM-DD HH:MM:SS UTC) / UNIX epoch to play qualifiers in")
+            .setDescription("The UTC date and/or time (E.g. YYYY-MM-DD HH:MM UTC) / UNIX epoch to play qualifiers in")
             .setRequired(true))
     .addStringOption(option => 
         option.setName("tournament")
