@@ -3,7 +3,6 @@
         <div class="mappool__main_content">
             <OpenTitle>
                 {{ $t('open.mappool.title') }}
-
                 <template #buttons>
                     <StageSelector>
                         <template #top_text>
@@ -94,7 +93,7 @@ export default class Mappool extends Vue {
     overflow: auto;
 
     &__main_content {
-        align-self: center;;
+        align-self: center;
         position: relative;
         width: 65vw;
         padding: 35px;
