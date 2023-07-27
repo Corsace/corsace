@@ -5,7 +5,7 @@ async function script () {
     const conn = await ormConfig.initialize();
     console.log("DB schema is initialized.");
 
-    conn.transaction(async (manager) => {
+    await conn.transaction(async (manager) => {
 
         const qualifierMatchups = await manager
             .createQueryBuilder(Matchup, "matchup")
@@ -14,8 +14,6 @@ async function script () {
             .leftJoinAndSelect("matchup.teams", "teams")
             .where("stage.stageType = '0'")
             .getMany();
-
-        console.log(qualifierMatchups);
 
         // If there are multiple teams in a lobby, and the lobby hasn't been played yet, then we need to create a new matchup for each team.
         // This is because qualifier lobbies will be run for 1 team only from now on.
