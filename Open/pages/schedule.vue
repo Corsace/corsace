@@ -5,10 +5,22 @@
                 SCHEDULE - {{ stage?.abbreviation }}
                 <template #selector>
                     <StageSelector>
+                        <template #top_text>
+                            STAGE
+                        </template>
+                        <template #bottom_text>
+                            SELECT
+                        </template>
 
+                        <template #stage>
+                            QL
+                        </template>
                     </StageSelector>
                 </template>
             </OpenTitle>
+            <ScheduleMatchBox>
+                
+            </ScheduleMatchBox>
         </div>
     </div>
 </template>
@@ -17,6 +29,7 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StageSelector from "../../Assets/components/open/StageSelector.vue";
+import ScheduleMatchBox from "../../Assets/components/open/ScheduleMatchBox.vue";
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage } from "../../Interfaces/stage";
 
@@ -28,6 +41,7 @@ const openModule = namespace("open");
     components: {
         StageSelector,
         OpenTitle,
+        ScheduleMatchBox,
     },
     head () {
         return {
@@ -94,17 +108,17 @@ export default class Mappool extends Vue {
 
 .schedule {
     background: linear-gradient(180deg, #1F1F1F 0%, #131313 100%);
-    display: ;
 
     &_main_content {
         background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
         display: flex;
-        align-items: center;
+        align-self: center;
         justify-content: center;
         margin-top: 20px;
         flex-direction: column;
         width: 75vw;
         position: relative;
+        padding: 35px;
     }
 }
 </style>
