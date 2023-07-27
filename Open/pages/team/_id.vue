@@ -133,12 +133,19 @@
                                     {{ Math.round(member.BWS) }} BWS
                                 </div>
                             </a>
-                            <div
-                                v-if="!member.isManager && isManager && editMembers" 
-                                class="team__member_x"
-                                @click="removeMember(member)"
-                            >
-                                X
+                            <div>
+                                <div
+                                    v-if="!member.isManager && isManager && editMembers" 
+                                    class="team__member_x"
+                                    @click="removeMember(member)"
+                                >
+                                    X
+                                </div>
+                                <div
+                                    v-if="!member.isManager && isManager && editMembers" 
+                                    class="team__member_crown"
+                                    @click="transferManager(member)"
+                                />
                             </div>
                         </div>
                     </div>
@@ -675,6 +682,22 @@ export default class Team extends Vue {
             alert(res.error);
     }
 
+    async transferManager (user: TeamUser) {
+        if (!this.teamData)
+            return;
+
+        if (!confirm(`Are you sure you want to transfer manager to ${user.username}?`))
+            return;
+
+        const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/manager/${user.ID}`);
+
+        if (res.success) {
+            this.teamData = await this.getTeam(true);
+            this.editMembers = false;
+        } else
+            alert(res.error);
+    }
+
     async managerToggle () {
         if (!this.isManager || !this.teamData)
             return;
@@ -928,8 +951,27 @@ export default class Team extends Vue {
             font-family: $font-ggsans;
             font-weight: 700;
             font-size: $font-lg;
-            color: $open-red;
             margin-bottom: 10px;
+            color: $gray;
+
+            &:hover {
+                color: $open-red;
+            }
+        }
+
+        &_crown {
+            width: 20px;
+            height: 20px;
+            background-image: url('../../../Assets/img/site/open/team/manager.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+            filter: saturate(0);
+
+            &:hover {
+                filter: saturate(1);
+            }
         }
 
         &--search {

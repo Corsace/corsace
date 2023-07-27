@@ -543,7 +543,7 @@ teamRouter.post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true
             .innerJoin("matchup.stage", "stage")
             .innerJoin("stage.tournament", "tournament")
             .innerJoin("matchup.teams", "team")
-            .where("tournament.ID = :ID", { ID: tournaments.filter(t => t.status === TournamentStatus.Registrations)[0].ID })
+            .where("tournament.ID IN (:...IDs)", { IDs: tournaments.filter(t => t.status === TournamentStatus.Registrations).map(t => t.ID) })
             .andWhere("stage.stageType = '0'")
             .andWhere("team.ID = :teamID", { teamID: team.ID })
             .getMany();
@@ -602,7 +602,7 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
             .innerJoin("matchup.stage", "stage")
             .innerJoin("stage.tournament", "tournament")
             .innerJoin("matchup.teams", "team")
-            .where("tournament.ID = :ID", { ID: tournaments.filter(t => t.status === TournamentStatus.Registrations)[0].ID })
+            .where("tournament.ID IN (:...IDs)", { IDs: tournaments.filter(t => t.status === TournamentStatus.Registrations).map(t => t.ID) })
             .andWhere("stage.stageType = '0'")
             .andWhere("team.ID = :teamID", { teamID: team.ID })
             .getMany();
