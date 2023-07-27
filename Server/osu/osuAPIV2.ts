@@ -78,7 +78,7 @@ export class osuAPIV2 {
         if (this.clientCredentials && (this.clientCredentials.expiresAt.getTime() - (new Date()).getTime()) / 1000 > 300)
             return this.clientCredentials.token;
 
-        const data = await this.getToken("client_credentials", "public delegate");
+        const data = await this.getToken("client_credentials", "public");
 
         this.clientCredentials = {
             token: data.access_token,
