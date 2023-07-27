@@ -274,11 +274,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             }
         }
     } else {
-        // TODO: Readd this later, removing this for now so cavoe can just do his stuff for COE 
-        // if (target && !await confirmCommand(m, `<@${user.discord.userID}> do you wish to confirm your registration for ${tournament.name} under team name ${team.name}?`, true, user.discord.userID)) {
-        //     await respond(m, "Ok Lol");
-        //     return;
-        // }
+        if (target && !await confirmCommand(m, `<@${user.discord.userID}> do you wish to confirm your registration for ${tournament.name} under team name ${team.name}?`, true, user.discord.userID)) {
+            await respond(m, "Ok Lol");
+            return;
+        }
 
         // New team, need to check roles
         const teamMembers = [team.manager, ...team.members].filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
