@@ -18,9 +18,7 @@
                     </StageSelector>
                 </template>
             </OpenTitle>
-            <ScheduleMatchBox>
-                
-            </ScheduleMatchBox>
+            <ScheduleMatchBox />
         </div>
     </div>
 </template>

@@ -14,8 +14,12 @@
                 </div>
             </div>
             <div class="team_card_details_teambws">
-                <div class="team_card--title">TEAM BWS AVG</div>
-                <div class="team_card_details_teambws__bws">99</div>
+                <div class="team_card--title">
+                    TEAM BWS AVG
+                </div>
+                <div class="team_card_details_teambws__bws">
+                    99
+                </div>
             </div>
         </div>
     </div>
