@@ -5,37 +5,40 @@ async function script () {
     const conn = await ormConfig.initialize();
     console.log("DB schema is initialized.");
 
-    const qualifierMatchups = await Matchup
-        .createQueryBuilder("matchup")
-        .leftJoinAndSelect("matchup.stage", "stage")
-        .leftJoinAndSelect("stage.tournament", "tournament")
-        .leftJoinAndSelect("matchup.teams", "teams")
-        .where("stage.stageType = '0'")
-        .getMany();
+    conn.transaction(async (manager) => {
 
-    // If there are multiple teams in a lobby, and the lobby hasn't been played yet, then we need to create a new matchup for each team.
-    // This is because qualifier lobbies will be run for 1 team only from now on.
-    for (const matchup of qualifierMatchups) {
-        if (!matchup.teams || matchup.teams.length === 0) {
-            console.log(`Matchup ${matchup.ID} has no teams. Removing.`);
-            await matchup.remove();
-            continue;
-        }
+        const qualifierMatchups = await manager
+            .createQueryBuilder(Matchup, "matchup")
+            .leftJoinAndSelect("matchup.stage", "stage")
+            .leftJoinAndSelect("stage.tournament", "tournament")
+            .leftJoinAndSelect("matchup.teams", "teams")
+            .where("stage.stageType = '0'")
+            .getMany();
 
-        if (matchup.teams.length > 1 && !matchup.mp) {
-            const newMatchups: Matchup[] = [];
-            for (const team of matchup.teams) {
-                const newMatchup = new Matchup();
-                newMatchup.stage = matchup.stage;
-                newMatchup.teams = [ team ];
-                newMatchup.date = matchup.date;
-                newMatchups.push(newMatchup);
+        // If there are multiple teams in a lobby, and the lobby hasn't been played yet, then we need to create a new matchup for each team.
+        // This is because qualifier lobbies will be run for 1 team only from now on.
+        for (const matchup of qualifierMatchups) {
+            if (!matchup.teams || matchup.teams.length === 0) {
+                console.log(`Matchup ${matchup.ID} has no teams. Removing.`);
+                await manager.remove(Matchup, matchup);
+                continue;
             }
-            await Matchup.save(newMatchups);
-            await matchup.remove();
-            console.log(`Matchup ${matchup.ID} has ${matchup.teams.length} and is not played yet. Splitting into ${matchup.teams.length} new matchups.`);
+
+            if (matchup.teams.length > 1 && !matchup.mp) {
+                const newMatchups: Matchup[] = [];
+                for (const team of matchup.teams) {
+                    const newMatchup = new Matchup();
+                    newMatchup.stage = matchup.stage;
+                    newMatchup.teams = [ team ];
+                    newMatchup.date = matchup.date;
+                    newMatchups.push(newMatchup);
+                }
+                await manager.remove(Matchup, matchup);
+                await manager.save(Matchup, newMatchups);
+                console.log(`Matchup ${matchup.ID} has ${matchup.teams.length} and is not played yet. Splitting into ${matchup.teams.length} new matchups.`);
+            }
         }
-    }
+    });
 
     await conn.destroy();
 }
