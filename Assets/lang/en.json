@@ -436,6 +436,7 @@
         },
         "info": {
             "title": "INFORMATION",
+            "condensed": "CONDENSED INFO",
             "error": "Could not find tournament",
             "matchInfo": {
                 "matchSize": "MATCH SIZE",

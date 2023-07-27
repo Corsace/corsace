@@ -177,23 +177,19 @@
                         <li>
                             <strong>Placements:</strong>
                             <ul class="info_desc__list">
-                                <li>Seeding is in the following precedence:</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <ul class="info_desc__list">
-                        <li>Difference in Points (W/L Ratio)</li>
-                        <li>Average score difference per map</li>
-                        <li>
-                            Average accuracy per map
-                            <ul class="info_desc__list">
+                                <li>
+                                    Seeding is in the following precedence:]
+                                    <ul class="info_desc__list">
+                                        <li>Difference in Points (W/L Ratio)</li>
+                                        <li>Average score difference per map</li>
+                                        <li>Average accuracy per map</li>
+                                    </ul>
+                                </li>
                                 <li><strong>1st:</strong> Moves on to <strong>Knockout 1</strong> (becomes Teams 9 - 12 in KO1)</li>
                                 <li><strong>2nd</strong> and <strong>3rd:</strong> Moves on to <strong>Runoff</strong></li>
-                                <li><strong>4th:</strong> <black>ELIMINATED</black></li>
+                                <li><strong>4th:</strong> <red>ELIMINATED</red></li>
                             </ul>
                         </li>
-                    </ul>
-                    <ul class="info_desc__list">
                         <li>Matches are <strong>Best of 9</strong> with <strong>1 ban</strong></li>
                         <li>Mappool size (15 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
                     </ul>
@@ -205,7 +201,7 @@
                             <strong>Round 1 </strong>(8 teams, 4 matches)
                             <ul class="info_desc__list">
                                 <li>Winners move on to Round 2</li>
-                                <li>Losers are <black>ELIMINATED</black></li>
+                                <li>Losers are <red>ELIMINATED</red></li>
                             </ul>
                         </li>
                         <li>
@@ -884,8 +880,8 @@ export default class Info extends Vue {
                     font-weight: 600;
                 }
 
-                & li black {
-                    color: black;
+                & li red {
+                    color: $open-red;
                     font-weight: 800;
                     font-style: italic;
                 }
