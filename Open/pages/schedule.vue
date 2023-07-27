@@ -18,7 +18,26 @@
                     </StageSelector>
                 </template>
             </OpenTitle>
-            <ScheduleMatchBox />
+            <ScheduleMatchBox>
+                <template #month>
+                    JUL 30
+                </template>
+                <template #time>
+                    15:00
+                </template>
+                <template #timezone>
+                    UTC
+                </template>
+                <template #teamcard_left>
+                    <TeamCard />
+                </template>
+                <template #teamcard_right>
+                    <TeamCard />
+                </template>
+                <template #links>
+                    
+                </template>
+            </ScheduleMatchBox>
         </div>
     </div>
 </template>
@@ -28,6 +47,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StageSelector from "../../Assets/components/open/StageSelector.vue";
 import ScheduleMatchBox from "../../Assets/components/open/ScheduleMatchBox.vue";
+import TeamCard from "../../Assets/components/open/TeamCard.vue";
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage } from "../../Interfaces/stage";
 
@@ -40,6 +60,7 @@ const openModule = namespace("open");
         StageSelector,
         OpenTitle,
         ScheduleMatchBox,
+        TeamCard,
     },
     head () {
         return {

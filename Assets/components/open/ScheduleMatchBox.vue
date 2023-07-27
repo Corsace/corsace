@@ -2,28 +2,29 @@
     <div class="schedule_matchbox">
         <div class="schedule_matchbox_date">
             <div class="schedule_matchbox_date__month">
-                JUL 30
+                <slot name="month" />
             </div>
             <div class="schedule_matchbox_date__time">
-                15:00
+                <slot name="time" />
             </div>
             <div class="schedule_matchbox_date__timezone">
-                UTC
+                <slot name="timezone" />
             </div>
         </div>
         <div class="schedule_matchbox_team">
             <div class="schedule_matchbox_team__left">
-                <TeamCard />
+                <slot name="teamcard_left" />
             </div>
             <div class="schedule_matchbox_team__vs">
                 VS
             </div>
             <div class="schedule_matchbox_team__right">
-                <TeamCard />
+                <slot name="teamcard_right" />
             </div>
         </div>
         <div class="schedule_matchbox_links">
-            <a
+            <slot name="links" />
+            <!-- <a
                 href="/schedule" 
                 class="schedule_matchbox_links__button"
             >
@@ -40,19 +41,17 @@
                     class="schedule_matchbox_links__button__twitch"
                     src="../../img/site/open/link.svg"
                 >
-            </a>
+            </a> -->
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import TeamCard from "./TeamCard.vue";
 import ContentButton from "./ContentButton.vue";
 
 @Component({
     components: {
-        TeamCard,
         ContentButton,
     },
 })
@@ -79,6 +78,7 @@ export default class ScheduleMatchBox extends Vue {
         padding: 25px;
         justify-content: center;
         align-items: center;
+        white-space: nowrap;
 
         &__month {
             font-family: $font-swis721;

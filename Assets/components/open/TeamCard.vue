@@ -3,14 +3,14 @@
         <div class="team_card__avatar" />
         <div class="team_card_details">
             <div class="team_card_details__name">
-                goofy ahh lil jits
+                <slot name="name"/>
             </div>
             <div class="team_card_details_teamrank">
                 <div class="team_card--title">
                     RANK
                 </div>
                 <div class="team_card_details_teamrank__rank">
-                    1
+                    <slot name="rank" />
                 </div>
             </div>
             <div class="team_card_details_teambws">
@@ -18,7 +18,7 @@
                     TEAM BWS AVG
                 </div>
                 <div class="team_card_details_teambws__bws">
-                    99
+                    <slot name="bws" />
                 </div>
             </div>
         </div>
