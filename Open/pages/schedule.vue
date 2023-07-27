@@ -18,26 +18,110 @@
                     </StageSelector>
                 </template>
             </OpenTitle>
-            <ScheduleMatchBox>
-                <template #month>
-                    JUL 30
-                </template>
-                <template #time>
-                    15:00
-                </template>
-                <template #timezone>
-                    UTC
-                </template>
-                <template #teamcard_left>
-                    <TeamCard />
-                </template>
-                <template #teamcard_right>
-                    <TeamCard />
-                </template>
-                <template #links>
-                    
-                </template>
-            </ScheduleMatchBox>
+            <div class="schedule_main_content_matches">
+                <ScheduleMatchBox>
+                    <template #month>
+                        JUL 30
+                    </template>
+                    <template #time>
+                        15:00
+                    </template>
+                    <template #timezone>
+                        UTC
+                    </template>
+                    <template #teamcard_left>
+                        <TeamCard>
+                            <template #name>
+                                goofty12312
+                            </template>
+                            <template #rank>
+                                1
+                            </template>
+                            <template #bws>
+                                99
+                            </template>
+                        </TeamCard>
+                    </template>
+                    <template #teamcard_right>
+                        <TeamCard>
+                            <template #name>
+                                goofty12312
+                            </template>
+                            <template #rank>
+                                1
+                            </template>
+                            <template #bws>
+                                99
+                            </template>
+                        </TeamCard>
+                    </template>
+                    <template #links>
+                        <IconButton link="/home">
+                            <img 
+                                class="schedule_matchbox_links__button__twitch"
+                                src="../../Assets/img/social/twitch-dark.svg"
+                            >
+                        </IconButton>
+                        <IconButton link="/home">
+                            <img 
+                                class="schedule_matchbox_links__button__twitch"
+                                src="../../Assets/img/site/open/link.svg"
+                            >
+                        </IconButton>
+                    </template>
+                </ScheduleMatchBox>
+                <ScheduleMatchBox>
+                    <template #month>
+                        JUL 30
+                    </template>
+                    <template #time>
+                        15:00
+                    </template>
+                    <template #timezone>
+                        UTC
+                    </template>
+                    <template #teamcard_left>
+                        <TeamCard avatar="url../../Assets/img/test_avatar.png)">
+                            <template #name>
+                                goofty12312
+                            </template>
+                            <template #rank>
+                                1
+                            </template>
+                            <template #bws>
+                                99
+                            </template>
+                        </TeamCard>
+                    </template>
+                    <template #teamcard_right>
+                        <TeamCard>
+                            <template #name>
+                                goofty12312
+                            </template>
+                            <template #rank>
+                                1
+                            </template>
+                            <template #bws>
+                                99
+                            </template>
+                        </TeamCard>
+                    </template>
+                    <template #links>
+                        <IconButton link="/home">
+                            <img 
+                                class="schedule_matchbox_links__button__twitch"
+                                src="../../Assets/img/social/twitch-dark.svg"
+                            >
+                        </IconButton>
+                        <IconButton link="/home">
+                            <img 
+                                class="schedule_matchbox_links__button__twitch"
+                                src="../../Assets/img/site/open/link.svg"
+                            >
+                        </IconButton>
+                    </template>
+                </ScheduleMatchBox>
+            </div>
         </div>
     </div>
 </template>
@@ -48,6 +132,7 @@ import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StageSelector from "../../Assets/components/open/StageSelector.vue";
 import ScheduleMatchBox from "../../Assets/components/open/ScheduleMatchBox.vue";
 import TeamCard from "../../Assets/components/open/TeamCard.vue";
+import IconButton from "../../Assets/components/open/IconButton.vue";
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage } from "../../Interfaces/stage";
 
@@ -61,6 +146,7 @@ const openModule = namespace("open");
         OpenTitle,
         ScheduleMatchBox,
         TeamCard,
+        IconButton,
     },
     head () {
         return {
@@ -138,6 +224,16 @@ export default class Mappool extends Vue {
         width: 75vw;
         position: relative;
         padding: 35px;
+
+        @media screen and (max-width: $breakpoint-xl) {
+            width: 100vw;
+        }
+
+        &_matches{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
     }
 }
 </style>

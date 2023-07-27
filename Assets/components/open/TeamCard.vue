@@ -1,9 +1,12 @@
 <template>
     <div class="team_card">
-        <div class="team_card__avatar" />
+        <div
+            class="team_card__avatar" 
+            :style="{ 'backgroundImage': `url(${avatarSync || require('../../../Assets/img/site/open/team/default.png')})` }"
+        />
         <div class="team_card_details">
             <div class="team_card_details__name">
-                <slot name="name"/>
+                <slot name="name" />
             </div>
             <div class="team_card_details_teamrank">
                 <div class="team_card--title">
@@ -26,10 +29,11 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, PropSync} from "vue-property-decorator";
 
 @Component
 export default class TeamCard extends Vue {
+    @PropSync("avatar", { type: String, default: "../../img/site/open/team/default.png" }) avatarSync!: string;
 }
 </script>
 
@@ -41,12 +45,14 @@ export default class TeamCard extends Vue {
     display: flex;
     flex-direction: row;
     height: 100%;
-
+    white-space: nowrap;
 
     &__avatar {
         width: 129px;
         height: 100%;
-        background-image: url("../../img/test_avatar.png"); // Replace later
+        overflow: hidden;
+        
+        // background-image: url("../../img/test_avatar.png"); // Replace later
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;

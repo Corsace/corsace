@@ -24,24 +24,6 @@
         </div>
         <div class="schedule_matchbox_links">
             <slot name="links" />
-            <!-- <a
-                href="/schedule" 
-                class="schedule_matchbox_links__button"
-            >
-                <img 
-                    class="schedule_matchbox_links__button__twitch"
-                    src="../../img/social/twitch-dark.svg"
-                >
-            </a>
-            <a
-                href="/schedule" 
-                class="schedule_matchbox_links__button"
-            >
-                <img 
-                    class="schedule_matchbox_links__button__twitch"
-                    src="../../img/site/open/link.svg"
-                >
-            </a> -->
         </div>
     </div>
 </template>
@@ -106,6 +88,7 @@ export default class ScheduleMatchBox extends Vue {
     &_team {
         display: flex;
         width: 100%;
+
         &__left {
             flex-grow: 2;
         }
@@ -140,29 +123,13 @@ export default class ScheduleMatchBox extends Vue {
 
     &_links {
         display: flex;
-        width: 100px;
+        flex-direction: row;
 
         padding: 15px 15px 5px 15px;
         border-left: 1px solid $open-red;
-        justify-content: space-evenly;
+        justify-content: space-between;
 
         gap: 15px;
-
-        &__button {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 27px;
-            height: 27px;
-
-            background-color: $open-red;
-
-            &__twitch {
-                width: 19.1px;
-                height: 21.07px;
-            }
-        }
     }
 }
-
 </style>
