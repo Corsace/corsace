@@ -177,8 +177,8 @@ export const actions: ActionTree<OpenState, OpenState> = {
         await Promise.all([
             dispatch("setTournament", year),
             commit("setTitle", year),
-            await dispatch("setTeam"),
-            await dispatch("setInvites"),
+            dispatch("setTeam"),
+            dispatch("setInvites"),
         ]);
     },
 };

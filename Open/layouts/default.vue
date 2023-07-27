@@ -311,7 +311,7 @@ export default class Default extends Vue {
         filter: drop-shadow(0 0 0.75rem $open-red);
 
         &_title {
-            font-family: $font-communterssans;
+            font-family: $font-commuterssans;
             margin-bottom: 5px;
         }
 

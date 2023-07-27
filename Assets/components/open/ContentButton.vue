@@ -86,7 +86,7 @@ export default class ContentButton extends Vue {
     &--red_lg {
         color: #181818;
         background-color: $open-red;
-        font-family: $font-communterssans;
+        font-family: $font-commuterssans;
         font-size: $font-lg;
         font-weight: 400;
         line-height: 2rem;
