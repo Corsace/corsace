@@ -36,9 +36,7 @@ async function script () {
                     newMatchups.push(newMatchup);
                 }
                 await manager.remove(Matchup, matchup);
-                await matchup.remove();
                 await manager.save(Matchup, newMatchups);
-                await Matchup.save(newMatchups);
                 console.log(`Matchup ${matchup.ID} has ${matchup.teams.length} and is not played yet. Splitting into ${matchup.teams.length} new matchups.`);
             }
         }
