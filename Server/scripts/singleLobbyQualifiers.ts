@@ -15,6 +15,8 @@ async function script () {
             .where("stage.stageType = '0'")
             .getMany();
 
+        console.log(qualifierMatchups);
+
         // If there are multiple teams in a lobby, and the lobby hasn't been played yet, then we need to create a new matchup for each team.
         // This is because qualifier lobbies will be run for 1 team only from now on.
         for (const matchup of qualifierMatchups) {
@@ -34,7 +36,9 @@ async function script () {
                     newMatchups.push(newMatchup);
                 }
                 await manager.remove(Matchup, matchup);
+                await matchup.remove();
                 await manager.save(Matchup, newMatchups);
+                await Matchup.save(newMatchups);
                 console.log(`Matchup ${matchup.ID} has ${matchup.teams.length} and is not played yet. Splitting into ${matchup.teams.length} new matchups.`);
             }
         }
