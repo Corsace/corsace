@@ -17,6 +17,7 @@ async function script () {
     // This is because qualifier lobbies will be run for 1 team only from now on.
     for (const matchup of qualifierMatchups) {
         if (!matchup.teams || matchup.teams.length === 0) {
+            console.log(`Matchup ${matchup.ID} has no teams. Removing.`);
             await matchup.remove();
             continue;
         }
