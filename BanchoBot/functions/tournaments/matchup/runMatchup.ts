@@ -19,6 +19,7 @@ import getMappoolSlotMods from "./getMappoolSlotMods";
 import getUserInMatchup from "./getUserInMatchup";
 import invitePlayersToLobby from "./invitePlayersToLobby";
 import isPlayerInMatchup from "./isPlayerInMatchup";
+import kickExtraPlayers from "./kickExtraPlayers";
 import loadNextBeatmap from "./loadNextBeatmap";
 import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
 import { TournamentChannel } from "../../../../Models/tournaments/tournamentChannel";
@@ -158,8 +159,11 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             else if (
                 message.content === "Countdown finished" && autoStart
             ) {
-                await mpChannel.sendMessage("u guys are taking WAY TOO LONG TO READY UP im starting the match now");
+                await mpChannel.sendMessage("u guys are taking WAY TOO LONG TO READY UP im starting the match now and kicking any extra players in a team at random");
                 setTimeout(async () => {
+                    if (!autoStart)
+                        return;
+                    await kickExtraPlayers(matchup, playersInLobby, mpLobby);
                     await mpLobby.startMatch(5);
                     mapTimerStarted = true;
                     autoStart = false;
@@ -178,6 +182,21 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             playersInLobby.some(p => p.user.id === message.user.id)
         )
             await abortMap(message.user);
+        else if (message.message === "!panic" || message.message === "!alert") {
+            if (refCollector?.channelId) {
+                const discordChannel = discordClient.channels.cache.get(refCollector.channelId);
+                if (!(discordChannel instanceof TextChannel)) {
+                    await message.user.sendMessage(`No ref channel found`);
+                    return;
+                }
+
+                await discordChannel.send(`@here <@${matchup.stage!.tournament.organizer.discord.userID}> ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message.user.username} is PANICING for the matchup Omggg go helkp them\n\nAuto-running lobby has stopped`);
+
+                state.matchups[matchup.ID].autoRunning = false;
+
+                await mpChannel.sendMessage(`ok i notified the refs and organizer(s) of the tourney and stopped the auto lobby for u`);
+            }
+        }
     });
 
     // Player joined event

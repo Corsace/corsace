@@ -288,28 +288,21 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
             return;
         }
 
-        const maxTeams = Math.floor(16 / tournament.matchupSize);
-        const existingMatchup = qualifierStage.matchups.find(m => m.teams!.length < maxTeams && m.date.getTime() === qualifierDate.getTime());
-        if (existingMatchup && !qualifierStage.qualifierTeamChooseOrder) {
-            existingMatchup.teams!.push(team);
-            await existingMatchup.save();
-        } else {
-            try {
-                const matchup = new Matchup;
-                matchup.date = qualifierDate;
-                matchup.teams = [ team ];
-                matchup.stage = qualifierStage;
-                await matchup.save();
-            } catch (e) {
-                if (e instanceof QueryFailedError && e.driverError.sqlState === "45000")
-                    ctx.body = { error: "Team already has a qualifier matchup, you may have double clicked" };
-                else
-                    ctx.body = { error: `Error creating qualifier matchup\n${e}` };
-                return;
-            }
-
-            await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
+        try {
+            const matchup = new Matchup;
+            matchup.date = qualifierDate;
+            matchup.teams = [ team ];
+            matchup.stage = qualifierStage;
+            await matchup.save();
+        } catch (e) {
+            if (e instanceof QueryFailedError && e.driverError.sqlState === "45000")
+                ctx.body = { error: "Team already has a qualifier matchup, you may have double clicked" };
+            else
+                ctx.body = { error: `Error creating qualifier matchup\n${e}` };
+            return;
         }
+
+        await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
     }
 
     tournament.teams.push(team);
@@ -367,11 +360,7 @@ teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), as
             return;
         }
 
-        qualifier.teams = qualifier.teams!.filter(t => t.ID !== team.ID);
-        if (qualifier.teams.length === 0)
-            await qualifier.remove();
-        else
-            await qualifier.save();
+        await qualifier.remove();
     }
 
     tournament.teams = tournament.teams.filter(t => t.ID !== team.ID);
@@ -407,6 +396,7 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         ctx.body = { error: "Tournament not found" };
         return;
     }
+
     if (tournament.status !== TournamentStatus.Registrations) {
         ctx.body = { error: "Tournament is not in registration phase" };
         return;
@@ -441,33 +431,20 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
     }
 
     const previousMatch = qualifierStage.matchups.find(m => m.teams!.some(t => t.ID === team.ID));
-    if (previousMatch) {
-        if (previousMatch.mp) {
-            ctx.body = { error: "Team has already played a qualifier match" };
-            return;
-        }
-
-        previousMatch.teams = previousMatch.teams!.filter(t => t.ID !== team.ID);
-        if (previousMatch.teams.length === 0)
-            await previousMatch.remove();   
-        else
-            await previousMatch.save(); 
-    } 
-
-    const maxTeams = Math.floor(16 / tournament.matchupSize);
-    const existingMatchup = qualifierStage.matchups.find(m => m.teams!.length < maxTeams && m.date.getTime() === qualifierDate.getTime());
-    if (existingMatchup && !qualifierStage.qualifierTeamChooseOrder) {
-        existingMatchup.teams!.push(team);
-        await existingMatchup.save();
-    } else {
-        const matchup = new Matchup;
-        matchup.date = qualifierDate;
-        matchup.teams = [ team ];
-        matchup.stage = qualifierStage;
-        await matchup.save();
-
-        await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
+    if (!previousMatch) {
+        ctx.body = { error: "No qualifier found assigned to this team" };
+        return;
     }
+
+    if (previousMatch.mp) {
+        ctx.body = { error: "Team has already played a qualifier match" };
+        return;
+    }
+
+    previousMatch.date = qualifierDate;
+    await previousMatch.save(); 
+
+    await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
 
     ctx.body = { success: "Qualifier date set" };
 });
