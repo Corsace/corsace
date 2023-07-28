@@ -11,7 +11,7 @@
                         src="../../img/kaetwo.png"
                     >
                 </div>
-                <div class="staff_row_members_card_details" >  
+                <div class="staff_row_members_card_details">  
                     <div class="staff_row_members_card_details__username">
                         kaetwo
                     </div>
@@ -49,6 +49,7 @@ export default class StaffRow extends Vue {
     
     &__title {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         font-family: $font-ggsans;
@@ -57,18 +58,18 @@ export default class StaffRow extends Vue {
         line-height: 23px;
         letter-spacing: 0em;
         text-align: center;
-
         white-space: nowrap;
-        width: 150px;
-        padding-left: 20px;
+        min-width: 150px;
         color: $open-red;
+        padding: 0 10px 0 10px;
     }
 
     &_members {
         display: flex;
         align-items: center;
-        justify-content: space-evenly;
         width: 100%;
+        padding-right: 10px;
+        gap: 10px;
         
         &_card {
             display: flex;

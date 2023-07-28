@@ -24,6 +24,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StaffRow from "../../Assets/components/open/StaffRow.vue";
+
 @Component({
     components: {
         OpenTitle,
@@ -58,7 +59,6 @@ export default class Staff extends Vue {
 @import '@s-sass/_variables';
 
 .staff {
-
     &_main_content {
         align-self: center;
         position: relative;
@@ -70,6 +70,7 @@ export default class Staff extends Vue {
             padding-top: 20px;
             display: flex;
             flex-direction: column;
+            justify-content: space-around;
             gap: 20px;
         }
     }
