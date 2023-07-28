@@ -4,7 +4,18 @@
             <OpenTitle>
                 STAFF
             </OpenTitle>
-            <StaffRow />
+            <div class="staff_main_content_staff_list">
+                <StaffRow>
+                    <template #role>
+                        ORGANIZER
+                    </template>
+                </StaffRow>
+                <StaffRow>
+                    <template #role>
+                        DESIGN TEAM
+                    </template>
+                </StaffRow>
+            </div>
         </div>
     </div>
 </template>
@@ -54,6 +65,13 @@ export default class Staff extends Vue {
         width: 65vw;
         padding: 35px;
         background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
+
+        &_staff_list {
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
     }
 }
 

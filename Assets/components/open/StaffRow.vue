@@ -1,18 +1,17 @@
 <template>
     <div class="staff_row">
         <div class="staff_row__title">
-            ORGANIZERS
             <slot name="role" />
         </div>
         <div class="staff_row_members">
-            <div class="staff_row_members_card">
+            <div class="staff_row_members_card" v-for="n in 4">
                 <div class="staff_row_members_card__headshot">
                     <img
                         class="staff_row_members_card__headshot" 
                         src="../../img/kaetwo.png"
                     >
                 </div>
-                <div class="staff_row_members_card_details">  
+                <div class="staff_row_members_card_details" >  
                     <div class="staff_row_members_card_details__username">
                         kaetwo
                     </div>
@@ -58,15 +57,18 @@ export default class StaffRow extends Vue {
         line-height: 23px;
         letter-spacing: 0em;
         text-align: center;
-        
+
+        white-space: nowrap;
+        width: 150px;
+        padding-left: 20px;
         color: $open-red;
-        
-        padding: 25px;
     }
 
     &_members {
         display: flex;
         align-items: center;
+        justify-content: space-evenly;
+        width: 100%;
         
         &_card {
             display: flex;
@@ -75,9 +77,7 @@ export default class StaffRow extends Vue {
             flex-direction: row;
             align-items: center;
 
-
             border: 1px solid rgba(42, 44, 45, 1);
-            
             background: linear-gradient(0deg, #171B1E, #171B1E),
             linear-gradient(0deg, #2A2C2D, #2A2C2D);
             
@@ -99,7 +99,6 @@ export default class StaffRow extends Vue {
                     line-height: 29px;
                     letter-spacing: 0em;
                     text-align: left;
-
                 }
 
                 &__nationality {
