@@ -281,10 +281,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     let matchup = await Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
-        .innerJoin("stage.tournament", "tournament")
-        .innerJoinAndSelect("matchup.teams", "team")
-        .where("tournament.ID = :ID", { ID: tournament.ID })
-        .andWhere("stage.stageType = '0'")
+        .innerJoin("matchup.teams", "team")
+        .where("stage.ID = :ID", { ID: stage.ID })
         .andWhere("team.ID = :ID", { ID: team.ID })
         .getOne();
     if (matchup) {
