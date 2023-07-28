@@ -49,7 +49,7 @@ export class osuAPIV2 {
     }
 
     public async getUser (userID: string, mode?: "osu" | "taiko" | "fruits" | "mania", accessToken?: string): Promise<osuV2User> {
-        return this.get<osuV2User>(`/users${userID}${mode ? `/${mode}` : ""}`, accessToken || await this.getClientCredentials());
+        return this.get<osuV2User>(`/users${`/${userID}`}${mode ? `/${mode}` : ""}`, accessToken || await this.getClientCredentials());
     }
 
     public getMe (accessToken: string, mode?: "osu" | "taiko" | "fruits" | "mania"): Promise<osuV2Me> {
