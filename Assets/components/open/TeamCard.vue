@@ -2,8 +2,9 @@
     <div class="team_card">
         <div
             class="team_card__avatar" 
-            :style="{ 'backgroundImage': `url(${avatarSync || require('../../../Assets/img/site/open/team/default.png')})` }"
-        />
+            :style="{ 'backgroundImage': `url(${require('../../../Assets/img/site/open/team/default.png')})` }" 
+        /> 
+        <!-- Replace with avatarSync above -->
         <div class="team_card_details">
             <div class="team_card_details__name">
                 <slot name="name" />

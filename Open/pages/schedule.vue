@@ -22,9 +22,6 @@
                 <ScheduleMatchBox match="" />
                 <ScheduleMatchBox match="" />
                 <ScheduleMatchBox match="" />
-                <ScheduleMatchBox match="" />
-                <ScheduleMatchBox match="" />
-                <ScheduleMatchBox match="" />
             </div>
         </div>
     </div>
