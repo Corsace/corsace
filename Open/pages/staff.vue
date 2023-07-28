@@ -4,7 +4,7 @@
             <OpenTitle>
                 STAFF
             </OpenTitle>
-            <StaffRow></StaffRow>
+            <StaffRow />
         </div>
     </div>
 </template>
@@ -13,7 +13,6 @@
 import { Vue, Component } from "vue-property-decorator";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StaffRow from "../../Assets/components/open/StaffRow.vue";
-
 @Component({
     components: {
         OpenTitle,
