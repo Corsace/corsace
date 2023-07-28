@@ -183,27 +183,35 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             playersInLobby.some(p => p.user.id === message.user.id)
         )
             await abortMap(message.user);
-        else if (message.message === "!panic" || message.message === "!alert") {
-            if (refCollector?.channelId && !state.matchups[matchup.ID].autoRunning) {
-                const discordChannel = discordClient.channels.cache.get(refCollector.channelId);
-                if (!(discordChannel instanceof TextChannel)) {
-                    await message.user.sendMessage(`No ref channel found`);
-                    return;
-                }
+        else if (
+            (
+                message.message === "!panic" || 
+                message.message === "!alert"
+            ) && 
+            !state.matchups[matchup.ID].autoRunning
+        ) {
+            state.matchups[matchup.ID].autoRunning = false;
 
-                const refereeRole = await TournamentRole
-                    .createQueryBuilder("role")
-                    .innerJoinAndSelect("role.tournament", "tournament")
-                    .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
-                    .andWhere("role.roleType = '6'")
-                    .getOne();
-
-                await discordChannel.send(`<@${matchup.stage!.tournament.organizer.discord.userID}> ${refereeRole ? `<@&${refereeRole.roleID}>` : ""} ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message.user.username} ran the \`PANIC\` command for the matchup Omggg go helkp them\n\nAuto-running lobby has stopped`);
-
-                state.matchups[matchup.ID].autoRunning = false;
-
-                await mpChannel.sendMessage(`ok i notified the refs and organizer(s) of the tourney and stopped the auto lobby for u`);
+            if (!refCollector?.channelId) {
+                await mpChannel.sendMessage(`No ref channel ID found, I have stopped the auto-lobby tho. Get the organizer of the tournament to continue the match manually`);
+                return;
             }
+            const discordChannel = discordClient.channels.cache.get(refCollector.channelId);
+            if (!(discordChannel instanceof TextChannel)) {
+                await mpChannel.sendMessage(`No ref discord channel found, I have stopped the auto-lobby tho. Get the organizer of the tournament to continue the match manually`);
+                return;
+            }
+
+            const refereeRole = await TournamentRole
+                .createQueryBuilder("role")
+                .innerJoinAndSelect("role.tournament", "tournament")
+                .where("tournament.ID = :tournament", { tournament: matchup.stage!.tournament.ID })
+                .andWhere("role.roleType = '6'")
+                .getOne();
+
+            await discordChannel.send(`<@${matchup.stage!.tournament.organizer.discord.userID}> ${refereeRole ? `<@&${refereeRole.roleID}>` : ""} ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message.user.username} ran the \`PANIC\` command for the matchup Omggg go helkp them\n\nAuto-running lobby has stopped`);
+
+            await mpChannel.sendMessage(`ok i notified the refs and organizer(s) of the tourney and stopped the auto lobby for u`);
         } else if (message.message === "!start" && !started && earlyStart) {
             started = true;
             await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go");
