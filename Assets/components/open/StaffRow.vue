@@ -8,7 +8,7 @@
                 <div class="staff_row_members_card__headshot">
                     <img
                         class="staff_row_members_card__headshot" 
-                        src="../../img/kaetwo.png"
+                        src="../../img/corsace.png"
                     >
                 </div>
                 <div class="staff_row_members_card_details">  
