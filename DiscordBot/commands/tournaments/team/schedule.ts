@@ -282,8 +282,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
         .innerJoin("matchup.teams", "team")
-        .where("stage.ID = :ID", { ID: stage.ID })
-        .andWhere("team.ID = :ID", { ID: team.ID })
+        .where("stage.ID = :stageID", { stageID: stage.ID })
+        .andWhere("team.ID = :teamID", { teamID: team.ID })
         .getOne();
     if (matchup) {
         if (matchup.date.getTime() === date.getTime()) {
