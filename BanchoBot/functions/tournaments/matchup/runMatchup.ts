@@ -353,20 +353,22 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     mpLobby.on("matchStarted", async () => {
         log(matchup, "Match started");
-        if (!state.matchups[matchup.ID].autoRunning)
-            return;
 
         mapTimerStarted = false;
         matchStart = new Date();
         const beatmap = pools.flatMap(pool => pool.slots.flatMap(slot => slot.maps)).find(map => map.beatmap!.ID === mpLobby.beatmapId);
         if (!beatmap) {
-            await mpLobby.abortMatch();
-            await mpChannel.sendMessage("YO HOLD UP I can't find the map in the pool(s) for some reason GET CORSACE STAFF IMNMEDIATRELY");
-            log(matchup, `Couldn't find map ${mpLobby.beatmapId} in the pools`);
-            return;
-        }
+            if (state.matchups[matchup.ID].autoRunning) {
+                await mpLobby.abortMatch();
+                await mpChannel.sendMessage("YO HOLD UP I can't find the map in the pool(s) for some reason GET CORSACE STAFF IMNMEDIATRELY");
+                log(matchup, `Couldn't find map ${mpLobby.beatmapId} in the pools`);
+                return;
+            } else {
+                await mpChannel.sendMessage("Yo uh I can't find the map in the pool(s) for some reason but I'm not aborting cuz this is not auto-run anymore, I might crash and not save the scores tho so proly get corsace staff immediately");
+            }
+        } else 
+            mapsPlayed.push(beatmap);
         playersPlaying = playersInLobby;
-        mapsPlayed.push(beatmap);
     });
 
     mpLobby.on("matchFinished", async () => {
