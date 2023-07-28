@@ -19,108 +19,12 @@
                 </template>
             </OpenTitle>
             <div class="schedule_main_content_matches">
-                <ScheduleMatchBox>
-                    <template #month>
-                        JUL 30
-                    </template>
-                    <template #time>
-                        15:00
-                    </template>
-                    <template #timezone>
-                        UTC
-                    </template>
-                    <template #teamcard_left>
-                        <TeamCard>
-                            <template #name>
-                                goofty12312
-                            </template>
-                            <template #rank>
-                                1
-                            </template>
-                            <template #bws>
-                                99
-                            </template>
-                        </TeamCard>
-                    </template>
-                    <template #teamcard_right>
-                        <TeamCard>
-                            <template #name>
-                                goofty12312
-                            </template>
-                            <template #rank>
-                                1
-                            </template>
-                            <template #bws>
-                                99
-                            </template>
-                        </TeamCard>
-                    </template>
-                    <template #links>
-                        <IconButton link="/home">
-                            <img 
-                                class="schedule_matchbox_links__button__twitch"
-                                src="../../Assets/img/social/twitch-dark.svg"
-                            >
-                        </IconButton>
-                        <IconButton link="/home">
-                            <img 
-                                class="schedule_matchbox_links__button__twitch"
-                                src="../../Assets/img/site/open/link.svg"
-                            >
-                        </IconButton>
-                    </template>
-                </ScheduleMatchBox>
-                <ScheduleMatchBox>
-                    <template #month>
-                        JUL 30
-                    </template>
-                    <template #time>
-                        15:00
-                    </template>
-                    <template #timezone>
-                        UTC
-                    </template>
-                    <template #teamcard_left>
-                        <TeamCard avatar="url../../Assets/img/test_avatar.png)">
-                            <template #name>
-                                goofty12312
-                            </template>
-                            <template #rank>
-                                1
-                            </template>
-                            <template #bws>
-                                99
-                            </template>
-                        </TeamCard>
-                    </template>
-                    <template #teamcard_right>
-                        <TeamCard>
-                            <template #name>
-                                goofty12312
-                            </template>
-                            <template #rank>
-                                1
-                            </template>
-                            <template #bws>
-                                99
-                            </template>
-                        </TeamCard>
-                    </template>
-                    <template #links>
-                        <IconButton link="/home">
-                            <img 
-                                class="schedule_matchbox_links__button__twitch"
-                                src="../../Assets/img/social/twitch-dark.svg"
-                            >
-                        </IconButton>
-                        <IconButton link="/home">
-                            <img 
-                                class="schedule_matchbox_links__button__twitch"
-                                src="../../Assets/img/site/open/link.svg"
-                            >
-                        </IconButton>
-                    </template>
-                </ScheduleMatchBox>
+                <ScheduleMatchBox match="" />
+                <ScheduleMatchBox match="" />
+                <ScheduleMatchBox match="" />
+                <ScheduleMatchBox match="" />
+                <ScheduleMatchBox match="" />
+                <ScheduleMatchBox match="" />
             </div>
         </div>
     </div>
@@ -131,8 +35,6 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StageSelector from "../../Assets/components/open/StageSelector.vue";
 import ScheduleMatchBox from "../../Assets/components/open/ScheduleMatchBox.vue";
-import TeamCard from "../../Assets/components/open/TeamCard.vue";
-import IconButton from "../../Assets/components/open/IconButton.vue";
 import { Tournament } from "../../Interfaces/tournament";
 import { Stage } from "../../Interfaces/stage";
 
@@ -145,8 +47,6 @@ const openModule = namespace("open");
         StageSelector,
         OpenTitle,
         ScheduleMatchBox,
-        TeamCard,
-        IconButton,
     },
     head () {
         return {
@@ -219,7 +119,6 @@ export default class Mappool extends Vue {
         display: flex;
         align-self: center;
         justify-content: center;
-        margin-top: 20px;
         flex-direction: column;
         width: 75vw;
         position: relative;
@@ -232,6 +131,7 @@ export default class Mappool extends Vue {
         &_matches{
             display: flex;
             flex-direction: column;
+            margin-top: 20px;
             gap: 20px;
         }
     }

@@ -2,42 +2,80 @@
     <div class="schedule_matchbox">
         <div class="schedule_matchbox_date">
             <div class="schedule_matchbox_date__month">
-                <slot name="month" />
+                JUL 30
             </div>
             <div class="schedule_matchbox_date__time">
-                <slot name="time" />
+                15:00
             </div>
             <div class="schedule_matchbox_date__timezone">
-                <slot name="timezone" />
+                UTC
             </div>
         </div>
         <div class="schedule_matchbox_team">
             <div class="schedule_matchbox_team__left">
-                <slot name="teamcard_left" />
+                <TeamCard>
+                    <template #name>
+                        goofy ahh lil jits
+                    </template>
+                    <template #rank>
+                        1
+                    </template>
+                    <template #bws>
+                        99
+                    </template>
+                </TeamCard>
             </div>
             <div class="schedule_matchbox_team__vs">
                 VS
             </div>
             <div class="schedule_matchbox_team__right">
-                <slot name="teamcard_right" />
+                <TeamCard>
+                    <template #name>
+                        goofy ahh lil jits
+                    </template>
+                    <template #rank>
+                        1
+                    </template>
+                    <template #bws>
+                        99
+                    </template>
+                </TeamCard>
             </div>
         </div>
         <div class="schedule_matchbox_links">
-            <slot name="links" />
+            <IconButton link="#">
+                <img 
+                    class="schedule_matchbox_links__button__twitch"
+                    src="../../img/social/twitch-dark.svg"
+                >
+            </IconButton>
+            <IconButton link="#">
+                <img 
+                    class="schedule_matchbox_links__button__twitch"
+                    src="../../img/site/open/link.svg"
+                >
+            </IconButton>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
 import ContentButton from "./ContentButton.vue";
+import TeamCard from "../../Assets/components/open/TeamCard.vue";
+import IconButton from "../../Assets/components/open/IconButton.vue";
+
+
 
 @Component({
     components: {
         ContentButton,
+        TeamCard,
+        IconButton,
     },
 })
 export default class ScheduleMatchBox extends Vue {
+    // @PropSync("match", { type: Object }) matchSync!: Match;
 }
 </script>
 
