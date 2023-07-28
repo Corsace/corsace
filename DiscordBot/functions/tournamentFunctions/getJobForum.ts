@@ -1,6 +1,7 @@
 import { ChannelType, ChatInputCommandInteraction, ForumChannel, Message } from "discord.js";
+import { TournamentChannelType } from "../../../Interfaces/tournament";
 import { Tournament } from "../../../Models/tournaments/tournament";
-import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
+import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
 import { discordClient } from "../../../Server/discord";
 import respond from "../respond";
 
