@@ -22,6 +22,8 @@ import { StageType } from "../../../../Interfaces/stage";
 import { cron } from "../../../../Server/cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { discordClient } from "../../../../Server/discord";
+import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
+import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 
 // TODO: Merge the functionality in this command with the team create and register and qualifier API endpoints
 async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommandInteraction, user: User, tournament: Tournament) {
@@ -276,19 +278,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await team.calculateStats();
     await team.save();
 
-    const matchups = await Matchup
+    let matchup = await Matchup
         .createQueryBuilder("matchup")
-        .innerJoinAndSelect("matchup.stage", "stage")
-        .innerJoinAndSelect("stage.tournament", "tournament")
-        .leftJoinAndSelect("matchup.teams", "team")
-        .leftJoinAndSelect("matchup.messages", "message")
-        .leftJoinAndSelect("matchup.maps", "map")
-        .leftJoinAndSelect("map.scores", "score")
+        .innerJoin("matchup.stage", "stage")
+        .innerJoin("stage.tournament", "tournament")
+        .innerJoinAndSelect("matchup.teams", "team")
         .where("tournament.ID = :ID", { ID: tournament.ID })
         .andWhere("stage.stageType = '0'")
-        .getMany();
-
-    let matchup = matchups.find(m => m.teams?.some(t => t.ID === team!.ID));
+        .andWhere("team.ID = :ID", { ID: team.ID })
+        .getOne();
     if (matchup) {
         if (matchup.date.getTime() === date.getTime()) {
             await respond(m, `\`${team.name}\` is already scheduled for this date`);
@@ -307,23 +305,30 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         matchup.date = date;
         matchup.mp = null;
-        if (matchup.messages) {
-            await Promise.all(matchup.messages.map(m => m.remove()));
-            matchup.messages = [];
-        }
-        if (matchup.maps) {
-            await Promise.all(matchup.maps.flatMap(map => map.scores.map(s => s.remove())));
-            await Promise.all(matchup.maps.map(m => m.remove()));
-            matchup.maps = [];
-        }
-        
+        const messages = await MatchupMessage
+            .createQueryBuilder("matchupMessage")
+            .innerJoin("matchupMessage.matchup", "matchup")
+            .where("matchup.ID = :ID", { ID: matchup.ID })
+            .getMany();
+        await Promise.all(messages.map(m => m.remove()));
+        matchup.messages = null;
+
+        const maps = await MatchupMap
+            .createQueryBuilder("matchupMap")
+            .innerJoin("matchupMap.matchup", "matchup")
+            .leftJoinAndSelect("matchupMap.scores", "score")
+            .where("matchup.ID = :ID", { ID: matchup.ID })
+            .getMany();
+        await Promise.all(maps.flatMap(map => map.scores.map(s => s.remove())));
+        await Promise.all(maps.map(m => m.remove()));
+        matchup.maps = null;
     } else {
         matchup = new Matchup();
         matchup.date = date;
         matchup.teams = [ team ];
         matchup.stage = stage;
     }
-    
+
     await matchup.save();
     try {
         await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(date.getTime() - preInviteTime, Date.now() + 10 * 1000)));

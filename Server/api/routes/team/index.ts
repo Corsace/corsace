@@ -8,7 +8,6 @@ import { discordClient } from "../../../discord";
 import { validateTeam } from "./middleware";
 import { parseQueryParam } from "../../../utils/query";
 import { deleteTeamAvatar, uploadTeamAvatar } from "../../../functions/tournaments/teams/teamAvatarFunctions";
-import { StageType } from "../../../../Interfaces/stage";
 import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
 import { cron } from "../../../cron";
 import { CronJobType } from "../../../../Interfaces/cron";
@@ -16,6 +15,8 @@ import { parseDateOrTimestamp } from "../../../utils/dateParse";
 import getTeamInvites from "../../../functions/get/getTeamInvites";
 import { GuildMember } from "discord.js";
 import { QueryFailedError } from "typeorm";
+import { Stage } from "../../../../Models/tournaments/stage";
+import { User } from "../../../../Models/user";
 
 const teamRouter = new Router();
 
@@ -180,13 +181,6 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     const tournament = await Tournament
         .createQueryBuilder("tournament")
         .leftJoinAndSelect("tournament.teams", "team")
-        .leftJoinAndSelect("tournament.stages", "stage")
-        .leftJoinAndSelect("team.manager", "manager")
-        .leftJoinAndSelect("team.members", "member")
-        .leftJoinAndSelect("member.userStatistics", "stats")
-        .leftJoinAndSelect("stats.modeDivision", "mode")
-        .leftJoinAndSelect("stage.matchups", "matchup")
-        .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getOne();
 
@@ -215,12 +209,23 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         return;
     }
 
-    // Role checks
     const teamMembers = [team.manager, ...team.members].filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
+    const alreadyRegistered = await User
+        .createQueryBuilder("user")
+        .innerJoin("user.teams", "team")
+        .innerJoin("team.tournaments", "tournament")
+        .where("tournament.ID = :ID", { ID: tournamentID })
+        .andWhere("user.ID IN (:...IDs)", { IDs: teamMembers.map(m => m.ID) })
+        .getMany();
+    if (alreadyRegistered.length > 0) {
+        ctx.body = { error: `Some members are already registered in this tournament:\n${alreadyRegistered.map(m => m.osu.username).join(", ")}` };
+        return;
+    }
 
+    // Role checks
     const tournamentRoles = await TournamentRole
         .createQueryBuilder("tournamentRole")
-        .leftJoin("tournamentRole.tournament", "tournament")
+        .innerJoin("tournamentRole.tournament", "tournament")
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getMany();
     const participantRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Participants);
@@ -263,14 +268,12 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         return;
     }
 
-    const tournamentMembers = tournament.teams.flatMap(t => [t.manager, ...t.members]);
-    const alreadyRegistered = teamMembers.filter(member => tournamentMembers.some(m => m.ID === member.ID));
-    if (alreadyRegistered.length > 0) {
-        ctx.body = { error: `Some members are already registered in this tournament:\n${alreadyRegistered.map(m => m.osu.username).join(", ")}` };
-        return;
-    }
-
-    const qualifierStage = tournament.stages.find(s => s.stageType === StageType.Qualifiers);
+    const qualifierStage = await Stage
+        .createQueryBuilder("stage")
+        .innerJoin("stage.tournament", "tournament")
+        .where("tournament.ID = :ID", { ID: tournamentID })
+        .andWhere("stage.stageType = '0'")
+        .getOne();
     if (qualifierStage) {
         const qualifierAt = ctx.request.body?.qualifierAt;
         if (!qualifierAt) {
@@ -326,9 +329,6 @@ teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), as
     const tournament = await Tournament
         .createQueryBuilder("tournament")
         .leftJoinAndSelect("tournament.teams", "team")
-        .leftJoinAndSelect("tournament.stages", "stage")
-        .leftJoinAndSelect("stage.matchups", "matchup")
-        .leftJoinAndSelect("matchup.teams", "matchupTeam")
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getOne();
 
@@ -347,9 +347,20 @@ teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), as
         return;
     }
 
-    const qualifierStage = tournament.stages.find(s => s.stageType === StageType.Qualifiers);
+    const qualifierStage = await Stage
+        .createQueryBuilder("stage")
+        .innerJoin("stage.tournament", "tournament")
+        .where("tournament.ID = :ID", { ID: tournamentID })
+        .andWhere("stage.stageType = '0'")
+        .getOne();
     if (qualifierStage) {
-        const qualifier = qualifierStage.matchups.find(m => m.teams?.some(t => t.ID === team.ID));
+        const qualifier = await Matchup
+            .createQueryBuilder("matchup")
+            .innerJoin("matchup.stage", "stage")
+            .innerJoin("matchup.teams", "team")
+            .where("stage.ID = :stageID", { stageID: qualifierStage.ID })
+            .andWhere("team.ID = :teamID", { teamID: team.ID })
+            .getOne();
         if (!qualifier) {
             ctx.body = { error: "No qualifier found assigned to this team" };
             return;
@@ -380,15 +391,6 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
-        .leftJoinAndSelect("tournament.teams", "team")
-        .leftJoinAndSelect("tournament.stages", "stage")
-        .leftJoinAndSelect("team.manager", "manager")
-        .leftJoinAndSelect("team.members", "member")
-        .leftJoinAndSelect("member.userStatistics", "stats")
-        .leftJoinAndSelect("stats.modeDivision", "mode")
-        .leftJoinAndSelect("stage.matchups", "matchup")
-        .leftJoinAndSelect("matchup.teams", "matchupTeam")
-        .leftJoinAndSelect("matchup.maps", "map")
         .where("tournament.ID = :ID", { ID: tournamentID })
         .getOne();
 
@@ -402,12 +404,23 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         return;
     }
 
-    if (!tournament.teams.find(t => t.ID === team.ID)) {
+    const teamRegistered = await Team
+        .createQueryBuilder("team")
+        .innerJoin("team.tournaments", "tournament")
+        .where("team.ID = :ID", { ID: team.ID })
+        .andWhere("tournament.ID = :tournamentID", { tournamentID })
+        .getExists();
+    if (!teamRegistered) {
         ctx.body = { error: "Team not registered" };
         return;
     }
 
-    const qualifierStage = tournament.stages.find(s => s.stageType === StageType.Qualifiers);
+    const qualifierStage = await Stage
+        .createQueryBuilder("stage")
+        .innerJoin("stage.tournament", "tournament")
+        .where("tournament.ID = :ID", { ID: tournamentID })
+        .andWhere("stage.stageType = '0'")
+        .getOne();
     if (!qualifierStage) {
         ctx.body = { error: "Tournament does not have a qualifier stage" };
         return;
@@ -430,19 +443,25 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         return;
     }
 
-    const previousMatch = qualifierStage.matchups.find(m => m.teams!.some(t => t.ID === team.ID));
-    if (!previousMatch) {
+    const qualifier = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoin("matchup.stage", "stage")
+        .innerJoin("matchup.teams", "team")
+        .where("stage.ID = :stageID", { stageID: qualifierStage.ID })
+        .andWhere("team.ID = :teamID", { teamID: team.ID })
+        .getOne();
+    if (!qualifier) {
         ctx.body = { error: "No qualifier found assigned to this team" };
         return;
     }
 
-    if (previousMatch.mp) {
+    if (qualifier.mp) {
         ctx.body = { error: "Team has already played a qualifier match" };
         return;
     }
 
-    previousMatch.date = qualifierDate;
-    await previousMatch.save(); 
+    qualifier.date = qualifierDate;
+    await qualifier.save(); 
 
     await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
 
@@ -454,7 +473,7 @@ teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async
 
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
-        .leftJoin("tournament.teams", "team")
+        .innerJoin("tournament.teams", "team")
         .where("team.ID = :ID", { ID: team.ID })
         .getMany();
 
@@ -464,12 +483,12 @@ teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async
             .innerJoin("matchup.stage", "stage")
             .innerJoin("stage.tournament", "tournament")
             .innerJoin("matchup.teams", "team")
-            .where("tournament.ID = :ID", { ID: tournaments.filter(t => t.status === TournamentStatus.Registrations)[0].ID })
+            .where("tournament.ID IN (:...IDs)", { IDs: tournaments.filter(t => t.status === TournamentStatus.Registrations).map(t => t.ID) })
             .andWhere("stage.stageType = '0'")
             .andWhere("team.ID = :teamID", { teamID: team.ID })
-            .getMany();
+            .getExists();
 
-        if (qualifierMatches.length > 0) {
+        if (qualifierMatches) {
             ctx.body = { error: "Team is currently registered in a tournament where they have already played a qualifier match" };
             return;
         }
