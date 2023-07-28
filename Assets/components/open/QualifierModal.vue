@@ -23,7 +23,7 @@
                     v-model="qualifierAt"
                     type="datetime-local"
                     :max="qualifierStage?.timespan.end.toISOString().slice(0, 16)"
-                    :min="minDate.toISOString().slice(0, 16)"
+                    :min="qualifierStage?.timespan.start.toISOString().slice(0, 16)"
                     class="team__input"
                 >
             </div>
@@ -77,10 +77,6 @@ export default class QualifierModal extends Vue {
         return dateString[dateString.length - 1];
     }
 
-    get minDate () {
-        return this.qualifierStage && Date.now() >= this.qualifierStage.timespan.start.getTime() ? new Date() : this.qualifierStage?.timespan.start || new Date();
-    }
-
     qualifierAt = toLocalISOString(new Date).slice(0, 16);
     loading = false;
 
@@ -125,11 +121,25 @@ export default class QualifierModal extends Vue {
             return;
 
         this.loading = true;
-        const date = new Date(this.qualifierAt);
+        let date = new Date(this.qualifierAt);
         if (isNaN(date.getTime())) {
             alert("Invalid date/time");
             this.loading = false;
             return;
+        }
+
+        if (date.getTime() === this.team.qualifier?.date.getTime()) {
+            alert("You have not changed the qualifier time.");
+            this.loading = false;
+            return;
+        }
+
+        if (date.getTime() < Date.now()) {
+            if (!confirm("You are setting the qualifier time to a time in the past. I will automatically change it to the current time. Are you sure you want to do this?")) {
+                this.loading = false;
+                return;
+            }
+            date = new Date();
         }
 
         if (!confirm(`Are you sure your team wants to now play their qualifiers at the UTC time ${date.toUTCString()}?`)) {
