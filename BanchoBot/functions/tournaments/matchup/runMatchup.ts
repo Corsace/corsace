@@ -239,6 +239,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         started = true;
         await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go");
 
+        await pause(leniencyTime);
         try {
             log(matchup, "Picking map");
             await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, false);
@@ -396,7 +397,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
                 log(matchup, `Error loading beatmap: ${ex}`);
             }
-        }, matchup.streamer ? 30 * 1000 : 0);
+        }, matchup.streamer ? 30 * 1000 : leniencyTime);
     });
 
     mpLobby.channel.on("PART", async (member) => {
