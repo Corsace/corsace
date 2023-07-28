@@ -1,7 +1,6 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
-import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
 import { loginResponse } from "../../../functions/loginResponse";
@@ -18,6 +17,7 @@ import respond from "../../../functions/respond";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import getCustomThread from "../../../functions/tournamentFunctions/getCustomThread";
 import { discordClient } from "../../../../Server/discord";
+import { TournamentRoleType } from "../../../../Interfaces/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

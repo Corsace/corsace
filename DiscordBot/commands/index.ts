@@ -56,10 +56,10 @@ import influenceRemove from "./osu/influenceRemove";
 import profile from "./osu/profile";
 import recent from "./osu/recent";
 
-import { TournamentChannelType } from "../../Models/tournaments/tournamentChannel";
 import { mappoolQACreate, mappoolQADelete } from "./threadCommands/mapoolQA";
 import { jobBoardCreate, jobBoardDelete } from "./threadCommands/jobBoard";
 import { mappoolComponentsThreadType } from "../functions/tournamentFunctions/mappoolComponentsThread";
+import { TournamentChannelType } from "../../Interfaces/tournament";
 
 interface Command {
     data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | SlashCommandSubcommandsOnlyBuilder;

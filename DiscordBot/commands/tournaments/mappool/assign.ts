@@ -1,12 +1,10 @@
 import { ChatInputCommandInteraction, ForumChannel, Message, SlashCommandBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
 import { Tournament, unFinishedTournaments } from "../../../../Models/tournaments/tournament";
-import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { Beatmap } from "../../../../Models/beatmap";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { osuClient } from "../../../../Server/osu";
 import { insertBeatmap } from "../../../../Server/scripts/fetchYearMaps";
-import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { loginResponse } from "../../../functions/loginResponse";
 import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappoolMapHistory";
 import { discordClient } from "../../../../Server/discord";
@@ -29,6 +27,7 @@ import mappoolComponents from "../../../functions/tournamentFunctions/mappoolCom
 import getStaff from "../../../functions/tournamentFunctions/getStaff";
 import getCustomThread from "../../../functions/tournamentFunctions/getCustomThread";
 import confirmCommand from "../../../functions/confirmCommand";
+import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

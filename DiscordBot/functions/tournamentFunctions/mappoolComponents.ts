@@ -11,8 +11,8 @@ import { Mappool } from "../../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../../Models/tournaments/mappools/mappoolSlot";
 import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
 import { User } from "../../../Models/user";
-import { TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
 import { Stage } from "../../../Models/tournaments/stage";
+import { TournamentRoleType } from "../../../Interfaces/tournament";
 
 type optionalComponents = { stage?: Stage, staff?: User };
 type TournamentOnly = { tournament: Tournament };

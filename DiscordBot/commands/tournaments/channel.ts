@@ -5,13 +5,13 @@ import respond from "../../functions/respond";
 import { unFinishedTournaments } from "../../../Models/tournaments/tournament";
 import getTournament from "../../functions/tournamentFunctions/getTournament";
 import channelID from "../../functions/channelID";
-import { TournamentChannel, TournamentChannelType, forumTags } from "../../../Models/tournaments/tournamentChannel";
+import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
 import getUser from "../../../Server/functions/get/getUser";
 import commandUser from "../../functions/commandUser";
 import { loginResponse } from "../../functions/loginResponse";
 import confirmCommand from "../../functions/confirmCommand";
 import { securityChecks } from "../../functions/tournamentFunctions/securityChecks";
-import { TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
+import { TournamentChannelType, TournamentRoleType, forumTags } from "../../../Interfaces/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

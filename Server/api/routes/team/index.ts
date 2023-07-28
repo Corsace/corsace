@@ -3,7 +3,7 @@ import { isCorsace, isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
 import { Team as TeamInterface, validateTeamText } from "../../../../Interfaces/team";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
-import { TournamentRole, unallowedToPlay, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
+import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
 import { validateTeam } from "./middleware";
 import { parseQueryParam } from "../../../utils/query";
@@ -17,6 +17,7 @@ import { GuildMember } from "discord.js";
 import { QueryFailedError } from "typeorm";
 import { Stage } from "../../../../Models/tournaments/stage";
 import { User } from "../../../../Models/user";
+import { unallowedToPlay, TournamentRoleType } from "../../../../Interfaces/tournament";
 
 const teamRouter = new Router();
 

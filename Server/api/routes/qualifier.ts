@@ -1,10 +1,10 @@
 import Router from "@koa/router";
 import { Multi } from "nodesu";
 import { Qualifier, QualifierTeam } from "../../../Interfaces/qualifier";
+import { unallowedToPlay } from "../../../Interfaces/tournament";
 import { Matchup } from "../../../Models/tournaments/matchup";
 import { MatchupMap } from "../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../Models/tournaments/matchupScore";
-import { unallowedToPlay } from "../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../discord";
 import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { osuClient } from "../../osu";
