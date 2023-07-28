@@ -91,6 +91,10 @@ export default class ScoresView extends Vue {
         return mapNames;
     }
 
+    get useAvg (): boolean {
+        return this.currentFilter === "average" || this.currentFilter === "relAvg" || this.currentFilter === "percentAvg";
+    }
+
     get shownQualifierScoreViews (): QualifierScoreView[] {
         return this.syncView === "players" ? this.playerQualifierScoreViews : this.teamQualifierScoreViews;
     }
@@ -109,10 +113,12 @@ export default class ScoresView extends Vue {
                 name: idName.name,
                 scores: this.mapNames.map(map => {
                     const mapScores = scores.filter(s => s.mapID === map.mapID);
+                    const score = mapScores.reduce((a, b) => a + b.score, 0);
+                    const avgScore = Math.round(mapScores.reduce((a, b) => a + b.score, 0) / (mapScores.length || 1));
                     return {
                         map: map.map,
                         mapID: map.mapID,
-                        score: Math.round(mapScores.reduce((a, b) => a + b.score, 0) / (mapScores.length || 1)),
+                        score: this.useAvg ? avgScore : score,
                         relMax: -100,
                         percentMax: -100,
                         relAvg: -100,
