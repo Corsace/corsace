@@ -188,7 +188,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 message.message === "!panic" || 
                 message.message === "!alert"
             ) && 
-            !state.matchups[matchup.ID].autoRunning
+            state.matchups[matchup.ID].autoRunning
         ) {
             state.matchups[matchup.ID].autoRunning = false;
 
