@@ -510,7 +510,9 @@ export default async function runMatchup (matchup: Matchup, replace = false) {
     matchup.messages = [];
     matchup.maps = [];
 
-    const requiredPlayerAmount = Math.min(16, 1 + matchup.stage!.tournament.matchupSize * (matchup.teams?.length || 2));
+    // no extra slot for qualifiers
+    // slots for each team based on matchup size
+    const requiredPlayerAmount = Math.min(16, (matchup.stage!.stageType === StageType.Qualifiers ? 0 : 1) + matchup.stage!.tournament.matchupSize * (matchup.teams?.length || 2));
 
     log(matchup, `Setting lobby settings, password and adding refs`);
     await Promise.all([
