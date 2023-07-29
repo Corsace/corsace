@@ -125,18 +125,19 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             )
         ) {
             const abortCount = (aborts.get(team.ID) || 0) + 1;
-            await Promise.all([
-                mpLobby.abortMatch(),
-                mpChannel.sendMessage(`${username} has triggered an abort${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? `, they now have ${matchup.stage!.tournament.teamAbortLimit - abortCount} aborts left` : ""}`),
-            ]);
+            await mpLobby.abortMatch();
+            await mpChannel.sendMessage(`${username} has triggered an abort${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? `, they now have ${matchup.stage!.tournament.teamAbortLimit - abortCount} aborts left` : ""}`);
+            await mpChannel.sendMessage(`As a reminder, !panic exists if something is going/has gone absurdly wrong`);
             aborts.set(team.ID, abortCount);
         } else if (
             team && 
             typeof matchup.stage!.tournament.teamAbortLimit === "number" && 
             aborts.get(team.ID) && 
             aborts.get(team.ID)! >= matchup.stage!.tournament.teamAbortLimit
-        )
+        ) {
             await mpChannel.sendMessage(`${username} has triggered an abort but the team has reached their abort limit`);
+            await mpChannel.sendMessage(`As a reminder, !panic exists if something is going/has gone absurdly wrong`);
+        }
     };
 
     mpChannel.on("message", async (message) => {
@@ -170,6 +171,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                         return;
                     await kickExtraPlayers(matchup, playersInLobby, mpLobby);
                     await mpLobby.startMatch(5);
+                    await mpChannel.sendMessage(`As a reminder, !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby`);
                     mapTimerStarted = true;
                     autoStart = false;
                 }, leniencyTime);
@@ -367,6 +369,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         log(matchup, "All players readied up for the next map");
         await mpLobby.startMatch(5);
+        await mpChannel.sendMessage(`As a reminder, !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby`);
         mapTimerStarted = true;
     });
 
