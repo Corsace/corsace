@@ -27,6 +27,7 @@
             <OpenTitle>
                 {{ $t('open.qualifiers.nav.qualifiers') }}
                 <template #buttons>
+                    <Clock />
                     <div
                         v-if="page === 'mappool' && qualifiersStage?.mappool?.[0].isPublic"
                         class="qualifiers__button_group"
@@ -139,6 +140,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
+import Clock from "../../Assets/components/open/Clock.vue";
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
@@ -157,6 +159,7 @@ const openModule = namespace("open");
 
 @Component({
     components: {
+        Clock,
         OpenButton,
         MappoolView,
         ContentButton,
