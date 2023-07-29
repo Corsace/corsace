@@ -517,6 +517,12 @@
                 "teams": "TEAMS"
             }
         },
+        "teams": {
+            "teamsList": "TEAMS LIST",
+            "loading": "LOADING",
+            "error": "COULD NOT GET TEAM LIST",
+            "searchPlaceholder": "search for user/team"
+        },
         "create": {
             "title": "CREATE A TEAM",
             "info1": "Registrations will end on",
