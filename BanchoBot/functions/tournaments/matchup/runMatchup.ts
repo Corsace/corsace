@@ -318,7 +318,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         if (
             mpLobby.playing &&
-            playersInLobby.some(p => p.user.id === player.user.id)
+            playersPlaying?.some(p => p.user.id === player.user.id)
         )
             await abortMap(player);
 
