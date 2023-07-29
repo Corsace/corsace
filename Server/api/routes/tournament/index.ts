@@ -298,6 +298,9 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
 });
 
 tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     const ID: number = ctx.state.ID;
 
     const tournament = await Tournament
