@@ -215,7 +215,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             await mpChannel.sendMessage(`ok i notified the refs and organizer(s) of the tourney and stopped the auto lobby for u`);
         } else if (message.message === "!start" && !started && earlyStart) {
             started = true;
-            await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go");
+            await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go (managers who aren't members don't need to stay in lobby)");
 
             await pause(leniencyTime);
             try {
@@ -273,14 +273,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         earlyStart = true;
         if (matchup.date.getTime() > Date.now()) {
             await mpChannel.sendMessage("OK managers exist so we can start now, OR when the match time starts");
-            await mpChannel.sendMessage("If u wanna start earlier just have a manager type !start, otherwise I'll automatically start at the match time");
+            await mpChannel.sendMessage("To start earlier have a manager type \"!start\", otherwise I'll automatically start at the match time");
             await pause(matchup.date.getTime() - Date.now());
             if (started)
                 return;
         }
 
         started = true;
-        await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go");
+        await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go (managers who aren't members don't need to stay in lobby)");
 
         await pause(leniencyTime);
         try {
