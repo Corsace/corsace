@@ -100,7 +100,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     // Close lobby 15 minutes after matchup time if not all managers had joined
     setTimeout(async () => {
-        if (started || !state.matchups[matchup.ID].autoRunning)
+        if (started || !state.matchups[matchup.ID]?.autoRunning)
             return;
 
         await mpChannel.sendMessage("Matchup lobby closed due to managers not joining");
@@ -148,7 +148,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchupMessage.user = user;
         matchup.messages!.push(matchupMessage);
 
-        if (message.self || !state.matchups[matchup.ID].autoRunning)
+        if (message.self || !state.matchups[matchup.ID]?.autoRunning)
             return;
 
         if (message.user.ircUsername === "BanchoBot") { 
@@ -193,7 +193,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 message.message === "!mp panic" || 
                 message.message === "!mp alert"
             ) && 
-            state.matchups[matchup.ID].autoRunning
+            state.matchups[matchup.ID]?.autoRunning
         ) {
             state.matchups[matchup.ID].autoRunning = false;
 
@@ -260,7 +260,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         playersInLobby.push(newPlayer);
         log(matchup, `Player ${newPlayer.user.username} joined the lobby`);
 
-        if (started || mpLobby.playing || !state.matchups[matchup.ID].autoRunning)
+        if (started || mpLobby.playing || !state.matchups[matchup.ID]?.autoRunning)
             return;
 
         if (
@@ -310,7 +310,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpLobby.on("playerLeft", async (player) => {
         log(matchup, `Player ${player.user.username} left the lobby`);
 
-        if (!state.matchups[matchup.ID].autoRunning)
+        if (!state.matchups[matchup.ID]?.autoRunning)
             return;
 
         if (mapTimerStarted)
@@ -329,7 +329,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpLobby.on("allPlayersReady", async () => {
         await mpLobby.updateSettings();
 
-        if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId) || !state.matchups[matchup.ID].autoRunning)
+        if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId) || !state.matchups[matchup.ID]?.autoRunning)
             return;
 
         if (!allPlayersInMatchup(matchup, playersInLobby)) {
@@ -359,7 +359,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     mpLobby.on("matchAborted", async () => {
         log(matchup, "Match aborted");
-        if (!state.matchups[matchup.ID].autoRunning)
+        if (!state.matchups[matchup.ID]?.autoRunning)
             return;
 
         matchStart = undefined;
@@ -379,7 +379,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchStart = new Date();
         const beatmap = pools.flatMap(pool => pool.slots.flatMap(slot => slot.maps)).find(map => map.beatmap!.ID === mpLobby.beatmapId);
         if (!beatmap) {
-            if (state.matchups[matchup.ID].autoRunning) {
+            if (state.matchups[matchup.ID]?.autoRunning) {
                 await mpLobby.abortMatch();
                 await mpChannel.sendMessage("YO HOLD UP I can't find the map in the pool(s) for some reason GET CORSACE STAFF IMNMEDIATRELY");
                 log(matchup, `Couldn't find map ${mpLobby.beatmapId} in the pools`);
@@ -435,7 +435,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         log(matchup, `Matchup map and scores saved with matchupMap ID ${matchupMap.ID}`);
 
-        if (!state.matchups[matchup.ID].autoRunning)
+        if (!state.matchups[matchup.ID]?.autoRunning)
             return;
 
         setTimeout(async () => {
