@@ -162,6 +162,14 @@ const data = new SlashCommandBuilder()
             {
                 name: "Commentators",
                 value: "Commentators",
+            },
+            {
+                name: "Designer",
+                value: "Designer",
+            },
+            {
+                name: "Developer",
+                value: "Developer",
             }))
     .setDMPermission(false);
 
