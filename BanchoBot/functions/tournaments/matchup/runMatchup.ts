@@ -250,6 +250,17 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await mpChannel.sendMessage(`Error loading beatmap: ${ex}`);
                 log(matchup, `Error loading beatmap: ${ex}`);
             }
+        } else if (
+            (
+                message.message === "!auto" ||
+                message.message === "!mp auto"
+            ) &&
+            refs.some(ref => ref === `#${message.user.id}`) &&
+            !state.matchups[matchup.ID].autoRunning
+        ) {
+            state.matchups[matchup.ID].autoRunning = true;
+            await mpChannel.sendMessage("ok i started the auto lobby for u again");
+            log(matchup, "Auto-lobby started again");
         }
     });
 
