@@ -4,17 +4,49 @@
             <OpenTitle>
                 STAFF
             </OpenTitle>
-            <div class="staff_main_content_staff_list">
-                <StaffRow>
-                    <template #role>
-                        ORGANIZER
-                    </template>
-                </StaffRow>
-                <StaffRow>
-                    <template #role>
-                        DESIGN TEAM
-                    </template>
-                </StaffRow>
+            <div
+                v-if="staffList" 
+                class="staff_main_content_staff_list"
+            >
+                <div 
+                    v-for="(staffRow, i) in staffList"
+                    :key="i"
+                    class="staff_row"
+                >
+                    <div class="staff_row__title">
+                        {{ staffRow.role.toUpperCase() }} ({{ getRoleTypeName(staffRow.roleType).toUpperCase() }} ROLE)
+                    </div>
+                    <div class="staff_row_members">
+                        <a 
+                            v-for="(staffMember, j) in staffRow.users"
+                            :key="j"
+                            class="staff_row_members_card"
+                            :style="{ 'cursor': staffMember.osuID ? 'pointer' : 'default' }"
+                            :href="staffMember.osuID ? `https://osu.ppy.sh/users/${staffMember.osuID}` : undefined"
+                        >
+                            <div 
+                                class="staff_row_members_card__headshot"
+                                :style="{ 'backgroundImage': `url(${staffMember.avatar})` }"
+                            />
+                            <div class="staff_row_members_card_details">  
+                                <div class="staff_row_members_card_details__username">
+                                    {{ staffMember.username }}
+                                </div>
+                                <div 
+                                    v-if="staffMember.country"
+                                    class="staff_row_members_card_details__nationality"
+                                    :style="{ 'backgroundImage': `url(https://osu.ppy.sh/images/flags/${staffMember.country}.png)` }"
+                                />
+                                <div 
+                                    v-else
+                                    class="staff_row_members_card_details__not_logged_in"
+                                >
+                                    NOT LOGGED IN
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -22,13 +54,17 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
-import StaffRow from "../../Assets/components/open/StaffRow.vue";
+import { Tournament, TournamentRoleType } from "../../Interfaces/tournament";
+import { StaffList } from "../../Interfaces/staff";
+
+const openModule = namespace("open");
 
 @Component({
     components: {
         OpenTitle,
-        StaffRow,
     },
     head () {
         return {
@@ -52,10 +88,21 @@ import StaffRow from "../../Assets/components/open/StaffRow.vue";
     },
 })
 export default class Staff extends Vue {
+    @openModule.State tournament!: Tournament | null;
+    @openModule.State staffList!: StaffList[] | null;
+
+    async mounted () {
+        await this.$store.dispatch("open/setStaffList", this.tournament?.ID);
+    }
+
+    getRoleTypeName (roleType: TournamentRoleType): string {
+        return TournamentRoleType[roleType];
+    }
 }
 </script>
 
 <style lang="scss">
+@import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
 .staff {
@@ -72,6 +119,95 @@ export default class Staff extends Vue {
             flex-direction: column;
             justify-content: space-around;
             gap: 20px;
+        }
+    }
+
+    &_row {
+        display: flex;
+        flex-direction: row;
+
+        background: linear-gradient(0deg, #131313, #131313),
+        linear-gradient(0deg, #2B2D2E, #2B2D2E);
+        
+        &__title {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: $font-base;
+            font-weight: 600;
+            line-height: 23px;
+            letter-spacing: 0em;
+            text-align: center;
+            width: 150px;
+            color: $open-red;
+            padding: 0 10px 0 10px;
+        }
+
+        &_members {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 25px;
+            padding: 25px 0;
+            flex-wrap: wrap;
+            
+            &_card {
+                display: flex;
+                flex-basis: calc(25% - 25px);
+                height: 95px;
+                flex-direction: row;
+                align-items: center;
+
+                border: 1px solid rgba(42, 44, 45, 1);
+                background: linear-gradient(0deg, #171B1E, #171B1E),
+                linear-gradient(0deg, #2A2C2D, #2A2C2D);
+
+                &:hover {
+                    text-decoration: none;
+                    box-shadow: 0px 0px 8px 4px $darker-gray;
+                }
+                
+                &__headshot {
+                    height: 93px;
+                    width: 74px;
+                    border-right: 1px solid $open-red;
+
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                }
+
+                &_details {
+                    display: flex;
+                    flex-direction: column;
+                    padding-left: 10px;
+
+                    &__username {
+                        font-size: $font-xl;
+                        font-weight: 700;
+                        line-height: 29px;
+                        letter-spacing: 0em;
+                        text-align: left;
+                    }
+
+                    &__nationality {
+                        width: 16px;
+                        height: 11px;
+
+                        background-size: 100%;
+                    }
+
+                    &__not_logged_in {
+                        font-size: $font-sm;
+                        font-weight: 700;
+                        line-height: 16px;
+                        letter-spacing: 0em;
+                        text-align: left;
+                        color: $open-red;
+                    }
+                }
+            }
         }
     }
 }

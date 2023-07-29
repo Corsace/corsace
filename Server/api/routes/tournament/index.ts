@@ -353,7 +353,7 @@ tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
                     ID: dbUser?.ID,
                     username: dbUser?.osu.username ?? m.user.username,
                     osuID: dbUser?.osu.userID,
-                    avatar: dbUser?.osu.avatar ?? dbUser?.discord.avatar ?? m.user.avatarURL() ?? "",
+                    avatar: dbUser?.osu.avatar || dbUser?.discord.avatar || m.displayAvatarURL(),
                     country: dbUser?.country,
                     loggedIn: dbUser !== undefined,
                 };
