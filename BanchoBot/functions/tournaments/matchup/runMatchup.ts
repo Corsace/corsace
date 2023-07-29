@@ -170,8 +170,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     if (!autoStart)
                         return;
                     await kickExtraPlayers(matchup, playersInLobby, mpLobby);
-                    await mpLobby.startMatch(5);
                     await mpChannel.sendMessage(`As a reminder, !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby`);
+                    await mpLobby.startMatch(5);
                     mapTimerStarted = true;
                     autoStart = false;
                 }, leniencyTime);
@@ -368,8 +368,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         }
 
         log(matchup, "All players readied up for the next map");
-        await mpLobby.startMatch(5);
         await mpChannel.sendMessage(`As a reminder, !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby`);
+        await mpLobby.startMatch(5);
         mapTimerStarted = true;
     });
 
