@@ -1,6 +1,4 @@
 import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder, TextChannel } from "discord.js";
-import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
-import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { extractParameters } from "../../../functions/parameterFunctions";
 import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
@@ -10,6 +8,7 @@ import { MappoolMapHistory } from "../../../../Models/tournaments/mappools/mappo
 import { Command } from "../..";
 import modeColour from "../../../functions/modeColour";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
+import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

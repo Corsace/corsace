@@ -52,12 +52,12 @@
                 >
                     MAPPOOL
                 </NuxtLink>
-                <!-- <NuxtLink
+                <NuxtLink
                     to="/staff" 
                     class="header__nav-item"
                 >
                     STAFF
-                </NuxtLink> -->
+                </NuxtLink>
             </div>
             <template #login>         
                 <div 

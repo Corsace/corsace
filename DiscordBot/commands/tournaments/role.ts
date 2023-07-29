@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "..";
 import { securityChecks } from "../../functions/tournamentFunctions/securityChecks";
-import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
+import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
 import getUser from "../../../Server/functions/get/getUser";
 import commandUser from "../../functions/commandUser";
 import { loginResponse } from "../../functions/loginResponse";
@@ -11,6 +11,7 @@ import getTournament from "../../functions/tournamentFunctions/getTournament";
 import channelID from "../../functions/channelID";
 import { unFinishedTournaments } from "../../../Models/tournaments/tournament";
 import confirmCommand from "../../functions/confirmCommand";
+import { TournamentRoleType } from "../../../Interfaces/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

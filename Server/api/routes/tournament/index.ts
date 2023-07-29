@@ -4,8 +4,9 @@ import { Tournament } from "../../../../Models/tournaments/tournament";
 import { BaseQualifier, QualifierScore } from "../../../../Interfaces/qualifier";
 import { Next, ParameterizedContext } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
+import { StaffMember } from "../../../../Interfaces/staff";
 import { Team } from "../../../../Models/tournaments/team";
-import { unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
+import { playingRoles, TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
 import { discordClient } from "../../../discord";
 import { osuClient } from "../../../osu";
 import { Beatmap, Mode } from "nodesu";
@@ -13,6 +14,7 @@ import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
+import { User } from "../../../../Models/user";
 
 async function validateID (ctx: ParameterizedContext, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
@@ -293,6 +295,84 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
     }
 
     ctx.body = scores;
+});
+
+tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
+    const ID: number = ctx.state.ID;
+
+    const tournament = await Tournament
+        .createQueryBuilder("tournament")
+        .leftJoinAndSelect("tournament.roles", "roles")
+        .innerJoinAndSelect("tournament.organizer", "organizer")
+        .where("tournament.ID = :ID", { ID })
+        .getOne();
+
+    if (!tournament) {
+        ctx.body = {
+            success: false,
+            error: "Tournament not found",
+        };
+        return;
+    }
+
+    const roles = tournament.roles.filter(r => !playingRoles.some(p => p === r.roleType));
+
+    try {
+        const server = await discordClient.guilds.fetch(tournament.server);
+        await server.members.fetch();
+
+        const staff: {
+            role: string;
+            roleType: TournamentRoleType;
+            users: StaffMember[];
+        }[] = [{
+            role: "Organizer",
+            roleType: TournamentRoleType.Organizer,
+            users: [{
+                ID: tournament.organizer.ID,
+                username: tournament.organizer.osu.username,
+                osuID: tournament.organizer.osu.userID,
+                avatar: tournament.organizer.osu.avatar,
+                country: tournament.organizer.country,
+                loggedIn: true,
+            }],
+        }];
+
+        for (const role of roles) {
+            const discordRole = await server.roles.fetch(role.roleID);
+            if (!discordRole || discordRole.members.size === 0)
+                continue;
+
+            const dbUsers = await User
+                .createQueryBuilder("user")
+                .where("user.discordUserid IN (:...ids)", { ids: discordRole.members.map(m => m.id) })
+                .getMany();
+            const users = discordRole.members.map<StaffMember>(m => {
+                const dbUser = dbUsers.find(u => u.discord.userID === m.id);
+                return {
+                    ID: dbUser?.ID,
+                    username: dbUser?.osu.username ?? m.user.username,
+                    osuID: dbUser?.osu.userID,
+                    avatar: dbUser?.osu.avatar || dbUser?.discord.avatar || m.displayAvatarURL(),
+                    country: dbUser?.country,
+                    loggedIn: dbUser !== undefined,
+                };
+            });
+
+            staff.push({
+                role: discordRole.name,
+                roleType: role.roleType,
+                users,
+            });
+        }
+
+        ctx.body = staff;
+    } catch (e) {
+        ctx.body = {
+            success: false,
+            error: `Error fetching staff list\n${e}`,
+        };
+    }
 });
 
 export default tournamentRouter;

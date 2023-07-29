@@ -1,7 +1,5 @@
 import { ChatInputCommandInteraction, GuildForumThreadCreateOptions, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../index";
-import { TournamentChannelType } from "../../../../../Models/tournaments/tournamentChannel";
-import { TournamentRoleType } from "../../../../../Models/tournaments/tournamentRole";
 import { CronJobType } from "../../../../../Interfaces/cron";
 import { loginResponse } from "../../../../functions/loginResponse";
 import { cron } from "../../../../../Server/cron";
@@ -17,6 +15,7 @@ import mappoolComponents from "../../../../functions/tournamentFunctions/mappool
 import { unFinishedTournaments } from "../../../../../Models/tournaments/tournament";
 import channelID from "../../../../functions/channelID";
 import { discordStringTimestamp } from "../../../../../Server/utils/dateParse";
+import { TournamentRoleType, TournamentChannelType } from "../../../../../Interfaces/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

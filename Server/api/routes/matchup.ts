@@ -1,6 +1,6 @@
 import Router from "@koa/router";
+import { TournamentRoleType } from "../../../Interfaces/tournament";
 import { Matchup } from "../../../Models/tournaments/matchup";
-import { TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
 import { isLoggedInDiscord } from "../../middleware";
 import { validateTournament, hasRoles, validateStageOrRound } from "../../middleware/tournament";
 import { parseDateOrTimestamp } from "../../utils/dateParse";

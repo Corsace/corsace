@@ -1,7 +1,5 @@
 import { Message, EmbedBuilder, SlashCommandBuilder, ChatInputCommandInteraction, ChannelType, TextChannel } from "discord.js";
 import { Command } from "../../index";
-import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
-import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { Brackets } from "typeorm";
 import { loginResponse } from "../../../functions/loginResponse";
@@ -14,6 +12,7 @@ import respond from "../../../functions/respond";
 import getStaff from "../../../functions/tournamentFunctions/getStaff";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
+import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
 
 async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
     // Check if they had -incfin in their text, or if they said true for the include_finished option in the slash command

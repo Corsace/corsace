@@ -1,10 +1,11 @@
 import { EmbedBuilder, TextChannel } from "discord.js";
 import { MappoolMapHistory } from "../../../Models/tournaments/mappools/mappoolMapHistory";
 import { Tournament } from "../../../Models/tournaments/tournament";
-import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
+import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
 import { User } from "../../../Models/user";
 import modeColour from "../modeColour";
 import { discordClient } from "../../../Server/discord";
+import { TournamentChannelType } from "../../../Interfaces/tournament";
 
 export default async function mappoolLog(tournament: Tournament, command: string, user: User, log: MappoolMapHistory, mappoolSlot: string);
 export default async function mappoolLog(tournament: Tournament, command: string, user: User, event: string);

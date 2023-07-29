@@ -1,8 +1,9 @@
 import { ChatInputCommandInteraction, GuildMemberRoleManager, Message, PermissionFlagsBits, PermissionsBitField } from "discord.js";
-import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
-import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
+import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
+import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
 import respond from "../respond";
 import channelID from "../channelID";
+import { TournamentRoleType, TournamentChannelType } from "../../../Interfaces/tournament";
 
 export async function hasTournamentRoles (m: Message | ChatInputCommandInteraction, targetRoles: TournamentRoleType[]): Promise<boolean> {
     if (targetRoles.length === 0)

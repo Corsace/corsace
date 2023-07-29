@@ -1,14 +1,15 @@
 import { Message } from "discord.js";
-import { TournamentChannel, TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
+import { TournamentChannel } from "../../../../Models/tournaments/tournamentChannel";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { Brackets } from "typeorm";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { ojsamaParse, ojsamaToCustom } from "../../../functions/beatmapParse";
 import getUser from "../../../../Server/functions/get/getUser";
 import bypassSubmit from "../../../functions/tournamentFunctions/bypassSubmit";
-import { TournamentRole, TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
+import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import commandUser from "../../../functions/commandUser";
 import channelID from "../../../functions/channelID";
+import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
 
 export default async function autoSubmit (m: Message) {
     if (!m.guild)

@@ -1,13 +1,14 @@
 import { ThreadChannel, User as DiscordUser, Message, DiscordAPIError } from "discord.js";
 import { User } from "../../../Models/user";
 import { Tournament, unFinishedTournaments } from "../../../Models/tournaments/tournament";
-import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
+import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
 import mappoolComponents from "./mappoolComponents";
 import respond from "../respond";
 import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
-import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
+import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
 import { discordClient } from "../../../Server/discord";
 import { threadNameRegex } from "./getCustomThread";
+import { TournamentRoleType, TournamentChannelType } from "../../../Interfaces/tournament";
 
 export type mappoolComponentsThreadType = {
     m: Message;

@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, GuildMember, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../";
 import { Team } from "../../../../Models/tournaments/team";
-import { TournamentRole, TournamentRoleType, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
+import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { User } from "../../../../Models/user";
 import getFromList from "../../../functions/getFromList";
 import getTeams from "../../../../Server/functions/get/getTeams";
@@ -24,6 +24,7 @@ import { CronJobType } from "../../../../Interfaces/cron";
 import { discordClient } from "../../../../Server/discord";
 import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
+import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
 
 // TODO: Merge the functionality in this command with the team create and register and qualifier API endpoints
 async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommandInteraction, user: User, tournament: Tournament) {

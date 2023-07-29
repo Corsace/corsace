@@ -1,7 +1,8 @@
 import { EmbedBuilder, EmbedData, GuildMember, TextChannel } from "discord.js";
 import { config } from "node-config-ts";
 import { Brackets } from "typeorm";
-import { TournamentRole, TournamentRoleType } from "../../Models/tournaments/tournamentRole";
+import { TournamentRoleType } from "../../Interfaces/tournament";
+import { TournamentRole } from "../../Models/tournaments/tournamentRole";
 import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
 

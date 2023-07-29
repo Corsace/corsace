@@ -1,6 +1,5 @@
 import { Message, SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, GuildMember } from "discord.js";
 import { Command } from "../../index";
-import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
 import { osuClient } from "../../../../Server/osu";
 import { Beatmap as APIBeatmap, Mode } from "nodesu";
 import beatmapEmbed from "../../../functions/beatmapEmbed";
@@ -13,9 +12,9 @@ import { extractParameters } from "../../../functions/parameterFunctions";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
-import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import channelID from "../../../functions/channelID";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
+import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

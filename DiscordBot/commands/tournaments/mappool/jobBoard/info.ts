@@ -1,8 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../index";
-import { TournamentRoleType } from "../../../../../Models/tournaments/tournamentRole";
 import modeColour from "../../../../functions/modeColour";
-import { TournamentChannelType } from "../../../../../Models/tournaments/tournamentChannel";
 import respond from "../../../../functions/respond";
 import { securityChecks } from "../../../../functions/tournamentFunctions/securityChecks";
 import { extractParameters } from "../../../../functions/parameterFunctions";
@@ -10,6 +8,7 @@ import { postProcessSlotOrder } from "../../../../functions/tournamentFunctions/
 import mappoolComponents from "../../../../functions/tournamentFunctions/mappoolComponents";
 import { unFinishedTournaments } from "../../../../../Models/tournaments/tournament";
 import channelID from "../../../../functions/channelID";
+import { TournamentRoleType, TournamentChannelType } from "../../../../../Interfaces/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

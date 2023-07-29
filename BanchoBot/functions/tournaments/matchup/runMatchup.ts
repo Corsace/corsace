@@ -27,7 +27,8 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, GuildMemberRoleManager, I
 import { discordClient } from "../../../../Server/discord";
 import { User } from "../../../../Models/user";
 import { loginRow } from "../../../../DiscordBot/functions/loginResponse";
-import { TournamentRole, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
+import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
+import { unallowedToPlay } from "../../../../Interfaces/tournament";
 
 const winConditions = {
     [ScoringMethod.ScoreV2]: BanchoLobbyWinConditions.ScoreV2,
