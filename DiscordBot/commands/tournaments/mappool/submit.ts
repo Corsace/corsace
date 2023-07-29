@@ -28,7 +28,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const link = getLink(m, "map");
+    const link = await getLink(m, "map", true);
     if (!link)
         return;
 

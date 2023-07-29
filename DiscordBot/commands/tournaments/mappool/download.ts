@@ -52,7 +52,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
     
         try {
-            const data = await download(link);
+            const data = download(link);
             await respond(m, undefined, undefined, undefined, [
                 {
                     attachment: data,
