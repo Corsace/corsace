@@ -79,6 +79,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     let earlyStart = false;
     let started = false;
     let lastMessageSaved = Date.now();
+    const refs: string[] = [];
     const aborts = new Map<number, number>();
     const pools = matchup.round?.mappool || matchup.stage!.mappool!;
     const users = await allAllowedUsersForMatchup(matchup);
@@ -227,9 +228,15 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 message.message === "!start" ||
                 message.message === "!mp start"
             ) && 
-            !started && 
-            earlyStart
+            (
+                !started && 
+                (
+                    refs.some(ref => ref === `#${message.user.id}`) ||
+                    earlyStart
+                )
+            )
         ) {
+            earlyStart = true;
             started = true;
             await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go (managers don't need to stay in lobby)");
 
@@ -244,6 +251,18 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 log(matchup, `Error loading beatmap: ${ex}`);
             }
         }
+    });
+
+    // Referee added event
+    mpLobby.on("refereeAdded", async (referee) => {
+        if (!state.matchups[matchup.ID])
+            return;
+
+        if (refs.some(ref => ref === referee))
+            return;
+
+        refs.push(referee);
+        log(matchup, `Referee ${referee} added to the lobby`);
     });
 
     // Player joined event
