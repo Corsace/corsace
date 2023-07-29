@@ -354,6 +354,16 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
                                 label: "Commentators",
                                 value: "Commentators",
                                 description: "Create a commentator role",
+                            },
+                            {
+                                label: "Designer",
+                                value: "Designer",
+                                description: "Create a designer role",
+                            },
+                            {
+                                label: "Developer",
+                                value: "Developer",
+                                description: "Create a developer role",
                             })
                 ),
             new ActionRowBuilder<ButtonBuilder>()

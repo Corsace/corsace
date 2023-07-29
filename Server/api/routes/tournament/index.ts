@@ -319,6 +319,9 @@ tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
     }
 
     const roles = tournament.roles.filter(r => !playingRoles.some(p => p === r.roleType));
+    roles
+        .sort((a, b) => parseInt(a.roleID) - parseInt(b.roleID))
+        .sort((a, b) => a.roleType - b.roleType);
 
     try {
         const server = await discordClient.guilds.fetch(tournament.server);
@@ -343,14 +346,15 @@ tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
 
         for (const role of roles) {
             const discordRole = await server.roles.fetch(role.roleID);
-            if (!discordRole || discordRole.members.size === 0)
+            if (!discordRole || discordRole.members.filter(m => !m.user.bot).size === 0)
                 continue;
 
+            const members = discordRole.members.filter(m => !m.user.bot);
             const dbUsers = await User
                 .createQueryBuilder("user")
-                .where("user.discordUserid IN (:...ids)", { ids: discordRole.members.map(m => m.id) })
+                .where("user.discordUserid IN (:...ids)", { ids: members.map(m => m.id) })
                 .getMany();
-            const users = discordRole.members.map<StaffMember>(m => {
+            const users = members.map<StaffMember>(m => {
                 const dbUser = dbUsers.find(u => u.discord.userID === m.id);
                 return {
                     ID: dbUser?.ID,
@@ -360,7 +364,7 @@ tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
                     country: dbUser?.country,
                     loggedIn: dbUser !== undefined,
                 };
-            });
+            }).sort((a, b) => a.username.localeCompare(b.username));
 
             staff.push({
                 role: discordRole.name,

@@ -28,7 +28,7 @@
                                 class="staff_row_members_card__headshot"
                                 :style="{ 'backgroundImage': `url(${staffMember.avatar})` }"
                             />
-                            <div class="staff_row_members_card_details">  
+                            <div class="staff_row_members_card_details">
                                 <div class="staff_row_members_card_details__username">
                                     {{ staffMember.username }}
                                 </div>
@@ -125,20 +125,19 @@ export default class Staff extends Vue {
     &_row {
         display: flex;
         flex-direction: row;
+        align-items: center;
 
         background: linear-gradient(0deg, #131313, #131313),
         linear-gradient(0deg, #2B2D2E, #2B2D2E);
         
         &__title {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             font-size: $font-base;
             font-weight: 600;
             line-height: 23px;
             letter-spacing: 0em;
             text-align: center;
+            text-overflow: ellipsis;
+            overflow: hidden;
             width: 150px;
             color: $open-red;
             padding: 0 10px 0 10px;
@@ -155,6 +154,8 @@ export default class Staff extends Vue {
             &_card {
                 display: flex;
                 flex-basis: calc(25% - 25px);
+                text-overflow: ellipsis;
+                overflow: hidden;
                 height: 95px;
                 flex-direction: row;
                 align-items: center;
@@ -181,14 +182,22 @@ export default class Staff extends Vue {
                 &_details {
                     display: flex;
                     flex-direction: column;
-                    padding-left: 10px;
+                    padding: 0 10px;
+
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
 
                     &__username {
-                        font-size: $font-xl;
+                        font-size: $font-lg;
                         font-weight: 700;
                         line-height: 29px;
                         letter-spacing: 0em;
                         text-align: left;
+
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
                     }
 
                     &__nationality {

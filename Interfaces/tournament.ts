@@ -45,6 +45,8 @@ export enum TournamentRoleType {
     Streamers,
     Commentators,
     Staff,
+    Designer,
+    Developer,
 }
 
 export const unallowedToPlay = [
