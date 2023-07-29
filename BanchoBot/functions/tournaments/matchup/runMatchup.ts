@@ -178,7 +178,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (
             (
                 message.message === "!abort" || 
-                message.message === "!stop"
+                message.message === "!stop" ||
+                message.message === "!mp abort" || 
+                message.message === "!mp stop"
             ) && 
             mpLobby.playing &&
             playersInLobby.some(p => p.user.id === message.user.id)
@@ -187,7 +189,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         else if (
             (
                 message.message === "!panic" || 
-                message.message === "!alert"
+                message.message === "!alert" ||
+                message.message === "!mp panic" || 
+                message.message === "!mp alert"
             ) && 
             state.matchups[matchup.ID].autoRunning
         ) {
@@ -213,7 +217,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             await discordChannel.send(`<@${matchup.stage!.tournament.organizer.discord.userID}> ${refereeRole ? `<@&${refereeRole.roleID}>` : ""} ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message.user.username} ran the \`PANIC\` command for the matchup Omggg go helkp them\n\nAuto-running lobby has stopped`);
 
             await mpChannel.sendMessage(`ok i notified the refs and organizer(s) of the tourney and stopped the auto lobby for u`);
-        } else if (message.message === "!start" && !started && earlyStart) {
+        } else if (
+            (
+                message.message === "!start" ||
+                message.message === "!mp start"
+            ) && 
+            !started && 
+            earlyStart
+        ) {
             started = true;
             await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go (managers who aren't members don't need to stay in lobby)");
 
