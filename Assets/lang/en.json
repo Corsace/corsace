@@ -423,10 +423,15 @@
         }
     },
     "open": {
+        "stages": {
+            "qualifiers": "Qualifiers",
+            "roundRobin": "Round Robin"
+        },
         "home": {
             "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
             "timeline": "TIMELINE",
             "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "registrations": "Registrations",
             "button": {
                 "qualifiersMappool": "QUALIFIERS MAPPOOLS",
                 "mappoolDownload": "Mappool download and statistics",
