@@ -25,7 +25,7 @@
                 class="info_main info_section"
             >
                 <div class="info_desc__text">
-                    The 2023 edition of Corsace Open, one of osu!'s most prestigious unofficial 4v4 tournaments. Organized by Corsace, this open rank tournament gathers some of the most talented players from around the world, serving as a testament to the skill, strategy, and teamwork inherent in the rhythm game community.
+                    {{ tournament.description }}
                 </div>
                 <div class="info_desc__buttons">
                     <ContentButton 
@@ -33,20 +33,20 @@
                         link="https://paypal.me/corsaceofficial"
                         external
                     >
-                        DONATE TO CORSACE
+                        {{ $t('open.info.donateToCorsace') }}
                     </ContentButton>
                     <ContentButton 
                         class="content_button--red info_desc_button"
                         link="http://momokai.com/corsace"
                         external
                     >
-                        SUPPORT VIA MOMOKAI SPONSORSHIP
+                        {{ $t('open.info.supportViaSponsorship') }}
                     </ContentButton>
                 </div>
                 <OpenTitle
                     class="info_section_header"
                 >
-                    GENERAL INFORMATION
+                    {{ $t('open.info.generalInfo') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
                     <ul class="info_desc__list">
@@ -61,7 +61,7 @@
                 <OpenTitle
                     class="info_section_header"
                 >
-                    TEAM STRUCTURE
+                    {{ $t('open.info.teamStructure') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
                     <ul class="info_desc__list">
@@ -118,7 +118,7 @@
                 <OpenTitle
                     class="info_section_header"
                 >
-                    QUALIFIERS PROCEDURES
+                    {{ $t('open.info.qualifiersProcedures') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
                     <ul class="info_desc__list">
@@ -156,7 +156,7 @@
                 <OpenTitle
                     class="info_section_header"
                 >
-                    TOURNAMENT STRUCTURE
+                    {{ $t('open.info.tournamentStructure') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
                     <ul class="info_desc__list">
@@ -254,7 +254,7 @@
                 <OpenTitle
                     class="info_section_header"
                 >
-                    INFOGRAPHIC
+                    {{ $t('open.info.infoGraphic') }}
                 </OpenTitle>
                 <div class="info_desc__images">
                     <img src="../../Assets/img/site/open/info/image1.png">
@@ -263,7 +263,7 @@
                 <OpenTitle
                     class="info_section_header"
                 >
-                    MATCH PROCEDURES
+                    {{ $t('open.info.matchProcedures') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
                     <ul class="info_desc__list">
@@ -374,9 +374,9 @@
                         link="https://pif.ephemeral.ink/tournament-reports"
                         external
                     >
-                        REPORT TOURNAMENTS HERE
+                        {{ $t('open.info.reportTournament') }}
                     </ContentButton>
-                    <p><em>*all rules are subject to change for clarification and/or adjustments</em></p>
+                    <p><em>*{{ $t('open.info.subjectToChange') }}</em></p>
                 </div>
             </div>
             <div 
@@ -397,7 +397,7 @@
                         link="https://pif.ephemeral.ink/tournament-reports"
                         external
                     >
-                        REPORT TOURNAMENTS HERE
+                        {{ $t('open.info.reportTournament') }}
                     </ContentButton>
                     <div class="info_match">
                         <MatchBox>
