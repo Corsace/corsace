@@ -100,7 +100,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     // Close lobby 15 minutes after matchup time if not all managers had joined
     setTimeout(async () => {
-        if (started || !state.matchups[matchup.ID].autoRunning)
+        if (started || !state.matchups[matchup.ID]?.autoRunning)
             return;
 
         await mpChannel.sendMessage("Matchup lobby closed due to managers not joining");
@@ -140,6 +140,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     };
 
     mpChannel.on("message", async (message) => {
+        if (!state.matchups[matchup.ID])
+            return;
+
         const user = await getUserInMatchup(users, message);
         const matchupMessage = new MatchupMessage();
         matchupMessage.timestamp = new Date();
@@ -161,7 +164,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             else if (
                 message.content === "Countdown finished" && autoStart
             ) {
-                await mpChannel.sendMessage("u guys are taking WAY TOO LONG TO READY UP im starting the match now and kicking any extra players in a team at random");
+                await mpChannel.sendMessage("u guys are taking WAY TOO LONG TO READY UP im starting the match now (and kicking any extra players)");
                 setTimeout(async () => {
                     if (!autoStart)
                         return;
@@ -178,7 +181,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (
             (
                 message.message === "!abort" || 
-                message.message === "!stop"
+                message.message === "!stop" ||
+                message.message === "!mp abort" || 
+                message.message === "!mp stop"
             ) && 
             mpLobby.playing &&
             playersInLobby.some(p => p.user.id === message.user.id)
@@ -187,7 +192,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         else if (
             (
                 message.message === "!panic" || 
-                message.message === "!alert"
+                message.message === "!alert" ||
+                message.message === "!mp panic" || 
+                message.message === "!mp alert"
             ) && 
             state.matchups[matchup.ID].autoRunning
         ) {
@@ -213,9 +220,16 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             await discordChannel.send(`<@${matchup.stage!.tournament.organizer.discord.userID}> ${refereeRole ? `<@&${refereeRole.roleID}>` : ""} ${matchup.referee ? `<@${matchup.referee.discord.userID}>` : ""} ${matchup.streamer ? `<@${matchup.streamer.discord.userID}>` : ""}\n${message.user.username} ran the \`PANIC\` command for the matchup Omggg go helkp them\n\nAuto-running lobby has stopped`);
 
             await mpChannel.sendMessage(`ok i notified the refs and organizer(s) of the tourney and stopped the auto lobby for u`);
-        } else if (message.message === "!start" && !started && earlyStart) {
+        } else if (
+            (
+                message.message === "!start" ||
+                message.message === "!mp start"
+            ) && 
+            !started && 
+            earlyStart
+        ) {
             started = true;
-            await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go (managers who aren't members don't need to stay in lobby)");
+            await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go (managers don't need to stay in lobby)");
 
             await pause(leniencyTime);
             try {
@@ -232,6 +246,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     // Player joined event
     mpLobby.on("playerJoined", async (joinInfo) => {
+        if (!state.matchups[matchup.ID])
+            return;
 
         const newPlayer = joinInfo.player;
         const newPlayerID = newPlayer.user.id.toString();
@@ -273,14 +289,15 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         earlyStart = true;
         if (matchup.date.getTime() > Date.now()) {
             await mpChannel.sendMessage("OK managers exist so we can start now, OR when the match time starts");
-            await mpChannel.sendMessage("To start earlier have a manager type \"!start\", otherwise I'll automatically start at the match time");
+            await mpChannel.sendMessage("To get the first map up, have a manager type \"!start\", otherwise I'll automatically start at the match time");
             await pause(matchup.date.getTime() - Date.now());
             if (started)
                 return;
         }
 
         started = true;
-        await mpChannel.sendMessage("OK WE;'RE STARTING THE MATCH let's go (managers who aren't members don't need to stay in lobby)");
+        await mpChannel.sendMessage(`OK WE;'RE STARTING THE MATCH let's go (only ${matchup.stage!.tournament.matchupSize} players per map)`);
+        await mpChannel.sendMessage("If managers aren't playing, they don't need to stay");
 
         await pause(leniencyTime);
         try {
@@ -296,6 +313,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
     // Player left event
     mpLobby.on("playerLeft", async (player) => {
+        if (!state.matchups[matchup.ID])
+            return;
+
         log(matchup, `Player ${player.user.username} left the lobby`);
 
         if (!state.matchups[matchup.ID].autoRunning)
@@ -306,15 +326,20 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         if (
             mpLobby.playing &&
-            playersInLobby.some(p => p.user.id === player.user.id)
+            playersPlaying?.some(p => p.user.id === player.user.id)
         )
             await abortMap(player);
 
         playersInLobby = playersInLobby.filter(p => p.user.id !== player.user.id);
+
+        await mpLobby.updateSettings();
     });
 
     // All players ready event
     mpLobby.on("allPlayersReady", async () => {
+        if (!state.matchups[matchup.ID])
+            return;
+
         await mpLobby.updateSettings();
 
         if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId) || !state.matchups[matchup.ID].autoRunning)
@@ -346,6 +371,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     });
 
     mpLobby.on("matchAborted", async () => {
+        if (!state.matchups[matchup.ID])
+            return;
+
         log(matchup, "Match aborted");
         if (!state.matchups[matchup.ID].autoRunning)
             return;
@@ -361,6 +389,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     });
 
     mpLobby.on("matchStarted", async () => {
+        if (!state.matchups[matchup.ID])
+            return;
+
         log(matchup, "Match started");
 
         mapTimerStarted = false;
@@ -381,6 +412,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     });
 
     mpLobby.on("matchFinished", async () => {
+        if (!state.matchups[matchup.ID])
+            return;
+
         const beatmap = mapsPlayed[mapsPlayed.length - 1];
         const mp = await osuClient.multi.getMatch(mpLobby.id) as Multi;
         const game = mp.games[mp.games.length - 1];
