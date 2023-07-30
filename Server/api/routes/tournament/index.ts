@@ -223,21 +223,6 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         return;
     }
 
-    const q = Matchup
-        .createQueryBuilder("matchup")
-        .innerJoin("matchup.stage", "stage")
-        .innerJoin("stage.tournament", "tournament")
-        .innerJoinAndSelect("matchup.teams", "team")
-        .innerJoinAndSelect("team.manager", "manager")
-        .innerJoinAndSelect("team.members", "member")
-        .innerJoinAndSelect("matchup.maps", "matchupMap")
-        .innerJoinAndSelect("matchupMap.map", "mappoolMap")
-        .innerJoinAndSelect("mappoolMap.slot", "slot")
-        .innerJoinAndSelect("matchupMap.scores", "score")
-        .innerJoinAndSelect("score.user", "user")
-        .where("tournament.ID = :ID", { ID })
-        .andWhere("stage.stageType = '0'");
-
     // For when tournaments don't have their qualifier scores public
     if (
         !tournament.publicQualifiers && 
@@ -272,27 +257,40 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         }
     }
 
-    const qualifiers = await q.getMany();
-    const scores: QualifierScore[] = [];
-    for (const qualifier of qualifiers) {
-        for (const matchupMap of qualifier.maps ?? []) {
-            for (const score of matchupMap.scores ?? []) {
-                const team = qualifier.teams?.find(t => t.members.some(m => m.ID === score.user?.ID));
-                if (!team)
-                    continue;
-
-                scores.push({
-                    teamID: team.ID,
-                    teamName: team.name,
-                    username: score.user!.osu.username,
-                    userID: score.user!.ID,
-                    score: score.score,
-                    map: `${matchupMap.map!.slot!.acronym}${matchupMap.map!.order}`,
-                    mapID: parseInt(`${matchupMap.map!.slot.ID}${matchupMap.map!.order}`),
-                });
-            }
-        }
-    }
+    const rawScores = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoin("matchup.stage", "stage")
+        .innerJoin("stage.tournament", "tournament")
+        .innerJoin("matchup.teams", "team")
+        .innerJoin("team.manager", "manager")
+        .innerJoin("team.members", "member")
+        .innerJoin("matchup.maps", "matchupMap")
+        .innerJoin("matchupMap.map", "mappoolMap")
+        .innerJoin("mappoolMap.slot", "slot")
+        .innerJoin("matchupMap.scores", "score")
+        .innerJoin("score.user", "user")
+        .where("tournament.ID = :ID", { ID })
+        .andWhere("stage.stageType = '0'")
+        .select([
+            "team.ID",
+            "team.name",
+            "user.osuUsername",
+            "user.ID",
+            "score.score",
+            "slot.acronym",
+            "slot.ID",
+            "mappoolMap.order",
+        ])
+        .getRawMany();
+    const scores: QualifierScore[] = rawScores.map(score => ({
+        teamID: score.team_ID,
+        teamName: score.team_name,
+        username: score.user_osuUsername,
+        userID: score.user_ID,
+        score: score.score_score,
+        map: `${score.slot_acronym}${score.mappoolMap_order}`,
+        mapID: parseInt(`${score.slot_ID}${score.mappoolMap_order}`),
+    }));
 
     ctx.body = scores;
 });
