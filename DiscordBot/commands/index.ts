@@ -6,6 +6,7 @@ import tournamentEdit from "./tournaments/edit";
 import tournamentInfo from "./tournaments/info";
 import tournamentList from "./tournaments/list";
 import tournamentRole from "./tournaments/role";
+import tournamentScreening from "./tournaments/screening";
 import tournamentTeams from "./tournaments/teams";
 
 import mappoolAdd from "./tournaments/mappool/add";
@@ -81,6 +82,7 @@ commands.push(tournamentEdit);
 commands.push(tournamentInfo);
 commands.push(tournamentList);
 commands.push(tournamentRole);
+commands.push(tournamentScreening);
 commands.push(tournamentTeams);
 
 // mappool commands

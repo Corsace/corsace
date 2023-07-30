@@ -174,6 +174,36 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
     }));
 });
 
+tournamentRouter.get("/:tournamentID/teams/screening", validateID, async (ctx) => {
+    const ID: number = ctx.state.ID;
+
+    const teams = await Team
+        .createQueryBuilder("team")
+        .innerJoin("team.tournament", "tournament")
+        .innerJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member")
+        .where("tournament.ID = :ID", { ID })
+        .getMany();
+
+    if (teams.length === 0) {
+        ctx.body = {
+            success: false,
+            error: "Tournament not found or has no teams",
+        };
+        return;
+    }
+
+    const csv = teams.map(t => {
+        const members = t.members;
+        if (!members.some(m => m.ID === t.manager.ID))
+            members.push(t.manager);
+        return members.map(m => `${m.osu.username},${t.name},${m.osu.userID}`).join("\n");
+    }).join("\n");
+
+    ctx.set("Content-Type", "text/csv");
+    ctx.body = csv;
+});
+
 tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
     const ID: number = ctx.state.ID;
 
