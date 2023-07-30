@@ -14,7 +14,7 @@
                     class="staff_row"
                 >
                     <div class="staff_row__title">
-                        {{ staffRow.role.toUpperCase() }} ({{ getRoleTypeName(staffRow.roleType).toUpperCase() }} ROLE)
+                        {{ staffRow.role.toUpperCase() }}<br>({{ getRoleTypeName(staffRow.roleType).toUpperCase() }} ROLE)
                     </div>
                     <div class="staff_row_members">
                         <a 
@@ -137,14 +137,11 @@ $flex-gap: 25px;
         &__title {
             font-size: $font-base;
             font-weight: 600;
-            line-height: 23px;
-            letter-spacing: 0em;
             text-align: center;
             text-overflow: ellipsis;
             overflow: hidden;
             width: 150px;
             color: $open-red;
-            padding: 0 10px 0 10px;
         }
 
         &_members {
