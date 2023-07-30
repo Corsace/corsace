@@ -79,7 +79,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     let earlyStart = false;
     let started = false;
     let lastMessageSaved = Date.now();
-    const refs: string[] = [];
     const aborts = new Map<number, number>();
     const pools = matchup.round?.mappool || matchup.stage!.mappool!;
     const users = await allAllowedUsersForMatchup(matchup);
@@ -231,7 +230,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             (
                 !started && 
                 (
-                    refs.some(ref => ref === `#${message.user.id}`) ||
+                    message.user.id === undefined ||
                     earlyStart
                 )
             )
@@ -255,25 +254,13 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 message.message === "!auto" ||
                 message.message === "!mp auto"
             ) &&
-            refs.some(ref => ref === `#${message.user.id}`) &&
+            message.user.id === undefined &&
             !state.matchups[matchup.ID].autoRunning
         ) {
             state.matchups[matchup.ID].autoRunning = true;
             await mpChannel.sendMessage("ok i started the auto lobby for u again");
             log(matchup, "Auto-lobby started again");
         }
-    });
-
-    // Referee added event
-    mpLobby.on("refereeAdded", async (referee) => {
-        if (!state.matchups[matchup.ID])
-            return;
-
-        if (refs.some(ref => ref === referee))
-            return;
-
-        refs.push(referee);
-        log(matchup, `Referee ${referee} added to the lobby`);
     });
 
     // Player joined event
