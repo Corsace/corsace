@@ -6,7 +6,7 @@ import { Next, ParameterizedContext } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { StaffMember } from "../../../../Interfaces/staff";
 import { Team } from "../../../../Models/tournaments/team";
-import { playingRoles, TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
+import { playingRoles, TournamentRoleType, tournamentStaffRoleOrder, unallowedToPlay } from "../../../../Interfaces/tournament";
 import { discordClient } from "../../../discord";
 import { osuClient } from "../../../osu";
 import { Beatmap, Mode } from "nodesu";
@@ -321,7 +321,7 @@ tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
     const roles = tournament.roles.filter(r => !playingRoles.some(p => p === r.roleType));
     roles
         .sort((a, b) => parseInt(a.roleID) - parseInt(b.roleID))
-        .sort((a, b) => a.roleType - b.roleType);
+        .sort((a, b) => tournamentStaffRoleOrder.indexOf(a.roleType) - tournamentStaffRoleOrder.indexOf(b.roleType));
 
     try {
         const server = await discordClient.guilds.fetch(tournament.server);

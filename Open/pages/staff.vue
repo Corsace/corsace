@@ -105,6 +105,8 @@ export default class Staff extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
+$flex-gap: 25px;
+
 .staff {
     &_main_content {
         align-self: center;
@@ -124,8 +126,10 @@ export default class Staff extends Vue {
 
     &_row {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
+        padding: $flex-gap;
+        gap: $flex-gap;
 
         background: linear-gradient(0deg, #131313, #131313),
         linear-gradient(0deg, #2B2D2E, #2B2D2E);
@@ -147,13 +151,12 @@ export default class Staff extends Vue {
             display: flex;
             align-items: center;
             width: 100%;
-            gap: 25px;
-            padding: 25px 0;
+            gap: $flex-gap;
             flex-wrap: wrap;
             
             &_card {
                 display: flex;
-                flex-basis: calc(25% - 25px);
+                flex-basis: calc(25% - $flex-gap*0.75); // 4 cards per row, 3 gaps of 25px per row
                 text-overflow: ellipsis;
                 overflow: hidden;
                 height: 95px;

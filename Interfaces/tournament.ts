@@ -62,6 +62,19 @@ export const playingRoles = [
     TournamentRoleType.Managers,
 ];
 
+export const tournamentStaffRoleOrder = [
+    TournamentRoleType.Organizer,
+    TournamentRoleType.Designer,
+    TournamentRoleType.Developer,
+    TournamentRoleType.Referees,
+    TournamentRoleType.Streamers,
+    TournamentRoleType.Commentators,
+    TournamentRoleType.Mappoolers,
+    TournamentRoleType.Mappers,
+    TournamentRoleType.Testplayers,
+    TournamentRoleType.Staff,
+];
+
 export enum TournamentChannelType {
     General,
     Participants,
