@@ -36,7 +36,8 @@ export interface QualifierScoreView {
     scores: {
         map: string;
         mapID: number;
-        score: number;
+        sum: number;
+        average: number;
         relMax: number;
         percentMax: number;
         relAvg: number;

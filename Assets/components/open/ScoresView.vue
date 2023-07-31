@@ -19,31 +19,54 @@
             <table class="scores__table">
                 <tbody>
                     <tr>
+                        <th>PLACEMENT</th>
                         <th>TEAM</th>
                         <th>BEST</th>
                         <th>WORST</th>
-                        <th>{{ $t(`open.qualifiers.scores.nav.${currentFilter}`) }}</th>
+                        <th @click="mapSort = -1; sortDir = sortDir === 'asc' ? 'desc' : 'asc';">
+                            <div class="scores__table--click">
+                                {{ $t(`open.qualifiers.scores.nav.${currentFilter}`) }}
+                                <div
+                                    :class="{ 
+                                        'scores__table--asc': mapSort === -1 && sortDir === 'asc', 
+                                        'scores__table--desc': mapSort === -1 && sortDir === 'desc', 
+                                        'scores__table--none': mapSort !== -1 || (sortDir !== 'asc' && sortDir !== 'desc')
+                                    }"
+                                />
+                            </div>
+                        </th>
                         <th
-                            v-for="map in mapNames"
+                            v-for="(map, i) in mapNames"
                             :key="map.mapID"
+                            @click="mapSort = i; sortDir = sortDir === 'asc' ? 'desc' : 'asc';"
                         >
-                            {{ map.map }}
+                            <div class="scores__table--click">
+                                {{ map.map }}
+                                <div
+                                    :class="{ 
+                                        'scores__table--asc': mapSort === i && sortDir === 'asc',
+                                        'scores__table--desc': mapSort === i && sortDir === 'desc',
+                                        'scores__table--none': mapSort !== i || (sortDir !== 'asc' && sortDir !== 'desc')
+                                    }"
+                                />
+                            </div>
                         </th>
                     </tr>
                     <tr
-                        v-for="row in shownQualifierScoreViews"
+                        v-for="(row, i) in shownQualifierScoreViews"
                         :key="row.ID"
                     >
+                        <td>#{{ i+1 }}</td>
                         <td>{{ row.name }}</td>
                         <td>{{ row.best }}</td>
                         <td>{{ row.worst }}</td>
-                        <td>{{ row[currentFilter] === -100 ? "" : row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}</td>
+                        <td>{{ row[currentFilter] === -100 ? "" : row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && row[currentFilter] !== -100 ? "%" : "" }}</td>
                         <td 
                             v-for="score in row.scores"
                             :key="score.map"
                             :class="{ 'scores__table--highlight': score.isBest }"
                         >
-                            {{ currentFilter === "sum" || currentFilter === "average" ? score.score || "" : score[currentFilter] === -100 ? "" : score[currentFilter].toFixed(2) }}{{ currentFilter.includes("percent") && score[currentFilter] !== -100 ? "%" : "" }}
+                            {{ score[currentFilter] === -100 ? "" : score[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && score[currentFilter] !== -100 ? "%" : "" }}
                         </td>
                     </tr>
                 </tbody>
@@ -73,6 +96,8 @@ export default class ScoresView extends Vue {
     @openModule.State qualifierScores!: QualifierScore[] | null;
 
     currentFilter: sortType = "zScore";
+    sortDir: "asc" | "desc" = "desc";
+    mapSort = -1;
     filters: sortType[] = filters;
 
     get mapNames (): {
@@ -82,12 +107,14 @@ export default class ScoresView extends Vue {
         if (!this.qualifierScores)
             return [];
 
-        const mapNames = this.qualifierScores.map(s => ({
-            map: s.map,
-            mapID: s.mapID,
-        })).filter((v, i, a) => a.findIndex(t => (t.map === v.map && t.mapID === v.mapID)) === i);
-        mapNames.sort((a, b) => a.mapID - b.mapID);
+        const mapNames = this.qualifierScores
+            .map(s => ({
+                map: s.map,
+                mapID: s.mapID,
+            }))
+            .filter((v, i, a) => a.findIndex(t => (t.map === v.map && t.mapID === v.mapID)) === i);
 
+        mapNames.sort((a, b) => a.mapID - b.mapID);
         return mapNames;
     }
 
@@ -114,11 +141,12 @@ export default class ScoresView extends Vue {
                 scores: this.mapNames.map(map => {
                     const mapScores = scores.filter(s => s.mapID === map.mapID);
                     const score = mapScores.reduce((a, b) => a + b.score, 0);
-                    const avgScore = Math.round(mapScores.reduce((a, b) => a + b.score, 0) / (mapScores.length || 1));
+                    const avgScore = Math.round(score / (mapScores.length || 1));
                     return {
                         map: map.map,
                         mapID: map.mapID,
-                        score: this.useAvg ? avgScore : score,
+                        sum: score,
+                        average: avgScore,
                         relMax: -100,
                         percentMax: -100,
                         relAvg: -100,
@@ -144,33 +172,43 @@ export default class ScoresView extends Vue {
 
         qualifierScoreViews.forEach(score => {
             score.scores.forEach(s => {
-                if (s.score === 0)
+                if (s.sum === 0)
                     return;
 
                 const mapsScores = qualifierScoreViews.flatMap(v => v.scores.filter(t => t.mapID === s.mapID));
-                const max = Math.max(...mapsScores.map(score => score.score));
-                const avg = mapsScores.reduce((a, b) => a + b.score, 0) / (mapsScores.length || 1);
-                const stddev = Math.sqrt(mapsScores.reduce((a, b) => a + Math.pow(b.score - avg, 2), 0) / (mapsScores.length || 1));
+                const max = Math.max(...mapsScores.map(score => score.sum));
+                const avg = mapsScores.reduce((a, b) => a + b.sum, 0) / (mapsScores.length || 1);
+                const stddev = Math.sqrt(mapsScores.reduce((a, b) => a + Math.pow(b.sum - avg, 2), 0) / (mapsScores.length || 1));
 
-                if (s.score === max)
-                    s.isBest = true;
-
-                s.relMax = s.score / (max || 1);
+                s.relMax = s.sum / (max || 1);
                 s.percentMax = Math.round(s.relMax * 100);
 
-                s.relAvg = s.score / (avg || 1);
+                s.relAvg = s.sum / (avg || 1);
                 s.percentAvg = Math.round(s.relAvg * 100);
 
-                s.zScore = (s.score - avg) / (stddev || 1);
+                s.zScore = (s.sum - avg) / (stddev || 1);
             });
-            score.relMax = score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.relMax, 0);
-            score.percentMax = Math.round(score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.percentMax, 0) / (score.scores.filter(score => score.score !== 0).length || 1));
-            score.relAvg = score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.relAvg, 0);
-            score.percentAvg = Math.round(score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.percentAvg, 0) / (score.scores.filter(score => score.score !== 0).length || 1));
-            score.zScore = score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.zScore, 0);    
+            score.relMax = score.scores.filter(score => score.sum !== 0).reduce((a, b) => a + b.relMax, 0);
+            score.percentMax = Math.round(score.scores.filter(score => score.sum !== 0).reduce((a, b) => a + b.percentMax, 0) / (score.scores.filter(score => score.sum !== 0).length || 1));
+            score.relAvg = score.scores.filter(score => score.sum !== 0).reduce((a, b) => a + b.relAvg, 0);
+            score.percentAvg = Math.round(score.scores.filter(score => score.sum !== 0).reduce((a, b) => a + b.percentAvg, 0) / (score.scores.filter(score => score.sum !== 0).length || 1));
+            score.zScore = score.scores.filter(score => score.sum !== 0).reduce((a, b) => a + b.zScore, 0);    
+        });
+        qualifierScoreViews.forEach(score => {
+            score.scores.forEach(s => {
+                const mapsScores = qualifierScoreViews.flatMap(v => v.scores.filter(t => t.mapID === s.mapID));
+                const maxFilter = Math.max(...mapsScores.map(score => score[this.currentFilter]));
+                if (s[this.currentFilter] === maxFilter)
+                    s.isBest = true;
+            });
         });
 
-        qualifierScoreViews.sort((a, b) => b[this.currentFilter] - a[this.currentFilter]);
+        qualifierScoreViews.sort((a, b) => {
+            if (this.mapSort !== -1 && a.scores[this.mapSort])
+                return this.sortDir === "asc" ? a.scores[this.mapSort][this.currentFilter] - b.scores[this.mapSort][this.currentFilter] : b.scores[this.mapSort][this.currentFilter] - a.scores[this.mapSort][this.currentFilter];
+
+            return this.sortDir === "asc" ? a[this.currentFilter] - b[this.currentFilter] : b[this.currentFilter] - a[this.currentFilter];
+        });
 
         return qualifierScoreViews;
     }
@@ -272,13 +310,43 @@ export default class ScoresView extends Vue {
         &--highlight{
             color: #FBBA20;
         }
+
+        &--asc {
+            width: 0;
+            height: 0;
+            border-left: 4.5px solid transparent;
+            border-right: 4.5px solid transparent;
+            border-top: 4.5px solid #FBBA20;
+        }
+
+        &--desc {
+            width: 0;
+            height: 0;
+            border-left: 4.5px solid transparent;
+            border-right: 4.5px solid transparent;
+            border-bottom: 4.5px solid #FBBA20;
+        }
+
+        &--none {
+            width: 0;
+            height: 0;
+            border: 4.5px solid #383838;
+        }
+
+        &--click {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 15px 5px;
+        }
     }
 
     &__table th {
         font-size: $font-sm;
         font-weight: 700;
         border-bottom: 1px solid #383838;
-        padding: 15px 5px;
         border-left: 1px solid #383838;
     }
 
