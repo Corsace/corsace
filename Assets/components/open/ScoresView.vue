@@ -53,10 +53,14 @@
                         </th>
                     </tr>
                     <tr
-                        v-for="(row, i) in shownQualifierScoreViews"
+                        v-for="row in shownQualifierScoreViews"
                         :key="row.ID"
+                        :class="{ 
+                            'scores__table--tier1': row.placement <= 8,
+                            'scores__table--tier2': row.placement > 8 && row.placement <= 24,
+                        }"
                     >
-                        <td>#{{ i+1 }}</td>
+                        <td>#{{ row.placement }}</td>
                         <td>{{ row.name }}</td>
                         <td>{{ row.best }}</td>
                         <td>{{ row.worst }}</td>
@@ -155,8 +159,8 @@ export default class ScoresView extends Vue {
                         isBest: false,
                     };
                 }),
-                best: scores.reduce((a, b) => a.score > b.score ? a : b).map,
-                worst: scores.filter(score => score.score !== 0).reduce((a, b) => a.score < b.score ? a : b).map,
+                best: "",
+                worst: "",
                 sum: scores.reduce((a, b) => a + b.score, 0),
                 average: Math.round(scores.filter(score => score.score !== 0).reduce((a, b) => a + b.score, 0) / (scores.filter(score => score.score !== 0).length || 1)),
                 relMax: -100,
@@ -164,6 +168,7 @@ export default class ScoresView extends Vue {
                 relAvg: -100,
                 percentAvg: -100,
                 zScore: -100,
+                placement: -1,
             };
             scoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
@@ -201,6 +206,9 @@ export default class ScoresView extends Vue {
                 if (s[this.currentFilter] === maxFilter)
                     s.isBest = true;
             });
+            score.placement = qualifierScoreViews.filter(s => s.zScore > score.zScore).length + 1;
+            score.best = score.scores.reduce((a, b) => a[this.currentFilter] > b[this.currentFilter] ? a : b).map,
+            score.worst = score.scores.filter(score => score[this.currentFilter] !== 0).reduce((a, b) => a[this.currentFilter] < b[this.currentFilter] ? a : b).map;
         });
 
         qualifierScoreViews.sort((a, b) => {
@@ -331,6 +339,7 @@ export default class ScoresView extends Vue {
             width: 0;
             height: 0;
             border: 4.5px solid #383838;
+            transform: rotate(45deg);
         }
 
         &--click {
@@ -340,6 +349,14 @@ export default class ScoresView extends Vue {
             justify-content: center;
             gap: 5px;
             padding: 15px 5px;
+        }
+
+        &--tier1 {
+            background-color: rgba(251, 186, 32, 0.1);
+        }
+        
+        &--tier2 {
+            background-color: rgba(255, 255, 255, 0.05);
         }
     }
 

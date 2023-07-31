@@ -54,4 +54,5 @@ export interface QualifierScoreView {
     relAvg: number;
     percentAvg: number;
     zScore: number;
+    placement: number;
 }

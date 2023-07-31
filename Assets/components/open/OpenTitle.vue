@@ -16,7 +16,6 @@
             </div>
         </div>
         <hr class="line--red line--bottom-space">
-        <hr class="line--red line--bottom-space">
     </div>
 </template>
 
