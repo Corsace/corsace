@@ -521,7 +521,27 @@
             "teamsList": "TEAMS LIST",
             "loading": "LOADING",
             "error": "COULD NOT GET TEAM LIST",
-            "searchPlaceholder": "search for user/team"
+            "searchPlaceholder": "search for user/team",
+            "headers": {
+                "tournaments": "TOURNAMENTS",
+                "teamStats": "TEAM STATS",
+                "teamManager": "TEAM MANAGER",
+                "teamMembers": "TEAM MEMBERS",
+                "teamInvites": "TEAM INVITES",
+                "qualifier": "QUALIFIER"
+            },
+            "registration":{
+                "noRegistration": "Registered in no tournaments",
+                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
+            },
+            "teamID": "TEAM ID",
+            "averageBWS": "Average BWS",
+            "averageRank": "Average Rank",
+            "averagePP": "Average PP",
+            "editQualifierTime": "edit qualifier time",
+            "deleteTeam": "delete qualifier/unregister team",
+            "createJoinQualifier": "create/join qualifier",
+            "notRegistered": "Currently not registered in Corsace Open."
         },
         "create": {
             "title": "CREATE A TEAM",

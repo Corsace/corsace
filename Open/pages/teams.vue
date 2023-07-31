@@ -8,7 +8,7 @@
                 {{ $t('open.teams.teamsList') }}
                 <template #buttons>
                     <SearchBar
-                        :placeholder= "`${$t('open.teams.searchPlaceholder')}`"
+                        :placeholder="`${$t('open.teams.searchPlaceholder')}`"
                         style="margin-bottom: 10px;"
                         @update:search="searchValue = $event"
                     />

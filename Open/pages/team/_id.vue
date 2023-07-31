@@ -24,34 +24,34 @@
             <div class="team_fields">
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
-                        TOURNAMENTS
+                        {{ $t('open.teams.headers.tournaments') }}
                     </div>
                     <div class="team_fields_block">
                         <div v-if="(teamData.tournaments?.length ?? -1) > 0">
                             {{ teamData.tournaments?.map(t => t.name).join(", ") }}
                         </div>
                         <div v-else>
-                            Registered in no tournaments
+                            {{ $t('open.teams.registration.noRegistration') }}
                             <br>
-                            To play in Corsace Open, get 6 members, and choose a qualifier date and time below
+                            {{ $t('open.teams.registration.toPlay') }}
                         </div>
                     </div>
                 </div>
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
-                        TEAM STATS
+                        {{ $t('open.teams.headers.teamStats') }}
                     </div>
                     <div class="team_fields_block">
-                        <div>Team ID #{{ teamData.ID }}</div>
+                        <div>{{ $t('open.teams.teamID') }} #{{ teamData.ID }}</div>
                         <div>{{ teamData.members.length }} member{{ teamData.members.length === 1 ? "" : "s" }}</div>
-                        <div>{{ Math.round(teamData.BWS) }} Average BWS</div>
-                        <div>#{{ Math.round(teamData.rank) }} Average Rank</div>
-                        <div>{{ Math.round(teamData.pp) }} Average PP</div>
+                        <div>{{ Math.round(teamData.BWS) }} {{ $t('open.teams.averageBWS') }}</div>
+                        <div>#{{ Math.round(teamData.rank) }} {{ $t('open.teams.averageRank') }}</div>
+                        <div>{{ Math.round(teamData.pp) }} {{ $t('open.teams.averagePP') }}</div>
                     </div>
                 </div>
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
-                        TIMEZONE
+                        {{ $t('open.create.teamTimezone') }}
                     </div>
                     <div class="team_fields_block">
                         <div>UTC{{ teamData.timezoneOffset >= 0 ? "+" : "" }}{{ teamData.timezoneOffset }}:00</div>
@@ -59,7 +59,7 @@
                 </div>
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
-                        TEAM MANAGER
+                        {{ $t('open.teams.headers.teamManager') }}
                     </div>
                     <div class="team_fields_block team__member_list">
                         <a
@@ -87,7 +87,7 @@
                 </div>
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
-                        TEAM MEMBERS
+                        {{ $t('open.teams.headers.teamMembers') }}
                         <div 
                             v-if="isManager && teamData.members.filter(m => !m.isManager).length > 0 && !teamData.qualifier?.mp"
                             class="team_fields--clickable"
@@ -155,7 +155,8 @@
                     class="team_fields_row"
                 >
                     <div class="team_fields_block--label">
-                        TEAM INVITES
+                        {{ $t('open.teams.headers.teamInvites') }}
+
                         <div 
                             v-if="isManager"
                             class="team_fields--clickable"
@@ -218,13 +219,13 @@
                 </div>
                 <div class="team_fields_row">
                     <div class="team_fields_block--label">
-                        QUALIFIER
+                        {{ $t('open.teams.headers.qualifier') }}
                         <div
                             v-if="isManager && teamData.qualifier && !teamData.qualifier.mp"
                             class="team_fields--clickable"
                             @click="unregister"
                         >
-                            delete qualifier/unregister team
+                            {{ $t('open.teams.deleteTeam') }}
                         </div>
                         <div 
                             v-if="isManager && tournament && tournament.minTeamSize <= teamData.members.length && tournament.maxTeamSize >= teamData.members.length && !teamData.qualifier?.mp"
@@ -234,13 +235,13 @@
                                 v-if="teamData.qualifier && !teamData.qualifier.mp" 
                                 class="team_fields--clickable"
                             >
-                                edit qualifier time
+                                {{ $t('open.teams.editQualifierTime') }}
                             </div>
                             <div
                                 v-else-if="!teamData.qualifier"
                                 class="team_fields--clickable"
                             >
-                                create/join qualifier
+                                {{ $t('open.teams.createJoinQualifier') }}
                             </div>
                         </div>
                         <div v-else-if="isManager && tournament">
@@ -262,7 +263,7 @@
                         v-else
                         class="team_fields_block"
                     >
-                        Currently not registered in Corsace Open.
+                        {{ $t('open.teams.notRegistered') }}
                     </div>
                 </div>
             </div>
