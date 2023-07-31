@@ -290,7 +290,7 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
     const teams = await Team
         .createQueryBuilder("team")
         .innerJoinAndSelect("team.members", "member")
-        .innerJoinAndSelect("team.tournament", "tournament")
+        .innerJoinAndSelect("team.tournaments", "tournament")
         .where("tournament.ID = :ID", { ID })
         .getMany();
 
