@@ -287,11 +287,24 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         }
     }
 
+    const teams = await Team
+        .createQueryBuilder("team")
+        .innerJoinAndSelect("team.members", "member")
+        .innerJoinAndSelect("team.tournament", "tournament")
+        .where("tournament.ID = :ID", { ID })
+        .getMany();
+
+    const teamLookup = new Map<string, Team>();
+    teams.forEach(team => {
+        team.members.forEach(member => {
+            teamLookup.set(member.osu.userID, team);
+        });
+    });
+
     const rawScores = await Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
-        .innerJoin("matchup.teams", "team")
         .innerJoin("matchup.maps", "matchupMap")
         .innerJoin("matchupMap.map", "mappoolMap")
         .innerJoin("mappoolMap.slot", "slot")
@@ -300,8 +313,6 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         .where("tournament.ID = :ID", { ID })
         .andWhere("stage.stageType = '0'")
         .select([
-            "team.ID",
-            "team.name",
             "user.osuUsername",
             "user.ID",
             "score.score",
@@ -310,15 +321,18 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
             "mappoolMap.order",
         ])
         .getRawMany();
-    const scores: QualifierScore[] = rawScores.map(score => ({
-        teamID: score.team_ID,
-        teamName: score.team_name,
-        username: score.user_osuUsername,
-        userID: score.user_ID,
-        score: score.score_score,
-        map: `${score.slot_acronym}${score.mappoolMap_order}`,
-        mapID: parseInt(`${score.slot_ID}${score.mappoolMap_order}`),
-    }));
+    const scores: QualifierScore[] = rawScores.map(score => {
+        const team = teamLookup.get(score.user_ID) || { ID: -1, name: "N/A" };
+        return {
+            teamID: team.ID,
+            teamName: team.name,
+            username: score.user_osuUsername,
+            userID: score.user_ID,
+            score: score.score_score,
+            map: `${score.slot_acronym}${score.mappoolMap_order}`,
+            mapID: parseInt(`${score.slot_ID}${score.mappoolMap_order}`),
+        };
+    });
 
     ctx.body = scores;
 });
