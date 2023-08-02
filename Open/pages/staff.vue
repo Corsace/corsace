@@ -2,7 +2,7 @@
     <div class="staff">
         <div class="staff_main_content">
             <OpenTitle>
-                STAFF
+                {{ $t('open.staff.staff') }}
             </OpenTitle>
             <div
                 v-if="staffList" 
@@ -41,7 +41,7 @@
                                     v-else
                                     class="staff_row_members_card_details__not_logged_in"
                                 >
-                                    NOT LOGGED IN
+                                    {{ $t('open.staff.notLoggedIn') }}
                                 </div>
                             </div>
                         </a>

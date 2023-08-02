@@ -569,6 +569,10 @@
             "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
             "create": "CREATE TEAM"
         },
+        "staff": {
+            "staff": "STAFF",
+            "notLoggedIn": "NOT LOGGED IN"
+        },
         "status": {
             "loading": "LOADING"
         },
