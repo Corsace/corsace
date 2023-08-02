@@ -27,7 +27,7 @@
             class="teams_list__main_content"
         >
             <OpenTitle>
-                {{ $t('open.teams.loading') }}...
+                {{ $t('open.status.loading') }}...
             </OpenTitle>
         </div>
         <div

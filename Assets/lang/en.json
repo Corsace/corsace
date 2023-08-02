@@ -519,7 +519,6 @@
         },
         "teams": {
             "teamsList": "TEAMS LIST",
-            "loading": "LOADING",
             "error": "COULD NOT GET TEAM LIST",
             "searchPlaceholder": "search for user/team",
             "headers": {
@@ -569,6 +568,9 @@
             "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
             "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
             "create": "CREATE TEAM"
+        },
+        "status": {
+            "loading": "LOADING"
         },
         "mappool": {
             "title": "MAPPOOL"
