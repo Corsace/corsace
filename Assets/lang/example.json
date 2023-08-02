@@ -384,6 +384,7 @@
                 "maxPlayers": "",
                 "pickTimer": "",
                 "readyTimer": "",
+                "order": "",
                 "scoringMethod": "",
                 "type": "",
                 "startDate": "",
