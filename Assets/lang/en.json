@@ -449,6 +449,7 @@
                 "maxPlayers": "MAX. PLAYERS",
                 "pickTimer": "MAP PICK TIMER",
                 "readyTimer": "READY TIMER",
+                "order": "ORDER",
                 "scoringMethod": "SCORING METHOD",
                 "type": "TYPE",
                 "startDate": "START DATE",

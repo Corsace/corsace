@@ -467,7 +467,7 @@
                             <div class="info_stage_data__content">
                                 <InfoData>
                                     <template #title>
-                                        ORDER
+                                        {{ $t('open.info.matchInfo.order') }}
                                     </template>
                                     <template #value>
                                         {{ stage.order }}
