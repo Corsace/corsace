@@ -570,7 +570,7 @@
             "create": "CREATE TEAM"
         },
         "staff": {
-            "staff": "STAFF",
+            "title": "STAFF",
             "notLoggedIn": "NOT LOGGED IN"
         },
         "status": {

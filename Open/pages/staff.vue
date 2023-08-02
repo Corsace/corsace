@@ -2,7 +2,7 @@
     <div class="staff">
         <div class="staff_main_content">
             <OpenTitle>
-                {{ $t('open.staff.staff') }}
+                {{ $t('open.staff.title') }}
             </OpenTitle>
             <div
                 v-if="staffList" 
