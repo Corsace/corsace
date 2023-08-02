@@ -456,9 +456,9 @@
                             <div class="info_stage_title__status">
                                 <MatchStatus 
                                     class="status"
-                                    :class="{ 'status--not_started': stageStatus === 'NOT STARTED', 'status--ongoing': stageStatus === 'ONGOING', 'status--completed': stageStatus === 'COMPLETED' }"
+                                    :class="{ 'status--not_started': stageStatus === 'notStarted', 'status--ongoing': stageStatus === 'ongoing', 'status--completed': stageStatus === 'complete' }"
                                 >
-                                    {{ stageStatus }}
+                                    {{ $t(`open.info.status.${stageStatus}`) }}
                                 </MatchStatus>
                             </div>
                             <hr class="line--gray line--bottom-space-default">
@@ -637,9 +637,9 @@ import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 const openModule = namespace("open");
 
 enum StageStatus {
-    NOT_STARTED = "NOT STARTED",
-    ONGOING = "ONGOING",
-    COMPLETED = "COMPLETED",
+    NOT_STARTED = "notStarted",
+    ONGOING = "ongoing",
+    COMPLETED = "complete",
 }
 
 @Component({
