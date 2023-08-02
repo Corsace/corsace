@@ -20,6 +20,9 @@
                 <tbody>
                     <tr>
                         <th>PLACEMENT</th>
+                        <th v-if="syncView === 'players'">
+                            PLAYER
+                        </th>
                         <th>TEAM</th>
                         <th>BEST</th>
                         <th>WORST</th>
@@ -62,15 +65,18 @@
                     >
                         <td>#{{ row.placement }}</td>
                         <td>{{ row.name }}</td>
+                        <td v-if="syncView === 'players'">
+                            {{ row.team }}
+                        </td>
                         <td>{{ row.best }}</td>
                         <td>{{ row.worst }}</td>
-                        <td>{{ row[currentFilter] === -100 ? "" : row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && row[currentFilter] !== -100 ? "%" : "" }}</td>
+                        <td>{{ row.sum === 0 ? "" : row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && row.sum !== 0 ? "%" : "" }}</td>
                         <td 
                             v-for="score in row.scores"
                             :key="score.map"
                             :class="{ 'scores__table--highlight': score.isBest }"
                         >
-                            {{ score[currentFilter] === -100 ? "" : score[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && score[currentFilter] !== -100 ? "%" : "" }}
+                            {{ score.sum === 0 ? "" : score[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && score.sum !== 0 ? "%" : "" }}
                         </td>
                     </tr>
                 </tbody>
@@ -135,17 +141,37 @@ export default class ScoresView extends Vue {
             return [];
 
         const qualifierScoreViews: QualifierScoreView[] = [];
-        const idNames = this.qualifierScores.map(idNameAccessor).filter((v, i, a) => a.findIndex(t => (t.id === v.id && t.name === v.name)) === i);
+        const idNames = new Set(this.qualifierScores.map(idNameAccessor));
 
+        const scoresByAccessorID = new Map<number, QualifierScore[]>();
+        const scoresByMapID = new Map<number, number[]>();
+        for (const score of this.qualifierScores) {
+            const userID = idNameAccessor(score).id;
+            const scores = scoresByAccessorID.get(userID) || [];
+            scores.push(score);
+            scoresByAccessorID.set(userID, scores);
+        }
+
+        // Create score objects for each player
         for (const idName of idNames) {
-            const scores = this.qualifierScores.filter(s => idNameAccessor(s).id === idName.id);
+            const scores = scoresByAccessorID.get(idName.id)!;
+            const nonZeroScores = scores.filter(score => score.score !== 0);
+            if (nonZeroScores.length === 0)
+                continue;
+
             const scoreView: QualifierScoreView = {
                 ID: idName.id,
                 name: idName.name,
                 scores: this.mapNames.map(map => {
-                    const mapScores = scores.filter(s => s.mapID === map.mapID);
+                    const mapScores = scores.filter(score => score.mapID === map.mapID);
                     const score = mapScores.reduce((a, b) => a + b.score, 0);
                     const avgScore = Math.round(score / (mapScores.length || 1));
+
+                    const mapID = map.mapID;
+                    const mapScoreHash = scoresByMapID.get(mapID) || [];
+                    mapScoreHash.push(score);
+                    scoresByMapID.set(mapID, mapScoreHash);
+
                     return {
                         map: map.map,
                         mapID: map.mapID,
@@ -162,7 +188,7 @@ export default class ScoresView extends Vue {
                 best: "",
                 worst: "",
                 sum: scores.reduce((a, b) => a + b.score, 0),
-                average: Math.round(scores.filter(score => score.score !== 0).reduce((a, b) => a + b.score, 0) / (scores.filter(score => score.score !== 0).length || 1)),
+                average: Math.round(nonZeroScores.reduce((a, b) => a + b.score, 0) / (nonZeroScores.length || 1)),
                 relMax: -100,
                 percentMax: -100,
                 relAvg: -100,
@@ -172,45 +198,85 @@ export default class ScoresView extends Vue {
             };
             scoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
+            if (this.syncView === "players") {
+                const team = this.qualifierScores.find(s => s.userID === idName.id);
+                if (team)
+                    scoreView.team = team.teamName;
+            }
+
             qualifierScoreViews.push(scoreView);
         }
 
+        // Compute stats for each map
+        const statsByMapID = new Map<number, {
+            max: number;
+            avg: number;
+            stdDev: number;
+        }>();
+        for (const mapID of scoresByMapID.keys()) {
+            const scores = scoresByMapID.get(mapID)!;
+            const max = Math.max(...scores);
+            const avg = scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
+            const stdDev = Math.sqrt(scores.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / (scores.length || 1));
+            statsByMapID.set(mapID, { max, avg, stdDev });
+        }
+
+        // Compute per-score stats and find best values
+        const maxFilterByMapID = new Map<number, {
+            sum: number;
+            average: number;
+            relMax: number;
+            percentMax: number;
+            relAvg: number;
+            percentAvg: number;
+            zScore: number;
+        }>();
         qualifierScoreViews.forEach(score => {
             score.scores.forEach(s => {
                 if (s.sum === 0)
                     return;
 
-                const mapsScores = qualifierScoreViews.flatMap(v => v.scores.filter(t => t.mapID === s.mapID));
-                const max = Math.max(...mapsScores.map(score => score.sum));
-                const avg = mapsScores.reduce((a, b) => a + b.sum, 0) / (mapsScores.length || 1);
-                const stddev = Math.sqrt(mapsScores.reduce((a, b) => a + Math.pow(b.sum - avg, 2), 0) / (mapsScores.length || 1));
+                const mapsStats = statsByMapID.get(s.mapID)!;
+                const mapMax = maxFilterByMapID.get(s.mapID) || { sum: 0, average: 0, relMax: 0, percentMax: 0, relAvg: 0, percentAvg: 0, zScore: 0 };
 
-                s.relMax = s.sum / (max || 1);
+                s.relMax = s.sum / (mapsStats.max || 1);
                 s.percentMax = Math.round(s.relMax * 100);
 
-                s.relAvg = s.sum / (avg || 1);
+                s.relAvg = s.sum / (mapsStats.avg || 1);
                 s.percentAvg = Math.round(s.relAvg * 100);
 
-                s.zScore = (s.sum - avg) / (stddev || 1);
+                s.zScore = (s.sum - mapsStats.avg) / (mapsStats.stdDev || 1);
+                
+                mapMax.sum = Math.max(mapMax.sum, s.sum);
+                mapMax.average = Math.max(mapMax.average, s.average);
+                mapMax.relMax = Math.max(mapMax.relMax, s.relMax);
+                mapMax.percentMax = Math.max(mapMax.percentMax, s.percentMax);
+                mapMax.relAvg = Math.max(mapMax.relAvg, s.relAvg);
+                mapMax.percentAvg = Math.max(mapMax.percentAvg, s.percentAvg);
+                mapMax.zScore = Math.max(mapMax.zScore, s.zScore);
+                maxFilterByMapID.set(s.mapID, mapMax);
             });
-            score.relMax = score.scores.filter(score => score.sum !== 0).reduce((a, b) => a + b.relMax, 0);
-            score.percentMax = Math.round(score.scores.filter(score => score.sum !== 0).reduce((a, b) => a + b.percentMax, 0) / (score.scores.filter(score => score.sum !== 0).length || 1));
-            score.relAvg = score.scores.filter(score => score.sum !== 0).reduce((a, b) => a + b.relAvg, 0);
-            score.percentAvg = Math.round(score.scores.filter(score => score.sum !== 0).reduce((a, b) => a + b.percentAvg, 0) / (score.scores.filter(score => score.sum !== 0).length || 1));
-            score.zScore = score.scores.filter(score => score.sum !== 0).reduce((a, b) => a + b.zScore, 0);    
+
+            const nonZeroScores = score.scores.filter(score => score.sum !== 0);
+            score.relMax = nonZeroScores.reduce((a, b) => a + b.relMax, 0);
+            score.percentMax = Math.round(nonZeroScores.reduce((a, b) => a + b.percentMax, 0) / (nonZeroScores.length || 1));
+            score.relAvg = nonZeroScores.reduce((a, b) => a + b.relAvg, 0);
+            score.percentAvg = Math.round(nonZeroScores.reduce((a, b) => a + b.percentAvg, 0) / (nonZeroScores.length || 1));
+            score.zScore = nonZeroScores.reduce((a, b) => a + b.zScore, 0);    
         });
+
+        // Add best/worst values, and placement
         qualifierScoreViews.forEach(score => {
             score.scores.forEach(s => {
-                const mapsScores = qualifierScoreViews.flatMap(v => v.scores.filter(t => t.mapID === s.mapID));
-                const maxFilter = Math.max(...mapsScores.map(score => score[this.currentFilter]));
-                if (s[this.currentFilter] === maxFilter)
+                if (s[this.currentFilter] === maxFilterByMapID.get(s.mapID)?.[this.currentFilter])
                     s.isBest = true;
             });
             score.placement = qualifierScoreViews.filter(s => s.zScore > score.zScore).length + 1;
             score.best = score.scores.reduce((a, b) => a[this.currentFilter] > b[this.currentFilter] ? a : b).map,
-            score.worst = score.scores.filter(score => score[this.currentFilter] !== 0).reduce((a, b) => a[this.currentFilter] < b[this.currentFilter] ? a : b).map;
+            score.worst = score.scores.filter(score => score.sum !== 0).reduce((a, b) => a[this.currentFilter] < b[this.currentFilter] ? a : b).map;
         });
 
+        // Sort by current filter
         qualifierScoreViews.sort((a, b) => {
             if (this.mapSort !== -1 && a.scores[this.mapSort])
                 return this.sortDir === "asc" ? a.scores[this.mapSort][this.currentFilter] - b.scores[this.mapSort][this.currentFilter] : b.scores[this.mapSort][this.currentFilter] - a.scores[this.mapSort][this.currentFilter];
@@ -234,7 +300,7 @@ export default class ScoresView extends Vue {
             return [];
 
         const groupedScores: QualifierScore[][] = [];
-        const teamIDs = this.qualifierScores.map(s => s.teamID).filter((v, i, a) => a.indexOf(v) === i);
+        const teamIDs = new Set(this.qualifierScores.map(s => s.teamID));
 
         for (const teamID of teamIDs)
             groupedScores.push(this.qualifierScores.filter(s => s.teamID === teamID));
