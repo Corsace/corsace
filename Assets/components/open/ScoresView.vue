@@ -19,31 +19,81 @@
             <table class="scores__table">
                 <tbody>
                     <tr>
+                        <th>PLACEMENT</th>
+                        <th v-if="syncView === 'players'">
+                            PLAYER
+                        </th>
                         <th>TEAM</th>
                         <th>BEST</th>
                         <th>WORST</th>
-                        <th>{{ $t(`open.qualifiers.scores.nav.${currentFilter}`) }}</th>
+                        <th @click="mapSort = -1; sortDir = sortDir === 'asc' ? 'desc' : 'asc';">
+                            <div class="scores__table--click">
+                                {{ $t(`open.qualifiers.scores.nav.${currentFilter}`) }}
+                                <div
+                                    :class="{ 
+                                        'scores__table--asc': mapSort === -1 && sortDir === 'asc', 
+                                        'scores__table--desc': mapSort === -1 && sortDir === 'desc', 
+                                        'scores__table--none': mapSort !== -1 || (sortDir !== 'asc' && sortDir !== 'desc')
+                                    }"
+                                />
+                            </div>
+                        </th>
                         <th
-                            v-for="map in mapNames"
+                            v-for="(map, i) in mapNames"
                             :key="map.mapID"
+                            @click="mapSort = i; sortDir = sortDir === 'asc' ? 'desc' : 'asc';"
                         >
-                            {{ map.map }}
+                            <div class="scores__table--click">
+                                {{ map.map }}
+                                <div
+                                    :class="{ 
+                                        'scores__table--asc': mapSort === i && sortDir === 'asc',
+                                        'scores__table--desc': mapSort === i && sortDir === 'desc',
+                                        'scores__table--none': mapSort !== i || (sortDir !== 'asc' && sortDir !== 'desc')
+                                    }"
+                                />
+                            </div>
                         </th>
                     </tr>
                     <tr
                         v-for="row in shownQualifierScoreViews"
                         :key="row.ID"
+                        :class="{ 
+                            'scores__table--tier1': row.placement <= 8,
+                            'scores__table--tier2': row.placement > 8 && row.placement <= 24,
+                        }"
                     >
-                        <td>{{ row.name }}</td>
+                        <td>#{{ row.placement }}</td>
+                        <td
+                            class="scores__table--background-image"
+                            :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})` }"
+                        >
+                            <a
+                                :href="syncView === 'players' ? `https://osu.ppy.sh/users/${row.ID}` : `https://open.corsace.io/team/${row.ID}`"
+                                target="_blank"
+                                class="scores__table--click scores__table--no_padding"
+                            >
+                                {{ row.name }}
+                            </a>
+                        </td>
+                        <td v-if="syncView === 'players'">
+                            <a
+                                :href="`https://open.corsace.io/team/${row.teamID}`"
+                                target="_blank"
+                                class="scores__table--click scores__table--no_padding"
+                            >
+                                {{ row.team }}
+                            </a>
+                        </td>
                         <td>{{ row.best }}</td>
                         <td>{{ row.worst }}</td>
-                        <td>{{ row[currentFilter] === -100 ? "" : row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}</td>
+                        <td>{{ row.sum === 0 ? "" : row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && row.sum !== 0 ? "%" : "" }}</td>
                         <td 
                             v-for="score in row.scores"
                             :key="score.map"
                             :class="{ 'scores__table--highlight': score.isBest }"
                         >
-                            {{ currentFilter === "sum" || currentFilter === "average" ? score.score || "" : score[currentFilter] === -100 ? "" : score[currentFilter].toFixed(2) }}{{ currentFilter.includes("percent") && score[currentFilter] !== -100 ? "%" : "" }}
+                            {{ score.sum === 0 ? "" : score[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && score.sum !== 0 ? "%" : "" }}
                         </td>
                     </tr>
                 </tbody>
@@ -73,6 +123,8 @@ export default class ScoresView extends Vue {
     @openModule.State qualifierScores!: QualifierScore[] | null;
 
     currentFilter: sortType = "zScore";
+    sortDir: "asc" | "desc" = "desc";
+    mapSort = -1;
     filters: sortType[] = filters;
 
     get mapNames (): {
@@ -82,12 +134,14 @@ export default class ScoresView extends Vue {
         if (!this.qualifierScores)
             return [];
 
-        const mapNames = this.qualifierScores.map(s => ({
-            map: s.map,
-            mapID: s.mapID,
-        })).filter((v, i, a) => a.findIndex(t => (t.map === v.map && t.mapID === v.mapID)) === i);
-        mapNames.sort((a, b) => a.mapID - b.mapID);
+        const mapNames = this.qualifierScores
+            .map(s => ({
+                map: s.map,
+                mapID: s.mapID,
+            }))
+            .filter((v, i, a) => a.findIndex(t => (t.map === v.map && t.mapID === v.mapID)) === i);
 
+        mapNames.sort((a, b) => a.mapID - b.mapID);
         return mapNames;
     }
 
@@ -99,26 +153,48 @@ export default class ScoresView extends Vue {
         return this.syncView === "players" ? this.playerQualifierScoreViews : this.teamQualifierScoreViews;
     }
 
-    computeQualifierScoreViews (idNameAccessor: (score: QualifierScore) => { id: number, name: string }): QualifierScoreView[] {
+    computeQualifierScoreViews (idNameAccessor: (score: QualifierScore) => { id: number, name: string, avatar?: string | null }): QualifierScoreView[] {
         if (!this.qualifierScores)
             return [];
 
         const qualifierScoreViews: QualifierScoreView[] = [];
         const idNames = this.qualifierScores.map(idNameAccessor).filter((v, i, a) => a.findIndex(t => (t.id === v.id && t.name === v.name)) === i);
 
+        const scoresByAccessorID = new Map<number, QualifierScore[]>();
+        const scoresByMapID = new Map<number, number[]>();
+        for (const score of this.qualifierScores) {
+            const userID = idNameAccessor(score).id;
+            const scores = scoresByAccessorID.get(userID) || [];
+            scores.push(score);
+            scoresByAccessorID.set(userID, scores);
+        }
+
+        // Create score objects for each player
         for (const idName of idNames) {
-            const scores = this.qualifierScores.filter(s => idNameAccessor(s).id === idName.id);
+            const scores = scoresByAccessorID.get(idName.id)!;
+            const nonZeroScores = scores.filter(score => score.score !== 0);
+            if (nonZeroScores.length === 0)
+                continue;
+
             const scoreView: QualifierScoreView = {
                 ID: idName.id,
                 name: idName.name,
+                avatar: idName.avatar,
                 scores: this.mapNames.map(map => {
-                    const mapScores = scores.filter(s => s.mapID === map.mapID);
+                    const mapScores = scores.filter(score => score.mapID === map.mapID);
                     const score = mapScores.reduce((a, b) => a + b.score, 0);
-                    const avgScore = Math.round(mapScores.reduce((a, b) => a + b.score, 0) / (mapScores.length || 1));
+                    const avgScore = Math.round(score / (mapScores.length || 1));
+
+                    const mapID = map.mapID;
+                    const mapScoreHash = scoresByMapID.get(mapID) || [];
+                    mapScoreHash.push(score);
+                    scoresByMapID.set(mapID, mapScoreHash);
+
                     return {
                         map: map.map,
                         mapID: map.mapID,
-                        score: this.useAvg ? avgScore : score,
+                        sum: score,
+                        average: avgScore,
                         relMax: -100,
                         percentMax: -100,
                         relAvg: -100,
@@ -127,60 +203,115 @@ export default class ScoresView extends Vue {
                         isBest: false,
                     };
                 }),
-                best: scores.reduce((a, b) => a.score > b.score ? a : b).map,
-                worst: scores.filter(score => score.score !== 0).reduce((a, b) => a.score < b.score ? a : b).map,
+                best: "",
+                worst: "",
                 sum: scores.reduce((a, b) => a + b.score, 0),
-                average: Math.round(scores.filter(score => score.score !== 0).reduce((a, b) => a + b.score, 0) / (scores.filter(score => score.score !== 0).length || 1)),
+                average: Math.round(nonZeroScores.reduce((a, b) => a + b.score, 0) / (nonZeroScores.length || 1)),
                 relMax: -100,
                 percentMax: -100,
                 relAvg: -100,
                 percentAvg: -100,
                 zScore: -100,
+                placement: -1,
             };
             scoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
+            if (this.syncView === "players") {
+                const team = this.qualifierScores.find(s => s.userID === idName.id);
+                if (team) {
+                    scoreView.team = team.teamName;
+                    scoreView.teamID = team.teamID;
+                }
+            }
             qualifierScoreViews.push(scoreView);
         }
 
+        // Compute stats for each map
+        const statsByMapID = new Map<number, {
+            max: number;
+            avg: number;
+            stdDev: number;
+        }>();
+        for (const mapID of scoresByMapID.keys()) {
+            const scores = scoresByMapID.get(mapID)!;
+            const max = Math.max(...scores);
+            const avg = scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
+            const stdDev = Math.sqrt(scores.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / (scores.length || 1));
+            statsByMapID.set(mapID, { max, avg, stdDev });
+        }
+
+        // Compute per-score stats and find best values
+        const maxFilterByMapID = new Map<number, {
+            sum: number;
+            average: number;
+            relMax: number;
+            percentMax: number;
+            relAvg: number;
+            percentAvg: number;
+            zScore: number;
+        }>();
         qualifierScoreViews.forEach(score => {
             score.scores.forEach(s => {
-                if (s.score === 0)
+                if (s.sum === 0)
                     return;
 
-                const mapsScores = qualifierScoreViews.flatMap(v => v.scores.filter(t => t.mapID === s.mapID));
-                const max = Math.max(...mapsScores.map(score => score.score));
-                const avg = mapsScores.reduce((a, b) => a + b.score, 0) / (mapsScores.length || 1);
-                const stddev = Math.sqrt(mapsScores.reduce((a, b) => a + Math.pow(b.score - avg, 2), 0) / (mapsScores.length || 1));
+                const mapsStats = statsByMapID.get(s.mapID)!;
+                const mapMax = maxFilterByMapID.get(s.mapID) || { sum: 0, average: 0, relMax: 0, percentMax: 0, relAvg: 0, percentAvg: 0, zScore: 0 };
 
-                if (s.score === max)
-                    s.isBest = true;
-
-                s.relMax = s.score / (max || 1);
+                s.relMax = s.sum / (mapsStats.max || 1);
                 s.percentMax = Math.round(s.relMax * 100);
 
-                s.relAvg = s.score / (avg || 1);
+                s.relAvg = s.sum / (mapsStats.avg || 1);
                 s.percentAvg = Math.round(s.relAvg * 100);
 
-                s.zScore = (s.score - avg) / (stddev || 1);
+                s.zScore = (s.sum - mapsStats.avg) / (mapsStats.stdDev || 1);
+                
+                mapMax.sum = Math.max(mapMax.sum, s.sum);
+                mapMax.average = Math.max(mapMax.average, s.average);
+                mapMax.relMax = Math.max(mapMax.relMax, s.relMax);
+                mapMax.percentMax = Math.max(mapMax.percentMax, s.percentMax);
+                mapMax.relAvg = Math.max(mapMax.relAvg, s.relAvg);
+                mapMax.percentAvg = Math.max(mapMax.percentAvg, s.percentAvg);
+                mapMax.zScore = Math.max(mapMax.zScore, s.zScore);
+                maxFilterByMapID.set(s.mapID, mapMax);
             });
-            score.relMax = score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.relMax, 0);
-            score.percentMax = Math.round(score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.percentMax, 0) / (score.scores.filter(score => score.score !== 0).length || 1));
-            score.relAvg = score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.relAvg, 0);
-            score.percentAvg = Math.round(score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.percentAvg, 0) / (score.scores.filter(score => score.score !== 0).length || 1));
-            score.zScore = score.scores.filter(score => score.score !== 0).reduce((a, b) => a + b.zScore, 0);    
+
+            const nonZeroScores = score.scores.filter(score => score.sum !== 0);
+            score.relMax = nonZeroScores.reduce((a, b) => a + b.relMax, 0);
+            score.percentMax = Math.round(nonZeroScores.reduce((a, b) => a + b.percentMax, 0) / (nonZeroScores.length || 1));
+            score.relAvg = nonZeroScores.reduce((a, b) => a + b.relAvg, 0);
+            score.percentAvg = Math.round(nonZeroScores.reduce((a, b) => a + b.percentAvg, 0) / (nonZeroScores.length || 1));
+            score.zScore = nonZeroScores.reduce((a, b) => a + b.zScore, 0);    
         });
 
-        qualifierScoreViews.sort((a, b) => b[this.currentFilter] - a[this.currentFilter]);
+        // Add best/worst values, and placement
+        qualifierScoreViews.forEach(score => {
+            score.scores.forEach(s => {
+                if (s[this.currentFilter] === maxFilterByMapID.get(s.mapID)?.[this.currentFilter])
+                    s.isBest = true;
+            });
+            score.placement = qualifierScoreViews.filter(s => s.zScore > score.zScore).length + 1;
+            score.best = score.scores.reduce((a, b) => a[this.currentFilter] > b[this.currentFilter] ? a : b).map,
+            score.worst = score.scores.filter(score => score.sum !== 0).reduce((a, b) => a[this.currentFilter] < b[this.currentFilter] ? a : b).map;
+        });
+
+        // Sort by current filter
+        qualifierScoreViews.sort((a, b) => {
+            if (this.mapSort !== -1 && a.scores[this.mapSort])
+                return this.sortDir === "asc" ? a.scores[this.mapSort][this.currentFilter] - b.scores[this.mapSort][this.currentFilter] : b.scores[this.mapSort][this.currentFilter] - a.scores[this.mapSort][this.currentFilter];
+
+            return this.sortDir === "asc" ? a[this.currentFilter] - b[this.currentFilter] : b[this.currentFilter] - a[this.currentFilter];
+        });
 
         return qualifierScoreViews;
     }
 
     get playerQualifierScoreViews (): QualifierScoreView[] {
-        return this.computeQualifierScoreViews(score => ({ id: score.userID, name: score.username }));
+        return this.computeQualifierScoreViews(score => ({ id: score.userID, name: score.username, avatar: `https://a.ppy.sh/${score.userID}` }));
     }
 
     get teamQualifierScoreViews (): QualifierScoreView[] {
-        return this.computeQualifierScoreViews(score => ({ id: score.teamID, name: score.teamName }));
+        return this.computeQualifierScoreViews(score => ({ id: score.teamID, name: score.teamName, avatar: score.teamAvatar }));
     }
 
     get teamGroupedScores (): QualifierScore[][] {
@@ -188,7 +319,7 @@ export default class ScoresView extends Vue {
             return [];
 
         const groupedScores: QualifierScore[][] = [];
-        const teamIDs = this.qualifierScores.map(s => s.teamID).filter((v, i, a) => a.indexOf(v) === i);
+        const teamIDs = new Set(this.qualifierScores.map(s => s.teamID));
 
         for (const teamID of teamIDs)
             groupedScores.push(this.qualifierScores.filter(s => s.teamID === teamID));
@@ -272,13 +403,63 @@ export default class ScoresView extends Vue {
         &--highlight{
             color: #FBBA20;
         }
+
+        &--background-image {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        &--asc {
+            width: 0;
+            height: 0;
+            border-left: 4.5px solid transparent;
+            border-right: 4.5px solid transparent;
+            border-top: 4.5px solid #FBBA20;
+        }
+
+        &--desc {
+            width: 0;
+            height: 0;
+            border-left: 4.5px solid transparent;
+            border-right: 4.5px solid transparent;
+            border-bottom: 4.5px solid #FBBA20;
+        }
+
+        &--none {
+            width: 0;
+            height: 0;
+            border: 4.5px solid #383838;
+            transform: rotate(45deg);
+        }
+
+        &--click {
+            text-decoration: none !important;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 15px 5px;
+        }
+
+        &--no_padding {
+            padding: 0;
+        }
+
+        &--tier1 {
+            background-color: rgba(251, 186, 32, 0.1);
+        }
+        
+        &--tier2 {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
     }
 
     &__table th {
         font-size: $font-sm;
         font-weight: 700;
         border-bottom: 1px solid #383838;
-        padding: 15px 5px;
         border-left: 1px solid #383838;
     }
 

@@ -23,6 +23,7 @@ export interface QualifierTeam {
 export interface QualifierScore {
     teamID: number;
     teamName: string;
+    teamAvatar?: string | null;
     username: string;
     userID: number;
     score: number;
@@ -33,10 +34,14 @@ export interface QualifierScore {
 export interface QualifierScoreView {
     ID: number;
     name: string;
+    team?: string;
+    teamID?: number;
+    avatar?: string | null;
     scores: {
         map: string;
         mapID: number;
-        score: number;
+        sum: number;
+        average: number;
         relMax: number;
         percentMax: number;
         relAvg: number;
@@ -53,4 +58,5 @@ export interface QualifierScoreView {
     relAvg: number;
     percentAvg: number;
     zScore: number;
+    placement: number;
 }

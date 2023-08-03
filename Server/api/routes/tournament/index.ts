@@ -314,7 +314,7 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         .andWhere("stage.stageType = '0'")
         .select([
             "user.osuUsername",
-            "user.ID",
+            "user.osuUserid",
             "score.score",
             "slot.acronym",
             "slot.ID",
@@ -322,12 +322,13 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         ])
         .getRawMany();
     const scores: QualifierScore[] = rawScores.map(score => {
-        const team = teamLookup.get(score.user_ID) || { ID: -1, name: "N/A" };
+        const team = teamLookup.get(score.osuUserid) || { ID: -1, name: "N/A", avatarURL: undefined };
         return {
             teamID: team.ID,
             teamName: team.name,
-            username: score.user_osuUsername,
-            userID: score.user_ID,
+            teamAvatar: team.avatarURL,
+            username: score.osuUsername,
+            userID: parseInt(score.osuUserid),
             score: score.score_score,
             map: `${score.slot_acronym}${score.mappoolMap_order}`,
             mapID: parseInt(`${score.slot_ID}${score.mappoolMap_order}`),

@@ -266,7 +266,7 @@ export default class Qualifiers extends Vue {
     &__main_content {
         align-self: center;
         position: relative;
-        width: 65vw;
+        width: 75vw;
         padding: 35px;
         background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
     }
