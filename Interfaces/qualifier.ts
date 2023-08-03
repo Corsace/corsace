@@ -23,6 +23,7 @@ export interface QualifierTeam {
 export interface QualifierScore {
     teamID: number;
     teamName: string;
+    teamAvatar?: string | null;
     username: string;
     userID: number;
     score: number;
@@ -34,6 +35,7 @@ export interface QualifierScoreView {
     ID: number;
     name: string;
     team?: string;
+    avatar?: string | null;
     scores: {
         map: string;
         mapID: number;

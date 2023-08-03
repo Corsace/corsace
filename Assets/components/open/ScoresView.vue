@@ -64,7 +64,12 @@
                         }"
                     >
                         <td>#{{ row.placement }}</td>
-                        <td>{{ row.name }}</td>
+                        <td
+                            class="scores__table--background-image"
+                            :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})` }"
+                        >
+                            {{ row.name }}
+                        </td>
                         <td v-if="syncView === 'players'">
                             {{ row.team }}
                         </td>
@@ -136,12 +141,12 @@ export default class ScoresView extends Vue {
         return this.syncView === "players" ? this.playerQualifierScoreViews : this.teamQualifierScoreViews;
     }
 
-    computeQualifierScoreViews (idNameAccessor: (score: QualifierScore) => { id: number, name: string }): QualifierScoreView[] {
+    computeQualifierScoreViews (idNameAccessor: (score: QualifierScore) => { id: number, name: string, avatar?: string | null }): QualifierScoreView[] {
         if (!this.qualifierScores)
             return [];
 
         const qualifierScoreViews: QualifierScoreView[] = [];
-        const idNames = new Set(this.qualifierScores.map(idNameAccessor));
+        const idNames = this.qualifierScores.map(idNameAccessor).filter((v, i, a) => a.findIndex(t => (t.id === v.id && t.name === v.name)) === i);
 
         const scoresByAccessorID = new Map<number, QualifierScore[]>();
         const scoresByMapID = new Map<number, number[]>();
@@ -162,6 +167,7 @@ export default class ScoresView extends Vue {
             const scoreView: QualifierScoreView = {
                 ID: idName.id,
                 name: idName.name,
+                avatar: idName.avatar,
                 scores: this.mapNames.map(map => {
                     const mapScores = scores.filter(score => score.mapID === map.mapID);
                     const score = mapScores.reduce((a, b) => a + b.score, 0);
@@ -203,7 +209,6 @@ export default class ScoresView extends Vue {
                 if (team)
                     scoreView.team = team.teamName;
             }
-
             qualifierScoreViews.push(scoreView);
         }
 
@@ -288,11 +293,11 @@ export default class ScoresView extends Vue {
     }
 
     get playerQualifierScoreViews (): QualifierScoreView[] {
-        return this.computeQualifierScoreViews(score => ({ id: score.userID, name: score.username }));
+        return this.computeQualifierScoreViews(score => ({ id: score.userID, name: score.username, avatar: `https://a.ppy.sh/${score.userID}` }));
     }
 
     get teamQualifierScoreViews (): QualifierScoreView[] {
-        return this.computeQualifierScoreViews(score => ({ id: score.teamID, name: score.teamName }));
+        return this.computeQualifierScoreViews(score => ({ id: score.teamID, name: score.teamName, avatar: score.teamAvatar }));
     }
 
     get teamGroupedScores (): QualifierScore[][] {
@@ -383,6 +388,12 @@ export default class ScoresView extends Vue {
 
         &--highlight{
             color: #FBBA20;
+        }
+
+        &--background-image {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         &--asc {
