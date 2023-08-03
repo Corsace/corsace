@@ -68,10 +68,22 @@
                             class="scores__table--background-image"
                             :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})` }"
                         >
-                            {{ row.name }}
+                            <a
+                                :href="syncView === 'players' ? `https://osu.ppy.sh/users/${row.ID}` : `https://open.corsace.io/team/${row.ID}`"
+                                target="_blank"
+                                class="scores__table--click scores__table--no_padding"
+                            >
+                                {{ row.name }}
+                            </a>
                         </td>
                         <td v-if="syncView === 'players'">
-                            {{ row.team }}
+                            <a
+                                :href="`https://open.corsace.io/team/${row.teamID}`"
+                                target="_blank"
+                                class="scores__table--click scores__table--no_padding"
+                            >
+                                {{ row.team }}
+                            </a>
                         </td>
                         <td>{{ row.best }}</td>
                         <td>{{ row.worst }}</td>
@@ -206,8 +218,10 @@ export default class ScoresView extends Vue {
 
             if (this.syncView === "players") {
                 const team = this.qualifierScores.find(s => s.userID === idName.id);
-                if (team)
+                if (team) {
                     scoreView.team = team.teamName;
+                    scoreView.teamID = team.teamID;
+                }
             }
             qualifierScoreViews.push(scoreView);
         }
@@ -420,12 +434,17 @@ export default class ScoresView extends Vue {
         }
 
         &--click {
+            text-decoration: none !important;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 5px;
             padding: 15px 5px;
+        }
+
+        &--no_padding {
+            padding: 0;
         }
 
         &--tier1 {
