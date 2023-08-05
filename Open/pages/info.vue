@@ -451,7 +451,6 @@
                         class="info_stage_panel"
                     >
                         <div class="info_stage_title">
-                            <!-- {{ stage.name.toUpperCase() }}  -->
                             {{ $t(`open.info.headings.${stage.name.toLowerCase()}`) }} 
                             <span class="info_stage_title--red">{{ $t(`open.info.headings.${stage.abbreviation.toLowerCase()}`) }}</span> 
                             <div class="info_stage_title__status">
