@@ -524,6 +524,7 @@
             "mappool": {
                 "sheets": "SHEETS",
                 "mappool": "MAPPOOL",
+                "notAvailable": "Mappool not available yet",
                 "banner": {
                     "mapper": "MAPPER",
                     "difficulty": "DIFFICULTY"

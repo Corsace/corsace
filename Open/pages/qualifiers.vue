@@ -117,7 +117,7 @@
                 v-else-if="page === 'mappool'"
                 class="qualifiers__button_group"
             >
-                Mappool not available yet
+                {{ $t("open.qualifiers.mappool.notAvailable") }}
             </div>
             <ScoresView
                 v-else-if="page === 'scores'"
