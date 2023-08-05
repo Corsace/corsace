@@ -451,8 +451,9 @@
                         class="info_stage_panel"
                     >
                         <div class="info_stage_title">
-                            {{ stage.name.toUpperCase() }} 
-                            <span class="info_stage_title--red">({{ stage.abbreviation.toUpperCase() }})</span> 
+                            <!-- {{ stage.name.toUpperCase() }}  -->
+                            {{ $t(`open.info.headings.${stage.name.toLowerCase()}`) }} 
+                            <span class="info_stage_title--red">{{ $t(`open.info.headings.${stage.abbreviation.toLowerCase()}`) }}</span> 
                             <div class="info_stage_title__status">
                                 <MatchStatus 
                                     class="status"
@@ -537,7 +538,7 @@
                     </div>
                     <div class="info_stage_panel">
                         <div class="info_stage_title">
-                            MAPPOOLS 
+                            {{ $t("open.info.headings.mappools") }}
                         </div>
                         <hr class="line--gray line--bottom-space-default">
                         <div class="info_stage_data--bottom_padding">
