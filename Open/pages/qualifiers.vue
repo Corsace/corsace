@@ -97,14 +97,14 @@
                             :class="{ 'content_button--disabled': !team || !tournament || tournament.minTeamSize > team.members.length || tournament.maxTeamSize < team.members.length }"
                             @click.native="togglePopup()"
                         >
-                            CREATE
+                            {{ $t('open.qualifiers.create') }}
                         </ContentButton>
                         <BaseModal
                             v-if="isOpen"
                             @click.native="togglePopup()"
                         >
-                            <span>You cannot create/join a qualifier until you have {{ tournament?.minTeamSize === tournament?.maxTeamSize ? tournament?.minTeamSize : tournament?.minTeamSize + " to " + tournament?.maxTeamSize }} players!</span>
-                            <span>Press anywhere to close</span>
+                            <span> {{ $t('open.qualifiers.error.message', { numPlayers: tournament?.minTeamSize === tournament?.maxTeamSize ? tournament?.minTeamSize : tournament?.minTeamSize + " to " + tournament?.maxTeamSize }) }}</span>
+                            <span> {{ $t('open.qualifiers.error.pressToClose') }}</span>
                         </BaseModal>
                     </div>
                 </template>
