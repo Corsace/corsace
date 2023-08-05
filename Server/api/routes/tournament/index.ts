@@ -15,6 +15,8 @@ import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { User } from "../../../../Models/user";
+import { TournamentKey } from "../../../../Models/tournaments/tournamentKey";
+import { createHash } from "crypto";
 
 async function validateID (ctx: ParameterizedContext, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
@@ -120,6 +122,31 @@ tournamentRouter.get("/open/:year", async (ctx) => {
 
     await Promise.all(beatmapPromises);
     ctx.body = tournament;
+});
+
+tournamentRouter.get("/validateKey", async (ctx) => {
+    const key = ctx.query.key as string;
+    if (!key) {
+        ctx.body = {
+            success: false,
+            error: "No key provided",
+        };
+        return;
+    }
+
+    const hash = createHash("sha512");
+    hash.update(key);
+    const hashedKey = hash.digest("hex");
+
+    const keyCheck = await TournamentKey
+        .createQueryBuilder("key")
+        .where("key.key = :hash", { hash: hashedKey })
+        .getExists();
+
+    ctx.body = {
+        success: true,
+        valid: keyCheck,
+    };
 });
 
 tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
