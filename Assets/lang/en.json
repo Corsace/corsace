@@ -529,19 +529,48 @@
             "teamsList": "TEAMS LIST",
             "error": "COULD NOT GET TEAM LIST",
             "searchPlaceholder": "search for user/team",
+            "editTeamInfo": "edit team info",
+            "edit": {
+                "teamName": "TEAM NAME",
+                "teamAbbreviation": "TEAM ABBREVIATION",
+                "timezone": "TIMEZONE",
+                "teamAvatar": "TEAM AVATAR",
+                "errors": {
+                    "size": "Image is too large. Ensure the image is less than 5MB.",
+                    "type": "Invalid image file. Ensure the image is a PNG or JPG.",
+                    "invalidImage": "Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.",
+                    "invalidName": ""
+                },
+                "confirm": {
+                    "deleteTeam": "Are you sure you want to delete this team?",
+                    "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!"
+                },
+                "save": "SAVE",
+                "deleteTeam": "DELETE TEAM"
+            },
             "headers": {
                 "tournaments": "TOURNAMENTS",
                 "teamStats": "TEAM STATS",
                 "teamManager": "TEAM MANAGER",
                 "teamMembers": "TEAM MEMBERS",
+                "editTeamMembers": "edit team members",
+                "closeTeamMembers": "close team members edit",
+                "becomeMember": "become a member and play as well",
+                "becomeManager": "become manager only",
                 "teamInvites": "TEAM INVITES",
-                "qualifier": "QUALIFIER"
+                "editTeamInvites": "edit team invites",
+                "closeTeamInvites": "close team invites edit",
+                "qualifier": "QUALIFIER",
+                "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
+                "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
             },
             "registration":{
                 "noRegistration": "Registered in no tournaments",
                 "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
             },
             "teamID": "TEAM ID",
+            "member": "member",
+            "members": "members",
             "averageBWS": "Average BWS",
             "averageRank": "Average Rank",
             "averagePP": "Average PP",

@@ -18,7 +18,7 @@
                     class="team_fields--clickable"
                     @click="edit = !edit"
                 >
-                    {{ !edit ? "edit team info" : "" }}
+                    {{ !edit ? $t('open.teams.editTeamInfo') : "" }}
                 </div>
             </OpenTitle>
             <div class="team_fields">
@@ -43,7 +43,7 @@
                     </div>
                     <div class="team_fields_block">
                         <div>{{ $t('open.teams.teamID') }} #{{ teamData.ID }}</div>
-                        <div>{{ teamData.members.length }} member{{ teamData.members.length === 1 ? "" : "s" }}</div>
+                        <div>{{ teamData.members.length }} {{ teamData.members.length === 1 ? $t('open.teams.member') : $t('open.teams.members') }}</div>
                         <div>{{ Math.round(teamData.BWS) }} {{ $t('open.teams.averageBWS') }}</div>
                         <div>#{{ Math.round(teamData.rank) }} {{ $t('open.teams.averageRank') }}</div>
                         <div>{{ Math.round(teamData.pp) }} {{ $t('open.teams.averagePP') }}</div>
@@ -93,14 +93,14 @@
                             class="team_fields--clickable"
                             @click="editMembers = !editMembers"
                         >
-                            {{ !editMembers ? "edit team members" : "close team members edit" }}
+                            {{ !editMembers ? $t('open.teams.headers.editTeamMembers') : $t('open.teams.headers.closeTeamMembers') }}
                         </div>
                         <div 
                             v-if="isManager && !teamData.qualifier?.mp"
                             class="team_fields--clickable"
                             @click="managerToggle"
                         >
-                            {{ teamData.members.some(m => m.isManager) ? "become manager only" : "become a member and play as well" }}
+                            {{ teamData.members.some(m => m.isManager) ? $t('open.teams.headers.becomeManager') : $t('open.teams.headers.becomeMember') }}
                         </div>
                     </div>
                     <div class="team_fields_block team__member_list">
@@ -162,7 +162,7 @@
                             class="team_fields--clickable"
                             @click="editInvites = !editInvites"
                         >
-                            {{ !editInvites ? "edit team invites" : "close team invites edit" }}
+                            {{ !editInvites ? $t('open.teams.headers.editTeamInvites') : $t('open.teams.headers.closeTeamInvites') }}
                         </div>
                     </div>
                     <div class="team_fields_block team__member_list">
@@ -246,7 +246,7 @@
                         </div>
                         <div v-else-if="isManager && tournament">
                             <div class="team_fields--clickable">
-                                {{ tournament.minTeamSize === tournament.maxTeamSize ? `You need exactly ${tournament.minTeamSize} team members to register and join a qualifier` : `You need within ${tournament.minTeamSize} to ${tournament.maxTeamSize} team members to register and join a qualifier` }}
+                                {{ tournament.minTeamSize === tournament.maxTeamSize ? $t('open.teams.headers.requiredMessageExact', {minTeamSize: tournament.minTeamSize}) : $t('open.teams.headers.requiredMessageRange', {minTeamSize: tournament.minTeamSize, maxTeamSize: tournament.maxTeamSize}), }}
                             </div>
                         </div>
                     </div>
@@ -304,7 +304,7 @@
             <div class="team_fields">
                 <div class="team_fields_row">
                     <div class="team_fields_block--label team_fields_block--edit">
-                        TEAM NAME
+                        {{ $t('open.teams.edit.teamName') }}
                     </div>
                     <div class="team_fields_block">
                         <OpenInput 
@@ -319,7 +319,7 @@
                 </div>
                 <div class="team_fields_row">
                     <div class="team_fields_block--label team_fields_block--edit">
-                        TEAM ABBREVIATION
+                        {{ $t('open.teams.edit.teamAbbreviation') }}
                     </div>
                     <div class="team_fields_block">
                         <OpenInput 
@@ -338,7 +338,7 @@
                 />
                 <div class="team_fields_row">
                     <div class="team_fields_block--label team_fields_block--edit">
-                        TIMEZONE
+                        {{ $t('open.teams.edit.timezone') }}
                     </div>
                     <div class="team_fields_block">
                         <OpenSelect
@@ -355,7 +355,7 @@
                 />
                 <div class="team_fields_row">
                     <div class="team_fields_block--label team_fields_block--edit">
-                        TEAM AVATAR
+                        {{ $t('open.teams.edit.teamAvatar') }}
                     </div>
                     <div class="team_fields_block team_fields_block__avatar_block">
                         <label 
@@ -392,27 +392,27 @@
                     v-if="sizeError" 
                     class="team_fields_block--edit"
                 >
-                    Image is too large. Ensure the image is less than 5MB.
+                    {{ $t('open.teams.edit.errors.size') }}
                 </div>
                 <div 
                     v-if="typeError"
                     class="team_fields_block--edit"
                 >
-                    Invalid image file. Ensure the image is a PNG or JPG.
+                    {{ $t('open.teams.edit.errors.type') }}
                 </div>
             </div>
             <ContentButton
                 class="content_button--red content_button--red_sm team_fields_block--edit"
                 @click.native="saveEdit"
             >
-                SAVE
+                {{ $t('open.teams.edit.save') }}
             </ContentButton>
             <ContentButton
                 v-if="!teamData.qualifier?.mp"
                 class="content_button--red content_button--red_sm team_fields_block--edit"
                 @click.native="deleteTeam"
             >
-                DELETE TEAM
+                {{ $t('open.teams.edit.deleteTeam') }}
             </ContentButton>
         </BaseModal>
         <!-- Qualifier Edit Modal -->
@@ -667,10 +667,10 @@ export default class Team extends Vue {
         if (!this.teamData)
             return;
 
-        if (!confirm("Are you sure you want to delete this team?"))
+        if (!confirm(this.$t('open.teams.edit.confirm.deleteTeam')))
             return;
 
-        if (!confirm("Are you REALLY sure you want to delete this team? This can't be undone!"))
+        if (!confirm(this.$t('open.teams.edit.confirm.deleteTeamFinal')))
             return;
 
         const { data: res } = await this.$axios.delete(`/api/team/${this.teamData.ID}`);

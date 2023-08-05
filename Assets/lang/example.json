@@ -464,19 +464,46 @@
             "teamsList": "",
             "error": "",
             "searchPlaceholder": "",
+            "editTeamInfo": "",
+            "edit": {
+                "teamName": "",
+                "teamAbbreviation": "",
+                "timezone": "",
+                "teamAvatar": "",
+                "errors": {
+                    "size": "",
+                    "type": ""
+                },
+                "confirm": {
+                    "deleteTeam": "",
+                    "deleteTeamFinal": ""
+                },
+                "save": "",
+                "deleteTeam": ""
+            },
             "headers": {
                 "tournaments": "",
                 "teamStats": "",
                 "teamManager": "",
                 "teamMembers": "",
+                "editTeamMembers": "",
+                "closeTeamMembers": "",
+                "becomeMember": "",
+                "becomeManager": "",
                 "teamInvites": "",
-                "qualifier": ""
+                "editTeamInvites": "",
+                "closeTeamInvites": "",
+                "qualifier": "",
+                "requiredMessageExact": "",
+                "requiredMessageRange": ""
             },
             "registration":{
                 "noRegistration": "",
                 "toPlay": ""
             },
             "teamID": "",
+            "member": "",
+            "members": "",
             "averageBWS": "",
             "averageRank": "",
             "averagePP": "",
