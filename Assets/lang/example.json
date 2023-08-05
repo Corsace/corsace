@@ -555,6 +555,14 @@
             "confirmManager": "",
             "create": ""
         },
+        "components": {
+            "openCardTeam": {
+                "rank": "",
+                "teambwsAverage": "",
+                "unregistered": "",
+                "bws": ""
+            }
+        },
         "staff": {
             "title": "",
             "notLoggedIn": ""

@@ -620,6 +620,14 @@
             "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
             "create": "CREATE TEAM"
         },
+        "components": {
+            "openCardTeam": {
+                "rank": "RANK",
+                "teambwsAverage": "TEAM BWS AVG",
+                "unregistered": "UNREGISTERED",
+                "bws": "BWS"
+            }
+        },
         "staff": {
             "title": "STAFF",
             "notLoggedIn": "NOT LOGGED IN"
