@@ -423,6 +423,27 @@
         }
     },
     "open": {
+        "navbar": {
+            "home": "HOME",
+            "info": "INFO",
+            "qualifiers": "QUALIFIERS",
+            "teams": "TEAMS",
+            "schedule": "SCHEDULE",
+            "mappool": "MAPPOOL",
+            "staff": "STAFF",
+            "createTeam": "CREATE TEAM",
+            "invitations": "INVITATIONS",
+            "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
+            "teamInvites": "TEAM INVITES",
+            "noInvites": "You currently have no invites"
+        },
+        "footer": {
+            "corsace": "CORSACE",
+            "twitter": "TWITTER",
+            "discord": "DISCORD",
+            "twitch": "TWITCH",
+            "youtube": "YOUTUBE"
+        },
         "stages": {
             "qualifiers": "QUALIFIERS",
             "round robin": "ROUND ROBIN",

@@ -358,6 +358,27 @@
         }
     },
     "open": {
+        "navbar": {
+            "home": "",
+            "info": "",
+            "qualifiers": "",
+            "teams": "",
+            "schedule": "",
+            "mappool": "",
+            "staff": "",
+            "createTeam": "",
+            "invitations": "",
+            "loginDiscord": "",
+            "teamInvites": "",
+            "noInvites": ""
+        },
+        "footer": {
+            "corsace": "",
+            "twitter": "",
+            "discord": "",
+            "twitch": "",
+            "youtube": ""
+        },
         "stages": {
             "qualifiers": "",
             "round robin": "",
