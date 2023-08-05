@@ -195,7 +195,7 @@
                         <div class="team__member_manager" />
                         <div v-if="isManager && editInvites">
                             <SearchBar
-                                :placeholder="'osu! username (must have corsace account)'"
+                                :placeholder="`${$t('open.teams.placeholders.searchUser')}`"
                                 style="min-width: 500px;"
                                 @update:search="search($event)"
                             />
@@ -256,7 +256,7 @@
                         style="text-decoration: none;"
                         :to="'/qualifier/' + teamData.qualifier.ID"
                     >
-                        <div>Qualifier ID #{{ teamData.qualifier.ID }}</div>
+                        <div>{{ $t("open.teams.qualifierId") }} #{{ teamData.qualifier.ID }}</div>
                         <div>{{ teamData.qualifier.date.toLocaleString('en-US', optionsUTC) }} ({{ teamData.qualifier.date.toLocaleString('en-US', options) }})</div>
                     </NuxtLink>
                     <div 
@@ -278,7 +278,7 @@
                         class="team__title_avatar"
                         src="../../../Assets/img/site/open/team/default.png"
                     > 
-                    <span>LOADING...</span>
+                    <span>{{ $t("open.status.loading") }}...</span>
                 </div>
             </OpenTitle>
         </div>
@@ -310,7 +310,7 @@
                         <OpenInput 
                             :min="5"
                             :max="20"
-                            :placeholder="'name'"
+                            :placeholder="`${$t('open.teams.placeholders.name')}`"
                             :text="name"
                             class="team__input"
                             @input="name = $event"
@@ -325,7 +325,7 @@
                         <OpenInput 
                             :min="2"
                             :max="4"
-                            :placeholder="'abbreviation'"
+                            :placeholder="`${$t('open.teams.placeholders.abbreviation')}`"
                             :text="abbreviation"
                             class="team__input"
                             @input="abbreviation = $event"
@@ -601,7 +601,7 @@ export default class Team extends Vue {
         }
 
         if (this.typeError || this.sizeError) {
-            alert("Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.");
+            alert(this.$t("open.teams.edit.errors.invalidImage"));
             return;
         }
 
@@ -614,7 +614,7 @@ export default class Team extends Vue {
 
         const timezone = parseInt(this.timezone);
         if (isNaN(timezone) || timezone < -12 || timezone > 14) {
-            alert("Invalid timezone.");
+            alert(this.$t("open.teams.edit.errors.invalidTimezone"));
             this.loading = false;
             return;
         }
@@ -657,7 +657,7 @@ export default class Team extends Vue {
         this.image = undefined;
     
         if (resAvatar.error) {
-            alert(`Error adding team avatar:\n${resAvatar.error}`);
+            alert(this.$t("open.teams.edit.errors.errorAddingTeamAvatar", {error: resAvatar.error}));
             this.teamData = await this.getTeam(true);
             return;
         }
@@ -667,10 +667,10 @@ export default class Team extends Vue {
         if (!this.teamData)
             return;
 
-        if (!confirm(this.$t('open.teams.edit.confirm.deleteTeam')))
+        if (!confirm(this.$t("open.teams.edit.confirm.deleteTeam") as string))
             return;
 
-        if (!confirm(this.$t('open.teams.edit.confirm.deleteTeamFinal')))
+        if (!confirm(this.$t("open.teams.edit.confirm.deleteTeamFinal") as string))
             return;
 
         const { data: res } = await this.$axios.delete(`/api/team/${this.teamData.ID}`);
@@ -686,7 +686,7 @@ export default class Team extends Vue {
         if (!this.teamData)
             return;
 
-        if (!confirm(`Are you sure you want to remove ${user.username} from your team?`))
+        if (!confirm(this.$t("open.teams.edit.confirm.removeMember", {username: user.username}) as string))
             return;
 
         const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/remove/${user.ID}`);
@@ -701,7 +701,7 @@ export default class Team extends Vue {
         if (!this.teamData)
             return;
 
-        if (!confirm(`Are you sure you want to transfer manager to ${user.username}?`))
+        if (!confirm(this.$t("open.teams.edit.confirm.transferManager", {username: user.username}) as string))
             return;
 
         const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/manager/${user.ID}`);
@@ -734,7 +734,7 @@ export default class Team extends Vue {
             else
                 alert(data.error);
         } catch (error) {
-            alert("Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I.");
+            alert(this.$t("open.teams.edit.errors.contactVinxis") as string);
             console.error(error);
         }
     }
@@ -743,7 +743,7 @@ export default class Team extends Vue {
         if (!this.teamData)
             return;
 
-        if (!confirm(`Are you sure you want to invite ${user.osu.username} to your team?`))
+        if (!confirm(this.$t("open.teams.edit.confirm.invite", {username: user.osu.username}) as string))
             return;
 
         const { data: res } = await this.$axios.post(`/api/team/invite/${this.teamData.ID}`, {
@@ -761,7 +761,7 @@ export default class Team extends Vue {
         if (!this.teamData)
             return;
 
-        if (!confirm(`Are you sure you want to remove ${user.username}'s invite to your team?`))
+        if (!confirm(this.$t("open.teams.edit.confirm.removeInvite", {username: user.username}) as string))
             return;
 
         const { data: res } = await this.$axios.post(`/api/team/invite/${this.teamData.ID}/cancel/${user.ID}`);
@@ -776,7 +776,7 @@ export default class Team extends Vue {
         if (!this.teamData || !this.tournament)
             return;
 
-        if (!confirm("Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."))
+        if (!confirm(this.$t("open.teams.edit.confirm.unregister") as string))
             return;
 
         const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/unregister`, {
