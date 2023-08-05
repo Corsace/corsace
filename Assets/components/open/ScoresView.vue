@@ -19,10 +19,10 @@
             <table class="scores__table">
                 <tbody>
                     <tr>
-                        <th>TEAM</th>
-                        <th>BEST</th>
-                        <th>WORST</th>
-                        <th>{{ $t(`open.qualifiers.scores.nav.${currentFilter}`) }}</th>
+                        <th> {{ $t('open.qualifiers.scores.nav.team') }} </th>
+                        <th> {{ $t('open.qualifiers.scores.nav.best') }} </th>
+                        <th> {{ $t('open.qualifiers.scores.nav.worst') }} </th>
+                        <th> {{ $t(`open.qualifiers.scores.nav.${currentFilter}`) }} </th>
                         <th
                             v-for="map in mapNames"
                             :key="map.mapID"

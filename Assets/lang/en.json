@@ -514,7 +514,18 @@
                     "relAvg": "REL. AVG",
                     "percentMax": "%MAX",
                     "relMax": "REL. MAX",
-                    "zScore": "Z-SCORE"
+                    "zScore": "Z-SCORE",
+                    "team": "TEAM",
+                    "best": "BEST",
+                    "worst": "WORST"
+                },
+                "table": {
+                    "headers": {
+                        "team": "TEAM",
+                        "best": "TEAM",
+                        "worst": "TEAM",
+                        "zScore": "TEAM"
+                    }
                 },
                 "category": "CATEGORY",
                 "select": "SELECT",
