@@ -465,6 +465,12 @@
             "error": "",
             "searchPlaceholder": "",
             "editTeamInfo": "",
+            "qualifierId": "",
+            "placeholders": {
+                "searchUser": "",
+                "name": "",
+                "abbreviation": ""
+            },
             "edit": {
                 "teamName": "",
                 "teamAbbreviation": "",
@@ -472,11 +478,21 @@
                 "teamAvatar": "",
                 "errors": {
                     "size": "",
-                    "type": ""
+                    "type": "",
+                    "invalidImage": "",
+                    "invalidTimezone": "",
+                    "errorAddingTeamAvatar": "",
+                    "invalidName": "",
+                    "contactVinxis": ""
                 },
                 "confirm": {
                     "deleteTeam": "",
-                    "deleteTeamFinal": ""
+                    "deleteTeamFinal": "",
+                    "removeMember": "",
+                    "transferManager": "",
+                    "invite": "",
+                    "removeInvite": "",
+                    "unregister": ""
                 },
                 "save": "",
                 "deleteTeam": ""
