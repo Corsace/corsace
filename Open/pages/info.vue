@@ -443,7 +443,7 @@
                             :class="{ 'content_button--active': selectedStage === stage.ID }"
                             @click.native="selectedStage = stage.ID"
                         >
-                            {{ stage.name.toUpperCase() }}
+                            {{ $t(`open.info.headings.${stage.name.toLowerCase()}`) }}
                         </ContentButton>
                     </div>
                     <div
@@ -550,7 +550,7 @@
                                         :class="{ 'content_button--active': selectedMappool === mappool.ID }"
                                         @click.native="selectedMappool = mappool.ID"
                                     >
-                                        {{ mappool.name.toUpperCase() }}
+                                        {{ $t(`open.info.headings.${mappool.name.toLowerCase()}`) }}
                                     </ContentButton>
                                 </div>
                             </div>
@@ -561,7 +561,7 @@
                             >
                                 <div class="info_stage_data_text">
                                     <div class="info_stage_data_text__title">
-                                        {{ mappool.name.toUpperCase() }}
+                                        {{ $t(`open.info.headings.${mappool.name.toLowerCase()}`) }}
                                     </div>
                                     <div>
                                         <ul>
