@@ -15,6 +15,7 @@ import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { User } from "../../../../Models/user";
+import { createHash } from "crypto";
 
 async function validateID (ctx: ParameterizedContext, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
@@ -120,6 +121,31 @@ tournamentRouter.get("/open/:year", async (ctx) => {
 
     await Promise.all(beatmapPromises);
     ctx.body = tournament;
+});
+
+tournamentRouter.get("/validateKey", async (ctx) => {
+    const key = ctx.query.key as string;
+    if (!key) {
+        ctx.body = {
+            success: false,
+            error: "No key provided",
+        };
+        return;
+    }
+
+    const hash = createHash("sha512");
+    hash.update(key);
+    const hashedKey = hash.digest("hex");
+
+    const keyCheck = await Tournament
+        .createQueryBuilder("tournament")
+        .where("tournament.key = :key", { key: hashedKey })
+        .getOne();
+
+    ctx.body = {
+        success: true,
+        tournamentID: keyCheck?.ID,
+    };
 });
 
 tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
@@ -254,7 +280,33 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
     }
 
     // For when tournaments don't have their qualifier scores public
-    if (
+    if (ctx.query.key) {
+        const key = ctx.query.key as string;
+        if (!key) {
+            ctx.body = {
+                success: false,
+                error: "No key provided",
+            };
+            return;
+        }
+
+        const hash = createHash("sha512");
+        hash.update(key);
+        const hashedKey = hash.digest("hex");
+
+        const keyCheck = await Tournament
+            .createQueryBuilder("tournament")
+            .where("tournament.key = :key", { key: hashedKey })
+            .getExists();
+
+        if (!keyCheck) {
+            ctx.body = {
+                success: false,
+                error: "Tournament does not have public qualifiers and you are not logged in to view this tournament's scores",
+            };
+            return;
+        }
+    } else if (
         !tournament.publicQualifiers && 
         tournament.organizer.ID !== ctx.state.user?.ID
     ) {
