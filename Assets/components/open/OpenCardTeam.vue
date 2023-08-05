@@ -15,7 +15,7 @@
                         {{ member.username }}
                     </div>
                     <div class="open_card_team_overlay__list_item_text open_card_team_overlay__list_item_text--bws">
-                        {{ Math.round(member.BWS) }} BWS
+                        {{ Math.round(member.BWS) }} {{ $t("open.components.openCardTeam.bws") }}
                     </div>
                 </li>
             </ul>
