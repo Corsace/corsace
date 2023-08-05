@@ -4,24 +4,24 @@ import { extractParameter } from "../../functions/parameterFunctions";
 import getTournament from "../../functions/tournamentFunctions/getTournament";
 import channelID from "../../functions/channelID";
 import respond from "../../functions/respond";
-import { TournamentKey } from "../../../Models/tournaments/tournamentKey";
 import { createHash, pseudoRandomBytes } from "crypto";
 import { securityChecks } from "../../functions/tournamentFunctions/securityChecks";
 import { TournamentChannelType, TournamentRoleType } from "../../../Interfaces/tournament";
 import { QueryFailedError } from "typeorm";
+import { Tournament } from "../../../Models/tournaments/tournament";
 
-async function regenerateKey (key: TournamentKey): Promise<string> {
+async function regenerateKey (tournament: Tournament): Promise<string> {
     const newKey = pseudoRandomBytes(36).toString("hex").toUpperCase();
     const hash = createHash("sha512");
     hash.update(newKey);
     const hashedKey = hash.digest("hex");
     
-    key.key = hashedKey;
+    tournament.key = hashedKey;
     try {
-        await key.save();
+        await tournament.save();
     } catch (e) {
         if (e instanceof QueryFailedError && (e.driverError.code === "ER_DUP_ENTRY" || e.driverError.errno === 1062))
-            return await regenerateKey(key);
+            return await regenerateKey(tournament);
         else
             throw e;
     }
@@ -42,19 +42,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!tournament)
         return;
 
-    let key = await TournamentKey
-        .createQueryBuilder("key")
-        .innerJoin("key.tournament", "tournament")
-        .where("tournament.ID = :ID", { ID: tournament.ID })
-        .getOne();
-    if (!key) {
-        key = new TournamentKey();
-        key.tournament = tournament;
-    }
+    const newKey = await regenerateKey(tournament);
 
-    const newKey = await regenerateKey(key);
-
-    const message = await respond(m, `**DO NOT SHARE THIS PUBLICLY**.\nThis allows anyone to query tournament data not otherwise publicly available, such as private mappools or qualifier scores.\n\nTo use, add it as a query parameter to the end of the target URL\nExample: \`https://open.corsace.io/stream/qualifierscores?key=${newKey}\`\n\n**Key:** \`${newKey}\`\n\nThis message will be deleted in 60 seconds.`);
+    const message = await respond(m, `**DO NOT SHARE THIS PUBLICLY**.\nThis allows anyone to query tournament data not otherwise publicly available, such as private mappools or qualifier scores.\n\nTo use, add it as a query parameter to the end of the target URL\nExample: \`https://open.corsace.io/stream/qualifierscores?key=${newKey}\`\n\n**Key:** \`${newKey}\`\n\nThis message will be deleted in 1 minute.`);
 
     setTimeout(async () => await message.delete(), 60000);
 }
