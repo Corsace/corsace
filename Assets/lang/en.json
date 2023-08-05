@@ -500,11 +500,6 @@
                     "difficulty": "DIFFICULTY"
                 }
             },
-            "create": "CREATE",
-            "error": {
-                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
-                "pressToClose": "Press anywhere to close"
-            },
             "scores": {
                 "nav": {
                     "sort": "SORT",
@@ -519,18 +514,15 @@
                     "best": "BEST",
                     "worst": "WORST"
                 },
-                "table": {
-                    "headers": {
-                        "team": "TEAM",
-                        "best": "TEAM",
-                        "worst": "TEAM",
-                        "zScore": "TEAM"
-                    }
-                },
                 "category": "CATEGORY",
                 "select": "SELECT",
                 "players": "PLAYERS",
                 "teams": "TEAMS"
+            },
+            "create": "CREATE",
+            "error": {
+                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
+                "pressToClose": "Press anywhere to close"
             }
         },
         "teams": {

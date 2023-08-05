@@ -444,12 +444,20 @@
                     "relAvg": "",
                     "percentMax": "",
                     "relMax": "",
-                    "zScore": ""
+                    "zScore": "",
+                    "team": "",
+                    "best": "",
+                    "worst": ""
                 },
                 "category": "",
                 "select": "",
                 "players": "",
                 "teams": ""
+            },
+            "create": "",
+            "error": {
+                "message": "",
+                "pressToClose": ""
             }
         },
         "teams": {
