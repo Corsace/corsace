@@ -6,10 +6,10 @@
                 <template #buttons>
                     <StageSelector>
                         <template #top_text>
-                            STAGE
+                            {{ $t("open.components.stageSelector.stage")}}
                         </template>
                         <template #bottom_text>
-                            SELECT
+                            {{ $t("open.components.stageSelector.select")}}
                         </template>
 
                         <template #stage>

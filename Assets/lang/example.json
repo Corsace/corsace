@@ -569,6 +569,10 @@
                 "teambwsAverage": "",
                 "unregistered": "",
                 "bws": ""
+            },
+            "stageSelector": {
+                "select": "",
+                "stage": ""
             }
         },
         "staff": {
