@@ -443,7 +443,7 @@
                             :class="{ 'content_button--active': selectedStage === stage.ID }"
                             @click.native="selectedStage = stage.ID"
                         >
-                            {{ $t(`open.info.headings.${stage.name.toLowerCase()}`) }}
+                            {{ $t(`open.stages.${stage.name.toLowerCase()}`) }}
                         </ContentButton>
                     </div>
                     <div
@@ -451,8 +451,8 @@
                         class="info_stage_panel"
                     >
                         <div class="info_stage_title">
-                            {{ $t(`open.info.headings.${stage.name.toLowerCase()}`) }} 
-                            <span class="info_stage_title--red">{{ $t(`open.info.headings.${stage.abbreviation.toLowerCase()}`) }}</span> 
+                            {{ $t(`open.stages.${stage.name.toLowerCase()}`) }} 
+                            <span class="info_stage_title--red">{{ $t(`open.stages.abbreviations.${stage.abbreviation.toLowerCase()}`) }}</span> 
                             <div class="info_stage_title__status">
                                 <MatchStatus 
                                     class="status"
@@ -550,7 +550,7 @@
                                         :class="{ 'content_button--active': selectedMappool === mappool.ID }"
                                         @click.native="selectedMappool = mappool.ID"
                                     >
-                                        {{ $t(`open.info.headings.${mappool.name.toLowerCase()}`) }}
+                                        {{ $t(`open.stages.${mappool.name.toLowerCase()}`) }}
                                     </ContentButton>
                                 </div>
                             </div>
@@ -561,7 +561,7 @@
                             >
                                 <div class="info_stage_data_text">
                                     <div class="info_stage_data_text__title">
-                                        {{ $t(`open.info.headings.${mappool.name.toLowerCase()}`) }}
+                                        {{ $t(`open.stages.${mappool.name.toLowerCase()}`) }}
                                     </div>
                                     <div>
                                         <ul>

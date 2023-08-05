@@ -424,14 +424,24 @@
     },
     "open": {
         "stages": {
-            "qualifiers": "Qualifiers",
-            "roundRobin": "Round Robin"
+            "qualifiers": "QUALIFIERS",
+            "round robin": "ROUND ROBIN",
+            "runoff bracket": "RUNOFF BRACKET",
+            "knockout 1": "KNOCKOUT 1",
+            "knockout 2": "KNOCKOUT 2",
+            "abbreviations": {
+                "ql": "(QL)",
+                "rr": "(RR)",
+                "ro": "(RO)",
+                "ko1": "(KO1)",
+                "ko2": "(KO2)"
+            }
         },
         "home": {
             "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
             "timeline": "TIMELINE",
             "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
-            "registrations": "Registrations",
+            "registrations": "REGISTRATIONS",
             "button": {
                 "qualifiersMappool": "QUALIFIERS MAPPOOLS",
                 "mappoolDownload": "Mappool download and statistics",
@@ -459,16 +469,6 @@
                 "finalSize": "FINAL SIZE"
             },
             "headings": {
-                "qualifiers": "QUALIFIERS",
-                "ql": "(QL)",
-                "round robin": "ROUND ROBIN",
-                "rr": "(RR)",
-                "runoff bracket": "RUNOFF BRACKET",
-                "ro": "(RR)",
-                "knockout 1": "KNOCKOUT 1",
-                "ko1": "(KO1)",
-                "knockout 2": "KNOCKOUT 2",
-                "ko2": "(KO2)",
                 "mappools": "MAPPOOLS",
                 "stage": "STAGE"
             },

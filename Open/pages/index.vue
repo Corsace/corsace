@@ -38,7 +38,7 @@
                                 :key="round.name"
                                 class="index_schedule__group"
                             >
-                                <span class="index_schedule__event"> {{ round.name }} </span>
+                                <span class="index_schedule__event"> {{ $t(`open.stages.${round.name.toLowerCase()}`) }} </span>
                                 <span class="index_schedule__line" />
                                 <span class="index_schedule__time">{{ new Date(round.timespan.start || "").toLocaleString('en-US', optionsRange) }} - {{ new Date(round.timespan.end || "").toLocaleString('en-US', optionsRange) }}</span>
                             </li>
