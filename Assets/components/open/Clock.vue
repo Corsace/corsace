@@ -7,7 +7,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-@Component()
+@Component({})
 export default class Clock extends Vue {
     time = "";
     timer: any = undefined;

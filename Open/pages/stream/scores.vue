@@ -3,11 +3,17 @@
         v-if="mapName"
         class="scores"
     >
+        <div class="scores__streamTitle">
+            QUALIFIER RESULTS - TEAMS
+        </div>
         <div class="scores__mapName">
             {{ mapName }}
         </div>
         <div class="scores__top">
-            <div class="scores_video">
+            <div 
+                class="scores_video"
+                :style="{ 'backgroundImage': `linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0.33) 73.96%, rgba(0, 0, 0, 0.00) 100%), url(https://assets.ppy.sh/beatmaps/${mappoolMap?.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)` }"
+            >
                 <div class="scores__map">
                     <div class="scores__map_data scores__map_data--main">
                         <div class="scores__map_title">
@@ -88,8 +94,14 @@
             />
         </div>
     </div>
-    <div v-else-if="!loading">
-        <table class="scores_table">
+    <div 
+        v-else-if="!loading"
+        class="scores scores--centre"
+    >
+        <div class="scores__streamTitle">
+            QUALIFIER RESULTS - TEAMS
+        </div>
+        <table class="scores_table scores_table--noMap">
             <tr>
                 <th>Rank</th>
                 <th>Team</th>
@@ -233,6 +245,21 @@ $x-axis-height: 25px;
 .scores {
     flex-direction: column;
 
+    &--centre {
+        justify-content: center;
+        align-items: center;
+        background-image: linear-gradient(0deg, #0F0F0F 0%, #2F2F2F 100%);
+    }
+
+    &__streamTitle {
+        position: fixed;
+        top: 8px;
+        left: 10px;
+        font-family: $font-swis721;
+        font-size: 40px;
+        color: #1d1d1d;
+    }
+
     &__mapName {
         position: fixed;
         top: 70px;
@@ -253,7 +280,7 @@ $x-axis-height: 25px;
         width: 100%;
         height: $top-height;
 
-        border-bottom: 4.5px solid $open-red;
+        border-bottom: 5px solid $open-red;
     }
 
     &__bottom {
@@ -261,7 +288,7 @@ $x-axis-height: 25px;
         width: 100%;
         height: $bottom-height;
 
-        border-top: 4.5px solid $open-red;
+        border-top: 5px solid $open-red;
     }
 
     &_video, &_table, &_graph, &_stats {
@@ -271,7 +298,9 @@ $x-axis-height: 25px;
 
     &_video {
         font-family: $font-ggsans;
-        background-image: linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0.33) 73.96%, rgba(0, 0, 0, 0.00) 100%);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
 
         display: flex;
         flex-direction: column;
@@ -359,6 +388,11 @@ $x-axis-height: 25px;
         border-collapse: collapse;
         box-sizing: border-box;
 
+        &--noMap {
+            height: calc(100% - 64px);
+            margin-top: 64px;
+        }
+
         &__team {
             background-size: cover;
             background-position: center;
@@ -436,13 +470,13 @@ $x-axis-height: 25px;
         padding: 50px;
 
         font-family: $font-ggsans;
-        font-size: $font-xl;
+        font-size: $font-xxxl;
     }
 }
 
 .mappool_map_stats-table__img {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
 }
 
 .mappool_map_stats__stat {
