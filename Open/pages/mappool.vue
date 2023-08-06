@@ -4,7 +4,12 @@
             <OpenTitle>
                 {{ $t('open.mappool.title') }}
                 <template #buttons>
-                    <StageSelector>
+                    <StageSelector
+                        :not-beginning="selectedMappool?.ID !== mappoolList[0]?.ID"
+                        :not-end="selectedMappool?.ID !== mappoolList[mappoolList.length - 1]?.ID"
+                        @prev="index--"
+                        @next="index++"
+                    >
                         <template #top_text>
                             STAGE
                         </template>
@@ -13,7 +18,7 @@
                         </template>
 
                         <template #stage>
-                            QL
+                            {{ selectedMappool?.abbreviation.toUpperCase() || '' }}
                         </template>
                     </StageSelector>
                     <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
@@ -30,7 +35,7 @@
                         >
                     </a>
                     <a
-                        :href="qualifiersStage?.mappool?.[0].mappackLink || ''"
+                        :href="selectedMappool?.mappackLink || ''"
                         class="qualifiers__button"
                     >
                         <div class="qualifiers__button_text">
@@ -44,8 +49,8 @@
                 </template>
             </OpenTitle>
             <MappoolView
-                v-if="qualifiersStage?.mappool?.[0].isPublic"
-                :pool="qualifiersStage.mappool[0]"
+                v-if="selectedMappool?.isPublic"
+                :pool="selectedMappool"
             />
         </div>
     </div>
@@ -60,7 +65,7 @@ import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StageSelector from "../../Assets/components/open/StageSelector.vue";
 
 import { Tournament } from "../../Interfaces/tournament";
-import { Stage } from "../../Interfaces/stage";
+import { Mappool as MappoolInterface } from "../../Interfaces/mappool";
 
 const openModule = namespace("open");
 
@@ -95,8 +100,17 @@ export default class Mappool extends Vue {
 
     @openModule.State tournament!: Tournament | null;
 
-    get qualifiersStage (): Stage | null {
-        return this.tournament?.stages.find(s => s.stageType === 0) || null;
+    mappoolList: MappoolInterface[] = [];
+    index = 0;
+    
+    get selectedMappool (): MappoolInterface | null {
+        return this.mappoolList[this.index] || null;
+    }
+
+    mounted () {
+        this.mappoolList = this.tournament?.stages.flatMap(s => [...s.mappool, ...s.rounds.flatMap(r => r.mappool)]) || [];
+        this.mappoolList.sort((a, b) => a.ID - b.ID);
+        this.index = this.mappoolList.findLastIndex(m => m.isPublic);
     }
 }
 </script>
@@ -116,4 +130,3 @@ export default class Mappool extends Vue {
     }
 }
 </style>
-```
