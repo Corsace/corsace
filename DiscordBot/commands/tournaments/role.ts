@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "..";
 import { securityChecks } from "../../functions/tournamentFunctions/securityChecks";
-import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
+import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
 import getUser from "../../../Server/functions/get/getUser";
 import commandUser from "../../functions/commandUser";
 import { loginResponse } from "../../functions/loginResponse";
@@ -11,6 +11,7 @@ import getTournament from "../../functions/tournamentFunctions/getTournament";
 import channelID from "../../functions/channelID";
 import { unFinishedTournaments } from "../../../Models/tournaments/tournament";
 import confirmCommand from "../../functions/confirmCommand";
+import { TournamentRoleType } from "../../../Interfaces/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -40,6 +41,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
+    const discordRole = m.guild!.roles.cache.get(role);
+    if (!discordRole) {
+        await respond(m, `Can't find a role with the ID \`${role}\` <@&${role}>`);
+        return;
+    }
+
     const tournament = await getTournament(m, channelID(m), "channel", unFinishedTournaments);
     if (!tournament)
         return;
@@ -63,13 +70,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        if (!await confirmCommand(m, `U sure u wanna remove <@&${role}> from ${tournament.name}?`)) {
+        if (!await confirmCommand(m, `U sure u wanna remove ${discordRole.name} from ${tournament.name}?`)) {
             await respond(m, "K ,");
             return;
         }
 
         await tournamentRole.remove();
-        await respond(m, `Removed <@&${role}> from ${tournament.name}, it was a \`${TournamentRoleType[tournamentRole.roleType]}\` role`);
+        await respond(m, `Removed ${discordRole.name} from ${tournament.name}, it was a \`${TournamentRoleType[tournamentRole.roleType]}\` role`);
         return;
     }
 
@@ -79,15 +86,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const discordRole = m.guild!.roles.cache.get(role);
-    if (!discordRole) {
-        await respond(m, `Can't find a role with the ID \`${role}\` <@&${role}>`);
-        return;
-    }
-
     const roleType = role_type.toLowerCase().charAt(0).toUpperCase() + role_type.toLowerCase().slice(1);
     if (TournamentRoleType[roleType] === undefined) {
-        await respond(m, `Invalid role type \`${role_type}\` (Valid role types are: Participants, Staff, Managers, Mappoolers, Mappers, Testplayers, Referees, Streamers, Commentators)`);
+        await respond(m, `Invalid role type \`${role_type}\` (Valid role types are: Participants, Staff, Managers, Mappoolers, Mappers, Testplayers, Referees, Streamers, Commentators, Designers, Developers)`);
         return;
     }
 
@@ -97,7 +98,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    if (!await confirmCommand(m, `U sure u wanna add <@&${role}> to ${tournament.name} as a \`${roleType}\` role?`)) {
+    if (!await confirmCommand(m, `U sure u wanna add ${discordRole.name} to ${tournament.name} as a \`${roleType}\` role?`)) {
         await respond(m, "K ,");
         return;
     }
@@ -107,7 +108,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     tournamentRole.roleType = TournamentRoleType[roleType];
     tournamentRole.tournament = tournament;
     await tournamentRole.save();
-    await respond(m, `Added <@&${role}> to ${tournament.name} as a \`${roleType}\` role`);
+    await respond(m, `Added ${discordRole.name} to ${tournament.name} as a \`${roleType}\` role`);
     return;
 }
 
@@ -161,6 +162,14 @@ const data = new SlashCommandBuilder()
             {
                 name: "Commentators",
                 value: "Commentators",
+            },
+            {
+                name: "Designer",
+                value: "Designer",
+            },
+            {
+                name: "Developer",
+                value: "Developer",
             }))
     .setDMPermission(false);
 

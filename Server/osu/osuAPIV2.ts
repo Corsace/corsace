@@ -49,7 +49,7 @@ export class osuAPIV2 {
     }
 
     public async getUser (userID: string, mode?: "osu" | "taiko" | "fruits" | "mania", accessToken?: string): Promise<osuV2User> {
-        return this.get<osuV2User>(`/users${userID}${mode ? `/${mode}` : ""}`, accessToken || await this.getClientCredentials());
+        return this.get<osuV2User>(`/users/${userID}${mode ? `/${mode}` : ""}`, accessToken || await this.getClientCredentials());
     }
 
     public getMe (accessToken: string, mode?: "osu" | "taiko" | "fruits" | "mania"): Promise<osuV2Me> {
@@ -78,7 +78,7 @@ export class osuAPIV2 {
         if (this.clientCredentials && (this.clientCredentials.expiresAt.getTime() - (new Date()).getTime()) / 1000 > 300)
             return this.clientCredentials.token;
 
-        const data = await this.getToken("client_credentials", "public delegate");
+        const data = await this.getToken("client_credentials", "public");
 
         this.clientCredentials = {
             token: data.access_token,

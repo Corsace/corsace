@@ -2,9 +2,9 @@ import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { Tournament } from "../../Interfaces/tournament";
 import { BaseTeam, Team, TeamList, TeamUser } from "../../Interfaces/team";
 import { BaseQualifier, QualifierScore } from "../../Interfaces/qualifier";
+import { StaffList } from "../../Interfaces/staff";
 
 export interface OpenState {
-    site: string;
     title: string;
     tournament: Tournament | null;
     teamList: TeamList[] | null;
@@ -12,10 +12,10 @@ export interface OpenState {
     teamInvites: BaseTeam[] | null;
     qualifierList: BaseQualifier[] | null;
     qualifierScores: QualifierScore[] | null;
+    staffList: StaffList[] | null;
 }
 
 export const state = (): OpenState => ({
-    site: "",
     title: "",
     tournament: null,
     teamList: null,
@@ -23,9 +23,13 @@ export const state = (): OpenState => ({
     teamInvites: null,
     qualifierList: null,
     qualifierScores: null,
+    staffList: null,
 });
 
 export const mutations: MutationTree<OpenState> = {
+    async setTitle (state, year: number | undefined) {
+        state.title = `Corsace Open - ${year}` || "";
+    },
     setTournament (state, tournament: Tournament | undefined) {
         if (tournament) {
             state.tournament = {
@@ -115,8 +119,8 @@ export const mutations: MutationTree<OpenState> = {
     async setQualifierScores (state, scores: QualifierScore[] | undefined) {
         state.qualifierScores = scores || null;
     },
-    async setTitle (state, year: number | undefined) {
-        state.title = `Corsace Open - ${year}` || "";
+    async setStaffList (state, staff: StaffList[] | undefined) {
+        state.staffList = staff || null;
     },
 };
 
@@ -173,12 +177,18 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (!data.error)
             commit("setQualifierScores", data);
     },
+    async setStaffList ({ commit }, tournamentID) {
+        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/staff`);
+
+        if (!data.error)
+            commit("setStaffList", data);
+    },
     async setInitialData ({ commit, dispatch }, year) {
         await Promise.all([
             dispatch("setTournament", year),
             commit("setTitle", year),
-            await dispatch("setTeam"),
-            await dispatch("setInvites"),
+            dispatch("setTeam"),
+            dispatch("setInvites"),
         ]);
     },
 };

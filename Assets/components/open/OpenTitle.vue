@@ -15,7 +15,6 @@
             </div>
         </div>
         <hr class="line--red line--bottom-space">
-        <hr class="line--red line--bottom-space">
     </div>
 </template>
 
@@ -35,7 +34,7 @@ export default class OpenTitle extends Vue {
         justify-content: space-between;
         
         &__text{
-            font-family: $font-communterssans;
+            font-family: $font-commuterssans;
             font-weight: 400;
             font-size: $font-title;
         }

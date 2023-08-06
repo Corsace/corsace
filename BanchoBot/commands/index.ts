@@ -3,7 +3,6 @@ import { ChannelMessage, PrivateMessage } from "bancho.js";
 // import example from "./example";
 
 // import exampleMulti from "./multiplayer/example";
-import panic from "./multiplayer/panic";
 
 interface Command {
     name: string;
@@ -20,7 +19,6 @@ const commands: Command[] = [];
 
 // multiplayer commands
 // commands.push(exampleMulti);
-commands.push(panic);
 
 async function handleCommand (commandName: string, message: PrivateMessage | ChannelMessage) {
     const command = commands.find(cmd => 

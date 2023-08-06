@@ -1,10 +1,10 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../..";
 import { StageType } from "../../../../Interfaces/stage";
+import { unallowedToPlay } from "../../../../Interfaces/tournament";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { MapStatus } from "../../../../Models/tournaments/matchupMap";
 import { Team } from "../../../../Models/tournaments/team";
-import { unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
 import channelID from "../../../functions/channelID";
 import respond from "../../../functions/respond";
 import getStage from "../../../functions/tournamentFunctions/getStage";

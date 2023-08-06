@@ -1,10 +1,10 @@
 import Router from "@koa/router";
 import { Multi } from "nodesu";
 import { Qualifier, QualifierTeam } from "../../../Interfaces/qualifier";
+import { unallowedToPlay } from "../../../Interfaces/tournament";
 import { Matchup } from "../../../Models/tournaments/matchup";
 import { MatchupMap } from "../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../Models/tournaments/matchupScore";
-import { unallowedToPlay } from "../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../discord";
 import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { osuClient } from "../../osu";
@@ -117,8 +117,9 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
                 qualifierData.scores.push({
                     teamID: team.ID,
                     teamName: team.name,
+                    teamAvatar: team.avatarURL,
                     username: score.user!.osu.username,
-                    userID: score.user!.ID,
+                    userID: parseInt(score.user!.osu.userID),
                     score: score.score,
                     map: `${matchupMap.map!.slot!.acronym}${matchupMap.map!.order}`,
                     mapID: parseInt(`${matchupMap.map!.slot.ID}${matchupMap.map!.order}`),

@@ -1,6 +1,7 @@
 import { GuildMemberRoleManager } from "discord.js";
-import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
+import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
 import { Tournament } from "../../../Models/tournaments/tournament";
+import { TournamentRoleType } from "../../../Interfaces/tournament";
 
 export default async function bypassSubmit (memberRoles: GuildMemberRoleManager, tournament: Tournament) {
     const roles = await TournamentRole.find({

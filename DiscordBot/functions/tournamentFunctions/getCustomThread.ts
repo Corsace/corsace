@@ -1,12 +1,13 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, ForumChannel, Message, MessageComponentInteraction, ThreadChannel } from "discord.js";
 import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
 import { Tournament } from "../../../Models/tournaments/tournament";
-import { TournamentChannel, TournamentChannelType } from "../../../Models/tournaments/tournamentChannel";
+import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
 import { discordClient } from "../../../Server/discord";
 import { randomUUID } from "crypto";
 import respond from "../respond";
 import commandUser from "../commandUser";
 import { discordStringTimestamp } from "../../../Server/utils/dateParse";
+import { TournamentChannelType } from "../../../Interfaces/tournament";
 
 export const threadNameRegex = /(\S+) (\S+)( \((.+)\))?/i;
 

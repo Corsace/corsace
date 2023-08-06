@@ -52,12 +52,12 @@
                 >
                     MAPPOOL
                 </NuxtLink>
-                <!-- <NuxtLink
+                <NuxtLink
                     to="/staff" 
                     class="header__nav-item"
                 >
                     STAFF
-                </NuxtLink> -->
+                </NuxtLink>
             </div>
             <template #login>         
                 <div 
@@ -229,7 +229,7 @@ import { BaseTeam, Team } from "../../Interfaces/team";
 import DevBanner from "../../Assets/components/DevBanner.vue";
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
-import Tooltip from "../../Assets/components/footer/Tooltip.vue";
+import Tooltip from "../../Assets/components/Tooltip.vue";
 
 const openModule = namespace("open");
 
@@ -311,7 +311,7 @@ export default class Default extends Vue {
         filter: drop-shadow(0 0 0.75rem $open-red);
 
         &_title {
-            font-family: $font-communterssans;
+            font-family: $font-commuterssans;
             margin-bottom: 5px;
         }
 

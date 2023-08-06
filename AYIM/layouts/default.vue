@@ -13,7 +13,7 @@
             >
                 <!-- TODO: Remove year -->
                 <img
-                    :src="require(`../../Assets/img/site/mca-ayim/year/${$route.params.year || 2023}-${viewTheme}-ayim.png`)"
+                    :src="require(`../../Assets/img/site/mca-ayim/year/${$route.params.year || 2022}-${viewTheme}-ayim.png`)"
                     class="mcaayim__logo"
                     :class="`mcaayim__logo--${viewTheme}`"
                 >

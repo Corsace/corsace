@@ -1,8 +1,9 @@
 import { Next, ParameterizedContext } from "koa";
 import { Brackets } from "typeorm";
+import { TournamentRoleType } from "../../Interfaces/tournament";
 import { Stage } from "../../Models/tournaments/stage";
 import { Tournament } from "../../Models/tournaments/tournament";
-import { TournamentRole, TournamentRoleType } from "../../Models/tournaments/tournamentRole";
+import { TournamentRole } from "../../Models/tournaments/tournamentRole";
 import { getMember } from "../discord";
 
 export async function validateTournament (ctx: ParameterizedContext, next: Next): Promise<void> {

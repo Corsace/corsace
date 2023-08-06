@@ -2,8 +2,8 @@ import Axios from "axios";
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { config } from "node-config-ts";
 import { Command } from "../..";
+import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { extractParameter } from "../../../functions/parameterFunctions";
 import respond from "../../../functions/respond";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
@@ -58,7 +58,7 @@ const data = new SlashCommandBuilder()
 
 const stopAutoLobby: Command = {
     data,
-    alternativeNames: ["stop_auto_lobby", "stop-auto-lobby", "stopauto", "stopauto-lobby", "stopautolobby", "stopautol", "stopautolobby", "stopautolobby", "stopal", "stopalobby"],
+    alternativeNames: ["stop-auto-lobby", "stopauto", "stopauto-lobby", "stopautol", "stopal", "stopalobby"],
     category: "tournaments",
     subCategory: "matchups",
     run,

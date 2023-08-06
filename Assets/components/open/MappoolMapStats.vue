@@ -9,7 +9,9 @@
                 :src="require(`../../img/site/open/mappool/${stat.image}.svg`)"
                 class="mappool_map_stats-table__img"
             >
-            {{ map?.beatmap?.[stat.property]?.toFixed(stat.decimals) || map?.beatmap?.beatmapset?.[stat.property]?.toFixed(stat.decimals) || "" }}
+            {{ 
+                formatStat(stat)
+            }}
         </div>
     </div>
 </template>
@@ -31,6 +33,34 @@ export default class MappoolMapStats extends Vue {
         { image: "OD", property: "overallDifficulty", decimals: 1 },
         { image: "HP", property: "hpDrain", decimals: 1 },
     ];
+
+    formatStat (stat: { property: string, decimals: number }): string {
+        const value = this.map?.beatmap?.[stat.property]?.toFixed(stat.decimals)
+            || this.map?.beatmap?.beatmapset?.[stat.property]?.toFixed(stat.decimals)
+            || this.map?.customBeatmap?.[stat.property]?.toFixed(stat.decimals)
+            || "";
+
+        // If the property is "totalLength", convert the value to mm:ss
+        if (stat.property === "totalLength" && (
+            this.map?.beatmap?.totalLength ||
+            this.map?.customBeatmap?.totalLength
+        )) {
+            const seconds = parseInt(value);
+            return this.toMinutesAndSeconds(seconds);
+        }
+
+        return value;
+    }
+
+    toMinutesAndSeconds (seconds: number): string {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+
+        const minutesString = String(minutes).padStart(2, "0");
+        const secondsString = String(remainingSeconds).padStart(2, "0");
+
+        return `${minutesString}:${secondsString}`;
+    }
 }
 </script>
 

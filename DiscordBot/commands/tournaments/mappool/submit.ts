@@ -1,7 +1,5 @@
 import { ChatInputCommandInteraction, GuildMemberRoleManager, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../index";
-import { TournamentChannelType } from "../../../../Models/tournaments/tournamentChannel";
-import { TournamentRoleType } from "../../../../Models/tournaments/tournamentRole";
 import { loginResponse } from "../../../functions/loginResponse";
 import { unFinishedTournaments } from "../../../../Models/tournaments/tournament";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
@@ -15,6 +13,7 @@ import commandUser from "../../../functions/commandUser";
 import mappoolComponents from "../../../functions/tournamentFunctions/mappoolComponents";
 import bypassSubmit from "../../../functions/tournamentFunctions/bypassSubmit";
 import channelID from "../../../functions/channelID";
+import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -29,7 +28,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const link = getLink(m, "map");
+    const link = await getLink(m, "map", true);
     if (!link)
         return;
 
@@ -64,13 +63,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     // Obtain beatmap data
-    const beatmap = await ojsamaParse(m, difficulty || "", link);
-    if (!beatmap) {
+    const beatmapData = await ojsamaParse(m, difficulty || "", link);
+    if (!beatmapData?.beatmap) {
         await respond(m, `Can't find **${difficulty !== "" ? `[${difficulty}]` : "a single difficulty(????)"}** in ur osz`);
         return;
     }
 
-    await ojsamaToCustom(m, tournament, mappool, slotMod, mappoolMap, beatmap, link, user, mappoolSlot);
+    await ojsamaToCustom(m, tournament, mappool, slotMod, mappoolMap, beatmapData, link, user, mappoolSlot);
     return;
 }
 

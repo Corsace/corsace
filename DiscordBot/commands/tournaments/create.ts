@@ -9,8 +9,8 @@ import { filter, stopRow, timedOut } from "../../functions/messageInteractionFun
 import { profanityFilterStrong } from "../../../Interfaces/comment";
 import { Stage } from "../../../Models/tournaments/stage";
 import { Phase } from "../../../Models/phase";
-import { TournamentChannel, TournamentChannelType, getTournamentChannelTypeRoles, forumTags } from "../../../Models/tournaments/tournamentChannel";
-import { TournamentRole, TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
+import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
+import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
 import { randomUUID } from "crypto";
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../Server/utils/dateParse";
 import respond from "../../functions/respond";
@@ -19,6 +19,7 @@ import getUser from "../../../Server/functions/get/getUser";
 import { cron } from "../../../Server/cron";
 import { CronJobType } from "../../../Interfaces/cron";
 import { StageType } from "../../../Interfaces/stage";
+import { TournamentRoleType, TournamentChannelType, getTournamentChannelTypeRoles, forumTags } from "../../../Interfaces/tournament";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -353,6 +354,16 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
                                 label: "Commentators",
                                 value: "Commentators",
                                 description: "Create a commentator role",
+                            },
+                            {
+                                label: "Designer",
+                                value: "Designer",
+                                description: "Create a designer role",
+                            },
+                            {
+                                label: "Developer",
+                                value: "Developer",
+                                description: "Create a developer role",
                             })
                 ),
             new ActionRowBuilder<ButtonBuilder>()

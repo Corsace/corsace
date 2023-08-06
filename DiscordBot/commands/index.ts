@@ -4,8 +4,11 @@ import tournamentChannel from "./tournaments/channel";
 import tournamentCreate from "./tournaments/create";
 import tournamentEdit from "./tournaments/edit";
 import tournamentInfo from "./tournaments/info";
+import tournamentKey from "./tournaments/key";
 import tournamentList from "./tournaments/list";
+import tournamentQualifiers from "./tournaments/qualifiers";
 import tournamentRole from "./tournaments/role";
+import tournamentScreening from "./tournaments/screening";
 import tournamentTeams from "./tournaments/teams";
 
 import mappoolAdd from "./tournaments/mappool/add";
@@ -16,6 +19,7 @@ import mappoolDeadline from "./tournaments/mappool/deadline";
 import mappoolDelete from "./tournaments/mappool/delete";
 import mappoolDownload from "./tournaments/mappool/download";
 import mappoolEdit from "./tournaments/mappool/edit";
+import mappoolFinish from "./tournaments/mappool/finish";
 import mappoolHistory from "./tournaments/mappool/history";
 import mappoolInfo from "./tournaments/mappool/info";
 import mappoolPublish from "./tournaments/mappool/publish";
@@ -56,10 +60,10 @@ import influenceRemove from "./osu/influenceRemove";
 import profile from "./osu/profile";
 import recent from "./osu/recent";
 
-import { TournamentChannelType } from "../../Models/tournaments/tournamentChannel";
 import { mappoolQACreate, mappoolQADelete } from "./threadCommands/mapoolQA";
 import { jobBoardCreate, jobBoardDelete } from "./threadCommands/jobBoard";
 import { mappoolComponentsThreadType } from "../functions/tournamentFunctions/mappoolComponentsThread";
+import { TournamentChannelType } from "../../Interfaces/tournament";
 
 interface Command {
     data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | SlashCommandSubcommandsOnlyBuilder;
@@ -79,8 +83,11 @@ commands.push(tournamentChannel);
 commands.push(tournamentCreate);
 commands.push(tournamentEdit);
 commands.push(tournamentInfo);
+commands.push(tournamentKey);
 commands.push(tournamentList);
+commands.push(tournamentQualifiers);
 commands.push(tournamentRole);
+commands.push(tournamentScreening);
 commands.push(tournamentTeams);
 
 // mappool commands
@@ -92,6 +99,7 @@ commands.push(mappoolDeadline);
 commands.push(mappoolDelete);
 commands.push(mappoolDownload);
 commands.push(mappoolEdit);
+commands.push(mappoolFinish);
 commands.push(mappoolHistory);
 commands.push(mappoolInfo);
 commands.push(mappoolPublish);

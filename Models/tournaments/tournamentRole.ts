@@ -1,28 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Tournament } from "./tournament";
 import { User } from "../user";
-
-export enum TournamentRoleType {
-    Organizer,
-    Participants,
-    Managers,
-    Mappoolers,
-    Mappers,
-    Testplayers,
-    Referees,
-    Streamers,
-    Commentators,
-    Staff,
-}
-
-export const unallowedToPlay = [
-    TournamentRoleType.Organizer,
-    TournamentRoleType.Mappoolers,
-    TournamentRoleType.Mappers,
-    TournamentRoleType.Testplayers,
-    TournamentRoleType.Referees,
-];
-
+import { TournamentRoleType } from "../../Interfaces/tournament";
 @Entity()
 export class TournamentRole extends BaseEntity {
 

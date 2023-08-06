@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, GuildMember, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../";
 import { Team } from "../../../../Models/tournaments/team";
-import { TournamentRole, TournamentRoleType, unallowedToPlay } from "../../../../Models/tournaments/tournamentRole";
+import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { User } from "../../../../Models/user";
 import getFromList from "../../../functions/getFromList";
 import getTeams from "../../../../Server/functions/get/getTeams";
@@ -22,6 +22,9 @@ import { StageType } from "../../../../Interfaces/stage";
 import { cron } from "../../../../Server/cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { discordClient } from "../../../../Server/discord";
+import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
+import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
+import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
 
 // TODO: Merge the functionality in this command with the team create and register and qualifier API endpoints
 async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommandInteraction, user: User, tournament: Tournament) {
@@ -209,76 +212,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Ok Lol");
         return;
     }
-
-    if (team.tournaments.some(t => t.ID === tournament.ID)) {
-        const matchups = await Matchup
-            .createQueryBuilder("matchup")
-            .innerJoinAndSelect("matchup.stage", "stage")
-            .innerJoinAndSelect("stage.tournament", "tournament")
-            .leftJoinAndSelect("matchup.teams", "team")
-            .leftJoinAndSelect("matchup.messages", "message")
-            .leftJoinAndSelect("matchup.maps", "map")
-            .leftJoinAndSelect("map.scores", "score")
-            .where("tournament.ID = :ID", { ID: tournament.ID })
-            .andWhere("stage.stageType = '0'")
-            .getMany();
-
-        const matchup = matchups.find(m => m.teams!.some(t => t.ID === team!.ID));
-        if (matchup) {
-            if (matchup.date.getTime() === date.getTime()) {
-                await respond(m, `\`${team.name}\` is already scheduled for this date`);
-                return;
-            }
-            if (matchup.mp) {
-                if (!await securityChecks(m, true, true, [], [TournamentRoleType.Organizer]))
-                    return;
-
-                if (!await confirmCommand(m, `\`${team.name}\` already has a scheduled match with an mp ID on ${discordStringTimestamp(matchup.date)}. Do you want to reset and reschedule?`)) {
-                    await respond(m, "Ok Lol");
-                    return;
-                }
-
-                matchup.date = date;
-                matchup.mp = null;
-                if (matchup.messages) {
-                    await Promise.all(matchup.messages.map(m => m.remove()));
-                    matchup.messages = [];
-                }
-                if (matchup.maps) {
-                    await Promise.all(matchup.maps.flatMap(map => map.scores.map(s => s.remove())));
-                    await Promise.all(matchup.maps.map(m => m.remove()));
-                    matchup.maps = [];
-                }
-
-                await matchup.save();
-                try {
-                    await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(date.getTime() - preInviteTime, Date.now() + 10 * 1000)));
-                } catch (err) {
-                    await respond(m, `Failed to get cron job running to run qualifier match at specified time. Contact VINXIS`);
-                    return;
-                }
-                await respond(m, `The qualifier for \`${team.name}\` is now ${discordStringTimestamp(date)}`);
-                return;
-            }
-            if (team.manager.discord.userID !== commandUser(m).id) {
-                if (!await confirmCommand(m, `\`${team.name}\` already has a scheduled match on ${discordStringTimestamp(matchup.date)}. Do you want to reschedule?`)) {
-                    await respond(m, "Ok Lol");
-                    return;
-                }
-            }
-            if (matchup.teams?.length === 1 && !matchup.mp)
-                await matchup.remove();
-            else {
-                matchup.teams = matchup.teams?.filter(t => t.ID !== team!.ID);
-                await matchup.save();
-            }
+    
+    if (!team.tournaments.some(t => t.ID === tournament.ID)) {
+        if (target && !await confirmCommand(m, `<@${user.discord.userID}> do you wish to confirm your registration for ${tournament.name} under team name ${team.name}?`, true, user.discord.userID)) {
+            await respond(m, "Ok Lol");
+            return;
         }
-    } else {
-        // TODO: Readd this later, removing this for now so cavoe can just do his stuff for COE 
-        // if (target && !await confirmCommand(m, `<@${user.discord.userID}> do you wish to confirm your registration for ${tournament.name} under team name ${team.name}?`, true, user.discord.userID)) {
-        //     await respond(m, "Ok Lol");
-        //     return;
-        // }
 
         // New team, need to check roles
         const teamMembers = [team.manager, ...team.members].filter((v, i, a) => a.findIndex(t => t.ID === v.ID) === i);
@@ -340,32 +279,56 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await team.calculateStats();
     await team.save();
 
-    if (!stage.qualifierTeamChooseOrder) {
-        const maxTeams = Math.floor(16 / tournament.matchupSize);
-        const matchup = await Matchup
-            .createQueryBuilder("matchup")
-            .innerJoinAndSelect("matchup.teams", "team")
-            .innerJoinAndSelect("matchup.stage", "stage")
-            .innerJoinAndSelect("stage.tournament", "tournament")
-            .where("tournament.ID = :ID", { ID: tournament.ID })
-            .andWhere("stage.stageType = '0'")
-            .andWhere("matchup.date = :date", { date })
-            .getOne();
-
-        if (matchup && matchup.teams!.length < maxTeams) {
-            matchup.teams!.push(team);
-            await matchup.save();
-            await respond(m, `The qualifier for \`${team.name}\` is now ${discordStringTimestamp(date)}`);
+    let matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoin("matchup.stage", "stage")
+        .innerJoin("matchup.teams", "team")
+        .where("stage.ID = :stageID", { stageID: stage.ID })
+        .andWhere("team.ID = :teamID", { teamID: team.ID })
+        .getOne();
+    if (matchup) {
+        if (matchup.date.getTime() === date.getTime()) {
+            await respond(m, `\`${team.name}\` is already scheduled for this date`);
             return;
         }
+
+        if (matchup.mp) {
+            if (!await securityChecks(m, true, true, [], [TournamentRoleType.Organizer]))
+                return;
+
+            if (!await confirmCommand(m, `\`${team.name}\` already has a scheduled match with an mp ID on ${discordStringTimestamp(matchup.date)}. Do you want to reset and reschedule?`)) {
+                await respond(m, "Ok Lol");
+                return;
+            }
+        }
+
+        matchup.date = date;
+        matchup.mp = null;
+        const messages = await MatchupMessage
+            .createQueryBuilder("matchupMessage")
+            .innerJoin("matchupMessage.matchup", "matchup")
+            .where("matchup.ID = :ID", { ID: matchup.ID })
+            .getMany();
+        await Promise.all(messages.map(m => m.remove()));
+        matchup.messages = null;
+
+        const maps = await MatchupMap
+            .createQueryBuilder("matchupMap")
+            .innerJoin("matchupMap.matchup", "matchup")
+            .leftJoinAndSelect("matchupMap.scores", "score")
+            .where("matchup.ID = :ID", { ID: matchup.ID })
+            .getMany();
+        await Promise.all(maps.flatMap(map => map.scores.map(s => s.remove())));
+        await Promise.all(maps.map(m => m.remove()));
+        matchup.maps = null;
+    } else {
+        matchup = new Matchup();
+        matchup.date = date;
+        matchup.teams = [ team ];
+        matchup.stage = stage;
     }
 
-    const matchup = new Matchup();
-    matchup.date = date;
-    matchup.teams = [ team ];
-    matchup.stage = stage;
     await matchup.save();
-
     try {
         await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(date.getTime() - preInviteTime, Date.now() + 10 * 1000)));
     } catch (err) {
@@ -401,7 +364,7 @@ interface parameters {
 
 const teamSchedule: Command = {
     data,
-    alternativeNames: ["schedule_team", "teams_schedule", "team_schedule", "schedule-teams", "schedule-team", "teams-schedule", "team-schedule", "teamsschedule", "teamschedule", "scheduleteams", "scheduleteam", "schedulet", "tschedule", "teams", "teamss", "steam", "steams"],
+    alternativeNames: ["teams_schedule", "team_schedule", "schedule-teams", "schedule-team", "teams-schedule", "team-schedule", "teamsschedule", "teamschedule", "scheduleteams", "scheduleteam", "schedulet", "tschedule", "teams", "teamss", "steam", "steams"],
     category: "tournaments",
     subCategory: "teams",
     run,

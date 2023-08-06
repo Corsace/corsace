@@ -1,5 +1,4 @@
 import { DiscordAPIError, ThreadChannel } from "discord.js";
-import { TournamentRoleType } from "../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../Server/discord";
 import { User } from "../../../Models/user";
 import getStaff from "../../functions/tournamentFunctions/getStaff";
@@ -8,6 +7,7 @@ import confirmCommand from "../../functions/confirmCommand";
 import { mappoolComponentsThreadType } from "../../functions/tournamentFunctions/mappoolComponentsThread";
 import respond from "../../functions/respond";
 import { discordStringTimestamp } from "../../../Server/utils/dateParse";
+import { TournamentRoleType } from "../../../Interfaces/tournament";
 
 export async function mappoolQACreate (t: ThreadChannel, { m, creator, tournament, mappoolMap, mappers }: mappoolComponentsThreadType) {
     const mapperUsers: User[] = [];

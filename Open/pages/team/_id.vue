@@ -133,12 +133,19 @@
                                     {{ Math.round(member.BWS) }} BWS
                                 </div>
                             </a>
-                            <div
-                                v-if="!member.isManager && isManager && editMembers" 
-                                class="team__member_x"
-                                @click="removeMember(member)"
-                            >
-                                X
+                            <div>
+                                <div
+                                    v-if="!member.isManager && isManager && editMembers" 
+                                    class="team__member_x"
+                                    @click="removeMember(member)"
+                                >
+                                    X
+                                </div>
+                                <div
+                                    v-if="!member.isManager && isManager && editMembers" 
+                                    class="team__member_crown"
+                                    @click="transferManager(member)"
+                                />
                             </div>
                         </div>
                     </div>
@@ -597,6 +604,13 @@ export default class Team extends Vue {
             return;
         }
 
+        if (this.image && this.name === this.teamData.name && this.abbreviation === this.teamData.abbreviation && parseInt(this.timezone) === this.teamData.timezoneOffset) {
+            await this.saveAvatar();
+            this.teamData = await this.getTeam(true);
+            this.edit = false;
+            return;
+        }
+
         const timezone = parseInt(this.timezone);
         if (isNaN(timezone) || timezone < -12 || timezone > 14) {
             alert("Invalid timezone.");
@@ -618,27 +632,34 @@ export default class Team extends Vue {
             timezoneOffset: timezone,
         });
 
-        if (res.success) {
-            if (this.image) {
-                const formData = new FormData();
-                formData.append("avatar", this.image, this.image.name);
-                const { data: resAvatar } = await this.$axios.post(`/api/team/${this.teamData.ID}/avatar`, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
-                this.image = undefined;
-                if (resAvatar.error) {
-                    alert(`Error adding team avatar:\n${resAvatar.error}`);
-                    this.teamData = await this.getTeam(true);
-                    return;
-                }
-            }
-        } else
+        if (res.success)
+            await this.saveAvatar();
+        else
             alert(res.error);
 
         this.teamData = await this.getTeam(true);
         this.edit = false;
+    }
+
+    async saveAvatar () {
+        if (!this.image || !this.teamData)
+            return;
+    
+        const formData = new FormData();
+        formData.append("avatar", this.image, this.image.name);
+
+        const { data: resAvatar } = await this.$axios.post(`/api/team/${this.teamData.ID}/avatar`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        this.image = undefined;
+    
+        if (resAvatar.error) {
+            alert(`Error adding team avatar:\n${resAvatar.error}`);
+            this.teamData = await this.getTeam(true);
+            return;
+        }
     }
 
     async deleteTeam () {
@@ -672,6 +693,22 @@ export default class Team extends Vue {
         if (res.success)
             this.teamData = await this.getTeam(true);
         else
+            alert(res.error);
+    }
+
+    async transferManager (user: TeamUser) {
+        if (!this.teamData)
+            return;
+
+        if (!confirm(`Are you sure you want to transfer manager to ${user.username}?`))
+            return;
+
+        const { data: res } = await this.$axios.post(`/api/team/${this.teamData.ID}/manager/${user.ID}`);
+
+        if (res.success) {
+            this.teamData = await this.getTeam(true);
+            this.editMembers = false;
+        } else
             alert(res.error);
     }
 
@@ -928,8 +965,27 @@ export default class Team extends Vue {
             font-family: $font-ggsans;
             font-weight: 700;
             font-size: $font-lg;
-            color: $open-red;
             margin-bottom: 10px;
+            color: $gray;
+
+            &:hover {
+                color: $open-red;
+            }
+        }
+
+        &_crown {
+            width: 20px;
+            height: 20px;
+            background-image: url('../../../Assets/img/site/open/team/manager.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+            filter: saturate(0);
+
+            &:hover {
+                filter: saturate(1);
+            }
         }
 
         &--search {
