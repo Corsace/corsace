@@ -34,7 +34,7 @@
                     >
                         <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
                         <a 
-                            href="https://docs.google.com/spreadsheets/d/1Bl-G_jKyxxMrTtgEJ6j2uYnHtDoPz8uG_flSKWkc734/edit#gid=2089223782"
+                            href="https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing"
                             class="qualifiers__button"
                         >
                             <div class="qualifiers__button_text">

@@ -40,12 +40,12 @@
                 >
                     TEAMS
                 </NuxtLink>
-                <!-- <NuxtLink
-                    to="/schedule" 
+                <a
+                    href="https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing" 
                     class="header__nav-item"
                 >
                     SCHEDULE
-                </NuxtLink> -->
+                </a>
                 <NuxtLink
                     to="/mappool" 
                     class="header__nav-item"
