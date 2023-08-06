@@ -101,6 +101,9 @@
         <div class="scores__streamTitle">
             QUALIFIER RESULTS - TEAMS
         </div>
+        <div class="scores__mapName">
+            FINAL STANDINGS
+        </div>
         <table class="scores_table scores_table--noMap">
             <tr>
                 <th>Rank</th>
@@ -249,8 +252,8 @@ $x-axis-height: 25px;
         justify-content: center;
         align-items: center;
         background-image: linear-gradient(0deg, #0F0F0F 0%, #2F2F2F 100%);
-        height: calc(100% - 64px);
-        margin-top: 64px;
+        height: calc(100% - 122px);
+        margin-top: 122px;
     }
 
     &__streamTitle {
