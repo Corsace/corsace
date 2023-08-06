@@ -146,7 +146,6 @@ import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue
 import { MappoolMap } from "../../../Interfaces/mappool";
 import { censor, profanityFilter } from "../../../Interfaces/comment";
 
-const openModule = namespace("open");
 const streamModule = namespace("stream");
 
 @Component({
@@ -159,11 +158,11 @@ export default class Scores extends Vue {
 
     @streamModule.State key!: string | null;
     @streamModule.State tournamentID!: number | null;
-    @openModule.State qualifierScores!: QualifierScore[] | null;
+    @streamModule.State scores!: QualifierScore[] | null;
 
     loading = false;
     mapName: string | null = null;
-    scores: QualifierScoreView[] = [];
+    finalScores: QualifierScoreView[] = [];
     binNumber = 11;
     mappoolMap: MappoolMap | null = null;
 
@@ -172,34 +171,34 @@ export default class Scores extends Vue {
     }
 
     get filteredScores (): QualifierScore[] | null {
-        if (!this.qualifierScores)
+        if (!this.scores)
             return null;
 
         if (!this.mapName)
-            return this.qualifierScores;
+            return this.scores;
         
-        return this.qualifierScores.filter(score => score.map.toLowerCase() === this.mapName!.toLowerCase());
+        return this.scores.filter(score => score.map.toLowerCase() === this.mapName!.toLowerCase());
     }
 
     get minZScore (): number {
         if (!this.filteredScores)
             return 0;
 
-        return Math.max(...this.scores.map(score => Math.abs(score.zScore))) * -1 - 0.01;
+        return Math.max(...this.finalScores.map(score => Math.abs(score.zScore))) * -1 - 0.01;
     }
 
     get maxZScore (): number {
         if (!this.filteredScores)
             return 0;
 
-        return Math.max(...this.scores.map(score => Math.abs(score.zScore))) + 0.01;
+        return Math.max(...this.finalScores.map(score => Math.abs(score.zScore))) + 0.01;
     }
 
     get histogramBins (): number[] {
         if (!this.filteredScores)
             return [];
 
-        const scores = this.scores.map(score => score.zScore);
+        const scores = this.finalScores.map(score => score.zScore);
         const binSize = (this.maxZScore - this.minZScore) / this.binNumber;
 
         const bins: number[] = [];
@@ -219,12 +218,13 @@ export default class Scores extends Vue {
         if (typeof mapName === "string")
             this.mapName = mapName;
 
-        this.scores = computeQualifierScoreViews(
+        console.log(this.filteredScores);
+        this.finalScores = computeQualifierScoreViews(
             score => ({ id: score.teamID, name: score.teamName, avatar: score.teamAvatar }),
             this.filteredScores,
             "teams",
             "zScore",
-            this.mapName ? this.filteredScores?.[0].mapID || -1 : -1,
+            this.mapName ? this.filteredScores?.[0]?.mapID || -1 : -1,
             "desc"
         );
 
