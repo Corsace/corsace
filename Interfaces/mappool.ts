@@ -1,4 +1,5 @@
 import { Beatmap } from "./beatmap";
+import { User } from "./user";
 
 export interface Mappool {
     ID:            number;
@@ -34,6 +35,29 @@ export interface MappoolMap {
     deadline:        Date | null;
     customThreadID:  string | null;
     customMessageID: string | null;
-    customBeatmap:   null;
+    customMappers?:   User[];
+    customBeatmap?:   CustomBeatmap | null;
     beatmap:         Beatmap | null;
+}
+
+export interface CustomBeatmap {
+    ID:                number;
+    link:              string;
+    artist:            string;
+    title:             string;
+    BPM:               number;
+    totalLength:       number;
+    hitLength:         number;
+    difficulty:        string;
+    circleSize:        number;
+    overallDifficulty: number;
+    approachRate:      number;
+    hpDrain:           number;
+    circles:           number;
+    sliders:           number;
+    spinners:          number;
+    maxCombo:          number;
+    aimSR:             number;
+    speedSR:           number;
+    totalSR:           number;
 }

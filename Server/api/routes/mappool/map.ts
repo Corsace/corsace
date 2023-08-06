@@ -54,20 +54,31 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
         return;
     }
 
-    const mappoolMap = await MappoolMap
+    let mappoolID: number | null = null;
+    if (ctx.query.mappoolID && !isNaN(parseInt(ctx.query.mappoolID as string)))
+        mappoolID = parseInt(ctx.query.mappoolID as string);
+
+    const mappoolMapQ = MappoolMap
         .createQueryBuilder("mappoolMap")
         .leftJoinAndSelect("mappoolMap.beatmap", "beatmap")
         .leftJoinAndSelect("beatmap.beatmapset", "beatmapset")
         .leftJoinAndSelect("beatmapset.creator", "creator")
+        .leftJoinAndSelect("mappoolMap.customBeatmap", "customBeatmap")
+        .leftJoinAndSelect("mappoolMap.customMappers", "customMappers")
         .innerJoinAndSelect("mappoolMap.slot", "slot")
         .innerJoinAndSelect("slot.mappool", "mappool")
         .innerJoin("mappool.stage", "stage")
         .innerJoin("stage.tournament", "tournament")
         .where("slot.acronym LIKE :slot", { slot: `%${slot}%` })
         .andWhere("mappoolMap.order = :order", { order })
-        .andWhere("stage.stageType = '0'") // TODO: Stage ID instead of stageType
-        .andWhere("tournament.ID = :ID", { ID: tournament.ID })
-        .getOne();
+        .andWhere("tournament.ID = :ID", { ID: tournament.ID });
+
+    if (mappoolID)
+        mappoolMapQ.andWhere("mappool.ID = :mappoolID", { mappoolID });
+    else
+        mappoolMapQ.andWhere("stage.stageType = '0'");
+
+    const mappoolMap = await mappoolMapQ.getOne();
 
     if (!mappoolMap) {
         ctx.body = {
