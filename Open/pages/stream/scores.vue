@@ -249,6 +249,8 @@ $x-axis-height: 25px;
         justify-content: center;
         align-items: center;
         background-image: linear-gradient(0deg, #0F0F0F 0%, #2F2F2F 100%);
+        height: calc(100% - 64px);
+        margin-top: 64px;
     }
 
     &__streamTitle {
@@ -387,11 +389,6 @@ $x-axis-height: 25px;
         font-size: $font-lg;
         border-collapse: collapse;
         box-sizing: border-box;
-
-        &--noMap {
-            height: calc(100% - 64px);
-            margin-top: 64px;
-        }
 
         &__team {
             background-size: cover;
