@@ -26,7 +26,7 @@
             <div class="mappool_map_banner__osu_data">
                 <div class="mappool_map_banner__osu_data_text">
                     <div class="mappool_map_banner__osu_data_text--mapper">
-                        MAPPER
+                        {{ $t("open.qualifiers.mappool.banner.mapper") }}
                     </div>
                     <div class="mappool_map_banner__osu_data_text--truncated">
                         {{ mappoolMap.customMappers?.map(mapper => mapper.osu.username).join(", ") || mappoolMap.beatmap?.beatmapset?.creator?.osu.username || '' }}
@@ -34,7 +34,7 @@
                 </div>
                 <div class="mappool_map_banner__osu_data_text">
                     <div class="mappool_map_banner__osu_data_text--difficulty">
-                        DIFFICULTY
+                        {{ $t("open.qualifiers.mappool.banner.difficulty") }}
                     </div>
                     <div class="mappool_map_banner__osu_data_text--truncated">
                         {{ censorMethod(mappoolMap.beatmap?.difficulty || mappoolMap.customBeatmap?.difficulty || '') }}

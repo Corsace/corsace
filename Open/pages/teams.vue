@@ -5,10 +5,10 @@
             class="teams_list__main_content"
         >
             <OpenTitle>
-                TEAMS LIST
+                {{ $t('open.teams.teamsList') }}
                 <template #buttons>
                     <SearchBar
-                        placeholder="search for user/team..."
+                        :placeholder="`${$t('open.teams.searchPlaceholder')}`"
                         style="margin-bottom: 10px;"
                         @update:search="searchValue = $event"
                     />
@@ -27,7 +27,7 @@
             class="teams_list__main_content"
         >
             <OpenTitle>
-                LOADING...
+                {{ $t('open.status.loading') }}...
             </OpenTitle>
         </div>
         <div
@@ -35,7 +35,7 @@
             class="teams_list__main_content"
         >
             <OpenTitle>
-                COULD NOT GET TEAM LIST...
+                {{ $t('open.teams.error') }}...
             </OpenTitle>
         </div>
     </div>
