@@ -1,7 +1,7 @@
 <template>
     <a
         v-if="mappoolMap"
-        :href="`https://osu.ppy.sh/b/${mappoolMap.beatmap?.ID || ''}`" 
+        :href="mappoolMap.beatmap?.ID ? `https://osu.ppy.sh/b/${mappoolMap.beatmap.ID}` : undefined" 
         class="mappool_map_banner"
         target="_blank"
         rel="noopener noreferrer"
@@ -16,10 +16,10 @@
         <div class="mappool_map_banner__info">
             <div class="mappool_map_banner__song_data">
                 <div class="mappool_map_banner__title">
-                    {{ mappoolMap.beatmap?.beatmapset?.title || '' }}
+                    {{ censorMethod(mappoolMap.beatmap?.beatmapset?.title || mappoolMap.customBeatmap?.title || '') }}
                 </div>
                 <div class="mappool_map_banner__artist">
-                    {{ mappoolMap.beatmap?.beatmapset?.artist || '' }}
+                    {{ censorMethod(mappoolMap.beatmap?.beatmapset?.artist || mappoolMap.customBeatmap?.artist || '') }}
                 </div>
             </div>
             <hr class="line--red line--banner">
@@ -29,7 +29,7 @@
                         {{ $t("open.qualifiers.mappool.banner.mapper") }}
                     </div>
                     <div class="mappool_map_banner__osu_data_text--truncated">
-                        {{ mappoolMap.beatmap?.beatmapset?.creator?.osu.username || '' }}
+                        {{ mappoolMap.customMappers?.map(mapper => mapper.osu.username).join(", ") || mappoolMap.beatmap?.beatmapset?.creator?.osu.username || '' }}
                     </div>
                 </div>
                 <div class="mappool_map_banner__osu_data_text">
@@ -37,7 +37,7 @@
                         {{ $t("open.qualifiers.mappool.banner.difficulty") }}
                     </div>
                     <div class="mappool_map_banner__osu_data_text--truncated">
-                        {{ mappoolMap.beatmap?.difficulty || '' }}
+                        {{ censorMethod(mappoolMap.beatmap?.difficulty || mappoolMap.customBeatmap?.difficulty || '') }}
                     </div>
                 </div>
             </div>
@@ -52,6 +52,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import MappoolMapStats from "./MappoolMapStats.vue";
 import { MappoolMap } from "../../../Interfaces/mappool";
+import { censor, profanityFilter } from "../../../Interfaces/comment";
 
 @Component({
     components: {
@@ -63,6 +64,10 @@ export default class MappoolMapBanner extends Vue {
     @Prop({ type: Object }) readonly mappoolMap: MappoolMap | undefined;
     @Prop({ type: String, default: "" }) readonly slotAcronym!: string;
     @Prop({ type: Boolean, default: false }) readonly onlyMap!: boolean;
+
+    censorMethod (input: string): string {
+        return censor(input, profanityFilter);
+    }
 }
 </script>
 

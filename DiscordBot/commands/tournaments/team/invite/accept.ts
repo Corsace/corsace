@@ -65,7 +65,7 @@ const data = new SlashCommandBuilder()
 
 const inviteAccept: Command = {
     data,
-    alternativeNames: ["invite_accept", "accept_invite", "invite-accept", "accept-invite", "acceptinvite", "inviteaccept", "invitea", "ainvite", "accepti", "iaccept"],
+    alternativeNames: ["accept_invite", "invite-accept", "accept-invite", "acceptinvite", "inviteaccept", "invitea", "ainvite", "accepti", "iaccept"],
     category: "tournaments",
     subCategory: "teams/invites",
     run,

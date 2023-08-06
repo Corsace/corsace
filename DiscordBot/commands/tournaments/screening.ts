@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "..";
 import { Team } from "../../../Models/tournaments/team";
 import { extractParameter } from "../../functions/parameterFunctions";
@@ -24,33 +24,32 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
         .getMany();
 
-    const embed = new EmbedBuilder()
-        .setTitle(`Teams for ${tournament.name}`)
-        .setDescription(
-            teams.map(team => {
-                return `**${team.name}** (${team.abbreviation})\n**Manager:** ${team.manager.osu.username} <@${team.manager.discord.userID}>\n**Members:** ${team.members.map(m => m.osu.username).join(", ")}`;
-            }).join("\n\n"))
-        .setFooter({
-            text: `Requested by ${m instanceof Message ? m.author.username : m.user.username}`,
-            iconURL: (m instanceof Message ? m.author.avatarURL() : m.user.avatarURL()) || undefined,
-        });
+    const csv = teams.map(t => {
+        const members = t.members;
+        if (!members.some(m => m.ID === t.manager.ID))
+            members.push(t.manager);
+        return members.map(m => `${m.osu.username},${t.name},${m.osu.userID}`).join("\n");
+    }).join("\n");
 
-    await respond(m, undefined, [ embed ]);
+    await respond(m, "Here's the screening sheet to send to osu! staff.", undefined, undefined, [{
+        name: `${tournament.name} - Screening Sheet.csv`,
+        attachment: Buffer.from(csv),
+    }]);
 }
 
 const data = new SlashCommandBuilder()
-    .setName("tournament_teams")
-    .setDescription("Get a list of teams for a tournament.")
+    .setName("tournament_screening")
+    .setDescription("Get a generated csv of players for osu! screening.")
     .addStringOption(option => 
         option.setName("tournament")
-            .setDescription("The tournament to get teams for (not required).")
+            .setDescription("The tournament to get the screening sheet for (not required).")
             .setRequired(false));
 
-const tournamentTeams: Command = {
+const tournamentScreening: Command = {
     data,
-    alternativeNames: [ "teams_tournament", "teams-tournament","teamst", "tteams", "tournamentt", "ttournament", "tournament-teams", "tournamentteams", "teamstournament", "tt" ],
+    alternativeNames: [ "screening_tournament", "screening-tournament","screeningt", "tscreening", "tournaments", "stournament", "tournament-screening", "tournamentscreening", "screeningtournament", "ts", "screen_tournament", "screen-tournament","screent", "tscreen", "tournament-screen", "tournamentscreen", "screentournament" ],
     category: "tournaments",
     run,
 };
     
-export default tournamentTeams;
+export default tournamentScreening;

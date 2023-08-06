@@ -172,6 +172,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const embed = new EmbedBuilder()
         .setTitle(`Info for ${mappool.name} (${mappool.abbreviation.toUpperCase()})`)
+        .setDescription(`**ID:** ${mappool.ID}\n**Target SR:** ${mappool.targetSR}\n**Mappack Link:** ${mappool.mappackLink || "N/A"}\n**Mappack Expiry:** ${mappool.mappackExpiry ? discordStringTimestamp(mappool.mappackExpiry) : "N/A"}`)
         .setFields(mappool.slots.map(slot => ({
             name: `**${slot.name}**`,
             value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap && map.customBeatmap.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : "N/A"}`).join("\n"),

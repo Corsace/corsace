@@ -7,6 +7,10 @@ export const profanityFilter = new RegExp(`${profanityFilterString}`, "gi");
 
 export const profanityFilterStrong = new RegExp(`${profanityFilterString}|fuck|sh(i|1)t|p(i|1)ss|(4|a)ss|s(e|3)x"`, "gi");
 
+export function censor (input: string, regex: RegExp): string {
+    return input.replace(regex, (match) => "*".repeat(match.length));
+}
+
 export interface Comment {
     ID: number;
     comment: string;

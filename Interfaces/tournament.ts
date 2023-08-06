@@ -45,6 +45,8 @@ export enum TournamentRoleType {
     Streamers,
     Commentators,
     Staff,
+    Designer,
+    Developer,
 }
 
 export const unallowedToPlay = [
@@ -58,6 +60,19 @@ export const unallowedToPlay = [
 export const playingRoles = [
     TournamentRoleType.Participants,
     TournamentRoleType.Managers,
+];
+
+export const tournamentStaffRoleOrder = [
+    TournamentRoleType.Organizer,
+    TournamentRoleType.Designer,
+    TournamentRoleType.Developer,
+    TournamentRoleType.Referees,
+    TournamentRoleType.Streamers,
+    TournamentRoleType.Commentators,
+    TournamentRoleType.Mappoolers,
+    TournamentRoleType.Mappers,
+    TournamentRoleType.Testplayers,
+    TournamentRoleType.Staff,
 ];
 
 export enum TournamentChannelType {

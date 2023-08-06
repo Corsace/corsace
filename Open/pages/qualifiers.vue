@@ -27,13 +27,14 @@
             <OpenTitle>
                 {{ $t('open.qualifiers.nav.qualifiers') }}
                 <template #buttons>
+                    <Clock />
                     <div
                         v-if="page === 'mappool' && qualifiersStage?.mappool?.[0].isPublic"
                         class="qualifiers__button_group"
                     >
                         <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
                         <a 
-                            href="https://docs.google.com/spreadsheets/d/1Bl-G_jKyxxMrTtgEJ6j2uYnHtDoPz8uG_flSKWkc734/edit#gid=2089223782"
+                            href="https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing"
                             class="qualifiers__button"
                         >
                             <div class="qualifiers__button_text">
@@ -139,6 +140,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
+import Clock from "../../Assets/components/open/Clock.vue";
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
@@ -157,6 +159,7 @@ const openModule = namespace("open");
 
 @Component({
     components: {
+        Clock,
         OpenButton,
         MappoolView,
         ContentButton,
@@ -263,7 +266,7 @@ export default class Qualifiers extends Vue {
     &__main_content {
         align-self: center;
         position: relative;
-        width: 65vw;
+        width: 75vw;
         padding: 35px;
         background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
     }

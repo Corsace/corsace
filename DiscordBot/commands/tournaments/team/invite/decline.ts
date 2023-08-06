@@ -55,7 +55,7 @@ const data = new SlashCommandBuilder()
 
 const inviteDecline: Command = {
     data,
-    alternativeNames: ["invite_decline", "decline_invite", "invite-decline", "decline-invite", "declineinvite", "invitedecline", "invited", "dinvite", "declinei", "idecline"],
+    alternativeNames: ["decline_invite", "invite-decline", "decline-invite", "declineinvite", "invitedecline", "invited", "dinvite", "declinei", "idecline"],
     category: "tournaments",
     subCategory: "teams/invites",
     run,

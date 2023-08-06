@@ -364,7 +364,7 @@ interface parameters {
 
 const teamSchedule: Command = {
     data,
-    alternativeNames: ["schedule_team", "teams_schedule", "team_schedule", "schedule-teams", "schedule-team", "teams-schedule", "team-schedule", "teamsschedule", "teamschedule", "scheduleteams", "scheduleteam", "schedulet", "tschedule", "teams", "teamss", "steam", "steams"],
+    alternativeNames: ["teams_schedule", "team_schedule", "schedule-teams", "schedule-team", "teams-schedule", "team-schedule", "teamsschedule", "teamschedule", "scheduleteams", "scheduleteam", "schedulet", "tschedule", "teams", "teamss", "steam", "steams"],
     category: "tournaments",
     subCategory: "teams",
     run,

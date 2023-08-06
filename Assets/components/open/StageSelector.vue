@@ -9,20 +9,32 @@
             </span>
         </div>
         <div class="stage_selector_buttons">
-            <div class="stage_selector_buttons__left" />
+            <div 
+                v-if="notBeginningSync"
+                class="stage_selector_buttons__left" 
+                @click="$emit('prev')"
+            />
+            <div v-else />
             <div class="stage_selector_buttons__selected">
                 <slot name="stage" />
             </div>
-            <div class="stage_selector_buttons__right" />
+            <div 
+                v-if="notEndSync"
+                class="stage_selector_buttons__right"
+                @click="$emit('next')"
+            />
+            <div v-else />
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, PropSync } from "vue-property-decorator";
 
 @Component
 export default class StageSelector extends Vue {
+    @PropSync("notBeginning", { type: Boolean, default: false }) notBeginningSync!: boolean;
+    @PropSync("notEnd", { type: Boolean, default: false }) notEndSync!: boolean;
 }
 </script>
 

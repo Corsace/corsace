@@ -134,4 +134,6 @@ export class Tournament extends BaseEntity {
     @Column({ type: "enum", enum: TournamentStatus, default: TournamentStatus.NotStarted })
         status!: TournamentStatus;
 
+    @Column({ type: "varchar", length: 128, unique: true, select: false, nullable: true })
+        key!: string | null;
 }

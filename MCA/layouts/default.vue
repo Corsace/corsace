@@ -138,7 +138,7 @@ import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import ModeSwitcher from "../../Assets/components/mca-ayim/ModeSwitcher.vue";
 import YearSwitcher from "../../Assets/components/mca-ayim/YearSwitcher.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
-import Tooltip from "../../Assets/components/footer/Tooltip.vue";
+import Tooltip from "../../Assets/components/Tooltip.vue";
 import GuestDifficultyModal from "../../Assets/components/mca-ayim/GuestDifficultyModal.vue";
 
 import { UserMCAInfo } from "../../Interfaces/user";

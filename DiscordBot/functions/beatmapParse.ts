@@ -23,6 +23,7 @@ import { discordClient } from "../../Server/discord";
 
 export async function ojsamaParse (m: Message | ChatInputCommandInteraction, diff: string, link: string) {
     let beatmap: osu.beatmap | undefined = undefined;
+    let background: string | undefined = undefined;
     let axiosData: any = null;
     try {
         const { data } = await Axios.get(link, { responseType: "stream" });
@@ -45,18 +46,40 @@ export async function ojsamaParse (m: Message | ChatInputCommandInteraction, dif
                 continue;
 
             beatmap = osuParser.map;
-            break;
+            if (background)
+                break;
+        } else if (entry.type === "File" && (
+            entry.props.path.endsWith(".png") ||
+            entry.props.path.endsWith(".jpg") ||
+            entry.props.path.endsWith(".jpeg")
+        )) {
+            // Get image and send in a discord message, then assign the link to the background variable
+            const buffer = await entry.buffer();
+            const message = await m.channel!.send({
+                files: [{
+                    attachment: buffer,
+                    name: entry.props.path,
+                }],
+            });
+            background = message.attachments.first()!.url;
+            if (beatmap)
+                break;
         }
 
         entry.autodrain();
     }
 
-    return beatmap;
+    return {
+        beatmap,
+        background,
+    };
 }
 
-export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappool: Mappool, slot: MappoolSlot, mappoolMap: MappoolMap, beatmap: osu.beatmap, link: string, user: User, mappoolSlot: string) {
+export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappool: Mappool, slot: MappoolSlot, mappoolMap: MappoolMap, beatmapData: { beatmap: osu.beatmap | undefined, background: string | undefined }, link: string, user: User, mappoolSlot: string) {
     if (!mappoolMap.customBeatmap)
         mappoolMap.customBeatmap = new CustomBeatmap();
+
+    const beatmap = beatmapData.beatmap!;
 
     const artist = beatmap.artist;
     const title = beatmap.title;
@@ -96,6 +119,7 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
     const sr = calc.total;
 
     mappoolMap.customBeatmap.link = link;
+    mappoolMap.customBeatmap.background = beatmapData.background;
     mappoolMap.customBeatmap.artist = artist;
     mappoolMap.customBeatmap.title = title;
     mappoolMap.customBeatmap.BPM = parseFloat(bpm.toFixed(2));

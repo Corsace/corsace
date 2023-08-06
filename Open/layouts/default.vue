@@ -40,12 +40,12 @@
                 >
                     {{ $t("open.navbar.teams") }}
                 </NuxtLink>
-                <!-- <NuxtLink
-                    to="/schedule" 
+                <a
+                    href="https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing" 
                     class="header__nav-item"
                 >
                     {{ $t("open.navbar.schedule") }}
-                </NuxtLink> -->
+                </a>
                 <NuxtLink
                     to="/mappool" 
                     class="header__nav-item"
@@ -229,7 +229,7 @@ import { BaseTeam, Team } from "../../Interfaces/team";
 import DevBanner from "../../Assets/components/DevBanner.vue";
 import TheHeader from "../../Assets/components/header/TheHeader.vue";
 import TheFooter from "../../Assets/components/footer/TheFooter.vue";
-import Tooltip from "../../Assets/components/footer/Tooltip.vue";
+import Tooltip from "../../Assets/components/Tooltip.vue";
 
 const openModule = namespace("open");
 
