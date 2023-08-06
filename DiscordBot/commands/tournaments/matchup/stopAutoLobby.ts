@@ -58,7 +58,7 @@ const data = new SlashCommandBuilder()
 
 const stopAutoLobby: Command = {
     data,
-    alternativeNames: ["stop_auto_lobby", "stop-auto-lobby", "stopauto", "stopauto-lobby", "stopautolobby", "stopautol", "stopautolobby", "stopautolobby", "stopal", "stopalobby"],
+    alternativeNames: ["stop-auto-lobby", "stopauto", "stopauto-lobby", "stopautol", "stopal", "stopalobby"],
     category: "tournaments",
     subCategory: "matchups",
     run,

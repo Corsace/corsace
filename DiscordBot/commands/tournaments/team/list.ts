@@ -74,7 +74,7 @@ interface parameters {
 
 const teamList: Command = {
     data,
-    alternativeNames: ["list_team", "teams_list", "team_list", "list-teams", "list-team", "teams-list", "team-list", "teamslist", "teamlist", "listteams", "listteam", "listt", "tlist", "teaml", "teamsl", "lteam", "lteams"],
+    alternativeNames: ["list_team", "teams_list", "team_list", "list-teams", "list-team", "teams-list", "team-list", "teamslist", "teamlist", "listteams", "listteam", "teaml", "teamsl", "lteam", "lteams"],
     category: "tournaments",
     subCategory: "teams",
     run,

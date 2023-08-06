@@ -31,7 +31,7 @@ const data = new SlashCommandBuilder()
 
 const tournamentQualifiers: Command = {
     data,
-    alternativeNames: [ "qualifiers_tournament", "qualifiers-tournament","qualifierst", "tqualifiers", "tournamentq", "qtournament", "tournament-qualifiers", "qualifierstournament", "tq", "qualifiers_tournament", "qualifiers-tournament","qualifierst", "tqualifiers", "tournamentq", "qtournament", "tournament-qualifiers", "tournamentqualifiers", "qualifierstournament" ],
+    alternativeNames: [ "qualifiers_tournament", "qualifiers-tournament","qualifierst", "tqualifiers", "tournamentq", "qtournament", "tournament-qualifiers", "qualifierstournament", "tq", "tournamentqualifiers" ],
     category: "tournaments",
     run,
 };

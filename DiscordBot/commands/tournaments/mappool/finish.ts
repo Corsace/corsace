@@ -148,7 +148,7 @@ interface parameters {
 
 const mappoolFinish: Command = {
     data,
-    alternativeNames: [ "finish_mappool", "mappool-finish", "finish-mappool", "mappoolfinish", "finishmappool", "finishp", "pfinish", "pool_finish", "finish_pool", "pool-finish", "finish-pool", "poolfinish", "finishpool", "mappool_a", "a_mappool", "mappool-a", "a-mappool", "mappoola", "amappool", "ap", "pa", "pool_a", "a_pool", "pool-a", "a-pool", "poola", "apool" ],
+    alternativeNames: [ "finish_mappool", "mappool-finish", "finish-mappool", "mappoolfinish", "finishmappool", "finishp", "pfinish", "pool_finish", "finish_pool", "pool-finish", "finish-pool", "poolfinish", "finishpool", "mappool_f", "f_mappool", "mappool-f", "f-mappool", "mappoolf", "fmappool", "fp", "pf", "pool_f", "f_pool", "pool-f", "f-pool", "poolf", "fpool" ],
     category: "tournaments",
     subCategory: "mappools",
     run,
