@@ -57,17 +57,17 @@
                 >
                     <td>#{{ n }}</td>
                     <td 
-                        v-if="scores[n-1]"
+                        v-if="finalScores[n-1]"
                         class="scores_table__team"
-                        :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url(${scores[n-1].avatar})` }"
+                        :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url(${finalScores[n-1].avatar})` }"
                     >
-                        {{ scores[n-1].name }}
+                        {{ finalScores[n-1].name }}
                     </td>
-                    <td v-if="scores[n-1]">
-                        {{ scores[n-1].sum }}
+                    <td v-if="finalScores[n-1]">
+                        {{ finalScores[n-1].sum }}
                     </td>
-                    <td v-if="scores[n-1]">
-                        {{ scores[n-1].zScore.toFixed(2) }}
+                    <td v-if="finalScores[n-1]">
+                        {{ finalScores[n-1].zScore.toFixed(2) }}
                     </td>
                 </tr>
             </table>
@@ -117,17 +117,17 @@
             >
                 <td>#{{ n }}</td>
                 <td 
-                    v-if="scores[n-1]"
+                    v-if="finalScores[n-1]"
                     class="scores_table__team"
-                    :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url(${scores[n-1].avatar})` }"
+                    :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url(${finalScores[n-1].avatar})` }"
                 >
-                    {{ scores[n-1].name }}
+                    {{ finalScores[n-1].name }}
                 </td>
-                <td v-if="scores[n-1]">
-                    {{ scores[n-1].sum }}
+                <td v-if="finalScores[n-1]">
+                    {{ finalScores[n-1].sum }}
                 </td>
-                <td v-if="scores[n-1]">
-                    {{ scores[n-1].zScore.toFixed(2) }}
+                <td v-if="finalScores[n-1]">
+                    {{ finalScores[n-1].zScore.toFixed(2) }}
                 </td>
             </tr>
         </table>
