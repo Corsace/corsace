@@ -15,11 +15,11 @@
             >
                 <div 
                     class="scores_bg--blur"
-                    :style="{ 'backgroundImage': `linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0.33) 73.96%, rgba(0, 0, 0, 0.00) 100%), url(https://assets.ppy.sh/beatmaps/${mappoolMap?.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)` }"
+                    :style="{ 'backgroundImage': `linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0.33) 73.96%, rgba(0, 0, 0, 0.00) 100%), url(${mappoolMap?.beatmap?.beatmapset?.ID ? `https://assets.ppy.sh/beatmaps/${mappoolMap.beatmap.beatmapset.ID}/covers/cover@2x.jpg` : mappoolMap?.customBeatmap?.background || require('../../../Assets/img/site/open/team/default.png')})` }"
                 />
                 <div
                     class="scores_bg--main"
-                    :style="{ 'backgroundImage': `url(https://assets.ppy.sh/beatmaps/${mappoolMap?.beatmap?.beatmapset?.ID || ''}/covers/list@2x.jpg)` }"
+                    :style="{ 'backgroundImage': mappoolMap?.beatmap?.beatmapset?.ID ? `url(https://assets.ppy.sh/beatmaps/${mappoolMap?.beatmap?.beatmapset?.ID || ''}/covers/list@2x.jpg)` : `url(${mappoolMap?.customBeatmap?.background || require('../../../Assets/img/site/open/team/default.png')}`}"
                 />
             </div>
         </div>
@@ -27,10 +27,10 @@
             <div class="scores__map">
                 <div class="scores__map_data scores__map_data--main">
                     <div class="scores__map_title">
-                        {{ mappoolMap?.beatmap?.beatmapset?.title || mappoolMap?.customBeatmap?.title }}
+                        {{ mappoolMap?.beatmap?.beatmapset?.title || mappoolMap?.customBeatmap?.title || '' }}
                     </div>
                     <div class="scores__map_artist">
-                        {{ mappoolMap?.beatmap?.beatmapset?.artist || mappoolMap?.customBeatmap?.artist }}
+                        {{ mappoolMap?.beatmap?.beatmapset?.artist || mappoolMap?.customBeatmap?.artist || '' }}
                     </div>
                 </div>
                 <div class="scores__map--line" />
@@ -40,7 +40,7 @@
                             MAPPER
                         </div>
                         <div class="scores__map_data_text--truncated">
-                            {{ mappoolMap?.beatmap?.beatmapset?.creator?.osu.username || mappoolMap?.customMappers?.map(mapper => mapper.osu.username).join(", ") || '' }}
+                            {{ mappoolMap?.customMappers?.map(mapper => mapper.osu.username).join(", ") || mappoolMap?.beatmap?.beatmapset?.creator?.osu.username || '' }}
                         </div>
                     </div>
                     <div class="scores__map_data_text">

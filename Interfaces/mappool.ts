@@ -42,7 +42,8 @@ export interface MappoolMap {
 
 export interface CustomBeatmap {
     ID:                number;
-    link:              string;
+    link:              string | null;
+    background:        string | null;
     artist:            string;
     title:             string;
     BPM:               number;

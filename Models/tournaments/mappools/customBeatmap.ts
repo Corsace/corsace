@@ -11,6 +11,9 @@ export class CustomBeatmap extends BaseEntity {
     @Column({ nullable: true })
         link?: string;
 
+    @Column({ nullable: true })
+        background?: string;
+
     @Column()
         artist!: string;
 

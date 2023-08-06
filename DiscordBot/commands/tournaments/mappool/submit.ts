@@ -63,13 +63,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     // Obtain beatmap data
-    const beatmap = await ojsamaParse(m, difficulty || "", link);
-    if (!beatmap) {
+    const beatmapData = await ojsamaParse(m, difficulty || "", link);
+    if (!beatmapData?.beatmap) {
         await respond(m, `Can't find **${difficulty !== "" ? `[${difficulty}]` : "a single difficulty(????)"}** in ur osz`);
         return;
     }
 
-    await ojsamaToCustom(m, tournament, mappool, slotMod, mappoolMap, beatmap, link, user, mappoolSlot);
+    await ojsamaToCustom(m, tournament, mappool, slotMod, mappoolMap, beatmapData, link, user, mappoolSlot);
     return;
 }
 
