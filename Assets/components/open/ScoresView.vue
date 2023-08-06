@@ -59,8 +59,8 @@
                         v-for="row in shownQualifierScoreViews"
                         :key="row.ID"
                         :class="{ 
-                            'scores__table--tier1': row.placement <= 8,
-                            'scores__table--tier2': row.placement > 8 && row.placement <= 24,
+                            'scores__table--tier1': row.placement <= 8 && syncView === 'teams',
+                            'scores__table--tier2': row.placement > 8 && row.placement <= 24 && syncView === 'teams',
                         }"
                     >
                         <td>#{{ row.placement }}</td>
