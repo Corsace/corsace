@@ -474,6 +474,8 @@
                     "percentMax": "",
                     "relMax": "",
                     "zScore": "",
+                    "placement": "",
+                    "player": "",
                     "team": "",
                     "best": "",
                     "worst": ""

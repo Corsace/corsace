@@ -19,9 +19,9 @@
             <table class="scores__table">
                 <tbody>
                     <tr>
-                        <th>PLACEMENT</th>
+                        <th> {{ $t('open.qualifiers.scores.nav.placement') }} </th>
                         <th v-if="syncView === 'players'">
-                            PLAYER
+                            {{ $t('open.qualifiers.scores.nav.player') }}
                         </th>
                         <th> {{ $t('open.qualifiers.scores.nav.team') }} </th>
                         <th> {{ $t('open.qualifiers.scores.nav.best') }} </th>

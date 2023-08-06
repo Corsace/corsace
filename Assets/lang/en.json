@@ -540,6 +540,8 @@
                     "percentMax": "%MAX",
                     "relMax": "REL. MAX",
                     "zScore": "Z-SCORE",
+                    "placement": "PLACEMENT",
+                    "player": "PLAYER",
                     "team": "TEAM",
                     "best": "BEST",
                     "worst": "WORST"
