@@ -16,10 +16,10 @@
         <div class="mappool_map_banner__info">
             <div class="mappool_map_banner__song_data">
                 <div class="mappool_map_banner__title">
-                    {{ mappoolMap.beatmap?.beatmapset?.title || mappoolMap.customBeatmap?.title || '' }}
+                    {{ censorMethod(mappoolMap.beatmap?.beatmapset?.title || mappoolMap.customBeatmap?.title || '') }}
                 </div>
                 <div class="mappool_map_banner__artist">
-                    {{ mappoolMap.beatmap?.beatmapset?.artist || mappoolMap.customBeatmap?.artist || '' }}
+                    {{ censorMethod(mappoolMap.beatmap?.beatmapset?.artist || mappoolMap.customBeatmap?.artist || '') }}
                 </div>
             </div>
             <hr class="line--red line--banner">
@@ -37,7 +37,7 @@
                         DIFFICULTY
                     </div>
                     <div class="mappool_map_banner__osu_data_text--truncated">
-                        {{ mappoolMap.beatmap?.difficulty || mappoolMap.customBeatmap?.difficulty || '' }}
+                        {{ censorMethod(mappoolMap.beatmap?.difficulty || mappoolMap.customBeatmap?.difficulty || '') }}
                     </div>
                 </div>
             </div>
@@ -52,6 +52,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import MappoolMapStats from "./MappoolMapStats.vue";
 import { MappoolMap } from "../../../Interfaces/mappool";
+import { censor, profanityFilter } from "../../../Interfaces/comment";
 
 @Component({
     components: {
@@ -63,6 +64,10 @@ export default class MappoolMapBanner extends Vue {
     @Prop({ type: Object }) readonly mappoolMap: MappoolMap | undefined;
     @Prop({ type: String, default: "" }) readonly slotAcronym!: string;
     @Prop({ type: Boolean, default: false }) readonly onlyMap!: boolean;
+
+    censorMethod (input: string): string {
+        return censor(input, profanityFilter);
+    }
 }
 </script>
 

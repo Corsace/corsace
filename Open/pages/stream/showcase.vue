@@ -27,10 +27,10 @@
             <div class="scores__map">
                 <div class="scores__map_data scores__map_data--main">
                     <div class="scores__map_title">
-                        {{ mappoolMap?.beatmap?.beatmapset?.title || mappoolMap?.customBeatmap?.title || '' }}
+                        {{ censorMethod(mappoolMap?.beatmap?.beatmapset?.title || mappoolMap?.customBeatmap?.title || '') }}
                     </div>
                     <div class="scores__map_artist">
-                        {{ mappoolMap?.beatmap?.beatmapset?.artist || mappoolMap?.customBeatmap?.artist || '' }}
+                        {{ censorMethod(mappoolMap?.beatmap?.beatmapset?.artist || mappoolMap?.customBeatmap?.artist || '') }}
                     </div>
                 </div>
                 <div class="scores__map--line" />
@@ -48,7 +48,7 @@
                             DIFFICULTY
                         </div>
                         <div class="scores__map_data_text--truncated">
-                            {{ mappoolMap?.beatmap?.difficulty || mappoolMap?.customBeatmap?.difficulty || '' }}
+                            {{ censorMethod(mappoolMap?.beatmap?.difficulty || mappoolMap?.customBeatmap?.difficulty || '') }}
                         </div>
                     </div>
                 </div>
@@ -69,6 +69,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue";
 import { MappoolMap } from "../../../Interfaces/mappool";
+import { censor, profanityFilter } from "../../../Interfaces/comment";
 
 const streamModule = namespace("stream");
 
@@ -85,6 +86,10 @@ export default class Showcase extends Vue {
     loading = false;
     mapName: string | null = null;
     mappoolMap: MappoolMap | null = null;
+
+    censorMethod (input: string): string {
+        return censor(input, profanityFilter);
+    }
 
     async mounted () {
         this.loading = true;
