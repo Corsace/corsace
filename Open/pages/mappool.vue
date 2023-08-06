@@ -109,7 +109,6 @@ export default class Mappool extends Vue {
 
     mounted () {
         this.mappoolList = this.tournament?.stages.flatMap(s => [...s.mappool, ...s.rounds.flatMap(r => r.mappool)]) || [];
-        this.mappoolList.sort((a, b) => a.ID - b.ID);
         this.index = this.mappoolList.findLastIndex(m => m.isPublic);
     }
 }

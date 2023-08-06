@@ -52,7 +52,7 @@
                     <th>z-Score</th>
                 </tr>
                 <tr
-                    v-for="n in 16"
+                    v-for="n in 24"
                     :key="n"
                 >
                     <td>#{{ n }}</td>
@@ -112,7 +112,7 @@
                 <th>z-Score</th>
             </tr>
             <tr
-                v-for="n in 16"
+                v-for="n in 24"
                 :key="n"
             >
                 <td>#{{ n }}</td>
@@ -394,7 +394,7 @@ $x-axis-height: 25px;
     &_table {
         background-color: #171717;
         font-family: $font-ggsans;
-        font-size: $font-lg;
+        font-size: $font-base;
         border-collapse: collapse;
         box-sizing: border-box;
 
