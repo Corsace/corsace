@@ -1,6 +1,5 @@
 {
     "flag": "https://osu.ppy.sh/images/flags/KR.png",
-    "login": "로그인",
     "mca_ayim": {
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
@@ -21,6 +20,10 @@
             "authOsuComp": "osu!로 로그인되었습니다. 안녕하세요 ",
             "authDiscord": "여기를 클릭하여 디스코드로 로그인하세요",
             "authDiscordComp": "디스코드로 로그인되었습니다. 안녕하세요 "
+        },
+        "banner": {
+            "merch": "",
+            "corsace": ""
         }
     },
     "ayim": {
@@ -32,7 +35,9 @@
             "numberwith": "맵 개수",
             "message": {
                 "2019": "<p>2020</p><p>A Year in Mapping 2019가 2019년 한 해의 기록들과 통계를 들고 돌아왔습니다!</p><p>이 웹사이트를 통해, 지금까지 기록된 모든 통계 및 정보들을 검색할 수 있습니다! 기타 의견 또는 제안사항이 있다면, corsace 서버의 VINXIS에게 연락주세요. (좌하단 링크 참조)</p><p>또한 이제 크라우드펀딩식 코멘트를 지원합니다! 즉, 아무나 원하는 만큼 원하는 매퍼에게 코멘트를 쓸 수 있다는 말이죠!</p><p>하단에 있는 게임모드 중 자신의 주 모드를 선택하여 시작하세요!</p>",
-                "2020": "<p>2021... 작년이 아닌 올해입니다!</p><p>A Year in Mapping 2020가 2020년 한 해의 기록들과 통계를 들고 드디어 제 시간에 찾아왔습니다!</p><p>작년과 마찬가지로, 코멘트는 크라우드펀딩식으로 진행됩니다! 하단에 있는 게임모드 중 자신의 주 모드를 선택하여 시작하세요!</p>"
+                "2020": "<p>2021... 작년이 아닌 올해입니다!</p><p>A Year in Mapping 2020가 2020년 한 해의 기록들과 통계를 들고 드디어 제 시간에 찾아왔습니다!</p><p>작년과 마찬가지로, 코멘트는 크라우드펀딩식으로 진행됩니다! 하단에 있는 게임모드 중 자신의 주 모드를 선택하여 시작하세요!</p>",
+                "2021": "",
+                "2022": ""
             }
         },
         "mapsets": {
@@ -79,7 +84,7 @@
             "lowestAvgSr": "최저 평균 스타레이팅",
             "mappers": "매퍼"
         },
-            "statistics": {
+        "statistics": {
             "numberOf": "수",
             "numberOfMapsWith": "맵 개수",
             "average": "평균"
@@ -95,7 +100,7 @@
             "create": "생성",
             "login": "코멘트를 작성하기 전에 먼저 로그인하세요",
             "visible": "(아직 비공개)",
-	          "notice": "안녕하세요, 코멘트 페이지에는 처음 방문하시는거 같네요! <br> 코멘트는 크라우드 펀딩식으로 진행됩니다! <br> 누구나, 누구에게든지 코멘트를 작성할 수 있다는 말이죠. <br> [YEAR]년에 해당 매퍼가 어떤 일을 했고 커뮤니티에는 어떤 기여를 했는지, 감사를 전하기 위해 이곳에 코멘트를 작성해주세요!"
+            "notice": "안녕하세요, 코멘트 페이지에는 처음 방문하시는거 같네요! <br> 코멘트는 크라우드 펀딩식으로 진행됩니다! <br> 누구나, 누구에게든지 코멘트를 작성할 수 있다는 말이죠. <br> [YEAR]년에 해당 매퍼가 어떤 일을 했고 커뮤니티에는 어떤 기여를 했는지, 감사를 전하기 위해 이곳에 코멘트를 작성해주세요!"
         }
     },
     "mca": {
@@ -103,7 +108,6 @@
             "voting": "투표",
             "nominating": "추천",
             "results": "결과",
-            "undefined": "",
             "mapsetsLabel": "맵셋",
             "mappersLabel": "매퍼",
             "commentsLabel": "코멘트",
@@ -112,7 +116,8 @@
             "stage": {
                 "voting": "투표 기간",
                 "nominating": "추천 기간",
-                "undefined": ""
+                "preparation": "",
+                "stage": ""
             },
             "rankedSets": "랭크맵 수",
             "nominateNow": "지금 추천하세요 !",
@@ -120,20 +125,29 @@
             "daysLeft": "일 남음",
             "message": {
                 "2019": "<p>Mapper's Choice Awards가 2019년 4회차로 돌아왔습니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2019년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>올해는 저희가 새로 완성한 홈페이지를 통해 투표가 더욱 쉬워졌습니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨으면 좋겠습니다!</p>",
-                "2020": "<p>바로 이어서, MCA가 2020년 제 5회차를 맞이합니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2020년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>MCA 2019가 진행되는 동안 받은 제안과 피드백을 바탕으로 올해는 더 매끄러운 진행이 될거라 예상됩니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨!</p>"
+                "2020": "<p>바로 이어서, MCA가 2020년 제 5회차를 맞이합니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2020년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>MCA 2019가 진행되는 동안 받은 제안과 피드백을 바탕으로 올해는 더 매끄러운 진행이 될거라 예상됩니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨!</p>",
+                "2021": "",
+                "2022": ""
             },
             "categories": {
                 "map": "맵 카테고리",
-                "user": "매퍼 카테고리"
+                "user": "매퍼 카테고리",
+                "index": ""
             },
-            "organized": "주최자"
+            "organized": "주최자",
+            "banner": "",
+            "click": "",
+            "welcome": "",
+            "preparation": "",
+            "timeline": "",
+            "viewResults": ""
         },
         "categories": {
             "grandAward": {
                 "name": "그랜드 어워드",
                 "description": "한 해를 빛낸 최고의 비트맵"
             },
-	    "grandStoryboard": {
+            "grandStoryboard": {
                 "name": "그랜드 스토리보드",
                 "description": "한 해를 빛낸 최고의 스토리보드"
             },
@@ -225,7 +239,7 @@
                 "name": "SV",
                 "description": "슬라이더 SV를 가장 잘 활용한 비트맵셋"
             },
-	    "featuredArtist": {
+            "featuredArtist": {
                 "name": "피쳐드 아티스트",
                 "description": "공식 FA 곡으로 제작한 최고의 비트맵셋"
             },
@@ -257,7 +271,7 @@
                 "name": "동화책",
                 "description": "최고의 이야기를 선사하는 스토리보드"
             },
-   	    "technicalTaiko": {
+            "technicalTaiko": {
                 "name": "테크니컬",
                 "description": "복잡한 패턴과 스냅 구성으로 이루어진 최고의 비트맵"
             },
@@ -297,10 +311,6 @@
                 "name": "선구자",
                 "description": "다른 매퍼들에게 막대한 영향력을 끼치고 영감을 불어넣어준 유저"
             },
-            "communityServant": {
-                "name": "서포터",
-                "description": "커뮤니티 전반을 위해 일하고 헌신해온 최고의 유저"
-            },
             "simplisticTaiko": {
                 "name": "심플",
                 "description": "단순한 패턴과 리듬으로 구성된 최고의 비트맵"
@@ -312,6 +322,54 @@
             "antiMetaCatch": {
                 "name": "안티 메타",
                 "description": "특이하거나 기믹성 패턴을 위주로 구성된 최고의 비트맵"
+            },
+            "marathonMan": {
+                "name": "",
+                "description": ""
+            },
+            "longNotes4K": {
+                "name": "",
+                "description": ""
+            },
+            "longNotes7K": {
+                "name": "",
+                "description": ""
+            },
+            "rice": {
+                "name": "",
+                "description": ""
+            },
+            "rice4K": {
+                "name": "",
+                "description": ""
+            },
+            "rice7K": {
+                "name": "",
+                "description": ""
+            },
+            "hybrid4K": {
+                "name": "",
+                "description": ""
+            },
+            "hybrid7K": {
+                "name": "",
+                "description": ""
+            },
+            "mostInnovative": {
+                "name": "",
+                "description": ""
+            },
+            "communityPillar": {
+                "name": "",
+                "description": ""
+            },
+            "unconventionalCtb": {
+                "name": "",
+                "description": ""
+            },
+            "diversity": {
+                "name": "",
+                "description": ""
             }
         },
         "nom_vote": {
@@ -328,23 +386,305 @@
                 "alph": "알파벳순",
                 "asc": "오름차순",
                 "desc": "내림차순",
-                "voteOrder": "투표 순서"
+                "voteOrder": "투표 순서",
+                "valid": "",
+                "invalid": "",
+                "both": "",
+                "all": "",
+                "played": "",
+                "results": "",
+                "voters": ""
             },
-	    "votingOverlay": "안녕하세요! 투표 페이지에는 처음이신 것 같네요. <br> MCA 투표는 <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>선호투표제</a>를 채용합니다! <br> 이는 즉 투표 개수에 제한 없이 여러분이 원하는 만큼 투표할 수 있다는 뜻이죠! <br> 모든 투표는 순위를 가지게 되며, <span class='notice-modal--bold'>첫 투표가 가장 높은 순위를 차지합니다!</span> <br> 투표에 신중한 선택 부탁드리며 MCA [YEAR] 결과를 기대해 봅니다!",
+            "votingOverlay": "안녕하세요! 투표 페이지에는 처음이신 것 같네요. <br> MCA 투표는 <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>선호투표제</a>를 채용합니다! <br> 이는 즉 투표 개수에 제한 없이 여러분이 원하는 만큼 투표할 수 있다는 뜻이죠! <br> 모든 투표는 순위를 가지게 되며, <span class='notice-modal--bold'>첫 투표가 가장 높은 순위를 차지합니다!</span> <br> 투표에 신중한 선택 부탁드리며 MCA [YEAR] 결과를 기대해 봅니다!",
             "hosted": "매퍼",
-            "userID": "유저 ID"
+            "userID": "유저 ID",
+            "select": ""
+        },
+        "results": {
+            "headings": {
+                "placement": "",
+                "map": "",
+                "title": "",
+                "artist": "",
+                "hoster": "",
+                "username": "",
+                "firstChoice": "",
+                "secondThirdChoice": "",
+                "restChoice": ""
+            },
+            "resultsOverlay": ""
         }
     },
     "main": {
-        "header": {
-            "login": "로그인",
-            "register": "회원가입"
+        "construction": {
+            "underConstruction": "",
+            "sorry": "",
+            "development": "",
+            "theTeam": ""
         },
-        "index": {
-            "underConstruction": "공사중",
-            "sorry": "불편을 드려 죄송합니다",
-            "development": "Corsace 웹사이트는 아직 개발중에 있습니다",
-            "theTeam": "Corsace 팀 올림"
+        "merch": {
+            "code": "",
+            "products": ""
+        }
+    },
+    "header": {
+        "welcomeBack": "",
+        "login": "",
+        "register": "",
+        "changeDiscord": "",
+        "logout": ""
+    },
+    "open": {
+        "navbar": {
+            "home": "",
+            "info": "",
+            "qualifiers": "",
+            "teams": "",
+            "schedule": "",
+            "mappool": "",
+            "staff": "",
+            "createTeam": "",
+            "invitations": "",
+            "loginDiscord": "",
+            "teamInvites": "",
+            "noInvites": ""
+        },
+        "footer": {
+            "corsace": "",
+            "twitter": "",
+            "discord": "",
+            "twitch": "",
+            "youtube": ""
+        },
+        "stages": {
+            "qualifiers": "",
+            "round robin": "",
+            "runoff bracket": "",
+            "knockout 1": "",
+            "knockout 2": "",
+            "abbreviations": {
+                "ql": "",
+                "rr": "",
+                "ro": "",
+                "ko1": "",
+                "ko2": ""
+            }
+        },
+        "home": {
+            "description": "",
+            "timeline": "",
+            "presentedBy": "",
+            "registrations": "",
+            "button": {
+                "qualifiersMappool": "",
+                "mappoolDownload": "",
+                "register": "",
+                "registrationsEnd": ""
+            }
+        },
+        "info": {
+            "title": "",
+            "condensed": "",
+            "error": "",
+            "matchInfo": {
+                "matchSize": "",
+                "minPlayers": "",
+                "maxPlayers": "",
+                "pickTimer": "",
+                "readyTimer": "",
+                "order": "",
+                "scoringMethod": "",
+                "type": "",
+                "startDate": "",
+                "endDate": "",
+                "rounds": "",
+                "initialSize": "",
+                "finalSize": ""
+            },
+            "headings": {
+                "mappools": "",
+                "stage": ""
+            },
+            "status": {
+                "notStarted": "",
+                "complete": "",
+                "ongoing": ""
+            },
+            "mappools": {
+                "info": "",
+                "notAvailable": "",
+                "mappackDownload": "",
+                "mappacknotAvailable": ""
+            },
+            "donateToCorsace": "",
+            "supportViaSponsorship": "",
+            "generalInfo": "",
+            "teamStructure": "",
+            "qualifiersProcedures": "",
+            "tournamentStructure": "",
+            "infoGraphic": "",
+            "matchProcedures": "",
+            "reportTournament": "",
+            "subjectToChange": ""
+        },
+        "qualifiers": {
+            "nav": {
+                "mappool": "",
+                "qualifiers": "",
+                "scores": ""
+            },
+            "mappool": {
+                "sheets": "",
+                "mappool": "",
+                "notAvailable": "",
+                "banner": {
+                    "mapper": "",
+                    "difficulty": ""
+                }
+            },
+            "scores": {
+                "nav": {
+                    "sort": "",
+                    "average": "",
+                    "sum": "",
+                    "percentAvg": "",
+                    "relAvg": "",
+                    "percentMax": "",
+                    "relMax": "",
+                    "zScore": "",
+                    "placement": "",
+                    "player": "",
+                    "team": "",
+                    "best": "",
+                    "worst": ""
+                },
+                "category": "",
+                "select": "",
+                "players": "",
+                "teams": ""
+            },
+            "create": "",
+            "error": {
+                "message": "",
+                "pressToClose": ""
+            }
+        },
+        "teams": {
+            "teamsList": "",
+            "error": "",
+            "searchPlaceholder": "",
+            "editTeamInfo": "",
+            "qualifierId": "",
+            "placeholders": {
+                "searchUser": "",
+                "name": "",
+                "abbreviation": ""
+            },
+            "edit": {
+                "teamName": "",
+                "teamAbbreviation": "",
+                "timezone": "",
+                "teamAvatar": "",
+                "errors": {
+                    "size": "",
+                    "type": "",
+                    "invalidImage": "",
+                    "invalidTimezone": "",
+                    "errorAddingTeamAvatar": "",
+                    "invalidName": "",
+                    "contactVinxis": ""
+                },
+                "confirm": {
+                    "deleteTeam": "",
+                    "deleteTeamFinal": "",
+                    "removeMember": "",
+                    "transferManager": "",
+                    "invite": "",
+                    "removeInvite": "",
+                    "unregister": ""
+                },
+                "save": "",
+                "deleteTeam": ""
+            },
+            "headers": {
+                "tournaments": "",
+                "teamStats": "",
+                "teamManager": "",
+                "teamMembers": "",
+                "editTeamMembers": "",
+                "closeTeamMembers": "",
+                "becomeMember": "",
+                "becomeManager": "",
+                "teamInvites": "",
+                "editTeamInvites": "",
+                "closeTeamInvites": "",
+                "qualifier": "",
+                "requiredMessageExact": "",
+                "requiredMessageRange": ""
+            },
+            "registration": {
+                "noRegistration": "",
+                "toPlay": ""
+            },
+            "teamID": "",
+            "member": "",
+            "members": "",
+            "averageBWS": "",
+            "averageRank": "",
+            "averagePP": "",
+            "editQualifierTime": "",
+            "deleteTeam": "",
+            "createJoinQualifier": "",
+            "notRegistered": ""
+        },
+        "create": {
+            "title": "",
+            "info1": "",
+            "info2": "",
+            "teamName": "",
+            "teamLength": "",
+            "teamAcronym": "",
+            "acronymLength": "",
+            "teamTimezone": "",
+            "timezoneText": "",
+            "teamAvatar": "",
+            "upload": "",
+            "fileSizeLimit": "",
+            "fileSizeError": "",
+            "fileTypeError": "",
+            "preview": "",
+            "avatarInfo1": "",
+            "avatarInfo2": "",
+            "avatarInfo3": "",
+            "avatarInfo4": "",
+            "teamManagement": "",
+            "teamManagers": "",
+            "teamManagersFree": "",
+            "selectManager": "",
+            "confirmManager": "",
+            "create": ""
+        },
+        "components": {
+            "openCardTeam": {
+                "rank": "",
+                "teambwsAverage": "",
+                "unregistered": "",
+                "bws": ""
+            },
+            "stageSelector": {
+                "select": "",
+                "stage": ""
+            }
+        },
+        "staff": {
+            "title": "",
+            "notLoggedIn": ""
+        },
+        "status": {
+            "loading": ""
+        },
+        "mappool": {
+            "title": ""
         }
     }
 }

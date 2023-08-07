@@ -1,6 +1,5 @@
 {
     "flag": "https://osu.ppy.sh/images/flags/ES.png",
-    "login": "INICIAR SESIÓN",
     "mca_ayim": {
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
@@ -21,6 +20,10 @@
             "authOsuComp": "Verificación con osu! completada. Saludos ",
             "authDiscord": "¡Haz click aquí para autentificar con Discord!",
             "authDiscordComp": "Verificación con osu! completada. Saludos "
+        },
+        "banner": {
+            "merch": "",
+            "corsace": ""
         }
     },
     "ayim": {
@@ -32,7 +35,9 @@
             "numberwith": "Número de mapas con",
             "message": {
                 "2019": "<p>Saludos 2020.</p><p>A Year in Mapping 2019 ha vuelto para traerte los records del año, junto a las estadísticas detalladas!</p><p>Con este sitio web, ahora podémos agregar la mayor cantidad de información recolectable para todos los años! Si tienes alguna sugerencia, dejaselo saber a VINXIS en el servidor de Corsace (Link en el extremo inferior izquierdo!)</p><p>TAMBIÉN ESTAREMOS RECAUDANDO COMENTARIOS! Eso signifíca que TÚ puedes escribir y subir comentarios hacia cualquier cantidad de mappers que tú quieras!</p><p>Selecciona tu rol preferido utilizando los íconos debajo para comenzar!</p>",
-                "2020": "<p>Saludos 2021... el año correcto esta vez!</p><p>A Year in Mapping 2020 ha regresado nuevamente para traerte los records de ESTE año, junto a las estadísticas detalladas!</p><p>Y nuevamente los comentarios serán definitivamente recolectados! Así que avanza y selecciona tu rol preferido utilizando los íconos debajo para comenzar!</p>"
+                "2020": "<p>Saludos 2021... el año correcto esta vez!</p><p>A Year in Mapping 2020 ha regresado nuevamente para traerte los records de ESTE año, junto a las estadísticas detalladas!</p><p>Y nuevamente los comentarios serán definitivamente recolectados! Así que avanza y selecciona tu rol preferido utilizando los íconos debajo para comenzar!</p>",
+                "2021": "",
+                "2022": ""
             }
         },
         "mapsets": {
@@ -103,7 +108,6 @@
             "voting": "votación",
             "nominating": "nominación",
             "results": "resultados",
-            "undefined": "",
             "mapsetsLabel": "MAPSETS",
             "mappersLabel": "MAPPERS",
             "commentsLabel": "COMENTARIOS",
@@ -112,7 +116,8 @@
             "stage": {
                 "voting": "etapa de votación",
                 "nominating": "etapa de nominación",
-                "undefined": ""
+                "preparation": "",
+                "stage": ""
             },
             "rankedSets": "SETS CLASIFICADOS",
             "nominateNow": "nomina ahora !",
@@ -120,14 +125,22 @@
             "daysLeft": "días restantes",
             "message": {
                 "2019": "<p>Mappers Choice Awards está de vuelta por el round 4 en 2019! Éste es un evento de votación en el que todos los mappers/modders pueden nominar y votar a quien crean que sea el mejor mapa/mapper para cada categoría!</p><p>Nuestra intención es otorgar una nueva perspectiva hacia los mejores mapas del 2019 a través de los ojos de la comunidad de mapping en comparación al Community Choice!</p><p>Este año, hemos trabajado a fondo en este nuevo sitio para facilitarle lo máximo posible a los votantes para que voten y nominen ahora!</p><p>Todos los premios de osu! supporter serán proporcionados por el staff de osu! directamente. 2 meses de supporter para </p><p>Esperamos que participen en este evento tantos participantes como sea posible!</p>",
-                "2020": "<p>Una vez más, Mapper's Choice Awards está de vuelta para finalizar el round 5 con 2020! Éste es un evento de votación en el que todos los mappers/modders pueden nominar y votar a quien crean que sea el mejor mapa/mapper para cada categoría!</p><p>Nuestra intención es otorgar una nueva perspectiva hacia los mejores mapas del 2020 a través de los ojos de la comunidad de mapping en comparación al Community Choice!</p><p>Hemos realizado bastantes cambios y ojalá reparado todos los bugs que fueron encontrados a raiz del MCA 2019 además de cambiar las categorías en base a lo necesario así que esta vez todo debería ir mejor!</p><p>Esperamos que participen en este evento tantos participantes como sea posible!</p>"
+                "2020": "<p>Una vez más, Mapper's Choice Awards está de vuelta para finalizar el round 5 con 2020! Éste es un evento de votación en el que todos los mappers/modders pueden nominar y votar a quien crean que sea el mejor mapa/mapper para cada categoría!</p><p>Nuestra intención es otorgar una nueva perspectiva hacia los mejores mapas del 2020 a través de los ojos de la comunidad de mapping en comparación al Community Choice!</p><p>Hemos realizado bastantes cambios y ojalá reparado todos los bugs que fueron encontrados a raiz del MCA 2019 además de cambiar las categorías en base a lo necesario así que esta vez todo debería ir mejor!</p><p>Esperamos que participen en este evento tantos participantes como sea posible!</p>",
+                "2021": "",
+                "2022": ""
             },
             "categories": {
                 "map": "categoría de mapas",
-                "user": "categoría de usuarios"
+                "user": "categoría de usuarios",
+                "index": ""
             },
             "organized": "ORGANIZADO POR",
-            "preparation": "preparación"
+            "preparation": "preparación",
+            "banner": "",
+            "click": "",
+            "welcome": "",
+            "timeline": "",
+            "viewResults": ""
         },
         "categories": {
             "grandAward": {
@@ -249,6 +262,114 @@
             "featuredArtist": {
                 "name": "Featured Artist",
                 "description": "El mejor set para una canción de un Featured Artist."
+            },
+            "grandStoryboard": {
+                "name": "",
+                "description": ""
+            },
+            "grandStoryboarder": {
+                "name": "",
+                "description": ""
+            },
+            "marathonMan": {
+                "name": "",
+                "description": ""
+            },
+            "longNotes4K": {
+                "name": "",
+                "description": ""
+            },
+            "longNotes7K": {
+                "name": "",
+                "description": ""
+            },
+            "rice": {
+                "name": "",
+                "description": ""
+            },
+            "rice4K": {
+                "name": "",
+                "description": ""
+            },
+            "rice7K": {
+                "name": "",
+                "description": ""
+            },
+            "technicalTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "fastTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "slowTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "hybrid": {
+                "name": "",
+                "description": ""
+            },
+            "hybrid4K": {
+                "name": "",
+                "description": ""
+            },
+            "hybrid7K": {
+                "name": "",
+                "description": ""
+            },
+            "highBPMAlternator": {
+                "name": "",
+                "description": ""
+            },
+            "vanilla": {
+                "name": "",
+                "description": ""
+            },
+            "complex": {
+                "name": "",
+                "description": ""
+            },
+            "unorthodox": {
+                "name": "",
+                "description": ""
+            },
+            "sliderTech": {
+                "name": "",
+                "description": ""
+            },
+            "mostInspiring": {
+                "name": "",
+                "description": ""
+            },
+            "mostInnovative": {
+                "name": "",
+                "description": ""
+            },
+            "communityPillar": {
+                "name": "",
+                "description": ""
+            },
+            "simplisticTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "technicalCatch": {
+                "name": "",
+                "description": ""
+            },
+            "antiMetaCatch": {
+                "name": "",
+                "description": ""
+            },
+            "unconventionalCtb": {
+                "name": "",
+                "description": ""
+            },
+            "diversity": {
+                "name": "",
+                "description": ""
             }
         },
         "nom_vote": {
@@ -266,23 +387,304 @@
                 "alph": "ALF",
                 "asc": "ASC",
                 "desc": "DESC",
-                "voteOrder": "ÓRDEN DE VOTO"
+                "voteOrder": "ÓRDEN DE VOTO",
+                "valid": "",
+                "invalid": "",
+                "both": "",
+                "all": "",
+                "played": "",
+                "results": "",
+                "voters": ""
             },
             "votingOverlay": "Hola! Esta debe ser la primera vez que has navegado por la página de votación! <br> La votación de MCA utiliza <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>un sistema de votacion por orden de preferencia!</a> <br> Esto significa que podrás seleccionar cualquier cantidad de mapas/usuarios para votar! <br> Todos los votos están ordenados por orden de elección, así que <span class='notice-modal--bold'>la primera elección tendrá la mayor prioridad!</span> <br> Tu primera elección contará hasta que pierda la carrera. Luego tu segunda, y tu tercera, la cuarta, e.t.c. <br>  Buena suerte! Esperamos con ansias ver los resultados para MCA [YEAR]",
             "hosted": "ORGANIZADO POR",
             "userID": "ID DE USUARIO"
+        },
+        "results": {
+            "headings": {
+                "placement": "",
+                "map": "",
+                "title": "",
+                "artist": "",
+                "hoster": "",
+                "username": "",
+                "firstChoice": "",
+                "secondThirdChoice": "",
+                "restChoice": ""
+            },
+            "resultsOverlay": ""
         }
     },
     "main": {
-        "header": {
-            "login": "INICIAR SESIÓN",
-            "register": "REGISTRARSE"
+        "construction": {
+            "underConstruction": "",
+            "sorry": "",
+            "development": "",
+            "theTeam": ""
         },
-        "index": {
-            "underConstruction": "bajo construcción",
-            "sorry": "disculpe las molestias",
-            "development": "el sitio de Corsace aún está bajo desarrollo",
-            "theTeam": "el equipo Corsace"
+        "merch": {
+            "code": "",
+            "products": ""
+        }
+    },
+    "header": {
+        "welcomeBack": "",
+        "login": "",
+        "register": "",
+        "changeDiscord": "",
+        "logout": ""
+    },
+    "open": {
+        "navbar": {
+            "home": "",
+            "info": "",
+            "qualifiers": "",
+            "teams": "",
+            "schedule": "",
+            "mappool": "",
+            "staff": "",
+            "createTeam": "",
+            "invitations": "",
+            "loginDiscord": "",
+            "teamInvites": "",
+            "noInvites": ""
+        },
+        "footer": {
+            "corsace": "",
+            "twitter": "",
+            "discord": "",
+            "twitch": "",
+            "youtube": ""
+        },
+        "stages": {
+            "qualifiers": "",
+            "round robin": "",
+            "runoff bracket": "",
+            "knockout 1": "",
+            "knockout 2": "",
+            "abbreviations": {
+                "ql": "",
+                "rr": "",
+                "ro": "",
+                "ko1": "",
+                "ko2": ""
+            }
+        },
+        "home": {
+            "description": "",
+            "timeline": "",
+            "presentedBy": "",
+            "registrations": "",
+            "button": {
+                "qualifiersMappool": "",
+                "mappoolDownload": "",
+                "register": "",
+                "registrationsEnd": ""
+            }
+        },
+        "info": {
+            "title": "",
+            "condensed": "",
+            "error": "",
+            "matchInfo": {
+                "matchSize": "",
+                "minPlayers": "",
+                "maxPlayers": "",
+                "pickTimer": "",
+                "readyTimer": "",
+                "order": "",
+                "scoringMethod": "",
+                "type": "",
+                "startDate": "",
+                "endDate": "",
+                "rounds": "",
+                "initialSize": "",
+                "finalSize": ""
+            },
+            "headings": {
+                "mappools": "",
+                "stage": ""
+            },
+            "status": {
+                "notStarted": "",
+                "complete": "",
+                "ongoing": ""
+            },
+            "mappools": {
+                "info": "",
+                "notAvailable": "",
+                "mappackDownload": "",
+                "mappacknotAvailable": ""
+            },
+            "donateToCorsace": "",
+            "supportViaSponsorship": "",
+            "generalInfo": "",
+            "teamStructure": "",
+            "qualifiersProcedures": "",
+            "tournamentStructure": "",
+            "infoGraphic": "",
+            "matchProcedures": "",
+            "reportTournament": "",
+            "subjectToChange": ""
+        },
+        "qualifiers": {
+            "nav": {
+                "mappool": "",
+                "qualifiers": "",
+                "scores": ""
+            },
+            "mappool": {
+                "sheets": "",
+                "mappool": "",
+                "notAvailable": "",
+                "banner": {
+                    "mapper": "",
+                    "difficulty": ""
+                }
+            },
+            "scores": {
+                "nav": {
+                    "sort": "",
+                    "average": "",
+                    "sum": "",
+                    "percentAvg": "",
+                    "relAvg": "",
+                    "percentMax": "",
+                    "relMax": "",
+                    "zScore": "",
+                    "placement": "",
+                    "player": "",
+                    "team": "",
+                    "best": "",
+                    "worst": ""
+                },
+                "category": "",
+                "select": "",
+                "players": "",
+                "teams": ""
+            },
+            "create": "",
+            "error": {
+                "message": "",
+                "pressToClose": ""
+            }
+        },
+        "teams": {
+            "teamsList": "",
+            "error": "",
+            "searchPlaceholder": "",
+            "editTeamInfo": "",
+            "qualifierId": "",
+            "placeholders": {
+                "searchUser": "",
+                "name": "",
+                "abbreviation": ""
+            },
+            "edit": {
+                "teamName": "",
+                "teamAbbreviation": "",
+                "timezone": "",
+                "teamAvatar": "",
+                "errors": {
+                    "size": "",
+                    "type": "",
+                    "invalidImage": "",
+                    "invalidTimezone": "",
+                    "errorAddingTeamAvatar": "",
+                    "invalidName": "",
+                    "contactVinxis": ""
+                },
+                "confirm": {
+                    "deleteTeam": "",
+                    "deleteTeamFinal": "",
+                    "removeMember": "",
+                    "transferManager": "",
+                    "invite": "",
+                    "removeInvite": "",
+                    "unregister": ""
+                },
+                "save": "",
+                "deleteTeam": ""
+            },
+            "headers": {
+                "tournaments": "",
+                "teamStats": "",
+                "teamManager": "",
+                "teamMembers": "",
+                "editTeamMembers": "",
+                "closeTeamMembers": "",
+                "becomeMember": "",
+                "becomeManager": "",
+                "teamInvites": "",
+                "editTeamInvites": "",
+                "closeTeamInvites": "",
+                "qualifier": "",
+                "requiredMessageExact": "",
+                "requiredMessageRange": ""
+            },
+            "registration": {
+                "noRegistration": "",
+                "toPlay": ""
+            },
+            "teamID": "",
+            "member": "",
+            "members": "",
+            "averageBWS": "",
+            "averageRank": "",
+            "averagePP": "",
+            "editQualifierTime": "",
+            "deleteTeam": "",
+            "createJoinQualifier": "",
+            "notRegistered": ""
+        },
+        "create": {
+            "title": "",
+            "info1": "",
+            "info2": "",
+            "teamName": "",
+            "teamLength": "",
+            "teamAcronym": "",
+            "acronymLength": "",
+            "teamTimezone": "",
+            "timezoneText": "",
+            "teamAvatar": "",
+            "upload": "",
+            "fileSizeLimit": "",
+            "fileSizeError": "",
+            "fileTypeError": "",
+            "preview": "",
+            "avatarInfo1": "",
+            "avatarInfo2": "",
+            "avatarInfo3": "",
+            "avatarInfo4": "",
+            "teamManagement": "",
+            "teamManagers": "",
+            "teamManagersFree": "",
+            "selectManager": "",
+            "confirmManager": "",
+            "create": ""
+        },
+        "components": {
+            "openCardTeam": {
+                "rank": "",
+                "teambwsAverage": "",
+                "unregistered": "",
+                "bws": ""
+            },
+            "stageSelector": {
+                "select": "",
+                "stage": ""
+            }
+        },
+        "staff": {
+            "title": "",
+            "notLoggedIn": ""
+        },
+        "status": {
+            "loading": ""
+        },
+        "mappool": {
+            "title": ""
         }
     }
 }

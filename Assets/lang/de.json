@@ -1,6 +1,5 @@
 {
     "flag": "https://osu.ppy.sh/images/flags/DE.png",
-    "login": "EINLOGGEN",
     "mca_ayim": {
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
@@ -14,15 +13,17 @@
         "login": {
             "login": "einloggen",
             "message": {
-
                 "1": "Scheinbar bist du nicht eingeloggt!<br>Logge dich einfach über deinen osu!-Account ein und du kannst sofort anfangen, abzustimmen / zu nominieren!",
                 "2": "Du kannst dich danach auch noch bei Discord anmelden, aber es ist <b>nicht notwending</b> um nominieren/abstimmen zu können.<br>Discord Login <b>ist erfordert</b> für an MCA/AYIM arbeitendes Personal.</span>"
-
             },
             "authOsu": "Klicke hier, um dich über osu! zu authentifizieren",
             "authOsuComp": "osu! Verifizierung abgeschlossen. Hallo ",
             "authDiscord": "Klicke hier, um dich über Discord zu authentifizieren",
             "authDiscordComp": "Discord Verifizierung abgeschlossen. Hallo "
+        },
+        "banner": {
+            "merch": "",
+            "corsace": ""
         }
     },
     "ayim": {
@@ -33,10 +34,10 @@
             "numberof": "Anzahl von",
             "numberwith": "Anzahl von Maps mit",
             "message": {
-
                 "2019": "Hallo 2020. A Year in Mapping 2019 ist zurück um euch die Rekordbrüche des Jahres und detailierte Statistiken zu bringen! Mit dieser Website können wir jetzt so viel Informationen für alle Jahre sammeln wie wir wollen! Wenn ihr Vorschläge habt könnt ihre diese VINXIS im Corsace Server mitteilen (Link links unten)</p><p>ZUSÄTZLICH KANN JEDER KOMMENTARE SCHREIBEN! Das heißt, dass DU einem Kommentar für so viele Mapper wie du willst schreiben und einreichen kannst! </p><p> Wähle deinen bevorzugten Mode mit den Icons unten aus um loszulegen!</p>",
-                "2020": "Hallo 2021... dieses Mal das korrekte Jahr!</p><p>A Year in Mapping 2020 ist direkt nochmal da, um euch die Rekordbrüche und Statistiken DIESES Jahres auch noch zu bringen!</p><p>Und auch diese mal sind die Kommentare wieder für jeden frei verfügbar! Also, wählt euren bevorzugen Mode mit den Icons unten aus um loszulegen!"
-
+                "2020": "Hallo 2021... dieses Mal das korrekte Jahr!</p><p>A Year in Mapping 2020 ist direkt nochmal da, um euch die Rekordbrüche und Statistiken DIESES Jahres auch noch zu bringen!</p><p>Und auch diese mal sind die Kommentare wieder für jeden frei verfügbar! Also, wählt euren bevorzugen Mode mit den Icons unten aus um loszulegen!",
+                "2021": "",
+                "2022": ""
             }
         },
         "mapsets": {
@@ -44,11 +45,9 @@
             "playcount": "PLAYS",
             "favourites": "FAVORITEN",
             "length": "LÄNGE",
-
             "difficulties": "SCHWIERIGKEITEN",
             "totalRanked": "RANKED GESAMT",
             "totalDiff": "SCHWIERIGKEITEN GESAMT",
-
             "submitDates": "DATUM DER ERSTELLUNG",
             "starRatings": "SR",
             "approachRate": "AR",
@@ -60,12 +59,9 @@
             "spinners": "SPINNERS",
             "sliders": "SLIDERS",
             "circles": "CIRCLES",
-
             "avgSpinnersPerDiff": "DURCHSCHNITTLICHE ANZAHL VON SPINNERN PRO SCHWIERIGKEIT",
             "avgSlidersPerDiff": "DURCHSCHNITTLICHE ANZAHL VON SLIDERN PRO SCHWIERIGKEIT",
             "avgCirclesPerDiff": "DURCHSCHNITTLICHE ANZAHL VON CIRCLES PRO SCHWIERIGKEIT",
-
-
             "highestSr": "HÖCHSTES SR",
             "lowestSr": "NIEDRIGSTES SR"
         },
@@ -74,19 +70,15 @@
             "mostRanked": "DIE MEISTEN RANKED MAPS",
             "mostFavs": "DIE MEISTEN FAVORITEN",
             "mostPlayed": "AM MEISTEN GESPIELT",
-
             "totalMappers": "MAPPER INSGESAMT",
-
             "newMapperAges": "ALTER VON NEUEN MAPPERN",
             "mapperAges": "ALTER VON MAPPERN",
             "mapsPerMapperAges": "MAPS PRO MAPPER PRO ALTER",
             "bng": "BNG",
             "nat": "NAT",
-
             "mostDiffs": "DIE MEISTEN SCHWIERIGKEITEN",
             "mostFavsExclHybrid": "DIE MEISTEN FAVORITEN (OHNE HYBRID-SETS)",
             "uniqueMappers": "MAPPER INSGESAMT",
-
             "newMappers": "NEUE MAPPER",
             "highestAvgSr": "HÖCHSTES DURCHSCHNITTLICHES SR",
             "lowestAvgSr": "NIEDRIGSTES DURCHSCHNITTLICHES SR",
@@ -94,9 +86,7 @@
         },
         "comments": {
             "name": "KOMMENTARE",
-
             "info": "Alle Kommentare werden nach Bekanntgabe der MCA Ergebnisse veröffentlicht! Du kannst bis dahin deine eigenen Kommentare einreichen.",
-
             "viewSubmit": "Kommentare anschauen/einreichen",
             "update": "Updaten",
             "remove": "Entfernen",
@@ -104,7 +94,8 @@
             "login": "Logge dich ein um einem Kommentar zu erstellen!",
             "visible": "(noch nicht sichtbar)",
             "search": "Suche nach einem Mapper",
-            "writeHere": "Schreibe einen neuen Kommentar für diesen Mapper hier!"
+            "writeHere": "Schreibe einen neuen Kommentar für diesen Mapper hier!",
+            "notice": ""
         },
         "statistics": {
             "numberOf": "Anzahl von",
@@ -117,7 +108,6 @@
             "voting": "abstimmen",
             "nominating": "nominieren",
             "results": "ergebnisse",
-            "undefined": "",
             "mapsetsLabel": "MAPSETS",
             "mappersLabel": "MAPPER",
             "commentsLabel": "KOMMENTARE",
@@ -125,23 +115,32 @@
             "statisticsLabel": "STATISTIKEN",
             "stage": {
                 "voting": "Abstimmungsphase",
-                "nominating": "Nominierungsphase"
+                "nominating": "Nominierungsphase",
+                "preparation": "",
+                "stage": ""
             },
             "rankedSets": "RANKED SETS",
             "nominateNow": "jetzt nominieren !",
             "voteNow": "jetzt abstimmen !",
-
             "daysLeft": "Tage übrig",
             "message": {
                 "2019": "Mapper's Choice Awards ist zurück für Runde 4 in 2019! Hierbei handelt es sich um eine Abstimmung, bei der jeder Mapper/Modder seine Favoriten nominieren bzw. für sie stimmen kann!</p><p>Unser Ziel ist es, durch die Augen der Mapping Community eine neue Perspektive auf die besten Maps von 2019 zu bringen!</p><p>Dieses Jahr haben wir sogar eine komplett neue Website, um das Nominieren und Abstimmen so einfach wie möglich zu machen!</p><p>Alle osu!supporter Preise werden von osu! selbst bereitgestellt. 2 Monate für die Gewinner von individuellen Kategorien, und 6 Monate für die Gewinner der Hauptpreise!</p><p>Wir hoffen, dass so viele wie möglich an diesem Event teilnehmen! Falls du irgenwelche Bugs oder Probleme mit der Website findest, teile es VINXIS im corsace Discord Server mit!</p>",
-                "2020": "Und direkt nochmal, Mapper's Choice Awards ist zurück um es mit Runde 5 in 2020 abzuschließen! Hierbei handelt es sich um eine Abstimmung, bei der jeder Mapper/Modder seine Favoriten nominieren bzw. für sie stimmen kann!</p><p>Unser Ziel ist es, durch die Augen der Mapping Community eine neue Perspektive auf die besten Maps von 2019 zu bringen!</p><p>Wir haben viele Änderungen vorgenommen und hoffentlich alle Bugs, die währen MCA 2019 gefunden worden, behoben. Zusätzlich haben wir Kategorien wie nötig geändert, was bedeutet dass es dieses mal viel glatter gehen sollte!</p><p>Wir hoffen, dass so viele wie möglich an diesem Event teilnehmen!"
+                "2020": "Und direkt nochmal, Mapper's Choice Awards ist zurück um es mit Runde 5 in 2020 abzuschließen! Hierbei handelt es sich um eine Abstimmung, bei der jeder Mapper/Modder seine Favoriten nominieren bzw. für sie stimmen kann!</p><p>Unser Ziel ist es, durch die Augen der Mapping Community eine neue Perspektive auf die besten Maps von 2019 zu bringen!</p><p>Wir haben viele Änderungen vorgenommen und hoffentlich alle Bugs, die währen MCA 2019 gefunden worden, behoben. Zusätzlich haben wir Kategorien wie nötig geändert, was bedeutet dass es dieses mal viel glatter gehen sollte!</p><p>Wir hoffen, dass so viele wie möglich an diesem Event teilnehmen!",
+                "2021": "",
+                "2022": ""
             },
             "categories": {
                 "map": "Map Kategorien",
-                "user": "User Kategorien"
+                "user": "User Kategorien",
+                "index": ""
             },
-            "organized": "ORGANISIERT VON"
-
+            "organized": "ORGANISIERT VON",
+            "banner": "",
+            "click": "",
+            "welcome": "",
+            "preparation": "",
+            "timeline": "",
+            "viewResults": ""
         },
         "categories": {
             "grandAward": {
@@ -154,7 +153,6 @@
             },
             "hitsounding": {
                 "name": "Hitsounding",
-
                 "description": "Die besten Hitsounds."
             },
             "collab": {
@@ -164,7 +162,6 @@
             "simple": {
                 "name": "Simpel",
                 "description": "Das beste Set mit einem Insane als höchste Schwierigkeit."
-
             },
             "highBPM": {
                 "name": "Hohe BPM",
@@ -172,9 +169,7 @@
             },
             "smallCircles": {
                 "name": "Kleine Circles",
-
                 "description": "Das beste Set mit einer höchsten Schwierigkeit mit CS5 oder kleiner."
-
             },
             "heavy13": {
                 "name": "Viel 1/3",
@@ -197,9 +192,7 @@
                 "description": "Die Person, die die am besten hitsoundet."
             },
             "mostPromising": {
-
                 "name": "Am vielversprechensten",
-
                 "description": "Der beste Mapper, der dieses Jahr sein erstes Set gerankt hat."
             },
             "mostInfluential": {
@@ -224,18 +217,15 @@
             },
             "highBPMTaiko": {
                 "name": "Hohe BPM",
-
                 "description": "Das beste Set über 240 BPM."
             },
             "lowBPMTaiko": {
                 "name": "Niedrige BPM",
                 "description": "Das beste set unter 140 BPM."
-
             },
             "simplistic": {
                 "name": "Simpel",
                 "description": "Das beste simple Set."
-
             },
             "sliderVelocity": {
                 "name": "SV",
@@ -244,7 +234,6 @@
             "longNotes": {
                 "name": "LNs",
                 "description": "Das beste Set mit häufiger Verwendung von LNs."
-
             },
             "antiMeta": {
                 "name": "Anti-Meta",
@@ -253,7 +242,6 @@
             "7K": {
                 "name": "7K spezifisch",
                 "description": "Das beste auf 7K basierende Set."
-
             },
             "technical": {
                 "name": "Technisch",
@@ -270,7 +258,118 @@
             "narrative": {
                 "name": "Erzählung",
                 "description": "Das beste Storyboard, das eine Geschichte erzählt."
-
+            },
+            "grandStoryboard": {
+                "name": "",
+                "description": ""
+            },
+            "grandStoryboarder": {
+                "name": "",
+                "description": ""
+            },
+            "marathonMan": {
+                "name": "",
+                "description": ""
+            },
+            "featuredArtist": {
+                "name": "",
+                "description": ""
+            },
+            "longNotes4K": {
+                "name": "",
+                "description": ""
+            },
+            "longNotes7K": {
+                "name": "",
+                "description": ""
+            },
+            "rice": {
+                "name": "",
+                "description": ""
+            },
+            "rice4K": {
+                "name": "",
+                "description": ""
+            },
+            "rice7K": {
+                "name": "",
+                "description": ""
+            },
+            "technicalTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "fastTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "slowTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "hybrid": {
+                "name": "",
+                "description": ""
+            },
+            "hybrid4K": {
+                "name": "",
+                "description": ""
+            },
+            "hybrid7K": {
+                "name": "",
+                "description": ""
+            },
+            "highBPMAlternator": {
+                "name": "",
+                "description": ""
+            },
+            "vanilla": {
+                "name": "",
+                "description": ""
+            },
+            "complex": {
+                "name": "",
+                "description": ""
+            },
+            "unorthodox": {
+                "name": "",
+                "description": ""
+            },
+            "sliderTech": {
+                "name": "",
+                "description": ""
+            },
+            "mostInspiring": {
+                "name": "",
+                "description": ""
+            },
+            "mostInnovative": {
+                "name": "",
+                "description": ""
+            },
+            "communityPillar": {
+                "name": "",
+                "description": ""
+            },
+            "simplisticTaiko": {
+                "name": "",
+                "description": ""
+            },
+            "technicalCatch": {
+                "name": "",
+                "description": ""
+            },
+            "antiMetaCatch": {
+                "name": "",
+                "description": ""
+            },
+            "unconventionalCtb": {
+                "name": "",
+                "description": ""
+            },
+            "diversity": {
+                "name": "",
+                "description": ""
             }
         },
         "nom_vote": {
@@ -287,23 +386,305 @@
                 "alph": "ALPH",
                 "asc": "ASC",
                 "desc": "DESC",
-                "voteOrder": "Stimmenreihenfolge"
+                "voteOrder": "Stimmenreihenfolge",
+                "valid": "",
+                "invalid": "",
+                "both": "",
+                "all": "",
+                "played": "",
+                "results": "",
+                "voters": ""
             },
             "hosted": "HOSTED BY",
             "userID": "USER ID",
-            "select": "Bitte wähle eine Kategorie aus!"
+            "select": "Bitte wähle eine Kategorie aus!",
+            "votingOverlay": ""
+        },
+        "results": {
+            "headings": {
+                "placement": "",
+                "map": "",
+                "title": "",
+                "artist": "",
+                "hoster": "",
+                "username": "",
+                "firstChoice": "",
+                "secondThirdChoice": "",
+                "restChoice": ""
+            },
+            "resultsOverlay": ""
         }
     },
     "main": {
-        "header": {
-            "login": "EINLOGGEN",
-            "register": "REGISTRIEREN"
+        "construction": {
+            "underConstruction": "",
+            "sorry": "",
+            "development": "",
+            "theTeam": ""
         },
-        "index": {
-            "underConstruction": "Wird entwickelt",
-            "sorry": "Wir bitten um Entschuldigung für die Unangenehmlichkeiten",
-            "development": "die Corsace Website ist noch in der Entwicklung",
-            "theTeam": "das Corsace Team"
+        "merch": {
+            "code": "",
+            "products": ""
+        }
+    },
+    "header": {
+        "welcomeBack": "",
+        "login": "",
+        "register": "",
+        "changeDiscord": "",
+        "logout": ""
+    },
+    "open": {
+        "navbar": {
+            "home": "",
+            "info": "",
+            "qualifiers": "",
+            "teams": "",
+            "schedule": "",
+            "mappool": "",
+            "staff": "",
+            "createTeam": "",
+            "invitations": "",
+            "loginDiscord": "",
+            "teamInvites": "",
+            "noInvites": ""
+        },
+        "footer": {
+            "corsace": "",
+            "twitter": "",
+            "discord": "",
+            "twitch": "",
+            "youtube": ""
+        },
+        "stages": {
+            "qualifiers": "",
+            "round robin": "",
+            "runoff bracket": "",
+            "knockout 1": "",
+            "knockout 2": "",
+            "abbreviations": {
+                "ql": "",
+                "rr": "",
+                "ro": "",
+                "ko1": "",
+                "ko2": ""
+            }
+        },
+        "home": {
+            "description": "",
+            "timeline": "",
+            "presentedBy": "",
+            "registrations": "",
+            "button": {
+                "qualifiersMappool": "",
+                "mappoolDownload": "",
+                "register": "",
+                "registrationsEnd": ""
+            }
+        },
+        "info": {
+            "title": "",
+            "condensed": "",
+            "error": "",
+            "matchInfo": {
+                "matchSize": "",
+                "minPlayers": "",
+                "maxPlayers": "",
+                "pickTimer": "",
+                "readyTimer": "",
+                "order": "",
+                "scoringMethod": "",
+                "type": "",
+                "startDate": "",
+                "endDate": "",
+                "rounds": "",
+                "initialSize": "",
+                "finalSize": ""
+            },
+            "headings": {
+                "mappools": "",
+                "stage": ""
+            },
+            "status": {
+                "notStarted": "",
+                "complete": "",
+                "ongoing": ""
+            },
+            "mappools": {
+                "info": "",
+                "notAvailable": "",
+                "mappackDownload": "",
+                "mappacknotAvailable": ""
+            },
+            "donateToCorsace": "",
+            "supportViaSponsorship": "",
+            "generalInfo": "",
+            "teamStructure": "",
+            "qualifiersProcedures": "",
+            "tournamentStructure": "",
+            "infoGraphic": "",
+            "matchProcedures": "",
+            "reportTournament": "",
+            "subjectToChange": ""
+        },
+        "qualifiers": {
+            "nav": {
+                "mappool": "",
+                "qualifiers": "",
+                "scores": ""
+            },
+            "mappool": {
+                "sheets": "",
+                "mappool": "",
+                "notAvailable": "",
+                "banner": {
+                    "mapper": "",
+                    "difficulty": ""
+                }
+            },
+            "scores": {
+                "nav": {
+                    "sort": "",
+                    "average": "",
+                    "sum": "",
+                    "percentAvg": "",
+                    "relAvg": "",
+                    "percentMax": "",
+                    "relMax": "",
+                    "zScore": "",
+                    "placement": "",
+                    "player": "",
+                    "team": "",
+                    "best": "",
+                    "worst": ""
+                },
+                "category": "",
+                "select": "",
+                "players": "",
+                "teams": ""
+            },
+            "create": "",
+            "error": {
+                "message": "",
+                "pressToClose": ""
+            }
+        },
+        "teams": {
+            "teamsList": "",
+            "error": "",
+            "searchPlaceholder": "",
+            "editTeamInfo": "",
+            "qualifierId": "",
+            "placeholders": {
+                "searchUser": "",
+                "name": "",
+                "abbreviation": ""
+            },
+            "edit": {
+                "teamName": "",
+                "teamAbbreviation": "",
+                "timezone": "",
+                "teamAvatar": "",
+                "errors": {
+                    "size": "",
+                    "type": "",
+                    "invalidImage": "",
+                    "invalidTimezone": "",
+                    "errorAddingTeamAvatar": "",
+                    "invalidName": "",
+                    "contactVinxis": ""
+                },
+                "confirm": {
+                    "deleteTeam": "",
+                    "deleteTeamFinal": "",
+                    "removeMember": "",
+                    "transferManager": "",
+                    "invite": "",
+                    "removeInvite": "",
+                    "unregister": ""
+                },
+                "save": "",
+                "deleteTeam": ""
+            },
+            "headers": {
+                "tournaments": "",
+                "teamStats": "",
+                "teamManager": "",
+                "teamMembers": "",
+                "editTeamMembers": "",
+                "closeTeamMembers": "",
+                "becomeMember": "",
+                "becomeManager": "",
+                "teamInvites": "",
+                "editTeamInvites": "",
+                "closeTeamInvites": "",
+                "qualifier": "",
+                "requiredMessageExact": "",
+                "requiredMessageRange": ""
+            },
+            "registration": {
+                "noRegistration": "",
+                "toPlay": ""
+            },
+            "teamID": "",
+            "member": "",
+            "members": "",
+            "averageBWS": "",
+            "averageRank": "",
+            "averagePP": "",
+            "editQualifierTime": "",
+            "deleteTeam": "",
+            "createJoinQualifier": "",
+            "notRegistered": ""
+        },
+        "create": {
+            "title": "",
+            "info1": "",
+            "info2": "",
+            "teamName": "",
+            "teamLength": "",
+            "teamAcronym": "",
+            "acronymLength": "",
+            "teamTimezone": "",
+            "timezoneText": "",
+            "teamAvatar": "",
+            "upload": "",
+            "fileSizeLimit": "",
+            "fileSizeError": "",
+            "fileTypeError": "",
+            "preview": "",
+            "avatarInfo1": "",
+            "avatarInfo2": "",
+            "avatarInfo3": "",
+            "avatarInfo4": "",
+            "teamManagement": "",
+            "teamManagers": "",
+            "teamManagersFree": "",
+            "selectManager": "",
+            "confirmManager": "",
+            "create": ""
+        },
+        "components": {
+            "openCardTeam": {
+                "rank": "",
+                "teambwsAverage": "",
+                "unregistered": "",
+                "bws": ""
+            },
+            "stageSelector": {
+                "select": "",
+                "stage": ""
+            }
+        },
+        "staff": {
+            "title": "",
+            "notLoggedIn": ""
+        },
+        "status": {
+            "loading": ""
+        },
+        "mappool": {
+            "title": ""
         }
     }
 }

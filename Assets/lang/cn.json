@@ -1,6 +1,5 @@
 {
     "flag": "https://osu.ppy.sh/images/flags/CN.png",
-    "login": "登录",
     "mca_ayim": {
         "header": {
             "mca": "谱师之选奖 <br> (MCA)",
@@ -21,9 +20,13 @@
             "authOsuComp": "osu! 认证通过。你好，",
             "authDiscord": "点击这里通过 Discord 登录",
             "authDiscordComp": "Discord 认证通过。你好，"
+        },
+        "banner": {
+            "merch": "",
+            "corsace": ""
         }
     },
-	"ayim": {
+    "ayim": {
         "main": {
             "records": "纪录",
             "statistics": "统计数据",
@@ -34,7 +37,7 @@
                 "2019": "<p>时间来到 2020 年。</p><p>做谱又一年：2019，回归！这里有当年做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>通过本网站，只要是我们能够获得的信息，我们想加多少就加多少！如果你有任何建议（或者发现了任何网站 Bug），请在 Corsace Discord 群联系 VINXIS（链接见左下方）！</p><p><b>我们目前还在公开征集评论！</b>这意味着只要你愿意，<b>你本人</b>可以为任意多的谱师撰写并发表评论！</p><p>在下方的图标中选择你关心的游戏模式以开始！</p>",
                 "2020": "<p>时间来到 2021 年...这下对了吧！</p><p>做谱又一年：2020，再次回归！这里有<b>今年</b>做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>并且同样地，我们依旧在公开征集评论！在下方的图标中选择你关心的游戏模式以开始！</p>",
                 "2021": "<p>现在是 2022 年！</p> <p>在做谱又一年：2021 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！</p>",
-		"2022": "<p>欢迎来到 2023 年！</p> <p>在做谱又一年：2022 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！这次总算（差不多）如期公布了！</p>"
+                "2022": "<p>欢迎来到 2023 年！</p> <p>在做谱又一年：2022 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！这次总算（差不多）如期公布了！</p>"
             }
         },
         "mapsets": {
@@ -113,7 +116,9 @@
             "statisticsLabel": "统计",
             "stage": {
                 "voting": "投票阶段",
-                "nominating": "提名阶段"
+                "nominating": "提名阶段",
+                "preparation": "",
+                "stage": ""
             },
             "rankedSets": "上架（Ranked）谱面",
             "nominateNow": "现在提名！",
@@ -124,20 +129,25 @@
                 "2019": "<p>2019 年，第四届谱师之选奖（Mapper's Choice Awards），归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2019 年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>今年，我们尽全力制作了一个网站，以便符合要求的你能够尽可能轻松地立刻开始提名和投票！</p><p>所有 osu! 支持者（supporter）奖励将直接由 osu! 工作人员给出。每个大类下的获奖者将获得 2 个月的 supporter 奖励，而大奖获奖者将获得 6 个月的 supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！如果你对本网站有任何建议或发现了本网站的 Bug，请在 Corsace Discord 群内联系 VINXIS！</p>",
                 "2020": "<p>2020 年，第五届谱师之选奖（Mapper's Choice Awards），再次归来! 在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2020 年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>我们在 MCA 2019 的基础上网站进行了（希望是）彻底的 Debug，并对部分分类进行了更改，所以现在的网站应该如丝般顺滑！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>",
                 "2021": "<p>2021 年，第六届谱师之选奖（Mapper's Choice Awards），又一次归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>所有 osu! supporter 奖品均由 osu! 工作人员直接提供。获得各分类小奖第一名的谱师将收到 2 个月的 osu! supporter 奖励，而获得各项大奖的谱师将获得 4 个月的 osu! supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>",
-		"2022": "<p>新一届谱师之选奖（Mapper's Choice Awards）再一次拉开了帷幕！（这一届基本可以说是如期而至！）在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>所有 osu! supporter 奖品均由 osu! 工作人员直接提供。获得各分类小奖第一名的谱师将收到 2 个月的 osu! supporter 奖励，而获得各项大奖的谱师将获得 4 个月的 osu! supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>"
+                "2022": "<p>新一届谱师之选奖（Mapper's Choice Awards）再一次拉开了帷幕！（这一届基本可以说是如期而至！）在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>所有 osu! supporter 奖品均由 osu! 工作人员直接提供。获得各分类小奖第一名的谱师将收到 2 个月的 osu! supporter 奖励，而获得各项大奖的谱师将获得 4 个月的 osu! supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>"
             },
             "categories": {
                 "map": "谱面分类",
-                "user": "谱师分类"
+                "user": "谱师分类",
+                "index": ""
             },
-            "organized": "组织者："
+            "organized": "组织者：",
+            "banner": "",
+            "click": "",
+            "welcome": "",
+            "timeline": ""
         },
         "categories": {
             "grandAward": {
                 "name": "大奖",
                 "description": "就是你了！"
             },
-	    "grandStoryboard": {
+            "grandStoryboard": {
                 "name": "最佳故事板",
                 "description": "最佳故事板（Storyboard）。"
             },
@@ -149,7 +159,7 @@
                 "name": "最佳马拉松谱面",
                 "description": "总有效时长 5 分钟以上的最佳谱面。"
             },
-	    "marathonMan": {
+            "marathonMan": {
                 "name": "最佳迷你马拉松谱面",
                 "description": "总有效时长 4 分钟以上的最佳谱面。"
             },
@@ -241,7 +251,7 @@
                 "name": "最佳 LN 谱面",
                 "description": "大量使用 LN 的最佳谱面。"
             },
-	    "longNotes4K": {
+            "longNotes4K": {
                 "name": "最佳 4K LN 谱面",
                 "description": "大量使用 LN 的最佳 4K 谱面。"
             },
@@ -285,7 +295,7 @@
                 "name": "最佳叙事性",
                 "description": "叙事性最强的故事板。"
             },
-	    "technicalTaiko": {
+            "technicalTaiko": {
                 "name": "最佳 Technical 谱面",
                 "description": "以使用复杂梗和 snap 为特色的最佳谱面。"
             },
@@ -301,7 +311,7 @@
                 "name": "最佳混合（Hybrid）谱面",
                 "description": "大量使用 LN 和 rice 的最佳谱面。"
             },
-	    "hybrid4K": {
+            "hybrid4K": {
                 "name": "最佳 4K 混合（Hybrid）谱面",
                 "description": "大量使用 LN 和 rice 的最佳 4K 谱面。"
             },
@@ -333,7 +343,7 @@
                 "name": "最具启发奖",
                 "description": "给予了他人最大影响和启发的人。"
             },
-	    "mostInnovative": {
+            "mostInnovative": {
                 "name": "最具创新精神奖",
                 "description": "给予了他人最大影响和启发的人。"
             },
@@ -353,11 +363,11 @@
                 "name": "最佳非主流谱面",
                 "description": "使用非传统 / 神秘梗的最佳谱面。"
             },
-	    "unconventionalCtb": {
+            "unconventionalCtb": {
                 "name": "最佳非常规 AR / CS 谱面",
                 "description": "具有不常见 AR (≤8.5 左右）或 CS (大约 ≥5 且 ≤3) 的最佳谱面。"
             },
-	    "diversity": {
+            "diversity": {
                 "name": "最具有多样性的谱面",
                 "description": "风格多变、能够全面测试玩家各项技能的谱面当中最优秀的那一张"
             }
@@ -386,11 +396,11 @@
                 "results": "结果",
                 "voters": "投票者"
             },
-	        "votingOverlay": "你好！或许这是你第一次来到投票界面！<br>MCA 的投票基于<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>排序复选法</a>进行！<br>这意味着，你可以为任意多的谱面/用户进行投票！<br>你的每一个选择都会被排序，因此<span class='notice-modal--bold'>你的第一候选具有最高的优先级！</span><br>直到因为被选为第一候选的人数最少而被淘汰，或因为最终得票超过半数而被判为获得第一为止，你的第一候选都是合法的。当你的第一候选被淘汰时，你投给TA的票将转给在此时你的未淘汰候选者中顺位最高的那一个。<br>祝各位好运，让我们共同期待 MCA [YEAR] 的最终结果！",
+            "votingOverlay": "你好！或许这是你第一次来到投票界面！<br>MCA 的投票基于<a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>排序复选法</a>进行！<br>这意味着，你可以为任意多的谱面/用户进行投票！<br>你的每一个选择都会被排序，因此<span class='notice-modal--bold'>你的第一候选具有最高的优先级！</span><br>直到因为被选为第一候选的人数最少而被淘汰，或因为最终得票超过半数而被判为获得第一为止，你的第一候选都是合法的。当你的第一候选被淘汰时，你投给TA的票将转给在此时你的未淘汰候选者中顺位最高的那一个。<br>祝各位好运，让我们共同期待 MCA [YEAR] 的最终结果！",
             "hosted": "谱面拥有者",
             "userID": "用户 ID"
         },
-	    "results": {
+        "results": {
             "headings": {
                 "placement": "排名",
                 "map": "谱面",
@@ -406,11 +416,6 @@
         }
     },
     "main": {
-        "header": {
-            "login": "登录",
-            "register": "注册",
-            "changeDiscord": "修改 Discord"
-        },
         "construction": {
             "underConstruction": "施工中",
             "sorry": "抱歉给你带来不便",
@@ -420,6 +425,266 @@
         "merch": {
             "code": "Tap Trio - Corsace 联名款",
             "products": "限量发售"
+        }
+    },
+    "header": {
+        "welcomeBack": "",
+        "login": "",
+        "register": "",
+        "changeDiscord": "",
+        "logout": ""
+    },
+    "open": {
+        "navbar": {
+            "home": "",
+            "info": "",
+            "qualifiers": "",
+            "teams": "",
+            "schedule": "",
+            "mappool": "",
+            "staff": "",
+            "createTeam": "",
+            "invitations": "",
+            "loginDiscord": "",
+            "teamInvites": "",
+            "noInvites": ""
+        },
+        "footer": {
+            "corsace": "",
+            "twitter": "",
+            "discord": "",
+            "twitch": "",
+            "youtube": ""
+        },
+        "stages": {
+            "qualifiers": "",
+            "round robin": "",
+            "runoff bracket": "",
+            "knockout 1": "",
+            "knockout 2": "",
+            "abbreviations": {
+                "ql": "",
+                "rr": "",
+                "ro": "",
+                "ko1": "",
+                "ko2": ""
+            }
+        },
+        "home": {
+            "description": "",
+            "timeline": "",
+            "presentedBy": "",
+            "registrations": "",
+            "button": {
+                "qualifiersMappool": "",
+                "mappoolDownload": "",
+                "register": "",
+                "registrationsEnd": ""
+            }
+        },
+        "info": {
+            "title": "",
+            "condensed": "",
+            "error": "",
+            "matchInfo": {
+                "matchSize": "",
+                "minPlayers": "",
+                "maxPlayers": "",
+                "pickTimer": "",
+                "readyTimer": "",
+                "order": "",
+                "scoringMethod": "",
+                "type": "",
+                "startDate": "",
+                "endDate": "",
+                "rounds": "",
+                "initialSize": "",
+                "finalSize": ""
+            },
+            "headings": {
+                "mappools": "",
+                "stage": ""
+            },
+            "status": {
+                "notStarted": "",
+                "complete": "",
+                "ongoing": ""
+            },
+            "mappools": {
+                "info": "",
+                "notAvailable": "",
+                "mappackDownload": "",
+                "mappacknotAvailable": ""
+            },
+            "donateToCorsace": "",
+            "supportViaSponsorship": "",
+            "generalInfo": "",
+            "teamStructure": "",
+            "qualifiersProcedures": "",
+            "tournamentStructure": "",
+            "infoGraphic": "",
+            "matchProcedures": "",
+            "reportTournament": "",
+            "subjectToChange": ""
+        },
+        "qualifiers": {
+            "nav": {
+                "mappool": "",
+                "qualifiers": "",
+                "scores": ""
+            },
+            "mappool": {
+                "sheets": "",
+                "mappool": "",
+                "notAvailable": "",
+                "banner": {
+                    "mapper": "",
+                    "difficulty": ""
+                }
+            },
+            "scores": {
+                "nav": {
+                    "sort": "",
+                    "average": "",
+                    "sum": "",
+                    "percentAvg": "",
+                    "relAvg": "",
+                    "percentMax": "",
+                    "relMax": "",
+                    "zScore": "",
+                    "placement": "",
+                    "player": "",
+                    "team": "",
+                    "best": "",
+                    "worst": ""
+                },
+                "category": "",
+                "select": "",
+                "players": "",
+                "teams": ""
+            },
+            "create": "",
+            "error": {
+                "message": "",
+                "pressToClose": ""
+            }
+        },
+        "teams": {
+            "teamsList": "",
+            "error": "",
+            "searchPlaceholder": "",
+            "editTeamInfo": "",
+            "qualifierId": "",
+            "placeholders": {
+                "searchUser": "",
+                "name": "",
+                "abbreviation": ""
+            },
+            "edit": {
+                "teamName": "",
+                "teamAbbreviation": "",
+                "timezone": "",
+                "teamAvatar": "",
+                "errors": {
+                    "size": "",
+                    "type": "",
+                    "invalidImage": "",
+                    "invalidTimezone": "",
+                    "errorAddingTeamAvatar": "",
+                    "invalidName": "",
+                    "contactVinxis": ""
+                },
+                "confirm": {
+                    "deleteTeam": "",
+                    "deleteTeamFinal": "",
+                    "removeMember": "",
+                    "transferManager": "",
+                    "invite": "",
+                    "removeInvite": "",
+                    "unregister": ""
+                },
+                "save": "",
+                "deleteTeam": ""
+            },
+            "headers": {
+                "tournaments": "",
+                "teamStats": "",
+                "teamManager": "",
+                "teamMembers": "",
+                "editTeamMembers": "",
+                "closeTeamMembers": "",
+                "becomeMember": "",
+                "becomeManager": "",
+                "teamInvites": "",
+                "editTeamInvites": "",
+                "closeTeamInvites": "",
+                "qualifier": "",
+                "requiredMessageExact": "",
+                "requiredMessageRange": ""
+            },
+            "registration": {
+                "noRegistration": "",
+                "toPlay": ""
+            },
+            "teamID": "",
+            "member": "",
+            "members": "",
+            "averageBWS": "",
+            "averageRank": "",
+            "averagePP": "",
+            "editQualifierTime": "",
+            "deleteTeam": "",
+            "createJoinQualifier": "",
+            "notRegistered": ""
+        },
+        "create": {
+            "title": "",
+            "info1": "",
+            "info2": "",
+            "teamName": "",
+            "teamLength": "",
+            "teamAcronym": "",
+            "acronymLength": "",
+            "teamTimezone": "",
+            "timezoneText": "",
+            "teamAvatar": "",
+            "upload": "",
+            "fileSizeLimit": "",
+            "fileSizeError": "",
+            "fileTypeError": "",
+            "preview": "",
+            "avatarInfo1": "",
+            "avatarInfo2": "",
+            "avatarInfo3": "",
+            "avatarInfo4": "",
+            "teamManagement": "",
+            "teamManagers": "",
+            "teamManagersFree": "",
+            "selectManager": "",
+            "confirmManager": "",
+            "create": ""
+        },
+        "components": {
+            "openCardTeam": {
+                "rank": "",
+                "teambwsAverage": "",
+                "unregistered": "",
+                "bws": ""
+            },
+            "stageSelector": {
+                "select": "",
+                "stage": ""
+            }
+        },
+        "staff": {
+            "title": "",
+            "notLoggedIn": ""
+        },
+        "status": {
+            "loading": ""
+        },
+        "mappool": {
+            "title": ""
         }
     }
 }

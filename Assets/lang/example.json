@@ -1,6 +1,5 @@
 {
     "flag": "",
-    "login": "",
     "mca_ayim": {
         "header": {
             "mca": "",
@@ -21,6 +20,10 @@
             "authOsuComp": "",
             "authDiscord": "",
             "authDiscordComp": ""
+        },
+        "banner": {
+            "merch": "",
+            "corsace": ""
         }
     },
     "ayim": {
@@ -32,7 +35,9 @@
             "numberwith": "",
             "message": {
                 "2019": "",
-                "2020": ""
+                "2020": "",
+                "2021": "",
+                "2022": ""
             }
         },
         "mapsets": {
@@ -110,7 +115,9 @@
             "statisticsLabel": "",
             "stage": {
                 "voting": "",
-                "nominating": ""
+                "nominating": "",
+                "preparation": "",
+                "stage": ""
             },
             "rankedSets": "",
             "nominateNow": "",
@@ -118,15 +125,22 @@
             "daysLeft": "",
             "message": {
                 "2019": "",
-                "2020": ""
+                "2020": "",
+                "2021": "",
+                "2022": ""
             },
             "categories": {
                 "map": "",
-                "user": ""
+                "user": "",
+                "index": ""
             },
             "organized": "",
             "preparation": "",
-            "viewResults": ""
+            "viewResults": "",
+            "banner": "",
+            "click": "",
+            "welcome": "",
+            "timeline": ""
         },
         "categories": {
             "grandAward": {
@@ -312,6 +326,50 @@
             "antiMetaCatch": {
                 "name": "",
                 "description": ""
+            },
+            "marathonMan": {
+                "name": "",
+                "description": ""
+            },
+            "longNotes4K": {
+                "name": "",
+                "description": ""
+            },
+            "longNotes7K": {
+                "name": "",
+                "description": ""
+            },
+            "rice": {
+                "name": "",
+                "description": ""
+            },
+            "rice4K": {
+                "name": "",
+                "description": ""
+            },
+            "rice7K": {
+                "name": "",
+                "description": ""
+            },
+            "hybrid4K": {
+                "name": "",
+                "description": ""
+            },
+            "hybrid7K": {
+                "name": "",
+                "description": ""
+            },
+            "mostInnovative": {
+                "name": "",
+                "description": ""
+            },
+            "unconventionalCtb": {
+                "name": "",
+                "description": ""
+            },
+            "diversity": {
+                "name": "",
+                "description": ""
             }
         },
         "nom_vote": {
@@ -462,7 +520,8 @@
                 "banner": {
                     "mapper": "",
                     "difficulty": ""
-                }
+                },
+                "notAvailable": ""
             },
             "scores": {
                 "nav": {
@@ -544,7 +603,7 @@
                 "requiredMessageExact": "",
                 "requiredMessageRange": ""
             },
-            "registration":{
+            "registration": {
                 "noRegistration": "",
                 "toPlay": ""
             },
@@ -610,11 +669,6 @@
         }
     },
     "main": {
-        "header": {
-            "login": "",
-            "register": "",
-            "changeDiscord": ""
-        },
         "construction": {
             "underConstruction": "",
             "sorry": "",
@@ -625,5 +679,12 @@
             "code": "",
             "products": ""
         }
+    },
+    "header": {
+        "welcomeBack": "",
+        "login": "",
+        "register": "",
+        "changeDiscord": "",
+        "logout": ""
     }
 }
