@@ -93,7 +93,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                 dbMatchup.date = ctx.state.stage.timespan.start;
 
             if (dbMatchup.date.getTime() < ctx.state.stage.timespan.start.getTime())
-                return Promise.reject(new Error(`Matchup ${matchup.ID} date is before stage start`));
+                return Promise.reject(new Error(`Matchup ${matchup.ID} date ${dbMatchup.date} is before stage start ${ctx.state.stage.timespan.start}`));
 
             if (parent)
                 dbMatchup.nextMatchups?.push(parent);
@@ -148,7 +148,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
         console.error(err);
         ctx.body = {
             success: false,
-            error: err,
+            error: err instanceof Error ? err.message : err,
         };
     }
 });
