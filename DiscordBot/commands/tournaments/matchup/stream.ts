@@ -48,6 +48,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
+    if (matchup.mp) {
+        await respond(m, "This matchup has already been played");
+        return;
+    }
+
     if (matchup.streamer?.ID === user.ID) {
         matchup.streamer = null;
         await matchup.save();

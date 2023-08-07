@@ -47,6 +47,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
+    if (matchup.mp) {
+        await respond(m, "This matchup has already been played");
+        return;
+    }
+
     if (matchup.commentators?.some(c => c.ID === user.ID)) {
         matchup.commentators = matchup.commentators.filter(c => c.ID !== user.ID);
         await matchup.save();
