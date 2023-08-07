@@ -19,39 +19,71 @@
         </div>
         <div class="schedule_matchbox_team">
             <div class="schedule_matchbox_team__left">
-                <TeamCard
+                <div
                     v-if="matchupSync.teams?.[0]"
-                    :avatar="matchupSync.teams[0].avatarURL"
+                    class="schedule_matchbox_team_card"
                 >
-                    <template #name>
-                        {{ matchupSync.teams[0].name }}
-                    </template>
-                    <template #rank>
-                        {{ Math.round(matchupSync.teams[0].rank) }}
-                    </template>
-                    <template #bws>
-                        {{ Math.round(matchupSync.teams[0].BWS) }}
-                    </template>
-                </TeamCard>
+                    <div
+                        class="schedule_matchbox_team_card__avatar" 
+                        :style="{ 'backgroundImage': `url(${matchupSync.teams[0].avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }" 
+                    />
+                    <div class="schedule_matchbox_team_card_details">
+                        <div class="schedule_matchbox_team_card_details__name">
+                            {{ matchupSync.teams[0].name }}
+                        </div>
+                        <div class="schedule_matchbox_team_card_details_teamrank">
+                            <div class="schedule_matchbox_team_card--title">
+                                RANK
+                            </div>
+                            <div class="schedule_matchbox_team_card_details_teamrank__rank">
+                                {{ Math.round(matchupSync.teams[0].rank) }}
+                            </div>
+                        </div>
+                        <div class="schedule_matchbox_team_card_details_teambws">
+                            <div class="schedule_matchbox_team_card--title">
+                                TEAM BWS AVG
+                            </div>
+                            <div class="schedule_matchbox_team_card_details_teambws__bws">
+                                {{ Math.round(matchupSync.teams[0].BWS) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="schedule_matchbox_team__vs">
                 VS
             </div>
             <div class="schedule_matchbox_team__right">
-                <TeamCard
+                <div
                     v-if="matchupSync.teams?.[1]"
-                    :avatar="matchupSync.teams[1].avatarURL"
+                    class="schedule_matchbox_team_card"
                 >
-                    <template #name>
-                        {{ matchupSync.teams[1].name }}
-                    </template>
-                    <template #rank>
-                        {{ Math.round(matchupSync.teams[1].rank) }}
-                    </template>
-                    <template #bws>
-                        {{ Math.round(matchupSync.teams[1].BWS) }}
-                    </template>
-                </TeamCard>
+                    <div
+                        class="schedule_matchbox_team_card__avatar" 
+                        :style="{ 'backgroundImage': `url(${matchupSync.teams[1].avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }" 
+                    />
+                    <div class="schedule_matchbox_team_card_details">
+                        <div class="schedule_matchbox_team_card_details__name">
+                            {{ matchupSync.teams[1].name }}
+                        </div>
+                        <div class="schedule_matchbox_team_card_details_teamrank">
+                            <div class="schedule_matchbox_team_card--title">
+                                RANK
+                            </div>
+                            <div class="schedule_matchbox_team_card_details_teamrank__rank">
+                                {{ Math.round(matchupSync.teams[1].rank) }}
+                            </div>
+                        </div>
+                        <div class="schedule_matchbox_team_card_details_teambws">
+                            <div class="schedule_matchbox_team_card--title">
+                                TEAM BWS AVG
+                            </div>
+                            <div class="schedule_matchbox_team_card_details_teambws__bws">
+                                {{ Math.round(matchupSync.teams[1].BWS) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="schedule_matchbox_links">
@@ -74,14 +106,12 @@
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
 import ContentButton from "./ContentButton.vue";
-import TeamCard from "../../Assets/components/open/TeamCard.vue";
 import IconButton from "../../Assets/components/open/IconButton.vue";
 import { MatchupList } from "../../../Interfaces/matchup";
 
 @Component({
     components: {
         ContentButton,
-        TeamCard,
         IconButton,
     },
 })
@@ -179,6 +209,81 @@ export default class ScheduleMatchBox extends Vue {
             background-repeat: no-repeat;
             background-size: contain;
             background-position: right bottom;
+        }
+
+        &_card {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            white-space: nowrap;
+
+            &__avatar {
+                width: 129px;
+                height: 100%;
+                overflow: hidden;
+                
+                // background-image: url("../../img/test_avatar.png"); // Replace later
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+
+            &_details {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 15px;
+
+                &__name {
+                    font-family: $font-ggsans;
+                    font-size: 28px;
+                    font-weight: 700;
+                    line-height: 37px;
+                    letter-spacing: 0em;
+                    text-align: left;
+                }
+                &_teamrank {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 10px;
+                    
+                    &__rank {
+                        font-family: $font-swis721;
+                        font-size: 21px;
+                        font-style: italic;
+                        font-weight: 700;
+                        line-height: 25px;
+                        letter-spacing: 0em;
+                        text-align: center;
+                    }
+                }
+                &_teambws {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 10px;
+
+                    &__bws {
+                        font-family: $font-swis721;
+                        font-size: 21px;
+                        font-style: italic;
+                        font-weight: 700;
+                        line-height: 25px;
+                        letter-spacing: 0em;
+                        text-align: left;
+                    }
+                }
+
+            }
+
+            &--title {
+                font-family: $font-ggsans;
+                font-size: 12px;
+                font-weight: 600;
+                text-align: left;
+                color: $open-red;
+            }
         }
     }
 
