@@ -46,8 +46,9 @@ import inviteAccept from "./tournaments/team/invite/accept";
 import inviteDecline from "./tournaments/team/invite/decline";
 import inviteList from "./tournaments/team/invite/list";
 
-import scores from "./tournaments/matchup/scores";
-import stopAutoLobby from "./tournaments/matchup/stopAutoLobby";
+import matchupReschedule from "./tournaments/matchup/reschedule";
+import matchupScores from "./tournaments/matchup/scores";
+import matchupStopAutoLobby from "./tournaments/matchup/stopAutoLobby";
 
 import avatar from "./utility/avatar";
 import help from "./utility/help";
@@ -131,8 +132,9 @@ commands.push(inviteDecline);
 commands.push(inviteList);
 
 // matchup commands
-commands.push(scores);
-commands.push(stopAutoLobby);
+commands.push(matchupReschedule);
+commands.push(matchupScores);
+commands.push(matchupStopAutoLobby);
 
 // general utility commands
 commands.push(avatar);

@@ -1,0 +1,182 @@
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
+import { Command } from "../..";
+import getFromList from "../../../functions/getFromList";
+import getTournament from "../../../functions/tournamentFunctions/getTournament";
+import channelID from "../../../functions/channelID";
+import commandUser from "../../../functions/commandUser";
+import { extractDate } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
+import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
+import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
+import { extractParameters } from "../../../functions/parameterFunctions";
+import respond from "../../../functions/respond";
+import confirmCommand from "../../../functions/confirmCommand";
+import { Matchup } from "../../../../Models/tournaments/matchup";
+import { TournamentRoleType } from "../../../../Interfaces/tournament";
+
+async function run (m: Message | ChatInputCommandInteraction) {
+    if (m instanceof ChatInputCommandInteraction)
+        await m.deferReply();
+
+    const params = extractParameters<parameters>(m, [
+        { name: "date", paramType: "string", customHandler: extractDate },
+        { name: "matchup", paramType: "number", optional: true },
+        { name: "tournament", paramType: "string", optional: true },
+    ]); 
+    if (!params)
+        return;
+
+    const { date, matchup: matchupID, tournament: tournamentParam } = params;
+
+    if (isNaN(date.getTime())) {
+        await respond(m, "Invalid date. Provide a valid date using either `YYYY-MM-DD HH:MM UTC` format, or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
+        return;
+    }
+
+    const tournament = await getTournament(m, typeof tournamentParam === "string" ? tournamentParam : channelID(m), typeof tournamentParam === "string" ? "name" : "channel", undefined, true);
+    if (!tournament)
+        return;
+    
+    // For organizers or referees, allow them to reschedule any matchup
+    if (matchupID) {
+        if (!await securityChecks(m, true, true, [], [TournamentRoleType.Organizer, TournamentRoleType.Referees]))
+            return;
+
+        const matchup = await Matchup
+            .createQueryBuilder("matchup")
+            .innerJoinAndSelect("matchup.stage", "stage")
+            .innerJoin("stage.tournament", "tournament")
+            .leftJoinAndSelect("matchup.team1", "team1")
+            .leftJoinAndSelect("matchup.team2", "team2")
+            .leftJoinAndSelect("team1.manager", "manager1")
+            .leftJoinAndSelect("team2.manager", "manager2")
+            .leftJoinAndSelect("matchup.referee", "referee")
+            .leftJoinAndSelect("matchup.streamer", "streamer")
+            .leftJoinAndSelect("matchup.commentators", "commentators")
+            .where("matchup.ID = :matchupID", { matchupID })
+            .andWhere("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
+            .getOne();
+        
+        if (!matchup) {
+            await respond(m, "Invalid matchup ID provided");
+            return;
+        }
+
+        if (!await confirmCommand(m, `Do you wish to reschedule the matchup ID ${matchup.ID} in stage \`${matchup.stage?.name || "N/A"}\` between \`${matchup.team1?.name || "N/A"}\` and \`${matchup.team2?.name || "N/A"}\` to ${discordStringTimestamp(date)}?`)) {
+            await respond(m, "Ok Lol");
+            return;
+        }
+
+        if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> Do you wish to reschedule your match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} to ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID)) {
+            await respond(m, "Ok Lol");
+            return;
+        }
+
+        if (matchup.team2 && !await confirmCommand(m, `<@${matchup.team2.manager.discord.userID}> Do you wish to reschedule your match${matchup.team1 ? ` vs \`${matchup.team1.name}\`` : ""} to ${discordStringTimestamp(date)}?`, true, matchup.team2.manager.discord.userID)) {
+            await respond(m, "Ok Lol");
+            return;
+        }
+
+        matchup.date = date;
+        await matchup.save();
+        await respond(m, `Matchup rescheduled to ${discordStringTimestamp(date)}`);
+        return;
+    }
+
+    // For everyone else, only allow them to reschedule matchups they are in
+    const matchups = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoinAndSelect("matchup.stage", "stage")
+        .innerJoin("stage.tournament", "tournament")
+        .leftJoinAndSelect("matchup.team1", "team1")
+        .leftJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("team1.manager", "manager1")
+        .leftJoinAndSelect("team2.manager", "manager2")
+        .leftJoinAndSelect("matchup.referee", "referee")
+        .leftJoinAndSelect("matchup.streamer", "streamer")
+        .leftJoinAndSelect("matchup.commentators", "commentators")
+        .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
+        .andWhere("matchup.date > :date", { date: new Date() })
+        .andWhere("manager1.discordUserid = :userID OR manager2.discordUserid = :userID", { userID: commandUser(m).id })
+        .getMany();
+
+    if (matchups.length === 0) {
+        await respond(m, "You are not in any matchups that can be rescheduled. Note that you must be a manager of a team to reschedule a matchup");
+        return;
+    }
+
+    const matchupList = matchups.map((matchup) => {
+        return {
+            ID: matchup.ID,
+            name: `${matchup.team1?.name || "N/A"} vs ${matchup.team2?.name || "N/A"} in ${matchup.stage?.name || "N/A"}`,
+        };
+    });
+    const matchupListResult = await getFromList(m, matchupList, "matchup", tournamentParam || channelID(m));
+    if (!matchupListResult) {
+        await respond(m, "Could not find a valid matchup");
+        return;
+    }
+
+    const matchup = matchups.find((matchup) => matchup.ID === matchupListResult.ID)!;
+    const dayBeforeStart = matchup.stage!.timespan.start.getTime() - 86400000;
+    if (Date.now() > dayBeforeStart) {
+        await respond(m, `You cannot reschedule a matchup within 24 hours of the stage starting (${discordStringTimestamp(new Date(dayBeforeStart))})`);
+        return;
+    }
+
+    if (date.getTime() < matchup.stage!.timespan.start.getTime()) {
+        await respond(m, `You cannot reschedule a matchup to before the stage starts (${discordStringTimestamp(matchup.stage!.timespan.start)})`);
+        return;
+    }
+
+    if (date.getTime() < Date.now()) {
+        await respond(m, "You cannot reschedule a matchup to before the current time");
+        return;
+    }
+
+    if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> Do you wish to reschedule your match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} to ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID)) {
+        await respond(m, "Ok Lol");
+        return;
+    }
+
+    if (matchup.team2 && !await confirmCommand(m, `<@${matchup.team2.manager.discord.userID}> Do you wish to reschedule your match${matchup.team1 ? ` vs \`${matchup.team1.name}\`` : ""} to ${discordStringTimestamp(date)}?`, true, matchup.team2.manager.discord.userID)) {
+        await respond(m, "Ok Lol");
+        return;
+    }
+
+    matchup.date = date;
+    await matchup.save();
+    await respond(m, `Matchup rescheduled to ${discordStringTimestamp(date)}`);
+}
+
+const data = new SlashCommandBuilder()
+    .setName("matchup_reschedule")
+    .setDescription("Reschedule a matchup your team is in")
+    .addStringOption(option =>
+        option.setName("date")
+            .setDescription("The UTC date and/or time (E.g. YYYY-MM-DD HH:MM UTC) / UNIX epoch to reschedule to")
+            .setRequired(true))
+    .addStringOption(option => 
+        option.setName("tournament")
+            .setDescription("The tournament to reschedule for")
+            .setRequired(false))
+    .addIntegerOption(option => 
+        option.setName("matchup")
+            .setDescription("The ID of the matchup (only works for tournament organizers)")
+            .setRequired(false))
+    .setDMPermission(false);
+
+interface parameters {
+    date: Date,
+    matchup?: number,
+    tournament?: string,
+}
+
+const matchupReschedule: Command = {
+    data,
+    alternativeNames: ["reschedule_matchup", "reschedule-matchup", "matchup-reschedule", "matchupreschedule", "reschedulematchup", "reschedulem", "mreschedule", "matchupr", "rmatchup", "matchup_resched", "resched_matchup", "resched-matchup", "matchup-resched", "matchupresched", "reschedmatchup", "reschedm", "mresched"],
+    category: "tournaments",
+    subCategory: "matchups",
+    run,
+};
+
+export default matchupReschedule;
