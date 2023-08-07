@@ -181,7 +181,7 @@ export default class ScheduleMatchBox extends Vue {
         width: 100%;
 
         &__left {
-            flex-grow: 2;
+            flex: 1;
         }
         
         &__vs {
@@ -204,7 +204,7 @@ export default class ScheduleMatchBox extends Vue {
         }
         
         &__right {
-            flex-grow: 2;
+            flex: 1;
             background-image: url("../../img/site/open/checkers-bg.png");
             background-repeat: no-repeat;
             background-size: contain;
