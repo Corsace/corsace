@@ -2,6 +2,7 @@ import Router from "@koa/router";
 import { EntityManager } from "typeorm";
 import { TournamentRoleType } from "../../../Interfaces/tournament";
 import { Matchup } from "../../../Models/tournaments/matchup";
+import { Team } from "../../../Models/tournaments/team";
 import ormConfig from "../../../ormconfig";
 import { isLoggedInDiscord } from "../../middleware";
 import { validateTournament, hasRoles, validateStageOrRound } from "../../middleware/tournament";
@@ -53,7 +54,7 @@ const validatePOSTMatchups = (matchups: any[]): string | true => {
     return true;
 };
 
-matchupRouter.post("/create", validateTournament, validateStageOrRound, async (ctx) => {
+matchupRouter.post("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const matchups = ctx.request.body?.matchups;
     if (!matchups) {
         ctx.body = {
@@ -101,6 +102,26 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, async (c
                 dbMatchup.stage = ctx.state.stage;
             else
                 dbMatchup.round = ctx.state.round;
+
+            if (matchup.team1) {
+                const team1 = await transactionManager
+                    .createQueryBuilder(Team, "team")
+                    .where("team.ID = :teamID", { teamID: matchup.team1 })
+                    .getOne();
+                if (!team1)
+                    return Promise.reject(new Error(`Could not find team1's ID ${matchup.team1} for matchup ${matchup.ID}`));
+                dbMatchup.team1 = team1;
+            }
+
+            if (matchup.team2) {
+                const team2 = await transactionManager
+                    .createQueryBuilder(Team, "team")
+                    .where("team.ID = :teamID", { teamID: matchup.team2 })
+                    .getOne();
+                if (!team2)
+                    return Promise.reject(new Error(`Could not find team2's ID ${matchup.team2} for matchup ${matchup.ID}`));
+                dbMatchup.team2 = team2;
+            }
 
             await transactionManager.save(dbMatchup);
             idToMatchup.set(matchup.ID, dbMatchup);
