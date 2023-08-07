@@ -1,5 +1,5 @@
 import { profanityFilterStrong } from "./comment";
-import { Matchup } from "./matchup";
+import { BaseMatchup } from "./matchup";
 import { BaseTournament } from "./tournament";
 
 export interface BaseTeam {
@@ -21,7 +21,7 @@ export interface Team extends TeamList {
     timezoneOffset: number;
     manager: TeamMember;
     invites?: TeamUser[];
-    qualifier?: Matchup;
+    qualifier?: BaseMatchup;
     tournaments?: BaseTournament[];
 }
 

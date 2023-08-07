@@ -40,14 +40,18 @@ import stageInfo from "./tournaments/stage/info";
 import teamAvatar from "./tournaments/team/avatar";
 import teamInvite from "./tournaments/team/invite";
 import teamList from "./tournaments/team/list";
-import teamSchedule from "./tournaments/team/schedule";
+import teamQualifier from "./tournaments/team/qualifier";
 
 import inviteAccept from "./tournaments/team/invite/accept";
 import inviteDecline from "./tournaments/team/invite/decline";
 import inviteList from "./tournaments/team/invite/list";
 
-import scores from "./tournaments/matchup/scores";
-import stopAutoLobby from "./tournaments/matchup/stopAutoLobby";
+import matchupCommentator from "./tournaments/matchup/commentator";
+import matchupReferee from "./tournaments/matchup/referee";
+import matchupReschedule from "./tournaments/matchup/reschedule";
+import matchupScores from "./tournaments/matchup/scores";
+import matchupStopAutoLobby from "./tournaments/matchup/stopAutoLobby";
+import matchupStream from "./tournaments/matchup/stream";
 
 import avatar from "./utility/avatar";
 import help from "./utility/help";
@@ -123,7 +127,7 @@ commands.push(stageInfo);
 commands.push(teamAvatar);
 commands.push(teamInvite);
 commands.push(teamList);
-commands.push(teamSchedule);
+commands.push(teamQualifier);
 
 // invite commands
 commands.push(inviteAccept);
@@ -131,8 +135,12 @@ commands.push(inviteDecline);
 commands.push(inviteList);
 
 // matchup commands
-commands.push(scores);
-commands.push(stopAutoLobby);
+commands.push(matchupCommentator);
+commands.push(matchupReferee);
+commands.push(matchupReschedule);
+commands.push(matchupScores);
+commands.push(matchupStopAutoLobby);
+commands.push(matchupStream);
 
 // general utility commands
 commands.push(avatar);

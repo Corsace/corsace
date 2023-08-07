@@ -40,12 +40,13 @@
                 >
                     {{ $t("open.navbar.teams") }}
                 </NuxtLink>
-                <a
-                    href="https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing" 
+                <NuxtLink
+                    to="/schedule" 
                     class="header__nav-item"
                 >
                     {{ $t("open.navbar.schedule") }}
-                </a>
+                </NuxtLink>
+
                 <NuxtLink
                     to="/mappool" 
                     class="header__nav-item"

@@ -204,6 +204,10 @@ const data = new SlashCommandBuilder()
                 value: "Streamers",
             },
             {
+                name: "Rescheduling",
+                value: "Rescheduling",
+            },
+            {
                 name: "Matchup Results",
                 value: "Matchupresults",
             }))

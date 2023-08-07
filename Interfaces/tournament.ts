@@ -91,6 +91,7 @@ export enum TournamentChannelType {
     Jobboard,
     Staff,
     Streamannouncements,
+    Rescheduling,
 }
 
 // Designate an array of TournamentRoles for each channel type
