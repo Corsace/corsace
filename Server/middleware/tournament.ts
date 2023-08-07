@@ -38,12 +38,21 @@ export async function validateTournament (ctx: ParameterizedContext, next: Next)
 }
 
 export async function validateStageOrRound (ctx: ParameterizedContext, next: Next): Promise<void> {
-    const ID = ctx.request.body?.stageID || ctx.params?.stageID || ctx.query.stageID || ctx.request.body?.roundID || ctx.params?.roundID || ctx.query.roundID || ctx.request.body?.stage || ctx.params?.stage || ctx.query.stage || ctx.request.body?.round || ctx.params?.round || ctx.query.round;
+    const stageID = ctx.request.body?.stageID || ctx.params?.stageID || ctx.query.stageID || ctx.request.body?.stage || ctx.params?.stage || ctx.query.stage;
+    const roundID = ctx.request.body?.roundID || ctx.params?.roundID || ctx.query.roundID || ctx.request.body?.round || ctx.params?.round || ctx.query.round;
     
-    if (ID === undefined || isNaN(parseInt(ID)) || parseInt(ID) < 1) {
+    if (stageID === undefined || isNaN(parseInt(stageID)) || parseInt(stageID) < 1) {
         ctx.body = {
             success: false,
-            error: "Missing stage or round ID",
+            error: "Missing stage ID",
+        };
+        return;
+    }
+
+    if (roundID !== undefined && (isNaN(parseInt(roundID)) || parseInt(roundID) < 1)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid round ID",
         };
         return;
     }
@@ -52,18 +61,23 @@ export async function validateStageOrRound (ctx: ParameterizedContext, next: Nex
         .createQueryBuilder("stage")
         .leftJoinAndSelect("stage.rounds", "rounds")
         .leftJoinAndSelect("stage.tournament", "tournament");
-    if (ctx.state.tournament)
+    if (ctx.state.tournament) {
+        stageQ.where("tournament.ID = :tournamentID", { tournamentID: ctx.state.tournament.ID });
+        if (roundID)
+            stageQ
+                .andWhere(new Brackets(qb => {
+                    qb.where("stage.ID = :stageID", { stageID: parseInt(stageID) })
+                        .orWhere("rounds.ID = :roundID", { roundID: parseInt(roundID) });
+                }));
+        else
+            stageQ
+                .andWhere("stage.ID = :stageID", { stageID: parseInt(stageID) });
+    } else if (roundID)
         stageQ
-            .where("tournament.ID = :tournamentID", { tournamentID: ctx.state.tournament.ID })
-            .andWhere(new Brackets(qb => {
-                qb.where("stage.ID = :stageID", { stageID: parseInt(ID) })
-                    .orWhere("rounds.ID = :roundID", { roundID: parseInt(ID) });
-            }));
+            .where("stage.ID = :stageID", { stageID: parseInt(stageID) })
+            .orWhere("rounds.ID = :roundID", { roundID: parseInt(roundID) });
     else
-        stageQ.where(new Brackets(qb => {
-            qb.where("stage.ID = :stageID", { stageID: parseInt(ID) })
-                .orWhere("rounds.ID = :roundID", { roundID: parseInt(ID) });
-        }));
+        stageQ.where("stage.ID = :stageID", { stageID: parseInt(stageID) });
     
     const stage = await stageQ.getOne();
 
@@ -75,10 +89,10 @@ export async function validateStageOrRound (ctx: ParameterizedContext, next: Nex
         return;
     }
     
-    if (stage.ID === parseInt(ID))
+    if (stage.ID === parseInt(stageID))
         ctx.state.stage = stage;
     else {
-        ctx.state.round = stage.rounds.find(round => round.ID === parseInt(ID));
+        ctx.state.round = stage.rounds.find(round => round.ID === parseInt(roundID));
         if (!ctx.state.round) {
             ctx.body = {
                 success: false,
