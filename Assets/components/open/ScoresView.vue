@@ -44,7 +44,7 @@
                             @click="mapSort = i; sortDir = sortDir === 'asc' ? 'desc' : 'asc';"
                         >
                             <div class="scores__table--click">
-                                {{ map.map }}
+                                {{ $t(`open.qualifiers.scores.mods.${map.map}`) }}
                                 <div
                                     :class="{ 
                                         'scores__table--asc': mapSort === i && sortDir === 'asc',
