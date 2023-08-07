@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, GuildMember, Message, SlashCommandBuilder } from "discord.js";
-import { Command } from "../../";
+import { Command } from "../..";
 import { Team } from "../../../../Models/tournaments/team";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { User } from "../../../../Models/user";
@@ -208,7 +208,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
     }
 
-    if (!await confirmCommand(m, `Do you wish to schedule \`${team.name}\` for ${discordStringTimestamp(date)}?`)) {
+    if (!await confirmCommand(m, `Do you wish to schedule \`${team.name}\` to a qualifier for ${discordStringTimestamp(date)}?`)) {
         await respond(m, "Ok Lol");
         return;
     }
@@ -340,7 +340,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 }
 
 const data = new SlashCommandBuilder()
-    .setName("schedule_team")
+    .setName("qualifier_team")
     .setDescription("Schedule your team (or a team if you are an organizer) to play qualifiers")
     .addStringOption(option =>
         option.setName("date")
@@ -362,12 +362,12 @@ interface parameters {
     tournament?: string,
 }
 
-const teamSchedule: Command = {
+const teamQualifier: Command = {
     data,
-    alternativeNames: ["teams_schedule", "team_schedule", "schedule-teams", "schedule-team", "teams-schedule", "team-schedule", "teamsschedule", "teamschedule", "scheduleteams", "scheduleteam", "schedulet", "tschedule", "teams", "teamss", "steam", "steams"],
+    alternativeNames: ["teams_qualifier", "team_qualifier", "qualifier-teams", "qualifier-team", "teams-qualifier", "team-qualifier", "teamsqualifier", "teamqualifier", "qualifierteams", "qualifierteam", "qualifiert", "tqualifier", "teams", "teamss", "steam", "steams"],
     category: "tournaments",
     subCategory: "teams",
     run,
 };
 
-export default teamSchedule;
+export default teamQualifier;
