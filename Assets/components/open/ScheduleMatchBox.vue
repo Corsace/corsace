@@ -13,6 +13,9 @@
             <div class="schedule_matchbox_date__timezone">
                 UTC
             </div>
+            <div class="schedule_matchbox_date__month">
+                ID {{ matchupSync.ID }}
+            </div>
         </div>
         <div class="schedule_matchbox_team">
             <div class="schedule_matchbox_team__left">

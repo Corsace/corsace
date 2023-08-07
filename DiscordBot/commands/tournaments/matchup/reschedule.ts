@@ -74,13 +74,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
     // For organizers or referees, allow them to reschedule any matchup
     if (matchupID) {
-        if (!await securityChecks(m, true, true, [], [TournamentRoleType.Organizer, TournamentRoleType.Referees]))
+        if (!await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Referees]))
             return;
 
         const matchup = await Matchup
             .createQueryBuilder("matchup")
             .innerJoinAndSelect("matchup.stage", "stage")
-            .innerJoin("stage.tournament", "tournament")
+            .innerJoinAndSelect("stage.tournament", "tournament")
             .leftJoinAndSelect("matchup.team1", "team1")
             .leftJoinAndSelect("matchup.team2", "team2")
             .leftJoinAndSelect("team1.manager", "manager1")
@@ -123,7 +123,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const matchups = await Matchup
         .createQueryBuilder("matchup")
         .innerJoinAndSelect("matchup.stage", "stage")
-        .innerJoin("stage.tournament", "tournament")
+        .innerJoinAndSelect("stage.tournament", "tournament")
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
         .leftJoinAndSelect("team1.manager", "manager1")
