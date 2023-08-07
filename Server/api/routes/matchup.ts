@@ -1,6 +1,8 @@
 import Router from "@koa/router";
+import { EntityManager } from "typeorm";
 import { TournamentRoleType } from "../../../Interfaces/tournament";
 import { Matchup } from "../../../Models/tournaments/matchup";
+import ormConfig from "../../../ormconfig";
 import { isLoggedInDiscord } from "../../middleware";
 import { validateTournament, hasRoles, validateStageOrRound } from "../../middleware/tournament";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
@@ -11,6 +13,8 @@ interface postMatchup {
     ID: number;
     isLowerBracket?: boolean;
     date?: string;
+    team1?: number;
+    team2?: number;
     previousMatchups?: postMatchup[];
 }
 
@@ -24,6 +28,12 @@ const validatePOSTMatchups = (matchups: any[]): string | true => {
 
         if (matchup.isLowerBracket !== undefined && typeof matchup.isLowerBracket !== "boolean")
             return `Invalid matchup isLowerBracket provided: ${matchup.isLowerBracket}`;
+
+        if (matchup.team1 !== undefined && (isNaN(parseInt(matchup.team1)) || parseInt(matchup.team1) < 1))
+            return `Invalid matchup team1 provided: ${matchup.team1}`;
+
+        if (matchup.team2 !== undefined && (isNaN(parseInt(matchup.team2)) || parseInt(matchup.team2) < 1))
+            return `Invalid matchup team2 provided: ${matchup.team2}`;
 
         if (matchup.previousMatchups) {
             if (!Array.isArray(matchup.previousMatchups) || matchup.previousMatchups.length > 3)
@@ -43,7 +53,7 @@ const validatePOSTMatchups = (matchups: any[]): string | true => {
     return true;
 };
 
-matchupRouter.post("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+matchupRouter.post("/create", validateTournament, validateStageOrRound, async (ctx) => {
     const matchups = ctx.request.body?.matchups;
     if (!matchups) {
         ctx.body = {
@@ -62,7 +72,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
 
     const idToMatchup = new Map<number, Matchup>();
 
-    const createMatchups = async (matchups: postMatchup[], parent?: Matchup): Promise<Matchup[]> => {
+    const createMatchups = async (matchups: postMatchup[], transactionManager: EntityManager, parent?: Matchup): Promise<Matchup[]> => {
         const createdMatchups: Matchup[] = [];
         for (const matchup of matchups) {
 
@@ -92,13 +102,13 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
             else
                 dbMatchup.round = ctx.state.round;
 
-            await dbMatchup.save();
+            await transactionManager.save(dbMatchup);
             idToMatchup.set(matchup.ID, dbMatchup);
-            const previousMatchups = matchup.previousMatchups ? await createMatchups(matchup.previousMatchups, dbMatchup) : undefined;
+            const previousMatchups = matchup.previousMatchups ? await createMatchups(matchup.previousMatchups, transactionManager, dbMatchup) : undefined;
             if (previousMatchups)
                 dbMatchup.previousMatchups = previousMatchups;
 
-            await dbMatchup.save();
+            await transactionManager.save(dbMatchup);
             idToMatchup.set(matchup.ID, dbMatchup);
             createdMatchups.push(dbMatchup);
         }
@@ -106,13 +116,15 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
     };
 
     try {
-        const createdMatchups = await createMatchups(matchups);
-        ctx.body = {
-            success: true,
-            matchups: createdMatchups,
-        };
+        await ormConfig.transaction(async transactionManager => {
+            const createdMatchups = await createMatchups(matchups, transactionManager);
+            ctx.body = {
+                success: true,
+                matchups: createdMatchups,
+            };
+        });
     } catch (err) {
-        console.log(err);
+        console.error(err);
         ctx.body = {
             success: false,
             error: err,
