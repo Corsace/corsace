@@ -55,7 +55,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const params = extractParameters<parameters>(m, [
         { name: "date", paramType: "string", customHandler: extractDate },
-        { name: "matchup", paramType: "number", optional: true },
+        { name: "matchup", paramType: "integer", optional: true },
         { name: "tournament", paramType: "string", optional: true },
     ]); 
     if (!params)
@@ -74,9 +74,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
     // For organizers or referees, allow them to reschedule any matchup
     if (matchupID) {
-        if (!await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Referees]))
-            return;
-
         const matchup = await Matchup
             .createQueryBuilder("matchup")
             .innerJoinAndSelect("matchup.stage", "stage")
@@ -97,9 +94,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        if (!await confirmCommand(m, `Do you wish to reschedule the matchup ID ${matchup.ID} in stage \`${matchup.stage?.name || "N/A"}\` between \`${matchup.team1?.name || "N/A"}\` and \`${matchup.team2?.name || "N/A"}\` to ${discordStringTimestamp(date)}?`)) {
-            await respond(m, "Ok Lol");
-            return;
+        if (
+            matchup.team1?.manager.discord.userID !== commandUser(m).id && 
+            matchup.team2?.manager.discord.userID !== commandUser(m).id && 
+            matchup.referee?.discord.userID !== commandUser(m).id
+        ) {
+            if (!await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Referees]))
+                return;
+
+            if (!await confirmCommand(m, `Do you wish to reschedule the matchup ID ${matchup.ID} in stage \`${matchup.stage?.name || "N/A"}\` between \`${matchup.team1?.name || "N/A"}\` and \`${matchup.team2?.name || "N/A"}\` to ${discordStringTimestamp(date)}?`)) {
+                await respond(m, "Ok Lol");
+                return;
+            }
         }
 
         if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> Do you wish to reschedule your match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} to ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID)) {
