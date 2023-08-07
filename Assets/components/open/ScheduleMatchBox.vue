@@ -1,14 +1,14 @@
 <template>
     <div 
-        v-if="matchSync"
+        v-if="matchupSync"
         class="schedule_matchbox"
     >
         <div class="schedule_matchbox_date">
             <div class="schedule_matchbox_date__month">
-                {{ formatDate(matchSync.date) }}
+                {{ formatDate(matchupSync.date) }}
             </div>
             <div class="schedule_matchbox_date__time">
-                {{ formatTime(matchSync.date) }}
+                {{ formatTime(matchupSync.date) }}
             </div>
             <div class="schedule_matchbox_date__timezone">
                 UTC
@@ -17,17 +17,17 @@
         <div class="schedule_matchbox_team">
             <div class="schedule_matchbox_team__left">
                 <TeamCard
-                    v-if="matchSync.teams?.[0]"
-                    :avatar="matchSync.teams[0].avatarURL"
+                    v-if="matchupSync.teams?.[0]"
+                    :avatar="matchupSync.teams[0].avatarURL"
                 >
                     <template #name>
-                        {{ matchSync.teams[0].name }}
+                        {{ matchupSync.teams[0].name }}
                     </template>
                     <template #rank>
-                        {{ Math.round(matchSync.teams[0].rank) }}
+                        {{ Math.round(matchupSync.teams[0].rank) }}
                     </template>
                     <template #bws>
-                        {{ Math.round(matchSync.teams[0].BWS) }}
+                        {{ Math.round(matchupSync.teams[0].BWS) }}
                     </template>
                 </TeamCard>
             </div>
@@ -36,17 +36,17 @@
             </div>
             <div class="schedule_matchbox_team__right">
                 <TeamCard
-                    v-if="matchSync.teams?.[1]"
-                    :avatar="matchSync.teams[1].avatarURL"
+                    v-if="matchupSync.teams?.[1]"
+                    :avatar="matchupSync.teams[1].avatarURL"
                 >
                     <template #name>
-                        {{ matchSync.teams[1].name }}
+                        {{ matchupSync.teams[1].name }}
                     </template>
                     <template #rank>
-                        {{ Math.round(matchSync.teams[1].rank) }}
+                        {{ Math.round(matchupSync.teams[1].rank) }}
                     </template>
                     <template #bws>
-                        {{ Math.round(matchSync.teams[1].BWS) }}
+                        {{ Math.round(matchupSync.teams[1].BWS) }}
                     </template>
                 </TeamCard>
             </div>
@@ -83,7 +83,7 @@ import { MatchupList } from "../../../Interfaces/matchup";
     },
 })
 export default class ScheduleMatchBox extends Vue {
-    @PropSync("match", { default: null }) matchSync!: MatchupList | null;
+    @PropSync("matchup", { default: null }) matchupSync!: MatchupList | null;
 
     formatDate (date: Date): string {
         const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
