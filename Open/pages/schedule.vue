@@ -88,16 +88,28 @@ export default class Schedule extends Vue {
 
     @Watch("selectedStage")
     async stageMatchups () {
-        if (!this.selectedStage)
+        if (!this.selectedStage) {
             this.matchupList = [];
+            return;
+        }
+        
+        const ID = this.selectedStage.ID;
+        this.matchupList = [];
 
-        const { data } = await this.$axios.get(`/api/stage/${this.selectedStage?.ID}/matchups`);
+        await this.pause(500);
+        if (ID !== this.selectedStage.ID) return;
+
+        const { data } = await this.$axios.get(`/api/stage/${this.selectedStage.ID}/matchups`);
 
         this.matchupList = data.matchups.map(matchup => {
             matchup.date = new Date(matchup.date);
             return matchup;
         });
         this.matchupList.sort((a, b) => a.date.getTime() - b.date.getTime());
+    }
+
+    async pause (ms: number) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     mounted () {

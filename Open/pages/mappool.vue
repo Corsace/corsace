@@ -11,10 +11,10 @@
                         @next="index++"
                     >
                         <template #top_text>
-                            {{ $t("open.components.stageSelector.stage")}}
+                            {{ $t("open.components.stageSelector.stage") }}
                         </template>
                         <template #bottom_text>
-                            {{ $t("open.components.stageSelector.select")}}
+                            {{ $t("open.components.stageSelector.select") }}
                         </template>
 
                         <template #stage>
