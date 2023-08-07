@@ -166,7 +166,7 @@
                     class="content_button content_button--red_lg"
                     @click.native="create"
                 >
-                    {{ loading ? "Loading..." : $t('open.create.create') }}
+                    {{ loading ? `${$t('open.status.loading')}...` : $t('open.create.create') }}
                 </ContentButton>
             </div>
         </div>

@@ -20,43 +20,44 @@
                     to="/"
                     class="header__nav-item"
                 >
-                    HOME
+                    {{ $t("open.navbar.home")}}
                 </NuxtLink>
                 <NuxtLink
                     to="/info"
                     class="header__nav-item"
                 >
-                    INFO
+                    {{ $t("open.navbar.info") }}
                 </NuxtLink>
                 <NuxtLink
                     to="/qualifiers" 
                     class="header__nav-item"
                 >
-                    QUALIFIERS
+                    {{ $t("open.navbar.qualifiers") }}
                 </NuxtLink>
                 <NuxtLink
                     to="/teams" 
                     class="header__nav-item"
                 >
-                    TEAMS
+                    {{ $t("open.navbar.teams") }}
                 </NuxtLink>
                 <NuxtLink
                     to="/schedule" 
                     class="header__nav-item"
                 >
-                    SCHEDULE
+                    {{ $t("open.navbar.schedule") }}
                 </NuxtLink>
+
                 <NuxtLink
                     to="/mappool" 
                     class="header__nav-item"
                 >
-                    MAPPOOL
+                    {{ $t("open.navbar.mappool") }}
                 </NuxtLink>
                 <NuxtLink
                     to="/staff" 
                     class="header__nav-item"
                 >
-                    STAFF
+                    {{ $t("open.navbar.staff") }}
                 </NuxtLink>
             </div>
             <template #login>         
@@ -76,28 +77,28 @@
                         to="/team/create"
                         class="header__manage_teams_item"
                     >
-                        CREATE TEAM
+                        {{ $t("open.navbar.createTeam") }}
                     </NuxtLink>
                     <a
                         v-if="!team"
                         class="header__manage_teams_item"
                         @click="togglePopup()"
                     >
-                        INVITATIONS ({{ teamInvites?.length || 0 }})
+                        {{ $t("open.navbar.invitations") }} ({{ teamInvites?.length || 0 }})
                     </a>
                 </div>
                 <div
                     v-else
                     class="header__manage_teams"
                 >
-                    LOGIN DISCORD TO MANAGE TEAMS/INVITES
+                    {{ $t("open.navbar.loginDiscord") }}
                 </div>
                 <div 
                     v-show="isOpen"
                     class="header__popup"
                 >
                     <div class="header__popup_title">
-                        TEAM INVITES
+                        {{ $t("open.navbar.teamInvites") }}
                     </div>
                     <hr class="line--red line--no-space">
                     <ul v-if="!team && teamInvites">
@@ -112,7 +113,7 @@
                         </li>
                     </ul>
                     <div v-else>
-                        You currently have no invites
+                        {{ $t("open.navbar.noInvites") }}
                     </div>
                 </div>
             </template>
@@ -140,7 +141,7 @@
                             >
                         </a>
                     </template>
-                    CORSACE
+                    {{ $t("open.footer.corsace") }}
                 </Tooltip>
                 <Tooltip>
                     <template #icon>
@@ -157,7 +158,7 @@
                             >
                         </a>
                     </template>
-                    TWITTER
+                    {{ $t("open.footer.twitter") }}
                 </Tooltip>
                 <Tooltip>
                     <template #icon>
@@ -174,7 +175,7 @@
                             >
                         </a>
                     </template>
-                    DISCORD
+                    {{ $t("open.footer.discord") }}
                 </Tooltip>
                 <Tooltip>
                     <template #icon>
@@ -191,7 +192,7 @@
                             >
                         </a>
                     </template>
-                    TWITCH
+                    {{ $t("open.footer.twitch") }}
                 </Tooltip>
                 <Tooltip>
                     <template #icon>
@@ -208,7 +209,7 @@
                             >
                         </a>
                     </template>
-                    YOUTUBE
+                    {{ $t("open.footer.youtube") }}
                 </Tooltip>
             </div>
             <div 
