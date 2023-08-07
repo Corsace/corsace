@@ -15,7 +15,7 @@
                         {{ member.username }}
                     </div>
                     <div class="open_card_team_overlay__list_item_text open_card_team_overlay__list_item_text--bws">
-                        {{ Math.round(member.BWS) }} BWS
+                        {{ Math.round(member.BWS) }} {{ $t("open.components.openCardTeam.bws") }}
                     </div>
                 </li>
             </ul>
@@ -25,12 +25,12 @@
             :style="{ 'backgroundImage': `url(${teamSync.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
         />
         <div class="open_card_team__name">
-            {{ teamSync.name }} <span v-if="!teamSync.isRegistered">(UNREGISTERED)</span>
+            {{ teamSync.name }} <span v-if="!teamSync.isRegistered">({{ $t("open.components.openCardTeam.unregistered") }})</span>
         </div>
         <div class="open_card_team__text">
             <div class="open_card_team__text_group">
                 <div class="open_card_team__text_group_label">
-                    RANK
+                    {{ $t("open.components.openCardTeam.rank") }}
                 </div>
                 <div class="open_card_team__text_group_data">
                     {{ Math.round(teamSync.rank) }}
@@ -38,13 +38,13 @@
             </div>
             <div class="open_card_team__text_group">
                 <div class="open_card_team__text_group_label">
-                    TEAM BWS AVG
+                    {{ $t("open.components.openCardTeam.teambwsAverage") }}
                 </div>
                 <div class="open_card_team__text_group_data">
                     {{ Math.round(teamSync.BWS) }}
                 </div>
                 <div class="open_card_team__text_group_label--vertical">
-                    BWS
+                    {{ $t("open.components.openCardTeam.bws") }}
                 </div>
             </div>
         </div>

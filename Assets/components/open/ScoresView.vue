@@ -19,13 +19,13 @@
             <table class="scores__table">
                 <tbody>
                     <tr>
-                        <th>PLACEMENT</th>
+                        <th> {{ $t('open.qualifiers.scores.nav.placement') }} </th>
                         <th v-if="syncView === 'players'">
-                            PLAYER
+                            {{ $t('open.qualifiers.scores.nav.player') }}
                         </th>
-                        <th>TEAM</th>
-                        <th>BEST</th>
-                        <th>WORST</th>
+                        <th> {{ $t('open.qualifiers.scores.nav.team') }} </th>
+                        <th> {{ $t('open.qualifiers.scores.nav.best') }} </th>
+                        <th> {{ $t('open.qualifiers.scores.nav.worst') }} </th>
                         <th @click="mapSort = -1; sortDir = sortDir === 'asc' ? 'desc' : 'asc';">
                             <div class="scores__table--click">
                                 {{ $t(`open.qualifiers.scores.nav.${currentFilter}`) }}
