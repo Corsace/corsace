@@ -2,9 +2,14 @@
     <div class="schedule">
         <div class="schedule_main_content">
             <OpenTitle>
-                SCHEDULE - {{ stage?.abbreviation }}
+                SCHEDULE - {{ selectedStage?.abbreviation.toUpperCase() || '' }}
                 <template #selector>
-                    <StageSelector>
+                    <StageSelector
+                        :not-beginning="selectedStage?.ID !== stageList[0]?.ID"
+                        :not-end="selectedStage?.ID !== stageList[stageList.length - 1]?.ID"
+                        @prev="index--"
+                        @next="index++"
+                    >
                         <template #top_text>
                             STAGE
                         </template>
@@ -13,15 +18,17 @@
                         </template>
 
                         <template #stage>
-                            QL
+                            {{ selectedStage?.abbreviation.toUpperCase() || '' }}
                         </template>
                     </StageSelector>
                 </template>
             </OpenTitle>
             <div class="schedule_main_content_matches">
-                <ScheduleMatchBox match="" />
-                <ScheduleMatchBox match="" />
-                <ScheduleMatchBox match="" />
+                <ScheduleMatchBox
+                    v-for="matchup in matchupList"
+                    :key="matchup.ID"
+                    :matchup="matchup"
+                />
             </div>
         </div>
     </div>
@@ -33,9 +40,10 @@ import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StageSelector from "../../Assets/components/open/StageSelector.vue";
 import ScheduleMatchBox from "../../Assets/components/open/ScheduleMatchBox.vue";
 import { Tournament } from "../../Interfaces/tournament";
-import { Stage } from "../../Interfaces/stage";
+import { Stage, StageType } from "../../Interfaces/stage";
 
 import { namespace } from "vuex-class";
+import { MatchupList } from "../../Interfaces/matchup";
 
 const openModule = namespace("open");
 
@@ -66,40 +74,34 @@ const openModule = namespace("open");
         };
     },
 })
-export default class Mappool extends Vue {
+export default class Schedule extends Vue {
     
     @openModule.State tournament!: Tournament | null;
-    
-    selectedStage = 0;
-    
-    get stageList (): {
-        ID: number; 
-        name: string; 
-        order: number;
-    }[] {
-        const stages = this.tournament?.stages.map<{
-            ID: number; 
-            name: string; 
-            order: number;
-        }>(s => {
-            return {
-                ID: s.ID,
-                name: s.name,
-                order: s.order,
-            };
-        }) || [];
 
-        return stages;
+    stageList: Stage[] = [];
+    matchupList: MatchupList[] = [];
+    index = 0;
+    
+    get selectedStage (): Stage | null {
+        return this.stageList[this.index] || null;
     }
 
-    @Watch("stageList", { immediate: true })
-    onstageListChanged (list: {ID: number; name: string}[]) {
-        if (list.length > 0)
-            this.selectedStage = list[0]?.ID || 0;
+    @Watch("selectedStage")
+    async stageMatchups () {
+        if (!this.selectedStage)
+            this.matchupList = [];
+
+        const { data } = await this.$axios.get(`/api/stage/${this.selectedStage?.ID}/matchups`);
+
+        this.matchupList = data.matchups.map(matchup => {
+            matchup.date = new Date(matchup.date);
+            return matchup;
+        });
+        this.matchupList.sort((a, b) => a.date.getTime() - b.date.getTime());
     }
 
-    get stage (): Stage | null {
-        return this.tournament?.stages.find(s => s.ID === this.selectedStage) || null;
+    mounted () {
+        this.stageList = this.tournament?.stages.filter(stage => stage.stageType !== StageType.Qualifiers) || [];
     }
 }
 

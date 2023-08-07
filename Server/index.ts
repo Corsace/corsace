@@ -41,6 +41,8 @@ import mappersRouter from "./api/routes/mappers";
 
 import tournamentRouter from "./api/routes/tournament";
 
+import stageRouter from "./api/routes/stage";
+
 import mappoolRouter from "./api/routes/mappool";
 import mappoolMapRouter from "./api/routes/mappool/map";
 
@@ -134,7 +136,10 @@ koa.use(Mount("/api/influences", influencesRouter.routes()));
 /// Tournament
 koa.use(Mount("/api/tournament", tournamentRouter.routes()));
 
-// Mappool
+/// Stage
+koa.use(Mount("/api/stage", stageRouter.routes()));
+
+/// Mappool
 koa.use(Mount("/api/mappool", mappoolRouter.routes()));
 koa.use(Mount("/api/mappool/map", mappoolMapRouter.routes()));
 

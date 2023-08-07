@@ -48,17 +48,24 @@ export async function validateStageOrRound (ctx: ParameterizedContext, next: Nex
         return;
     }
 
-    const stage = await Stage
+    const stageQ = Stage
         .createQueryBuilder("stage")
         .leftJoinAndSelect("stage.rounds", "rounds")
-        .leftJoinAndSelect("stage.tournament", "tournament")
-        .where("tournament.ID = :tournamentID", { tournamentID: ctx.state.tournament.ID })
-        .andWhere(new Brackets(qb => {
+        .leftJoinAndSelect("stage.tournament", "tournament");
+    if (ctx.state.tournament)
+        stageQ
+            .where("tournament.ID = :tournamentID", { tournamentID: ctx.state.tournament.ID })
+            .andWhere(new Brackets(qb => {
+                qb.where("stage.ID = :stageID", { stageID: parseInt(ID) })
+                    .orWhere("rounds.ID = :roundID", { roundID: parseInt(ID) });
+            }));
+    else
+        stageQ.where(new Brackets(qb => {
             qb.where("stage.ID = :stageID", { stageID: parseInt(ID) })
                 .orWhere("rounds.ID = :roundID", { roundID: parseInt(ID) });
-        }))
-        .getOne();
-
+        }));
+    
+    const stage = await stageQ.getOne();
 
     if (!stage) {
         ctx.body = {

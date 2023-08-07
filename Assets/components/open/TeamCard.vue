@@ -2,7 +2,7 @@
     <div class="team_card">
         <div
             class="team_card__avatar" 
-            :style="{ 'backgroundImage': `url(${require('../../../Assets/img/site/open/team/default.png')})` }" 
+            :style="{ 'backgroundImage': `url(${avatarSync || require('../../../Assets/img/site/open/team/default.png')})` }" 
         /> 
         <!-- Replace with avatarSync above -->
         <div class="team_card_details">
@@ -34,7 +34,7 @@ import { Vue, Component, PropSync} from "vue-property-decorator";
 
 @Component
 export default class TeamCard extends Vue {
-    @PropSync("avatar", { type: String, default: "../../img/site/open/team/default.png" }) avatarSync!: string;
+    @PropSync("avatar", { type: String, default: require("../../img/site/open/team/default.png") }) avatarSync!: string;
 }
 </script>
 
