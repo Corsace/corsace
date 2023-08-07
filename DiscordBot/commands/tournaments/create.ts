@@ -566,6 +566,11 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                                 description: "Create a tournament streamer channel",
                             },
                             {
+                                label: "Rescheduling",
+                                value: "Rescheduling",
+                                description: "Create a channel to log matchup reschedules",
+                            },
+                            {
                                 label: "Matchup Results",
                                 value: "Matchupresults",
                                 description: "Create a channel to log tournament matchup results",

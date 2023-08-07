@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder, DiscordAPIError } from "discord.js";
 import { Command } from "../..";
 import getFromList from "../../../functions/getFromList";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
@@ -12,6 +12,42 @@ import respond from "../../../functions/respond";
 import confirmCommand from "../../../functions/confirmCommand";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { TournamentRoleType } from "../../../../Interfaces/tournament";
+import { TournamentChannel } from "../../../../Models/tournaments/tournamentChannel";
+import { discordClient } from "../../../../Server/discord";
+
+async function rescheduleLog (matchup: Matchup) {
+    const rescheduleChannel = await TournamentChannel
+        .createQueryBuilder("tournamentChannel")
+        .innerJoin("tournamentChannel.tournament", "tournament")
+        .where("tournament.ID = :tournamentID", { tournamentID: matchup.stage!.tournament.ID })
+        .andWhere("tournamentChannel.channelType = '15'")
+        .getOne();
+
+    if (!rescheduleChannel)
+        return;
+
+    try {
+        const rescheduleChannelMessage = await discordClient.channels.fetch(rescheduleChannel.channelID);
+        if (!rescheduleChannelMessage?.isTextBased())
+            return;
+
+        const pings: string[] = [];
+        if (matchup.team1?.manager.discord.userID)
+            pings.push(`<@${matchup.team1.manager.discord.userID}>`);
+        if (matchup.team2?.manager.discord.userID)
+            pings.push(`<@${matchup.team2.manager.discord.userID}>`);
+        if (matchup.referee?.discord.userID)
+            pings.push(`<@${matchup.referee.discord.userID}>`);
+        if (matchup.streamer?.discord.userID)
+            pings.push(`<@${matchup.streamer.discord.userID}>`);
+        if (matchup.commentators && matchup.commentators.length > 0)
+            pings.push(matchup.commentators.map((commentator) => `<@${commentator.discord.userID}>`).join(" "));
+        await rescheduleChannelMessage.send(`${pings.join(" ")}\n\nMatchup ID ${matchup.ID} in stage \`${matchup.stage?.name || "N/A"}\` between \`${matchup.team1?.name || "N/A"}\` and \`${matchup.team2?.name || "N/A"}\` has been rescheduled to ${discordStringTimestamp(matchup.date)}\n\nAny relevant staff members should confirm that they are available at this time, or remove themselves from the matchup otherwise.`);
+    } catch (e) {
+        if (!(e instanceof DiscordAPIError) || e.code !== 10003) 
+            throw e;
+    }
+}
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -79,6 +115,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         matchup.date = date;
         await matchup.save();
         await respond(m, `Matchup rescheduled to ${discordStringTimestamp(date)}`);
+        await rescheduleLog(matchup);
         return;
     }
 
@@ -146,6 +183,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     matchup.date = date;
     await matchup.save();
     await respond(m, `Matchup rescheduled to ${discordStringTimestamp(date)}`);
+    await rescheduleLog(matchup);
 }
 
 const data = new SlashCommandBuilder()
