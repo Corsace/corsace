@@ -1,122 +1,176 @@
 <template>
-    <div class="scores">
-        <div class="scores__sub_header">
-            <div class="scores__sub_header_subtext">
-                {{ $t('open.qualifiers.scores.nav.sort') }}
-            </div>
-            <div 
-                v-for="filter in filters"
-                :key="filter"
-                class="scores__sub_header_item"
-                :class="{ 'scores__sub_header_item--active': currentFilter === filter }"
-                @click="currentFilter = filter"
-            >
-                {{ $t(`open.qualifiers.scores.nav.${filter}`) }}
-            </div>
+    <div>
+        <div v-if="hover">
+            <ToolTip
+                v-for="team in filteredTeams"
+                :key="team.ID"
+                :team="team"
+                class="tooltips"
+                :style="{ 'top': `${y}px`, 'left': `${x}px`}"
+            />
         </div>
-        <hr class="line--red line--bottom-space">
-        <div class="scores__wrapper">
-            <table class="scores__table">
-                <tbody>
-                    <tr>
-                        <th> {{ $t('open.qualifiers.scores.nav.placement') }} </th>
-                        <th v-if="syncView === 'players'">
-                            {{ $t('open.qualifiers.scores.nav.player') }}
-                        </th>
-                        <th> {{ $t('open.qualifiers.scores.nav.team') }} </th>
-                        <th> {{ $t('open.qualifiers.scores.nav.best') }} </th>
-                        <th> {{ $t('open.qualifiers.scores.nav.worst') }} </th>
-                        <th @click="mapSort = -1; sortDir = sortDir === 'asc' ? 'desc' : 'asc';">
-                            <div class="scores__table--click">
-                                {{ $t(`open.qualifiers.scores.nav.${currentFilter}`) }}
-                                <div
-                                    :class="{ 
-                                        'scores__table--asc': mapSort === -1 && sortDir === 'asc', 
-                                        'scores__table--desc': mapSort === -1 && sortDir === 'desc', 
-                                        'scores__table--none': mapSort !== -1 || (sortDir !== 'asc' && sortDir !== 'desc')
-                                    }"
-                                />
-                            </div>
-                        </th>
-                        <th
-                            v-for="(map, i) in mapNameList"
-                            :key="map.mapID"
-                            @click="mapSort = i; sortDir = sortDir === 'asc' ? 'desc' : 'asc';"
-                        >
-                            <div class="scores__table--click">
-                                {{ map.map }}
-                                <div
-                                    :class="{ 
-                                        'scores__table--asc': mapSort === i && sortDir === 'asc',
-                                        'scores__table--desc': mapSort === i && sortDir === 'desc',
-                                        'scores__table--none': mapSort !== i || (sortDir !== 'asc' && sortDir !== 'desc')
-                                    }"
-                                />
-                            </div>
-                        </th>
-                    </tr>
-                    <tr
-                        v-for="row in shownQualifierScoreViews"
-                        :key="row.ID"
-                        :class="{ 
-                            'scores__table--tier1': row.placement <= 8 && syncView === 'teams',
-                            'scores__table--tier2': row.placement > 8 && row.placement <= 24 && syncView === 'teams',
-                        }"
-                    >
-                        <td>#{{ row.placement }}</td>
-                        <td
-                            class="scores__table--background-image"
-                            :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})` }"
-                        >
-                            <a
-                                :href="syncView === 'players' ? `https://osu.ppy.sh/users/${row.ID}` : `https://open.corsace.io/team/${row.ID}`"
-                                target="_blank"
-                                class="scores__table--click scores__table--no_padding"
+        <div
+            class="scores"
+        >
+            <div class="scores__sub_header">
+                <div class="scores__sub_header_subtext">
+                    {{ $t('open.qualifiers.scores.nav.sort') }}
+                </div>
+                <div 
+                    v-for="filter in filters"
+                    :key="filter"
+                    class="scores__sub_header_item"
+                    :class="{ 'scores__sub_header_item--active': currentFilter === filter }"
+                    @click="currentFilter = filter"
+                >
+                    {{ $t(`open.qualifiers.scores.nav.${filter}`) }}
+                </div>
+            </div>
+            <hr class="line--red line--bottom-space">
+            <div class="scores__wrapper">
+                <table class="scores__table">
+                    <tbody>
+                        <tr>
+                            <th> {{ $t('open.qualifiers.scores.nav.placement') }} </th>
+                            <th v-if="syncView === 'players'">
+                                {{ $t('open.qualifiers.scores.nav.player') }}
+                            </th>
+                            <th> {{ $t('open.qualifiers.scores.nav.team') }} </th>
+                            <th> {{ $t('open.qualifiers.scores.nav.best') }} </th>
+                            <th> {{ $t('open.qualifiers.scores.nav.worst') }} </th>
+                            <th @click="mapSort = -1; sortDir = sortDir === 'asc' ? 'desc' : 'asc';">
+                                <div class="scores__table--click">
+                                    {{ $t(`open.qualifiers.scores.nav.${currentFilter}`) }}
+                                    <div
+                                        :class="{ 
+                                            'scores__table--asc': mapSort === -1 && sortDir === 'asc', 
+                                            'scores__table--desc': mapSort === -1 && sortDir === 'desc', 
+                                            'scores__table--none': mapSort !== -1 || (sortDir !== 'asc' && sortDir !== 'desc')
+                                        }"
+                                    />
+                                </div>
+                            </th>
+                            <th
+                                v-for="(map, i) in mapNameList"
+                                :key="map.mapID"
+                                @click="mapSort = i; sortDir = sortDir === 'asc' ? 'desc' : 'asc';"
                             >
-                                {{ row.name }}
-                            </a>
-                        </td>
-                        <td v-if="syncView === 'players'">
-                            <a
-                                :href="`https://open.corsace.io/team/${row.teamID}`"
-                                target="_blank"
-                                class="scores__table--click scores__table--no_padding"
-                            >
-                                {{ row.team }}
-                            </a>
-                        </td>
-                        <td>{{ row.best }}</td>
-                        <td>{{ row.worst }}</td>
-                        <td>{{ row.sum === 0 ? "" : row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && row.sum !== 0 ? "%" : "" }}</td>
-                        <td 
-                            v-for="score in row.scores"
-                            :key="score.map"
-                            :class="{ 'scores__table--highlight': score.isBest }"
+                                <div class="scores__table--click">
+                                    {{ map.map }}
+                                    <div
+                                        :class="{ 
+                                            'scores__table--asc': mapSort === i && sortDir === 'asc',
+                                            'scores__table--desc': mapSort === i && sortDir === 'desc',
+                                            'scores__table--none': mapSort !== i || (sortDir !== 'asc' && sortDir !== 'desc')
+                                        }"
+                                    />
+                                </div>
+                            </th>
+                        </tr>
+                        <tr
+                            v-for="row in shownQualifierScoreViews"
+                            :key="row.ID"
+                            :class="{ 
+                                'scores__table--tier1': row.placement <= 8 && syncView === 'teams',
+                                'scores__table--tier2': row.placement > 8 && row.placement <= 24 && syncView === 'teams',
+                            }"
                         >
-                            {{ score.sum === 0 ? "" : score[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && score.sum !== 0 ? "%" : "" }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            <td>#{{ row.placement }}</td>
+                            <td
+                                class="scores__table--background-image"
+                                :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})` }"
+                                @mousemove="getCursor($event)"
+                                @mouseenter="hover = true; searchID = row.ID.toString()"
+                                @mouseleave="hover = false"
+                            >
+                                <a
+                                    :href="syncView === 'players' ? `https://osu.ppy.sh/users/${row.ID}` : `https://open.corsace.io/team/${row.ID}`"
+                                    target="_blank"
+                                    class="scores__table--click scores__table--no_padding"
+                                >
+                                    {{ row.name }}
+                                </a>
+                            </td>
+                            <td v-if="syncView === 'players'">
+                                <a
+                                    :href="`https://open.corsace.io/team/${row.teamID}`"
+                                    target="_blank"
+                                    class="scores__table--click scores__table--no_padding"
+                                >
+                                    {{ row.team }}
+                                </a>
+                            </td>
+                            <td>{{ row.best }}</td>
+                            <td>{{ row.worst }}</td>
+                            <td>{{ row.sum === 0 ? "" : row[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && row.sum !== 0 ? "%" : "" }}</td>
+                            <td 
+                                v-for="score in row.scores"
+                                :key="score.map"
+                                :class="{ 'scores__table--highlight': score.isBest }"
+                            >
+                                {{ score.sum === 0 ? "" : score[currentFilter].toFixed(currentFilter === "sum" || currentFilter === "average" ? 0 : 2) }}{{ currentFilter.includes("percent") && score.sum !== 0 ? "%" : "" }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, PropSync } from "vue-property-decorator";
+import { Vue, Component, PropSync} from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { QualifierScore, QualifierScoreView, sortType, filters, mapNames, computeQualifierScoreViews } from "../../../Interfaces/qualifier";
 import { Tournament } from "../../../Interfaces/tournament";
 
+import ToolTip from "./FollowToolTip.vue";
+
 const openModule = namespace("open");
 
-@Component
+@Component({
+    components: {
+        ToolTip,
+    },
+})
+
 export default class ScoresView extends Vue {
 
     @PropSync("view", { type: String }) syncView!: "players" | "teams";
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State qualifierScores!: QualifierScore[] | null;
+    @openModule.State teamList!: TeamList[] | null;
+
+    x = 0;
+    y = 0;
+
+
+    
+    getCursor (event) {
+        console.log(event); // you can read pos here
+        this.x = event.clientX;
+        this.y = event.clientY;
+    }
+    
+    loading = true;
+    searchID = "";
+    
+    get filteredTeams () {
+        if (!this.searchID)
+            return this.teamList;
+        return this.teamList?.filter(team => 
+            team.ID.toString() == this.searchID.toLowerCase()
+        );
+    }
+    
+    async mounted () {
+        this.loading = true;
+        if (this.tournament)
+            await this.$store.dispatch("open/setTeamList", this.tournament.ID);
+        this.loading = false;
+    }
+    hover = true;
 
     currentFilter: sortType = "zScore";
     sortDir: "asc" | "desc" = "desc";
@@ -172,11 +226,19 @@ export default class ScoresView extends Vue {
 
         return groupedScores;
     }
+
 }
 </script>
 
 <style lang="scss">
 @import '@s-sass/_variables';
+.tooltips {
+    display: block;
+    position: fixed;
+    z-index: 10;
+    // pointer-events: none;
+}
+
 .scores {
     position: relative;
 
@@ -199,7 +261,7 @@ export default class ScoresView extends Vue {
             font-family: $font-ggsans;
             font-weight: 500;
             padding: 0 30px 5px 30px;
-
+            
             &:hover, &--active {
                 color: $open-red;
             }
@@ -286,7 +348,7 @@ export default class ScoresView extends Vue {
             align-items: center;
             justify-content: center;
             gap: 5px;
-            padding: 15px 5px;
+            // padding: 15px 5px;
         }
 
         &--no_padding {
