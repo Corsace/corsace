@@ -1,12 +1,11 @@
 <template>
     <div>
         <div v-if="hover">
-            <ToolTip
+            <TeamToolTip
                 v-for="team in filteredTeams"
                 :key="team.ID"
                 :team="team"
-                class="tooltips"
-                :style="{ 'top': `${y}px`, 'left': `${x}px`}"
+                :style="{ 'top': `${y + 10}px`, 'left': `${x + 10}px`}"
             />
         </div>
         <div
@@ -124,13 +123,13 @@ import { namespace } from "vuex-class";
 import { QualifierScore, QualifierScoreView, sortType, filters, mapNames, computeQualifierScoreViews } from "../../../Interfaces/qualifier";
 import { Tournament } from "../../../Interfaces/tournament";
 
-import ToolTip from "./FollowToolTip.vue";
+import TeamToolTip from "./TeamToolTip.vue";
 
 const openModule = namespace("open");
 
 @Component({
     components: {
-        ToolTip,
+        TeamToolTip,
     },
 })
 
@@ -144,8 +143,6 @@ export default class ScoresView extends Vue {
 
     x = 0;
     y = 0;
-
-
     
     getCursor (event) {
         console.log(event); // you can read pos here
@@ -170,7 +167,7 @@ export default class ScoresView extends Vue {
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);
         this.loading = false;
     }
-    hover = true;
+    hover = false;
 
     currentFilter: sortType = "zScore";
     sortDir: "asc" | "desc" = "desc";
@@ -181,6 +178,7 @@ export default class ScoresView extends Vue {
         map: string;
         mapID: number;
     }[] {
+        console.log(this.qualifierScores);
         return mapNames(this.qualifierScores);
     }
 
@@ -232,12 +230,6 @@ export default class ScoresView extends Vue {
 
 <style lang="scss">
 @import '@s-sass/_variables';
-.tooltips {
-    display: block;
-    position: fixed;
-    z-index: 10;
-    // pointer-events: none;
-}
 
 .scores {
     position: relative;
