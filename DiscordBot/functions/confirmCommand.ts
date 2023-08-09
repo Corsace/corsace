@@ -25,7 +25,7 @@ export default async function confirmCommand (m: Message | ChatInputCommandInter
 
     return new Promise<boolean>(resolve => {
         const filter = (i: MessageComponentInteraction) => i.user.id === targetFilter;
-        const confirmationCollector = m.channel!.createMessageComponentCollector({ filter: useFilter ? filter : undefined, time: 6000000 });
+        const confirmationCollector = m.channel!.createMessageComponentCollector({ filter: useFilter ? filter : undefined, time: 900000 });
         confirmationCollector.on("collect", async (i: MessageComponentInteraction) => {
             if (i.customId === ids.yes) {
                 await message.delete();

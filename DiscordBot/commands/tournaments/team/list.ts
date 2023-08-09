@@ -59,13 +59,11 @@ const data = new SlashCommandBuilder()
     .addBooleanOption(option => 
         option.setName("all")
             .setDescription("List all tournament teams that exist (Default false)")
-            .setRequired(false)
-    )
+            .setRequired(false))
     .addBooleanOption(option => 
         option.setName("manager")
             .setDescription("Only list teams you manage (Default false)")
-            .setRequired(false)
-    );
+            .setRequired(false));
 
 interface parameters {
     all?: boolean,

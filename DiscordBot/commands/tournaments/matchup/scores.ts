@@ -80,7 +80,7 @@ const data = new SlashCommandBuilder()
 
 const matchupScores: Command = {
     data,
-    alternativeNames: ["scores", "scores_matchup", "mscores", "ms"],
+    alternativeNames: ["scores", "scores_matchup", "mscores"],
     category: "tournaments",
     subCategory: "matchups",
     run,
