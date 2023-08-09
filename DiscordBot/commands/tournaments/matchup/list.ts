@@ -24,12 +24,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    if (m instanceof Message ? m.content.includes("-incfin") : m.options.getBoolean("include_finished")) {
-        await respond(m, "U cant use the `all` option outside of DMs, as it shows ur assignments across all pools and tournaments");
-        return;
-    }
-
-    // Get specific pool and user
     const params = extractParameters<parameters>(m, [
         { name: "filter", paramType: "string" },
         { name: "tournament", paramType: "string", optional: true },
