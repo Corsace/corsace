@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, GuildMemberRoleManager, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../..";
 import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
@@ -13,6 +13,7 @@ import confirmCommand from "../../../functions/confirmCommand";
 import respond from "../../../functions/respond";
 import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
 import getStaff from "../../../functions/tournamentFunctions/getStaff";
+import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 
 const refValues = ["referee", "ref", "r", "referees", "refs", "rs"] as const;
 const commentValues = ["commentator", "comment", "c", "commentators", "comments", "cs"] as const;
@@ -121,11 +122,30 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         if (
             matchup[staffProperty] && 
-            matchup[staffProperty]!.ID !== user.ID && 
-            !await confirmCommand(m, `<@${matchup[staffProperty]!.discord.userID}> do u allow \`${user.osu.username}\` to be the \`${staffProperty}\` for matchup \`${matchup.ID}\`?`, true, matchup[staffProperty]!.discord.userID)
+            matchup[staffProperty]!.ID !== user.ID
         ) {
-            await respond(m, "Ok w/e .");
-            return;
+            const memberRoles = m.member?.roles;
+            if (!memberRoles) {
+                await respond(m, "Can't fetch ur roles");
+                return;
+            }
+
+            const roleIDs = memberRoles instanceof GuildMemberRoleManager ? memberRoles.cache.map(r => r.id) : memberRoles;
+            if (roleIDs.length === 0) {
+                await respond(m, "U don't have any roles");
+                return;
+            }
+
+            const roles = await TournamentRole
+                .createQueryBuilder("role")
+                .where("role.roleID IN (:...roleIDs)", { roleIDs })
+                .getMany();
+            const bypass = roles.some(r => r.roleType === TournamentRoleType.Organizer);
+
+            if (!bypass && !await confirmCommand(m, `<@${matchup[staffProperty]!.discord.userID}> do u allow \`${user.osu.username}\` to be the \`${staffProperty}\` for matchup \`${matchup.ID}\`?`, true, matchup[staffProperty]!.discord.userID)) {
+                await respond(m, "Ok w/e .");
+                return;
+            }
         }
     
         matchup[staffProperty] = user;

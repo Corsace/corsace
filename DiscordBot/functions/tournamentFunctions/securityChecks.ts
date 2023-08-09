@@ -14,7 +14,12 @@ export async function hasTournamentRoles (m: Message | ChatInputCommandInteracti
         await respond(m, "Can't fetch ur roles");
         return false;
     }
+
     const roleIDs = memberRoles instanceof GuildMemberRoleManager ? memberRoles.cache.map(r => r.id) : memberRoles;
+    if (roleIDs.length === 0) {
+        await respond(m, "U don't have any roles");
+        return false;
+    }
 
     const roles = await TournamentRole
         .createQueryBuilder("role")

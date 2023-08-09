@@ -11,13 +11,32 @@ import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import getStaff from "../../../functions/tournamentFunctions/getStaff";
 import channelID from "../../../functions/channelID";
 import { Matchup } from "../../../../Models/tournaments/matchup";
+import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 
-const filterValues = ["all", "assigned", "unassigned", "team"] as const;
+const refValues = ["referee", "ref", "r", "referees", "refs", "rs"] as const;
+const commentValues = ["commentator", "comment", "c", "commentators", "comments", "cs"] as const;
+const streamValues = ["streamer", "stream", "s", "streamers", "streams", "ss"] as const;
+const filterValues = ["all", "assigned", "unassigned", "team", ...refValues, ...commentValues, ...streamValues] as const;
 
+type referee = typeof refValues[number];
+type commentator = typeof commentValues[number];
+type streamer = typeof streamValues[number];
 type filter = typeof filterValues[number];
 
 function isFilter (type: filter): boolean {
     return filterValues.includes(type);
+}
+
+function isReferee (type: referee): boolean {
+    return refValues.includes(type);
+}
+
+function isCommentator (type: commentator): boolean {
+    return commentValues.includes(type);
+}
+
+function isStreamer (type: streamer): boolean {
+    return streamValues.includes(type);
 }
 
 async function run (m: Message | ChatInputCommandInteraction) {
@@ -76,6 +95,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         matchupsQ.andWhere("referee.ID IS NULL OR streamer.ID IS NULL OR (streamer.ID IS NOT NULL AND commentators.ID IS NULL)");
     else if (filter === "team")
         matchupsQ.andWhere("team1manager.discordUserid = :userID OR team2manager.discordUserid = :userID OR team1members.discordUserid = :userID OR team2members.discordUserid = :userID", { userID: user.ID });
+    else if (isReferee(filter as referee))
+        matchupsQ.andWhere("referee.ID IS NULL");
+    else if (isStreamer(filter as streamer))
+        matchupsQ.andWhere("streamer.ID IS NULL");
+    else if (isCommentator(filter as commentator))
+        matchupsQ.andWhere("streamer.ID IS NOT NULL AND commentators.ID IS NULL");
 
     const matchups = await matchupsQ.getMany();
 
@@ -94,11 +119,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     for (const matchup of matchups) {
         const team1 = matchup.team1 ? `${matchup.team1.name} (${matchup.team1.abbreviation})` : "TBD";
         const team2 = matchup.team2 ? `${matchup.team2.name} (${matchup.team2.abbreviation})` : "TBD";
-        const score = matchup.team1Score > 0 || matchup.team2Score > 0 ? `${matchup.team1Score} - ${matchup.team2Score}\n` : "";
-        const referee = matchup.referee ? `Referee: **${matchup.referee.osu.username}**\n` : "";
-        const streamer = matchup.streamer ? `Streamer: **${matchup.streamer.osu.username}**\n` : "";
-        const commentators = matchup.commentators && matchup.commentators.length > 0 ? `Commentators: **${matchup.commentators.map(u => u.osu.username).join(", ")}**\n` : "";
-        const value = `${score}${referee}${streamer}${commentators}`;
+        const referee = matchup.referee?.osu.username || "";
+        const streamer = matchup.streamer?.osu.username || "";
+        const commentators = matchup.commentators?.map(u => u.osu.username).join(", ") || "";
+        const value = `${discordStringTimestamp(matchup.date)}\n\nReferee: **${referee}**\nStreamer: **${streamer}**\nCommentators: **${commentators}**`;
         if (value.length > 0)
             embed.addFields(
                 {
@@ -140,7 +164,16 @@ const data = new SlashCommandBuilder()
                 name: "Your/Someone's Assignments",
                 value: "assigned",
             }, {
-                name: "Unassigned/Unstreamed Matchups",
+                name: "Unassigned Refs Matchups",
+                value: "ref",
+            }, {
+                name: "Unassigned Streamers Matchups",
+                value: "stream",
+            }, {
+                name: "Unassigned Commentators Matchups",
+                value: "comm",
+            }, {
+                name: "Unassigned Matchups",
                 value: "unassigned",
             }, {
                 name: "Your Team's Matchups",
