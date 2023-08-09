@@ -7,6 +7,7 @@
             <TeamToolTip
                 v-if="hover && filteredTeam"
                 :team="filteredTeam"
+                :player="showPlayers"
             />
         </div>
         <div
@@ -91,11 +92,10 @@
                         >
                             <td>#{{ row.placement }}</td>
                             <td
-                                class="scores__table--background-image"
-                                :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})` }"
+                                :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})` }" 
                                 @mousemove="updateTooltipPosition($event)"
-                                @mouseenter="hover = true; teamSearchID = row.ID"
-                                @mouseleave="hover = false"
+                                @mouseenter="hover = true; syncView === 'players' ? (showPlayers = false, teamSearchID = row.teamID): (showPlayers = true, teamSearchID = row.ID); "
+                                @mouseleave="hover = false; showPlayers = true"
                             >
                                 <a
                                     :href="syncView === 'players' ? `https://osu.ppy.sh/users/${row.ID}` : `https://open.corsace.io/team/${row.ID}`"
@@ -108,7 +108,7 @@
                             <td
                                 v-if="syncView === 'players'"
                                 @mousemove="updateTooltipPosition($event)"
-                                @mouseenter="hover = true; teamSearchID = row.teamID || 1"
+                                @mouseenter="hover = true; teamSearchID = row.teamID"
                                 @mouseleave="hover = false"
                             >
                                 <a
@@ -176,6 +176,9 @@ export default class ScoresView extends Vue {
         const x = event.clientX;
         const y = event.clientY;
 
+        console.log(this.teamSearchID);
+        console.log(this.showPlayers);
+
         if (this.$refs.teamToolTip instanceof HTMLElement) {
             this.$refs.teamToolTip.style.left = `${x + 10}px`;
             this.$refs.teamToolTip.style.top = `${y + 10}px`;
@@ -218,6 +221,7 @@ export default class ScoresView extends Vue {
     }
     hover = false;
     maphover = false;
+    showPlayers = true;
 
     currentFilter: sortType = "zScore";
     sortDir: "asc" | "desc" = "desc";
@@ -354,6 +358,10 @@ export default class ScoresView extends Vue {
         }
 
         &--background-image {
+            box-sizing: border-box;
+            position: absolute;
+            width: 100%;
+            height: 100%;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;

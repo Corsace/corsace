@@ -14,23 +14,27 @@
                 </div>
             </div>
         </div>
-        <div class="team_tooltip__list">
+        <div
+            class="team_tooltip__list"
+        >
             <div class="team_tooltip__list__teamname">
                 {{ teamSync.name }}
             </div>
-            <li 
-                v-for="member in teamSync.members"
-                :key="member.ID"
-                class="team_tooltip__list__item"
-                :class="{ 'team_tooltip__list__item--leader': member.isManager }"
-            >
-                <div class="team_tooltip__list__item--text">
-                    {{ member.username }}
-                </div>
-                <div class="team_tooltip__list__item--text team_tooltip__list__item--text--bws">
-                    {{ Math.round(member.BWS) }} {{ $t("open.components.openCardTeam.bws") }}
-                </div>
-            </li>
+            <div v-if="playerSync">
+                <li 
+                    v-for="member in teamSync.members"
+                    :key="member.ID"
+                    class="team_tooltip__list__item"
+                    :class="{ 'team_tooltip__list__item--leader': member.isManager }"
+                >
+                    <div class="team_tooltip__list__item--text">
+                        {{ member.username }}
+                    </div>
+                    <div class="team_tooltip__list__item--text team_tooltip__list__item--text--bws">
+                        {{ Math.round(member.BWS) }} {{ $t("open.components.openCardTeam.bws") }}
+                    </div>
+                </li>
+            </div>
         </div>
         <div class="team_tooltip__bottom_left" />
     </div>
@@ -47,6 +51,7 @@ import { TeamList } from "../../../Interfaces/team";
 
 export default class TeamToolTip extends Vue {
     @PropSync("team", { type: Object }) teamSync!: TeamList;
+    @PropSync("player", { type: Object, default: true}) playerSync!: boolean;
 }
 </script>
 
@@ -64,7 +69,7 @@ export default class TeamToolTip extends Vue {
     border: 1px solid #353535;
 
     width: 175px;
-    min-height: 175px;
+    max-height: 175px;
     padding-bottom: 10px;
 
     background-image: url("../../img/site/open/checkers-bg.png");
