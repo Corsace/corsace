@@ -165,13 +165,13 @@ const data = new SlashCommandBuilder()
                 value: "assigned",
             }, {
                 name: "Unassigned Refs Matchups",
-                value: "ref",
+                value: "referee",
             }, {
                 name: "Unassigned Streamers Matchups",
-                value: "stream",
+                value: "streamer",
             }, {
                 name: "Unassigned Commentators Matchups",
-                value: "comm",
+                value: "commentator",
             }, {
                 name: "Unassigned Matchups",
                 value: "unassigned",
