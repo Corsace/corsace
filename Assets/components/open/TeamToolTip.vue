@@ -4,8 +4,18 @@
         <div
             class="team_tooltip__banner"
             :style="{ 'background-image': `url(${teamSync.avatarURL || require('../../img/site/open/team/default.png')})` }"
-        />
+        >
+            <div class="team_tooltip__banner_ranking">
+                <div class="team_tooltip__banner_ranking__rank">
+                    Rank 2
+                </div>
+                <div class="team_tooltip__banner_ranking__bws">BWS 10</div>
+            </div>
+        </div>
         <div class="team_tooltip__list">
+            <div class="team_tooltip__list__teamname">
+                {{ teamSync.name }}
+            </div>
             <li 
                 v-for="member in teamSync.members"
                 :key="member.ID"
@@ -105,18 +115,55 @@ export default class TeamToolTip extends Vue {
         background-position: center;
         background-repeat: no-repeat;
         clip-path: polygon(0 8.00px, 8.00px 0,100% 0,100% 100%,0 100%);
-    }
 
+        &_ranking {
+            display: flex;
+            position: absolute;
+            flex-direction: column;
+            top: 0;
+            right: 0;
+            padding: 3px;
+            margin: 7px;
+            gap: 3px;
+            
+            font-family: $font-swis721;
+            font-size: 8px;
+            font-weight: 700;
+            line-height: 7px;
+            letter-spacing: 0em;
+            text-align: right;
+
+            // text-shadow: 0 0 1px #131313;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+    }
+    
     &__list {
         display: flex;
         flex-direction: column;
         width: 100%;
         height: 80%;
-        margin-top: 10px;
+        margin-top: -5%;
         align-items: center;
         padding-left: 10px;
         gap: 5px;
-
+        z-index: 3;
+        
+        &__teamname {
+            display: flex;
+            width: 75%;
+            justify-self: flex-start;
+            font-family: $font-ggsans;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 16px;
+            letter-spacing: 0em;
+            text-align: right;
+    
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+        
         &__item {
             display: flex;
             flex-direction: row;
