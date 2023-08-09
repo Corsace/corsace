@@ -94,7 +94,7 @@
                                 class="scores__table--background-image"
                                 :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})` }"
                                 @mousemove="updateTooltipPosition($event)"
-                                @mouseenter="hover = true; searchID = row.ID"
+                                @mouseenter="hover = true; teamSearchID = row.ID"
                                 @mouseleave="hover = false"
                             >
                                 <a
@@ -183,14 +183,14 @@ export default class ScoresView extends Vue {
     }
     
     loading = true;
-    searchID = 0;
+    teamSearchID = 0;
     mapSearchID = "";
     
     get filteredTeam () {
-        if (!this.searchID)
+        if (!this.teamSearchID)
             return null;
         return this.teamList?.find(team => 
-            team.ID == this.searchID
+            team.ID == this.teamSearchID
         );
     }
 
