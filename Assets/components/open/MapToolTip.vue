@@ -3,7 +3,7 @@
         <div class="map_tooltip__top_left" />
         <div
             class="map_tooltip__banner"
-            :style="`background-image: url(https://assets.ppy.sh/beatmaps/${mapSync.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)`"
+            :style="`background-image: linear-gradient(rgba(0,0,0,0.66), rgba(0,0,0,0.66)), url(https://assets.ppy.sh/beatmaps/${mapSync.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)`"
         />
         <div class="map_tooltip_info">
             <div class="map_tooltip_info__wrapper">
@@ -62,11 +62,7 @@ export default class MapToolTip extends Vue {
 .map_tooltip {
     display: flex;
     flex-direction: column;
-    position: fixed;
-    z-index: 10;
 
-    background: linear-gradient(0deg, #131313, #131313),
-    linear-gradient(0deg, #353535, #353535);
     background: #131313;
     border: 1px solid #353535;
 

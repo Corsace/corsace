@@ -1,17 +1,21 @@
 <template>
     <div>
-        <div v-if="hover">
+        <div
+            ref="teamToolTip"
+            style="position: fixed; transition: none; z-index: 10;"
+        >
             <TeamToolTip
-                v-for="team in filteredTeams"
-                :key="team.ID"
-                :team="team"
-                :style="{ 'top': `${y + 10}px`, 'left': `${x + 10}px`}"
+                v-if="hover"
+                :team="filteredTeam"
             />
         </div>
-        <div v-if="maphover">
+        <div
+            ref="mapToolTip"
+            style="position: fixed; transition: none; z-index: 10;"
+        >
             <MapToolTip
+                v-if="maphover"
                 :map="filteredMap"
-                :style="{ 'top': `${y + 10}px`, 'left': `${x + 10}px`}"
             />
         </div>
         <div
@@ -62,7 +66,7 @@
                             >
                                 <div
                                     class="scores__table--click"
-                                    @mousemove="getCursor($event)"
+                                    @mousemove="updateTooltipPosition($event)"
                                     @mouseenter="maphover = true; mapSearchID = map.map"
                                     @mouseleave="maphover = false"
                                 >
@@ -89,8 +93,8 @@
                             <td
                                 class="scores__table--background-image"
                                 :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})` }"
-                                @mousemove="getCursor($event)"
-                                @mouseenter="hover = true; searchID = row.ID.toString()"
+                                @mousemove="updateTooltipPosition($event)"
+                                @mouseenter="hover = true; searchID = row.ID"
                                 @mouseleave="hover = false"
                             >
                                 <a
@@ -134,6 +138,7 @@ import { namespace } from "vuex-class";
 import { QualifierScore, QualifierScoreView, sortType, filters, mapNames, computeQualifierScoreViews } from "../../../Interfaces/qualifier";
 import { Tournament } from "../../../Interfaces/tournament";
 import { Mappool as MappoolInterface } from "../../../Interfaces/mappool";
+import { TeamList } from "../../../Interfaces/team";
 
 import TeamToolTip from "./TeamToolTip.vue";
 import MapToolTip from "./MapToolTip.vue";
@@ -162,23 +167,30 @@ export default class ScoresView extends Vue {
         return this.mappoolList[this.index] || null;
     }
 
-    x = 0;
-    y = 0;
-    
-    getCursor (event) {
-        this.x = event.clientX;
-        this.y = event.clientY;
+    updateTooltipPosition (event) {
+        const x = event.clientX;
+        const y = event.clientY;
+
+        console.log(this.$refs);
+        if (this.$refs.teamToolTip instanceof HTMLElement) {
+            this.$refs.teamToolTip.style.left = `${x + 10}px`;
+            this.$refs.teamToolTip.style.top = `${y + 10}px`;
+        }
+        if (this.$refs.mapToolTip instanceof HTMLElement) {
+            this.$refs.mapToolTip.style.left = `${x + 10}px`;
+            this.$refs.mapToolTip.style.top = `${y + 10}px`;
+        }
     }
     
     loading = true;
-    searchID = "";
+    searchID = 0;
     mapSearchID = "";
     
-    get filteredTeams () {
+    get filteredTeam () {
         if (!this.searchID)
-            return this.teamList;
-        return this.teamList?.filter(team => 
-            team.ID.toString() == this.searchID.toLowerCase()
+            return null;
+        return this.teamList?.find(team => 
+            team.ID == this.searchID
         );
     }
 
@@ -189,10 +201,6 @@ export default class ScoresView extends Vue {
             this.mapSearchID.toLowerCase().includes(map.acronym.toLowerCase())
         )[0].maps[+(this.mapSearchID.match(/(\d+)/)?.[0] || 1) - 1];
     }
-
-    
-
-    
     
     async mounted () {
         this.loading = true;

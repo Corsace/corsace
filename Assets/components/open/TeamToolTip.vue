@@ -3,14 +3,14 @@
         <div class="team_tooltip__top_left" />
         <div
             class="team_tooltip__banner"
-            :style="{ 'background-image': `url(${teamSync.avatarURL || require('../../img/site/open/team/default.png')})` }"
+            :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.66), rgba(0,0,0,0.66)), url(${teamSync.avatarURL || require('../../img/site/open/team/default.png')})` }"
         >
             <div class="team_tooltip__banner_ranking">
                 <div class="team_tooltip__banner_ranking__rank">
-                    RANK {{ teamSync.rank }}
+                    RANK {{ Math.round(teamSync.rank) }}
                 </div>
                 <div class="team_tooltip__banner_ranking__bws">
-                    BWS {{ teamSync.BWS }}
+                    BWS {{ Math.round(teamSync.BWS) }}
                 </div>
             </div>
         </div>
@@ -54,13 +54,11 @@ export default class TeamToolTip extends Vue {
 @import '@s-sass/_variables';
 
 .team_tooltip {
+    transition: none;
     display: flex;
     flex-direction: column;
-    position: fixed;
     z-index: 10;
 
-    background: linear-gradient(0deg, #131313, #131313),
-    linear-gradient(0deg, #353535, #353535);
     background: #131313;
 
     border: 1px solid #353535;
