@@ -185,7 +185,6 @@ export default class ScoresView extends Vue {
     get filteredMap () {
         if (!this.mapSearchID)
             return null;
-        // console.log(this.mapSearchID);
         return this.selectedMappool?.slots.filter(map => 
             this.mapSearchID.toLowerCase().includes(map.acronym.toLowerCase())
         )[0].maps[+(this.mapSearchID.match(/(\d+)/)?.[0] || 1) - 1];
@@ -217,8 +216,6 @@ export default class ScoresView extends Vue {
         map: string;
         mapID: number;
     }[] {
-        // console.log(this.qualifierScores);
-        // console.log(this.selectedMappool);
         return mapNames(this.qualifierScores);
     }
 
