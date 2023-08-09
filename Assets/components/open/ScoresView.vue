@@ -105,7 +105,12 @@
                                     {{ row.name }}
                                 </a>
                             </td>
-                            <td v-if="syncView === 'players'">
+                            <td
+                                v-if="syncView === 'players'"
+                                @mousemove="updateTooltipPosition($event)"
+                                @mouseenter="hover = true; teamSearchID = row.teamID || 1"
+                                @mouseleave="hover = false"
+                            >
                                 <a
                                     :href="`https://open.corsace.io/team/${row.teamID}`"
                                     target="_blank"
@@ -171,7 +176,6 @@ export default class ScoresView extends Vue {
         const x = event.clientX;
         const y = event.clientY;
 
-        console.log(this.$refs);
         if (this.$refs.teamToolTip instanceof HTMLElement) {
             this.$refs.teamToolTip.style.left = `${x + 10}px`;
             this.$refs.teamToolTip.style.top = `${y + 10}px`;
