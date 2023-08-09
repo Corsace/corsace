@@ -46,6 +46,7 @@ import inviteAccept from "./tournaments/team/invite/accept";
 import inviteDecline from "./tournaments/team/invite/decline";
 import inviteList from "./tournaments/team/invite/list";
 
+import matchupList from "./tournaments/matchup/list";
 import matchupReschedule from "./tournaments/matchup/reschedule";
 import matchupScores from "./tournaments/matchup/scores";
 import matchupStaff from "./tournaments/matchup/staff";
@@ -133,6 +134,7 @@ commands.push(inviteDecline);
 commands.push(inviteList);
 
 // matchup commands
+commands.push(matchupList);
 commands.push(matchupReschedule);
 commands.push(matchupScores);
 commands.push(matchupStaff);

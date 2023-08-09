@@ -73,7 +73,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (embed.data.fields!.length === 0)
             embed.addFields({ name: "No History Found", value: "No history found for this given slot GJ ."});
         
-        await replied ? respond(m, undefined, [embed]) : m.channel?.send({ embeds: [embed] });
+        replied ? await respond(m, undefined, [embed]) : await m.channel?.send({ embeds: [embed] });
     }
 
 }

@@ -190,7 +190,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (embed.data.fields!.length === 0)
             embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters GJ ."});
         
-        await replied ? respond(m, undefined, [embed]) : m.channel?.send({ embeds: [embed] });
+        replied ? await respond(m, undefined, [embed]) : await m.channel?.send({ embeds: [embed] });
     }
 
 }
