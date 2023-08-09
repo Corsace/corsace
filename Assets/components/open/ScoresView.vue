@@ -377,7 +377,7 @@ export default class ScoresView extends Vue {
             align-items: center;
             justify-content: center;
             gap: 5px;
-            // padding: 15px 5px;
+            padding: 15px 5px;
         }
 
         &--no_padding {
