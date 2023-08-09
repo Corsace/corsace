@@ -3,14 +3,35 @@
         <div class="map_tooltip__top_left" />
         <div
             class="map_tooltip__banner"
+            :style="`background-image: url(https://assets.ppy.sh/beatmaps/${mapSync.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)`"
         />
-        <!-- :style="`background-image: url(https://assets.ppy.sh/beatmaps/${mapSync.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)`" -->
         <div class="map_tooltip_info">
             <div class="map_tooltip_info__wrapper">
-                <div class="map_tooltip_info__wrapper__title" />
-                <div class="map_tooltip_info__wrapper__artist" />
+                <div class="map_tooltip_info__wrapper__title">
+                    {{ mapSync.beatmap?.beatmapset?.title }}
+                </div>
+                <div class="map_tooltip_info__wrapper__artist">
+                    {{ mapSync.beatmap?.beatmapset?.artist }}
+                </div>
             </div>
-            <div class="map_tooltip_info__bottom" />
+            <div class="map_tooltip_info_osu_data">
+                <div class="map_tooltip_info_osu_data_text">
+                    <div class="map_tooltip_info_osu_data_text--mapper">
+                        {{ $t("open.qualifiers.mappool.banner.mapper") }}
+                    </div>
+                    <div class="map_tooltip_info_osu_data_text--truncated">
+                        {{ mapSync.customMappers?.map(mapper => mapper.osu.username).join(", ") || mapSync.beatmap?.beatmapset?.creator?.osu.username || '' }}
+                    </div>
+                </div>
+                <div class="map_tooltip_info_osu_data_text">
+                    <div class="map_tooltip_info_osu_data_text--difficulty">
+                        {{ $t("open.qualifiers.mappool.banner.difficulty") }}
+                    </div>
+                    <div class="map_tooltip_info_osu_data_text--truncated">
+                        {{ censorMethod(mapSync.beatmap?.difficulty || mapSync.customBeatmap?.difficulty || '') }}
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="map_tooltip__top_right" />
     </div>
@@ -18,8 +39,8 @@
 
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
-import { Mappool } from "../../../Interfaces/mappool";
-
+import { MappoolMap } from "../../../Interfaces/mappool";
+import { censor, profanityFilter } from "../../../Interfaces/comment";
 @Component({
     components: {
     },
@@ -27,14 +48,10 @@ import { Mappool } from "../../../Interfaces/mappool";
 
 
 export default class MapToolTip extends Vue {
-    @PropSync("pool", { type: Object }) poolData!: Mappool;
+    @PropSync("map", { type: Object }) mapSync!: MappoolMap;
 
-    get filteredMap () {
-        if (!this.mapSearchID)
-            return this.teamList;
-        return this.teamList?.filter(team => 
-            team.ID.toString() == this.searchID.toLowerCase()
-        );
+    censorMethod (input: string): string {
+        return censor(input, profanityFilter);
     }
 }
 </script>
@@ -51,10 +68,9 @@ export default class MapToolTip extends Vue {
     background: linear-gradient(0deg, #131313, #131313),
     linear-gradient(0deg, #353535, #353535);
     background: #131313;
-
     border: 1px solid #353535;
 
-    width: 226px;
+    width: 250px;
     min-height: 75px;
     padding-bottom: 10px;
 
@@ -62,7 +78,6 @@ export default class MapToolTip extends Vue {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: bottom;
-
     align-items: center;
 
     overflow: hidden;
@@ -97,67 +112,89 @@ export default class MapToolTip extends Vue {
 
     &__banner {
         display: flex;
-        width: 95%;
+        width: 97%;
         height: 31px;
         margin-top: 4px;
         z-index: 0;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        clip-path: polygon(0 8.00px, 8.00px 0,100% 0,100% 100%,0 100%);
+        // clip-path: polygon(0 8.00px, 8.00px 0,100% 0,100% 100%,0 100%);
+        clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%, 0 8px);
     }
 
-    &__list {
+    &_info {
+        width: 95%;
         display: flex;
         flex-direction: column;
-        width: 100%;
-        height: 80%;
-        margin-top: 10px;
-        align-items: center;
-        padding-left: 10px;
+        justify-self: center;
+        z-index: 2;
+        margin-top: -5px;
         gap: 5px;
-
-        &__item {
+        &__wrapper {
             display: flex;
-            flex-direction: row;
-            width: 75%;
-            gap: 5px;
-
-            &--leader {
-                position: relative;
-                &:after {
-                    content: "";
-                    background-image: url('../../img/site/open/team/manager.svg');
-                    background-size: 100%;
-                    background-repeat: no-repeat;
-                    width: 8.4px;
-                    height: 5.5px;
-                    position: absolute;
-                    left: -12px;
-                    top: 4px;
-                }
+            flex-direction: column;
+            justify-content: flex-start;
+            font-family: $font-ggsans;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+            
+            &__title {
+                font-size: $font-sm;
+                font-weight: 600;
+                line-height: 16px;
+                letter-spacing: 0em;
+                text-align: left;
             }
 
-            &--text {
-                font-family: $font-ggsans;
-                list-style: none;
-                font-size: 10px;
-                font-weight: 400;
+            &__artist {
+                font-size: $font-xsm;
+                font-style: italic;
+                font-weight: 500;
                 line-height: 13px;
                 letter-spacing: 0em;
                 text-align: left;
+            }
+        }
 
-                &--bws {
-                    color: $open-red;
+        &_osu_data {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            &_text {
+                gap: 5px;
+                display: flex;
+                flex-direction: row;
+                font-family: $font-ggsans;
+                font-size: $font-xsm;
+                font-weight: 500;
+                line-height: 13px;
+                letter-spacing: 0em;
+                text-align: left;
+                
+                &--mapper, &--difficulty {
                     font-family: $font-swis721;
-                    font-size: 7px;
                     font-weight: 700;
-                    line-height: 8px;
-                    letter-spacing: 0em;
-                    text-align: right;
-                    align-self: center;
+                    color: #131313;
+                    padding: 1px 1px;
+                    font-size: $font-xsm;
+                }
+    
+                &--mapper {
+                    background-color: $open-red;
+                }
+    
+                &--difficulty {
+                    background-color: $white;
+                }
+    
+                &--truncated { 
+                    min-width: 0px; 
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
                 }
             }
+
         }
     }
 }

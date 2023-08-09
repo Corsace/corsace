@@ -10,8 +10,7 @@
         </div>
         <div v-if="maphover">
             <MapToolTip
-                v-if="selectedMappool?.isPublic"
-                :pool="selectedMappool"
+                :map="filteredMap"
                 :style="{ 'top': `${y + 10}px`, 'left': `${x + 10}px`}"
             />
         </div>
@@ -134,7 +133,7 @@ import { Vue, Component, PropSync} from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { QualifierScore, QualifierScoreView, sortType, filters, mapNames, computeQualifierScoreViews } from "../../../Interfaces/qualifier";
 import { Tournament } from "../../../Interfaces/tournament";
-import { Mappool as MappoolInterface } from "../../Interfaces/mappool";
+import { Mappool as MappoolInterface } from "../../../Interfaces/mappool";
 
 import TeamToolTip from "./TeamToolTip.vue";
 import MapToolTip from "./MapToolTip.vue";
@@ -167,8 +166,6 @@ export default class ScoresView extends Vue {
     y = 0;
     
     getCursor (event) {
-        // console.log(event); // you can read pos here
-        console.log(this.filteredMap);
         this.x = event.clientX;
         this.y = event.clientY;
     }
@@ -188,9 +185,10 @@ export default class ScoresView extends Vue {
     get filteredMap () {
         if (!this.mapSearchID)
             return null;
+        // console.log(this.mapSearchID);
         return this.selectedMappool?.slots.filter(map => 
             this.mapSearchID.toLowerCase().includes(map.acronym.toLowerCase())
-        );
+        )[0].maps[+(this.mapSearchID.match(/(\d+)/)?.[0] || 1) - 1];
     }
 
     
@@ -204,7 +202,8 @@ export default class ScoresView extends Vue {
         this.loading = false;
 
         this.mappoolList = this.tournament?.stages.flatMap(s => [...s.mappool, ...s.rounds.flatMap(r => r.mappool)]) || [];
-        this.index = this.mappoolList.findLastIndex(m => m.isPublic);
+        this.index = this.mappoolList.findIndex(m => m.isPublic);
+        // this.index = this.mappoolList.findLastIndex(m => m.isPublic);
     }
     hover = false;
     maphover = false;
@@ -218,8 +217,8 @@ export default class ScoresView extends Vue {
         map: string;
         mapID: number;
     }[] {
-        console.log(this.qualifierScores);
-        console.log(this.selectedMappool);
+        // console.log(this.qualifierScores);
+        // console.log(this.selectedMappool);
         return mapNames(this.qualifierScores);
     }
 

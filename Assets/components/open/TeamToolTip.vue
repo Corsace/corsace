@@ -39,7 +39,6 @@
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
 import { TeamList } from "../../../Interfaces/team";
-import Teams from "../../../Open/pages/teams.vue";
 
 @Component({
     components: {
