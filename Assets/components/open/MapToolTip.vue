@@ -1,60 +1,48 @@
 <template>
-    <div class="team_tooltip">
-        <div class="team_tooltip__top_left" />
+    <div class="map_tooltip">
+        <div class="map_tooltip__top_left" />
         <div
-            class="team_tooltip__banner"
-            :style="{ 'background-image': `url(${teamSync.avatarURL || require('../../img/site/open/team/default.png')})` }"
-        >
-            <div class="team_tooltip__banner_ranking">
-                <div class="team_tooltip__banner_ranking__rank">
-                    RANK {{ teamSync.rank }}
-                </div>
-                <div class="team_tooltip__banner_ranking__bws">
-                    BWS {{ teamSync.BWS }}
-                </div>
+            class="map_tooltip__banner"
+        />
+        <!-- :style="`background-image: url(https://assets.ppy.sh/beatmaps/${mapSync.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg)`" -->
+        <div class="map_tooltip_info">
+            <div class="map_tooltip_info__wrapper">
+                <div class="map_tooltip_info__wrapper__title" />
+                <div class="map_tooltip_info__wrapper__artist" />
             </div>
+            <div class="map_tooltip_info__bottom" />
         </div>
-        <div class="team_tooltip__list">
-            <div class="team_tooltip__list__teamname">
-                {{ teamSync.name }}
-            </div>
-            <li 
-                v-for="member in teamSync.members"
-                :key="member.ID"
-                class="team_tooltip__list__item"
-                :class="{ 'team_tooltip__list__item--leader': member.isManager }"
-            >
-                <div class="team_tooltip__list__item--text">
-                    {{ member.username }}
-                </div>
-                <div class="team_tooltip__list__item--text team_tooltip__list__item--text--bws">
-                    {{ Math.round(member.BWS) }} {{ $t("open.components.openCardTeam.bws") }}
-                </div>
-            </li>
-        </div>
-        <div class="team_tooltip__bottom_left" />
+        <div class="map_tooltip__top_right" />
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
-import { TeamList } from "../../../Interfaces/team";
-import Teams from "../../../Open/pages/teams.vue";
+import { Mappool } from "../../../Interfaces/mappool";
 
 @Component({
     components: {
     },
 })
 
-export default class TeamToolTip extends Vue {
-    @PropSync("team", { type: Object }) teamSync!: TeamList;
+
+export default class MapToolTip extends Vue {
+    @PropSync("pool", { type: Object }) poolData!: Mappool;
+
+    get filteredMap () {
+        if (!this.mapSearchID)
+            return this.teamList;
+        return this.teamList?.filter(team => 
+            team.ID.toString() == this.searchID.toLowerCase()
+        );
+    }
 }
 </script>
 
 <style lang="scss">
 @import '@s-sass/_variables';
 
-.team_tooltip {
+.map_tooltip {
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -66,8 +54,8 @@ export default class TeamToolTip extends Vue {
 
     border: 1px solid #353535;
 
-    width: 175px;
-    min-height: 175px;
+    width: 226px;
+    min-height: 75px;
     padding-bottom: 10px;
 
     background-image: url("../../img/site/open/checkers-bg.png");
@@ -94,17 +82,16 @@ export default class TeamToolTip extends Vue {
 
         z-index: 1;
     }
-    &__bottom_left {
+    &__top_right {
         display: flex;
         position: absolute;
-        bottom: 2px;
-        left: 2px;
+        top: 2px;
+        right: 2px;
         width: 0;
         height: 0;
         border-style: solid;
-        border-width: 8px 0 0 8px;
-        border-color: transparent transparent transparent #353535;
-
+        border-width: 0 8px 8px 0;
+        border-color: transparent #353535 transparent transparent;;
         z-index: 1;
     }
 
@@ -118,55 +105,18 @@ export default class TeamToolTip extends Vue {
         background-position: center;
         background-repeat: no-repeat;
         clip-path: polygon(0 8.00px, 8.00px 0,100% 0,100% 100%,0 100%);
-
-        &_ranking {
-            display: flex;
-            position: absolute;
-            flex-direction: column;
-            top: 0;
-            right: 0;
-            padding: 3px;
-            margin: 7px;
-            gap: 3px;
-            
-            font-family: $font-swis721;
-            font-size: 8px;
-            font-weight: 700;
-            line-height: 7px;
-            letter-spacing: 0em;
-            text-align: right;
-
-            // text-shadow: 0 0 1px #131313;
-            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-        }
-
     }
-    
+
     &__list {
         display: flex;
         flex-direction: column;
         width: 100%;
         height: 80%;
-        margin-top: -5%;
+        margin-top: 10px;
         align-items: center;
         padding-left: 10px;
         gap: 5px;
-        z-index: 3;
-        
-        &__teamname {
-            display: flex;
-            width: 75%;
-            justify-self: flex-start;
-            font-family: $font-ggsans;
-            font-size: 12px;
-            font-weight: 600;
-            line-height: 16px;
-            letter-spacing: 0em;
-            text-align: right;
-    
-            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-        }
-        
+
         &__item {
             display: flex;
             flex-direction: row;

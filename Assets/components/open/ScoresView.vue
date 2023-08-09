@@ -8,6 +8,13 @@
                 :style="{ 'top': `${y + 10}px`, 'left': `${x + 10}px`}"
             />
         </div>
+        <div v-if="maphover">
+            <MapToolTip
+                v-if="selectedMappool?.isPublic"
+                :pool="selectedMappool"
+                :style="{ 'top': `${y + 10}px`, 'left': `${x + 10}px`}"
+            />
+        </div>
         <div
             class="scores"
         >
@@ -54,7 +61,12 @@
                                 :key="map.mapID"
                                 @click="mapSort = i; sortDir = sortDir === 'asc' ? 'desc' : 'asc';"
                             >
-                                <div class="scores__table--click">
+                                <div
+                                    class="scores__table--click"
+                                    @mousemove="getCursor($event)"
+                                    @mouseenter="maphover = true; mapSearchID = map.map"
+                                    @mouseleave="maphover = false"
+                                >
                                     {{ map.map }}
                                     <div
                                         :class="{ 
@@ -122,14 +134,17 @@ import { Vue, Component, PropSync} from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { QualifierScore, QualifierScoreView, sortType, filters, mapNames, computeQualifierScoreViews } from "../../../Interfaces/qualifier";
 import { Tournament } from "../../../Interfaces/tournament";
+import { Mappool as MappoolInterface } from "../../Interfaces/mappool";
 
 import TeamToolTip from "./TeamToolTip.vue";
+import MapToolTip from "./MapToolTip.vue";
 
 const openModule = namespace("open");
 
 @Component({
     components: {
         TeamToolTip,
+        MapToolTip,
     },
 })
 
@@ -141,17 +156,26 @@ export default class ScoresView extends Vue {
     @openModule.State qualifierScores!: QualifierScore[] | null;
     @openModule.State teamList!: TeamList[] | null;
 
+    mappoolList: MappoolInterface[] = [];
+    index = 0;
+    
+    get selectedMappool (): MappoolInterface | null {
+        return this.mappoolList[this.index] || null;
+    }
+
     x = 0;
     y = 0;
     
     getCursor (event) {
-        console.log(event); // you can read pos here
+        // console.log(event); // you can read pos here
+        console.log(this.filteredMap);
         this.x = event.clientX;
         this.y = event.clientY;
     }
     
     loading = true;
     searchID = "";
+    mapSearchID = "";
     
     get filteredTeams () {
         if (!this.searchID)
@@ -160,14 +184,30 @@ export default class ScoresView extends Vue {
             team.ID.toString() == this.searchID.toLowerCase()
         );
     }
+
+    get filteredMap () {
+        if (!this.mapSearchID)
+            return null;
+        return this.selectedMappool?.slots.filter(map => 
+            this.mapSearchID.toLowerCase().includes(map.acronym.toLowerCase())
+        );
+    }
+
+    
+
+    
     
     async mounted () {
         this.loading = true;
         if (this.tournament)
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);
         this.loading = false;
+
+        this.mappoolList = this.tournament?.stages.flatMap(s => [...s.mappool, ...s.rounds.flatMap(r => r.mappool)]) || [];
+        this.index = this.mappoolList.findLastIndex(m => m.isPublic);
     }
     hover = false;
+    maphover = false;
 
     currentFilter: sortType = "zScore";
     sortDir: "asc" | "desc" = "desc";
@@ -179,6 +219,7 @@ export default class ScoresView extends Vue {
         mapID: number;
     }[] {
         console.log(this.qualifierScores);
+        console.log(this.selectedMappool);
         return mapNames(this.qualifierScores);
     }
 
