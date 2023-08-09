@@ -5,7 +5,7 @@
             style="position: fixed; transition: none; z-index: 10;"
         >
             <TeamToolTip
-                v-if="hover"
+                v-if="hover && filteredTeam"
                 :team="filteredTeam"
             />
         </div>
@@ -14,7 +14,7 @@
             style="position: fixed; transition: none; z-index: 10;"
         >
             <MapToolTip
-                v-if="maphover"
+                v-if="maphover && filteredMap"
                 :map="filteredMap"
             />
         </div>
@@ -199,7 +199,7 @@ export default class ScoresView extends Vue {
             return null;
         return this.selectedMappool?.slots.filter(map => 
             this.mapSearchID.toLowerCase().includes(map.acronym.toLowerCase())
-        )[0].maps[+(this.mapSearchID.match(/(\d+)/)?.[0] || 1) - 1];
+        )[0]?.maps[+(this.mapSearchID.match(/(\d+)/)?.[0] || 1) - 1];
     }
     
     async mounted () {
