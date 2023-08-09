@@ -67,16 +67,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .leftJoinAndSelect("matchup.referee", "referee")
         .leftJoinAndSelect("matchup.streamer", "streamer")
         .leftJoinAndSelect("matchup.commentators", "commentators")
-        .where("tournament.id = :tournamentID", { tournamentID: tournament.ID })
+        .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
         .andWhere("matchup.date > :now", { now: new Date() });
 
-    if (filter === "assigned") {
-        matchupsQ.andWhere("referee.id = :userID OR streamer.id = :userID OR commentators.id = :userID", { userID: user.ID });
-    } else if (filter === "unassigned") {
-        matchupsQ.andWhere("referee.id IS NULL AND streamer.id IS NULL AND commentators.id IS NULL");
-    } else if (filter === "team") {
+    if (filter === "assigned")
+        matchupsQ.andWhere("referee.ID = :userID OR streamer.ID = :userID OR commentators.ID = :userID", { userID: user.ID });
+    else if (filter === "unassigned")
+        matchupsQ.andWhere("referee.ID IS NULL OR streamer.ID IS NULL OR (streamer.ID IS NOT NULL AND commentators.ID IS NULL)");
+    else if (filter === "team")
         matchupsQ.andWhere("team1manager.discordUserid = :userID OR team2manager.discordUserid = :userID OR team1members.discordUserid = :userID OR team2members.discordUserid = :userID", { userID: user.ID });
-    }
 
     const matchups = await matchupsQ.getMany();
 
@@ -141,7 +140,7 @@ const data = new SlashCommandBuilder()
                 name: "Your/Someone's Assignments",
                 value: "assigned",
             }, {
-                name: "Unassigned Matchups",
+                name: "Unassigned/Unstreamed Matchups",
                 value: "unassigned",
             }, {
                 name: "Your Team's Matchups",
