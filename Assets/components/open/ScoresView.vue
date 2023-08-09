@@ -176,9 +176,6 @@ export default class ScoresView extends Vue {
         const x = event.clientX;
         const y = event.clientY;
 
-        console.log(this.teamSearchID);
-        console.log(this.showPlayers);
-
         if (this.$refs.teamToolTip instanceof HTMLElement) {
             this.$refs.teamToolTip.style.left = `${x + 10}px`;
             this.$refs.teamToolTip.style.top = `${y + 10}px`;
