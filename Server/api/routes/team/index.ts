@@ -636,28 +636,32 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
 teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team;
     const body: Partial<Team> | undefined = ctx.request.body;
-
-    const tournaments = await Tournament
-        .createQueryBuilder("tournament")
-        .leftJoin("tournament.teams", "team")
-        .where("team.ID = :ID", { ID: ctx.state.team.ID })
-        .getMany();
-
-    if (tournaments.some(t => t.status !== TournamentStatus.NotStarted)) {
-        ctx.body = { error: "Team is currently playing/has played in a tournament" };
-        return;
-    }
-
-    if (body?.name)
-        team.name = body.name;
-    if (body?.abbreviation)
-        team.abbreviation = body.abbreviation;
     if (body?.timezoneOffset) {
         if (typeof body.timezoneOffset !== "number" || body.timezoneOffset < -12 || body.timezoneOffset > 14) {
             ctx.body = { error: "Invalid timezone" };
             return;
         }
         team.timezoneOffset = body.timezoneOffset;
+    }
+    if (
+        (body?.name && body.name !== team.name) || 
+        (body?.abbreviation && body.abbreviation !== team.abbreviation)
+    ) {
+        const tournaments = await Tournament
+            .createQueryBuilder("tournament")
+            .leftJoin("tournament.teams", "team")
+            .where("team.ID = :ID", { ID: ctx.state.team.ID })
+            .getMany();
+
+        if (tournaments.some(t => t.status !== TournamentStatus.NotStarted)) {
+            ctx.body = { error: "Team is currently playing/has played in a tournament" };
+            return;
+        }
+
+        if (body?.name)
+            team.name = body.name;
+        if (body?.abbreviation)
+            team.abbreviation = body.abbreviation;
     }
 
     const res = validateTeamText(team.name, team.abbreviation);
