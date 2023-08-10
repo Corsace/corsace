@@ -29,15 +29,15 @@ export default async function confirmCommand (m: Message | ChatInputCommandInter
         let timeout = true;
         confirmationCollector.on("collect", async (i: MessageComponentInteraction) => {
             if (i.customId === ids.yes) {
+                timeout = false;
                 await message.delete();
                 confirmationCollector.stop();
-                timeout = false;
                 resolve(true);
             }
             else if (i.customId === ids.no) {
+                timeout = false;
                 await message.delete();
                 confirmationCollector.stop();
-                timeout = false;
                 resolve(false);
             }
         });
