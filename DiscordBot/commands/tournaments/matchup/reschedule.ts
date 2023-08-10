@@ -50,7 +50,7 @@ async function rescheduleLog (matchup: Matchup) {
 }
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    const message = await respond(m, "Rescheduling matchup...");
+    await respond(m, "Rescheduling matchup...");
 
     const params = extractParameters<parameters>(m, [
         { name: "date", paramType: "string", customHandler: extractDate },
@@ -63,7 +63,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { date, matchup: matchupID, tournament: tournamentParam } = params;
 
     if (isNaN(date.getTime())) {
-        await respond(message, "Invalid date. Provide a valid date using either `YYYY-MM-DD HH:MM UTC` format, or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
+        await respond(m, "Invalid date. Provide a valid date using either `YYYY-MM-DD HH:MM UTC` format, or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
         return;
     }
 
@@ -89,7 +89,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .getOne();
         
         if (!matchup) {
-            await respond(message, "Invalid matchup ID provided");
+            await respond(m, "Invalid matchup ID provided");
             return;
         }
 
@@ -102,24 +102,24 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 return;
 
             if (!await confirmCommand(m, `Do you wish to reschedule the matchup ID ${matchup.ID} in stage \`${matchup.stage?.name || "N/A"}\` between \`${matchup.team1?.name || "N/A"}\` and \`${matchup.team2?.name || "N/A"}\` to ${discordStringTimestamp(date)}?`)) {
-                await respond(message, "Ok Lol");
+                await respond(m, "Ok Lol");
                 return;
             }
         }
 
         if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> Do you wish to reschedule your match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} to ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID)) {
-            await respond(message, "Ok Lol");
+            await respond(m, "Ok Lol");
             return;
         }
 
         if (matchup.team2 && !await confirmCommand(m, `<@${matchup.team2.manager.discord.userID}> Do you wish to reschedule your match${matchup.team1 ? ` vs \`${matchup.team1.name}\`` : ""} to ${discordStringTimestamp(date)}?`, true, matchup.team2.manager.discord.userID)) {
-            await respond(message, "Ok Lol");
+            await respond(m, "Ok Lol");
             return;
         }
 
         matchup.date = date;
         await matchup.save();
-        await respond(message, `Matchup rescheduled to ${discordStringTimestamp(date)}`);
+        await respond(m, `Matchup rescheduled to ${discordStringTimestamp(date)}`);
         await rescheduleLog(matchup);
         return;
     }
@@ -142,7 +142,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .getMany();
 
     if (matchups.length === 0) {
-        await respond(message, "You are not in any matchups that can be rescheduled. Note that you must be a manager of a team to reschedule a matchup");
+        await respond(m, "You are not in any matchups that can be rescheduled. Note that you must be a manager of a team to reschedule a matchup");
         return;
     }
 
@@ -154,14 +154,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     });
     const matchupListResult = await getFromList(m, matchupList, "matchup", tournamentParam || channelID(m));
     if (!matchupListResult) {
-        await respond(message, "Could not find a valid matchup");
+        await respond(m, "Could not find a valid matchup");
         return;
     }
 
     const matchup = matchups.find((matchup) => matchup.ID === matchupListResult.ID)!;
     const dayBeforeStart = matchup.stage!.timespan.start.getTime() - 86400000;
     if (Date.now() > dayBeforeStart) {
-        await respond(message, `You cannot reschedule a matchup within 24 hours of the stage starting (${discordStringTimestamp(new Date(dayBeforeStart))})`);
+        await respond(m, `You cannot reschedule a matchup within 24 hours of the stage starting (${discordStringTimestamp(new Date(dayBeforeStart))})`);
         return;
     }
 
@@ -171,12 +171,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (date.getTime() < Date.now()) {
-        await respond(message, "You cannot reschedule a matchup to before the current time");
+        await respond(m, "You cannot reschedule a matchup to before the current time");
         return;
     }
 
     if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> Do you wish to reschedule your match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} to ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID)) {
-        await respond(message, "Ok Lol");
+        await respond(m, "Ok Lol");
         return;
     }
 
@@ -187,7 +187,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     matchup.date = date;
     await matchup.save();
-    await respond(message, `Matchup rescheduled to ${discordStringTimestamp(date)}`);
+    await respond(m, `Matchup rescheduled to ${discordStringTimestamp(date)}`);
     await rescheduleLog(matchup);
 }
 
