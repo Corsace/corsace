@@ -108,6 +108,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, `No matchups found${filter === "assigned" ? " with u as a ref streamer or comm" : filter === "unassigned" ? " that r unassigned" : filter === "team" ? " with u as a team member/manager" : ""}`);
         return;
     }
+    
+    matchups.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     const embed = new EmbedBuilder()
         .setTitle("Matchups")
