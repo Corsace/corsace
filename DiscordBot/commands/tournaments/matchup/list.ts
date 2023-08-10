@@ -94,7 +94,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     else if (filter === "unassigned")
         matchupsQ.andWhere("referee.ID IS NULL OR streamer.ID IS NULL OR (streamer.ID IS NOT NULL AND commentators.ID IS NULL)");
     else if (filter === "team")
-        matchupsQ.andWhere("team1manager.discordUserid = :userID OR team2manager.discordUserid = :userID OR team1members.discordUserid = :userID OR team2members.discordUserid = :userID", { userID: user.ID });
+        matchupsQ.andWhere("team1manager.ID = :userID OR team2manager.ID = :userID OR team1members.ID = :userID OR team2members.ID = :userID", { userID: user.ID });
     else if (isReferee(filter as referee))
         matchupsQ.andWhere("referee.ID IS NULL");
     else if (isStreamer(filter as streamer))
