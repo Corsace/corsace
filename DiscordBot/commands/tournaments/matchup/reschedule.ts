@@ -107,6 +107,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 await respond(m, "Ok Lol");
                 return;
             }
+
+            const prevDate = matchup.date;
+            matchup.date = date;
+            await matchup.save();
+            await respond(m, `Matchup rescheduled from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}`);
+            await rescheduleLog(matchup, prevDate);
         }
     } else {
         // For everyone else, only allow them to reschedule matchups they are in
