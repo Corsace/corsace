@@ -25,23 +25,28 @@ export default async function confirmCommand (m: Message | ChatInputCommandInter
 
     return new Promise<boolean>(resolve => {
         const filter = (i: MessageComponentInteraction) => i.user.id === targetFilter;
-        const confirmationCollector = m.channel!.createMessageComponentCollector({ filter: useFilter ? filter : undefined, time: 6000000 });
+        const confirmationCollector = message.createMessageComponentCollector({ filter: useFilter ? filter : undefined, time: 6000000 });
+        let timeout = true;
         confirmationCollector.on("collect", async (i: MessageComponentInteraction) => {
             if (i.customId === ids.yes) {
                 await message.delete();
                 confirmationCollector.stop();
+                timeout = false;
                 resolve(true);
             }
             else if (i.customId === ids.no) {
                 await message.delete();
                 confirmationCollector.stop();
+                timeout = false;
                 resolve(false);
             }
         });
         confirmationCollector.on("end", async () => {
-            if (message.deletable)
-                await message.delete();
-            resolve(false);
+            if (timeout) {
+                if (message.deletable)
+                    await message.delete();
+                resolve(false);
+            }
         });
     });
 }
