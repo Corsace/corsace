@@ -121,10 +121,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
     for (const matchup of matchups) {
         const team1 = matchup.team1 ? `${matchup.team1.name} (${matchup.team1.abbreviation})` : "TBD";
         const team2 = matchup.team2 ? `${matchup.team2.name} (${matchup.team2.abbreviation})` : "TBD";
-        const referee = matchup.referee?.osu.username || "";
-        const streamer = matchup.streamer?.osu.username || "";
-        const commentators = matchup.commentators?.map(u => u.osu.username).join(", ") || "";
-        const value = `${discordStringTimestamp(matchup.date)}\n\nReferee: **${referee}**\nStreamer: **${streamer}**\nCommentators: **${commentators}**`;
+        const referee = matchup.referee?.osu.username ? `**${matchup.referee.osu.username}**` : "";
+        const streamer = matchup.streamer?.osu.username ? `**${matchup.streamer.osu.username}**` : "";
+        const commentators = matchup.commentators && matchup.commentators.length > 0 ? `**${matchup.commentators.map(c => c.osu.username).join("**, **")}**` : "";
+        const value = `${matchup.date.toUTCString()}\n${discordStringTimestamp(matchup.date)}\n\nReferee: ${referee}\nStreamer: ${streamer}\nCommentators: ${commentators}`;
         if (value.length > 0)
             embed.addFields(
                 {
