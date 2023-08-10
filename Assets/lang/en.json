@@ -668,6 +668,9 @@
             "title": "STAFF",
             "notLoggedIn": "NOT LOGGED IN"
         },
+        "referee": {
+            "title": "REFEREE"
+        },
         "status": {
             "loading": "LOADING"
         },
