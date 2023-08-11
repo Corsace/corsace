@@ -110,7 +110,7 @@
                                 >
                                     <div 
                                         class="scores__table_team--background-image scores__table_team--background-image--team"
-                                        :style="{ 'background-image': `url(${row.avatar || '../../img/site/open/checkers-bg.png'})`}" 
+                                        :style="{ 'background-image': `url(${row.avatar || require('../../img/site/open/team/default.png')})`}"   
                                     />
                                 </div>
                                 <a
@@ -376,11 +376,10 @@ export default class ScoresView extends Vue {
             background-image: url("../../img/site/open/checkers-bg.png");
             padding-bottom: 1px;
 
+            // The border
             text-shadow: 1.41px 1.41px #222222, 2px 0 #222222, 1.41px -1.41px #222222,
     0 -2px #222222, -1.41px -1.41px #222222, -2px 0 #222222,
    -1.41px 1.41px #222222, 0 2px #222222;
-
-            // border: 1px solid #222222
 
             &--background-image {
                 display: flex;
@@ -396,7 +395,7 @@ export default class ScoresView extends Vue {
                 background-repeat: no-repeat;
                 
                 &--team {
-                    clip-path: ellipse(99% 98% at 0% 0%);
+                    clip-path: ellipse(98% 98% at 0% 0%);
                     width: 37%;
                 }
             }
