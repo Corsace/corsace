@@ -99,8 +99,18 @@
                 </template>
             </OpenTitle>
             <MappoolView
-                v-if="selectedMappool?.isPublic"
+                v-if="page === 'mappool' && selectedMappool?.isPublic"
                 :pool="selectedMappool"
+            />
+            <div
+                v-else-if="page === 'mappool'"
+                class="qualifiers__button_group"
+            >
+                {{ $t("open.qualifiers.mappool.notAvailable") }}
+            </div>
+            <ScoresView
+                v-else-if="page === 'scores'"
+                :view="scoreView"
             />
         </div>
     </div>
@@ -117,6 +127,12 @@ import StageSelector from "../../Assets/components/open/StageSelector.vue";
 import { Tournament } from "../../Interfaces/tournament";
 import { Mappool as MappoolInterface } from "../../Interfaces/mappool";
 
+import Clock from "../../Assets/components/open/Clock.vue";
+import OpenButton from "../../Assets/components/open/OpenButton.vue";
+import ContentButton from "../../Assets/components/open/ContentButton.vue";
+import ScoresView from "../../Assets/components/open/ScoresView.vue";
+
+
 const openModule = namespace("open");
 
 @Component({
@@ -124,6 +140,10 @@ const openModule = namespace("open");
         StageSelector,
         MappoolView,
         OpenTitle,
+        Clock,
+        OpenButton,
+        ContentButton,
+        ScoresView,
     },
     head () {
         return {
