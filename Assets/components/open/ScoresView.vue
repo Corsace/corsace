@@ -93,6 +93,7 @@
                             <td>#{{ row.placement }}</td>
                             <td
                                 :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})` }" 
+                                class="scores__table--background-image"
                                 @mousemove="updateTooltipPosition($event)"
                                 @mouseenter="hover = true; syncView === 'players' ? (showPlayers = false, teamSearchID = row.teamID): (showPlayers = true, teamSearchID = row.ID); "
                                 @mouseleave="hover = false; showPlayers = true"
@@ -355,10 +356,6 @@ export default class ScoresView extends Vue {
         }
 
         &--background-image {
-            box-sizing: border-box;
-            position: absolute;
-            width: 100%;
-            height: 100%;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
