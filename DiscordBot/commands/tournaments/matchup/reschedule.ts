@@ -151,13 +151,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
 
         matchup = matchups.find((matchup) => matchup.ID === matchupListResult.ID)!;
+    }
 
-        // If the matchup is within 24 hours of the stage starting, dont allow it to be rescheduled, unless the user is an organizer or referee (in which case, allow it)
-        const dayBeforeStart = matchup.stage!.timespan.start.getTime() - 86400000;
-        if (Date.now() > dayBeforeStart) {
-            await respond(m, `U cant reschedule a matchup within 24 hours of the stage starting noob (${new Date(dayBeforeStart).toUTCString()} ${discordStringTimestamp(new Date(dayBeforeStart))})`);
-            return;
-        }
+    // If the matchup is within 24 hours of the stage starting, dont allow it to be rescheduled
+    const dayBeforeStart = matchup.stage!.timespan.start.getTime() - 86400000;
+    if (Date.now() > dayBeforeStart) {
+        await respond(m, `U cant reschedule a matchup within 24 hours of the stage starting noob (${new Date(dayBeforeStart).toUTCString()} ${discordStringTimestamp(new Date(dayBeforeStart))})`);
+        return;
     }
 
     const prevDate = matchup.date;
