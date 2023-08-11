@@ -1,51 +1,101 @@
 <template>
     <div class="mappool">
+        <div class="qualifiers__sub_header">
+            <div
+                class="qualifiers__sub_header_item"
+                :class="{ 'qualifiers__sub_header_item--active': page === 'mappool' }"
+                @click="page = 'mappool'"
+            >
+                {{ $t('open.qualifiers.nav.mappool') }}
+            </div>
+            <div
+                class="qualifiers__sub_header_item"
+                :class="{ 'qualifiers__sub_header_item--active': page === 'scores' }"
+                @click="page = 'scores'; $store.dispatch('open/setQualifierScores', tournament?.ID);"
+            >
+                {{ $t('open.qualifiers.nav.scores') }}
+            </div>
+        </div>
         <div class="mappool__main_content">
             <OpenTitle>
                 {{ $t('open.mappool.title') }}
                 <template #buttons>
-                    <StageSelector
-                        :not-beginning="selectedMappool?.ID !== mappoolList[0]?.ID"
-                        :not-end="selectedMappool?.ID !== mappoolList[mappoolList.length - 1]?.ID"
-                        @prev="index--"
-                        @next="index++"
+                    <div
+                        v-if="page === 'mappool'"
+                        class="qualifiers__button_group"
                     >
-                        <template #top_text>
-                            {{ $t("open.components.stageSelector.stage") }}
-                        </template>
-                        <template #bottom_text>
-                            {{ $t("open.components.stageSelector.select") }}
-                        </template>
+                        <StageSelector
+                            :not-beginning="selectedMappool?.ID !== mappoolList[0]?.ID"
+                            :not-end="selectedMappool?.ID !== mappoolList[mappoolList.length - 1]?.ID"
+                            @prev="index--"
+                            @next="index++"
+                        >
+                            <template #top_text>
+                                {{ $t("open.components.stageSelector.stage") }}
+                            </template>
+                            <template #bottom_text>
+                                {{ $t("open.components.stageSelector.select") }}
+                            </template>
 
-                        <template #stage>
-                            {{ selectedMappool?.abbreviation.toUpperCase() || '' }}
-                        </template>
-                    </StageSelector>
-                    <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
-                    <a 
-                        href="https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing"
-                        class="qualifiers__button"
-                    >
-                        <div class="qualifiers__button_text">
-                            {{ $t('open.qualifiers.mappool.sheets') }}
-                        </div>
-                        <img 
-                            class="qualifiers__button_ico" 
-                            src="../../Assets/img/site/open/mappool/sheets-ico.svg"
+                            <template #stage>
+                                {{ selectedMappool?.abbreviation.toUpperCase() || '' }}
+                            </template>
+                        </StageSelector>
+                        <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
+                        <a 
+                            href="https://docs.google.com/spreadsheets/d/1NvbsvI3aa-UHdenu22zDCyoto6lqM8rPri_XZ8fCMds/edit?usp=sharing"
+                            class="qualifiers__button"
                         >
-                    </a>
-                    <a
-                        :href="selectedMappool?.mappackLink || ''"
-                        class="qualifiers__button"
-                    >
-                        <div class="qualifiers__button_text">
-                            {{ $t('open.qualifiers.mappool.mappool') }}
-                        </div>
-                        <img 
-                            class="qualifiers__button_ico"
-                            src="../../Assets/img/site/open/mappool/dl-ico.svg"
+                            <div class="qualifiers__button_text">
+                                {{ $t('open.qualifiers.mappool.sheets') }}
+                            </div>
+                            <img 
+                                class="qualifiers__button_ico" 
+                                src="../../Assets/img/site/open/mappool/sheets-ico.svg"
+                            >
+                        </a>
+                        <a
+                            :href="selectedMappool?.mappackLink || ''"
+                            class="qualifiers__button"
                         >
-                    </a>
+                            <div class="qualifiers__button_text">
+                                {{ $t('open.qualifiers.mappool.mappool') }}
+                            </div>
+                            <img 
+                                class="qualifiers__button_ico"
+                                src="../../Assets/img/site/open/mappool/dl-ico.svg"
+                            >
+                        </a>
+                    </div>
+                    <div
+                        v-if="page === 'scores'"
+                        class="qualifiers__button_group"
+                    >
+                        <div class="qualifiers__header_subtext">
+                            <span>{{ $t('open.qualifiers.scores.category') }}</span>
+                            <span>{{ $t('open.qualifiers.scores.select') }}</span>
+                        </div>
+                        <ContentButton 
+                            class="content_button--header_button"
+                            :class="{
+                                'content_button--red': scoreView === 'players',
+                                'content_button--red_outline': scoreView !== 'players',
+                            }"
+                            @click.native="scoreView = 'players'"
+                        >
+                            {{ $t('open.qualifiers.scores.players') }}
+                        </ContentButton>
+                        <ContentButton 
+                            class="content_button--header_button"
+                            :class="{
+                                'content_button--red': scoreView === 'teams',
+                                'content_button--red_outline': scoreView !== 'teams',
+                            }"
+                            @click.native="scoreView = 'teams'"
+                        >
+                            {{ $t('open.qualifiers.scores.teams') }}
+                        </ContentButton>
+                    </div>
                 </template>
             </OpenTitle>
             <MappoolView
@@ -97,6 +147,8 @@ const openModule = namespace("open");
     },
 })
 export default class Mappool extends Vue {
+    page: "mappool" | "scores" = "mappool";
+    scoreView: "players" | "teams" = "teams";
 
     @openModule.State tournament!: Tournament | null;
 
