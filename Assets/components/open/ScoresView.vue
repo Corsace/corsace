@@ -91,21 +91,37 @@
                             }"
                         >
                             <td>#{{ row.placement }}</td>
-                            <td
-                                :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})` }" 
-                                class="scores__table--background-image"
+                            <!-- THE TEAM / PLAYER COLUMN -->
+                            <div
+                                class="scores__table_team"
                                 @mousemove="updateTooltipPosition($event)"
                                 @mouseenter="hover = true; syncView === 'players' ? (showPlayers = false, teamSearchID = row.teamID): (showPlayers = true, teamSearchID = row.ID); "
                                 @mouseleave="hover = false; showPlayers = true"
                             >
+                                <div 
+                                    v-if="syncView === 'players'"
+                                    class="scores__table_team--background-image"
+                                    :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})`}" 
+                                />
+                                <div 
+                                    v-else
+                                    class="scores__table_team--background-image"
+                                    :style="{'clip-path': 'ellipse(37% 100% at 0% 0%)'}" 
+                                >
+                                    <div 
+                                        class="scores__table_team--background-image scores__table_team--background-image--team"
+                                        :style="{ 'background-image': `url(${row.avatar || '../../img/site/open/checkers-bg.png'})`}" 
+                                    />
+                                </div>
                                 <a
                                     :href="syncView === 'players' ? `https://osu.ppy.sh/users/${row.ID}` : `https://open.corsace.io/team/${row.ID}`"
                                     target="_blank"
                                     class="scores__table--click scores__table--no_padding"
+                                    :style="{'z-index': 2}"
                                 >
                                     {{ row.name }}
                                 </a>
-                            </td>
+                            </div>
                             <td
                                 v-if="syncView === 'players'"
                                 @mousemove="updateTooltipPosition($event)"
@@ -351,14 +367,35 @@ export default class ScoresView extends Vue {
         border-collapse: collapse;
         box-sizing: border-box;
 
-        &--highlight{
-            color: #FBBA20;
+        &_team {
+            display: flex;
+            position: relative;
+            justify-content: center;
+            background-image: url("../../img/site/open/checkers-bg.png");
+            padding-bottom: 1px;
+
+            &--background-image {
+                display: flex;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                
+                background: linear-gradient(180deg, #EBEBEB 0%, #000000 99.99%, rgba(98, 72, 72, 0) 100%);
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                
+                &--team {
+                    clip-path: ellipse(99% 98% at 0% 0%);
+                    width: 37%;
+                }
+            }
         }
 
-        &--background-image {
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+        &--highlight{
+            color: #FBBA20;
         }
 
         &--asc {
@@ -419,7 +456,7 @@ export default class ScoresView extends Vue {
         border-right: 0;
     }
 
-    &__table td {
+    &__table td, &__table_team {
         font-size: 0.70rem; /* i tried $font-xsm but its too small*/
         font-weight: 600;
         text-align: center;
