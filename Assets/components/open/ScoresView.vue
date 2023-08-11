@@ -101,7 +101,7 @@
                                 <div 
                                     v-if="syncView === 'players'"
                                     class="scores__table_team--background-image"
-                                    :style="{ 'background-image': `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(${row.avatar})`}" 
+                                    :style="{ 'background-image': `url(${row.avatar})`}" 
                                 />
                                 <div 
                                     v-else
@@ -366,6 +366,8 @@ export default class ScoresView extends Vue {
         width: 100%;
         border-collapse: collapse;
         box-sizing: border-box;
+        white-space: nowrap;
+        
 
         &_team {
             display: flex;
@@ -373,6 +375,12 @@ export default class ScoresView extends Vue {
             justify-content: center;
             background-image: url("../../img/site/open/checkers-bg.png");
             padding-bottom: 1px;
+
+            text-shadow: 1.41px 1.41px #222222, 2px 0 #222222, 1.41px -1.41px #222222,
+    0 -2px #222222, -1.41px -1.41px #222222, -2px 0 #222222,
+   -1.41px 1.41px #222222, 0 2px #222222;
+
+            // border: 1px solid #222222
 
             &--background-image {
                 display: flex;
