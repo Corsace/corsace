@@ -7,6 +7,10 @@
             ROUND ROBIN
         </div>
         <div class="matchup__mapName">
+            <div 
+                class="matchup__diamond matchup__mapName__diamond"
+                :style="{backgroundColor: 'white'}"
+            />
             MATCH
         </div>
         <div
@@ -58,10 +62,10 @@
                     :style="{color: slotMod}"
                 >
                     <div 
-                        class="matchup__beatmap__name_diamond"
+                        class="matchup__diamond matchup__beatmap__name__diamond"
                         :style="{backgroundColor: slotMod}"
                     />
-                    {{ latestMap.map.slot.acronym.toUpperCase() }}{{ latestMap.map.order }}
+                    {{ latestMap.map.slot?.acronym.toUpperCase() }}{{ latestMap.map.order }}
                 </div>
                 <div class="matchup__beatmap__picked">
                     PICKED BY {{ pickedBy }}
@@ -220,7 +224,372 @@ export default class Matchup extends Vue {
         if (data.error)
             return;
 
-        this.matchup = data.matchup;
+        this.matchup = {
+            "ID": 249,
+            "date": new Date("2023-08-13T04:00:00.000Z"),
+            "mp": null,
+            "vod": null,
+            "team1Score": 3,
+            "team2Score": 0,
+            "team1": {
+                "ID": 1,
+                "name": "FLOPINSKI",
+                "abbreviation": "ESSA",
+                "timezoneOffset": -1,
+                "avatarURL": "https://tournament-team-avatars.corsace.io/1_1690596807745.png",
+                "manager": {
+                    "ID": 8334,
+                    "username": "MonkiDonki",
+                    "osuID": "5298487",
+                    "BWS": 0,
+                    "isManager": true,
+                },
+                "members": [
+                    {
+                        "ID": 3252,
+                        "username": "enri",
+                        "osuID": "8640970",
+                        "BWS": 11.23622468020549,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 3539,
+                        "username": "tekkito",
+                        "osuID": "7075211",
+                        "BWS": 18.99899179288283,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 4698,
+                        "username": "Intercambing",
+                        "osuID": "2546001",
+                        "BWS": 2.1078478260241305,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 4770,
+                        "username": "maliszewski",
+                        "osuID": "12408961",
+                        "BWS": 1.0572336417115773,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 8022,
+                        "username": "ninerik",
+                        "osuID": "10549880",
+                        "BWS": 3.266402565957539,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 8335,
+                        "username": "gnahus",
+                        "osuID": "12779141",
+                        "BWS": 5.434076366203132,
+                        "isManager": false,
+                    },
+                ],
+                "pp": 18721.8,
+                "BWS": 6.90579716163078,
+                "rank": 33.666666666666664,
+                "tournaments": [
+                    {
+                        "ID": 1,
+                        "name": "Corsace Open 2023",
+                    },
+                ],
+                "qualifier": {
+                    "ID": 11,
+                    "date": new Date("2023-07-25T18:00:00.000Z"),
+                    "mp": 109675119,
+                },
+            },
+            "team2": {
+                "ID": 1,
+                "name": "FLOPINSKI",
+                "abbreviation": "ESSA",
+                "timezoneOffset": -1,
+                "avatarURL": "https://tournament-team-avatars.corsace.io/1_1690596807745.png",
+                "manager": {
+                    "ID": 8334,
+                    "username": "MonkiDonki",
+                    "osuID": "5298487",
+                    "BWS": 0,
+                    "isManager": true,
+                },
+                "members": [
+                    {
+                        "ID": 3252,
+                        "username": "enri",
+                        "osuID": "8640970",
+                        "BWS": 11.23622468020549,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 3539,
+                        "username": "tekkito",
+                        "osuID": "7075211",
+                        "BWS": 18.99899179288283,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 4698,
+                        "username": "Intercambing",
+                        "osuID": "2546001",
+                        "BWS": 2.1078478260241305,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 4770,
+                        "username": "maliszewski",
+                        "osuID": "12408961",
+                        "BWS": 1.0572336417115773,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 8022,
+                        "username": "ninerik",
+                        "osuID": "10549880",
+                        "BWS": 3.266402565957539,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 8335,
+                        "username": "gnahus",
+                        "osuID": "12779141",
+                        "BWS": 5.434076366203132,
+                        "isManager": false,
+                    },
+                ],
+                "pp": 18721.8,
+                "BWS": 6.90579716163078,
+                "rank": 33.666666666666664,
+                "tournaments": [
+                    {
+                        "ID": 1,
+                        "name": "Corsace Open 2023",
+                    },
+                ],
+                "qualifier": {
+                    "ID": 11,
+                    "date": new Date("2023-07-25T18:00:00.000Z"),
+                    "mp": 109675119,
+                },
+            },
+            "first": {
+                "ID": 1,
+                "name": "FLOPINSKI",
+                "abbreviation": "ESSA",
+                "timezoneOffset": -1,
+                "avatarURL": "https://tournament-team-avatars.corsace.io/1_1690596807745.png",
+                "manager": {
+                    "ID": 8334,
+                    "username": "MonkiDonki",
+                    "osuID": "5298487",
+                    "BWS": 0,
+                    "isManager": true,
+                },
+                "members": [
+                    {
+                        "ID": 3252,
+                        "username": "enri",
+                        "osuID": "8640970",
+                        "BWS": 11.23622468020549,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 3539,
+                        "username": "tekkito",
+                        "osuID": "7075211",
+                        "BWS": 18.99899179288283,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 4698,
+                        "username": "Intercambing",
+                        "osuID": "2546001",
+                        "BWS": 2.1078478260241305,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 4770,
+                        "username": "maliszewski",
+                        "osuID": "12408961",
+                        "BWS": 1.0572336417115773,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 8022,
+                        "username": "ninerik",
+                        "osuID": "10549880",
+                        "BWS": 3.266402565957539,
+                        "isManager": false,
+                    },
+                    {
+                        "ID": 8335,
+                        "username": "gnahus",
+                        "osuID": "12779141",
+                        "BWS": 5.434076366203132,
+                        "isManager": false,
+                    },
+                ],
+                "pp": 18721.8,
+                "BWS": 6.90579716163078,
+                "rank": 33.666666666666664,
+                "tournaments": [
+                    {
+                        "ID": 1,
+                        "name": "Corsace Open 2023",
+                    },
+                ],
+                "qualifier": {
+                    "ID": 11,
+                    "date": new Date("2023-07-25T18:00:00.000Z"),
+                    "mp": 109675119,
+                },
+            },
+            "maps": [
+                {
+                    "ID": 1,
+                    "map": {
+                        "ID": 4,
+                        "createdAt": "2023-07-29T22:37:59.015Z",
+                        "lastUpdate": "2023-07-29T22:37:59.000Z",
+                        "order": 1,
+                        "isCustom": true,
+                        "deadline": null,
+                        "slot": {
+                            "ID": 3,
+                            "createdAt": "2023-07-29T22:37:59.012Z",
+                            "mappool": {
+                                "ID": 2,
+                                "createdAt": "2023-07-29T22:37:59.008Z",
+                                "name": "upload",
+                                "abbreviation": "upl",
+                                "isPublic": false,
+                                "bannable": false,
+                                "mappackLink": null,
+                                "mappackExpiry": null,
+                                "targetSR": 8,
+                                "order": 1,
+                            },
+                            "name": "Nomod",
+                            "acronym": "NM",
+                            "colour": null,
+                            "allowedMods": 16,
+                            "userModCount": null,
+                            "uniqueModCount": null,
+                        },
+                        "customThreadID": null,
+                        "customMessageID": null,
+                        "customMappers": [
+                            {
+                                "ID": 1546,
+                                "discord": {
+                                    "userID": "352605625869402123",
+                                    "username": "pink blood",
+                                    "avatar": "",
+                                    "dateAdded": "2021-06-02T07:48:23.540Z",
+                                    "lastVerified": "2021-06-02T07:48:23.000Z",
+                                },
+                                "osu": {
+                                    "userID": "4323406",
+                                    "username": "VINXIS",
+                                    "avatar": "https://a.ppy.sh/4323406",
+                                    "dateAdded": "2021-06-02T07:48:23.540Z",
+                                    "lastVerified": "2021-06-02T07:48:23.000Z",
+                                },
+                                "country": "CA",
+                                "registered": "2021-06-02T07:48:23.540Z",
+                                "lastLogin": "2021-06-02T07:48:23.000Z",
+                                "canComment": true,
+                            },
+                        ],
+                        "customBeatmap": {
+                            "ID": 2,
+                            "link": "https://cdn.discordapp.com/attachments/1122650852923023451/1137597021910487201/Yosi_Horikawa_-_Letter.osz",
+                            "background": "https://cdn.discordapp.com/attachments/1122650852923023451/1137597029409886279/86818644_p1.png",
+                            "artist": "Yosi Horikawa",
+                            "title": "Letter",
+                            "BPM": 110,
+                            "totalLength": 80,
+                            "hitLength": 80,
+                            "difficulty": "V",
+                            "circleSize": 4,
+                            "overallDifficulty": 8,
+                            "approachRate": 9,
+                            "hpDrain": 3,
+                            "circles": 87,
+                            "sliders": 37,
+                            "spinners": 0,
+                            "maxCombo": 356,
+                            "aimSR": 3.031670536343471,
+                            "speedSR": 2.2088123321170414,
+                            "totalSR": 5.651911970573727,
+                        },
+                        "beatmap": {
+                            "ID": 2116069,
+                            "beatmapsetID": 1010927,
+                            "beatmapset": {
+                                "ID": 1010927,
+                                "artist": "ELECTROCUTICA feat. F9",
+                                "title": "Triplaneta",
+                                "submitDate": "2019-07-29T00:10:37.000Z",
+                                "approvedDate": "2019-08-24T02:40:01.000Z",
+                                "rankedStatus": -2,
+                                "BPM": 72,
+                                "genre": "electronic",
+                                "language": "japanese",
+                                "favourites": 339,
+                                "tags": "reversus treow kiyono japanese electronic リヴェルサス",
+                                "creator": {
+                                    "ID": 1453,
+                                    "discord": {
+                                        "userID": null,
+                                        "username": "",
+                                        "avatar": "",
+                                        "dateAdded": "2021-06-02T07:47:44.504Z",
+                                        "lastVerified": "2021-06-02T07:47:44.000Z",
+                                    },
+                                    "osu": {
+                                        "userID": "3513559",
+                                        "username": "deetz",
+                                        "avatar": "https://a.ppy.sh/3513559",
+                                        "dateAdded": "2021-06-02T07:47:44.504Z",
+                                        "lastVerified": "2021-06-02T07:47:44.000Z",
+                                    },
+                                    "country": "CA",
+                                    "registered": "2021-06-02T07:47:44.504Z",
+                                    "lastLogin": "2021-06-02T07:47:44.000Z",
+                                    "canComment": true,
+                                },
+                            },
+                            "totalLength": 359,
+                            "hitLength": 331,
+                            "difficulty": "FALL",
+                            "circleSize": 4,
+                            "overallDifficulty": 8,
+                            "approachRate": 9,
+                            "hpDrain": 5,
+                            "circles": 565,
+                            "sliders": 520,
+                            "spinners": 1,
+                            "rating": 9.48505,
+                            "storyboard": false,
+                            "video": false,
+                            "playCount": 60453,
+                            "passCount": 12105,
+                            "packs": "R279,S809",
+                            "maxCombo": 1633,
+                            "aimSR": 2.88146,
+                            "speedSR": 2.2418,
+                            "totalSR": 5.44309,
+                        },
+                    },
+                    "order": 1,
+                    "status": 2,
+                },
+            ],
+        };
 
         this.loading = false;
     }
@@ -251,6 +620,10 @@ export default class Matchup extends Vue {
     overflow: hidden;
     font-family: $font-ggsans;
 
+    &__diamond {
+        transform: rotate(45deg);
+    }
+
     &__streamTitle {
         position: fixed;
         top: 8px;
@@ -263,11 +636,21 @@ export default class Matchup extends Vue {
     &__mapName {
         position: fixed;
         top: 70px;
-        left: 43px;
+        left: 16px;
         font-family: $font-swis721;
         font-weight: bold;
         font-size: 40px;
         color: #fff;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 13px;
+
+        &__diamond {
+            width: 10px;
+            height: 10px;
+        }
     }
 
     &__beatmap {
@@ -283,10 +666,9 @@ export default class Matchup extends Vue {
             align-items: center;
             gap: 10px;
 
-            &_diamond {
+            &__diamond {
                 width: 5px;
                 height: 5px;
-                transform: rotate(45deg);
             }
         }
 
