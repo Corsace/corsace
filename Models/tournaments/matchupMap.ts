@@ -1,14 +1,9 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { MapStatus } from "../../Interfaces/matchup";
 import { MappoolMap } from "./mappools/mappoolMap";
 import { Matchup } from "./matchup";
 import { MatchupScore } from "./matchupScore";
 import { Team } from "./team";
-
-export enum MapStatus {
-    Protected,
-    Banned,
-    Picked,
-}
 
 @Entity()
 export class MatchupMap extends BaseEntity {

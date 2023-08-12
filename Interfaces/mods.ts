@@ -73,6 +73,68 @@ export const modAcronyms = {
     "MR": Mods.Mirror,
 };
 
+// RGB values for different mod slots
+export const freemodRGB: [number, number, number] = [158, 216, 84];
+export const freemodButFreerRGB: [number, number, number] = [235, 235, 235];
+
+const modsRGB: {
+    [key: number]: [number, number, number];
+} = {
+    0: [41, 168, 249],
+    1: [242, 129, 65],
+    2: [236, 255, 184],
+    4: [240, 157, 157],
+    8: [251, 186, 32],
+    16: [242, 65, 65],
+    32: [164, 164, 164],
+    64: [219, 174, 255],
+    128: [177, 232, 225],
+    256: [188, 111, 171],
+    512: [186, 107, 248],
+    576: [186, 107, 248],
+    1024: [255, 233, 157],
+    2048: [94, 203, 196],
+    4096: [30, 208, 155],
+    8192: [218, 254, 241],
+    16384: [225, 255, 103],
+    32768: [236, 169, 209],
+    65536: [236, 169, 209],
+    131072: [236, 169, 209],
+    262144: [236, 169, 209],
+    524288: [236, 169, 209],
+    1048576: [130, 161, 240],
+    2097152: [130, 161, 240],
+    4194304: [130, 161, 240],
+    8388608: [130, 161, 240],
+    16777216: [236, 169, 209],
+    33554432: [236, 169, 209],
+    67108864: [236, 169, 209],
+    134217728: [236, 169, 209],
+    268435456: [236, 169, 209],
+    1073741824: [238, 162, 145],
+};
+
+export function modsToRGB (modNum?: ModsType | null): [number, number, number] {
+    if (!modNum)
+        return modsRGB[0];
+
+    const colours: [number, number, number][] = [];
+    for (const mod in modsRGB) {
+        if (modNum && (modNum & parseInt(mod))) {
+            colours.push(modsRGB[mod]);
+        }
+    }
+
+    if (colours.length === 0)
+        return modsRGB[0];
+
+    const averageColour = colours.reduce((acc, val) => {
+        return [acc[0] + val[0], acc[1] + val[1], acc[2] + val[2]];
+    }, [0, 0, 0]).map((val) => Math.floor(val / colours.length)) as [number, number, number];
+
+    return averageColour;
+}
+
 /**
  * Parses a list of mod acronyms into nodesu ModsType enums
  * @param text A string consisting of mods as acronyms

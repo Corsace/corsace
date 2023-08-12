@@ -58,6 +58,33 @@ const validatePOSTMatchups = (matchups: any[]): string | true => {
     return true;
 };
 
+matchupRouter.get("/:matchupID", async (ctx) => {
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .leftJoinAndSelect("matchup.team1", "team1")
+        .leftJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("matchup.first", "first")
+        .leftJoinAndSelect("matchup.winner", "winner")
+        .leftJoinAndSelect("matchup.maps", "maps")
+        .leftJoinAndSelect("maps.map", "map")
+        .leftJoinAndSelect("map.slot", "slot")
+        .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
+        .getOne();
+
+    if (!matchup) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found.",
+        };
+        return;
+    }
+
+    ctx.body = {
+        success: true,
+        matchup,
+    };
+});
+
 matchupRouter.post("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const matchups = ctx.request.body?.matchups;
     if (!matchups) {
