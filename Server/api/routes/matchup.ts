@@ -67,6 +67,11 @@ matchupRouter.get("/:matchupID", async (ctx) => {
         .leftJoinAndSelect("matchup.winner", "winner")
         .leftJoinAndSelect("matchup.maps", "maps")
         .leftJoinAndSelect("maps.map", "map")
+        .leftJoinAndSelect("map.beatmap", "beatmap")
+        .leftJoinAndSelect("beatmap.beatmapset", "beatmapset")
+        .leftJoinAndSelect("beatmapset.creator", "creator")
+        .leftJoinAndSelect("map.customBeatmap", "customBeatmap")
+        .leftJoinAndSelect("map.customMappers", "customMappers")
         .leftJoinAndSelect("map.slot", "slot")
         .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
         .getOne();

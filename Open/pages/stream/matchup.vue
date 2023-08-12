@@ -194,17 +194,12 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue";
 
 import { Matchup as MatchupInterface } from "../../../Interfaces/matchup";
-import { freemodRGB, freemodButFreerRGB, modsToRGB } from "../../../Interfaces/mods";
 
 const streamModule = namespace("stream");
 
 @Component({
-    components: {
-        MappoolMapStats,
-    },
     layout: "stream",
 })
 export default class Matchup extends Vue {
@@ -214,47 +209,6 @@ export default class Matchup extends Vue {
 
     matchup: MatchupInterface | null = null;
     loading = false;
-
-    get pickedMaps () {
-        if (!this.matchup?.maps)
-            return [];
-
-        return this.matchup.maps.filter(map => map.status === 2).sort((a, b) => a.order - b.order);
-    }
-
-    get latestMap () {
-        if (!this.pickedMaps.length)
-            return null;
-
-        return this.pickedMaps[this.pickedMaps.length - 1];
-    }
-
-    get pickedBy () {
-        if (!this.latestMap)
-            return null;
-
-        if (this.pickedMaps.length % 2 !== 0)
-            return this.matchup?.first?.abbreviation.toUpperCase() || "N/A";
-
-        return (this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2?.abbreviation.toUpperCase() : this.matchup?.team1?.abbreviation.toUpperCase()) || "N/A";
-    }
-
-    get slotMod (): string {
-        if (!this.latestMap?.map?.slot)
-            return this.RGBValuesToRGBCSS(modsToRGB(0));
-
-        if (this.latestMap.map.slot.allowedMods === null && this.latestMap.map.slot.userModCount === null && this.latestMap.map.slot.uniqueModCount === null)
-            return this.RGBValuesToRGBCSS(freemodButFreerRGB);
-
-        if (this.latestMap.map.slot.userModCount !== null || this.latestMap.map.slot.uniqueModCount !== null)
-            return this.RGBValuesToRGBCSS(freemodRGB);
-
-        return this.RGBValuesToRGBCSS(modsToRGB(this.latestMap.map.slot.allowedMods));
-    }
-
-    RGBValuesToRGBCSS (values: [number, number, number]) {
-        return `rgb(${values[0]}, ${values[1]}, ${values[2]})`;
-    } 
 
     async mounted () {
         this.loading = true;
@@ -275,22 +229,6 @@ export default class Matchup extends Vue {
 
 <style lang="scss">
 @import '@s-sass/_variables';
-@keyframes fade1 {
-    0%      {opacity: 1}
-    25%     {opacity: 1}
-    50%     {opacity: 0}
-    75%     {opacity: 0}
-    100%    {opacity: 1}
-}
-
-@keyframes fade2 {
-    0%      {opacity: 0}
-    25%     {opacity: 0}
-    50%     {opacity: 1}
-    75%     {opacity: 1}
-    100%    {opacity: 0}
-}
-
 .matchup {
     width: 1920px;
     height: 1080px;
