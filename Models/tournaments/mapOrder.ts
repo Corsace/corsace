@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { MapStatus } from "./matchupMap";
+import { MapStatus } from "../../Interfaces/matchup";
 import { Round } from "./round";
 import { Stage } from "./stage";
 
