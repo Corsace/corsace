@@ -11,7 +11,7 @@
                 class="matchup__diamond matchup__mapName__diamond"
                 :style="{backgroundColor: 'white'}"
             />
-            MATCH
+            MATCHUP
         </div>
         <div
             v-if="matchup.team1" 
@@ -28,6 +28,22 @@
             />
             <div class="matchup__team1_name">
                 {{ matchup.team1.name }}
+            </div>
+            <div class="matchup__team1_info matchup__team1_info--rank">
+                <div class="matchup__team1_info_header">
+                    RANK AVG
+                </div>
+                <div class="matchup__team1_info_value">
+                    {{ Math.round(matchup.team1.rank) }}
+                </div>
+            </div>
+            <div class="matchup__team1_info matchup__team1_info--bws">
+                <div class="matchup__team1_info_header">
+                    BWS AVG
+                </div>
+                <div class="matchup__team1_info_value">
+                    {{ Math.round(matchup.team1.BWS) }}
+                </div>
             </div>
             <div class="matchup__team1_score">
                 WINS
@@ -48,62 +64,40 @@
                     />
                 </svg>
             </div>
-            <div class="matchup__team1_score_header">
-                SCORE
-            </div>
-        </div>
-        <div
-            v-if="latestMap" 
-            class="matchup__beatmap"
-        >
-            <div class="matchup__beatmap__header">
-                <div
-                    class="matchup__beatmap__name"
-                    :style="{color: slotMod}"
+            <div class="matchup__team1_members">
+                <div class="matchup__team1_members_member">
+                    <div 
+                        class="matchup__team1_members_member_avatar"
+                        :style="{
+                            'background-image': `url(https://a.ppy.sh/${matchup.team1.manager.osuID})`,
+                        }"
+                    />
+                    <div class="matchup__team1_members_member_username">
+                        {{ matchup.team1.manager.username.toUpperCase() }}
+                    </div>
+                    <div class="matchup__team1_members_member_BWS">
+                        MANAGER
+                    </div>
+                    <div class="matchup__team1_members_member_manager" />
+                </div>
+                <div 
+                    v-for="member in matchup.team1.members.filter(member => !member.isManager)"
+                    :key="member.ID"
+                    class="matchup__team1_members_member"
                 >
                     <div 
-                        class="matchup__diamond matchup__beatmap__name__diamond"
-                        :style="{backgroundColor: slotMod}"
+                        class="matchup__team1_members_member_avatar"
+                        :style="{
+                            'background-image': `url(https://a.ppy.sh/${member.osuID})`,
+                        }"
                     />
-                    {{ latestMap.map.slot?.acronym.toUpperCase() }}{{ latestMap.map.order }}
-                </div>
-                <div class="matchup__beatmap__picked">
-                    PICKED BY {{ pickedBy }}
-                </div>
-            </div>
-            <div
-                class="matchup__beatmap__info"
-                :style="{ backgroundImage: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%), url(${latestMap?.map?.customBeatmap?.background || `https://assets.ppy.sh/beatmaps/${latestMap?.map?.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg`})` }"
-            >
-                <div class="matchup__beatmap__info1">
-                    <div class="matchup__beatmap__info1__title">
-                        {{ latestMap.map.beatmap?.beatmapset?.title }}
+                    <div class="matchup__team1_members_member_username">
+                        {{ member.username.toUpperCase() }}
                     </div>
-                    <div class="matchup__beatmap__info1__artist">
-                        {{ latestMap.map.beatmap?.beatmapset?.artist }}
-                    </div>
-                    <div class="matchup__beatmap__info1_line" />
-                    <div class="matchup__beatmap__info1_text matchup__beatmap__info1_text_mapper">
-                        <div class="matchup__beatmap__info1_text--mapper">
-                            MAPPER
-                        </div>
-                        <div class="matchup__beatmap__info1_text--truncated">
-                            {{ latestMap.map.customMappers?.map(mapper => mapper.osu.username).join(", ") || latestMap.map.beatmap?.beatmapset?.creator?.osu.username || '' }}
-                        </div>
-                    </div>
-                    <div class="matchup__beatmap__info1_text matchup__beatmap__info1_text_difficulty">
-                        <div class="matchup__beatmap__info1_text--difficulty">
-                            DIFFICULTY
-                        </div>
-                        <div class="matchup__beatmap__info1_text--truncated">
-                            {{ latestMap.map.beatmap?.difficulty || latestMap.map.customBeatmap?.difficulty || '' }}
-                        </div>
+                    <div class="matchup__team1_members_member_BWS">
+                        {{ Math.round(member.BWS) }} BWS
                     </div>
                 </div>
-                <MappoolMapStats
-                    class="matchup__beatmap__info2"
-                    :mappool-map="latestMap.map"
-                />
             </div>
         </div>
         <div
@@ -121,6 +115,22 @@
             />
             <div class="matchup__team2_name">
                 {{ matchup.team2.name }}
+            </div>
+            <div class="matchup__team2_info matchup__team2_info--rank">
+                <div class="matchup__team2_info_header">
+                    RANK AVG
+                </div>
+                <div class="matchup__team2_info_value">
+                    {{ Math.round(matchup.team2.rank) }}
+                </div>
+            </div>
+            <div class="matchup__team2_info matchup__team2_info--bws">
+                <div class="matchup__team2_info_header">
+                    BWS AVG
+                </div>
+                <div class="matchup__team2_info_value">
+                    {{ Math.round(matchup.team2.BWS) }}
+                </div>
             </div>
             <div class="matchup__team2_score">
                 <svg 
@@ -141,8 +151,40 @@
                 </svg>
                 WINS
             </div>
-            <div class="matchup__team2_score_header">
-                SCORE
+            <div class="matchup__team2_members">
+                <div class="matchup__team2_members_member">
+                    <div 
+                        class="matchup__team2_members_member_avatar"
+                        :style="{
+                            'background-image': `url(https://a.ppy.sh/${matchup.team2.manager.osuID})`,
+                        }"
+                    />
+                    <div class="matchup__team2_members_member_username">
+                        {{ matchup.team2.manager.username.toUpperCase() }}
+                    </div>
+                    <div class="matchup__team2_members_member_BWS">
+                        MANAGER
+                    </div>
+                    <div class="matchup__team2_members_member_manager" />
+                </div>
+                <div 
+                    v-for="member in matchup.team2.members.filter(member => !member.isManager)"
+                    :key="member.ID"
+                    class="matchup__team2_members_member"
+                >
+                    <div 
+                        class="matchup__team2_members_member_avatar"
+                        :style="{
+                            'background-image': `url(https://a.ppy.sh/${member.osuID})`,
+                        }"
+                    />
+                    <div class="matchup__team2_members_member_username">
+                        {{ member.username.toUpperCase() }}
+                    </div>
+                    <div class="matchup__team2_members_member_BWS">
+                        {{ Math.round(member.BWS) }} BWS
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -165,7 +207,7 @@ const streamModule = namespace("stream");
     },
     layout: "stream",
 })
-export default class Match extends Vue {
+export default class Matchup extends Vue {
 
     @streamModule.State key!: string | null;
     @streamModule.State tournamentID!: number | null;
@@ -220,7 +262,7 @@ export default class Match extends Vue {
         if (typeof matchupID !== "string")
             return;
 
-        const { data } = await this.$axios.get(`/api/matchup/${matchupID}`);
+        const { data } = await this.$axios.get(`/api/matchup/${matchupID}/teams`);
         if (data.error)
             return;
 
@@ -288,159 +330,76 @@ export default class Match extends Vue {
         }
     }
 
-    &__beatmap {
-        &__name {
-            position: fixed;
-            bottom: 157px;
-            left: 711px;
-            font-size: 22px;
-            font-weight: bold;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-
-            &__diamond {
-                width: 5px;
-                height: 5px;
-            }
-        }
-
-        &__picked {
-            position: fixed;
-            bottom: 157px;
-            right: 711px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        &__info {
-            background-size: cover;
-            background-position: center;
-            position: fixed;
-            bottom: 0;
-            width: 524px;
-            height: 153px;
-            left: 698px;
-            right: 698px;
-
-            &1, &2 {
-                animation-duration: 16s;
-                animation-iteration-count: infinite;
-                animation-timing-function: ease-in-out;
-            }
-
-            &1 {
-                color: #1D1D1D;
-                animation-name: fade1;
-
-                &__title {
-                    position: absolute;
-                    top: 11px;
-                    right: 13px;
-                    font-size: 32px;
-                    font-weight: bold;
-                }
-
-                &__artist {
-                    position: absolute;
-                    top: 53px;
-                    right: 13px;
-                    font-size: 22px;
-                    font-weight: bold;
-                    font-style: italic;
-                }
-
-                &_line {
-                    position: absolute;
-                    border: 1px solid $open-red;
-                    width: 301px;
-                    right: 0;
-                    top: 92px;
-                }
-
-                &_text {
-                    position: absolute;
-                    bottom: 9px;
-                    display: flex;
-                    flex-direction: column;
-
-                    &_mapper {
-                        right: 13px;
-                    }
-
-                    &_difficulty {
-                        right: 144px;
-                    }
-
-                    &--mapper, &--difficulty {
-                        font-family: $font-swis721;
-                        font-weight: 700;
-                        padding: 1.75px 3.5px;
-                        font-size: 12px;
-                        vertical-align: middle;
-
-                    }
-
-                    &--mapper {
-                        background-color: $open-red;
-                        color: #131313;
-                    }
-
-                    &--difficulty {
-                        background-color: #131313;
-                        color: #EBEBEB;
-                    }
-
-                    &--truncated { 
-                        min-width: 0px; 
-                        overflow: hidden;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                        text-shadow: 0 0 3px black;
-
-                        font-size: 16px;
-                    }
-                }
-            }
-
-            &2 {
-                animation-name: fade2;
-            }
-        }
-    }
-
     &__team1_abbreviation, &__team2_abbreviation {
         font-family: $font-swis721;
         font-weight: bold;
         font-size: 27px;
-        color: #1d1d1d;
+        color: #1D1D1D;
         position: fixed;
-        bottom: 195px;
+        width: 279px;
+        height: 46px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #E0E0E0;
+        top: 144px;
         letter-spacing: -1.08px;
     }
 
     &__team1_avatar, &__team2_avatar {
         position: fixed;
-        bottom: 0;
-        width: 161px;
-        height: 189px;
+        top: 144px;
+        width: 222px;
+        height: 331px;
         background-size: cover;
         background-position: center;
-        border: 2px solid $open-red;
+        border: 2px solid #F1F1F1;
     }
 
     &__team1_name, &__team2_name {
         position: fixed;
-        bottom: 151px;
+        bottom: 500px;
         font-size: 41px;
         font-weight: bold;
     }
 
+    &__team1_info, &__team2_info {
+        position: fixed;
+        width: 216px;
+        height: 143px;
+        font-family: $font-swis721;
+
+        &_header {
+            padding: 4px 11px;
+            background-color: $open-red;
+            font-size: 23px;
+            font-weight: bold;
+            color: #1D1D1D;
+            width: fit-content;
+            position: absolute;
+            top: 0;
+        }
+
+        &_value {
+            font-size: 89px;
+            font-weight: bold;
+            font-style: italic;
+            position: absolute;
+            bottom: 0;
+        }
+
+        &--rank {
+            top: 206px;  
+        }
+
+        &--bws {
+            top: 349px;
+        }
+    }
+
     &__team1_score, &__team2_score {
         position: fixed;
-        bottom: 119px;
+        bottom: 460px;
         font-size: 12px;
         font-weight: bold;
 
@@ -448,68 +407,133 @@ export default class Match extends Vue {
         gap: 15px;
     }
 
-    &__team1_score_header, &__team2_score_header {
+    &__team1_members, &__team2_members {
         position: fixed;
-        bottom: 39px;
-        font-size: 12px;
-        font-weight: bold;
+        width: 454px;
+        top: 680px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 20px;
+
+        &_member {
+            position: relative;
+            height: 76px;
+            width: 217px;
+
+            border: 1px solid #767676;
+            background-color: #E0E0E0;
+            color: #1D1D1D;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: right;
+
+            overflow: hidden;
+
+            &_avatar {
+                height: 100%;
+                width: 45px;
+                position: absolute;
+                left: 0;
+                top: 0;
+                background-size: cover;
+                background-position: center;
+            }
+
+            &_username {
+                padding-right: 5px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+
+            &_BWS {
+                padding-right: 5px;
+                background-color: $open-red;
+                color: #EBEBEB;
+            }
+
+            &_manager {
+                background-image: url("../../../Assets/img/site/open/team/managerBlack.svg");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                width: 20px;
+                height: 14px;
+                position: absolute;
+                right: 5px;
+                bottom: 5px;
+            }
+        }
     }
 
     &__team1 {
         &_abbreviation {
-            left: 55px;
+            left: 245px;
         }
 
         &_avatar {
-            left: 0;
+            left: 23px;
         }
         
         &_name {
-            left: 188px;
+            left: 23px;
             color: #5BBCFA;
         }
 
         &_score {
-            left: 188px;
+            left: 23px;
         }
 
-        &_score_header {
-            left: 188px;
+        &_info {
+            left: 276px;
+
+            &_header {
+                left: 0;
+            }
+
+            &_value {
+                right: 0;
+            }
+        }
+
+        &_members {
+            left: 50px;
         }
     }
 
     &__team2 {
         &_abbreviation {
-            right: 55px;
+            right: 245px;
         }
 
         &_avatar {
-            right: 0;
+            right: 23px;
         }
 
         &_name {
-            right: 188px;
+            right: 23px;
             color: #F24141;
         }
 
         &_score {
-            right: 188px;
+            right: 23px;
         }
 
-        &_score_header {
-            right: 188px;
+        &_info {
+            right: 276px;
+
+            &_header {
+                right: 0;
+            }
+
+            &_value {
+                left: 0;
+            }
+        }
+
+        &_members {
+            right: 50px;
         }
     }
-}
-
-.mappool_map_stats {
-    mix-blend-mode: normal;
-    color: black;
-    font-weight: bold;
-    background-image: none;
-    width: 275px;
-    height: 100%;
-    position: absolute;
-    right: 0;
 }
 </style>

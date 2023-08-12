@@ -85,6 +85,32 @@ matchupRouter.get("/:matchupID", async (ctx) => {
     };
 });
 
+matchupRouter.get("/:matchupID/teams", async (ctx) => {
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .leftJoinAndSelect("matchup.team1", "team1")
+        .leftJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("team1.manager", "manager1")
+        .leftJoinAndSelect("team2.manager", "manager2")
+        .leftJoinAndSelect("team1.members", "members1")
+        .leftJoinAndSelect("team2.members", "members2")
+        .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
+        .getOne();
+
+    if (!matchup) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found.",
+        };
+        return;
+    }
+
+    ctx.body = {
+        success: true,
+        matchup,
+    };
+});
+
 matchupRouter.post("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const matchups = ctx.request.body?.matchups;
     if (!matchups) {
