@@ -140,5 +140,10 @@
     "interOpAuth": {
         "username": "interop",
         "password": "generate random password"
+    },
+    "centrifugo": {
+        "apiUrl": "http://127.0.0.1:8001/api",
+        "apiKey": "corsace",
+        "ipWhitelist": ["127.0.0.1"]
     }
 }
