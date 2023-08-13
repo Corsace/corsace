@@ -60,6 +60,9 @@ export class Matchup extends BaseEntity {
         potential!: boolean;
 
     @Column({ type: "boolean", default: false })
+        invalid!: boolean;
+
+    @Column({ type: "boolean", default: false })
         forfeit!: boolean;
 
     @Column({ type: "varchar", nullable: true })
@@ -90,9 +93,4 @@ export class Matchup extends BaseEntity {
 
     @Column({ type: "varchar", length: `http://255.255.255.255:65565`.length, nullable: true })
         baseURL?: string | null;
-
-    constructor (parents?: Matchup[]) {
-        super();
-        this.nextMatchups = parents;
-    }
 }

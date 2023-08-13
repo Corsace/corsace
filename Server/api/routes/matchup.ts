@@ -13,6 +13,7 @@ const matchupRouter = new Router();
 interface postMatchup {
     ID: number;
     isLowerBracket?: boolean;
+    potentials?: boolean;
     date?: string;
     team1?: number;
     team2?: number;
@@ -29,6 +30,9 @@ const validatePOSTMatchups = (matchups: any[]): string | true => {
 
         if (matchup.isLowerBracket !== undefined && typeof matchup.isLowerBracket !== "boolean")
             return `Invalid matchup isLowerBracket provided: ${matchup.isLowerBracket}`;
+
+        if (matchup.potentials !== undefined && typeof matchup.potentials !== "boolean")
+            return `Invalid matchup potentials provided: ${matchup.potentials}`;
 
         if (matchup.team1 !== undefined && (isNaN(parseInt(matchup.team1)) || parseInt(matchup.team1) < 1))
             return `Invalid matchup team1 provided: ${matchup.team1}`;
@@ -73,11 +77,11 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
 
     const idToMatchup = new Map<number, Matchup>();
 
-    const createMatchups = async (matchups: postMatchup[], transactionManager: EntityManager, parent?: Matchup): Promise<Matchup[]> => {
+    const createMatchups = async (matchups: postMatchup[], transactionManager: EntityManager): Promise<Matchup[]> => {
         const createdMatchups: Matchup[] = [];
         for (const matchup of matchups) {
 
-            let dbMatchup = new Matchup(parent ? [parent] : undefined);
+            let dbMatchup = new Matchup();
             dbMatchup.isLowerBracket = matchup.isLowerBracket || false;
             if (idToMatchup.has(matchup.ID)) {
                 dbMatchup = idToMatchup.get(matchup.ID)!;
@@ -87,16 +91,11 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
 
             if (matchup.date)
                 dbMatchup.date = parseDateOrTimestamp(matchup.date);
-            else if (parent) // 1 hour after parent.date
-                dbMatchup.date = new Date(parent.date.getTime() + 3600000);
             else // beginning of stage time
                 dbMatchup.date = ctx.state.stage.timespan.start;
 
             if (dbMatchup.date.getTime() < ctx.state.stage.timespan.start.getTime())
                 return Promise.reject(new Error(`Matchup ${matchup.ID} date ${dbMatchup.date} is before stage start ${ctx.state.stage.timespan.start}`));
-
-            if (parent)
-                dbMatchup.nextMatchups?.push(parent);
 
             if (ctx.state.stage)
                 dbMatchup.stage = ctx.state.stage;
@@ -125,10 +124,48 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
 
             await transactionManager.save(dbMatchup);
             idToMatchup.set(matchup.ID, dbMatchup);
-            const previousMatchups = matchup.previousMatchups ? await createMatchups(matchup.previousMatchups, transactionManager, dbMatchup) : undefined;
+            const previousMatchups = matchup.previousMatchups ? await createMatchups(matchup.previousMatchups, transactionManager) : undefined;
             if (previousMatchups)
                 dbMatchup.previousMatchups = previousMatchups;
 
+            if (matchup.potentials) {
+                const teams = previousMatchups?.map(m => {
+                    if (m.winner)
+                        return [m.winner];
+
+                    const teamArray: Team[] = [];
+                    if (m.team1)
+                        teamArray.push(m.team1);
+                    if (m.team2)
+                        teamArray.push(m.team2);
+
+                    return teamArray;
+                }) || [];
+                if (teams.flat().length < 2)
+                    for (let i = 0; i < 4; i++) {
+                        const potential = new Matchup();
+                        potential.potential = true;
+                        potential.date = dbMatchup.date;
+                        await transactionManager.save(potential);
+                        createdMatchups.push(potential);
+                    }
+                else
+                    for (let i = 0; i < teams.length; i++) {
+                        for (let j = i + 1; j < teams.length; j++) {
+                            for (const team of teams[i]) {
+                                for (const team2 of teams[j]) {
+                                    const potential = new Matchup();
+                                    potential.potential = true;
+                                    potential.date = dbMatchup.date;
+                                    potential.team1 = team;
+                                    potential.team2 = team2;
+                                    await transactionManager.save(potential);
+                                    createdMatchups.push(potential);
+                                }
+                            }
+                        }
+                    }
+            }
             await transactionManager.save(dbMatchup);
             idToMatchup.set(matchup.ID, dbMatchup);
             createdMatchups.push(dbMatchup);
@@ -145,7 +182,6 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
             };
         });
     } catch (err) {
-        console.error(err);
         ctx.body = {
             success: false,
             error: err instanceof Error ? err.message : err,
