@@ -160,7 +160,7 @@
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
                     <ul class="info_desc__list">
-                        <li>The tournament consists of <strong>4 stages</strong>: Round Robin (RR), Runoff (RO), Knockout 1 (KO1), and Knockout Stage 2 (KO2)</li>
+                        <li>The tournament consists of <strong>4 stages</strong>: Round Robin (RR), Runoff (RO), Knockout 1 (KO1), and Knockout 2 (KO2)</li>
                         <li>Knockout 1 and Knockout 2 are considered the <strong>main bracket</strong> in the tournament with Round Robin and Runoff being used to supplement the remaining teams.</li>
                     </ul>
                     <h2>ROUND ROBIN (AUG 12 - 13)</h2>
@@ -178,11 +178,13 @@
                             <strong>Placements:</strong>
                             <ul class="info_desc__list">
                                 <li>
-                                    Seeding is in the following precedence:]
+                                    Seeding is in the following precedence:
                                     <ul class="info_desc__list">
-                                        <li>Difference in Points (W/L Ratio)</li>
-                                        <li>Average score difference per map</li>
-                                        <li>Average accuracy per map</li>
+                                        <li>Match W/L Ratio</li>
+                                        <li>Difference in Points (Points Won - Points Lost)</li>
+                                        <li>Points Won</li>
+                                        <li>Points Lost</li>
+                                        <li>Average normalized score difference per map</li>
                                     </ul>
                                 </li>
                                 <li><strong>1st:</strong> Moves on to <strong>Knockout 1</strong> (becomes Teams 9 - 12 in KO1)</li>
