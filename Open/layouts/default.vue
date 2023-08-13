@@ -20,7 +20,7 @@
                     to="/"
                     class="header__nav-item"
                 >
-                    {{ $t("open.navbar.home")}}
+                    {{ $t("open.navbar.home") }}
                 </NuxtLink>
                 <NuxtLink
                     to="/info"
