@@ -24,6 +24,7 @@ import mappoolHistory from "./tournaments/mappool/history";
 import mappoolInfo from "./tournaments/mappool/info";
 import mappoolPublish from "./tournaments/mappool/publish";
 import mappoolRemove from "./tournaments/mappool/remove";
+import mappoolReplay from "./tournaments/mappool/replay";
 import mappoolSubmit from "./tournaments/mappool/submit";
 import mappoolSwap from "./tournaments/mappool/swap";
 
@@ -107,6 +108,7 @@ commands.push(mappoolHistory);
 commands.push(mappoolInfo);
 commands.push(mappoolPublish);
 commands.push(mappoolRemove);
+commands.push(mappoolReplay);
 commands.push(mappoolSubmit);
 commands.push(mappoolSwap);
 

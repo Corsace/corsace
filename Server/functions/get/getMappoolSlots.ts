@@ -2,7 +2,7 @@ import { Brackets } from "typeorm";
 import { Mappool } from "../../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../../Models/tournaments/mappools/mappoolSlot";
 
-export default function getMappoolSlots (mappool: Mappool, slot = "", getMappool = false, getMaps = false, getJobPost = false) {
+export default function getMappoolSlots (mappool: Mappool, slot = "", getMappool = false, getMaps = false, getJobPost = false, getReplays = false) {
     const mappoolSlotQ = MappoolSlot.createQueryBuilder("slot");
     if (getMappool) {
         mappoolSlotQ.leftJoinAndSelect("slot.mappool", "mappool");
@@ -20,6 +20,10 @@ export default function getMappoolSlots (mappool: Mappool, slot = "", getMappool
             if (getJobPost)
                 mappoolSlotQ
                     .leftJoinAndSelect("maps.jobPost", "jobPost");
+
+            if (getReplays)
+                mappoolSlotQ
+                    .leftJoinAndSelect("maps.replays", "replays");
         }
     } else
         mappoolSlotQ.leftJoin("slot.mappool", "mappool");

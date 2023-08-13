@@ -199,7 +199,7 @@ interface parameters {
 
 const matchupList: Command = {
     data,
-    alternativeNames: [ "list_matchup", "list-matchup", "matchup-list", "matchuplist", "listmatchup", "listm", "mlist", "matchup_s", "l_matchup", "l-matchup", "matchup-l", "matchupl", "lmatchup", "lm", "ml" ],
+    alternativeNames: [ "list_matchup", "list-matchup", "matchup-list", "matchuplist", "listmatchup", "listm", "mlist", "matchup_l", "l_matchup", "l-matchup", "matchup-l", "matchupl", "lmatchup", "lm", "ml" ],
     category: "tournaments",
     subCategory: "matchups",
     run,

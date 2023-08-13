@@ -38,7 +38,8 @@ export default async function mappoolComponents (
         text: string,
         roles: TournamentRoleType[],
     },
-    getJobPosts?: boolean
+    getJobPosts?: boolean,
+    getReplays?: boolean
 ): Promise<undefined | MappoolComponentsType> {
     
     // Get tournament
@@ -77,7 +78,7 @@ export default async function mappoolComponents (
         return { tournament, mappool, stage, staff };
 
     // Get slotMod
-    const slotMod = await getMappoolSlot(m, mappool, slot, false, map !== undefined, getJobPosts);
+    const slotMod = await getMappoolSlot(m, mappool, slot, false, map !== undefined, getJobPosts, getReplays);
     if (!slotMod) 
         return;
 

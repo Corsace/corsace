@@ -37,6 +37,7 @@ import { MatchupScore } from "./tournaments/matchupScore";
 import { MatchupMessage } from "./tournaments/matchupMessage";
 import { UserStatistics } from "./userStatistics";
 import { modeIDToMode } from "../Interfaces/modes";
+import { MappoolReplay } from "./tournaments/mappools/mappoolReplay";
 
 // General middlewares
 
@@ -191,6 +192,9 @@ export class User extends BaseEntity {
 
     @OneToMany(() => MappoolMapHistory, history => history.createdBy)
         mappoolMapHistoryEntriesCreated!: MappoolMapHistory[];
+
+    @OneToMany(() => MappoolReplay, replay => replay.createdBy)
+        mappoolReplaysCreated!: MappoolReplay[];
 
     @OneToMany(() => JobPost, post => post.createdBy)
         jobPostsCreated!: JobPost[];

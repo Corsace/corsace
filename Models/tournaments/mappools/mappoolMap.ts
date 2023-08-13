@@ -8,6 +8,7 @@ import { MappoolSlot } from "./mappoolSlot";
 import { CustomBeatmap } from "./customBeatmap";
 import { JobPost } from "./jobPost";
 import { MatchupMap } from "../matchupMap";
+import { MappoolReplay } from "./mappoolReplay";
 
 @Entity()
 export class MappoolMap extends BaseEntity {
@@ -60,6 +61,10 @@ export class MappoolMap extends BaseEntity {
     @OneToOne(() => CustomBeatmap, beatmap => beatmap.mappoolMap)
     @JoinColumn()
         customBeatmap?: CustomBeatmap | null;
+
+    @OneToOne(() => MappoolReplay, replay => replay.mappoolMap)
+    @JoinColumn()
+        replay?: MappoolReplay | null;
 
     @ManyToOne(() => Beatmap, beatmap => beatmap.mappoolMaps)
         beatmap?: Beatmap | null;
