@@ -176,11 +176,11 @@
                                 </ul>
                             </li>
                             <img
-                                class="info_desc__list_wrapper__image"
+                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--small"
                                 src="../../Assets/img/site/open/info/rrgroup.png"
                             >
                         </div>
-                        <div class="info_desc__list_wrapper">
+                        <div class="info_desc__list_wrapper info_desc__list_wrapper">
                             <div>
                                 <li>
                                     <strong>Placements:</strong>
@@ -925,6 +925,7 @@ export default class Info extends Vue {
                 justify-content: space-between;
                 overflow: hidden;
                 // align-items: center;
+                gap: 20px;
 
                 &__image {
                     max-height: 300px;
@@ -935,9 +936,18 @@ export default class Info extends Vue {
                         max-height: 200px;
                     }
 
+                    &--medium {
+                        max-height: 300px;
+                    }
+
                     &--large {
                         max-height: 400px;
                     }
+
+                }
+
+                &--align-left {
+                    justify-content: flex-start;
                 }
 
                 &--center {
