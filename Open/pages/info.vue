@@ -160,86 +160,126 @@
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
                     <ul class="info_desc__list">
-                        <li>The tournament consists of <strong>4 stages</strong>: Round Robin (RR), Runoff (RO), Knockout 1 (KO1), and Knockout Stage 2 (KO2)</li>
+                        <li>The tournament consists of <strong>4 stages</strong>: Round Robin (RR), Runoff (RO), Knockout 1 (KO1), and Knockout 2 (KO2)</li>
                         <li>Knockout 1 and Knockout 2 are considered the <strong>main bracket</strong> in the tournament with Round Robin and Runoff being used to supplement the remaining teams.</li>
                     </ul>
                     <h2>ROUND ROBIN (AUG 12 - 13)</h2>
                     <ul class="info_desc__list">
-                        <li>
-                            <strong>Groups </strong>(16 teams, 24 matches)
-                            <ul class="info_desc__list">
-                                <li>Group A (Seeds 9, 16, 17, 24)</li>
-                                <li>Group B (Seeds 10, 15, 18, 23)</li>
-                                <li>Group C (Seeds 11, 14, 19, 22)</li>
-                                <li>Group D (Seeds 12, 13, 20, 21)</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>Placements:</strong>
-                            <ul class="info_desc__list">
+                        <div class="info_desc__list_wrapper">
+                            <li>
+                                <strong>Groups </strong>(16 teams, 24 matches)
+                                <ul class="info_desc__list">
+                                    <li>Group A (Seeds 9, 16, 17, 24)</li>
+                                    <li>Group B (Seeds 10, 15, 18, 23)</li>
+                                    <li>Group C (Seeds 11, 14, 19, 22)</li>
+                                    <li>Group D (Seeds 12, 13, 20, 21)</li>
+                                </ul>
+                            </li>
+                            <img
+                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--small"
+                                src="../../Assets/img/site/open/info/rrgroup.png"
+                            >
+                        </div>
+                        <div class="info_desc__list_wrapper info_desc__list_wrapper">
+                            <div>
                                 <li>
-                                    Seeding is in the following precedence:]
+                                    <strong>Placements:</strong>
                                     <ul class="info_desc__list">
-                                        <li>Difference in Points (W/L Ratio)</li>
-                                        <li>Average score difference per map</li>
-                                        <li>Average accuracy per map</li>
+                                        <li>
+                                            Seeding is in the following precedence:
+                                            <ul class="info_desc__list">
+                                                <li>Match W/L Ratio</li>
+                                                <li>Difference in Points (Points Won - Points Lost)</li>
+                                                <li>Points Won</li>
+                                                <li>Points Lost</li>
+                                                <li>Average normalized score difference per map</li>
+                                            </ul>
+                                        </li>
+                                        <li><strong>1st:</strong> Moves on to <strong>Knockout 1</strong> (becomes Teams 9 - 12 in KO1)</li>
+                                        <li><strong>2nd</strong> and <strong>3rd:</strong> Moves on to <strong>Runoff</strong></li>
+                                        <li><strong>4th:</strong> <red>ELIMINATED</red></li>
                                     </ul>
                                 </li>
-                                <li><strong>1st:</strong> Moves on to <strong>Knockout 1</strong> (becomes Teams 9 - 12 in KO1)</li>
-                                <li><strong>2nd</strong> and <strong>3rd:</strong> Moves on to <strong>Runoff</strong></li>
-                                <li><strong>4th:</strong> <red>ELIMINATED</red></li>
-                            </ul>
-                        </li>
-                        <li>Matches are <strong>Best of 9</strong> with <strong>1 ban</strong></li>
-                        <li>Mappool size (15 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
+                                <li>Matches are <strong>Best of 9</strong> with <strong>1 ban</strong></li>
+                                <li>Mappool size (15 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
+                            </div>
+                            <img
+                                class="info_desc__list_wrapper__image"
+                                src="../../Assets/img/site/open/info/rrplacement.png"
+                            >
+                        </div>
                     </ul>
                     <h2> RUNOFF (AUG 19 - 20)</h2>
-                    <ul class="info_desc__list">
-                        <li>Consists of 2 rounds running similar to a traditional bracket</li>
-                        <li>Used to determine Teams 13 - 16 in Knockout 1</li>
-                        <li>
-                            <strong>Round 1 </strong>(8 teams, 4 matches)
-                            <ul class="info_desc__list">
-                                <li>Winners move on to Round 2</li>
-                                <li>Losers are <red>ELIMINATED</red></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>Round 2 </strong>(4 teams, 2 matches)
-                            <ul class="info_desc__list">
-                                <li>Winners become Teams 13/14 in Knockout 1</li>
-                                <li>Losers become Teams 15/16 in Knockout 1</li>
-                            </ul>
-                        </li>
-                        <li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong></li>
-                        <li>Mappool size (15 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
-                    </ul>
+                    <div class="info_desc__list_wrapper">
+                        <ul class="info_desc__list">
+                            <li>Consists of 2 rounds running similar to a traditional bracket</li>
+                            <li>Used to determine Teams 13 - 16 in Knockout 1</li>
+                            <li>
+                                <strong>Round 1 </strong>(8 teams, 4 matches)
+                                <ul class="info_desc__list">
+                                    <li>Winners move on to Round 2</li>
+                                    <li>Losers are <red>ELIMINATED</red></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Round 2 </strong>(4 teams, 2 matches)
+                                <ul class="info_desc__list">
+                                    <li>Winners become Teams 13/14 in Knockout 1</li>
+                                    <li>Losers become Teams 15/16 in Knockout 1</li>
+                                </ul>
+                            </li>
+                            <li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong></li>
+                            <li>Mappool size (15 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
+                        </ul>
+                        <img 
+                            class="info_desc__list_wrapper__image"
+                            src="../../Assets/img/site/open/info/rodesc.png"
+                        >
+                    </div>
+
                     <h2>KNOCKOUT 1 (AUG 26 - 27)</h2>
-                    <ul class="info_desc__list">
-                        <li>
-                            Single-elimination bracket
-                            <ul class="info_desc__list">
-                                <li>Consists of Round of 16 and Quarterfinals <strong>only</strong></li>
-                            </ul>
-                        </li>
-                        <li>Matchups are determined using <strong>power seeding</strong> (#1 vs #16, #2 vs #15, etc.)</li>
-                        <li>Teams 9 - 12 are seeded using the same order of precedence used in RO</li>
-                        <li>Matches are <strong>Best of 3 Sets</strong></li>
-                        <li>Sets are <strong>Best of 7</strong> with <strong>1 protect </strong>and <strong>1 ban</strong></li>
-                        <li>
-                            Mappool size (31 maps):
-                            <ul class="info_desc__list">
-                                <li>
-                                    3 total mappools
-                                    <ul class="info_desc__list">
-                                        <li>Each mappool consists of 10 maps: <strong>4 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>2 DT</strong></li>
-                                    </ul>
-                                </li>
-                                <li>1 TB is used for the entire stage</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <h2>KNOCKOUT 2 (SEP 2 - 3)</h2>
+                    <div class="info_desc__list_wrapper">
+                        <ul class="info_desc__list">
+                            <li>
+                                Single-elimination bracket
+                                <ul class="info_desc__list">
+                                    <li>Consists of Round of 16 and Quarterfinals <strong>only</strong></li>
+                                </ul>
+                            </li>
+                            <li>Matchups are determined using <strong>power seeding</strong> (#1 vs #16, #2 vs #15, etc.)</li>
+                            <li>Teams 9 - 12 are seeded using the same order of precedence used in RO</li>
+                            <li>Matches are <strong>Best of 3 Sets</strong></li>
+                            <li>Sets are <strong>Best of 7</strong> with <strong>1 protect </strong>and <strong>1 ban</strong></li>
+                            <li>
+                                Mappool size (31 maps):
+                                <ul class="info_desc__list">
+                                    <li>
+                                        3 total mappools
+                                        <ul class="info_desc__list">
+                                            <li>Each mappool consists of 10 maps: <strong>4 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>2 DT</strong></li>
+                                        </ul>
+                                    </li>
+                                    <li>1 TB is used for the entire stage</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="info_desc__list_wrapper info_desc__list_wrapper--center">
+                            <img 
+                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
+                                src="../../Assets/img/site/open/info/ko1.png"
+                            >
+                            <img 
+                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
+                                src="../../Assets/img/site/open/info/ko1-2.png"
+                            >
+                            <img 
+                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
+                                src="../../Assets/img/site/open/info/ko1-3.png"
+                            >
+                        </div>
+                    </div>
+
+                    <h2>KNOCKOUT 2 (SEP 2 - 3)</h2>        
                     <ul class="info_desc__list">
                         <li>
                             Single-elimination bracket (cont.)
@@ -250,15 +290,6 @@
                         <li>Matches are <strong>Best of 13</strong> with <strong>1 protect</strong> and <strong>2 bans</strong></li>
                         <li>Mappool size (18 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>4 DT</strong><strong> / </strong><strong>4 FM</strong><strong> / 1 TB</strong></li>
                     </ul>
-                </div>
-                <OpenTitle
-                    class="info_section_header"
-                >
-                    {{ $t('open.info.infoGraphic') }}
-                </OpenTitle>
-                <div class="info_desc__images">
-                    <img src="../../Assets/img/site/open/info/image1.png">
-                    <img src="../../Assets/img/site/open/info/image2.png">
                 </div>
                 <OpenTitle
                     class="info_section_header"
@@ -831,61 +862,99 @@ export default class Info extends Vue {
 
     /* left panel */
     &_desc {
+        display: flex;
+        flex-direction: column;
+        width: 30%;
+        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
+        margin: 15px 20px 0 0;
+        padding: 40px 35px;
+
+        & img {
+            width: 100%;
+            object-fit: cover;
+            overflow: hidden;
+        }
+
+        &_button {
+            flex: 1;
+        }
+
+        &__images {
             display: flex;
-            flex-direction: column;
-            width: 30%;
-            background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
-            margin: 15px 20px 0 0;
-            padding: 40px 35px;
+            justify-content: space-between;
 
             & img {
+                height: 500px;
+            }
+        }
+
+        &__text {
+            text-align: center;
+
+            &--noAlign {
+                text-align: left;
+            }
+        }
+
+        &__buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        &__list {
+            display: flex;
+            flex-direction: column;
+
+            & li strong {
+                color: $open-red;
+                font-weight: 600;
+            }
+
+            & li red {
+                color: $open-red;
+                font-weight: 800;
+                font-style: italic;
+            }
+
+            &_wrapper {
+                display: flex;
+                flex-direction: row;
                 width: 100%;
-                object-fit: cover;
-                overflow: hidden;
-            }
-
-            &_button {
-                flex: 1;
-            }
-
-            &__images {
-                display: flex;
                 justify-content: space-between;
+                overflow: hidden;
+                // align-items: center;
 
-                & img {
-                    height: 500px;
-                }
-            }
+                &__image {
+                    max-height: 300px;
+                    object-fit: contain;
+                    overflow: hidden;
 
-            &__text {
-                text-align: center;
+                    &--small {
+                        max-height: 200px;
+                    }
 
-                &--noAlign {
-                    text-align: left;
-                }
-            }
+                    &--medium {
+                        max-height: 300px;
+                    }
 
-            &__buttons {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 20px;
-            }
+                    &--large {
+                        max-height: 400px;
+                    }
 
-            &__list {
-
-
-                & li strong {
-                    color: $open-red;
-                    font-weight: 600;
                 }
 
-                & li red {
-                    color: $open-red;
-                    font-weight: 800;
-                    font-style: italic;
+                &--align-left {
+                    justify-content: flex-start;
+                }
+
+                &--center {
+                    align-items: center;
+                    justify-content: flex-end;
                 }
             }
+        }
     }
 
     &_match {
