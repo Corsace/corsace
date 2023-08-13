@@ -14,6 +14,8 @@ import channelID from "../../../functions/channelID";
 import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import { MappoolReplay } from "../../../../Models/tournaments/mappools/mappoolReplay";
+import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
+import getStaff from "../../../functions/tournamentFunctions/getStaff";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -22,7 +24,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!await securityChecks(m, true, false, [TournamentChannelType.Admin, TournamentChannelType.Mappool, TournamentChannelType.Mappoollog, TournamentChannelType.Mappoolqa, TournamentChannelType.Testplayers, TournamentChannelType.Jobboard], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers]))
         return;
 
-    const user = await getUser(commandUser(m).id, "discord", false);
+    let user = await getUser(commandUser(m).id, "discord", false);
     if (!user) {
         await loginResponse(m);
         return;
@@ -41,11 +43,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         { name: "pool" , paramType: "string" },
         { name: "slot", paramType: "string", postProcess: postProcessSlotOrder },
         { name: "score", paramType: "integer" },
+        { name: "target", paramType: "string", customHandler: extractTargetText },
     ]);
     if (!params)
         return;
 
-    const { pool, slot, order, score } = params;
+    const { pool, slot, order, score, target } = params;
 
     const components = await mappoolComponents(m, pool, slot, order || true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, undefined, undefined, undefined, true);
     if (!components || !("mappoolMap" in components)) {
@@ -55,6 +58,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     const { tournament, mappool, mappoolMap, mappoolSlot } = components;
+
+    if (target) {
+        if (!await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
+            return;
+
+        user = await getStaff(m, tournament, target, [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers, TournamentRoleType.Mappers, TournamentRoleType.Testplayers]);
+        if (!user)
+            return;
+    }
 
     if (mappoolMap.replay)
         await mappoolMap.replay.remove();
@@ -90,6 +102,10 @@ const data = new SlashCommandBuilder()
         option.setName("replay")
             .setDescription("The replay to submit.")
             .setRequired(true))
+    .addUserOption(option =>
+        option.setName("user")
+            .setDescription("The user who did the replay (for organizers).")
+            .setRequired(false))
     .setDMPermission(false);
 
 interface parameters {
@@ -97,6 +113,7 @@ interface parameters {
     slot: string;
     order?: number;
     score: number;
+    target?: string,
 }
 
 const mappoolReplay: Command = {
