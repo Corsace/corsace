@@ -925,7 +925,6 @@ export default class Info extends Vue {
                 justify-content: space-between;
                 overflow: hidden;
                 // align-items: center;
-                gap: 20px;
 
                 &__image {
                     max-height: 300px;
