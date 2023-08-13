@@ -165,15 +165,18 @@
                     </ul>
                     <h2>ROUND ROBIN (AUG 12 - 13)</h2>
                     <ul class="info_desc__list">
+                        <div class="_info_desc_wrapper">
                         <li>
-                            <strong>Groups </strong>(16 teams, 24 matches)
-                            <ul class="info_desc__list">
-                                <li>Group A (Seeds 9, 16, 17, 24)</li>
-                                <li>Group B (Seeds 10, 15, 18, 23)</li>
-                                <li>Group C (Seeds 11, 14, 19, 22)</li>
-                                <li>Group D (Seeds 12, 13, 20, 21)</li>
-                            </ul>
-                        </li>
+                                <strong>Groups </strong>(16 teams, 24 matches)
+                                <ul class="info_desc__list">
+                                    <li>Group A (Seeds 9, 16, 17, 24)</li>
+                                    <li>Group B (Seeds 10, 15, 18, 23)</li>
+                                    <li>Group C (Seeds 11, 14, 19, 22)</li>
+                                    <li>Group D (Seeds 12, 13, 20, 21)</li>
+                                </ul>
+                            </li>
+                            <img src="../../Assets/img/site/open/info/Group_368.png">
+                        </div>
                         <li>
                             <strong>Placements:</strong>
                             <ul class="info_desc__list">
@@ -831,6 +834,20 @@ export default class Info extends Vue {
             margin: 15px 20px 0 0;
             padding: 40px 35px;
 
+            &_wrapper {
+                display: flex;
+                flex-direction: row;    
+
+                &__images {
+                display: flex;
+                justify-content: space-between;
+
+                & img {
+                    height: 500px;
+                }
+            }
+            }
+
             & img {
                 width: 100%;
                 object-fit: cover;
@@ -866,7 +883,12 @@ export default class Info extends Vue {
             }
 
             &__list {
+                display: flex;
+                flex-direction: column;
 
+                & li {
+                    width: 200px;
+                }
 
                 & li strong {
                     color: $open-red;
