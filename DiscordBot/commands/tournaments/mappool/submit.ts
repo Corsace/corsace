@@ -6,7 +6,7 @@ import { securityChecks } from "../../../functions/tournamentFunctions/securityC
 import { extractParameters } from "../../../functions/parameterFunctions";
 import { getLink } from "../../../functions/getLink";
 import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
-import { ojsamaParse, ojsamaToCustom } from "../../../functions/beatmapParse";
+import { beatmapParse, parsedBeatmapToCustom } from "../../../functions/beatmapParse";
 import respond from "../../../functions/respond";
 import getUser from "../../../../Server/functions/get/getUser";
 import commandUser from "../../../functions/commandUser";
@@ -63,13 +63,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     // Obtain beatmap data
-    const beatmapData = await ojsamaParse(m, difficulty || "", link);
+    const beatmapData = await beatmapParse(m, difficulty || "", link);
     if (!beatmapData?.beatmap) {
         await respond(m, `Can't find **${difficulty !== "" ? `[${difficulty}]` : "a single difficulty(????)"}** in ur osz`);
         return;
     }
 
-    await ojsamaToCustom(m, tournament, mappool, slotMod, mappoolMap, beatmapData, link, user, mappoolSlot);
+    await parsedBeatmapToCustom(m, tournament, mappool, slotMod, mappoolMap, beatmapData, link, user, mappoolSlot);
     return;
 }
 

@@ -1,14 +1,11 @@
 
 import Axios from "axios";
-import osu from "ojsama";
 import { Entry, Parse } from "unzipper";
-import { once } from "events";
 import { ChatInputCommandInteraction, ForumChannel, Message } from "discord.js";
 import { Beatmap as APIBeatmap} from "nodesu";
 import { CustomBeatmap } from "../../Models/tournaments/mappools/customBeatmap";
 import { deletePack } from "../../Server/functions/tournaments/mappool/mappackFunctions";
 import { MappoolMapHistory } from "../../Models/tournaments/mappools/mappoolMapHistory";
-import { BeatmapParser } from "../../Server/beatmapParser";
 import getCustomThread from "./tournamentFunctions/getCustomThread";
 import beatmapEmbed from "./beatmapEmbed";
 import { applyMods, modsToAcronym } from "../../Interfaces/mods";
@@ -20,9 +17,10 @@ import { Mappool } from "../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../Models/tournaments/mappools/mappoolSlot";
 import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
+import { parseBeatmap, ParserBeatmap } from "wasm-replay-parser-rs";
 
-export async function ojsamaParse (m: Message | ChatInputCommandInteraction, diff: string, link: string) {
-    let beatmap: osu.beatmap | undefined = undefined;
+export async function beatmapParse (m: Message | ChatInputCommandInteraction, diff: string, link: string) {
+    let beatmap: ParserBeatmap | undefined = undefined;
     let background: string | undefined = undefined;
     let axiosData: any = null;
     try {
@@ -33,20 +31,20 @@ export async function ojsamaParse (m: Message | ChatInputCommandInteraction, dif
         return;
     }
     const zip = axiosData.pipe(Parse({ forceStream: true }));
-    const osuParser = new osu.parser();
     let foundBeatmap = false;
     for await (const _entry of zip) {
         const entry = _entry as Entry;
+        const buffer = await entry.buffer();
 
         if (entry.type === "File" && entry.props.path.endsWith(".osu") && !foundBeatmap) {
-            const writableBeatmapParser = new BeatmapParser(osuParser);
-            entry.pipe(writableBeatmapParser);
-            await once(writableBeatmapParser, "finish");
+            const parsedBeatmap = parseBeatmapExtra(buffer);
+
+            console.log(parsedBeatmap);
             
-            if (diff !== "" && osuParser.map.version.toLowerCase() !== diff.toLowerCase())
+            if (diff !== "" && parsedBeatmap.diff_name.toLowerCase() !== diff.toLowerCase())
                 continue;
 
-            beatmap = osuParser.map;
+            beatmap = parsedBeatmap;
             foundBeatmap = true;
             if (background)
                 break;
@@ -56,7 +54,6 @@ export async function ojsamaParse (m: Message | ChatInputCommandInteraction, dif
             entry.props.path.endsWith(".jpeg")
         )) {
             // Get image and send in a discord message, then assign the link to the background variable
-            const buffer = await entry.buffer();
             const message = await m.channel!.send({
                 files: [{
                     attachment: buffer,
@@ -77,7 +74,7 @@ export async function ojsamaParse (m: Message | ChatInputCommandInteraction, dif
     };
 }
 
-export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappool: Mappool, slot: MappoolSlot, mappoolMap: MappoolMap, beatmapData: { beatmap: osu.beatmap | undefined, background: string | undefined }, link: string, user: User, mappoolSlot: string) {
+export async function parsedBeatmapToCustom (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappool: Mappool, slot: MappoolSlot, mappoolMap: MappoolMap, beatmapData: { beatmap: ParserBeatmap | undefined, background: string | undefined }, link: string, user: User, mappoolSlot: string) {
     if (!mappoolMap.customBeatmap)
         mappoolMap.customBeatmap = new CustomBeatmap();
 
@@ -85,19 +82,19 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
 
     const artist = beatmap.artist;
     const title = beatmap.title;
-    const diff = beatmap.version;
+    const diff = beatmap.diff_name;
 
     const cs = beatmap.cs;
     const ar = beatmap.ar ?? -1;
     const od = beatmap.od;
     const hp = beatmap.hp;
-    const circles = beatmap.objects.filter(object => object.type === osu.objtypes.circle).length;
-    const sliders = beatmap.objects.filter(object => object.type === osu.objtypes.slider).length;
-    const spinners = beatmap.objects.filter(object => object.type === osu.objtypes.spinner).length;
-    const maxCombo = beatmap.max_combo();
+    const circles = beatmap.circles;
+    const sliders = beatmap.sliders;
+    const spinners = beatmap.spinners;
+    const maxCombo = beatmap.difficulty?.max_combo;
 
     // Obtaining length
-    const lengthMs = beatmap.objects[beatmap.objects.length - 1].time - beatmap.objects[0].time;
+    const lengthMs = beatmap.hit_objects?.;
     const length = lengthMs / 1000;
 
     // Obtaining bpm
