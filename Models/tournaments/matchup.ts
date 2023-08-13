@@ -56,8 +56,11 @@ export class Matchup extends BaseEntity {
     @JoinTable()
         mappoolsBanned?: Mappool[] | null;
 
-    @Column({ type: "boolean", default: false })
-        potential!: boolean;
+    @ManyToOne(() => Matchup, matchup => matchup.potentials)
+        potentialFor?: Matchup | null;
+
+    @OneToMany(() => Matchup, matchup => matchup.potentialFor)
+        potentials?: Matchup[] | null;
 
     @Column({ type: "boolean", default: false })
         invalid!: boolean;

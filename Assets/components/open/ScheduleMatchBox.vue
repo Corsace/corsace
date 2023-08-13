@@ -3,6 +3,12 @@
         v-if="matchupSync"
         class="schedule_matchbox"
     >
+        <div
+            v-if="matchupSync.potential" 
+            class="schedule_matchbox__potential"
+        >
+            (POTENTIAL)
+        </div>
         <div class="schedule_matchbox_date">
             <div class="schedule_matchbox_date__month">
                 {{ formatDate(matchupSync.date) }}
@@ -14,7 +20,7 @@
                 UTC
             </div>
             <div class="schedule_matchbox_date__month">
-                ID {{ matchupSync.ID }}
+                ID {{ matchupSync.ID }} {{ matchupSync.potential ? `(${matchupSync.potential})` : "" }}
             </div>
         </div>
         <div class="schedule_matchbox_team">
@@ -50,7 +56,12 @@
                     </div>
                 </div>
             </div>
-            <div class="schedule_matchbox_team__vs">
+            <div 
+                class="schedule_matchbox_team__vs"
+                :style="{
+                    'background-color': matchupSync.potential ? '#AAAAAA' : '#F24141'
+                }"
+            >
                 VS
             </div>
             <div class="schedule_matchbox_team__right">
@@ -138,6 +149,7 @@ export default class ScheduleMatchBox extends Vue {
 @import '@s-sass/_variables';
 
 .schedule_matchbox {
+    position: relative;
     display: flex;
     flex-direction: row;
     background: linear-gradient(0deg, #131313, #131313), linear-gradient(0deg, #383838, #383838);
@@ -145,10 +157,24 @@ export default class ScheduleMatchBox extends Vue {
     height: 153px;
     width: 100%;
 
+    &__potential {
+        font-family: $font-swis721;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0em;
+        text-align: center;
+        position: absolute;
+        text-transform: uppercase;
+        left: 26px;
+        top: 0;
+        bottom: 0;
+        transform: rotate(-90deg);
+    }
+
     &_date {
         display: flex;
         flex-direction: column;
-        padding: 25px;
+        padding: 30px;
         justify-content: center;
         align-items: center;
         white-space: nowrap;
@@ -190,7 +216,6 @@ export default class ScheduleMatchBox extends Vue {
             height: 100%;
             justify-content: center;
             align-items: center;
-            background-color: $open-red;
             
             font-family: $font-swis721;
             font-size: 30px;

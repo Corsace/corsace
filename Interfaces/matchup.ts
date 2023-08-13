@@ -8,5 +8,6 @@ export interface BaseMatchup {
 
 export interface MatchupList extends BaseMatchup {
     vod?:   string | null;
+    potential?: string;
     teams: TeamList[] | null;
 }

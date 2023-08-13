@@ -129,6 +129,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                 dbMatchup.previousMatchups = previousMatchups;
 
             if (matchup.potentials) {
+                dbMatchup.potentials = [];
                 const teams = previousMatchups?.map(m => {
                     if (m.winner)
                         return [m.winner];
@@ -144,10 +145,13 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                 if (teams.flat().length < 2)
                     for (let i = 0; i < 4; i++) {
                         const potential = new Matchup();
-                        potential.potential = true;
                         potential.date = dbMatchup.date;
+                        if (ctx.state.stage)
+                            potential.stage = ctx.state.stage;
+                        else
+                            potential.round = ctx.state.round;
                         await transactionManager.save(potential);
-                        createdMatchups.push(potential);
+                        dbMatchup.potentials.push(potential);
                     }
                 else
                     for (let i = 0; i < teams.length; i++) {
@@ -155,12 +159,16 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                             for (const team of teams[i]) {
                                 for (const team2 of teams[j]) {
                                     const potential = new Matchup();
-                                    potential.potential = true;
                                     potential.date = dbMatchup.date;
                                     potential.team1 = team;
                                     potential.team2 = team2;
+                                    potential.isLowerBracket = dbMatchup.isLowerBracket;
+                                    if (ctx.state.stage)
+                                        potential.stage = ctx.state.stage;
+                                    else
+                                        potential.round = ctx.state.round;
                                     await transactionManager.save(potential);
-                                    createdMatchups.push(potential);
+                                    dbMatchup.potentials.push(potential);
                                 }
                             }
                         }
