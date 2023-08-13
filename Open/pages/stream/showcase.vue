@@ -249,6 +249,12 @@ $x-axis-height: 25px;
         justify-content: center;
         gap: 35px;
 
+        &_title, &_artist {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: normal;
+        }
+
         &_title {
             font-size: 58px;
             text-shadow: 0 0 3px black;
