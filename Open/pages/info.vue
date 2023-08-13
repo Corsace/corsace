@@ -238,31 +238,48 @@
                     </div>
 
                     <h2>KNOCKOUT 1 (AUG 26 - 27)</h2>
-                    <ul class="info_desc__list">
-                        <li>
-                            Single-elimination bracket
-                            <ul class="info_desc__list">
-                                <li>Consists of Round of 16 and Quarterfinals <strong>only</strong></li>
-                            </ul>
-                        </li>
-                        <li>Matchups are determined using <strong>power seeding</strong> (#1 vs #16, #2 vs #15, etc.)</li>
-                        <li>Teams 9 - 12 are seeded using the same order of precedence used in RO</li>
-                        <li>Matches are <strong>Best of 3 Sets</strong></li>
-                        <li>Sets are <strong>Best of 7</strong> with <strong>1 protect </strong>and <strong>1 ban</strong></li>
-                        <li>
-                            Mappool size (31 maps):
-                            <ul class="info_desc__list">
-                                <li>
-                                    3 total mappools
-                                    <ul class="info_desc__list">
-                                        <li>Each mappool consists of 10 maps: <strong>4 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>2 DT</strong></li>
-                                    </ul>
-                                </li>
-                                <li>1 TB is used for the entire stage</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <h2>KNOCKOUT 2 (SEP 2 - 3)</h2>
+                    <div class="info_desc__list_wrapper">
+                        <ul class="info_desc__list">
+                            <li>
+                                Single-elimination bracket
+                                <ul class="info_desc__list">
+                                    <li>Consists of Round of 16 and Quarterfinals <strong>only</strong></li>
+                                </ul>
+                            </li>
+                            <li>Matchups are determined using <strong>power seeding</strong> (#1 vs #16, #2 vs #15, etc.)</li>
+                            <li>Teams 9 - 12 are seeded using the same order of precedence used in RO</li>
+                            <li>Matches are <strong>Best of 3 Sets</strong></li>
+                            <li>Sets are <strong>Best of 7</strong> with <strong>1 protect </strong>and <strong>1 ban</strong></li>
+                            <li>
+                                Mappool size (31 maps):
+                                <ul class="info_desc__list">
+                                    <li>
+                                        3 total mappools
+                                        <ul class="info_desc__list">
+                                            <li>Each mappool consists of 10 maps: <strong>4 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>2 DT</strong></li>
+                                        </ul>
+                                    </li>
+                                    <li>1 TB is used for the entire stage</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="info_desc__list_wrapper info_desc__list_wrapper--center">
+                            <img 
+                                class="info_desc__list_wrapper__image"
+                                src="../../Assets/img/site/open/info/ko1.png"
+                            >
+                            <img 
+                                class="info_desc__list_wrapper__image"
+                                src="../../Assets/img/site/open/info/ko1-2.png"
+                            >
+                            <img 
+                                class="info_desc__list_wrapper__image"
+                                src="../../Assets/img/site/open/info/ko1-3.png"
+                            >
+                        </div>
+                    </div>
+
+                    <h2>KNOCKOUT 2 (SEP 2 - 3)</h2>        
                     <ul class="info_desc__list">
                         <li>
                             Single-elimination bracket (cont.)
@@ -906,6 +923,7 @@ export default class Info extends Vue {
                 flex-direction: row;
                 width: 100%;
                 justify-content: space-between;
+                overflow: hidden;
                 // align-items: center;
 
                 &__image {
@@ -914,6 +932,11 @@ export default class Info extends Vue {
                     max-height: 300px;
                     object-fit: contain;
                     overflow: hidden;
+                }
+
+                &--center {
+                    align-items: center;
+                    justify-content: flex-end;
                 }
             }
         }
