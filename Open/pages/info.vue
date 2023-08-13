@@ -177,7 +177,7 @@
                             </li>
                             <img
                                 class="info_desc__list_wrapper__image"
-                                src="../../Assets/img/site/open/info/Group_368.png"
+                                src="../../Assets/img/site/open/info/rrgroup.png"
                             >
                         </div>
                         <div class="info_desc__list_wrapper">
@@ -205,31 +205,38 @@
                             </div>
                             <img
                                 class="info_desc__list_wrapper__image"
-                                src="../../Assets/img/site/open/info/Group_384.png"
+                                src="../../Assets/img/site/open/info/rrplacement.png"
                             >
                         </div>
                     </ul>
                     <h2> RUNOFF (AUG 19 - 20)</h2>
-                    <ul class="info_desc__list">
-                        <li>Consists of 2 rounds running similar to a traditional bracket</li>
-                        <li>Used to determine Teams 13 - 16 in Knockout 1</li>
-                        <li>
-                            <strong>Round 1 </strong>(8 teams, 4 matches)
-                            <ul class="info_desc__list">
-                                <li>Winners move on to Round 2</li>
-                                <li>Losers are <red>ELIMINATED</red></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>Round 2 </strong>(4 teams, 2 matches)
-                            <ul class="info_desc__list">
-                                <li>Winners become Teams 13/14 in Knockout 1</li>
-                                <li>Losers become Teams 15/16 in Knockout 1</li>
-                            </ul>
-                        </li>
-                        <li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong></li>
-                        <li>Mappool size (15 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
-                    </ul>
+                    <div class="info_desc__list_wrapper">
+                        <ul class="info_desc__list">
+                            <li>Consists of 2 rounds running similar to a traditional bracket</li>
+                            <li>Used to determine Teams 13 - 16 in Knockout 1</li>
+                            <li>
+                                <strong>Round 1 </strong>(8 teams, 4 matches)
+                                <ul class="info_desc__list">
+                                    <li>Winners move on to Round 2</li>
+                                    <li>Losers are <red>ELIMINATED</red></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Round 2 </strong>(4 teams, 2 matches)
+                                <ul class="info_desc__list">
+                                    <li>Winners become Teams 13/14 in Knockout 1</li>
+                                    <li>Losers become Teams 15/16 in Knockout 1</li>
+                                </ul>
+                            </li>
+                            <li>Matches are <strong>Best of 11</strong> with <strong>2 bans</strong></li>
+                            <li>Mappool size (15 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
+                        </ul>
+                        <img 
+                            class="info_desc__list_wrapper__image"
+                            src="../../Assets/img/site/open/info/rodesc.png"
+                        >
+                    </div>
+
                     <h2>KNOCKOUT 1 (AUG 26 - 27)</h2>
                     <ul class="info_desc__list">
                         <li>
