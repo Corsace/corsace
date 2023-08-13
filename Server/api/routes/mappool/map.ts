@@ -64,6 +64,8 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
         .leftJoinAndSelect("beatmap.beatmapset", "beatmapset")
         .leftJoinAndSelect("beatmapset.creator", "creator")
         .leftJoinAndSelect("mappoolMap.customBeatmap", "customBeatmap")
+        .leftJoinAndSelect("mappoolMap.replay", "replay")
+        .leftJoinAndSelect("replay.createdBy", "replayUser")
         .leftJoinAndSelect("mappoolMap.customMappers", "customMappers")
         .innerJoinAndSelect("mappoolMap.slot", "slot")
         .innerJoinAndSelect("slot.mappool", "mappool")

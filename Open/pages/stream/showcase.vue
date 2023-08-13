@@ -57,6 +57,27 @@
                 class="scores__stats"
                 :mappool-map="mappoolMap"
             />
+            <div
+                v-if="mappoolMap?.replay" 
+                class="scores__replay"
+            >
+                <div class="scores__replay_stat">
+                    <div class="scores__replay_stat--title">
+                        REPLAYER
+                    </div>
+                    <div class="scores__replay_stat--value">
+                        {{ mappoolMap.replay.createdBy.osu.username }}
+                    </div>
+                </div>
+                <div class="scores__replay_stat">
+                    <div class="scores__replay_stat--title">
+                        SCORE
+                    </div>
+                    <div class="scores__replay_stat--value">
+                        {{ mappoolMap.replay.score }}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div v-else>
@@ -122,6 +143,22 @@ $bottom-height: 1080px - $top-margin - $top-height;
 $histogram-padding: 25px;
 $axis-padding: 5px;
 $x-axis-height: 25px;
+
+@keyframes fade1 {
+    0%      {opacity: 1}
+    25%     {opacity: 1}
+    50%     {opacity: 0}
+    75%     {opacity: 0}
+    100%    {opacity: 1}
+}
+
+@keyframes fade2 {
+    0%      {opacity: 0}
+    25%     {opacity: 0}
+    50%     {opacity: 1}
+    75%     {opacity: 1}
+    100%    {opacity: 0}
+}
 
 .scores {
     flex-direction: column;
@@ -279,6 +316,12 @@ $x-axis-height: 25px;
         }
     }
 
+    &__stats, &__replay {
+        animation-duration: 16s;
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+    }
+
     &__stats {
         width: 50%;
         background-image: none;
@@ -286,6 +329,44 @@ $x-axis-height: 25px;
 
         font-family: $font-ggsans;
         font-size: $font-xxxl;
+        animation-name: fade1;
+    }
+
+    &__replay {
+        position: absolute;
+        right: 0;
+        width: 50%;
+        padding: 47px;
+
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+
+        animation-name: fade2;
+
+        &_stat {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            &--title {
+                font-family: $font-swis721;
+                font-size: 21px;
+                font-weight: bold;
+                color: #131313;
+                background-color: $open-red;
+                padding: 6px;
+                line-height: normal;
+            }
+
+            &--value {
+                font-family: $font-ggsans;
+                font-size: 31px;
+                font-weight: bold;
+                color: $white;
+                line-height: normal;
+            }
+        }
     }
 }
 

@@ -37,6 +37,7 @@ export interface MappoolMap {
     customMessageID: string | null;
     customMappers?:   User[];
     customBeatmap?:   CustomBeatmap | null;
+    replay?:          MappoolReplay | null;
     beatmap:         Beatmap | null;
 }
 
@@ -61,4 +62,12 @@ export interface CustomBeatmap {
     aimSR:             number;
     speedSR:           number;
     totalSR:           number;
+}
+
+export interface MappoolReplay {
+    ID: number;
+    createdAt: Date;
+    createdBy: User;
+    link: string;
+    score: number;
 }
