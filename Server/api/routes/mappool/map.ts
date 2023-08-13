@@ -1,7 +1,10 @@
 import Router from "@koa/router";
 import { createHash } from "crypto";
+import { Beatmap, Mode } from "nodesu";
+import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { Tournament } from "../../../../Models/tournaments/tournament";
+import { osuClient } from "../../../osu";
 
 const mappoolMapRouter = new Router();
 
@@ -94,6 +97,21 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
             error: "This mappool is private",
         };
         return;
+    }
+
+    if (mappoolMap.slot.allowedMods && mappoolMap.beatmap) {
+        const set = await osuClient.beatmaps.getByBeatmapId(mappoolMap.beatmap.ID, Mode.all, undefined, undefined, mappoolMap.slot.allowedMods) as Beatmap[];
+        if (set.length === 0)
+            return;
+
+        const beatmap = applyMods(set[0], modsToAcronym(mappoolMap.slot.allowedMods));
+        mappoolMap.beatmap.totalLength = beatmap.totalLength;
+        mappoolMap.beatmap.totalSR = beatmap.difficultyRating;
+        mappoolMap.beatmap.circleSize = beatmap.circleSize;
+        mappoolMap.beatmap.overallDifficulty = beatmap.overallDifficulty;
+        mappoolMap.beatmap.approachRate = beatmap.approachRate;
+        mappoolMap.beatmap.hpDrain = beatmap.hpDrain;
+        mappoolMap.beatmap.beatmapset.BPM = beatmap.bpm;
     }
 
     ctx.body = {
