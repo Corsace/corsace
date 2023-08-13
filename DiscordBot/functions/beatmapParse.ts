@@ -34,10 +34,11 @@ export async function ojsamaParse (m: Message | ChatInputCommandInteraction, dif
     }
     const zip = axiosData.pipe(Parse({ forceStream: true }));
     const osuParser = new osu.parser();
+    let foundBeatmap = false;
     for await (const _entry of zip) {
         const entry = _entry as Entry;
 
-        if (entry.type === "File" && entry.props.path.endsWith(".osu")) {
+        if (entry.type === "File" && entry.props.path.endsWith(".osu") && !foundBeatmap) {
             const writableBeatmapParser = new BeatmapParser(osuParser);
             entry.pipe(writableBeatmapParser);
             await once(writableBeatmapParser, "finish");
@@ -46,6 +47,7 @@ export async function ojsamaParse (m: Message | ChatInputCommandInteraction, dif
                 continue;
 
             beatmap = osuParser.map;
+            foundBeatmap = true;
             if (background)
                 break;
         } else if (entry.type === "File" && (
