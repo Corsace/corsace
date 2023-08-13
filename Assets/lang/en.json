@@ -669,7 +669,9 @@
             "notLoggedIn": "NOT LOGGED IN"
         },
         "referee": {
-            "title": "REFEREE"
+            "title": "REFEREE",
+            "back": "BACK",
+            "createLobby": "CREATE LOBBY"
         },
         "status": {
             "loading": "LOADING"

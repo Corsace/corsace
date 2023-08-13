@@ -7,10 +7,7 @@
             ROUND ROBIN
         </div>
         <div class="matchup__mapName">
-            <div 
-                class="matchup__diamond matchup__mapName__diamond"
-                :style="{backgroundColor: 'white'}"
-            />
+            <div class="matchup__diamond matchup__mapName__diamond" />
             MATCHUP
         </div>
         <div
@@ -265,6 +262,7 @@ export default class Matchup extends Vue {
         &__diamond {
             width: 10px;
             height: 10px;
+            background-color: white;
         }
     }
 

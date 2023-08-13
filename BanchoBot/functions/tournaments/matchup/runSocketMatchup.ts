@@ -37,6 +37,7 @@ export default async function runSocketMatchup (matchup: Matchup, mpLobby: Banch
     await matchup.save();
     log(matchup, `Saved matchup lobby to DB with ID ${mpLobby.id}`);
 
+    let matchStart: Date | undefined = undefined;
     const aborts = new Map<number, number>();
     const pools = matchup.round?.mappool || matchup.stage!.mappool!;
     const users = await allAllowedUsersForMatchup(matchup);
@@ -57,6 +58,39 @@ export default async function runSocketMatchup (matchup: Matchup, mpLobby: Banch
         }
     }, 15 * 1000);
 
+    // Functionality to abort the map
+    const abortMap = async (player: BanchoLobbyPlayer | BanchoUser) => {
+        const id = player instanceof BanchoLobbyPlayer ? player.user.id.toString() : player.id.toString();
+        const username = player instanceof BanchoLobbyPlayer ? player.user.username : player.username;
+        const team = matchup.teams!.find(team => team.members.some(m => m.osu.userID === id));
+        if (
+            (team &&
+                (
+                    aborts.get(team.ID) === undefined ||
+                    typeof matchup.stage!.tournament.teamAbortLimit !== "number" ||
+                    aborts.get(team.ID)! < matchup.stage!.tournament.teamAbortLimit
+                )
+            ) && (
+                matchStart &&
+                Date.now() - matchStart.getTime() < (matchup.stage!.tournament.abortThreshold ?? 30) * 1000
+            )
+        ) {
+            const abortCount = (aborts.get(team.ID) || 0) + 1;
+            await mpLobby.abortMatch();
+            await mpChannel.sendMessage(`${username} has triggered an abort${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? `, they now have ${matchup.stage!.tournament.teamAbortLimit - abortCount} aborts left` : ""}`);
+            await mpChannel.sendMessage(`As a reminder, !panic exists if something is going/has gone absurdly wrong`);
+            aborts.set(team.ID, abortCount);
+        } else if (
+            team && 
+            typeof matchup.stage!.tournament.teamAbortLimit === "number" && 
+            aborts.get(team.ID) && 
+            aborts.get(team.ID)! >= matchup.stage!.tournament.teamAbortLimit
+        ) {
+            await mpChannel.sendMessage(`${username} has triggered an abort but the team has reached their abort limit`);
+            await mpChannel.sendMessage(`As a reminder, !panic exists if something is going/has gone absurdly wrong`);
+        }
+    };
+
     mpChannel.on("message", async (message) => {
         if (!state.matchups[matchup.ID])
             return;
@@ -72,17 +106,20 @@ export default async function runSocketMatchup (matchup: Matchup, mpLobby: Banch
         if (message.self)
             return;
 
-        // if (
-        //     (
-        //         message.message === "!abort" || 
-        //         message.message === "!stop" ||
-        //         message.message === "!mp abort" || 
-        //         message.message === "!mp stop"
-        //     ) && 
-        //     mpLobby.playing &&
-        //     playersInLobby.some(p => p.user.id === message.user.id)
-        // )
-        //     await abortMap(message.user);
+        if (
+            (
+                message.message === "!abort" || 
+                message.message === "!stop" ||
+                message.message === "!mp abort" || 
+                message.message === "!mp stop"
+            ) && 
+            mpLobby.playing
+        ) {
+            if (mpLobby.slots.some(p => p?.user.id === message.user.id))
+                await abortMap(message.user);
+            else
+                await mpLobby.abortMatch();
+        }
     });
 
 

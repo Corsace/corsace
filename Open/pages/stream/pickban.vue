@@ -7,14 +7,12 @@
             ROUND ROBIN
         </div>
         <div class="pickban__mapName">
-            <div 
-                class="pickban__diamond pickban__mapName__diamond"
-                :style="{backgroundColor: 'white'}"
-            />
+            <div class="pickban__diamond pickban__mapName__diamond" />
             PICKBAN
         </div>
         <div class="pickban__header">
-            <div 
+            <div
+                v-if="picking" 
                 class="pickban__header__picking"
                 :style="{ color: nextTeamToPick?.abbreviation === matchup?.team1?.abbreviation ? '#5BBCFA' : '#F24141' }"
             >
@@ -226,6 +224,7 @@ export default class Pickban extends Vue {
 
     matchup: MatchupInterface | null = null;
     loading = false;
+    picking = false;
 
     get pickedMaps () {
         if (!this.matchup?.maps)
@@ -339,6 +338,7 @@ export default class Pickban extends Vue {
         &__diamond {
             width: 10px;
             height: 10px;
+            background-color: white;
         }
     }
 
