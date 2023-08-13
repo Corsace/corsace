@@ -204,7 +204,7 @@ export default class ScoresView extends Vue {
     }
     
     loading = true;
-    teamSearchID = 0;
+    teamSearchID: number | undefined = 0;
     mapSearchID = "";
     
     get filteredTeam () {

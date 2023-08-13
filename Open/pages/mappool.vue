@@ -71,6 +71,23 @@
                         v-if="page === 'scores'"
                         class="qualifiers__button_group"
                     >
+                        <StageSelector
+                            :not-beginning="selectedMappool?.ID !== mappoolList[0]?.ID"
+                            :not-end="selectedMappool?.ID !== mappoolList[mappoolList.length - 1]?.ID"
+                            @prev="index--"
+                            @next="index++"
+                        >
+                            <template #top_text>
+                                {{ $t("open.components.stageSelector.stage") }}
+                            </template>
+                            <template #bottom_text>
+                                {{ $t("open.components.stageSelector.select") }}
+                            </template>
+
+                            <template #stage>
+                                {{ selectedMappool?.abbreviation.toUpperCase() || '' }}
+                            </template>
+                        </StageSelector>
                         <div class="qualifiers__header_subtext">
                             <span>{{ $t('open.qualifiers.scores.category') }}</span>
                             <span>{{ $t('open.qualifiers.scores.select') }}</span>
@@ -127,11 +144,9 @@ import StageSelector from "../../Assets/components/open/StageSelector.vue";
 import { Tournament } from "../../Interfaces/tournament";
 import { Mappool as MappoolInterface } from "../../Interfaces/mappool";
 
-import Clock from "../../Assets/components/open/Clock.vue";
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
-
 
 const openModule = namespace("open");
 
@@ -140,7 +155,6 @@ const openModule = namespace("open");
         StageSelector,
         MappoolView,
         OpenTitle,
-        Clock,
         OpenButton,
         ContentButton,
         ScoresView,
