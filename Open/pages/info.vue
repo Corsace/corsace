@@ -256,15 +256,6 @@
                 <OpenTitle
                     class="info_section_header"
                 >
-                    {{ $t('open.info.infoGraphic') }}
-                </OpenTitle>
-                <div class="info_desc__images">
-                    <img src="../../Assets/img/site/open/info/image1.png">
-                    <img src="../../Assets/img/site/open/info/image2.png">
-                </div>
-                <OpenTitle
-                    class="info_section_header"
-                >
                     {{ $t('open.info.matchProcedures') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
