@@ -120,6 +120,12 @@ declare module "node-config-ts" {
             username: string;
             password: string;
         };
+
+        centrifugo: {
+            apiUrl: string;
+            apiKey: string;
+            ipWhitelist: string[];
+        };
     }
 
     export const config: Config;

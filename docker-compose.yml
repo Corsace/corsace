@@ -30,6 +30,16 @@ services:
       - PMA_HOST=database
       - PMA_USER=corsace
       - PMA_PASSWORD=corsace
+  centrifugo:
+    image: centrifugo/centrifugo:v5.0.2
+    network_mode: host
+    volumes:
+      - ./centrifugo-config.json:/centrifugo/config.json
+    command: centrifugo -c config.json -p 8001
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
   corsace:
     <<: *x-node
     ports:
