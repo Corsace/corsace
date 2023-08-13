@@ -165,8 +165,8 @@
                     </ul>
                     <h2>ROUND ROBIN (AUG 12 - 13)</h2>
                     <ul class="info_desc__list">
-                        <div class="_info_desc_wrapper">
-                        <li>
+                        <div class="info_desc__list_wrapper">
+                            <li>
                                 <strong>Groups </strong>(16 teams, 24 matches)
                                 <ul class="info_desc__list">
                                     <li>Group A (Seeds 9, 16, 17, 24)</li>
@@ -175,28 +175,39 @@
                                     <li>Group D (Seeds 12, 13, 20, 21)</li>
                                 </ul>
                             </li>
-                            <img src="../../Assets/img/site/open/info/Group_368.png">
+                            <img
+                                class="info_desc__list_wrapper__image"
+                                src="../../Assets/img/site/open/info/Group_368.png"
+                            >
                         </div>
-                        <li>
-                            <strong>Placements:</strong>
-                            <ul class="info_desc__list">
+                        <div class="info_desc__list_wrapper">
+                            <div>
                                 <li>
-                                    Seeding is in the following precedence:
+                                    <strong>Placements:</strong>
                                     <ul class="info_desc__list">
-                                        <li>Match W/L Ratio</li>
-                                        <li>Difference in Points (Points Won - Points Lost)</li>
-                                        <li>Points Won</li>
-                                        <li>Points Lost</li>
-                                        <li>Average normalized score difference per map</li>
+                                        <li>
+                                            Seeding is in the following precedence:
+                                            <ul class="info_desc__list">
+                                                <li>Match W/L Ratio</li>
+                                                <li>Difference in Points (Points Won - Points Lost)</li>
+                                                <li>Points Won</li>
+                                                <li>Points Lost</li>
+                                                <li>Average normalized score difference per map</li>
+                                            </ul>
+                                        </li>
+                                        <li><strong>1st:</strong> Moves on to <strong>Knockout 1</strong> (becomes Teams 9 - 12 in KO1)</li>
+                                        <li><strong>2nd</strong> and <strong>3rd:</strong> Moves on to <strong>Runoff</strong></li>
+                                        <li><strong>4th:</strong> <red>ELIMINATED</red></li>
                                     </ul>
                                 </li>
-                                <li><strong>1st:</strong> Moves on to <strong>Knockout 1</strong> (becomes Teams 9 - 12 in KO1)</li>
-                                <li><strong>2nd</strong> and <strong>3rd:</strong> Moves on to <strong>Runoff</strong></li>
-                                <li><strong>4th:</strong> <red>ELIMINATED</red></li>
-                            </ul>
-                        </li>
-                        <li>Matches are <strong>Best of 9</strong> with <strong>1 ban</strong></li>
-                        <li>Mappool size (15 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
+                                <li>Matches are <strong>Best of 9</strong> with <strong>1 ban</strong></li>
+                                <li>Mappool size (15 maps): <strong>5 NM</strong><strong> / </strong><strong>2 HD</strong><strong> / </strong><strong>2 HR</strong><strong> / </strong><strong>3 DT</strong><strong> / </strong><strong>2 FM</strong><strong> / 1 TB</strong></li>
+                            </div>
+                            <img
+                                class="info_desc__list_wrapper__image"
+                                src="../../Assets/img/site/open/info/Group_384.png"
+                            >
+                        </div>
                     </ul>
                     <h2> RUNOFF (AUG 19 - 20)</h2>
                     <ul class="info_desc__list">
@@ -827,80 +838,78 @@ export default class Info extends Vue {
 
     /* left panel */
     &_desc {
+        display: flex;
+        flex-direction: column;
+        width: 30%;
+        background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
+        margin: 15px 20px 0 0;
+        padding: 40px 35px;
+
+        & img {
+            width: 100%;
+            object-fit: cover;
+            overflow: hidden;
+        }
+
+        &_button {
+            flex: 1;
+        }
+
+        &__images {
+            display: flex;
+            justify-content: space-between;
+
+            & img {
+                height: 500px;
+            }
+        }
+
+        &__text {
+            text-align: center;
+
+            &--noAlign {
+                text-align: left;
+            }
+        }
+
+        &__buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        &__list {
             display: flex;
             flex-direction: column;
-            width: 30%;
-            background: linear-gradient(180deg, #1B1B1B 0%, #333333 261.55%);
-            margin: 15px 20px 0 0;
-            padding: 40px 35px;
+
+            & li strong {
+                color: $open-red;
+                font-weight: 600;
+            }
+
+            & li red {
+                color: $open-red;
+                font-weight: 800;
+                font-style: italic;
+            }
 
             &_wrapper {
                 display: flex;
-                flex-direction: row;    
-
-                &__images {
-                display: flex;
-                justify-content: space-between;
-
-                & img {
-                    height: 500px;
-                }
-            }
-            }
-
-            & img {
+                flex-direction: row;
                 width: 100%;
-                object-fit: cover;
-                overflow: hidden;
-            }
-
-            &_button {
-                flex: 1;
-            }
-
-            &__images {
-                display: flex;
                 justify-content: space-between;
+                // align-items: center;
 
-                & img {
-                    height: 500px;
+                &__image {
+                    height: auto;
+                    width: auto;
+                    max-height: 300px;
+                    object-fit: contain;
+                    overflow: hidden;
                 }
             }
-
-            &__text {
-                text-align: center;
-
-                &--noAlign {
-                    text-align: left;
-                }
-            }
-
-            &__buttons {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 20px;
-            }
-
-            &__list {
-                display: flex;
-                flex-direction: column;
-
-                & li {
-                    width: 200px;
-                }
-
-                & li strong {
-                    color: $open-red;
-                    font-weight: 600;
-                }
-
-                & li red {
-                    color: $open-red;
-                    font-weight: 800;
-                    font-style: italic;
-                }
-            }
+        }
     }
 
     &_match {
