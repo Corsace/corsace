@@ -1,6 +1,7 @@
 import Router from "@koa/router";
 import koaBasicAuth from "koa-basic-auth";
 import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
+import runAutoMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runAutoMatchup";
 import { ParameterizedContext, Next } from "koa";
 import { config } from "node-config-ts";
 import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
@@ -68,7 +69,7 @@ banchoRouter.post("/runMatchups", validateData, async (ctx) => {
         .getMany();
 
     for (const matchup of matchups) {
-        await runMatchup(matchup).catch(err => {
+        await runMatchup(matchup, false, runAutoMatchup).catch(err => {
             console.error(err);
             const channel = discordClient.channels.cache.get(config.discord.coreChannel);
             if (channel instanceof TextChannel)
