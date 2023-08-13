@@ -265,15 +265,15 @@
                         </ul>
                         <div class="info_desc__list_wrapper info_desc__list_wrapper--center">
                             <img 
-                                class="info_desc__list_wrapper__image"
+                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
                                 src="../../Assets/img/site/open/info/ko1.png"
                             >
                             <img 
-                                class="info_desc__list_wrapper__image"
+                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
                                 src="../../Assets/img/site/open/info/ko1-2.png"
                             >
                             <img 
-                                class="info_desc__list_wrapper__image"
+                                class="info_desc__list_wrapper__image info_desc__list_wrapper__image--large"
                                 src="../../Assets/img/site/open/info/ko1-3.png"
                             >
                         </div>
@@ -927,11 +927,17 @@ export default class Info extends Vue {
                 // align-items: center;
 
                 &__image {
-                    height: auto;
-                    width: auto;
                     max-height: 300px;
                     object-fit: contain;
                     overflow: hidden;
+
+                    &--small {
+                        max-height: 200px;
+                    }
+
+                    &--large {
+                        max-height: 400px;
+                    }
                 }
 
                 &--center {
