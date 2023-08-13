@@ -283,7 +283,7 @@ $x-axis-height: 25px;
                 align-items: center;
                 gap: 10px;
                 font-weight: 500;
-                width: 100%;
+                width: 441px;
 
                 &--mapper, &--difficulty {
                     font-family: $font-swis721;
