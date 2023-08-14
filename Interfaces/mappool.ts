@@ -23,6 +23,7 @@ export interface MappoolSlot {
     allowedMods:    number | null;
     userModCount:   number | null;
     uniqueModCount: number | null;
+    mappool?:       Mappool | null;
     maps:           MappoolMap[];
 }
 
@@ -39,6 +40,7 @@ export interface MappoolMap {
     customBeatmap?:   CustomBeatmap | null;
     replay?:          MappoolReplay | null;
     beatmap:         Beatmap | null;
+    slot?:           MappoolSlot | null;
 }
 
 export interface CustomBeatmap {

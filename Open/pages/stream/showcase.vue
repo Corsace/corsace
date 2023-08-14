@@ -4,7 +4,7 @@
         class="scores"
     >
         <div class="scores__streamTitle">
-            MAPPOOL SHOWCASE - ROUND ROBIN
+            MAPPOOL SHOWCASE - {{ mappoolMap?.slot?.mappool?.name.toUpperCase() || '' }}
         </div>
         <div class="scores__mapName">
             {{ mapName }}
