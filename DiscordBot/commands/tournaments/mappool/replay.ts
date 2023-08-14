@@ -43,7 +43,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         { name: "pool" , paramType: "string" },
         { name: "slot", paramType: "string", postProcess: postProcessSlotOrder },
         { name: "score", paramType: "integer" },
-        { name: "target", paramType: "string", customHandler: extractTargetText },
+        { name: "target", paramType: "string", customHandler: extractTargetText, optional: true },
     ]);
     if (!params)
         return;
@@ -59,7 +59,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { tournament, mappool, mappoolMap, mappoolSlot } = components;
 
-    if (target) {
+    if (target && commandUser(m).id !== target) {
         if (!await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers]))
             return;
 
