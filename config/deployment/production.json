@@ -121,5 +121,8 @@
     "interOpAuth": {
         "username": "interop",
         "password": "@@INTEROP_PASSWORD"
+    },
+    "centrifugo": {
+        "ipWhitelist": ["10.*.*.*"]
     }
 }

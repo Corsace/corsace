@@ -11,6 +11,8 @@ import { setupPassport } from "./passportFunctions";
 
 import osuURIRouter from "./api/routes/osuuri";
 
+import centrifugoRouter from "./api/routes/centrifugo";
+
 import logoutRouter from "./api/routes/login/logout";
 import discordRouter from "./api/routes/login/discord";
 import osuRouter from "./api/routes/login/osu";
@@ -95,6 +97,9 @@ koa.use(Mount("/public", serve(path.join(__dirname, "../public"))));
 
 // General
 koa.use(Mount("/api/osuuri", osuURIRouter.routes()));
+
+/// Centrifugo
+koa.use(Mount("/api/centrifugo", centrifugoRouter.routes()));
 
 /// Login
 koa.use(Mount("/api/login/discord", discordRouter.routes()));

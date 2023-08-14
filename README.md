@@ -75,8 +75,6 @@ Make sure to update `config.database` to reflect your choice of database name an
 
 Create and seed the whole Corsace database using: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
 
-### Discord
-
 ### Object Storage/S3
 
 We use S3-compatible object storage for storing and serving mappacks, configured in `config.s3`.
@@ -100,6 +98,8 @@ Create the `mappacks` and `team-avatars` buckets and enable their R2.dev subdoma
 Create the `mappacks-temp` bucket and add an object lifecycle rule to delete objects after 7 days (leave prefix empty).
 
 Set hostname to `<cloudflare account id>.r2.cloudflarestorage.com`, and obtain S3 credentials from https://dash.cloudflare.com/?to=/:account/r2/api-tokens. **Make sure you give the token `Edit` permissions instead of the default `Read` permissions.**
+
+### Discord
 
 #### Setup
 
@@ -162,6 +162,19 @@ Head to the Bot section of the bot and copy your bot token.
 Paste it into `config.discord.token`
 
 Ensure you enable the `Server Members` and `Message Content` intents under the **Privileged Gateway Intents** subsection before usage, the bot will not start otherwise, and you will be provided a `[DISALLOWED INTENTS]` error.
+
+### Centrifugo
+
+We use Centrifugo for real-time notifications. You can find the documentation [here](https://centrifugal.dev/docs/).
+
+#### Setup
+
+On Unix:
+Run `npm run centrifugo` to start the centrifugo server. It will be available at `http://localhost:8001` by default, unless you change the port in the config files.
+
+On WSL/Windows OR if the above doesn't work:
+Install the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and add it to the root folder of this project.
+Afterwards, run `./centrifugo --config=centrifugo-config.json -p=8001` to start the centrifugo server. If you want to change the port, change the `-p` flag, and your config file's api URL.
 
 ## Development
 

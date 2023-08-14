@@ -1,0 +1,20 @@
+{
+    "token_hmac_secret_key": "corsace",
+    "api_key": "corsace",
+    "admin_password": "corsace",
+    "admin_secret": "secret",
+    "admin": true,
+    "allowed_origins": ["http://localhost:7000"],
+    "proxy_http_headers": [
+        "Origin",
+        "User-Agent",
+        "Cookie",
+        "Authorization",
+        "X-Request-Id"
+    ],
+    "proxy_connect_endpoint": "http://127.0.0.1:8080/api/centrifugo/connect",
+    "proxy_connect_timeout": "5s",
+    "proxy_subscribe_endpoint": "http://127.0.0.1:8080/api/centrifugo/subscribe",
+    "proxy_subscribe_timeout": "5s",
+    "proxy_subscribe": true
+}
