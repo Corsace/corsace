@@ -86,6 +86,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .leftJoinAndSelect("matchup.commentators", "commentators")
+            .leftJoinAndSelect("matchup.nextMatchups", "nextMatchups")
+            .leftJoinAndSelect("nextMatchups.potentials", "nextMatchupsPotentials", "nextMatchupsPotentials.invalid = 0")
             .where("matchup.ID = :matchupID", { matchupID })
             .andWhere("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
             .getOne();
@@ -128,6 +130,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .leftJoinAndSelect("matchup.commentators", "commentators")
+            .leftJoinAndSelect("matchup.nextMatchups", "nextMatchups")
+            .leftJoinAndSelect("nextMatchups.potentials", "nextMatchupsPotentials", "nextMatchupsPotentials.invalid = 0")
             .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
             .andWhere("matchup.date > :date", { date: new Date().toISOString() })
             .andWhere("manager1.discordUserid = :userID OR manager2.discordUserid = :userID", { userID: commandUser(m).id })
@@ -151,6 +155,23 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
 
         matchup = matchups.find((matchup) => matchup.ID === matchupListResult.ID)!;
+    }
+
+    if (matchup.nextMatchups && matchup.nextMatchups.length > 0) {
+        const nextMatchupBeforeDate = matchup.nextMatchups.find((nextMatchup) => date.getTime() > (nextMatchup.date.getTime() - 3600000));
+        if (nextMatchupBeforeDate) {
+            await respond(m, `U cant reschedule a matchup to a time that is AFTER 1 hour before a matchup that is dependant on this one, see matchup ID ${nextMatchupBeforeDate.ID}`);
+            return;
+        }
+
+        const potentials = matchup.nextMatchups
+            .filter((nextMatchup) => nextMatchup.potentials && nextMatchup.potentials.filter(potential => !potential.invalid).length > 0)
+            .flatMap((nextMatchup) => nextMatchup.potentials!.filter(potential => !potential.invalid));
+        const potentialsBeforeDate = potentials.find((potential) => date.getTime() > (potential.date.getTime() - 3600000));
+        if (potentialsBeforeDate) {
+            await respond(m, `U cant reschedule a matchup to a time that is AFTER 1 hour before a matchup that is dependant on this one, see POTENTIAL matchup ID ${potentialsBeforeDate.ID}`);
+            return;
+        }
     }
 
     // If the matchup is within 24 hours of the stage starting, dont allow it to be rescheduled
