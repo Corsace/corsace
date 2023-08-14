@@ -129,7 +129,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .leftJoinAndSelect("matchup.commentators", "commentators")
             .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
-            .andWhere("matchup.date > :date", { date: new Date() })
+            .andWhere("matchup.date > :date", { date: new Date().toISOString() })
             .andWhere("manager1.discordUserid = :userID OR manager2.discordUserid = :userID", { userID: commandUser(m).id })
             .getMany();
 
