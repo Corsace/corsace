@@ -13,6 +13,14 @@ import respond from "../../../../DiscordBot/functions/respond";
 
 export async function createPack (m: Message | ChatInputCommandInteraction, bucket: "mappacks" | "mappacksTemp", mappool: Mappool, packName: string, video = false): Promise<string | undefined> {
     const mappoolMaps = mappool.slots.flatMap(s => s.maps);
+    if (bucket === "mappacks" && mappoolMaps.some(m => !m.beatmap)) {
+        const slots = mappool.slots.filter(s => s.maps.some(m => !m.beatmap));
+        const maps = slots
+            .flatMap(s => s.maps.filter(m => !m.beatmap))
+            .map(map => `${slots.find(slot => slot.maps.some(m => m.ID === map.ID))!.acronym.toUpperCase()}${map.order}`);
+        await respond(m, `**${mappool.name}** doesnt have all finished beatmaps yet, which are ${maps.join(", ")}, remember to run !pfinish or /mappool_finish for them`);
+        return;
+    }
     const filteredMaps = mappoolMaps.filter(m => (m.customBeatmap && m.customBeatmap.link) || m.beatmap);
     if (filteredMaps.length === 0) {
         await respond(m, `**${mappool.name}** doesn't have any downloadable beatmaps`);
