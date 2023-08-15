@@ -26,6 +26,10 @@ interface SubscribeRequest {
     b64data?: string;
 }
 
+function getChannel (channelType: string, channelID: number) {
+    console.log(channelType, channelID);
+}           
+
 centrifugoRouter.post("/connect", async (ctx) => {
     if (ctx.state?.user?.ID) {
         ctx.body = {
@@ -47,9 +51,24 @@ centrifugoRouter.post("/connect", async (ctx) => {
 
 centrifugoRouter.post("/subscribe", async (ctx) => {
     const body = ctx.request.body as SubscribeRequest;
-    const user = body.user ? await User.findOne({ where: { ID: Number(body.user) } }) : null;
+    const channelName = body.channel;
+    if (!channelName.includes("-") || channelName.split("-").length !== 2 || isNaN(parseInt(channelName.split("-")[1]))) {
+        ctx.body = {
+            error: {
+                code: 102,
+                message: "unknown channel",
+            },
+        };
+        return;
+    }
+    const channelType = channelName.split("-")[0];
+    const channelID = parseInt(channelName.split("-")[1]);
 
     const authorized = true; // TODO: implement subscription auth logic
+
+    const channel = getChannel(channelType, channelID);
+
+    const user = body.user ? await User.findOne({ where: { ID: Number(body.user) } }) : null;
 
     if (authorized) {
         ctx.body = {

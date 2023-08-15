@@ -1,5 +1,5 @@
 import { BanchoLobby } from "bancho.js";
-import { Server } from "socket.io";
+import { Centrifuge }  from "centrifuge";
 import { Matchup } from "../Models/tournaments/matchup";
 
 interface MatchupList {
@@ -14,7 +14,7 @@ const state = {
     shuttingDown: false,
     httpServerShutDown: false,
     runningMatchups: 0,
-    socket: null as Server | null,
+    centrifuge: null as Centrifuge | null,
     matchups: {} as MatchupList,
 };
 

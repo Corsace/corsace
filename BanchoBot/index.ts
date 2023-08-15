@@ -14,6 +14,8 @@ import ormConfig from "../ormconfig";
 import messageHandler from "./handlers/messageHandler";
 import state from "./state";
 import { discordClient } from "../Server/discord";
+import { Centrifuge } from "centrifuge";
+import { WebSocket } from "ws";
 
 // Bancho Client
 const banchoClient = new BanchoClient({
@@ -42,6 +44,24 @@ koa.use(koaBody());
 
 /// Cron
 koa.use(Mount("/api/bancho", banchoRouter.routes()));
+
+const centrifuge = new Centrifuge("ws://localhost:8001/connection/websocket", {
+    websocket: WebSocket,
+});
+
+centrifuge.on("connecting", (ctx) => {
+    console.log("connecting", ctx);
+});
+
+centrifuge.on("error", (err) => {
+    console.error("error", err);
+});
+
+centrifuge.on("connected", (ctx) => {
+    console.log("connected", ctx);
+});
+
+centrifuge.connect();
 
 let httpShutdown: () => Promise<void> | undefined;
 ormConfig.initialize()

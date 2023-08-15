@@ -83,6 +83,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+import { Centrifuge } from "centrifuge";
 
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
@@ -120,7 +121,29 @@ export default class Referee extends Vue {
     @openModule.State tournament!: Tournament | null;
 
     async mounted () {
-        //
+        const centrifuge = new Centrifuge("ws://localhost:8001/connection/websocket");
+
+        centrifuge.on("connecting", (ctx) => {
+            console.log("connecting", ctx);
+        });
+
+        centrifuge.on("error", (err) => {
+            console.error("error", err);
+        });
+
+        centrifuge.on("connected", (ctx) => {
+            console.log("connected", ctx);
+        });
+
+        const sub = centrifuge.newSubscription("testingChannel");
+
+        sub.on("subscribed", () => {
+            console.log("subscribed");
+        });
+
+        sub.subscribe();
+
+        centrifuge.connect();
     }
 }
 </script>
