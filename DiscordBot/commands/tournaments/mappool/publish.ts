@@ -1,8 +1,6 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../index";
 import { loginResponse } from "../../../functions/loginResponse";
-import { buckets } from "../../../../Server/s3";
-import { gets3Key } from "../../../../Server/utils/s3";
 import { createPack, deletePack } from "../../../../Server/functions/tournaments/mappool/mappackFunctions";
 import { extractParameter } from "../../../functions/parameterFunctions";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
@@ -78,9 +76,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
     if (m instanceof Message) await m.react("⏳");
 
-    const s3Key = gets3Key("mappacksTemp", mappool);
-    if (mappool.mappackLink && (mappool.mappackExpiry?.getTime() ?? -1) > Date.now() && s3Key)
-        await buckets.mappacksTemp.deleteObject(s3Key);
+    await deletePack("mappacksTemp", mappool);
 
     const url = await createPack(m, "mappacks", mappool, `${tournament.abbreviation.toUpperCase()}_${mappool.abbreviation.toUpperCase()}`);
     if (!url) {
@@ -89,7 +85,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     mappool.mappackLink = url;
-    
     mappool.mappackExpiry = null;
     mappool.isPublic = true;
     await mappool.save();

@@ -45,7 +45,7 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
     }
 
     const names = updatedMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
-    const dlLinks = updatedMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}`);
+    const dlLinks = updatedMaps.map(m => m.beatmap ? `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}` : m.customBeatmap?.link ?? ``).filter(l => l !== ``);
 
     try {
         const streams = dlLinks.map(link => download(link));
