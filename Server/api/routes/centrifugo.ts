@@ -46,7 +46,7 @@ async function getChannel (channelType: string, channelID: number): Promise<any 
             .getOne();
     }
 
-    return `${channelType}-${channelID}`;
+    return `${channelType}:${channelID}`;
 }           
 
 centrifugoRouter.post("/connect", async (ctx) => {
@@ -71,7 +71,7 @@ centrifugoRouter.post("/connect", async (ctx) => {
 centrifugoRouter.post("/subscribe", async (ctx) => {
     const body = ctx.request.body as SubscribeRequest;
     const channelName = body.channel;
-    if (!channelName.includes("-") || channelName.split("-").length !== 2 || isNaN(parseInt(channelName.split("-")[1]))) {
+    if (!channelName.includes(":") || channelName.split(":").length !== 2 || isNaN(parseInt(channelName.split(":")[1]))) {
         ctx.body = {
             error: {
                 code: 102,
@@ -80,8 +80,8 @@ centrifugoRouter.post("/subscribe", async (ctx) => {
         };
         return;
     }
-    const channelType = channelName.split("-")[0];
-    const channelID = parseInt(channelName.split("-")[1]);
+    const channelType = channelName.split(":")[0];
+    const channelID = parseInt(channelName.split(":")[1]);
 
     const channel = await getChannel(channelType, channelID);
     if (!channel) {
