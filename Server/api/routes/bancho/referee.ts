@@ -108,6 +108,10 @@ banchoRefereeRouter.post("/:matchupID/roll", validateMatchup, async (ctx) => {
     await mpChannel.sendMessage("OK we're gonna roll now I'm gonna run !roll 2");
     await mpChannel.sendMessage(`${matchupList.matchup.team1?.name} will be 1 and ${matchupList.matchup.team2?.name} will be 2`);
     await mpChannel.sendMessage("!roll 2");
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 banchoRefereeRouter.post("/:matchupID/invite", validateMatchup, async (ctx) => {

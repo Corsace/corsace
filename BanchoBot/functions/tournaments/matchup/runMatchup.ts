@@ -81,6 +81,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     let matchStart: Date | undefined = undefined;
     let playersInLobby: BanchoLobbyPlayer[] = [];
     let playersPlaying: BanchoLobbyPlayer[] | undefined = undefined;
+    let rolling = false;
     let earlyStart = false;
     let started = false;
     let lastMessageSaved = Date.now();
@@ -158,6 +159,26 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchup.messages!.push(matchupMessage);
 
         await publish(matchup, { type: "message", ...matchupMessage });
+
+        // Rolling logic
+        if (message.self && !rolling && message.content.toLowerCase() === "!roll 2")
+            rolling = true;
+        else if (message.user.ircUsername === "BanchoBot" && rolling && message.content.toLowerCase().startsWith("Corsace rolls")) {
+            // BanchoBot sent a message that says "Corsace rolls x point(s)"
+            const points = parseInt(message.content.split(" ")[2]);
+            if (isNaN(points) || (points !== 1 && points !== 2))
+                return;
+            if (points === 1)
+                matchup.first = matchup.team1;
+            else if (points === 2)
+                matchup.first = matchup.team2;
+            await matchup.save();
+            rolling = false;
+            // TODO: Don't hardcode picking/banning/protecting first/second in the message
+            await mpChannel.sendMessage(`OK ${matchup.first?.name} is considered team 1 so they'll be picking first and banning second`);
+
+            await publish(matchup, { type: "first", ...matchup.first });
+        }
 
         if (message.self || !state.matchups[matchup.ID].autoRunning)
             return;
