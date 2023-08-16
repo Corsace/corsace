@@ -3,12 +3,14 @@ import Router from "@koa/router";
 import { config } from "node-config-ts";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { isLoggedInDiscord } from "../../../middleware";
+import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
+import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
+import { discordClient } from "../../../discord";
+import { hasRoles, validateTournament } from "../../../middleware/tournament";
 
 const refereeBanchoRouter = new Router();
 
-refereeBanchoRouter.use(isLoggedInDiscord);
-
-refereeBanchoRouter.post("/:matchupID/bancho", async (ctx) => {
+refereeBanchoRouter.post("/:tournamentID/:matchupID/bancho", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     if (!ctx.request.body.endpoint) {
         ctx.body = {
             success: false,
@@ -40,11 +42,33 @@ refereeBanchoRouter.post("/:matchupID/bancho", async (ctx) => {
     }
 
     if (matchup.referee?.ID !== ctx.state.user.id && matchup.stage!.tournament.organizer.ID !== ctx.state.user.id) {
-        ctx.body = {
-            success: false,
-            error: "You are not the referee of this matchup",
-        };
-        return;
+        // If not organizer check if they are referee
+        const roles = await TournamentRole
+            .createQueryBuilder("role")
+            .innerJoin("role.tournament", "tournament")
+            .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
+            .getMany();
+
+        // For organizers to see all matchups
+        let bypass = false;
+        if (roles.length > 0) {
+            try {
+                const privilegedRoles = roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+                const tournamentServer = await discordClient.guilds.fetch(ctx.state.tournament.server);
+                const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
+                bypass = privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID));
+            } catch (e) {
+                bypass = false;
+            }
+        }
+
+        if (!bypass) {
+            ctx.body = {
+                success: false,
+                error: "You are not the referee of this matchup",
+            };
+            return;
+        }
     }
 
     const { data } = await Axios.post(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`, {

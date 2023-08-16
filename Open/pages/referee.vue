@@ -83,11 +83,12 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { Centrifuge } from "centrifuge";
+import { Centrifuge, Subscription } from "centrifuge";
 
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import { Tournament } from "../../Interfaces/tournament";
+import { Matchup } from "../../Interfaces/matchup";
 
 const openModule = namespace("open");
 
@@ -120,8 +121,24 @@ const openModule = namespace("open");
 export default class Referee extends Vue {
     @openModule.State tournament!: Tournament | null;
 
+    centrifuge: Centrifuge | null = null;
+    matchupChannel: Subscription | null = null;
+
+    matchup: Matchup | null = null;
+    matchupList: Matchup[] | null = null;
+
     async mounted () {
-        const centrifuge = new Centrifuge("ws://localhost:8001/connection/websocket");
+        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}`);
+        if (matchupData.error) {
+            alert(matchupData.error);
+            this.$router.push("/");
+            return;
+        }
+        this.matchupList = matchupData.matchups;
+
+        const { data: centrifugoURL } = await this.$axios.get("/api/centrifugo/url");
+
+        const centrifuge = new Centrifuge(centrifugoURL);
 
         centrifuge.on("connecting", (ctx) => {
             console.log("connecting", ctx);
@@ -135,15 +152,52 @@ export default class Referee extends Vue {
             console.log("connected", ctx);
         });
 
-        const sub = centrifuge.newSubscription("testingChannel");
-
-        sub.on("subscribed", () => {
-            console.log("subscribed");
-        });
-
-        sub.subscribe();
-
         centrifuge.connect();
+
+        this.centrifuge = centrifuge;
+    }
+
+    formatDate (date: Date): string {
+        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        const day = date.getUTCDate();
+        const monthIndex = date.getUTCMonth();
+        return `${months[monthIndex]} ${day < 10 ? "0" : ""}${day}`;
+    }
+
+    formatTime (date: Date): string {
+        const hours = date.getUTCHours();
+        const minutes = date.getUTCMinutes();
+        return `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
+    }
+
+    unsub () {
+        if (this.matchupChannel) {
+            this.matchupChannel.unsubscribe();
+            this.matchupChannel = null;
+        }
+    }
+
+    async selectMatchup (matchupID: number) {
+        if (!this.centrifuge) {
+            alert("Centrifuge not connected");
+            return;
+        }
+        this.unsub();
+
+        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}/${matchupID}`);
+        if (matchupData.error) {
+            alert(matchupData.error);
+            return;
+        }
+
+        this.matchup = matchupData.matchup;
+
+        this.centrifuge.newSubscription(`matchup:${matchupID}`);
+    }
+
+    back () {
+        this.unsub();
+        this.matchup = null;
     }
 }
 </script>

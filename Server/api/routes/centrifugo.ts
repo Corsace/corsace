@@ -47,7 +47,11 @@ async function getChannel (channelType: string, channelID: number): Promise<any 
     }
 
     return `${channelType}:${channelID}`;
-}           
+}
+
+centrifugoRouter.get("/url", async (ctx) => {
+    ctx.body = config.centrifugo.publicUrl;
+});
 
 centrifugoRouter.post("/connect", async (ctx) => {
     if (ctx.state?.user?.ID) {
