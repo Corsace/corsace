@@ -1,21 +1,20 @@
 import { BanchoLobby } from "bancho.js";
-import { Centrifuge }  from "centrifuge";
 import { Matchup } from "../Models/tournaments/matchup";
 
-interface MatchupList {
-    [key: number]: {
-        matchup: Matchup;
-        lobby: BanchoLobby;
-        autoRunning: boolean;
-    }
+interface MatchupState {
+    [key: number]: MatchupList
+}
+export interface MatchupList {
+    matchup: Matchup;
+    lobby: BanchoLobby;
+    autoRunning: boolean;
 }
 
 const state = {
     shuttingDown: false,
     httpServerShutDown: false,
     runningMatchups: 0,
-    centrifuge: null as Centrifuge | null,
-    matchups: {} as MatchupList,
+    matchups: {} as MatchupState,
 };
 
 export default state;

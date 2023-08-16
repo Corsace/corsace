@@ -1,11 +1,10 @@
-import Axios from "axios";
 import Router from "@koa/router";
 import koaBasicAuth from "koa-basic-auth";
 import { config } from "node-config-ts";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Next, ParameterizedContext } from "koa";
 import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
-import runSocketMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runSocketMatchup";
+import state, { MatchupList } from "../../../../BanchoBot/state";
 
 const banchoRefereeRouter = new Router();
 
@@ -24,62 +23,22 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
         return;
     }
 
-    const matchupQ = await Matchup
-        .createQueryBuilder("matchup")
-        .innerJoinAndSelect("matchup.stage", "stage")
-        .innerJoinAndSelect("stage.tournament", "tournament")
-        .innerJoinAndSelect("tournament.organizer", "organizer")
-        .leftJoinAndSelect("matchup.team1", "team1")
-        .leftJoinAndSelect("matchup.team2", "team2");
+    const endpoint = ctx.URL.pathname.split("/")[ctx.URL.pathname.split("/").length - 1];
 
-    switch (ctx.URL.pathname.split("/")[ctx.URL.pathname.split("/").length - 1]) {
-        case "createLobby":
-            matchupQ.leftJoinAndSelect("matchup.winner", "winner");
-            break;
-        case "roll":
-            matchupQ.leftJoinAndSelect("matchup.first", "first");
-            break;
-        case "invite":
-            matchupQ
-                .leftJoinAndSelect("team1.manager", "team1Manager")
-                .leftJoinAndSelect("team2.manager", "team2Manager")
-                .leftJoinAndSelect("team1.members", "team1Members")
-                .leftJoinAndSelect("team2.members", "team2Members");
-            break;
-        case "addRef":
-            matchupQ
-                .leftJoinAndSelect("matchup.referee", "referee")
-                .leftJoinAndSelect("matchup.commentators", "commentators")
-                .leftJoinAndSelect("matchup.streamer", "streamer");
-            break;
-        case "selectMap":
-            matchupQ
-                .leftJoinAndSelect("matchup.maps", "maps")
-                .leftJoinAndSelect("maps.map", "map")
-                .leftJoinAndSelect("map.slot", "slot");
-            break;
-        case "startMap":
-        case "timer":
-        case "settings":
-        case "abortMap":
-            break;
-        case "message":
-            matchupQ
-                .leftJoinAndSelect("matchup.messages", "messages")
-                .leftJoinAndSelect("messages.user", "user");
-            break;
-        case "closeLobby":
-            break;
-    }
+    const matchup = state.matchups[parseInt(id)];
 
-    const matchup = await matchupQ
-        .where("matchup.id = :id", { id })
-        .getOne();
-
-    if (!matchup) {
+    if (matchup && endpoint === "createLobby" && !ctx.request.body.replace) {
         ctx.body = {
             success: false,
-            error: "Matchup not found or invalid for this operation",
+            error: "Matchup already has a lobby",
+        };
+        return;
+    }
+
+    if (!matchup && endpoint !== "createLobby") {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
         };
         return;
     }
@@ -89,7 +48,37 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
 }
 
 banchoRefereeRouter.post("/:matchupID/createLobby", validateMatchup, async (ctx) => {
-    const matchup: Matchup = ctx.state.matchup;
+    const matchupList: MatchupList | undefined | null = ctx.state.matchup;
+    let matchup: Matchup | undefined | null = matchupList?.matchup;
+    if (!matchup) {
+        matchup = await Matchup
+            .createQueryBuilder("matchup")
+            .leftJoinAndSelect("matchup.referee", "referee")
+            .leftJoinAndSelect("matchup.streamer", "streamer")
+            .innerJoinAndSelect("matchup.stage", "stage")
+            .innerJoinAndSelect("stage.mappool", "mappool")
+            .innerJoinAndSelect("mappool.slots", "slot")
+            .innerJoinAndSelect("slot.maps", "map")
+            .innerJoinAndSelect("map.beatmap", "beatmap")
+            .innerJoinAndSelect("stage.tournament", "tournament")
+            .innerJoinAndSelect("tournament.organizer", "organizer")
+            .leftJoinAndSelect("matchup.team1", "team1")
+            .leftJoinAndSelect("team1.manager", "manager1")
+            .leftJoinAndSelect("team1.members", "member1")
+            .leftJoinAndSelect("matchup.team2", "team2")
+            .leftJoinAndSelect("team2.manager", "manager2")
+            .leftJoinAndSelect("team2.members", "member2")
+            .where("matchup.ID = :id", { id: ctx.params.matchupID })
+            .getOne();
+        if (!matchup) {
+            ctx.body = {
+                success: false,
+                error: "Matchup not found",
+            };
+            return;
+        }
+    }
+
     if (!ctx.request.body.replace && (matchup.mp || matchup.baseURL || matchup.winner)) {
         ctx.body = {
             success: false,
@@ -98,11 +87,27 @@ banchoRefereeRouter.post("/:matchupID/createLobby", validateMatchup, async (ctx)
         return;
     }
 
-    await runMatchup(matchup, ctx.request.body.replace, runSocketMatchup);
+    ctx.body = {
+        success: true,
+    };
+
+    await runMatchup(matchup, ctx.request.body.replace, ctx.request.body.auto);
 });
 
 banchoRefereeRouter.post("/:matchupID/roll", validateMatchup, async (ctx) => {
-
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    if (!matchupList) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
+    const mpChannel = matchupList.lobby.channel;
+    
+    await mpChannel.sendMessage("OK we're gonna roll now I'm gonna run !roll 2");
+    await mpChannel.sendMessage(`${matchupList.matchup.team1?.name} will be 1 and ${matchupList.matchup.team2?.name} will be 2`);
+    await mpChannel.sendMessage("!roll 2");
 });
 
 banchoRefereeRouter.post("/:matchupID/invite", validateMatchup, async (ctx) => {
