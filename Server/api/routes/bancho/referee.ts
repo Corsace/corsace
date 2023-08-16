@@ -151,31 +151,150 @@ banchoRefereeRouter.post("/:matchupID/addRef", validateMatchup, async (ctx) => {
 });
 
 banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) => {
-    
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    if (!matchupList || !ctx.request.body.mapID) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    // TODO: Different logic for banned/protected vs picked maps
 });
 
 banchoRefereeRouter.post("/:matchupID/startMap", validateMatchup, async (ctx) => {
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    if (!matchupList) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
 
+    if (typeof ctx.request.body.time !== "number" || isNaN(ctx.request.body.time)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid time provided (in seconds)",
+        };
+        return;
+    }
+
+    const mpLobby = matchupList.lobby;
+    await mpLobby.startMatch(ctx.request.body.time);
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 banchoRefereeRouter.post("/:matchupID/timer", validateMatchup, async (ctx) => {
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    if (!matchupList) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
 
+    if (typeof ctx.request.body.time !== "number" || isNaN(ctx.request.body.time)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid time provided (in seconds)",
+        };
+        return;
+    }
+
+    if (ctx.request.body.message && typeof ctx.request.body.message !== "string") {
+        ctx.body = {
+            success: false,
+            error: "Invalid message provided",
+        };
+        return;
+    }
+
+    const mpLobby = matchupList.lobby;
+    if (ctx.request.body.message) 
+        await mpLobby.channel.sendMessage(ctx.request.body.message);
+    await mpLobby.startTimer(ctx.request.body.time);
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 banchoRefereeRouter.post("/:matchupID/settings", validateMatchup, async (ctx) => {
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    if (!matchupList) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
 
+    const mpLobby = matchupList.lobby;
+    await mpLobby.updateSettings();
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 banchoRefereeRouter.post("/:matchupID/abortMap", validateMatchup, async (ctx) => {
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    if (!matchupList) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
 
+    const mpLobby = matchupList.lobby;
+    await mpLobby.abortMatch();
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 banchoRefereeRouter.post("/:matchupID/message", validateMatchup, async (ctx) => {
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    if (!matchupList) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
 
+    const mpChannel = matchupList.lobby.channel;
+    await mpChannel.sendMessage(`<${ctx.request.body.username}>: ${ctx.request.body.message}`);
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 banchoRefereeRouter.post("/:matchupID/closeLobby", validateMatchup, async (ctx) => {
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    if (!matchupList) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
 
+    const mpLobby = matchupList.lobby;
+    await mpLobby.closeLobby();
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 export default banchoRefereeRouter;

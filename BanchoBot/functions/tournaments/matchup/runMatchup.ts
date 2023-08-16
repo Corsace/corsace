@@ -517,6 +517,18 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             matchupScore.fullCombo = score.perfect || score.maxCombo === beatmap.beatmap!.maxCombo;
             return matchupScore.save();
         }));
+        if (matchup.stage!.stageType !== StageType.Qualifiers) {
+            const team1Score = matchupMap.scores
+                .filter(score => matchup.team1!.members.some(m => m.osu.userID === score.user.osu.userID))
+                .reduce((acc, score) => acc + score.score, 0);
+            const team2Score = matchupMap.scores
+                .filter(score => matchup.team2!.members.some(m => m.osu.userID === score.user.osu.userID))
+                .reduce((acc, score) => acc + score.score, 0);
+            if (team1Score > team2Score)
+                matchup.team1Score++;
+            else if (team2Score > team1Score)
+                matchup.team2Score++;
+        }
         matchup.maps!.push(matchupMap);
 
         log(matchup, `Matchup map and scores saved with matchupMap ID ${matchupMap.ID}`);
@@ -551,7 +563,17 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             invCollector?.stop();
             refCollector?.stop();
             await matchup.save();
-    
+
+            if (matchup.stage!.stageType !== StageType.Qualifiers) {
+                if (matchup.team1Score > matchup.team2Score)
+                    matchup.winner = matchup.team1;
+                else if (matchup.team2Score > matchup.team1Score)
+                    matchup.winner = matchup.team2;
+                await matchup.save();
+            }
+
+            // Let it run one more time before clearing
+            await pause(15 * 1000);
             clearInterval(messageSaver);
 
             state.runningMatchups--;
