@@ -51,6 +51,9 @@ import mappoolMapRouter from "./api/routes/mappool/map";
 import qualifierRouter from "./api/routes/qualifier";
 import matchupRouter from "./api/routes/matchup";
 
+import refereeMatchupsRouter from "./api/routes/referee/matchups";
+import refereeBanchoRouter from "./api/routes/referee/bancho";
+
 import teamRouter from "./api/routes/team";
 import inviteRouter from "./api/routes/team/invite";
 
@@ -155,6 +158,10 @@ koa.use(Mount("/api/team/invite", inviteRouter.routes()));
 /// Matchup
 koa.use(Mount("/api/qualifier", qualifierRouter.routes()));
 koa.use(Mount("/api/matchup", matchupRouter.routes()));
+
+/// Referee
+koa.use(Mount("/api/referee/matchups", refereeMatchupsRouter.routes()));
+koa.use(Mount("/api/referee/bancho", refereeBanchoRouter.routes()));
 
 ormConfig.initialize()
     .then(async (connection) => {

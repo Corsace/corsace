@@ -4,7 +4,7 @@
     "admin_password": "corsace",
     "admin_secret": "secret",
     "admin": true,
-    "allowed_origins": ["http://localhost:7000", "http://localhost:8082"],
+    "allowed_origins": ["http://localhost:7000"],
     "proxy_http_headers": [
         "Origin",
         "User-Agent",

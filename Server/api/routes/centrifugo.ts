@@ -1,7 +1,12 @@
 import Router from "@koa/router";
 import koaIp from "koa-ip";
 import { config } from "node-config-ts";
+import { StageType } from "../../../Interfaces/stage";
+import { unallowedToPlay } from "../../../Interfaces/tournament";
+import { Matchup } from "../../../Models/tournaments/matchup";
+import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
 import { User } from "../../../Models/user";
+import { discordClient } from "../../discord";
 
 const centrifugoRouter = new Router();
 
@@ -26,8 +31,22 @@ interface SubscribeRequest {
     b64data?: string;
 }
 
-function getChannel (channelType: string, channelID: number) {
-    console.log(channelType, channelID);
+const channelTypes = [ "matchup" ];
+
+async function getChannel (channelType: string, channelID: number): Promise<any | null> {
+    if (!channelTypes.includes(channelType))
+        return null;
+
+    if (channelType === "matchup") {
+        return Matchup
+            .createQueryBuilder("matchup")
+            .leftJoinAndSelect("matchup.stage", "stage")
+            .leftJoinAndSelect("stage.tournament", "tournament")
+            .where("matchup.ID = :id", { id: channelID })
+            .getOne();
+    }
+
+    return `${channelType}-${channelID}`;
 }           
 
 centrifugoRouter.post("/connect", async (ctx) => {
@@ -64,24 +83,51 @@ centrifugoRouter.post("/subscribe", async (ctx) => {
     const channelType = channelName.split("-")[0];
     const channelID = parseInt(channelName.split("-")[1]);
 
-    const authorized = true; // TODO: implement subscription auth logic
-
-    const channel = getChannel(channelType, channelID);
-
-    const user = body.user ? await User.findOne({ where: { ID: Number(body.user) } }) : null;
-
-    if (authorized) {
-        ctx.body = {
-            result: {},
-        };
-    } else {
+    const channel = await getChannel(channelType, channelID);
+    if (!channel) {
         ctx.body = {
             error: {
-                code: 103,
-                message: "permission denied",
+                code: 102,
+                message: "unknown channel",
             },
         };
+        return;
     }
+
+    if (channel instanceof Matchup && channel.stage?.stageType === StageType.Qualifiers && !channel.stage.tournament.publicQualifiers) {
+        let authorized = false;
+        const user = body.user ? await User.findOne({ where: { ID: Number(body.user) } }) : null;
+        if (user) {
+            const roles = await TournamentRole
+                .createQueryBuilder("role")
+                .leftJoinAndSelect("role.tournament", "tournament")
+                .where("tournament.ID = :tournament", { tournament: channel.stage.tournament.ID })
+                .getMany();
+            if (roles.length > 0) {
+                try {
+                    const privilegedRoles = roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+                    const tournamentServer = await discordClient.guilds.fetch(ctx.state.tournament.server);
+                    const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
+                    authorized = privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID));
+                } catch (e) {
+                    authorized = false;
+                }
+            }
+        }
+        if (!authorized) {
+            ctx.body = {
+                error: {
+                    code: 103,
+                    message: "permission denied",
+                },
+            };
+            return;
+        }
+    }
+
+    ctx.body = {
+        result: {},
+    };
 });
 
 export default centrifugoRouter;

@@ -1,13 +1,17 @@
 import Router from "@koa/router";
-import { TournamentRoleType } from "../../../Interfaces/tournament";
-import { Matchup } from "../../../Models/tournaments/matchup";
-import { isLoggedInDiscord } from "../../middleware";
-import { hasRoles, validateTournament } from "../../middleware/tournament";
+import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
+import { Matchup } from "../../../../Models/tournaments/matchup";
+import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
+import { discordClient } from "../../../discord";
+import { isLoggedInDiscord } from "../../../middleware";
+import { hasRoles, validateTournament } from "../../../middleware/tournament";
 
-const refereeRouter = new Router();
+const refereeMatchupsRouter = new Router();
 
-refereeRouter.get("/matchups/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
-    const matchups = await Matchup
+//TODO: Look into making refereeRouter.use work for the middleware functions
+
+refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+    const matchupQ = Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.referee", "referee")
         .innerJoinAndSelect("matchup.stage", "stage")
@@ -20,9 +24,33 @@ refereeRouter.get("/matchups/:tournamentID", validateTournament, isLoggedInDisco
         .leftJoinAndSelect("team1.members", "members1")
         .leftJoinAndSelect("team2.members", "members2")
         .leftJoinAndSelect("matchup.winner", "winner")
-        .where("tournament.ID = :ID", { ID: ctx.state.ID })
-        .andWhere("referee.ID = :refereeID", { refereeID: ctx.state.user.ID })
+        .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID });
+    
+    // If not organizer check if they are referee
+    const roles = await TournamentRole
+        .createQueryBuilder("role")
+        .innerJoin("role.tournament", "tournament")
+        .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
         .getMany();
+    
+    // For organizers to see all matchups
+    let bypass = false;
+    if (roles.length > 0) {
+        try {
+            const privilegedRoles = roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+            const tournamentServer = await discordClient.guilds.fetch(ctx.state.tournament.server);
+            const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
+            bypass = privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID));
+        } catch (e) {
+            bypass = false;
+        }
+    }
+
+    if (!bypass)
+        matchupQ
+            .andWhere("referee.ID = :refereeID", { refereeID: ctx.state.user.ID });
+        
+    const matchups = await matchupQ.getMany();
 
     ctx.body = {
         success: true,
@@ -30,7 +58,7 @@ refereeRouter.get("/matchups/:tournamentID", validateTournament, isLoggedInDisco
     };
 });
 
-refereeRouter.get("/matchups/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchup = await Matchup
         .createQueryBuilder("matchup")
         .innerJoinAndSelect("matchup.stage", "stage")
@@ -53,6 +81,7 @@ refereeRouter.get("/matchups/:tournamentID/:matchupID", validateTournament, isLo
         .leftJoinAndSelect("matchup.messages", "messages")
         .leftJoinAndSelect("messages.user", "user")
         .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
+        .andWhere("referee.ID = :refereeID", { refereeID: ctx.state.user.ID })
         .getOne();
 
     if (!matchup) {
@@ -69,4 +98,4 @@ refereeRouter.get("/matchups/:tournamentID/:matchupID", validateTournament, isLo
     };
 });
 
-export default refereeRouter;
+export default refereeMatchupsRouter;
