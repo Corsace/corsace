@@ -115,15 +115,43 @@ banchoRefereeRouter.post("/:matchupID/roll", validateMatchup, async (ctx) => {
 });
 
 banchoRefereeRouter.post("/:matchupID/invite", validateMatchup, async (ctx) => {
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    if (!matchupList) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
 
+    const mpLobby = matchupList.lobby;
+    await mpLobby.invitePlayer(`#${ctx.request.body.userID}`);
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 banchoRefereeRouter.post("/:matchupID/addRef", validateMatchup, async (ctx) => {
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    if (!matchupList) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
 
+    const mpLobby = matchupList.lobby;
+    await mpLobby.addRef(`#${ctx.request.body.userID}`);
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) => {
-
+    
 });
 
 banchoRefereeRouter.post("/:matchupID/startMap", validateMatchup, async (ctx) => {
