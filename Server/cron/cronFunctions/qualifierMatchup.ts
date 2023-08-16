@@ -33,7 +33,7 @@ async function initialize (): Promise<CronJobData[]> {
 }
 
 async function execute (job: CronJobData) {
-    const { data } = await Axios.post(`${config.banchoBot.publicUrl}/api/bancho/runMatchups`, {
+    const { data } = await Axios.post(`${config.banchoBot.publicUrl}/api/bancho/runQualifiers`, {
         time: job.date.getTime(),
     }, {
         auth: config.interOpAuth,

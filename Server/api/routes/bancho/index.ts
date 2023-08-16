@@ -1,7 +1,6 @@
 import Router from "@koa/router";
 import koaBasicAuth from "koa-basic-auth";
 import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
-import runAutoMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runAutoMatchup";
 import { ParameterizedContext, Next } from "koa";
 import { config } from "node-config-ts";
 import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
@@ -43,12 +42,12 @@ banchoRouter.use(koaBasicAuth({
     pass: config.interOpAuth.password,
 }));
 
-banchoRouter.post("/runMatchups", validateData, async (ctx) => {
+banchoRouter.post("/runQualifiers", validateData, async (ctx) => {
     ctx.body = {
         success: true,
     };
 
-    // Get all matchups that are in the past and have not been played
+    // Get all qualifiers that are in the past and have not been played
     const matchups = await Matchup
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.referee", "referee")
@@ -69,11 +68,11 @@ banchoRouter.post("/runMatchups", validateData, async (ctx) => {
         .getMany();
 
     for (const matchup of matchups) {
-        await runMatchup(matchup, false, runAutoMatchup).catch(err => {
+        await runMatchup(matchup, false, true).catch(err => {
             console.error(err);
             const channel = discordClient.channels.cache.get(config.discord.coreChannel);
             if (channel instanceof TextChannel)
-                channel.send(`Error running match GHIVE THIS IMMEDIATE ATTENTION:\n\`\`\`\n${err}\n\`\`\``);
+                channel.send(`Error running qualifier GHIVE THIS IMMEDIATE ATTENTION:\n\`\`\`\n${err}\n\`\`\``);
         });
     }
 });
