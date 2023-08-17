@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Tournament } from "../../../../Models/tournaments/tournament";
-import { BaseQualifier, QualifierScore } from "../../../../Interfaces/qualifier";
+import { BaseQualifier } from "../../../../Interfaces/qualifier";
 import { Next, ParameterizedContext } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { StaffMember } from "../../../../Interfaces/staff";
@@ -16,6 +16,9 @@ import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { User } from "../../../../Models/user";
 import { createHash } from "crypto";
+import { MatchupScore } from "../../../../Interfaces/matchup";
+import { Stage } from "../../../../Models/tournaments/stage";
+import { StageType } from "../../../../Interfaces/stage";
 
 async function validateID (ctx: ParameterizedContext, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
@@ -264,14 +267,22 @@ tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
     });
 });
 
-tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx) => {
-    const ID: number = ctx.state.ID;
+tournamentRouter.get("/:tournamentID/:stageID/scores", validateID, async (ctx) => {
+    const tournamentID: number = ctx.state.ID;
+    const stageID: number = parseInt(ctx.params.stageID);
+    if (!stageID || isNaN(stageID)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid stage ID",
+        };
+        return;
+    }
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
         .leftJoinAndSelect("tournament.roles", "roles")
         .innerJoinAndSelect("tournament.organizer", "organizer")
-        .where("tournament.ID = :ID", { ID })
+        .where("tournament.ID = :tournamentID", { tournamentID })
         .getOne();
 
     if (!tournament) {
@@ -282,63 +293,80 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         return;
     }
 
-    // For when tournaments don't have their qualifier scores public
-    if (ctx.query.key) {
-        const key = ctx.query.key as string;
-        if (!key) {
-            ctx.body = {
-                success: false,
-                error: "No key provided",
-            };
-            return;
-        }
+    const stage = await Stage
+        .createQueryBuilder("stage")
+        .leftJoinAndSelect("stage.tournament", "tournament")
+        .where("stage.ID = :stageID", { stageID })
+        .andWhere("tournament.ID = :tournamentID", { tournamentID })
+        .getOne();
 
-        const hash = createHash("sha512");
-        hash.update(key);
-        const hashedKey = hash.digest("hex");
+    if (!stage) {
+        ctx.body = {
+            success: false,
+            error: "Stage not found",
+        };
+        return;
+    }
 
-        const keyCheck = await Tournament
-            .createQueryBuilder("tournament")
-            .where("tournament.key = :key", { key: hashedKey })
-            .getExists();
-
-        if (!keyCheck) {
-            ctx.body = {
-                success: false,
-                error: "Tournament does not have public qualifiers and you are not logged in to view this tournament's scores",
-            };
-            return;
-        }
-    } else if (
-        !tournament.publicQualifiers && 
-        tournament.organizer.ID !== ctx.state.user?.ID
-    ) {
-        if (!ctx.state.user?.discord.userID) {
-            ctx.body = {
-                success: false,
-                error: "Tournament does not have public qualifiers and you are not logged in to view this tournament's scores",
-            };
-            return;
-        }
-
-        // Checking if they have privileged roles or not
-        try {
-            const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
-            const tournamentServer = await discordClient.guilds.fetch(tournament.server);
-            const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
-            if (!privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID))) {
+    if (stage.stageType === StageType.Qualifiers) {
+        // For when tournaments don't have their qualifier scores public
+        if (ctx.query.key) {
+            const key = ctx.query.key as string;
+            if (!key) {
                 ctx.body = {
                     success: false,
-                    error: "Tournament does not have public qualifiers and you do not have the required role to view scores",
+                    error: "No key provided",
                 };
                 return;
             }
-        } catch (e) {
-            ctx.body = {
-                success: false,
-                error: `Tournament does not have public qualifiers and you may not be in the discord server to view scores.\n${e}`,
-            };
-            return;
+
+            const hash = createHash("sha512");
+            hash.update(key);
+            const hashedKey = hash.digest("hex");
+
+            const keyCheck = await Tournament
+                .createQueryBuilder("tournament")
+                .where("tournament.key = :key", { key: hashedKey })
+                .getExists();
+
+            if (!keyCheck) {
+                ctx.body = {
+                    success: false,
+                    error: "Tournament does not have public qualifiers and you are not logged in to view this tournament's scores",
+                };
+                return;
+            }
+        } else if (
+            !tournament.publicQualifiers && 
+            tournament.organizer.ID !== ctx.state.user?.ID
+        ) {
+            if (!ctx.state.user?.discord.userID) {
+                ctx.body = {
+                    success: false,
+                    error: "Tournament does not have public qualifiers and you are not logged in to view this tournament's scores",
+                };
+                return;
+            }
+
+            // Checking if they have privileged roles or not
+            try {
+                const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+                const tournamentServer = await discordClient.guilds.fetch(tournament.server);
+                const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
+                if (!privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID))) {
+                    ctx.body = {
+                        success: false,
+                        error: "Tournament does not have public qualifiers and you do not have the required role to view scores",
+                    };
+                    return;
+                }
+            } catch (e) {
+                ctx.body = {
+                    success: false,
+                    error: `Tournament does not have public qualifiers and you may not be in the discord server to view scores.\n${e}`,
+                };
+                return;
+            }
         }
     }
 
@@ -346,7 +374,7 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         .createQueryBuilder("team")
         .innerJoinAndSelect("team.members", "member")
         .innerJoinAndSelect("team.tournaments", "tournament")
-        .where("tournament.ID = :ID", { ID })
+        .where("tournament.ID = :tournamentID", { tournamentID })
         .getMany();
 
     const teamLookup = new Map<string, Team>();
@@ -365,8 +393,8 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
         .innerJoin("mappoolMap.slot", "slot")
         .innerJoin("matchupMap.scores", "score")
         .innerJoin("score.user", "user")
-        .where("tournament.ID = :ID", { ID })
-        .andWhere("stage.stageType = '0'")
+        .where("tournament.ID = :tournamentID", { tournamentID })
+        .andWhere("stage.ID = :stageID", { stageID })
         .select([
             "user.osuUsername",
             "user.osuUserid",
@@ -376,7 +404,7 @@ tournamentRouter.get("/:tournamentID/qualifiers/scores", validateID, async (ctx)
             "mappoolMap.order",
         ])
         .getRawMany();
-    const scores: QualifierScore[] = rawScores.map(score => {
+    const scores: MatchupScore[] = rawScores.map(score => {
         const team = teamLookup.get(score.osuUserid) || { ID: -1, name: "N/A", avatarURL: undefined };
         return {
             teamID: team.ID,

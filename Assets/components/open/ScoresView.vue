@@ -157,7 +157,7 @@
 <script lang="ts">
 import { Vue, Component, PropSync} from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { QualifierScore, QualifierScoreView, sortType, filters, mapNames, computeQualifierScoreViews } from "../../../Interfaces/qualifier";
+import { MatchupScore, MatchupScoreView, computeScoreViews, mapNames, scoreFilters, scoreSortType } from "../../../Interfaces/matchup";
 import { Tournament } from "../../../Interfaces/tournament";
 import { Mappool as MappoolInterface } from "../../../Interfaces/mappool";
 import { TeamList } from "../../../Interfaces/team";
@@ -179,7 +179,7 @@ export default class ScoresView extends Vue {
     @PropSync("view", { type: String }) syncView!: "players" | "teams";
 
     @openModule.State tournament!: Tournament | null;
-    @openModule.State qualifierScores!: QualifierScore[] | null;
+    @openModule.State scores!: MatchupScore[] | null;
     @openModule.State teamList!: TeamList[] | null;
 
     mappoolList: MappoolInterface[] = [];
@@ -237,30 +237,30 @@ export default class ScoresView extends Vue {
     maphover = false;
     showPlayers = true;
 
-    currentFilter: sortType = "zScore";
+    currentFilter: scoreSortType = "zScore";
     sortDir: "asc" | "desc" = "desc";
     mapSort = -1;
-    filters: sortType[] = filters;
+    filters: scoreSortType[] = scoreFilters;
 
     get mapNameList (): {
         map: string;
         mapID: number;
     }[] {
-        return mapNames(this.qualifierScores);
+        return mapNames(this.scores);
     }
 
     get useAvg (): boolean {
         return this.currentFilter === "average" || this.currentFilter === "relAvg" || this.currentFilter === "percentAvg";
     }
 
-    get shownQualifierScoreViews (): QualifierScoreView[] {
+    get shownQualifierScoreViews (): MatchupScoreView[] {
         return this.syncView === "players" ? this.playerQualifierScoreViews : this.teamQualifierScoreViews;
     }
 
-    get playerQualifierScoreViews (): QualifierScoreView[] {
-        return computeQualifierScoreViews(
+    get playerQualifierScoreViews (): MatchupScoreView[] {
+        return computeScoreViews(
             score => ({ id: score.userID, name: score.username, avatar: `https://a.ppy.sh/${score.userID}` }),
-            this.qualifierScores,
+            this.scores,
             this.syncView,
             this.currentFilter,
             this.mapSort,
@@ -268,10 +268,10 @@ export default class ScoresView extends Vue {
         );
     }
 
-    get teamQualifierScoreViews (): QualifierScoreView[] {
-        return computeQualifierScoreViews(
+    get teamQualifierScoreViews (): MatchupScoreView[] {
+        return computeScoreViews(
             score => ({ id: score.teamID, name: score.teamName, avatar: score.teamAvatar }),
-            this.qualifierScores,
+            this.scores,
             this.syncView,
             this.currentFilter,
             this.mapSort,
@@ -279,15 +279,15 @@ export default class ScoresView extends Vue {
         );
     }
 
-    get teamGroupedScores (): QualifierScore[][] {
-        if (!this.qualifierScores)
+    get teamGroupedScores (): MatchupScore[][] {
+        if (!this.scores)
             return [];
 
-        const groupedScores: QualifierScore[][] = [];
-        const teamIDs = new Set(this.qualifierScores.map(s => s.teamID));
+        const groupedScores: MatchupScore[][] = [];
+        const teamIDs = new Set(this.scores.map(s => s.teamID));
 
         for (const teamID of teamIDs)
-            groupedScores.push(this.qualifierScores.filter(s => s.teamID === teamID));
+            groupedScores.push(this.scores.filter(s => s.teamID === teamID));
 
         return groupedScores;
     }

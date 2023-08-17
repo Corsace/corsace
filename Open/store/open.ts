@@ -1,8 +1,9 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { Tournament } from "../../Interfaces/tournament";
 import { BaseTeam, Team, TeamList, TeamUser } from "../../Interfaces/team";
-import { BaseQualifier, QualifierScore } from "../../Interfaces/qualifier";
+import { BaseQualifier } from "../../Interfaces/qualifier";
 import { StaffList } from "../../Interfaces/staff";
+import { MatchupScore } from "../../Interfaces/matchup";
 
 export interface OpenState {
     title: string;
@@ -11,7 +12,7 @@ export interface OpenState {
     team: Team | null;
     teamInvites: BaseTeam[] | null;
     qualifierList: BaseQualifier[] | null;
-    qualifierScores: QualifierScore[] | null;
+    scores: MatchupScore[] | null;
     staffList: StaffList[] | null;
 }
 
@@ -22,7 +23,7 @@ export const state = (): OpenState => ({
     team: null,
     teamInvites: null,
     qualifierList: null,
-    qualifierScores: null,
+    scores: null,
     staffList: null,
 });
 
@@ -116,8 +117,8 @@ export const mutations: MutationTree<OpenState> = {
             date: new Date(q.date),
         })) || null;
     },
-    async setQualifierScores (state, scores: QualifierScore[] | undefined) {
-        state.qualifierScores = scores || null;
+    async setScores (state, scores: MatchupScore[] | undefined) {
+        state.scores = scores || null;
     },
     async setStaffList (state, staff: StaffList[] | undefined) {
         state.staffList = staff || null;
@@ -171,11 +172,15 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (!data.error)
             commit("setQualifierList", data);
     },
-    async setQualifierScores ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/qualifiers/scores`);
+    async setScores ({ commit }, IDs) {
+        const { tournamentID, stageID } = IDs;
+        if (!tournamentID || !stageID || isNaN(parseInt(tournamentID)) || isNaN(parseInt(stageID)))
+            return;
+
+        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/${stageID}/scores`);
 
         if (!data.error)
-            commit("setQualifierScores", data);
+            commit("setScores", data);
     },
     async setStaffList ({ commit }, tournamentID) {
         const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/staff`);
