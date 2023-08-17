@@ -46,7 +46,7 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
         (!matchup.teams && matchup.stage.stageType === StageType.Qualifiers) ||
         (!matchup.team1 || !matchup.team2) && matchup.stage.stageType !== StageType.Qualifiers
     )
-        throw new Error("Matchup has no teams");
+        throw new Error("Matchup has missing teams");
     if (matchup.winner)
         throw new Error("Matchup already has a winner");
     if (matchup.mp && !replace)

@@ -670,8 +670,9 @@
         },
         "referee": {
             "title": "REFEREE",
-            "back": "BACK",
-            "createLobby": "CREATE LOBBY"
+            "back": "BACK TO MATCHUP LIST",
+            "createLobby": "CREATE LOBBY",
+            "roll": "ROLL"
         },
         "status": {
             "loading": "LOADING"

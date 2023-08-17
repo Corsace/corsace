@@ -91,7 +91,20 @@ banchoRefereeRouter.post("/:matchupID/createLobby", validateMatchup, async (ctx)
         success: true,
     };
 
-    await runMatchup(matchup, ctx.request.body.replace, ctx.request.body.auto);
+    try {
+        await runMatchup(matchup, ctx.request.body.replace, ctx.request.body.auto);
+    } catch (error) {
+        if (error instanceof Error)
+            ctx.body = {
+                success: false,
+                error: error.message,
+            };
+        else
+            ctx.body = {
+                success: false,
+                error: `Unknown error, ${error}`,
+            };
+    }
 });
 
 banchoRefereeRouter.post("/:matchupID/roll", validateMatchup, async (ctx) => {
@@ -124,6 +137,14 @@ banchoRefereeRouter.post("/:matchupID/invite", validateMatchup, async (ctx) => {
         return;
     }
 
+    if (!ctx.request.body.userID || isNaN(parseInt(ctx.request.body.userID))) {
+        ctx.body = {
+            success: false,
+            error: "Invalid user ID",
+        };
+        return;
+    }
+
     const mpLobby = matchupList.lobby;
     await mpLobby.invitePlayer(`#${ctx.request.body.userID}`);
 
@@ -138,6 +159,14 @@ banchoRefereeRouter.post("/:matchupID/addRef", validateMatchup, async (ctx) => {
         ctx.body = {
             success: false,
             error: "Matchup not found",
+        };
+        return;
+    }
+
+    if (!ctx.request.body.userID || isNaN(parseInt(ctx.request.body.userID))) {
+        ctx.body = {
+            success: false,
+            error: "Invalid user ID",
         };
         return;
     }

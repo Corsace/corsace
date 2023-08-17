@@ -1,8 +1,18 @@
 <template>
-    <div class="referee">
+    <div 
+        class="referee"
+        @mousemove="updateTooltipPosition($event)"
+    >
+        <div
+            ref="tooltip" 
+            class="referee__tooltip"
+            :style="{ display: tooltipText ? 'block' : 'none' }"
+        >
+            {{ tooltipText }}
+        </div>
         <div class="referee__container">
             <OpenTitle>
-                {{ $t('open.referee.title') }}
+                {{ $t('open.referee.title') }} {{ matchup ? `- (${matchup.ID}) ${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "" }}
             </OpenTitle>
             <!-- Matchup Selected -->
             <div 
@@ -10,47 +20,154 @@
                 class="referee__matchup"
             >
                 <div class="referee__matchup__header">
-                    <div class="referee__matchup__header__title">
-                        ({{ matchup.ID }}) {{ `${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` }}
-                    </div>
                     <div class="referee__matchup__header__date">
                         {{ formatDate(matchup.date) }} {{ formatTime(matchup.date) }}
                     </div>
                     <ContentButton
-                        v-if="!matchup.mp"
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
-                        @click.native="createLobby"
+                        :class="{
+                            'content_button--disabled': matchup.mp,
+                        }"
+                        @click.native="!matchup.mp ? banchoCall('createLobby', { auto: false }) : tooltipText = 'Matchup already has a lobby'"
                     >
                         {{ $t('open.referee.createLobby') }}
                     </ContentButton>
+                    <ContentButton
+                        class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
+                        :class="{
+                            'content_button--disabled': !matchup.mp || matchup.first,
+                        }"
+                        @click.native="matchup.mp && !matchup.first ? banchoCall('roll') : tooltipText = matchup.first ? 'Matchup already rolled' : 'Matchup has no lobby'"
+                    >
+                        {{ $t('open.referee.roll') }}
+                    </ContentButton>
                 </div>
                 <div class="referee__matchup__content">
-                    <div class="referee__matchup__content__team">
-                        <div class="referee__matchup__content__team__name">
-                            {{ matchup.team1?.name || "TBD" }}
+                    <div class="referee__matchup__content_div">
+                        <div class="referee__matchup__content__staff">
+                            <div class="referee__matchup__content__team__name">
+                                Staff
+                            </div>
+                            <div class="referee__matchup__content__team__members">
+                                <div 
+                                    v-if="matchup.referee"
+                                    class="referee__matchup__content__team__members__member"
+                                    @click="matchup.mp ? banchoCall('addRef', { userID: matchup.referee.osu.userID }) : tooltipText = 'Matchup has no lobby'"
+                                >
+                                    <div 
+                                        class="referee__matchup__content__team__members__member__avatar"
+                                        :style="{ backgroundImage: `url(https://a.ppy.sh/${matchup.referee.osu.userID})` }"
+                                    />
+                                    {{ matchup.referee.osu.username }} ({{ matchup.referee.osu.userID }})
+                                </div>
+                                <div 
+                                    v-if="matchup.streamer"
+                                    class="referee__matchup__content__team__members__member"
+                                    @click="matchup.mp ? banchoCall('addRef', { userID: matchup.streamer.osu.userID }) : tooltipText = 'Matchup has no lobby'"
+                                >
+                                    <div 
+                                        class="referee__matchup__content__team__members__member__avatar"
+                                        :style="{ backgroundImage: `url(https://a.ppy.sh/${matchup.streamer.osu.userID})` }"
+                                    />
+                                    {{ matchup.streamer.osu.username }} ({{ matchup.streamer.osu.userID }})
+                                </div>
+                                <div 
+                                    v-for="member in matchup.commentators"
+                                    :key="member.ID"
+                                    class="referee__matchup__content__team__members__member"
+                                    @click="matchup.mp ? banchoCall('addRef', { userID: member.osu.userID }) : tooltipText = 'Matchup has no lobby'"
+                                >
+                                    <div 
+                                        class="referee__matchup__content__team__members__member__avatar"
+                                        :style="{ backgroundImage: `url(https://a.ppy.sh/${member.osu.userID})` }"
+                                    />
+                                    {{ member.osu.username }} ({{ member.osu.userID }})
+                                </div>
+                            </div>
                         </div>
-                        <div class="referee__matchup__content__team__avatar">
-                            <img 
-                                :src="matchup.team1?.avatarURL || require('../../Assets/img/site/open/team/default.png')"
-                                alt="Team Avatar"
-                            >
+                        <div class="referee__matchup__content__team">
+                            <div class="referee__matchup__content__team__name">
+                                {{ matchup.team1?.name || "TBD" }}
+                            </div>
+                            <div class="referee__matchup__content__team__avatar_section">
+                                <div 
+                                    class="referee__matchup__content__team__avatar"
+                                    :style="{ backgroundImage: `url(${matchup.team1?.avatarURL || require('../../Assets/img/site/open/team/default.png')})` }"
+                                />
+                                <div class="referee__matchup__content__team__stats">
+                                    {{ team1PlayerStates.filter(player => player.inLobby).length }} in lobby
+                                </div>
+                                <div class="referee__matchup__content__team__stats">
+                                    {{ team1PlayerStates.filter(player => player.ready).length }} ready
+                                </div>
+                            </div>
+                            <div class="referee__matchup__content__team__members">
+                                <div 
+                                    v-for="member in team1PlayerStates"
+                                    :key="member.ID"
+                                    class="referee__matchup__content__team__members__member"
+                                    :class="{
+                                        'referee__matchup__content__team__members__member--ready': member.ready,
+                                        'referee__matchup__content__team__members__member--notInLobby': !member.inLobby,
+                                    }"
+                                    @click="matchup.mp ? banchoCall('invite', { userID: member.osuID }) : tooltipText = 'Matchup has no lobby'"
+                                >
+                                    <div 
+                                        class="referee__matchup__content__team__members__member__avatar"
+                                        :class="{
+                                            'referee__matchup__content__team__members__member__avatar--ready': member.ready,
+                                        }"
+                                        :style="{ backgroundImage: `url(https://a.ppy.sh/${member.osuID})` }"
+                                    />
+                                    {{ member.username }} ({{ member.osuID }}) {{ member.mods ? `+${member.mods}` : "" }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="referee__matchup__content__team">
+                            <div class="referee__matchup__content__team__name">
+                                {{ matchup.team2?.name || "TBD" }}
+                            </div>
+                            <div class="referee__matchup__content__team__avatar_section">
+                                <div 
+                                    class="referee__matchup__content__team__avatar"
+                                    :style="{ backgroundImage: `url(${matchup.team2?.avatarURL || require('../../Assets/img/site/open/team/default.png')})` }"
+                                />
+                                <div class="referee__matchup__content__team__stats">
+                                    {{ team2PlayerStates.filter(player => player.inLobby).length }} in lobby
+                                </div>
+                                <div class="referee__matchup__content__team__stats">
+                                    {{ team2PlayerStates.filter(player => player.ready).length }} ready
+                                </div>
+                            </div>
+                            <div class="referee__matchup__content__team__members">
+                                <div 
+                                    v-for="member in team2PlayerStates"
+                                    :key="member.ID"
+                                    class="referee__matchup__content__team__members__member"
+                                    :class="{
+                                        'referee__matchup__content__team__members__member--ready': member.ready,
+                                        'referee__matchup__content__team__members__member--notInLobby': !member.inLobby,
+                                    }"
+                                    @click="matchup.mp ? banchoCall('invite', { userID: member.osuID }) : tooltipText = 'Matchup has no lobby'"
+                                >
+                                    <div 
+                                        class="referee__matchup__content__team__members__member__avatar"
+                                        :style="{ backgroundImage: `url(https://a.ppy.sh/${member.osuID})` }"
+                                        :class="{
+                                            'referee__matchup__content__team__members__member__avatar--ready': member.ready,
+                                        }"
+                                    />
+                                    {{ member.username }} ({{ member.osuID }}) {{ member.mods ? `+${member.mods}` : "" }}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="referee__matchup__content__team">
-                        <div class="referee__matchup__content__team__name">
-                            {{ matchup.team2?.name || "TBD" }}
-                        </div>
-                        <div class="referee__matchup__content__team__avatar">
-                            <img 
-                                :src="matchup.team2?.avatarURL || require('../../Assets/img/site/open/team/default.png')"
-                                alt="Team Avatar"
-                            >
-                        </div>
-                    </div>
+                    <div class="referee__matchup__content_div" />
+                    <div class="referee__matchup__content_div" />
                 </div>
                 <div class="referee__matchup__footer">
                     <ContentButton
-                        class="referee__matchup__footer__button content_button--red content_button--red_sm"
+                        class="referee__matchup__footer__button content_button--red"
                         @click.native="back"
                     >
                         {{ $t('open.referee.back') }}
@@ -69,7 +186,7 @@
                     @click="selectMatchup(matchup.ID)"
                 >
                     <div class="referee__matchups__matchup_name">
-                        ({{ matchup.ID }}) {{ matchup.teams?.map(team => team.name).join(" vs ") || "TBD" }}
+                        ({{ matchup.ID }}) {{ matchup.teams?.map(team => team.name).join(" vs ") ?? (matchup.team1 || matchup.team2) ? `${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "TBD" }}
                     </div>
                     <div class="referee__matchups__matchup_date">
                         {{ formatDate(matchup.date) }} {{ formatTime(matchup.date) }}
@@ -81,7 +198,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { Centrifuge, Subscription } from "centrifuge";
 
@@ -91,6 +208,15 @@ import { Tournament } from "../../Interfaces/tournament";
 import { Matchup } from "../../Interfaces/matchup";
 
 const openModule = namespace("open");
+
+interface playerState {
+    ID: number;
+    username: string;
+    osuID: string;
+    inLobby: boolean;
+    ready: boolean;
+    mods: string;
+}
 
 @Component({
     components: {
@@ -124,8 +250,126 @@ export default class Referee extends Vue {
     centrifuge: Centrifuge | null = null;
     matchupChannel: Subscription | null = null;
 
-    matchup: Matchup | null = null;
+    // TODO: Clear matchup back to null after testing
+    matchup: Matchup | null = {
+        ID: 0,
+        date: new Date(),
+        mp: null,
+        team1: {
+            ID: 0,
+            name: "Team 1",
+            abbreviation: "T1",
+            pp: 0,
+            rank: 0,
+            BWS: 0,
+            members: [
+                {
+                    ID: 0,
+                    username: "VINXIS",
+                    osuID: "4323406",
+                    isManager: true,
+                    BWS: 0,
+                },
+                {
+                    ID: 0,
+                    username: "VINXIS",
+                    osuID: "4323406",
+                    isManager: false,
+                    BWS: 0,
+                },
+                {
+                    ID: 0,
+                    username: "VINXIS",
+                    osuID: "4323406",
+                    isManager: false,
+                    BWS: 0,
+                },
+            ],
+            timezoneOffset: 0,
+            manager: {
+                ID: 0,
+                username: "VINXIS",
+                osuID: "4323406",
+                isManager: true,
+                BWS: 0,
+            },
+        },
+        team2: {
+            ID: 0,
+            name: "Team 2",
+            abbreviation: "T2",
+            pp: 0,
+            rank: 0,
+            BWS: 0,
+            members: [
+                {
+                    ID: 0,
+                    username: "VINXIS",
+                    osuID: "4323406",
+                    isManager: true,
+                    BWS: 0,
+                },
+                {
+                    ID: 0,
+                    username: "VINXIS",
+                    osuID: "4323406",
+                    isManager: false,
+                    BWS: 0,
+                },
+                {
+                    ID: 0,
+                    username: "VINXIS",
+                    osuID: "4323406",
+                    isManager: false,
+                    BWS: 0,
+                },
+            ],
+            timezoneOffset: 0,
+            manager: {
+                ID: 0,
+                username: "VINXIS",
+                osuID: "4323406",
+                isManager: true,
+                BWS: 0,
+            },
+        },
+        isLowerBracket: false,
+        team1Score: 0,
+        team2Score: 0,
+        potential: false,
+        forfeit: false,
+    };
     matchupList: Matchup[] | null = null;
+    mapStarted = false;
+
+    team1PlayerStates: playerState[] = [];
+    team2PlayerStates: playerState[] = [];
+
+    tooltipText = "";
+    timeoutRef: any = null;
+    @Watch("tooltipText")
+    clearTooltipText (newValue: string) {
+        if (this.timeoutRef) {
+            clearTimeout(this.timeoutRef);
+        }
+
+        if (newValue) {
+            this.timeoutRef = setTimeout(() => {
+                this.tooltipText = "";
+                this.timeoutRef = null;
+            }, 5000);
+        }
+    }
+
+    updateTooltipPosition (event) {
+        const x = event.clientX;
+        const y = event.clientY;
+
+        if (this.$refs.tooltip instanceof HTMLElement) {
+            this.$refs.tooltip.style.left = `${x + 10}px`;
+            this.$refs.tooltip.style.top = `${y + 10}px`;
+        }
+    }
 
     async mounted () {
         const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}`);
@@ -134,11 +378,16 @@ export default class Referee extends Vue {
             this.$router.push("/");
             return;
         }
-        this.matchupList = matchupData.matchups;
+        this.matchupList = matchupData.matchups?.map(matchup => ({
+            ...matchup,
+            date: new Date(matchup.date),
+        })) || [];
 
         const { data: centrifugoURL } = await this.$axios.get("/api/centrifugo/url");
 
-        const centrifuge = new Centrifuge(centrifugoURL);
+        const centrifuge = new Centrifuge(centrifugoURL, {
+
+        });
 
         centrifuge.on("connecting", (ctx) => {
             console.log("connecting", ctx);
@@ -155,6 +404,24 @@ export default class Referee extends Vue {
         centrifuge.connect();
 
         this.centrifuge = centrifuge;
+
+        // TODO: Remove after testing
+        this.team1PlayerStates = this.matchup?.team1?.members.map(member => ({
+            ID: member.ID,
+            username: member.username,
+            osuID: member.osuID,
+            inLobby: false,
+            ready: false,
+            mods: "",
+        })) || [];
+        this.team2PlayerStates = this.matchup?.team2?.members.map(member => ({
+            ID: member.ID,
+            username: member.username,
+            osuID: member.osuID,
+            inLobby: false,
+            ready: false,
+            mods: "",
+        })) || [];
     }
 
     formatDate (date: Date): string {
@@ -172,7 +439,7 @@ export default class Referee extends Vue {
 
     unsub () {
         if (this.matchupChannel) {
-            this.matchupChannel.unsubscribe();
+            this.centrifuge?.removeSubscription(this.matchupChannel);
             this.matchupChannel = null;
         }
     }
@@ -190,14 +457,73 @@ export default class Referee extends Vue {
             return;
         }
 
-        this.matchup = matchupData.matchup;
+        this.matchup = matchupData.matchup ? {
+            ...matchupData.matchup,
+            date: new Date(matchupData.matchup.date),
+        } : null;
 
-        this.centrifuge.newSubscription(`matchup:${matchupID}`);
+        this.team1PlayerStates = this.matchup?.team1?.members.map(member => ({
+            ID: member.ID,
+            username: member.username,
+            osuID: member.osuID,
+            inLobby: false,
+            ready: false,
+            mods: "",
+        })) || [];
+        this.team2PlayerStates = this.matchup?.team2?.members.map(member => ({
+            ID: member.ID,
+            username: member.username,
+            osuID: member.osuID,
+            inLobby: false,
+            ready: false,
+            mods: "",
+        })) || [];
+
+        this.matchupChannel = this.centrifuge.newSubscription(`matchup:${matchupID}`);
+
+        this.matchupChannel.on("subscribed", (ctx) => {
+            console.log("subscribed", ctx);
+        });
+
+        this.matchupChannel.subscribe();
     }
 
     back () {
         this.unsub();
         this.matchup = null;
+    }
+
+    async banchoCall (endpoint: string, data?: any) {
+        if (!this.matchup) {
+            alert("No matchup selected");
+            return;
+        }
+
+        const { data: lobbyData } = await this.$axios.post(`/api/referee/bancho/${this.tournament?.ID}/${this.matchup.ID}/bancho`, {
+            endpoint,
+            ...data,
+        });
+
+        if (lobbyData.error) {
+            alert(lobbyData.error);
+            console.error(lobbyData.error, Object.keys(lobbyData.error));
+            return;
+        }
+
+        switch (endpoint) {
+            case "createLobby":
+                this.tooltipText = "Lobby created";
+                break;
+            case "addRef":
+                this.tooltipText = "Addreffed";
+                break;
+            case "invite":
+                this.tooltipText = "Invited";
+                break;
+            case "roll":
+                this.tooltipText = "Rolled";
+                break;
+        }
     }
 }
 </script>
@@ -208,6 +534,17 @@ export default class Referee extends Vue {
 
 .referee {
     width: 100%;
+
+    &__tooltip {
+        position: fixed;
+        transition: none;
+        z-index: 10;
+
+        background-color: #1B1B1B;
+        padding: 10px;
+        border-radius: 10px;
+
+    }
 
     &__container {
         width: 95vw;
@@ -225,7 +562,7 @@ export default class Referee extends Vue {
 
         &__header {
             display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 5px;
 
             &__title {
@@ -243,7 +580,13 @@ export default class Referee extends Vue {
             display: flex;
             flex-direction: row;
             gap: 20px;
-            margin-top: 20px;
+
+            &_div {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
 
             &__team {
                 display: flex;
@@ -252,19 +595,62 @@ export default class Referee extends Vue {
 
                 &__name {
                     font-size: $font-lg;
-                    font-weight: 500;
+                    font-weight: bold;
                 }
 
                 &__avatar {
-                    width: 100px;
-                    height: 100px;
-                    border-radius: 5px;
-                    overflow: hidden;
+                    width: 150px;
+                    height: 50px;
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    background-position: center;
 
-                    img {
-                        width: 100%;
-                        height: 100%;
-                        object-fit: cover;
+                    &_section {
+                        display: flex;
+                        gap: 5px;
+                    }
+                }
+
+                &__stats {
+                    font-size: $font-xxl;
+                    font-weight: bold;
+                }
+
+                &__members {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+
+                    &__member {
+                        display: flex;
+                        gap: 5px;
+                        cursor: pointer;
+
+                        &--disabled {
+                            cursor: not-allowed;
+                        }
+
+                        &--ready {
+                            color: rgb(158, 216, 84);
+                        }
+
+                        &--notInLobby {
+                            filter: saturate(0);
+                            color: #333333;
+                        }
+
+                        &__avatar {
+                            width: 20px;
+                            height: 20px;
+                            background-size: contain;
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            border-radius: 50%;
+
+                            &--ready {
+                                border: 2px solid rgb(158, 216, 84);
+                            }
+                        }
                     }
                 }
             }
@@ -274,10 +660,9 @@ export default class Referee extends Vue {
             display: flex;
             flex-direction: row;
             gap: 20px;
-            margin-top: 20px;
 
             &__button {
-                width: 100%;
+                max-width: 300px;
             }
         }
     }
@@ -286,7 +671,6 @@ export default class Referee extends Vue {
         display: flex;
         flex-direction: column;
         gap: 20px;
-        margin-top: 20px;
 
         &__matchup {
             display: flex;

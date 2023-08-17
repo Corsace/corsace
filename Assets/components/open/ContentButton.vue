@@ -101,6 +101,7 @@ export default class ContentButton extends Vue {
         background-color: rgba(0, 0, 0, 0);
         border: 1px solid $open-red;
         color: $open-red;
+        min-height: 29px;
     }
 
     &--red_outline:hover {
@@ -118,14 +119,16 @@ export default class ContentButton extends Vue {
         cursor: not-allowed;
         color: #545454;
         background-color: rgba(0, 0, 0, 0);
-        border: 1px solid #545454
+        border: 1px solid #545454;
+        min-height: 29px;
     }
 
     &--disabled:hover {
         cursor: not-allowed;
         color: #545454;
         background-color: rgba(0, 0, 0, 0);
-        border: 1px solid #545454
+        border: 1px solid #545454;
+        min-height: 29px;
     }
 }
 </style>

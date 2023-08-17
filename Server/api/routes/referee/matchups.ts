@@ -13,7 +13,6 @@ const refereeMatchupsRouter = new Router();
 refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup
         .createQueryBuilder("matchup")
-        .innerJoin("matchup.referee", "referee")
         .innerJoinAndSelect("matchup.stage", "stage")
         .innerJoinAndSelect("stage.tournament", "tournament")
         .leftJoinAndSelect("matchup.round", "round")
@@ -24,16 +23,15 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
         .leftJoinAndSelect("team1.members", "members1")
         .leftJoinAndSelect("team2.members", "members2")
         .leftJoinAndSelect("matchup.winner", "winner")
+        .leftJoin("matchup.referee", "referee")
         .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID });
-    
-    // If not organizer check if they are referee
+
+    // For organizers to see all matchups
     const roles = await TournamentRole
         .createQueryBuilder("role")
         .innerJoin("role.tournament", "tournament")
         .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
         .getMany();
-    
-    // For organizers to see all matchups
     let bypass = false;
     if (roles.length > 0) {
         try {
@@ -59,7 +57,7 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
 });
 
 refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
-    const matchup = await Matchup
+    const matchupQ = Matchup
         .createQueryBuilder("matchup")
         .innerJoinAndSelect("matchup.stage", "stage")
         .innerJoinAndSelect("stage.tournament", "tournament")
@@ -80,9 +78,31 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
         .leftJoinAndSelect("maps.winner", "mapWinner")
         .leftJoinAndSelect("matchup.messages", "messages")
         .leftJoinAndSelect("messages.user", "user")
-        .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
-        .andWhere("referee.ID = :refereeID", { refereeID: ctx.state.user.ID })
-        .getOne();
+        .where("matchup.ID = :ID", { ID: ctx.params.matchupID });
+
+    // For organizers to see all matchups
+    const roles = await TournamentRole
+        .createQueryBuilder("role")
+        .innerJoin("role.tournament", "tournament")
+        .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
+        .getMany();
+    let bypass = false;
+    if (roles.length > 0) {
+        try {
+            const privilegedRoles = roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+            const tournamentServer = await discordClient.guilds.fetch(ctx.state.tournament.server);
+            const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
+            bypass = privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID));
+        } catch (e) {
+            bypass = false;
+        }
+    }
+
+    if (!bypass)
+        matchupQ
+            .andWhere("referee.ID = :refereeID", { refereeID: ctx.state.user.ID });
+        
+    const matchup = await matchupQ.getOne();
 
     if (!matchup) {
         ctx.body = {
@@ -97,5 +117,13 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
         matchup,
     };
 });
+
+// TODO: Delete thius shitr when PR is ready
+// refereeMatchupsRouter.post("testMatchup", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+//     const users = [
+//         { country: "US", osu: { username: "ajmosca", userID: "19884809" }, discord: { username: "ajmosca", userID: "300176143854731275" } },
+//         { country: "FR", osu: { username: "Mimiliaa", userID: "7117621" }, discord: { username: "mimiliaa", userID: "177397082338885632" } },
+//     ];
+// });
 
 export default refereeMatchupsRouter;

@@ -34,6 +34,8 @@ export interface Matchup extends BaseMatchup {
     forfeit:        boolean;
     vod?:            null;
     referee?:        User | null;
+    streamer?:       User | null;
+    commentators?:   User[] | null;
     messages?:       MatchupMessage[] | null;
 }
 
