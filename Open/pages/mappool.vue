@@ -11,7 +11,7 @@
             <div
                 class="qualifiers__sub_header_item"
                 :class="{ 'qualifiers__sub_header_item--active': page === 'scores' }"
-                @click="getScores"
+                @click="page = 'scores'"
             >
                 {{ $t('open.qualifiers.nav.scores') }}
             </div>
@@ -25,8 +25,8 @@
                         class="qualifiers__button_group"
                     >
                         <StageSelector
-                            :not-beginning="selectedMappool?.ID !== mappoolList[0]?.ID"
-                            :not-end="selectedMappool?.ID !== mappoolList[mappoolList.length - 1]?.ID"
+                            :not-beginning="selectedStage?.ID !== stageList[0]?.ID"
+                            :not-end="selectedStage?.ID !== stageList[stageList.length - 1]?.ID"
                             @prev="index--"
                             @next="index++"
                         >
@@ -38,7 +38,7 @@
                             </template>
 
                             <template #stage>
-                                {{ selectedMappool?.abbreviation.toUpperCase() || '' }}
+                                {{ selectedStage?.abbreviation.toUpperCase() || '' }}
                             </template>
                         </StageSelector>
                         <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
@@ -55,7 +55,7 @@
                             >
                         </a>
                         <a
-                            :href="selectedMappool?.mappackLink || ''"
+                            :href="mappoolList[0]?.mappackLink || ''"
                             class="qualifiers__button"
                         >
                             <div class="qualifiers__button_text">
@@ -72,8 +72,8 @@
                         class="qualifiers__button_group"
                     >
                         <StageSelector
-                            :not-beginning="selectedMappool?.ID !== mappoolList[0]?.ID"
-                            :not-end="selectedMappool?.ID !== mappoolList[mappoolList.length - 1]?.ID"
+                            :not-beginning="selectedStage?.ID !== stageList[0]?.ID"
+                            :not-end="selectedStage?.ID !== stageList[stageList.length - 1]?.ID"
                             @prev="index--"
                             @next="index++"
                         >
@@ -85,7 +85,7 @@
                             </template>
 
                             <template #stage>
-                                {{ selectedMappool?.abbreviation.toUpperCase() || '' }}
+                                {{ selectedStage?.abbreviation.toUpperCase() || '' }}
                             </template>
                         </StageSelector>
                         <div class="qualifiers__header_subtext">
@@ -115,10 +115,13 @@
                     </div>
                 </template>
             </OpenTitle>
-            <MappoolView
-                v-if="page === 'mappool' && selectedMappool?.isPublic"
-                :pool="selectedMappool"
-            />
+            <div v-if="page === 'mappool' && mappoolList.length !== 0">
+                <MappoolView
+                    v-for="mappool in mappoolList"
+                    :key="mappool.ID"
+                    :pool="mappool"
+                />
+            </div>
             <div
                 v-else-if="page === 'mappool'"
                 class="qualifiers__button_group"
@@ -134,7 +137,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component} from "vue-property-decorator";
+import { Vue, Component, Watch} from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
@@ -147,6 +150,7 @@ import { Mappool as MappoolInterface } from "../../Interfaces/mappool";
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
+import { Stage } from "../../Interfaces/stage";
 
 const openModule = namespace("open");
 
@@ -186,24 +190,28 @@ export default class Mappool extends Vue {
 
     @openModule.State tournament!: Tournament | null;
 
-    mappoolList: MappoolInterface[] = [];
+    stageList: Stage[] = [];
     index = 0;
     
-    get selectedMappool (): MappoolInterface | null {
-        return this.mappoolList[this.index] || null;
+    get selectedStage (): Stage | null {
+        return this.stageList[this.index] || null;
+    }
+
+    @Watch("selectedStage")
+    async getScores () {
+        await this.$store.dispatch("open/setScores", {
+            tournamentID: this.tournament?.ID,
+            stageID: this.selectedStage?.ID,
+        });
+    }
+
+    get mappoolList (): MappoolInterface [] {
+        return this.selectedStage?.mappool.concat(this.selectedStage?.rounds.flatMap(r => r.mappool)).filter(p => p.isPublic) || [];
     }
 
     mounted () {
-        this.mappoolList = this.tournament?.stages.flatMap(s => [...s.mappool, ...s.rounds.flatMap(r => r.mappool)]) || [];
-        this.index = this.mappoolList.findLastIndex(m => m.isPublic);
-    }
-
-    async getScores () {
-        this.page = "scores";
-        this.$store.dispatch("open/setScores", {
-            tournamentID: this.tournament?.ID,
-            stageID: this.tournament?.stages.find(s => s.mappool.some(m => m.ID === this.selectedMappool?.ID))?.ID,
-        });
+        this.stageList = this.tournament?.stages || [];
+        this.index = this.stageList.findLastIndex(s => s.mappool.some(m => m.isPublic) || s.rounds.some(r => r.mappool.some(m => m.isPublic))) || 0;
     }
 }
 </script>
