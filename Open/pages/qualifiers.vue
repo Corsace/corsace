@@ -122,6 +122,7 @@
             </div>
             <ScoresView
                 v-else-if="page === 'scores'"
+                tiers
                 :view="scoreView"
             />
             <QualifiersView

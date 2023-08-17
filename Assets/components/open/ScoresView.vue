@@ -82,12 +82,13 @@
                                 </div>
                             </th>
                         </tr>
+                        <!-- TODO: Don't hardcode tiers -->
                         <tr
                             v-for="row in shownQualifierScoreViews"
                             :key="row.ID"
                             :class="{ 
-                                'scores__table--tier1': row.placement <= 8 && syncView === 'teams',
-                                'scores__table--tier2': row.placement > 8 && row.placement <= 24 && syncView === 'teams',
+                                'scores__table--tier1': tiers && row.placement <= 8 && syncView === 'teams',
+                                'scores__table--tier2': tiers && row.placement > 8 && row.placement <= 24 && syncView === 'teams',
                             }"
                         >
                             <td>#{{ row.placement }}</td>
@@ -155,7 +156,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, PropSync} from "vue-property-decorator";
+import { Vue, Component, PropSync, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { MatchupScore, MatchupScoreView, computeScoreViews, mapNames, scoreFilters, scoreSortType } from "../../../Interfaces/matchup";
 import { Tournament } from "../../../Interfaces/tournament";
@@ -177,6 +178,7 @@ const openModule = namespace("open");
 export default class ScoresView extends Vue {
 
     @PropSync("view", { type: String }) syncView!: "players" | "teams";
+    @Prop(Boolean) readonly tiers!: boolean;
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State scores!: MatchupScore[] | null;
