@@ -375,6 +375,7 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
 
     ctx.body = {
         success: true,
+        matchup,
     };
 });
 
@@ -452,19 +453,20 @@ matchupRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
         return;
     }
 
-    const matchupScore = new MatchupScore;
-    matchupScore.user = user;
-    matchupScore.score = score;
-    matchupScore.mods = mods;
-    matchupScore.misses = misses;
-    matchupScore.combo = combo;
-    matchupScore.fail = ctx.request.body.fail || false;
-    matchupScore.accuracy = accuracy;
-    matchupScore.fullCombo = ctx.request.body.fullCombo || false;
-    matchupScore.map = map;
+    const matchupScore      = new MatchupScore;
+    matchupScore.user       = user;
+    matchupScore.score      = score;
+    matchupScore.mods       = mods;
+    matchupScore.misses     = misses;
+    matchupScore.combo      = combo;
+    matchupScore.fail       = ctx.request.body.fail || false;
+    matchupScore.accuracy   = accuracy;
+    matchupScore.fullCombo  = ctx.request.body.fullCombo || false;
+    matchupScore.map        = map;
     await matchupScore.save();
 
     if (matchup.stage!.stageType !== StageType.Qualifiers) {
+        map.scores.push(matchupScore);
         map.team1Score = map.scores
             .filter(score => matchup.team1!.members.some(member => member.ID === score.user!.ID))
             .reduce((acc, score) => acc + score.score, 0);
@@ -490,6 +492,7 @@ matchupRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
 
     ctx.body = {
         success: true,
+        matchup,
     };
 }); 
 
