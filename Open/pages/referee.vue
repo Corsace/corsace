@@ -10,6 +10,13 @@
         >
             {{ tooltipText }}
         </div>
+        <!-- TODO: DELETE THE EPIC BUTTON -->
+        <ContentButton
+            class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
+            @click.native="doEpic()"
+        >
+            Epic Button
+        </ContentButton>
         <div class="referee__container">
             <OpenTitle>
                 {{ $t('open.referee.title') }} {{ matchup ? `- (${matchup.ID}) ${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "" }}
@@ -524,6 +531,13 @@ export default class Referee extends Vue {
                 this.tooltipText = "Rolled";
                 break;
         }
+    }
+
+    // TODO: DELETE EPIC
+    async doEpic () {
+        const { data } = await this.$axios.post(`/api/referee/matchups/testMatchup/${this.tournament?.ID}`);
+        console.log(data);
+        this.tooltipText = "Epic";
     }
 }
 </script>

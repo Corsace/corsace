@@ -158,7 +158,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchupMessage.user = user;
         matchup.messages!.push(matchupMessage);
 
-        await publish(matchup, { type: "message", ...matchupMessage });
+        await publish(matchup, { type: "message", timestamp: matchupMessage.timestamp, content: matchupMessage.content, ...user });
 
         // Rolling logic
         if (message.self && !rolling && message.content.toLowerCase() === "!roll 2")
