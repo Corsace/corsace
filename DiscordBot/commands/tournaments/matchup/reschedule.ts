@@ -51,7 +51,7 @@ async function rescheduleLog (matchup: Matchup, prevDate: Date) {
 }
 
 async function run (m: Message | ChatInputCommandInteraction) {
-    await respond(m, "Rescheduling matchup...");
+    const message = await respond(m, "Rescheduling matchup...");
 
     const params = extractParameters<parameters>(m, [
         { name: "date", paramType: "string", customHandler: extractDate },
@@ -64,7 +64,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const { date, matchup: matchupID, tournament: tournamentParam } = params;
 
     if (isNaN(date.getTime())) {
-        await respond(m, "Invalid date. Provide a valid date using either `YYYY-MM-DD HH:MM UTC` format, or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
+        await message.edit("Invalid date. Provide a valid date using either `YYYY-MM-DD HH:MM UTC` format, or a unix/epoch timestamp in seconds.\n\nUnix timestamps can be found [here](https://www.unixtimestamp.com/)");
         return;
     }
 
@@ -94,7 +94,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .getOne();
         
         if (!matchup) {
-            await respond(m, "Invalid matchup ID provided");
+            await message.edit("Invalid matchup ID provided");
             return;
         }
 
@@ -107,14 +107,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 return;
 
             if (!await confirmCommand(m, `Do you wish to reschedule the matchup ID ${matchup.ID} in stage \`${matchup.stage?.name || "N/A"}\` between \`${matchup.team1?.name || "N/A"}\` and \`${matchup.team2?.name || "N/A"}\` to ${discordStringTimestamp(date)}?`)) {
-                await respond(m, "Ok Lol");
+                await message.edit("Ok Lol");
                 return;
             }
 
             const prevDate = matchup.date;
             matchup.date = date;
             await matchup.save();
-            await respond(m, `Matchup rescheduled from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}`);
+            await message.edit(`Matchup rescheduled from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}`);
             await rescheduleLog(matchup, prevDate);
             return;
         }
@@ -140,7 +140,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .getMany();
 
         if (matchups.length === 0) {
-            await respond(m, "You are not in any matchups that can be rescheduled. Note that you must be a manager of a team to reschedule a matchup");
+            await message.edit("Ur not in any matchups that can be rescheduled (u must be a manager of a team to reschedule a matchup)");
             return;
         }
 
@@ -152,7 +152,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         });
         const matchupListResult = await getFromList(m, matchupList, "matchup", tournamentParam || channelID(m));
         if (!matchupListResult) {
-            await respond(m, "Could not find a valid matchup");
+            await message.edit("Could not find a valid matchup");
             return;
         }
 
@@ -162,7 +162,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (matchup.previousMatchups && matchup.previousMatchups.length > 0) {
         const previousMatchupAfterDate = matchup.previousMatchups.find((previousMatchup) => date.getTime() < (previousMatchup.date.getTime() + 3600000));
         if (previousMatchupAfterDate) {
-            await respond(m, `U cant reschedule a matchup to a time that is BEFORE 1 hour after a matchup that the one ur rescheduling depends on, see matchup ID ${previousMatchupAfterDate.ID} (${previousMatchupAfterDate.date.toUTCString()} ${discordStringTimestamp(previousMatchupAfterDate.date)})`);
+            await message.edit(`U cant reschedule a matchup to a time that is BEFORE 1 hour after a matchup that the one ur rescheduling depends on, see matchup ID ${previousMatchupAfterDate.ID} (${previousMatchupAfterDate.date.toUTCString()} ${discordStringTimestamp(previousMatchupAfterDate.date)})`);
             return;
         }
     }
@@ -170,7 +170,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (matchup.nextMatchups && matchup.nextMatchups.length > 0) {
         const nextMatchupBeforeDate = matchup.nextMatchups.find((nextMatchup) => date.getTime() > (nextMatchup.date.getTime() - 3600000));
         if (nextMatchupBeforeDate) {
-            await respond(m, `U cant reschedule a matchup to a time that is AFTER 1 hour before a matchup that is dependant on this one, see matchup ID ${nextMatchupBeforeDate.ID} (${nextMatchupBeforeDate.date.toUTCString()} ${discordStringTimestamp(nextMatchupBeforeDate.date)})`);
+            await message.edit(`U cant reschedule a matchup to a time that is AFTER 1 hour before a matchup that is dependant on this one, see matchup ID ${nextMatchupBeforeDate.ID} (${nextMatchupBeforeDate.date.toUTCString()} ${discordStringTimestamp(nextMatchupBeforeDate.date)})`);
             return;
         }
 
@@ -179,7 +179,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .flatMap((nextMatchup) => nextMatchup.potentials!.filter(potential => !potential.invalid));
         const potentialsBeforeDate = potentials.find((potential) => date.getTime() > (potential.date.getTime() - 3600000));
         if (potentialsBeforeDate) {
-            await respond(m, `U cant reschedule a matchup to a time that is AFTER 1 hour before a matchup that is dependant on this one, see POTENTIAL matchup ID ${potentialsBeforeDate.ID} (${potentialsBeforeDate.date.toUTCString()} ${discordStringTimestamp(potentialsBeforeDate.date)})`);
+            await message.edit(`U cant reschedule a matchup to a time that is AFTER 1 hour before a matchup that is dependant on this one, see POTENTIAL matchup ID ${potentialsBeforeDate.ID} (${potentialsBeforeDate.date.toUTCString()} ${discordStringTimestamp(potentialsBeforeDate.date)})`);
             return;
         }
     }
@@ -187,24 +187,24 @@ async function run (m: Message | ChatInputCommandInteraction) {
     // If the matchup is within 24 hours of the stage starting, dont allow it to be rescheduled
     const dayBeforeStart = matchup.stage!.timespan.start.getTime() - 86400000;
     if (Date.now() > dayBeforeStart) {
-        await respond(m, `U cant reschedule a matchup within 24 hours of the stage starting noob (${new Date(dayBeforeStart).toUTCString()} ${discordStringTimestamp(new Date(dayBeforeStart))})`);
+        await message.edit(`U cant reschedule a matchup within 24 hours of the stage starting noob (${new Date(dayBeforeStart).toUTCString()} ${discordStringTimestamp(new Date(dayBeforeStart))})`);
         return;
     }
 
     const prevDate = matchup.date;
 
     if (date.getTime() < matchup.stage!.timespan.start.getTime()) {
-        await respond(m, `U cant reschedule a matchup to before the stage starts Lol (${date.toUTCString()} ${discordStringTimestamp(matchup.stage!.timespan.start)})`);
+        await message.edit(`U cant reschedule a matchup to before the stage starts Lol (${date.toUTCString()} ${discordStringTimestamp(matchup.stage!.timespan.start)})`);
         return;
     }
 
     if (date.getTime() > matchup.stage!.timespan.end.getTime()) {
-        await respond(m, `U cant reschedule a matchup to after the stage ends Lol (${date.toUTCString()} ${discordStringTimestamp(matchup.stage!.timespan.end)})`);
+        await message.edit(`U cant reschedule a matchup to after the stage ends Lol (${date.toUTCString()} ${discordStringTimestamp(matchup.stage!.timespan.end)})`);
         return;
     }
 
     if (date.getTime() < Date.now()) {
-        await respond(m, "U cant reschedule a matchup to before the current time...");
+        await message.edit("U cant reschedule a matchup to before the current time...");
         return;
     }
 
@@ -228,23 +228,24 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .getOne();
 
     if (existing) {
-        await respond(m, `YO theres already a matchup scheduled for ${date.toUTCString()} ${discordStringTimestamp(date)} between \`${existing.team1?.name || "N/A"}\` and \`${existing.team2?.name || "N/A"}\` this is gonna cause a conflict for the teams cuz it's within 1 hour of the new time`);
+        await message.edit(`YO theres already a matchup scheduled for ${date.toUTCString()} ${discordStringTimestamp(date)} between \`${existing.team1?.name || "N/A"}\` and \`${existing.team2?.name || "N/A"}\` this is gonna cause a conflict for the teams cuz it's within 1 hour of the new time`);
+        await message.edit(`YO theres already a matchup scheduled for ${date.toUTCString()} ${discordStringTimestamp(date)} between \`${existing.team1?.name || "N/A"}\` and \`${existing.team2?.name || "N/A"}\` this is gonna cause a conflict for the teams cuz it's within 1 hour of the new time`);
         return;
     }
 
     if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> U wanna reschedule ur match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID)) {
-        await respond(m, "Ok Lol");
+        await message.edit("Ok Lol");
         return;
     }
 
     if (matchup.team2 && !await confirmCommand(m, `<@${matchup.team2.manager.discord.userID}> U wanna reschedule ur match${matchup.team1 ? ` vs \`${matchup.team1.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team2.manager.discord.userID)) {
-        await respond(m, "Ok Lol");
+        await message.edit("Ok Lol");
         return;
     }
 
     matchup.date = date;
     await matchup.save();
-    await respond(m, `Matchup rescheduled from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}`);
+    await message.edit(`Matchup rescheduled from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}`);
     await rescheduleLog(matchup, prevDate);
 }
 
