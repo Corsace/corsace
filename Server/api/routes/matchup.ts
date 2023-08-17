@@ -26,6 +26,38 @@ interface postMatchup {
     previousMatchups?: postMatchup[];
 }
 
+function sanitizeMatchupResponse (matchup: Matchup) {
+    return {
+        ID: matchup.ID,
+        stage: matchup.stage,
+        teams: matchup.teams,
+        team1: matchup.team1,
+        team2: matchup.team2,
+        team1Score: matchup.team1Score,
+        team2Score: matchup.team2Score,
+        winner: matchup.winner,
+        maps: matchup.maps?.map(map => ({
+            ID: map.ID,
+            map: map.map,
+            order: map.order,
+            team1Score: map.team1Score,
+            team2Score: map.team2Score,
+            winner: map.winner,
+            scores: map.scores.map(score => ({
+                ID: score.ID,
+                user: score.user,
+                score: score.score,
+                mods: score.mods,
+                misses: score.misses,
+                combo: score.combo,
+                fail: score.fail,
+                accuracy: score.accuracy,
+                fullCombo: score.fullCombo,
+            })),
+        })),
+    };
+}
+
 function requiredNumberFields<T extends Record<string, any>> (obj: Partial<T>, fields: (keyof T)[]): string | Record<keyof T, number> {
     const result: Record<string, number> = {};
 
@@ -375,7 +407,7 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
 
     ctx.body = {
         success: true,
-        matchup,
+        matchup: sanitizeMatchupResponse(matchup),
     };
 });
 
@@ -492,7 +524,7 @@ matchupRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
 
     ctx.body = {
         success: true,
-        matchup,
+        matchup: sanitizeMatchupResponse(matchup),
     };
 }); 
 
