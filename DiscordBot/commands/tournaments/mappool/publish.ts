@@ -26,6 +26,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
+    // TODO: change to extractParameters
     const pool = extractParameter(m, { name: "pool", paramType: "string" }, 1);
     if (!pool || !(typeof pool === "string")) {
         await respond(m, "Provide a mappool");
@@ -103,6 +104,10 @@ const data = new SlashCommandBuilder()
         option.setName("pool")
             .setDescription("The mappool to publish/private")
             .setRequired(true))
+    .addAttachmentOption(option =>
+        option.setName("mappack")
+            .setDescription("The mappack to upload")
+            .setRequired(false))
     .setDMPermission(false);  
 
 const mappoolPublish: Command = {
