@@ -11,7 +11,7 @@
             <div
                 class="qualifiers__sub_header_item"
                 :class="{ 'qualifiers__sub_header_item--active': page === 'scores' }"
-                @click="page = 'scores'; $store.dispatch('open/setQualifierScores', tournament?.ID);"
+                @click="getScores"
             >
                 {{ $t('open.qualifiers.nav.scores') }}
             </div>
@@ -196,6 +196,14 @@ export default class Mappool extends Vue {
     mounted () {
         this.mappoolList = this.tournament?.stages.flatMap(s => [...s.mappool, ...s.rounds.flatMap(r => r.mappool)]) || [];
         this.index = this.mappoolList.findLastIndex(m => m.isPublic);
+    }
+
+    async getScores () {
+        this.page = "scores";
+        this.$store.dispatch("open/setScores", {
+            tournamentID: this.tournament?.ID,
+            stageID: this.tournament?.stages.find(s => s.mappool.some(m => m.ID === this.selectedMappool?.ID))?.ID,
+        });
     }
 }
 </script>

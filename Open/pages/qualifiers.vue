@@ -218,6 +218,14 @@ export default class Qualifiers extends Vue {
         if (get)
             await this.$store.dispatch("open/setQualifierList", this.tournament?.ID);
     }
+
+    async getScores () {
+        this.page = "scores";
+        this.$store.dispatch("open/setScores", {
+            tournamentID: this.tournament?.ID,
+            stageID: this.qualifiersStage?.ID,
+        });
+    }
 }
 </script>
 

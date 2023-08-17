@@ -103,6 +103,10 @@ const data = new SlashCommandBuilder()
         option.setName("pool")
             .setDescription("The mappool to publish/private")
             .setRequired(true))
+    .addAttachmentOption(option =>
+        option.setName("mappack")
+            .setDescription("The mappack to upload")
+            .setRequired(false))
     .setDMPermission(false);  
 
 const mappoolPublish: Command = {
