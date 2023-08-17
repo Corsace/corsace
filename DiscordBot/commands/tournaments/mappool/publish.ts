@@ -26,7 +26,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    // TODO: change to extractParameters
     const pool = extractParameter(m, { name: "pool", paramType: "string" }, 1);
     if (!pool || !(typeof pool === "string")) {
         await respond(m, "Provide a mappool");
