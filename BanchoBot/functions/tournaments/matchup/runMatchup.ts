@@ -5,7 +5,7 @@ import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { StageType, ScoringMethod } from "../../../../Interfaces/stage";
 import { osuClient } from "../../../../Server/osu";
-import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions, BanchoUser } from "bancho.js";
+import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyPlayerStates, BanchoLobbyTeamModes, BanchoLobbyWinConditions, BanchoUser } from "bancho.js";
 import { convertDateToDDDHH } from "../../../../Server/utils/dateParse";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
@@ -158,7 +158,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchupMessage.user = user;
         matchup.messages!.push(matchupMessage);
 
-        await publish(matchup, { type: "message", timestamp: matchupMessage.timestamp, content: matchupMessage.content, ...user });
+        await publish(matchup, { 
+            type: "message", 
+            timestamp: matchupMessage.timestamp, 
+            content: matchupMessage.content, 
+            userID: matchupMessage.user.ID, 
+            userOsuID: matchupMessage.user.osu.userID, 
+            username: matchupMessage.user.osu.username,
+        });
 
         // Rolling logic
         if (message.self && !rolling && message.content.toLowerCase() === "!roll 2")
@@ -177,7 +184,10 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             // TODO: Don't hardcode picking/banning/protecting first/second in the message
             await mpChannel.sendMessage(`OK ${matchup.first?.name} is considered team 1 so they'll be picking first and banning second`);
 
-            await publish(matchup, { type: "first", ...matchup.first });
+            await publish(matchup, { 
+                type: "first",
+                first: matchup.first?.ID,
+            });
         }
 
         if (message.self || !state.matchups[matchup.ID].autoRunning)
@@ -296,7 +306,13 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (!state.matchups[matchup.ID])
             return;
         
-        await publish(matchup, { type: "playerJoined", ...joinInfo });
+        await publish(matchup, { 
+            type: "playerJoined", 
+            playerOsuID: joinInfo.player.user.id,
+            slot: joinInfo.slot,
+            team: joinInfo.team,
+            ready: joinInfo.player.state === BanchoLobbyPlayerStates.Ready,
+        });
 
         const newPlayer = joinInfo.player;
         const newPlayerID = newPlayer.user.id.toString();
@@ -316,7 +332,15 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         await mpLobby.updateSettings();
 
-        await publish(matchup, { type: "settings", ...mpLobby.slots });
+        await publish(matchup, { 
+            type: "settings",
+            slots: mpLobby.slots.map((slot, i) => ({
+                playerOsuID: slot?.user.id,
+                slot: i + 1,
+                team: slot?.team,
+                ready: slot.state === BanchoLobbyPlayerStates.Ready,
+            })),
+        });
 
         if (started || mpLobby.playing || !state.matchups[matchup.ID].autoRunning)
             return;
@@ -370,11 +394,22 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return;
 
         log(matchup, `Player ${player.user.username} left the lobby`);
-        await publish(matchup, { type: "playerLeft", ...player });
+        await publish(matchup, { 
+            type: "playerLeft",
+            playerOsuID: player.user.id,
+        });
 
         await mpLobby.updateSettings();
         
-        await publish(matchup, { type: "settings", ...mpLobby.slots });
+        await publish(matchup, { 
+            type: "settings",
+            slots: mpLobby.slots.map((slot, i) => ({
+                playerOsuID: slot?.user.id,
+                slot: i + 1,
+                team: slot?.team,
+                ready: slot.state === BanchoLobbyPlayerStates.Ready,
+            })),
+        });
 
         if (!state.matchups[matchup.ID].autoRunning)
             return;
@@ -398,7 +433,15 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         await mpLobby.updateSettings();
 
-        await publish(matchup, { type: "settings", ...mpLobby.slots });
+        await publish(matchup, { 
+            type: "settings",
+            slots: mpLobby.slots.map((slot, i) => ({
+                playerOsuID: slot?.user.id,
+                slot: i + 1,
+                team: slot?.team,
+                ready: slot.state === BanchoLobbyPlayerStates.Ready,
+            })),
+        });
 
         if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId) || !state.matchups[matchup.ID].autoRunning)
             return;
@@ -518,22 +561,32 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return matchupScore.save();
         }));
         if (matchup.stage!.stageType !== StageType.Qualifiers) {
-            const team1Score = matchupMap.scores
+            matchupMap.team1Score = matchupMap.scores
                 .filter(score => matchup.team1!.members.some(m => m.osu.userID === score.user.osu.userID))
                 .reduce((acc, score) => acc + score.score, 0);
-            const team2Score = matchupMap.scores
+            matchupMap.team2Score = matchupMap.scores
                 .filter(score => matchup.team2!.members.some(m => m.osu.userID === score.user.osu.userID))
                 .reduce((acc, score) => acc + score.score, 0);
-            if (team1Score > team2Score)
+            if (matchupMap.team1Score > matchupMap.team2Score) {
                 matchup.team1Score++;
-            else if (team2Score > team1Score)
+                matchupMap.winner = matchup.team1;
+            } else if (matchupMap.team2Score > matchupMap.team1Score) {
                 matchup.team2Score++;
+                matchupMap.winner = matchup.team2;
+            }
         }
         matchup.maps!.push(matchupMap);
 
         log(matchup, `Matchup map and scores saved with matchupMap ID ${matchupMap.ID}`);
 
-        await publish(matchup, { type: "matchFinished", ...matchupMap });
+        await publish(matchup, {
+            type: "matchFinished",
+            beatmapID: matchupMap.map.beatmap!.ID,
+            mapOrder: matchupMap.order,
+            team1Score: matchupMap.team1Score,
+            team2Score: matchupMap.team2Score,
+            winner: matchupMap.winner?.ID,
+        });
 
         if (!state.matchups[matchup.ID].autoRunning)
             return;

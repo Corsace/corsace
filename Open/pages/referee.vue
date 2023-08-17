@@ -207,7 +207,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { Centrifuge, Subscription } from "centrifuge";
+import { Centrifuge, PublicationContext, Subscription } from "centrifuge";
 
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
@@ -257,95 +257,7 @@ export default class Referee extends Vue {
     centrifuge: Centrifuge | null = null;
     matchupChannel: Subscription | null = null;
 
-    // TODO: Clear matchup back to null after testing
-    matchup: Matchup | null = {
-        ID: 0,
-        date: new Date(),
-        mp: null,
-        team1: {
-            ID: 0,
-            name: "Team 1",
-            abbreviation: "T1",
-            pp: 0,
-            rank: 0,
-            BWS: 0,
-            members: [
-                {
-                    ID: 0,
-                    username: "VINXIS",
-                    osuID: "4323406",
-                    isManager: true,
-                    BWS: 0,
-                },
-                {
-                    ID: 0,
-                    username: "VINXIS",
-                    osuID: "4323406",
-                    isManager: false,
-                    BWS: 0,
-                },
-                {
-                    ID: 0,
-                    username: "VINXIS",
-                    osuID: "4323406",
-                    isManager: false,
-                    BWS: 0,
-                },
-            ],
-            timezoneOffset: 0,
-            manager: {
-                ID: 0,
-                username: "VINXIS",
-                osuID: "4323406",
-                isManager: true,
-                BWS: 0,
-            },
-        },
-        team2: {
-            ID: 0,
-            name: "Team 2",
-            abbreviation: "T2",
-            pp: 0,
-            rank: 0,
-            BWS: 0,
-            members: [
-                {
-                    ID: 0,
-                    username: "VINXIS",
-                    osuID: "4323406",
-                    isManager: true,
-                    BWS: 0,
-                },
-                {
-                    ID: 0,
-                    username: "VINXIS",
-                    osuID: "4323406",
-                    isManager: false,
-                    BWS: 0,
-                },
-                {
-                    ID: 0,
-                    username: "VINXIS",
-                    osuID: "4323406",
-                    isManager: false,
-                    BWS: 0,
-                },
-            ],
-            timezoneOffset: 0,
-            manager: {
-                ID: 0,
-                username: "VINXIS",
-                osuID: "4323406",
-                isManager: true,
-                BWS: 0,
-            },
-        },
-        isLowerBracket: false,
-        team1Score: 0,
-        team2Score: 0,
-        potential: false,
-        forfeit: false,
-    };
+    matchup: Matchup | null = null;
     matchupList: Matchup[] | null = null;
     mapStarted = false;
 
@@ -492,6 +404,8 @@ export default class Referee extends Vue {
             console.log("subscribed", ctx);
         });
 
+        this.matchupChannel.on("publication", this.handleData);
+
         this.matchupChannel.subscribe();
     }
 
@@ -500,13 +414,17 @@ export default class Referee extends Vue {
         this.matchup = null;
     }
 
+    handleData (ctx: PublicationContext) {
+        console.log("publication", ctx);
+    }
+
     async banchoCall (endpoint: string, data?: any) {
         if (!this.matchup) {
-            alert("No matchup selected");
+            this.tooltipText = "No matchup selected";
             return;
         }
 
-        const { data: lobbyData } = await this.$axios.post(`/api/referee/bancho/${this.tournament?.ID}/${this.matchup.ID}/bancho`, {
+        const { data: lobbyData } = await this.$axios.post(`/api/referee/bancho/${this.tournament?.ID}/${this.matchup.ID}`, {
             endpoint,
             ...data,
         });

@@ -10,7 +10,7 @@ import { hasRoles, validateTournament } from "../../../middleware/tournament";
 
 const refereeBanchoRouter = new Router();
 
-refereeBanchoRouter.post("/:tournamentID/:matchupID/bancho", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+refereeBanchoRouter.post("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     if (!ctx.request.body.endpoint) {
         ctx.body = {
             success: false,
@@ -70,14 +70,34 @@ refereeBanchoRouter.post("/:tournamentID/:matchupID/bancho", validateTournament,
         }
     }
 
-    const { data } = await Axios.post(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`, {
-        ...ctx.request.body,
-        endpoint: undefined,
-    }, {
-        auth: config.interOpAuth,
-    });
+    try {
+        const { data } = await Axios.post(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`, {
+            ...ctx.request.body,
+            endpoint: undefined,
+        }, {
+            auth: config.interOpAuth,
+        });
 
-    ctx.body = data;
+        ctx.body = data;
+
+    } catch (e) {
+        if (Axios.isAxiosError(e)) {
+            ctx.body = {
+                success: false,
+                error: e.response?.data ?? e.message,
+            };
+        } else if (e instanceof Error) {
+            ctx.body = {
+                success: false,
+                error: e.message,
+            };
+        } else {
+            ctx.body = {
+                success: false,
+                error: `Unknown error: ${e}`,
+            };
+        }
+    }
 });
 
 export default refereeBanchoRouter;

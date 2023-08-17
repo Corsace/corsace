@@ -17,26 +17,25 @@ export interface MatchupList extends BaseMatchup {
 }
 
 export interface Matchup extends BaseMatchup {
-    baseURL?: string | null;
-    round?:          Round | null;
-    stage?:          Stage | null;
-    isLowerBracket: boolean;
-    teams?: Team[] | null;
-    team1?:          Team | null;
-    team2?:          Team | null;
-    team1Score:     number;
-    team2Score:     number;
-    first?:          Team | null;
-    winner?:         Team | null;
-    maps?:           MatchupMap[];
-    mappoolsBanned?: Mappool[];
-    potential:      boolean;
-    forfeit:        boolean;
-    vod?:            null;
-    referee?:        User | null;
-    streamer?:       User | null;
-    commentators?:   User[] | null;
-    messages?:       MatchupMessage[] | null;
+    baseURL?:           string | null;
+    round?:             Round | null;
+    stage?:             Stage | null;
+    isLowerBracket:     boolean;
+    teams?:             Team[] | null;
+    team1?:             Team | null;
+    team2?:             Team | null;
+    team1Score:         number;
+    team2Score:         number;
+    first?:             Team | null;
+    winner?:            Team | null;
+    maps?:              MatchupMap[] | null;
+    mappoolsBanned?:    Mappool[] | null;
+    potential:          boolean;
+    forfeit:            boolean;
+    referee?:           User | null;
+    streamer?:          User | null;
+    commentators?:      User[] | null;
+    messages?:          MatchupMessage[] | null;
 }
 
 export enum MapStatus {
