@@ -43,6 +43,45 @@ function requiredNumberFields<T extends Record<string, any>> (obj: Partial<T>, f
     return result as Record<keyof T, number>;
 }
 
+async function updateMatchup (matchupID: number) {
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .leftJoinAndSelect("matchup.stage", "stage")
+        .leftJoinAndSelect("matchup.maps", "map")
+        .leftJoinAndSelect("map.scores", "score")
+        .leftJoinAndSelect("score.user", "user")
+        .leftJoinAndSelect("matchup.team1", "team1")
+        .leftJoinAndSelect("team1.members", "team1member")
+        .leftJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("team2.members", "team2member")
+        .where("matchup.ID = :matchupID", { matchupID })
+        .andWhere("stage.stageType != '0'")
+        .getOne();
+
+    if (matchup) {
+        matchup.maps!.forEach(async map => {
+            map.team1Score = map.scores
+                .filter(score => matchup.team1!.members.some(member => member.ID === score.user!.ID))
+                .reduce((acc, score) => acc + score.score, 0);
+            map.team2Score = map.scores
+                .filter(score => matchup.team2!.members.some(member => member.ID === score.user!.ID))
+                .reduce((acc, score) => acc + score.score, 0);
+            if (map.team1Score > map.team2Score)
+                map.winner = matchup.team1;
+            else if (map.team2Score > map.team1Score)
+                map.winner = matchup.team2;
+            await map.save();
+        });
+        matchup.team1Score = matchup.maps!.filter(map => map.team1Score && map.team2Score ? map.team1Score > map.team2Score : false).length;
+        matchup.team2Score = matchup.maps!.filter(map => map.team1Score && map.team2Score ? map.team2Score > map.team1Score : false).length;
+        if (matchup.team1Score > matchup.team2Score)
+            matchup.winner = matchup.team1;
+        else if (matchup.team2Score > matchup.team1Score)
+            matchup.winner = matchup.team2;
+        await matchup.save();
+    }
+}
+
 function validatePOSTMatchups (matchups: any[]): string | true {
     for (const matchup of matchups) {
         if (matchup.ID === undefined || isNaN(parseInt(matchup.ID)) || parseInt(matchup.ID) < 1)
@@ -478,6 +517,8 @@ matchupRouter.delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (ctx
 
     await score.remove();
 
+    await updateMatchup(score.map!.matchup!.ID);
+    
     ctx.body = {
         success: true,
     };
@@ -495,6 +536,7 @@ matchupRouter.delete("/map/:mapID", isLoggedInDiscord, isCorsace, async (ctx) =>
     const map = await MatchupMap
         .createQueryBuilder("map")
         .leftJoinAndSelect("map.scores", "score")
+        .leftJoinAndSelect("map.matchup", "matchup")
         .where("map.ID = :mapID", { mapID })
         .getOne();
     if (!map) {
@@ -506,6 +548,8 @@ matchupRouter.delete("/map/:mapID", isLoggedInDiscord, isCorsace, async (ctx) =>
 
     await Promise.all(map.scores.map(score => score.remove()));
     await map.remove();
+    
+    await updateMatchup(map.matchup!.ID);
 
     ctx.body = {
         success: true,
