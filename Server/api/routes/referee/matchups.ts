@@ -193,8 +193,6 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
             order: dbMatchup.stage.order,
             scoringMethod: dbMatchup.stage.scoringMethod,
             isDraft: dbMatchup.stage.isDraft,
-            setsBestOf: dbMatchup.stage.setsBestOf,
-            bestOf: dbMatchup.stage.bestOf,
             qualifierTeamChooseOrder: dbMatchup.stage.qualifierTeamChooseOrder,
             timespan: dbMatchup.stage.timespan,
             isFinished: dbMatchup.stage.isFinished,

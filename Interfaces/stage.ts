@@ -1,4 +1,5 @@
 import { Mappool } from "./mappool";
+import { MapStatus } from "./matchup";
 import { Phase } from "./phase";
 import { Round } from "./round";
 
@@ -30,8 +31,6 @@ export interface Stage {
     stageType:                  StageType;
     scoringMethod:              ScoringMethod;
     isDraft?:                   boolean | null;
-    setsBestOf:                 number;
-    bestOf?:                    number | null;
     qualifierTeamChooseOrder?:  boolean | null;
     timespan:                   Phase;
     rounds:                     Round[];
@@ -39,4 +38,13 @@ export interface Stage {
     isFinished:                 boolean;
     initialSize:                number;
     finalSize:                  number;
+    mapOrder?:                  MapOrder[] | null;
+}
+
+export interface MapOrder {
+    ID:         number;
+    set:        number;
+    order:      number;
+    team:       number;
+    status:     MapStatus;
 }

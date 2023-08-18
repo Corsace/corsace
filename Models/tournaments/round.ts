@@ -19,12 +19,6 @@ export class Round extends BaseEntity {
     @Column("boolean", { nullable: true })
         isDraft?: boolean | null;
     
-    @Column({ default: 1 })
-        setsBestOf!: number;
-
-    @Column("integer", { nullable: true })
-        bestOf?: number | null;
-    
     @ManyToOne(() => Stage, stage => stage.rounds)
         stage!: Stage;
 
@@ -34,7 +28,7 @@ export class Round extends BaseEntity {
     @OneToMany(() => Matchup, matchup => matchup.round)
         matchups!: Matchup[];
 
-    @OneToMany(() => MapOrder, mapOrder => mapOrder.stage)
+    @OneToMany(() => MapOrder, mapOrder => mapOrder.round)
         mapOrder?: MapOrder[] | null;
 
 }
