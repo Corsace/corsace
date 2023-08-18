@@ -37,17 +37,53 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
         return;
     }
 
-    if (!matchup && endpoint !== "createLobby") {
-        ctx.body = {
-            success: false,
-            error: "Matchup not found",
-        };
+    if (!matchup) {
+        if (endpoint === "pulse")
+            ctx.body = {
+                success: true,
+                pulse: false,
+            };
+        else if (endpoint !== "createLobby")
+            ctx.body = {
+                success: false,
+                error: "Matchup not found",
+            };
         return;
     }
 
     ctx.state.matchup = matchup;
     await next();
 }
+
+banchoRefereeRouter.post("/:matchupID/pulse", validateMatchup, async (ctx) => {
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    if (!matchupList) {
+        ctx.body = {
+            success: true,
+            pulse: false,
+        };
+        return;
+    }
+
+    const mpLobby = matchupList.lobby;
+    await mpLobby.updateSettings();
+
+    await publish(matchupList.matchup, { 
+        type: "settings",
+        slots: mpLobby.slots.map((slot, i) => ({
+            playerOsuID: slot?.user.id,
+            slot: i + 1,
+            mods: slot?.mods.map(mod => mod.shortMod).join(""),
+            team: slot?.team,
+            ready: slot?.state === BanchoLobbyPlayerStates.Ready,
+        })),
+    });
+
+    ctx.body = {
+        success: true,
+        pulse: true,
+    };
+});
 
 banchoRefereeRouter.post("/:matchupID/createLobby", validateMatchup, async (ctx) => {
     const matchupList: MatchupList | undefined | null = ctx.state.matchup;

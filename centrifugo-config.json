@@ -15,7 +15,7 @@
     "namespaces": [
         {
             "name": "matchup",
-            "allow_subscribe_for_client": true
+            "proxy_subscribe": true
         }
     ],
     "proxy_connect_endpoint": "http://127.0.0.1:8080/api/centrifugo/connect",

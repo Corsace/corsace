@@ -673,7 +673,8 @@
             "back": "BACK TO MATCHUP LIST",
             "createLobby": "CREATE LOBBY",
             "roll": "ROLL",
-            "settings": "!MP SETTINGS"
+            "settings": "!MP SETTINGS",
+            "closeLobby": "CLOSE LOBBY"
         },
         "status": {
             "loading": "LOADING"

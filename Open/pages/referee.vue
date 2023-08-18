@@ -26,29 +26,38 @@
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
                         :class="{
-                            'content_button--disabled': matchup.mp,
+                            'content_button--disabled': matchup.mp && !runningLobby,
                         }"
-                        @click.native="!matchup.mp ? banchoCall('createLobby', { auto: false }) : tooltipText = 'Matchup already has a lobby'"
+                        @click.native="!matchup.mp || runningLobby ? banchoCall('createLobby', { auto: false }) : tooltipText = 'Matchup already has a lobby'"
                     >
                         {{ $t('open.referee.createLobby') }}
                     </ContentButton>
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
                         :class="{
-                            'content_button--disabled': !matchup.mp || matchup.first || matchup.stage?.stageType === 0,
+                            'content_button--disabled': !matchup.mp || matchup.first || matchup.stage?.stageType === 0 || !runningLobby,
                         }"
-                        @click.native="matchup.mp && !matchup.first && matchup.stage?.stageType !== 0 ? banchoCall('roll') : tooltipText = matchup.first ? 'Matchup already rolled' : 'Matchup has no lobby'"
+                        @click.native="matchup.mp && runningLobby && !matchup.first && matchup.stage?.stageType !== 0 ? banchoCall('roll') : tooltipText = matchup.first ? 'Matchup already rolled' : 'Matchup has no lobby'"
                     >
                         {{ $t('open.referee.roll') }}
                     </ContentButton>
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
                         :class="{
-                            'content_button--disabled': !matchup.mp,
+                            'content_button--disabled': !matchup.mp || !runningLobby,
                         }"
-                        @click.native="matchup.mp ? banchoCall('settings') : 'Matchup has no lobby'"
+                        @click.native="matchup.mp && runningLobby ? banchoCall('settings') : 'Matchup has no lobby'"
                     >
                         {{ $t('open.referee.settings') }}
+                    </ContentButton>
+                    <ContentButton
+                        class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
+                        :class="{
+                            'content_button--disabled': !matchup.mp || !runningLobby,
+                        }"
+                        @click.native="matchup.mp && runningLobby ? banchoCall('closeLobby') : 'Matchup has no lobby'"
+                    >
+                        {{ $t('open.referee.closeLobby') }}
                     </ContentButton>
                 </div>
                 
@@ -80,7 +89,7 @@
                         </div>
                     </div>
                     <div
-                        v-if="loggedInUser"
+                        v-if="loggedInUser && runningLobby"
                         class="referee__matchup__messages__input_div"
                     >
                         {{ loggedInUser.osu.username }}:
@@ -128,7 +137,7 @@
                                 <div 
                                     v-if="matchup.referee"
                                     class="referee__matchup__content__team__members__member"
-                                    @click="matchup.mp ? banchoCall('addRef', { userID: matchup.referee.osu.userID }) : tooltipText = 'Matchup has no lobby'"
+                                    @click="matchup.mp && runningLobby ? banchoCall('addRef', { userID: matchup.referee.osu.userID }) : tooltipText = 'Matchup has no lobby'"
                                 >
                                     <div 
                                         class="referee__matchup__content__team__members__member__avatar"
@@ -139,7 +148,7 @@
                                 <div 
                                     v-if="matchup.streamer"
                                     class="referee__matchup__content__team__members__member"
-                                    @click="matchup.mp ? banchoCall('addRef', { userID: matchup.streamer.osu.userID }) : tooltipText = 'Matchup has no lobby'"
+                                    @click="matchup.mp && runningLobby ? banchoCall('addRef', { userID: matchup.streamer.osu.userID }) : tooltipText = 'Matchup has no lobby'"
                                 >
                                     <div 
                                         class="referee__matchup__content__team__members__member__avatar"
@@ -151,7 +160,7 @@
                                     v-for="member in matchup.commentators"
                                     :key="member.ID"
                                     class="referee__matchup__content__team__members__member"
-                                    @click="matchup.mp ? banchoCall('addRef', { userID: member.osu.userID }) : tooltipText = 'Matchup has no lobby'"
+                                    @click="matchup.mp && runningLobby ? banchoCall('addRef', { userID: member.osu.userID }) : tooltipText = 'Matchup has no lobby'"
                                 >
                                     <div 
                                         class="referee__matchup__content__team__members__member__avatar"
@@ -186,7 +195,7 @@
                                         'referee__matchup__content__team__members__member--ready': member.ready,
                                         'referee__matchup__content__team__members__member--notInLobby': !member.inLobby,
                                     }"
-                                    @click="matchup.mp ? banchoCall('invite', { userID: member.osuID }) : tooltipText = 'Matchup has no lobby'"
+                                    @click="matchup.mp && runningLobby ? banchoCall('invite', { userID: member.osuID }) : tooltipText = 'Matchup has no lobby'"
                                 >
                                     <div 
                                         class="referee__matchup__content__team__members__member__avatar"
@@ -224,7 +233,7 @@
                                         'referee__matchup__content__team__members__member--ready': member.ready,
                                         'referee__matchup__content__team__members__member--notInLobby': !member.inLobby,
                                     }"
-                                    @click="matchup.mp ? banchoCall('invite', { userID: member.osuID }) : tooltipText = 'Matchup has no lobby'"
+                                    @click="matchup.mp && runningLobby ? banchoCall('invite', { userID: member.osuID }) : tooltipText = 'Matchup has no lobby'"
                                 >
                                     <div 
                                         class="referee__matchup__content__team__members__member__avatar"
@@ -345,6 +354,7 @@ export default class Referee extends Vue {
     matchup: Matchup | null = null;
     matchupList: Matchup[] | null = null;
     mapStarted = false;
+    runningLobby = true;
 
     team1PlayerStates: playerState[] = [];
     team2PlayerStates: playerState[] = [];
@@ -464,24 +474,6 @@ export default class Referee extends Vue {
         centrifuge.connect();
 
         this.centrifuge = centrifuge;
-
-        // TODO: Remove after testing
-        this.team1PlayerStates = this.matchup?.team1?.members.map(member => ({
-            ID: member.ID,
-            username: member.username,
-            osuID: member.osuID,
-            inLobby: false,
-            ready: false,
-            mods: "",
-        })) || [];
-        this.team2PlayerStates = this.matchup?.team2?.members.map(member => ({
-            ID: member.ID,
-            username: member.username,
-            osuID: member.osuID,
-            inLobby: false,
-            ready: false,
-            mods: "",
-        })) || [];
     }
 
     formatDate (date: Date): string {
@@ -553,7 +545,11 @@ export default class Referee extends Vue {
         });
 
         this.matchupChannel.on("unsubscribed", (ctx) => {
-            if (ctx.code > 100) {
+            if (ctx.code === 102)
+                alert("Couldn't find matchup channel");
+            else if (ctx.code === 103)
+                alert("Unauthorized to subscribe to matchup channel");
+            else if (ctx.code !== 0) {
                 alert("Error in console for matchup channel subscription");
                 console.error("unsubscribed", ctx);
             } else
@@ -569,7 +565,7 @@ export default class Referee extends Vue {
         this.matchupChannel.subscribe();
 
         if (this.matchup?.mp)
-            await this.banchoCall("settings");
+            await this.banchoCall("pulse");
     }
 
     back () {
@@ -650,6 +646,9 @@ export default class Referee extends Vue {
                 break;
             case "matchFinished":
                 break;
+            case "closed":
+                this.runningLobby = false;
+                break;
         }
     }
 
@@ -674,11 +673,18 @@ export default class Referee extends Vue {
         });
 
         if (lobbyData.error) {
-            if (endpoint !== "settings")
-                alert(lobbyData.error);
+            if (endpoint === "pulse") {
+                this.runningLobby = false;
+                return;
+            }
+
+            alert(lobbyData.error);
             console.error(lobbyData.error, Object.keys(lobbyData.error));
             return;
         }
+
+        if (endpoint === "pulse")
+            this.runningLobby = lobbyData.pulse;
 
         switch (endpoint) {
             case "createLobby":
@@ -965,6 +971,7 @@ export default class Referee extends Vue {
             gap: 20px;
 
             grid-column: 1 / 4;
+            grid-row: 3 / 4;
 
             &__button {
                 max-width: 300px;
