@@ -234,8 +234,8 @@ refereeMatchupsRouter.post("/testMatchup/:tournamentID", validateTournament, isL
     }
 
     const users = [
-        { country: "US", osu: { username: "Risen", userID: "9652892" }, discord: { username: "zzzrisen", userID: "152971654379732992" } },
-        { country: "GB", osu: { username: "ilw8", userID: "14167692" }, discord: { username: "ilw8", userID: "181358896328212480" } },
+        { country: "CA", osu: { username: "uzzi", userID: "1928230" }, discord: { username: "uzzi", userID: "92448752152875008" } },
+        { country: "NL", osu: { username: "cavoeboy", userID: "7361815" }, discord: { username: "cavoe", userID: "128203919296823296" } },
     ];
 
     const teams: Team[] = [];
@@ -253,19 +253,26 @@ refereeMatchupsRouter.post("/testMatchup/:tournamentID", validateTournament, isL
         }
         console.log(`Saved ${u.discord.username} to database.`);
 
-        const team = new Team();
-        team.name = user.osu.username;
-        team.manager = user;
-        team.members = [ user ];
-        team.avatarURL = user.osu.avatar;
-        team.tournaments = [tournament];
-        const usernameSplit = user.osu.username.split(" ");
-        team.abbreviation = usernameSplit.length < 2 || usernameSplit.length > 4 ? 
-            usernameSplit[0].slice(0, Math.min(usernameSplit[0].length, 4)) : 
-            usernameSplit.map(n => n[0]).join("");
-        await team.calculateStats();
-        await team.save();
-        console.log(`Saved ${team.name} to database.`);
+        let team = await Team
+            .createQueryBuilder("team")
+            .leftJoinAndSelect("team.manager", "manager")
+            .where("manager.ID = :ID", { ID: user.ID })
+            .getOne();
+        if (!team) {
+            team = new Team;
+            team.name = user.osu.username;
+            team.manager = user;
+            team.members = [ user ];
+            team.avatarURL = user.osu.avatar;
+            team.tournaments = [ tournament ];
+            const usernameSplit = user.osu.username.split(" ");
+            team.abbreviation = usernameSplit.length < 2 || usernameSplit.length > 4 ? 
+                usernameSplit[0].slice(0, Math.min(usernameSplit[0].length, 4)) : 
+                usernameSplit.map(n => n[0]).join("");
+            await team.calculateStats();
+            await team.save();
+            console.log(`Saved ${team.name} to database.`);
+        }
         teams.push(team);
     }
 
@@ -276,11 +283,14 @@ refereeMatchupsRouter.post("/testMatchup/:tournamentID", validateTournament, isL
         .andWhere("stage.stageType != '0'")
         .getOne();
 
+    const ref = await User.findOne({ where: { discord: { userID: ctx.state.user.discord.userID } } });
+
     const matchup = new Matchup();
     matchup.stage = stage;
     matchup.team1 = teams[0];
     matchup.team2 = teams[1];
     matchup.date = new Date();
+    matchup.referee = ref;
     await matchup.save();
 
     ctx.body = {

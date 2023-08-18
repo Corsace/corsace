@@ -5,6 +5,8 @@ import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Next, ParameterizedContext } from "koa";
 import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
 import state, { MatchupList } from "../../../../BanchoBot/state";
+import { publish } from "../../../../BanchoBot/functions/tournaments/matchup/centrifugo";
+import { BanchoLobbyPlayerStates } from "bancho.js";
 
 const banchoRefereeRouter = new Router();
 
@@ -266,6 +268,17 @@ banchoRefereeRouter.post("/:matchupID/settings", validateMatchup, async (ctx) =>
 
     const mpLobby = matchupList.lobby;
     await mpLobby.updateSettings();
+
+    await publish(matchupList.matchup, { 
+        type: "settings",
+        slots: mpLobby.slots.map((slot, i) => ({
+            playerOsuID: slot?.user.id,
+            slot: i + 1,
+            mods: slot?.mods.map(mod => mod.shortMod).join(""),
+            team: slot?.team,
+            ready: slot?.state === BanchoLobbyPlayerStates.Ready,
+        })),
+    });
 
     ctx.body = {
         success: true,

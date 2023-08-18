@@ -9,7 +9,17 @@ const bots = {
 export default async function getUserInMatchup (users: User[], message: BanchoMessage): Promise<User> {
     if (!message.user || !message.user.id) {
         const id = bots[message.user?.ircUsername || "BanchoBot"];
-        return users.find(user => user.osu.userID === id)!;
+        const botUser = users.find(user => user.osu.userID === id);
+        if (botUser)
+            return botUser;
+
+        if (message.user?.ircUsername) {
+            const user = await User.findOne({ where: { osu: { username: message.user?.ircUsername } } });
+            if (user)
+                return user;
+        }
+
+        return users.find(user => user.osu.userID === "3")!;
     }
 
     const user = users.find(user => user.osu.userID === message.user!.id.toString());

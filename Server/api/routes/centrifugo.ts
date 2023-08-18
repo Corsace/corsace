@@ -105,7 +105,7 @@ centrifugoRouter.post("/subscribe", async (ctx) => {
             const roles = await TournamentRole
                 .createQueryBuilder("role")
                 .leftJoinAndSelect("role.tournament", "tournament")
-                .where("tournament.ID = :tournament", { tournament: channel.stage.tournament.ID })
+                .where("tournament.ID = :tournamentID", { tournamentID: channel.stage.tournament.ID })
                 .getMany();
             if (roles.length > 0) {
                 try {

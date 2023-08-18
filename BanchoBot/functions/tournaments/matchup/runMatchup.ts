@@ -73,7 +73,11 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     await matchup.save();
     log(matchup, `Saved matchup lobby to DB with mp ID ${mpLobby.id}`);
 
-    await publish(matchup, { type: "created" });
+    await publish(matchup, {
+        type: "created",
+        mpID: mpLobby.id,
+        baseURL,
+    });
 
     let autoStart = false;
     let mapsPlayed: MappoolMap[] = [];
@@ -162,15 +166,19 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             type: "message", 
             timestamp: matchupMessage.timestamp, 
             content: matchupMessage.content, 
-            userID: matchupMessage.user.ID, 
-            userOsuID: matchupMessage.user.osu.userID, 
-            username: matchupMessage.user.osu.username,
+            user: {
+                ID: matchupMessage.user.ID,
+                osu: {
+                    userID: matchupMessage.user.osu.userID,
+                    username: matchupMessage.user.osu.username,
+                },
+            },
         });
 
         // Rolling logic
         if (message.self && !rolling && message.content.toLowerCase() === "!roll 2")
             rolling = true;
-        else if (message.user.ircUsername === "BanchoBot" && rolling && message.content.toLowerCase().startsWith("Corsace rolls")) {
+        else if (message.user.ircUsername === "BanchoBot" && rolling && message.content.toLowerCase().startsWith("corsace rolls")) {
             // BanchoBot sent a message that says "Corsace rolls x point(s)"
             const points = parseInt(message.content.split(" ")[2]);
             if (isNaN(points) || (points !== 1 && points !== 2))
@@ -305,14 +313,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     mpLobby.on("playerJoined", async (joinInfo) => {
         if (!state.matchups[matchup.ID])
             return;
-        
-        await publish(matchup, { 
-            type: "playerJoined", 
-            playerOsuID: joinInfo.player.user.id,
-            slot: joinInfo.slot,
-            team: joinInfo.team,
-            ready: joinInfo.player.state === BanchoLobbyPlayerStates.Ready,
-        });
 
         const newPlayer = joinInfo.player;
         const newPlayerID = newPlayer.user.id.toString();
@@ -337,8 +337,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             slots: mpLobby.slots.map((slot, i) => ({
                 playerOsuID: slot?.user.id,
                 slot: i + 1,
+                mods: slot?.mods.map(mod => mod.shortMod).join(""),
                 team: slot?.team,
-                ready: slot.state === BanchoLobbyPlayerStates.Ready,
+                ready: slot?.state === BanchoLobbyPlayerStates.Ready,
             })),
         });
 
@@ -394,10 +395,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return;
 
         log(matchup, `Player ${player.user.username} left the lobby`);
-        await publish(matchup, { 
-            type: "playerLeft",
-            playerOsuID: player.user.id,
-        });
 
         await mpLobby.updateSettings();
         
@@ -406,8 +403,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             slots: mpLobby.slots.map((slot, i) => ({
                 playerOsuID: slot?.user.id,
                 slot: i + 1,
+                mods: slot?.mods.map(mod => mod.shortMod).join(""),
                 team: slot?.team,
-                ready: slot.state === BanchoLobbyPlayerStates.Ready,
+                ready: slot?.state === BanchoLobbyPlayerStates.Ready,
             })),
         });
 
@@ -438,8 +436,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             slots: mpLobby.slots.map((slot, i) => ({
                 playerOsuID: slot?.user.id,
                 slot: i + 1,
+                mods: slot?.mods.map(mod => mod.shortMod).join(""),
                 team: slot?.team,
-                ready: slot.state === BanchoLobbyPlayerStates.Ready,
+                ready: slot?.state === BanchoLobbyPlayerStates.Ready,
             })),
         });
 
@@ -615,15 +614,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             // Lobby is closed
             invCollector?.stop();
             refCollector?.stop();
-            await matchup.save();
 
             if (matchup.stage!.stageType !== StageType.Qualifiers) {
                 if (matchup.team1Score > matchup.team2Score)
                     matchup.winner = matchup.team1;
                 else if (matchup.team2Score > matchup.team1Score)
                     matchup.winner = matchup.team2;
-                await matchup.save();
             }
+            await matchup.save();
 
             // Let it run one more time before clearing
             await pause(15 * 1000);

@@ -12,6 +12,12 @@
         "Authorization",
         "X-Request-Id"
     ],
+    "namespaces": [
+        {
+            "name": "matchup",
+            "allow_subscribe_for_client": true
+        }
+    ],
     "proxy_connect_endpoint": "http://127.0.0.1:8080/api/centrifugo/connect",
     "proxy_connect_timeout": "5s",
     "proxy_subscribe_endpoint": "http://127.0.0.1:8080/api/centrifugo/subscribe",
