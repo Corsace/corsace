@@ -50,8 +50,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
     mappool.slots = [];
     mappool.targetSR = targetSR;
 
-    // If the stage is an elmination-type stage, then check if they want to make a mappool for a specific round for the stage; otherwise, just make a mappool for the stage
-    if ((stage.stageType === StageType.Doubleelimination || stage.stageType === StageType.Singleelimination) && await confirmCommand(m, `Is this for a specific round in ${stage.abbreviation}?\n**If it's for the entire stage, select No**`)) {
+    // If the stage is an elimination-type stage, then check if they want to make a mappool for a specific round for the stage; otherwise, just make a mappool for the stage
+    if (
+        (stage.stageType === StageType.Doubleelimination || stage.stageType === StageType.Singleelimination) && 
+        await confirmCommand(m, `Is this for a specific round in ${stage.abbreviation}?\n**If it's for the entire stage, select No**`)
+    ) {
         // Ask if they want to make a mappool for a specific round, or just for the stage
         const round = await getRound(m, stage);
         if (round)

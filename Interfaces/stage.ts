@@ -45,6 +45,15 @@ export interface MapOrder {
     ID:         number;
     set:        number;
     order:      number;
-    team:       number;
+    team:       MapOrderTeam;
     status:     MapStatus;
+}
+
+export enum MapOrderTeam {
+    Team1,
+    Team2,
+    TeamWinner,
+    TeamLoser,
+    TeamWinnerPrevious,
+    TeamLoserPrevious,
 }
