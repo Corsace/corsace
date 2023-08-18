@@ -388,6 +388,14 @@ export default class Referee extends Vue {
     }
 
     async sendMessage () {
+        if (this.inputMessage === "" || !this.matchup || this.inputMessage.length === 0)
+            return;
+
+        if (this.inputMessage.length > 200) {
+            alert("Message too long");
+            return;
+        }
+
         await this.banchoCall("message", { message: this.inputMessage, username: this.loggedInUser?.osu.username });
         this.inputMessage = "";
         const messageContainer = document.getElementById("messageContainer");
