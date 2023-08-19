@@ -360,6 +360,7 @@
                         >
                             {{ nextMapMessage }}
                         </ContentButton>
+                        Matchup's Map List
                         <div
                             v-for="map in matchupMaps"
                             :key="map.ID"
@@ -375,6 +376,9 @@
                             <div class="referee__matchup__content__map_name">
                                 ({{ map.order }}) {{ selectedMappool?.slots.find(slot => slot.maps.some(m => m.ID === map.map.ID))?.acronym.toUpperCase() }}{{ map.map.order }} - {{ mapStatusToString(map.status) }}
                             </div>
+                        </div>
+                        <div v-if="matchupMaps.length === 0">
+                            No maps picked/banned/protected yet
                         </div>
                     </div>
                     <div class="referee__matchup__content_div">
@@ -1013,6 +1017,9 @@ export default class Referee extends Vue {
         if (endpoint === "pulse")
             this.runningLobby = lobbyData.pulse;
 
+        if (endpoint === "deleteMap" && this.matchup.maps)
+            this.matchup.maps = this.matchup.maps.filter(map => map.ID !== data.mapID);
+
         switch (endpoint) {
             case "createLobby":
                 this.tooltipText = "Lobby created";
@@ -1391,7 +1398,6 @@ export default class Referee extends Vue {
                         border-radius: 5px;
                         background: #333333;
                         cursor: pointer;
-                        transition: background 0.2s;
 
                         &:hover {
                             background: #444444;
@@ -1449,7 +1455,6 @@ export default class Referee extends Vue {
             border-radius: 5px;
             background: #333333;
             cursor: pointer;
-            transition: background 0.2s;
 
             &:hover {
                 background: #444444;
