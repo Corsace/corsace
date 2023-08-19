@@ -450,7 +450,7 @@
                     </div>
                 </div>
                 <ContentButton
-                    v-if="moreMaps"
+                    v-if="moreMatchups"
                     class="referee__matchup__footer__button content_button--red content_button--red_sm"
                     @click.native="loadMore"
                 >
@@ -533,7 +533,7 @@ export default class Referee extends Vue {
     @State loggedInUser!: UserInfo | null;
     @openModule.State tournament!: Tournament | null;
 
-    moreMaps = true;
+    moreMatchups = true;
 
     centrifuge: Centrifuge | null = null;
     matchupChannel: Subscription | null = null;
@@ -721,7 +721,7 @@ export default class Referee extends Vue {
             return;
         }
         if (matchupData.matchups?.length && matchupData.matchups.length < 5)
-            this.moreMaps = false;
+            this.moreMatchups = false;
         this.matchupList.push(...matchupData.matchups?.map(matchup => ({
             ...matchup,
             date: new Date(matchup.date),
