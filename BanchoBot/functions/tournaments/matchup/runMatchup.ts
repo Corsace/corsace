@@ -31,6 +31,7 @@ import { loginRow } from "../../../../DiscordBot/functions/loginResponse";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { unallowedToPlay } from "../../../../Interfaces/tournament";
 import { publish } from "./centrifugo";
+import assignTeamsToNextMatchup from "../../../../Server/functions/tournaments/matchups/assignTeamsToNextMatchup";
 
 const winConditions = {
     [ScoringMethod.ScoreV2]: BanchoLobbyWinConditions.ScoreV2,
@@ -624,8 +625,11 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     matchup.winner = matchup.team1;
                 else if (matchup.team2Score > matchup.team1Score)
                     matchup.winner = matchup.team2;
-            }
-            await matchup.save();
+                await matchup.save();
+
+                await assignTeamsToNextMatchup(matchup.ID);
+            } else 
+                await matchup.save();
 
             await publish(matchup, { type: "closed" });
 
