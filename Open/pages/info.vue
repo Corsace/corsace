@@ -368,6 +368,7 @@
                                     The<strong> second set of bans</strong> shall be after <strong>4 maps</strong> are played
                                     <ul class="info_desc__list">
                                         <li>The<strong> losing</strong> team shall <strong>ban first</strong> (EX: If the scoreline is 4 - 0, the team with 0 points bans first)</li>
+                                        <li>If the score is tied (2 - 2), the ban order shall be the same as the first set of bans</li>
                                     </ul>
                                 </li>
                             </ul>
