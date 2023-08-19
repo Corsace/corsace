@@ -315,6 +315,8 @@ banchoRefereeRouter.post("/:matchupID/deleteMap", validateMatchup, async (ctx) =
             state.matchups[parseInt(ctx.state.matchupID)].matchup.maps = state.matchups[parseInt(ctx.state.matchupID)].matchup.maps?.filter(map => map.ID !== mapID);
             state.matchups[parseInt(ctx.state.matchupID)].matchup.maps?.forEach((map, i) => map.order = i + 1);
             await Promise.all(state.matchups[parseInt(ctx.state.matchupID)].matchup.maps?.map(map => manager.save(map)) ?? []);
+
+            await state.matchups[parseInt(ctx.state.matchupID)].lobby.channel.sendMessage(`Ref has deleted a map from matchup ${matchupMap.map.ID}`);
         });
 
         ctx.body = {

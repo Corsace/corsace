@@ -1036,6 +1036,21 @@ export default class Referee extends Vue {
             case "roll":
                 this.tooltipText = "Rolled";
                 break;
+            case "timer":
+                this.tooltipText = "Timer set";
+                break;
+            case "selectMap":
+                this.tooltipText = "Map selected";
+                break;
+            case "deleteMap":
+                this.tooltipText = "Map deleted";
+                break;
+            case "startMap":
+                this.tooltipText = "Map started";
+                break;
+            case "abortMap":
+                this.tooltipText = "Map aborted";
+                break;
             case "settings":
                 this.tooltipText = "Settings ran";
                 break;
