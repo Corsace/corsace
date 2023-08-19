@@ -7,6 +7,8 @@ import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runM
 import state, { MatchupList } from "../../../../BanchoBot/state";
 import { publish } from "../../../../BanchoBot/functions/tournaments/matchup/centrifugo";
 import { BanchoLobbyPlayerStates } from "bancho.js";
+import getMappoolSlotMods from "../../../../BanchoBot/functions/tournaments/matchup/getMappoolSlotMods";
+import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 
 const banchoRefereeRouter = new Router();
 
@@ -48,7 +50,9 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
                 success: false,
                 error: "Matchup not found",
             };
-        return;
+        
+        if (endpoint !== "createLobby")
+            return;
     }
 
     ctx.state.matchup = matchup;
@@ -219,7 +223,8 @@ banchoRefereeRouter.post("/:matchupID/addRef", validateMatchup, async (ctx) => {
 
 banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) => {
     const matchupList: MatchupList | undefined = ctx.state.matchup;
-    if (!matchupList || !ctx.request.body.mapID) {
+    const mapID = ctx.request.body.mapID;
+    if (!matchupList || !mapID || typeof mapID !== "number" || isNaN(mapID)) {
         ctx.body = {
             success: false,
             error: "Matchup not found",
@@ -227,7 +232,97 @@ banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) =
         return;
     }
 
+    const status = ctx.request.body.status;
+    if (typeof status !== "number" || isNaN(status) || status < 0 || status > 2) {
+        ctx.body = {
+            success: false,
+            error: "Invalid map status provided",
+        };
+        return;
+    }
+
+    const slot = matchupList.matchup.stage!.mappool!.flatMap(pool => pool.slots).find(slot => slot.maps.some(map => map.ID === mapID));
+    if (!slot) {
+        ctx.body = {
+            success: false,
+            error: "Slot not found",
+        };
+        return;
+    }
+
+    const map = slot.maps.find(map => map.ID === mapID);
+    if (!map) {
+        ctx.body = {
+            success: false,
+            error: "Map not found",
+        };
+        return;
+    }
     // TODO: Different logic for banned/protected vs picked maps
+
+    if (status !== 2) {
+        // Add map to matchup.maps
+        if (!matchupList.matchup.maps)
+            matchupList.matchup.maps = [];
+        const matchupMap = new MatchupMap;
+        matchupMap.map = map;
+        matchupMap.matchup = matchupList.matchup;
+        matchupMap.status = status;
+        matchupMap.order = matchupList.matchup.maps.length + 1;
+        await matchupMap.save();
+        matchupList.matchup.maps.push(matchupMap);
+
+        await publish(matchupList.matchup, {
+            type: "map",
+            map: {
+                ID: matchupMap.ID,
+                map,
+                order: matchupMap.order,
+                status: matchupMap.status,
+            },
+        });
+    } else {
+        const mpLobby = matchupList.lobby;
+        await Promise.all([
+            mpLobby.setMap(map.beatmap!.ID),
+            mpLobby.setMods(getMappoolSlotMods(slot.allowedMods), typeof slot.allowedMods !== "number" || typeof slot.uniqueModCount === "number" || typeof slot.userModCount === "number"),
+        ]);
+    }
+
+    ctx.body = {
+        success: true,
+    };
+});
+
+banchoRefereeRouter.post("/:matchupID/deleteMap", validateMatchup, async (ctx) => {
+    const matchupList: MatchupList | undefined = ctx.state.matchup;
+
+    const mapID = ctx.request.body.mapID;
+    if (!matchupList || !mapID || typeof mapID !== "number" || isNaN(mapID)) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    const matchupMap = matchupList.matchup.maps?.find(map => map.ID === mapID);
+    if (!matchupMap) {
+        ctx.body = {
+            success: false,
+            error: "Map not found",
+        };
+        return;
+    }
+
+    await matchupMap.remove();
+
+    matchupList.matchup.maps = matchupList.matchup.maps?.filter(map => map.ID !== mapID);
+    matchupList.matchup.maps?.forEach((map, i) => map.order = i + 1);
+
+    ctx.body = {
+        success: true,
+    };
 });
 
 banchoRefereeRouter.post("/:matchupID/startMap", validateMatchup, async (ctx) => {
@@ -240,7 +335,7 @@ banchoRefereeRouter.post("/:matchupID/startMap", validateMatchup, async (ctx) =>
         return;
     }
 
-    if (typeof ctx.request.body.time !== "number" || isNaN(ctx.request.body.time)) {
+    if (ctx.request.body.time && (typeof ctx.request.body.time !== "number" || isNaN(ctx.request.body.time))) {
         ctx.body = {
             success: false,
             error: "Invalid time provided (in seconds)",
@@ -249,7 +344,7 @@ banchoRefereeRouter.post("/:matchupID/startMap", validateMatchup, async (ctx) =>
     }
 
     const mpLobby = matchupList.lobby;
-    await mpLobby.startMatch(ctx.request.body.time);
+    await mpLobby.startMatch(ctx.request.body.time || 5);
 
     ctx.body = {
         success: true,
@@ -274,17 +369,7 @@ banchoRefereeRouter.post("/:matchupID/timer", validateMatchup, async (ctx) => {
         return;
     }
 
-    if (ctx.request.body.message && typeof ctx.request.body.message !== "string") {
-        ctx.body = {
-            success: false,
-            error: "Invalid message provided",
-        };
-        return;
-    }
-
     const mpLobby = matchupList.lobby;
-    if (ctx.request.body.message) 
-        await mpLobby.channel.sendMessage(ctx.request.body.message);
     await mpLobby.startTimer(ctx.request.body.time);
 
     ctx.body = {

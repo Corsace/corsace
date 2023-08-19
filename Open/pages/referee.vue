@@ -10,6 +10,33 @@
         >
             {{ tooltipText }}
         </div>
+        <div
+            ref="mapStatusSelect"
+            class="referee__map_status_select"
+            :style="{ display: mapSelected ? 'block' : 'none' }"
+        >
+            <div 
+                class="referee__map_status_select__option"
+                :style="{ backgroundColor: convertStatusEnum(0) }"
+                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 0 }); mapSelected = null"
+            >
+                PROTECT
+            </div>
+            <div 
+                class="referee__map_status_select__option"
+                :style="{ backgroundColor: convertStatusEnum(1) }"
+                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 1 }); mapSelected = null"
+            >
+                BAN
+            </div>
+            <div 
+                class="referee__map_status_select__option"
+                :style="{ backgroundColor: convertStatusEnum(2) }"
+                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 2 }); mapSelected = null"
+            >
+                PICK
+            </div>
+        </div>
         <div class="referee__container">
             <OpenTitle>
                 {{ $t('open.referee.title') }} {{ matchup ? `- (${matchup.ID}) ${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "" }}
@@ -26,9 +53,9 @@
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
                         :class="{
-                            'content_button--disabled': matchup.mp && !runningLobby,
+                            'content_button--disabled': matchup.mp && runningLobby,
                         }"
-                        @click.native="!matchup.mp || runningLobby ? banchoCall('createLobby', { auto: false }) : tooltipText = 'Matchup already has a lobby'"
+                        @click.native="!matchup.mp || !runningLobby ? banchoCall('createLobby', { auto: false }) : tooltipText = 'Matchup already has a lobby'"
                     >
                         {{ $t('open.referee.createLobby') }}
                     </ContentButton>
@@ -46,16 +73,62 @@
                         :class="{
                             'content_button--disabled': !matchup.mp || !runningLobby,
                         }"
-                        @click.native="matchup.mp && runningLobby ? banchoCall('settings') : 'Matchup has no lobby'"
+                        @click.native="matchup.mp && runningLobby ? banchoCall('settings') : tooltipText = 'Matchup has no lobby'"
                     >
                         {{ $t('open.referee.settings') }}
                     </ContentButton>
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
                         :class="{
+                            'content_button--disabled': !matchup.mp || !runningLobby || mapStarted,
+                        }"
+                        style="font-size: 12px;"
+                        @click.native="matchup.mp && runningLobby && !mapStarted ? banchoCall('timer', { time: parseInt(mapTimer) }) : mapStarted ? tooltipText = 'Matchup is currently playing a map' : tooltipText = 'Matchup has no lobby'"
+                    >
+                        {{ $t('open.referee.timer') }} <input
+                            v-model="mapTimer"
+                            class="referee__matchup__messages__input"
+                            style="width: 40px;"
+                        >
+                    </ContentButton>
+                    <ContentButton
+                        class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
+                        :class="{
+                            'content_button--disabled': !matchup.mp || !runningLobby || mapStarted,
+                        }"
+                        style="font-size: 12px;"
+                        @click.native="matchup.mp && runningLobby && !mapStarted ? banchoCall('timer', { time: parseInt(readyTimer) }) : mapStarted ? tooltipText = 'Matchup is currently playing a map' : tooltipText = 'Matchup has no lobby'"
+                    >
+                        {{ $t('open.referee.timer') }} <input
+                            v-model="readyTimer"
+                            class="referee__matchup__messages__input"
+                            style="width: 40px;"
+                        >
+                    </ContentButton>
+                    <ContentButton
+                        class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
+                        :class="{
+                            'content_button--disabled': !matchup.mp || !runningLobby || mapStarted,
+                        }"
+                        @click.native="matchup.mp && runningLobby && !mapStarted ? banchoCall('startMap') : mapStarted ? tooltipText = 'Matchup is currently playing a map' : tooltipText = 'Matchup has no lobby'"
+                    >
+                        {{ $t('open.referee.startMap') }}
+                    </ContentButton>
+                    <ContentButton
+                        class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
+                        :class="{
+                            'content_button--disabled': !matchup.mp || !runningLobby || !mapStarted,
+                        }"
+                        @click.native="matchup.mp && runningLobby && mapStarted ? banchoCall('abortMap') : !mapStarted ? tooltipText = 'Matchup is not currently playing a map' : tooltipText = 'Matchup has no lobby'"
+                    >
+                        {{ $t('open.referee.abortMap') }}
+                    </ContentButton>
+                    <ContentButton
+                        class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
+                        :class="{
                             'content_button--disabled': !matchup.mp || !runningLobby,
                         }"
-                        @click.native="matchup.mp && runningLobby ? banchoCall('closeLobby') : 'Matchup has no lobby'"
+                        @click.native="matchup.mp && runningLobby ? banchoCall('closeLobby') : tooltipText = 'Matchup has no lobby'"
                     >
                         {{ $t('open.referee.closeLobby') }}
                     </ContentButton>
@@ -172,7 +245,7 @@
                         </div>
                         <div class="referee__matchup__content__team">
                             <div class="referee__matchup__content__team__name">
-                                {{ matchup.team1?.name || "TBD" }}
+                                {{ matchup.first ? `(${matchup.first.ID === (matchup.team1?.ID || 0) ? "1" : "2"})` : '' }} {{ matchup.team1?.name || "TBD" }}
                             </div>
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
@@ -210,7 +283,7 @@
                         </div>
                         <div class="referee__matchup__content__team">
                             <div class="referee__matchup__content__team__name">
-                                {{ matchup.team2?.name || "TBD" }}
+                                {{ matchup.first ? `(${matchup.first.ID === (matchup.team2?.ID || 0) ? "1" : "2"})` : '' }} {{ matchup.team2?.name || "TBD" }}
                             </div>
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
@@ -246,8 +319,104 @@
                                 </div>
                             </div>
                         </div>
+                        <div
+                            v-if="mapOrder.length > 0" 
+                            class="referee__matchup__content__order"
+                        >
+                            Pickban Order<br>1 = Roll winner<br>2 = Roll loser<br>W = Winner so far in matchup<br>L = Loser so far in matchup<br>WP = Winner of previous map<br>LP = Loser of previous map
+                            <div 
+                                v-for="set in mapOrder"
+                                :key="set.set"
+                                class="referee__matchup__content__order__set"
+                            >
+                                <div 
+                                    v-if="set.order.length === 0"
+                                    class="referee__matchup__content__order__set_header"
+                                >
+                                    Set {{ set.set }}
+                                </div>
+                                <div class="referee__matchup__content__order__list">
+                                    <div 
+                                        v-for="map in set.order"
+                                        :key="map.ID"
+                                        class="referee__matchup__content__order__team"
+                                        :style="{ 
+                                            backgroundColor: matchupMaps.length < mapOrder.filter(m => m.set < set.set).reduce((acc, cur) => acc + cur.order.length, 0) + map.order ? convertStatusEnum(map.status) : '#333333',
+                                            boxShadow: matchupMaps.length === mapOrder.filter(m => m.set < set.set).reduce((acc, cur) => acc + cur.order.length, 0) + map.order - 1 ? `0 0 10px ${convertStatusEnum(map.status)}` : 'none',
+                                        }"
+                                    >
+                                        {{ convertOrderEnum(map.team) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <ContentButton
+                            class="referee__matchup__header__create_lobby__button content_button--red"
+                            :class="{
+                                'content_button--disabled': !matchup.mp || !runningLobby || mapStarted,
+                            }"
+                            style="max-height: 40px;"
+                            @click.native="matchup.mp && runningLobby && !mapStarted ? sendNextMapMessage() : mapStarted ? tooltipText = 'Matchup is currently playing a map' : tooltipText = 'Matchup has no lobby'"
+                        >
+                            {{ nextMapMessage }}
+                        </ContentButton>
+                        <div
+                            v-for="map in matchupMaps"
+                            :key="map.ID"
+                            class="referee__matchup__content__map"
+                            :style="{backgroundColor: slotColour(selectedMappool?.slots.find(slot => slot.maps.some(m => m.ID === map.map.ID))?.allowedMods)}"
+                        >
+                            <div
+                                class="referee__matchup__content__map_delete"
+                                @click="banchoCall('deleteMap', { mapID: map.ID })"
+                            >
+                                X
+                            </div>
+                            <div class="referee__matchup__content__map_name">
+                                ({{ map.order }}) {{ selectedMappool?.slots.find(slot => slot.maps.some(m => m.ID === map.map.ID))?.acronym.toUpperCase() }}{{ map.map.order }} - {{ mapStatusToString(map.status) }}
+                            </div>
+                        </div>
                     </div>
-                    <div class="referee__matchup__content_div" />
+                    <div class="referee__matchup__content_div">
+                        Mappool:
+                        <OpenSelect
+                            :value="selectedMappool?.abbreviation.toUpperCase() || ''"
+                            :options="mappoolSelector"
+                            @change="selectedMappool = mappools.find(m => m.abbreviation.toLowerCase() === $event.toLowerCase()) || null"
+                        />
+
+                        <div
+                            v-if="selectedMappool"
+                            class="referee__matchup__content__mappool"
+                        >
+                            <div
+                                v-for="slot in selectedMappool.slots"
+                                :key="slot.ID"
+                                class="referee__matchup__content__mappool__slot"
+                                :style="{backgroundColor: slotColour(slot.allowedMods)}"
+                            >
+                                <div 
+                                    class="referee__matchup__content__mappool__slot__name"
+                                >
+                                    {{ slot.name }}
+                                </div>
+                                <div
+                                    v-for="map in slot.maps"
+                                    :key="map.ID"
+                                    class="referee__matchup__content__mappool__slot__map"
+                                    :class="{ 'referee__matchup__content__mappool__slot__map--used': matchupMaps.some(m => m.map.ID === map.ID) }"
+                                    @click="!matchup.mp || !runningLobby ? tooltipText = 'Matchup has no lobby' : matchupMaps.find(m => m.map.ID === map.ID) ? tooltipText = 'Map has been used already' : selectMap(map.ID)"
+                                >
+                                    <div class="referee__matchup__content__mappool__slot__map__name">
+                                        {{ slot.acronym.toUpperCase() }}{{ slot.maps.length === 1 ? '' : map.order }}
+                                    </div>
+                                    <div class="referee__matchup__content__mappool__slot__map__beatmap">
+                                        {{ map.beatmap?.beatmapset?.artist }} - {{ map.beatmap?.beatmapset?.title }} [{{ map.beatmap?.difficulty }}]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="referee__matchup__footer">
                     <ContentButton
@@ -260,7 +429,7 @@
             </div>
             <!-- Matchup list -->
             <div 
-                v-else-if="matchupList"
+                v-else
                 class="referee__matchups"
             >
                 <div 
@@ -287,10 +456,14 @@ import { State, namespace } from "vuex-class";
 import { Centrifuge, PublicationContext, Subscription } from "centrifuge";
 
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
+import OpenSelect from "../../Assets/components/open/OpenSelect.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import { Tournament } from "../../Interfaces/tournament";
-import { Matchup } from "../../Interfaces/matchup";
+import { MapStatus, Matchup } from "../../Interfaces/matchup";
+import { MapOrder, MapOrderTeam } from "../../Interfaces/stage";
 import { UserInfo } from "../../Interfaces/user";
+import { Mappool, MappoolMap } from "../../Interfaces/mappool";
+import { modsToRGB } from "../../Interfaces/mods";
 
 const openModule = namespace("open");
 
@@ -319,8 +492,9 @@ interface message {
 
 @Component({
     components: {
-        OpenTitle,
         ContentButton,
+        OpenSelect,
+        OpenTitle,
     },
     head () {
         return {
@@ -352,12 +526,26 @@ export default class Referee extends Vue {
     matchupChannel: Subscription | null = null;
 
     matchup: Matchup | null = null;
-    matchupList: Matchup[] | null = null;
+    matchupList: Matchup[] = [];
+    mappools: Mappool[] = [];
+    mappoolSelector: {
+        value: string;
+        text: string;
+    }[] = [];
+    selectedMappool: Mappool | null = null;
+    mapOrder: {
+        set: number;
+        order: MapOrder[];
+    }[] = [];
+    mapSelected: MappoolMap | null = null;
     mapStarted = false;
-    runningLobby = true;
+    runningLobby = false;
 
     team1PlayerStates: playerState[] = [];
     team2PlayerStates: playerState[] = [];
+
+    mapTimer = "90";
+    readyTimer = "90";
 
     inputMessage = "";
     messages: message[] = [];
@@ -395,6 +583,28 @@ export default class Referee extends Vue {
                 return false;
             return true;
         });
+    }
+
+    get matchupMaps () {
+        return this.matchup?.maps || [];
+    }
+
+    get nextMapMessage () {
+        // TODO: Support sets, and don't hardcode no losing -> second and no winning -> first
+        const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchup?.team1Score} - ${this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
+        const bestOf = `BO${this.mapOrder[0].order.filter(p => p.status === MapStatus.Picked).length + 1}`;
+        const firstTo = this.mapOrder[0].order.filter(p => p.status === MapStatus.Picked).length / 2;
+        const winner = this.matchup?.team1Score === firstTo ? this.matchup.team1?.name : this.matchup?.team2Score === firstTo ? this.matchup?.team2?.name : null;
+        const nextMap = this.matchupMaps.length > this.mapOrder[0].order.length ? null : this.mapOrder[0].order[this.matchupMaps.length];
+        const first = this.matchup?.first?.name;
+        const second = this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2?.name : this.matchup?.team2?.ID === this.matchup?.first?.ID ? this.matchup?.team1?.name : null;
+        const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
+        const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score < this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
+        const nextMapTeam = nextMap?.team === MapOrderTeam.Team1 ? first : MapOrderTeam.Team2 ? second : MapOrderTeam.TeamLoser ? losing ?? second : MapOrderTeam.TeamWinner ? winning ?? first : null;
+        console.log(first, second, winning, losing, nextMapTeam);
+        const nextMapString = `Next ${this.mapStatusToString(nextMap?.status || 0)}: ${nextMapTeam}`;
+
+        return `${score} // ${bestOf} // ${winner ?? nextMapString}`;
     }
 
     async sendMessage () {
@@ -438,6 +648,20 @@ export default class Referee extends Vue {
         if (this.$refs.tooltip instanceof HTMLElement) {
             this.$refs.tooltip.style.left = `${x + 10}px`;
             this.$refs.tooltip.style.top = `${y + 10}px`;
+        }
+    }
+
+    selectMap (mapID: number) {
+        if (this.mapSelected?.ID === mapID) {
+            this.mapSelected = null;
+            return;
+        }
+
+        this.mapSelected = this.selectedMappool?.slots.flatMap(slot => slot.maps).find(map => map.ID === mapID) || null;
+        console.log(this.$refs);
+        if (this.$refs.mapStatusSelect instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
+            this.$refs.mapStatusSelect.style.left = this.$refs.tooltip.style.left;
+            this.$refs.mapStatusSelect.style.top = this.$refs.tooltip.style.top;
         }
     }
 
@@ -489,6 +713,39 @@ export default class Referee extends Vue {
         return `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
     }
 
+    slotColour (num?: number | null) {
+        const values = modsToRGB(num);
+        return `rgba(${values[0]}, ${values[1]}, ${values[2]}, 0.333)`;
+    }
+
+    convertOrderEnum (num: MapOrderTeam): string {
+        switch (num) {
+            case MapOrderTeam.Team1:
+                return "1";
+            case MapOrderTeam.Team2:
+                return "2";
+            case MapOrderTeam.TeamLoser:
+                return "L";
+            case MapOrderTeam.TeamWinner:
+                return "W";
+            case MapOrderTeam.TeamLoserPrevious:
+                return "LP";
+            case MapOrderTeam.TeamWinnerPrevious:
+                return "WP";
+        }
+    }
+
+    convertStatusEnum (num: MapStatus): string {
+        switch (num) {
+            case MapStatus.Banned:
+                return "#F24141";
+            case MapStatus.Protected:
+                return "#5BBCFA";
+            case MapStatus.Picked:
+                return "#3A8F5E";
+        }
+    }
+
     unsub () {
         if (this.matchupChannel) {
             this.matchupChannel.unsubscribe();
@@ -536,6 +793,27 @@ export default class Referee extends Vue {
             ID: i,
             timestamp: new Date(message.timestamp),
         })) || [];
+        this.mapOrder = this.matchup?.round?.mapOrder?.map(o => o.set)
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .map(s => ({
+                set: s,
+                order: this.matchup?.round?.mapOrder?.filter(o => o.set === s).sort((a, b) => a.order - b.order) || [],
+            })) || this.matchup?.stage?.mapOrder?.map(o => o.set)
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .map(s => ({
+                set: s,
+                order: this.matchup?.stage?.mapOrder?.filter(o => o.set === s).sort((a, b) => a.order - b.order) || [],
+            })) || [];
+
+        this.mappools = this.matchup?.round?.mappool || this.matchup?.stage?.mappool || [];
+        this.mappoolSelector = this.mappools.map(mappool => ({
+            value: mappool.abbreviation.toUpperCase(),
+            text: mappool.abbreviation.toUpperCase(),
+        }));
+        this.selectedMappool = this.mappools[0] || null;
+        
+        this.mapTimer = `${this.tournament?.mapTimer || 90}`;
+        this.readyTimer = `${this.tournament?.readyTimer || 90}`;
 
         this.matchupChannel = this.centrifuge.newSubscription(`matchup:${matchupID}`);
 
@@ -572,6 +850,12 @@ export default class Referee extends Vue {
         this.unsub();
         this.matchup = null;
         this.messages = [];
+        this.mapOrder = [];
+        this.mappools = [];
+        this.mappoolSelector = [];
+        this.selectedMappool = null;
+        this.mapSelected = null;
+        this.runningLobby = false;
     }
 
     addMessage (data: any) {
@@ -611,6 +895,7 @@ export default class Referee extends Vue {
             case "created":
                 this.matchup.baseURL = ctx.data.baseURL;
                 this.matchup.mp = ctx.data.mpID;
+                this.runningLobby = true;
                 break;
             case "message":
                 this.addMessage(ctx.data);
@@ -640,15 +925,53 @@ export default class Referee extends Vue {
                     };
                 });
                 break;
+            case "map":
+                if (!this.matchup.maps)
+                    this.matchup.maps = [];
+                this.matchup.maps.push(ctx.data.map);
+                this.mapSelected = null;
+                setTimeout(async () => {
+                    await this.sendNextMapMessage();
+                }, 100);
+                break;
             case "matchStarted":
+                this.mapStarted = true;
                 break;
             case "matchAborted":
+                this.mapStarted = false;
                 break;
             case "matchFinished":
+                this.mapStarted = false;
+                if (this.matchup) {
+                    this.matchup.team1Score = ctx.data.team1Score;
+                    this.matchup.team2Score = ctx.data.team2Score;
+                }
+                this.matchup.maps?.push(ctx.data.map);
+                setTimeout(async () => {
+                    await this.sendNextMapMessage();
+                }, 100);
                 break;
             case "closed":
+                this.team1PlayerStates = [];
+                this.team2PlayerStates = [];
                 this.runningLobby = false;
                 break;
+        }
+    }
+
+    async sendNextMapMessage () {
+        await this.banchoCall("message", { message: this.nextMapMessage, username: this.loggedInUser?.osu.username });
+        await this.banchoCall("timer", { time: parseInt(this.mapTimer) });
+    }
+
+    mapStatusToString (num: MapStatus): string {
+        switch (num) {
+            case MapStatus.Banned:
+                return "Ban";
+            case MapStatus.Protected:
+                return "Protect";
+            case MapStatus.Picked:
+                return "Pick";
         }
     }
 
@@ -661,10 +984,14 @@ export default class Referee extends Vue {
         if (
             (
                 endpoint === "createLobby" || 
-                endpoint === "roll"
+                endpoint === "roll" ||
+                endpoint === "deleteMap"
             ) &&
             !confirm(`Are you sure you want to ${endpoint}?`)
         )
+            return;
+
+        if (endpoint === "deleteMap" && !confirm("Are you REALLY SURE you want to delete a map? If this is a pick, this is irreversible."))
             return;
 
         const { data: lobbyData } = await this.$axios.post(`/api/referee/bancho/${this.tournament?.ID}/${this.matchup.ID}`, {
@@ -689,6 +1016,9 @@ export default class Referee extends Vue {
         switch (endpoint) {
             case "createLobby":
                 this.tooltipText = "Lobby created";
+                break;
+            case "closeLobby":
+                this.tooltipText = "Lobby closed";
                 break;
             case "addRef":
                 this.tooltipText = "Addreffed";
@@ -725,6 +1055,26 @@ export default class Referee extends Vue {
 
     }
 
+    &__map_status_select {
+        position: fixed;
+        transition: none;
+        z-index: 10;
+
+        background-color: #333333;
+        padding: 10px;
+        border-radius: 10px;
+
+        &__option {
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+
+            &:hover {
+                background-color: #333333;
+            }
+        }
+    }
+
     &__container {
         width: 95vw;
         align-self: center;
@@ -757,6 +1107,7 @@ export default class Referee extends Vue {
 
             &__create_lobby__button {
                 white-space: nowrap;
+                height: 40px;
             }
         }
 
@@ -959,6 +1310,108 @@ export default class Referee extends Vue {
                             &--ready {
                                 border: 2px solid rgb(158, 216, 84);
                             }
+                        }
+                    }
+                }
+            }
+
+            &__map {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+                border-radius: 5px;
+
+                &_delete {
+                    color: $open-red;
+                    cursor: pointer;
+                }
+
+                &_name {
+                    font-size: $font-lg;
+                    font-weight: bold;
+                }
+            }
+
+            &__order {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                background: #333333;
+                padding: 10px;
+                border-radius: 5px;
+
+                &__set {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                }
+
+                &__list {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 10px;
+                }
+
+                &__team {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+                    width: 10px;
+                    height: 10px;
+                    gap: 5px;
+                    padding: 10px;
+                    border-radius: 5px;
+                }
+            }
+
+            &__mappool {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+                &__slot {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                    padding: 10px;
+                    border-radius: 5px;
+                    background: #333333;
+
+                    &__name {
+                        font-size: $font-lg;
+                        font-weight: 500;
+                    }
+
+                    &__map {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 5px;
+                        padding: 10px;
+                        border-radius: 5px;
+                        background: #333333;
+                        cursor: pointer;
+                        transition: background 0.2s;
+
+                        &--used {
+                            cursor: not-allowed;
+                            color: black;
+                            background: black;
+                        }
+
+                        &:hover {
+                            background: #444444;
+                        }
+
+                        &__name {
+                            font-size: $font-lg;
+                            font-weight: 500;
+                        }
+
+                        &__beatmap {
+                            font-size: $font-base;
+                            font-weight: 300;
                         }
                     }
                 }

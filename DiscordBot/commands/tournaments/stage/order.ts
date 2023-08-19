@@ -158,7 +158,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
             const mapOrder = new MapOrder();
             mapOrder.set = set;
-            mapOrder.order = order.length + 1;
+            mapOrder.order = orderMade.length + 1;
             mapOrder.team = n === "1" ? MapOrderTeam.Team1 : n === "2" ? MapOrderTeam.Team2 : n === "w" ? MapOrderTeam.TeamWinner : MapOrderTeam.TeamLoser;
             mapOrder.status = t === "b" ? MapStatus.Banned : t === "p" ? MapStatus.Picked : MapStatus.Protected;
             if (round)

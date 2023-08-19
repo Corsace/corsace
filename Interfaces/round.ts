@@ -63,7 +63,7 @@ export interface Round {
     ID:           number;
     name:         string;
     abbreviation: string;
-    isDraft:      null;
+    isDraft?:     boolean | null;
     mappool:      Mappool[];
     mapOrder?:    MapOrder[] | null;
 }

@@ -674,6 +674,9 @@
             "createLobby": "CREATE LOBBY",
             "roll": "ROLL",
             "settings": "!MP SETTINGS",
+            "timer": "!MP TIMER",
+            "startMap": "!MP START",
+            "abortMap": "!MP ABORT",
             "closeLobby": "CLOSE LOBBY"
         },
         "status": {

@@ -575,16 +575,20 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             }
         }
         matchup.maps!.push(matchupMap);
+        await matchup.save();
 
         log(matchup, `Matchup map and scores saved with matchupMap ID ${matchupMap.ID}`);
 
         await publish(matchup, {
             type: "matchFinished",
-            beatmapID: matchupMap.map.beatmap!.ID,
-            mapOrder: matchupMap.order,
-            team1Score: matchupMap.team1Score,
-            team2Score: matchupMap.team2Score,
-            winner: matchupMap.winner?.ID,
+            team1Score: matchup.team1Score,
+            team2Score: matchup.team2Score,
+            map: {
+                ID: matchupMap.ID,
+                map: beatmap,
+                order: matchupMap.order,
+                status: matchupMap.status,
+            },
         });
 
         if (!state.matchups[matchup.ID].autoRunning)
@@ -623,14 +627,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             }
             await matchup.save();
 
+            await publish(matchup, { type: "closed" });
+
             // Let it run one more time before clearing
             await pause(15 * 1000);
             clearInterval(messageSaver);
 
             state.runningMatchups--;
             delete state.matchups[matchup.ID];
-
-            await publish(matchup, { type: "closed" });
             maybeShutdown();
         }
     });
