@@ -84,7 +84,7 @@ refereeBanchoRouter.post("/:tournamentID/:matchupID", validateTournament, isLogg
         if (Axios.isAxiosError(e)) {
             ctx.body = {
                 success: false,
-                error: e.response?.data ?? e.message,
+                error: e.response,
             };
         } else if (e instanceof Error) {
             ctx.body = {

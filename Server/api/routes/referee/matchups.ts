@@ -1,6 +1,8 @@
 import Router from "@koa/router";
 import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
 import { Matchup } from "../../../../Models/tournaments/matchup";
+import { Stage } from "../../../../Models/tournaments/stage";
+import { Round } from "../../../../Models/tournaments/round";
 import { Matchup as MatchupInterface } from "../../../../Interfaces/matchup"; 
 import { Team as TeamInterface } from "../../../../Interfaces/team";
 import { Team } from "../../../../Models/tournaments/team";
@@ -9,12 +11,6 @@ import { Mappool } from "../../../../Interfaces/mappool";
 import { discordClient } from "../../../discord";
 import { isLoggedInDiscord } from "../../../middleware";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
-
-// TODO: Delete these after testing
-import { Stage } from "../../../../Models/tournaments/stage";
-import { Tournament } from "../../../../Models/tournaments/tournament";
-import { OAuth, User } from "../../../../Models/user";
-import { Round } from "../../../../Models/tournaments/round";
 
 const refereeMatchupsRouter = new Router();
 
@@ -263,87 +259,6 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
 
     ctx.body = {
         success: true,
-        matchup,
-    };
-});
-
-// TODO: Delete thius shitr when PR is ready
-refereeMatchupsRouter.post("/testMatchup/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
-    const tournament = await Tournament
-        .createQueryBuilder("tournament")
-        .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
-        .getOne();
-    if (!tournament) {
-        ctx.body = {
-            success: false,
-            error: "Tournament not found.",
-        };
-        return;
-    }
-
-    const users = [
-        { country: "CA", osu: { username: "uzzi", userID: "1928230" }, discord: { username: "uzzi", userID: "92448752152875008" } },
-        { country: "NL", osu: { username: "cavoeboy", userID: "7361815" }, discord: { username: "cavoe", userID: "128203919296823296" } },
-    ];
-
-    const teams: Team[] = [];
-    for (const u of users) {
-        let user = await User.findOne({ where: { osu: { userID: u.osu.userID } } });
-        if (user) {
-            user.discord = user.discord as OAuth;
-            await user.save();
-        } else {
-            user = new User();
-            user.country = u.country;
-            user.osu = u.osu as OAuth;
-            user.discord = u.discord as OAuth;
-            await user.save();
-        }
-        console.log(`Saved ${u.discord.username} to database.`);
-
-        let team = await Team
-            .createQueryBuilder("team")
-            .leftJoinAndSelect("team.manager", "manager")
-            .where("manager.ID = :ID", { ID: user.ID })
-            .getOne();
-        if (!team) {
-            team = new Team;
-            team.name = user.osu.username;
-            team.manager = user;
-            team.members = [ user ];
-            team.avatarURL = user.osu.avatar;
-            team.tournaments = [ tournament ];
-            const usernameSplit = user.osu.username.split(" ");
-            team.abbreviation = usernameSplit.length < 2 || usernameSplit.length > 4 ? 
-                usernameSplit[0].slice(0, Math.min(usernameSplit[0].length, 4)) : 
-                usernameSplit.map(n => n[0]).join("");
-            await team.calculateStats();
-            await team.save();
-            console.log(`Saved ${team.name} to database.`);
-        }
-        teams.push(team);
-    }
-
-    const stage = await Stage
-        .createQueryBuilder("stage")
-        .innerJoin("stage.tournament", "tournament")
-        .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
-        .andWhere("stage.stageType != '0'")
-        .getOne();
-
-    const ref = await User.findOne({ where: { discord: { userID: ctx.state.user.discord.userID } } });
-
-    const matchup = new Matchup();
-    matchup.stage = stage;
-    matchup.team1 = teams[0];
-    matchup.team2 = teams[1];
-    matchup.date = new Date();
-    matchup.referee = ref;
-    await matchup.save();
-
-    ctx.body = {
-        success: true,
-        teams,
         matchup,
     };
 });
