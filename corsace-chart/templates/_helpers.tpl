@@ -182,6 +182,11 @@ Shared environment by deployments
     secretKeyRef:
       name: {{ include "corsace-chart.fullname" $ }}
       key: cloudflareR2SecretAccessKey
+- name: CENTRIFUGO_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: centrifugoApiKey
 - name: API_PUBLICURL
   value: {{ default (printf "%s%s%s" "http://" (include "corsace-chart.fullname" $) "-api") $.Values.webServices.api.publicUrl }}
 - name: CRONRUNNER_PUBLICURL

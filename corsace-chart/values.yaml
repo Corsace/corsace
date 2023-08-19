@@ -59,6 +59,8 @@ secrets:
           accessKeyId: ""
           secretAccessKey: ""
   interOpPassword: ""
+  centrifugo:
+    apiKey: ""
 
 webServices:
   corsace:
