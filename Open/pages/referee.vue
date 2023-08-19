@@ -1387,21 +1387,25 @@ export default class Referee extends Vue {
                     &__map {
                         display: flex;
                         flex-direction: column;
-                        gap: 5px;
                         padding: 10px;
                         border-radius: 5px;
                         background: #333333;
                         cursor: pointer;
                         transition: background 0.2s;
 
+                        &:hover {
+                            background: #444444;
+                        }
+
                         &--used {
                             cursor: not-allowed;
                             color: black;
                             background: black;
-                        }
 
-                        &:hover {
-                            background: #444444;
+                            &:hover {
+                                background: black;
+                                color: white;
+                            }
                         }
 
                         &__name {

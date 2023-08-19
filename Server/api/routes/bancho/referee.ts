@@ -9,6 +9,7 @@ import { publish } from "../../../../BanchoBot/functions/tournaments/matchup/cen
 import { BanchoLobbyPlayerStates } from "bancho.js";
 import getMappoolSlotMods from "../../../../BanchoBot/functions/tournaments/matchup/getMappoolSlotMods";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
+import ormConfig from "../../../../ormconfig";
 
 const banchoRefereeRouter = new Router();
 
@@ -29,9 +30,9 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
 
     const endpoint = ctx.URL.pathname.split("/")[ctx.URL.pathname.split("/").length - 1];
 
-    const matchup = state.matchups[parseInt(id)];
+    const matchupList = state.matchups[parseInt(id)];
 
-    if (matchup && endpoint === "createLobby" && !ctx.request.body.replace) {
+    if (matchupList && endpoint === "createLobby" && !ctx.request.body.replace) {
         ctx.body = {
             success: false,
             error: "Matchup already has a lobby",
@@ -39,7 +40,7 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
         return;
     }
 
-    if (!matchup) {
+    if (!matchupList) {
         if (endpoint === "pulse")
             ctx.body = {
                 success: true,
@@ -55,12 +56,12 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
             return;
     }
 
-    ctx.state.matchup = matchup;
+    ctx.state.matchupList = matchupList;
     await next();
 }
 
 banchoRefereeRouter.post("/:matchupID/pulse", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     if (!matchupList) {
         ctx.body = {
             success: true,
@@ -90,7 +91,7 @@ banchoRefereeRouter.post("/:matchupID/pulse", validateMatchup, async (ctx) => {
 });
 
 banchoRefereeRouter.post("/:matchupID/createLobby", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined | null = ctx.state.matchup;
+    const matchupList: MatchupList | undefined | null = ctx.state.matchupList;
     let matchup: Matchup | undefined | null = matchupList?.matchup;
     if (!matchup) {
         matchup = await Matchup
@@ -150,7 +151,7 @@ banchoRefereeRouter.post("/:matchupID/createLobby", validateMatchup, async (ctx)
 });
 
 banchoRefereeRouter.post("/:matchupID/roll", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     if (!matchupList) {
         ctx.body = {
             success: false,
@@ -170,7 +171,7 @@ banchoRefereeRouter.post("/:matchupID/roll", validateMatchup, async (ctx) => {
 });
 
 banchoRefereeRouter.post("/:matchupID/invite", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     if (!matchupList) {
         ctx.body = {
             success: false,
@@ -196,7 +197,7 @@ banchoRefereeRouter.post("/:matchupID/invite", validateMatchup, async (ctx) => {
 });
 
 banchoRefereeRouter.post("/:matchupID/addRef", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     if (!matchupList) {
         ctx.body = {
             success: false,
@@ -222,7 +223,7 @@ banchoRefereeRouter.post("/:matchupID/addRef", validateMatchup, async (ctx) => {
 });
 
 banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     const mapID = ctx.request.body.mapID;
     if (!matchupList || !mapID || typeof mapID !== "number" || isNaN(mapID)) {
         ctx.body = {
@@ -294,8 +295,7 @@ banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) =
 });
 
 banchoRefereeRouter.post("/:matchupID/deleteMap", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
-
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     const mapID = ctx.request.body.mapID;
     if (!matchupList || !mapID || typeof mapID !== "number" || isNaN(mapID)) {
         ctx.body = {
@@ -314,19 +314,34 @@ banchoRefereeRouter.post("/:matchupID/deleteMap", validateMatchup, async (ctx) =
         return;
     }
 
-    await matchupMap.remove();
+    try {
+        await ormConfig.transaction(async manager => {
+            await manager.remove(matchupMap);
 
-    matchupList.matchup.maps = matchupList.matchup.maps?.filter(map => map.ID !== mapID);
-    matchupList.matchup.maps?.forEach((map, i) => map.order = i + 1);
-    await Promise.all(matchupList.matchup.maps?.map(map => map.save()) ?? []);
+            matchupList.matchup.maps = matchupList.matchup.maps?.filter(map => map.ID !== mapID);
+            matchupList.matchup.maps?.forEach((map, i) => map.order = i + 1);
+            await Promise.all(matchupList.matchup.maps?.map(map => manager.save(map)) ?? []);
+        });
 
-    ctx.body = {
-        success: true,
-    };
+        ctx.body = {
+            success: true,
+        };
+    } catch (error) {
+        if (error instanceof Error)
+            ctx.body = {
+                success: false,
+                error: error.message,
+            };
+        else
+            ctx.body = {
+                success: false,
+                error: `Unknown error, ${error}`,
+            };
+    }
 });
 
 banchoRefereeRouter.post("/:matchupID/startMap", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     if (!matchupList) {
         ctx.body = {
             success: false,
@@ -352,7 +367,7 @@ banchoRefereeRouter.post("/:matchupID/startMap", validateMatchup, async (ctx) =>
 });
 
 banchoRefereeRouter.post("/:matchupID/timer", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     if (!matchupList) {
         ctx.body = {
             success: false,
@@ -378,7 +393,7 @@ banchoRefereeRouter.post("/:matchupID/timer", validateMatchup, async (ctx) => {
 });
 
 banchoRefereeRouter.post("/:matchupID/settings", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     if (!matchupList) {
         ctx.body = {
             success: false,
@@ -407,7 +422,7 @@ banchoRefereeRouter.post("/:matchupID/settings", validateMatchup, async (ctx) =>
 });
 
 banchoRefereeRouter.post("/:matchupID/abortMap", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     if (!matchupList) {
         ctx.body = {
             success: false,
@@ -425,7 +440,7 @@ banchoRefereeRouter.post("/:matchupID/abortMap", validateMatchup, async (ctx) =>
 });
 
 banchoRefereeRouter.post("/:matchupID/message", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     if (!matchupList) {
         ctx.body = {
             success: false,
@@ -443,7 +458,7 @@ banchoRefereeRouter.post("/:matchupID/message", validateMatchup, async (ctx) => 
 });
 
 banchoRefereeRouter.post("/:matchupID/closeLobby", validateMatchup, async (ctx) => {
-    const matchupList: MatchupList | undefined = ctx.state.matchup;
+    const matchupList: MatchupList | undefined = ctx.state.matchupList;
     if (!matchupList) {
         ctx.body = {
             success: false,
