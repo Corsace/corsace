@@ -11,6 +11,7 @@ import { Mappool } from "../../../../Interfaces/mappool";
 import { discordClient } from "../../../discord";
 import { isLoggedInDiscord } from "../../../middleware";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
+import { parseQueryParam } from "../../../utils/query";
 
 const refereeMatchupsRouter = new Router();
 
@@ -48,9 +49,9 @@ function convertTeam (team: Team | null | undefined): TeamInterface | undefined 
 refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup
         .createQueryBuilder("matchup")
+        .leftJoinAndSelect("matchup.round", "round")
         .innerJoinAndSelect("matchup.stage", "stage")
         .innerJoinAndSelect("stage.tournament", "tournament")
-        .leftJoinAndSelect("matchup.round", "round")
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
         .leftJoinAndSelect("team1.manager", "manager1")
@@ -60,7 +61,8 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
         .leftJoinAndSelect("matchup.winner", "winner")
         .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
         .leftJoin("matchup.referee", "referee")
-        .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID });
+        .where("tournament.ID = :ID", { ID: ctx.state.tournament.ID })
+        .andWhere("matchup.potentialFor IS NULL");
 
     // For organizers to see all matchups
     const roles = await TournamentRole
@@ -84,11 +86,15 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
         matchupQ
             .andWhere("referee.ID = :refereeID", { refereeID: ctx.state.user.ID });
         
-    const matchups = await matchupQ.getMany();
+    const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
+    const matchups = await matchupQ
+        .skip(skip)
+        .take(5)
+        .getMany();
 
     ctx.body = {
         success: true,
-        matchups: matchups.filter(matchup => !matchup.potentialFor),
+        matchups,
     };
 });
 

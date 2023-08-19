@@ -449,6 +449,13 @@
                         {{ formatDate(matchup.date) }} {{ formatTime(matchup.date) }}
                     </div>
                 </div>
+                <ContentButton
+                    v-if="moreMaps"
+                    class="referee__matchup__footer__button content_button--red content_button--red_sm"
+                    @click.native="loadMore"
+                >
+                    {{ $t('open.referee.loadMore') }}
+                </ContentButton>
             </div>
         </div>
     </div>
@@ -525,6 +532,8 @@ export default class Referee extends Vue {
 
     @State loggedInUser!: UserInfo | null;
     @openModule.State tournament!: Tournament | null;
+
+    moreMaps = true;
 
     centrifuge: Centrifuge | null = null;
     matchupChannel: Subscription | null = null;
@@ -702,6 +711,21 @@ export default class Referee extends Vue {
         centrifuge.connect();
 
         this.centrifuge = centrifuge;
+    }
+
+    async loadMore () {
+        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}?skip=${this.matchupList.length}`);
+        if (matchupData.error) {
+            alert(matchupData.error);
+            this.$router.push("/");
+            return;
+        }
+        if (matchupData.matchups?.length && matchupData.matchups.length < 5)
+            this.moreMaps = false;
+        this.matchupList.push(...matchupData.matchups?.map(matchup => ({
+            ...matchup,
+            date: new Date(matchup.date),
+        })) || []);
     }
 
     formatDate (date: Date): string {
