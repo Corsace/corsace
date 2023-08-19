@@ -13,6 +13,7 @@ import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { validateTournament, hasRoles, validateStageOrRound } from "../../middleware/tournament";
 import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
+import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assignTeamsToNextMatchup";
 
 const matchupRouter = new Router();
 
@@ -459,6 +460,8 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
             matchup.winner = matchup.team1;
         else if (matchup.team2Score > matchup.team1Score)
             matchup.winner = matchup.team2;
+
+        await assignTeamsToNextMatchup(matchup.ID);
     }
     matchup.mp = mpID;
     await matchup.save();
