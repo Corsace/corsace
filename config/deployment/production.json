@@ -124,6 +124,7 @@
     },
     "centrifugo": {
         "apiUrl": "http://centrifugo:9000/api",
+        "publicUrl": "wss://centrifugo.corsace.io",
         "apiKey": "@@CENTRIFUGO_API_KEY",
         "ipWhitelist": ["10.*.*.*"]
     }

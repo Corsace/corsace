@@ -305,6 +305,7 @@ async function stageSave (m: Message, stage: Stage) {
 const data = new SlashCommandBuilder()
     .setName("stage_edit")
     .setDescription("Edit a stage.")
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .setDMPermission(false);
 
 const stageEdit: Command = {

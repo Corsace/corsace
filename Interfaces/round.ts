@@ -1,4 +1,5 @@
 import { Mappool } from "./mappool";
+import { MapOrder } from "./stage";
 
 export const roundAcronyms = [
     "ql",
@@ -62,8 +63,7 @@ export interface Round {
     ID:           number;
     name:         string;
     abbreviation: string;
-    isDraft:      null;
-    setsBestOf:   number;
-    bestOf:       null;
+    isDraft?:     boolean | null;
     mappool:      Mappool[];
+    mapOrder?:    MapOrder[] | null;
 }

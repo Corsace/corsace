@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../..";
+import { MapStatus } from "../../../../Interfaces/matchup";
 import { StageType } from "../../../../Interfaces/stage";
 import { unallowedToPlay } from "../../../../Interfaces/tournament";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { MapStatus } from "../../../../Models/tournaments/matchupMap";
 import { Team } from "../../../../Models/tournaments/team";
 import channelID from "../../../functions/channelID";
 import respond from "../../../functions/respond";

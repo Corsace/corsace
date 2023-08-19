@@ -26,47 +26,7 @@
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
 import { MappoolSlot } from "../../../Interfaces/mappool";
-
-// RGB values for different mod slots
-const freemod: [number, number, number] = [158, 216, 84];
-const freemodButFreer: [number, number, number] = [235, 235, 235];
-
-const mods: {
-    [key: number]: [number, number, number];
-} = {
-    0: [41, 168, 249],
-    1: [242, 129, 65],
-    2: [236, 255, 184],
-    4: [240, 157, 157],
-    8: [251, 186, 32],
-    16: [242, 65, 65],
-    32: [164, 164, 164],
-    64: [219, 174, 255],
-    128: [177, 232, 225],
-    256: [188, 111, 171],
-    512: [186, 107, 248],
-    576: [186, 107, 248],
-    1024: [255, 233, 157],
-    2048: [94, 203, 196],
-    4096: [30, 208, 155],
-    8192: [218, 254, 241],
-    16384: [225, 255, 103],
-    32768: [236, 169, 209],
-    65536: [236, 169, 209],
-    131072: [236, 169, 209],
-    262144: [236, 169, 209],
-    524288: [236, 169, 209],
-    1048576: [130, 161, 240],
-    2097152: [130, 161, 240],
-    4194304: [130, 161, 240],
-    8388608: [130, 161, 240],
-    16777216: [236, 169, 209],
-    33554432: [236, 169, 209],
-    67108864: [236, 169, 209],
-    134217728: [236, 169, 209],
-    268435456: [236, 169, 209],
-    1073741824: [238, 162, 145],
-};
+import { freemodRGB, freemodButFreerRGB, modsToRGB } from "../../../Interfaces/mods";
 
 @Component
 export default class MappoolSlotDropdown extends Vue {
@@ -81,26 +41,12 @@ export default class MappoolSlotDropdown extends Vue {
 
     get slotMod (): string {
         if (this.slotData?.allowedMods === null && this.slotData?.userModCount === null && this.slotData?.uniqueModCount === null)
-            return this.RGBValuesToRGBCSS(freemodButFreer);
+            return this.RGBValuesToRGBCSS(freemodButFreerRGB);
 
         if (this.slotData?.userModCount !== null || this.slotData?.uniqueModCount !== null)
-            return this.RGBValuesToRGBCSS(freemod);
+            return this.RGBValuesToRGBCSS(freemodRGB);
 
-        let colours: [number, number, number][] = [];
-        for (let mod in mods) {
-            if (this.slotData?.allowedMods && (this.slotData?.allowedMods & parseInt(mod))) {
-                colours.push(mods[mod]);
-            }
-        }
-
-        if (colours.length === 0)
-            return this.RGBValuesToRGBCSS(mods[0]);
-
-        const averageColour = colours.reduce((acc, val) => {
-            return [acc[0] + val[0], acc[1] + val[1], acc[2] + val[2]];
-        }, [0, 0, 0]).map((val) => Math.floor(val / colours.length)) as [number, number, number];
-
-        return this.RGBValuesToRGBCSS(averageColour);
+        return this.RGBValuesToRGBCSS(modsToRGB(this.slotData?.allowedMods));
     }
 
     RGBValuesToRGBCSS (values: [number, number, number]) {

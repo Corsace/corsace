@@ -123,6 +123,7 @@ declare module "node-config-ts" {
 
         centrifugo: {
             apiUrl: string;
+            publicUrl: string;
             apiKey: string;
             ipWhitelist: string[];
         };

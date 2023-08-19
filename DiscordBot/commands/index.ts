@@ -37,6 +37,7 @@ import stageCreate from "./tournaments/stage/create";
 import stageDelete from "./tournaments/stage/delete";
 import stageEdit from "./tournaments/stage/edit";
 import stageInfo from "./tournaments/stage/info";
+import stageOrder from "./tournaments/stage/order";
 
 import teamAvatar from "./tournaments/team/avatar";
 import teamInvite from "./tournaments/team/invite";
@@ -123,6 +124,7 @@ commands.push(stageCreate);
 commands.push(stageDelete);
 commands.push(stageEdit);
 commands.push(stageInfo);
+commands.push(stageOrder);
 
 // team commands
 commands.push(teamAvatar);

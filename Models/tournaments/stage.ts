@@ -39,12 +39,6 @@ export class Stage extends BaseEntity {
 
     @Column("boolean", { nullable: true })
         isDraft?: boolean | null;
-    
-    @Column({ default: 1 })
-        setsBestOf!: number;
-
-    @Column("integer", { nullable: true })
-        bestOf?: number | null;
 
     @Column("boolean", { nullable: true })
         qualifierTeamChooseOrder?: boolean | null;

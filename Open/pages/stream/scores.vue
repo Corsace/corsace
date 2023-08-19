@@ -132,9 +132,7 @@
             </tr>
         </table>
     </div> 
-    <div v-else>
-        Epic
-    </div>
+    <div v-else />
 </template>
 
 <script lang="ts">

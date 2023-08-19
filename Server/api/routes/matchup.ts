@@ -13,6 +13,7 @@ import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { validateTournament, hasRoles, validateStageOrRound } from "../../middleware/tournament";
 import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
+import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assignTeamsToNextMatchup";
 
 const matchupRouter = new Router();
 
@@ -151,6 +152,64 @@ function validatePOSTMatchups (matchups: any[]): string | true {
     }
     return true;
 }
+
+matchupRouter.get("/:matchupID", async (ctx) => {
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .leftJoinAndSelect("matchup.team1", "team1")
+        .leftJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("matchup.first", "first")
+        .leftJoinAndSelect("matchup.winner", "winner")
+        .leftJoinAndSelect("matchup.maps", "maps")
+        .leftJoinAndSelect("maps.map", "map")
+        .leftJoinAndSelect("map.beatmap", "beatmap")
+        .leftJoinAndSelect("beatmap.beatmapset", "beatmapset")
+        .leftJoinAndSelect("beatmapset.creator", "creator")
+        .leftJoinAndSelect("map.customBeatmap", "customBeatmap")
+        .leftJoinAndSelect("map.customMappers", "customMappers")
+        .leftJoinAndSelect("map.slot", "slot")
+        .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
+        .getOne();
+
+    if (!matchup) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found.",
+        };
+        return;
+    }
+
+    ctx.body = {
+        success: true,
+        matchup,
+    };
+});
+
+matchupRouter.get("/:matchupID/teams", async (ctx) => {
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .leftJoinAndSelect("matchup.team1", "team1")
+        .leftJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("team1.manager", "manager1")
+        .leftJoinAndSelect("team2.manager", "manager2")
+        .leftJoinAndSelect("team1.members", "members1")
+        .leftJoinAndSelect("team2.members", "members2")
+        .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
+        .getOne();
+
+    if (!matchup) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found.",
+        };
+        return;
+    }
+
+    ctx.body = {
+        success: true,
+        matchup,
+    };
+});
 
 matchupRouter.post("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const matchups = ctx.request.body?.matchups;
@@ -401,6 +460,8 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
             matchup.winner = matchup.team1;
         else if (matchup.team2Score > matchup.team1Score)
             matchup.winner = matchup.team2;
+
+        await assignTeamsToNextMatchup(matchup.ID);
     }
     matchup.mp = mpID;
     await matchup.save();

@@ -8,6 +8,7 @@ import gracefulShutdown from "http-graceful-shutdown";
 import os from "os";
 
 import banchoRouter from "../Server/api/routes/bancho";
+import banchoRefereeRouter from "../Server/api/routes/bancho/referee";
 
 import ormConfig from "../ormconfig";
 
@@ -42,6 +43,9 @@ koa.use(koaBody());
 
 /// Cron
 koa.use(Mount("/api/bancho", banchoRouter.routes()));
+
+/// Referee
+koa.use(Mount("/api/bancho/referee", banchoRefereeRouter.routes()));  
 
 let httpShutdown: () => Promise<void> | undefined;
 ormConfig.initialize()

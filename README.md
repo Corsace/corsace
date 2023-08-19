@@ -174,7 +174,7 @@ Run `npm run centrifugo` to start the centrifugo server. It will be available at
 
 On WSL/Windows OR if the above doesn't work:
 Install the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and add it to the root folder of this project.
-Afterwards, run `./centrifugo --config=centrifugo-config.json -p=8001` to start the centrifugo server. If you want to change the port, change the `-p` flag, and your config file's api URL.
+Afterwards, run `npm run centrifugo:local` to start the centrifugo server. If you want to change the port, change the `-p` flag in the repective script in `package.json`, and your config file's api URL.
 
 ## Development
 

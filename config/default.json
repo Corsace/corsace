@@ -143,6 +143,7 @@
     },
     "centrifugo": {
         "apiUrl": "http://127.0.0.1:8001/api",
+        "publicUrl": "ws://localhost:8001",
         "apiKey": "corsace",
         "ipWhitelist": ["127.0.0.1"]
     }
