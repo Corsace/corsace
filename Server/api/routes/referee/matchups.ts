@@ -14,6 +14,7 @@ import { hasRoles, validateTournament } from "../../../middleware/tournament";
 import { Stage } from "../../../../Models/tournaments/stage";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { OAuth, User } from "../../../../Models/user";
+import { Round } from "../../../../Models/tournaments/round";
 
 const refereeMatchupsRouter = new Router();
 
@@ -98,22 +99,9 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
 refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup
         .createQueryBuilder("matchup")
-        // round mappool + pickban order
+        // round and stage
         .leftJoinAndSelect("matchup.round", "round")
-        .leftJoinAndSelect("round.mappool", "roundMappool")
-        .leftJoinAndSelect("roundMappool.slots", "roundSlots")
-        .leftJoinAndSelect("roundSlots.maps", "roundMaps")
-        .leftJoinAndSelect("roundMaps.beatmap", "roundMap")
-        .leftJoinAndSelect("roundMap.beatmapset", "roundBeatmapset")
-        .leftJoinAndSelect("round.mapOrder", "roundMapOrder")
-        // stage mappool + pickban order
         .innerJoinAndSelect("matchup.stage", "stage")
-        .leftJoinAndSelect("stage.mappool", "stageMappool")
-        .leftJoinAndSelect("stageMappool.slots", "stageSlots")
-        .leftJoinAndSelect("stageSlots.maps", "stageMaps")
-        .leftJoinAndSelect("stageMaps.beatmap", "stageMap")
-        .leftJoinAndSelect("stageMap.beatmapset", "stageBeatmapset")
-        .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
         // tournament
         .innerJoinAndSelect("stage.tournament", "tournament")
         .leftJoinAndSelect("matchup.referee", "referee")
@@ -173,6 +161,33 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
     const first = dbMatchup.first?.ID === dbMatchup.team1?.ID ? dbMatchup.team1 : dbMatchup.first?.ID === dbMatchup.team2?.ID ? dbMatchup.team2 : undefined;
     const winner = dbMatchup.winner?.ID === dbMatchup.team1?.ID ? dbMatchup.team1 : dbMatchup.winner?.ID === dbMatchup.team2?.ID ? dbMatchup.team2 : undefined;
 
+    const roundOrStage: Round | Stage | null = 
+        dbMatchup.round ? 
+            await Round
+                .createQueryBuilder("round")
+                .innerJoin("round.matchups", "matchup")
+                .leftJoinAndSelect("round.mappool", "roundMappool")
+                .leftJoinAndSelect("roundMappool.slots", "roundSlots")
+                .leftJoinAndSelect("roundSlots.maps", "roundMaps")
+                .leftJoinAndSelect("roundMaps.beatmap", "roundMap")
+                .leftJoinAndSelect("roundMap.beatmapset", "roundBeatmapset")
+                .leftJoinAndSelect("round.mapOrder", "roundMapOrder")
+                .where("matchup.ID = :ID", { ID: dbMatchup.ID })
+                .getOne() :
+            dbMatchup.stage ?
+                await Stage
+                    .createQueryBuilder("stage")
+                    .innerJoin("stage.matchups", "matchup")
+                    .leftJoinAndSelect("stage.mappool", "stageMappool")
+                    .leftJoinAndSelect("stageMappool.slots", "stageSlots")
+                    .leftJoinAndSelect("stageSlots.maps", "stageMaps")
+                    .leftJoinAndSelect("stageMaps.beatmap", "stageMap")
+                    .leftJoinAndSelect("stageMap.beatmapset", "stageBeatmapset")
+                    .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
+                    .where("matchup.ID = :ID", { ID: dbMatchup.ID })
+                    .getOne() : 
+                null;
+
     const matchup: MatchupInterface = {
         ID: dbMatchup.ID,
         date: dbMatchup.date,
@@ -184,11 +199,11 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
         team2Score: dbMatchup.team2Score,
         potential: !dbMatchup.potentialFor,
         baseURL: dbMatchup.baseURL,
-        round: dbMatchup.round ? {
-            ID: dbMatchup.round.ID,
-            name: dbMatchup.round.name,
-            abbreviation: dbMatchup.round.abbreviation,
-            mappool: dbMatchup.round.mappool?.map<Mappool>(mappool => ({
+        round: roundOrStage instanceof Round ? {
+            ID: roundOrStage.ID,
+            name: roundOrStage.name,
+            abbreviation: roundOrStage.abbreviation,
+            mappool: roundOrStage.mappool?.map<Mappool>(mappool => ({
                 ID: mappool.ID,
                 name: mappool.name,
                 abbreviation: mappool.abbreviation,
@@ -201,16 +216,16 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
                 targetSR: mappool.targetSR,
                 slots: mappool.slots || [],
             })) || [],
-            isDraft: dbMatchup.round.isDraft,
-            mapOrder: dbMatchup.round.mapOrder,
+            isDraft: roundOrStage.isDraft,
+            mapOrder: roundOrStage.mapOrder,
         } : undefined,
-        stage: dbMatchup.stage ? {
-            ID: dbMatchup.stage.ID,
-            name: dbMatchup.stage.name,
-            abbreviation: dbMatchup.stage.abbreviation,
-            stageType: dbMatchup.stage.stageType,
+        stage: roundOrStage instanceof Stage ? {
+            ID: roundOrStage.ID,
+            name: roundOrStage.name,
+            abbreviation: roundOrStage.abbreviation,
+            stageType: roundOrStage.stageType,
             rounds: [],
-            mappool: dbMatchup.stage.mappool?.map<Mappool>(mappool => ({
+            mappool: roundOrStage.mappool?.map<Mappool>(mappool => ({
                 ID: mappool.ID,
                 name: mappool.name,
                 abbreviation: mappool.abbreviation,
@@ -223,16 +238,16 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
                 targetSR: mappool.targetSR,
                 slots: mappool.slots || [],
             })) || [],
-            createdAt: dbMatchup.stage.createdAt,
-            order: dbMatchup.stage.order,
-            scoringMethod: dbMatchup.stage.scoringMethod,
-            isDraft: dbMatchup.stage.isDraft,
-            qualifierTeamChooseOrder: dbMatchup.stage.qualifierTeamChooseOrder,
-            timespan: dbMatchup.stage.timespan,
-            isFinished: dbMatchup.stage.isFinished,
-            initialSize: dbMatchup.stage.initialSize,
-            finalSize: dbMatchup.stage.finalSize,
-            mapOrder: dbMatchup.stage.mapOrder,
+            createdAt: roundOrStage.createdAt,
+            order: roundOrStage.order,
+            scoringMethod: roundOrStage.scoringMethod,
+            isDraft: roundOrStage.isDraft,
+            qualifierTeamChooseOrder: roundOrStage.qualifierTeamChooseOrder,
+            timespan: roundOrStage.timespan,
+            isFinished: roundOrStage.isFinished,
+            initialSize: roundOrStage.initialSize,
+            finalSize: roundOrStage.finalSize,
+            mapOrder: roundOrStage.mapOrder,
         } : undefined,
         isLowerBracket: dbMatchup.isLowerBracket,
         first: convertTeam(first),
