@@ -258,7 +258,6 @@ banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) =
         };
         return;
     }
-    // TODO: Different logic for banned/protected vs picked maps
 
     if (status !== 2) {
         // Add map to matchup.maps
@@ -319,6 +318,7 @@ banchoRefereeRouter.post("/:matchupID/deleteMap", validateMatchup, async (ctx) =
 
     matchupList.matchup.maps = matchupList.matchup.maps?.filter(map => map.ID !== mapID);
     matchupList.matchup.maps?.forEach((map, i) => map.order = i + 1);
+    await Promise.all(matchupList.matchup.maps?.map(map => map.save()) ?? []);
 
     ctx.body = {
         success: true,
