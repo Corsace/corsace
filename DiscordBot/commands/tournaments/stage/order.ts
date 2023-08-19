@@ -31,7 +31,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const tournament = await getTournament(m, channelID(m), "channel", [ TournamentStatus.NotStarted, TournamentStatus.Registrations ], true);
+    const tournament = await getTournament(m, channelID(m), "channel", [], true);
     if (!tournament)
         return;
 
