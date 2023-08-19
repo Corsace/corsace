@@ -98,6 +98,7 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
 refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup
         .createQueryBuilder("matchup")
+        // round mappool + pickban order
         .leftJoinAndSelect("matchup.round", "round")
         .leftJoinAndSelect("round.mappool", "roundMappool")
         .leftJoinAndSelect("roundMappool.slots", "roundSlots")
@@ -105,6 +106,7 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
         .leftJoinAndSelect("roundMaps.beatmap", "roundMap")
         .leftJoinAndSelect("roundMap.beatmapset", "roundBeatmapset")
         .leftJoinAndSelect("round.mapOrder", "roundMapOrder")
+        // stage mappool + pickban order
         .innerJoinAndSelect("matchup.stage", "stage")
         .leftJoinAndSelect("stage.mappool", "stageMappool")
         .leftJoinAndSelect("stageMappool.slots", "stageSlots")
@@ -112,10 +114,10 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
         .leftJoinAndSelect("stageMaps.beatmap", "stageMap")
         .leftJoinAndSelect("stageMap.beatmapset", "stageBeatmapset")
         .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
+        // tournament
         .innerJoinAndSelect("stage.tournament", "tournament")
         .leftJoinAndSelect("matchup.referee", "referee")
-        .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
-        .leftJoinAndSelect("matchup.potentials", "potentials")
+        // teams
         .leftJoinAndSelect("matchup.teams", "teams")
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
@@ -125,16 +127,16 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
         .leftJoinAndSelect("teams.members", "members")
         .leftJoinAndSelect("team1.members", "members1")
         .leftJoinAndSelect("team2.members", "members2")
+        // other teams
         .leftJoinAndSelect("matchup.first", "first")
         .leftJoinAndSelect("matchup.winner", "winner")
+        // maps
         .leftJoinAndSelect("matchup.maps", "maps")
         .leftJoinAndSelect("maps.map", "map")
         .leftJoinAndSelect("map.slot", "slot")
-        .leftJoinAndSelect("maps.scores", "scores")
-        .leftJoinAndSelect("maps.winner", "mapWinner")
-        .leftJoinAndSelect("matchup.messages", "messages")
-        .leftJoinAndSelect("messages.user", "user")
         .where("matchup.ID = :ID", { ID: ctx.params.matchupID });
+
+    // TODO: Add x amount of latest messages to the query, and support scrolling pagination on ref page and matchup page
 
     // For organizers to see all matchups
     const roles = await TournamentRole
