@@ -19,7 +19,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
         
-    const link = await getLink(m, "avatar", false);
+    const link = await getLink(m, "avatar", false, false);
     if (!link)
         return;
 

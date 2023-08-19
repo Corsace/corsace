@@ -1,8 +1,6 @@
 import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../index";
 import { loginResponse } from "../../../functions/loginResponse";
-import { buckets } from "../../../../Server/s3";
-import { gets3Key } from "../../../../Server/utils/s3";
 import { createPack, deletePack } from "../../../../Server/functions/tournaments/mappool/mappackFunctions";
 import { extractParameter } from "../../../functions/parameterFunctions";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
@@ -78,29 +76,15 @@ async function run (m: Message | ChatInputCommandInteraction) {
     
     if (m instanceof Message) await m.react("⏳");
 
-    const s3Key = gets3Key("mappacksTemp", mappool);
-    if (mappool.mappackLink && (mappool.mappackExpiry?.getTime() ?? -1) > Date.now() && s3Key) {
-        // Copy mappack from temp to public
-        try {
-            await buckets.mappacks.copyObject(s3Key, buckets.mappacksTemp, s3Key, "application/zip");
-            await buckets.mappacksTemp.deleteObject(s3Key);
-        
-            mappool.mappackLink = await buckets.mappacks.getPublicUrl(s3Key);
-        } catch (err) {
-            await respond(m, "Something died while copying the mappack. Contact VINXIS");
-            console.log(err);
-            return;
-        }
-    } else {
-        const url = await createPack(m, "mappacks", mappool, `${tournament.abbreviation.toUpperCase()}_${mappool.abbreviation.toUpperCase()}`);
-        if (!url) {
-            await respond(m, "Something died while creating the mappack and retrieving its URL. Contact VINXIS");
-            return;
-        }
+    await deletePack("mappacksTemp", mappool);
 
-        mappool.mappackLink = url;
+    const url = await createPack(m, "mappacks", mappool, `${tournament.abbreviation.toUpperCase()}_${mappool.abbreviation.toUpperCase()}`);
+    if (!url) {
+        await respond(m, "Something died while creating the mappack and retrieving its URL. Contact VINXIS");
+        return;
     }
-    
+
+    mappool.mappackLink = url;
     mappool.mappackExpiry = null;
     mappool.isPublic = true;
     await mappool.save();
@@ -119,6 +103,10 @@ const data = new SlashCommandBuilder()
         option.setName("pool")
             .setDescription("The mappool to publish/private")
             .setRequired(true))
+    .addAttachmentOption(option =>
+        option.setName("mappack")
+            .setDescription("The mappack to upload")
+            .setRequired(false))
     .setDMPermission(false);  
 
 const mappoolPublish: Command = {

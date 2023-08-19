@@ -1,11 +1,11 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
-import { QualifierScore } from "../../Interfaces/qualifier";
+import { MatchupScore } from "../../Interfaces/matchup";
 import { OpenState } from "./open";
 
 export interface StreamState {
     key: string | null;
     tournamentID: number | null;
-    scores: QualifierScore[] | null; // TODO: Generic Score Interface
+    scores: MatchupScore[] | null;
 }
 
 export const state = (): StreamState => ({
@@ -19,7 +19,7 @@ export const mutations: MutationTree<StreamState> = {
         state.key = data.key;
         state.tournamentID = data.tournamentID;
     },
-    async setScores (state, scores: QualifierScore[] | undefined) {
+    async setScores (state, scores: MatchupScore[] | undefined) {
         state.scores = scores || null;
     },
 };
@@ -28,25 +28,28 @@ export const getters: GetterTree<StreamState, OpenState> = {
 };
 
 export const actions: ActionTree<StreamState, OpenState> = {
-    async setScores ({ commit }) {
+    async setScores ({ commit }, stageID) {
         const state = this.state as any;
-        // TODO: Do not use qualifiers specifically
-        const { data } = await this.$axios.get(`/api/tournament/${state.stream.tournamentID}/qualifiers/scores?key=${state.stream.key}`);
+        const { data } = await this.$axios.get(`/api/tournament/${state.stream.tournamentID}/${stageID}/scores?key=${state.stream.key}`);
 
         if (!data.error)
             commit("setScores", data);
     },
-    async setInitialData ({ commit, dispatch }, key) {
-        const { data } = await this.$axios.get(`/api/tournament/validateKey?key=${key}`);
+    async setInitialData ({ commit, dispatch }, payload) {
+        if (!payload.key)
+            return;
+
+        const { data } = await this.$axios.get(`/api/tournament/validateKey?key=${payload.key}`);
 
         if (data.error)
             return;
 
         await commit("setKey", {
-            key,
+            key: payload.key,
             tournamentID: data.tournamentID,
         });
 
-        await dispatch("setScores");
+        if (payload.stageID && !isNaN(parseInt(payload.stageID)))
+            await dispatch("setScores", data.stageID);
     },
 };

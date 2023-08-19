@@ -10,9 +10,19 @@ import { insertBeatmap } from "../../../scripts/fetchYearMaps";
 import { osuClient } from "../../../osu";
 import { Beatmap as APIBeatmap } from "nodesu";
 import respond from "../../../../DiscordBot/functions/respond";
+import { getLink } from "../../../../DiscordBot/functions/getLink";
+import { Readable } from "stream";
 
 export async function createPack (m: Message | ChatInputCommandInteraction, bucket: "mappacks" | "mappacksTemp", mappool: Mappool, packName: string, video = false): Promise<string | undefined> {
     const mappoolMaps = mappool.slots.flatMap(s => s.maps);
+    if (bucket === "mappacks" && mappoolMaps.some(m => !m.beatmap)) {
+        const slots = mappool.slots.filter(s => s.maps.some(m => !m.beatmap));
+        const maps = slots
+            .flatMap(s => s.maps.filter(m => !m.beatmap))
+            .map(map => `${slots.find(slot => slot.maps.some(m => m.ID === map.ID))!.acronym.toUpperCase()}${map.order}`);
+        await respond(m, `**${mappool.name}** doesnt have all finished beatmaps yet, which are ${maps.join(", ")}, remember to run !pfinish or /mappool_finish for them`);
+        return;
+    }
     const filteredMaps = mappoolMaps.filter(m => (m.customBeatmap && m.customBeatmap.link) || m.beatmap);
     if (filteredMaps.length === 0) {
         await respond(m, `**${mappool.name}** doesn't have any downloadable beatmaps`);
@@ -36,12 +46,22 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
         updatedMaps.push(map);
     }
 
-    const names = updatedMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
-    const dlLinks = updatedMaps.map(m => m.customBeatmap ? m.customBeatmap.link! : `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}`);
+    const link = await getLink(m, "mappack", false, true);
+    if (link && !link.endsWith(".zip")) {
+        await respond(m, "Pleaseee provide a proper .zip file STOP TROLLING ME");
+        return;
+    }
 
     try {
-        const streams = dlLinks.map(link => download(link));
-        const zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
+        let zipStream: Readable | undefined = undefined;
+        if (link)
+            zipStream = download(link);
+        else {
+            const names = updatedMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
+            const dlLinks = updatedMaps.map(m => m.beatmap ? `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}` : m.customBeatmap?.link ?? ``).filter(l => l !== ``);
+            const streams = dlLinks.map(link => download(link));
+            zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
+        }
     
         const s3Key = `${randomUUID()}/${packName}.zip`;
 
@@ -52,7 +72,7 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
         }
 
         await buckets.mappacks.putObject(s3Key, zipStream, "application/zip");
-        const url = await buckets.mappacks.getPublicUrl(s3Key);
+        const url = buckets.mappacks.getPublicUrl(s3Key);
         return url;
     } catch (e) {
         await respond(m, "Failed to create pack. Contact VINXIS");

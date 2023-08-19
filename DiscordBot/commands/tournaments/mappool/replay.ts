@@ -30,7 +30,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const link = await getLink(m, "replay", true);
+    const link = await getLink(m, "replay", true, false);
     if (!link)
         return;
 

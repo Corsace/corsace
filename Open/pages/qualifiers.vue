@@ -18,7 +18,7 @@
             <div
                 class="qualifiers__sub_header_item"
                 :class="{ 'qualifiers__sub_header_item--active': page === 'scores' }"
-                @click="page = 'scores'; $store.dispatch('open/setQualifierScores', tournament?.ID);"
+                @click="getScores"
             >
                 {{ $t('open.qualifiers.nav.scores') }}
             </div>
@@ -122,6 +122,7 @@
             </div>
             <ScoresView
                 v-else-if="page === 'scores'"
+                tiers
                 :view="scoreView"
             />
             <QualifiersView
@@ -217,6 +218,14 @@ export default class Qualifiers extends Vue {
         this.editQualifier = false;
         if (get)
             await this.$store.dispatch("open/setQualifierList", this.tournament?.ID);
+    }
+
+    async getScores () {
+        this.page = "scores";
+        this.$store.dispatch("open/setScores", {
+            tournamentID: this.tournament?.ID,
+            stageID: this.qualifiersStage?.ID,
+        });
     }
 }
 </script>

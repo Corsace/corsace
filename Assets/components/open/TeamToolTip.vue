@@ -172,7 +172,8 @@ export default class TeamToolTip extends Vue {
         &__item {
             display: flex;
             flex-direction: row;
-            width: 75%;
+            justify-content: space-between;
+            width: 100%;
             gap: 5px;
 
             &--leader {
