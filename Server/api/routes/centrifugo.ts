@@ -10,7 +10,7 @@ import { discordClient } from "../../discord";
 
 const centrifugoRouter = new Router();
 
-centrifugoRouter.use(koaIp(config.centrifugo.ipWhitelist));
+const ipWhitelist = koaIp(config.centrifugo.ipWhitelist);
 
 interface ConnectResponse {
     result: {
@@ -53,7 +53,7 @@ centrifugoRouter.get("/publicUrl", async (ctx) => {
     ctx.body = config.centrifugo.publicUrl;
 });
 
-centrifugoRouter.post("/connect", async (ctx) => {
+centrifugoRouter.post("/connect", ipWhitelist, async (ctx) => {
     if (ctx.state?.user?.ID) {
         ctx.body = {
             result: {
@@ -72,7 +72,7 @@ centrifugoRouter.post("/connect", async (ctx) => {
     }
 });
 
-centrifugoRouter.post("/subscribe", async (ctx) => {
+centrifugoRouter.post("/subscribe", ipWhitelist, async (ctx) => {
     const body = ctx.request.body as SubscribeRequest;
     const channelName = body.channel;
     if (!channelName.includes(":") || channelName.split(":").length !== 2 || isNaN(parseInt(channelName.split(":")[1]))) {
