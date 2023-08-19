@@ -681,9 +681,9 @@ export default class Referee extends Vue {
             date: new Date(matchup.date),
         })) || [];
 
-        const { data: centrifugoURL } = await this.$axios.get("/api/centrifugo/url");
+        const { data: centrifugoURL } = await this.$axios.get("/api/centrifugo/publicUrl");
 
-        const centrifuge = new Centrifuge(centrifugoURL, {
+        const centrifuge = new Centrifuge(`${centrifugoURL}/connection/websocket`, {
 
         });
 
