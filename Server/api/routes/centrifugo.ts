@@ -49,7 +49,7 @@ async function getChannel (channelType: string, channelID: number): Promise<any 
     return `${channelType}:${channelID}`;
 }
 
-centrifugoRouter.get("/url", async (ctx) => {
+centrifugoRouter.get("/publicUrl", async (ctx) => {
     ctx.body = config.centrifugo.publicUrl;
 });
 
