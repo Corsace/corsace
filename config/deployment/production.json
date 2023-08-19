@@ -123,6 +123,8 @@
         "password": "@@INTEROP_PASSWORD"
     },
     "centrifugo": {
+        "apiUrl": "http://centrifugo:9000/api",
+        "apiKey": "@@CENTRIFUGO_API_KEY",
         "ipWhitelist": ["10.*.*.*"]
     }
 }
