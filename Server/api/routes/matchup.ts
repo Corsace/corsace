@@ -342,10 +342,10 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                 const node = queue.shift()!;
                 stack.push(node);
 
-                if (node.previousMatchups)
-                    queue.push(...node.previousMatchups);
                 if (node.potentials)
                     queue.push(...node.potentials);
+                if (node.previousMatchups)
+                    queue.push(...node.previousMatchups);
             }
 
             while (stack.length > 0) {
