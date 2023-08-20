@@ -128,10 +128,15 @@
             >
                 {{ $t("open.qualifiers.mappool.notAvailable") }}
             </div>
-            <ScoresView
-                v-else-if="page === 'scores'"
-                :view="scoreView"
-            />
+            <div v-if="page === 'scores'">
+                <!-- TODO: Actually support multiple pools -->
+                <ScoresView
+                    v-for="mappool in mappoolList"
+                    :key="mappool.ID"
+                    :view="scoreView"
+                    :pool="mappool"
+                />
+            </div>
         </div>
     </div>
 </template>

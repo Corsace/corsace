@@ -160,7 +160,7 @@ import { Vue, Component, PropSync, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { MatchupScore, MatchupScoreView, computeScoreViews, mapNames, scoreFilters, scoreSortType } from "../../../Interfaces/matchup";
 import { Tournament } from "../../../Interfaces/tournament";
-import { Mappool as MappoolInterface } from "../../../Interfaces/mappool";
+import { Mappool } from "../../../Interfaces/mappool";
 import { TeamList } from "../../../Interfaces/team";
 
 import TeamToolTip from "./TeamToolTip.vue";
@@ -178,18 +178,12 @@ const openModule = namespace("open");
 export default class ScoresView extends Vue {
 
     @PropSync("view", { type: String }) syncView!: "players" | "teams";
+    @PropSync("pool", { default: null }) readonly selectedMappool!: Mappool | null;
     @Prop(Boolean) readonly tiers!: boolean;
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State scores!: MatchupScore[] | null;
     @openModule.State teamList!: TeamList[] | null;
-
-    mappoolList: MappoolInterface[] = [];
-    index = 0;
-    
-    get selectedMappool (): MappoolInterface | null {
-        return this.mappoolList[this.index] || null;
-    }
 
     updateTooltipPosition (event) {
         const x = event.clientX;
@@ -230,10 +224,6 @@ export default class ScoresView extends Vue {
         if (this.tournament)
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);
         this.loading = false;
-
-        this.mappoolList = this.tournament?.stages.flatMap(s => [...s.mappool, ...s.rounds.flatMap(r => r.mappool)]) || [];
-        this.index = this.mappoolList.findIndex(m => m.isPublic);
-        // this.index = this.mappoolList.findLastIndex(m => m.isPublic);
     }
     hover = false;
     maphover = false;
@@ -369,8 +359,32 @@ export default class ScoresView extends Vue {
         border-collapse: collapse;
         box-sizing: border-box;
         white-space: nowrap;
-        
+        display: block;
+        overflow-x: auto;
 
+        &::-webkit-scrollbar {
+            height: 10px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: #333333;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #555555;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: #777777;
+        }
+
+        &::-webkit-scrollbar-thumb:active {
+            background: #999999;
+        }
+
+        scrollbar-color: #555555 #333333;
+        scrollbar-width: thin;
+        
         &_team {
             display: flex;
             position: relative;
@@ -403,7 +417,7 @@ export default class ScoresView extends Vue {
             }
         }
 
-        &--highlight{
+        &--highlight {
             color: #FBBA20;
         }
 
@@ -469,7 +483,7 @@ export default class ScoresView extends Vue {
         font-size: 0.70rem; /* i tried $font-xsm but its too small*/
         font-weight: 600;
         text-align: center;
-        padding: 15px 20px;
+        padding: 10px;
         border-bottom: 1px solid $open-red;
         border-left: 1px solid #383838;
     }
