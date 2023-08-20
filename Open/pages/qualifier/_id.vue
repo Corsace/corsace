@@ -84,7 +84,9 @@
                     </ContentButton>
                 </div>
                 <ScoresView
+                    v-if="qualifiersStage?.mappool?.[0].isPublic"
                     :view="scoreView"
+                    :pool="qualifiersStage.mappool"
                 />
             </div>
         </div>
@@ -117,12 +119,13 @@ import { namespace } from "vuex-class";
 
 import { Qualifier as QualifierInterface } from "../../../Interfaces/qualifier";
 import { Tournament } from "../../../Interfaces/tournament";
+import { Stage } from "../../../Interfaces/stage";
 import { Team } from "../../../Interfaces/team";
 
-import ContentButton from "../../Assets/components/open/ContentButton.vue";
-import ScoresView from "../../Assets/components/open/ScoresView.vue";
-import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
-import BaseModal from "../../Assets/components/BaseModal.vue";
+import ContentButton from "../../../Assets/components/open/ContentButton.vue";
+import ScoresView from "../../../Assets/components/open/ScoresView.vue";
+import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
+import BaseModal from "../../../Assets/components/BaseModal.vue";
 
 const openModule = namespace("open");
 
@@ -184,6 +187,10 @@ export default class Qualifier extends Vue {
         minute: "2-digit", // Two-digit minute (e.g., "59")
         timeZoneName: "short", // Abbreviated time zone name (e.g., "UTC")
     };
+
+    get qualifiersStage (): Stage | null {
+        return this.tournament?.stages.find(s => s.stageType === 0) || null;
+    }
 
     async getQualifier (): Promise<QualifierInterface | null> {
         this.loading = true;
