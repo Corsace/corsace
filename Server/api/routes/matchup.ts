@@ -275,7 +275,6 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                 dbMatchup.team2 = team2;
             }
 
-            await transactionManager.save(dbMatchup);
             idToMatchup.set(matchup.ID, dbMatchup);
             const previousMatchups = matchup.previousMatchups ? await createMatchups(matchup.previousMatchups, transactionManager) : undefined;
             if (previousMatchups)
@@ -303,7 +302,6 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                             potential.stage = ctx.state.stage;
                         else
                             potential.round = ctx.state.round;
-                        await transactionManager.save(potential);
                         dbMatchup.potentials.push(potential);
                     }
                 else
@@ -320,14 +318,12 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                                         potential.stage = ctx.state.stage;
                                     else
                                         potential.round = ctx.state.round;
-                                    await transactionManager.save(potential);
                                     dbMatchup.potentials.push(potential);
                                 }
                             }
                         }
                     }
             }
-            await transactionManager.save(dbMatchup);
             idToMatchup.set(matchup.ID, dbMatchup);
             createdMatchups.push(dbMatchup);
         }
@@ -337,6 +333,26 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
     try {
         await ormConfig.transaction(async transactionManager => {
             const createdMatchups = await createMatchups(matchups, transactionManager);
+            // Reverse Level Order Traversal to save the initial matchups (and their potentials) first at each level, before saving levels closer to the root
+            const stack: Matchup[] = [];
+            const queue: Matchup[] = [];
+            queue.push(...createdMatchups);
+
+            while (queue.length > 0) {
+                const node = queue.shift()!;
+                stack.push(node);
+
+                if (node.previousMatchups)
+                    queue.push(...node.previousMatchups);
+                if (node.potentials)
+                    queue.push(...node.potentials);
+            }
+
+            while (stack.length > 0) {
+                const node = stack.pop()!;
+                await transactionManager.save(node);
+            }
+
             ctx.body = {
                 success: true,
                 matchups: createdMatchups,
