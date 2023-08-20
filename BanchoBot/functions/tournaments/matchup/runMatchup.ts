@@ -310,6 +310,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         }
     });
 
+    // Beatmap change event
+    mpLobby.on("beatmapId", async (beatmapID) => await publish(matchup, { type: "beatmap", beatmapID }));
+
     // Player joined event
     mpLobby.on("playerJoined", async (joinInfo) => {
         if (!state.matchups[matchup.ID])

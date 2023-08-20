@@ -1,3 +1,4 @@
+import Axios from "axios";
 import Router from "@koa/router";
 import { Multi } from "nodesu";
 import { EntityManager } from "typeorm";
@@ -14,6 +15,9 @@ import { validateTournament, hasRoles, validateStageOrRound } from "../../middle
 import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
 import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assignTeamsToNextMatchup";
+import { Round } from "../../../Models/tournaments/round";
+import { Stage } from "../../../Models/tournaments/stage";
+import { config } from "node-config-ts";
 
 const matchupRouter = new Router();
 
@@ -156,6 +160,9 @@ function validatePOSTMatchups (matchups: any[]): string | true {
 matchupRouter.get("/:matchupID", async (ctx) => {
     const matchup = await Matchup
         .createQueryBuilder("matchup")
+        .leftJoinAndSelect("matchup.round", "round")
+        .innerJoinAndSelect("matchup.stage", "stage")
+        .innerJoinAndSelect("stage.tournament", "tournament")
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
         .leftJoinAndSelect("matchup.first", "first")
@@ -179,10 +186,81 @@ matchupRouter.get("/:matchupID", async (ctx) => {
         return;
     }
 
+    const stageOrRound: Round | Stage | null = 
+        matchup.round ? 
+            await Round
+                .createQueryBuilder("round")
+                .innerJoin("round.matchups", "matchup")
+                .leftJoinAndSelect("round.mappool", "roundMappool")
+                .leftJoinAndSelect("roundMappool.slots", "roundSlots")
+                .leftJoinAndSelect("roundSlots.maps", "roundMaps")
+                .leftJoinAndSelect("roundMaps.beatmap", "roundMap")
+                .leftJoinAndSelect("roundMap.beatmapset", "roundBeatmapset")
+                .leftJoinAndSelect("round.mapOrder", "roundMapOrder")
+                .where("matchup.ID = :ID", { ID: matchup.ID })
+                .getOne() :
+            matchup.stage ?
+                await Stage
+                    .createQueryBuilder("stage")
+                    .innerJoin("stage.matchups", "matchup")
+                    .leftJoinAndSelect("stage.mappool", "stageMappool")
+                    .leftJoinAndSelect("stageMappool.slots", "stageSlots")
+                    .leftJoinAndSelect("stageSlots.maps", "stageMaps")
+                    .leftJoinAndSelect("stageMaps.beatmap", "stageMap")
+                    .leftJoinAndSelect("stageMap.beatmapset", "stageBeatmapset")
+                    .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
+                    .where("matchup.ID = :ID", { ID: matchup.ID })
+                    .getOne() : 
+                null;
+
     ctx.body = {
         success: true,
         matchup,
+        stageOrRound,
     };
+});
+
+matchupRouter.get("/:matchupID/bancho/:endpoint", async (ctx) => {
+    const endpoint = ctx.params.endpoint;
+
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .where("matchup.id = :matchupID", { matchupID: ctx.params.matchupID })
+        .getOne();
+
+    if (!matchup) {
+        ctx.body = {
+            success: false,
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    try {
+        const { data } = await Axios.get(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
+            auth: config.interOpAuth,
+        });
+
+        ctx.body = data;
+    } catch (e) {
+        if (Axios.isAxiosError(e)) {
+            ctx.body = e.response?.data ?? {
+                success: false,
+                error: e.message,
+            };
+            ctx.status = e.response?.status ?? 500;
+        } else if (e instanceof Error) {
+            ctx.body = {
+                success: false,
+                error: e.message,
+            };
+        } else {
+            ctx.body = {
+                success: false,
+                error: `Unknown error: ${e}`,
+            };
+        }
+    }
 });
 
 matchupRouter.get("/:matchupID/teams", async (ctx) => {

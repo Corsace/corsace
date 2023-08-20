@@ -20,7 +20,7 @@
             <div 
                 class="matchup__team1_avatar"
                 :style="{
-                    'background-image': `url(${matchup.team1.avatarURL || '../../Assets/img/site/open/team/default.png'})`,
+                    'background-image': `url(${matchup.team1.avatarURL || require('../../../Assets/img/site/open/team/default.png')})`,
                 }"
             />
             <div class="matchup__team1_name">
@@ -29,7 +29,7 @@
             <div class="matchup__team1_score">
                 WINS
                 <svg 
-                    v-for="n in 5"
+                    v-for="n in firstTo"
                     :key="n"
                     width="48" 
                     height="22" 
@@ -40,8 +40,8 @@
                 >
                     <path
                         d="M 31 22 H 0 L 16 0 H 48 L 31 22 Z"
-                        :fill="matchup.team1Score >= n ? '#5BBCFA' : undefined"
-                        :stroke="matchup.team1Score >= n ? undefined : '#5BBCFA'"
+                        :fill="matchup.team1Score >= n ? '#F24141' : undefined"
+                        :stroke="matchup.team1Score >= n ? undefined : '#F24141'"
                     />
                 </svg>
             </div>
@@ -62,7 +62,7 @@
                         class="matchup__diamond matchup__beatmap__name__diamond"
                         :style="{backgroundColor: slotMod}"
                     />
-                    {{ latestMap.map.slot?.acronym.toUpperCase() }}{{ latestMap.map.order }}
+                    {{ latestMap.slot?.acronym.toUpperCase() }}{{ latestMap.order }}
                 </div>
                 <div class="matchup__beatmap__picked">
                     PICKED BY {{ pickedBy }}
@@ -70,14 +70,14 @@
             </div>
             <div
                 class="matchup__beatmap__info"
-                :style="{ backgroundImage: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%), url(${latestMap?.map?.customBeatmap?.background || `https://assets.ppy.sh/beatmaps/${latestMap?.map?.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg`})` }"
+                :style="{ backgroundImage: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%), url(${latestMap.customBeatmap?.background || `https://assets.ppy.sh/beatmaps/${latestMap?.beatmap?.beatmapset?.ID || ''}/covers/cover.jpg`})` }"
             >
                 <div class="matchup__beatmap__info1">
                     <div class="matchup__beatmap__info1__title">
-                        {{ latestMap.map.beatmap?.beatmapset?.title }}
+                        {{ latestMap.beatmap?.beatmapset?.title }}
                     </div>
                     <div class="matchup__beatmap__info1__artist">
-                        {{ latestMap.map.beatmap?.beatmapset?.artist }}
+                        {{ latestMap.beatmap?.beatmapset?.artist }}
                     </div>
                     <div class="matchup__beatmap__info1_line" />
                     <div class="matchup__beatmap__info1_text matchup__beatmap__info1_text_mapper">
@@ -85,7 +85,7 @@
                             MAPPER
                         </div>
                         <div class="matchup__beatmap__info1_text--truncated">
-                            {{ latestMap.map.customMappers?.map(mapper => mapper.osu.username).join(", ") || latestMap.map.beatmap?.beatmapset?.creator?.osu.username || '' }}
+                            {{ latestMap.customMappers?.map(mapper => mapper.osu.username).join(", ") || latestMap.beatmap?.beatmapset?.creator?.osu.username || '' }}
                         </div>
                     </div>
                     <div class="matchup__beatmap__info1_text matchup__beatmap__info1_text_difficulty">
@@ -93,13 +93,13 @@
                             DIFFICULTY
                         </div>
                         <div class="matchup__beatmap__info1_text--truncated">
-                            {{ latestMap.map.beatmap?.difficulty || latestMap.map.customBeatmap?.difficulty || '' }}
+                            {{ latestMap.beatmap?.difficulty || latestMap.customBeatmap?.difficulty || '' }}
                         </div>
                     </div>
                 </div>
                 <MappoolMapStats
                     class="matchup__beatmap__info2"
-                    :mappool-map="latestMap.map"
+                    :mappool-map="latestMap"
                 />
             </div>
         </div>
@@ -113,7 +113,7 @@
             <div 
                 class="matchup__team2_avatar"
                 :style="{
-                    'background-image': `url(${matchup.team2.avatarURL || '../../Assets/img/site/open/team/default.png'})`,
+                    'background-image': `url(${matchup.team2.avatarURL || require('../../../Assets/img/site/open/team/default.png')})`,
                 }"
             />
             <div class="matchup__team2_name">
@@ -121,7 +121,7 @@
             </div>
             <div class="matchup__team2_score">
                 <svg 
-                    v-for="n in 5"
+                    v-for="n in firstTo"
                     :key="n"
                     width="48" 
                     height="22" 
@@ -132,8 +132,8 @@
                 >
                     <path
                         d="M 16 22 H 48 L 31 0 H 0.684986 L 16 22 Z"
-                        :fill="matchup.team2Score >= n ? '#F24141' : undefined"
-                        :stroke="matchup.team2Score >= n ? undefined : '#F24141'"
+                        :fill="matchup.team2Score >= n ? '#5BBCFA' : undefined"
+                        :stroke="matchup.team2Score >= n ? undefined : '#5BBCFA'"
                     />
                 </svg>
                 WINS
@@ -151,8 +151,12 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue";
 
-import { Matchup as MatchupInterface } from "../../../Interfaces/matchup";
+import { MapStatus, Matchup as MatchupInterface } from "../../../Interfaces/matchup";
+import { MapOrderTeam, Stage } from "../../../Interfaces/stage";
+import { Round } from "../../../Interfaces/round";
 import { freemodRGB, freemodButFreerRGB, modsToRGB } from "../../../Interfaces/mods";
+import { Centrifuge, PublicationContext, Subscription } from "centrifuge";
+import { MappoolMap } from "../../../Interfaces/mappool";
 
 const streamModule = namespace("stream");
 
@@ -167,7 +171,12 @@ export default class Match extends Vue {
     @streamModule.State key!: string | null;
     @streamModule.State tournamentID!: number | null;
 
+    centrifuge: Centrifuge | null = null;
+    matchupChannel: Subscription | null = null;
+
     matchup: MatchupInterface | null = null;
+    stageOrRound: Stage | Round | null = null;
+    latestMap: MappoolMap | null = null;
     loading = false;
 
     get pickedMaps () {
@@ -177,39 +186,57 @@ export default class Match extends Vue {
         return this.matchup.maps.filter(map => map.status === 2).sort((a, b) => a.order - b.order);
     }
 
-    get latestMap () {
-        if (!this.pickedMaps.length)
-            return null;
-
-        return this.pickedMaps[this.pickedMaps.length - 1];
-    }
-
     get pickedBy () {
         if (!this.latestMap)
             return null;
 
-        if (this.pickedMaps.length % 2 !== 0)
-            return this.matchup?.first?.abbreviation.toUpperCase() || "N/A";
+        // TODO: support for sets
+        const pickOrder = this.mapOrder[0].order?.filter(p => p.status === MapStatus.Picked);
+        if (!pickOrder)
+            return null;
+    
+        const currentOrder = this.pickedMaps.length > pickOrder.length ? null : pickOrder[this.pickedMaps.length - 1];
+        const first = this.matchup?.first?.abbreviation.toUpperCase();
+        const second = this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2?.abbreviation.toUpperCase() : this.matchup?.team2?.ID === this.matchup?.first?.ID ? this.matchup?.team1?.abbreviation.toUpperCase() : null;
+        const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.abbreviation.toUpperCase() : this.matchup?.team2?.abbreviation.toUpperCase() : null;
+        const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score < this.matchup?.team2Score ? this.matchup?.team1?.abbreviation.toUpperCase() : this.matchup?.team2?.abbreviation.toUpperCase() : null;
 
-        return (this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2?.abbreviation.toUpperCase() : this.matchup?.team1?.abbreviation.toUpperCase()) || "N/A";
+        return currentOrder?.team === MapOrderTeam.Team1 ? first : MapOrderTeam.Team2 ? second : MapOrderTeam.TeamLoser ? losing ?? second : MapOrderTeam.TeamWinner ? winning ?? first : null;
+    }
+
+    get mapOrder () {
+        if (!this.stageOrRound)
+            return [];
+
+        return this.stageOrRound.mapOrder
+            ?.map(mapOrder => mapOrder.set)
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .map(set => ({
+                set,
+                order: this.stageOrRound?.mapOrder?.filter(mapOrder => mapOrder.set === set),
+            })) || [];
+    }
+
+    get firstTo () {
+        return (this.mapOrder[0]?.order?.filter(p => p.status === MapStatus.Picked).length || 0) / 2 + 1;
     }
 
     get slotMod (): string {
-        if (!this.latestMap?.map?.slot)
+        if (!this.latestMap?.slot)
             return this.RGBValuesToRGBCSS(modsToRGB(0));
 
-        if (this.latestMap.map.slot.allowedMods === null && this.latestMap.map.slot.userModCount === null && this.latestMap.map.slot.uniqueModCount === null)
+        if (this.latestMap.slot.allowedMods === null && this.latestMap.slot.userModCount === null && this.latestMap.slot.uniqueModCount === null)
             return this.RGBValuesToRGBCSS(freemodButFreerRGB);
 
-        if (this.latestMap.map.slot.userModCount !== null || this.latestMap.map.slot.uniqueModCount !== null)
+        if (this.latestMap.slot.userModCount !== null || this.latestMap.slot.uniqueModCount !== null)
             return this.RGBValuesToRGBCSS(freemodRGB);
 
-        return this.RGBValuesToRGBCSS(modsToRGB(this.latestMap.map.slot.allowedMods));
+        return this.RGBValuesToRGBCSS(modsToRGB(this.latestMap.slot.allowedMods));
     }
 
     RGBValuesToRGBCSS (values: [number, number, number]) {
         return `rgb(${values[0]}, ${values[1]}, ${values[2]})`;
-    } 
+    }
 
     async mounted () {
         this.loading = true;
@@ -217,13 +244,94 @@ export default class Match extends Vue {
         if (typeof matchupID !== "string")
             return;
 
+        const { data: centrifugoURL } = await this.$axios.get("/api/centrifugo/publicUrl");
+
+        const centrifuge = new Centrifuge(`${centrifugoURL}/connection/websocket`, {
+
+        });
+
+        centrifuge.on("connecting", (ctx) => {
+            console.log("connecting", ctx);
+        });
+
+        centrifuge.on("error", (err) => {
+            console.error("error", err);
+        });
+
+        centrifuge.on("connected", (ctx) => {
+            console.log("connected", ctx);
+        });
+
+        centrifuge.connect();
+
+        this.centrifuge = centrifuge;
+
         const { data } = await this.$axios.get(`/api/matchup/${matchupID}`);
         if (data.error)
             return;
 
         this.matchup = data.matchup;
+        this.stageOrRound = data.stageOrRound;
 
+        this.matchupChannel = this.centrifuge.newSubscription(`matchup:${matchupID}`);
+
+        this.matchupChannel.on("error", (err) => {
+            alert("Error in console for matchup channel subscription");
+            console.error("error", err);
+        });
+
+        this.matchupChannel.on("unsubscribed", (ctx) => {
+            if (ctx.code === 102)
+                alert("Couldn't find matchup channel");
+            else if (ctx.code === 103)
+                alert("Unauthorized to subscribe to matchup channel");
+            else if (ctx.code !== 0) {
+                alert("Error in console for matchup channel subscription");
+                console.error("unsubscribed", ctx);
+            } else
+                console.log("unsubscribed", ctx);
+        });
+
+        this.matchupChannel.on("subscribed", (ctx) => {
+            console.log("subscribed", ctx);
+        });
+
+        this.matchupChannel.on("publication", this.handleData);
+
+        this.matchupChannel.subscribe();
+
+        if (this.matchup?.mp) {
+            const { data } = await this.$axios.get(`/api/matchup/${this.matchup.ID}/bancho/pulseMatch`);
+            if (data.error || !data.pulse)
+                return;
+            this.latestMap = this.stageOrRound?.mappool.flatMap(m => m.slots).flatMap(s => s.maps).find(m => m.beatmap?.ID === data.beatmapID) || null;
+            this.matchup.team1Score = data.team1Score;
+            this.matchup.team2Score = data.team2Score;
+        }
         this.loading = false;
+    }
+
+    handleData (ctx: PublicationContext) {
+        console.log("publication", ctx);
+
+        if (!ctx.channel.startsWith("matchup:"))
+            return;
+        const matchupID = parseInt(ctx.channel.split(":")[1]);
+        if (matchupID !== this.matchup?.ID)
+            return;
+
+        switch (ctx.data.type) {
+            case "beatmap":
+                this.latestMap = this.stageOrRound?.mappool
+                    .flatMap(m => m.slots)
+                    .flatMap(s => s.maps)
+                    .find(m => m.beatmap?.ID === ctx.data.beatmapID) || null;
+                break;
+            case "matchFinished":
+                this.matchup.team1Score = ctx.data.team1Score;
+                this.matchup.team2Score = ctx.data.team2Score;
+                break;
+        }
     }
 }
 </script>
@@ -464,7 +572,7 @@ export default class Match extends Vue {
         
         &_name {
             left: 188px;
-            color: #5BBCFA;
+            color: #F24141;
         }
 
         &_score {
@@ -487,7 +595,7 @@ export default class Match extends Vue {
 
         &_name {
             right: 188px;
-            color: #F24141;
+            color: #5BBCFA;
         }
 
         &_score {

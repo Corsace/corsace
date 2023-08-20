@@ -606,7 +606,7 @@ export default class Referee extends Vue {
         // TODO: Support sets, and don't hardcode no losing -> second and no winning -> first
         const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchup?.team1Score} - ${this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
         const bestOf = `BO${this.mapOrder[0].order.filter(p => p.status === MapStatus.Picked).length + 1}`;
-        const firstTo = this.mapOrder[0].order.filter(p => p.status === MapStatus.Picked).length / 2;
+        const firstTo = this.mapOrder[0].order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
         const winner = this.matchup?.team1Score === firstTo ? this.matchup.team1?.name : this.matchup?.team2Score === firstTo ? this.matchup?.team2?.name : null;
         const nextMap = this.matchupMaps.length > this.mapOrder[0].order.length ? null : this.mapOrder[0].order[this.matchupMaps.length];
         const first = this.matchup?.first?.name;
@@ -614,7 +614,6 @@ export default class Referee extends Vue {
         const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
         const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score < this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
         const nextMapTeam = nextMap?.team === MapOrderTeam.Team1 ? first : MapOrderTeam.Team2 ? second : MapOrderTeam.TeamLoser ? losing ?? second : MapOrderTeam.TeamWinner ? winning ?? first : null;
-        console.log(first, second, winning, losing, nextMapTeam);
         const nextMapString = `Next ${this.mapStatusToString(nextMap?.status || 0)}: ${nextMapTeam}`;
 
         return `${score} // ${bestOf} // ${winner ?? nextMapString}`;
