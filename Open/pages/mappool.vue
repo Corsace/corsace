@@ -129,6 +129,7 @@
                 {{ $t("open.qualifiers.mappool.notAvailable") }}
             </div>
             <div v-if="page === 'scores'">
+                <!-- TODO: Actually support multiple pools -->
                 <ScoresView
                     v-for="mappool in mappoolList"
                     :key="mappool.ID"
