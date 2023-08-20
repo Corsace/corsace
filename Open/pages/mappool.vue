@@ -55,11 +55,13 @@
                             >
                         </a>
                         <a
-                            :href="mappoolList[0]?.mappackLink || ''"
+                            v-for="mappool in mappoolList"
+                            :key="mappool.ID"
+                            :href="mappool.mappackLink || ''"
                             class="qualifiers__button"
                         >
                             <div class="qualifiers__button_text">
-                                {{ $t('open.qualifiers.mappool.mappool') }}
+                                {{ $t('open.qualifiers.mappool.mappool') }} - {{ mappool.abbreviation.toUpperCase() }}
                             </div>
                             <img 
                                 class="qualifiers__button_ico"
