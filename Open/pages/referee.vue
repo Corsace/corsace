@@ -837,6 +837,10 @@ export default class Referee extends Vue {
             mods: "",
             slot: 0,
         })) || []));
+
+        this.team1PlayerStates = this.team1PlayerStates.filter((v, i, a) => a.findIndex(t => t.osuID === v.osuID) === i);
+        this.team2PlayerStates = this.team2PlayerStates.filter((v, i, a) => a.findIndex(t => t.osuID === v.osuID) === i);
+
         this.messages = this.matchup?.messages?.map((message, i) => ({
             ...message,
             ID: i,
