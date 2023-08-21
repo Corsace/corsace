@@ -277,10 +277,12 @@ banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) =
             },
         });
     } else {
+
         const mpLobby = state.matchups[parseInt(ctx.state.matchupID)].lobby;
         await Promise.all([
             mpLobby.setMap(map.beatmap!.ID),
             mpLobby.setMods(getMappoolSlotMods(slot.allowedMods), typeof slot.allowedMods !== "number" || typeof slot.uniqueModCount === "number" || typeof slot.userModCount === "number"),
+            mpLobby.startTimer(typeof ctx.request.body.time !== "number" || isNaN(ctx.request.body.time) ? 90 : ctx.request.body.time),
         ]);
     }
 

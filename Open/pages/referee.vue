@@ -32,7 +32,7 @@
             <div 
                 class="referee__map_status_select__option"
                 :style="{ backgroundColor: convertStatusEnum(2) }"
-                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 2 }); mapSelected = null"
+                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 2, time: parseInt(readyTimer) }); mapSelected = null"
             >
                 PICK
             </div>
@@ -615,7 +615,7 @@ export default class Referee extends Vue {
         const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
         const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score < this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
         const nextMapTeam = nextMap?.team === MapOrderTeam.Team1 ? first : MapOrderTeam.Team2 ? second : MapOrderTeam.TeamLoser ? losing ?? second : MapOrderTeam.TeamWinner ? winning ?? first : null;
-        const nextMapString = `Next ${this.mapStatusToString(nextMap?.status || 0)}: ${nextMapTeam}`;
+        const nextMapString = `Next ${this.mapStatusToString(nextMap?.status || 0)}: ${nextMapTeam ?? "N/A"}`;
 
         return `${score} // ${bestOf} // ${winner ?? nextMapString}`;
     }
@@ -998,9 +998,6 @@ export default class Referee extends Vue {
                     this.matchup.team2Score = ctx.data.team2Score;
                 }
                 this.matchup.maps?.push(ctx.data.map);
-                setTimeout(async () => {
-                    await this.sendNextMapMessage();
-                }, 100);
                 break;
             case "closed":
                 this.team1PlayerStates = [];
@@ -1017,10 +1014,10 @@ export default class Referee extends Vue {
 
     mapStatusToString (num: MapStatus): string {
         switch (num) {
-            case MapStatus.Banned:
-                return "Ban";
             case MapStatus.Protected:
                 return "Protect";
+            case MapStatus.Banned:
+                return "Ban";
             case MapStatus.Picked:
                 return "Pick";
         }
