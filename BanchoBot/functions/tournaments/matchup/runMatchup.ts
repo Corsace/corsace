@@ -393,8 +393,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         playersInLobby.push(newPlayer);
         log(matchup, `Player ${newPlayer.user.username} joined the lobby`);
 
-        await mpLobby.updateSettings();
-
         await publish(matchup, { 
             type: "settings",
             slots: mpLobby.slots.map((slot, i) => ({
@@ -458,8 +456,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return;
 
         log(matchup, `Player ${player.user.username} left the lobby`);
-
-        await mpLobby.updateSettings();
         
         await publish(matchup, { 
             type: "settings",
