@@ -985,9 +985,6 @@ export default class Referee extends Vue {
                     this.matchup.maps = [];
                 this.matchup.maps.push(ctx.data.map);
                 this.mapSelected = null;
-                setTimeout(async () => {
-                    await this.sendNextMapMessage();
-                }, 100);
                 break;
             case "matchStarted":
                 this.mapStarted = true;
