@@ -10,6 +10,7 @@ import { BanchoLobbyPlayerStates } from "bancho.js";
 import getMappoolSlotMods from "../../../../BanchoBot/functions/tournaments/matchup/getMappoolSlotMods";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import ormConfig from "../../../../ormconfig";
+import { StageType } from "../../../../Interfaces/stage";
 
 const banchoRefereeRouter = new Router();
 
@@ -157,11 +158,37 @@ banchoRefereeRouter.post("/:matchupID/roll", validateMatchup, async (ctx) => {
         };
         return;
     }
+
+    if (state.matchups[parseInt(ctx.state.matchupID)].matchup.stage?.stageType === StageType.Qualifiers) {
+        ctx.body = {
+            success: false,
+            error: "Cannot roll for qualifiers",
+        };
+        return;
+    }
+
+    const allowed = ctx.request.body.allowed;
+    if (allowed !== "managers" || allowed !== "all" || allowed !== "bot") {
+        ctx.body = {
+            success: false,
+            error: "Invalid allowed value",
+        };
+        return;
+    }
+
+    const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
     const mpChannel = state.matchups[parseInt(ctx.state.matchupID)].lobby.channel;
-    
-    await mpChannel.sendMessage("OK we're gonna roll now I'm gonna run !roll 2");
-    await mpChannel.sendMessage(`${state.matchups[parseInt(ctx.state.matchupID)].matchup.team1?.name} will be 1 and ${state.matchups[parseInt(ctx.state.matchupID)].matchup.team2?.name} will be 2`);
-    await mpChannel.sendMessage("!roll 2");
+    if (allowed === "managers")
+        await mpChannel.sendMessage("OK we're gonna roll now, I want the managers to do !roll, higher roll will be considered Team 1");
+    else if (allowed === "all")
+        await mpChannel.sendMessage("OK we're gonna roll now, I want the stand-in managers to do !roll, higher roll will be considered Team 1");
+    else if (allowed === "bot") {
+        await mpChannel.sendMessage("OK we're gonna roll now, I'm gonna run !roll 2");
+        await pause(100);
+        await mpChannel.sendMessage(`${state.matchups[parseInt(ctx.state.matchupID)].matchup.team1?.name} will be 1 and ${state.matchups[parseInt(ctx.state.matchupID)].matchup.team2?.name} will be 2`);
+        await pause(100);
+        await mpChannel.sendMessage("!roll 2");
+    }
 
     ctx.body = {
         success: true,

@@ -87,6 +87,9 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     let playersInLobby: BanchoLobbyPlayer[] = [];
     let playersPlaying: BanchoLobbyPlayer[] | undefined = undefined;
     let rolling = false;
+    let whoRolls: "managers" | "all" | "bot" | null = null;
+    let team1Roll = -1;
+    let team2Roll = -1;
     let earlyStart = false;
     let started = false;
     let lastMessageSaved = Date.now();
@@ -177,21 +180,77 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         });
 
         // Rolling logic
-        if (message.self && !rolling && message.content.toLowerCase() === "!roll 2")
-            rolling = true;
-        else if (message.user.ircUsername === "BanchoBot" && rolling && message.content.toLowerCase().startsWith("corsace rolls")) {
-            // BanchoBot sent a message that says "Corsace rolls x point(s)"
+        if (message.self) {
+            if (message.content.startsWith("OK we're gonna roll now"))
+                rolling = true;
+
+            if (message.content.includes("I want the managers to do !roll"))
+                whoRolls = "managers";
+            else if (message.content.includes("I want the stand-in managers to do !roll"))
+                whoRolls = "all";
+            else
+                whoRolls = "bot";
+        } else if (message.user.ircUsername === "BanchoBot" && rolling && /(.+) rolls (\d+) point\(s\)/.test(message.content)) {
+            // BanchoBot sent a message that says "x rolls y point(s)"
+            const username = message.content.split(" ")[0];
             const points = parseInt(message.content.split(" ")[2]);
-            if (isNaN(points) || (points !== 1 && points !== 2))
+            if (isNaN(points))
                 return;
-            if (points === 1)
-                matchup.first = matchup.team1;
-            else if (points === 2)
-                matchup.first = matchup.team2;
-            await matchup.save();
-            rolling = false;
-            // TODO: Don't hardcode picking/banning/protecting first/second in the message
-            await mpChannel.sendMessage(`OK ${matchup.first?.name} is considered team 1 so they'll be picking first and banning second`);
+
+            if (whoRolls === "bot" && username === "Corsace") {
+                if (points !== 1 && points !== 2)
+                    return;
+
+                if (points === 1)
+                    matchup.first = matchup.team1;
+                else if (points === 2)
+                    matchup.first = matchup.team2;
+                await matchup.save();
+                rolling = false;
+
+                // TODO: Don't hardcode picking/banning/protecting first/second in the message
+                await mpChannel.sendMessage(`OK ${matchup.first?.name} is considered team 1 so they'll be picking first and banning/protecting second`);
+            } else {
+                const player = playersInLobby.find(p => p.user.username === username);
+                if (!player)
+                    return;
+
+                if (whoRolls === "managers") {
+                    if (matchup.team1!.manager.osu.userID === player.user.id.toString())
+                        team1Roll = points;
+                    else if (matchup.team2!.manager.osu.userID === player.user.id.toString())
+                        team2Roll = points;
+                    else
+                        return;
+                } else if (whoRolls === "all") {
+                    if (matchup.team1!.manager.osu.userID === player.user.id.toString() || matchup.team1!.members.some(m => m.osu.userID === player.user.id.toString()))
+                        team1Roll = points;
+                    else if (matchup.team2!.manager.osu.userID === player.user.id.toString() || matchup.team2!.members.some(m => m.osu.userID === player.user.id.toString()))
+                        team2Roll = points;
+                    else
+                        return;
+                }
+
+                if (team1Roll === team2Roll) {
+                    await mpChannel.sendMessage("OK both teams rolled the same number of points Lol, pleasee roll again");
+                    team1Roll = -1;
+                    team2Roll = -1;
+                    return;
+                }
+
+                if (team1Roll === -1 || team2Roll === -1)
+                    return;
+
+                if (team1Roll > team2Roll)
+                    matchup.first = matchup.team1;
+                else if (team2Roll > team1Roll)
+                    matchup.first = matchup.team2;
+                await matchup.save();
+                rolling = false;
+
+                // TODO: Don't hardcode picking/banning/protecting first/second in the message
+                await mpChannel.sendMessage(`OK ${matchup.first?.name} is considered team 1 so they'll be picking first and banning/protecting second`);
+            }
 
             await publish(matchup, { 
                 type: "first",

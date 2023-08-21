@@ -12,29 +12,56 @@
         </div>
         <div
             ref="mapStatusSelect"
-            class="referee__map_status_select"
+            class="referee__menu_select"
             :style="{ display: mapSelected ? 'block' : 'none' }"
         >
             <div 
-                class="referee__map_status_select__option"
+                class="referee__menu_select__option"
                 :style="{ backgroundColor: convertStatusEnum(0) }"
                 @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 0 }); mapSelected = null"
             >
                 PROTECT
             </div>
             <div 
-                class="referee__map_status_select__option"
+                class="referee__menu_select__option"
                 :style="{ backgroundColor: convertStatusEnum(1) }"
                 @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 1 }); mapSelected = null"
             >
                 BAN
             </div>
             <div 
-                class="referee__map_status_select__option"
+                class="referee__menu_select__option"
                 :style="{ backgroundColor: convertStatusEnum(2) }"
                 @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 2, time: parseInt(readyTimer) }); mapSelected = null"
             >
                 PICK
+            </div>
+        </div>
+        <div
+            ref="rollSelect"
+            class="referee__menu_select"
+            :style="{ display: rollMenu ? 'block' : 'none' }"
+        >
+            <div 
+                class="referee__menu_select__option"
+                :style="{ backgroundColor: '#5BBCFA' }"
+                @click="banchoCall('roll', { allowed: 'managers' }); rollMenu = false"
+            >
+                ONLY MANAGERS ROLL
+            </div>
+            <div 
+                class="referee__menu_select__option"
+                :style="{ backgroundColor: '#5BBCFA' }"
+                @click="banchoCall('roll', { allowed: 'all' }); rollMenu = false"
+            >
+                ANY TEAM MEMBER ROLLS
+            </div>
+            <div 
+                class="referee__menu_select__option"
+                :style="{ backgroundColor: '#5BBCFA' }"
+                @click="banchoCall('roll', { allowed: 'bot' }); rollMenu = false"
+            >
+                BOT AUTO-ROLLS
             </div>
         </div>
         <div class="referee__container">
@@ -64,7 +91,7 @@
                         :class="{
                             'content_button--disabled': !matchup.mp || matchup.first || matchup.stage?.stageType === 0 || !runningLobby,
                         }"
-                        @click.native="matchup.mp && runningLobby && !matchup.first && matchup.stage?.stageType !== 0 ? banchoCall('roll') : tooltipText = matchup.first ? 'Matchup already rolled' : 'Matchup has no lobby'"
+                        @click.native="matchup.mp && runningLobby && !matchup.first && matchup.stage?.stageType !== 0 ? toggleRollMenu() : tooltipText = matchup.first ? 'Matchup already rolled' : 'Matchup has no lobby'"
                     >
                         {{ $t('open.referee.roll') }}
                     </ContentButton>
@@ -551,9 +578,12 @@ export default class Referee extends Vue {
         set: number;
         order: MapOrder[];
     }[] = [];
-    mapSelected: MappoolMap | null = null;
+
     mapStarted = false;
     runningLobby = false;
+
+    rollMenu = false;
+    mapSelected: MappoolMap | null = null;
 
     team1PlayerStates: playerState[] = [];
     team2PlayerStates: playerState[] = [];
@@ -671,10 +701,20 @@ export default class Referee extends Vue {
         }
 
         this.mapSelected = this.selectedMappool?.slots.flatMap(slot => slot.maps).find(map => map.ID === mapID) || null;
-        console.log(this.$refs);
         if (this.$refs.mapStatusSelect instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
             this.$refs.mapStatusSelect.style.left = this.$refs.tooltip.style.left;
             this.$refs.mapStatusSelect.style.top = this.$refs.tooltip.style.top;
+        }
+    }
+
+    toggleRollMenu () {
+        this.rollMenu = !this.rollMenu;
+        if (!this.rollMenu)
+            return;
+
+        if (this.$refs.rollMenu instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
+            this.$refs.rollMenu.style.left = this.$refs.tooltip.style.left;
+            this.$refs.rollMenu.style.top = this.$refs.tooltip.style.top;
         }
     }
 
@@ -1122,7 +1162,7 @@ export default class Referee extends Vue {
 
     }
 
-    &__map_status_select {
+    &__menu_select {
         position: fixed;
         transition: none;
         z-index: 10;
