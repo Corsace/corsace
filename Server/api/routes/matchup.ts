@@ -341,9 +341,8 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
             while (queue.length > 0) {
                 const node = queue.shift()!;
                 stack.push(node);
+                stack.push(...node.potentials || []);
 
-                if (node.potentials)
-                    queue.push(...node.potentials);
                 if (node.previousMatchups)
                     queue.push(...node.previousMatchups);
             }
