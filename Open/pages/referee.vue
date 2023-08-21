@@ -277,7 +277,7 @@
                                         }"
                                         :style="{ backgroundImage: `url(https://a.ppy.sh/${member.osuID})` }"
                                     />
-                                    {{ member.username }} ({{ member.osuID }}) {{ member.team ?? '' }} {{ member.mods ? `+${member.mods.toUpperCase()}` : "" }}
+                                    {{ member.username }} ({{ member.osuID }}) {{ member.slot ? `Slot ${member.slot}` : '' }} {{ member.team ?? '' }} {{ member.mods ? `+${member.mods.toUpperCase()}` : "" }}
                                 </div>
                             </div>
                         </div>
@@ -315,7 +315,7 @@
                                             'referee__matchup__content__team__members__member__avatar--ready': member.ready,
                                         }"
                                     />
-                                    {{ member.username }} ({{ member.osuID }}) {{ member.team ?? '' }} {{ member.mods ? `+${member.mods.toUpperCase()}` : "" }}
+                                    {{ member.username }} ({{ member.osuID }}) {{ member.slot ? `Slot ${member.slot}` : '' }} {{ member.team ?? '' }} {{ member.mods ? `+${member.mods.toUpperCase()}` : "" }}
                                 </div>
                             </div>
                         </div>
@@ -485,6 +485,7 @@ interface playerState {
     inLobby: boolean;
     ready: boolean;
     mods: string;
+    slot: number;
     team?: "Blue" | "Red";
 }
 
@@ -799,22 +800,43 @@ export default class Referee extends Vue {
             date: new Date(matchupData.matchup.date),
         } : null;
 
-        this.team1PlayerStates = this.matchup?.team1?.members.map(member => ({
+        this.team1PlayerStates = this.matchup?.team1?.manager ? [{
+            ID: this.matchup.team1.manager.ID,
+            username: this.matchup.team1.manager.username,
+            osuID: this.matchup.team1.manager.osuID,
+            inLobby: false,
+            ready: false,
+            mods: "",
+            slot: 0,
+        }] : [];
+        this.team2PlayerStates = this.matchup?.team2?.manager ? [{
+            ID: this.matchup.team2.manager.ID,
+            username: this.matchup.team2.manager.username,
+            osuID: this.matchup.team2.manager.osuID,
+            inLobby: false,
+            ready: false,
+            mods: "",
+            slot: 0,
+        }] : [];
+
+        this.team1PlayerStates.push(...(this.matchup?.team1?.members.map(member => ({
             ID: member.ID,
             username: member.username,
             osuID: member.osuID,
             inLobby: false,
             ready: false,
             mods: "",
-        })) || [];
-        this.team2PlayerStates = this.matchup?.team2?.members.map(member => ({
+            slot: 0,
+        })) || []));
+        this.team2PlayerStates.push(...(this.matchup?.team2?.members.map(member => ({
             ID: member.ID,
             username: member.username,
             osuID: member.osuID,
             inLobby: false,
             ready: false,
             mods: "",
-        })) || [];
+            slot: 0,
+        })) || []));
         this.messages = this.matchup?.messages?.map((message, i) => ({
             ...message,
             ID: i,
@@ -939,6 +961,7 @@ export default class Referee extends Vue {
                         ready: slotPlayer?.ready || false,
                         team: slotPlayer?.team,
                         mods: slotPlayer?.mods || "",
+                        slot: slotPlayer?.slot,
                     };
                 });
                 this.team2PlayerStates = this.team2PlayerStates.map(player => {
@@ -949,6 +972,7 @@ export default class Referee extends Vue {
                         ready: slotPlayer?.ready || false,
                         team: slotPlayer?.team,
                         mods: slotPlayer?.mods || "",
+                        slot: slotPlayer?.slot,
                     };
                 });
                 break;
