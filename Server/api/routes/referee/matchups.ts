@@ -73,10 +73,10 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
     let bypass = false;
     if (roles.length > 0) {
         try {
-            const privilegedRoles = roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+            const organizerRoles = roles.filter(r => r.roleType === TournamentRoleType.Organizer);
             const tournamentServer = await discordClient.guilds.fetch(ctx.state.tournament.server);
             const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
-            bypass = privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID));
+            bypass = organizerRoles.some(r => discordMember.roles.cache.has(r.roleID));
         } catch (e) {
             bypass = false;
         }

@@ -29,6 +29,14 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
         return;
     }
 
+    if (!ctx.request.body.user) {
+        ctx.body = {
+            success: false,
+            error: "Missing user",
+        };
+        return;
+    }
+
     const endpoint = ctx.URL.pathname.split("/")[ctx.URL.pathname.split("/").length - 1];
 
     const matchupList = state.matchups[parseInt(id)];
@@ -135,7 +143,7 @@ banchoRefereeRouter.post("/:matchupID/createLobby", validateMatchup, async (ctx)
     };
 
     try {
-        await runMatchup(matchup, ctx.request.body.replace, ctx.request.body.auto);
+        await runMatchup(matchup, ctx.request.body.replace, ctx.request.body.auto, `${ctx.request.body.user.osu.username} (${ctx.request.body.user.osu.userID})`);
     } catch (error) {
         if (error instanceof Error)
             ctx.body = {

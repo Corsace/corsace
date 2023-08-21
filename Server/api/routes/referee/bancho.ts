@@ -4,9 +4,10 @@ import { config } from "node-config-ts";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { isLoggedInDiscord } from "../../../middleware";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
-import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
+import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { discordClient } from "../../../discord";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
+import { User } from "../../../../Models/user";
 
 const refereeBanchoRouter = new Router();
 
@@ -40,7 +41,9 @@ refereeBanchoRouter.post("/:tournamentID/:matchupID", validateTournament, isLogg
         return;
     }
 
-    if (matchup.referee?.ID !== ctx.state.user.id && matchup.stage!.tournament.organizer.ID !== ctx.state.user.id) {
+    const user: User = ctx.state.user;
+
+    if (matchup.referee?.ID !== user.ID && matchup.stage!.tournament.organizer.ID !== user.ID) {
         // If not organizer check if they are referee
         const roles = await TournamentRole
             .createQueryBuilder("role")
@@ -52,10 +55,10 @@ refereeBanchoRouter.post("/:tournamentID/:matchupID", validateTournament, isLogg
         let bypass = false;
         if (roles.length > 0) {
             try {
-                const privilegedRoles = roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
+                const organizerRoles = roles.filter(r => r.roleType === TournamentRoleType.Organizer);
                 const tournamentServer = await discordClient.guilds.fetch(ctx.state.tournament.server);
-                const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
-                bypass = privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID));
+                const discordMember = await tournamentServer.members.fetch(user.discord.userID);
+                bypass = organizerRoles.some(r => discordMember.roles.cache.has(r.roleID));
             } catch (e) {
                 bypass = false;
             }
@@ -74,6 +77,7 @@ refereeBanchoRouter.post("/:tournamentID/:matchupID", validateTournament, isLogg
         const { data } = await Axios.post(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`, {
             ...ctx.request.body,
             endpoint: undefined,
+            user,
         }, {
             auth: config.interOpAuth,
         });

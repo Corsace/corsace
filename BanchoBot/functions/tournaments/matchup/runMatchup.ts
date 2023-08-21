@@ -702,7 +702,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     });
 }
 
-export default async function runMatchup (matchup: Matchup, replace = false, auto = false) {
+export default async function runMatchup (matchup: Matchup, replace = false, auto = false, runBy?: string) {
     runMatchupCheck(matchup, replace);
 
     let lobbyName = `${matchup.stage!.tournament.abbreviation}: (${matchup.team1?.name}) vs (${matchup.team2?.name})`;
@@ -752,7 +752,7 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
         const discordChannel = discordClient.channels.cache.get(refChannel.channelID);
         if (discordChannel instanceof TextChannel) {
             const refMessage = await discordChannel.send({
-                content: `Lobby has been created for \`${lobbyName}\` ID and channel \`#mp_${mpLobby.id}\`, if u need to be (re)added as a ref, and u have a role considered unallowed to play, press the button below.\n\n\`!start\` allows u to start the matchup if the team managers aren't able to make it\n\`!auto\` resumes the bot to run the lobby IF a user had used \`!panic\`\n\nMake sure u are online on osu! for the addref to work`,
+                content: `Lobby has been created for \`${lobbyName}\` ID and channel \`#mp_${mpLobby.id}\` by \`${auto ? "Corsace" : runBy}\`, if u need to be (re)added as a ref, and u have a role considered unallowed to play, press the button below.${auto ? `\n\n\`!start\` allows u to start the matchup if the team managers aren't able to make it\n\`!auto\` resumes the bot to run the lobby IF a user had used \`!panic\`` : ""}\n\nMake sure u are online on osu! for the addref to work`,
                 components: [row],
             });
 
@@ -828,7 +828,7 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
         const discordChannel = discordClient.channels.cache.get(generalChannel.channelID);
         if (discordChannel instanceof TextChannel) {
             const invMessage = await discordChannel.send({
-                content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n\nLobby has been created for ur match, if u need to be reinvited, press the button below.\n\nMake sure u have non-friends DMs allowed on osu!\n\nThe following commands work in lobby:\n\`!panic\` will notify organizers/currently assigned refs if anything goes absurdly wrong and stop auto-running the lobby\n\`!abort\` allows u to abort a map within the allowed time after a map start, and for the allowed amount of times a team is allowed to abort\n\`!start\` allows a manager to start the matchup before the match time if the manager appears in the lobby beforehand\n\nIf ur not part of the matchup, the button wont work for u .`,
+                content: `${IDs.map(id => `<@${id.discord}>`).join(" ")}\n\nLobby has been created for ur match by \`${auto ? "Corsace" : runBy}\`, if u need to be reinvited, press the button below.\n\nMake sure u have non-friends DMs allowed on osu!${auto ? `\n\nThe following commands work in lobby:\n\`!panic\` will notify organizers/currently assigned refs if anything goes absurdly wrong and stop auto-running the lobby\n\`!abort\` allows u to abort a map within the allowed time after a map start, and for the allowed amount of times a team is allowed to abort\n\`!start\` allows a manager to start the matchup before the match time if the manager appears in the lobby beforehand` : ""}\n\nIf ur not part of the matchup, the button wont work for u .`,
                 components: [row],
             });
 
