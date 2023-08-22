@@ -13,25 +13,22 @@
         <div
             ref="mapStatusSelect"
             class="referee__menu_select"
-            :style="{ display: mapSelected ? 'block' : 'none' }"
+            :style="{ display: mapSelected ? 'flex' : 'none' }"
         >
             <div 
-                class="referee__menu_select__option"
-                :style="{ backgroundColor: convertStatusEnum(0) }"
+                class="referee__menu_select__option referee__menu_select__option--blue"
                 @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 0 }); mapSelected = null"
             >
                 PROTECT
             </div>
             <div 
-                class="referee__menu_select__option"
-                :style="{ backgroundColor: convertStatusEnum(1) }"
+                class="referee__menu_select__option referee__menu_select__option--red"
                 @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 1 }); mapSelected = null"
             >
                 BAN
             </div>
             <div 
-                class="referee__menu_select__option"
-                :style="{ backgroundColor: convertStatusEnum(2) }"
+                class="referee__menu_select__option referee__menu_select__option--green"
                 @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 2, time: parseInt(readyTimer) }); mapSelected = null"
             >
                 PICK
@@ -40,25 +37,22 @@
         <div
             ref="rollSelect"
             class="referee__menu_select"
-            :style="{ display: rollMenu ? 'block' : 'none' }"
+            :style="{ display: rollMenu ? 'flex' : 'none' }"
         >
             <div 
-                class="referee__menu_select__option"
-                :style="{ backgroundColor: '#5BBCFA' }"
+                class="referee__menu_select__option referee__menu_select__option--blue"
                 @click="banchoCall('roll', { allowed: 'managers' }); rollMenu = false"
             >
                 ONLY MANAGERS ROLL
             </div>
             <div 
-                class="referee__menu_select__option"
-                :style="{ backgroundColor: '#5BBCFA' }"
+                class="referee__menu_select__option referee__menu_select__option--blue"
                 @click="banchoCall('roll', { allowed: 'all' }); rollMenu = false"
             >
                 ANY TEAM MEMBER ROLLS
             </div>
             <div 
-                class="referee__menu_select__option"
-                :style="{ backgroundColor: '#5BBCFA' }"
+                class="referee__menu_select__option referee__menu_select__option--blue"
                 @click="banchoCall('roll', { allowed: 'bot' }); rollMenu = false"
             >
                 BOT AUTO-ROLLS
@@ -585,15 +579,15 @@ export default class Referee extends Vue {
                 return false;
             if (
                 !this.showBanchoSettings && (
-                    message.user.osu.userID === "3" && (
+                    (message.user.osu.userID === "3" && (
                         message.content.startsWith("Room name:") ||
                         message.content.startsWith("Team mode:") ||
                         message.content.startsWith("Players:") ||
                         message.content.startsWith("Beatmap:") ||
                         message.content.startsWith("Active mods:") ||
                         message.content.startsWith("Slot")
-                    )
-                ) || message.content.startsWith("!mp settings")
+                    )) || message.content.startsWith("!mp settings")
+                )
             )
                 return false;
             if (!this.showCorsaceMessages && message.user.osu.userID === "29191632")
@@ -1106,13 +1100,29 @@ export default class Referee extends Vue {
         padding: 10px;
         border-radius: 10px;
 
+        flex-direction: column;
+        gap: 10px;
+
         &__option {
             cursor: pointer;
             padding: 5px;
             border-radius: 5px;
 
+            &--green {
+                background-color: #3A8F5E;
+            }
+
+            &--red {
+                background-color: #F24141;
+            }
+
+            &--blue {
+                background-color: #5BBCFA;
+            }
+
             &:hover {
-                background-color: #333333;
+                background-color: white;
+                color: #181818;
             }
         }
     }
