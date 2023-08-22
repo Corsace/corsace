@@ -614,7 +614,7 @@ export default class Referee extends Vue {
         const first = this.matchup?.first?.name;
         const second = this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2?.name : this.matchup?.team2?.ID === this.matchup?.first?.ID ? this.matchup?.team1?.name : null;
         const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
-        const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score < this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
+        const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team2?.name : this.matchup?.team1?.name : null;
         const nextMapTeam = nextMap?.team === MapOrderTeam.Team1 ? first : MapOrderTeam.Team2 ? second : MapOrderTeam.TeamLoser ? losing ?? second : MapOrderTeam.TeamWinner ? winning ?? first : null;
         const nextMapString = `Next ${this.mapStatusToString(nextMap?.status || 0)}: ${nextMapTeam ?? "N/A"}`;
 
