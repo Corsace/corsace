@@ -617,10 +617,12 @@ export default class Referee extends Vue {
         const second = this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2?.name : this.matchup?.team2?.ID === this.matchup?.first?.ID ? this.matchup?.team1?.name : null;
         const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
         const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team2?.name : this.matchup?.team1?.name : null;
-        const nextMapTeam = nextMap?.team === MapOrderTeam.Team1 ? first : MapOrderTeam.Team2 ? second : MapOrderTeam.TeamLoser ? losing ?? second : MapOrderTeam.TeamWinner ? winning ?? first : null;
+        const nextMapTeam = nextMap?.team === MapOrderTeam.Team1 ? first : nextMap?.team === MapOrderTeam.Team2 ? second : nextMap?.team === MapOrderTeam.TeamLoser ? losing ?? second : nextMap?.team === MapOrderTeam.TeamWinner ? winning ?? first : null;
+
+        const winnerString = `${winner ?? "N/A"} has won the matchup!`;
         const nextMapString = `Next ${this.mapStatusToString(nextMap?.status || 0)}: ${nextMapTeam ?? "N/A"}`;
 
-        return `${score} // ${bestOf} // ${winner ?? nextMapString}`;
+        return `${score} // ${bestOf} // ${winner ? winnerString : nextMapString}`;
     }
 
     async sendMessage () {
