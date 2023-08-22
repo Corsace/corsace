@@ -68,7 +68,6 @@
             <OpenTitle>
                 {{ $t('open.referee.title') }} {{ matchup ? `- (${matchup.ID}) ${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "" }}
             </OpenTitle>
-            <!-- Matchup Selected -->
             <div 
                 v-if="matchup"
                 class="referee__matchup"
@@ -277,7 +276,7 @@
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
                                     class="referee__matchup__content__team__avatar"
-                                    :style="{ backgroundImage: `url(${matchup.team1?.avatarURL || require('../../Assets/img/site/open/team/default.png')})` }"
+                                    :style="{ backgroundImage: `url(${matchup.team1?.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
                                 />
                                 <div class="referee__matchup__content__team__stats">
                                     {{ team1PlayerStates.filter(player => player.inLobby).length }} in lobby
@@ -315,7 +314,7 @@
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
                                     class="referee__matchup__content__team__avatar"
-                                    :style="{ backgroundImage: `url(${matchup.team2?.avatarURL || require('../../Assets/img/site/open/team/default.png')})` }"
+                                    :style="{ backgroundImage: `url(${matchup.team2?.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
                                 />
                                 <div class="referee__matchup__content__team__stats">
                                     {{ team2PlayerStates.filter(player => player.inLobby).length }} in lobby
@@ -392,7 +391,7 @@
                             v-for="map in matchupMaps"
                             :key="map.ID"
                             class="referee__matchup__content__map"
-                            :style="{backgroundColor: slotColour(selectedMappool?.slots.find(slot => slot.maps.some(m => m.ID === map.map.ID))?.allowedMods)}"
+                            :style="{backgroundColor: slotColour(selectedMappool?.slots.find(slot => slot.maps.some(m => m.ID === map.map.ID)))}"
                         >
                             <div
                                 class="referee__matchup__content__map_delete"
@@ -424,7 +423,7 @@
                                 v-for="slot in selectedMappool.slots"
                                 :key="slot.ID"
                                 class="referee__matchup__content__mappool__slot"
-                                :style="{backgroundColor: slotColour(slot.allowedMods)}"
+                                :style="{backgroundColor: slotColour(slot)}"
                             >
                                 <div 
                                     class="referee__matchup__content__mappool__slot__name"
@@ -452,37 +451,11 @@
                 <div class="referee__matchup__footer">
                     <ContentButton
                         class="referee__matchup__footer__button content_button--red"
-                        @click.native="back"
+                        :link="'/referee'"
                     >
                         {{ $t('open.referee.back') }}
                     </ContentButton>
                 </div>
-            </div>
-            <!-- Matchup list -->
-            <div 
-                v-else
-                class="referee__matchups"
-            >
-                <div 
-                    v-for="matchup in matchupList"
-                    :key="matchup.ID"
-                    class="referee__matchups__matchup"
-                    @click="selectMatchup(matchup.ID)"
-                >
-                    <div class="referee__matchups__matchup_name">
-                        ({{ matchup.ID }}) {{ matchup.teams?.map(team => team.name).join(" vs ") ?? (matchup.team1 || matchup.team2) ? `${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "TBD" }}
-                    </div>
-                    <div class="referee__matchups__matchup_date">
-                        {{ formatDate(matchup.date) }} {{ formatTime(matchup.date) }}
-                    </div>
-                </div>
-                <ContentButton
-                    v-if="moreMatchups"
-                    class="referee__matchup__footer__button content_button--red content_button--red_sm"
-                    @click.native="loadMore"
-                >
-                    {{ $t('open.referee.loadMore') }}
-                </ContentButton>
             </div>
         </div>
     </div>
@@ -493,15 +466,15 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 import { Centrifuge, PublicationContext, Subscription } from "centrifuge";
 
-import ContentButton from "../../Assets/components/open/ContentButton.vue";
-import OpenSelect from "../../Assets/components/open/OpenSelect.vue";
-import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
-import { Tournament } from "../../Interfaces/tournament";
-import { MapStatus, Matchup } from "../../Interfaces/matchup";
-import { MapOrder, MapOrderTeam } from "../../Interfaces/stage";
-import { UserInfo } from "../../Interfaces/user";
-import { Mappool, MappoolMap } from "../../Interfaces/mappool";
-import { modsToRGB } from "../../Interfaces/mods";
+import ContentButton from "../../../Assets/components/open/ContentButton.vue";
+import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
+import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
+import { Tournament } from "../../../Interfaces/tournament";
+import { MapStatus, Matchup } from "../../../Interfaces/matchup";
+import { MapOrder, MapOrderTeam } from "../../../Interfaces/stage";
+import { UserInfo } from "../../../Interfaces/user";
+import { Mappool, MappoolMap, MappoolSlot } from "../../../Interfaces/mappool";
+import { freemodButFreerRGB, freemodRGB, modsToRGB } from "../../../Interfaces/mods";
 
 const openModule = namespace("open");
 
@@ -545,15 +518,18 @@ interface message {
                 {hid: "og:title", property: "og:title", content: this.$store.state["open"].title},
                 {hid: "og:url", property: "og:url", content: `https://open.corsace.io${this.$route.path}`}, 
                 {hid: "og:description", property: "og:description", content: this.$store.state["open"].tournament.description},
-                {hid: "og:image",property: "og:image", content: require("../../Assets/img/site/open/banner.png")},
+                {hid: "og:image",property: "og:image", content: require("../../../Assets/img/site/open/banner.png")},
                 
                 {name: "twitter:title", content: this.$store.state["open"].title},
                 {name: "twitter:description", content: this.$store.state["open"].tournament.description},
-                {name: "twitter:image", content: require("../../Assets/img/site/open/banner.png")},
-                {name: "twitter:image:src", content: require("../../Assets/img/site/open/banner.png")},
+                {name: "twitter:image", content: require("../../../Assets/img/site/open/banner.png")},
+                {name: "twitter:image:src", content: require("../../../Assets/img/site/open/banner.png")},
             ],
             link: [{rel: "canonical", hid: "canonical", href: `https://open.corsace.io${this.$route.path}`}],
         };
+    },
+    validate ({ params }) {
+        return !params.id || !isNaN(parseInt(params.id));
     },
 })
 export default class Referee extends Vue {
@@ -561,13 +537,10 @@ export default class Referee extends Vue {
     @State loggedInUser!: UserInfo | null;
     @openModule.State tournament!: Tournament | null;
 
-    moreMatchups = true;
-
     centrifuge: Centrifuge | null = null;
     matchupChannel: Subscription | null = null;
 
     matchup: Matchup | null = null;
-    matchupList: Matchup[] = [];
     mappools: Mappool[] = [];
     mappoolSelector: {
         value: string;
@@ -719,119 +692,10 @@ export default class Referee extends Vue {
     }
 
     async mounted () {
-        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}`);
+        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}/${this.$route.params.id}`);
         if (matchupData.error) {
             alert(matchupData.error);
             this.$router.push("/");
-            return;
-        }
-        this.matchupList = matchupData.matchups?.map(matchup => ({
-            ...matchup,
-            date: new Date(matchup.date),
-        })) || [];
-
-        const { data: centrifugoURL } = await this.$axios.get("/api/centrifugo/publicUrl");
-
-        const centrifuge = new Centrifuge(`${centrifugoURL}/connection/websocket`, {
-
-        });
-
-        centrifuge.on("connecting", (ctx) => {
-            console.log("connecting", ctx);
-        });
-
-        centrifuge.on("error", (err) => {
-            console.error("error", err);
-        });
-
-        centrifuge.on("connected", (ctx) => {
-            console.log("connected", ctx);
-        });
-
-        centrifuge.connect();
-
-        this.centrifuge = centrifuge;
-    }
-
-    async loadMore () {
-        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}?skip=${this.matchupList.length}`);
-        if (matchupData.error) {
-            alert(matchupData.error);
-            this.$router.push("/");
-            return;
-        }
-        if (matchupData.matchups?.length && matchupData.matchups.length < 5)
-            this.moreMatchups = false;
-        this.matchupList.push(...matchupData.matchups?.map(matchup => ({
-            ...matchup,
-            date: new Date(matchup.date),
-        })) || []);
-    }
-
-    formatDate (date: Date): string {
-        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-        const day = date.getUTCDate();
-        const monthIndex = date.getUTCMonth();
-        return `${months[monthIndex]} ${day < 10 ? "0" : ""}${day}`;
-    }
-
-    formatTime (date: Date): string {
-        const hours = date.getUTCHours();
-        const minutes = date.getUTCMinutes();
-        return `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
-    }
-
-    slotColour (num?: number | null) {
-        const values = modsToRGB(num);
-        return `rgba(${values[0]}, ${values[1]}, ${values[2]}, 0.333)`;
-    }
-
-    convertOrderEnum (num: MapOrderTeam): string {
-        switch (num) {
-            case MapOrderTeam.Team1:
-                return "1";
-            case MapOrderTeam.Team2:
-                return "2";
-            case MapOrderTeam.TeamLoser:
-                return "L";
-            case MapOrderTeam.TeamWinner:
-                return "W";
-            case MapOrderTeam.TeamLoserPrevious:
-                return "LP";
-            case MapOrderTeam.TeamWinnerPrevious:
-                return "WP";
-        }
-    }
-
-    convertStatusEnum (num: MapStatus): string {
-        switch (num) {
-            case MapStatus.Banned:
-                return "#F24141";
-            case MapStatus.Protected:
-                return "#5BBCFA";
-            case MapStatus.Picked:
-                return "#3A8F5E";
-        }
-    }
-
-    unsub () {
-        if (this.matchupChannel) {
-            this.matchupChannel.unsubscribe();
-            this.centrifuge?.removeSubscription(this.matchupChannel);
-            this.matchupChannel = null;
-        }
-    }
-
-    async selectMatchup (matchupID: number) {
-        if (!this.centrifuge) {
-            alert("Centrifuge not connected");
-            return;
-        }
-        this.unsub();
-
-        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}/${matchupID}`);
-        if (matchupData.error) {
-            alert(matchupData.error);
             return;
         }
 
@@ -908,7 +772,29 @@ export default class Referee extends Vue {
         this.mapTimer = `${this.tournament?.mapTimer || 90}`;
         this.readyTimer = `${this.tournament?.readyTimer || 90}`;
 
-        this.matchupChannel = this.centrifuge.newSubscription(`matchup:${matchupID}`);
+        const { data: centrifugoURL } = await this.$axios.get("/api/centrifugo/publicUrl");
+
+        const centrifuge = new Centrifuge(`${centrifugoURL}/connection/websocket`, {
+
+        });
+
+        centrifuge.on("connecting", (ctx) => {
+            console.log("connecting", ctx);
+        });
+
+        centrifuge.on("error", (err) => {
+            console.error("error", err);
+        });
+
+        centrifuge.on("connected", (ctx) => {
+            console.log("connected", ctx);
+        });
+
+        centrifuge.connect();
+
+        this.centrifuge = centrifuge;
+
+        this.matchupChannel = this.centrifuge.newSubscription(`matchup:${this.$route.params.id}`);
 
         this.matchupChannel.on("error", (err) => {
             alert("Error in console for matchup channel subscription");
@@ -939,16 +825,62 @@ export default class Referee extends Vue {
             await this.banchoCall("pulse");
     }
 
-    back () {
-        this.unsub();
-        this.matchup = null;
-        this.messages = [];
-        this.mapOrder = [];
-        this.mappools = [];
-        this.mappoolSelector = [];
-        this.selectedMappool = null;
-        this.mapSelected = null;
-        this.runningLobby = false;
+    formatDate (date: Date): string {
+        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        const day = date.getUTCDate();
+        const monthIndex = date.getUTCMonth();
+        return `${months[monthIndex]} ${day < 10 ? "0" : ""}${day}`;
+    }
+
+    formatTime (date: Date): string {
+        const hours = date.getUTCHours();
+        const minutes = date.getUTCMinutes();
+        return `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
+    }
+
+    slotColour (slot?: MappoolSlot) {
+        if (!slot)
+            return this.RGBValuesToRGBCSS(modsToRGB(0));
+
+        if (slot.allowedMods === null && slot.userModCount === null && slot.uniqueModCount === null)
+            return this.RGBValuesToRGBCSS(freemodButFreerRGB);
+
+        if (slot.userModCount !== null || slot.uniqueModCount !== null)
+            return this.RGBValuesToRGBCSS(freemodRGB);
+
+        return this.RGBValuesToRGBCSS(modsToRGB(slot.allowedMods));
+    }
+
+    RGBValuesToRGBCSS (values: [number, number, number]) {
+        return `rgba(${values[0]}, ${values[1]}, ${values[2]}, 0.333)`;
+    }
+
+    convertOrderEnum (num: MapOrderTeam): string {
+        switch (num) {
+            case MapOrderTeam.Team1:
+                return "1";
+            case MapOrderTeam.Team2:
+                return "2";
+            case MapOrderTeam.TeamLoser:
+                return "L";
+            case MapOrderTeam.TeamWinner:
+                return "W";
+            case MapOrderTeam.TeamLoserPrevious:
+                return "LP";
+            case MapOrderTeam.TeamWinnerPrevious:
+                return "WP";
+        }
+    }
+
+    convertStatusEnum (num: MapStatus): string {
+        switch (num) {
+            case MapStatus.Banned:
+                return "#F24141";
+            case MapStatus.Protected:
+                return "#5BBCFA";
+            case MapStatus.Picked:
+                return "#3A8F5E";
+        }
     }
 
     addMessage (data: any) {
@@ -1159,7 +1091,6 @@ export default class Referee extends Vue {
         background-color: #1B1B1B;
         padding: 10px;
         border-radius: 10px;
-
     }
 
     &__menu_select {
@@ -1224,6 +1155,7 @@ export default class Referee extends Vue {
             gap: 5px;
             background-color: #181818;
             padding: 10px;
+            overflow: hidden;
             
             grid-column: 3 / 4;
             grid-row: 1 / 4;
@@ -1235,10 +1167,11 @@ export default class Referee extends Vue {
 
             &__container {
                 overflow-y: scroll;
-                max-height: 550px;
+                height: 550px;
 
                 &::-webkit-scrollbar {
                     width: 5px;
+                    height: 5px;
                 }
 
                 &::-webkit-scrollbar-track {
@@ -1538,36 +1471,6 @@ export default class Referee extends Vue {
 
             &__button {
                 max-width: 300px;
-            }
-        }
-    }
-
-    &__matchups {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-
-        &__matchup {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            padding: 10px;
-            border-radius: 5px;
-            background: #333333;
-            cursor: pointer;
-
-            &:hover {
-                background: #444444;
-            }
-
-            &__name {
-                font-size: $font-lg;
-                font-weight: 500;
-            }
-
-            &__date {
-                font-size: $font-base;
-                font-weight: 300;
             }
         }
     }
