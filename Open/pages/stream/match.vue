@@ -40,8 +40,8 @@
                 >
                     <path
                         d="M 31 22 H 0 L 16 0 H 48 L 31 22 Z"
-                        :fill="matchup.team1Score >= n ? '#F24141' : undefined"
-                        :stroke="matchup.team1Score >= n ? undefined : '#F24141'"
+                        :fill="matchup.team1Score >= n ? '#F24141FF' : '#F2414100'"
+                        :stroke="matchup.team1Score >= n ? '#F2414100' : '#F24141FF'"
                     />
                 </svg>
             </div>
@@ -132,8 +132,8 @@
                 >
                     <path
                         d="M 16 22 H 48 L 31 0 H 0.684986 L 16 22 Z"
-                        :fill="matchup.team2Score >= n ? '#5BBCFA' : undefined"
-                        :stroke="matchup.team2Score >= n ? undefined : '#5BBCFA'"
+                        :fill="matchup.team2Score >= n ? '#5BBCFAFF' : '#5BBCFA00'"
+                        :stroke="matchup.team2Score >= n ? '#5BBCFA00' : '#5BBCFAFF'"
                     />
                 </svg>
                 WINS
@@ -199,7 +199,7 @@ export default class Match extends Vue {
         const first = this.matchup?.first?.abbreviation.toUpperCase();
         const second = this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2?.abbreviation.toUpperCase() : this.matchup?.team2?.ID === this.matchup?.first?.ID ? this.matchup?.team1?.abbreviation.toUpperCase() : null;
         const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.abbreviation.toUpperCase() : this.matchup?.team2?.abbreviation.toUpperCase() : null;
-        const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score < this.matchup?.team2Score ? this.matchup?.team1?.abbreviation.toUpperCase() : this.matchup?.team2?.abbreviation.toUpperCase() : null;
+        const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team2?.abbreviation.toUpperCase() : this.matchup?.team1?.abbreviation.toUpperCase() : null;
 
         return currentOrder?.team === MapOrderTeam.Team1 ? first : MapOrderTeam.Team2 ? second : MapOrderTeam.TeamLoser ? losing ?? second : MapOrderTeam.TeamWinner ? winning ?? first : null;
     }
