@@ -158,65 +158,67 @@
                     v-if="matchup.mp"
                     class="referee__matchup__messages"
                 >
-                    <div class="referee__matchup__messages__header">
-                        Channel: #mp_{{ matchup.mp }}
-                    </div>
-                    <div 
-                        id="messageContainer"
-                        class="referee__matchup__messages__container"
-                    >
+                    <div class="referee__matchup__messages_wrapper">
+                        <div class="referee__matchup__messages__header">
+                            Channel: #mp_{{ matchup.mp }}
+                        </div>
+                        <div 
+                            id="messageContainer"
+                            class="referee__matchup__messages__container"
+                        >
+                            <div
+                                v-for="message in filteredMessages"
+                                :key="message.ID"
+                                class="referee__matchup__messages__message"
+                            >
+                                <div class="referee__matchup__messages__message__timestamp">
+                                    {{ formatTime(message.timestamp) }}
+                                </div>
+                                <div class="referee__matchup__messages__message__user">
+                                    {{ message.user.osu.username }}:
+                                </div>
+                                <div class="referee__matchup__messages__message__content">
+                                    {{ message.content }}
+                                </div>
+                            </div>
+                        </div>
                         <div
-                            v-for="message in filteredMessages"
-                            :key="message.ID"
-                            class="referee__matchup__messages__message"
+                            v-if="loggedInUser && runningLobby"
+                            class="referee__matchup__messages__input_div"
                         >
-                            <div class="referee__matchup__messages__message__timestamp">
-                                {{ formatTime(message.timestamp) }}
-                            </div>
-                            <div class="referee__matchup__messages__message__user">
-                                {{ message.user.osu.username }}:
-                            </div>
-                            <div class="referee__matchup__messages__message__content">
-                                {{ message.content }}
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        v-if="loggedInUser && runningLobby"
-                        class="referee__matchup__messages__input_div"
-                    >
-                        {{ loggedInUser.osu.username }}:
-                        <input
-                            v-model="inputMessage"
-                            class="referee__matchup__messages__input"
-                            placeholder="Type a message..."
-                            @keyup.enter="sendMessage"
-                        >
-                    </div>
-                    <div class="referee__matchup__messages__checkboxes">
-                        <div class="referee__matchup__messages__checkboxes_div">
-                            Show Bancho Messages
-                            <input 
-                                v-model="showBanchoMessages"
-                                class="referee__matchup__messages__checkboxes__checkbox"
-                                type="checkbox"
+                            {{ loggedInUser.osu.username }}:
+                            <input
+                                v-model="inputMessage"
+                                class="referee__matchup__messages__input"
+                                placeholder="Type a message..."
+                                @keyup.enter="sendMessage"
                             >
                         </div>
-                        <div class="referee__matchup__messages__checkboxes_div">
-                            Show Bancho Settings
-                            <input 
-                                v-model="showBanchoSettings"
-                                class="referee__matchup__messages__checkboxes__checkbox"
-                                type="checkbox"
-                            >
-                        </div>
-                        <div class="referee__matchup__messages__checkboxes_div">
-                            Show Corsace Messages
-                            <input 
-                                v-model="showCorsaceMessages"
-                                class="referee__matchup__messages__checkboxes__checkbox"
-                                type="checkbox"
-                            >
+                        <div class="referee__matchup__messages__checkboxes">
+                            <div class="referee__matchup__messages__checkboxes_div">
+                                Show Bancho Messages
+                                <input 
+                                    v-model="showBanchoMessages"
+                                    class="referee__matchup__messages__checkboxes__checkbox"
+                                    type="checkbox"
+                                >
+                            </div>
+                            <div class="referee__matchup__messages__checkboxes_div">
+                                Show Bancho Settings
+                                <input 
+                                    v-model="showBanchoSettings"
+                                    class="referee__matchup__messages__checkboxes__checkbox"
+                                    type="checkbox"
+                                >
+                            </div>
+                            <div class="referee__matchup__messages__checkboxes_div">
+                                Show Corsace Messages
+                                <input 
+                                    v-model="showCorsaceMessages"
+                                    class="referee__matchup__messages__checkboxes__checkbox"
+                                    type="checkbox"
+                                >
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -590,7 +592,7 @@ export default class Referee extends Vue {
                 )
             )
                 return false;
-            if (!this.showCorsaceMessages && message.user.osu.userID === "29191632")
+            if (!this.showCorsaceMessages && message.user.osu.userID === "29191632" && !/<.+>: /.test(message.content))
                 return false;
             return true;
         });
@@ -1032,8 +1034,10 @@ export default class Referee extends Vue {
         if (endpoint === "pulse")
             this.runningLobby = lobbyData.pulse;
 
-        if (endpoint === "deleteMap" && this.matchup.maps)
+        if (endpoint === "deleteMap" && this.matchup.maps) {
             this.matchup.maps = this.matchup.maps.filter(map => map.ID !== data.mapID);
+            this.matchup.maps.forEach((map, i) => map.order = i + 1);
+        }
 
         switch (endpoint) {
             case "createLobby":
@@ -1164,15 +1168,18 @@ export default class Referee extends Vue {
         }
 
         &__messages {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            background-color: #181818;
-            padding: 10px;
             overflow: hidden;
-            
+
             grid-column: 3 / 4;
             grid-row: 1 / 4;
+
+            &_wrapper {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                background-color: #181818;
+                padding: 10px;
+            }
 
             &__header {
                 font-size: $font-lg;

@@ -347,13 +347,13 @@ banchoRefereeRouter.post("/:matchupID/deleteMap", validateMatchup, async (ctx) =
 
     try {
         await ormConfig.transaction(async manager => {
+            state.matchups[parseInt(ctx.state.matchupID)].matchup.maps = state.matchups[parseInt(ctx.state.matchupID)].matchup.maps!.filter(map => map.ID !== mapID);
+            state.matchups[parseInt(ctx.state.matchupID)].matchup.maps!.forEach((map, i) => map.order = i + 1);
+            
             await manager.remove(matchupMap);
+            await Promise.all(state.matchups[parseInt(ctx.state.matchupID)].matchup.maps!.map(map => manager.save(map)));
 
-            state.matchups[parseInt(ctx.state.matchupID)].matchup.maps = state.matchups[parseInt(ctx.state.matchupID)].matchup.maps?.filter(map => map.ID !== mapID);
-            state.matchups[parseInt(ctx.state.matchupID)].matchup.maps?.forEach((map, i) => map.order = i + 1);
-            await Promise.all(state.matchups[parseInt(ctx.state.matchupID)].matchup.maps?.map(map => manager.save(map)) ?? []);
-
-            await state.matchups[parseInt(ctx.state.matchupID)].lobby.channel.sendMessage(`Ref has deleted a map from matchup ${matchupMap.map.ID}`);
+            await state.matchups[parseInt(ctx.state.matchupID)].lobby.channel.sendMessage(`Ref has deleted a map from matchup ${matchupMap.map.beatmap?.ID}`);
         });
 
         ctx.body = {
