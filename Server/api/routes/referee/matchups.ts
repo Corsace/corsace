@@ -168,24 +168,24 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
             await Round
                 .createQueryBuilder("round")
                 .innerJoin("round.matchups", "matchup")
-                .leftJoinAndSelect("round.mappool", "roundMappool")
-                .leftJoinAndSelect("roundMappool.slots", "roundSlots")
-                .leftJoinAndSelect("roundSlots.maps", "roundMaps")
-                .leftJoinAndSelect("roundMaps.beatmap", "roundMap")
-                .leftJoinAndSelect("roundMap.beatmapset", "roundBeatmapset")
-                .leftJoinAndSelect("round.mapOrder", "roundMapOrder")
+                .leftJoinAndSelect("round.mappool", "mappool")
+                .leftJoinAndSelect("mappool.slots", "slots")
+                .leftJoinAndSelect("slots.maps", ",mps")
+                .leftJoinAndSelect("maps.beatmap", "map")
+                .leftJoinAndSelect("map.beatmapset", "beatmapset")
+                .leftJoinAndSelect("round.mapOrder", "mapOrder")
                 .where("matchup.ID = :ID", { ID: dbMatchup.ID })
                 .getOne() :
             dbMatchup.stage ?
                 await Stage
                     .createQueryBuilder("stage")
                     .innerJoin("stage.matchups", "matchup")
-                    .leftJoinAndSelect("stage.mappool", "stageMappool")
-                    .leftJoinAndSelect("stageMappool.slots", "stageSlots")
-                    .leftJoinAndSelect("stageSlots.maps", "stageMaps")
-                    .leftJoinAndSelect("stageMaps.beatmap", "stageMap")
-                    .leftJoinAndSelect("stageMap.beatmapset", "stageBeatmapset")
-                    .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
+                    .leftJoinAndSelect("stage.mappool", "mappool")
+                    .leftJoinAndSelect("mappool.slots", "slots")
+                    .leftJoinAndSelect("slots.maps", "maps")
+                    .leftJoinAndSelect("maps.beatmap", "map")
+                    .leftJoinAndSelect("map.beatmapset", "beatmapset")
+                    .leftJoinAndSelect("stage.mapOrder", "mapOrder")
                     .where("matchup.ID = :ID", { ID: dbMatchup.ID })
                     .getOne() : 
                 null;

@@ -4,7 +4,7 @@
         class="matchup"
     >
         <div class="matchup__streamTitle">
-            ROUND ROBIN
+            {{ matchup.stage?.name.toUpperCase() || '' }}
         </div>
         <div class="matchup__mapName">
             <div class="matchup__diamond matchup__mapName__diamond" />
@@ -15,7 +15,7 @@
             class="matchup__team1"
         >
             <div class="matchup__team1_abbreviation">
-                {{ matchup.team1.abbreviation }}
+                {{ matchup.team1.abbreviation.toUpperCase() }}
             </div>
             <div 
                 class="matchup__team1_avatar"
@@ -62,7 +62,7 @@
                         class="matchup__diamond matchup__beatmap__name__diamond"
                         :style="{backgroundColor: slotMod}"
                     />
-                    {{ latestMap.slot?.acronym.toUpperCase() }}{{ latestMap.order }}
+                    {{ stageOrRound?.mappool.flatMap(m => m.slots).find(s => s.maps.some(m => m.ID === latestMap?.ID))?.acronym.toUpperCase() }}{{ latestMap.order }}
                 </div>
                 <div class="matchup__beatmap__picked">
                     PICKED BY {{ pickedBy }}
@@ -108,7 +108,7 @@
             class="matchup__team2"
         >
             <div class="matchup__team2_abbreviation">
-                {{ matchup.team2.abbreviation }}
+                {{ matchup.team2.abbreviation.toUpperCase() }}
             </div>
             <div 
                 class="matchup__team2_avatar"
@@ -195,13 +195,13 @@ export default class Match extends Vue {
         if (!pickOrder)
             return null;
     
-        const currentOrder = this.pickedMaps.length > pickOrder.length ? null : pickOrder[this.pickedMaps.length - 1];
+        const currentOrder = this.pickedMaps.length > pickOrder.length ? null : pickOrder[this.pickedMaps.length];
         const first = this.matchup?.first?.abbreviation.toUpperCase();
         const second = this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2?.abbreviation.toUpperCase() : this.matchup?.team2?.ID === this.matchup?.first?.ID ? this.matchup?.team1?.abbreviation.toUpperCase() : null;
         const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.abbreviation.toUpperCase() : this.matchup?.team2?.abbreviation.toUpperCase() : null;
         const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team2?.abbreviation.toUpperCase() : this.matchup?.team1?.abbreviation.toUpperCase() : null;
 
-        return currentOrder?.team === MapOrderTeam.Team1 ? first : MapOrderTeam.Team2 ? second : MapOrderTeam.TeamLoser ? losing ?? second : MapOrderTeam.TeamWinner ? winning ?? first : null;
+        return currentOrder?.team === MapOrderTeam.Team1 ? first : currentOrder?.team === MapOrderTeam.Team2 ? second : currentOrder?.team === MapOrderTeam.TeamLoser ? losing ?? second : currentOrder?.team === MapOrderTeam.TeamWinner ? winning ?? first : null;
     }
 
     get mapOrder () {
@@ -222,16 +222,20 @@ export default class Match extends Vue {
     }
 
     get slotMod (): string {
-        if (!this.latestMap?.slot)
+        const slot = this.stageOrRound?.mappool
+            .flatMap(m => m.slots)
+            .find(s => s.maps.some(m => m.ID === this.latestMap?.ID));
+    
+        if (!slot)
             return this.RGBValuesToRGBCSS(modsToRGB(0));
 
-        if (this.latestMap.slot.allowedMods === null && this.latestMap.slot.userModCount === null && this.latestMap.slot.uniqueModCount === null)
+        if (slot.allowedMods === null && slot.userModCount === null && slot.uniqueModCount === null)
             return this.RGBValuesToRGBCSS(freemodButFreerRGB);
 
-        if (this.latestMap.slot.userModCount !== null || this.latestMap.slot.uniqueModCount !== null)
+        if (slot.userModCount !== null || slot.uniqueModCount !== null)
             return this.RGBValuesToRGBCSS(freemodRGB);
 
-        return this.RGBValuesToRGBCSS(modsToRGB(this.latestMap.slot.allowedMods));
+        return this.RGBValuesToRGBCSS(modsToRGB(slot.allowedMods));
     }
 
     RGBValuesToRGBCSS (values: [number, number, number]) {
@@ -304,7 +308,10 @@ export default class Match extends Vue {
             const { data } = await this.$axios.get(`/api/matchup/${this.matchup.ID}/bancho/pulseMatch`);
             if (data.error || !data.pulse)
                 return;
-            this.latestMap = this.stageOrRound?.mappool.flatMap(m => m.slots).flatMap(s => s.maps).find(m => m.beatmap?.ID === data.beatmapID) || null;
+            this.latestMap = this.stageOrRound?.mappool
+                .flatMap(m => m.slots)
+                .flatMap(s => s.maps)
+                .find(m => m.beatmap?.ID === data.beatmapID) || null;
             this.matchup.team1Score = data.team1Score;
             this.matchup.team2Score = data.team2Score;
         }
@@ -321,6 +328,9 @@ export default class Match extends Vue {
             return;
 
         switch (ctx.data.type) {
+            case "first":
+                this.$set(this.matchup, "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2); // In order to make the computed properties watchers work 
+                break;
             case "beatmap":
                 this.latestMap = this.stageOrRound?.mappool
                     .flatMap(m => m.slots)
@@ -430,6 +440,7 @@ export default class Match extends Vue {
             height: 153px;
             left: 698px;
             right: 698px;
+            overflow: hidden;
 
             &1, &2 {
                 animation-duration: 16s;
@@ -440,6 +451,14 @@ export default class Match extends Vue {
             &1 {
                 color: #1D1D1D;
                 animation-name: fade1;
+
+                &__title, &__artist {
+                    text-align: right;
+                    width: 100%;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
 
                 &__title {
                     position: absolute;
@@ -499,8 +518,8 @@ export default class Match extends Vue {
                         color: #EBEBEB;
                     }
 
-                    &--truncated { 
-                        min-width: 0px; 
+                    &--truncated {
+                        max-width: 131px;
                         overflow: hidden;
                         white-space: nowrap;
                         text-overflow: ellipsis;

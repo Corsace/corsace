@@ -44,12 +44,12 @@ export const actions: ActionTree<StreamState, OpenState> = {
         if (data.error)
             return;
 
-        await commit("setKey", {
+        commit("setKey", {
             key: payload.key,
             tournamentID: data.tournamentID,
         });
 
         if (payload.stageID && !isNaN(parseInt(payload.stageID)))
-            await dispatch("setScores", data.stageID);
+            await dispatch("setScores", parseInt(payload.stageID));
     },
 };
