@@ -271,7 +271,7 @@
                         </div>
                         <div class="referee__matchup__content__team">
                             <div class="referee__matchup__content__team__name">
-                                {{ matchup.first ? `(${matchup.first.ID === (matchup.team1?.ID || 0) ? "1" : "2"})` : '' }} {{ matchup.team1?.name || "TBD" }}
+                                {{ matchup.team1?.name || "TBD" }} {{ matchup.first ? `(${matchup.first.ID === (matchup.team1?.ID || 0) ? "Roll won" : "Roll lost"})` : '' }}
                             </div>
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
@@ -309,7 +309,7 @@
                         </div>
                         <div class="referee__matchup__content__team">
                             <div class="referee__matchup__content__team__name">
-                                {{ matchup.first ? `(${matchup.first.ID === (matchup.team2?.ID || 0) ? "1" : "2"})` : '' }} {{ matchup.team2?.name || "TBD" }}
+                                {{ matchup.team2?.name || "TBD" }} {{ matchup.first ? `(${matchup.first.ID === (matchup.team2?.ID || 0) ? "Roll won" : "Roll lost"})` : '' }}
                             </div>
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
@@ -611,6 +611,10 @@ export default class Referee extends Vue {
         const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchup?.team1Score} - ${this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
         const bestOf = `BO${this.mapOrder[0].order.filter(p => p.status === MapStatus.Picked).length + 1}`;
         const firstTo = this.mapOrder[0].order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
+        
+        if (!this.matchup?.first)
+            return `${score} // ${bestOf}`;
+
         const winner = this.matchup?.team1Score === firstTo ? this.matchup.team1?.name : this.matchup?.team2Score === firstTo ? this.matchup?.team2?.name : null;
         const nextMap = this.matchupMaps.length > this.mapOrder[0].order.length ? null : this.mapOrder[0].order[this.matchupMaps.length];
         const first = this.matchup?.first?.name;
@@ -926,7 +930,7 @@ export default class Referee extends Vue {
                 this.addMessage(ctx.data);
                 break;
             case "first":
-                this.matchup.first = this.matchup.team1?.ID === ctx.data.first ? this.matchup.team1 : this.matchup.team2;
+                this.$set(this.matchup, "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2);
                 break;
             case "settings":
                 this.team1PlayerStates = this.team1PlayerStates.map(player => {
@@ -973,8 +977,8 @@ export default class Referee extends Vue {
                 this.matchup.maps?.push(ctx.data.map);
                 break;
             case "closed":
-                this.team1PlayerStates = [];
-                this.team2PlayerStates = [];
+                this.team1PlayerStates.forEach(player => player.inLobby = player.ready = false);
+                this.team2PlayerStates.forEach(player => player.inLobby = player.ready = false);
                 this.runningLobby = false;
                 break;
         }
@@ -1391,6 +1395,7 @@ export default class Referee extends Vue {
                     display: flex;
                     flex-direction: row;
                     gap: 10px;
+                    flex-wrap: wrap;
                 }
 
                 &__team {
