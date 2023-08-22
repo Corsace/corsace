@@ -82,11 +82,11 @@
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
                         :class="{
-                            'content_button--disabled': !matchup.mp || matchup.first || matchup.stage?.stageType === 0 || !runningLobby,
+                            'content_button--disabled': !matchup.mp || matchup.stage?.stageType === 0 || !runningLobby,
                         }"
-                        @click.native="matchup.mp && runningLobby && !matchup.first && matchup.stage?.stageType !== 0 ? toggleRollMenu() : tooltipText = matchup.first ? 'Matchup already rolled' : 'Matchup has no lobby'"
+                        @click.native="matchup.mp && runningLobby && matchup.stage?.stageType !== 0 ? toggleRollMenu() : tooltipText = 'Matchup has no lobby'"
                     >
-                        {{ $t('open.referee.roll') }}
+                        {{ matchup.first ? $t('open.referee.reroll') : $t('open.referee.roll') }}
                     </ContentButton>
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
@@ -928,7 +928,7 @@ export default class Referee extends Vue {
                 this.addMessage(ctx.data);
                 break;
             case "first":
-                this.$set(this.matchup, "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2);
+                this.$set(this.matchup, "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2); // In order to make the computed properties watchers work 
                 break;
             case "settings":
                 this.team1PlayerStates = this.team1PlayerStates.map(player => {
