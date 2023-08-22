@@ -712,9 +712,9 @@ export default class Referee extends Vue {
         if (!this.rollMenu)
             return;
 
-        if (this.$refs.rollMenu instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
-            this.$refs.rollMenu.style.left = this.$refs.tooltip.style.left;
-            this.$refs.rollMenu.style.top = this.$refs.tooltip.style.top;
+        if (this.$refs.rollSelect instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
+            this.$refs.rollSelect.style.left = this.$refs.tooltip.style.left;
+            this.$refs.rollSelect.style.top = this.$refs.tooltip.style.top;
         }
     }
 
@@ -928,7 +928,7 @@ export default class Referee extends Vue {
         });
 
         this.matchupChannel.on("subscribed", (ctx) => {
-            console.log("subscribed", ctx);
+            console.log("subscribed", ctx.channel);
         });
 
         this.matchupChannel.on("publication", this.handleData);
@@ -976,7 +976,7 @@ export default class Referee extends Vue {
     }
 
     handleData (ctx: PublicationContext) {
-        console.log("publication", ctx);
+        console.log("publication", ctx.channel, ctx.data);
 
         if (!ctx.channel.startsWith("matchup:"))
             return;

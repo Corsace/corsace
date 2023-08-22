@@ -5,7 +5,7 @@ import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { StageType, ScoringMethod } from "../../../../Interfaces/stage";
 import { osuClient } from "../../../../Server/osu";
-import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyPlayerStates, BanchoLobbyTeamModes, BanchoLobbyWinConditions, BanchoUser } from "bancho.js";
+import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions, BanchoUser } from "bancho.js";
 import { convertDateToDDDHH } from "../../../../Server/utils/dateParse";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
@@ -30,7 +30,7 @@ import { User } from "../../../../Models/user";
 import { loginRow } from "../../../../DiscordBot/functions/loginResponse";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { unallowedToPlay } from "../../../../Interfaces/tournament";
-import { publish } from "./centrifugo";
+import { publish, publishSettings } from "./centrifugo";
 import assignTeamsToNextMatchup from "../../../../Server/functions/tournaments/matchups/assignTeamsToNextMatchup";
 
 const winConditions = {
@@ -393,16 +393,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         playersInLobby.push(newPlayer);
         log(matchup, `Player ${newPlayer.user.username} joined the lobby`);
 
-        await publish(matchup, { 
-            type: "settings",
-            slots: mpLobby.slots.map((slot, i) => ({
-                playerOsuID: slot?.user.id,
-                slot: i + 1,
-                mods: slot?.mods.map(mod => mod.shortMod).join(""),
-                team: slot?.team,
-                ready: slot?.state === BanchoLobbyPlayerStates.Ready,
-            })),
-        });
+        await publishSettings(matchup, mpLobby.slots);
 
         if (started || mpLobby.playing || !state.matchups[matchup.ID].autoRunning)
             return;
@@ -457,16 +448,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         log(matchup, `Player ${player.user.username} left the lobby`);
         
-        await publish(matchup, { 
-            type: "settings",
-            slots: mpLobby.slots.map((slot, i) => ({
-                playerOsuID: slot?.user.id,
-                slot: i + 1,
-                mods: slot?.mods.map(mod => mod.shortMod).join(""),
-                team: slot?.team,
-                ready: slot?.state === BanchoLobbyPlayerStates.Ready,
-            })),
-        });
+        await publishSettings(matchup, mpLobby.slots);
 
         if (!state.matchups[matchup.ID].autoRunning)
             return;
@@ -483,6 +465,18 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         playersInLobby = playersInLobby.filter(p => p.user.id !== player.user.id);
     });
 
+    // Player changed team event
+    mpLobby.on("playerChangedTeam", async () => await publishSettings(matchup, mpLobby.slots));
+
+    // Player moved event
+    mpLobby.on("playerMoved", async () => await publishSettings(matchup, mpLobby.slots));
+
+    // Mods event
+    mpLobby.on("mods", async () => await publishSettings(matchup, mpLobby.slots));
+
+    // Freemod event
+    mpLobby.on("freemod", async () => await publishSettings(matchup, mpLobby.slots));
+
     // All players ready event
     mpLobby.on("allPlayersReady", async () => {
         if (!state.matchups[matchup.ID])
@@ -490,16 +484,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         await mpLobby.updateSettings();
 
-        await publish(matchup, { 
-            type: "settings",
-            slots: mpLobby.slots.map((slot, i) => ({
-                playerOsuID: slot?.user.id,
-                slot: i + 1,
-                mods: slot?.mods.map(mod => mod.shortMod).join(""),
-                team: slot?.team,
-                ready: slot?.state === BanchoLobbyPlayerStates.Ready,
-            })),
-        });
+        await publishSettings(matchup, mpLobby.slots);
 
         if (mapsPlayed.some(m => m.beatmap!.ID === mpLobby.beatmapId) || !state.matchups[matchup.ID].autoRunning)
             return;

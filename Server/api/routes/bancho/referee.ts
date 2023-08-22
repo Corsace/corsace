@@ -176,7 +176,7 @@ banchoRefereeRouter.post("/:matchupID/roll", validateMatchup, async (ctx) => {
     }
 
     const allowed = ctx.request.body.allowed;
-    if (allowed !== "managers" || allowed !== "all" || allowed !== "bot") {
+    if (allowed !== "managers" && allowed !== "all" && allowed !== "bot") {
         ctx.body = {
             success: false,
             error: "Invalid allowed value",
