@@ -46,7 +46,7 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
         .where("team.ID IN (:...teamIDs)", { teamIDs: teamIDs.map(t => t.ID) })
         .getMany();
 
-    ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface()));
+    ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface(true, true)));
 });
 
 teamRouter.get("/all", async (ctx) => {
@@ -83,7 +83,7 @@ teamRouter.get("/:teamID", async (ctx) => {
         return;
     }
 
-    ctx.body = await team.teamInterface();
+    ctx.body = await team.teamInterface(true, true);
 });
 
 teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {

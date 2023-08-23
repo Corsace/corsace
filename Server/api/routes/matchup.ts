@@ -4,6 +4,7 @@ import { Multi } from "nodesu";
 import { EntityManager } from "typeorm";
 import { StageType } from "../../../Interfaces/stage";
 import { TournamentRoleType } from "../../../Interfaces/tournament";
+import { Matchup as MatchupInterface } from "../../../Interfaces/matchup";
 import { Matchup } from "../../../Models/tournaments/matchup";
 import { MatchupMap } from "../../../Models/tournaments/matchupMap";
 import { MatchupScore } from "../../../Models/tournaments/matchupScore";
@@ -18,6 +19,7 @@ import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assig
 import { Round } from "../../../Models/tournaments/round";
 import { Stage } from "../../../Models/tournaments/stage";
 import { config } from "node-config-ts";
+import { Mappool } from "../../../Interfaces/mappool";
 
 const matchupRouter = new Router();
 
@@ -158,13 +160,17 @@ function validatePOSTMatchups (matchups: any[]): string | true {
 }
 
 matchupRouter.get("/:matchupID", async (ctx) => {
-    const matchup = await Matchup
+    const dbMatchup = await Matchup
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.round", "round")
         .innerJoinAndSelect("matchup.stage", "stage")
         .innerJoinAndSelect("stage.tournament", "tournament")
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("team1.manager", "manager1")
+        .leftJoinAndSelect("team2.manager", "manager2")
+        .leftJoinAndSelect("team1.members", "members1")
+        .leftJoinAndSelect("team2.members", "members2")
         .leftJoinAndSelect("matchup.first", "first")
         .leftJoinAndSelect("matchup.winner", "winner")
         .leftJoinAndSelect("matchup.maps", "maps")
@@ -178,7 +184,7 @@ matchupRouter.get("/:matchupID", async (ctx) => {
         .where("matchup.ID = :ID", { ID: ctx.params.matchupID })
         .getOne();
 
-    if (!matchup) {
+    if (!dbMatchup) {
         ctx.body = {
             success: false,
             error: "Matchup not found.",
@@ -186,8 +192,13 @@ matchupRouter.get("/:matchupID", async (ctx) => {
         return;
     }
 
-    const stageOrRound: Round | Stage | null = 
-        matchup.round ? 
+    const team1 = dbMatchup.team1 ? await dbMatchup.team1.teamInterface() : undefined;
+    const team2 = dbMatchup.team2 ? await dbMatchup.team2.teamInterface() : undefined;
+    const first = dbMatchup.first?.ID === team1?.ID ? team1 : dbMatchup.first?.ID === team2?.ID ? team2 : undefined;
+    const winner = dbMatchup.winner?.ID === team1?.ID ? team1 : dbMatchup.winner?.ID === team2?.ID ? team2 : undefined;
+
+    const roundOrStage: Round | Stage | null = 
+        dbMatchup.round ? 
             await Round
                 .createQueryBuilder("round")
                 .innerJoin("round.matchups", "matchup")
@@ -200,9 +211,9 @@ matchupRouter.get("/:matchupID", async (ctx) => {
                 .leftJoinAndSelect("maps.customBeatmap", "customBeatmap")
                 .leftJoinAndSelect("maps.customMappers", "customMappers")
                 .leftJoinAndSelect("round.mapOrder", "mapOrder")
-                .where("matchup.ID = :ID", { ID: matchup.ID })
+                .where("matchup.ID = :ID", { ID: dbMatchup.ID })
                 .getOne() :
-            matchup.stage ?
+            dbMatchup.stage ?
                 await Stage
                     .createQueryBuilder("stage")
                     .innerJoin("stage.matchups", "matchup")
@@ -215,15 +226,90 @@ matchupRouter.get("/:matchupID", async (ctx) => {
                     .leftJoinAndSelect("maps.customBeatmap", "customBeatmap")
                     .leftJoinAndSelect("maps.customMappers", "customMappers")
                     .leftJoinAndSelect("stage.mapOrder", "mapOrder")
-                    .where("matchup.ID = :ID", { ID: matchup.ID })
+                    .where("matchup.ID = :ID", { ID: dbMatchup.ID })
                     .getOne() : 
                 null;
 
-    ctx.body = {
+    const body: {
+        success: true;
+        matchup: MatchupInterface;
+    } = {
         success: true,
-        matchup,
-        stageOrRound,
+        matchup: {
+            ID: dbMatchup.ID,
+            date: dbMatchup.date,
+            mp: dbMatchup.mp,
+            teams: await Promise.all(dbMatchup.teams?.map(team => team.teamInterface()) || []),
+            team1,
+            team2,
+            team1Score: dbMatchup.team1Score,
+            team2Score: dbMatchup.team2Score,
+            potential: !dbMatchup.potentialFor,
+            baseURL: dbMatchup.baseURL,
+            round: roundOrStage instanceof Round ? {
+                ID: roundOrStage.ID,
+                name: roundOrStage.name,
+                abbreviation: roundOrStage.abbreviation,
+                mappool: roundOrStage.mappool?.map<Mappool>(mappool => ({
+                    ID: mappool.ID,
+                    name: mappool.name,
+                    abbreviation: mappool.abbreviation,
+                    createdAt: mappool.createdAt,
+                    order: mappool.order,
+                    isPublic: mappool.isPublic,
+                    bannable: mappool.bannable,
+                    mappackLink: mappool.mappackLink,
+                    mappackExpiry: mappool.mappackExpiry,
+                    targetSR: mappool.targetSR,
+                    slots: mappool.slots || [],
+                })) || [],
+                isDraft: roundOrStage.isDraft,
+                mapOrder: roundOrStage.mapOrder,
+            } : undefined,
+            stage: roundOrStage instanceof Stage ? {
+                ID: roundOrStage.ID,
+                name: roundOrStage.name,
+                abbreviation: roundOrStage.abbreviation,
+                stageType: roundOrStage.stageType,
+                rounds: [],
+                mappool: roundOrStage.mappool?.map<Mappool>(mappool => ({
+                    ID: mappool.ID,
+                    name: mappool.name,
+                    abbreviation: mappool.abbreviation,
+                    createdAt: mappool.createdAt,
+                    order: mappool.order,
+                    isPublic: mappool.isPublic,
+                    bannable: mappool.bannable,
+                    mappackLink: mappool.mappackLink,
+                    mappackExpiry: mappool.mappackExpiry,
+                    targetSR: mappool.targetSR,
+                    slots: mappool.slots || [],
+                })) || [],
+                createdAt: roundOrStage.createdAt,
+                order: roundOrStage.order,
+                scoringMethod: roundOrStage.scoringMethod,
+                isDraft: roundOrStage.isDraft,
+                qualifierTeamChooseOrder: roundOrStage.qualifierTeamChooseOrder,
+                timespan: roundOrStage.timespan,
+                isFinished: roundOrStage.isFinished,
+                initialSize: roundOrStage.initialSize,
+                finalSize: roundOrStage.finalSize,
+                mapOrder: roundOrStage.mapOrder,
+            } : undefined,
+            isLowerBracket: dbMatchup.isLowerBracket,
+            first,
+            winner,
+            maps: dbMatchup.maps,
+            mappoolsBanned: dbMatchup.mappoolsBanned,
+            forfeit: dbMatchup.forfeit,
+            referee: dbMatchup.referee,
+            streamer: dbMatchup.streamer,
+            commentators: dbMatchup.commentators,
+            messages: dbMatchup.messages,
+        },
     };
+    
+    ctx.body = body;
 });
 
 matchupRouter.get("/:matchupID/bancho/:endpoint", async (ctx) => {

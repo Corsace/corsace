@@ -4,7 +4,7 @@
         class="pickban"
     >
         <div class="pickban__streamTitle">
-            ROUND ROBIN
+            {{ matchup.stage?.name.toUpperCase() || '' }}
         </div>
         <div class="pickban__mapName">
             <div class="pickban__diamond pickban__mapName__diamond" />
@@ -24,7 +24,7 @@
             class="pickban__team1"
         >
             <div class="pickban__team1_abbreviation">
-                {{ matchup.team1.abbreviation }}
+                {{ matchup.team1.abbreviation.toUpperCase() }}
             </div>
             <div class="pickban__team1_notMembers">
                 <div 
@@ -66,8 +66,8 @@
                     >
                         <path
                             d="M 31 22 H 0 L 16 0 H 48 L 31 22 Z"
-                            :fill="matchup.team1Score >= n ? '#5BBCFA' : undefined"
-                            :stroke="matchup.team1Score >= n ? undefined : '#5BBCFA'"
+                            :fill="matchup.team2Score >= n ? '#5BBCFAFF' : '#5BBCFA00'"
+                            :stroke="matchup.team2Score >= n ? '#5BBCFA00' : '#5BBCFAFF'"
                         />
                     </svg>
                 </div>
@@ -113,7 +113,7 @@
             class="pickban__team2"
         >
             <div class="pickban__team2_abbreviation">
-                {{ matchup.team2.abbreviation }}
+                {{ matchup.team2.abbreviation.toUpperCase() }}
             </div>
             <div class="pickban__team2_notMembers">
                 <div 
@@ -155,8 +155,8 @@
                     >
                         <path
                             d="M 31 22 H 0 L 16 0 H 48 L 31 22 Z"
-                            :fill="matchup.team2Score >= n ? '#F24141' : undefined"
-                            :stroke="matchup.team2Score >= n ? undefined : '#F24141'"
+                            :fill="matchup.team1Score >= n ? '#F24141FF' : '#F2414100'"
+                            :stroke="matchup.team1Score >= n ? '#F2414100' : '#F24141FF'"
                         />
                     </svg>
                 </div>
@@ -278,6 +278,7 @@ export default class Pickban extends Vue {
             return;
 
         this.matchup = data.matchup;
+        console.log(this.matchup);
 
         this.loading = false;
     }

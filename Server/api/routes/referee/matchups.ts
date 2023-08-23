@@ -3,9 +3,7 @@ import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tour
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Stage } from "../../../../Models/tournaments/stage";
 import { Round } from "../../../../Models/tournaments/round";
-import { Matchup as MatchupInterface } from "../../../../Interfaces/matchup"; 
-import { Team as TeamInterface } from "../../../../Interfaces/team";
-import { Team } from "../../../../Models/tournaments/team";
+import { Matchup as MatchupInterface } from "../../../../Interfaces/matchup";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { Mappool } from "../../../../Interfaces/mappool";
 import { discordClient } from "../../../discord";
@@ -16,35 +14,6 @@ import { parseQueryParam } from "../../../utils/query";
 const refereeMatchupsRouter = new Router();
 
 //TODO: Look into making refereeRouter.use work for the middleware functions
-function convertTeam(team: Team): TeamInterface;
-function convertTeam(team: null | undefined): undefined;
-function convertTeam (team: Team | null | undefined): TeamInterface | undefined
-function convertTeam (team: Team | null | undefined): TeamInterface | undefined {
-    return team ? {
-        ID: team.ID,
-        name: team.name,
-        abbreviation: team.abbreviation,
-        timezoneOffset: team.timezoneOffset,
-        avatarURL: team.avatarURL,
-        pp: team.pp,
-        rank: team.rank,
-        BWS: team.BWS,
-        manager: {
-            ID: team.manager.ID,
-            username: team.manager.osu.username,
-            osuID: team.manager.osu.userID,
-            BWS: 0,
-            isManager: true,
-        },
-        members: team.members.map(member => ({
-            ID: member.ID,
-            username: member.osu.username,
-            osuID: member.osu.userID,
-            BWS: 0,
-            isManager: member.ID === team.manager.ID,
-        })),
-    } : undefined;
-}
 
 refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup
@@ -160,8 +129,10 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
         return;
     }
 
-    const first = dbMatchup.first?.ID === dbMatchup.team1?.ID ? dbMatchup.team1 : dbMatchup.first?.ID === dbMatchup.team2?.ID ? dbMatchup.team2 : undefined;
-    const winner = dbMatchup.winner?.ID === dbMatchup.team1?.ID ? dbMatchup.team1 : dbMatchup.winner?.ID === dbMatchup.team2?.ID ? dbMatchup.team2 : undefined;
+    const team1 = dbMatchup.team1 ? await dbMatchup.team1.teamInterface() : undefined;
+    const team2 = dbMatchup.team2 ? await dbMatchup.team2.teamInterface() : undefined;
+    const first = dbMatchup.first?.ID === team1?.ID ? team1 : dbMatchup.first?.ID === team2?.ID ? team2 : undefined;
+    const winner = dbMatchup.winner?.ID === team1?.ID ? team1 : dbMatchup.winner?.ID === team2?.ID ? team2 : undefined;
 
     const roundOrStage: Round | Stage | null = 
         dbMatchup.round ? 
@@ -194,9 +165,9 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
         ID: dbMatchup.ID,
         date: dbMatchup.date,
         mp: dbMatchup.mp,
-        teams: dbMatchup.teams?.map<TeamInterface>(team => convertTeam(team)),
-        team1: convertTeam(dbMatchup.team1),
-        team2: convertTeam(dbMatchup.team2),
+        teams: await Promise.all(dbMatchup.teams?.map(team => team.teamInterface()) || []),
+        team1,
+        team2,
         team1Score: dbMatchup.team1Score,
         team2Score: dbMatchup.team2Score,
         potential: !dbMatchup.potentialFor,
@@ -252,8 +223,8 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
             mapOrder: roundOrStage.mapOrder,
         } : undefined,
         isLowerBracket: dbMatchup.isLowerBracket,
-        first: convertTeam(first),
-        winner: convertTeam(winner),
+        first,
+        winner,
         maps: dbMatchup.maps,
         mappoolsBanned: dbMatchup.mappoolsBanned,
         forfeit: dbMatchup.forfeit,
