@@ -6,6 +6,7 @@ import { Matchup } from "./matchup";
 import { Team as TeamInterface, TeamMember } from "../../Interfaces/team";
 import { BaseTournament } from "../../Interfaces/tournament";
 import { ModeDivisionType } from "../MCA_AYIM/modeDivision";
+import { MatchupSet } from "./matchupSet";
 
 @Entity()
 export class Team extends BaseEntity {
@@ -56,8 +57,11 @@ export class Team extends BaseEntity {
     @OneToMany(() => Matchup, matchup => matchup.team2)
         matchupsAsTeam2!: Matchup[];
 
-    @OneToMany(() => Matchup, matchup => matchup.first)
-        matchupsFirst!: Matchup[];
+    @OneToMany(() => MatchupSet, set => set.first)
+        setsFirst!: Matchup[];
+
+    @OneToMany(() => MatchupSet, set => set.winner)
+        setWins!: Matchup[];
 
     @OneToMany(() => Matchup, matchup => matchup.winner)
         wins!: Matchup[];
