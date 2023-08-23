@@ -12,6 +12,9 @@ export class MatchupSet extends BaseEntity {
     @ManyToOne(() => Matchup, matchup => matchup.sets)
         matchup?: Matchup | null;
 
+    @Column()
+        order!: number;
+
     @OneToMany(() => MatchupMap, map => map.set)
         maps?: MatchupMap[] | null;
 

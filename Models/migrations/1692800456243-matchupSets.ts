@@ -1,22 +1,23 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
-import { Matchup } from "../tournaments/matchup";
-import { MatchupSet } from "../tournaments/matchupSet";
 
 export class MatchupSets1692800456243 implements MigrationInterface {
     name = "MatchupSets1692800456243";
 
     public async up (queryRunner: QueryRunner): Promise<void> {
-        const matchups = await Matchup
-            .createQueryBuilder("matchup")
-            .leftJoinAndSelect("matchup.maps", "map")
-            .leftJoinAndSelect("matchup.first", "first")
-            .leftJoinAndSelect("matchup.winner", "winner")
-            .getMany();
+        const rawMatchups = await queryRunner.query(`
+            SELECT
+                matchup.ID AS ID,
+                matchup.team1Score AS team1Score,
+                matchup.team2Score AS team2Score,
+                matchup.firstID AS firstID,
+                matchup.winnerID AS winnerID
+            FROM matchup
+        `);
 
         await queryRunner.query(`ALTER TABLE \`matchup\` DROP FOREIGN KEY \`FK_83d3c0a5db0f9245bc29ae6730f\``);
         await queryRunner.query(`ALTER TABLE \`matchup_map\` DROP FOREIGN KEY \`FK_a79753c16f88bb77b80f5d30b84\``);
         await queryRunner.query(`ALTER TABLE \`matchup_map\` CHANGE \`matchupID\` \`setID\` int NULL`);
-        await queryRunner.query(`CREATE TABLE \`matchup_set\` (\`ID\` int NOT NULL AUTO_INCREMENT, \`team1Score\` int NOT NULL DEFAULT '0', \`team2Score\` int NOT NULL DEFAULT '0', \`matchupID\` int NULL, \`firstID\` int NULL, \`winnerID\` int NULL, PRIMARY KEY (\`ID\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`matchup_set\` (\`ID\` int NOT NULL AUTO_INCREMENT, \`order\` int NOT NULL, \`team1Score\` int NOT NULL DEFAULT '0', \`team2Score\` int NOT NULL DEFAULT '0', \`matchupID\` int NULL, \`firstID\` int NULL, \`winnerID\` int NULL, PRIMARY KEY (\`ID\`)) ENGINE=InnoDB`);
         await queryRunner.query(`ALTER TABLE \`matchup\` DROP COLUMN \`firstID\``);
         await queryRunner.query(`ALTER TABLE \`tournament\` DROP COLUMN \`publicQualifiers\``);
         await queryRunner.query(`ALTER TABLE \`stage\` ADD \`publicScores\` tinyint NOT NULL DEFAULT 1`);
@@ -25,27 +26,42 @@ export class MatchupSets1692800456243 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`matchup_set\` ADD CONSTRAINT \`FK_aea8f15057763d4769bc4573de0\` FOREIGN KEY (\`winnerID\`) REFERENCES \`team\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`matchup_map\` ADD CONSTRAINT \`FK_040496538cb713b0233be919fd6\` FOREIGN KEY (\`setID\`) REFERENCES \`matchup_set\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
 
-        await Promise.all(matchups.map(matchup => {
-            const set = new MatchupSet();
-            set.matchup = matchup;
-            set.order = 1;
-            set.team1Score = matchup.team1Score;
-            set.team2Score = matchup.team2Score;
-            set.first = matchup.first;
-            set.winner = matchup.winner;
-            set.maps = matchup.maps;
-            return set.save();
-        }));
+        await queryRunner.query(`
+            INSERT INTO \`matchup_set\` (ID, team1Score, team2Score, matchupID, firstID, winnerID)
+            VALUES ${rawMatchups.map((matchup: any, i: number) => `(${i + 1}, ${matchup.team1Score}, ${matchup.team2Score}, ${matchup.ID}, ${matchup.firstID || "NULL"}, ${matchup.winnerID || "NULL"})`).join(", ")}
+        `);
+
+        await queryRunner.query(`
+            UPDATE \`matchup_map\`
+            SET setID = (
+                SELECT matchup_set.ID
+                FROM matchup_set
+                WHERE matchup_set.matchupID = matchup_map.matchupID
+                LIMIT 1
+            )
+        `);
     }
 
     public async down (queryRunner: QueryRunner): Promise<void> {
-        const matchups = await Matchup
-            .createQueryBuilder("matchup")
-            .leftJoinAndSelect("matchup.sets", "set")
-            .leftJoinAndSelect("set.maps", "map")
-            .leftJoinAndSelect("set.first", "first")
-            .leftJoinAndSelect("set.winner", "winner")
-            .getMany();
+        const rawSets = await queryRunner.query(`
+            SELECT
+                matchup_set.ID AS ID,
+                matchup_set.team1Score AS team1Score,
+                matchup_set.team2Score AS team2Score,
+                matchup_set.matchupID AS matchupID,
+                matchup_set.firstID AS firstID,
+                matchup_set.winnerID AS winnerID
+            FROM matchup_set
+        `);
+
+        const rawMaps = await queryRunner.query(`
+            SELECT
+                matchup_map.ID AS ID,
+                matchup.ID AS matchupID
+            FROM matchup_map
+            INNER JOIN matchup_set ON matchup_set.ID = matchup_map.setID
+            INNER JOIN matchup ON matchup.ID = matchup_set.matchupID
+        `);
 
         await queryRunner.query(`ALTER TABLE \`matchup_map\` DROP FOREIGN KEY \`FK_040496538cb713b0233be919fd6\``);
         await queryRunner.query(`ALTER TABLE \`matchup_set\` DROP FOREIGN KEY \`FK_aea8f15057763d4769bc4573de0\``);
@@ -59,14 +75,17 @@ export class MatchupSets1692800456243 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`matchup_map\` ADD CONSTRAINT \`FK_a79753c16f88bb77b80f5d30b84\` FOREIGN KEY (\`matchupID\`) REFERENCES \`matchup\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`matchup\` ADD CONSTRAINT \`FK_83d3c0a5db0f9245bc29ae6730f\` FOREIGN KEY (\`firstID\`) REFERENCES \`team\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
 
-        for (const matchup of matchups) {
-            matchup.team1Score = matchup.sets?.[0].team1Score ?? 0;
-            matchup.team2Score = matchup.sets?.[0].team2Score ?? 0;
-            matchup.first = matchup.sets?.[0].first;
-            matchup.winner = matchup.sets?.[0].winner;
-            matchup.maps = matchup.sets?.[0].maps;
-            await matchup.save();
-        }
+        await Promise.all(rawSets.map((set: any) => queryRunner.query(`
+            UPDATE \`matchup\`
+            SET matchup.team1Score = ${set.team1Score}, matchup.team2Score = ${set.team2Score}, matchup.firstID = ${set.firstID || "NULL"}, matchup.winnerID = ${set.winnerID || "NULL"}
+            WHERE matchup.ID = ${set.matchupID}
+        `)));
+
+        await Promise.all(rawMaps.map((map: any) => queryRunner.query(`
+            UPDATE \`matchup_map\`
+            SET matchupID = ${map.matchupID}
+            WHERE ID = ${map.ID}
+        `)));
     }
 
 }
