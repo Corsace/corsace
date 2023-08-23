@@ -23,7 +23,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!stage)
         return;
 
-    if (stage.stageType === StageType.Qualifiers && !tournament.publicQualifiers && !await securityChecks(m, false, false, [], unallowedToPlay))
+    if (stage.stageType === StageType.Qualifiers && !stage.publicScores && !await securityChecks(m, false, false, [], unallowedToPlay))
         return;
 
     const matchups = await Matchup

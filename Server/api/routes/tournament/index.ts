@@ -337,7 +337,7 @@ tournamentRouter.get("/:tournamentID/:stageID/scores", validateID, async (ctx) =
                 return;
             }
         } else if (
-            !tournament.publicQualifiers && 
+            !stage.publicScores && 
             tournament.organizer.ID !== ctx.state.user?.ID
         ) {
             if (!ctx.state.user?.discord.userID) {
