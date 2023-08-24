@@ -44,7 +44,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!mappool.isPublic && stage!.timespan.start.getTime() - Date.now() > 1000 * 60 * 60 * 24 * 7) {
         const confirm = await confirmCommand(m, "This mappool is more than a week away from the stage's start date u sure u wanna publish it?");
         if (!confirm) {
-            await respond(m, "Ok Lol .");
+            await respond(m, "Ok Lol . stopped mappool publish");
             return;
         }
     } 
@@ -55,7 +55,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (mappool.isPublic && stage!.timespan.start.getTime() < Date.now()) {
         const confirm = await confirmCommand(m, "This mappool's stage already started u sure u wanna privatize it?");
         if (!confirm) {
-            await respond(m, "Ok Lol .");
+            await respond(m, "Ok Lol . stopped mappool unpublishing");
             return;
         }
     }

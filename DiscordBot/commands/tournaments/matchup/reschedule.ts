@@ -107,7 +107,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 return;
 
             if (!await confirmCommand(m, `Do you wish to reschedule the matchup ID ${matchup.ID} in stage \`${matchup.stage?.name || "N/A"}\` between \`${matchup.team1?.name || "N/A"}\` and \`${matchup.team2?.name || "N/A"}\` to ${discordStringTimestamp(date)}?`)) {
-                await message.edit("Ok Lol");
+                await message.edit("Ok Lol . stopped reschedule");
                 return;
             }
 
@@ -234,12 +234,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> U wanna reschedule ur match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID)) {
-        await message.edit("Ok Lol");
+        await message.edit("Ok Lol . stopped reschedule");
         return;
     }
 
     if (matchup.team2 && !await confirmCommand(m, `<@${matchup.team2.manager.discord.userID}> U wanna reschedule ur match${matchup.team1 ? ` vs \`${matchup.team1.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team2.manager.discord.userID)) {
-        await message.edit("Ok Lol");
+        await message.edit("Ok Lol . stopped reschedule");
         return;
     }
 
