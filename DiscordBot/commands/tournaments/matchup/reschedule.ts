@@ -86,6 +86,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .leftJoinAndSelect("matchup.commentators", "commentators")
+            .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
+            .leftJoinAndSelect("potentialFor.previousMatchups", "potentialForPreviousMatchups")
+            .leftJoinAndSelect("potentialFor.nextMatchups", "potentialForNextMatchups")
+            .leftJoinAndSelect("potentialForNextMatchups.potentials", "potentialForNextMatchupsPotentials", "potentialForNextMatchupsPotentials.invalid = 0")
             .leftJoinAndSelect("matchup.previousMatchups", "previousMatchups")
             .leftJoinAndSelect("matchup.nextMatchups", "nextMatchups")
             .leftJoinAndSelect("nextMatchups.potentials", "nextMatchupsPotentials", "nextMatchupsPotentials.invalid = 0")
@@ -131,6 +135,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .leftJoinAndSelect("matchup.commentators", "commentators")
+            .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
+            .leftJoinAndSelect("potentialFor.previousMatchups", "potentialForPreviousMatchups")
+            .leftJoinAndSelect("potentialFor.nextMatchups", "potentialForNextMatchups")
+            .leftJoinAndSelect("potentialForNextMatchups.potentials", "potentialForNextMatchupsPotentials", "potentialForNextMatchupsPotentials.invalid = 0")
             .leftJoinAndSelect("matchup.previousMatchups", "previousMatchups")
             .leftJoinAndSelect("matchup.nextMatchups", "nextMatchups")
             .leftJoinAndSelect("nextMatchups.potentials", "nextMatchupsPotentials", "nextMatchupsPotentials.invalid = 0")
@@ -215,10 +223,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .innerJoin("stage.tournament", "tournament")
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
         .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
         .andWhere("matchup.date > :date", { date: new Date(date.getTime() - 3600000) })
         .andWhere("matchup.date < :date2", { date2: new Date(date.getTime() + 3600000) })
-        .andWhere("matchup.ID != :matchupID", { matchupID: matchup.ID })
+        .andWhere(new Brackets((qb) => {
+            qb.where("matchup.ID != :matchupID", { matchupID: matchup!.ID })
+                .orWhere("matchup.ID != :potentialID", { potentialID: matchup!.potentialFor?.ID || 0 })
+                .orWhere("potentialFor.ID != :matchupID2", { matchupID2: matchup!.ID })
+                .orWhere("potentialFor.ID != :potentialID2", { potentialID2: matchup!.potentialFor?.ID || 0 });
+        }))
+        .andWhere("", { matchupID: matchup.ID })
+        .andWhere("matchup.invalid = 0")
         .andWhere(new Brackets((qb) => {
             qb.where("team1.ID = :team1ID1", { team1ID1: matchup!.team1?.ID })
                 .orWhere("team2.ID = :team2ID1", { team2ID1: matchup!.team1?.ID })
@@ -228,7 +244,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .getOne();
 
     if (existing) {
-        await message.edit(`YO theres already a matchup scheduled for ${date.toUTCString()} ${discordStringTimestamp(date)} between \`${existing.team1?.name || "N/A"}\` and \`${existing.team2?.name || "N/A"}\` this is gonna cause a conflict for the teams cuz it's within 1 hour of the new time`);
         await message.edit(`YO theres already a matchup scheduled for ${date.toUTCString()} ${discordStringTimestamp(date)} between \`${existing.team1?.name || "N/A"}\` and \`${existing.team2?.name || "N/A"}\` this is gonna cause a conflict for the teams cuz it's within 1 hour of the new time`);
         return;
     }
