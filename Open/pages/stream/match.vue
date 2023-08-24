@@ -180,10 +180,10 @@ export default class Match extends Vue {
     loading = false;
 
     get pickedMaps () {
-        if (!this.matchup?.maps)
+        if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.maps)
             return [];
 
-        return this.matchup.maps.filter(map => map.status === 2).sort((a, b) => a.order - b.order);
+        return this.matchup.sets[this.matchup.sets.length - 1].maps!.filter(map => map.status === 2).sort((a, b) => a.order - b.order);
     }
 
     get pickedBy () {
@@ -191,13 +191,13 @@ export default class Match extends Vue {
             return null;
 
         // TODO: support for sets
-        const pickOrder = this.mapOrder[0].order?.filter(p => p.status === MapStatus.Picked);
+        const pickOrder = this.mapOrder[(this.matchup?.sets?.[this.matchup.sets.length - 1]?.order || 1) - 1]?.order?.filter(p => p.status === MapStatus.Picked);
         if (!pickOrder)
             return null;
     
         const currentOrder = this.pickedMaps.length > pickOrder.length ? null : pickOrder[this.pickedMaps.length];
-        const first = this.matchup?.first?.abbreviation.toUpperCase();
-        const second = this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2?.abbreviation.toUpperCase() : this.matchup?.team2?.ID === this.matchup?.first?.ID ? this.matchup?.team1?.abbreviation.toUpperCase() : null;
+        const first = this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.abbreviation.toUpperCase();
+        const second = this.matchup?.team1?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team2?.abbreviation.toUpperCase() : this.matchup?.team2?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team1?.abbreviation.toUpperCase() : null;
         const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.abbreviation.toUpperCase() : this.matchup?.team2?.abbreviation.toUpperCase() : null;
         const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team2?.abbreviation.toUpperCase() : this.matchup?.team1?.abbreviation.toUpperCase() : null;
 
@@ -218,7 +218,7 @@ export default class Match extends Vue {
     }
 
     get firstTo () {
-        return (this.mapOrder[0]?.order?.filter(p => p.status === MapStatus.Picked).length || 0) / 2 + 1;
+        return (this.mapOrder[(this.matchup?.sets?.[this.matchup.sets.length - 1]?.order || 1) - 1]?.order?.filter(p => p.status === MapStatus.Picked).length || 0) / 2 + 1;
     }
 
     get slotMod (): string {

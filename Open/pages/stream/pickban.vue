@@ -227,10 +227,10 @@ export default class Pickban extends Vue {
     picking = false;
 
     get pickedMaps () {
-        if (!this.matchup?.maps)
+        if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.maps)
             return [];
 
-        return this.matchup.maps.filter(map => map.status === 2).sort((a, b) => a.order - b.order);
+        return this.matchup.sets[this.matchup.sets.length - 1].maps!.filter(map => map.status === 2).sort((a, b) => a.order - b.order);
     }
 
     get latestMap () {
@@ -245,9 +245,9 @@ export default class Pickban extends Vue {
             return null;
 
         if (this.pickedMaps.length % 2 === 0)
-            return this.matchup?.first;
+            return this.matchup?.sets?.[this.matchup.sets.length - 1]?.first;
     
-        return this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2 : this.matchup?.team1;
+        return this.matchup?.team1?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team2 : this.matchup?.team1;
     }
 
     get slotMod (): string {

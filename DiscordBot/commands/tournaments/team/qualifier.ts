@@ -23,8 +23,8 @@ import { cron } from "../../../../Server/cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { discordClient } from "../../../../Server/discord";
 import { MatchupMessage } from "../../../../Models/tournaments/matchupMessage";
-import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
+import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
 
 // TODO: Merge the functionality in this command with the team create and register and qualifier API endpoints
 async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommandInteraction, user: User, tournament: Tournament) {
@@ -312,15 +312,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await Promise.all(messages.map(m => m.remove()));
         matchup.messages = null;
 
-        const maps = await MatchupMap
-            .createQueryBuilder("matchupMap")
-            .innerJoin("matchupMap.matchup", "matchup")
-            .leftJoinAndSelect("matchupMap.scores", "score")
+        const sets = await MatchupSet
+            .createQueryBuilder("matchupSet")
+            .innerJoin("matchupSet.matchup", "matchup")
+            .leftJoinAndSelect("matchupSet.maps", "map")
+            .leftJoinAndSelect("map.scores", "score")
             .where("matchup.ID = :ID", { ID: matchup.ID })
             .getMany();
-        await Promise.all(maps.flatMap(map => map.scores.map(s => s.remove())));
-        await Promise.all(maps.map(m => m.remove()));
-        matchup.maps = null;
+        await Promise.all(sets.flatMap(set => set.maps?.flatMap(map => map.scores.map(s => s.remove()))));
+        await Promise.all(sets.flatMap(set => set.maps?.map(m => m.remove())));
+        await Promise.all(sets.map(s => s.remove()));
+
+        matchup.sets = null;
     } else {
         matchup = new Matchup();
         matchup.date = date;

@@ -26,7 +26,8 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
         .leftJoinAndSelect("matchup.teams", "team")
         .leftJoinAndSelect("team.members", "member")
         .leftJoinAndSelect("team.manager", "manager")
-        .leftJoinAndSelect("matchup.maps", "map")
+        .leftJoinAndSelect("matchup.sets", "set")
+        .leftJoinAndSelect("set.maps", "map")
         .leftJoinAndSelect("map.map", "mappoolMap")
         .leftJoinAndSelect("mappoolMap.slot", "slot")
         .leftJoinAndSelect("map.scores", "score")
@@ -61,7 +62,7 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
     const tournament = qualifier.stage!.tournament;
     let getScores = false;
     // Redundant ifs solely to make it (slightly) easier to read
-    if (tournament.publicQualifiers)
+    if (qualifier.stage!.publicScores)
         getScores = true;
     else if (ctx.state.user && (
         tournament.organizer.ID === ctx.state.user.ID || 
@@ -86,7 +87,7 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
 
     if (getScores) {
         qualifierData.mp = qualifier.mp;
-        for (const matchupMap of qualifier.maps ?? []) {
+        for (const matchupMap of qualifier.sets?.[0]?.maps ?? []) {
             for (const score of matchupMap.scores ?? []) {
                 const team = qualifier.teams?.find(t => t.members.some(m => m.ID === score.user?.ID));
                 if (!team)

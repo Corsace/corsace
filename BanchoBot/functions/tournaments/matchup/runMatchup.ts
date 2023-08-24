@@ -3,7 +3,7 @@ import { banchoClient, baseURL, maybeShutdown } from "../../..";
 import state from "../../../state";
 import { leniencyTime } from "../../../../Models/tournaments/stage";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { StageType, ScoringMethod } from "../../../../Interfaces/stage";
+import { StageType, ScoringMethod, MapOrderTeam } from "../../../../Interfaces/stage";
 import { osuClient } from "../../../../Server/osu";
 import { BanchoChannel, BanchoLobby, BanchoLobbyPlayer, BanchoLobbyTeamModes, BanchoLobbyWinConditions, BanchoUser } from "bancho.js";
 import { convertDateToDDDHH } from "../../../../Server/utils/dateParse";
@@ -32,6 +32,8 @@ import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { unallowedToPlay } from "../../../../Interfaces/tournament";
 import { publish, publishSettings } from "./centrifugo";
 import assignTeamsToNextMatchup from "../../../../Server/functions/tournaments/matchups/assignTeamsToNextMatchup";
+import { MatchupSet } from "../../../../Models/tournaments/matchupSet";
+import { MapStatus } from "../../../../Interfaces/matchup";
 
 const winConditions = {
     [ScoringMethod.ScoreV2]: BanchoLobbyWinConditions.ScoreV2,
@@ -54,6 +56,8 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
         throw new Error("Matchup is already assigned to an mp ID");
     if (!matchup.round?.mappool && !matchup.stage.mappool)
         throw new Error("Matchup is missing mappool");
+    if (matchup.stage.stageType !== StageType.Qualifiers && (!matchup.round?.mapOrder && !matchup.stage.mapOrder))
+        throw new Error("Matchup is missing map order");
 }
 
 async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpChannel: BanchoChannel, invCollector?: InteractionCollector<any>, refCollector?: InteractionCollector<any>, auto = false) {
@@ -68,9 +72,19 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     matchup.baseURL = baseURL;
     matchup.winner = null;
     matchup.team1Score = 0;
-    matchup.forfeit = false;
     matchup.team2Score = 0;
-    matchup.first = null;
+    matchup.forfeit = false;
+    await Promise.all(matchup.messages?.map(message => message.remove()) ?? []);
+    matchup.messages = [];
+    await Promise.all(matchup.sets?.flatMap(set => set.maps?.flatMap(map => map.scores.map(score => score.remove())) ?? []) ?? []);
+    await Promise.all(matchup.sets?.flatMap(set => set.maps?.map(map => map.remove()) ?? []) ?? []);
+    await Promise.all(matchup.sets?.map(set => set.remove()) ?? []);
+    const firstSet = new MatchupSet();
+    firstSet.order = 1;
+    firstSet.matchup = matchup;
+    firstSet.maps = [];
+    await firstSet.save();
+    matchup.sets = [firstSet];
     await matchup.save();
     log(matchup, `Saved matchup lobby to DB with mp ID ${mpLobby.id}`);
 
@@ -95,6 +109,24 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     let lastMessageSaved = Date.now();
     const aborts = new Map<number, number>();
     const pools = matchup.round?.mappool || matchup.stage!.mappool!;
+
+    // Map order stuff, everything should be null/undefined for qualifiers
+    const mapOrder = matchup.round?.mapOrder || matchup.stage!.mapOrder;
+    const setOrder = mapOrder?.map(order => order.set)
+        .filter((set, index, self) => self.indexOf(set) === index)
+        .map(set => ({ set, maps: mapOrder?.filter(map => map.set === set) })) ?? [];
+    let picking: string | null = null;
+    let banning: string | null = null;
+    let protecting: string | null = null;
+    let firstTo: number | null = null;
+
+    if (matchup.stage!.stageType === StageType.Qualifiers) {
+        picking = setOrder[0]?.maps.filter(map => map.status === MapStatus.Picked)[0] ? setOrder[0]?.maps.filter(map => map.status === MapStatus.Picked)[0].team === MapOrderTeam.Team1 ? "picking first" : "picking second" : null;
+        banning = setOrder[0]?.maps.filter(map => map.status === MapStatus.Banned)[0] ? setOrder[0]?.maps.filter(map => map.status === MapStatus.Banned)[0].team === MapOrderTeam.Team1 ? "banning first" : "banning second" : null;
+        protecting = setOrder[0]?.maps.filter(map => map.status === MapStatus.Protected)[0] ? setOrder[0]?.maps.filter(map => map.status === MapStatus.Protected)[0].team === MapOrderTeam.Team1 ? "protecting first" : "protecting second" : null;
+        firstTo = setOrder[0]?.maps.filter(map => map.status === MapStatus.Picked).length / 2 + 1;
+    }
+
     const users = await allAllowedUsersForMatchup(matchup);
     const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -202,14 +234,15 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     return;
 
                 if (points === 1)
-                    matchup.first = matchup.team1;
+                    matchup.sets![matchup.sets!.length - 1].first = matchup.team1;
                 else if (points === 2)
-                    matchup.first = matchup.team2;
+                matchup.sets![matchup.sets!.length - 1].first = matchup.team2;
                 await matchup.save();
                 rolling = false;
 
                 // TODO: Don't hardcode picking/banning/protecting first/second in the message
-                await mpChannel.sendMessage(`OK ${matchup.first?.name} is considered team 1 so they'll be picking first and banning/protecting second`);
+
+                await mpChannel.sendMessage(`OK ${matchup.sets![matchup.sets!.length - 1].first} is considered team 1 so they'll be protecting ${protecting}, banning ${banning}, and picking ${picking}}`);
             } else {
                 const player = playersInLobby.find(p => p.user.username === username);
                 if (!player)
@@ -258,19 +291,20 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     return;
 
                 if (team1Roll > team2Roll)
-                    matchup.first = matchup.team1;
+                    matchup.sets![matchup.sets!.length - 1].first = matchup.team1;
                 else if (team2Roll > team1Roll)
-                    matchup.first = matchup.team2;
+                    matchup.sets![matchup.sets!.length - 1].first = matchup.team2;
                 await matchup.save();
                 rolling = false;
 
+                
                 // TODO: Don't hardcode picking/banning/protecting first/second in the message
-                await mpChannel.sendMessage(`OK ${matchup.first?.name} is considered team 1 so they'll be picking first and banning/protecting second`);
+                await mpChannel.sendMessage(`OK ${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so they'll be picking first and banning/protecting second`);
             }
 
             await publish(matchup, { 
                 type: "first",
-                first: matchup.first?.ID,
+                first: matchup.sets![matchup.sets!.length - 1].first?.ID,
             });
         }
 
@@ -596,7 +630,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchStart = undefined;
 
         const matchupMap = new MatchupMap;
-        matchupMap.matchup = matchup;
+        matchupMap.set = matchup.sets![matchup.sets!.length - 1];
         matchupMap.map = beatmap;
         matchupMap.order = mapsPlayed.length;
         await matchupMap.save();
@@ -626,15 +660,37 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             matchupMap.team2Score = matchupMap.scores
                 .filter(score => matchup.team2!.members.some(m => m.osu.userID === score.user.osu.userID))
                 .reduce((acc, score) => acc + score.score, 0);
+
             if (matchupMap.team1Score > matchupMap.team2Score) {
-                matchup.team1Score++;
+                matchup.sets![matchup.sets!.length - 1].team1Score++;
                 matchupMap.winner = matchup.team1;
             } else if (matchupMap.team2Score > matchupMap.team1Score) {
-                matchup.team2Score++;
+                matchup.sets![matchup.sets!.length - 1].team2Score++;
                 matchupMap.winner = matchup.team2;
             }
+
+            if (matchup.sets![matchup.sets!.length - 1].team1Score === firstTo) {
+                matchup.sets![matchup.sets!.length - 1].winner = matchup.team1;
+                matchup.team1Score++;
+            } else if (matchup.sets![matchup.sets!.length - 1].team2Score === firstTo) {
+                matchup.sets![matchup.sets!.length - 1].winner = matchup.team2;
+                matchup.team2Score++;
+            }
+            await matchup.sets![matchup.sets!.length - 1].save();
         }
-        matchup.maps!.push(matchupMap);
+
+        if (matchup.sets![matchup.sets!.length - 1].winner) {
+            const nextSet = new MatchupSet;
+            nextSet.order = matchup.sets![matchup.sets!.length - 1].order + 1;
+            nextSet.matchup = matchup;
+            nextSet.maps = [];
+            matchup.sets!.push(nextSet);
+
+            picking = setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Picked)[0] ? setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Picked)[0].team === MapOrderTeam.Team1 ? "picking first" : "picking second" : null;
+            banning = setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Banned)[0] ? setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Banned)[0].team === MapOrderTeam.Team1 ? "banning first" : "banning second" : null;
+            protecting = setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Protected)[0] ? setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Protected)[0].team === MapOrderTeam.Team1 ? "protecting first" : "protecting second" : null;
+            firstTo = setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Picked).length / 2 + 1;
+        }
         await matchup.save();
 
         log(matchup, `Matchup map and scores saved with matchupMap ID ${matchupMap.ID}`);
@@ -714,9 +770,6 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
     const mpChannel = await banchoClient.createLobby(lobbyName, false);
     const mpLobby = mpChannel.lobby;
     log(matchup, `Created lobby with name ${lobbyName} and ID ${mpLobby.id}`);
-
-    matchup.messages = [];
-    matchup.maps = [];
 
     // no extra slot for qualifiers
     // slots for each team based on matchup size

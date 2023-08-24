@@ -24,7 +24,6 @@ refereeBanchoRouter.post("/:tournamentID/:matchupID", validateTournament, isLogg
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
-        .leftJoinAndSelect("matchup.first", "first")
         .leftJoinAndSelect("matchup.winner", "winner")
         .leftJoinAndSelect("matchup.referee", "referee")
         .innerJoinAndSelect("matchup.stage", "stage")

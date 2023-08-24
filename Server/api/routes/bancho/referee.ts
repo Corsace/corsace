@@ -106,11 +106,18 @@ banchoRefereeRouter.post("/:matchupID/createLobby", validateMatchup, async (ctx)
             .createQueryBuilder("matchup")
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
+            .leftJoinAndSelect("matchup.round", "round")
+            .leftJoinAndSelect("round.mapOrder", "roundMapOrder")
+            .leftJoinAndSelect("round.mappool", "roundMappool")
+            .leftJoinAndSelect("roundMappool.slots", "roundSlot")
+            .leftJoinAndSelect("roundSlot.maps", "roundMap")
+            .leftJoinAndSelect("roundMap.beatmap", "roundBeatmap")
             .innerJoinAndSelect("matchup.stage", "stage")
-            .innerJoinAndSelect("stage.mappool", "mappool")
-            .innerJoinAndSelect("mappool.slots", "slot")
-            .innerJoinAndSelect("slot.maps", "map")
-            .innerJoinAndSelect("map.beatmap", "beatmap")
+            .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
+            .leftJoinAndSelect("stage.mappool", "stageMappool")
+            .leftJoinAndSelect("stageMappool.slots", "stageSlot")
+            .leftJoinAndSelect("stageSlot.maps", "stageMap")
+            .leftJoinAndSelect("stageMap.beatmap", "stageBeatmap")
             .innerJoinAndSelect("stage.tournament", "tournament")
             .innerJoinAndSelect("tournament.organizer", "organizer")
             .leftJoinAndSelect("matchup.team1", "team1")
@@ -272,6 +279,15 @@ banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) =
         return;
     }
 
+    const set = ctx.request.body.set;
+    if (typeof set !== "number" || isNaN(set) || set < 0) {
+        ctx.body = {
+            success: false,
+            error: "Invalid set provided",
+        };
+        return;
+    }
+
     const slot = state.matchups[parseInt(ctx.state.matchupID)].matchup.stage!.mappool!.flatMap(pool => pool.slots).find(slot => slot.maps.some(map => map.ID === mapID));
     if (!slot) {
         ctx.body = {
@@ -290,17 +306,25 @@ banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) =
         return;
     }
 
+    if (!state.matchups[parseInt(ctx.state.matchupID)].matchup.sets?.[set]) {
+        ctx.body = {
+            success: false,
+            error: "Set not found",
+        };
+        return;
+    }
+
     if (status !== 2) {
         // Add map to matchup.maps
-        if (!state.matchups[parseInt(ctx.state.matchupID)].matchup.maps)
-            state.matchups[parseInt(ctx.state.matchupID)].matchup.maps = [];
+        if (!state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps)
+            state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps = [];
         const matchupMap = new MatchupMap;
         matchupMap.map = map;
-        matchupMap.matchup = state.matchups[parseInt(ctx.state.matchupID)].matchup;
+        matchupMap.set = state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set];
         matchupMap.status = status;
-        matchupMap.order = state.matchups[parseInt(ctx.state.matchupID)].matchup.maps!.length + 1;
+        matchupMap.order = state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps!.length + 1;
         await matchupMap.save();
-        state.matchups[parseInt(ctx.state.matchupID)].matchup.maps!.push(matchupMap);
+        state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps!.push(matchupMap);
 
         await publish(state.matchups[parseInt(ctx.state.matchupID)].matchup, {
             type: "map",
@@ -336,7 +360,24 @@ banchoRefereeRouter.post("/:matchupID/deleteMap", validateMatchup, async (ctx) =
         return;
     }
 
-    const matchupMap = state.matchups[parseInt(ctx.state.matchupID)].matchup.maps?.find(map => map.ID === mapID);
+    const set = ctx.request.body.set;
+    if (typeof set !== "number" || isNaN(set) || set < 0) {
+        ctx.body = {
+            success: false,
+            error: "Invalid set provided",
+        };
+        return;
+    }
+
+    if (!state.matchups[parseInt(ctx.state.matchupID)].matchup.sets?.[set]) {
+        ctx.body = {
+            success: false,
+            error: "Set not found",
+        };
+        return;
+    }
+
+    const matchupMap = state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps?.find(map => map.ID === mapID);
     if (!matchupMap) {
         ctx.body = {
             success: false,
@@ -347,11 +388,11 @@ banchoRefereeRouter.post("/:matchupID/deleteMap", validateMatchup, async (ctx) =
 
     try {
         await ormConfig.transaction(async manager => {
-            state.matchups[parseInt(ctx.state.matchupID)].matchup.maps = state.matchups[parseInt(ctx.state.matchupID)].matchup.maps!.filter(map => map.ID !== mapID);
-            state.matchups[parseInt(ctx.state.matchupID)].matchup.maps!.forEach((map, i) => map.order = i + 1);
+            state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps = state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps!.filter(map => map.ID !== mapID);
+            state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps!.forEach((map, i) => map.order = i + 1);
             
             await manager.remove(matchupMap);
-            await Promise.all(state.matchups[parseInt(ctx.state.matchupID)].matchup.maps!.map(map => manager.save(map)));
+            await Promise.all(state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps!.map(map => manager.save(map)));
 
             await state.matchups[parseInt(ctx.state.matchupID)].lobby.channel.sendMessage(`Ref has deleted a map from matchup ${matchupMap.map.beatmap?.ID}`);
         });

@@ -86,7 +86,7 @@
                         }"
                         @click.native="matchup.mp && runningLobby && matchup.stage?.stageType !== 0 ? toggleRollMenu() : tooltipText = 'Matchup has no lobby'"
                     >
-                        {{ matchup.first ? $t('open.referee.reroll') : $t('open.referee.roll') }}
+                        {{ matchupSet?.first ? $t('open.referee.reroll') : $t('open.referee.roll') }}
                     </ContentButton>
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
@@ -267,7 +267,7 @@
                         </div>
                         <div class="referee__matchup__content__team">
                             <div class="referee__matchup__content__team__name">
-                                {{ matchup.team1?.name || "TBD" }} {{ matchup.first ? `(${matchup.first.ID === (matchup.team1?.ID || 0) ? "Roll won" : "Roll lost"})` : '' }}
+                                {{ matchup.team1?.name || "TBD" }} {{ matchup.sets?.[matchup.sets?.length - 1]?.first ? `(${matchup.sets![matchup.sets.length - 1].first!.ID === (matchup.team1?.ID || 0) ? "Roll won" : "Roll lost"})` : '' }}
                             </div>
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
@@ -305,7 +305,7 @@
                         </div>
                         <div class="referee__matchup__content__team">
                             <div class="referee__matchup__content__team__name">
-                                {{ matchup.team2?.name || "TBD" }} {{ matchup.first ? `(${matchup.first.ID === (matchup.team2?.ID || 0) ? "Roll won" : "Roll lost"})` : '' }}
+                                {{ matchup.team2?.name || "TBD" }} {{ matchup.sets?.[matchup.sets?.length - 1]?.first ? `(${matchup.sets![matchup.sets.length - 1].first!.ID === (matchup.team2?.ID || 0) ? "Roll won" : "Roll lost"})` : '' }}
                             </div>
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
@@ -363,8 +363,8 @@
                                         :key="map.ID"
                                         class="referee__matchup__content__order__team"
                                         :style="{ 
-                                            backgroundColor: matchupMaps.length < mapOrder.filter(m => m.set < set.set).reduce((acc, cur) => acc + cur.order.length, 0) + map.order ? convertStatusEnum(map.status) : '#333333',
-                                            boxShadow: matchupMaps.length === mapOrder.filter(m => m.set < set.set).reduce((acc, cur) => acc + cur.order.length, 0) + map.order - 1 ? `0 0 10px ${convertStatusEnum(map.status)}` : 'none',
+                                            backgroundColor: (matchupSet?.maps?.length || 0) < (mapOrder.find(set => set.set === matchupSet?.order)?.order.length || 0) + map.order ? convertStatusEnum(map.status) : '#333333',
+                                            boxShadow: (matchupSet?.maps?.length || 0) === (mapOrder.find(set => set.set === matchupSet?.order)?.order.length || 0) + map.order - 1 ? `0 0 10px ${convertStatusEnum(map.status)}` : 'none',
                                         }"
                                     >
                                         {{ convertOrderEnum(map.team) }}
@@ -384,7 +384,7 @@
                         </ContentButton>
                         Matchup's Map List
                         <div
-                            v-for="map in matchupMaps"
+                            v-for="map in matchup.sets?.flatMap(set => set.maps || [])"
                             :key="map.ID"
                             class="referee__matchup__content__map"
                             :style="{backgroundColor: slotColour(selectedMappool?.slots.find(slot => slot.maps.some(m => m.ID === map.map.ID)))}"
@@ -399,7 +399,7 @@
                                 ({{ map.order }}) {{ selectedMappool?.slots.find(slot => slot.maps.some(m => m.ID === map.map.ID))?.acronym.toUpperCase() }}{{ map.map.order }} - {{ mapStatusToString(map.status) }}
                             </div>
                         </div>
-                        <div v-if="matchupMaps.length === 0">
+                        <div v-if="matchup.sets?.flatMap(set => set.maps || []).length === 0">
                             No maps picked/banned/protected yet
                         </div>
                     </div>
@@ -430,8 +430,8 @@
                                     v-for="map in slot.maps"
                                     :key="map.ID"
                                     class="referee__matchup__content__mappool__slot__map"
-                                    :class="{ 'referee__matchup__content__mappool__slot__map--used': matchupMaps.some(m => m.map.ID === map.ID) }"
-                                    @click="!matchup.mp || !runningLobby ? tooltipText = 'Matchup has no lobby' : matchupMaps.find(m => m.map.ID === map.ID) ? tooltipText = 'Map has been used already' : selectMap(map.ID)"
+                                    :class="{ 'referee__matchup__content__mappool__slot__map--used': matchupSet?.maps?.some(m => m.map.ID === map.ID) }"
+                                    @click="!matchup.mp || !runningLobby ? tooltipText = 'Matchup has no lobby' : matchupSet?.maps?.find(m => m.map.ID === map.ID) ? tooltipText = 'Map has been used already' : selectMap(map.ID)"
                                 >
                                     <div class="referee__matchup__content__mappool__slot__map__name">
                                         {{ slot.acronym.toUpperCase() }}{{ slot.maps.length === 1 ? '' : map.order }}
@@ -598,23 +598,23 @@ export default class Referee extends Vue {
         });
     }
 
-    get matchupMaps () {
-        return this.matchup?.maps || [];
+    get matchupSet () {
+        return this.matchup?.sets?.[this.matchup.sets.length - 1];
     }
 
     get nextMapMessage () {
         // TODO: Support sets, and don't hardcode no losing -> second and no winning -> first
         const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchup?.team1Score} - ${this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
-        const bestOf = `BO${this.mapOrder[0].order.filter(p => p.status === MapStatus.Picked).length + 1}`;
-        const firstTo = this.mapOrder[0].order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
+        const bestOf = `BO${this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length + 1}`;
+        const firstTo = this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
         
-        if (!this.matchup?.first)
+        if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.first)
             return `${score} // ${bestOf}`;
 
         const winner = this.matchup?.team1Score === firstTo ? this.matchup.team1?.name : this.matchup?.team2Score === firstTo ? this.matchup?.team2?.name : null;
-        const nextMap = this.matchupMaps.length > this.mapOrder[0].order.length ? null : this.mapOrder[0].order[this.matchupMaps.length];
-        const first = this.matchup?.first?.name;
-        const second = this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2?.name : this.matchup?.team2?.ID === this.matchup?.first?.ID ? this.matchup?.team1?.name : null;
+        const nextMap = (this.matchupSet?.maps?.length || 0) > this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.length ? null : this.mapOrder[(this.matchupSet?.order || 1) - 1].order[this.matchupSet?.maps?.length || 0];
+        const first = this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.name;
+        const second = this.matchup?.team1?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team2?.name : this.matchup?.team2?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team1?.name : null;
         const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
         const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team2?.name : this.matchup?.team1?.name : null;
         const nextMapTeam = nextMap?.team === MapOrderTeam.Team1 ? first : nextMap?.team === MapOrderTeam.Team2 ? second : nextMap?.team === MapOrderTeam.TeamLoser ? losing ?? second : nextMap?.team === MapOrderTeam.TeamWinner ? winning ?? first : null;
@@ -955,9 +955,11 @@ export default class Referee extends Vue {
                 });
                 break;
             case "map":
-                if (!this.matchup.maps)
-                    this.matchup.maps = [];
-                this.matchup.maps.push(ctx.data.map);
+                if (!this.matchup.sets)
+                    this.matchup.sets = [];
+                if (!this.matchup.sets?.[this.matchup.sets.length - 1]?.maps)
+                    this.matchup.sets[this.matchup.sets.length - 1].maps = [];
+                this.matchup.sets[this.matchup.sets.length - 1].maps!.push(ctx.data.map);
                 this.mapSelected = null;
                 break;
             case "matchStarted":
@@ -972,7 +974,7 @@ export default class Referee extends Vue {
                     this.matchup.team1Score = ctx.data.team1Score;
                     this.matchup.team2Score = ctx.data.team2Score;
                 }
-                this.matchup.maps?.push(ctx.data.map);
+                this.matchup.sets![this.matchup.sets!.length - 1].maps!.push(ctx.data.map);
                 break;
             case "closed":
                 this.team1PlayerStates.forEach(player => player.inLobby = player.ready = false);
@@ -1036,9 +1038,9 @@ export default class Referee extends Vue {
         if (endpoint === "pulse")
             this.runningLobby = lobbyData.pulse;
 
-        if (endpoint === "deleteMap" && this.matchup.maps) {
-            this.matchup.maps = this.matchup.maps.filter(map => map.ID !== data.mapID);
-            this.matchup.maps.forEach((map, i) => map.order = i + 1);
+        if (endpoint === "deleteMap" && this.matchup.sets?.[data.set]) {
+            this.matchup.sets[data.set].maps = this.matchup.sets[data.set].maps!.filter(map => map.ID !== data.mapID);
+            this.matchup.sets[data.set].maps!.forEach((map, i) => map.order = i + 1);
         }
 
         switch (endpoint) {

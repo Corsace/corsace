@@ -86,11 +86,11 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
         .leftJoinAndSelect("teams.members", "members")
         .leftJoinAndSelect("team1.members", "members1")
         .leftJoinAndSelect("team2.members", "members2")
-        // other teams
-        .leftJoinAndSelect("matchup.first", "first")
         .leftJoinAndSelect("matchup.winner", "winner")
         // maps
-        .leftJoinAndSelect("matchup.maps", "maps")
+        .leftJoinAndSelect("matchup.sets", "set")
+        .leftJoinAndSelect("set.first", "first")
+        .leftJoinAndSelect("set.maps", "maps")
         .leftJoinAndSelect("maps.map", "map")
         .leftJoinAndSelect("map.slot", "slot")
         .where("matchup.ID = :ID", { ID: ctx.params.matchupID });
@@ -131,7 +131,6 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
 
     const team1 = dbMatchup.team1 ? await dbMatchup.team1.teamInterface() : undefined;
     const team2 = dbMatchup.team2 ? await dbMatchup.team2.teamInterface() : undefined;
-    const first = dbMatchup.first?.ID === team1?.ID ? team1 : dbMatchup.first?.ID === team2?.ID ? team2 : undefined;
     const winner = dbMatchup.winner?.ID === team1?.ID ? team1 : dbMatchup.winner?.ID === team2?.ID ? team2 : undefined;
 
     const roundOrStage: Round | Stage | null = 
@@ -220,13 +219,36 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
             isFinished: roundOrStage.isFinished,
             initialSize: roundOrStage.initialSize,
             finalSize: roundOrStage.finalSize,
+            publicScores: roundOrStage.publicScores,
             mapOrder: roundOrStage.mapOrder,
         } : undefined,
         isLowerBracket: dbMatchup.isLowerBracket,
-        first,
         winner,
-        maps: dbMatchup.maps,
-        mappoolsBanned: dbMatchup.mappoolsBanned,
+        sets: await Promise.all(dbMatchup.sets?.map(async (set) => ({
+            ID: set.ID,
+            order: set.order,
+            first: await set.first?.teamInterface(false, false),
+            maps: set.maps?.map(map => ({
+                ID: map.ID,
+                map: map.map,
+                order: map.order,
+                status: map.status,
+                team1Score: map.team1Score,
+                team2Score: map.team2Score,
+                winner: map.winner,
+                scores: map.scores.map(score => ({
+                    ID: score.ID,
+                    user: score.user,
+                    score: score.score,
+                    mods: score.mods,
+                    misses: score.misses,
+                    combo: score.combo,
+                    fail: score.fail,
+                    accuracy: score.accuracy,
+                    fullCombo: score.fullCombo,
+                })),
+            })) || [],
+        })) || []),
         forfeit: dbMatchup.forfeit,
         referee: dbMatchup.referee,
         streamer: dbMatchup.streamer,
