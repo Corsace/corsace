@@ -478,6 +478,8 @@ matchupRouter.post("/assignTeam", validateTournament, validateStageOrRound, isLo
             return potential.save();
         }));
     }
+    if (matchup.potentials && matchup.potentials.filter(potential => !potential.invalid).length === 1)
+        matchup.date = matchup.potentials.find(potential => !potential.invalid)!.date;
 
     await matchup.save();
 
