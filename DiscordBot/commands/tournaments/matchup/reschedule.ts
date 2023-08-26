@@ -248,13 +248,23 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> U wanna reschedule ur match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID)) {
+    if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> U wanna reschedule ur match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID, dayBeforeStart - Date.now())) {
         await message.edit(`Ok Lol . <@${matchup.team1.manager.discord.userID}> stopped reschedule`);
         return;
     }
 
-    if (matchup.team2 && !await confirmCommand(m, `<@${matchup.team2.manager.discord.userID}> U wanna reschedule ur match${matchup.team1 ? ` vs \`${matchup.team1.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team2.manager.discord.userID)) {
+    if (dayBeforeStart - Date.now() < 0) {
+        await message.edit(`U mightve took too long... cant reschedule a matchup within 24 hours of the stage starting (${new Date(dayBeforeStart).toUTCString()} ${discordStringTimestamp(new Date(dayBeforeStart))})`);
+        return;
+    }
+
+    if (matchup.team2 && !await confirmCommand(m, `<@${matchup.team2.manager.discord.userID}> U wanna reschedule ur match${matchup.team1 ? ` vs \`${matchup.team1.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team2.manager.discord.userID, dayBeforeStart - Date.now())) {
         await message.edit(`Ok Lol . <@${matchup.team2.manager.discord.userID}> stopped reschedule`);
+        return;
+    }
+
+    if (dayBeforeStart - Date.now() < 0) {
+        await message.edit(`U mightve took too long... cant reschedule a matchup within 24 hours of the stage starting (${new Date(dayBeforeStart).toUTCString()} ${discordStringTimestamp(new Date(dayBeforeStart))})`);
         return;
     }
 
