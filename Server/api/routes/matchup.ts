@@ -489,6 +489,68 @@ matchupRouter.post("/assignTeam", validateTournament, validateStageOrRound, isLo
     };
 });
 
+matchupRouter.post("/date", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+    const tournament: Tournament | null = ctx.state.tournament || null;
+    if (!tournament) {
+        ctx.body = {
+            error: "Tournament not found",
+        };
+        return;
+    }
+
+    const stageOrRound: Stage | Round | null = ctx.state.stage || ctx.state.round || null;
+    if (!stageOrRound) {
+        ctx.body = {
+            error: "Stage or round not found",
+        };
+        return;
+    }
+
+    const matchupID = ctx.request.body?.matchupID;
+    if (!matchupID || isNaN(parseInt(matchupID))) {
+        ctx.body = {
+            error: "No matchup ID provided",
+        };
+        return;
+    }
+
+    const date = ctx.request.body?.date;
+    if (!date || (isNaN(parseDateOrTimestamp(date).getTime()) || parseDateOrTimestamp(date).getTime() < 0)) {
+        ctx.body = {
+            error: "No date provided",
+        };
+        return;
+    }
+
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoin("matchup.stage", "stage")
+        .innerJoin("stage.tournament", "tournament")
+        .leftJoin("matchup.round", "round")
+        .where("matchup.ID = :matchupID", { matchupID })
+        .andWhere("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
+        .andWhere(new Brackets(qb => {
+            qb.where("stage.ID = :stageID", { stageID: stageOrRound.ID });
+            qb.orWhere("round.ID = :roundID", { roundID: stageOrRound.ID });
+        }))
+        .getOne();
+
+    if (!matchup) {
+        ctx.body = {
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    matchup.date = parseDateOrTimestamp(date);
+    await matchup.save();
+
+    ctx.body = {
+        success: true,
+        matchup,
+    };
+});
+
 matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
     if (!ctx.request.body) {
         ctx.body = {
