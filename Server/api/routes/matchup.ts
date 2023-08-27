@@ -339,7 +339,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
             // Reverse Level Order Traversal to save the initial matchups (and their potentials) first at each level, before saving levels closer to the root
             const stack: Matchup[] = [];
             const queue: Matchup[] = [];
-            queue.push(...createdMatchups);
+            queue.push(...createdMatchups.reverse());
 
             while (queue.length > 0) {
                 const node = queue.shift()!;
