@@ -108,6 +108,7 @@ export default class MappoolMapBanner extends Vue {
     &__info {
         background: #171B1E;
         width: 100%;
+        max-width: 491px;
         padding-left: 15px;
     }
 
@@ -120,6 +121,9 @@ export default class MappoolMapBanner extends Vue {
     &__title {
         font-weight: 700;
         font-size: $font-lg;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &__artist {
@@ -147,7 +151,7 @@ export default class MappoolMapBanner extends Vue {
                 color: #131313;
                 padding: 1.75px 3.5px;
                 font-size: $font-sm;
-
+                align-self: center;
             }
 
             &--mapper {
