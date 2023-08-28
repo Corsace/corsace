@@ -2,7 +2,7 @@
 import Axios from "axios";
 import { Entry, Parse } from "unzipper";
 import { ChatInputCommandInteraction, ForumChannel, Message } from "discord.js";
-import { Beatmap as APIBeatmap} from "nodesu";
+import { Beatmap as APIBeatmap, Beatmap} from "nodesu";
 import { CustomBeatmap } from "../../Models/tournaments/mappools/customBeatmap";
 import { deletePack } from "../../Server/functions/tournaments/mappool/mappackFunctions";
 import { MappoolMapHistory } from "../../Models/tournaments/mappools/mappoolMapHistory";
@@ -17,7 +17,7 @@ import { Mappool } from "../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../Models/tournaments/mappools/mappoolSlot";
 import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
-import { parseBeatmap, ParserBeatmap } from "wasm-replay-parser-rs";
+import { parseBeatmap, ParserBeatmap, parseBeatmapExtra, ParserScore } from "wasm-replay-parser-rs";
 
 export async function beatmapParse (m: Message | ChatInputCommandInteraction, diff: string, link: string) {
     let beatmap: ParserBeatmap | undefined = undefined;
@@ -37,14 +37,20 @@ export async function beatmapParse (m: Message | ChatInputCommandInteraction, di
         const buffer = await entry.buffer();
 
         if (entry.type === "File" && entry.props.path.endsWith(".osu") && !foundBeatmap) {
-            const parsedBeatmap = parseBeatmapExtra(buffer);
+            // not sure what the first argument does so I set it to undefined
+            const parsedBeatmap = parseBeatmapExtra(undefined, Uint8Array.from(buffer));
 
             console.log(parsedBeatmap);
-            
-            if (diff !== "" && parsedBeatmap.diff_name.toLowerCase() !== diff.toLowerCase())
+
+            // need difficulty name
+            if (diff !== "" && parsedBeatmap.difficulty.toLowerCase() !== diff.toLowerCase())
                 continue;
 
-            beatmap = parsedBeatmap;
+            // I think we are missing a lot of info from parseBeatmapExtra() to fill out Beatmap()
+            beatmap = new Beatmap({
+                ar: parsedBeatmap.difficulty?.ar ?? 0,
+                diff_name: "idk",
+            });
             foundBeatmap = true;
             if (background)
                 break;
@@ -94,10 +100,11 @@ export async function parsedBeatmapToCustom (m: Message | ChatInputCommandIntera
     const maxCombo = beatmap.difficulty?.max_combo;
 
     // Obtaining length
-    const lengthMs = beatmap.hit_objects?.;
+    const lengthMs = (beatmap.hit_objects?.[0].start_time ?? 0) - (beatmap.hit_objects?.[beatmap.hit_objects?.length].start_time ?? 0);
     const length = lengthMs / 1000;
 
     // Obtaining bpm
+    // ParserBeatmap currently doesn't have enough info for finding BPM
     const changedLines = beatmap.timing_points.filter(line => line.change === true);
     const timingPoints = changedLines.map((line, i) => {
         return {
@@ -112,10 +119,9 @@ export async function parsedBeatmapToCustom (m: Message | ChatInputCommandIntera
         bpm = timingPoints.reduce((acc, curr) => acc + curr.length * curr.bpm, 0) / timingPoints.reduce((acc, curr) => acc + curr.length, 0);
 
     // Obtaining star rating
-    const calc = new osu.std_diff().calc({map: beatmap, mods: slot.allowedMods || 0});
-    const aimSR = calc.aim;
-    const speedSR = calc.speed;
-    const sr = calc.total;
+    const aimSR = beatmap.difficulty?.aim_strain ?? 0;
+    const speedSR = beatmap.difficulty?.speed_strain ?? 0;
+    const sr = beatmap.difficulty?.stars ?? 0;
 
     mappoolMap.customBeatmap.link = link;
     mappoolMap.customBeatmap.background = beatmapData.background;
