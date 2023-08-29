@@ -2,7 +2,7 @@
 import Axios from "axios";
 import { Entry, Parse } from "unzipper";
 import { ChatInputCommandInteraction, ForumChannel, Message } from "discord.js";
-import { Beatmap as APIBeatmap, Beatmap} from "nodesu";
+import { Beatmap as APIBeatmap} from "nodesu";
 import { CustomBeatmap } from "../../Models/tournaments/mappools/customBeatmap";
 import { deletePack } from "../../Server/functions/tournaments/mappool/mappackFunctions";
 import { MappoolMapHistory } from "../../Models/tournaments/mappools/mappoolMapHistory";
@@ -17,10 +17,11 @@ import { Mappool } from "../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../Models/tournaments/mappools/mappoolSlot";
 import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
-import { parseBeatmap, ParserBeatmap, parseBeatmapExtra, ParserScore } from "wasm-replay-parser-rs";
+import { ParserBeatmap, parseBeatmapExtra,  parseBeatmapAttributes, ParserBeatmapAttributes } from "wasm-replay-parser-rs";
 
 export async function beatmapParse (m: Message | ChatInputCommandInteraction, diff: string, link: string) {
     let beatmap: ParserBeatmap | undefined = undefined;
+    let beatmapAttributes: ParserBeatmapAttributes | undefined = undefined;
     let background: string | undefined = undefined;
     let axiosData: any = null;
     try {
@@ -37,20 +38,14 @@ export async function beatmapParse (m: Message | ChatInputCommandInteraction, di
         const buffer = await entry.buffer();
 
         if (entry.type === "File" && entry.props.path.endsWith(".osu") && !foundBeatmap) {
-            // not sure what the first argument does so I set it to undefined
-            const parsedBeatmap = parseBeatmapExtra(undefined, Uint8Array.from(buffer));
+            const parsedBeatmap = parseBeatmapExtra(Uint8Array.from(buffer));
+            beatmapAttributes = parseBeatmapAttributes(undefined, Uint8Array.from(buffer));
+            console.log({parsedBeatmap});
 
-            console.log(parsedBeatmap);
-
-            // need difficulty name
-            if (diff !== "" && parsedBeatmap.difficulty.toLowerCase() !== diff.toLowerCase())
+            if (diff !== "" && parsedBeatmap.diff_name.toLowerCase() !== diff.toLowerCase())
                 continue;
 
-            // I think we are missing a lot of info from parseBeatmapExtra() to fill out Beatmap()
-            beatmap = new Beatmap({
-                ar: parsedBeatmap.difficulty?.ar ?? 0,
-                diff_name: "idk",
-            });
+            beatmap = parsedBeatmap;
             foundBeatmap = true;
             if (background)
                 break;
@@ -76,11 +71,22 @@ export async function beatmapParse (m: Message | ChatInputCommandInteraction, di
 
     return {
         beatmap,
+        beatmapAttributes,
         background,
     };
 }
 
-export async function parsedBeatmapToCustom (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappool: Mappool, slot: MappoolSlot, mappoolMap: MappoolMap, beatmapData: { beatmap: ParserBeatmap | undefined, background: string | undefined }, link: string, user: User, mappoolSlot: string) {
+export async function parsedBeatmapToCustom (
+    m: Message | ChatInputCommandInteraction,
+    tournament: Tournament,
+    mappool: Mappool,
+    slot: MappoolSlot,
+    mappoolMap: MappoolMap,
+    beatmapData: { beatmap: ParserBeatmap | undefined, beatmapAttributes: ParserBeatmapAttributes | undefined, background: string | undefined },
+    link: string,
+    user: User,
+    mappoolSlot: string
+) {
     if (!mappoolMap.customBeatmap)
         mappoolMap.customBeatmap = new CustomBeatmap();
 
@@ -91,37 +97,39 @@ export async function parsedBeatmapToCustom (m: Message | ChatInputCommandIntera
     const diff = beatmap.diff_name;
 
     const cs = beatmap.cs;
-    const ar = beatmap.ar ?? -1;
+    const ar = beatmap.ar;
     const od = beatmap.od;
     const hp = beatmap.hp;
     const circles = beatmap.circles;
     const sliders = beatmap.sliders;
     const spinners = beatmap.spinners;
-    const maxCombo = beatmap.difficulty?.max_combo;
+    const maxCombo = beatmap.max_combo;
 
     // Obtaining length
     const lengthMs = (beatmap.hit_objects?.[0].start_time ?? 0) - (beatmap.hit_objects?.[beatmap.hit_objects?.length].start_time ?? 0);
     const length = lengthMs / 1000;
 
     // Obtaining bpm
-    // ParserBeatmap currently doesn't have enough info for finding BPM
-    const changedLines = beatmap.timing_points.filter(line => line.change === true);
-    const timingPoints = changedLines.map((line, i) => {
-        return {
-            bpm: 60000 / line.ms_per_beat,
-            length: (i < changedLines.length - 1) ? changedLines[i + 1].time - line.time : beatmap!.objects[beatmap!.objects.length - 1].time - line.time,
-        };
-    });
-    let bpm = 0;
-    if (timingPoints.length === 1)
-        bpm = timingPoints[0].bpm;
-    else
-        bpm = timingPoints.reduce((acc, curr) => acc + curr.length * curr.bpm, 0) / timingPoints.reduce((acc, curr) => acc + curr.length, 0);
+    // TODO: wasm-replay-parser-rs currently doesn't have enough info for finding BPM
+    // Also this is old code from v0.1.2
+    // const changedLines = beatmap.timing_points.filter(line => line.change === true);
+    // const timingPoints = changedLines.map((line, i) => {
+    //     return {
+    //         bpm: 60000 / line.ms_per_beat,
+    //         length: (i < changedLines.length - 1) ? changedLines[i + 1].time - line.time : beatmap!.objects[beatmap!.objects.length - 1].time - line.time,
+    //     };
+    // });
+    // let bpm = 0;
+    // if (timingPoints.length === 1)
+    //     bpm = timingPoints[0].bpm;
+    // else
+    //     bpm = timingPoints.reduce((acc, curr) => acc + curr.length * curr.bpm, 0) / timingPoints.reduce((acc, curr) => acc + curr.length, 0);
+    const bpm = -666;
 
     // Obtaining star rating
-    const aimSR = beatmap.difficulty?.aim_strain ?? 0;
-    const speedSR = beatmap.difficulty?.speed_strain ?? 0;
-    const sr = beatmap.difficulty?.stars ?? 0;
+    const aimSR = beatmapData.beatmapAttributes?.difficulty?.aim_strain ?? 0;
+    const speedSR = beatmapData.beatmapAttributes?.difficulty?.speed_strain ?? 0;
+    const sr = beatmapData.beatmapAttributes?.difficulty?.aim_strain ?? 0;
 
     mappoolMap.customBeatmap.link = link;
     mappoolMap.customBeatmap.background = beatmapData.background;
