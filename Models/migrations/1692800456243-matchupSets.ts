@@ -26,10 +26,11 @@ export class MatchupSets1692800456243 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`matchup_set\` ADD CONSTRAINT \`FK_aea8f15057763d4769bc4573de0\` FOREIGN KEY (\`winnerID\`) REFERENCES \`team\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`matchup_map\` ADD CONSTRAINT \`FK_040496538cb713b0233be919fd6\` FOREIGN KEY (\`setID\`) REFERENCES \`matchup_set\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
 
-        await queryRunner.query(`
-            INSERT INTO \`matchup_set\` (ID, team1Score, team2Score, matchupID, firstID, winnerID)
-            VALUES ${rawMatchups.map((matchup: any, i: number) => `(${i + 1}, ${matchup.team1Score}, ${matchup.team2Score}, ${matchup.ID}, ${matchup.firstID || "NULL"}, ${matchup.winnerID || "NULL"})`).join(", ")}
-        `);
+        if (rawMatchups.length > 0)
+            await queryRunner.query(`
+                INSERT INTO \`matchup_set\` (ID, team1Score, team2Score, matchupID, firstID, winnerID)
+                VALUES ${rawMatchups.map((matchup: any, i: number) => `(${i + 1}, ${matchup.team1Score}, ${matchup.team2Score}, ${matchup.ID}, ${matchup.firstID || "NULL"}, ${matchup.winnerID || "NULL"})`).join(", ")}
+            `);
 
         await queryRunner.query(`
             UPDATE \`matchup_map\`
