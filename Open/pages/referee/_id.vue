@@ -267,7 +267,7 @@
                         </div>
                         <div class="referee__matchup__content__team">
                             <div class="referee__matchup__content__team__name">
-                                {{ matchup.team1?.name || "TBD" }} {{ matchup.sets?.[matchup.sets?.length - 1]?.first ? `(${matchup.sets![matchup.sets.length - 1].first!.ID === (matchup.team1?.ID || 0) ? "Roll won" : "Roll lost"})` : '' }}
+                                {{ getTeamName(matchup.team1) }} {{ getRollStatus(matchup.sets, matchup.team1) }}
                             </div>
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
@@ -305,7 +305,7 @@
                         </div>
                         <div class="referee__matchup__content__team">
                             <div class="referee__matchup__content__team__name">
-                                {{ matchup.team2?.name || "TBD" }} {{ matchup.sets?.[matchup.sets?.length - 1]?.first ? `(${matchup.sets![matchup.sets.length - 1].first!.ID === (matchup.team2?.ID || 0) ? "Roll won" : "Roll lost"})` : '' }}
+                                {{ getTeamName(matchup.team2) }} {{ getRollStatus(matchup.sets, matchup.team2) }}
                             </div>
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
@@ -466,11 +466,12 @@ import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
 import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
 import { Tournament } from "../../../Interfaces/tournament";
-import { MapStatus, Matchup } from "../../../Interfaces/matchup";
+import { MapStatus, Matchup, MatchupSet } from "../../../Interfaces/matchup";
 import { MapOrder, MapOrderTeam } from "../../../Interfaces/stage";
 import { UserInfo } from "../../../Interfaces/user";
 import { Mappool, MappoolMap, MappoolSlot } from "../../../Interfaces/mappool";
 import { freemodButFreerRGB, freemodRGB, modsToRGB } from "../../../Interfaces/mods";
+import { Team } from "../../../Interfaces/team";
 
 const openModule = namespace("open");
 
@@ -838,6 +839,17 @@ export default class Referee extends Vue {
         const hours = date.getUTCHours();
         const minutes = date.getUTCMinutes();
         return `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
+    }
+
+    getTeamName (team: Team | null | undefined) {
+        return team && team.name ? team.name : "TBD";
+    }
+
+    getRollStatus (sets: MatchupSet[] | null | undefined, team: Team | null | undefined) {
+        if (!sets || !sets.length) return "";
+        const lastSet = sets[sets.length - 1];
+        if (!lastSet || !lastSet.first) return "";
+        return lastSet.first.ID === team?.ID ? "Roll won" : "Roll lost";
     }
 
     slotColour (slot?: MappoolSlot) {
