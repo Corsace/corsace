@@ -1,7 +1,7 @@
 import Axios from "axios";
 import Router from "@koa/router";
 import { Multi } from "nodesu";
-import { EntityManager } from "typeorm";
+import { Brackets, EntityManager } from "typeorm";
 import { StageType } from "../../../Interfaces/stage";
 import { TournamentRoleType } from "../../../Interfaces/tournament";
 import { MapStatus, Matchup as MatchupInterface } from "../../../Interfaces/matchup";
@@ -16,6 +16,7 @@ import { validateTournament, hasRoles, validateStageOrRound } from "../../middle
 import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
 import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assignTeamsToNextMatchup";
+import { Tournament } from "../../../Models/tournaments/tournament";
 import { Round } from "../../../Models/tournaments/round";
 import { Stage } from "../../../Models/tournaments/stage";
 import { config } from "node-config-ts";
@@ -390,7 +391,6 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                 dbMatchup.team2 = team2;
             }
 
-            await transactionManager.save(dbMatchup);
             idToMatchup.set(matchup.ID, dbMatchup);
             const previousMatchups = matchup.previousMatchups ? await createMatchups(matchup.previousMatchups, transactionManager) : undefined;
             if (previousMatchups)
@@ -418,7 +418,6 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                             potential.stage = ctx.state.stage;
                         else
                             potential.round = ctx.state.round;
-                        await transactionManager.save(potential);
                         dbMatchup.potentials.push(potential);
                     }
                 else
@@ -435,14 +434,12 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                                         potential.stage = ctx.state.stage;
                                     else
                                         potential.round = ctx.state.round;
-                                    await transactionManager.save(potential);
                                     dbMatchup.potentials.push(potential);
                                 }
                             }
                         }
                     }
             }
-            await transactionManager.save(dbMatchup);
             idToMatchup.set(matchup.ID, dbMatchup);
             createdMatchups.push(dbMatchup);
         }
@@ -452,6 +449,25 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
     try {
         await ormConfig.transaction(async transactionManager => {
             const createdMatchups = await createMatchups(matchups, transactionManager);
+            // Reverse Level Order Traversal to save the initial matchups (and their potentials) first at each level, before saving levels closer to the root
+            const stack: Matchup[] = [];
+            const queue: Matchup[] = [];
+            queue.push(...createdMatchups.reverse());
+
+            while (queue.length > 0) {
+                const node = queue.shift()!;
+                stack.push(node);
+                stack.push(...node.potentials || []);
+
+                if (node.previousMatchups)
+                    queue.push(...node.previousMatchups);
+            }
+
+            while (stack.length > 0) {
+                const node = stack.pop()!;
+                await transactionManager.save(node);
+            }
+
             ctx.body = {
                 success: true,
                 matchups: createdMatchups,
@@ -463,6 +479,189 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
             error: err instanceof Error ? err.message : err,
         };
     }
+});
+
+matchupRouter.post("/assignTeam", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+    const tournament: Tournament | null = ctx.state.tournament || null;
+    if (!tournament) {
+        ctx.body = {
+            error: "Tournament not found",
+        };
+        return;
+    }
+
+    const stageOrRound: Stage | Round | null = ctx.state.stage || ctx.state.round || null;
+    if (!stageOrRound) {
+        ctx.body = {
+            error: "Stage or round not found",
+        };
+        return;
+    }
+
+    const matchupID = ctx.request.body?.matchupID;
+    if (!matchupID || isNaN(parseInt(matchupID))) {
+        ctx.body = {
+            error: "No matchup ID provided",
+        };
+        return;
+    }
+
+    const teamID = ctx.request.body?.teamID;
+    if (!teamID || isNaN(parseInt(teamID))) {
+        ctx.body = {
+            error: "No team ID provided",
+        };
+        return;
+    }
+    const team = await Team
+        .createQueryBuilder("team")
+        .leftJoinAndSelect("team.manager", "manager")
+        .leftJoinAndSelect("team.members", "member")
+        .where("team.ID = :teamID", { teamID })
+        .getOne();
+    if (!team) {
+        ctx.body = {
+            error: "Team not found",
+        };
+        return;
+    }
+
+    const team1Or2 = ctx.request.body?.team1Or2;
+    if (team1Or2 !== 1 && team1Or2 !== 2) {
+        ctx.body = {
+            error: "No team1 or team2 provided",
+        };
+        return;
+    }
+
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoin("matchup.stage", "stage")
+        .innerJoin("stage.tournament", "tournament")
+        .leftJoin("matchup.round", "round")
+        .leftJoinAndSelect("matchup.team1", "team1")
+        .leftJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("matchup.potentials", "potential")
+        .leftJoinAndSelect("potential.team1", "potentialTeam1")
+        .leftJoinAndSelect("potential.team2", "potentialTeam2")
+        .where("matchup.ID = :matchupID", { matchupID })
+        .andWhere("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
+        .andWhere(new Brackets(qb => {
+            qb.where("stage.ID = :stageID", { stageID: stageOrRound.ID });
+            qb.orWhere("round.ID = :roundID", { roundID: stageOrRound.ID });
+        }))
+        .getOne();
+
+    if (!matchup) {
+        ctx.body = {
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    if (matchup.team1?.ID === parseInt(teamID) || matchup.team2?.ID === parseInt(teamID)) {
+        ctx.body = {
+            error: "Team is already assigned to matchup",
+        };
+        return;
+    }
+    
+    if (team1Or2 === 1) {
+        if (matchup.team1) {
+            ctx.body = {
+                error: "Team1 is already assigned to matchup",
+            };
+            return;
+        }
+        matchup.team1 = team;
+    } else {
+        if (matchup.team2) {
+            ctx.body = {
+                error: "Team2 is already assigned to matchup",
+            };
+            return;
+        }
+        matchup.team2 = team;
+    }
+
+    if (matchup.potentials) {
+        const potentialsWithoutTeam = matchup.potentials.filter(potential => potential.team1?.ID !== parseInt(teamID) && potential.team2?.ID !== parseInt(teamID));
+        await Promise.all(potentialsWithoutTeam.map(potential => {
+            potential.invalid = true;
+            return potential.save();
+        }));
+    }
+    if (matchup.potentials && matchup.potentials.filter(potential => !potential.invalid).length === 1)
+        matchup.date = matchup.potentials.find(potential => !potential.invalid)!.date;
+
+    await matchup.save();
+
+    ctx.body = {
+        success: true,
+        matchup,
+    };
+});
+
+matchupRouter.post("/date", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+    const tournament: Tournament | null = ctx.state.tournament || null;
+    if (!tournament) {
+        ctx.body = {
+            error: "Tournament not found",
+        };
+        return;
+    }
+
+    const stageOrRound: Stage | Round | null = ctx.state.stage || ctx.state.round || null;
+    if (!stageOrRound) {
+        ctx.body = {
+            error: "Stage or round not found",
+        };
+        return;
+    }
+
+    const matchupID = ctx.request.body?.matchupID;
+    if (!matchupID || isNaN(parseInt(matchupID))) {
+        ctx.body = {
+            error: "No matchup ID provided",
+        };
+        return;
+    }
+
+    const date = ctx.request.body?.date;
+    if (!date || (isNaN(parseDateOrTimestamp(date).getTime()) || parseDateOrTimestamp(date).getTime() < 0)) {
+        ctx.body = {
+            error: "No date provided",
+        };
+        return;
+    }
+
+    const matchup = await Matchup
+        .createQueryBuilder("matchup")
+        .innerJoin("matchup.stage", "stage")
+        .innerJoin("stage.tournament", "tournament")
+        .leftJoin("matchup.round", "round")
+        .where("matchup.ID = :matchupID", { matchupID })
+        .andWhere("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
+        .andWhere(new Brackets(qb => {
+            qb.where("stage.ID = :stageID", { stageID: stageOrRound.ID });
+            qb.orWhere("round.ID = :roundID", { roundID: stageOrRound.ID });
+        }))
+        .getOne();
+
+    if (!matchup) {
+        ctx.body = {
+            error: "Matchup not found",
+        };
+        return;
+    }
+
+    matchup.date = parseDateOrTimestamp(date);
+    await matchup.save();
+
+    ctx.body = {
+        success: true,
+        matchup,
+    };
 });
 
 matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {

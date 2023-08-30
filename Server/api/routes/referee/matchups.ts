@@ -59,6 +59,7 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
     const matchups = await matchupQ
         .skip(skip)
         .take(5)
+        .orderBy("matchup.ID", "DESC")
         .getMany();
 
     ctx.body = {

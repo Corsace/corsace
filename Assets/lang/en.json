@@ -504,6 +504,7 @@
                 "mappackDownload": "DOWNLOAD MAP PACK",
                 "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
             },
+            "prizes": "PRIZES",
             "donateToCorsace": "DONATE TO CORSACE",
             "supportViaSponsorship": "SUPPORT VIA MOMOKAI SPONSORSHIP",
             "generalInfo": "GENERAL INFORMATION",
@@ -540,7 +541,7 @@
                     "percentMax": "%MAX",
                     "relMax": "REL. MAX",
                     "zScore": "Z-SCORE",
-                    "placement": "PLACEMENT",
+                    "placement": "PLACE",
                     "player": "PLAYER",
                     "team": "TEAM",
                     "best": "BEST",

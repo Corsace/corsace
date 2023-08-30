@@ -55,11 +55,13 @@
                             >
                         </a>
                         <a
-                            :href="mappoolList[0]?.mappackLink || ''"
+                            v-for="mappool in mappoolList"
+                            :key="mappool.ID"
+                            :href="mappool.mappackLink || ''"
                             class="qualifiers__button"
                         >
                             <div class="qualifiers__button_text">
-                                {{ $t('open.qualifiers.mappool.mappool') }}
+                                {{ $t('open.qualifiers.mappool.mappool') }} - {{ mappool.abbreviation.toUpperCase() }}
                             </div>
                             <img 
                                 class="qualifiers__button_ico"
@@ -128,10 +130,15 @@
             >
                 {{ $t("open.qualifiers.mappool.notAvailable") }}
             </div>
-            <ScoresView
-                v-else-if="page === 'scores'"
-                :view="scoreView"
-            />
+            <div v-if="page === 'scores'">
+                <!-- TODO: Actually support multiple pools -->
+                <ScoresView
+                    v-for="mappool in mappoolList"
+                    :key="mappool.ID"
+                    :view="scoreView"
+                    :pool="mappool"
+                />
+            </div>
         </div>
     </div>
 </template>

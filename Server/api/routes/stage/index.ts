@@ -10,7 +10,7 @@ const stageRouter = new Router();
 stageRouter.get("/:stageID/matchups", validateStageOrRound, async (ctx) => {
     const stage: Stage = ctx.state.stage;
 
-    const matchups = await Matchup
+    let matchups = await Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
         .leftJoinAndSelect("matchup.team1", "team1")
@@ -22,6 +22,12 @@ stageRouter.get("/:stageID/matchups", validateStageOrRound, async (ctx) => {
         .getMany();
 
     matchups.sort((a, b) => a.ID - b.ID);
+    matchups = matchups.filter((matchup) => 
+        matchup.potentialFor && 
+        matchups.filter((m) => m.potentialFor && m.potentialFor.ID === matchup.potentialFor!.ID).length === 1 ? 
+            false : 
+            true
+    );
 
     const potentialIDs = new Map<number, number>();
 

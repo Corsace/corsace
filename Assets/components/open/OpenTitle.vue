@@ -32,6 +32,7 @@ export default class OpenTitle extends Vue {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        flex-wrap: wrap;
         
         &__text{
             font-family: $font-commuterssans;

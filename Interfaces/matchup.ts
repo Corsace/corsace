@@ -242,13 +242,15 @@ export function computeScoreViews (
             const mapsStats = statsByMapID.get(s.mapID)!;
             const mapMax = maxFilterByMapID.get(s.mapID) || { sum: 0, average: 0, relMax: 0, percentMax: 0, relAvg: 0, percentAvg: 0, zScore: 0 };
 
-            s.relMax = s.sum / (mapsStats.max || 1);
+            const targetScore = syncView === "players" ? s.average : s.sum;
+
+            s.relMax = targetScore / (mapsStats.max || 1);
             s.percentMax = Math.round(s.relMax * 100);
 
-            s.relAvg = s.sum / (mapsStats.avg || 1);
+            s.relAvg = targetScore / (mapsStats.avg || 1);
             s.percentAvg = Math.round(s.relAvg * 100);
 
-            s.zScore = (s.sum - mapsStats.avg) / (mapsStats.stdDev || 1);
+            s.zScore = (targetScore - mapsStats.avg) / (mapsStats.stdDev || 1);
             
             mapMax.sum = Math.max(mapMax.sum, s.sum);
             mapMax.average = Math.max(mapMax.average, s.average);

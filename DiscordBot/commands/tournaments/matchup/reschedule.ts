@@ -86,6 +86,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .leftJoinAndSelect("matchup.commentators", "commentators")
+            .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
+            .leftJoinAndSelect("potentialFor.previousMatchups", "potentialForPreviousMatchups")
+            .leftJoinAndSelect("potentialFor.nextMatchups", "potentialForNextMatchups")
+            .leftJoinAndSelect("potentialForNextMatchups.potentials", "potentialForNextMatchupsPotentials", "potentialForNextMatchupsPotentials.invalid = 0")
             .leftJoinAndSelect("matchup.previousMatchups", "previousMatchups")
             .leftJoinAndSelect("matchup.nextMatchups", "nextMatchups")
             .leftJoinAndSelect("nextMatchups.potentials", "nextMatchupsPotentials", "nextMatchupsPotentials.invalid = 0")
@@ -107,7 +111,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 return;
 
             if (!await confirmCommand(m, `Do you wish to reschedule the matchup ID ${matchup.ID} in stage \`${matchup.stage?.name || "N/A"}\` between \`${matchup.team1?.name || "N/A"}\` and \`${matchup.team2?.name || "N/A"}\` to ${discordStringTimestamp(date)}?`)) {
-                await message.edit("Ok Lol");
+                await message.edit("Ok Lol . stopped reschedule");
                 return;
             }
 
@@ -131,6 +135,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
             .leftJoinAndSelect("matchup.commentators", "commentators")
+            .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
+            .leftJoinAndSelect("potentialFor.previousMatchups", "potentialForPreviousMatchups")
+            .leftJoinAndSelect("potentialFor.nextMatchups", "potentialForNextMatchups")
+            .leftJoinAndSelect("potentialForNextMatchups.potentials", "potentialForNextMatchupsPotentials", "potentialForNextMatchupsPotentials.invalid = 0")
             .leftJoinAndSelect("matchup.previousMatchups", "previousMatchups")
             .leftJoinAndSelect("matchup.nextMatchups", "nextMatchups")
             .leftJoinAndSelect("nextMatchups.potentials", "nextMatchupsPotentials", "nextMatchupsPotentials.invalid = 0")
@@ -215,10 +223,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .innerJoin("stage.tournament", "tournament")
         .leftJoinAndSelect("matchup.team1", "team1")
         .leftJoinAndSelect("matchup.team2", "team2")
+        .leftJoinAndSelect("matchup.potentialFor", "potentialFor")
         .where("tournament.ID = :tournamentID", { tournamentID: tournament.ID })
         .andWhere("matchup.date > :date", { date: new Date(date.getTime() - 3600000) })
         .andWhere("matchup.date < :date2", { date2: new Date(date.getTime() + 3600000) })
-        .andWhere("matchup.ID != :matchupID", { matchupID: matchup.ID })
+        .andWhere(new Brackets((qb) => {
+            qb.where("matchup.ID != :matchupID", { matchupID: matchup!.ID })
+                .orWhere("matchup.ID != :potentialID", { potentialID: matchup!.potentialFor?.ID || 0 })
+                .orWhere("potentialFor.ID != :matchupID2", { matchupID2: matchup!.ID })
+                .orWhere("potentialFor.ID != :potentialID2", { potentialID2: matchup!.potentialFor?.ID || 0 });
+        }))
+        .andWhere("", { matchupID: matchup.ID })
+        .andWhere("matchup.invalid = 0")
         .andWhere(new Brackets((qb) => {
             qb.where("team1.ID = :team1ID1", { team1ID1: matchup!.team1?.ID })
                 .orWhere("team2.ID = :team2ID1", { team2ID1: matchup!.team1?.ID })
@@ -229,17 +245,26 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     if (existing) {
         await message.edit(`YO theres already a matchup scheduled for ${date.toUTCString()} ${discordStringTimestamp(date)} between \`${existing.team1?.name || "N/A"}\` and \`${existing.team2?.name || "N/A"}\` this is gonna cause a conflict for the teams cuz it's within 1 hour of the new time`);
-        await message.edit(`YO theres already a matchup scheduled for ${date.toUTCString()} ${discordStringTimestamp(date)} between \`${existing.team1?.name || "N/A"}\` and \`${existing.team2?.name || "N/A"}\` this is gonna cause a conflict for the teams cuz it's within 1 hour of the new time`);
         return;
     }
 
-    if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> U wanna reschedule ur match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID)) {
-        await message.edit("Ok Lol");
+    if (matchup.team1 && !await confirmCommand(m, `<@${matchup.team1.manager.discord.userID}> U wanna reschedule ur match${matchup.team2 ? ` vs \`${matchup.team2.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team1.manager.discord.userID, dayBeforeStart - Date.now())) {
+        await message.edit(`Ok Lol . <@${matchup.team1.manager.discord.userID}> stopped reschedule or the message timed out`);
         return;
     }
 
-    if (matchup.team2 && !await confirmCommand(m, `<@${matchup.team2.manager.discord.userID}> U wanna reschedule ur match${matchup.team1 ? ` vs \`${matchup.team1.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team2.manager.discord.userID)) {
-        await message.edit("Ok Lol");
+    if (dayBeforeStart - Date.now() < 0) {
+        await message.edit(`U mightve took too long... cant reschedule a matchup within 24 hours of the stage starting (${new Date(dayBeforeStart).toUTCString()} ${discordStringTimestamp(new Date(dayBeforeStart))})`);
+        return;
+    }
+
+    if (matchup.team2 && !await confirmCommand(m, `<@${matchup.team2.manager.discord.userID}> U wanna reschedule ur match${matchup.team1 ? ` vs \`${matchup.team1.name}\`` : ""} from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${date.toUTCString()} ${discordStringTimestamp(date)}?`, true, matchup.team2.manager.discord.userID, dayBeforeStart - Date.now())) {
+        await message.edit(`Ok Lol . <@${matchup.team2.manager.discord.userID}> stopped reschedule or the message timed out`);
+        return;
+    }
+
+    if (dayBeforeStart - Date.now() < 0) {
+        await message.edit(`U mightve took too long... cant reschedule a matchup within 24 hours of the stage starting (${new Date(dayBeforeStart).toUTCString()} ${discordStringTimestamp(new Date(dayBeforeStart))})`);
         return;
     }
 

@@ -61,6 +61,37 @@
                 <OpenTitle
                     class="info_section_header"
                 >
+                    {{ $t('open.info.prizes') }}
+                </OpenTitle>
+                <div class="info_desc__text info_desc__text--noAlign">
+                    <ul class="info_desc__list">
+                        <li>
+                            <strong>1st Place</strong>:
+                            <ul>
+                                <li><a href="https://momokai.com/corsace">Exclusive Corsace edition Momokai Tap Trio keypads</a></li>
+                                <li>50% of prizepool split among players and their manager how they wish</li>
+                                <li>(Pending) Corsace Open 1st place badge</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>2nd Place</strong>:
+                            <ul>
+                                <li>30% of prizepool split among players and their manager how they wish</li>
+                                <li>(Pending) Corsace Open 2nd place badge</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>3rd Place</strong>:
+                            <ul>
+                                <li>20% of prizepool split among players and their manager how they wish</li>
+                                <li>(Pending) Corsace Open 3rd place badge</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <OpenTitle
+                    class="info_section_header"
+                >
                     {{ $t('open.info.teamStructure') }}
                 </OpenTitle>
                 <div class="info_desc__text info_desc__text--noAlign">
@@ -368,6 +399,7 @@
                                     The<strong> second set of bans</strong> shall be after <strong>4 maps</strong> are played
                                     <ul class="info_desc__list">
                                         <li>The<strong> losing</strong> team shall <strong>ban first</strong> (EX: If the scoreline is 4 - 0, the team with 0 points bans first)</li>
+                                        <li>If the score is tied (2 - 2), the ban order shall be the same as the first set of bans</li>
                                     </ul>
                                 </li>
                             </ul>

@@ -165,7 +165,7 @@ Ensure you enable the `Server Members` and `Message Content` intents under the *
 
 ### Centrifugo
 
-We use Centrifugo for real-time notifications. You can find the documentation [here](https://centrifugal.dev/docs/).
+We use Centrifugo for real-time notifications. You can find the documentation [here](https://centrifugal.dev/docs/getting-started/introduction).
 
 #### Setup
 

@@ -253,6 +253,7 @@ $x-axis-height: 25px;
             overflow: hidden;
             text-overflow: ellipsis;
             line-height: normal;
+            white-space: nowrap;
         }
 
         &_title {

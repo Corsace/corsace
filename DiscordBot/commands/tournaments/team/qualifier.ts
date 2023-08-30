@@ -34,7 +34,7 @@ async function singlePlayerTournamentTeamCreation (m: Message | ChatInputCommand
     }
 
     if (!await confirmCommand(m, `User ${user.osu.username} is not in this tournament. Do you want to register them?`)) {
-        await respond(m, "Ok Lol");
+        await respond(m, "Ok Lol . stopped signing player for qualifier");
         return;
     }
 
@@ -209,13 +209,13 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     if (!await confirmCommand(m, `Do you wish to schedule \`${team.name}\` to a qualifier for ${discordStringTimestamp(date)}?`)) {
-        await respond(m, "Ok Lol");
+        await respond(m, "Ok Lol . stopped qualifier scheduling");
         return;
     }
     
     if (!team.tournaments.some(t => t.ID === tournament.ID)) {
         if (target && !await confirmCommand(m, `<@${user.discord.userID}> do you wish to confirm your registration for ${tournament.name} under team name ${team.name}?`, true, user.discord.userID)) {
-            await respond(m, "Ok Lol");
+            await respond(m, "Ok Lol . stopped tournament registration");
             return;
         }
 
@@ -297,7 +297,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 return;
 
             if (!await confirmCommand(m, `\`${team.name}\` already has a scheduled match with an mp ID on ${discordStringTimestamp(matchup.date)}. Do you want to reset and reschedule?`)) {
-                await respond(m, "Ok Lol");
+                await respond(m, "Ok Lol . stopped qualifier reschedule");
                 return;
             }
         }

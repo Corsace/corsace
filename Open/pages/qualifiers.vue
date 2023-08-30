@@ -121,9 +121,10 @@
                 {{ $t("open.qualifiers.mappool.notAvailable") }}
             </div>
             <ScoresView
-                v-else-if="page === 'scores'"
+                v-else-if="page === 'scores' && qualifiersStage?.mappool?.[0].isPublic"
                 tiers
                 :view="scoreView"
+                :pool="qualifiersStage.mappool[0]"
             />
             <QualifiersView
                 v-else-if="page === 'qualifiers'"

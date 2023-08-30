@@ -168,7 +168,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const confirm = await confirmCommand(m, "U sure u wanna remove **ALL** beatmaps, custom beatmaps and mappers from this mappool?\n**This action CANNOT be undone**");
     if (!confirm) {
-        await respond(m, "Ok Lol");
+        await respond(m, "Ok Lol . stopped mappool remove");
         return;
     }
 
