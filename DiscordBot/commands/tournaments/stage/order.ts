@@ -115,6 +115,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }
+            if (order.map(o => o.set).filter((v, i, a) => a.indexOf(v) === i).length % 2 === 0) {
+                await i.reply("U have an even number of sets which is impossible to have a clear winner for the match.");
+                setTimeout(async () => (await i.deleteReply()), 5000);
+                return;
+            }
             await i.reply("Pickban order created");
             setTimeout(async () => (await i.deleteReply()), 5000);
             stopped = true;
@@ -166,6 +171,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
             else
                 mapOrder.stage = stage;
             orderMade.push(mapOrder);
+        }
+
+        if (orderMade.filter(o => o.status === MapStatus.Picked).length % 2 === 0) {
+            const reply = await msg.reply(`U have an even number of picks which is impossible to have a clear winner for the set.`);
+            setTimeout(async () => {
+                await reply.delete();
+            }, 5000);
+            return;
         }
 
         newOrder = `Set ${set}: ${orderMade.map(o => `\`${MapOrderTeam[o.team]} ${MapStatus[o.status]}\``).join(" ")}\n`;
