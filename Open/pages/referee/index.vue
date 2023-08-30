@@ -84,10 +84,14 @@ export default class Referee extends Vue {
             this.$router.push("/");
             return;
         }
+
         this.matchupList = matchupData.matchups?.map(matchup => ({
             ...matchup,
             date: new Date(matchup.date),
         })) || [];
+
+        if (matchupData.matchups?.length < 5)
+            this.moreMatchups = false;
     }
 
     async loadMore () {
@@ -97,8 +101,10 @@ export default class Referee extends Vue {
             this.$router.push("/");
             return;
         }
+
         if (matchupData.matchups?.length && matchupData.matchups.length < 5)
             this.moreMatchups = false;
+
         this.matchupList.push(...matchupData.matchups?.map(matchup => ({
             ...matchup,
             date: new Date(matchup.date),

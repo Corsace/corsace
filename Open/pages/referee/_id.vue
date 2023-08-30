@@ -606,7 +606,9 @@ export default class Referee extends Vue {
     get nextMapMessage () {
         // TODO: Support sets, and don't hardcode no losing -> second and no winning -> first
         const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchup?.team1Score} - ${this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
-        const bestOf = `BO${this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length + 1}`;
+        let bestOf = `BO${this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length + 1 || ""}`;
+        if (this.mapOrder.length > 1)
+            bestOf = `BO${this.mapOrder.length + 1 / 2} ${bestOf}`;
         const firstTo = this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
         
         if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.first)
