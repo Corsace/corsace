@@ -605,24 +605,34 @@ export default class Referee extends Vue {
 
     get nextMapMessage () {
         // TODO: Support sets, and don't hardcode no losing -> second and no winning -> first
-        const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchup?.sets?.[this.matchup.sets.length - 1]?.team1Score || this.matchup?.team1Score} - ${this.matchup?.sets?.[this.matchup.sets.length - 1]?.team2Score || this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
+        const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchupSet?.team1Score || this.matchup?.team1Score} - ${this.matchupSet?.team2Score || this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
         let bestOf = `BO${this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length + 1 || ""}`;
         if (this.mapOrder.length > 1)
             bestOf = `BO${this.mapOrder.length + 1 / 2} ${bestOf}`;
         const firstTo = this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
         
-        if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.first)
+        if (!this.matchupSet?.first)
             return `${score} // ${bestOf}`;
 
-        const winner = this.matchup?.team1Score === firstTo ? this.matchup.team1?.name : this.matchup?.team2Score === firstTo ? this.matchup?.team2?.name : null;
+        let winner = this.matchup?.team1Score === firstTo ? this.matchup.team1?.name : this.matchup?.team2Score === firstTo ? this.matchup.team2?.name : null;
+        if (this.mapOrder.length > 1) {
+            winner = this.matchupSet?.team1Score === firstTo ? this.matchup?.team1?.name : this.matchupSet?.team2Score === firstTo ? this.matchup?.team2?.name : null;
+        }
         const nextMap = (this.matchupSet?.maps?.length || 0) > this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.length ? null : this.mapOrder[(this.matchupSet?.order || 1) - 1].order[this.matchupSet?.maps?.length || 0];
-        const first = this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.name;
-        const second = this.matchup?.team1?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team2?.name : this.matchup?.team2?.ID === this.matchup?.sets?.[this.matchup.sets.length - 1]?.first?.ID ? this.matchup?.team1?.name : null;
-        const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
-        const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team2?.name : this.matchup?.team1?.name : null;
+    
+        const first = this.matchupSet?.first?.name;
+        const second = this.matchup?.team1?.ID === this.matchupSet?.first?.ID ? this.matchup?.team2?.name : this.matchup?.team2?.ID === this.matchupSet?.first?.ID ? this.matchup?.team1?.name : null;
+    
+        let winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
+        let losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team2?.name : this.matchup?.team1?.name : null;
+        if (this.mapOrder.length > 1 && (this.matchupSet?.team1Score > 0 || this.matchupSet?.team2Score > 0)) {
+            winning = this.matchupSet?.team1Score > this.matchupSet?.team2Score ? this.matchup?.team1?.name : this.matchupSet?.team1Score < this.matchupSet?.team2Score ? this.matchup?.team2?.name : null;
+            losing = this.matchupSet?.team1Score > this.matchupSet?.team2Score ? this.matchup?.team2?.name : this.matchupSet?.team1Score < this.matchupSet?.team2Score ? this.matchup?.team1?.name : null;
+        }
+    
         const nextMapTeam = nextMap?.team === MapOrderTeam.Team1 ? first : nextMap?.team === MapOrderTeam.Team2 ? second : nextMap?.team === MapOrderTeam.TeamLoser ? losing ?? second : nextMap?.team === MapOrderTeam.TeamWinner ? winning ?? first : null;
 
-        const winnerString = `${winner ?? "N/A"} has won the matchup!`;
+        const winnerString = `${winner ?? "N/A"} has won the ${this.mapOrder.length > 1 ? "set" : "matchup"}!`;
         const nextMapString = `Next ${this.mapStatusToString(nextMap?.status || 0)}: ${nextMapTeam ?? "N/A"}`;
 
         return `${score} // ${bestOf} // ${winner ? winnerString : nextMapString}`;
