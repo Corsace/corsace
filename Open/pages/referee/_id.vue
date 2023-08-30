@@ -605,7 +605,7 @@ export default class Referee extends Vue {
 
     get nextMapMessage () {
         // TODO: Support sets, and don't hardcode no losing -> second and no winning -> first
-        const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchup?.team1Score} - ${this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
+        const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchup?.sets?.[this.matchup.sets.length - 1]?.team1Score || this.matchup?.team1Score} - ${this.matchup?.sets?.[this.matchup.sets.length - 1]?.team2Score || this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
         let bestOf = `BO${this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length + 1 || ""}`;
         if (this.mapOrder.length > 1)
             bestOf = `BO${this.mapOrder.length + 1 / 2} ${bestOf}`;
@@ -708,6 +708,15 @@ export default class Referee extends Vue {
             ...matchupData.matchup,
             date: new Date(matchupData.matchup.date),
         } : null;
+        if (this.matchup && !this.matchup.sets)
+            this.matchup.sets = [{
+                ID: 0,
+                order: 1,
+                first: null,
+                maps: [],
+                team1Score: 0,
+                team2Score: 0,
+            }];
 
         this.team1PlayerStates = this.matchup?.team1?.manager ? [{
             ID: this.matchup.team1.manager.ID,
@@ -937,12 +946,13 @@ export default class Referee extends Vue {
                 this.matchup.baseURL = ctx.data.baseURL;
                 this.matchup.mp = ctx.data.mpID;
                 this.runningLobby = true;
+                this.matchup.sets = [ctx.data.firstSet];
                 break;
             case "message":
                 this.addMessage(ctx.data);
                 break;
             case "first":
-                this.$set(this.matchup, "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2); // In order to make the computed properties watchers work 
+                this.$set(this.matchup.sets![this.matchup.sets!.length - 1], "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2); // In order to make the computed properties watchers work 
                 break;
             case "settings":
                 this.team1PlayerStates = this.team1PlayerStates.map(player => {
@@ -970,7 +980,14 @@ export default class Referee extends Vue {
                 break;
             case "map":
                 if (!this.matchup.sets)
-                    this.matchup.sets = [];
+                    this.matchup.sets = [{
+                        ID: 0,
+                        order: 1,
+                        first: null,
+                        maps: [],
+                        team1Score: 0,
+                        team2Score: 0,
+                    }];
                 if (!this.matchup.sets?.[this.matchup.sets.length - 1]?.maps)
                     this.matchup.sets[this.matchup.sets.length - 1].maps = [];
                 this.matchup.sets[this.matchup.sets.length - 1].maps!.push(ctx.data.map);
@@ -984,17 +1001,34 @@ export default class Referee extends Vue {
                 break;
             case "matchFinished":
                 this.mapStarted = false;
-                if (this.matchup) {
-                    this.matchup.team1Score = ctx.data.team1Score;
-                    this.matchup.team2Score = ctx.data.team2Score;
-                }
+                this.matchup.team1Score = ctx.data.team1Score;
+                this.matchup.team2Score = ctx.data.team2Score;
                 this.matchup.sets![this.matchup.sets!.length - 1].maps!.push(ctx.data.map);
+                this.matchup.sets![this.matchup.sets!.length - 1].team1Score = ctx.data.setTeam1Score;
+                this.matchup.sets![this.matchup.sets!.length - 1].team2Score = ctx.data.setTeam2Score;
                 break;
             case "closed":
                 this.team1PlayerStates.forEach(player => player.inLobby = player.ready = false);
                 this.team2PlayerStates.forEach(player => player.inLobby = player.ready = false);
                 this.runningLobby = false;
                 break;
+        }
+    }
+
+    newSet () {
+        if (!this.matchup?.sets)
+            return;
+
+        const firstTo = this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
+        if (this.matchup.sets[this.matchup.sets.length - 1].team1Score === firstTo || this.matchup.sets[this.matchup.sets.length - 1].team2Score === firstTo) {
+            this.matchup.sets.push({
+                ID: this.matchup.sets[this.matchup.sets.length - 1].ID + 1,
+                order: this.matchup.sets.length + 1,
+                first: null,
+                maps: [],
+                team1Score: 0,
+                team2Score: 0,
+            });
         }
     }
 

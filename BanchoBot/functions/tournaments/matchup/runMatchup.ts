@@ -83,6 +83,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     firstSet.order = 1;
     firstSet.matchup = matchup;
     firstSet.maps = [];
+    firstSet.team1Score = 0;
+    firstSet.team2Score = 0;
     await firstSet.save();
     matchup.sets = [firstSet];
     await matchup.save();
@@ -92,6 +94,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         type: "created",
         mpID: mpLobby.id,
         baseURL,
+        firstSet: {
+            ID: firstSet.ID,
+            order: firstSet.order,
+            first: null,
+            maps: firstSet.maps,
+            team1Score: firstSet.team1Score,
+            team2Score: firstSet.team2Score,
+        },
     });
 
     let autoStart = false;
@@ -697,6 +707,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         await publish(matchup, {
             type: "matchFinished",
+            setTeam1Score: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.team1Score || 0,
+            setTeam2Score: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.team2Score || 0,
             team1Score: matchup.team1Score,
             team2Score: matchup.team2Score,
             map: {
