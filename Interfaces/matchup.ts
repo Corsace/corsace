@@ -44,10 +44,12 @@ export enum MapStatus {
 }
 
 export interface MatchupSet {
-    ID: number;
-    order: number;
-    first?: Team | null;
-    maps: MatchupMap[] | null;
+    ID:         number;
+    order:      number;
+    first?:     Team | null;
+    maps:       MatchupMap[] | null;
+    team1Score: number;
+    team2Score: number;
 }
 
 export interface MatchupMap {

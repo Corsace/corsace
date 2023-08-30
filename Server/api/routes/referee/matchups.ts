@@ -1,15 +1,15 @@
 import Router from "@koa/router";
 import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
+import { Matchup as MatchupInterface } from "../../../../Interfaces/matchup";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Stage } from "../../../../Models/tournaments/stage";
 import { Round } from "../../../../Models/tournaments/round";
-import { Matchup as MatchupInterface } from "../../../../Interfaces/matchup";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
-import { Mappool } from "../../../../Interfaces/mappool";
 import { discordClient } from "../../../discord";
 import { isLoggedInDiscord } from "../../../middleware";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
 import { parseQueryParam } from "../../../utils/query";
+import dbMatchupToInterface from "../../../functions/tournaments/matchups/dbMatchupToInterface";
 
 const refereeMatchupsRouter = new Router();
 
@@ -129,10 +129,6 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
         return;
     }
 
-    const team1 = dbMatchup.team1 ? await dbMatchup.team1.teamInterface() : undefined;
-    const team2 = dbMatchup.team2 ? await dbMatchup.team2.teamInterface() : undefined;
-    const winner = dbMatchup.winner?.ID === team1?.ID ? team1 : dbMatchup.winner?.ID === team2?.ID ? team2 : undefined;
-
     const roundOrStage: Round | Stage | null = 
         dbMatchup.round ? 
             await Round
@@ -160,106 +156,15 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
                     .getOne() : 
                 null;
 
-    const matchup: MatchupInterface = {
-        ID: dbMatchup.ID,
-        date: dbMatchup.date,
-        mp: dbMatchup.mp,
-        teams: await Promise.all(dbMatchup.teams?.map(team => team.teamInterface()) || []),
-        team1,
-        team2,
-        team1Score: dbMatchup.team1Score,
-        team2Score: dbMatchup.team2Score,
-        potential: !dbMatchup.potentialFor,
-        baseURL: dbMatchup.baseURL,
-        round: roundOrStage instanceof Round ? {
-            ID: roundOrStage.ID,
-            name: roundOrStage.name,
-            abbreviation: roundOrStage.abbreviation,
-            mappool: roundOrStage.mappool?.map<Mappool>(mappool => ({
-                ID: mappool.ID,
-                name: mappool.name,
-                abbreviation: mappool.abbreviation,
-                createdAt: mappool.createdAt,
-                order: mappool.order,
-                isPublic: mappool.isPublic,
-                bannable: mappool.bannable,
-                mappackLink: mappool.mappackLink,
-                mappackExpiry: mappool.mappackExpiry,
-                targetSR: mappool.targetSR,
-                slots: mappool.slots || [],
-            })) || [],
-            isDraft: roundOrStage.isDraft,
-            mapOrder: roundOrStage.mapOrder,
-        } : undefined,
-        stage: roundOrStage instanceof Stage ? {
-            ID: roundOrStage.ID,
-            name: roundOrStage.name,
-            abbreviation: roundOrStage.abbreviation,
-            stageType: roundOrStage.stageType,
-            rounds: [],
-            mappool: roundOrStage.mappool?.map<Mappool>(mappool => ({
-                ID: mappool.ID,
-                name: mappool.name,
-                abbreviation: mappool.abbreviation,
-                createdAt: mappool.createdAt,
-                order: mappool.order,
-                isPublic: mappool.isPublic,
-                bannable: mappool.bannable,
-                mappackLink: mappool.mappackLink,
-                mappackExpiry: mappool.mappackExpiry,
-                targetSR: mappool.targetSR,
-                slots: mappool.slots || [],
-            })) || [],
-            createdAt: roundOrStage.createdAt,
-            order: roundOrStage.order,
-            scoringMethod: roundOrStage.scoringMethod,
-            isDraft: roundOrStage.isDraft,
-            qualifierTeamChooseOrder: roundOrStage.qualifierTeamChooseOrder,
-            timespan: roundOrStage.timespan,
-            isFinished: roundOrStage.isFinished,
-            initialSize: roundOrStage.initialSize,
-            finalSize: roundOrStage.finalSize,
-            publicScores: roundOrStage.publicScores,
-            mapOrder: roundOrStage.mapOrder,
-        } : undefined,
-        isLowerBracket: dbMatchup.isLowerBracket,
-        winner,
-        sets: await Promise.all(dbMatchup.sets?.map(async (set) => ({
-            ID: set.ID,
-            order: set.order,
-            first: await set.first?.teamInterface(false, false),
-            maps: set.maps?.map(map => ({
-                ID: map.ID,
-                map: map.map,
-                order: map.order,
-                status: map.status,
-                team1Score: map.team1Score,
-                team2Score: map.team2Score,
-                winner: map.winner,
-                scores: map.scores.map(score => ({
-                    ID: score.ID,
-                    user: score.user,
-                    score: score.score,
-                    mods: score.mods,
-                    misses: score.misses,
-                    combo: score.combo,
-                    fail: score.fail,
-                    accuracy: score.accuracy,
-                    fullCombo: score.fullCombo,
-                })),
-            })) || [],
-        })) || []),
-        forfeit: dbMatchup.forfeit,
-        referee: dbMatchup.referee,
-        streamer: dbMatchup.streamer,
-        commentators: dbMatchup.commentators,
-        messages: dbMatchup.messages,
-    };
-
-    ctx.body = {
+    const body: {
+        success: true;
+        matchup: MatchupInterface;
+    } = {
         success: true,
-        matchup,
+        matchup: await dbMatchupToInterface(dbMatchup, roundOrStage),
     };
+    
+    ctx.body = body;
 });
 
 export default refereeMatchupsRouter;
