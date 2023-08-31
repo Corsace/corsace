@@ -233,7 +233,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 .orWhere("potentialFor.ID != :matchupID2", { matchupID2: matchup!.ID })
                 .orWhere("potentialFor.ID != :potentialID2", { potentialID2: matchup!.potentialFor?.ID || 0 });
         }))
-        .andWhere("", { matchupID: matchup.ID })
         .andWhere("matchup.invalid = 0")
         .andWhere(new Brackets((qb) => {
             qb.where("team1.ID = :team1ID1", { team1ID1: matchup!.team1?.ID })
