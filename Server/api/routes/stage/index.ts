@@ -85,6 +85,9 @@ stageRouter.get("/:stageID/matchups", validateStageOrRound, async (ctx) => {
 });
 
 stageRouter.get("/:stageID/mappools", validateStageOrRound, async (ctx) => {
+    if (await ctx.cashed())
+        return;
+
     const stage: Stage = ctx.state.stage;
 
     const tournament = await Tournament
