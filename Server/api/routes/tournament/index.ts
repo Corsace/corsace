@@ -6,19 +6,12 @@ import { Next, ParameterizedContext } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { StaffMember } from "../../../../Interfaces/staff";
 import { Team } from "../../../../Models/tournaments/team";
-import { playingRoles, TournamentRoleType, tournamentStaffRoleOrder, unallowedToPlay } from "../../../../Interfaces/tournament";
+import { playingRoles, TournamentRoleType, tournamentStaffRoleOrder } from "../../../../Interfaces/tournament";
 import { discordClient } from "../../../discord";
-import { osuClient } from "../../../osu";
-import { Beatmap, Mode } from "nodesu";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
-import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
-import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
-import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { User } from "../../../../Models/user";
 import { createHash } from "crypto";
-import { MatchupScore } from "../../../../Interfaces/matchup";
 import { Stage } from "../../../../Models/tournaments/stage";
-import { StageType } from "../../../../Interfaces/stage";
 
 async function validateID (ctx: ParameterizedContext, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
@@ -52,24 +45,7 @@ tournamentRouter.get("/open/:year", async (ctx) => {
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
-        .leftJoinAndSelect("tournament.stages", "stages")
-        .leftJoinAndSelect("stages.rounds", "rounds")
-        .leftJoinAndSelect("tournament.organizer", "organizer")
-        .leftJoinAndSelect("tournament.teams", "team")
-        .leftJoinAndSelect("stages.mappool", "mappools")
-        .leftJoinAndSelect("rounds.mappool", "roundMappools")
-        .leftJoinAndSelect("mappools.slots", "slots")
-        .leftJoinAndSelect("slots.maps", "maps")
-        .leftJoinAndSelect("maps.beatmap", "beatmaps", "mappools.isPublic = true")
-        .leftJoinAndSelect("maps.customBeatmap", "customBeatmaps", "mappools.isPublic = true")
-        .leftJoinAndSelect("maps.customMappers", "customMappers", "mappools.isPublic = true")
-        .leftJoinAndSelect("beatmaps.beatmapset", "beatmapsets")
-        .leftJoinAndSelect("beatmapsets.creator", "beatmapsetCreator")
-        .leftJoinAndSelect("roundMappools.slots", "roundSlots")
-        .leftJoinAndSelect("roundSlots.maps", "roundMaps")
-        .leftJoinAndSelect("roundMaps.beatmap", "roundBeatmaps", "roundMappools.isPublic = true")
-        .leftJoinAndSelect("roundMaps.customBeatmap", "roundCustomBeatmaps", "roundMappools.isPublic = true")
-        .leftJoinAndSelect("roundMaps.customMappers", "roundCustomMappers", "roundMappools.isPublic = true")
+        .innerJoinAndSelect("tournament.organizer", "organizer")
         .where("tournament.year = :year", { year })
         .andWhere("tournament.isOpen = true")
         .getOne();
@@ -81,51 +57,46 @@ tournamentRouter.get("/open/:year", async (ctx) => {
         };
         return;
     }
-    
-    const updateBeatmapData = async (mappool: Mappool, slot: MappoolSlot, map: MappoolMap) => {
-        if (!mappool.isPublic) {
-            mappool.mappackLink = null;
-            mappool.mappackExpiry = null;
-        }
 
-        if (!slot.allowedMods || !map.beatmap)
-            return;
+    tournament.stages = await Stage
+        .createQueryBuilder("stage")
+        .leftJoinAndSelect("stage.rounds", "rounds")
+        .where("stage.tournamentID = :ID", { ID: tournament.ID })
+        .getMany();
 
-        const set = await osuClient.beatmaps.getByBeatmapId(map.beatmap.ID, Mode.all, undefined, undefined, slot.allowedMods) as Beatmap[];
-        if (set.length === 0)
-            return;
+    tournament.stages.sort((a, b) => a.order - b.order);
+    tournament.stages.forEach(async stage => {
+        stage.rounds.forEach(async round => {
+            round.mappool = await Mappool
+                .createQueryBuilder("mappool")
+                .leftJoinAndSelect("mappool.slots", "slots")
+                .leftJoinAndSelect("slots.maps", "maps")
+                .where("mappool.roundID = :ID", { ID: round.ID })
+                .getMany();
 
-        const beatmap = applyMods(set[0], modsToAcronym(slot.allowedMods));
-        map.beatmap.totalLength = beatmap.totalLength;
-        map.beatmap.totalSR = beatmap.difficultyRating;
-        map.beatmap.circleSize = beatmap.circleSize;
-        map.beatmap.overallDifficulty = beatmap.overallDifficulty;
-        map.beatmap.approachRate = beatmap.approachRate;
-        map.beatmap.hpDrain = beatmap.hpDrain;
-        map.beatmap.beatmapset.BPM = beatmap.bpm;
-    };
-    
-    const beatmapPromises: Promise<void>[] = [];
-    tournament.stages.forEach(stage => {
-        stage.rounds.forEach(round => {
             round.mappool.forEach(mappool => {
-                mappool.slots.forEach(slot => {
-                    slot.maps.forEach(map => {
-                        beatmapPromises.push(updateBeatmapData(mappool, slot, map));
-                    });
-                });
+                if (!mappool.isPublic) {
+                    mappool.mappackLink = null;
+                    mappool.mappackExpiry = null;
+                }
             });
         });
-        stage.mappool?.forEach(mappool => {
-            mappool.slots.forEach(slot => {
-                slot.maps.forEach(map => {
-                    beatmapPromises.push(updateBeatmapData(mappool, slot, map));
-                });
-            });
+
+        stage.mappool = await Mappool
+            .createQueryBuilder("mappool")
+            .leftJoinAndSelect("mappool.slots", "slots")
+            .leftJoinAndSelect("slots.maps", "maps")
+            .where("mappool.stageID = :ID", { ID: stage.ID })
+            .getMany();
+
+        stage.mappool.forEach(mappool => {
+            if (!mappool.isPublic) {
+                mappool.mappackLink = null;
+                mappool.mappackExpiry = null;
+            }
         });
     });
 
-    await Promise.all(beatmapPromises);
     ctx.body = tournament;
 });
 
@@ -265,160 +236,6 @@ tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
             },
         }));
     });
-});
-
-tournamentRouter.get("/:tournamentID/:stageID/scores", validateID, async (ctx) => {
-    const tournamentID: number = ctx.state.ID;
-    const stageID: number = parseInt(ctx.params.stageID);
-    if (!stageID || isNaN(stageID)) {
-        ctx.body = {
-            success: false,
-            error: "Invalid stage ID",
-        };
-        return;
-    }
-
-    const tournament = await Tournament
-        .createQueryBuilder("tournament")
-        .leftJoinAndSelect("tournament.roles", "roles")
-        .innerJoinAndSelect("tournament.organizer", "organizer")
-        .where("tournament.ID = :tournamentID", { tournamentID })
-        .getOne();
-
-    if (!tournament) {
-        ctx.body = {
-            success: false,
-            error: "Tournament not found",
-        };
-        return;
-    }
-
-    const stage = await Stage
-        .createQueryBuilder("stage")
-        .leftJoinAndSelect("stage.tournament", "tournament")
-        .where("stage.ID = :stageID", { stageID })
-        .andWhere("tournament.ID = :tournamentID", { tournamentID })
-        .getOne();
-
-    if (!stage) {
-        ctx.body = {
-            success: false,
-            error: "Stage not found",
-        };
-        return;
-    }
-
-    if (stage.stageType === StageType.Qualifiers) {
-        // For when tournaments don't have their qualifier scores public
-        if (ctx.query.key) {
-            const key = ctx.query.key as string;
-            if (!key) {
-                ctx.body = {
-                    success: false,
-                    error: "No key provided",
-                };
-                return;
-            }
-
-            const hash = createHash("sha512");
-            hash.update(key);
-            const hashedKey = hash.digest("hex");
-
-            const keyCheck = await Tournament
-                .createQueryBuilder("tournament")
-                .where("tournament.key = :key", { key: hashedKey })
-                .getExists();
-
-            if (!keyCheck) {
-                ctx.body = {
-                    success: false,
-                    error: "Tournament does not have public qualifiers and you are not logged in to view this tournament's scores",
-                };
-                return;
-            }
-        } else if (
-            !tournament.publicQualifiers && 
-            tournament.organizer.ID !== ctx.state.user?.ID
-        ) {
-            if (!ctx.state.user?.discord.userID) {
-                ctx.body = {
-                    success: false,
-                    error: "Tournament does not have public qualifiers and you are not logged in to view this tournament's scores",
-                };
-                return;
-            }
-
-            // Checking if they have privileged roles or not
-            try {
-                const privilegedRoles = tournament.roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
-                const tournamentServer = await discordClient.guilds.fetch(tournament.server);
-                const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
-                if (!privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID))) {
-                    ctx.body = {
-                        success: false,
-                        error: "Tournament does not have public qualifiers and you do not have the required role to view scores",
-                    };
-                    return;
-                }
-            } catch (e) {
-                ctx.body = {
-                    success: false,
-                    error: `Tournament does not have public qualifiers and you may not be in the discord server to view scores.\n${e}`,
-                };
-                return;
-            }
-        }
-    }
-
-    const teams = await Team
-        .createQueryBuilder("team")
-        .innerJoinAndSelect("team.members", "member")
-        .innerJoinAndSelect("team.tournaments", "tournament")
-        .where("tournament.ID = :tournamentID", { tournamentID })
-        .getMany();
-
-    const teamLookup = new Map<string, Team>();
-    teams.forEach(team => {
-        team.members.forEach(member => {
-            teamLookup.set(member.osu.userID, team);
-        });
-    });
-
-    const rawScores = await Matchup
-        .createQueryBuilder("matchup")
-        .innerJoin("matchup.stage", "stage")
-        .innerJoin("stage.tournament", "tournament")
-        .innerJoin("matchup.maps", "matchupMap")
-        .innerJoin("matchupMap.map", "mappoolMap")
-        .innerJoin("mappoolMap.slot", "slot")
-        .innerJoin("matchupMap.scores", "score")
-        .innerJoin("score.user", "user")
-        .where("tournament.ID = :tournamentID", { tournamentID })
-        .andWhere("stage.ID = :stageID", { stageID })
-        .select([
-            "user.osuUsername",
-            "user.osuUserid",
-            "score.score",
-            "slot.acronym",
-            "slot.ID",
-            "mappoolMap.order",
-        ])
-        .getRawMany();
-    const scores: MatchupScore[] = rawScores.map(score => {
-        const team = teamLookup.get(score.osuUserid) || { ID: -1, name: "N/A", avatarURL: undefined };
-        return {
-            teamID: team.ID,
-            teamName: team.name,
-            teamAvatar: team.avatarURL,
-            username: score.osuUsername,
-            userID: parseInt(score.osuUserid),
-            score: score.score_score,
-            map: `${score.slot_acronym}${score.mappoolMap_order}`,
-            mapID: parseInt(`${score.slot_ID}${score.mappoolMap_order}`),
-        };
-    });
-
-    ctx.body = scores;
 });
 
 tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {

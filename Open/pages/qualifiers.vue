@@ -4,7 +4,7 @@
             <div
                 class="qualifiers__sub_header_item"
                 :class="{ 'qualifiers__sub_header_item--active': page === 'mappool' }"
-                @click="page = 'mappool'"
+                @click="getMappool"
             >
                 {{ $t('open.qualifiers.nav.mappool') }}
             </div>
@@ -221,12 +221,14 @@ export default class Qualifiers extends Vue {
             await this.$store.dispatch("open/setQualifierList", this.tournament?.ID);
     }
 
+    async getMappool () {
+        this.page = "mappool";
+        this.$store.dispatch("open/setMappools", this.qualifiersStage?.ID);
+    }
+
     async getScores () {
         this.page = "scores";
-        this.$store.dispatch("open/setScores", {
-            tournamentID: this.tournament?.ID,
-            stageID: this.qualifiersStage?.ID,
-        });
+        this.$store.dispatch("open/setScores", this.qualifiersStage?.ID);
     }
 }
 </script>
