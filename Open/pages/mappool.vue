@@ -230,7 +230,9 @@ export default class Mappool extends Vue {
 
     mounted () {
         this.stageList = this.tournament?.stages || [];
-        this.index = this.stageList.findLastIndex(s => s.mappool.some(m => m.isPublic) || s.rounds.some(r => r.mappool.some(m => m.isPublic))) || 0;
+        this.index = this.stageList.findIndex(s => s.timespan.end > new Date());
+        if (this.index === -1)
+            this.index = 0;
     }
 }
 </script>
