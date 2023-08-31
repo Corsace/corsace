@@ -55,7 +55,7 @@
                             >
                         </a>
                         <a
-                            v-for="mappool in mappoolList"
+                            v-for="mappool in mappools"
                             :key="mappool.ID"
                             :href="mappool.mappackLink || ''"
                             class="qualifiers__button"
@@ -117,9 +117,9 @@
                     </div>
                 </template>
             </OpenTitle>
-            <div v-if="page === 'mappool' && mappoolList.length !== 0">
+            <div v-if="page === 'mappool' && mappools?.length !== 0">
                 <MappoolView
-                    v-for="mappool in mappoolList"
+                    v-for="mappool in mappools"
                     :key="mappool.ID"
                     :pool="mappool"
                 />
@@ -133,7 +133,7 @@
             <div v-if="page === 'scores'">
                 <!-- TODO: Actually support multiple pools -->
                 <ScoresView
-                    v-for="mappool in mappoolList"
+                    v-for="mappool in mappools"
                     :key="mappool.ID"
                     :view="scoreView"
                     :pool="mappool"
@@ -196,6 +196,7 @@ export default class Mappool extends Vue {
     scoreView: "players" | "teams" = "teams";
 
     @openModule.State tournament!: Tournament | null;
+    @openModule.State mappools!: MappoolInterface[] | null;
 
     stageList: Stage[] = [];
     index = 0;
@@ -205,15 +206,26 @@ export default class Mappool extends Vue {
     }
 
     @Watch("selectedStage")
-    async getScores () {
-        await this.$store.dispatch("open/setScores", {
-            tournamentID: this.tournament?.ID,
-            stageID: this.selectedStage?.ID,
-        });
+    async stageScoresAndMappools () {
+        if (!this.selectedStage) {
+            this.$store.commit("open/setMappools", []);
+            this.$store.commit("open/setScores", []);
+            return;
+        }
+        
+        const ID = this.selectedStage.ID;
+        this.$store.commit("open/setMappools", []);
+        this.$store.commit("open/setScores", []);
+
+        await this.pause(500);
+        if (ID !== this.selectedStage.ID) return;
+
+        await this.$store.dispatch("open/setMappools", this.selectedStage?.ID);
+        await this.$store.dispatch("open/setScores", this.selectedStage?.ID);
     }
 
-    get mappoolList (): MappoolInterface [] {
-        return this.selectedStage?.mappool.concat(this.selectedStage?.rounds.flatMap(r => r.mappool)).filter(p => p.isPublic) || [];
+    async pause (ms: number) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     mounted () {

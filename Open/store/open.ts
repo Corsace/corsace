@@ -3,7 +3,8 @@ import { Tournament } from "../../Interfaces/tournament";
 import { BaseTeam, Team, TeamList, TeamUser } from "../../Interfaces/team";
 import { BaseQualifier } from "../../Interfaces/qualifier";
 import { StaffList } from "../../Interfaces/staff";
-import { MatchupScore } from "../../Interfaces/matchup";
+import { MatchupList, MatchupScore } from "../../Interfaces/matchup";
+import { Mappool } from "../../Interfaces/mappool";
 
 export interface OpenState {
     title: string;
@@ -12,6 +13,8 @@ export interface OpenState {
     team: Team | null;
     teamInvites: BaseTeam[] | null;
     qualifierList: BaseQualifier[] | null;
+    matchupList: MatchupList[] | null;
+    mappools: Mappool[] | null;
     scores: MatchupScore[] | null;
     staffList: StaffList[] | null;
 }
@@ -23,6 +26,8 @@ export const state = (): OpenState => ({
     team: null,
     teamInvites: null,
     qualifierList: null,
+    matchupList: null,
+    mappools: null,
     scores: null,
     staffList: null,
 });
@@ -54,7 +59,7 @@ export const mutations: MutationTree<OpenState> = {
                     },
                     rounds: stage.rounds.map(round => ({
                         ...round,
-                        mappool: round.mappool.map(mappool => ({
+                        mappool: round.mappool?.map(mappool => ({
                             ...mappool,
                             createdAt: new Date(mappool.createdAt),
                             mappackExpiry: mappool.mappackExpiry ? new Date(mappool.mappackExpiry) : null,
@@ -62,7 +67,7 @@ export const mutations: MutationTree<OpenState> = {
                                 ...slot,
                                 createdAt: new Date(slot.createdAt),
                             })),
-                        })),
+                        })) || [],
                     })),
                     mappool: stage.mappool?.map(mappool => ({
                         ...mappool,
@@ -72,7 +77,7 @@ export const mutations: MutationTree<OpenState> = {
                             ...slot,
                             createdAt: new Date(slot.createdAt),
                         })),
-                    })),
+                    })) || [],
                 })),
             };
 
@@ -116,6 +121,24 @@ export const mutations: MutationTree<OpenState> = {
             ...q,
             date: new Date(q.date),
         })) || null;
+    },
+    async setMatchups (state, matchups: MatchupList[] | undefined) {
+        state.matchupList = matchups?.map(matchup => {
+            matchup.date = new Date(matchup.date);
+            return matchup;
+        }) || [];
+        state.matchupList.sort((a, b) => a.date.getTime() - b.date.getTime());
+    },
+    async setMappools (state, mappools: Mappool[] | undefined) {
+        state.mappools = mappools?.map(mappool => ({
+            ...mappool,
+            createdAt: new Date(mappool.createdAt),
+            mappackExpiry: mappool.mappackExpiry ? new Date(mappool.mappackExpiry) : null,
+            slots: mappool.slots.map(slot => ({
+                ...slot,
+                createdAt: new Date(slot.createdAt),
+            })),
+        })) || [];
     },
     async setScores (state, scores: MatchupScore[] | undefined) {
         state.scores = scores || null;
@@ -172,15 +195,32 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (!data.error)
             commit("setQualifierList", data);
     },
-    async setScores ({ commit }, IDs) {
-        const { tournamentID, stageID } = IDs;
-        if (!tournamentID || !stageID || isNaN(parseInt(tournamentID)) || isNaN(parseInt(stageID)))
+    async setMatchups ({ commit }, stageID) {
+        if (!stageID || isNaN(parseInt(stageID)))
             return;
 
-        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/${stageID}/scores`);
+        const { data } = await this.$axios.get(`/api/stage/${stageID}/matchups`);
 
         if (!data.error)
-            commit("setScores", data);
+            commit("setMatchups", data.matchups);
+    },
+    async setMappools ({ commit }, stageID) {
+        if (!stageID || isNaN(parseInt(stageID)))
+            return;
+
+        const { data } = await this.$axios.get(`/api/stage/${stageID}/mappools`);
+
+        if (!data.error)
+            commit("setMappools", data.mappools);
+    },
+    async setScores ({ commit }, stageID) {
+        if (!stageID || isNaN(parseInt(stageID)))
+            return;
+
+        const { data } = await this.$axios.get(`/api/stage/${stageID}/scores`);
+
+        if (!data.error)
+            commit("setScores", data.scores);
     },
     async setStaffList ({ commit }, tournamentID) {
         const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/staff`);
