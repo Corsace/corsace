@@ -107,9 +107,9 @@ stageRouter.get("/:stageID/mappools", validateStageOrRound, async (ctx) => {
 
     const mappoolQ = await Mappool
         .createQueryBuilder("mappool")
-        .leftJoinAndSelect("mappool.stage", "stage")
-        .leftJoinAndSelect("mappool.slots", "slots")
-        .leftJoinAndSelect("slots.maps", "maps")
+        .innerJoinAndSelect("mappool.stage", "stage")
+        .innerJoinAndSelect("mappool.slots", "slots")
+        .innerJoinAndSelect("slots.maps", "maps")
         .leftJoinAndSelect("maps.beatmap", "beatmaps")
         .leftJoinAndSelect("beatmaps.beatmapset", "beatmapsets")
         .leftJoinAndSelect("maps.customBeatmap", "customBeatmaps")
@@ -179,7 +179,8 @@ stageRouter.get("/:stageID/mappools", validateStageOrRound, async (ctx) => {
         map.beatmap.overallDifficulty = beatmap.overallDifficulty;
         map.beatmap.approachRate = beatmap.approachRate;
         map.beatmap.hpDrain = beatmap.hpDrain;
-        map.beatmap.beatmapset.BPM = beatmap.bpm;
+        if (map.beatmap.beatmapset)
+            map.beatmap.beatmapset.BPM = beatmap.bpm;
     };
 
     const beatmapPromises: Promise<void>[] = [];
