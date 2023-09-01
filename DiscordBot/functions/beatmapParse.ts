@@ -106,12 +106,12 @@ export async function parsedBeatmapToCustom (
     const maxCombo = beatmap.max_combo;
 
     // Obtaining length
-    const lengthMs = (beatmap.hit_objects?.[0].start_time ?? 0) - (beatmap.hit_objects?.[beatmap.hit_objects?.length].start_time ?? 0);
+    const lengthMs = (beatmap.hit_objects?.[beatmap.hit_objects?.length - 1]?.start_time ?? 0) - (beatmap.hit_objects?.[0]?.start_time ?? 0);
     const length = lengthMs / 1000;
 
     // Obtaining bpm
     // TODO: wasm-replay-parser-rs currently doesn't have enough info for finding BPM
-    // Also this is old code from v0.1.2
+    // Also this is old code from v0.1.2 so this isn't going to work anyways
     // const changedLines = beatmap.timing_points.filter(line => line.change === true);
     // const timingPoints = changedLines.map((line, i) => {
     //     return {
@@ -129,7 +129,7 @@ export async function parsedBeatmapToCustom (
     // Obtaining star rating
     const aimSR = beatmapData.beatmapAttributes?.difficulty?.aim_strain ?? 0;
     const speedSR = beatmapData.beatmapAttributes?.difficulty?.speed_strain ?? 0;
-    const sr = beatmapData.beatmapAttributes?.difficulty?.aim_strain ?? 0;
+    const sr = beatmapData.beatmapAttributes?.difficulty?.stars ?? 0;
 
     mappoolMap.customBeatmap.link = link;
     mappoolMap.customBeatmap.background = beatmapData.background;
