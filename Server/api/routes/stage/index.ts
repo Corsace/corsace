@@ -111,6 +111,7 @@ stageRouter.get("/:stageID/mappools", validateStageOrRound, async (ctx) => {
         .leftJoinAndSelect("mappool.slots", "slots")
         .leftJoinAndSelect("slots.maps", "maps")
         .leftJoinAndSelect("maps.beatmap", "beatmaps")
+        .leftJoinAndSelect("beatmaps.beatmapset", "beatmapsets")
         .leftJoinAndSelect("maps.customBeatmap", "customBeatmaps")
         .leftJoinAndSelect("maps.customMappers", "customMappers");
 
