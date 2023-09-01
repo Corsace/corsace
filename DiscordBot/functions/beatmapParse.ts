@@ -110,21 +110,7 @@ export async function parsedBeatmapToCustom (
     const length = lengthMs / 1000;
 
     // Obtaining bpm
-    // TODO: wasm-replay-parser-rs currently doesn't have enough info for finding BPM
-    // Also this is old code from v0.1.2 so this isn't going to work anyways
-    // const changedLines = beatmap.timing_points.filter(line => line.change === true);
-    // const timingPoints = changedLines.map((line, i) => {
-    //     return {
-    //         bpm: 60000 / line.ms_per_beat,
-    //         length: (i < changedLines.length - 1) ? changedLines[i + 1].time - line.time : beatmap!.objects[beatmap!.objects.length - 1].time - line.time,
-    //     };
-    // });
-    // let bpm = 0;
-    // if (timingPoints.length === 1)
-    //     bpm = timingPoints[0].bpm;
-    // else
-    //     bpm = timingPoints.reduce((acc, curr) => acc + curr.length * curr.bpm, 0) / timingPoints.reduce((acc, curr) => acc + curr.length, 0);
-    const bpm = -666;
+    const bpm = beatmap.bpm ?? 0;
 
     // Obtaining star rating
     const aimSR = beatmapData.beatmapAttributes?.difficulty?.aim_strain ?? 0;
