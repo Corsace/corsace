@@ -40,7 +40,6 @@ export async function beatmapParse (m: Message | ChatInputCommandInteraction, di
         if (entry.type === "File" && entry.props.path.endsWith(".osu") && !foundBeatmap) {
             const parsedBeatmap = parseBeatmapExtra(Uint8Array.from(buffer));
             beatmapAttributes = parseBeatmapAttributes(undefined, Uint8Array.from(buffer));
-            console.log({parsedBeatmap});
 
             if (diff !== "" && parsedBeatmap.diff_name.toLowerCase() !== diff.toLowerCase())
                 continue;
