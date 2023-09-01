@@ -14,6 +14,13 @@ export class MatchupSets1692800456243 implements MigrationInterface {
             FROM matchup
         `);
 
+        const rawMaps = await queryRunner.query(`
+            SELECT
+                matchup_map.ID AS ID,
+                matchup_map.matchupID AS matchupID
+            FROM matchup_map
+        `);
+
         await queryRunner.query(`ALTER TABLE \`matchup\` DROP FOREIGN KEY \`FK_83d3c0a5db0f9245bc29ae6730f\``);
         await queryRunner.query(`ALTER TABLE \`matchup_map\` DROP FOREIGN KEY \`FK_a79753c16f88bb77b80f5d30b84\``);
         await queryRunner.query(`ALTER TABLE \`matchup_map\` CHANGE \`matchupID\` \`setID\` int NULL`);
@@ -26,21 +33,23 @@ export class MatchupSets1692800456243 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`matchup_set\` ADD CONSTRAINT \`FK_aea8f15057763d4769bc4573de0\` FOREIGN KEY (\`winnerID\`) REFERENCES \`team\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`matchup_map\` ADD CONSTRAINT \`FK_040496538cb713b0233be919fd6\` FOREIGN KEY (\`setID\`) REFERENCES \`matchup_set\`(\`ID\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
 
-        if (rawMatchups.length > 0)
+        if (rawMatchups.length > 0) {
             await queryRunner.query(`
                 INSERT INTO \`matchup_set\` (ID, team1Score, team2Score, matchupID, firstID, winnerID)
                 VALUES ${rawMatchups.map((matchup: any, i: number) => `(${i + 1}, ${matchup.team1Score}, ${matchup.team2Score}, ${matchup.ID}, ${matchup.firstID || "NULL"}, ${matchup.winnerID || "NULL"})`).join(", ")}
             `);
 
-        await queryRunner.query(`
-            UPDATE \`matchup_map\`
-            SET setID = (
-                SELECT matchup_set.ID
-                FROM matchup_set
-                WHERE matchup_set.matchupID = matchup_map.matchupID
-                LIMIT 1
-            )
-        `);
+            await Promise.all(rawMaps.map(map => queryRunner.query(`
+                UPDATE \`matchup_map\`
+                SET setID = (
+                    SELECT matchup_set.ID
+                    FROM matchup_set
+                    WHERE matchup_set.matchupID = ${map.matchupID}
+                    LIMIT 1
+                )
+                WHERE ID = ${map.ID}
+            `)));
+        }
     }
 
     public async down (queryRunner: QueryRunner): Promise<void> {
