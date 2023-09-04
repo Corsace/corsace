@@ -56,7 +56,7 @@ function runMatchupCheck (matchup: Matchup, replace: boolean) {
         throw new Error("Matchup is already assigned to an mp ID");
     if (!matchup.round?.mappool && !matchup.stage.mappool)
         throw new Error("Matchup is missing mappool");
-    if (matchup.stage.stageType !== StageType.Qualifiers && (!matchup.round?.mapOrder && !matchup.stage.mapOrder))
+    if (matchup.stage.stageType !== StageType.Qualifiers && (!matchup.round?.mapOrder?.length && !matchup.stage.mapOrder?.length))
         throw new Error("Matchup is missing map order");
 }
 
