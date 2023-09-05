@@ -5,7 +5,6 @@ import { MapOrderTeam, StageType } from "../../../../Interfaces/stage";
 import { MapStatus } from "../../../../Interfaces/matchup";
 import { MapOrder } from "../../../../Models/tournaments/mapOrder";
 import { Round } from "../../../../Models/tournaments/round";
-import { TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { filter, timedOut } from "../../../functions/messageInteractionFunctions";
 import { loginResponse } from "../../../functions/loginResponse";
 import channelID from "../../../functions/channelID";
@@ -171,14 +170,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
             else
                 mapOrder.stage = stage;
             orderMade.push(mapOrder);
-        }
-
-        if (orderMade.filter(o => o.status === MapStatus.Picked).length % 2 === 0) {
-            const reply = await msg.reply(`U have an even number of picks which is impossible to have a clear winner for the set.`);
-            setTimeout(async () => {
-                await reply.delete();
-            }, 5000);
-            return;
         }
 
         newOrder = `Set ${set}: ${orderMade.map(o => `\`${MapOrderTeam[o.team]} ${MapStatus[o.status]}\``).join(" ")}\n`;

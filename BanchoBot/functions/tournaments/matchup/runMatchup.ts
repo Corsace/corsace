@@ -130,7 +130,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     let protecting: string | null = null;
     let firstTo: number | null = null;
 
-    if (matchup.stage!.stageType === StageType.Qualifiers) {
+    if (matchup.stage!.stageType !== StageType.Qualifiers) {
         picking = setOrder[0]?.maps.filter(map => map.status === MapStatus.Picked)[0] ? setOrder[0]?.maps.filter(map => map.status === MapStatus.Picked)[0].team === MapOrderTeam.Team1 ? "picking first" : "picking second" : null;
         banning = setOrder[0]?.maps.filter(map => map.status === MapStatus.Banned)[0] ? setOrder[0]?.maps.filter(map => map.status === MapStatus.Banned)[0].team === MapOrderTeam.Team1 ? "banning first" : "banning second" : null;
         protecting = setOrder[0]?.maps.filter(map => map.status === MapStatus.Protected)[0] ? setOrder[0]?.maps.filter(map => map.status === MapStatus.Protected)[0].team === MapOrderTeam.Team1 ? "protecting first" : "protecting second" : null;
@@ -250,9 +250,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await matchup.save();
                 rolling = false;
 
-                // TODO: Don't hardcode picking/banning/protecting first/second in the message
-
-                await mpChannel.sendMessage(`OK ${matchup.sets![matchup.sets!.length - 1].first} is considered team 1 so they'll be protecting ${protecting}, banning ${banning}, and picking ${picking}}`);
+                await mpChannel.sendMessage(`OK ${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so they'll be protecting ${protecting}, banning ${banning}, and picking ${picking}`);
             } else {
                 const player = playersInLobby.find(p => p.user.username === username);
                 if (!player)
@@ -307,9 +305,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await matchup.save();
                 rolling = false;
 
-                
-                // TODO: Don't hardcode picking/banning/protecting first/second in the message
-                await mpChannel.sendMessage(`OK ${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so they'll be picking first and banning/protecting second`);
+                await mpChannel.sendMessage(`OK ${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so they'll be protecting ${protecting}, banning ${banning}, and picking ${picking}`);
             }
 
             await publish(matchup, { 
