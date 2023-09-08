@@ -23,13 +23,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!stage)
         return;
 
-    if (stage.stageType === StageType.Qualifiers && !tournament.publicQualifiers && !await securityChecks(m, false, false, [], unallowedToPlay))
+    if (stage.stageType === StageType.Qualifiers && !stage.publicScores && !await securityChecks(m, false, false, [], unallowedToPlay))
         return;
 
     const matchups = await Matchup
         .createQueryBuilder("matchup")
         .innerJoin("matchup.stage", "stage")
-        .leftJoinAndSelect("matchup.maps", "map")
+        .leftJoinAndSelect("matchup.sets", "set")
+        .leftJoinAndSelect("set.maps", "map")
         .leftJoinAndSelect("map.map", "mappoolMap")
         .leftJoinAndSelect("mappoolMap.slot", "slot")
         .leftJoinAndSelect("map.scores", "score")
@@ -43,7 +44,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .where("stage.ID = :ID", { ID: stage.ID })
         .getMany();
 
-    const maps = matchups.flatMap((matchup) => matchup.maps?.filter(map => map.status === MapStatus.Picked) ?? []);
+    const sets = matchups.flatMap((matchup) => matchup.sets ?? []);
+    const setMaps = sets.flatMap((set) => set.maps ?? []);
+    const maps = setMaps.filter(map => map.status === MapStatus.Picked);
     const mapNames = maps
         .map(map => `${map.map!.slot!.acronym}${map.map!.order}`)
         .filter((map, index, self) => self.indexOf(map) === index);
@@ -51,12 +54,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .flatMap((matchup) => matchup.teams ?? [matchup.team1, matchup.team2])
         .filter((team, index, self) => team && self.findIndex(t => t && t.ID === team.ID) === index) as Team[];
     const scores = matchups
-        .flatMap((matchup) => matchup.maps?.flatMap(map => map.scores ?? []) ?? [])
+        .flatMap((matchup) => matchup.sets?.flatMap(set => set.maps?.flatMap(map => map.scores) ?? []) ?? [])
         .map(score => {
             // Identify the user, team, and mp like you're currently doing
             const user = score.user?.osu.username;
             const team = teams.find(team => team.members.some(member => member.ID === score.user?.ID))?.name || "N/A";
-            const mp = matchups.find(matchup => matchup.maps?.some(map => map.scores?.some(s => s.ID === score.ID)) ?? false)?.mp || "N/A";
+            const mp = matchups.find(matchup => matchup.sets?.some(set => set.maps?.some(map => map.scores?.some(s => s.ID === score.ID)) ?? false))?.mp || "N/A";
 
             // Obtain map name
             const map = maps.find(map => map.scores?.some(s => s.ID === score.ID));

@@ -6,6 +6,7 @@ import { Matchup } from "./matchup";
 import { Team as TeamInterface, TeamMember } from "../../Interfaces/team";
 import { BaseTournament } from "../../Interfaces/tournament";
 import { ModeDivisionType } from "../MCA_AYIM/modeDivision";
+import { MatchupSet } from "./matchupSet";
 
 @Entity()
 export class Team extends BaseEntity {
@@ -56,8 +57,11 @@ export class Team extends BaseEntity {
     @OneToMany(() => Matchup, matchup => matchup.team2)
         matchupsAsTeam2!: Matchup[];
 
-    @OneToMany(() => Matchup, matchup => matchup.first)
-        matchupsFirst!: Matchup[];
+    @OneToMany(() => MatchupSet, set => set.first)
+        setsFirst!: Matchup[];
+
+    @OneToMany(() => MatchupSet, set => set.winner)
+        setWins!: Matchup[];
 
     @OneToMany(() => Matchup, matchup => matchup.winner)
         wins!: Matchup[];
@@ -91,26 +95,26 @@ export class Team extends BaseEntity {
             
     }
 
-    public async teamInterface (): Promise<TeamInterface> {
-        const qualifier = await Matchup
+    public async teamInterface (queryQualifier = false, queryTournaments = false): Promise<TeamInterface> {
+        const qualifier = queryQualifier ? await Matchup
             .createQueryBuilder("matchup")
             .innerJoin("matchup.teams", "team")
             .innerJoin("matchup.stage", "stage")
             .where("team.ID = :teamID", { teamID: this.ID })
             .andWhere("stage.stageType = '0'")
-            .getOne();
+            .getOne() : null;
         const tournaments: BaseTournament[] = this.tournaments?.map(t => ({
             ID: t.ID,
             name: t.name,
-        })) || (await Tournament
-            .createQueryBuilder("tournament")
-            .innerJoin("tournament.teams", "team")
-            .where("team.ID = :teamID", { teamID: this.ID })
-            .select(["tournament.ID", "tournament.name"])
-            .getMany()).map(t => ({
-            ID: t.ID,
-            name: t.name,
-        }));
+        })) || queryTournaments ? (await Tournament
+                .createQueryBuilder("tournament")
+                .innerJoin("tournament.teams", "team")
+                .where("team.ID = :teamID", { teamID: this.ID })
+                .select(["tournament.ID", "tournament.name"])
+                .getMany()).map(t => ({
+                ID: t.ID,
+                name: t.name,
+            })) : [];
         return {
             ID: this.ID,
             name: this.name,

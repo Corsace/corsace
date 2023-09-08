@@ -43,6 +43,9 @@ export class Stage extends BaseEntity {
     @Column("boolean", { nullable: true })
         qualifierTeamChooseOrder?: boolean | null;
 
+    @Column("boolean", { default: true })
+        publicScores!: boolean;
+
     @Column(() => Phase)
         timespan!: Phase;
 

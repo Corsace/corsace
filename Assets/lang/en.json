@@ -675,6 +675,7 @@
             "back": "BACK TO MATCHUP LIST",
             "createLobby": "CREATE LOBBY",
             "roll": "ROLL",
+            "reroll": "RE-ROLL",
             "settings": "!MP SETTINGS",
             "timer": "!MP TIMER",
             "startMap": "!MP START",

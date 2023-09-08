@@ -10,6 +10,7 @@ import { BanchoLobbyPlayerStates } from "bancho.js";
 import getMappoolSlotMods from "../../../../BanchoBot/functions/tournaments/matchup/getMappoolSlotMods";
 import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import ormConfig from "../../../../ormconfig";
+import { StageType } from "../../../../Interfaces/stage";
 
 const banchoRefereeRouter = new Router();
 
@@ -24,6 +25,14 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
         ctx.body = {
             success: false,
             error: "Invalid matchup ID",
+        };
+        return;
+    }
+
+    if (!ctx.request.body.user) {
+        ctx.body = {
+            success: false,
+            error: "Missing user",
         };
         return;
     }
@@ -97,11 +106,18 @@ banchoRefereeRouter.post("/:matchupID/createLobby", validateMatchup, async (ctx)
             .createQueryBuilder("matchup")
             .leftJoinAndSelect("matchup.referee", "referee")
             .leftJoinAndSelect("matchup.streamer", "streamer")
+            .leftJoinAndSelect("matchup.round", "round")
+            .leftJoinAndSelect("round.mapOrder", "roundMapOrder")
+            .leftJoinAndSelect("round.mappool", "roundMappool")
+            .leftJoinAndSelect("roundMappool.slots", "roundSlot")
+            .leftJoinAndSelect("roundSlot.maps", "roundMap")
+            .leftJoinAndSelect("roundMap.beatmap", "roundBeatmap")
             .innerJoinAndSelect("matchup.stage", "stage")
-            .innerJoinAndSelect("stage.mappool", "mappool")
-            .innerJoinAndSelect("mappool.slots", "slot")
-            .innerJoinAndSelect("slot.maps", "map")
-            .innerJoinAndSelect("map.beatmap", "beatmap")
+            .leftJoinAndSelect("stage.mapOrder", "stageMapOrder")
+            .leftJoinAndSelect("stage.mappool", "stageMappool")
+            .leftJoinAndSelect("stageMappool.slots", "stageSlot")
+            .leftJoinAndSelect("stageSlot.maps", "stageMap")
+            .leftJoinAndSelect("stageMap.beatmap", "stageBeatmap")
             .innerJoinAndSelect("stage.tournament", "tournament")
             .innerJoinAndSelect("tournament.organizer", "organizer")
             .leftJoinAndSelect("matchup.team1", "team1")
@@ -134,7 +150,7 @@ banchoRefereeRouter.post("/:matchupID/createLobby", validateMatchup, async (ctx)
     };
 
     try {
-        await runMatchup(matchup, ctx.request.body.replace, ctx.request.body.auto);
+        await runMatchup(matchup, ctx.request.body.replace, ctx.request.body.auto, `${ctx.request.body.user.osu.username} (${ctx.request.body.user.osu.userID})`);
     } catch (error) {
         if (error instanceof Error)
             ctx.body = {
@@ -157,11 +173,37 @@ banchoRefereeRouter.post("/:matchupID/roll", validateMatchup, async (ctx) => {
         };
         return;
     }
+
+    if (state.matchups[parseInt(ctx.state.matchupID)].matchup.stage?.stageType === StageType.Qualifiers) {
+        ctx.body = {
+            success: false,
+            error: "Cannot roll for qualifiers",
+        };
+        return;
+    }
+
+    const allowed = ctx.request.body.allowed;
+    if (allowed !== "managers" && allowed !== "all" && allowed !== "bot") {
+        ctx.body = {
+            success: false,
+            error: "Invalid allowed value",
+        };
+        return;
+    }
+
+    const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
     const mpChannel = state.matchups[parseInt(ctx.state.matchupID)].lobby.channel;
-    
-    await mpChannel.sendMessage("OK we're gonna roll now I'm gonna run !roll 2");
-    await mpChannel.sendMessage(`${state.matchups[parseInt(ctx.state.matchupID)].matchup.team1?.name} will be 1 and ${state.matchups[parseInt(ctx.state.matchupID)].matchup.team2?.name} will be 2`);
-    await mpChannel.sendMessage("!roll 2");
+    if (allowed === "managers")
+        await mpChannel.sendMessage("OK we're gonna roll now, I want the managers to do !roll, higher roll will be considered Team 1");
+    else if (allowed === "all")
+        await mpChannel.sendMessage("OK we're gonna roll now, I want the stand-in managers to do !roll, higher roll will be considered Team 1");
+    else if (allowed === "bot") {
+        await mpChannel.sendMessage("OK we're gonna roll now, I'm gonna run !roll 2");
+        await pause(100);
+        await mpChannel.sendMessage(`${state.matchups[parseInt(ctx.state.matchupID)].matchup.team1?.name} will be 1 and ${state.matchups[parseInt(ctx.state.matchupID)].matchup.team2?.name} will be 2`);
+        await pause(100);
+        await mpChannel.sendMessage("!roll 2");
+    }
 
     ctx.body = {
         success: true,
@@ -237,6 +279,15 @@ banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) =
         return;
     }
 
+    const set = ctx.request.body.set;
+    if (typeof set !== "number" || isNaN(set) || set < 0) {
+        ctx.body = {
+            success: false,
+            error: "Invalid set provided",
+        };
+        return;
+    }
+
     const slot = state.matchups[parseInt(ctx.state.matchupID)].matchup.stage!.mappool!.flatMap(pool => pool.slots).find(slot => slot.maps.some(map => map.ID === mapID));
     if (!slot) {
         ctx.body = {
@@ -255,17 +306,25 @@ banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) =
         return;
     }
 
+    if (!state.matchups[parseInt(ctx.state.matchupID)].matchup.sets?.[set]) {
+        ctx.body = {
+            success: false,
+            error: "Set not found",
+        };
+        return;
+    }
+
     if (status !== 2) {
         // Add map to matchup.maps
-        if (!state.matchups[parseInt(ctx.state.matchupID)].matchup.maps)
-            state.matchups[parseInt(ctx.state.matchupID)].matchup.maps = [];
+        if (!state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps)
+            state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps = [];
         const matchupMap = new MatchupMap;
         matchupMap.map = map;
-        matchupMap.matchup = state.matchups[parseInt(ctx.state.matchupID)].matchup;
+        matchupMap.set = state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set];
         matchupMap.status = status;
-        matchupMap.order = state.matchups[parseInt(ctx.state.matchupID)].matchup.maps!.length + 1;
+        matchupMap.order = state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps!.length + 1;
         await matchupMap.save();
-        state.matchups[parseInt(ctx.state.matchupID)].matchup.maps!.push(matchupMap);
+        state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps!.push(matchupMap);
 
         await publish(state.matchups[parseInt(ctx.state.matchupID)].matchup, {
             type: "map",
@@ -277,10 +336,12 @@ banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) =
             },
         });
     } else {
+
         const mpLobby = state.matchups[parseInt(ctx.state.matchupID)].lobby;
         await Promise.all([
             mpLobby.setMap(map.beatmap!.ID),
             mpLobby.setMods(getMappoolSlotMods(slot.allowedMods), typeof slot.allowedMods !== "number" || typeof slot.uniqueModCount === "number" || typeof slot.userModCount === "number"),
+            mpLobby.startTimer(typeof ctx.request.body.time !== "number" || isNaN(ctx.request.body.time) ? 90 : ctx.request.body.time),
         ]);
     }
 
@@ -299,7 +360,24 @@ banchoRefereeRouter.post("/:matchupID/deleteMap", validateMatchup, async (ctx) =
         return;
     }
 
-    const matchupMap = state.matchups[parseInt(ctx.state.matchupID)].matchup.maps?.find(map => map.ID === mapID);
+    const set = ctx.request.body.set;
+    if (typeof set !== "number" || isNaN(set) || set < 0) {
+        ctx.body = {
+            success: false,
+            error: "Invalid set provided",
+        };
+        return;
+    }
+
+    if (!state.matchups[parseInt(ctx.state.matchupID)].matchup.sets?.[set]) {
+        ctx.body = {
+            success: false,
+            error: "Set not found",
+        };
+        return;
+    }
+
+    const matchupMap = state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps?.find(map => map.ID === mapID);
     if (!matchupMap) {
         ctx.body = {
             success: false,
@@ -310,13 +388,13 @@ banchoRefereeRouter.post("/:matchupID/deleteMap", validateMatchup, async (ctx) =
 
     try {
         await ormConfig.transaction(async manager => {
+            state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps = state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps!.filter(map => map.ID !== mapID);
+            state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps!.forEach((map, i) => map.order = i + 1);
+            
             await manager.remove(matchupMap);
+            await Promise.all(state.matchups[parseInt(ctx.state.matchupID)].matchup.sets![set].maps!.map(map => manager.save(map)));
 
-            state.matchups[parseInt(ctx.state.matchupID)].matchup.maps = state.matchups[parseInt(ctx.state.matchupID)].matchup.maps?.filter(map => map.ID !== mapID);
-            state.matchups[parseInt(ctx.state.matchupID)].matchup.maps?.forEach((map, i) => map.order = i + 1);
-            await Promise.all(state.matchups[parseInt(ctx.state.matchupID)].matchup.maps?.map(map => manager.save(map)) ?? []);
-
-            await state.matchups[parseInt(ctx.state.matchupID)].lobby.channel.sendMessage(`Ref has deleted a map from matchup ${matchupMap.map.ID}`);
+            await state.matchups[parseInt(ctx.state.matchupID)].lobby.channel.sendMessage(`Ref has deleted a map from matchup ${matchupMap.map.beatmap?.ID}`);
         });
 
         ctx.body = {

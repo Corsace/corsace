@@ -16,7 +16,7 @@ async function getNextBeatmap (matchup: Matchup, mpLobby: BanchoLobby, mpChannel
                 .flatMap(slot => slot.maps
                     .sort((a, b) => a.order - b.order)
                 )
-                .filter(map => !matchup.maps!
+                .filter(map => !matchup.sets![0].maps! // Only 1 set in qualifiers
                     .some(matchMap => matchMap.map.beatmap?.ID === map.beatmap?.ID)
                 );
 

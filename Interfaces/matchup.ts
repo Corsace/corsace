@@ -26,9 +26,8 @@ export interface Matchup extends BaseMatchup {
     team2?:             Team | null;
     team1Score:         number;
     team2Score:         number;
-    first?:             Team | null;
     winner?:            Team | null;
-    maps?:              MatchupMap[] | null;
+    sets?:              MatchupSet[] | null;
     mappoolsBanned?:    Mappool[] | null;
     potential:          boolean;
     forfeit:            boolean;
@@ -42,6 +41,15 @@ export enum MapStatus {
     Protected,
     Banned,
     Picked,
+}
+
+export interface MatchupSet {
+    ID:         number;
+    order:      number;
+    first?:     Team | null;
+    maps:       MatchupMap[] | null;
+    team1Score: number;
+    team2Score: number;
 }
 
 export interface MatchupMap {

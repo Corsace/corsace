@@ -128,9 +128,6 @@ export class Tournament extends BaseEntity {
     @JoinTable()
         teams!: Team[];
 
-    @Column({ default: false })
-        publicQualifiers!: boolean;
-
     @Column({ type: "enum", enum: TournamentStatus, default: TournamentStatus.NotStarted })
         status!: TournamentStatus;
 

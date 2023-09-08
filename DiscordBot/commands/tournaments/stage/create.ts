@@ -185,6 +185,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (stage.stageType === StageType.Qualifiers) {
         const chooseOrder = m instanceof Message ? teamQualifierChooseRegex.test(m.content) : m.options.getBoolean("team_choose_qualifier_order");
         stage.qualifierTeamChooseOrder = chooseOrder;
+
+        stage.publicScores = false;
     }
 
     // Generate rounds if single/double elimination

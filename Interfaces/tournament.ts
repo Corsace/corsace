@@ -30,7 +30,6 @@ export interface Tournament extends BaseTournament {
     stages:           Stage[];
     registrations:    Phase;
     teams:            any[];
-    publicQualifiers: boolean;
     status:           number;
 }
 

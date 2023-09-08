@@ -1,8 +1,7 @@
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user";
-import { Mappool } from "./mappools/mappool";
-import { MatchupMap } from "./matchupMap";
 import { MatchupMessage } from "./matchupMessage";
+import { MatchupSet } from "./matchupSet";
 import { Round } from "./round";
 import { Stage } from "./stage";
 import { Team } from "./team";
@@ -43,18 +42,11 @@ export class Matchup extends BaseEntity {
     @Column({ type: "int", default: 0 })
         team2Score!: number;
 
-    @ManyToOne(() => Team, team => team.matchupsFirst)
-        first?: Team | null;
-
     @ManyToOne(() => Team, team => team.wins)
         winner?: Team | null;
 
-    @OneToMany(() => MatchupMap, map => map.matchup)
-        maps?: MatchupMap[] | null;
-
-    @ManyToMany(() => Mappool, mappool => mappool.bannedInMatchups)
-    @JoinTable()
-        mappoolsBanned?: Mappool[] | null;
+    @OneToMany(() => MatchupSet, set => set.matchup)
+        sets?: MatchupSet[] | null;
 
     @ManyToOne(() => Matchup, matchup => matchup.potentials)
         potentialFor?: Matchup | null;

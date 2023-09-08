@@ -98,7 +98,7 @@ centrifugoRouter.post("/subscribe", ipWhitelist, async (ctx) => {
         return;
     }
 
-    if (channel instanceof Matchup && channel.stage?.stageType === StageType.Qualifiers && !channel.stage.tournament.publicQualifiers) {
+    if (channel instanceof Matchup && channel.stage?.stageType === StageType.Qualifiers && !channel.stage.publicScores) {
         let authorized = false;
         const user = body.user ? await User.findOne({ where: { ID: Number(body.user) } }) : null;
         if (user) {

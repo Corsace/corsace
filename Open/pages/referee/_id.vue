@@ -12,36 +12,56 @@
         </div>
         <div
             ref="mapStatusSelect"
-            class="referee__map_status_select"
-            :style="{ display: mapSelected ? 'block' : 'none' }"
+            class="referee__menu_select"
+            :style="{ display: mapSelected ? 'flex' : 'none' }"
         >
             <div 
-                class="referee__map_status_select__option"
-                :style="{ backgroundColor: convertStatusEnum(0) }"
-                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 0 }); mapSelected = null"
+                class="referee__menu_select__option referee__menu_select__option--blue"
+                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 0, set: (matchupSet?.order || 1) - 1 }); mapSelected = null"
             >
                 PROTECT
             </div>
             <div 
-                class="referee__map_status_select__option"
-                :style="{ backgroundColor: convertStatusEnum(1) }"
-                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 1 }); mapSelected = null"
+                class="referee__menu_select__option referee__menu_select__option--red"
+                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 1, set: (matchupSet?.order || 1) - 1 }); mapSelected = null"
             >
                 BAN
             </div>
             <div 
-                class="referee__map_status_select__option"
-                :style="{ backgroundColor: convertStatusEnum(2) }"
-                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 2 }); mapSelected = null"
+                class="referee__menu_select__option referee__menu_select__option--green"
+                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 2, set: (matchupSet?.order || 1) - 1 }); mapSelected = null"
             >
                 PICK
+            </div>
+        </div>
+        <div
+            ref="rollSelect"
+            class="referee__menu_select"
+            :style="{ display: rollMenu ? 'flex' : 'none' }"
+        >
+            <div 
+                class="referee__menu_select__option referee__menu_select__option--blue"
+                @click="banchoCall('roll', { allowed: 'managers' }); rollMenu = false"
+            >
+                ONLY MANAGERS ROLL
+            </div>
+            <div 
+                class="referee__menu_select__option referee__menu_select__option--blue"
+                @click="banchoCall('roll', { allowed: 'all' }); rollMenu = false"
+            >
+                ANY TEAM MEMBER ROLLS
+            </div>
+            <div 
+                class="referee__menu_select__option referee__menu_select__option--blue"
+                @click="banchoCall('roll', { allowed: 'bot' }); rollMenu = false"
+            >
+                BOT AUTO-ROLLS
             </div>
         </div>
         <div class="referee__container">
             <OpenTitle>
                 {{ $t('open.referee.title') }} {{ matchup ? `- (${matchup.ID}) ${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "" }}
             </OpenTitle>
-            <!-- Matchup Selected -->
             <div 
                 v-if="matchup"
                 class="referee__matchup"
@@ -62,11 +82,11 @@
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
                         :class="{
-                            'content_button--disabled': !matchup.mp || matchup.first || matchup.stage?.stageType === 0 || !runningLobby,
+                            'content_button--disabled': !matchup.mp || matchup.stage?.stageType === 0 || !runningLobby,
                         }"
-                        @click.native="matchup.mp && runningLobby && !matchup.first && matchup.stage?.stageType !== 0 ? banchoCall('roll') : tooltipText = matchup.first ? 'Matchup already rolled' : 'Matchup has no lobby'"
+                        @click.native="matchup.mp && runningLobby && matchup.stage?.stageType !== 0 ? toggleRollMenu() : tooltipText = 'Matchup has no lobby'"
                     >
-                        {{ $t('open.referee.roll') }}
+                        {{ matchupSet?.first ? $t('open.referee.reroll') : $t('open.referee.roll') }}
                     </ContentButton>
                     <ContentButton
                         class="referee__matchup__header__create_lobby__button content_button--red content_button--red_sm"
@@ -138,65 +158,67 @@
                     v-if="matchup.mp"
                     class="referee__matchup__messages"
                 >
-                    <div class="referee__matchup__messages__header">
-                        Channel: #mp_{{ matchup.mp }}
-                    </div>
-                    <div 
-                        id="messageContainer"
-                        class="referee__matchup__messages__container"
-                    >
+                    <div class="referee__matchup__messages_wrapper">
+                        <div class="referee__matchup__messages__header">
+                            Channel: #mp_{{ matchup.mp }}
+                        </div>
+                        <div 
+                            id="messageContainer"
+                            class="referee__matchup__messages__container"
+                        >
+                            <div
+                                v-for="message in filteredMessages"
+                                :key="message.ID"
+                                class="referee__matchup__messages__message"
+                            >
+                                <div class="referee__matchup__messages__message__timestamp">
+                                    {{ formatTime(message.timestamp) }}
+                                </div>
+                                <div class="referee__matchup__messages__message__user">
+                                    {{ message.user.osu.username }}:
+                                </div>
+                                <div class="referee__matchup__messages__message__content">
+                                    {{ message.content }}
+                                </div>
+                            </div>
+                        </div>
                         <div
-                            v-for="message in filteredMessages"
-                            :key="message.ID"
-                            class="referee__matchup__messages__message"
+                            v-if="loggedInUser && runningLobby"
+                            class="referee__matchup__messages__input_div"
                         >
-                            <div class="referee__matchup__messages__message__timestamp">
-                                {{ formatTime(message.timestamp) }}
-                            </div>
-                            <div class="referee__matchup__messages__message__user">
-                                {{ message.user.osu.username }}:
-                            </div>
-                            <div class="referee__matchup__messages__message__content">
-                                {{ message.content }}
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        v-if="loggedInUser && runningLobby"
-                        class="referee__matchup__messages__input_div"
-                    >
-                        {{ loggedInUser.osu.username }}:
-                        <input
-                            v-model="inputMessage"
-                            class="referee__matchup__messages__input"
-                            placeholder="Type a message..."
-                            @keyup.enter="sendMessage"
-                        >
-                    </div>
-                    <div class="referee__matchup__messages__checkboxes">
-                        <div class="referee__matchup__messages__checkboxes_div">
-                            Show Bancho Messages
-                            <input 
-                                v-model="showBanchoMessages"
-                                class="referee__matchup__messages__checkboxes__checkbox"
-                                type="checkbox"
+                            {{ loggedInUser.osu.username }}:
+                            <input
+                                v-model="inputMessage"
+                                class="referee__matchup__messages__input"
+                                placeholder="Type a message..."
+                                @keyup.enter="sendMessage"
                             >
                         </div>
-                        <div class="referee__matchup__messages__checkboxes_div">
-                            Show Bancho Settings
-                            <input 
-                                v-model="showBanchoSettings"
-                                class="referee__matchup__messages__checkboxes__checkbox"
-                                type="checkbox"
-                            >
-                        </div>
-                        <div class="referee__matchup__messages__checkboxes_div">
-                            Show Corsace Messages
-                            <input 
-                                v-model="showCorsaceMessages"
-                                class="referee__matchup__messages__checkboxes__checkbox"
-                                type="checkbox"
-                            >
+                        <div class="referee__matchup__messages__checkboxes">
+                            <div class="referee__matchup__messages__checkboxes_div">
+                                Show Bancho Messages
+                                <input 
+                                    v-model="showBanchoMessages"
+                                    class="referee__matchup__messages__checkboxes__checkbox"
+                                    type="checkbox"
+                                >
+                            </div>
+                            <div class="referee__matchup__messages__checkboxes_div">
+                                Show Bancho Settings
+                                <input 
+                                    v-model="showBanchoSettings"
+                                    class="referee__matchup__messages__checkboxes__checkbox"
+                                    type="checkbox"
+                                >
+                            </div>
+                            <div class="referee__matchup__messages__checkboxes_div">
+                                Show Corsace Messages
+                                <input 
+                                    v-model="showCorsaceMessages"
+                                    class="referee__matchup__messages__checkboxes__checkbox"
+                                    type="checkbox"
+                                >
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -245,12 +267,12 @@
                         </div>
                         <div class="referee__matchup__content__team">
                             <div class="referee__matchup__content__team__name">
-                                {{ matchup.first ? `(${matchup.first.ID === (matchup.team1?.ID || 0) ? "1" : "2"})` : '' }} {{ matchup.team1?.name || "TBD" }}
+                                {{ getTeamName(matchup.team1) }} {{ getRollStatus(matchup.sets, matchup.team1) }}
                             </div>
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
                                     class="referee__matchup__content__team__avatar"
-                                    :style="{ backgroundImage: `url(${matchup.team1?.avatarURL || require('../../Assets/img/site/open/team/default.png')})` }"
+                                    :style="{ backgroundImage: `url(${matchup.team1?.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
                                 />
                                 <div class="referee__matchup__content__team__stats">
                                     {{ team1PlayerStates.filter(player => player.inLobby).length }} in lobby
@@ -277,18 +299,18 @@
                                         }"
                                         :style="{ backgroundImage: `url(https://a.ppy.sh/${member.osuID})` }"
                                     />
-                                    {{ member.username }} ({{ member.osuID }}) {{ member.team ?? '' }} {{ member.mods ? `+${member.mods.toUpperCase()}` : "" }}
+                                    {{ member.username }} ({{ member.osuID }}) {{ member.slot ? `Slot ${member.slot}` : '' }} {{ member.team ?? '' }} {{ member.mods ? `+${member.mods.toUpperCase()}` : "" }}
                                 </div>
                             </div>
                         </div>
                         <div class="referee__matchup__content__team">
                             <div class="referee__matchup__content__team__name">
-                                {{ matchup.first ? `(${matchup.first.ID === (matchup.team2?.ID || 0) ? "1" : "2"})` : '' }} {{ matchup.team2?.name || "TBD" }}
+                                {{ getTeamName(matchup.team2) }} {{ getRollStatus(matchup.sets, matchup.team2) }}
                             </div>
                             <div class="referee__matchup__content__team__avatar_section">
                                 <div 
                                     class="referee__matchup__content__team__avatar"
-                                    :style="{ backgroundImage: `url(${matchup.team2?.avatarURL || require('../../Assets/img/site/open/team/default.png')})` }"
+                                    :style="{ backgroundImage: `url(${matchup.team2?.avatarURL || require('../../../Assets/img/site/open/team/default.png')})` }"
                                 />
                                 <div class="referee__matchup__content__team__stats">
                                     {{ team2PlayerStates.filter(player => player.inLobby).length }} in lobby
@@ -315,7 +337,7 @@
                                             'referee__matchup__content__team__members__member__avatar--ready': member.ready,
                                         }"
                                     />
-                                    {{ member.username }} ({{ member.osuID }}) {{ member.team ?? '' }} {{ member.mods ? `+${member.mods.toUpperCase()}` : "" }}
+                                    {{ member.username }} ({{ member.osuID }}) {{ member.slot ? `Slot ${member.slot}` : '' }} {{ member.team ?? '' }} {{ member.mods ? `+${member.mods.toUpperCase()}` : "" }}
                                 </div>
                             </div>
                         </div>
@@ -341,8 +363,8 @@
                                         :key="map.ID"
                                         class="referee__matchup__content__order__team"
                                         :style="{ 
-                                            backgroundColor: matchupMaps.length < mapOrder.filter(m => m.set < set.set).reduce((acc, cur) => acc + cur.order.length, 0) + map.order ? convertStatusEnum(map.status) : '#333333',
-                                            boxShadow: matchupMaps.length === mapOrder.filter(m => m.set < set.set).reduce((acc, cur) => acc + cur.order.length, 0) + map.order - 1 ? `0 0 10px ${convertStatusEnum(map.status)}` : 'none',
+                                            backgroundColor: (matchupSet?.maps?.length || 0) < (mapOrder.find(set => set.set === matchupSet?.order)?.order.length || 0) + map.order ? convertStatusEnum(map.status) : '#333333',
+                                            boxShadow: (matchupSet?.maps?.length || 0) === (mapOrder.find(set => set.set === matchupSet?.order)?.order.length || 0) + map.order - 1 ? `0 0 10px ${convertStatusEnum(map.status)}` : 'none',
                                         }"
                                     >
                                         {{ convertOrderEnum(map.team) }}
@@ -362,10 +384,10 @@
                         </ContentButton>
                         Matchup's Map List
                         <div
-                            v-for="map in matchupMaps"
+                            v-for="map in matchup.sets?.flatMap(set => set.maps || [])"
                             :key="map.ID"
                             class="referee__matchup__content__map"
-                            :style="{backgroundColor: slotColour(selectedMappool?.slots.find(slot => slot.maps.some(m => m.ID === map.map.ID))?.allowedMods)}"
+                            :style="{backgroundColor: slotColour(selectedMappool?.slots.find(slot => slot.maps.some(m => m.ID === map.map.ID)))}"
                         >
                             <div
                                 class="referee__matchup__content__map_delete"
@@ -377,7 +399,7 @@
                                 ({{ map.order }}) {{ selectedMappool?.slots.find(slot => slot.maps.some(m => m.ID === map.map.ID))?.acronym.toUpperCase() }}{{ map.map.order }} - {{ mapStatusToString(map.status) }}
                             </div>
                         </div>
-                        <div v-if="matchupMaps.length === 0">
+                        <div v-if="matchup.sets?.flatMap(set => set.maps || []).length === 0">
                             No maps picked/banned/protected yet
                         </div>
                     </div>
@@ -397,7 +419,7 @@
                                 v-for="slot in selectedMappool.slots"
                                 :key="slot.ID"
                                 class="referee__matchup__content__mappool__slot"
-                                :style="{backgroundColor: slotColour(slot.allowedMods)}"
+                                :style="{backgroundColor: slotColour(slot)}"
                             >
                                 <div 
                                     class="referee__matchup__content__mappool__slot__name"
@@ -408,8 +430,8 @@
                                     v-for="map in slot.maps"
                                     :key="map.ID"
                                     class="referee__matchup__content__mappool__slot__map"
-                                    :class="{ 'referee__matchup__content__mappool__slot__map--used': matchupMaps.some(m => m.map.ID === map.ID) }"
-                                    @click="!matchup.mp || !runningLobby ? tooltipText = 'Matchup has no lobby' : matchupMaps.find(m => m.map.ID === map.ID) ? tooltipText = 'Map has been used already' : selectMap(map.ID)"
+                                    :class="{ 'referee__matchup__content__mappool__slot__map--used': matchupSet?.maps?.some(m => m.map.ID === map.ID) }"
+                                    @click="!matchup.mp || !runningLobby ? tooltipText = 'Matchup has no lobby' : matchupSet?.maps?.find(m => m.map.ID === map.ID) ? tooltipText = 'Map has been used already' : selectMap(map.ID)"
                                 >
                                     <div class="referee__matchup__content__mappool__slot__map__name">
                                         {{ slot.acronym.toUpperCase() }}{{ slot.maps.length === 1 ? '' : map.order }}
@@ -425,37 +447,11 @@
                 <div class="referee__matchup__footer">
                     <ContentButton
                         class="referee__matchup__footer__button content_button--red"
-                        @click.native="back"
+                        :link="'/referee'"
                     >
                         {{ $t('open.referee.back') }}
                     </ContentButton>
                 </div>
-            </div>
-            <!-- Matchup list -->
-            <div 
-                v-else
-                class="referee__matchups"
-            >
-                <div 
-                    v-for="matchup in matchupList"
-                    :key="matchup.ID"
-                    class="referee__matchups__matchup"
-                    @click="selectMatchup(matchup.ID)"
-                >
-                    <div class="referee__matchups__matchup_name">
-                        ({{ matchup.ID }}) {{ matchup.teams?.map(team => team.name).join(" vs ") ?? (matchup.team1 || matchup.team2) ? `${matchup.team1?.name || "TBD"} vs ${matchup.team2?.name || "TBD"}` : "TBD" }}
-                    </div>
-                    <div class="referee__matchups__matchup_date">
-                        {{ formatDate(matchup.date) }} {{ formatTime(matchup.date) }}
-                    </div>
-                </div>
-                <ContentButton
-                    v-if="moreMatchups"
-                    class="referee__matchup__footer__button content_button--red content_button--red_sm"
-                    @click.native="loadMore"
-                >
-                    {{ $t('open.referee.loadMore') }}
-                </ContentButton>
             </div>
         </div>
     </div>
@@ -466,15 +462,16 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 import { Centrifuge, PublicationContext, Subscription } from "centrifuge";
 
-import ContentButton from "../../Assets/components/open/ContentButton.vue";
-import OpenSelect from "../../Assets/components/open/OpenSelect.vue";
-import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
-import { Tournament } from "../../Interfaces/tournament";
-import { MapStatus, Matchup } from "../../Interfaces/matchup";
-import { MapOrder, MapOrderTeam } from "../../Interfaces/stage";
-import { UserInfo } from "../../Interfaces/user";
-import { Mappool, MappoolMap } from "../../Interfaces/mappool";
-import { modsToRGB } from "../../Interfaces/mods";
+import ContentButton from "../../../Assets/components/open/ContentButton.vue";
+import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
+import OpenTitle from "../../../Assets/components/open/OpenTitle.vue";
+import { Tournament } from "../../../Interfaces/tournament";
+import { MapStatus, Matchup, MatchupSet } from "../../../Interfaces/matchup";
+import { MapOrder, MapOrderTeam } from "../../../Interfaces/stage";
+import { UserInfo } from "../../../Interfaces/user";
+import { Mappool, MappoolMap, MappoolSlot } from "../../../Interfaces/mappool";
+import { freemodButFreerRGB, freemodRGB, modsToRGB } from "../../../Interfaces/mods";
+import { Team } from "../../../Interfaces/team";
 
 const openModule = namespace("open");
 
@@ -485,6 +482,7 @@ interface playerState {
     inLobby: boolean;
     ready: boolean;
     mods: string;
+    slot: number;
     team?: "Blue" | "Red";
 }
 
@@ -517,15 +515,18 @@ interface message {
                 {hid: "og:title", property: "og:title", content: this.$store.state["open"].title},
                 {hid: "og:url", property: "og:url", content: `https://open.corsace.io${this.$route.path}`}, 
                 {hid: "og:description", property: "og:description", content: this.$store.state["open"].tournament.description},
-                {hid: "og:image",property: "og:image", content: require("../../Assets/img/site/open/banner.png")},
+                {hid: "og:image",property: "og:image", content: require("../../../Assets/img/site/open/banner.png")},
                 
                 {name: "twitter:title", content: this.$store.state["open"].title},
                 {name: "twitter:description", content: this.$store.state["open"].tournament.description},
-                {name: "twitter:image", content: require("../../Assets/img/site/open/banner.png")},
-                {name: "twitter:image:src", content: require("../../Assets/img/site/open/banner.png")},
+                {name: "twitter:image", content: require("../../../Assets/img/site/open/banner.png")},
+                {name: "twitter:image:src", content: require("../../../Assets/img/site/open/banner.png")},
             ],
             link: [{rel: "canonical", hid: "canonical", href: `https://open.corsace.io${this.$route.path}`}],
         };
+    },
+    validate ({ params }) {
+        return !params.id || !isNaN(parseInt(params.id));
     },
 })
 export default class Referee extends Vue {
@@ -533,13 +534,10 @@ export default class Referee extends Vue {
     @State loggedInUser!: UserInfo | null;
     @openModule.State tournament!: Tournament | null;
 
-    moreMatchups = true;
-
     centrifuge: Centrifuge | null = null;
     matchupChannel: Subscription | null = null;
 
     matchup: Matchup | null = null;
-    matchupList: Matchup[] = [];
     mappools: Mappool[] = [];
     mappoolSelector: {
         value: string;
@@ -550,9 +548,12 @@ export default class Referee extends Vue {
         set: number;
         order: MapOrder[];
     }[] = [];
-    mapSelected: MappoolMap | null = null;
+
     mapStarted = false;
     runningLobby = false;
+
+    rollMenu = false;
+    mapSelected: MappoolMap | null = null;
 
     team1PlayerStates: playerState[] = [];
     team2PlayerStates: playerState[] = [];
@@ -581,43 +582,60 @@ export default class Referee extends Vue {
                 return false;
             if (
                 !this.showBanchoSettings && (
-                    message.user.osu.userID === "3" && (
+                    (message.user.osu.userID === "3" && (
                         message.content.startsWith("Room name:") ||
                         message.content.startsWith("Team mode:") ||
                         message.content.startsWith("Players:") ||
                         message.content.startsWith("Beatmap:") ||
                         message.content.startsWith("Active mods:") ||
                         message.content.startsWith("Slot")
-                    )
-                ) || message.content.startsWith("!mp settings")
+                    )) || message.content.startsWith("!mp settings")
+                )
             )
                 return false;
-            if (!this.showCorsaceMessages && message.user.osu.userID === "29191632")
+            if (!this.showCorsaceMessages && message.user.osu.userID === "29191632" && !/<.+>: /.test(message.content))
                 return false;
             return true;
         });
     }
 
-    get matchupMaps () {
-        return this.matchup?.maps || [];
+    get matchupSet () {
+        return this.matchup?.sets?.[this.matchup.sets.length - 1];
     }
 
     get nextMapMessage () {
         // TODO: Support sets, and don't hardcode no losing -> second and no winning -> first
-        const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchup?.team1Score} - ${this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
-        const bestOf = `BO${this.mapOrder[0].order.filter(p => p.status === MapStatus.Picked).length + 1}`;
-        const firstTo = this.mapOrder[0].order.filter(p => p.status === MapStatus.Picked).length / 2;
-        const winner = this.matchup?.team1Score === firstTo ? this.matchup.team1?.name : this.matchup?.team2Score === firstTo ? this.matchup?.team2?.name : null;
-        const nextMap = this.matchupMaps.length > this.mapOrder[0].order.length ? null : this.mapOrder[0].order[this.matchupMaps.length];
-        const first = this.matchup?.first?.name;
-        const second = this.matchup?.team1?.ID === this.matchup?.first?.ID ? this.matchup?.team2?.name : this.matchup?.team2?.ID === this.matchup?.first?.ID ? this.matchup?.team1?.name : null;
-        const winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
-        const losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score < this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
-        const nextMapTeam = nextMap?.team === MapOrderTeam.Team1 ? first : MapOrderTeam.Team2 ? second : MapOrderTeam.TeamLoser ? losing ?? second : MapOrderTeam.TeamWinner ? winning ?? first : null;
-        console.log(first, second, winning, losing, nextMapTeam);
-        const nextMapString = `Next ${this.mapStatusToString(nextMap?.status || 0)}: ${nextMapTeam}`;
+        const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchupSet?.team1Score || this.matchup?.team1Score} - ${this.matchupSet?.team2Score || this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
+        let bestOf = `BO${this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length + 1 || ""}`;
+        if (this.mapOrder.length > 1)
+            bestOf = `BO${this.mapOrder.length + 1 / 2} ${bestOf}`;
+        const firstTo = this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
+        
+        if (!this.matchupSet?.first)
+            return `${score} // ${bestOf}`;
 
-        return `${score} // ${bestOf} // ${winner ?? nextMapString}`;
+        let winner = this.matchup?.team1Score === firstTo ? this.matchup.team1?.name : this.matchup?.team2Score === firstTo ? this.matchup.team2?.name : null;
+        if (this.mapOrder.length > 1) {
+            winner = this.matchupSet?.team1Score === firstTo ? this.matchup?.team1?.name : this.matchupSet?.team2Score === firstTo ? this.matchup?.team2?.name : null;
+        }
+        const nextMap = (this.matchupSet?.maps?.length || 0) > this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.length ? null : this.mapOrder[(this.matchupSet?.order || 1) - 1].order[this.matchupSet?.maps?.length || 0];
+    
+        const first = this.matchupSet?.first?.name;
+        const second = this.matchup?.team1?.ID === this.matchupSet?.first?.ID ? this.matchup?.team2?.name : this.matchup?.team2?.ID === this.matchupSet?.first?.ID ? this.matchup?.team1?.name : null;
+    
+        let winning = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team1?.name : this.matchup?.team2?.name : null;
+        let losing = this.matchup?.team1Score && this.matchup?.team2Score ? this.matchup?.team1Score > this.matchup?.team2Score ? this.matchup?.team2?.name : this.matchup?.team1?.name : null;
+        if (this.mapOrder.length > 1 && (this.matchupSet?.team1Score > 0 || this.matchupSet?.team2Score > 0)) {
+            winning = this.matchupSet?.team1Score > this.matchupSet?.team2Score ? this.matchup?.team1?.name : this.matchupSet?.team1Score < this.matchupSet?.team2Score ? this.matchup?.team2?.name : null;
+            losing = this.matchupSet?.team1Score > this.matchupSet?.team2Score ? this.matchup?.team2?.name : this.matchupSet?.team1Score < this.matchupSet?.team2Score ? this.matchup?.team1?.name : null;
+        }
+    
+        const nextMapTeam = nextMap?.team === MapOrderTeam.Team1 ? first : nextMap?.team === MapOrderTeam.Team2 ? second : nextMap?.team === MapOrderTeam.TeamLoser ? losing ?? second : nextMap?.team === MapOrderTeam.TeamWinner ? winning ?? first : null;
+
+        const winnerString = `${winner ?? "N/A"} has won the ${this.mapOrder.length > 1 ? "set" : "matchup"}!`;
+        const nextMapString = `Next ${this.mapStatusToString(nextMap?.status || 0)}: ${nextMapTeam ?? "N/A"}`;
+
+        return `${score} // ${bestOf} // ${winner ? winnerString : nextMapString}`;
     }
 
     async sendMessage () {
@@ -671,24 +689,112 @@ export default class Referee extends Vue {
         }
 
         this.mapSelected = this.selectedMappool?.slots.flatMap(slot => slot.maps).find(map => map.ID === mapID) || null;
-        console.log(this.$refs);
         if (this.$refs.mapStatusSelect instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
             this.$refs.mapStatusSelect.style.left = this.$refs.tooltip.style.left;
             this.$refs.mapStatusSelect.style.top = this.$refs.tooltip.style.top;
         }
     }
 
+    toggleRollMenu () {
+        this.rollMenu = !this.rollMenu;
+        if (!this.rollMenu)
+            return;
+
+        if (this.$refs.rollSelect instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
+            this.$refs.rollSelect.style.left = this.$refs.tooltip.style.left;
+            this.$refs.rollSelect.style.top = this.$refs.tooltip.style.top;
+        }
+    }
+
     async mounted () {
-        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}`);
+        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}/${this.$route.params.id}`);
         if (matchupData.error) {
             alert(matchupData.error);
             this.$router.push("/");
             return;
         }
-        this.matchupList = matchupData.matchups?.map(matchup => ({
-            ...matchup,
-            date: new Date(matchup.date),
+
+        this.matchup = matchupData.matchup ? {
+            ...matchupData.matchup,
+            date: new Date(matchupData.matchup.date),
+        } : null;
+        if (this.matchup && !this.matchup.sets)
+            this.matchup.sets = [{
+                ID: 0,
+                order: 1,
+                first: null,
+                maps: [],
+                team1Score: 0,
+                team2Score: 0,
+            }];
+
+        this.team1PlayerStates = this.matchup?.team1?.manager ? [{
+            ID: this.matchup.team1.manager.ID,
+            username: this.matchup.team1.manager.username,
+            osuID: this.matchup.team1.manager.osuID,
+            inLobby: false,
+            ready: false,
+            mods: "",
+            slot: 0,
+        }] : [];
+        this.team2PlayerStates = this.matchup?.team2?.manager ? [{
+            ID: this.matchup.team2.manager.ID,
+            username: this.matchup.team2.manager.username,
+            osuID: this.matchup.team2.manager.osuID,
+            inLobby: false,
+            ready: false,
+            mods: "",
+            slot: 0,
+        }] : [];
+
+        this.team1PlayerStates.push(...(this.matchup?.team1?.members.map(member => ({
+            ID: member.ID,
+            username: member.username,
+            osuID: member.osuID,
+            inLobby: false,
+            ready: false,
+            mods: "",
+            slot: 0,
+        })) || []));
+        this.team2PlayerStates.push(...(this.matchup?.team2?.members.map(member => ({
+            ID: member.ID,
+            username: member.username,
+            osuID: member.osuID,
+            inLobby: false,
+            ready: false,
+            mods: "",
+            slot: 0,
+        })) || []));
+
+        this.team1PlayerStates = this.team1PlayerStates.filter((v, i, a) => a.findIndex(t => t.osuID === v.osuID) === i);
+        this.team2PlayerStates = this.team2PlayerStates.filter((v, i, a) => a.findIndex(t => t.osuID === v.osuID) === i);
+
+        this.messages = this.matchup?.messages?.map((message, i) => ({
+            ...message,
+            ID: i,
+            timestamp: new Date(message.timestamp),
         })) || [];
+        this.mapOrder = this.matchup?.round?.mapOrder?.map(o => o.set)
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .map(s => ({
+                set: s,
+                order: this.matchup?.round?.mapOrder?.filter(o => o.set === s).sort((a, b) => a.order - b.order) || [],
+            })) || this.matchup?.stage?.mapOrder?.map(o => o.set)
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .map(s => ({
+                set: s,
+                order: this.matchup?.stage?.mapOrder?.filter(o => o.set === s).sort((a, b) => a.order - b.order) || [],
+            })) || [];
+
+        this.mappools = this.matchup?.round?.mappool || this.matchup?.stage?.mappool || [];
+        this.mappoolSelector = this.mappools.map(mappool => ({
+            value: mappool.abbreviation.toUpperCase(),
+            text: mappool.abbreviation.toUpperCase(),
+        }));
+        this.selectedMappool = this.mappools[0] || null;
+        
+        this.mapTimer = `${this.tournament?.mapTimer || 90}`;
+        this.readyTimer = `${this.tournament?.readyTimer || 90}`;
 
         const { data: centrifugoURL } = await this.$axios.get("/api/centrifugo/publicUrl");
 
@@ -711,21 +817,36 @@ export default class Referee extends Vue {
         centrifuge.connect();
 
         this.centrifuge = centrifuge;
-    }
 
-    async loadMore () {
-        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}?skip=${this.matchupList.length}`);
-        if (matchupData.error) {
-            alert(matchupData.error);
-            this.$router.push("/");
-            return;
-        }
-        if (matchupData.matchups?.length && matchupData.matchups.length < 5)
-            this.moreMatchups = false;
-        this.matchupList.push(...matchupData.matchups?.map(matchup => ({
-            ...matchup,
-            date: new Date(matchup.date),
-        })) || []);
+        this.matchupChannel = this.centrifuge.newSubscription(`matchup:${this.$route.params.id}`);
+
+        this.matchupChannel.on("error", (err) => {
+            alert("Error in console for matchup channel subscription");
+            console.error("error", err);
+        });
+
+        this.matchupChannel.on("unsubscribed", (ctx) => {
+            if (ctx.code === 102)
+                alert("Couldn't find matchup channel");
+            else if (ctx.code === 103)
+                alert("Unauthorized to subscribe to matchup channel");
+            else if (ctx.code !== 0) {
+                alert("Error in console for matchup channel subscription");
+                console.error("unsubscribed", ctx);
+            } else
+                console.log("unsubscribed", ctx);
+        });
+
+        this.matchupChannel.on("subscribed", (ctx) => {
+            console.log("subscribed", ctx.channel);
+        });
+
+        this.matchupChannel.on("publication", this.handleData);
+
+        this.matchupChannel.subscribe();
+
+        if (this.matchup?.mp)
+            await this.banchoCall("pulse");
     }
 
     formatDate (date: Date): string {
@@ -741,8 +862,31 @@ export default class Referee extends Vue {
         return `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
     }
 
-    slotColour (num?: number | null) {
-        const values = modsToRGB(num);
+    getTeamName (team: Team | null | undefined) {
+        return team && team.name ? team.name : "TBD";
+    }
+
+    getRollStatus (sets: MatchupSet[] | null | undefined, team: Team | null | undefined) {
+        if (!sets || !sets.length) return "";
+        const lastSet = sets[sets.length - 1];
+        if (!lastSet || !lastSet.first) return "";
+        return lastSet.first.ID === team?.ID ? "Roll won" : "Roll lost";
+    }
+
+    slotColour (slot?: MappoolSlot) {
+        if (!slot)
+            return this.RGBValuesToRGBCSS(modsToRGB(0));
+
+        if (slot.allowedMods === null && slot.userModCount === null && slot.uniqueModCount === null)
+            return this.RGBValuesToRGBCSS(freemodButFreerRGB);
+
+        if (slot.userModCount !== null || slot.uniqueModCount !== null)
+            return this.RGBValuesToRGBCSS(freemodRGB);
+
+        return this.RGBValuesToRGBCSS(modsToRGB(slot.allowedMods));
+    }
+
+    RGBValuesToRGBCSS (values: [number, number, number]) {
         return `rgba(${values[0]}, ${values[1]}, ${values[2]}, 0.333)`;
     }
 
@@ -774,118 +918,6 @@ export default class Referee extends Vue {
         }
     }
 
-    unsub () {
-        if (this.matchupChannel) {
-            this.matchupChannel.unsubscribe();
-            this.centrifuge?.removeSubscription(this.matchupChannel);
-            this.matchupChannel = null;
-        }
-    }
-
-    async selectMatchup (matchupID: number) {
-        if (!this.centrifuge) {
-            alert("Centrifuge not connected");
-            return;
-        }
-        this.unsub();
-
-        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}/${matchupID}`);
-        if (matchupData.error) {
-            alert(matchupData.error);
-            return;
-        }
-
-        this.matchup = matchupData.matchup ? {
-            ...matchupData.matchup,
-            date: new Date(matchupData.matchup.date),
-        } : null;
-
-        this.team1PlayerStates = this.matchup?.team1?.members.map(member => ({
-            ID: member.ID,
-            username: member.username,
-            osuID: member.osuID,
-            inLobby: false,
-            ready: false,
-            mods: "",
-        })) || [];
-        this.team2PlayerStates = this.matchup?.team2?.members.map(member => ({
-            ID: member.ID,
-            username: member.username,
-            osuID: member.osuID,
-            inLobby: false,
-            ready: false,
-            mods: "",
-        })) || [];
-        this.messages = this.matchup?.messages?.map((message, i) => ({
-            ...message,
-            ID: i,
-            timestamp: new Date(message.timestamp),
-        })) || [];
-        this.mapOrder = this.matchup?.round?.mapOrder?.map(o => o.set)
-            .filter((v, i, a) => a.indexOf(v) === i)
-            .map(s => ({
-                set: s,
-                order: this.matchup?.round?.mapOrder?.filter(o => o.set === s).sort((a, b) => a.order - b.order) || [],
-            })) || this.matchup?.stage?.mapOrder?.map(o => o.set)
-            .filter((v, i, a) => a.indexOf(v) === i)
-            .map(s => ({
-                set: s,
-                order: this.matchup?.stage?.mapOrder?.filter(o => o.set === s).sort((a, b) => a.order - b.order) || [],
-            })) || [];
-
-        this.mappools = this.matchup?.round?.mappool || this.matchup?.stage?.mappool || [];
-        this.mappoolSelector = this.mappools.map(mappool => ({
-            value: mappool.abbreviation.toUpperCase(),
-            text: mappool.abbreviation.toUpperCase(),
-        }));
-        this.selectedMappool = this.mappools[0] || null;
-        
-        this.mapTimer = `${this.tournament?.mapTimer || 90}`;
-        this.readyTimer = `${this.tournament?.readyTimer || 90}`;
-
-        this.matchupChannel = this.centrifuge.newSubscription(`matchup:${matchupID}`);
-
-        this.matchupChannel.on("error", (err) => {
-            alert("Error in console for matchup channel subscription");
-            console.error("error", err);
-        });
-
-        this.matchupChannel.on("unsubscribed", (ctx) => {
-            if (ctx.code === 102)
-                alert("Couldn't find matchup channel");
-            else if (ctx.code === 103)
-                alert("Unauthorized to subscribe to matchup channel");
-            else if (ctx.code !== 0) {
-                alert("Error in console for matchup channel subscription");
-                console.error("unsubscribed", ctx);
-            } else
-                console.log("unsubscribed", ctx);
-        });
-
-        this.matchupChannel.on("subscribed", (ctx) => {
-            console.log("subscribed", ctx);
-        });
-
-        this.matchupChannel.on("publication", this.handleData);
-
-        this.matchupChannel.subscribe();
-
-        if (this.matchup?.mp)
-            await this.banchoCall("pulse");
-    }
-
-    back () {
-        this.unsub();
-        this.matchup = null;
-        this.messages = [];
-        this.mapOrder = [];
-        this.mappools = [];
-        this.mappoolSelector = [];
-        this.selectedMappool = null;
-        this.mapSelected = null;
-        this.runningLobby = false;
-    }
-
     addMessage (data: any) {
         data.type = undefined;
         data.timestamp = new Date(data.timestamp);
@@ -911,7 +943,7 @@ export default class Referee extends Vue {
     }
 
     handleData (ctx: PublicationContext) {
-        console.log("publication", ctx);
+        console.log("publication", ctx.channel, ctx.data);
 
         if (!ctx.channel.startsWith("matchup:"))
             return;
@@ -924,12 +956,13 @@ export default class Referee extends Vue {
                 this.matchup.baseURL = ctx.data.baseURL;
                 this.matchup.mp = ctx.data.mpID;
                 this.runningLobby = true;
+                this.matchup.sets = [ctx.data.firstSet];
                 break;
             case "message":
                 this.addMessage(ctx.data);
                 break;
             case "first":
-                this.matchup.first = this.matchup.team1?.ID === ctx.data.first ? this.matchup.team1 : this.matchup.team2;
+                this.$set(this.matchup.sets![this.matchup.sets!.length - 1], "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2); // In order to make the computed properties watchers work 
                 break;
             case "settings":
                 this.team1PlayerStates = this.team1PlayerStates.map(player => {
@@ -940,6 +973,7 @@ export default class Referee extends Vue {
                         ready: slotPlayer?.ready || false,
                         team: slotPlayer?.team,
                         mods: slotPlayer?.mods || "",
+                        slot: slotPlayer?.slot,
                     };
                 });
                 this.team2PlayerStates = this.team2PlayerStates.map(player => {
@@ -950,17 +984,24 @@ export default class Referee extends Vue {
                         ready: slotPlayer?.ready || false,
                         team: slotPlayer?.team,
                         mods: slotPlayer?.mods || "",
+                        slot: slotPlayer?.slot,
                     };
                 });
                 break;
             case "map":
-                if (!this.matchup.maps)
-                    this.matchup.maps = [];
-                this.matchup.maps.push(ctx.data.map);
+                if (!this.matchup.sets)
+                    this.matchup.sets = [{
+                        ID: 0,
+                        order: 1,
+                        first: null,
+                        maps: [],
+                        team1Score: 0,
+                        team2Score: 0,
+                    }];
+                if (!this.matchup.sets?.[this.matchup.sets.length - 1]?.maps)
+                    this.matchup.sets[this.matchup.sets.length - 1].maps = [];
+                this.matchup.sets[this.matchup.sets.length - 1].maps!.push(ctx.data.map);
                 this.mapSelected = null;
-                setTimeout(async () => {
-                    await this.sendNextMapMessage();
-                }, 100);
                 break;
             case "matchStarted":
                 this.mapStarted = true;
@@ -970,20 +1011,34 @@ export default class Referee extends Vue {
                 break;
             case "matchFinished":
                 this.mapStarted = false;
-                if (this.matchup) {
-                    this.matchup.team1Score = ctx.data.team1Score;
-                    this.matchup.team2Score = ctx.data.team2Score;
-                }
-                this.matchup.maps?.push(ctx.data.map);
-                setTimeout(async () => {
-                    await this.sendNextMapMessage();
-                }, 100);
+                this.matchup.team1Score = ctx.data.team1Score;
+                this.matchup.team2Score = ctx.data.team2Score;
+                this.matchup.sets![this.matchup.sets!.length - 1].maps!.push(ctx.data.map);
+                this.matchup.sets![this.matchup.sets!.length - 1].team1Score = ctx.data.setTeam1Score;
+                this.matchup.sets![this.matchup.sets!.length - 1].team2Score = ctx.data.setTeam2Score;
                 break;
             case "closed":
-                this.team1PlayerStates = [];
-                this.team2PlayerStates = [];
+                this.team1PlayerStates.forEach(player => player.inLobby = player.ready = false);
+                this.team2PlayerStates.forEach(player => player.inLobby = player.ready = false);
                 this.runningLobby = false;
                 break;
+        }
+    }
+
+    newSet () {
+        if (!this.matchup?.sets)
+            return;
+
+        const firstTo = this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
+        if (this.matchup.sets[this.matchup.sets.length - 1].team1Score === firstTo || this.matchup.sets[this.matchup.sets.length - 1].team2Score === firstTo) {
+            this.matchup.sets.push({
+                ID: this.matchup.sets[this.matchup.sets.length - 1].ID + 1,
+                order: this.matchup.sets.length + 1,
+                first: null,
+                maps: [],
+                team1Score: 0,
+                team2Score: 0,
+            });
         }
     }
 
@@ -994,10 +1049,10 @@ export default class Referee extends Vue {
 
     mapStatusToString (num: MapStatus): string {
         switch (num) {
-            case MapStatus.Banned:
-                return "Ban";
             case MapStatus.Protected:
                 return "Protect";
+            case MapStatus.Banned:
+                return "Ban";
             case MapStatus.Picked:
                 return "Pick";
         }
@@ -1041,8 +1096,10 @@ export default class Referee extends Vue {
         if (endpoint === "pulse")
             this.runningLobby = lobbyData.pulse;
 
-        if (endpoint === "deleteMap" && this.matchup.maps)
-            this.matchup.maps = this.matchup.maps.filter(map => map.ID !== data.mapID);
+        if (endpoint === "deleteMap" && this.matchup.sets?.[data.set]) {
+            this.matchup.sets[data.set].maps = this.matchup.sets[data.set].maps!.filter(map => map.ID !== data.mapID);
+            this.matchup.sets[data.set].maps!.forEach((map, i) => map.order = i + 1);
+        }
 
         switch (endpoint) {
             case "createLobby":
@@ -1098,10 +1155,9 @@ export default class Referee extends Vue {
         background-color: #1B1B1B;
         padding: 10px;
         border-radius: 10px;
-
     }
 
-    &__map_status_select {
+    &__menu_select {
         position: fixed;
         transition: none;
         z-index: 10;
@@ -1110,13 +1166,29 @@ export default class Referee extends Vue {
         padding: 10px;
         border-radius: 10px;
 
+        flex-direction: column;
+        gap: 10px;
+
         &__option {
             cursor: pointer;
             padding: 5px;
             border-radius: 5px;
 
+            &--green {
+                background-color: #3A8F5E;
+            }
+
+            &--red {
+                background-color: #F24141;
+            }
+
+            &--blue {
+                background-color: #5BBCFA;
+            }
+
             &:hover {
-                background-color: #333333;
+                background-color: white;
+                color: #181818;
             }
         }
     }
@@ -1158,14 +1230,18 @@ export default class Referee extends Vue {
         }
 
         &__messages {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            background-color: #181818;
-            padding: 10px;
-            
+            overflow: hidden;
+
             grid-column: 3 / 4;
             grid-row: 1 / 4;
+
+            &_wrapper {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                background-color: #181818;
+                padding: 10px;
+            }
 
             &__header {
                 font-size: $font-lg;
@@ -1174,10 +1250,11 @@ export default class Referee extends Vue {
 
             &__container {
                 overflow-y: scroll;
-                max-height: 550px;
+                height: 550px;
 
                 &::-webkit-scrollbar {
                     width: 5px;
+                    height: 5px;
                 }
 
                 &::-webkit-scrollbar-track {
@@ -1397,6 +1474,7 @@ export default class Referee extends Vue {
                     display: flex;
                     flex-direction: row;
                     gap: 10px;
+                    flex-wrap: wrap;
                 }
 
                 &__team {
@@ -1477,36 +1555,6 @@ export default class Referee extends Vue {
 
             &__button {
                 max-width: 300px;
-            }
-        }
-    }
-
-    &__matchups {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-
-        &__matchup {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            padding: 10px;
-            border-radius: 5px;
-            background: #333333;
-            cursor: pointer;
-
-            &:hover {
-                background: #444444;
-            }
-
-            &__name {
-                font-size: $font-lg;
-                font-weight: 500;
-            }
-
-            &__date {
-                font-size: $font-base;
-                font-weight: 300;
             }
         }
     }

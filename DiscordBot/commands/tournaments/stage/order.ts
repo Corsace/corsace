@@ -5,7 +5,6 @@ import { MapOrderTeam, StageType } from "../../../../Interfaces/stage";
 import { MapStatus } from "../../../../Interfaces/matchup";
 import { MapOrder } from "../../../../Models/tournaments/mapOrder";
 import { Round } from "../../../../Models/tournaments/round";
-import { TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { filter, timedOut } from "../../../functions/messageInteractionFunctions";
 import { loginResponse } from "../../../functions/loginResponse";
 import channelID from "../../../functions/channelID";
@@ -112,6 +111,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (i.customId === ids.done) {
             if (order.length === 0) {
                 await i.reply("U don't have a pickban order rn What the hell .");
+                setTimeout(async () => (await i.deleteReply()), 5000);
+                return;
+            }
+            if (order.map(o => o.set).filter((v, i, a) => a.indexOf(v) === i).length % 2 === 0) {
+                await i.reply("U have an even number of sets which is impossible to have a clear winner for the match.");
                 setTimeout(async () => (await i.deleteReply()), 5000);
                 return;
             }

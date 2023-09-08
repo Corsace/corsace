@@ -38,6 +38,7 @@ export interface Stage {
     isFinished:                 boolean;
     initialSize:                number;
     finalSize:                  number;
+    publicScores:               boolean;
     mapOrder?:                  MapOrder[] | null;
 }
 

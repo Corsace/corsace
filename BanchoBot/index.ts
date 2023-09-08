@@ -9,6 +9,7 @@ import os from "os";
 
 import banchoRouter from "../Server/api/routes/bancho";
 import banchoRefereeRouter from "../Server/api/routes/bancho/referee";
+import banchoStreamRouter from "../Server/api/routes/bancho/stream";
 
 import ormConfig from "../ormconfig";
 
@@ -45,7 +46,10 @@ koa.use(koaBody());
 koa.use(Mount("/api/bancho", banchoRouter.routes()));
 
 /// Referee
-koa.use(Mount("/api/bancho/referee", banchoRefereeRouter.routes()));  
+koa.use(Mount("/api/bancho/referee", banchoRefereeRouter.routes())); 
+
+/// Stream
+koa.use(Mount("/api/bancho/stream", banchoStreamRouter.routes()));
 
 let httpShutdown: () => Promise<void> | undefined;
 ormConfig.initialize()
