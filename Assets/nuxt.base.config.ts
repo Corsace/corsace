@@ -3,13 +3,21 @@ import * as fs from "fs";
 import { config } from "node-config-ts";
 import path from "path";
 
-const locales: any[] = [];
+const locales: {
+    code: string;
+    file: string;
+}[] = [
+    {
+        code: "en",
+        file: "en.json",
+    },
+];
 
-fs.readdirSync("../Assets/lang").forEach(file => {
-    if (file !== "example.json" && file !== "flagCodes.json" && file !== "index.js")
+fs.readdirSync("../Assets/lang/translated").forEach(file => {
+    if (file !== "index.js")
         locales.push({
             code: file.split(".")[0],
-            file,
+            file: `translated/${file}`,
         });
 });
 
