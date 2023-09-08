@@ -30,11 +30,8 @@
                             @prev="index--"
                             @next="index++"
                         >
-                            <template #top_text>
-                                {{ $t("open.components.stageSelector.stage") }}
-                            </template>
-                            <template #bottom_text>
-                                {{ $t("open.components.stageSelector.select") }}
+                            <template #text>
+                                {{ $t("open.components.stageSelector") }}
                             </template>
 
                             <template #stage>
@@ -79,12 +76,7 @@
                             @prev="index--"
                             @next="index++"
                         >
-                            <template #top_text>
-                                {{ $t("open.components.stageSelector.stage") }}
-                            </template>
-                            <template #bottom_text>
-                                {{ $t("open.components.stageSelector.select") }}
-                            </template>
+                            {{ $t("open.components.stageSelector") }}
 
                             <template #stage>
                                 {{ selectedStage?.abbreviation.toUpperCase() || '' }}

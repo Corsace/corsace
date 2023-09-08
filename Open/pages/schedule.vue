@@ -10,11 +10,8 @@
                         @prev="index--"
                         @next="index++"
                     >
-                        <template #top_text>
-                            STAGE
-                        </template>
-                        <template #bottom_text>
-                            SELECT
+                        <template #text>
+                            {{ $t("open.components.stageSelector") }}
                         </template>
 
                         <template #stage>
