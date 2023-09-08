@@ -422,6 +422,273 @@
             "resultsOverlay": "Hello! Dit is wellicht de eerste keer dat je op de resultaten pagina bent gekomen! <br> Deze resultaten laten de definitieve plaatsing van de beatmaps/users zien met gebruik van <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> naast het aantal keer dat de beatmap/user een eerste keus was, en het totaal aantal verschijningen!<br> Hopelijk ben je tevreden met de resultaten voor MCA [YEAR]! We kunnen niet wachten om jullie allemaal te zien voor de volgende MCA!"
         }
     },
+    "open": {
+        "navbar": {
+            "home": "HOME",
+            "info": "INFO",
+            "qualifiers": "QUALIFIERS",
+            "teams": "TEAMS",
+            "schedule": "SCHEDULE",
+            "mappool": "MAPPOOL",
+            "staff": "STAFF",
+            "createTeam": "CREATE TEAM",
+            "invitations": "INVITATIONS",
+            "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
+            "teamInvites": "TEAM INVITES",
+            "noInvites": "You currently have no invites"
+        },
+        "footer": {
+            "corsace": "CORSACE",
+            "twitter": "TWITTER",
+            "discord": "DISCORD",
+            "twitch": "TWITCH",
+            "youtube": "YOUTUBE"
+        },
+        "stages": {
+            "qualifiers": "QUALIFIERS",
+            "round robin": "ROUND ROBIN",
+            "runoff bracket": "RUNOFF BRACKET",
+            "knockout 1": "KNOCKOUT 1",
+            "knockout 2": "KNOCKOUT 2",
+            "abbreviations": {
+                "ql": "(QL)",
+                "rr": "(RR)",
+                "ro": "(RO)",
+                "ko1": "(KO1)",
+                "ko2": "(KO2)"
+            }
+        },
+        "home": {
+            "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
+            "timeline": "TIMELINE",
+            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "registrations": "REGISTRATIONS",
+            "button": {
+                "qualifiersMappool": "QUALIFIERS MAPPOOLS",
+                "mappoolDownload": "Mappool download and statistics",
+                "register": "CREATE AND REGISTER YOUR TEAM",
+                "registrationsEnd": "Registrations end"
+            }
+        },
+        "info": {
+            "title": "INFORMATION",
+            "condensed": "CONDENSED INFO",
+            "error": "Could not find tournament",
+            "matchInfo": {
+                "matchSize": "MATCH SIZE",
+                "minPlayers": "MIN. PLAYERS",
+                "maxPlayers": "MAX. PLAYERS",
+                "pickTimer": "MAP PICK TIMER",
+                "readyTimer": "READY TIMER",
+                "order": "ORDER",
+                "scoringMethod": "SCORING METHOD",
+                "type": "TYPE",
+                "startDate": "START DATE",
+                "endDate": "END DATE",
+                "rounds": "ROUNDS",
+                "initialSize": "INITIAL SIZE",
+                "finalSize": "FINAL SIZE"
+            },
+            "headings": {
+                "mappools": "MAPPOOLS",
+                "stage": "STAGE"
+            },
+            "status": {
+                "notStarted": "NOT STARTED",
+                "complete": "COMPLETE",
+                "ongoing": "ONGOING"
+            },
+            "mappools": {
+                "info": "MAPPOOL INFO",
+                "notAvailable": "INFO NOT AVAILABLE",
+                "mappackDownload": "DOWNLOAD MAP PACK",
+                "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
+            },
+            "prizes": "PRIZES",
+            "donateToCorsace": "DONATE TO CORSACE",
+            "supportViaSponsorship": "SUPPORT VIA MOMOKAI SPONSORSHIP",
+            "generalInfo": "GENERAL INFORMATION",
+            "teamStructure": "TEAM STRUCTURE",
+            "qualifiersProcedures": "QUALIFIERS PROCEDURES",
+            "tournamentStructure": "TOURNAMENT STRUCTURE",
+            "infoGraphic": "INFOGRAPHIC",
+            "matchProcedures": "MATCH PROCEDURES",
+            "reportTournament": "REPORT TOURNAMENTS HERE",
+            "subjectToChange": "all rules are subject to change for clarification and/or adjustments"
+        },
+        "qualifiers": {
+            "nav": {
+                "mappool": "MAPPOOL",
+                "qualifiers": "QUALIFIERS",
+                "scores": "SCORES"
+            },
+            "mappool": {
+                "sheets": "SHEETS",
+                "mappool": "MAPPOOL",
+                "notAvailable": "Mappool not available yet",
+                "banner": {
+                    "mapper": "MAPPER",
+                    "difficulty": "DIFFICULTY"
+                }
+            },
+            "scores": {
+                "nav": {
+                    "sort": "SORT",
+                    "average": "AVERAGE",
+                    "sum": "SUM",
+                    "percentAvg": "%AVG",
+                    "relAvg": "REL. AVG",
+                    "percentMax": "%MAX",
+                    "relMax": "REL. MAX",
+                    "zScore": "Z-SCORE",
+                    "placement": "PLACE",
+                    "player": "PLAYER",
+                    "team": "TEAM",
+                    "best": "BEST",
+                    "worst": "WORST"
+                },
+                "category": "CATEGORY",
+                "select": "SELECT",
+                "players": "PLAYERS",
+                "teams": "TEAMS"
+            },
+            "create": "CREATE",
+            "error": {
+                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
+                "pressToClose": "Press anywhere to close"
+            }
+        },
+        "teams": {
+            "teamsList": "TEAMS LIST",
+            "error": "COULD NOT GET TEAM LIST",
+            "searchPlaceholder": "search for user/team",
+            "editTeamInfo": "edit team info",
+            "qualifierId": "Qualifier ID",
+            "placeholders": {
+                "searchUser": "osu! username (must have corsace account)",
+                "name": "name",
+                "abbreviation": "abbreviation"
+            },
+            "edit": {
+                "teamName": "TEAM NAME",
+                "teamAbbreviation": "TEAM ABBREVIATION",
+                "timezone": "TIMEZONE",
+                "teamAvatar": "TEAM AVATAR",
+                "errors": {
+                    "size": "Image is too large. Ensure the image is less than 5MB.",
+                    "type": "Invalid image file. Ensure the image is a PNG or JPG.",
+                    "invalidImage": "Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.",
+                    "invalidTimezone": "Invalid timezone.",
+                    "errorAddingTeamAvatar": "Error adding team avatar:\n{error}",
+                    "invalidName": "",
+                    "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
+                },
+                "confirm": {
+                    "deleteTeam": "Are you sure you want to delete this team?",
+                    "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!",
+                    "removeMember": "Are you sure you want to remove {username} from your team?",
+                    "transferManager": "Are you sure you want to transfer manager to {username}?",
+                    "invite": "Are you sure you want to invite {username} to your team?",
+                    "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
+                    "unregister": "Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."
+                },
+                "save": "SAVE",
+                "deleteTeam": "DELETE TEAM"
+            },
+            "headers": {
+                "tournaments": "TOURNAMENTS",
+                "teamStats": "TEAM STATS",
+                "teamManager": "TEAM MANAGER",
+                "teamMembers": "TEAM MEMBERS",
+                "editTeamMembers": "edit team members",
+                "closeTeamMembers": "close team members edit",
+                "becomeMember": "become a member and play as well",
+                "becomeManager": "become manager only",
+                "teamInvites": "TEAM INVITES",
+                "editTeamInvites": "edit team invites",
+                "closeTeamInvites": "close team invites edit",
+                "qualifier": "QUALIFIER",
+                "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
+                "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
+            },
+            "registration": {
+                "noRegistration": "Registered in no tournaments",
+                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
+            },
+            "teamID": "TEAM ID",
+            "member": "member",
+            "members": "members",
+            "averageBWS": "Average BWS",
+            "averageRank": "Average Rank",
+            "averagePP": "Average PP",
+            "editQualifierTime": "edit qualifier time",
+            "deleteTeam": "delete qualifier/unregister team",
+            "createJoinQualifier": "create/join qualifier",
+            "notRegistered": "Currently not registered in Corsace Open."
+        },
+        "create": {
+            "title": "CREATE A TEAM",
+            "info1": "Registrations will end on",
+            "info2": "Please ensure all information is correct before finalizing.",
+            "teamName": "TEAM NAME",
+            "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
+            "teamAcronym": "TEAM ACRONYM",
+            "acronymLength": "2 - 4 characters. Profanity will be checked.",
+            "teamTimezone": "TEAM TIMEZONE",
+            "timezoneText": "We will assume your team can play between <span class='bold'>10:00 to 22:00</span> in the selected timezone.",
+            "teamAvatar": "TEAM AVATAR",
+            "upload": "UPLOAD",
+            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
+            "fileSizeError": "file size too big! please upload a smaller image",
+            "fileTypeError": "incorrect file type! please upload a .jpg or .png",
+            "preview": "PREVIEW",
+            "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
+            "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
+            "avatarInfo3": "All names and avatars will be approved by staff.",
+            "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
+            "teamManagement": "TEAM MANAGEMENT",
+            "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
+            "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
+            "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
+            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "create": "CREATE TEAM"
+        },
+        "components": {
+            "openCardTeam": {
+                "rank": "RANK",
+                "teambwsAverage": "TEAM BWS AVG",
+                "unregistered": "UNREGISTERED",
+                "bws": "BWS"
+            },
+            "stageSelector": {
+                "select": "SELECT",
+                "stage": "STAGE"
+            }
+        },
+        "staff": {
+            "title": "STAFF",
+            "notLoggedIn": "NOT LOGGED IN"
+        },
+        "referee": {
+            "title": "REFEREE",
+            "loadMore": "LOAD MORE",
+            "back": "BACK TO MATCHUP LIST",
+            "createLobby": "CREATE LOBBY",
+            "roll": "ROLL",
+            "reroll": "RE-ROLL",
+            "settings": "!MP SETTINGS",
+            "timer": "!MP TIMER",
+            "startMap": "!MP START",
+            "abortMap": "!MP ABORT",
+            "closeLobby": "CLOSE LOBBY"
+        },
+        "status": {
+            "loading": "LOADING"
+        },
+        "mappool": {
+            "title": "MAPPOOL"
+        }
+    },
     "main": {
         "construction": {
             "underConstruction": "wordt aan gewerkt",
@@ -432,259 +699,6 @@
         "merch": {
             "code": "Tap Trio - Corsace Bundle",
             "products": "Beperkte hoeveelheid beschikbaar"
-        }
-    },
-    "open": {
-        "navbar": {
-            "home": "",
-            "info": "",
-            "qualifiers": "",
-            "teams": "",
-            "schedule": "",
-            "mappool": "",
-            "staff": "",
-            "createTeam": "",
-            "invitations": "",
-            "loginDiscord": "",
-            "teamInvites": "",
-            "noInvites": ""
-        },
-        "footer": {
-            "corsace": "",
-            "twitter": "",
-            "discord": "",
-            "twitch": "",
-            "youtube": ""
-        },
-        "stages": {
-            "qualifiers": "",
-            "round robin": "",
-            "runoff bracket": "",
-            "knockout 1": "",
-            "knockout 2": "",
-            "abbreviations": {
-                "ql": "",
-                "rr": "",
-                "ro": "",
-                "ko1": "",
-                "ko2": ""
-            }
-        },
-        "home": {
-            "description": "",
-            "timeline": "",
-            "presentedBy": "",
-            "registrations": "",
-            "button": {
-                "qualifiersMappool": "",
-                "mappoolDownload": "",
-                "register": "",
-                "registrationsEnd": ""
-            }
-        },
-        "info": {
-            "title": "",
-            "condensed": "",
-            "error": "",
-            "matchInfo": {
-                "matchSize": "",
-                "minPlayers": "",
-                "maxPlayers": "",
-                "pickTimer": "",
-                "readyTimer": "",
-                "order": "",
-                "scoringMethod": "",
-                "type": "",
-                "startDate": "",
-                "endDate": "",
-                "rounds": "",
-                "initialSize": "",
-                "finalSize": ""
-            },
-            "headings": {
-                "mappools": "",
-                "stage": ""
-            },
-            "status": {
-                "notStarted": "",
-                "complete": "",
-                "ongoing": ""
-            },
-            "mappools": {
-                "info": "",
-                "notAvailable": "",
-                "mappackDownload": "",
-                "mappacknotAvailable": ""
-            },
-            "donateToCorsace": "",
-            "supportViaSponsorship": "",
-            "generalInfo": "",
-            "teamStructure": "",
-            "qualifiersProcedures": "",
-            "tournamentStructure": "",
-            "infoGraphic": "",
-            "matchProcedures": "",
-            "reportTournament": "",
-            "subjectToChange": ""
-        },
-        "qualifiers": {
-            "nav": {
-                "mappool": "",
-                "qualifiers": "",
-                "scores": ""
-            },
-            "mappool": {
-                "sheets": "",
-                "mappool": "",
-                "notAvailable": "",
-                "banner": {
-                    "mapper": "",
-                    "difficulty": ""
-                }
-            },
-            "scores": {
-                "nav": {
-                    "sort": "",
-                    "average": "",
-                    "sum": "",
-                    "percentAvg": "",
-                    "relAvg": "",
-                    "percentMax": "",
-                    "relMax": "",
-                    "zScore": "",
-                    "placement": "",
-                    "player": "",
-                    "team": "",
-                    "best": "",
-                    "worst": ""
-                },
-                "category": "",
-                "select": "",
-                "players": "",
-                "teams": ""
-            },
-            "create": "",
-            "error": {
-                "message": "",
-                "pressToClose": ""
-            }
-        },
-        "teams": {
-            "teamsList": "",
-            "error": "",
-            "searchPlaceholder": "",
-            "editTeamInfo": "",
-            "qualifierId": "",
-            "placeholders": {
-                "searchUser": "",
-                "name": "",
-                "abbreviation": ""
-            },
-            "edit": {
-                "teamName": "",
-                "teamAbbreviation": "",
-                "timezone": "",
-                "teamAvatar": "",
-                "errors": {
-                    "size": "",
-                    "type": "",
-                    "invalidImage": "",
-                    "invalidTimezone": "",
-                    "errorAddingTeamAvatar": "",
-                    "invalidName": "",
-                    "contactVinxis": ""
-                },
-                "confirm": {
-                    "deleteTeam": "",
-                    "deleteTeamFinal": "",
-                    "removeMember": "",
-                    "transferManager": "",
-                    "invite": "",
-                    "removeInvite": "",
-                    "unregister": ""
-                },
-                "save": "",
-                "deleteTeam": ""
-            },
-            "headers": {
-                "tournaments": "",
-                "teamStats": "",
-                "teamManager": "",
-                "teamMembers": "",
-                "editTeamMembers": "",
-                "closeTeamMembers": "",
-                "becomeMember": "",
-                "becomeManager": "",
-                "teamInvites": "",
-                "editTeamInvites": "",
-                "closeTeamInvites": "",
-                "qualifier": "",
-                "requiredMessageExact": "",
-                "requiredMessageRange": ""
-            },
-            "registration": {
-                "noRegistration": "",
-                "toPlay": ""
-            },
-            "teamID": "",
-            "member": "",
-            "members": "",
-            "averageBWS": "",
-            "averageRank": "",
-            "averagePP": "",
-            "editQualifierTime": "",
-            "deleteTeam": "",
-            "createJoinQualifier": "",
-            "notRegistered": ""
-        },
-        "create": {
-            "title": "",
-            "info1": "",
-            "info2": "",
-            "teamName": "",
-            "teamLength": "",
-            "teamAcronym": "",
-            "acronymLength": "",
-            "teamTimezone": "",
-            "timezoneText": "",
-            "teamAvatar": "",
-            "upload": "",
-            "fileSizeLimit": "",
-            "fileSizeError": "",
-            "fileTypeError": "",
-            "preview": "",
-            "avatarInfo1": "",
-            "avatarInfo2": "",
-            "avatarInfo3": "",
-            "avatarInfo4": "",
-            "teamManagement": "",
-            "teamManagers": "",
-            "teamManagersFree": "",
-            "selectManager": "",
-            "confirmManager": "",
-            "create": ""
-        },
-        "components": {
-            "openCardTeam": {
-                "rank": "",
-                "teambwsAverage": "",
-                "unregistered": "",
-                "bws": ""
-            },
-            "stageSelector": {
-                "select": "",
-                "stage": ""
-            }
-        },
-        "staff": {
-            "title": "",
-            "notLoggedIn": ""
-        },
-        "status": {
-            "loading": ""
-        },
-        "mappool": {
-            "title": ""
         }
     }
 }
