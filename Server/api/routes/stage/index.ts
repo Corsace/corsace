@@ -246,7 +246,7 @@ stageRouter.get("/:stageID/scores", validateStageOrRound, async (ctx) => {
                 return;
             }
         } else if (
-            !tournament.publicQualifiers && 
+            !stage.publicScores && 
             tournament.organizer.ID !== ctx.state.user?.ID
         ) {
             if (!ctx.state.user?.discord.userID) {
