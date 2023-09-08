@@ -166,10 +166,10 @@ Paste it into `config.discord.token`
 Ensure you enable the `Server Members` and `Message Content` intents under the **Privileged Gateway Intents** subsection before usage, the bot will not start otherwise, and you will be provided a `[DISALLOWED INTENTS]` error.
 
 ###### GitHub Webhook
-If you are forking this repository, and want to utilize Corsace's Github Webhook, follow these steps.
+Completely optional, and only if you really want to track your GitHub fork's events on discord and want to utilize Corsace's Github Webhook.
 
-In the channel you want to obtain GitHub notifications from, create a webhook, copy its URL, and place it into your config in `config.discord.github.webhookURL`.
-Create a password and place it in `config.discord.github.webhookSecret`.
+In the discord channel you want to obtain GitHub notifications from, create a webhook from `settings -> Integrations -> Create Webhook`, copy its Webhook URL, and place it into your config in `config.github.webhookURL`.
+Create a password and place it in `config.github.webhookSecret`.
 
 On GitHub, go to the repository's settings, and create a new webhook. Place the following URL in:
 ```
