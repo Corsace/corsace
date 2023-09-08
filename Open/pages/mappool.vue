@@ -83,8 +83,7 @@
                             </template>
                         </StageSelector>
                         <div class="qualifiers__header_subtext">
-                            <span>{{ $t('open.qualifiers.scores.category') }}</span>
-                            <span>{{ $t('open.qualifiers.scores.select') }}</span>
+                            {{ $t('open.qualifiers.scores.categorySelect') }}
                         </div>
                         <ContentButton 
                             class="content_button--header_button"
