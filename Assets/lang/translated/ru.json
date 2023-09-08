@@ -547,8 +547,7 @@
                     "best": "BEST",
                     "worst": "WORST"
                 },
-                "category": "CATEGORY",
-                "select": "ВЫБРАТЬ",
+                "categorySelect": "CATEGORY SELECT",
                 "players": "ИГРОКИ",
                 "teams": "КОМАНДЫ"
             },
