@@ -121,6 +121,12 @@ declare module "node-config-ts" {
             password: string;
         };
 
+        github: {
+            webhookSecret: string;
+            webhookURL: string;
+            ignoredBranches?: string[];
+        };
+
         centrifugo: {
             apiUrl: string;
             publicUrl: string;

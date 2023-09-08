@@ -122,6 +122,11 @@
         "username": "interop",
         "password": "@@INTEROP_PASSWORD"
     },
+    "github": {
+        "webhookSecret": "@@GITHUB_WEBHOOK_SECRET",
+        "webhookURL": "@@GITHUB_WEBHOOK_URL",
+        "ignoredBranches": ["crowdin"]
+    },
     "centrifugo": {
         "apiUrl": "http://centrifugo:9000/api",
         "publicUrl": "wss://centrifugo.corsace.io",
