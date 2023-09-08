@@ -1,11 +1,11 @@
 {
     "flag": "https://osu.ppy.sh/images/flags/FR.png",
     "header": {
-        "welcomeBack": "welcome back",
-        "login": "login",
-        "register": "register",
-        "changeDiscord": "change discord",
-        "logout": "logout"
+        "welcomeBack": "bon retour",
+        "login": "se connecter",
+        "register": "s'inscrire",
+        "changeDiscord": "changer discord",
+        "logout": "se déconnecter"
     },
     "mca_ayim": {
         "banner": {
