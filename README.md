@@ -1,5 +1,7 @@
 Please use this repository when you are changing any of the code for Corsace projects.
 
+[![Crowdin](https://badges.crowdin.net/corsace/localized.svg)](https://crowdin.com/project/corsace)
+
 # Before Getting Started
 On WSL/Unix:
 ```
