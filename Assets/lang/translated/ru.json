@@ -15,11 +15,11 @@
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
             "ayim": "A YEAR <br> IN <br> MAPPING",
-            "login": "LOG IN",
+            "login": "ВОЙТИ",
             "welcomeBack": "добро пожаловать",
             "admin": "ADMIN",
             "staff": "STAFF",
-            "logout": "LOGOUT"
+            "logout": "ВЫЙТИ"
         },
         "login": {
             "login": "войти",
@@ -35,8 +35,8 @@
     },
     "ayim": {
         "main": {
-            "records": "RECORDS",
-            "statistics": "STATISTICS",
+            "records": "РЕКОРДЫ",
+            "statistics": "СТАТИСТИКА",
             "search": "поиск маппера",
             "numberof": "количество",
             "numberwith": "количество карт с",
@@ -48,24 +48,24 @@
             }
         },
         "mapsets": {
-            "name": "MAPSETS",
+            "name": "КАРТЫ",
             "playcount": "PLAYCOUNT",
-            "favourites": "FAVOURITES",
+            "favourites": "ИЗБРАННЫЕ",
             "favouritesExclHybrid": "FAVOURITES (EXCL. HYBRIDS)",
-            "length": "LENGTH",
-            "difficulties": "DIFFICULTIES",
+            "length": "ДЛИНА",
+            "difficulties": "СЛОЖНОСТИ",
             "playTime": "LENGTH (SUM OF ALL DIFFICULTIES)",
             "totalRanked": "TOTAL RANKED",
-            "totalDiff": "TOTAL DIFFICULTIES",
+            "totalDiff": "СУММА СЛОЖНОСТЕЙ",
             "submitDates": "SUBMIT DATES",
             "starRatings": "STAR RATINGS",
             "approachRate": "APPROACH RATE",
             "overallDifficulty": "OVERALL DIFFICULTY",
-            "hpDrain": "HP DRAIN",
-            "circleSize": "CIRCLE SIZE",
-            "spinners": "SPINNERS",
-            "sliders": "SLIDERS",
-            "circles": "CIRCLES",
+            "hpDrain": "УТЕЧКА ХП",
+            "circleSize": "РАЗМЕР КРУЖКОВ",
+            "spinners": "СПИННЕРЫ",
+            "sliders": "СЛАЙДЕРЫ",
+            "circles": "КРУЖКИ",
             "avgSpinnersPerDiff": "AVG SPINNERS PER DIFF",
             "avgSlidersPerDiff": "AVG SLIDERS PER DIFF",
             "avgCirclesPerDiff": "AVG CIRCLES PER DIFF",
@@ -73,7 +73,7 @@
             "lowestSr": "LOWEST STAR RATING"
         },
         "mappers": {
-            "name": "MAPPERS",
+            "name": "МАППЕРЫ",
             "mostRanked": "MOST RANKED",
             "mostDiffs": "MOST DIFFICULTIES",
             "mostFavs": "MOST FAVOURITES",
@@ -89,7 +89,7 @@
             "newMappers": "НАЧИНАЮЩИЕ МАППЕРЫ",
             "highestAvgSr": "HIGHEST AVG SR",
             "lowestAvgSr": "LOWEST AVG SR",
-            "mappers": "MAPPERS"
+            "mappers": "МАППЕРЫ"
         },
         "statistics": {
             "numberOf": "number of",
@@ -105,8 +105,8 @@
             "update": "Обновить",
             "remove": "Удалить",
             "create": "Написать",
-            "login": "Login to create a comment!",
-            "visible": "(not visible yet)",
+            "login": "Войдите, чтобы написать комментарий!",
+            "visible": "(пока не видно)",
             "notice": "Hello! This may be the first time you have navigated to (one of) the comments page! <br> Please note that comments are crowdfunded! <br> Anyone (including you) can write comments for anyone until this year's MCA is done! <br> Write about what they did or their achievements in [YEAR] to show appreciation to the mappers participating in the community!"
         }
     },
@@ -120,18 +120,18 @@
             "preparation": "preparation",
             "results": "results",
             "timeline": "timeline",
-            "mapsetsLabel": "MAPSETS",
-            "mappersLabel": "MAPPERS",
-            "commentsLabel": "COMMENTS",
-            "recordsLabel": "RECORDS",
-            "statisticsLabel": "STATISTICS",
+            "mapsetsLabel": "КАРТЫ",
+            "mappersLabel": "МАППЕРЫ",
+            "commentsLabel": "КОММЕНТАРИИ",
+            "recordsLabel": "РЕКОРДЫ",
+            "statisticsLabel": "СТАТИСТИКА",
             "stage": {
                 "voting": "voting stage",
                 "nominating": "nomination stage",
                 "preparation": "preparation stage",
                 "stage": "stage"
             },
-            "rankedSets": "RANKED SETS",
+            "rankedSets": "РАНКНУТЫЕ КАРТЫ",
             "nominateNow": "nominate now!",
             "voteNow": "vote now!",
             "viewResults": "view results!",
