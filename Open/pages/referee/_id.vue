@@ -17,19 +17,19 @@
         >
             <div 
                 class="referee__menu_select__option referee__menu_select__option--blue"
-                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 0 }); mapSelected = null"
+                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 0, set: (matchupSet?.order || 1) - 1 }); mapSelected = null"
             >
                 PROTECT
             </div>
             <div 
                 class="referee__menu_select__option referee__menu_select__option--red"
-                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 1 }); mapSelected = null"
+                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 1, set: (matchupSet?.order || 1) - 1 }); mapSelected = null"
             >
                 BAN
             </div>
             <div 
                 class="referee__menu_select__option referee__menu_select__option--green"
-                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 2, time: parseInt(readyTimer) }); mapSelected = null"
+                @click="banchoCall('selectMap', { mapID: mapSelected?.ID, status: 2, set: (matchupSet?.order || 1) - 1 }); mapSelected = null"
             >
                 PICK
             </div>

@@ -308,7 +308,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await mpChannel.sendMessage(`OK ${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so they'll be protecting ${protecting}, banning ${banning}, and picking ${picking}`);
             }
 
-            await publish(matchup, { 
+            await publish(matchup, {
                 type: "first",
                 first: matchup.sets![matchup.sets!.length - 1].first?.ID,
             });
