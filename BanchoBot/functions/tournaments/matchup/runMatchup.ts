@@ -128,12 +128,14 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     let picking: string | null = null;
     let banning: string | null = null;
     let protecting: string | null = null;
+    let orderString = "";
     let firstTo: number | null = null;
 
     if (matchup.stage!.stageType !== StageType.Qualifiers) {
         picking = setOrder[0]?.maps.filter(map => map.status === MapStatus.Picked)[0] ? setOrder[0]?.maps.filter(map => map.status === MapStatus.Picked)[0].team === MapOrderTeam.Team1 ? "picking first" : "picking second" : null;
         banning = setOrder[0]?.maps.filter(map => map.status === MapStatus.Banned)[0] ? setOrder[0]?.maps.filter(map => map.status === MapStatus.Banned)[0].team === MapOrderTeam.Team1 ? "banning first" : "banning second" : null;
         protecting = setOrder[0]?.maps.filter(map => map.status === MapStatus.Protected)[0] ? setOrder[0]?.maps.filter(map => map.status === MapStatus.Protected)[0].team === MapOrderTeam.Team1 ? "protecting first" : "protecting second" : null;
+        orderString = [ protecting, banning, picking ].filter(o => o !== null).join(", ");
         firstTo = setOrder[0]?.maps.filter(map => map.status === MapStatus.Picked).length / 2 + 1;
     }
 
@@ -250,7 +252,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await matchup.save();
                 rolling = false;
 
-                await mpChannel.sendMessage(`OK ${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so they'll be protecting ${protecting}, banning ${banning}, and picking ${picking}`);
+                await mpChannel.sendMessage(`OK ${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so they'll be ${orderString}`);
             } else {
                 const player = playersInLobby.find(p => p.user.username === username);
                 if (!player)
@@ -305,7 +307,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await matchup.save();
                 rolling = false;
 
-                await mpChannel.sendMessage(`OK ${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so they'll be protecting ${protecting}, banning ${banning}, and picking ${picking}`);
+                await mpChannel.sendMessage(`OK ${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so they'll be ${orderString}`);
             }
 
             await publish(matchup, {
@@ -695,6 +697,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             picking = setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Picked)[0] ? setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Picked)[0].team === MapOrderTeam.Team1 ? "picking first" : "picking second" : null;
             banning = setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Banned)[0] ? setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Banned)[0].team === MapOrderTeam.Team1 ? "banning first" : "banning second" : null;
             protecting = setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Protected)[0] ? setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Protected)[0].team === MapOrderTeam.Team1 ? "protecting first" : "protecting second" : null;
+            orderString = [ protecting, banning, picking ].filter(o => o !== null).join(", ");
+
             firstTo = setOrder[matchup.sets!.length - 1]?.maps.filter(map => map.status === MapStatus.Picked).length / 2 + 1;
         }
         await matchup.save();
