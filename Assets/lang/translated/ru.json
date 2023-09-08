@@ -24,13 +24,13 @@
         "login": {
             "login": "войти",
             "message": {
-                "1": "It seems that you are not logged in!<br>Simply login with osu! and you can start voting/nominating immediately!",
+                "1": "Похоже, вы не вошли в систему!<br>Просто войдите через osu! и вы сможете сразу же начать голосовать и номинировать!",
                 "2": "You may login on discord in addition as well after, but it is <b>not required</b> to vote/nominate.<br>Discord login <b>is required</b> for staff members working on MCA/AYIM.</span>"
             },
             "authOsu": "click here to authenticate with osu!",
-            "authOsuComp": "osu! verification complete. Hi ",
+            "authOsuComp": "Верификация аккаунта osu! прошла успешно. Привет ",
             "authDiscord": "нажмите здесь, чтобы аутентифицироваться через discord",
-            "authDiscordComp": "Аутентификация прошла успешно. Привет "
+            "authDiscordComp": "Верификация аккаунта Discord прошла успешно. Привет "
         }
     },
     "ayim": {
@@ -92,8 +92,8 @@
             "mappers": "МАППЕРЫ"
         },
         "statistics": {
-            "numberOf": "number of",
-            "numberOfMapsWith": "number of maps with",
+            "numberOf": "количество",
+            "numberOfMapsWith": "количество карт с",
             "average": "average"
         },
         "comments": {
@@ -114,11 +114,11 @@
         "main": {
             "banner": "LET'S LOOK BACK <br> AT",
             "click": "CLICK HERE TO ENTER",
-            "welcome": "WELCOME TO MCA",
-            "voting": "voting",
-            "nominating": "nominating",
-            "preparation": "preparation",
-            "results": "results",
+            "welcome": "ДОБРО ПОЖАЛОВАТЬ В MCA",
+            "voting": "голосование",
+            "nominating": "номинация",
+            "preparation": "подготовка",
+            "results": "результаты",
             "timeline": "timeline",
             "mapsetsLabel": "КАРТЫ",
             "mappersLabel": "МАППЕРЫ",
@@ -411,8 +411,8 @@
             "headings": {
                 "placement": "PLACE",
                 "map": "MAP",
-                "title": "TITLE",
-                "artist": "ARTIST",
+                "title": "НАЗВАНИЕ",
+                "artist": "ИСПОЛНИТЕЛЬ",
                 "hoster": "HOST",
                 "username": "USER",
                 "firstChoice": "1ST CHOICES",
@@ -475,14 +475,14 @@
             "condensed": "CONDENSED INFO",
             "error": "Could not find tournament",
             "matchInfo": {
-                "matchSize": "MATCH SIZE",
-                "minPlayers": "MIN. PLAYERS",
-                "maxPlayers": "MAX. PLAYERS",
+                "matchSize": "РАЗМЕР МАТЧА",
+                "minPlayers": "МИН. КОЛ-ВО ИГРОКОВ",
+                "maxPlayers": "МАКС. КОЛ-ВО ИГРОКОВ",
                 "pickTimer": "MAP PICK TIMER",
                 "readyTimer": "READY TIMER",
                 "order": "ORDER",
                 "scoringMethod": "SCORING METHOD",
-                "type": "TYPE",
+                "type": "ТИП",
                 "startDate": "START DATE",
                 "endDate": "END DATE",
                 "rounds": "ROUNDS",
@@ -578,7 +578,7 @@
                     "type": "Invalid image file. Ensure the image is a PNG or JPG.",
                     "invalidImage": "Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.",
                     "invalidTimezone": "Invalid timezone.",
-                    "errorAddingTeamAvatar": "Error adding team avatar:\n{error}",
+                    "errorAddingTeamAvatar": "Ошибка при загрузке аватарки команды:\n{error}",
                     "invalidName": "",
                     "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
                 },
