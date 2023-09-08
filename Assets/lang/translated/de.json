@@ -660,10 +660,7 @@
                 "unregistered": "UNREGISTERED",
                 "bws": "BWS"
             },
-            "stageSelector": {
-                "select": "SELECT",
-                "stage": "STAGE"
-            }
+            "stageSelector": "STAGE SELECT"
         },
         "staff": {
             "title": "STAFF",
