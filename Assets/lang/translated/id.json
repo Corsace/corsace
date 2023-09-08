@@ -1,16 +1,16 @@
 {
     "flag": "https://osu.ppy.sh/images/flags/ID.png",
     "header": {
-        "welcomeBack": "welcome back",
-        "login": "login",
-        "register": "register",
-        "changeDiscord": "change discord",
-        "logout": "logout"
+        "welcomeBack": "selamat datang kembali",
+        "login": "masuk",
+        "register": "daftar",
+        "changeDiscord": "ubah discord",
+        "logout": "keluar"
     },
     "mca_ayim": {
         "banner": {
-            "merch": "OFFICIAL MERCHANDISE STORE",
-            "corsace": "MAIN EVENT HUB"
+            "merch": "TOKO CINDERAMATA RESMI",
+            "corsace": "HUB EVENT UTAMA"
         },
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
@@ -641,7 +641,7 @@
             "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
             "fileSizeError": "file size too big! please upload a smaller image",
             "fileTypeError": "incorrect file type! please upload a .jpg or .png",
-            "preview": "PREVIEW",
+            "preview": "PRATINJAU",
             "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
             "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
             "avatarInfo3": "All names and avatars will be approved by staff.",
@@ -694,10 +694,10 @@
             "underConstruction": "under construction",
             "sorry": "sorry for the inconvenience",
             "development": "the corsace website is still in early development",
-            "theTeam": "the corsace team"
+            "theTeam": "tim corsace"
         },
         "merch": {
-            "code": "Tap Trio - Corsace Bundle",
+            "code": "Tap Trio - Bundel Corsace",
             "products": "Persediaan terbatas"
         }
     }
