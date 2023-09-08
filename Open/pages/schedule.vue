@@ -77,9 +77,9 @@ const openModule = namespace("open");
 export default class Schedule extends Vue {
     
     @openModule.State tournament!: Tournament | null;
+    @openModule.State matchupList!: MatchupList[] | null;
 
     stageList: Stage[] = [];
-    matchupList: MatchupList[] = [];
     index = 0;
     
     get selectedStage (): Stage | null {
@@ -89,23 +89,17 @@ export default class Schedule extends Vue {
     @Watch("selectedStage")
     async stageMatchups () {
         if (!this.selectedStage) {
-            this.matchupList = [];
+            this.$store.commit("open/setMatchups", []);
             return;
         }
         
         const ID = this.selectedStage.ID;
-        this.matchupList = [];
+        this.$store.commit("open/setMatchups", []);
 
         await this.pause(500);
         if (ID !== this.selectedStage.ID) return;
 
-        const { data } = await this.$axios.get(`/api/stage/${this.selectedStage.ID}/matchups`);
-
-        this.matchupList = data.matchups.map(matchup => {
-            matchup.date = new Date(matchup.date);
-            return matchup;
-        });
-        this.matchupList.sort((a, b) => a.date.getTime() - b.date.getTime());
+        await this.$store.dispatch("open/setMatchups", this.selectedStage?.ID);
     }
 
     async pause (ms: number) {

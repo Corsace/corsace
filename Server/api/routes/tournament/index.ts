@@ -6,19 +6,12 @@ import { Next, ParameterizedContext } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { StaffMember } from "../../../../Interfaces/staff";
 import { Team } from "../../../../Models/tournaments/team";
-import { playingRoles, TournamentRoleType, tournamentStaffRoleOrder, unallowedToPlay } from "../../../../Interfaces/tournament";
+import { playingRoles, TournamentRoleType, tournamentStaffRoleOrder } from "../../../../Interfaces/tournament";
 import { discordClient } from "../../../discord";
-import { osuClient } from "../../../osu";
-import { Beatmap, Mode } from "nodesu";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
-import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
-import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
-import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
 import { User } from "../../../../Models/user";
 import { createHash } from "crypto";
-import { MatchupScore } from "../../../../Interfaces/matchup";
 import { Stage } from "../../../../Models/tournaments/stage";
-import { StageType } from "../../../../Interfaces/stage";
 
 async function validateID (ctx: ParameterizedContext, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
@@ -52,24 +45,7 @@ tournamentRouter.get("/open/:year", async (ctx) => {
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
-        .leftJoinAndSelect("tournament.stages", "stages")
-        .leftJoinAndSelect("stages.rounds", "rounds")
-        .leftJoinAndSelect("tournament.organizer", "organizer")
-        .leftJoinAndSelect("tournament.teams", "team")
-        .leftJoinAndSelect("stages.mappool", "mappools")
-        .leftJoinAndSelect("rounds.mappool", "roundMappools")
-        .leftJoinAndSelect("mappools.slots", "slots")
-        .leftJoinAndSelect("slots.maps", "maps")
-        .leftJoinAndSelect("maps.beatmap", "beatmaps", "mappools.isPublic = true")
-        .leftJoinAndSelect("maps.customBeatmap", "customBeatmaps", "mappools.isPublic = true")
-        .leftJoinAndSelect("maps.customMappers", "customMappers", "mappools.isPublic = true")
-        .leftJoinAndSelect("beatmaps.beatmapset", "beatmapsets")
-        .leftJoinAndSelect("beatmapsets.creator", "beatmapsetCreator")
-        .leftJoinAndSelect("roundMappools.slots", "roundSlots")
-        .leftJoinAndSelect("roundSlots.maps", "roundMaps")
-        .leftJoinAndSelect("roundMaps.beatmap", "roundBeatmaps", "roundMappools.isPublic = true")
-        .leftJoinAndSelect("roundMaps.customBeatmap", "roundCustomBeatmaps", "roundMappools.isPublic = true")
-        .leftJoinAndSelect("roundMaps.customMappers", "roundCustomMappers", "roundMappools.isPublic = true")
+        .innerJoinAndSelect("tournament.organizer", "organizer")
         .where("tournament.year = :year", { year })
         .andWhere("tournament.isOpen = true")
         .getOne();
@@ -81,51 +57,46 @@ tournamentRouter.get("/open/:year", async (ctx) => {
         };
         return;
     }
-    
-    const updateBeatmapData = async (mappool: Mappool, slot: MappoolSlot, map: MappoolMap) => {
-        if (!mappool.isPublic) {
-            mappool.mappackLink = null;
-            mappool.mappackExpiry = null;
-        }
 
-        if (!slot.allowedMods || !map.beatmap)
-            return;
+    tournament.stages = await Stage
+        .createQueryBuilder("stage")
+        .leftJoinAndSelect("stage.rounds", "rounds")
+        .where("stage.tournamentID = :ID", { ID: tournament.ID })
+        .getMany();
 
-        const set = await osuClient.beatmaps.getByBeatmapId(map.beatmap.ID, Mode.all, undefined, undefined, slot.allowedMods) as Beatmap[];
-        if (set.length === 0)
-            return;
+    tournament.stages.sort((a, b) => a.order - b.order);
+    tournament.stages.forEach(async stage => {
+        stage.rounds.forEach(async round => {
+            round.mappool = await Mappool
+                .createQueryBuilder("mappool")
+                .leftJoinAndSelect("mappool.slots", "slots")
+                .leftJoinAndSelect("slots.maps", "maps")
+                .where("mappool.roundID = :ID", { ID: round.ID })
+                .getMany();
 
-        const beatmap = applyMods(set[0], modsToAcronym(slot.allowedMods));
-        map.beatmap.totalLength = beatmap.totalLength;
-        map.beatmap.totalSR = beatmap.difficultyRating;
-        map.beatmap.circleSize = beatmap.circleSize;
-        map.beatmap.overallDifficulty = beatmap.overallDifficulty;
-        map.beatmap.approachRate = beatmap.approachRate;
-        map.beatmap.hpDrain = beatmap.hpDrain;
-        map.beatmap.beatmapset.BPM = beatmap.bpm;
-    };
-    
-    const beatmapPromises: Promise<void>[] = [];
-    tournament.stages.forEach(stage => {
-        stage.rounds.forEach(round => {
             round.mappool.forEach(mappool => {
-                mappool.slots.forEach(slot => {
-                    slot.maps.forEach(map => {
-                        beatmapPromises.push(updateBeatmapData(mappool, slot, map));
-                    });
-                });
+                if (!mappool.isPublic) {
+                    mappool.mappackLink = null;
+                    mappool.mappackExpiry = null;
+                }
             });
         });
-        stage.mappool?.forEach(mappool => {
-            mappool.slots.forEach(slot => {
-                slot.maps.forEach(map => {
-                    beatmapPromises.push(updateBeatmapData(mappool, slot, map));
-                });
-            });
+
+        stage.mappool = await Mappool
+            .createQueryBuilder("mappool")
+            .leftJoinAndSelect("mappool.slots", "slots")
+            .leftJoinAndSelect("slots.maps", "maps")
+            .where("mappool.stageID = :ID", { ID: stage.ID })
+            .getMany();
+
+        stage.mappool.forEach(mappool => {
+            if (!mappool.isPublic) {
+                mappool.mappackLink = null;
+                mappool.mappackExpiry = null;
+            }
         });
     });
 
-    await Promise.all(beatmapPromises);
     ctx.body = tournament;
 });
 

@@ -4,7 +4,7 @@
             <div
                 class="qualifiers__sub_header_item"
                 :class="{ 'qualifiers__sub_header_item--active': page === 'mappool' }"
-                @click="page = 'mappool'"
+                @click="getMappool"
             >
                 {{ $t('open.qualifiers.nav.mappool') }}
             </div>
@@ -29,7 +29,7 @@
                 <template #buttons>
                     <Clock />
                     <div
-                        v-if="page === 'mappool' && qualifiersStage?.mappool?.[0].isPublic"
+                        v-if="page === 'mappool' && mappools?.[0].isPublic"
                         class="qualifiers__button_group"
                     >
                         <!-- TODO: NOT MAKE THIS A STATIC LINK LOL -->
@@ -47,7 +47,7 @@
                         </a>
                         <a 
                             v-if="page === 'mappool'"
-                            :href="qualifiersStage?.mappool?.[0].mappackLink || ''"
+                            :href="mappools?.[0].mappackLink || ''"
                             class="qualifiers__button"
                         >
                             <div class="qualifiers__button_text">
@@ -111,8 +111,8 @@
                 </template>
             </OpenTitle>
             <MappoolView 
-                v-if="page === 'mappool' && qualifiersStage?.mappool?.[0].isPublic"
-                :pool="qualifiersStage.mappool[0]"
+                v-if="page === 'mappool' && mappools?.[0].isPublic"
+                :pool="mappools[0]"
             />
             <div
                 v-else-if="page === 'mappool'"
@@ -121,10 +121,10 @@
                 {{ $t("open.qualifiers.mappool.notAvailable") }}
             </div>
             <ScoresView
-                v-else-if="page === 'scores' && qualifiersStage?.mappool?.[0].isPublic"
+                v-else-if="page === 'scores' && mappools?.[0].isPublic"
                 tiers
                 :view="scoreView"
-                :pool="qualifiersStage.mappool[0]"
+                :pool="mappools[0]"
             />
             <QualifiersView
                 v-else-if="page === 'qualifiers'"
@@ -156,6 +156,7 @@ import { Stage } from "../../Interfaces/stage";
 import { Tournament } from "../../Interfaces/tournament";
 import { Team } from "../../Interfaces/team";
 import { UserInfo } from "../../Interfaces/user";
+import { Mappool } from "../../Interfaces/mappool";
 
 const openModule = namespace("open");
 
@@ -202,6 +203,7 @@ export default class Qualifiers extends Vue {
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State team!: Team | null;
+    @openModule.State mappools!: Mappool[] | null;
 
     get qualifiersStage (): Stage | null {
         return this.tournament?.stages.find(s => s.stageType === 0) || null;
@@ -221,12 +223,14 @@ export default class Qualifiers extends Vue {
             await this.$store.dispatch("open/setQualifierList", this.tournament?.ID);
     }
 
+    async getMappool () {
+        this.page = "mappool";
+        this.$store.dispatch("open/setMappools", this.qualifiersStage?.ID);
+    }
+
     async getScores () {
         this.page = "scores";
-        this.$store.dispatch("open/setScores", {
-            tournamentID: this.tournament?.ID,
-            stageID: this.qualifiersStage?.ID,
-        });
+        this.$store.dispatch("open/setScores", this.qualifiersStage?.ID);
     }
 }
 </script>

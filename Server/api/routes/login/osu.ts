@@ -1,17 +1,17 @@
 import Router from "@koa/router";
 import passport from "koa-passport";
-import Axios from "axios";
 import { ParameterizedContext } from "koa";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { config } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
 import { redirectToMainDomain } from "./middleware";
-import { osuV2Client } from "../../../osu";
+import { osuClient, osuV2Client } from "../../../osu";
 import { isPossessive } from "../../../../Models/MCA_AYIM/guestRequest";
 import { scopes } from "../../../../Interfaces/osuAPIV2";
 import { parseQueryParam } from "../../../utils/query";
 import { ModeDivisionType } from "../../../../Models/MCA_AYIM/modeDivision";
 import { UserStatistics } from "../../../../Models/userStatistics";
+import { Beatmap, Mode } from "nodesu";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
@@ -155,12 +155,12 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
         // MCA data
         ctx.state.user.mcaEligibility = ctx.state.user.mcaEligibility || [];
 
-        // TODO: Move to appropriate service (with rate-limiter etc)
-        const beatmaps = (await Axios.get(`${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&u=${ctx.state.user.osu.userID}`)).data;
+        // TODO: Replace this with osu!apiv2 because that actually has pagination, currently will cause issues if a user ranked more than 500 difficulties
+        const beatmaps = await osuClient.beatmaps.getByUser(ctx.state.user.osu.userID, Mode.all, undefined, undefined, "id") as Beatmap[];
         if (beatmaps.length != 0) {
             for (const beatmap of beatmaps) {
                 if (!isPossessive(beatmap.version) && (beatmap.approved == 2 || beatmap.approved == 1)) {
-                    const date = new Date(beatmap.approved_date);
+                    const date = new Date(beatmap.approvedDate);
                     const year = date.getUTCFullYear();
                     let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: { ID: ctx.state.user.ID }}});
                     if (!eligibility) {
@@ -169,8 +169,8 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                         eligibility.user = ctx.state.user;
                     }
                     
-                    if (!eligibility[modes[beatmap.mode]]) {
-                        eligibility[modes[beatmap.mode]] = true;
+                    if (!eligibility[modes[beatmap.mode || 0]]) {
+                        eligibility[modes[beatmap.mode || 0]] = true;
                         eligibility.storyboard = true;
                         await eligibility.save();
                         const i = ctx.state.user.mcaEligibility.findIndex((e: MCAEligibility) => e.year === year);
