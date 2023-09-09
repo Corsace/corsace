@@ -106,6 +106,8 @@ export default class Schedule extends Vue {
     mounted () {
         this.stageList = this.tournament?.stages.filter(stage => stage.stageType !== StageType.Qualifiers) || [];
         this.index = this.stageList.findIndex(stage => stage.timespan.end.getTime() > Date.now());
+        if (this.index === -1)
+            this.index = 0;
     }
 }
 

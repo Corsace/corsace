@@ -301,7 +301,7 @@ stageRouter.get("/:stageID/scores", validateStageOrRound, async (ctx) => {
         .innerJoin("set.maps", "map")
         .innerJoin("map.map", "mappoolMap")
         .innerJoin("mappoolMap.slot", "slot")
-        .innerJoin("matchupMap.scores", "score")
+        .innerJoin("map.scores", "score")
         .innerJoin("score.user", "user")
         .where("tournament.ID = :tournamentID", { tournamentID: stage.tournament.ID })
         .andWhere("stage.ID = :stageID", { stageID: stage.ID })
