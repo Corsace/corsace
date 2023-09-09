@@ -21,6 +21,8 @@ githubRouter.post("/", async (ctx) => {
     const ref = 
         body.ref?.split("/")?.pop() || 
         body.pull_request?.head?.ref ||
+        body.check_suite?.head_branch ||
+        body.check_suite?.pull_requests?.[0]?.head?.ref ||
         body.check_run?.check_suite?.head_branch || 
         body.check_run?.check_suite?.pull_requests?.[0]?.head?.ref ||
         body.check_run?.pull_requests?.[0]?.head?.ref ||
