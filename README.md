@@ -168,7 +168,7 @@ Ensure you enable the `Server Members` and `Message Content` intents under the *
 ###### GitHub Webhook
 Completely optional, and only if you really want to track your GitHub fork's events on discord and want to utilize Corsace's Github Webhook.
 
-In the discord channel you want to obtain GitHub notifications from, create a webhook from `settings -> Integrations -> Create Webhook`, copy its Webhook URL, and place it into your config in `config.github.webhookURL`.
+In the discord channel you want to obtain GitHub notifications from, create a webhook from `settings -> Integrations -> Create Webhook`, copy its Webhook URL, and place it into your config in `config.github.webhookUrl`.
 Create a password and place it in `config.github.webhookSecret`.
 
 On GitHub, go to the repository's settings, and create a new webhook. Place the following URL in:

@@ -34,7 +34,7 @@ githubRouter.post("/", async (ctx) => {
     }
 
     try {
-        const res = await Axios.post(`${config.github.webhookURL}/github`, ctx.request.body, {
+        const res = await Axios.post(`${config.github.webhookUrl}/github`, ctx.request.body, {
             headers: {
                 "content-type": "application/json",
                 "User-Agent": ctx.get("User-Agent"),

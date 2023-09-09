@@ -124,7 +124,7 @@
     },
     "github": {
         "webhookSecret": "@@GITHUB_WEBHOOK_SECRET",
-        "webhookURL": "@@GITHUB_WEBHOOK_URL",
+        "webhookUrl": "@@GITHUB_WEBHOOK_URL",
         "ignoredBranches": ["crowdin"]
     },
     "centrifugo": {

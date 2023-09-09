@@ -123,7 +123,7 @@ declare module "node-config-ts" {
 
         github: {
             webhookSecret: string;
-            webhookURL: string;
+            webhookUrl: string;
             ignoredBranches?: string[];
         };
 
