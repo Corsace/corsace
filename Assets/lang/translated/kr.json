@@ -4,8 +4,8 @@
         "welcomeBack": "welcome back",
         "login": "login",
         "register": "register",
-        "changeDiscord": "change discord",
-        "logout": "logout"
+        "changeDiscord": "디스코드 변경",
+        "logout": "로그아웃"
     },
     "mca_ayim": {
         "banner": {
@@ -24,7 +24,7 @@
         "login": {
             "login": "로그인",
             "message": {
-                "1": "아직 로그인하지 않으셨습니다!<br>osu! 계정으로 로그인하시면 추천과 투표를 바로 하실 수 있습니다!",
+                "1": "아직 로그인하지 않았습니다!!<br>osu! 계정으로 로그인하시면 추천과 투표를 바로 하실 수 있습니다!",
                 "2": "이후 디스코드로도 로그인하실 수 있지만, 추천/투표하는 데에는 <b>필요하지 않습니다.</b><br>MCA/AYIM 관련 스태프분들은 디스코드로 로그인을 <b>반드시</b> 하셔야 합니다."
             },
             "authOsu": "여기를 클릭하여 osu!로 로그인하세요",
