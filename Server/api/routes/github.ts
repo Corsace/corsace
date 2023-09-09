@@ -34,7 +34,17 @@ githubRouter.post("/", async (ctx) => {
     }
 
     try {
-        const res = await Axios.post(`${config.github.webhookURL}/github`, ctx.request.body);
+        const res = await Axios.post(`${config.github.webhookURL}/github`, ctx.request.body, {
+            headers: {
+                "content-type": "application/json",
+                "User-Agent": ctx.get("User-Agent"),
+                "X-GitHub-Delivery": ctx.get("X-GitHub-Delivery"),
+                "X-GitHub-Event": ctx.get("X-GitHub-Event"),
+                "X-GitHub-Hook-ID": ctx.get("X-GitHub-Hook-ID"),
+                "X-GitHub-Hook-Installation-Target-ID": ctx.get("X-GitHub-Hook-Installation-Target-ID"),
+                "X-GitHub-Hook-Installation-Target-Type": ctx.get("X-GitHub-Hook-Installation-Target-Type"),
+            },
+        });
         ctx.status = res.status;
         ctx.body = res.data;
     } catch (e) {
