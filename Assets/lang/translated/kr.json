@@ -251,8 +251,8 @@
                 "description": "슬라이더 SV를 가장 잘 활용한 비트맵셋"
             },
             "featuredArtist": {
-                "name": "피쳐드 아티스트",
-                "description": "공식 FA 곡으로 제작한 최고의 비트맵셋"
+                "name": "공식 아티스트",
+                "description": "공식 아티스트 곡으로 제작한 최고의 비트맵셋"
             },
             "longNotes": {
                 "name": "롱 노트",
@@ -426,13 +426,13 @@
         "navbar": {
             "home": "HOME",
             "info": "INFO",
-            "qualifiers": "QUALIFIERS",
-            "teams": "TEAMS",
-            "schedule": "SCHEDULE",
-            "mappool": "MAPPOOL",
-            "staff": "STAFF",
-            "createTeam": "CREATE TEAM",
-            "invitations": "INVITATIONS",
+            "qualifiers": "퀄리파이어",
+            "teams": "팀 목록",
+            "schedule": "스케쥴",
+            "mappool": "맵풀",
+            "staff": "스태프",
+            "createTeam": "팀 만들기",
+            "invitations": "받은 초대",
             "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
             "teamInvites": "TEAM INVITES",
             "noInvites": "You currently have no invites"
@@ -472,25 +472,25 @@
         },
         "info": {
             "title": "INFORMATION",
-            "condensed": "CONDENSED INFO",
+            "condensed": "세부 사항",
             "error": "Could not find tournament",
             "matchInfo": {
                 "matchSize": "MATCH SIZE",
                 "minPlayers": "MIN. PLAYERS",
                 "maxPlayers": "MAX. PLAYERS",
-                "pickTimer": "MAP PICK TIMER",
-                "readyTimer": "READY TIMER",
+                "pickTimer": "맵 선택 타이머",
+                "readyTimer": "준비 타이머",
                 "order": "ORDER",
-                "scoringMethod": "SCORING METHOD",
-                "type": "TYPE",
-                "startDate": "START DATE",
-                "endDate": "END DATE",
+                "scoringMethod": "점수 집계 방식",
+                "type": "경기 유형",
+                "startDate": "시작일",
+                "endDate": "종료일",
                 "rounds": "ROUNDS",
                 "initialSize": "INITIAL SIZE",
                 "finalSize": "FINAL SIZE"
             },
             "headings": {
-                "mappools": "MAPPOOLS",
+                "mappools": "맵풀",
                 "stage": "STAGE"
             },
             "status": {
@@ -499,21 +499,21 @@
                 "ongoing": "ONGOING"
             },
             "mappools": {
-                "info": "MAPPOOL INFO",
+                "info": "맵풀 정보",
                 "notAvailable": "INFO NOT AVAILABLE",
                 "mappackDownload": "DOWNLOAD MAP PACK",
                 "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
             },
             "prizes": "PRIZES",
             "donateToCorsace": "DONATE TO CORSACE",
-            "supportViaSponsorship": "SUPPORT VIA MOMOKAI SPONSORSHIP",
+            "supportViaSponsorship": "MOMOKAI SPONSORSHIP을 통한 지원",
             "generalInfo": "GENERAL INFORMATION",
-            "teamStructure": "TEAM STRUCTURE",
-            "qualifiersProcedures": "QUALIFIERS PROCEDURES",
-            "tournamentStructure": "TOURNAMENT STRUCTURE",
+            "teamStructure": "팀 구성",
+            "qualifiersProcedures": "퀄리파이어 규칙",
+            "tournamentStructure": "토너먼트 구성",
             "infoGraphic": "INFOGRAPHIC",
-            "matchProcedures": "MATCH PROCEDURES",
-            "reportTournament": "REPORT TOURNAMENTS HERE",
+            "matchProcedures": "경기 규칙",
+            "reportTournament": "토너먼트 신고",
             "subjectToChange": "all rules are subject to change for clarification and/or adjustments"
         },
         "qualifiers": {
