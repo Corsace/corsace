@@ -27,7 +27,7 @@
                 "1": "Похоже, вы не вошли в систему!<br>Просто войдите через osu! и вы сможете сразу же начать голосовать и номинировать!",
                 "2": "You may login on discord in addition as well after, but it is <b>not required</b> to vote/nominate.<br>Discord login <b>is required</b> for staff members working on MCA/AYIM.</span>"
             },
-            "authOsu": "click here to authenticate with osu!",
+            "authOsu": "нажмите здесь, чтобы аутентифицироваться через osu!",
             "authOsuComp": "Верификация аккаунта osu! прошла успешно. Привет ",
             "authDiscord": "нажмите здесь, чтобы аутентифицироваться через discord",
             "authDiscordComp": "Верификация аккаунта Discord прошла успешно. Привет "
