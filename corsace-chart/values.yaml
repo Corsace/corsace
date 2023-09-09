@@ -59,6 +59,9 @@ secrets:
           accessKeyId: ""
           secretAccessKey: ""
   interOpPassword: ""
+  github:
+    webhookSecret: ""
+    webhookUrl: ""
   centrifugo:
     apiKey: ""
 

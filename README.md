@@ -165,6 +165,18 @@ Paste it into `config.discord.token`
 
 Ensure you enable the `Server Members` and `Message Content` intents under the **Privileged Gateway Intents** subsection before usage, the bot will not start otherwise, and you will be provided a `[DISALLOWED INTENTS]` error.
 
+###### GitHub Webhook
+Completely optional, and only if you really want to track your GitHub fork's events on discord and want to utilize Corsace's Github Webhook.
+
+In the discord channel you want to obtain GitHub notifications from, create a webhook from `settings -> Integrations -> Create Webhook`, copy its Webhook URL, and place it into your config in `config.github.webhookUrl`.
+Create a password and place it in `config.github.webhookSecret`.
+
+On GitHub, go to the repository's settings, and create a new webhook. Place the following URL in:
+```
+config.corsace.publicUrl + /api/github
+```
+Set the content type to `application/json`, and the secret to the password you created earlier.
+
 ### Centrifugo
 
 We use Centrifugo for real-time notifications. You can find the documentation [here](https://centrifugal.dev/docs/getting-started/introduction).
