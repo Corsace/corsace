@@ -1,16 +1,16 @@
 {
     "flag": "https://osu.ppy.sh/images/flags/KR.png",
     "header": {
-        "welcomeBack": "welcome back",
-        "login": "login",
+        "welcomeBack": "환영합니다",
+        "login": "로그인",
         "register": "register",
         "changeDiscord": "디스코드 변경",
         "logout": "로그아웃"
     },
     "mca_ayim": {
         "banner": {
-            "merch": "OFFICIAL MERCHANDISE STORE",
-            "corsace": "MAIN EVENT HUB"
+            "merch": "공식 굿즈 샵",
+            "corsace": "메인 이벤트 허브"
         },
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
@@ -114,12 +114,12 @@
         "main": {
             "banner": "LET'S LOOK BACK <br> AT",
             "click": "CLICK HERE TO ENTER",
-            "welcome": "WELCOME TO MCA",
+            "welcome": "MCA에 오신것을 환영합니다",
             "voting": "투표",
             "nominating": "추천",
             "preparation": "preparation",
             "results": "결과",
-            "timeline": "timeline",
+            "timeline": "일정",
             "mapsetsLabel": "맵셋",
             "mappersLabel": "매퍼",
             "commentsLabel": "코멘트",
@@ -134,7 +134,7 @@
             "rankedSets": "랭크맵 수",
             "nominateNow": "지금 추천하세요 !",
             "voteNow": "지금 투표하세요 !",
-            "viewResults": "view results!",
+            "viewResults": "결과 보기!",
             "daysLeft": "일 남음",
             "message": {
                 "2019": "<p>Mapper's Choice Awards가 2019년 4회차로 돌아왔습니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2019년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>올해는 저희가 새로 완성한 홈페이지를 통해 투표가 더욱 쉬워졌습니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨으면 좋겠습니다!</p>",
@@ -167,8 +167,8 @@
                 "description": "5분 이상의 장곡 중 최고의 비트맵"
             },
             "marathonMan": {
-                "name": "Best Marathon",
-                "description": "The best beatmap with 4+ minute drain time."
+                "name": "최고의 마라톤",
+                "description": "4분 이상의 장곡중 최고의 비트맵"
             },
             "hitsounding": {
                 "name": "히트사운딩",
