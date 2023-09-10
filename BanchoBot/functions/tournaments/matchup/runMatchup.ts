@@ -161,7 +161,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (started || !state.matchups[matchup.ID]?.autoRunning)
             return;
 
-        await mpChannel.sendMessage("Matchup lobby closed due to captains not joining");
+        await mpChannel.sendMessage("matchup lobby closed due to captains not joining");
         await mpLobby.closeLobby();
     }, matchup.date.getTime() - Date.now() + 15 * 60 * 1000);
 
@@ -185,7 +185,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             const abortCount = (aborts.get(team.ID) || 0) + 1;
             await mpLobby.abortMatch();
             await mpChannel.sendMessage(`${username} has triggered an abort${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? `, they now have ${matchup.stage!.tournament.teamAbortLimit - abortCount} aborts left` : ""}`);
-            await mpChannel.sendMessage(`As a reminder, !panic exists if something is going absurdly wrong`);
+            await mpChannel.sendMessage(`reminder: !panic exists if something is going absurdly wrong`);
             aborts.set(team.ID, abortCount);
         } else if (
             team && 
@@ -194,7 +194,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             aborts.get(team.ID)! >= matchup.stage!.tournament.teamAbortLimit
         ) {
             await mpChannel.sendMessage(`${username} has triggered an abort but the team has reached their abort limit`);
-            await mpChannel.sendMessage(`As a reminder, !panic exists if something is going absurdly wrong`);
+            await mpChannel.sendMessage(`reminder: !panic exists if something is going absurdly wrong`);
         }
     };
 
@@ -291,7 +291,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 }
 
                 if (team1Roll === team2Roll) {
-                    await mpChannel.sendMessage("Both teams rolled the same number of points, roll again");
+                    await mpChannel.sendMessage("both teams rolled the same number of points, roll again");
                     team1Roll = -1;
                     team2Roll = -1;
                     return;
@@ -307,7 +307,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await matchup.save();
                 rolling = false;
 
-                await mpChannel.sendMessage(`${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so they'll be ${orderString}`);
+                await mpChannel.sendMessage(`${matchup.sets![matchup.sets!.length - 1].first?.name} is considered team 1 so theyll be ${orderString}`);
             }
 
             await publish(matchup, {
@@ -334,7 +334,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                     if (!autoStart)
                         return;
                     await kickExtraPlayers(matchup, playersInLobby, mpLobby);
-                    await mpChannel.sendMessage(`As a reminder, !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby`);
+                    await mpChannel.sendMessage(`reminder: !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby`);
                     await mpLobby.startMatch(5);
                     mapTimerStarted = true;
                     autoStart = false;
@@ -367,12 +367,12 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             state.matchups[matchup.ID].autoRunning = false;
 
             if (!refCollector?.channelId) {
-                await mpChannel.sendMessage(`No ref channel ID found, auto-lobby is stopped. Get the organizers/referees of the tournament to continue the match manually`);
+                await mpChannel.sendMessage(`no ref channel ID found, auto-lobby is stopped. Get the organizers/referees of the tournament to continue the match manually`);
                 return;
             }
             const discordChannel = discordClient.channels.cache.get(refCollector.channelId);
             if (!(discordChannel instanceof TextChannel)) {
-                await mpChannel.sendMessage(`No ref discord channel found, auto-lobby is stopped. Get the organizers/referees of the tournament to continue the match manually`);
+                await mpChannel.sendMessage(`no ref discord channel found, auto-lobby is stopped. Get the organizers/referees of the tournament to continue the match manually`);
                 return;
             }
 
@@ -401,7 +401,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         ) {
             earlyStart = true;
             started = true;
-            await mpChannel.sendMessage("matchup's now starting (captains don't need to stay in lobby)");
+            await mpChannel.sendMessage("matchup's now starting (captains dont need to stay in lobby)");
 
             await pause(leniencyTime);
             try {
@@ -444,7 +444,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 (await banchoClient.getUserById(newPlayer.user.id)).sendMessage("Bruh u aint part of this matchup"),
             ]);
             await invitePlayersToLobby(matchup, mpLobby),
-            await mpChannel.sendMessage(`${newPlayer.user.ircUsername} joined when they shouldn't have, changed password and resent invites`);
+            await mpChannel.sendMessage(`${newPlayer.user.ircUsername} joined when they shouldnt have, changed password and resent invites`);
             return;
         }
 
@@ -476,17 +476,17 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         
         earlyStart = true;
         if (matchup.date.getTime() > Date.now()) {
-            await mpChannel.sendMessage("All captains now exist");
-            await mpChannel.sendMessage("To get the first map up earlier, have a captain type \"!start\"");
-            await mpChannel.sendMessage(`Otherwise, the matchup is scheduled to start at ${matchup.date.toLocaleString("en-US", { timeZone: "UTC" })}`);
+            await mpChannel.sendMessage("all captains now exist");
+            await mpChannel.sendMessage("to get the first map up earlier, have a captain type \"!start\"");
+            await mpChannel.sendMessage(`otherwise, the matchup is scheduled to start at ${matchup.date.toLocaleString("en-US", { timeZone: "UTC" })}`);
             await pause(matchup.date.getTime() - Date.now());
             if (started)
                 return;
         }
 
         started = true;
-        await mpChannel.sendMessage(`Matchup has started (only ${matchup.stage!.tournament.matchupSize} players per map)`);
-        await mpChannel.sendMessage("Captains don't need to stay if they're not playing");
+        await mpChannel.sendMessage(`matchup has started (only ${matchup.stage!.tournament.matchupSize} players per map)`);
+        await mpChannel.sendMessage("captains don't need to stay if they're not playing");
 
         await pause(leniencyTime);
         try {
@@ -549,27 +549,27 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return;
 
         if (!allPlayersInMatchup(matchup, playersInLobby)) {
-            await mpChannel.sendMessage("bruh just cuz ur all ready doesnt mean anything if not enough players are in each team to start yet hrur y up");
+            await mpChannel.sendMessage("not enough players ready in each team to start yet");
             return;
         }
 
         if (!areAllPlayersInAssignedSlots(mpLobby, playersPlaying)) {
-            await mpChannel.sendMessage("Get the same players that were in the map before the abort in here");
+            await mpChannel.sendMessage("get the same players that were in the map before the abort in here");
             return;
         }
 
         const slotMod = pools.flatMap(p => p.slots).find(s => s.maps.some(map => map.beatmap!.ID === mpLobby.beatmapId));
         if (!slotMod) {
-            await mpChannel.sendMessage("This map isnt in any of the pools, contact Corsace IMMEDIATELY");
+            await mpChannel.sendMessage("this map isnt in any of the pools, contact Corsace IMMEDIATELY");
             return;
         }
         if (!doAllPlayersHaveCorrectMods(mpLobby, slotMod)) {
-            await mpChannel.sendMessage(`Someone has the wrong mods on for this slot (Allowed mods are ${getMappoolSlotMods(slotMod.allowedMods).map(m => `${m.longMod} (${m.shortMod})`).join(", ")})`);
+            await mpChannel.sendMessage(`someone has the wrong mods on for this slot (Allowed mods are ${getMappoolSlotMods(slotMod.allowedMods).map(m => `${m.longMod} (${m.shortMod})`).join(", ")})`);
             return;
         }
 
         log(matchup, "All players readied up for the next map");
-        await mpChannel.sendMessage(`As a reminder, !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby`);
+        await mpChannel.sendMessage(`as a reminder, !abort will stop the map, and !panic will notify the organizer and stop the auto-lobby`);
         await mpLobby.startMatch(5);
         mapTimerStarted = true;
     });
@@ -589,7 +589,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             return;
 
         setTimeout(async () => {
-            await mpChannel.sendMessage("Match aborted, 30 seconds to ready up again");
+            await mpChannel.sendMessage("match aborted, 30 seconds to ready up again");
             await mpLobby.startTimer(30);
             autoStart = true;
         }, leniencyTime);
@@ -607,11 +607,11 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         if (!beatmap) {
             if (state.matchups[matchup.ID].autoRunning) {
                 await mpLobby.abortMatch();
-                await mpChannel.sendMessage("Can't find the map in the pool(s), contact Corsace IMMEDIATELY");
+                await mpChannel.sendMessage("cant find the map in the pool(s), contact Corsace IMMEDIATELY");
                 log(matchup, `Couldn't find map ${mpLobby.beatmapId} in the pools`);
                 return;
             } else {
-                await mpChannel.sendMessage("Can't find the map in the pool(s) but not aborting since auto-lobby is off. Crashing is possible. Contact Corsace IMMEDIATELY");
+                await mpChannel.sendMessage("cant find the map in the pool(s) but not aborting since auto-lobby is off. Crashing is possible. Contact Corsace IMMEDIATELY");
             }
         } else 
             mapsPlayed.push(beatmap);
@@ -647,7 +647,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         matchupMap.scores = await Promise.all(scores.map(async (score) => {
             const user = users.find(u => u.osu.userID === score.userId.toString());
             if (!user) {
-                await mpChannel.sendMessage(`Can't find the user in slot ${score.slot} (ID ${score.userId}) in the matchup contact Corsace IMMEDIATELY"`);
+                await mpChannel.sendMessage(`cant find the user in slot ${score.slot} (ID ${score.userId}) in the matchup contact Corsace IMMEDIATELY"`);
                 throw new Error("User not found");
             }
             const matchupScore = new MatchupScore;
@@ -728,7 +728,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 log(matchup, "Picking map");
                 const end = await loadNextBeatmap(matchup, mpLobby, mpChannel, pools, true);
                 if (end) {
-                    await mpChannel.sendMessage(`No more maps to play, closing lobby in ${leniencyTime / 1000} seconds`);
+                    await mpChannel.sendMessage(`no more maps to play, closing lobby in ${leniencyTime / 1000} seconds`);
                     await pause(leniencyTime);
                     await mpLobby.closeLobby();
                     return;
