@@ -110,6 +110,7 @@ declare module "node-config-ts" {
         ayim: ISubSiteConfig;
         corsace: ISubSiteConfig;
         closed: ISubSiteConfig;
+        docs: ISubSiteConfig;
         mca: ISubSiteConfig;
         open: ISubSiteConfig;
         api: IWebServiceConfig;

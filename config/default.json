@@ -81,6 +81,12 @@
         "publicUrl": "http://localhost:5000",
         "ssr": true
     },
+    "docs": {
+        "host": "localhost",
+        "port": 10000,
+        "publicUrl": "http://localhost:10000",
+        "ssr": true
+    },
     "mca": {
         "host": "localhost",
         "port": 8000,
