@@ -1,4 +1,5 @@
 {
+    "language": "English",
     "flag": "https://osu.ppy.sh/images/flags/GB.png",
     "header": {
         "welcomeBack": "welcome back",
@@ -547,8 +548,7 @@
                     "best": "BEST",
                     "worst": "WORST"
                 },
-                "category": "CATEGORY",
-                "select": "SELECT",
+                "categorySelect": "CATEGORY SELECT",
                 "players": "PLAYERS",
                 "teams": "TEAMS"
             },
@@ -660,10 +660,7 @@
                 "unregistered": "UNREGISTERED",
                 "bws": "BWS"
             },
-            "stageSelector": {
-                "select": "SELECT",
-                "stage": "STAGE"
-            }
+            "stageSelector": "STAGE SELECT"
         },
         "staff": {
             "title": "STAFF",

@@ -30,11 +30,8 @@
                             @prev="index--"
                             @next="index++"
                         >
-                            <template #top_text>
-                                {{ $t("open.components.stageSelector.stage") }}
-                            </template>
-                            <template #bottom_text>
-                                {{ $t("open.components.stageSelector.select") }}
+                            <template #text>
+                                {{ $t("open.components.stageSelector") }}
                             </template>
 
                             <template #stage>
@@ -79,20 +76,14 @@
                             @prev="index--"
                             @next="index++"
                         >
-                            <template #top_text>
-                                {{ $t("open.components.stageSelector.stage") }}
-                            </template>
-                            <template #bottom_text>
-                                {{ $t("open.components.stageSelector.select") }}
-                            </template>
+                            {{ $t("open.components.stageSelector") }}
 
                             <template #stage>
                                 {{ selectedStage?.abbreviation.toUpperCase() || '' }}
                             </template>
                         </StageSelector>
                         <div class="qualifiers__header_subtext">
-                            <span>{{ $t('open.qualifiers.scores.category') }}</span>
-                            <span>{{ $t('open.qualifiers.scores.select') }}</span>
+                            {{ $t('open.qualifiers.scores.categorySelect') }}
                         </div>
                         <ContentButton 
                             class="content_button--header_button"

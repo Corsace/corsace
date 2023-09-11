@@ -157,6 +157,16 @@ Shared environment by deployments
     secretKeyRef:
       name: {{ include "corsace-chart.fullname" $ }}
       key: interOpPassword
+- name: GITHUB_WEBHOOK_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: githubWebhookSecret
+- name: GITHUB_WEBHOOK_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "corsace-chart.fullname" $ }}
+      key: githubWebhookUrl
 - name: BN_USERNAME
   valueFrom:
     secretKeyRef:

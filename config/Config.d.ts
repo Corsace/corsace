@@ -110,6 +110,7 @@ declare module "node-config-ts" {
         ayim: ISubSiteConfig;
         corsace: ISubSiteConfig;
         closed: ISubSiteConfig;
+        docs: IWebServiceConfig;
         mca: ISubSiteConfig;
         open: ISubSiteConfig;
         api: IWebServiceConfig;
@@ -119,6 +120,12 @@ declare module "node-config-ts" {
         interOpAuth: {
             username: string;
             password: string;
+        };
+
+        github: {
+            webhookSecret: string;
+            webhookUrl: string;
+            ignoredBranches?: string[];
         };
 
         centrifugo: {

@@ -16,6 +16,7 @@
       "centrifuge": "^4.1.0",
       "cron": "^2.3.0",
       "discord.js": "^14.9.0",
+      "fastest-levenshtein": "^1.0.16",
       "http-graceful-shutdown": "^3.1.13",
       "jimp": "^0.22.8",
       "koa": "^2.13.1",
@@ -52,6 +53,7 @@
       "vuex-class": "^0.3.2"
    },
    "devDependencies": {
+      "@astrojs/starlight": "^0.9.1",
       "@nuxt/types": "^2.16.3",
       "@nuxt/typescript-build": "^2.0.3",
       "@types/archiver": "^5.3.2",
@@ -73,13 +75,16 @@
       "@types/validator": "^13.1.2",
       "@typescript-eslint/eslint-plugin": "^5.59.7",
       "@typescript-eslint/parser": "^5.59.7",
+      "astro": "^3.0.12",
       "concurrently": "^5.3.0",
       "cross-env": "^7.0.3",
       "eslint": "^8.41.0",
       "eslint-plugin-vue": "^9.14.1",
+      "execa": "^8.0.1",
       "postcss": "^8.4.23",
       "sass": "^1.32.2",
       "sass-loader": "^10.1.0",
+      "sharp": "^0.32.5",
       "ts-node-dev": "^2.0.0"
    },
    "scripts": {
@@ -90,6 +95,7 @@
       "build:api": "cross-env NODE_ENV=production tsc --project Server/tsconfig.json",
       "build:discord-bot": "cross-env NODE_ENV=production tsc --project DiscordBot/tsconfig.json",
       "build:bancho-bot": "cross-env NODE_ENV=production tsc --project BanchoBot/tsconfig.json",
+      "build:docs": "cd ./Docs && astro build",
 
       "ayim": "cd ./AYIM && nuxt start",
       "mca": "cd ./MCA && nuxt start",
@@ -99,6 +105,7 @@
       "discord-bot": "cd DiscordBot && node dist/DiscordBot/index.js",
       "bancho-bot": "cd BanchoBot && node dist/BanchoBot/index.js",
       "cron-runner": "cd Server && node dist/Server/cron-runner.js",
+      "docs": "cd ./Docs && astro dev",
 
       "ayim-dev": "cd ./AYIM && nuxt",
       "mca-dev": "cd ./MCA && nuxt",
@@ -108,6 +115,7 @@
       "cron-runner-dev": "cross-env NODE_ENV=development ts-node-dev --project Server/tsconfig.json --respawn Server/cron-runner.ts",
       "discord-bot-dev": "cross-env NODE_ENV=development ts-node-dev --project DiscordBot/tsconfig.json --respawn DiscordBot/index.ts",
       "bancho-bot-dev": "cross-env NODE_ENV=development ts-node-dev --project BanchoBot/tsconfig.json --respawn BanchoBot/index.ts",
+      "docs-dev": "cd ./Docs && astro dev",
 
       "dev": "concurrently -n MCA,AYIM,MAIN,OPEN,API -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold,black.bgYellow.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\" \"npm:api-dev\"",
       "dev-client": "concurrently -n MCA,AYIM,MAIN,OPEN -c bgMagenta.bold,bgBlue.bold,black.bgWhite.bold,bgRed.bold \"npm:mca-dev\" \"npm:ayim-dev\" \"npm:main-dev\" \"npm:open-dev\"",
@@ -116,15 +124,18 @@
       "lintfix": "eslint --fix --ext .ts,.vue --ignore-path .gitignore .",
 
       "concatNoms": "ts-node ./Server/scripts/concatNoms.ts",
-      "duplicateCommands": "ts-node ./Server/scripts/duplicateCommands.ts",
-      "updateLanguages": "ts-node ./Server/scripts/updateLanguages.ts",
+      "dupeCmds": "ts-node ./Server/scripts/duplicateCommands.ts",
+      "dupeLangProps": "ts-node ./Server/scripts/duplicateLanguageProperties.ts",
+      "updLangs": "ts-node ./Server/scripts/updateLanguages.ts",
       "fetchMaps": "ts-node ./Server/scripts/fetchYearMaps.ts",
 
       "centrifugo": "docker-compose up -d centrifugo",
       "centrifugo:local": "./centrifugo --config=centrifugo-config.json -p=8001",
+
       "database": "docker-compose up -d database",
       "mariadb": "docker-compose exec database mariadb -u corsace -p",
-      "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
+      "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
+      "astro": "astro"
    },
    "repository": {
       "type": "git",

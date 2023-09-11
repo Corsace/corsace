@@ -1,12 +1,7 @@
 <template>
     <div class="stage_selector">
         <div class="stage_selector__text">
-            <span>
-                <slot name="top_text" />
-            </span>
-            <span>
-                <slot name="bottom_text" />
-            </span>
+            <slot name="text" />
         </div>
         <div class="stage_selector_buttons">
             <div 
@@ -57,6 +52,7 @@ export default class StageSelector extends Vue {
         font-size: $font-sm;
         color: #909090; // This color is not in variables
         font-weight: 400;
+        width: min-content;
     }
 
     &_buttons {

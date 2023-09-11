@@ -64,8 +64,7 @@
                         class="qualifiers__button_group"
                     >
                         <div class="qualifiers__header_subtext">
-                            <span>{{ $t('open.qualifiers.scores.category') }}</span>
-                            <span>{{ $t('open.qualifiers.scores.select') }}</span>
+                            {{ $t('open.qualifiers.scores.categorySelect') }}
                         </div>
                         <ContentButton 
                             class="content_button--header_button"
@@ -307,6 +306,7 @@ export default class Qualifiers extends Vue {
         &_group {
             display: flex;
             flex-direction: row;
+            align-items: center;
         }
 
         &_text {
@@ -324,10 +324,8 @@ export default class Qualifiers extends Vue {
         font-weight: 400;
         font-size: $font-sm;
         text-align: right;
-        margin-top: 15px;
         color: #909090;
-        display: flex;
-        flex-direction: column;
+        width: min-content;
     }
 }
 </style>

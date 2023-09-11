@@ -23,7 +23,8 @@ export class MatchupSets1692800456243 implements MigrationInterface {
 
         await queryRunner.query(`ALTER TABLE \`matchup\` DROP FOREIGN KEY \`FK_83d3c0a5db0f9245bc29ae6730f\``);
         await queryRunner.query(`ALTER TABLE \`matchup_map\` DROP FOREIGN KEY \`FK_a79753c16f88bb77b80f5d30b84\``);
-        await queryRunner.query(`ALTER TABLE \`matchup_map\` CHANGE \`matchupID\` \`setID\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`matchup_map\` DROP COLUMN \`matchupID\``);
+        await queryRunner.query(`ALTER TABLE \`matchup_map\` ADD \`setID\` int NULL`);
         await queryRunner.query(`CREATE TABLE \`matchup_set\` (\`ID\` int NOT NULL AUTO_INCREMENT, \`order\` int NOT NULL, \`team1Score\` int NOT NULL DEFAULT '0', \`team2Score\` int NOT NULL DEFAULT '0', \`matchupID\` int NULL, \`firstID\` int NULL, \`winnerID\` int NULL, PRIMARY KEY (\`ID\`)) ENGINE=InnoDB`);
         await queryRunner.query(`ALTER TABLE \`matchup\` DROP COLUMN \`firstID\``);
         await queryRunner.query(`ALTER TABLE \`tournament\` DROP COLUMN \`publicQualifiers\``);
@@ -35,8 +36,8 @@ export class MatchupSets1692800456243 implements MigrationInterface {
 
         if (rawMatchups.length > 0) {
             await queryRunner.query(`
-                INSERT INTO \`matchup_set\` (ID, team1Score, team2Score, matchupID, firstID, winnerID)
-                VALUES ${rawMatchups.map((matchup: any, i: number) => `(${i + 1}, ${matchup.team1Score}, ${matchup.team2Score}, ${matchup.ID}, ${matchup.firstID || "NULL"}, ${matchup.winnerID || "NULL"})`).join(", ")}
+                INSERT INTO \`matchup_set\` (ID, \`order\`, team1Score, team2Score, matchupID, firstID, winnerID)
+                VALUES ${rawMatchups.map((matchup: any, i: number) => `(${i + 1}, 1, ${matchup.team1Score}, ${matchup.team2Score}, ${matchup.ID}, ${matchup.firstID || "NULL"}, ${matchup.winnerID || "NULL"})`).join(", ")}
             `);
 
             await Promise.all(rawMaps.map(map => queryRunner.query(`

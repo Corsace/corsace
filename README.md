@@ -1,22 +1,22 @@
-Please use this repository when you are changing any of the code for Corsace projects.
+[![Crowdin](https://badges.crowdin.net/corsace/localized.svg)](https://translate.corsace.io)
+If you wish to translate, you can do so [here](https://translate.corsace.io)
 
-# Before Getting Started
-On WSL/Unix:
-```
-git clone https://github.com/Corsace/Corsace
-```
-On Windows (Use admin cmd):
-```
-git clone -c core.symlinks=true https://github.com/Corsace/Corsace
-```
+To clone the repository:
+
+|OS| Cmd |
+|--|--|
+| WSL/Unix | git clone https://github.com/Corsace/Corsace |
+| Windows* | git clone -c core.symlinks=true https://github.com/Corsace/Corsace
+
+*Use admin privileges in your console when running the command.
+
+## Initial Setup
 
 Install node-modules:
 ```
 npm i
 ```
 **Note: Please ensure that your node version is 16.6.0 or higher in order to use any of the discord features in this repository.**
-
-## Getting Started
 
 Duplicate `config/default.json` to `config/user/$USER.json`, `$USER` being your system username [(accessible via node's process.env.USER or USERNAME)](https://github.com/tusharmath/node-config-ts#using-files).
 The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
@@ -48,10 +48,10 @@ You can obtain your osu IRC password from the same place as the osu OAuth Applic
 If your account is a bot account, then make sure to have `botAccount` set to true; otherwise, make set it to false.
 
 ### Database
-
+`config.database`
 #### Setup
 
-`config.database`
+There are 2 ways to setup the database, either via Docker or manually.
 
 ##### Via Docker (Recommended)
 
@@ -100,10 +100,8 @@ Create the `mappacks-temp` bucket and add an object lifecycle rule to delete obj
 Set hostname to `<cloudflare account id>.r2.cloudflarestorage.com`, and obtain S3 credentials from https://dash.cloudflare.com/?to=/:account/r2/api-tokens. **Make sure you give the token `Edit` permissions instead of the default `Read` permissions.**
 
 ### Discord
-
-#### Setup
-
 `config.discord`
+#### Setup
 
 This is the most time-consuming part of the setup. 
 You will need the following:
@@ -163,6 +161,18 @@ Paste it into `config.discord.token`
 
 Ensure you enable the `Server Members` and `Message Content` intents under the **Privileged Gateway Intents** subsection before usage, the bot will not start otherwise, and you will be provided a `[DISALLOWED INTENTS]` error.
 
+###### GitHub Webhook
+Completely optional, and only if you really want to track your GitHub fork's events on discord and want to utilize Corsace's Github Webhook.
+
+In the discord channel you want to obtain GitHub notifications from, create a webhook from `settings -> Integrations -> Create Webhook`, copy its Webhook URL, and place it into your config in `config.github.webhookUrl`.
+Create a password and place it in `config.github.webhookSecret`.
+
+On GitHub, go to the repository's settings, and create a new webhook. Place the following URL in:
+```
+config.corsace.publicUrl + /api/github
+```
+Set the content type to `application/json`, and the secret to the password you created earlier.
+
 ### Centrifugo
 
 We use Centrifugo for real-time notifications. You can find the documentation [here](https://centrifugal.dev/docs/getting-started/introduction).
@@ -180,3 +190,5 @@ Afterwards, run `npm run centrifugo:local` to start the centrifugo server. If yo
 
 Run `npm run dev`, if you only want to run one of the projects, refer to the scripts in `package.json`.
 To run the project without the api, use `npm run dev-client`.
+
+For more specific instructions on developing/contributing to some of these projects, refer to the documentation [here](https://docs.corsace.io/development/)
