@@ -3,3 +3,5 @@ files:
     translation: /Assets/lang/translated/%two_letters_code%.json
   - source: /Docs/src/content/docs/en/
     translation: /Docs/src/content/docs/%two_letters_code%
+  - source: /README.md
+    translation: /README.%two_letters_code%.md
