@@ -22,7 +22,7 @@ jobs:
           DEPLOYMENT: gh-pages
         with:
             path: ./Docs
-            node-version: 16
+            node-version: 18
 
   deploy:
     needs: build
