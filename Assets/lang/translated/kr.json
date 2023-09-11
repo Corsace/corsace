@@ -389,7 +389,7 @@
                 "title": "제목",
                 "favs": "즐겨찾기 수",
                 "creator": "매퍼",
-                "sr": "별 개수",
+                "sr": "스타레이팅",
                 "id": "ID",
                 "alph": "알파벳순",
                 "asc": "오름차순",
@@ -428,7 +428,7 @@
             "info": "INFO",
             "qualifiers": "퀄리파이어",
             "teams": "팀 목록",
-            "schedule": "스케쥴",
+            "schedule": "일정",
             "mappool": "맵풀",
             "staff": "스태프",
             "createTeam": "팀 만들기",
@@ -467,7 +467,7 @@
                 "qualifiersMappool": "퀄리파이어 맵풀",
                 "mappoolDownload": "Mappool download and statistics",
                 "register": "당신의 팀을 만들고 등록하세요",
-                "registrationsEnd": "Registrations end"
+                "registrationsEnd": "등록이 마감됩니다"
             }
         },
         "info": {
@@ -544,25 +544,25 @@
                     "placement": "PLACE",
                     "player": "PLAYER",
                     "team": "TEAM",
-                    "best": "BEST",
-                    "worst": "WORST"
+                    "best": "최고 퍼포먼스",
+                    "worst": "최저 퍼포먼스"
                 },
-                "categorySelect": "CATEGORY SELECT",
-                "players": "PLAYERS",
-                "teams": "TEAMS"
+                "categorySelect": "카테고리 선택",
+                "players": "플레이어 목록",
+                "teams": "팀 목록"
             },
-            "create": "CREATE",
+            "create": "만들기",
             "error": {
-                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
-                "pressToClose": "Press anywhere to close"
+                "message": "{numPlayers} 명의 플레이어가 있기 전까지 퀄리파이어 로비를 만들거나 참여할 수 없습니다!",
+                "pressToClose": "닫으려면 아무곳이나 클릭해 주세요."
             }
         },
         "teams": {
-            "teamsList": "TEAMS LIST",
+            "teamsList": "팀 목록",
             "error": "COULD NOT GET TEAM LIST",
             "searchPlaceholder": "search for user/team",
             "editTeamInfo": "edit team info",
-            "qualifierId": "Qualifier ID",
+            "qualifierId": "퀄리파이어 ID",
             "placeholders": {
                 "searchUser": "osu! username (must have corsace account)",
                 "name": "name",
@@ -574,29 +574,29 @@
                 "timezone": "TIMEZONE",
                 "teamAvatar": "TEAM AVATAR",
                 "errors": {
-                    "size": "Image is too large. Ensure the image is less than 5MB.",
-                    "type": "Invalid image file. Ensure the image is a PNG or JPG.",
-                    "invalidImage": "Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.",
-                    "invalidTimezone": "Invalid timezone.",
-                    "errorAddingTeamAvatar": "Error adding team avatar:\n{error}",
+                    "size": "이미지 용량이 너무 큽니다. 이미지 용량이 5MB 이내인지 확인해 주세요.",
+                    "type": "유효하지 않은 이미지 파일입니다. 이미지 확장자가 PNG 혹은 JPG인지 확인해 주세요.",
+                    "invalidImage": "유효하지 않은 이미지 파일입니다. 이미지 확장자가 PNG 혹은 JPG이고, 용량이 5MB 이내인지 확인해 주세요.",
+                    "invalidTimezone": "유효허지 않은 타임존입니다.",
+                    "errorAddingTeamAvatar": "팀 아바타 추가 오류:\n{error}",
                     "invalidName": "",
-                    "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
+                    "contactVinxis": "검색오류가 있는 경우, VINXIS에게 문의해 주세요. 자세한 정보는 Ctrl + Shift + I를 사용해 콘솔을 참조해 주세요."
                 },
                 "confirm": {
-                    "deleteTeam": "Are you sure you want to delete this team?",
-                    "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!",
-                    "removeMember": "Are you sure you want to remove {username} from your team?",
-                    "transferManager": "Are you sure you want to transfer manager to {username}?",
+                    "deleteTeam": "팀을 지우는게 확실한가요?",
+                    "deleteTeamFinal": "팀을 지우는게 정말 확실한가요? 이 행동은 되돌릴 수 없습니다!",
+                    "removeMember": "정말 {username} 이 유저를 당신의 팀에서 제거하는 것이 확실한가요?",
+                    "transferManager": "{username} 이 유저를 팀 매니저로 변경하는게 확실한가요?",
                     "invite": "Are you sure you want to invite {username} to your team?",
                     "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
-                    "unregister": "Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."
+                    "unregister": "토너먼트에서 등록을 취소하시겠습니까? 6명이 있다면 언제든지 재등록이 가능합니다."
                 },
-                "save": "SAVE",
-                "deleteTeam": "DELETE TEAM"
+                "save": "저장하기",
+                "deleteTeam": "팀 지우기"
             },
             "headers": {
                 "tournaments": "TOURNAMENTS",
-                "teamStats": "TEAM STATS",
+                "teamStats": "팀 통계",
                 "teamManager": "TEAM MANAGER",
                 "teamMembers": "TEAM MEMBERS",
                 "editTeamMembers": "edit team members",
@@ -612,17 +612,17 @@
             },
             "registration": {
                 "noRegistration": "Registered in no tournaments",
-                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
+                "toPlay": "코사스 오픈에서 플레이하기 위해, 6명의 팀원을 확보하고 아래에서 퀄리파이어 날짜와 시간을 선택해 주세요."
             },
-            "teamID": "TEAM ID",
+            "teamID": "팀 ID",
             "member": "member",
             "members": "members",
-            "averageBWS": "Average BWS",
-            "averageRank": "Average Rank",
-            "averagePP": "Average PP",
-            "editQualifierTime": "edit qualifier time",
+            "averageBWS": "평균 BWS 순위",
+            "averageRank": "평균 순위",
+            "averagePP": "평균 PP",
+            "editQualifierTime": "퀄리파이어 시간 수정",
             "deleteTeam": "delete qualifier/unregister team",
-            "createJoinQualifier": "create/join qualifier",
+            "createJoinQualifier": "퀄리파이어 로비 만들기 / 참여하기",
             "notRegistered": "Currently not registered in Corsace Open."
         },
         "create": {
@@ -649,13 +649,13 @@
             "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
             "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
             "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
-            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
-            "create": "CREATE TEAM"
+            "confirmManager": "<div>이것을 체크함으로써 나는 팀 매니저로만 활동할 것이며</div> <div>어떤 경기에도 참여할 수 없음을 이해했습니다.</div>",
+            "create": "팀 만들기"
         },
         "components": {
             "openCardTeam": {
-                "rank": "RANK",
-                "teambwsAverage": "TEAM BWS AVG",
+                "rank": "순위",
+                "teambwsAverage": "팀 평균 BWS순위",
                 "unregistered": "UNREGISTERED",
                 "bws": "BWS"
             },
@@ -669,17 +669,17 @@
             "title": "REFEREE",
             "loadMore": "LOAD MORE",
             "back": "BACK TO MATCHUP LIST",
-            "createLobby": "CREATE LOBBY",
-            "roll": "ROLL",
-            "reroll": "RE-ROLL",
+            "createLobby": "로비 만들기",
+            "roll": "롤 굴리기",
+            "reroll": "다시 굴리기",
             "settings": "!MP SETTINGS",
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
-            "closeLobby": "CLOSE LOBBY"
+            "closeLobby": "로비 닫기"
         },
         "status": {
-            "loading": "LOADING"
+            "loading": "로딩중"
         },
         "mappool": {
             "title": "MAPPOOL"
@@ -688,8 +688,8 @@
     "main": {
         "construction": {
             "underConstruction": "under construction",
-            "sorry": "sorry for the inconvenience",
-            "development": "the corsace website is still in early development",
+            "sorry": "불편하게 해 죄송합니다.",
+            "development": "코사스 웹사이트는 아직 초기 개발 단계입니다.",
             "theTeam": "the corsace team"
         },
         "merch": {
