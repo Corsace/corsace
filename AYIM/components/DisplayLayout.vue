@@ -7,51 +7,49 @@
         stretch
         :ignore-modes="['storyboard']"
     >
-        <template>
-            <div class="ayim-nav">
-                <nuxt-link
-                    :to="`/${mca.year}/mapsets/records`"
-                    class="ayim-nav__item button"
-                    :class="[
-                        getNavClass('mapsets'),
-                        `button--${viewTheme}`,
-                    ]"
-                >
-                    {{ $t('ayim.mapsets.name') }}
-                </nuxt-link>
-                <nuxt-link
-                    :to="`/${mca.year}/mappers/records`"
-                    class="ayim-nav__item button"
-                    :class="[
-                        getNavClass('mappers'),
-                        `button--${viewTheme}`,
-                    ]"
-                >
-                    {{ $t('ayim.mappers.name') }}
-                </nuxt-link>
-                <nuxt-link
-                    :to="`/${mca.year}/nominators/records`"
-                    class="ayim-nav__item button"
-                    :class="[
-                        getNavClass('nominators'),
-                        `button--${viewTheme}`,
-                    ]"
-                >
-                    {{ $t('ayim.nominators.name') }}
-                </nuxt-link>
-                <nuxt-link
-                    v-if="mca.year < 2020"
-                    :to="`/${mca.year}/comments`"
-                    class="ayim-nav__item button"
-                    :class="[
-                        getNavClass('comments'),
-                        `button--${viewTheme}`,
-                    ]"
-                >
-                    {{ $t('ayim.comments.name') }}
-                </nuxt-link>
-            </div>
-        </template>
+        <div class="ayim-nav">
+            <nuxt-link
+                :to="`/${mca.year}/mapsets/records`"
+                class="ayim-nav__item button"
+                :class="[
+                    getNavClass('mapsets'),
+                    `button--${viewTheme}`,
+                ]"
+            >
+                {{ $t('ayim.mapsets.name') }}
+            </nuxt-link>
+            <nuxt-link
+                :to="`/${mca.year}/mappers/records`"
+                class="ayim-nav__item button"
+                :class="[
+                    getNavClass('mappers'),
+                    `button--${viewTheme}`,
+                ]"
+            >
+                {{ $t('ayim.mappers.name') }}
+            </nuxt-link>
+            <nuxt-link
+                :to="`/${mca.year}/nominators/records`"
+                class="ayim-nav__item button"
+                :class="[
+                    getNavClass('nominators'),
+                    `button--${viewTheme}`,
+                ]"
+            >
+                {{ $t('ayim.nominators.name') }}
+            </nuxt-link>
+            <nuxt-link
+                v-if="mca.year < 2020"
+                :to="`/${mca.year}/comments`"
+                class="ayim-nav__item button"
+                :class="[
+                    getNavClass('comments'),
+                    `button--${viewTheme}`,
+                ]"
+            >
+                {{ $t('ayim.comments.name') }}
+            </nuxt-link>
+        </div>
 
         <div class="ayim-content">
             <div

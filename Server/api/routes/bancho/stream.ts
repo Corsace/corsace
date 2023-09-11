@@ -1,15 +1,8 @@
 import Router from "@koa/router";
 import koaBasicAuth from "koa-basic-auth";
 import { config } from "node-config-ts";
-import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Next, ParameterizedContext } from "koa";
-import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
-import state, { MatchupList } from "../../../../BanchoBot/state";
-import { publish } from "../../../../BanchoBot/functions/tournaments/matchup/centrifugo";
-import { BanchoLobbyPlayerStates } from "bancho.js";
-import getMappoolSlotMods from "../../../../BanchoBot/functions/tournaments/matchup/getMappoolSlotMods";
-import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
-import ormConfig from "../../../../ormconfig";
+import state from "../../../../BanchoBot/state";
 
 const banchoRefereeRouter = new Router();
 

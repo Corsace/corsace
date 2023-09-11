@@ -7,9 +7,10 @@ import { osuClient } from "../../Server/osu";
 import modeColour from "./modeColour";
 import ppCalculator from "./ppCalculator";
 
-// TODO: Implement isRecent
+// TODO: Implement isRecent and remove the eslint disable rule
 export default async function beatmapEmbed (beatmap: Beatmap, mods: string, user: User, missCount?: number, userScore?: UserScore, isRecent?: boolean): Promise<EmbedBuilder>;
 export default async function beatmapEmbed (beatmap: Beatmap, mods: string, set: Beatmap[], missCount?: number): Promise<EmbedBuilder>;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default async function beatmapEmbed (beatmap: Beatmap, mods: string, setorUser: Beatmap[] | User, missCount?: number, userScore?: UserScore, isRecent?: boolean): Promise<EmbedBuilder> {
 
     const embedMsg = defaultBeatmapEmbed(beatmap, setorUser instanceof User ? false : true);
