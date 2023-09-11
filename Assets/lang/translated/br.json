@@ -459,9 +459,9 @@
             }
         },
         "home": {
-            "description": "Aprofunde-se Corsace Open 2023 - onde os melhores jogadores de osu! do mundo se enfrentam.",
+            "description": "Entre de cara na Corsace Open 2023 - onde os melhores jogadores de osu! do mundo se enfrentam.",
             "timeline": "LINHA DO TEMPO",
-            "presentedBy": "CORSACE OPEN 23 É APRESENTADO POR",
+            "presentedBy": "CORSACE OPEN 23 É APRESENTADA POR",
             "registrations": "INSCRIÇÕES",
             "button": {
                 "qualifiersMappool": "MAPPOOLS DAS QUALIFICATÓRIAS",
@@ -481,7 +481,7 @@
                 "pickTimer": "TEMPO DE PICK POR MAPA",
                 "readyTimer": "TEMPO PARA DAR READY",
                 "order": "ORDEM",
-                "scoringMethod": "MÉTODO DE SCORE",
+                "scoringMethod": "MÉTODO DE PONTUAÇÃO",
                 "type": "TIPO",
                 "startDate": "DATA DE INÍCIO",
                 "endDate": "DATA DE TÉRMINO",
@@ -494,25 +494,25 @@
                 "stage": "FASE"
             },
             "status": {
-                "notStarted": "NÃO INCIADO",
+                "notStarted": "NÃO INICIADO",
                 "complete": "COMPLETO",
                 "ongoing": "EM ANDAMENTO"
             },
             "mappools": {
                 "info": "INFORMAÇÃO DA MAPPOOL",
                 "notAvailable": "INFORMAÇÃO NÃO DISPONÍVEL",
-                "mappackDownload": "BAIXE O MAPPACK",
-                "mappacknotAvailable": "PACOTE DE MAPAS NÃO DISPONÍVEL"
+                "mappackDownload": "BAIXAR O MAPPACK",
+                "mappacknotAvailable": "MAPPACK NÃO DISPONÍVEL"
             },
             "prizes": "PRÊMIOS",
-            "donateToCorsace": "DOAR A CORSACE",
+            "donateToCorsace": "DOAR PARA A CORSACE",
             "supportViaSponsorship": "APOIO ATRAVÉS DO PATROCÍNIO DA MOMOKAI",
             "generalInfo": "INFORMAÇÕES GERAIS",
             "teamStructure": "ESTRUTURA DO TIME",
             "qualifiersProcedures": "PROCEDIMENTOS DAS QUALIFICATÓRIAS",
             "tournamentStructure": "ESTRUTURA DO TORNEIO",
             "infoGraphic": "INFOGRÁFICO",
-            "matchProcedures": "PROCEDIMENTOS DE PARTIDA",
+            "matchProcedures": "PROCEDIMENTOS DA PARTIDA",
             "reportTournament": "DENUNCIE TORNEIOS AQUI",
             "subjectToChange": "todas as regras estão sujeitas a mudanças para clarificação ou ajustes"
         },
@@ -547,7 +547,7 @@
                     "best": "MELHOR",
                     "worst": "PIOR"
                 },
-                "categorySelect": "SELECIONAR CATEGORIA",
+                "categorySelect": "SELEÇÃO DE CATEGORIAS",
                 "players": "JOGADORES",
                 "teams": "TIMES"
             },
@@ -564,7 +564,7 @@
             "editTeamInfo": "editar informações do time",
             "qualifierId": "ID da Qualificatória",
             "placeholders": {
-                "searchUser": "usuário do osu! (necessário ter conta da corsace)",
+                "searchUser": "nome de usuário no osu! (necessário ter conta na corsace)",
                 "name": "nome",
                 "abbreviation": "abreviação"
             },
@@ -576,7 +576,7 @@
                 "errors": {
                     "size": "A imagem é muito grande! Verifique se a imagem é menor que 5MB.",
                     "type": "Arquivo de imagem inválido. Verifique se a imagem é um PNG ou JPG.",
-                    "invalidImage": "Arquivo de imagem inválido. Verifique se a imagem é um PNG ou JPG ou é melhor que 5MB.",
+                    "invalidImage": "Arquivo de imagem inválido. Verifique se a imagem é um PNG ou JPG e é menor que 5MB.",
                     "invalidTimezone": "Fuso Horário inválido.",
                     "errorAddingTeamAvatar": "Erro ao adicionar o avatar do time:\n{error}",
                     "invalidName": "",
@@ -585,11 +585,11 @@
                 "confirm": {
                     "deleteTeam": "Você tem certeza que quer deletar este time?",
                     "deleteTeamFinal": "Você tem CERTEZA mesmo que deseja excluir este time? Isso não pode ser desfeito!",
-                    "removeMember": "Tem certeza de que deseja remover {username} de seu time?",
+                    "removeMember": "Você tem certeza de que deseja remover {username} de seu time?",
                     "transferManager": "Você tem certeza de que deseja transferir a função de manager para {username}?",
-                    "invite": "Tem certeza de que deseja convidar {username} para seu time?",
-                    "removeInvite": "Tem certeza de que deseja remover o convite de {username} para seu time?",
-                    "unregister": "Tem certeza de que deseja cancelar a inscrição deste torneio? Você pode se registrar novamente a qualquer momento se ainda tiver 6 membros."
+                    "invite": "Você tem certeza de que deseja convidar {username} para seu time?",
+                    "removeInvite": "Você tem certeza de que deseja remover o convite de {username} para seu time?",
+                    "unregister": "Você tem certeza de que deseja cancelar a inscrição deste torneio? Você pode se registrar novamente a qualquer momento se ainda tiver 6 membros."
                 },
                 "save": "SALVAR",
                 "deleteTeam": "APAGAR TIME"
@@ -603,15 +603,15 @@
                 "closeTeamMembers": "fechar edição dos membros do time",
                 "becomeMember": "se tornar um membro e jogar também",
                 "becomeManager": "se tornar apenas um manager",
-                "teamInvites": "CONVITES DO TIME",
-                "editTeamInvites": "editar convites do time",
-                "closeTeamInvites": "fechar edição dos convites do time",
+                "teamInvites": "CONVITES DE TIME",
+                "editTeamInvites": "editar convites de time",
+                "closeTeamInvites": "fechar edição dos convites de time",
                 "qualifier": "QUALIFICATÓRIA",
                 "requiredMessageExact": "Você precisa de exatamente {minTeamSize} membros no time para se registrar e participar de uma fase qualificatória",
                 "requiredMessageRange": "Você precisa de um time com entre {minTeamSize} e {maxTeamSize} membros para se registrar e participar de uma fase qualificatória"
             },
             "registration": {
-                "noRegistration": "Registrado em nenhum torneio",
+                "noRegistration": "Inscrito em nenhum torneio",
                 "toPlay": "Para jogar na Corsace Open, consiga 6 membros e escolha uma data e hora de qualificatória abaixo"
             },
             "teamID": "ID DO TIME",
@@ -646,10 +646,10 @@
             "avatarInfo3": "Todos os nomes e avatares serão submetidos a aprovação da staff.",
             "avatarInfo4": "Se julgado inapropiado, você será notificado para realizar mudanças.",
             "teamManagement": "GERENCIAMENTO DO TIME",
-            "teamManagers": "<div>Os <span>managers</span> de equipes (ou seja, você) têm a opção de jogar e ser capitão simultaneamente</div> <div><span>OU</span> não jogar com a equipe e apenas ser o capitão.</div>",
+            "teamManagers": "<div>Os <span>managers</span> de times (ou seja, você) têm a opção de jogar e ser capitão simultaneamente</div> <div><span>OU</span> não jogar com o time e apenas ser o capitão.</div>",
             "teamManagersFree": "Se você não deseja jogar e apenas participar como um manager, você <span>não</span> irá ocupar um slot de jogador.",
             "selectManager": "Marque esta checkbox se você <span>não</span> vai jogar com o time e apenas atuar como <span>manager</span>.",
-            "confirmManager": "<div>Ao marcar esta opção, eu atuarei apenas como gerente e entendo que não poderei participar </div> <div>em nenhuma das partidas.</div>",
+            "confirmManager": "<div>Ao marcar esta opção, eu atuarei apenas como manager e entendo que não poderei participar </div> <div>em nenhuma das partidas.</div>",
             "create": "CRIAR TIME"
         },
         "components": {
@@ -659,7 +659,7 @@
                 "unregistered": "NÃO INSCRITO",
                 "bws": "BWS"
             },
-            "stageSelector": "SELECIONAR FASE"
+            "stageSelector": "SELEÇÃO DE FASE"
         },
         "staff": {
             "title": "STAFF",
@@ -668,7 +668,7 @@
         "referee": {
             "title": "JUIZ",
             "loadMore": "CARREGAR MAIS",
-            "back": "VOLTAR A LISTA DE MATCHUP",
+            "back": "VOLTAR A LISTA DE PARTIDAS",
             "createLobby": "CRIAR LOBBY",
             "roll": "ROLL",
             "reroll": "RE-ROLL",
