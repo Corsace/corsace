@@ -10,9 +10,8 @@ const locales: {
         lang?: string;
     }
 } = {
-    root: {
+    en: {
         label: "English",
-        lang: "en",
     },
 };
 
@@ -56,7 +55,7 @@ export default defineConfig({
                 youtube: "https://youtube.com/corsace",
             },
             favicon: "/favicon.ico",
-            defaultLocale: "root",
+            defaultLocale: "en",
             locales,
             customCss: [
                 "./src/styles/custom.scss",

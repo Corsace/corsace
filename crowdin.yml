@@ -1,7 +1,3 @@
 files:
   - source: /Assets/lang/en.json
     translation: /Assets/lang/translated/%two_letters_code%.json
-  - source: /Docs/src/content/docs/**/*.mdx
-    ignore:
-      - /Docs/src/content/docs/%two_letters_code%/*.mdx
-    translation: /Docs/src/content/docs/%two_letters_code%

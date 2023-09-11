@@ -190,3 +190,5 @@ Afterwards, run `npm run centrifugo:local` to start the centrifugo server. If yo
 
 Run `npm run dev`, if you only want to run one of the projects, refer to the scripts in `package.json`.
 To run the project without the api, use `npm run dev-client`.
+
+For more specific instructions on developing/contributing to some of these projects, refer to the documentation [here](https://docs.corsace.io/development/)
