@@ -1,7 +1,11 @@
+"preserve_hierarchy": true
+
 files:
   - source: /Assets/lang/en.json
     translation: /Assets/lang/translated/%two_letters_code%.json
-  - source: /Docs/src/content/docs/en/
-    translation: /Docs/src/content/docs/%two_letters_code%
+  - source: /Docs/src/content/docs/en/**/*.mdx
+    translation: /Docs/src/content/docs/%two_letters_code%/**/%original_file_name%
+  - source: /Docs/src/content/docs/en/**/*.md
+    translation: /Docs/src/content/docs/%two_letters_code%/**/%original_file_name%
   - source: /README.md
     translation: /README.%two_letters_code%.md
