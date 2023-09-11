@@ -6,7 +6,6 @@ Build/
 tmp/
 temp/
 dist/
-config.ts
 *.js
 !.eslintrc.js
 centrifugo
