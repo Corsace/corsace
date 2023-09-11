@@ -60,10 +60,6 @@ services:
     ports:
       - 127.0.0.1:8080:8080
     command: "api"
-  docs:
-    <<: *x-node
-    ports:
-      - 127.0.0.1:10000:10000
   migrator:
     <<: *x-node
     command: "typeorm migration:run"

@@ -13,7 +13,6 @@ COPY AYIM/ /src/AYIM/
 COPY Closed/ /src/Closed/
 COPY BanchoBot/ /src/BanchoBot/
 COPY DiscordBot/ /src/DiscordBot/
-COPY Docs/ /src/Docs/
 COPY Interfaces/ /src/Interfaces/
 COPY Main/ /src/Main/
 COPY MCA/ /src/MCA/
@@ -30,7 +29,6 @@ RUN npm run build:api
 RUN npm run build:open
 RUN npm run build:discord-bot
 RUN npm run build:bancho-bot
-RUN npm run build:docs
 
 ENV NODE_ENV=production
 RUN npm prune --production

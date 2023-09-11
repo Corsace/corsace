@@ -84,8 +84,7 @@
     "docs": {
         "host": "localhost",
         "port": 10000,
-        "publicUrl": "http://localhost:10000",
-        "ssr": true
+        "publicUrl": "http://localhost:10000"
     },
     "mca": {
         "host": "localhost",

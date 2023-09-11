@@ -72,12 +72,6 @@
         "publicUrl": "@@CORSACE_PUBLICURL",
         "ssr": "@@CORSACE_SSR"
     },
-    "docs": {
-        "host": "0.0.0.0",
-        "port": 80,
-        "publicUrl": "@@DOCS_PUBLICURL",
-        "ssr": "@@DOCS_SSR"
-    },
     "mca": {
         "host": "0.0.0.0",
         "port": 80,
