@@ -16,13 +16,25 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v3
-      - name: Install, build, and upload your site
-        uses: withastro/action@v0
-        env:
-          DEPLOYMENT: gh-pages
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-            path: ./Docs
-            node-version: 18
+          node-version: 18
+          cache: npm
+
+      - name: Install Node Dependencies
+        run: |
+          npm install
+
+      - name: Build Docs
+        run: |
+          npm run build:docs
+          
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: Docs/dist/
 
   deploy:
     needs: build
