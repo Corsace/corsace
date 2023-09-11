@@ -3,8 +3,8 @@
     "header": {
         "welcomeBack": "환영합니다",
         "login": "로그인",
-        "register": "register",
-        "changeDiscord": "디스코드 변경",
+        "register": "등록",
+        "changeDiscord": "디스코드 계정 변경",
         "logout": "로그아웃"
     },
     "mca_ayim": {
@@ -17,14 +17,14 @@
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "로그인",
             "welcomeBack": "환영합니다",
-            "admin": "어드민",
+            "admin": "관리자",
             "staff": "스태프",
             "logout": "로그아웃"
         },
         "login": {
             "login": "로그인",
             "message": {
-                "1": "아직 로그인하지 않았습니다!!<br>osu! 계정으로 로그인하시면 추천과 투표를 바로 하실 수 있습니다!",
+                "1": "아직 로그인하지 않으셨습니다!<br>osu! 계정으로 로그인하시면 추천과 투표를 바로 하실 수 있습니다!",
                 "2": "이후 디스코드로도 로그인하실 수 있지만, 추천/투표하는 데에는 <b>필요하지 않습니다.</b><br>MCA/AYIM 관련 스태프분들은 디스코드로 로그인을 <b>반드시</b> 하셔야 합니다."
             },
             "authOsu": "여기를 클릭하여 osu!로 로그인하세요",
@@ -434,22 +434,22 @@
             "createTeam": "팀 만들기",
             "invitations": "받은 초대",
             "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
-            "teamInvites": "TEAM INVITES",
-            "noInvites": "You currently have no invites"
+            "teamInvites": "팀 초대",
+            "noInvites": "받은 초대가 없습니다"
         },
         "footer": {
-            "corsace": "CORSACE",
-            "twitter": "TWITTER",
-            "discord": "DISCORD",
-            "twitch": "TWITCH",
-            "youtube": "YOUTUBE"
+            "corsace": "코사스",
+            "twitter": "트위터",
+            "discord": "디스코드",
+            "twitch": "트위치",
+            "youtube": "유튜브"
         },
         "stages": {
-            "qualifiers": "QUALIFIERS",
-            "round robin": "ROUND ROBIN",
-            "runoff bracket": "RUNOFF BRACKET",
-            "knockout 1": "KNOCKOUT 1",
-            "knockout 2": "KNOCKOUT 2",
+            "qualifiers": "퀄리파이어",
+            "round robin": "라운드 로빈",
+            "runoff bracket": "런오프 브라켓",
+            "knockout 1": "녹아웃 1",
+            "knockout 2": "녹아웃 2",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
@@ -459,25 +459,25 @@
             }
         },
         "home": {
-            "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
-            "timeline": "TIMELINE",
+            "description": "세계 최고의 osu! 플레이어들이 배틀하는 코사스 오픈 2023에 빠져보세요!",
+            "timeline": "일정",
             "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
-            "registrations": "REGISTRATIONS",
+            "registrations": "등록 기간",
             "button": {
-                "qualifiersMappool": "QUALIFIERS MAPPOOLS",
+                "qualifiersMappool": "퀄리파이어 맵풀",
                 "mappoolDownload": "Mappool download and statistics",
-                "register": "CREATE AND REGISTER YOUR TEAM",
+                "register": "당신의 팀을 만들고 등록하세요",
                 "registrationsEnd": "Registrations end"
             }
         },
         "info": {
-            "title": "INFORMATION",
+            "title": "토너먼트 정보",
             "condensed": "세부 사항",
-            "error": "Could not find tournament",
+            "error": "토너먼트를 찾을수 없습니다",
             "matchInfo": {
-                "matchSize": "MATCH SIZE",
-                "minPlayers": "MIN. PLAYERS",
-                "maxPlayers": "MAX. PLAYERS",
+                "matchSize": "매치 규모",
+                "minPlayers": "최소 플레이어",
+                "maxPlayers": "최대 플레이어",
                 "pickTimer": "맵 선택 타이머",
                 "readyTimer": "준비 타이머",
                 "order": "ORDER",
@@ -501,10 +501,10 @@
             "mappools": {
                 "info": "맵풀 정보",
                 "notAvailable": "INFO NOT AVAILABLE",
-                "mappackDownload": "DOWNLOAD MAP PACK",
-                "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
+                "mappackDownload": "맵팩 다운로드",
+                "mappacknotAvailable": "맵팩을 이용할 수 없습니다."
             },
-            "prizes": "PRIZES",
+            "prizes": "상품",
             "donateToCorsace": "DONATE TO CORSACE",
             "supportViaSponsorship": "MOMOKAI SPONSORSHIP을 통한 지원",
             "generalInfo": "GENERAL INFORMATION",
@@ -514,18 +514,18 @@
             "infoGraphic": "INFOGRAPHIC",
             "matchProcedures": "경기 규칙",
             "reportTournament": "토너먼트 신고",
-            "subjectToChange": "all rules are subject to change for clarification and/or adjustments"
+            "subjectToChange": "모든 규칙은 설명 혹은 조정을 위해 변경될 수 있습니다."
         },
         "qualifiers": {
             "nav": {
-                "mappool": "MAPPOOL",
-                "qualifiers": "QUALIFIERS",
+                "mappool": "맵풀",
+                "qualifiers": "퀄리파이어",
                 "scores": "SCORES"
             },
             "mappool": {
                 "sheets": "SHEETS",
-                "mappool": "MAPPOOL",
-                "notAvailable": "Mappool not available yet",
+                "mappool": "맵풀",
+                "notAvailable": "맵풀을 아직 이용할 수 없습니다.",
                 "banner": {
                     "mapper": "MAPPER",
                     "difficulty": "DIFFICULTY"
@@ -533,8 +533,8 @@
             },
             "scores": {
                 "nav": {
-                    "sort": "SORT",
-                    "average": "AVERAGE",
+                    "sort": "정렬",
+                    "average": "평균",
                     "sum": "SUM",
                     "percentAvg": "%AVG",
                     "relAvg": "REL. AVG",
