@@ -118,10 +118,10 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
     team.name = name;
     team.abbreviation = abbreviation;
     team.timezoneOffset = timezoneOffset;
-    team.manager = ctx.state.user;
+    team.manager = ctx.state.user!;
     team.members = [];
     if (isPlaying)
-        team.members = [ctx.state.user];
+        team.members = [ctx.state.user!];
 
     const noErr = await team.calculateStats();
     try {
@@ -140,7 +140,7 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
 });
 
 teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+    const team: Team = ctx.state.team!;
 
     // Get the file from the request
     const files = ctx.request.files?.avatar;
@@ -173,7 +173,7 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
 });
 
 teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+    const team: Team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
     if (!tournamentID || isNaN(parseInt(tournamentID))) {
@@ -321,7 +321,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
 });
 
 teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+    const team: Team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
     if (!tournamentID || isNaN(parseInt(tournamentID))) {
@@ -384,7 +384,7 @@ teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), as
 });
 
 teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+    const team: Team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
     if (!tournamentID || isNaN(parseInt(tournamentID))) {
@@ -472,7 +472,7 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
 });
 
 teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+    const team: Team = ctx.state.team!;
 
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
@@ -502,13 +502,13 @@ teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async
         return;
     }
 
-    if (team.members.some(m => m.ID === ctx.state.user.ID)) {
+    if (team.members.some(m => m.ID === ctx.state.user!.ID)) {
         if (tournaments.some(t => team.members.length - 1 < t.minTeamSize)) {
             ctx.body = { error: "Team cannot have less than the minimum amount of players for the tournaments the team is in." };
             return;
         }
 
-        team.members = team.members.filter(m => m.ID !== ctx.state.user.ID);
+        team.members = team.members.filter(m => m.ID !== ctx.state.user!.ID);
         await team.calculateStats();
         await team.save();
 
@@ -519,7 +519,7 @@ teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async
             return;
         }
 
-        team.members.push(ctx.state.user);
+        team.members.push(ctx.state.user!);
         await team.calculateStats();
         await team.save();
 
@@ -528,7 +528,7 @@ teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async
 });
 
 teamRouter.post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+    const team: Team = ctx.state.team!;
 
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
@@ -576,8 +576,8 @@ teamRouter.post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true
 
     team.manager = team.members.find(m => m.ID === userID)!;
 
-    if (!team.members.some(m => m.ID === ctx.state.user.ID)) {
-        team.members.push(ctx.state.user);
+    if (!team.members.some(m => m.ID === ctx.state.user!.ID)) {
+        team.members.push(ctx.state.user!);
         team.members = team.members.filter(m => m.ID !== userID);
     }
     
@@ -587,7 +587,7 @@ teamRouter.post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true
 });
 
 teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+    const team: Team = ctx.state.team!;
 
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
@@ -636,7 +636,7 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
 });
 
 teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+    const team: Team = ctx.state.team!;
     const body: Partial<Team> | undefined = ctx.request.body;
     if (body?.timezoneOffset) {
         if (typeof body.timezoneOffset !== "number" || body.timezoneOffset < -12 || body.timezoneOffset > 14) {
@@ -646,13 +646,13 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
         team.timezoneOffset = body.timezoneOffset;
     }
     if (
-        (body?.name && body.name !== team.name) || 
+        (body?.name && body.name !== team.name) ?? 
         (body?.abbreviation && body.abbreviation !== team.abbreviation)
     ) {
         const tournaments = await Tournament
             .createQueryBuilder("tournament")
             .leftJoin("tournament.teams", "team")
-            .where("team.ID = :ID", { ID: ctx.state.team.ID })
+            .where("team.ID = :ID", { ID: team.ID })
             .getMany();
 
         if (tournaments.some(t => t.status !== TournamentStatus.NotStarted)) {
@@ -728,10 +728,12 @@ teamRouter.patch("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => 
 });
 
 teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team: Team = ctx.state.team!;
+
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
         .leftJoin("tournament.teams", "team")
-        .where("team.ID = :ID", { ID: ctx.state.team.ID })
+        .where("team.ID = :ID", { ID: team.ID })
         .getMany();
 
     if (tournaments.some(t => t.status !== TournamentStatus.NotStarted)) {
@@ -739,12 +741,11 @@ teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx)
         return;
     }
 
-    const team: Team = ctx.state.team;
     await deleteTeamAvatar(team);
     const invites = await getTeamInvites(team.ID, "teamID");
     await Promise.all(invites.map(i => i.remove()));
 
-    await ctx.state.team.remove();
+    await team.remove();
 
     ctx.body = { success: "Team deleted" };
 });

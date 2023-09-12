@@ -63,7 +63,7 @@ async function execute (job: CronJobData) {
                 await thread.setAppliedTags(tags, "This slot is now assigned.");
                 await thread.setArchived(true, "This slot is now assigned.");
 
-                const tournament = tournaments.find(t => t.server === thread.guildId) || await Tournament
+                const tournament = tournaments.find(t => t.server === thread.guildId) ?? await Tournament
                     .createQueryBuilder("tournament")
                     .leftJoinAndSelect("tournament.organizer", "organizer")
                     .leftJoinAndSelect("tournament.mode", "mode")

@@ -153,7 +153,7 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
         .leftJoinAndSelect("stats.modeDivision", "mode")
         .getMany();
 
-    ctx.body = await Promise.all(teams.map<Promise<TeamList>>(async t => {
+    ctx.body = teams.map<TeamList>(t => {
         const members = t.members;
         if (!members.some(m => m.ID === t.manager.ID))
             members.push(t.manager);
@@ -174,7 +174,7 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
                 })),
             isRegistered: tournament.teams.some(team => team.ID === t.ID),
         };
-    }));
+    });
 });
 
 tournamentRouter.get("/:tournamentID/teams/screening", validateID, async (ctx) => {
@@ -301,7 +301,7 @@ tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
                     ID: dbUser?.ID,
                     username: dbUser?.osu.username ?? m.user.username,
                     osuID: dbUser?.osu.userID,
-                    avatar: dbUser?.osu.avatar || dbUser?.discord.avatar || m.displayAvatarURL(),
+                    avatar: dbUser?.osu.avatar ?? dbUser?.discord.avatar ?? m.displayAvatarURL(),
                     country: dbUser?.country,
                     loggedIn: dbUser !== undefined,
                 };

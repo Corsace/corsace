@@ -356,8 +356,8 @@ statisticsRouter.get("/mappers", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
-    const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
+    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
+    const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
     const modeId = ModeDivisionType[modeString];
 
     const [yearQ, newyearQ, mapsQ]: [Promise<any>[], Promise<any>[], Promise<any>[]] = [[], [], []];

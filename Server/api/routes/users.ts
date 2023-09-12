@@ -29,7 +29,7 @@ usersRouter.get("/advSearch", async (ctx) => {
             error: "No year given!",
         };
 
-    const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
+    const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") || 0;
     const order = parseQueryParam(ctx.query.order);
     if (order !== undefined && order !== "ASC" && order !== "DESC")
         return ctx.body = {
@@ -37,7 +37,7 @@ usersRouter.get("/advSearch", async (ctx) => {
         };
 
     const query: MapperQuery = {
-        text: parseQueryParam(ctx.query.text) || "",
+        text: parseQueryParam(ctx.query.text) ?? "",
         skip: String(skip),
         year: parseQueryParam(ctx.query.year)!,
         mode: parseQueryParam(ctx.query.mode),

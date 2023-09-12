@@ -24,16 +24,16 @@ export default async function assignTeamsToNextMatchup (matchupID: number) {
                     if (potential.team1?.ID !== focus?.ID && potential.team2?.ID !== focus?.ID)
                         potential.invalid = true;
                     return manager.save(potential);
-                }) || []);
+                }) ?? []);
 
-                const dates = (nextMatchup.potentials?.map(potential => potential.date.getTime()) || [])
+                const dates = (nextMatchup.potentials?.map(potential => potential.date.getTime()) ?? [])
                     .filter((date, i, arr) => arr.indexOf(date) === i);
                 if (dates.length === 1) {
                     nextMatchup.date = new Date(dates[0]);
                     await manager.save(nextMatchup);
                 }
 
-                if (nextMatchup.team1 || nextMatchup.team2) {
+                if (nextMatchup.team1 ?? nextMatchup.team2) {
                     if (!nextMatchup.team1 && nextMatchup.team2?.ID !== focus?.ID)
                         nextMatchup.team1 = focus;
                     else if (!nextMatchup.team2 && nextMatchup.team1?.ID !== focus?.ID)

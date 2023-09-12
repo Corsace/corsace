@@ -52,7 +52,7 @@ const getModeDivison = memoizee(async (modeDivisionId: number) => {
 
 // API call to fetch a user's country.
 async function getMissingOsuUserProperties (userID: number): Promise<{ country: string; username: string; }> {
-    const userApi = (await axios.get(`${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`)).data as any[];
+    const userApi = (await axios.get(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`)).data as any[];
     if (userApi.length === 0)
         return { country: "", username: "" };
     return {
@@ -69,8 +69,8 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
         let username = targetUser.username;
         if (!username || !country) {
             const { country: newCountry, username: newUsername } = await getMissingOsuUserProperties(targetUser.userID);
-            country = newCountry || country || "";
-            username = newUsername || username || "";
+            country = newCountry ?? country ?? "";
+            username = newUsername ?? username ?? "";
         }
 
         user = new User;
@@ -252,8 +252,9 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
 
     if (!isPossessive(beatmap.difficulty) && !isNaN(apiBeatmap.approvedDate.getUTCFullYear())) {
         const eligibility = await getMCAEligibility(apiBeatmap.approvedDate.getUTCFullYear(), beatmap.beatmapset.creator);
-        if (!eligibility[modeList[apiBeatmap.mode!]]) {
-            eligibility[modeList[apiBeatmap.mode!]] = true;
+        const mode = modeList[apiBeatmap.mode!];
+        if (mode in ModeDivisionType) {
+            eligibility[mode as keyof typeof ModeDivisionType] = true;
             eligibility.storyboard = true;
             await eligibility.save();
         }
@@ -301,12 +302,12 @@ async function script () {
     };
     const progressInterval = setInterval(printStatus, 1000);
 
-    let since = new Date((await Beatmapset.findOne({ where: {}, order: { approvedDate: "DESC" } }))?.approvedDate || new Date("2006-01-01"));
+    let since = new Date((await Beatmapset.findOne({ where: {}, order: { approvedDate: "DESC" } }))?.approvedDate ?? new Date("2006-01-01"));
     console.log(`Fetching all beatmaps starting from ${since.toJSON()} until ${year}-12-31...`);
     printStatus();
     const queuedBeatmapIds: number[] = [];
     while (since.getTime() < until.getTime()) {
-        const newBeatmapsApi = (await axios.get(`${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${(new Date(since.getTime() - 1000)).toJSON().slice(0,19).replace("T", " ")}`)).data as any[];
+        const newBeatmapsApi = (await axios.get(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${(new Date(since.getTime() - 1000)).toJSON().slice(0,19).replace("T", " ")}`)).data as any[];
         for(const newBeatmapApi of newBeatmapsApi) {
             const newBeatmap = new APIBeatmap(newBeatmapApi);
             if(queuedBeatmapIds.includes(newBeatmap.id))
@@ -322,7 +323,7 @@ async function script () {
             }
 
             queuedBeatmapIds.push(newBeatmap.id);
-            processingQueue.push(newBeatmap);
+            await processingQueue.push(newBeatmap);
             bmQueued++;
         }
     }

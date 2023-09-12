@@ -20,9 +20,9 @@ export class osuAPIV2 {
     constructor (clientID: string, clientSecret: string, options?: osuAPIV2Options) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
-        this.disableRateLimiting = options?.disableRateLimiting || false;
-        this.requestsPerMinute = options?.requestsPerMinute || 60;
-        this.baseURL = options?.baseURL || "https://osu.ppy.sh";
+        this.disableRateLimiting = options?.disableRateLimiting ?? false;
+        this.requestsPerMinute = options?.requestsPerMinute ?? 60;
+        this.baseURL = options?.baseURL ?? "https://osu.ppy.sh";
         this.apiV2URL = `${this.baseURL}/api/v2`;
         
         if (!this.disableRateLimiting)
@@ -36,7 +36,7 @@ export class osuAPIV2 {
         let endpoint = `/users/${userID}/beatmapsets/favourite?limit=51`;
         if (offset)
             endpoint += `&offset=${offset}`;
-        return this.get<osuV2Beatmapset[]>(endpoint, accessToken || await this.getClientCredentials());
+        return this.get<osuV2Beatmapset[]>(endpoint, accessToken ?? await this.getClientCredentials());
     }
 
     public async getPlayedBeatmaps (accessToken: string, year?: number, cursorString?: string): Promise<osuV2PlayedBeatmaps> {
@@ -49,7 +49,7 @@ export class osuAPIV2 {
     }
 
     public async getUser (userID: string, mode?: "osu" | "taiko" | "fruits" | "mania", accessToken?: string): Promise<osuV2User> {
-        return this.get<osuV2User>(`/users/${userID}${mode ? `/${mode}` : ""}`, accessToken || await this.getClientCredentials());
+        return this.get<osuV2User>(`/users/${userID}${mode ? `/${mode}` : ""}`, accessToken ?? await this.getClientCredentials());
     }
 
     public getMe (accessToken: string, mode?: "osu" | "taiko" | "fruits" | "mania"): Promise<osuV2Me> {

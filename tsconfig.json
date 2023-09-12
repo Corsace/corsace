@@ -22,4 +22,13 @@
         ],
         "sourceMap": true,
     },
+    "include": [
+        "**/*",
+    ],
+    "exclude": [
+        "node_modules",
+        ".nuxt",
+        ".astro",
+        "dist",
+    ]
 }

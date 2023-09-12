@@ -36,7 +36,7 @@ export function setupPassport () {
 
     passport.use(new OAuth2Strategy({
         authorizationURL: "https://osu.ppy.sh/oauth/authorize",
-        tokenURL: `${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/oauth/token`,
+        tokenURL: `${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/oauth/token`,
         clientID: config.osu.v2.clientId,
         clientSecret: config.osu.v2.clientSecret,
         callbackURL: `${config.corsace.publicUrl}/api/login/osu/callback`,
