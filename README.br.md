@@ -17,22 +17,22 @@ npm i
 ```
 **Nota: Certifique-se que sua versão do node é a 16.6.0 ou superior para poder usar qualquer uma das funcionalidades do Discord neste repositório.**
 
-Duplique `config/default.json` para `config/user/$USER.json`, onde `$USER` é o nome de usuário do seu sistema [ (acessível através process.env.USER ou USERNAME do node)](https://github.com/tusharmath/node-config-ts#using-files). The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
+Duplique `config/default.json` para `config/user/$USER.json`, onde `$USER` é o nome de usuário do seu sistema [ (acessível através process.env.USER ou USERNAME do node)](https://github.com/tusharmath/node-config-ts#using-files). Os valores no seu arquivo de configuração pessoal `config/user/$USER.json` serão referidos como `config` daqui em diante.
 
 ### osu! API
 
 `config.osu.v1.apiKey`
 
-You can obtain your osu! API V1 key [here](https://osu.ppy.sh/p/api/)
+Você pode conseguir a chave API V1 [aqui](https://osu.ppy.sh/p/api/)
 
 ```
 config.osu.v2.clientId
 config.osu.v2.clientSecret
 ```
 
-You will need to create a "New OAuth Application" at the bottom of https://osu.ppy.sh/home/account/edit.
+Você precisará criar uma "Nova Aplicação OAuth" na parte inferior de https://osu.ppy.sh/home/account/edit.
 
-The callback URL should be set to:
+A URL de retorno (callback) deve ser definida como:
 ```
 config.corsace.publicUrl + /api/login/osu/callback
 ```
@@ -41,27 +41,27 @@ config.corsace.publicUrl + /api/login/osu/callback
 config.osu.bancho
 ```
 
-You can obtain your osu IRC password from the same place as the osu OAuth Application at https://osu.ppy.sh/home/account/edit#irc.
+Você pode obter sua senha IRC do osu! no mesmo local em que obteve a Aplicação OAuth do osu! em https://osu.ppy.sh/home/account/edit#irc.
 
-If your account is a bot account, then make sure to have `botAccount` set to true; otherwise, make set it to false.
+Se sua conta for uma conta de bot, certifique-se de ter `botAccount` definido como verdadeiro; caso contrário, defina-o como falso.
 
-### Database
+### Banco de Dados
 `config.database`
-#### Setup
+#### Configuração
 
-There are 2 ways to setup the database, either via Docker or manually.
+Existem duas maneiras de configurar o banco de dados: usando o Docker ou manualmente.
 
-##### Via Docker (Recommended)
+##### Usando o Docker (Recomendado)
 
-We are shipping a production-like `docker-compose.yml` file. You can start only the database service using: `docker-compose up -d database` or `npm run database`.
+Estamos disponibilizando um arquivo `docker-compose.yml` semelhante à produção. Você pode iniciar apenas o serviço do banco de dados usando: `docker-compose up -d database` ou `npm run database`.
 
-The database will listen on `127.0.0.1:3306`, with `corsace` being the database name, username and password.
+O banco de dados estará acessível em `127.0.0.1:3306`, e o nome do banco de dados, nome de usuário e senha serão todos definidos como `corsace`.
 
-##### Manual MariaDB Setup
+##### Configuração Manual do MariaDB
 
-If you do not want to use Docker, you will need to install [MariaDB](https://mariadb.org/) and create an empty database, named whatever you like.
+Se você não deseja usar o Docker, precisará instalar o [MariaDB](https://mariadb.org/) e criar um banco de dados vazio, com o nome que desejar.
 
-It can be as simple as running:
+Pode ser tão simples quanto executar:
 ```
 mysql -u root -p
 MySQL> create database <new_db_name>; 
