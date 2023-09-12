@@ -29,9 +29,9 @@
                 "2": "이후 디스코드로도 로그인하실 수 있지만, 추천/투표하는 데에는 <b>필요하지 않습니다.</b><br>MCA/AYIM 관련 스태프분들은 디스코드로 로그인을 <b>반드시</b> 하셔야 합니다."
             },
             "authOsu": "여기를 클릭하여 osu!로 로그인하세요",
-            "authOsuComp": "osu!로 로그인되었습니다. 안녕하세요 ",
+            "authOsuComp": "osu! 계정 인증이 완료되었습니다. 안녕하세요 ",
             "authDiscord": "여기를 클릭하여 디스코드로 로그인하세요",
-            "authDiscordComp": "디스코드로 로그인되었습니다. 안녕하세요 "
+            "authDiscordComp": "디스코드 인증이 완료되었습니다. 안녕하세요 "
         }
     },
     "ayim": {
@@ -434,7 +434,7 @@
             "staff": "스태프",
             "createTeam": "팀 만들기",
             "invitations": "초대장",
-            "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
+            "loginDiscord": "팀 관리/초대를 하려면 디스코드 로그인을 해 주세요",
             "teamInvites": "받은 팀 초대",
             "noInvites": "받은 초대가 없습니다"
         },
@@ -466,7 +466,7 @@
             "registrations": "등록 기간",
             "button": {
                 "qualifiersMappool": "퀄리파이어 맵풀",
-                "mappoolDownload": "Mappool download and statistics",
+                "mappoolDownload": "맵풀 다운로드와 통계 보기",
                 "register": "당신의 팀을 만들고 등록하세요",
                 "registrationsEnd": "등록이 마감됩니다"
             }
@@ -549,36 +549,36 @@
                     "worst": "최저 퍼포먼스"
                 },
                 "categorySelect": "카테고리 선택",
-                "players": "플레이어 목록",
-                "teams": "팀 목록"
+                "players": "플레이어",
+                "teams": "팀"
             },
             "create": "만들기",
             "error": {
-                "message": "{numPlayers} 명의 플레이어가 있기 전까지 퀄리파이어 로비를 만들거나 참여할 수 없습니다!",
+                "message": "{numPlayers}명의 플레이어가 있기 전까지 퀄리파이어 로비를 만들거나 참여할 수 없습니다!",
                 "pressToClose": "닫으려면 아무곳이나 클릭해 주세요."
             }
         },
         "teams": {
             "teamsList": "팀 목록",
-            "error": "COULD NOT GET TEAM LIST",
-            "searchPlaceholder": "search for user/team",
-            "editTeamInfo": "edit team info",
+            "error": "팀 목록을 가져올 수 없습니다",
+            "searchPlaceholder": "팀/유저 검색",
+            "editTeamInfo": "팀 정보 수정",
             "qualifierId": "퀄리파이어 ID",
             "placeholders": {
-                "searchUser": "osu! username (must have corsace account)",
-                "name": "name",
-                "abbreviation": "abbreviation"
+                "searchUser": "Osu! 닉네임 (코사스 계정이 있어야 합니다)",
+                "name": "팀 이름",
+                "abbreviation": "약어"
             },
             "edit": {
-                "teamName": "TEAM NAME",
-                "teamAbbreviation": "TEAM ABBREVIATION",
-                "timezone": "TIMEZONE",
+                "teamName": "팀 이름",
+                "teamAbbreviation": "팀 약어",
+                "timezone": "시간대",
                 "teamAvatar": "TEAM AVATAR",
                 "errors": {
                     "size": "이미지 용량이 너무 큽니다. 이미지 용량이 5MB 이내인지 확인해 주세요.",
                     "type": "유효하지 않은 이미지 파일입니다. 이미지 확장자가 PNG 혹은 JPG인지 확인해 주세요.",
                     "invalidImage": "유효하지 않은 이미지 파일입니다. 이미지 확장자가 PNG 혹은 JPG이고, 용량이 5MB 이내인지 확인해 주세요.",
-                    "invalidTimezone": "유효허지 않은 타임존입니다.",
+                    "invalidTimezone": "유효허지 않은 시간대입니다.",
                     "errorAddingTeamAvatar": "팀 아바타 추가 오류:\n{error}",
                     "invalidName": "",
                     "contactVinxis": "검색오류가 있는 경우, VINXIS에게 문의해 주세요. 자세한 정보는 Ctrl + Shift + I를 사용해 콘솔을 참조해 주세요."
@@ -588,25 +588,25 @@
                     "deleteTeamFinal": "팀을 지우는게 정말 확실한가요? 이 행동은 되돌릴 수 없습니다!",
                     "removeMember": "정말 {username} 이 유저를 당신의 팀에서 제거하는 것이 확실한가요?",
                     "transferManager": "{username} 이 유저를 팀 매니저로 변경하는게 확실한가요?",
-                    "invite": "Are you sure you want to invite {username} to your team?",
-                    "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
+                    "invite": "정말 {username} 이 유저를 당신의 팀으로 초대하는 것이 확실한가요?",
+                    "removeInvite": "정말 {username} 이 유저의 팀 초대를 취소하는 것이 확실한가요?",
                     "unregister": "토너먼트에서 등록을 취소하시겠습니까? 6명이 있다면 언제든지 재등록이 가능합니다."
                 },
                 "save": "저장하기",
                 "deleteTeam": "팀 지우기"
             },
             "headers": {
-                "tournaments": "TOURNAMENTS",
+                "tournaments": "토너먼트",
                 "teamStats": "팀 통계",
-                "teamManager": "TEAM MANAGER",
-                "teamMembers": "TEAM MEMBERS",
-                "editTeamMembers": "edit team members",
-                "closeTeamMembers": "close team members edit",
+                "teamManager": "팀 매니저",
+                "teamMembers": "팀 멤버 목록",
+                "editTeamMembers": "팀 멤버 수정",
+                "closeTeamMembers": "팀 멤버 수정 닫기",
                 "becomeMember": "become a member and play as well",
                 "becomeManager": "become manager only",
                 "teamInvites": "TEAM INVITES",
-                "editTeamInvites": "edit team invites",
-                "closeTeamInvites": "close team invites edit",
+                "editTeamInvites": "팀 초대 수정하기",
+                "closeTeamInvites": "팀 초대 닫기",
                 "qualifier": "QUALIFIER",
                 "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
                 "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
@@ -634,8 +634,8 @@
             "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
             "teamAcronym": "TEAM ACRONYM",
             "acronymLength": "2 - 4 characters. Profanity will be checked.",
-            "teamTimezone": "TEAM TIMEZONE",
-            "timezoneText": "We will assume your team can play between <span class='bold'>10:00 to 22:00</span> in the selected timezone.",
+            "teamTimezone": "팀 시간대",
+            "timezoneText": "당신의 팀이 선택한 시간대의 <span class='bold'>10:00부터 22:00</span> 사이에 플레이가 가능하다고 가정합니다.<span class='bold'>",
             "teamAvatar": "TEAM AVATAR",
             "upload": "UPLOAD",
             "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
