@@ -67,29 +67,29 @@ mysql -u root -p
 MySQL> create database <new_db_name>; 
 ```
 
-Make sure to update `config.database` to reflect your choice of database name and credentials.
+Certifique-se de atualizar `config.database` para refletir sua escolha de nome e credenciais do banco de dados.
 
-#### Seeding the database
+#### Preenchendo o banco de dados
 
-Create and seed the whole Corsace database using: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
+Crie e preencha todo o banco de dados Corsace usando: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
 
-### Object Storage/S3
+### Armazenamento de Objetos/S3
 
-We use S3-compatible object storage for storing and serving mappacks, configured in `config.s3`.
+Usamos armazenamento de objetos compatível com S3 para armazenar e servir mappacks, configurado em `config.s3`.
 
-While we target Cloudflare R2, any S3 provider should work as long as they support multipart uploads and pre-signed URLs.
+Embora visemos o Cloudflare R2, qualquer provedor S3 deve funcionar, desde que eles suportem uploads multipart e URLs pré-assinadas.
 
-We use three buckets:
-- `team-avatars` is a public bucket that stores team avatars, can be served by a CDN without authentication
-- `mappacks` is a public bucket that stores public mappacks, can be served by a CDN without authentication
-- `mappacks-temp` is a private bucket that stores private mappacks that should not have public access  
-  Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.  
-  Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.  
-  Mappacks that should become public get moved to the `mappacks` bucket.
+Usamos três buckets:
+- `team-avatars` é um bucket público que armazena avatares de equipe e pode ser servido por um CDN sem autenticação;
+- `mappacks` é um bucket público que armazena mappacks públicos e pode ser servido por um CDN sem autenticação;
+- `mappacks-temp` ié um bucket privado que armazena mappacks privados que não devem ter acesso público.  
+  Os mappacks gerados são primeiro enviados para este bucket, e os usuários têm acesso através de URLs pré-assinadas.  
+  Mappacks privados não devem ser armazenados permanentemente; uma política de ciclo de vida deve ser adicionada a esse bucket para excluir automaticamente objetos após 1 dia.  
+  Mappacks que devem se tornar públicos são movidos para o bucket `mappacks`.
 
 #### Cloudflare R2
 
-Go to the [Cloudflare R2 dashboard page](https://dash.cloudflare.com/?to=/:account/r2). Enable your plan if you haven't already (good luck exceeding free limits).
+Vá para a página do [painel do Cloudflare R2](https://dash.cloudflare.com/?to=/:account/r2). Ative seu plano se ainda não o fez (boa sorte ao exceder os limites gratuitos).
 
 Create the `mappacks` and `team-avatars` buckets and enable their R2.dev subdomains, or associate a custom domain for each.
 
