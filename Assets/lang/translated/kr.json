@@ -473,7 +473,7 @@
         },
         "info": {
             "title": "토너먼트 정보",
-            "condensed": "세부 사항",
+            "condensed": "세부 정보",
             "error": "토너먼트를 찾을수 없습니다",
             "matchInfo": {
                 "matchSize": "매치 규모",
@@ -484,9 +484,9 @@
                 "order": "ORDER",
                 "scoringMethod": "점수 집계 방식",
                 "type": "경기 유형",
-                "startDate": "시작일",
-                "endDate": "종료일",
-                "rounds": "ROUNDS",
+                "startDate": "시작 일자",
+                "endDate": "종료 일자",
+                "rounds": "라운드",
                 "initialSize": "INITIAL SIZE",
                 "finalSize": "FINAL SIZE"
             },
@@ -496,17 +496,17 @@
             },
             "status": {
                 "notStarted": "NOT STARTED",
-                "complete": "COMPLETE",
-                "ongoing": "ONGOING"
+                "complete": "완료됨",
+                "ongoing": "진행중"
             },
             "mappools": {
                 "info": "맵풀 정보",
-                "notAvailable": "INFO NOT AVAILABLE",
+                "notAvailable": "정보를 가져올 수 없습니다",
                 "mappackDownload": "맵팩 다운로드",
-                "mappacknotAvailable": "맵팩을 이용할 수 없습니다."
+                "mappacknotAvailable": "맵팩을 가져올 수 없습니다"
             },
             "prizes": "상품",
-            "donateToCorsace": "DONATE TO CORSACE",
+            "donateToCorsace": "코사스에 후원하기",
             "supportViaSponsorship": "MOMOKAI SPONSORSHIP을 통한 지원",
             "generalInfo": "GENERAL INFORMATION",
             "teamStructure": "팀 구성",
@@ -514,22 +514,22 @@
             "tournamentStructure": "토너먼트 구성",
             "infoGraphic": "INFOGRAPHIC",
             "matchProcedures": "경기 규칙",
-            "reportTournament": "토너먼트 신고",
+            "reportTournament": "토너먼트 신고하기",
             "subjectToChange": "모든 규칙은 설명 혹은 조정을 위해 변경될 수 있습니다."
         },
         "qualifiers": {
             "nav": {
                 "mappool": "맵풀",
                 "qualifiers": "퀄리파이어",
-                "scores": "SCORES"
+                "scores": "통계"
             },
             "mappool": {
-                "sheets": "SHEETS",
+                "sheets": "시트 열기",
                 "mappool": "맵풀",
                 "notAvailable": "맵풀을 아직 이용할 수 없습니다.",
                 "banner": {
-                    "mapper": "MAPPER",
-                    "difficulty": "DIFFICULTY"
+                    "mapper": "매퍼",
+                    "difficulty": "난이도"
                 }
             },
             "scores": {
@@ -542,9 +542,9 @@
                     "percentMax": "%MAX",
                     "relMax": "REL. MAX",
                     "zScore": "Z-SCORE",
-                    "placement": "PLACE",
-                    "player": "PLAYER",
-                    "team": "TEAM",
+                    "placement": "등수",
+                    "player": "플레이어",
+                    "team": "소속 팀",
                     "best": "최고 퍼포먼스",
                     "worst": "최저 퍼포먼스"
                 },
@@ -573,9 +573,9 @@
                 "teamName": "팀 이름",
                 "teamAbbreviation": "팀 약어",
                 "timezone": "시간대",
-                "teamAvatar": "TEAM AVATAR",
+                "teamAvatar": "팀 아바타",
                 "errors": {
-                    "size": "이미지 용량이 너무 큽니다. 이미지 용량이 5MB 이내인지 확인해 주세요.",
+                    "size": "이미지 크키가 너무 큽니다. 이미지 크기가 5MB 이내인지 확인해 주세요.",
                     "type": "유효하지 않은 이미지 파일입니다. 이미지 확장자가 PNG 혹은 JPG인지 확인해 주세요.",
                     "invalidImage": "유효하지 않은 이미지 파일입니다. 이미지 확장자가 PNG 혹은 JPG이고, 용량이 5MB 이내인지 확인해 주세요.",
                     "invalidTimezone": "유효허지 않은 시간대입니다.",
@@ -609,44 +609,44 @@
                 "closeTeamInvites": "팀 초대 닫기",
                 "qualifier": "QUALIFIER",
                 "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
-                "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
+                "requiredMessageRange": "퀄리파이어에 등록하고 참여할려면 {minTeamSize} ~ {maxTeamSize} 명의 팀원이 필요합니다."
             },
             "registration": {
-                "noRegistration": "Registered in no tournaments",
+                "noRegistration": "토너먼트에 등록되지 않았습니다",
                 "toPlay": "코사스 오픈에서 플레이하기 위해, 6명의 팀원을 확보하고 아래에서 퀄리파이어 날짜와 시간을 선택해 주세요."
             },
             "teamID": "팀 ID",
-            "member": "member",
-            "members": "members",
+            "member": "멤버",
+            "members": "멤버들",
             "averageBWS": "평균 BWS 순위",
             "averageRank": "평균 순위",
             "averagePP": "평균 PP",
             "editQualifierTime": "퀄리파이어 시간 수정",
             "deleteTeam": "delete qualifier/unregister team",
             "createJoinQualifier": "퀄리파이어 로비 만들기 / 참여하기",
-            "notRegistered": "Currently not registered in Corsace Open."
+            "notRegistered": "현재 코사스 오픈에 등록되어 있지 않습니다"
         },
         "create": {
-            "title": "CREATE A TEAM",
+            "title": "팀 만들기",
             "info1": "Registrations will end on",
-            "info2": "Please ensure all information is correct before finalizing.",
-            "teamName": "TEAM NAME",
-            "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
+            "info2": "완료하기 전에 모든 정보가 올바른지 확인해 주세요",
+            "teamName": "팀 이름",
+            "teamLength": "5 ~ 20자 이내여야 합니다. \"Team\"을 팀 이름에 넣을 경우 자동으로 삭제되며, 부적절한 표현은 확인 대상입니다.",
             "teamAcronym": "TEAM ACRONYM",
-            "acronymLength": "2 - 4 characters. Profanity will be checked.",
+            "acronymLength": "2 ~ 4자 이내여야 합니다. 부적절한 표현은 확인 대상입니다.",
             "teamTimezone": "팀 시간대",
             "timezoneText": "당신의 팀이 선택한 시간대의 <span class='bold'>10:00부터 22:00</span> 사이에 플레이가 가능하다고 가정합니다.<span class='bold'>",
-            "teamAvatar": "TEAM AVATAR",
-            "upload": "UPLOAD",
-            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
-            "fileSizeError": "file size too big! please upload a smaller image",
-            "fileTypeError": "incorrect file type! please upload a .jpg or .png",
-            "preview": "PREVIEW",
-            "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
-            "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
-            "avatarInfo3": "All names and avatars will be approved by staff.",
-            "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
-            "teamManagement": "TEAM MANAGEMENT",
+            "teamAvatar": "팀 아바타",
+            "upload": "업로드",
+            "fileSizeLimit": "5mb 이하여야 하며 .JPG 혹은 .PNG만 가능합니다",
+            "fileSizeError": "파일의 크기가 너무 큽니다! 더 작은 크기의 이미지를 올려주세요",
+            "fileTypeError": "파일 확장자가 다릅니다! .jpg 혹은 .png 확장자만 업로드 해주세요",
+            "preview": "미리보기",
+            "avatarInfo1": "아바타에는 <span>3:1 비율</span>을 사용하는 것이 좋습니다",
+            "avatarInfo2": "캡틴은 등록 마감 전에 팀 이름과 아바타를 수정할 수 있습니다",
+            "avatarInfo3": "모든 이름과 아바타는 스태프가 확인하게 됩니다",
+            "avatarInfo4": "부적절하다고 판단되는 경우, 변경 요청을 통보받게 됩니다",
+            "teamManagement": "팀 관리",
             "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
             "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
             "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
