@@ -317,7 +317,7 @@
             },
             "hybrid": {
                 "name": "하이브리드",
-                "description": "롱놋과  적절한 조화를 이루어낸 최고의 비트맵"
+                "description": "롱놋과 적절한 조화를 이루어낸 최고의 비트맵"
             },
             "hybrid4K": {
                 "name": "Best 4K Hybrid",
@@ -647,9 +647,9 @@
             "avatarInfo3": "모든 이름과 아바타는 스태프가 확인하게 됩니다",
             "avatarInfo4": "부적절하다고 판단되는 경우, 변경 요청을 통보받게 됩니다",
             "teamManagement": "팀 관리",
-            "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
-            "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
-            "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
+            "teamManagers": "<div>팀 <span>매니저(즉, 귀하)</span>는 플레이하면서 캡틴의 역할을 수행할 수 있습니다.</div><div><span>또는</span> 팀과 함께 플레이 하지 않고 캡틴 역할만 수행이 가능합니다. </div>",
+            "teamManagersFree": "만약 플레이하지 않고 매니저만 희망하는 경우, 플레이어 슬롯에 <span>들어가지 않습니다</span>",
+            "selectManager": "팀과 함께 플레이하지 <span>않고</span>, <span>매니저</span> 역할만 할 경우에 이 체크란을 선택해 주세요",
             "confirmManager": "<div>이것을 체크함으로써 나는 팀 매니저로만 활동할 것이며</div> <div>어떤 경기에도 참여할 수 없음을 이해했습니다.</div>",
             "create": "팀 만들기"
         },
@@ -657,19 +657,19 @@
             "openCardTeam": {
                 "rank": "순위",
                 "teambwsAverage": "팀 평균 BWS순위",
-                "unregistered": "UNREGISTERED",
+                "unregistered": "등록되지 않음",
                 "bws": "BWS"
             },
-            "stageSelector": "STAGE SELECT"
+            "stageSelector": "라운드 선택"
         },
         "staff": {
-            "title": "STAFF",
-            "notLoggedIn": "NOT LOGGED IN"
+            "title": "스태프",
+            "notLoggedIn": "로그인하지 않았습니다"
         },
         "referee": {
-            "title": "REFEREE",
+            "title": "심판",
             "loadMore": "LOAD MORE",
-            "back": "BACK TO MATCHUP LIST",
+            "back": "매치업 목록으로 돌아가기",
             "createLobby": "로비 만들기",
             "roll": "롤 굴리기",
             "reroll": "다시 굴리기",
@@ -694,8 +694,8 @@
             "theTeam": "the corsace team"
         },
         "merch": {
-            "code": "Tap Trio - Corsace Bundle",
-            "products": "Limited quantity available"
+            "code": "Tap Trio - 코사스 번들",
+            "products": "수량이 한정되어 있습니다"
         }
     }
 }
