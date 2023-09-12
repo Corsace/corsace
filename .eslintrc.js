@@ -17,12 +17,19 @@ module.exports = {
     ],
     extends: [
         "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended-type-checked",
         "plugin:@typescript-eslint/stylistic-type-checked",
         "plugin:vue/recommended",
     ],
     rules: {
+        // TODO: Remove these rules when it's actually feasible
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-argument": "off",
+        // 
+        "@typescript-eslint/prefer-nullish-coalescing": "warn",
+        "@typescript-eslint/restrict-template-expressions": "off",
         "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-non-null-assertion": "off",

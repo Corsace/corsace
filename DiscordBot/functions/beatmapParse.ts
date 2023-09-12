@@ -105,7 +105,7 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
     const timingPoints = changedLines.map((line, i) => {
         return {
             bpm: 60000 / line.ms_per_beat,
-            length: (i < changedLines.length - 1) ? changedLines[i + 1].time - line.time : beatmap!.objects[beatmap!.objects.length - 1].time - line.time,
+            length: (i < changedLines.length - 1) ? changedLines[i + 1].time - line.time : beatmap.objects[beatmap.objects.length - 1].time - line.time,
         };
     });
     let bpm = 0;

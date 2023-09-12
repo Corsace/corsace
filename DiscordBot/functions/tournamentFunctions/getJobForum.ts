@@ -20,5 +20,5 @@ export default async function getJobForum (m: Message | ChatInputCommandInteract
         return;
     }
 
-    return thread as ForumChannel;
+    return thread ;
 }

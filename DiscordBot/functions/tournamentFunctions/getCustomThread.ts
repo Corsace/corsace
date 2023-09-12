@@ -27,7 +27,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
         if (!(mappoolChannel && mappoolChannel.type === ChannelType.GuildForum))
             return true;
     
-        const forumChannel = mappoolChannel as ForumChannel;
+        const forumChannel = mappoolChannel ;
         const ids = {
             stop: randomUUID(),
             create: randomUUID(),

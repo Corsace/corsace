@@ -43,7 +43,7 @@ interface parameterOptions {
     shortName?: string,
     optional?: boolean,
     customHandler?: customHandlerType,
-    postProcess?: (parameter: string) => { [key: string]: string | number | undefined } | undefined,
+    postProcess?: (parameter: string) => Record<string, string | number | undefined> | undefined,
 }
 
 const quotes = ["'", "\"", "`"];

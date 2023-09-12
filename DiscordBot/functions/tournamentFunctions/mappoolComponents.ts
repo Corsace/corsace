@@ -14,11 +14,11 @@ import { User } from "../../../Models/user";
 import { Stage } from "../../../Models/tournaments/stage";
 import { TournamentRoleType } from "../../../Interfaces/tournament";
 
-type optionalComponents = { stage?: Stage, staff?: User };
-type TournamentOnly = { tournament: Tournament };
-type TournamentAndMappool = { tournament: Tournament, mappool: Mappool };
-type TournamentMappoolAndSlotMod = { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot };
-type AllComponents = { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot, mappoolMap: MappoolMap, mappoolSlot: string };
+interface optionalComponents { stage?: Stage, staff?: User }
+interface TournamentOnly { tournament: Tournament }
+interface TournamentAndMappool { tournament: Tournament, mappool: Mappool }
+interface TournamentMappoolAndSlotMod { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot }
+interface AllComponents { tournament: Tournament, mappool: Mappool, slotMod: MappoolSlot, mappoolMap: MappoolMap, mappoolSlot: string }
 
 export type MappoolComponentsType = (TournamentOnly | TournamentAndMappool | TournamentMappoolAndSlotMod | AllComponents) & optionalComponents;
 

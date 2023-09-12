@@ -11,7 +11,7 @@ export default async function getStaff (m: Message | ChatInputCommandInteraction
     let discordUser: DiscordUser | GuildMember;
     if (m instanceof ChatInputCommandInteraction)
         discordUser = m.options.getUser("user")!;
-    else if (m.mentions.members && m.mentions.members.first())
+    else if (m.mentions.members?.first())
         discordUser = m.mentions.members.first()!;
     else {
         const members = await m.guild!.members.fetch({ query: target });

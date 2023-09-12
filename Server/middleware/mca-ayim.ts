@@ -12,7 +12,8 @@ async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void>
     const user: User = ctx.state.user;
     
     if (user.mcaEligibility.find(e => e.year === mca.year)) {
-        return await next();
+        await next();
+        return;
     }
     
     ctx.body = {

@@ -130,7 +130,7 @@ export default class DisplayLayout extends Vue {
         }
     }
 
-    handleScroll (event) {
+    handleScroll = (event) => {
         if (event.target) {
             this.scrollPos = event.target.scrollTop;
             this.scrollSize = event.target.scrollHeight - event.target.clientHeight; // U know... just in case the window size changes Lol
@@ -138,7 +138,7 @@ export default class DisplayLayout extends Vue {
             const diff = Math.abs(this.scrollSize - this.scrollPos);
             this.emit(diff <= 50);
         }
-    }
+    };
 
     emit (currentlyBottom: boolean): void {
         if (currentlyBottom !== this.bottom) {

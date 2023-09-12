@@ -1,9 +1,7 @@
 import { BanchoLobby } from "bancho.js";
 import { Matchup } from "../Models/tournaments/matchup";
 
-interface MatchupState {
-    [key: number]: MatchupList
-}
+type MatchupState = Record<number, MatchupList>;
 export interface MatchupList {
     matchup: Matchup;
     lobby: BanchoLobby;

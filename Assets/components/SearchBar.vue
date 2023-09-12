@@ -72,9 +72,9 @@ export default class SearchBar extends Vue {
         this.emitUpdate(text);
     }
 
-    emitUpdate (text) {
+    emitUpdate = (text) => {
         this.$emit("update:search", text);
-    }
+    };
 }
 </script>
 

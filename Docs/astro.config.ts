@@ -4,16 +4,14 @@ import { config } from "node-config-ts";
 import { readdirSync, readFileSync } from "fs";
 import { basename, extname, join } from "path";
 
-const locales: {
-    [dir: string]: {
+const locales: Record<string, {
         label: string;
         lang?: string;
-    }
-} = {
-    en: {
-        label: "English",
-    },
-};
+    }> = {
+        en: {
+            label: "English",
+        },
+    };
 
 const dir = "../Assets/lang/translated";
 const files = readdirSync(dir);

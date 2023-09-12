@@ -77,9 +77,7 @@ export const modAcronyms = {
 export const freemodRGB: [number, number, number] = [158, 216, 84];
 export const freemodButFreerRGB: [number, number, number] = [235, 235, 235];
 
-const modsRGB: {
-    [key: number]: [number, number, number];
-} = {
+const modsRGB: Record<number, [number, number, number]> = {
     0: [41, 168, 249],
     1: [242, 129, 65],
     2: [236, 255, 184],
@@ -165,9 +163,8 @@ export function modsToAcronym (mod?: ModsType): string {
     let text = "";
     for (const acronym in modAcronyms) {
         const modValue = modAcronyms[acronym];
-        if ((mod & modValue) !== 0) {
+        if ((mod & modValue) !== 0)
             text += acronym;
-        }
     }
     return text;
 }
@@ -175,11 +172,11 @@ export function modsToAcronym (mod?: ModsType): string {
 /**
  * Applies mod affects to different aspects of a beatmap (DOES NOT AFFECT SR!!!)
  * @param beatmap The beatmap to change aspects of
- * @param difficultyscaler HR or EZ (undefined if neither)
- * @param speedScaler DT/NC or HT (undefined if neither)
+ * @param mods A string consisting of mods as 2 letter acronyms
  * @returns The beatmap with mods applied
  */
 export function applyMods (beatmap: Beatmap, mods: string): Beatmap {
+    mods = mods.toLowerCase();
     if (mods.includes("HR")) {
         beatmap.diffSize = Math.min(10, beatmap.diffSize * 1.3);
         beatmap.diffApproach = Math.min(10, beatmap.diffApproach * 1.4);

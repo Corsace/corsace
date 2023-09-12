@@ -60,7 +60,7 @@ export default class GuestDifficultySubmission extends Vue {
     }
 
     get isUpdating (): boolean {
-        return (this.status || this.status === 0) ? true : false;
+        return (this.status || this.status === RequestStatus.Pending) ? true : false;
     }
 
     get wasAccepted (): boolean {

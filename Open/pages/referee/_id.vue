@@ -507,18 +507,18 @@ interface message {
     },
     head () {
         return {
-            title: this.$store.state["open"].title,
+            title: this.$store.state.open.title,
             meta: [
-                {hid: "description", name: "description", content: this.$store.state["open"].tournament.description},
+                {hid: "description", name: "description", content: this.$store.state.open.tournament.description},
 
-                {hid: "og:site_name", property: "og:site_name", content: this.$store.state["open"].title},
-                {hid: "og:title", property: "og:title", content: this.$store.state["open"].title},
+                {hid: "og:site_name", property: "og:site_name", content: this.$store.state.open.title},
+                {hid: "og:title", property: "og:title", content: this.$store.state.open.title},
                 {hid: "og:url", property: "og:url", content: `https://open.corsace.io${this.$route.path}`}, 
-                {hid: "og:description", property: "og:description", content: this.$store.state["open"].tournament.description},
+                {hid: "og:description", property: "og:description", content: this.$store.state.open.tournament.description},
                 {hid: "og:image",property: "og:image", content: require("../../../Assets/img/site/open/banner.png")},
                 
-                {name: "twitter:title", content: this.$store.state["open"].title},
-                {name: "twitter:description", content: this.$store.state["open"].tournament.description},
+                {name: "twitter:title", content: this.$store.state.open.title},
+                {name: "twitter:description", content: this.$store.state.open.tournament.description},
                 {name: "twitter:image", content: require("../../../Assets/img/site/open/banner.png")},
                 {name: "twitter:image:src", content: require("../../../Assets/img/site/open/banner.png")},
             ],
@@ -863,13 +863,13 @@ export default class Referee extends Vue {
     }
 
     getTeamName (team: Team | null | undefined) {
-        return team && team.name ? team.name : "TBD";
+        return team?.name ? team.name : "TBD";
     }
 
     getRollStatus (sets: MatchupSet[] | null | undefined, team: Team | null | undefined) {
-        if (!sets || !sets.length) return "";
+        if (!sets?.length) return "";
         const lastSet = sets[sets.length - 1];
-        if (!lastSet || !lastSet.first) return "";
+        if (!lastSet?.first) return "";
         return lastSet.first.ID === team?.ID ? "Roll won" : "Roll lost";
     }
 
@@ -942,7 +942,7 @@ export default class Referee extends Vue {
         }
     }
 
-    handleData (ctx: PublicationContext) {
+    handleData = (ctx: PublicationContext) => {
         console.log("publication", ctx.channel, ctx.data);
 
         if (!ctx.channel.startsWith("matchup:"))
@@ -1023,7 +1023,7 @@ export default class Referee extends Vue {
                 this.runningLobby = false;
                 break;
         }
-    }
+    };
 
     newSet () {
         if (!this.matchup?.sets)

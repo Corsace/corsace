@@ -48,7 +48,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const setMaps = sets.flatMap((set) => set.maps ?? []);
     const maps = setMaps.filter(map => map.status === MapStatus.Picked);
     const mapNames = maps
-        .map(map => `${map.map!.slot!.acronym}${map.map!.order}`)
+        .map(map => `${map.map.slot.acronym}${map.map.order}`)
         .filter((map, index, self) => self.indexOf(map) === index);
     const teams: Team[] = matchups
         .flatMap((matchup) => matchup.teams ?? [matchup.team1, matchup.team2])

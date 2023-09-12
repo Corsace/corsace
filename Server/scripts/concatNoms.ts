@@ -84,7 +84,7 @@ async function script () {
                     setID: nom.beatmapsetID ?? null,
                 })
                 .getRawMany()
-            ).filter(v => v.categoryID === cat.ID && v.nominator_ID != null ).map(v => v.nominator_ID);
+            ).filter(v => v.categoryID === cat.ID && v.nominator_ID != null).map(v => v.nominator_ID);
             // Check for validity conflicts, will decide on if a reviewer should still be assigned or not
             const conflict = dupeNoms.some(v => !v.isValid) && dupeNoms.some(v => v.isValid && v.reviewerID !== null);
             const reviewer = conflict ? null : dupeNoms.find(v => v.reviewerID !== null)?.reviewerID ?? null;

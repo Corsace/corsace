@@ -132,11 +132,11 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
                     return ctx.body = {
                         error: "Beatmapset exceeds maximum length requirement!", 
                     };
-                if (category.filter.minBPM && beatmapset.BPM < category.filter!.minBPM!)
+                if (category.filter.minBPM && beatmapset.BPM < category.filter.minBPM)
                     return ctx.body = {
                         error: "Beatmapset does not exceed minimum BPM requirement!", 
                     };
-                if (category.filter.maxBPM && beatmapset.BPM > category.filter!.maxBPM!)
+                if (category.filter.maxBPM && beatmapset.BPM > category.filter.maxBPM)
                     return ctx.body = {
                         error: "Beatmapset exceeds maximum BPM requirement!", 
                     };
@@ -178,27 +178,27 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
             }
             // Check if the category has filters since this is a beatmap search
             if (category.filter) {
-                if (category.filter.minLength && beatmap.hitLength < category.filter!.minLength!)
+                if (category.filter.minLength && beatmap.hitLength < category.filter.minLength)
                     return ctx.body = {
                         error: "Beatmap does not exceed minimum length requirement!", 
                     };
-                if (category.filter.maxLength && beatmap.hitLength > category.filter!.maxLength!)
+                if (category.filter.maxLength && beatmap.hitLength > category.filter.maxLength)
                     return ctx.body = {
                         error: "Beatmap exceeds maximum length requirement!", 
                     };
-                if (category.filter.minBPM && beatmap.beatmapset.BPM < category.filter!.minBPM!)
+                if (category.filter.minBPM && beatmap.beatmapset.BPM < category.filter.minBPM)
                     return ctx.body = {
                         error: "Beatmap does not exceed minimum BPM requirement!", 
                     };
-                if (category.filter.maxBPM && beatmap.beatmapset.BPM > category.filter!.maxBPM!)
+                if (category.filter.maxBPM && beatmap.beatmapset.BPM > category.filter.maxBPM)
                     return ctx.body = {
                         error: "Beatmap exceeds maximum BPM requirement!", 
                     };
-                if (category.filter.minSR && beatmap.totalSR < category.filter!.minSR!)
+                if (category.filter.minSR && beatmap.totalSR < category.filter.minSR)
                     return ctx.body = {
                         error: "Beatmap does not exceed minimum SR requirement!", 
                     };
-                if (category.filter.maxSR && beatmap.totalSR > category.filter!.maxSR!)
+                if (category.filter.maxSR && beatmap.totalSR > category.filter.maxSR)
                     return ctx.body = {
                         error: "Beatmap exceeds maximum SR requirement!", 
                     };

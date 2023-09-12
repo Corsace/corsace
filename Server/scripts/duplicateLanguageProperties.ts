@@ -36,7 +36,7 @@ function flattenObject (obj: LangData, prefix = ""): Record<string, string> {
 const flatLangData = flattenObject(langData);
   
 // Group strings by length
-const lenMap: { [key: number]: {key: string, val: string}[] } = {};
+const lenMap: Record<number, {key: string, val: string}[]> = {};
 for (const [k, v] of Object.entries(flatLangData)) {
     const len = v.length;
     if (!lenMap[len]) lenMap[len] = [];

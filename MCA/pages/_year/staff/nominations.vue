@@ -140,9 +140,9 @@ export default class Nominations extends Vue {
                         !nomination.beatmapset.artist.toLowerCase().includes(lowerText) &&
                         !nomination.beatmapset.title.toLowerCase().includes(lowerText) &&
                         !nomination.beatmapset.tags.toLowerCase().includes(lowerText) &&
-                        !nomination.beatmapset.creator!.osuUsername.toLowerCase().includes(lowerText) && 
-                        !nomination.beatmapset.creator!.osuID.includes(lowerText) &&
-                        !nomination.beatmapset.creator!.discordUsername.toLowerCase().includes(lowerText)
+                        !nomination.beatmapset.creator.osuUsername.toLowerCase().includes(lowerText) && 
+                        !nomination.beatmapset.creator.osuID.includes(lowerText) &&
+                        !nomination.beatmapset.creator.discordUsername.toLowerCase().includes(lowerText)
                     )
                         continue;
                 }

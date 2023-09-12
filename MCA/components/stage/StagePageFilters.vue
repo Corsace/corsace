@@ -156,9 +156,9 @@ export default class StagePageFilters extends Vue {
         this.emitUpdate(event);
     }
 
-    emitUpdate (query: Partial<StageQuery>) {
+    emitUpdate = (query: Partial<StageQuery>) => {
         this.updateQuery(query);
-    }
+    };
 
 }
 </script>

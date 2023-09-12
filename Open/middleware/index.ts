@@ -6,6 +6,6 @@ export default async function ({ store }: Context) {
 
     const date = new Date;
 
-    if (!store.state["open"].tournament || store.state["open"].tournament.year !== date.getUTCFullYear())
+    if (!store.state.open.tournament || store.state.open.tournament.year !== date.getUTCFullYear())
         await store.dispatch("open/setInitialData", date.getUTCFullYear());
 }

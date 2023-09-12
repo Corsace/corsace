@@ -20,7 +20,7 @@ export default async function mappoolLog (tournament: Tournament, command: strin
         return;
 
     const embed = new EmbedBuilder();
-    embed.setTitle(`\`${command}\` was run by ${user!.osu.username}`);
+    embed.setTitle(`\`${command}\` was run by ${user.osu.username}`);
 
     if (logOrEvent instanceof MappoolMapHistory) {
         const log = logOrEvent;

@@ -126,9 +126,9 @@ export default class Votes extends Vue {
                         !vote.beatmapset.artist.toLowerCase().includes(lowerText) &&
                         !vote.beatmapset.title.toLowerCase().includes(lowerText) &&
                         !vote.beatmapset.tags.toLowerCase().includes(lowerText) &&
-                        !vote.beatmapset.creator!.osuUsername.toLowerCase().includes(lowerText) && 
-                        !vote.beatmapset.creator!.osuID.includes(lowerText) &&
-                        !vote.beatmapset.creator!.discordUsername.toLowerCase().includes(lowerText)
+                        !vote.beatmapset.creator.osuUsername.toLowerCase().includes(lowerText) && 
+                        !vote.beatmapset.creator.osuID.includes(lowerText) &&
+                        !vote.beatmapset.creator.discordUsername.toLowerCase().includes(lowerText)
                     )
                         continue;
                 }

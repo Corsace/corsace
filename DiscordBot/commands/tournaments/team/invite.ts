@@ -40,7 +40,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .addSelect("user.osuUsername")
         .where("user.osuUsername LIKE :username", { username: `%${user}%` })
         .orWhere("user.osuUserID = :userID", { userID: user })
-        .getRawMany() as { user_ID: number, osuUsername: string }[];
+        .getRawMany() ;
 
     const baseUsers = users.map(u => {
         return {

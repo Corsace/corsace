@@ -8,7 +8,7 @@ export default async function ({ redirect, route, store }: Context) {
         key: route.query.key,
         stageID: route.query.stageID,
     });
-    if (!store.state["stream"].tournamentID)
+    if (!store.state.stream.tournamentID)
         return redirect("/");
 
     return;

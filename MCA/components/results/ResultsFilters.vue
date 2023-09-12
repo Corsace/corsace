@@ -68,7 +68,7 @@ export default class ResultsFilters extends Vue {
     }
 
     // track current index of arrays selected by dropdowns
-    activeCategoryType = <CategoryType> 0;
+    activeCategoryType = 0 as CategoryType;
     activeCategory = 0;
 
     // dropdown lists
@@ -83,7 +83,7 @@ export default class ResultsFilters extends Vue {
 
     // change category index on dropdown selection
     changeCategoryType (newCategoryType: number) {
-        this.activeCategoryType = <CategoryType> newCategoryType;
+        this.activeCategoryType = newCategoryType as CategoryType;
         this.changeCategory(0);
     }
 
@@ -118,13 +118,13 @@ export default class ResultsFilters extends Vue {
     get catTypeDropStyle () {
         return {
             "margin-left": this.catTypeStyle["margin-left"],
-            "width": this.catTypeStyle["width"],
+            "width": this.catTypeStyle.width,
         };
     }
 
     get catDropStyle () {
         return {
-            "width": this.catStyle["width"],
+            "width": this.catStyle.width,
         };
     }
 }

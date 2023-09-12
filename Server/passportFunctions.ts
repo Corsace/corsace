@@ -117,8 +117,9 @@ export async function osuPassport (accessToken: string, refreshToken: string, pr
         user.osu.lastVerified = user.lastLogin = new Date;
 
         done(null, user);
-    } catch (error: any) {
+    } catch (error) {
         console.log("Error while authenticating user via osu!", error);
-        done(error, undefined);
+        if (error instanceof Error || !error)
+            done(error as Error | null | undefined, undefined);
     }
 }

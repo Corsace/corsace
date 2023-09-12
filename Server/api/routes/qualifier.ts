@@ -97,11 +97,11 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
                     teamID: team.ID,
                     teamName: team.name,
                     teamAvatar: team.avatarURL,
-                    username: score.user!.osu.username,
-                    userID: parseInt(score.user!.osu.userID),
+                    username: score.user.osu.username,
+                    userID: parseInt(score.user.osu.userID),
                     score: score.score,
-                    map: `${matchupMap.map!.slot!.acronym}${matchupMap.map!.order}`,
-                    mapID: parseInt(`${matchupMap.map!.slot.ID}${matchupMap.map!.order}`),
+                    map: `${matchupMap.map.slot.acronym}${matchupMap.map.order}`,
+                    mapID: parseInt(`${matchupMap.map.slot.ID}${matchupMap.map.order}`),
                 });
             }
         }

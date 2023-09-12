@@ -139,11 +139,11 @@ export default class Results extends Vue {
         }
     }
 
-    handleWindowResize () {
+    handleWindowResize = () => {
         if (process.client) {
             this.windowWidth = window.innerWidth;
         }
-    }
+    };
 
 }
 </script>

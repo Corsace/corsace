@@ -49,11 +49,11 @@ export default function mcaSearch (stage: "nominating" | "voting", initialCall: 
             objects = objects.filter(o => o.category.ID === category.ID);
 
             if (category.type == CategoryType.Beatmapsets && ctx.state.year < 2021)
-                setList = objects.map(o => o.beatmapset?.getInfo(true) as BeatmapsetInfo);  
+                setList = objects.map(o => o.beatmapset?.getInfo(true)!);  
             else if (category.type == CategoryType.Beatmapsets && ctx.state.year >= 2021)
-                mapList = objects.map(o => o.beatmap?.getInfo(true) as BeatmapInfo);
+                mapList = objects.map(o => o.beatmap?.getInfo(true)!);
             else if (category.type == CategoryType.Users)
-                userList = objects.map(o => o.user?.getCondensedInfo(true) as UserChoiceInfo);
+                userList = objects.map(o => o.user?.getCondensedInfo(true)!);
         }
         
         if ((ctx.query.favourites === "true" || ctx.query.played === "true") && category.type == CategoryType.Beatmapsets) {

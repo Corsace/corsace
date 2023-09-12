@@ -22,7 +22,9 @@ import { unallowedToPlay, TournamentRoleType } from "../../../../Interfaces/tour
 const teamRouter = new Router();
 
 teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
-    const teamIDs = await Team
+    const teamIDs: {
+        ID: number;
+    }[] = await Team
         .createQueryBuilder("team")
         .leftJoin("team.manager", "manager")
         .leftJoin("team.members", "member")

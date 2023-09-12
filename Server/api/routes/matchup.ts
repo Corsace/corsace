@@ -108,10 +108,10 @@ async function updateMatchup (matchupID: number) {
         matchup.sets!.forEach(async set => {
             set.maps!.forEach(async map => {
                 map.team1Score = map.scores
-                    .filter(score => matchup.team1!.members.some(member => member.ID === score.user!.ID))
+                    .filter(score => matchup.team1!.members.some(member => member.ID === score.user.ID))
                     .reduce((acc, score) => acc + score.score, 0);
                 map.team2Score = map.scores
-                    .filter(score => matchup.team2!.members.some(member => member.ID === score.user!.ID))
+                    .filter(score => matchup.team2!.members.some(member => member.ID === score.user.ID))
                     .reduce((acc, score) => acc + score.score, 0);
 
                 if (map.team1Score > map.team2Score)
@@ -756,10 +756,10 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
         });
         if (matchup.stage!.stageType !== StageType.Qualifiers) {
             map.team1Score = map.scores
-                .filter(score => matchup.team1!.members.some(member => member.osu.userID === score.user!.osu.userID))
+                .filter(score => matchup.team1!.members.some(member => member.osu.userID === score.user.osu.userID))
                 .reduce((acc, score) => acc + score.score, 0);
             map.team2Score = map.scores
-                .filter(score => matchup.team2!.members.some(member => member.osu.userID === score.user!.osu.userID))
+                .filter(score => matchup.team2!.members.some(member => member.osu.userID === score.user.osu.userID))
                 .reduce((acc, score) => acc + score.score, 0);
             map.winner = map.team1Score > map.team2Score ? matchup.team1 : map.team2Score > map.team1Score ? matchup.team2 : undefined;
         }
@@ -927,10 +927,10 @@ matchupRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
     if (matchup.stage!.stageType !== StageType.Qualifiers) {
         map.scores.push(matchupScore);
         map.team1Score = map.scores
-            .filter(score => matchup.team1!.members.some(member => member.ID === score.user!.ID))
+            .filter(score => matchup.team1!.members.some(member => member.ID === score.user.ID))
             .reduce((acc, score) => acc + score.score, 0);
         map.team2Score = map.scores
-            .filter(score => matchup.team2!.members.some(member => member.ID === score.user!.ID))
+            .filter(score => matchup.team2!.members.some(member => member.ID === score.user.ID))
             .reduce((acc, score) => acc + score.score, 0);
         if (map.team1Score > map.team2Score)
             map.winner = matchup.team1;
@@ -939,10 +939,10 @@ matchupRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
         await map.save();
 
         const i = matchup.sets!.findIndex(m => m.ID === set.ID);
-        const j = matchup.sets![i!].maps!.findIndex(m => m.ID === map.ID);
-        matchup.sets![i!].maps![j!] = map;
-        matchup.sets![i!].team1Score = matchup.sets![i!].maps!.filter(map => map.team1Score && map.team2Score ? map.team1Score > map.team2Score : false).length;
-        matchup.sets![i!].team2Score = matchup.sets![i!].maps!.filter(map => map.team1Score && map.team2Score ? map.team2Score > map.team1Score : false).length;
+        const j = matchup.sets![i].maps!.findIndex(m => m.ID === map.ID);
+        matchup.sets![i].maps![j] = map;
+        matchup.sets![i].team1Score = matchup.sets![i].maps!.filter(map => map.team1Score && map.team2Score ? map.team1Score > map.team2Score : false).length;
+        matchup.sets![i].team2Score = matchup.sets![i].maps!.filter(map => map.team1Score && map.team2Score ? map.team2Score > map.team1Score : false).length;
         matchup.team1Score = matchup.sets!.filter(set => set.team1Score && set.team2Score ? set.team1Score > set.team2Score : false).length;
         matchup.team2Score = matchup.sets!.filter(set => set.team1Score && set.team2Score ? set.team2Score > set.team1Score : false).length;
         if (matchup.team1Score > matchup.team2Score)
@@ -983,7 +983,7 @@ matchupRouter.delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (ctx
 
     await score.remove();
 
-    await updateMatchup(score.map!.set!.matchup!.ID);
+    await updateMatchup(score.map.set.matchup!.ID);
     
     ctx.body = {
         success: true,
@@ -1016,7 +1016,7 @@ matchupRouter.delete("/map/:mapID", isLoggedInDiscord, isCorsace, async (ctx) =>
     await Promise.all(map.scores.map(score => score.remove()));
     await map.remove();
     
-    await updateMatchup(map.set!.matchup!.ID);
+    await updateMatchup(map.set.matchup!.ID);
 
     ctx.body = {
         success: true,

@@ -128,8 +128,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .leftJoinAndSelect("maps.testplayers", "testplayer")
         .where("tournament.ID = :tournament")
         .andWhere(targetUser ? new Brackets(qb => {
-            qb.where(`customMapper.ID = ${targetUser!.ID}`)
-                .orWhere(`testplayer.ID = ${targetUser!.ID}`);
+            qb.where(`customMapper.ID = ${targetUser.ID}`)
+                .orWhere(`testplayer.ID = ${targetUser.ID}`);
         }) : "1 = 1")
         .andWhere(pool ? new Brackets(qb => {
             qb.where("mappool.name LIKE :criteria")

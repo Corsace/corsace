@@ -7,7 +7,7 @@ const bots = {
 };
 
 export default async function getUserInMatchup (users: User[], message: BanchoMessage): Promise<User> {
-    if (!message.user || !message.user.id) {
+    if (!message.user?.id) {
         const id = bots[message.user?.ircUsername || "BanchoBot"];
         const botUser = users.find(user => user.osu.userID === id);
         if (botUser)
@@ -22,7 +22,7 @@ export default async function getUserInMatchup (users: User[], message: BanchoMe
         return users.find(user => user.osu.userID === "3")!;
     }
 
-    const user = users.find(user => user.osu.userID === message.user!.id.toString());
+    const user = users.find(user => user.osu.userID === message.user.id.toString());
     if (user)
         return user;
 

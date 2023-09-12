@@ -89,7 +89,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (isReferee(staffType as referee) && !await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Referees]))
         return;
 
-    const staffProperty = getStaffProperty(staffType as staffType);
+    const staffProperty = getStaffProperty(staffType );
 
     const matchup = await Matchup
         .createQueryBuilder("matchup")

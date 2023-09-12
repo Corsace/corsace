@@ -128,7 +128,7 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
         stop: randomUUID(),
         confirm: randomUUID(),
     };
-    const nameMessage = await m.channel!.send({
+    const nameMessage = await m.channel.send({
         content,
         components: [
             new ActionRowBuilder<ButtonBuilder>()
@@ -146,8 +146,8 @@ async function mappoolName (m: Message, mappool: Mappool, tournament: Tournament
     });
 
     let stopped = false;
-    const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });
-    const mappoolNameCollector = m.channel!.createMessageCollector({ filter, time: 6000000 });
+    const componentCollector = m.channel.createMessageComponentCollector({ filter, time: 6000000 });
+    const mappoolNameCollector = m.channel.createMessageCollector({ filter, time: 6000000 });
 
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {	
         if (i.customId === ids.stop) {
@@ -233,7 +233,7 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
         stop: randomUUID(),
         done: randomUUID(),
     };
-    const slotMessage = await m.channel!.send({
+    const slotMessage = await m.channel.send({
         content,
         components: [
             new ActionRowBuilder<ButtonBuilder>()
@@ -251,8 +251,8 @@ async function mappoolSlots (m: Message, mappool: Mappool, tournament: Tournamen
     });
 
     let stopped = false;
-    const componentCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });
-    const slotNameCollector = m.channel!.createMessageCollector({ filter, time: 6000000 });
+    const componentCollector = m.channel.createMessageComponentCollector({ filter, time: 6000000 });
+    const slotNameCollector = m.channel.createMessageCollector({ filter, time: 6000000 });
     
     componentCollector.on("collect", async (i: MessageComponentInteraction) => {	
         if (i.customId === ids.stop) {
@@ -443,7 +443,7 @@ async function mappoolDone (m: Message, mappool: Mappool, tournament: Tournament
             }));
 
     await Promise.all([
-        m.channel!.send({ embeds: [embed] }),
+        m.channel.send({ embeds: [embed] }),
         mappoolLog(tournament, "mappoolCreate", mappool.createdBy, `Created mappool ${mappool.name} (${mappool.abbreviation.toUpperCase()})`),
     ]);
 }

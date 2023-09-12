@@ -318,7 +318,7 @@ export default class Match extends Vue {
         this.loading = false;
     }
 
-    handleData (ctx: PublicationContext) {
+    handleData = (ctx: PublicationContext) => {
         console.log("publication", ctx);
 
         if (!ctx.channel.startsWith("matchup:"))
@@ -342,7 +342,7 @@ export default class Match extends Vue {
                 this.matchup.team2Score = ctx.data.team2Score;
                 break;
         }
-    }
+    };
 }
 </script>
 

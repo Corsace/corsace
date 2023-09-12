@@ -191,7 +191,7 @@ const getMCAEligibility = memoizee(async function(year: number, user: User) {
 
 
 type BeatmapsetID = number;
-export type BNEvent = {
+export interface BNEvent {
     type: "nominate" | "qualify" | "disqualify" | "nomination_reset" | "rank";
     userId: number;
 }
@@ -226,7 +226,7 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
         beatmap = new Beatmap;
 
     beatmap.ID = apiBeatmap.id;
-    beatmap.mode = await getModeDivison(apiBeatmap.mode as number);
+    beatmap.mode = await getModeDivison(apiBeatmap.mode!);
     beatmap.difficulty = apiBeatmap.version;
     beatmap.circleSize = apiBeatmap.CS;
     beatmap.approachRate = apiBeatmap.AR;
@@ -252,8 +252,8 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
 
     if (!isPossessive(beatmap.difficulty) && !isNaN(apiBeatmap.approvedDate.getUTCFullYear())) {
         const eligibility = await getMCAEligibility(apiBeatmap.approvedDate.getUTCFullYear(), beatmap.beatmapset.creator);
-        if (!eligibility[modeList[apiBeatmap.mode as number]]) {
-            eligibility[modeList[apiBeatmap.mode as number]] = true;
+        if (!eligibility[modeList[apiBeatmap.mode!]]) {
+            eligibility[modeList[apiBeatmap.mode!]] = true;
             eligibility.storyboard = true;
             await eligibility.save();
         }

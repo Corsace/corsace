@@ -7,7 +7,7 @@ import mappoolComponentsThread from "../functions/tournamentFunctions/mappoolCom
 export default async function threadDelete (t: ThreadChannel) {
     const logs = await t.guild.fetchAuditLogs({ type: AuditLogEvent.ThreadDelete });
     const log = logs.entries.first();
-    if (!log || !log.executor || !log.executorId || log.executorId === discordClient.user!.id)
+    if (!log?.executor || !log.executorId || log.executorId === discordClient.user!.id)
         return;
 
     if (!t.parentId)

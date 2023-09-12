@@ -18,7 +18,7 @@ export default async function getBeatmap (apiBeatmap: APIBeatmap | number, save:
     if (!save)
         return;
 
-    const mode = await getModeDivison(targetBeatmap.mode as number, save);
+    const mode = await getModeDivison(targetBeatmap.mode!, save);
     if (!mode)
         return;
 
@@ -53,8 +53,8 @@ export default async function getBeatmap (apiBeatmap: APIBeatmap | number, save:
 
     if (!isPossessive(beatmap.difficulty)) {
         const eligibility = await getMCAEligibility(targetBeatmap, beatmap.beatmapset.creator, save);
-        if (eligibility && !eligibility[modeList[targetBeatmap.mode as number]]) {
-            eligibility[modeList[targetBeatmap.mode as number]] = true;
+        if (eligibility && !eligibility[modeList[targetBeatmap.mode!]]) {
+            eligibility[modeList[targetBeatmap.mode!]] = true;
             eligibility.storyboard = true;
             await eligibility.save();
         }

@@ -130,9 +130,9 @@ export default class StaffVoteAccordion extends Vue {
     getVoteName (vote: StaffVote) {
         if (vote.beatmapset) {
             if (vote.beatmap)
-                return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator!.osuUsername} [${vote.beatmap.difficulty}]`;
+                return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator.osuUsername} [${vote.beatmap.difficulty}]`;
             else
-                return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator!.osuUsername}`;
+                return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator.osuUsername}`;
         }
 
         return `${vote.user?.osuUsername}`;

@@ -23,7 +23,7 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
         await respond(m, `**${mappool.name}** doesnt have all finished beatmaps yet, which are ${maps.join(", ")}, remember to run !pfinish or /mappool_finish for them`);
         return;
     }
-    const filteredMaps = mappoolMaps.filter(m => (m.customBeatmap && m.customBeatmap.link) || m.beatmap);
+    const filteredMaps = mappoolMaps.filter(m => (m.customBeatmap?.link) || m.beatmap);
     if (filteredMaps.length === 0) {
         await respond(m, `**${mappool.name}** doesn't have any downloadable beatmaps`);
         return;
@@ -58,7 +58,7 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
             zipStream = download(link);
         else {
             const names = updatedMaps.map(m => m.beatmap ? `${m.beatmap.beatmapset.ID} ${m.beatmap.beatmapset.artist} - ${m.beatmap.beatmapset.title}.osz` : `${m.customBeatmap!.ID} ${m.customBeatmap!.artist} - ${m.customBeatmap!.title}.osz`);
-            const dlLinks = updatedMaps.map(m => m.beatmap ? `https://osu.direct/api/d/${m.beatmap!.beatmapsetID}${video ? "" : "n"}` : m.customBeatmap?.link ?? ``).filter(l => l !== ``);
+            const dlLinks = updatedMaps.map(m => m.beatmap ? `https://osu.direct/api/d/${m.beatmap.beatmapsetID}${video ? "" : "n"}` : m.customBeatmap?.link ?? ``).filter(l => l !== ``);
             const streams = dlLinks.map(link => download(link));
             zipStream = zipFiles(streams.map((d, i) => ({ content: d, name: names[i] })));
         }
