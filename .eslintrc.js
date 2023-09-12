@@ -4,6 +4,12 @@ module.exports = {
         browser: true,
         node: true,
     },
+    overrides: [
+        {
+            extends: ['plugin:@typescript-eslint/disable-type-checked'],
+            files: ['./config/Config.d.ts', './*/config/Config.d.ts'],
+        },
+    ],
     parser: "vue-eslint-parser",
     parserOptions: {
         parser: "@typescript-eslint/parser",
