@@ -85,7 +85,7 @@
             "mapperAges": "매퍼 계정 나이",
             "mapsPerMapperAges": "매퍼 계정 나이 별 맵 개수",
             "bng": "BNG",
-            "nat": "NAT",
+            "nat": "노미네이션 어세스먼트 팀",
             "uniqueMappers": "전체 매퍼 수",
             "newMappers": "신인 매퍼 수",
             "highestAvgSr": "최고 평균 스타레이팅",
@@ -144,7 +144,7 @@
                 "2022": "We are back for another installment of Mapper's Choice Awards! (This time almost on schedule!)<br>This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!"
             },
             "categories": {
-                "index": "categories",
+                "index": "카테고리",
                 "map": "맵 카테고리",
                 "user": "매퍼 카테고리"
             },
@@ -396,12 +396,12 @@
                 "asc": "오름차순",
                 "desc": "내림차순",
                 "voteOrder": "투표 순서",
-                "valid": "VALID",
-                "invalid": "INVALID",
+                "valid": "유효한",
+                "invalid": "유효하지 않은",
                 "both": "BOTH",
                 "all": "ALL",
                 "played": "PLAYED",
-                "results": "RESULTS",
+                "results": "결과",
                 "voters": "VOTERS"
             },
             "votingOverlay": "안녕하세요! 투표 페이지에는 처음이신 것 같네요. <br> MCA 투표는 <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>선호투표제</a>를 채용합니다! <br> 이는 즉 투표 개수에 제한 없이 여러분이 원하는 만큼 투표할 수 있다는 뜻이죠! <br> 모든 투표는 순위를 가지게 되며, <span class='notice-modal--bold'>첫 투표가 가장 높은 순위를 차지합니다!</span> <br> 투표에 신중한 선택 부탁드리며 MCA [YEAR] 결과를 기대해 봅니다!",
@@ -433,9 +433,9 @@
             "mappool": "맵풀",
             "staff": "스태프",
             "createTeam": "팀 만들기",
-            "invitations": "받은 초대",
+            "invitations": "초대장",
             "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
-            "teamInvites": "팀 초대",
+            "teamInvites": "받은 팀 초대",
             "noInvites": "받은 초대가 없습니다"
         },
         "footer": {
@@ -460,8 +460,8 @@
             }
         },
         "home": {
-            "description": "세계 최고의 osu! 플레이어들이 배틀하는 코사스 오픈 2023에 빠져보세요!",
-            "timeline": "일정",
+            "description": "세계 최고의 Osu! 플레이어들이 배틀하는 코사스 오픈 2023에 빠져보세요!",
+            "timeline": "타임라인",
             "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
             "registrations": "등록 기간",
             "button": {
