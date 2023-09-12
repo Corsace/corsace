@@ -129,7 +129,7 @@
             "stage": {
                 "voting": "투표 기간",
                 "nominating": "추천 기간",
-                "preparation": "preparation stage",
+                "preparation": "준비 기간",
                 "stage": "stage"
             },
             "rankedSets": "랭크맵 수",
@@ -481,7 +481,7 @@
                 "maxPlayers": "최대 플레이어",
                 "pickTimer": "맵 선택 타이머",
                 "readyTimer": "준비 타이머",
-                "order": "ORDER",
+                "order": "스테이지 순번",
                 "scoringMethod": "점수 집계 방식",
                 "type": "경기 유형",
                 "startDate": "시작 일자",
@@ -491,11 +491,11 @@
                 "finalSize": "FINAL SIZE"
             },
             "headings": {
-                "mappools": "맵풀",
-                "stage": "STAGE"
+                "mappools": "맵풀 목록",
+                "stage": "스테이지"
             },
             "status": {
-                "notStarted": "NOT STARTED",
+                "notStarted": "시작하지 않았음",
                 "complete": "완료됨",
                 "ongoing": "진행중"
             },
@@ -508,11 +508,11 @@
             "prizes": "상품",
             "donateToCorsace": "코사스에 후원하기",
             "supportViaSponsorship": "MOMOKAI SPONSORSHIP을 통한 지원",
-            "generalInfo": "GENERAL INFORMATION",
+            "generalInfo": "기본 정보",
             "teamStructure": "팀 구성",
             "qualifiersProcedures": "퀄리파이어 규칙",
             "tournamentStructure": "토너먼트 구성",
-            "infoGraphic": "INFOGRAPHIC",
+            "infoGraphic": "인포그래픽",
             "matchProcedures": "경기 규칙",
             "reportTournament": "토너먼트 신고하기",
             "subjectToChange": "모든 규칙은 설명 혹은 조정을 위해 변경될 수 있습니다."
@@ -535,14 +535,14 @@
             "scores": {
                 "nav": {
                     "sort": "정렬",
-                    "average": "평균",
+                    "average": "평균 점수",
                     "sum": "SUM",
                     "percentAvg": "%AVG",
                     "relAvg": "REL. AVG",
                     "percentMax": "%MAX",
                     "relMax": "REL. MAX",
                     "zScore": "Z-SCORE",
-                    "placement": "등수",
+                    "placement": "순위",
                     "player": "플레이어",
                     "team": "소속 팀",
                     "best": "최고 퍼포먼스",
@@ -660,7 +660,7 @@
                 "unregistered": "등록되지 않음",
                 "bws": "BWS"
             },
-            "stageSelector": "라운드 선택"
+            "stageSelector": "스테이지 선택"
         },
         "staff": {
             "title": "스태프",
