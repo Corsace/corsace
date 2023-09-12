@@ -2,12 +2,8 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "outDir": "./dist",
-        "sourceMap": true,
     },
     "files": [
         "index.ts"
-    ],
-    "include": [
-        "../config/Config.d.ts"
     ],
 }

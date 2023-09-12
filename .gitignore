@@ -6,6 +6,5 @@ Build/
 tmp/
 temp/
 dist/
-*.js
 !.eslintrc.js
 centrifugo

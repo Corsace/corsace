@@ -2,17 +2,9 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "outDir": "./dist",
-        "sourceMap": true,
     },
     "files": [
         "index.ts",
         "cron-runner.ts"
     ],
-    "include": [
-        "../config/Config.d.ts",
-        "../Typing/passport.d.ts"
-    ],
-    "ts-node": {
-        "files": true
-    }
 }

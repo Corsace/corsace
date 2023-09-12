@@ -7,6 +7,9 @@ module.exports = {
     parser: "vue-eslint-parser",
     parserOptions: {
         parser: "@typescript-eslint/parser",
+        sourceType: "module",
+        project: "./tsconfig.json",
+        extraFileExtensions: [ ".vue" ],
     },
     plugins: [
         "@typescript-eslint",
@@ -15,10 +18,12 @@ module.exports = {
     extends: [
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-type-checked",
+        "plugin:@typescript-eslint/stylistic-type-checked",
         "plugin:vue/recommended",
     ],
     rules: {
+        "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/explicit-function-return-type": "off",

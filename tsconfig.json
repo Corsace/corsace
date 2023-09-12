@@ -1,15 +1,14 @@
 {
     "compilerOptions": {
-        "target": "ES2022",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "outDir": "Build",
+        "target": "ESNext",
+        "module": "CommonJS",
+        "moduleResolution": "Node",
         "emitDecoratorMetadata": true,
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "resolveJsonModule": true,
         "strict": true,
-        "noImplicitAny": false,
+        "noImplicitAny": true,
         "types": [
             "@types/node",
             "@nuxt/types",
@@ -23,7 +22,4 @@
         ],
         "sourceMap": true,
     },
-    "include": [
-        "./config/Config.d.ts"
-    ],
 }
