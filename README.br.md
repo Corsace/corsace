@@ -1,23 +1,23 @@
-[![Crowdin](https://badges.crowdin.net/corsace/localized.svg)](https://translate.corsace.io) If you wish to translate, you can do so [here](https://translate.corsace.io)
+[![Crowdin](https://badges.crowdin.net/corsace/localized.svg)](https://translate.corsace.io) Se você deseja ajudar em traduções futuras, você pode fazer isso [aqui](https://translate.corsace.io)
 
-To clone the repository:
+Para clonar esse repositório:
 
 | OS       | Cmd                                                                |
 | -------- | ------------------------------------------------------------------ |
 | WSL/Unix | git clone https://github.com/Corsace/Corsace                       |
 | Windows* | git clone -c core.symlinks=true https://github.com/Corsace/Corsace |
 
-*Use admin privileges in your console when running the command.
+*Use privilégios de administrador quando for rodar esse comando no seu console.
 
-## Initial Setup
+## Configuração Inicial
 
-Install node-modules:
+Instalando os módulos do Node:
 ```
 npm i
 ```
-**Note: Please ensure that your node version is 16.6.0 or higher in order to use any of the discord features in this repository.**
+**Nota: Certifique-se que sua versão do node é a 16.6.0 ou superior para poder usar qualquer uma das funcionalidades do Discord neste repositório.**
 
-Duplicate `config/default.json` to `config/user/$USER.json`, `$USER` being your system username [(accessible via node's process.env.USER or USERNAME)](https://github.com/tusharmath/node-config-ts#using-files). The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
+Duplique `config/default.json` para `config/user/$USER.json`, onde `$USER` é o nome de usuário do seu sistema [ (acessível através process.env.USER ou USERNAME do node)](https://github.com/tusharmath/node-config-ts#using-files). The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
 
 ### osu! API
 
