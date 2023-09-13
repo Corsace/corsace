@@ -13,6 +13,6 @@ export default async function interactionCreate (interaction: Interaction) {
     try {
         await command.run(interaction);
     } catch (e) {
-        errorHandler(e, interaction);
+        await errorHandler(e, interaction);
     }
 }

@@ -55,10 +55,10 @@ export const actions: ActionTree<BaseState, BaseState> = {
             commit("setLoggedInUser", data);
         }
     },
-    async setViewTheme ({ commit }, defaultTheme: "light" | "dark") {
+    setViewTheme ({ commit }, defaultTheme: "light" | "dark") {
         commit("setViewTheme", defaultTheme);
     },
-    async updateViewTheme ({ commit }, theme) {
+    updateViewTheme ({ commit }, theme) {
         commit("updateViewTheme", theme);
     },
     async setInitialData ({ commit, dispatch }, site) {

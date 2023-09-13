@@ -32,7 +32,7 @@ export async function uploadTeamAvatar (team: Team, filepath: string) {
     const imgBuffer = await image.getBufferAsync(image.getMIME());
 
     await buckets.teamAvatars.putObject(s3Key, imgBuffer, image.getMIME());
-    const url = await buckets.teamAvatars.getPublicUrl(s3Key);
+    const url = buckets.teamAvatars.getPublicUrl(s3Key);
     return url;
 }
 

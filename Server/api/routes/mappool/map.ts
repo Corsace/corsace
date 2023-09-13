@@ -8,7 +8,7 @@ import { osuClient } from "../../../osu";
 
 const mappoolMapRouter = new Router();
 
-mappoolMapRouter.get("/", async (ctx) => {
+mappoolMapRouter.get("/", (ctx) => {
     ctx.body = {
         success: true,
     };

@@ -33,7 +33,7 @@ interface SubscribeRequest {
 
 const channelTypes = [ "matchup" ];
 
-async function getChannel (channelType: string, channelID: number): Promise<any | null> {
+async function getChannel (channelType: string, channelID: number): Promise<any> {
     if (!channelTypes.includes(channelType))
         return null;
 
@@ -49,11 +49,11 @@ async function getChannel (channelType: string, channelID: number): Promise<any 
     return `${channelType}:${channelID}`;
 }
 
-centrifugoRouter.get("/publicUrl", async (ctx) => {
+centrifugoRouter.get("/publicUrl", (ctx) => {
     ctx.body = config.centrifugo.publicUrl;
 });
 
-centrifugoRouter.post("/connect", ipWhitelist, async (ctx) => {
+centrifugoRouter.post("/connect", ipWhitelist, (ctx) => {
     if (ctx.state?.user?.ID) {
         ctx.body = {
             result: {

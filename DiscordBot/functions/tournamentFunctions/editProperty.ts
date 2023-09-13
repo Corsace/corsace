@@ -43,7 +43,7 @@ export default async function editProperty (m: Message, property: string, entity
             }
         });
 
-        idCollector.on("collect", async (msg: Message) => {
+        idCollector.on("collect", (msg: Message) => {
             resolve(msg.content);
             confirmationCollector.stop();
             idCollector.stop();

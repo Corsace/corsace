@@ -17,7 +17,7 @@ export default async function getStaff (m: Message | ChatInputCommandInteraction
         const members = await m.guild!.members.fetch({ query: target });
         const member = members.first();
         if (!member) {
-            m.reply(`Can't find user \`${target}\` in the server. Contact VINXIS if the problem persists`);
+            await m.reply(`Can't find user \`${target}\` in the server. Contact VINXIS if the problem persists`);
             return;
         }
         discordUser = member;

@@ -77,10 +77,10 @@ export default class Stage extends Vue {
     @mcaAyimModule.Getter phase!: MCAPhase | null;
     @mcaAyimModule.Mutation toggleGuestDifficultyModal;
     
-    mounted () {
+    async mounted () {
         
         if (!this.loggedInMCAUser || !this.loggedInMCAUser.eligibility.some(eligibility => eligibility.year == parseInt(this.$route.params.year)))
-            this.$router.push("/" + this.$route.params.year);
+            await this.$router.push("/" + this.$route.params.year);
     }
 
     get remainingDays (): string {
@@ -96,8 +96,8 @@ export default class Stage extends Vue {
         return this.phase?.phase && (((this.phase.phase === "nominating" || this.phase.phase === "voting") && this.phase.phase === this.$route.params.stage) || (this.mca && this.mca[this.$route.params.stage === "nominating" ? "nomination" : this.$route.params.stage].start <= new Date()));
     }
 
-    goBack () {
-        this.$router.push("/" + this.$route.params.year);
+    async goBack () {
+        await this.$router.push("/" + this.$route.params.year);
     }
 }
 </script>

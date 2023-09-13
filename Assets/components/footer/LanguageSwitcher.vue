@@ -61,8 +61,8 @@ export default class LanguagueSwitcher extends Vue {
         return null;
     }
 
-    switchLocale (localeCode: string): void {
-        this.$i18n.setLocale(localeCode);
+    async switchLocale (localeCode: string) {
+        await this.$i18n.setLocale(localeCode);
         this.showDropdown = false;
     }
         

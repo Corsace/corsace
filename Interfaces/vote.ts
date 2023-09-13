@@ -130,29 +130,27 @@ export function voteCounter (votes: UserVote[], year: number): ResultVote[] {
     for (;;) {
         // Check if last used vote is still in race, add the next best unused vote otherwise
         for (;;) {
-            for (let i = 0; i < votes.length; i++) {
-                const voter = votes[i];
-                for (let j = 0; j < voter.votes.length; j++) {
-                    const vote = voter.votes[j];
-                    if (!vote.inRace) continue;
+            for (const userVote of votes) {
+                for (const resultVote of userVote.votes) {
+                    if (!resultVote.inRace) continue;
 
-                    const k = candidates.findIndex(candidate => vote.beatmap?.ID ? vote.beatmap.ID === candidate.beatmap?.ID : vote.beatmapset?.ID ? vote.beatmapset?.ID === candidate.beatmapset?.ID : vote.user?.osuID === candidate.user?.osuID);
+                    const k = candidates.findIndex(candidate => resultVote.beatmap?.ID ? resultVote.beatmap.ID === candidate.beatmap?.ID : resultVote.beatmapset?.ID ? resultVote.beatmapset?.ID === candidate.beatmapset?.ID : resultVote.user?.osuID === candidate.user?.osuID);
                     if (k === -1) { // Placement for this choice is already accounted for in results array
-                        votes[i].votes[j].used = true;
-                        votes[i].votes[j].inRace = false;
+                        resultVote.used = true;
+                        resultVote.inRace = false;
                         continue;
                     }
                     
                     if (!candidates[k].inRace) { // Choice dropped out of the race last round
-                        votes[i].votes[j].inRace = false;
+                        resultVote.inRace = false;
                         continue;
                     }
 
-                    if (vote.used) // Choice is still in race and this vote is used so there's nothing to do
+                    if (resultVote.used) // Choice is still in race and this vote is used so there's nothing to do
                         break;
 
                     candidates[k].count++;
-                    votes[i].votes[j].used = true;
+                    resultVote.used = true;
                     break;
                 }
             }
@@ -189,13 +187,13 @@ export function voteCounter (votes: UserVote[], year: number): ResultVote[] {
         // Remove top ones this run
         const max = candidates[0].count;
         const placement = results.length + 1;
-        for (let i = 0; i < candidates.length; i++) {
-            if (candidates[i].count !== max) {
-                candidates[i].inRace = true;
-                candidates[i].count = 0;
+        for (const candidate of candidates) {
+            if (candidate.count !== max) {
+                candidate.inRace = true;
+                candidate.count = 0;
             } else
                 results.push({
-                    ...candidates[i],
+                    ...candidate,
                     placement,
                 });
         }
@@ -206,10 +204,10 @@ export function voteCounter (votes: UserVote[], year: number): ResultVote[] {
             break;
 
         // Reset candidate counts + vote uses
-        for (let i = 0; i < votes.length; i++) {
-            for (let j = 0; j < votes[i].votes.length; j++) {
-                votes[i].votes[j].used = false;
-                votes[i].votes[j].inRace = true;
+        for (const userVote of votes) {
+            for (const resultVote of userVote.votes) {
+                resultVote.used = false;
+                resultVote.inRace = true;
             }
         }
     }

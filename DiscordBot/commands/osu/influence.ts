@@ -36,7 +36,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    let query = await User
+    let query = User
         .createQueryBuilder("user")
         .leftJoin("user.otherNames", "otherName")
         .leftJoinAndSelect("user.influences", "influence")

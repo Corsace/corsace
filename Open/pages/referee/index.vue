@@ -81,7 +81,7 @@ export default class Referee extends Vue {
         const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}`);
         if (matchupData.error) {
             alert(matchupData.error);
-            this.$router.push("/");
+            await this.$router.push("/");
             return;
         }
 
@@ -98,7 +98,7 @@ export default class Referee extends Vue {
         const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}?skip=${this.matchupList.length}`);
         if (matchupData.error) {
             alert(matchupData.error);
-            this.$router.push("/");
+            await this.$router.push("/");
             return;
         }
 

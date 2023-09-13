@@ -50,7 +50,7 @@ cronRouter.use(koaBasicAuth({
     pass: config.interOpAuth.password,
 }));
 
-cronRouter.get("/", async (ctx) => {
+cronRouter.get("/", (ctx) => {
     ctx.body = cron.listJobs();
 });
 

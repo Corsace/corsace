@@ -291,7 +291,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Corsace", value: tournament.isOpen ? "Open" : "Closed", inline: true }
         );
 
-    m.reply({ content: "Nice u saved the tournament!!!1\nHere's the tournament embed:", embeds: [embed] });
+    await m.reply({ content: "Nice u saved the tournament!!!1\nHere's the tournament embed:", embeds: [embed] });
 }
 
 const data = new SlashCommandBuilder()

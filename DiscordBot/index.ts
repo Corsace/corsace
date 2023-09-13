@@ -22,7 +22,7 @@ discordClient.on("threadUpdate", threadUpdate);
 
 // Discord command registrations
 const rest = new REST({ version: "10" }).setToken(config.discord.token);
-(async () => {
+await (async () => {
     try {
         console.log("Started refreshing application (/) commands.");
 

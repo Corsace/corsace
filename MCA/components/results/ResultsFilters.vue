@@ -101,14 +101,17 @@ export default class ResultsFilters extends Vue {
 
     // dropdown styles
     get catTypeStyle () {
-        const longestStr = Math.max(...this.localCatTypes.map(lct => lct.toString().length));
+        const longestStr = Math.max(...this.localCatTypes.map(lct => typeof lct === "string" ? lct.length : 0));
         return {
             "width": `${longestStr * 0.82}em`,
-        };
+        } as Record<string, string>;
     }
 
     get catStyle () {
-        const longestStr = Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length));
+        const longestStr = Math.max(...this.categoriesInfo.map(c => {
+            const tl = this.$t(`mca.categories.${c.name}.name`);
+            return typeof tl === "string" ? tl.length : 0;
+        }));
         return {
             "width": `${longestStr * 0.82}em`,
             "clip-path": "inset(-8px -8px -8px 0)",

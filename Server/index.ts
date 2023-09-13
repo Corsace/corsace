@@ -167,7 +167,7 @@ koa.use(Mount("/api/referee/matchups", refereeMatchupsRouter.routes()));
 koa.use(Mount("/api/referee/bancho", refereeBanchoRouter.routes()));
 
 ormConfig.initialize()
-    .then(async (connection) => {
+    .then((connection) => {
         console.log(`Connected to the ${connection.options.database} database!`);
         setupPassport();
         koa.listen(config.api.port);

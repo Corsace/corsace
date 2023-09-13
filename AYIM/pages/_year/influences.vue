@@ -53,7 +53,7 @@ export default class Comments extends Vue {
     @influencesModule.Action search;
     @influencesModule.Action resetRoot;
     
-    async resetSearch (userSearch) {
+    resetSearch (userSearch) {
         this.resetRoot();
         this.search(userSearch);
     }

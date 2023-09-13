@@ -192,7 +192,7 @@ export default class MapperComments extends Vue {
 
     async mounted () {
         if (this.mca.year >= 2020)
-            this.$router.replace(`/${this.mca.year}`);
+            await this.$router.replace(`/${this.mca.year}`);
         await this.getData();
     }
     
@@ -201,7 +201,7 @@ export default class MapperComments extends Vue {
 
         if (data.error) {
             alert(data.error);
-            this.$router.push(`/comments`);
+            await this.$router.push(`/comments`);
         } else {
             this.comments = data.comments;
             this.user = data.user;
@@ -267,7 +267,7 @@ export default class MapperComments extends Vue {
         }
     }
 
-    async removeInfo () {
+    removeInfo () {
         setTimeout(() => this.info = "", 5000);
     }
 }

@@ -23,7 +23,7 @@ export class MCA2021Seeding1655696966203 implements MigrationInterface {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async down (queryRunner: QueryRunner): Promise<void> {
+    public down (queryRunner: QueryRunner): Promise<void> {
         throw new Error("There is no going back.");
     }
 

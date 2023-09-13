@@ -46,7 +46,7 @@ export default class Years extends Vue {
 
     async mounted () {
         if (!(this.loggedInUser?.staff?.corsace || this.loggedInUser?.staff?.headStaff))
-            this.$router.replace("/");
+            await this.$router.replace("/");
     }
 
     async resetCache () {

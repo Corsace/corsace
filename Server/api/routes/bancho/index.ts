@@ -68,16 +68,16 @@ banchoRouter.post("/runQualifiers", validateData, async (ctx) => {
         .getMany();
 
     for (const matchup of matchups) {
-        await runMatchup(matchup, false, true).catch(err => {
+        await runMatchup(matchup, false, true).catch(async err => {
             console.error(err);
             const channel = discordClient.channels.cache.get(config.discord.coreChannel);
             if (channel instanceof TextChannel)
-                channel.send(`Error running qualifier GHIVE THIS IMMEDIATE ATTENTION:\n\`\`\`\n${err}\n\`\`\``);
+                await channel.send(`Error running qualifier GHIVE THIS IMMEDIATE ATTENTION:\n\`\`\`\n${err}\n\`\`\``);
         });
     }
 });
 
-banchoRouter.post("/stopAutoLobby", async (ctx) => {
+banchoRouter.post("/stopAutoLobby", (ctx) => {
     const matchupID = ctx.request.body.matchupID;
     if (!matchupID || typeof matchupID !== "number" || isNaN(matchupID)) {
         ctx.body = {

@@ -191,7 +191,7 @@ export const actions: ActionTree<StageState, RootState> = {
     async setInitialData ({ state, commit, dispatch, rootState }) {
         const mcaState = rootState["mca-ayim"] as RootState;
         if (!mcaState.mca?.year) {
-            this.$router.push("/");
+            await this.$router.push("/");
             return;
         }
 
@@ -199,7 +199,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
         if ("error" in data) {
             console.error(data.error);
-            this.$router.push("/" + mcaState.mca?.year);
+            await this.$router.push("/" + mcaState.mca?.year);
             return;
         }
 
@@ -210,26 +210,26 @@ export const actions: ActionTree<StageState, RootState> = {
         if (state.stage === "nominating" && data.nominations?.length && data.nominations.some(n => !n.isValid)) {
             alert("Some nominations were denied, contact a staff member if you already haven't!");
         } else if (state.stage === "results")
-            dispatch("updateSelectedCategory", state.categories.filter(category => category.type === "Beatmapsets" && (category.mode === mcaState.selectedMode || category.mode === "storyboard"))[0]);
+            await dispatch("updateSelectedCategory", state.categories.filter(category => category.type === "Beatmapsets" && (category.mode === mcaState.selectedMode || category.mode === "storyboard"))[0]);
     },
     async updateSelectedCategory ({ commit, dispatch }, category) {
         commit("updateSelectedCategory", category);
-        dispatch("search");
+        await dispatch("search");
     },
-    async updateSection ({ commit }, section) {
+    updateSection ({ commit }, section) {
         commit("updateSection", section);
     },
     async updateQuery ({ commit, dispatch }, query) {
         commit("updateQuery", query);
-        dispatch("search");
+        await dispatch("search");
     },
     async updateFavourites ({ commit, dispatch }, favourites) {
         commit("updateFavourites", favourites);
-        dispatch("search");
+        await dispatch("search");
     },
     async updatePlayed ({ commit, dispatch }, played) {
         commit("updatePlayed", played);
-        dispatch("search");
+        await dispatch("search");
     },
     async search ({ state, commit, rootState }, skipping = false) {
         if (!state.selectedCategory) return;

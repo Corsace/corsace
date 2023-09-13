@@ -51,7 +51,7 @@ export default async function guildMemberAdd (member: GuildMember) {
             } catch (err) {
                 const channel = discordClient.channels.cache.get(config.discord.coreChannel);
                 if (channel instanceof TextChannel)
-                    channel.send(`Failed to DM ${member.user.username} (${member.id})\n\`\`\`${err}\`\`\``);
+                    await channel.send(`Failed to DM ${member.user.username} (${member.id})\n\`\`\`${err}\`\`\``);
             }
         }
 
@@ -85,7 +85,7 @@ export default async function guildMemberAdd (member: GuildMember) {
         } as EmbedData);
 
         const channel = (await discordClient.channels.fetch(config.discord.logChannel))!;
-        (channel as TextChannel).send({
+        await (channel as TextChannel).send({
             embeds: [embed],
         });
     }

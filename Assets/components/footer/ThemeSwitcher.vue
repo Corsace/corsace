@@ -22,8 +22,8 @@ export default class ThemeSwitcher extends Vue {
     @State viewTheme!: "light" | "dark";
     @State site!: string;
 
-    setTheme (): void {
-        this.$store.dispatch("updateViewTheme", this.viewTheme === "light" ? "dark" : "light");
+    async setTheme () {
+        await this.$store.dispatch("updateViewTheme", this.viewTheme === "light" ? "dark" : "light");
     }
 
     getMode () {

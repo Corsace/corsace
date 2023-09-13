@@ -35,18 +35,18 @@ export default async function beatmapEmbed (beatmap: Beatmap, mods: string, seto
             mapCompletion = `**${(100.0 * scoreHits / totalHits).toFixed(2)}%** completed \n`;
         else {
             const bestScores = (await osuClient.user.getBest(user.osu.userID, Mode.all, 100)) as UserScore[];
-            for (const i in bestScores) {
+            for (let i = 0; i < bestScores.length; i++) {
                 const bestScore = bestScores[i];
                 if (bestScore.score === score.score && bestScore.beatmapId === score.beatmapId) {
-                    mapCompletion += `**#${parseInt(i) + 1}** in top performances! \n`;
+                    mapCompletion += `**#${i + 1}** in top performances! \n`;
                     break;
                 }
             }
             const beatmapScores = (await osuClient.scores.get(score.beatmapId, Mode.all, 100)) as BeatmapScore[];
-            for (const i in beatmapScores) {
+            for (let i = 0; i < beatmapScores.length; i++) {
                 const beatmapScore = beatmapScores[i];
                 if (beatmapScore.score === score.score && beatmapScore.userId === score.userId) {
-                    mapCompletion += `**#${parseInt(i) + 1}** on leaderboard! \n`;
+                    mapCompletion += `**#${i + 1}** on leaderboard! \n`;
                     break;
                 }
             }
@@ -107,7 +107,7 @@ export default async function beatmapEmbed (beatmap: Beatmap, mods: string, seto
         // Not sure if there's a better way to get this
         let rankStatus = "Unknown";
         for (const status of Object.keys(ApprovalStatus)) {
-            if (beatmap.approved === ApprovalStatus[status]) {
+            if (beatmap.approved === ApprovalStatus[status as keyof typeof ApprovalStatus]) {
                 rankStatus = `${status[0].toUpperCase()}${status.substring(1)}`; 
             }
         }

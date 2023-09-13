@@ -25,7 +25,7 @@ export default async function messageCreate (m: Message) {
 
     // Check for osu! timeestamps
     if (timestampRegex.test(noEmoji))
-        osuTimestamp(m);
+        await osuTimestamp(m);
 
     // Command checking TODO: Add custom prefix (relies on discord server model)
     let commandRun = false;

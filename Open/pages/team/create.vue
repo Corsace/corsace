@@ -290,11 +290,11 @@ export default class Create extends Vue {
         reader.readAsDataURL(this.image);
     }
 
-    mounted () {
+    async mounted () {
         if (!this.loggedInUser?.discord.userID)
-            this.$router.push("/");
+            await this.$router.push("/");
         else if (this.team)
-            this.$router.push(`/team`);
+            await this.$router.push(`/team`);
     }
 
     async create () {
@@ -348,8 +348,8 @@ export default class Create extends Vue {
                 alert(`Error making team:\n${res.error}`);
 
             this.loading = false;
-            this.$store.dispatch("open/setTeam");
-            this.$router.push(`/team/${res.team.ID}`);
+            await this.$store.dispatch("open/setTeam");
+            await this.$router.push(`/team/${res.team.ID}`);
         } else
             alert(res.error);
     }
