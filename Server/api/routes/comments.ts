@@ -41,15 +41,23 @@ async function isCommentOwner (ctx: ParameterizedContext, next: Next): Promise<a
 const commentsRouter = new Router();
 
 commentsRouter.get("/", async (ctx) => {
-    if (!ctx.query.user)
-        return ctx.body = {
+    if (!ctx.query.user) {
+        ctx.body = {
             error: "No user ID provided!",
         };
+        return;
+    }
 
-    const userId = parseInt(parseQueryParam(ctx.query.user) || "");
-    const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
-    const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
-    const modeID = ModeDivisionType[modeString];
+    const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
+    if (!(modeString in ModeDivisionType)) {
+        ctx.body = {
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
+        return;
+    }
+    const modeID = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
+    const userId = parseInt(parseQueryParam(ctx.query.user) ?? "");
+    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
 
     if (year >= 2020) {
         ctx.body = {
@@ -62,21 +70,23 @@ commentsRouter.get("/", async (ctx) => {
         where: { year },
     });
 
-    let query: FindOptionsWhere<UserComment> | FindOptionsWhere<UserComment>[] = {
+    const baseQuery: FindOptionsWhere<UserComment> = {
         targetID: userId,
         year: year,
-        mode: modeID,
+        mode: { ID: modeID },
         commenter: ctx.state.user,
     };
+
+    let query: FindOptionsWhere<UserComment> | FindOptionsWhere<UserComment>[] = baseQuery;
 
     // Show all comments if mca results are out
     if (new Date() >= mca?.results) {
         query = [
-            query,
+            baseQuery,
             {
                 targetID: userId,
                 year: year,
-                mode: modeID,
+                mode: { ID: modeID },
                 isValid: true,
             },
         ];
@@ -99,9 +109,10 @@ commentsRouter.get("/", async (ctx) => {
     ]);
 
     if (!isEligibleFor(target, modeID, year)) {
-        return ctx.body = {
+        ctx.body = {
             error: `User wasn't active for the selected mode`,
         };
+        return;
     }
 
     ctx.body = {
@@ -115,7 +126,13 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
     const year: number = ctx.request.body.year;
     const targetID: number = ctx.request.body.targetID;
     const modeInput: string = ctx.request.body.mode;
-    const modeID = ModeDivisionType[modeInput];
+    if (!(modeInput in ModeDivisionType)) {
+        ctx.body = {
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
+        return;
+    }
+    const modeID = ModeDivisionType[modeInput as keyof typeof ModeDivisionType];
     const commenter: User = ctx.state.user;
     
     if (!newComment || !modeInput || !year || !targetID) {

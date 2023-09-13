@@ -142,42 +142,39 @@ async function updateMatchup (matchupID: number) {
     }
 }
 
-function validatePOSTMatchups (matchups: any[]): string | true {
+function validatePOSTMatchups (matchups: Partial<postMatchup>[]): asserts matchups is postMatchup[] {
     for (const matchup of matchups) {
-        if (matchup.ID === undefined || isNaN(parseInt(matchup.ID)) || parseInt(matchup.ID) < 1)
-            return `Invalid matchup ID provided: ${matchup.ID}`;
+        if (typeof matchup.ID !== "number" || isNaN(matchup.ID) || matchup.ID < 1)
+            throw new Error(`Invalid matchup ID provided: ${matchup.ID}`);
 
         if (matchup.date && (isNaN(parseDateOrTimestamp(matchup.date).getTime()) || parseDateOrTimestamp(matchup.date).getTime() < 0))
-            return `Invalid matchup date provided: ${matchup.date}`;
+            throw new Error(`Invalid matchup date provided: ${matchup.date}`);
 
         if (matchup.isLowerBracket !== undefined && typeof matchup.isLowerBracket !== "boolean")
-            return `Invalid matchup isLowerBracket provided: ${matchup.isLowerBracket}`;
+            throw new Error(`Invalid matchup isLowerBracket provided: ${matchup.isLowerBracket}`);
 
         if (matchup.potentials !== undefined && typeof matchup.potentials !== "boolean")
-            return `Invalid matchup potentials provided: ${matchup.potentials}`;
+            throw new Error(`Invalid matchup potentials provided: ${matchup.potentials}`);
 
-        if (matchup.team1 !== undefined && (isNaN(parseInt(matchup.team1)) || parseInt(matchup.team1) < 1))
-            return `Invalid matchup team1 provided: ${matchup.team1}`;
+        if (typeof matchup.team1 !== "number" || isNaN(matchup.team1) || matchup.team1 < 1)
+            throw new Error(`Invalid matchup team1 provided: ${matchup.team1}`);
 
-        if (matchup.team2 !== undefined && (isNaN(parseInt(matchup.team2)) || parseInt(matchup.team2) < 1))
-            return `Invalid matchup team2 provided: ${matchup.team2}`;
+        if (typeof matchup.team2 !== "number" || isNaN(matchup.team2) || matchup.team2 < 1)
+            throw new Error(`Invalid matchup team2 provided: ${matchup.team2}`);
 
         if (matchup.previousMatchups) {
             if (!Array.isArray(matchup.previousMatchups) || matchup.previousMatchups.length > 3)
-                return `Invalid matchup previousMatchups provided (not an array or more than 2 matchups): ${matchup.ID}`;
+                throw new Error(`Invalid matchup previousMatchups provided (not an array or more than 2 matchups): ${matchup.ID}`);
 
             if (!matchup.isLowerBracket && !matchup.previousMatchups.some(m => !m.isLowerBracket))
-                return `Invalid matchup previousMatchups provided (no previous matchup is winner bracket for a winner bracket matchup): ${matchup.ID}`;
+                throw new Error(`Invalid matchup previousMatchups provided (no previous matchup is winner bracket for a winner bracket matchup): ${matchup.ID}`);
 
             if (matchup.previousMatchups.some(m => m.ID === matchup.ID))
-                return `Invalid matchup previousMatchups provided (matchup is a previous matchup of itself): ${matchup.ID}`;
+                throw new Error(`Invalid matchup previousMatchups provided (matchup is a previous matchup of itself): ${matchup.ID}`);
 
-            const valid = validatePOSTMatchups(matchup.previousMatchups);
-            if (valid !== true)
-                return valid;
+            validatePOSTMatchups(matchup.previousMatchups);
         }
     }
-    return true;
 }
 
 matchupRouter.get("/:matchupID", async (ctx) => {
@@ -328,7 +325,7 @@ matchupRouter.get("/:matchupID/teams", async (ctx) => {
 });
 
 matchupRouter.post("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
-    const matchups = ctx.request.body?.matchups;
+    const matchups: Partial<postMatchup>[] | postMatchup[] = ctx.request.body?.matchups;
     if (!matchups) {
         ctx.body = {
             error: "No matchups provided",
@@ -336,13 +333,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
         return;
     }
 
-    const valid = validatePOSTMatchups(matchups);
-    if (valid !== true) {
-        ctx.body = {
-            error: valid,
-        };
-        return;
-    }
+    validatePOSTMatchups(matchups);
 
     const idToMatchup = new Map<number, Matchup>();
 
@@ -351,7 +342,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
         for (const matchup of matchups) {
 
             let dbMatchup = new Matchup();
-            dbMatchup.isLowerBracket = matchup.isLowerBracket || false;
+            dbMatchup.isLowerBracket = matchup.isLowerBracket ?? false;
             if (idToMatchup.has(matchup.ID)) {
                 dbMatchup = idToMatchup.get(matchup.ID)!;
                 if (dbMatchup.isLowerBracket !== matchup.isLowerBracket)
@@ -409,7 +400,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                         teamArray.push(m.team2);
 
                     return teamArray;
-                }) || [];
+                }) ?? [];
                 if (teams.flat().length < 2)
                     for (let i = 0; i < 4; i++) {
                         const potential = new Matchup();
@@ -457,7 +448,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
             while (queue.length > 0) {
                 const node = queue.shift()!;
                 stack.push(node);
-                stack.push(...node.potentials || []);
+                stack.push(...node.potentials ?? []);
 
                 if (node.previousMatchups)
                     queue.push(...node.previousMatchups);
@@ -482,7 +473,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
 });
 
 matchupRouter.post("/assignTeam", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
-    const tournament: Tournament | null = ctx.state.tournament || null;
+    const tournament: Tournament | null = ctx.state.tournament ?? null;
     if (!tournament) {
         ctx.body = {
             error: "Tournament not found",
@@ -490,7 +481,7 @@ matchupRouter.post("/assignTeam", validateTournament, validateStageOrRound, isLo
         return;
     }
 
-    const stageOrRound: Stage | Round | null = ctx.state.stage || ctx.state.round || null;
+    const stageOrRound: Stage | Round | null = ctx.state.stage ?? ctx.state.round ?? null;
     if (!stageOrRound) {
         ctx.body = {
             error: "Stage or round not found",
@@ -603,7 +594,7 @@ matchupRouter.post("/assignTeam", validateTournament, validateStageOrRound, isLo
 });
 
 matchupRouter.post("/date", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
-    const tournament: Tournament | null = ctx.state.tournament || null;
+    const tournament: Tournament | null = ctx.state.tournament ?? null;
     if (!tournament) {
         ctx.body = {
             error: "Tournament not found",
@@ -611,7 +602,7 @@ matchupRouter.post("/date", validateTournament, validateStageOrRound, isLoggedIn
         return;
     }
 
-    const stageOrRound: Stage | Round | null = ctx.state.stage || ctx.state.round || null;
+    const stageOrRound: Stage | Round | null = ctx.state.stage ?? ctx.state.round ?? null;
     if (!stageOrRound) {
         ctx.body = {
             error: "Stage or round not found",
@@ -738,19 +729,19 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
             if (matchup.stage!.stageType === StageType.Qualifiers)
                 user = matchup.teams!.flatMap(team => team.members).find(member => member.osu.userID === score.userId.toString());
             else
-                user = matchup.team1!.members.find(member => member.osu.userID === score.userId.toString()) || matchup.team2!.members.find(member => member.osu.userID === score.userId.toString());
+                user = matchup.team1!.members.find(member => member.osu.userID === score.userId.toString()) ?? matchup.team2!.members.find(member => member.osu.userID === score.userId.toString());
             if (!user)
                 return;
 
             const matchupScore      = new MatchupScore;
             matchupScore.user       = user;
             matchupScore.score      = score.score;
-            matchupScore.mods       = ((score.enabledMods || game.mods) | 1) ^ 1; // Remove NF from mods (the OR 1 is to ensure NM is 0 after XOR)
+            matchupScore.mods       = ((score.enabledMods ?? game.mods) | 1) ^ 1; // Remove NF from mods (the OR 1 is to ensure NM is 0 after XOR)
             matchupScore.misses     = score.countMiss;
             matchupScore.combo      = score.maxCombo;
             matchupScore.fail       = !score.pass;
             matchupScore.accuracy   = (score.count50 + 2 * score.count100 + 6 * score.count300) / Math.max(6 * (score.countMiss + score.count50 + score.count100 + score.count300), 1);
-            matchupScore.fullCombo  = score.perfect || score.maxCombo === beatmap.beatmap!.maxCombo;
+            matchupScore.fullCombo  = score.perfect ?? score.maxCombo === beatmap.beatmap!.maxCombo;
 
             map.scores.push(matchupScore);
         });
@@ -765,15 +756,15 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
         }
         sets[sets.length - 1].maps!.push(map);
 
-        if (matchup.stage!.stageType !== StageType.Qualifiers && (matchup.round?.mapOrder || matchup.stage!.mapOrder)) {
+        if (matchup.stage!.stageType !== StageType.Qualifiers && (matchup.round?.mapOrder ?? matchup.stage!.mapOrder)) {
             if (map.winner === matchup.team1)
-                sets[sets.length - 1].team1Score = (sets[sets.length - 1].team1Score || 0) + 1;
+                sets[sets.length - 1].team1Score = (sets[sets.length - 1].team1Score ?? 0) + 1;
             else if (map.winner === matchup.team2)
-                sets[sets.length - 1].team2Score = (sets[sets.length - 1].team2Score || 0) + 1;
+                sets[sets.length - 1].team2Score = (sets[sets.length - 1].team2Score ?? 0) + 1;
 
-            const setOrders = (matchup.round?.mapOrder || matchup.stage!.mapOrder)!.map(order => order.set).filter((set, i, arr) => arr.indexOf(set) === i).map(set => ({
+            const setOrders = (matchup.round?.mapOrder ?? matchup.stage!.mapOrder)!.map(order => order.set).filter((set, i, arr) => arr.indexOf(set) === i).map(set => ({
                 set,
-                maps: (matchup.round?.mapOrder || matchup.stage!.mapOrder)!.filter(mapOrder => mapOrder.set === set),
+                maps: (matchup.round?.mapOrder ?? matchup.stage!.mapOrder)!.filter(mapOrder => mapOrder.set === set),
             }));
             if (setOrders.find(setOrder => setOrder.set === sets.length)) {
                 const setOrder = setOrders.find(setOrder => setOrder.set === sets.length)!;
@@ -795,18 +786,18 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
     });
 
     matchup.sets?.forEach(async set => {
-        await Promise.all(set.maps?.map(map => map.scores.map(score => score.remove())) || []);
-        await Promise.all(set.maps?.map(map => map.remove()) || []);
+        await Promise.all(set.maps?.map(map => map.scores.map(score => score.remove())) ?? []);
+        await Promise.all(set.maps?.map(map => map.remove()) ?? []);
         await set.remove();
     });
 
     sets.forEach(async set => {
         await set.save();
-        await Promise.all(set.maps?.map(map => map.save()) || []);
+        await Promise.all(set.maps?.map(map => map.save()) ?? []);
         await Promise.all(set.maps?.flatMap(map => map.scores?.map(score => {
             score.map = map;
             return score.save();
-        }) || []) || []);
+        }) ?? []) ?? []);
     });
 
     matchup.sets = sets;
@@ -918,9 +909,9 @@ matchupRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
     matchupScore.mods       = mods;
     matchupScore.misses     = misses;
     matchupScore.combo      = combo;
-    matchupScore.fail       = ctx.request.body.fail || false;
+    matchupScore.fail       = ctx.request.body.fail ?? false;
     matchupScore.accuracy   = accuracy;
-    matchupScore.fullCombo  = ctx.request.body.fullCombo || false;
+    matchupScore.fullCombo  = ctx.request.body.fullCombo ?? false;
     matchupScore.map        = map;
     await matchupScore.save();
 

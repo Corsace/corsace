@@ -51,6 +51,7 @@ import { Vue, Component } from "vue-property-decorator";
 import BaseModal from "../BaseModal.vue";
 import ContentButton from "./ContentButton.vue";
 import { namespace } from "vuex-class";
+import { StageType } from "../../../Interfaces/stage";
 import { Tournament } from "../../../Interfaces/tournament";
 import { Team } from "../../../Interfaces/team";
 import { toLocalISOString } from "../../../Server/utils/dateParse";
@@ -69,7 +70,7 @@ export default class QualifierModal extends Vue {
     @openModule.State team!: Team | null;
 
     get qualifierStage () {
-        return this.tournament?.stages.find(s => s.stageType === 0) || null;
+        return this.tournament?.stages.find(s => s.stageType === StageType.Qualifiers) ?? null;
     }
 
     get timeZone () {

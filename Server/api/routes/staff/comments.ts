@@ -16,7 +16,7 @@ commentsReviewRouter.use(isMCAStaff);
 commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
-    const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) || "") : 0;
+    const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
     const text = ctx.query.text ?? undefined;
     const query = UserComment
         .createQueryBuilder("userComment")
@@ -49,35 +49,36 @@ commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
             .setParameter("criteria", `%${text}%`);
     }
     
-    const comments = await query.offset(isNaN(skip) ? 0 : skip).limit(10).getRawMany();
-    const staffComments = comments.map(comment => {
-        const keys = Object.keys(comment);
-        const staffComment: StaffComment = {
-            ID: comment.ID,
-            comment: comment.comment,
-            isValid: comment.isValid === 1,
-            mode: comment.modeName,
-            commenter: {
-                ID: 0,
-                osuID: "",
-                osuUsername: "",
-            },
-            target: {
-                osuID: "",
-                osuUsername: "",
-            },
-            lastReviewedAt: comment.lastReviewedAt ?? undefined,
-            reviewer: comment.reviewer ?? undefined,
-        };
-        for (const key of keys) {
-            if (key.includes("commenter"))
-                staffComment.commenter[key.replace("commenter", "")] = comment[key];
-            else if (key.includes("target"))
-                staffComment.target[key.replace("target", "")] = comment[key];
-        }
-
-        return staffComment;
-    });
+    const comments: {
+        ID: number;
+        comment: string;
+        commenterID: number;
+        isValid: number;
+        lastReviewedAt: Date;
+        modeName: string;
+        commenterosuID: string;
+        commenterosuUsername: string;
+        targetosuID: string;
+        targetosuUsername: string;
+        reviewer: string;
+    }[] = await query.offset(isNaN(skip) ? 0 : skip).limit(10).getRawMany();
+    const staffComments = comments.map<StaffComment>(comment => ({
+        ID: comment.ID,
+        comment: comment.comment,
+        isValid: comment.isValid === 1,
+        mode: comment.modeName,
+        commenter: {
+            ID: comment.commenterID,
+            osuID: comment.commenterosuID,
+            osuUsername: comment.commenterosuUsername,
+        },
+        target: {
+            osuID: comment.targetosuID,
+            osuUsername: comment.targetosuUsername,
+        },
+        lastReviewedAt: comment.lastReviewedAt ?? undefined,
+        reviewer: comment.reviewer ?? undefined,
+    }));
     ctx.body = staffComments;
 });
 

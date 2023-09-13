@@ -105,7 +105,7 @@ stageRouter.get("/:stageID/mappools", validateStageOrRound, async (ctx) => {
         return;
     }
 
-    const mappoolQ = await Mappool
+    const mappoolQ = Mappool
         .createQueryBuilder("mappool")
         .innerJoinAndSelect("mappool.stage", "stage")
         .innerJoinAndSelect("mappool.slots", "slots")
@@ -315,7 +315,7 @@ stageRouter.get("/:stageID/scores", validateStageOrRound, async (ctx) => {
         ])
         .getRawMany();
     const scores: MatchupScore[] = rawScores.map(score => {
-        const team = teamLookup.get(score.osuUserid) || { ID: -1, name: "N/A", avatarURL: undefined };
+        const team = teamLookup.get(score.osuUserid) ?? { ID: -1, name: "N/A", avatarURL: undefined };
         return {
             teamID: team.ID,
             teamName: team.name,

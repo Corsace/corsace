@@ -28,8 +28,8 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
         .createQueryBuilder("team")
         .leftJoin("team.manager", "manager")
         .leftJoin("team.members", "member")
-        .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
-        .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
+        .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user!.discord.userID })
+        .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user!.discord.userID })
         .select("team.ID", "ID")
         .getRawMany();
 

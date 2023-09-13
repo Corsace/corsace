@@ -55,7 +55,7 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
         matchupQ
             .andWhere("referee.ID = :refereeID", { refereeID: ctx.state.user.ID });
         
-    const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
+    const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") ?? 0;
     const matchups = await matchupQ
         .skip(skip)
         .take(5)

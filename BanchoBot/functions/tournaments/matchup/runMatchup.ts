@@ -97,7 +97,6 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         firstSet: {
             ID: firstSet.ID,
             order: firstSet.order,
-            first: null,
             maps: firstSet.maps,
             team1Score: firstSet.team1Score,
             team2Score: firstSet.team2Score,
@@ -118,10 +117,10 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
     let started = false;
     let lastMessageSaved = Date.now();
     const aborts = new Map<number, number>();
-    const pools = matchup.round?.mappool || matchup.stage!.mappool!;
+    const pools = matchup.round?.mappool ?? matchup.stage!.mappool!;
 
     // Map order stuff, everything should be null/undefined for qualifiers
-    const mapOrder = matchup.round?.mapOrder || matchup.stage!.mapOrder;
+    const mapOrder = matchup.round?.mapOrder ?? matchup.stage!.mapOrder;
     const setOrder = mapOrder?.map(order => order.set)
         .filter((set, index, self) => self.indexOf(set) === index)
         .map(set => ({ set, maps: mapOrder?.filter(map => map.set === set) })) ?? [];
@@ -182,7 +181,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 Date.now() - matchStart.getTime() < (matchup.stage!.tournament.abortThreshold ?? 30) * 1000
             )
         ) {
-            const abortCount = (aborts.get(team.ID) || 0) + 1;
+            const abortCount = (aborts.get(team.ID) ?? 0) + 1;
             await mpLobby.abortMatch();
             await mpChannel.sendMessage(`${username} has triggered an abort${typeof matchup.stage!.tournament.teamAbortLimit === "number" ? `, they now have ${matchup.stage!.tournament.teamAbortLimit - abortCount} aborts left` : ""}`);
             await mpChannel.sendMessage(`reminder: !panic exists if something is going absurdly wrong`);
@@ -629,7 +628,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         const game = mp.games[mp.games.length - 1];
         const scores = game.scores;
 
-        if (scores.length === 0 || (scores.length === 1 && scores[0].count300 + scores[0].count100 + scores[0].count50 + scores[0].countMiss < (beatmap.beatmap!.maxCombo || 0) && Date.now() - matchStart!.getTime() < (matchup.stage!.tournament.abortThreshold || 15) * 1000)) {
+        if (scores.length === 0 || (scores.length === 1 && scores[0].count300 + scores[0].count100 + scores[0].count50 + scores[0].countMiss < (beatmap.beatmap!.maxCombo ?? 0) && Date.now() - matchStart!.getTime() < (matchup.stage!.tournament.abortThreshold ?? 15) * 1000)) {
             mpLobby.emit("matchAborted");
             return;
         }
@@ -654,7 +653,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
             matchupScore.user = user;
             matchupScore.map = matchupMap;
             matchupScore.score = score.score;
-            matchupScore.mods = ((score.enabledMods || game.mods) | 1) ^ 1; // Remove NF from mods (the OR 1 is to ensure NM is 0 after XOR)
+            matchupScore.mods = ((score.enabledMods ?? game.mods) | 1) ^ 1; // Remove NF from mods (the OR 1 is to ensure NM is 0 after XOR)
             matchupScore.misses = score.countMiss;
             matchupScore.combo = score.maxCombo;
             matchupScore.fail = !score.pass;
@@ -708,8 +707,8 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
         await publish(matchup, {
             type: "matchFinished",
-            setTeam1Score: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.team1Score || 0,
-            setTeam2Score: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.team2Score || 0,
+            setTeam1Score: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.team1Score ?? 0,
+            setTeam2Score: matchup.sets?.[(matchup.sets?.length || 1) - 1]?.team2Score ?? 0,
             team1Score: matchup.team1Score,
             team2Score: matchup.team2Score,
             map: {
@@ -786,17 +785,21 @@ export default async function runMatchup (matchup: Matchup, replace = false, aut
 
     // no extra slot for qualifiers
     // slots for each team based on matchup size
-    const requiredPlayerAmount = Math.min(16, (matchup.stage!.stageType === StageType.Qualifiers ? 0 : 1) + matchup.stage!.tournament.matchupSize * (matchup.teams?.length || 2));
+    const requiredPlayerAmount = Math.min(16, (matchup.stage!.stageType === StageType.Qualifiers ? 0 : 1) + matchup.stage!.tournament.matchupSize * (matchup.teams?.length ?? 2));
+
+    let scoringMode = BanchoLobbyWinConditions.ScoreV2;
+    if (matchup.stage!.scoringMethod in winConditions)
+        scoringMode = winConditions[matchup.stage!.scoringMethod as keyof typeof winConditions];
 
     log(matchup, `Setting lobby settings, password and adding refs`);
     await Promise.all([
         mpLobby.setPassword(randomUUID()),
         mpLobby.setSettings(
             matchup.stage!.stageType === StageType.Qualifiers ? BanchoLobbyTeamModes.HeadToHead : BanchoLobbyTeamModes.TeamVs,
-            winConditions[matchup.stage!.stageType] || BanchoLobbyWinConditions.ScoreV2,
+            scoringMode,
             requiredPlayerAmount
         ),
-        mpLobby.addRef([`#${matchup.stage!.tournament.organizer.osu.userID}`, `#${matchup.referee?.osu.userID || ""}`, `#${matchup.streamer?.osu.userID || ""}`]),
+        mpLobby.addRef([`#${matchup.stage!.tournament.organizer.osu.userID}`, `#${matchup.referee?.osu.userID ?? ""}`, `#${matchup.streamer?.osu.userID ?? ""}`]),
     ]);
     log(matchup, `Set lobby settings, password and added refs`);
     const refChannel = await TournamentChannel

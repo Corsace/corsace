@@ -460,7 +460,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
-import { Centrifuge, PublicationContext, Subscription } from "centrifuge";
+import { Centrifuge, ExtendedPublicationContext, Subscription } from "centrifuge";
 
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
 import OpenSelect from "../../../Assets/components/open/OpenSelect.vue";
@@ -605,11 +605,11 @@ export default class Referee extends Vue {
 
     get nextMapMessage () {
         // TODO: Support sets, and don't hardcode no losing -> second and no winning -> first
-        const score = `${this.matchup?.team1?.name || "TBD"} | ${this.matchupSet?.team1Score || this.matchup?.team1Score} - ${this.matchupSet?.team2Score || this.matchup?.team2Score} | ${this.matchup?.team2?.name || "TBD"}`;
-        let bestOf = `BO${this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length + 1 || ""}`;
+        const score = `${this.matchup?.team1?.name ?? "TBD"} | ${this.matchupSet?.team1Score ?? this.matchup?.team1Score} - ${this.matchupSet?.team2Score ?? this.matchup?.team2Score} | ${this.matchup?.team2?.name ?? "TBD"}`;
+        let bestOf = `BO${this.mapOrder[(this.matchupSet?.order ?? 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length + 1 ?? ""}`;
         if (this.mapOrder.length > 1)
             bestOf = `BO${this.mapOrder.length + 1 / 2} ${bestOf}`;
-        const firstTo = this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
+        const firstTo = this.mapOrder[(this.matchupSet?.order ?? 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
         
         if (!this.matchupSet?.first)
             return `${score} // ${bestOf}`;
@@ -618,7 +618,7 @@ export default class Referee extends Vue {
         if (this.mapOrder.length > 1) {
             winner = this.matchupSet?.team1Score === firstTo ? this.matchup?.team1?.name : this.matchupSet?.team2Score === firstTo ? this.matchup?.team2?.name : null;
         }
-        const nextMap = (this.matchupSet?.maps?.length || 0) > this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.length ? null : this.mapOrder[(this.matchupSet?.order || 1) - 1].order[this.matchupSet?.maps?.length || 0];
+        const nextMap = (this.matchupSet?.maps?.length ?? 0) > this.mapOrder[(this.matchupSet?.order ?? 1) - 1]?.order.length ? null : this.mapOrder[(this.matchupSet?.order ?? 1) - 1].order[this.matchupSet?.maps?.length ?? 0];
     
         const first = this.matchupSet?.first?.name;
         const second = this.matchup?.team1?.ID === this.matchupSet?.first?.ID ? this.matchup?.team2?.name : this.matchup?.team2?.ID === this.matchupSet?.first?.ID ? this.matchup?.team1?.name : null;
@@ -633,7 +633,7 @@ export default class Referee extends Vue {
         const nextMapTeam = nextMap?.team === MapOrderTeam.Team1 ? first : nextMap?.team === MapOrderTeam.Team2 ? second : nextMap?.team === MapOrderTeam.TeamLoser ? losing ?? second : nextMap?.team === MapOrderTeam.TeamWinner ? winning ?? first : null;
 
         const winnerString = `${winner ?? "N/A"} has won the ${this.mapOrder.length > 1 ? "set" : "matchup"}!`;
-        const nextMapString = `Next ${this.mapStatusToString(nextMap?.status || 0)}: ${nextMapTeam ?? "N/A"}`;
+        const nextMapString = `Next ${this.mapStatusToString(nextMap?.status ?? 0)}: ${nextMapTeam ?? "N/A"}`;
 
         return `${score} // ${bestOf} // ${winner ? winnerString : nextMapString}`;
     }
@@ -688,7 +688,7 @@ export default class Referee extends Vue {
             return;
         }
 
-        this.mapSelected = this.selectedMappool?.slots.flatMap(slot => slot.maps).find(map => map.ID === mapID) || null;
+        this.mapSelected = this.selectedMappool?.slots.flatMap(slot => slot.maps).find(map => map.ID === mapID) ?? null;
         if (this.$refs.mapStatusSelect instanceof HTMLElement && this.$refs.tooltip instanceof HTMLElement) {
             this.$refs.mapStatusSelect.style.left = this.$refs.tooltip.style.left;
             this.$refs.mapStatusSelect.style.top = this.$refs.tooltip.style.top;
@@ -710,7 +710,7 @@ export default class Referee extends Vue {
         const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}/${this.$route.params.id}`);
         if (matchupData.error) {
             alert(matchupData.error);
-            this.$router.push("/");
+            await this.$router.push("/");
             return;
         }
 
@@ -755,7 +755,7 @@ export default class Referee extends Vue {
             ready: false,
             mods: "",
             slot: 0,
-        })) || []));
+        })) ?? []));
         this.team2PlayerStates.push(...(this.matchup?.team2?.members.map(member => ({
             ID: member.ID,
             username: member.username,
@@ -764,7 +764,7 @@ export default class Referee extends Vue {
             ready: false,
             mods: "",
             slot: 0,
-        })) || []));
+        })) ?? []));
 
         this.team1PlayerStates = this.team1PlayerStates.filter((v, i, a) => a.findIndex(t => t.osuID === v.osuID) === i);
         this.team2PlayerStates = this.team2PlayerStates.filter((v, i, a) => a.findIndex(t => t.osuID === v.osuID) === i);
@@ -773,28 +773,28 @@ export default class Referee extends Vue {
             ...message,
             ID: i,
             timestamp: new Date(message.timestamp),
-        })) || [];
+        })) ?? [];
         this.mapOrder = this.matchup?.round?.mapOrder?.map(o => o.set)
             .filter((v, i, a) => a.indexOf(v) === i)
             .map(s => ({
                 set: s,
-                order: this.matchup?.round?.mapOrder?.filter(o => o.set === s).sort((a, b) => a.order - b.order) || [],
-            })) || this.matchup?.stage?.mapOrder?.map(o => o.set)
+                order: this.matchup?.round?.mapOrder?.filter(o => o.set === s).sort((a, b) => a.order - b.order) ?? [],
+            })) ?? this.matchup?.stage?.mapOrder?.map(o => o.set)
             .filter((v, i, a) => a.indexOf(v) === i)
             .map(s => ({
                 set: s,
-                order: this.matchup?.stage?.mapOrder?.filter(o => o.set === s).sort((a, b) => a.order - b.order) || [],
-            })) || [];
+                order: this.matchup?.stage?.mapOrder?.filter(o => o.set === s).sort((a, b) => a.order - b.order) ?? [],
+            })) ?? [];
 
-        this.mappools = this.matchup?.round?.mappool || this.matchup?.stage?.mappool || [];
+        this.mappools = this.matchup?.round?.mappool ?? this.matchup?.stage?.mappool ?? [];
         this.mappoolSelector = this.mappools.map(mappool => ({
             value: mappool.abbreviation.toUpperCase(),
             text: mappool.abbreviation.toUpperCase(),
         }));
         this.selectedMappool = this.mappools[0] || null;
         
-        this.mapTimer = `${this.tournament?.mapTimer || 90}`;
-        this.readyTimer = `${this.tournament?.readyTimer || 90}`;
+        this.mapTimer = `${this.tournament?.mapTimer ?? 90}`;
+        this.readyTimer = `${this.tournament?.readyTimer ?? 90}`;
 
         const { data: centrifugoURL } = await this.$axios.get("/api/centrifugo/publicUrl");
 
@@ -942,7 +942,7 @@ export default class Referee extends Vue {
         }
     }
 
-    handleData = (ctx: PublicationContext) => {
+    handleData = (ctx: ExtendedPublicationContext) => {
         console.log("publication", ctx.channel, ctx.data);
 
         if (!ctx.channel.startsWith("matchup:"))
@@ -956,7 +956,10 @@ export default class Referee extends Vue {
                 this.matchup.baseURL = ctx.data.baseURL;
                 this.matchup.mp = ctx.data.mpID;
                 this.runningLobby = true;
-                this.matchup.sets = [ctx.data.firstSet];
+                this.matchup.sets = [{
+                    ...ctx.data.firstSet,
+                    first: ctx.data.firstSet.first === this.matchup.team1?.ID ? this.matchup.team1 : ctx.data.firstSet.first === this.matchup.team2?.ID ? this.matchup.team2 : null,
+                }];
                 break;
             case "message":
                 this.addMessage(ctx.data);
@@ -988,7 +991,7 @@ export default class Referee extends Vue {
                     };
                 });
                 break;
-            case "map":
+            case "selectMap":
                 if (!this.matchup.sets)
                     this.matchup.sets = [{
                         ID: 0,
@@ -1029,7 +1032,7 @@ export default class Referee extends Vue {
         if (!this.matchup?.sets)
             return;
 
-        const firstTo = this.mapOrder[(this.matchupSet?.order || 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
+        const firstTo = this.mapOrder[(this.matchupSet?.order ?? 1) - 1]?.order.filter(p => p.status === MapStatus.Picked).length / 2 + 1;
         if (this.matchup.sets[this.matchup.sets.length - 1].team1Score === firstTo || this.matchup.sets[this.matchup.sets.length - 1].team2Score === firstTo) {
             this.matchup.sets.push({
                 ID: this.matchup.sets[this.matchup.sets.length - 1].ID + 1,

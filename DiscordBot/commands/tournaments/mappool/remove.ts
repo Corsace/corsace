@@ -35,7 +35,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "pool", paramType: "string" },
         { name: "slot", paramType: "string", postProcess: postProcessSlotOrder, optional: true },
         { name: "target", paramType: "string", customHandler: extractTargetText, optional: true  },
@@ -46,7 +46,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, slot, order, target, testing } = params;
 
-    const components = await mappoolComponents(m, pool, slot || true, order || true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, undefined, target ? { text: target, roles: [TournamentRoleType.Testplayers, TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]} : undefined);
+    const components = await mappoolComponents(m, pool, slot ?? true, order ?? true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, undefined, target ? { text: target, roles: [TournamentRoleType.Testplayers, TournamentRoleType.Mappers, TournamentRoleType.Mappoolers, TournamentRoleType.Organizer]} : undefined);
     if (!components || !("mappool" in components))
         return;
 
@@ -60,7 +60,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if ("mappoolMap" in components) {
         const { mappoolMap, mappoolSlot } = components;
         
-        if ((testing && mappoolMap.testplayers.length === 0) || (!mappoolMap.beatmap && mappoolMap.customMappers.length === 0)) {
+        if ((testing && mappoolMap.testplayers.length === 0) ?? (!mappoolMap.beatmap && mappoolMap.customMappers.length === 0)) {
             await respond(m, `**${mappoolSlot}** is currently empty`);
             return;
         }
@@ -172,7 +172,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    await resetPool(m, tournament, mappool, user, testing);
+    resetPool(m, tournament, mappool, user, testing);
 
     await deletePack("mappacksTemp", mappool);
 
@@ -181,8 +181,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     await mappoolLog(tournament, "removePool", user, `Removed all beatmaps and custom beatmaps + mappers from \`${mappool.abbreviation.toUpperCase()}\``);
 } 
 
-async function resetPool (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappool: Mappool, user: User, testing?: boolean) {
-    mappool.slots.forEach(async slot => {
+function resetPool (m: Message | ChatInputCommandInteraction, tournament: Tournament, mappool: Mappool, user: User, testing?: boolean) {
+    mappool.slots.forEach(slot => {
         slot.maps.forEach(async map => {
             let customMap: CustomBeatmap | null = null;
             if (map.beatmap) {
@@ -193,7 +193,7 @@ async function resetPool (m: Message | ChatInputCommandInteraction, tournament: 
             }
             map.testplayers = [];
             if (testing) {
-                if (!await notifyCustomThread(m, tournament, map, `${mappool.abbreviation.toUpperCase()} ${slot}${slot.maps.length === 1 ? "" : map.order}`, `<@${user.discord.userID}> has removed **all testplayers**`))
+                if (!await notifyCustomThread(m, tournament, map, `${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${slot.maps.length === 1 ? "" : map.order}`, `<@${user.discord.userID}> has removed **all testplayers**`))
                     return;
             } else {
                 map.customMappers = [];

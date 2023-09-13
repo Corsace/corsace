@@ -4,7 +4,7 @@ import getTournaments, { tournamentSearchConditions } from "../../../Server/func
 import respond from "../respond";
 import getFromList from "../getFromList";
 
-export default async function getTournament (m: Message | ChatInputCommandInteraction, target: string = m.guild?.id || "", searchType: keyof typeof tournamentSearchConditions = m.guild ? "server" : "ID", tournamentStatusFilters?: TournamentStatus[], stageOrRound?: boolean, mappools?: boolean, slots?: boolean, maps?: boolean, jobPosts?: boolean) {
+export default async function getTournament (m: Message | ChatInputCommandInteraction, target: string = m.guild?.id ?? "", searchType: keyof typeof tournamentSearchConditions = m.guild ? "server" : "ID", tournamentStatusFilters?: TournamentStatus[], stageOrRound?: boolean, mappools?: boolean, slots?: boolean, maps?: boolean, jobPosts?: boolean) {
     const tournamentList = await getTournaments(target, searchType, tournamentStatusFilters, stageOrRound, mappools, slots, maps, jobPosts);
     if (tournamentList.length === 0) {
         if (searchType === "channel")

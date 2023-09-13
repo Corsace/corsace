@@ -21,7 +21,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (all && m instanceof Message)
         m.content = m.content.replace("-a", "");
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "pool", paramType: "string" },
         { name: "slot", paramType: "string", postProcess: postProcessSlotOrder, optional: true },
     ]);
@@ -30,7 +30,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, slot, order } = params;
 
-    const components = await mappoolComponents(m, pool, slot || true, order || true, false, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, false, undefined, true);
+    const components = await mappoolComponents(m, pool, slot ?? true, order ?? true, false, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, false, undefined, true);
     if (!components || !("mappool" in components))
         return;
 
@@ -59,7 +59,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .setColor(modeColour(tournament.mode.ID - 1))
         .setFooter({
             text: `Requested by ${m.member?.user.username}`,
-            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined,
+            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
         })
         .setTimestamp();
 

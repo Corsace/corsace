@@ -108,7 +108,7 @@ export class Beatmap extends BaseEntity {
 
     static search (year: number, modeId: number, stage: "voting" | "nominating", category: Category, query: StageQuery): Promise<[Beatmap[], number]> {
         // Initial repo setup
-        const includeStoryboard = modeId === ModeDivisionType.storyboard;
+        const includeStoryboard = modeId === ModeDivisionType.storyboard.valueOf();
         const queryBuilder = this.createQueryBuilder("beatmap")
             .leftJoinAndSelect("beatmap.beatmapset", "beatmapset");
         
@@ -180,7 +180,7 @@ export class Beatmap extends BaseEntity {
             if (category.filter.maxCS)
                 queryBuilder
                     .andWhere(`beatmap.circleSize<=${category.filter.maxCS}`);
-            if (category.filter.topOnly || includeStoryboard)
+            if (category.filter.topOnly ?? includeStoryboard)
                 queryBuilder
                     .andWhere((sqb) => {
                         const subSubQuery = sqb.subQuery()
@@ -216,7 +216,7 @@ export class Beatmap extends BaseEntity {
                    
         // Ordering
         const optionQuery = query.option ? query.option.toLowerCase() : "";
-        const order = query.order || "ASC";
+        const order = query.order ?? "ASC";
         let option = "beatmapset.approvedDate";
         if (/(artist|title|favs|creator|sr)/i.test(optionQuery)) {
             if (optionQuery.includes("artist"))

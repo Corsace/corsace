@@ -151,7 +151,7 @@ import QualifiersView from "../../Assets/components/open/QualifiersView.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import BaseModal from "../../Assets/components/BaseModal.vue";
 
-import { Stage } from "../../Interfaces/stage";
+import { Stage, StageType } from "../../Interfaces/stage";
 import { Tournament } from "../../Interfaces/tournament";
 import { Team } from "../../Interfaces/team";
 import { UserInfo } from "../../Interfaces/user";
@@ -205,7 +205,7 @@ export default class Qualifiers extends Vue {
     @openModule.State mappools!: Mappool[] | null;
 
     get qualifiersStage (): Stage | null {
-        return this.tournament?.stages.find(s => s.stageType === 0) || null;
+        return this.tournament?.stages.find(s => s.stageType === StageType.Qualifiers) ?? null;
     }
 
     togglePopup () {
@@ -224,12 +224,12 @@ export default class Qualifiers extends Vue {
 
     async getMappool () {
         this.page = "mappool";
-        this.$store.dispatch("open/setMappools", this.qualifiersStage?.ID);
+        await this.$store.dispatch("open/setMappools", this.qualifiersStage?.ID);
     }
 
     async getScores () {
         this.page = "scores";
-        this.$store.dispatch("open/setScores", this.qualifiersStage?.ID);
+        await this.$store.dispatch("open/setScores", this.qualifiersStage?.ID);
     }
 }
 </script>

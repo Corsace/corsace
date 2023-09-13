@@ -757,7 +757,7 @@ export default class Info extends Vue {
                 name: s.name,
                 order: s.order,
             };
-        }) || [];
+        }) ?? [];
 
         return stages;
     }
@@ -769,7 +769,7 @@ export default class Info extends Vue {
     }
 
     get stage (): Stage | null {
-        return this.tournament?.stages.find(s => s.ID === this.selectedStage) || null;
+        return this.tournament?.stages.find(s => s.ID === this.selectedStage) ?? null;
     }
 
     get stageType () {
@@ -804,7 +804,7 @@ export default class Info extends Vue {
     }
 
     get stageMappools (): Mappool[] {
-        return this.stage?.mappool || [];
+        return this.stage?.mappool ?? [];
     }
 
     get stageMappoolsList (): {ID: number; name: string}[] {
@@ -817,7 +817,7 @@ export default class Info extends Vue {
     }
 
     get mappool (): Mappool | null {
-        return this.stageMappools.find(m => m.ID === this.selectedMappool) || null;
+        return this.stageMappools.find(m => m.ID === this.selectedMappool) ?? null;
     }
     
 }

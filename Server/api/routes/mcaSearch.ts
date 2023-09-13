@@ -22,8 +22,12 @@ export default function mcaSearch (stage: "nominating" | "voting", initialCall: 
             };
 
         // Make sure user is eligible to nominate in this mode
-        const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
-        const modeId = ModeDivisionType[modeString];
+        const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
+        if (!(modeString in ModeDivisionType)) {
+            ctx.body = { error: "Invalid mode, please use standard, taiko, fruits or mania" };
+            return;
+        } 
+        const modeId = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
         if (!isEligibleFor(ctx.state.user, modeId, ctx.state.year))
             return ctx.body = { error: "Not eligible for this mode!" };
 
@@ -43,17 +47,17 @@ export default function mcaSearch (stage: "nominating" | "voting", initialCall: 
     
         
         // Check if this is the initial call, add currently nominated beatmaps/users at the top of the list
-        const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
+        const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") ?? 0;
         if (skip === 0) {
             let objects = await initialCall(ctx, category) as Vote[]; // doesnt really matter the type in this case
             objects = objects.filter(o => o.category.ID === category.ID);
 
             if (category.type == CategoryType.Beatmapsets && ctx.state.year < 2021)
-                setList = objects.map(o => o.beatmapset?.getInfo(true)!);  
+                setList = objects.map(o => o.beatmapset!.getInfo(true)!);  
             else if (category.type == CategoryType.Beatmapsets && ctx.state.year >= 2021)
-                mapList = objects.map(o => o.beatmap?.getInfo(true)!);
+                mapList = objects.map(o => o.beatmap!.getInfo(true)!);
             else if (category.type == CategoryType.Users)
-                userList = objects.map(o => o.user?.getCondensedInfo(true)!);
+                userList = objects.map(o => o.user!.getCondensedInfo(true)!);
         }
         
         if ((ctx.query.favourites === "true" || ctx.query.played === "true") && category.type == CategoryType.Beatmapsets) {
@@ -101,9 +105,9 @@ export default function mcaSearch (stage: "nominating" | "voting", initialCall: 
         const query: StageQuery = {
             category: category.ID,
             skip,
-            option: parseQueryParam(ctx.query.option) || "",
+            option: parseQueryParam(ctx.query.option) ?? "",
             order,
-            text: parseQueryParam(ctx.query.text) || "",
+            text: parseQueryParam(ctx.query.text) ?? "",
             favourites: favIDs,
             played: playedIDs,
         };

@@ -57,7 +57,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "date", paramType: "string", customHandler: extractDate },
         { name: "target", paramType: "string", customHandler: extractTargetText, optional: true },
         { name: "tournament", paramType: "string", optional: true },
@@ -139,7 +139,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             }
             // Check if they are in the server
             try {
-                const tournamentServer = m.guild || await discordClient.guilds.fetch(tournament.server);
+                const tournamentServer = m.guild ?? await discordClient.guilds.fetch(tournament.server);
                 await tournamentServer.members.fetch();
                 if (!tournamentServer.members.resolve(user.discord.userID)) {
                     await respond(m, `User \`${user.osu.username}\` is not in the tournament server`);
@@ -230,7 +230,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const managerRoles = tournamentRoles.filter(r => r.roleType === TournamentRoleType.Managers);
         const unallowedRoles = tournamentRoles.filter(r => unallowedToPlay.includes(r.roleType));
         try {
-            const tournamentServer = m.guild || await discordClient.guilds.fetch(tournament.server);
+            const tournamentServer = m.guild ?? await discordClient.guilds.fetch(tournament.server);
             await tournamentServer.members.fetch();
             const discordMembers = teamMembers.map(m => tournamentServer.members.resolve(m.discord.userID));
             const memberStaff: GuildMember[] = [];

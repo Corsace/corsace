@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, ChatInputCommandInteraction, SlashCommandBuilder, APIApplicationCommandOption, GuildMember } from "discord.js";
+import { Message, EmbedBuilder, ChatInputCommandInteraction, SlashCommandBuilder, APIApplicationCommandOption, GuildMember, ApplicationCommandOptionType } from "discord.js";
 import { Command, commands } from "..";
 
 function optionParser (options: APIApplicationCommandOption[] | undefined): string {
@@ -8,7 +8,7 @@ function optionParser (options: APIApplicationCommandOption[] | undefined): stri
     let subcommandOptions: string[] = [];
     
     options.forEach(option => {
-        if (option.type === 1 && option.options) {
+        if (option.type === ApplicationCommandOptionType.Subcommand && option.options) {
             // This is a subcommand. Process its options as a single unit.
             const subOptions = option.options.map(subOption => {
                 if (subOption.required) {
@@ -68,7 +68,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             //name: "Click here to invite Corsace!", <-- Add later when bot is public
             //url: `https://discordapp.com/oauth2/authorize?&client_id=${config.discord.clientId}&scope=bot&permissions=0`
             name: "corsace",
-            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined,
+            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
         },
         description: "**Most commands have other forms as well for convenience!**\n\n**Do `!help <command>` for more information about the command!**\nHelp information format: `(cmd|names) <args> [optional args]`\n\nWrap args around in quotes if they have spaces within them.\n**Example:** `\"2024-01-01 3:00:00\"`",
         color: 0xFB2475,

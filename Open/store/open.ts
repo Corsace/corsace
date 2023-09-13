@@ -33,7 +33,7 @@ export const state = (): OpenState => ({
 });
 
 export const mutations: MutationTree<OpenState> = {
-    async setTitle (state, year: number | undefined) {
+    setTitle (state, year: number | undefined) {
         state.title = `Corsace Open - ${year}` || "";
     },
     setTournament (state, tournament: Tournament | undefined) {
@@ -84,8 +84,8 @@ export const mutations: MutationTree<OpenState> = {
             state.tournament.stages.sort((a, b) => a.order - b.order);
         }
     },
-    async setTeamList (state, teams: TeamList[] | undefined) {
-        state.teamList = teams || null;
+    setTeamList (state, teams: TeamList[] | undefined) {
+        state.teamList = teams ?? null;
         if (state.teamList) {
             const unregisteredTeams = state.teamList.filter(team => !team.isRegistered);
             unregisteredTeams
@@ -99,37 +99,37 @@ export const mutations: MutationTree<OpenState> = {
             state.teamList = [...registeredTeams, ...unregisteredTeams];
         }
     },
-    async setTeam (state, teams: Team[] | undefined) {
+    setTeam (state, teams: Team[] | undefined) {
         teams = teams?.filter(team => !team.tournaments || !team.tournaments.some(tournament => tournament.ID !== state.tournament?.ID)); // TODO: Remove this when the website supports multiple teams for a user
 
-        state.team = teams?.[0] || null;
+        state.team = teams?.[0] ?? null;
         if (state.team?.qualifier)
             state.team.qualifier = {
                 ...state.team.qualifier,
                 date: new Date(state.team.qualifier.date),
             };
     },
-    async setTeamInvites (state, invites: TeamUser[] | undefined) {
+    setTeamInvites (state, invites: TeamUser[] | undefined) {
         if (state.team)
             state.team.invites = invites;
     },
-    async setInvites (state, invites: BaseTeam[] | undefined) {
-        state.teamInvites = invites || null;
+    setInvites (state, invites: BaseTeam[] | undefined) {
+        state.teamInvites = invites ?? null;
     },
-    async setQualifierList (state, qualifiers: BaseQualifier[] | undefined) {
+    setQualifierList (state, qualifiers: BaseQualifier[] | undefined) {
         state.qualifierList = qualifiers?.map(q => ({
             ...q,
             date: new Date(q.date),
-        })) || null;
+        })) ?? null;
     },
-    async setMatchups (state, matchups: MatchupList[] | undefined) {
+    setMatchups (state, matchups: MatchupList[] | undefined) {
         state.matchupList = matchups?.map(matchup => {
             matchup.date = new Date(matchup.date);
             return matchup;
-        }) || [];
+        }) ?? [];
         state.matchupList.sort((a, b) => a.date.getTime() - b.date.getTime());
     },
-    async setMappools (state, mappools: Mappool[] | undefined) {
+    setMappools (state, mappools: Mappool[] | undefined) {
         state.mappools = mappools?.map(mappool => ({
             ...mappool,
             createdAt: new Date(mappool.createdAt),
@@ -138,13 +138,13 @@ export const mutations: MutationTree<OpenState> = {
                 ...slot,
                 createdAt: new Date(slot.createdAt),
             })),
-        })) || [];
+        })) ?? [];
     },
-    async setScores (state, scores: MatchupScore[] | undefined) {
-        state.scores = scores || null;
+    setScores (state, scores: MatchupScore[] | undefined) {
+        state.scores = scores ?? null;
     },
-    async setStaffList (state, staff: StaffList[] | undefined) {
-        state.staffList = staff || null;
+    setStaffList (state, staff: StaffList[] | undefined) {
+        state.staffList = staff ?? null;
     },
 };
 

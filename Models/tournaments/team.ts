@@ -120,7 +120,7 @@ export class Team extends BaseEntity {
             name: this.name,
             abbreviation: this.abbreviation,
             timezoneOffset: this.timezoneOffset,
-            avatarURL: this.avatarURL || undefined,
+            avatarURL: this.avatarURL ?? undefined,
             manager: {
                 ID: this.manager.ID,
                 username: this.manager.osu.username,

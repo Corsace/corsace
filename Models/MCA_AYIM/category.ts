@@ -82,7 +82,7 @@ export class Category extends BaseEntity {
             maxNominations: this.maxNominations,
             type: CategoryType[this.type],
             mode: this.mode.name,
-            isFiltered: this.filter && (this.filter.minLength || this.filter.maxLength || this.filter.minBPM || this.filter.maxBPM || this.filter.minSR || this.filter.maxSR || this.filter.minCS || this.filter.maxCS || this.filter.topOnly) ? true : false,
+            isFiltered: this.filter && (this.filter.minLength ?? this.filter.maxLength ?? this.filter.minBPM ?? this.filter.maxBPM ?? this.filter.minSR ?? this.filter.maxSR ?? this.filter.minCS ?? this.filter.maxCS ?? this.filter.topOnly) ? true : false,
             filter: this.filter ?? undefined, 
         };
     };

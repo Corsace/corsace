@@ -6,8 +6,16 @@ import { Beatmapset } from "../../../Models/beatmapset";
 import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { parseQueryParam } from "../../../Server/utils/query";
 
-function mapBeatmapsetRecord (response: Record<string, any>): BeatmapsetRecord[] {
-    return response.map(res => ({
+function mapBeatmapsetRecord (response: {
+    beatmapset_ID: number;
+    beatmapset_artist: string;
+    beatmapset_title: string;
+    creator_ID: number;
+    creator_osuUserid: string;
+    creator_osuUsername: string;
+    value: string;
+}[]): BeatmapsetRecord[] {
+    return Object.values(response).map<BeatmapsetRecord>(res => ({
         beatmapset: {
             id: res.beatmapset_ID,
             artist: res.beatmapset_artist,
@@ -22,12 +30,28 @@ function mapBeatmapsetRecord (response: Record<string, any>): BeatmapsetRecord[]
     }));
 }
 
-function valueToFixed (record: any, digits = 2): any {
+function valueToFixed<T> (record: T & { value: any }, digits = 2): T {
     record.value = parseFloat(record.value).toFixed(digits);
     return record;
 }
 
-function padLengthWithZero (lengthRecord: Record<string, any>): Record<string, any> {
+function padLengthWithZero (lengthRecord: {
+    beatmapset_ID: number;
+    beatmapset_artist: string;
+    beatmapset_title: string;
+    creator_ID: number;
+    creator_osuUserid: string;
+    creator_osuUsername: string;
+    value: string;
+}): {
+    beatmapset_ID: number;
+    beatmapset_artist: string;
+    beatmapset_title: string;
+    creator_ID: number;
+    creator_osuUserid: string;
+    creator_osuUsername: string;
+    value: string;
+} {
     // e.g. a time like 6:5 should actually be 6:05
     const value = lengthRecord.value;
     if (value.slice(-2, -1) === ":") {
@@ -42,9 +66,13 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
-    const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
-    const modeId = ModeDivisionType[modeString];
+    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
+    const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
+    if (!(modeString in ModeDivisionType)) {
+        ctx.body = { error: "Invalid mode, please use standard, taiko, fruits or mania" };
+        return;
+    }
+    const modeId = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
 
     const [
         playcount,
@@ -61,7 +89,16 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
         avgSpinners,
         highestSr,
         lowestSr,
-    ] = await Promise.all([
+    ]: {
+        beatmapset_ID: number;
+        beatmapset_artist: string;
+        beatmapset_title: string;
+        creator_ID: number;
+        creator_osuUserid: string;
+        creator_osuUsername: string;
+        value: string;
+        length?: string;
+    }[][] = await Promise.all([
         // Playcount
         Beatmapset
             .queryRecord(year, modeId)
@@ -212,9 +249,13 @@ recordsRouter.get("/mappers", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
-    const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
-    const modeId = ModeDivisionType[modeString];
+    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
+    const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
+    if (!(modeString in ModeDivisionType)) {
+        ctx.body = { error: "Invalid mode, please use standard, taiko, fruits or mania" };
+        return;
+    }
+    const modeId = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
 
     const [
         mostRanked,
@@ -224,7 +265,7 @@ recordsRouter.get("/mappers", async (ctx) => {
         mostPlayed,
         highestAvgSr,
         lowestAvgSr,
-    ] = await Promise.all([
+    ]: MapperRecord[][] = await Promise.all([
         // Most Ranked
         createQueryBuilder()
             .from(sub => {

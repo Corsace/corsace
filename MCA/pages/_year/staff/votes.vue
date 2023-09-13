@@ -188,11 +188,11 @@ export default class Votes extends Vue {
     get selectedCategoryInfo (): UserVote[] | ResultVote[] {
         if (this.viewOption === "voters") {
             const group = this.votesByCategory.find(group => group.category === this.selectedCategoryId);
-            return group?.userVotes || [];
+            return group?.userVotes ?? [];
         }
 
         const group = this.resultsByCategory.find(group => group.category === this.selectedCategoryId);
-        return group?.results || [];
+        return group?.results ?? [];
     }
 
     get canSearch (): boolean {
@@ -238,7 +238,7 @@ export default class Votes extends Vue {
         }
     }
 
-    async changeView (option: ViewOption) {
+    changeView (option: ViewOption) {
         if (option !== this.viewOption) {
             this.votes = [];
             this.selectedCategoryId = null;

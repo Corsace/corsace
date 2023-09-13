@@ -104,7 +104,7 @@ export default class VotingBox extends Vue {
     @stageModule.Action swapVotes;
 
     @Watch("relatedCandidacies", { immediate: true })
-    async onChanged () {
+    onChanged () {
         this.reset();
     }
 
@@ -126,37 +126,43 @@ export default class VotingBox extends Vue {
             if (targetMap)
                 target = targetMap.title;
             else
-                target = vote.beatmapset?.title || "";
+                target = vote.beatmapset?.title ?? "";
         } else 
-            target = vote.user?.osu.username || "";
+            target = vote.user?.osu.username ?? "";
         
         return vote.choice + " - " + target;
     }
     
-    dragStart (e, vote: Vote) {
+    dragStart (e: DragEvent, vote: Vote) {
         this.dragging = vote.ID;
+        if (!e.dataTransfer)
+            return;
         e.dataTransfer.dropEffect = "move";
         e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("voteId", vote.ID);
+        e.dataTransfer.setData("voteId", vote.ID.toString());
     }
 
-    toggleHighlightClass (e, voteId: number) {
-        const id = e.dataTransfer.getData("voteId");
+    toggleHighlightClass (e: DragEvent, voteId: number) {
+        if (!e.dataTransfer || !e.target || !(e.target instanceof HTMLElement))
+            return;
 
-        if (id != voteId) {
+        const id = e.dataTransfer.getData("voteId");
+        if (id !== voteId.toString())
             e.target.classList.toggle("voting-item__" + this.selectedMode);
-        }
     }
 
     dragEnd () {
         this.dragging = null;
     }
 
-    async dropData (e, vote: Vote) {
+    dropData (e: DragEvent, vote: Vote) {
+        if (!e.dataTransfer)
+            return;
+
         this.dragging = null;
         this.toggleHighlightClass(e, vote.ID);
         const id = e.dataTransfer.getData("voteId");
-        const draggedIndex = this.newOrder.findIndex(v => v.ID == id);
+        const draggedIndex = this.newOrder.findIndex(v => v.ID.toString() == id);
         
         if (draggedIndex !== -1 && vote && this.newOrder[draggedIndex].ID !== vote.ID) {
             const replacedChoice = vote.choice;

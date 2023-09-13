@@ -44,12 +44,12 @@ export default class AdminModalYear extends Vue {
     onInfoChanged (info: MCAInfo | null) {
         let now = new Date;
         this.mcaInfo = {
-            year: info?.name || now.getUTCFullYear() - 1,
-            nominationStart: this.formatDate(info?.nomination.start || now),
-            nominationEnd: this.formatDate(info?.nomination.end || this.addWeeks(now)),
-            votingStart: this.formatDate(info?.voting.start || this.addWeeks(now, 2)),
-            votingEnd: this.formatDate(info?.voting.end || this.addWeeks(now, 4)),
-            results: this.formatDate(info?.results || this.addWeeks(now, 5)),
+            year: info?.name ?? now.getUTCFullYear() - 1,
+            nominationStart: this.formatDate(info?.nomination.start ?? now),
+            nominationEnd: this.formatDate(info?.nomination.end ?? this.addWeeks(now)),
+            votingStart: this.formatDate(info?.voting.start ?? this.addWeeks(now, 2)),
+            votingEnd: this.formatDate(info?.voting.end ?? this.addWeeks(now, 4)),
+            results: this.formatDate(info?.results ?? this.addWeeks(now, 5)),
         };
     }
 

@@ -263,14 +263,14 @@ export class User extends BaseEntity {
         }
         
         // Ordering
-        const order = query.order || "ASC";
+        const order = query.order ?? "ASC";
         let orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
         if (query.option && query.option.toLowerCase().includes("alph"))
             orderMethod = "user_osuUsername";
             
         // Search
         return queryBuilder
-            .skip(parseInt(query.skip || "") || 0)
+            .skip(parseInt(query.skip ?? "") ?? 0)
             .take(50)
             .orderBy(orderMethod, order)
             .getMany();
@@ -313,6 +313,8 @@ export class User extends BaseEntity {
         }
         
         if (category.filter?.rookie) {
+            if (!(modeString in ModeDivisionType))
+                modeString = "standard";
             queryBuilder
                 .andWhere((qb) => {
                     const subQuery = qb.subQuery()
@@ -320,7 +322,7 @@ export class User extends BaseEntity {
                         .innerJoin("beatmapset.beatmaps", "beatmap")
                         .select("min(year(approvedDate))")
                         .andWhere("creatorID = user.ID")
-                        .andWhere(`beatmap.modeID = ${ModeDivisionType[modeString]}`)
+                        .andWhere(`beatmap.modeID = ${ModeDivisionType[modeString as keyof typeof ModeDivisionType]}`)
                         .andWhere(`beatmap.difficulty NOT LIKE '%\\'s%'`)
                         .andWhere(`beatmap.difficulty NOT LIKE '%s\\'%'`) // These 2 lines are to check for posessives in diff names which would indicate a guest diff
                         .getQuery();
@@ -341,7 +343,7 @@ export class User extends BaseEntity {
         }
         
         // Ordering
-        const order = query.order || "ASC";
+        const order = query.order ?? "ASC";
         let orderMethod = "user_osuUsername";
         if (query.option && query.option.toLowerCase().includes("id"))
             orderMethod = "CAST(user_osuUserid AS UNSIGNED)";
@@ -359,10 +361,11 @@ export class User extends BaseEntity {
     }
 
     static filterBWSBadges (badges: osuV2UserBadge[], modeID = 1) {
-        if (modeID < 1 || modeID > 4)
+        if (!(modeID in bwsFilter))
             throw new Error("Invalid mode ID");
-
-        return badges.filter(badge => !bwsFilter[modeID].test(badge.description) || !bwsFilter[modeID].test(badge.image_url));
+        
+        const filter = bwsFilter[modeID as keyof typeof bwsFilter];
+        return badges.filter(badge => !filter.test(badge.description) || !filter.test(badge.image_url));
     }
 
     private async refreshOsuToken (this: User) {
@@ -379,16 +382,22 @@ export class User extends BaseEntity {
         if (this[tokenType].refreshToken)
             return this[tokenType].refreshToken!;
 
-        const res = await User
+        const sqlCol = tokenType === "osu" ? "osuRefreshtoken" : "discordRefreshtoken";
+
+        const res: { 
+            osuRefreshtoken?: string;
+            discordRefreshtoken?: string;
+        } | undefined = await User
             .createQueryBuilder("user")
-            .select(tokenType === "osu" ? "osuRefreshtoken" : "discordRefreshtoken")
+            .select(sqlCol)
             .where(`ID = ${this.ID}`)
             .getRawOne();
 
-        if (!res[tokenType === "osu" ? "osuRefreshtoken" : "discordRefreshtoken"])
-            throw new Error("User does not have a refresh token");
+        const val = res?.[sqlCol];
+        if (!val)
+            throw new Error("User does not have an access token");
 
-        return res[tokenType === "osu" ? "osuRefreshtoken" : "discordRefreshtoken"];
+        return val;
     }
 
     public async getAccessToken (tokenType: "osu" | "discord" = "osu"): Promise<string> {
@@ -404,22 +413,26 @@ export class User extends BaseEntity {
 
         const sqlCol = tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken";
 
-        const res = await User
+        const res: { 
+            osuAccesstoken?: string;
+            discordAccesstoken?: string;
+        } | undefined = await User
             .createQueryBuilder("user")
             .select(sqlCol)
             .where(`ID = ${this.ID}`)
             .getRawOne();
 
-        if (!res[sqlCol])
+        const val = res?.[sqlCol];
+        if (!val)
             throw new Error("User does not have an access token");
 
-        return res[sqlCol];
+        return val;
     }
 
     // TODO: Cache osu! API data because this is a lot of API calls
     public async getOsuAPIV2Data (modeID: ModeDivisionType = 1): Promise<osuV2Me | osuV2User> {
         try {
-            const accessToken = this.osu.accessToken || await this.getAccessToken("osu");
+            const accessToken = this.osu.accessToken ?? await this.getAccessToken("osu");
             return osuV2Client.getMe(accessToken);
         } catch (e) {
             // Invalid access token or it's not found
@@ -433,30 +446,30 @@ export class User extends BaseEntity {
         if (modeID === ModeDivisionType.storyboard)
             return;
 
-        const data: osuV2Me | osuV2User = osuV2Data || await this.getOsuAPIV2Data(modeID);
+        const data: osuV2Me | osuV2User = osuV2Data ?? await this.getOsuAPIV2Data(modeID);
         let statistics: osuV2UserStatistics | undefined = undefined;
         if ("statistics_rulesets" in data)
-            statistics = data.statistics_rulesets?.[modeIDToMode()[modeID]] || data.playmode == modeIDToMode()[modeID] ? data.statistics || undefined : undefined;
+            statistics = data.statistics_rulesets?.[modeIDToMode()[modeID]] ?? data.playmode == modeIDToMode()[modeID] ? data.statistics ?? undefined : undefined;
         else
-            statistics = data.statistics || undefined;
+            statistics = data.statistics ?? undefined;
 
-        const badges = User.filterBWSBadges(data.badges || [], modeID);
+        const badges = User.filterBWSBadges(data.badges ?? [], modeID);
 
         const userStatistics = 
-            this.userStatistics?.find(stat => stat.modeDivision.ID === modeID) || 
+            this.userStatistics?.find(stat => stat.modeDivision.ID === modeID.valueOf()) ?? 
             (await UserStatistics
                 .createQueryBuilder("stats")
                 .innerJoinAndSelect("stats.user", "user")
                 .innerJoinAndSelect("stats.modeDivision", "mode")
                 .where("user.ID = :userID", { userID: this.ID })
                 .andWhere("mode.ID = :modeID", { modeID })
-                .getOne()) ||
+                .getOne()) ??
             new UserStatistics();
 
-        userStatistics.rank = statistics?.global_rank || 0;
-        userStatistics.pp = statistics?.pp || 0;
+        userStatistics.rank = statistics?.global_rank ?? 0;
+        userStatistics.pp = statistics?.pp ?? 0;
         userStatistics.BWS = Math.pow(userStatistics.rank, Math.pow(0.9937, Math.pow(badges.length, 2)));
-        if (!this.userStatistics?.find(stat => stat.modeDivision.ID === modeID)) {
+        if (!this.userStatistics?.find(stat => stat.modeDivision.ID === modeID.valueOf())) {
             userStatistics.user = this;
             userStatistics.modeDivision = (await ModeDivision.modeSelect(modeIDToMode()[modeID]))!;
         }

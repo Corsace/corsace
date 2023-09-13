@@ -70,7 +70,7 @@ export default class AdminInputs extends Vue {
         this.$emit("input", updatedInput);
     }
     
-    updatedInput = {};
+    updatedInput: Record<string, string | number> = {};
 
     mounted () {
         this.updatedInput = JSON.parse(JSON.stringify(this.value));

@@ -19,8 +19,8 @@ export const mutations: MutationTree<StreamState> = {
         state.key = data.key;
         state.tournamentID = data.tournamentID;
     },
-    async setScores (state, scores: MatchupScore[] | undefined) {
-        state.scores = scores || null;
+    setScores (state, scores: MatchupScore[] | undefined) {
+        state.scores = scores ?? null;
     },
 };
 

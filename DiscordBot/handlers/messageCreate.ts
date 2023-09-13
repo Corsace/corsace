@@ -42,20 +42,20 @@ export default async function messageCreate (m: Message) {
             try {
                 await command.run(m);
             } catch (e) {
-                errorHandler(e, m);
+                await errorHandler(e, m);
             }
         }
     }
 
     // Check for an osu! profile linked
     if (profileRegex.test(m.content) && !commandRun)
-        profile.run(m);
+        await profile.run(m);
 
     // Check for an osu! beatmap linked
     if (beatmapRegex.test(m.content) && !commandRun)
-        beatmap.run(m);
+        await beatmap.run(m);
 
     // Check if a tournament map was uploaded/linked
-    if ((m.attachments.first()?.url || /https?:\/\/\S+/.test(m.content)) && !commandRun)
-        autoSubmit(m);
+    if ((m.attachments.first()?.url ?? /https?:\/\/\S+/.test(m.content)) && !commandRun)
+        await autoSubmit(m);
 }

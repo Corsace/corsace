@@ -119,7 +119,7 @@ import { namespace } from "vuex-class";
 
 import { Qualifier as QualifierInterface } from "../../../Interfaces/qualifier";
 import { Tournament } from "../../../Interfaces/tournament";
-import { Stage } from "../../../Interfaces/stage";
+import { Stage, StageType } from "../../../Interfaces/stage";
 import { Team } from "../../../Interfaces/team";
 
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
@@ -189,7 +189,7 @@ export default class Qualifier extends Vue {
     };
 
     get qualifiersStage (): Stage | null {
-        return this.tournament?.stages.find(s => s.stageType === 0) || null;
+        return this.tournament?.stages.find(s => s.stageType === StageType.Qualifiers) ?? null;
     }
 
     async getQualifier (): Promise<QualifierInterface | null> {
@@ -205,9 +205,9 @@ export default class Qualifier extends Vue {
         } else
             ID = parseInt(this.$route.params.id);
 
-        const { data: qualifierData } = await this.$axios.get(`/api/qualifier/${ID}`);
+        const { data } = await this.$axios.get<{ success: false, error: string } | { success: true, qualifierData: QualifierInterface }>(`/api/qualifier/${ID}`);
         this.loading = false;
-        return qualifierData.error ? null : qualifierData;
+        return !data.success ? null : data.qualifierData;
     }
 
     async mounted () {

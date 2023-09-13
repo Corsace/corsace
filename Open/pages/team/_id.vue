@@ -545,19 +545,25 @@ export default class Team extends Vue {
             return this.team;
         }
 
-        const { data: teamData } = await this.$axios.get(`/api/team/${this.$route.params.id}`);
+        const { data: teamData } = await this.$axios.get<{ error: string } | TeamInterface>(`/api/team/${this.$route.params.id}`);
+        if ("error" in teamData) {
+            alert(teamData.error);
+            this.loading = false;
+            return null;
+        }
+
         if (teamData?.qualifier)
             teamData.qualifier.date = new Date(teamData.qualifier.date);
         this.loading = false;
-        return teamData.error ? null : teamData;
+        return teamData;
     }
 
     async mounted () {
         this.teamData = await this.getTeam(false);
-        this.name = this.teamData?.name || "";
-        this.abbreviation = this.teamData?.abbreviation || "";
-        this.timezone = this.teamData?.timezoneOffset.toString() || getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone).toString();
-        this.previewBase64 = this.teamData?.avatarURL || null;
+        this.name = this.teamData?.name ?? "";
+        this.abbreviation = this.teamData?.abbreviation ?? "";
+        this.timezone = this.teamData?.timezoneOffset.toString() ?? getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone).toString();
+        this.previewBase64 = this.teamData?.avatarURL ?? null;
     }
 
     get isManager (): boolean {
@@ -677,7 +683,7 @@ export default class Team extends Vue {
 
         if (res.success) {
             await this.$store.dispatch("open/setTeam");
-            this.$router.push("/team/create");
+            await this.$router.push("/team/create");
         } else
             alert(res.error);
     }

@@ -13,8 +13,13 @@ staffNominationsRouter.use(isStaff);
 staffNominationsRouter.get("/", async (ctx) => {
     const categoryIDString = parseQueryParam(ctx.query.category);
     
-    if (!categoryIDString || !/\d+/.test(categoryIDString))
-        return ctx.body = { error: "Invalid category ID given!" };
+    if (!categoryIDString || !/\d+/.test(categoryIDString)) {
+        ctx.body = { 
+            success: false,
+            error: "Invalid category ID given!",
+        };
+        return;
+    }
 
     const categoryID = parseInt(categoryIDString);
 
@@ -94,14 +99,22 @@ staffNominationsRouter.get("/", async (ctx) => {
         return staffNom;
     });
 
-    ctx.body = staffNominations;
+    ctx.body = {
+        success: true,
+        staffNominations,
+    };
 });
 
 // Endpoint for accepting a nomination
 staffNominationsRouter.post("/:id/update", async (ctx) => {
     const nominationID = ctx.params.id;
-    if (!nominationID || !/\d+/.test(nominationID))
-        return ctx.body = { error: "Invalid nomination ID given!" };
+    if (!nominationID || !/\d+/.test(nominationID)) {
+        ctx.body = { 
+            success: false,
+            error: "Invalid nomination ID given!",
+        };
+        return;
+    }
 
     const nomination = await Nomination.findOneOrFail({
         where: {
@@ -116,6 +129,7 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
     await nomination.save();
 
     ctx.body = {
+        success: true,
         isValid: ctx.request.body.isValid,
         reviewer: ctx.state.user.osu.username,
         lastReviewedAt: new Date,

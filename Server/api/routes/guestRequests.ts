@@ -19,8 +19,13 @@ interface BodyData {
 
 async function validateBody (user: User, year: number, data: BodyData, currentRequestId?: number): Promise<{ error: string } | { beatmap: Beatmap; mode: ModeDivision; }> {
     // Validate mode
-    const modeId = ModeDivisionType[data.mode];
-    const mode = await ModeDivision.findOneOrFail(modeId);
+    if (!(data.mode in ModeDivisionType)) {
+        return { 
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
+    }
+    const modeId = ModeDivisionType[data.mode as keyof typeof ModeDivisionType];
+    const mode = await ModeDivision.findOneOrFail({ where: { ID: modeId }});
     
     if (isEligibleFor(user, mode.ID, year)) {
         return {
@@ -54,7 +59,7 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     }
 
     // Get beatmap information
-    const beatmaps = (await axios.get(`${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&b=${beatmapID}`)).data;
+    const beatmaps = (await axios.get(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&b=${beatmapID}`)).data;
     if (beatmaps.length !== 1) {
         return { error: "Error in obtaining beatmap info!"};
     }

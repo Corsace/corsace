@@ -111,15 +111,15 @@ export default class Results extends Vue {
     get filtCol () {
         return this.columns.filter(
             c => (!c.category || c.category === this.section) &&
-            ((c.mobileOnly && this.mobile) || 
-             (c.desktopOnly && !this.mobile) ||
+            ((c.mobileOnly && this.mobile) ??
+             (c.desktopOnly && !this.mobile) ??
              (!c.mobileOnly && !c.desktopOnly))
         );
     }
 
-    mounted () {
+    async mounted () {
         if (!(this.phase?.phase === "results" || this.isMCAStaff)) {
-            this.$router.push("/" + this.$route.params.year);
+            await this.$router.push("/" + this.$route.params.year);
             return;
         }
         

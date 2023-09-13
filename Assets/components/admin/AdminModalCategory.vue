@@ -7,7 +7,7 @@
             />
 
             <div 
-                v-if="isBeatmapsetType" 
+                v-if="isBeatmapsetType && category" 
                 class="admin-popout__section"
             >
                 auto filters
@@ -18,7 +18,7 @@
                 >
             </div>
             <div 
-                v-else-if="isUsersType"
+                v-else-if="isUsersType && filterParams"
                 class="admin-popout__section"
             >
                 rookie
@@ -29,13 +29,14 @@
                 >
             </div>
 
-            <div v-if="category.isFiltered && isBeatmapsetType">
+            <div v-if="category?.isFiltered && isBeatmapsetType">
                 <admin-inputs
                     v-model="filterParams"
                     :fields="filterFields"
                 />
 
                 <div 
+                    v-if="filterParams"
                     class="admin-popout__section"
                 >
                     top diff Only
@@ -86,10 +87,10 @@ export default class AdminModalCategory extends Vue {
     @Watch("info", { immediate: true })
     onInfoChanged (info: CategoryInfo | null) {
         this.category = {
-            name: info?.name || "",
-            type: info?.type !== undefined ? CategoryType[info.type] : CategoryType.Beatmapsets,
-            maxNominations: info?.maxNominations || 3,
-            isFiltered: info?.isFiltered || false,
+            name: info?.name ?? "",
+            type: info?.type && info.type in CategoryType ? CategoryType[info.type as keyof typeof CategoryType] : CategoryType.Beatmapsets,
+            maxNominations: info?.maxNominations ?? 3,
+            isFiltered: info?.isFiltered ?? false,
         };
 
         this.filterParams = {

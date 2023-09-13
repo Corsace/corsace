@@ -23,21 +23,31 @@ const modes = [
     "mania",
 ];
 
-osuRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext<any>, next) => {
+osuRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext, next) => {
     const site = parseQueryParam(ctx.query.site);
     if (!site) {
         ctx.body = "No site specified";
         return;
     }
+    if (!(site in config)) {
+        ctx.body = "Invalid site";
+        return;
+    }
+    const configInfo = config[site as keyof typeof config];
+    if (typeof configInfo === "object" && !("publicUrl" in configInfo)) {
+        ctx.body = "Invalid config";
+        return;
+    }
 
-    const baseURL = ctx.query.site ? (config[site] ? config[site].publicUrl : config.corsace.publicUrl) : "";
-    const params = ctx.query.redirect ?? "";
-    const redirectURL = baseURL + params ?? "back";
+    const baseURL = ctx.query.site ? (typeof configInfo === "object" ? configInfo.publicUrl : config.corsace.publicUrl) : "";
+    const params = parseQueryParam(ctx.query.redirect) ?? "";
+    const redirectURL = (baseURL + params) ?? "back";
     ctx.cookies.set("redirect", redirectURL, { overwrite: true });
     await next();
 }, passport.authenticate("oauth2", { scope: scopes }));
 
-osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
+osuRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
             await user.save();
@@ -67,7 +77,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
             .map(modeID => ctx.state.user.refreshStatistics(modeID, data)));
 
         // Username changes
-        const usernames: string[] = data.previous_usernames || [];
+        const usernames: string[] = data.previous_usernames ?? [];
         for (const name of usernames) {
             let nameChange = await UsernameChange.findOne({ 
                 where: { 
@@ -122,8 +132,8 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                     eligibility.user = ctx.state.user;
                 }
                 for (const eligibleMode of eligibleModes) {
-                    if (!eligibility[eligibleMode]) {
-                        eligibility[eligibleMode] = true;
+                    if (eligibleMode in ModeDivisionType) {
+                        eligibility[eligibleMode as keyof typeof ModeDivisionType] = true;
                         eligibility.storyboard = true;
                     }
                 }
@@ -169,8 +179,9 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext<any>, next) => {
                         eligibility.user = ctx.state.user;
                     }
                     
-                    if (!eligibility[modes[beatmap.mode || 0]]) {
-                        eligibility[modes[beatmap.mode || 0]] = true;
+                    const mode = modes[beatmap.mode ?? 0];
+                    if (mode in ModeDivisionType) {
+                        eligibility[mode as keyof typeof ModeDivisionType] = true;
                         eligibility.storyboard = true;
                         await eligibility.save();
                         const i = ctx.state.user.mcaEligibility.findIndex((e: MCAEligibility) => e.year === year);

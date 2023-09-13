@@ -21,7 +21,7 @@
                         {{ $t(`mca.main.stage.stage`) }}
                         <div :class="`index__modeInfo--time-line${viewTheme}`" />
                         <div class="index__modeInfo--time-stage">
-                            {{ $t(`mca.main.${phase.phase}`).split("").join(" ").toUpperCase() }}
+                            {{ $t(`mca.main.${phase.phase}`) }}
                         </div>
                     </div>
                     
@@ -33,7 +33,7 @@
                             {{ phase.phase === 'nominating' || phase.phase === 'voting' ? remainingDays : "00" }}
                         </div>
                         <div class="index__modeInfo--time-textLine" />
-                        {{ $t('mca.main.daysLeft').toUpperCase() }}
+                        {{ $t('mca.main.daysLeft') }}
                     </div>
 
                     <div class="index__modeInfo--time-bottomBorder" />
@@ -46,7 +46,7 @@
                 >
                     <div class="index__modeInfo--timeline">
                         <div class="index__mainHeader">
-                            {{ $t("mca.main.timeline").toUpperCase() }}
+                            {{ $t("mca.main.timeline") }}
                         </div>
                         <div class="index__modeInfo--timeline-phase">
                             <div 
@@ -56,7 +56,7 @@
                                     `index__modeInfo--${selectedMode}-${viewTheme}`
                                 ] : ''"
                             >
-                                {{ $t(`mca.main.nominating`).toUpperCase() }}
+                                {{ $t(`mca.main.nominating`) }}
                             </div>
                             <div 
                                 class="index__modeInfo--timeline-dot"
@@ -74,7 +74,7 @@
                                     `index__modeInfo--${selectedMode}-${viewTheme}`
                                 ] : ''"
                             >
-                                {{ $t(`mca.main.voting`).toUpperCase() }}
+                                {{ $t(`mca.main.voting`) }}
                             </div>
                             <div 
                                 class="index__modeInfo--timeline-dot"
@@ -92,7 +92,7 @@
                                     `index__modeInfo--${selectedMode}-${viewTheme}`
                                 ] : ''"
                             >
-                                {{ $t(`mca.main.results`).toUpperCase() }}
+                                {{ $t(`mca.main.results`) }}
                             </div>
                             <div 
                                 class="index__modeInfo--timeline-dot"
@@ -157,14 +157,14 @@
                     <div class="index__modeInfo--categories-line" />
                     <div class="index__categories">
                         <collapsible
-                            :title="$t('mca.main.categories.map').toUpperCase()"
+                            :title="$t('mca.main.categories.map')"
                             :list="beatmapCategories"
                             active
                             category-name
                             scroll
                         />
                         <collapsible
-                            :title="$t('mca.main.categories.user').toUpperCase()"
+                            :title="$t('mca.main.categories.user')"
                             :list="userCategories"
                             active
                             category-name
@@ -260,7 +260,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
 import { CategoryInfo } from "../../../Interfaces/category";
-import { MCA, MCAPhase } from "../../../Interfaces/mca";
+import { MCA, MCAPhase, PhaseType } from "../../../Interfaces/mca";
 import { UserMCAInfo } from "../../../Interfaces/user";
 
 import Collapsible from "../../../Assets/components/mca-ayim/Collapsible.vue";
@@ -309,7 +309,7 @@ export default class Index extends Vue {
     @mcaAyimModule.State selectedMode!: string;
     @mcaAyimModule.Getter phase!: MCAPhase | null;
     @mcaAyimModule.Getter isEligibleFor!: (mode: string) => boolean;
-    @mcaAyimModule.Mutation toggleGuestDifficultyModal!: boolean;
+    @mcaAyimModule.Mutation toggleGuestDifficultyModal!;
 
     @State viewTheme!: "light" | "dark";
 
@@ -321,18 +321,18 @@ export default class Index extends Vue {
     countString = ["0"];
 
     easingIterations = 20;
-    easing (easingVal) {
+    easing (easingVal: number) {
         return easingVal * (2 - easingVal);
     }
 
     get remainingDays (): number {
-        return Math.floor((this.phase?.endDate?.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+        return Math.floor(((this.phase?.endDate?.getTime() ?? Date.now()) - Date.now()) / (1000 * 60 * 60 * 24));
     }
 
     get currentModeInfo (): FrontInfo | undefined {
-        if (!this.info) return undefined;
+        if (!this.info || !(this.selectedMode in this.info)) return undefined;
 
-        return this.info[this.selectedMode];
+        return this.info[this.selectedMode as keyof typeof this.info];
     }
 
     get beatmapCategories (): CategoryInfo[] | undefined {
@@ -360,18 +360,20 @@ export default class Index extends Vue {
     }
     
     get organizers (): string {
-        return this.currentModeInfo?.organizers.join(", ") || "";
+        return this.currentModeInfo?.organizers.join(", ") ?? "";
     }
 
     get phaseText (): string {
         if (!this.phase) return "";
 
-        const text = {
+        const text: {
+            [key in PhaseType]?: string;
+        } = {
             nominating: "nominateNow",
             voting: "voteNow",
             results: "viewResults",
         };
-        return text[this.phase.phase];
+        return text[this.phase.phase] ?? "";
     }
 
     async mounted () {

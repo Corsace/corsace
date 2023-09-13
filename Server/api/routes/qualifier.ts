@@ -55,7 +55,7 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
             ID: t.ID,
             name: t.name,
             avatarURL: t.avatarURL,
-        })) || [],
+        })) ?? [],
         scores: [],
     };
 
@@ -107,7 +107,10 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
         }
     }
 
-    ctx.body = qualifierData;
+    ctx.body = {
+        success: true,
+        qualifierData,
+    };
 });
 
 export default qualifierRouter;

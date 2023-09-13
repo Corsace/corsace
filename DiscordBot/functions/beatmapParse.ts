@@ -29,7 +29,7 @@ export async function ojsamaParse (m: Message | ChatInputCommandInteraction, dif
         const { data } = await Axios.get(link, { responseType: "stream" });
         axiosData = data;
     } catch (e) {
-        m.reply("Can't download the map. Make sure the link is valid");
+        await m.reply("Can't download the map. Make sure the link is valid");
         return;
     }
     const zip = axiosData.pipe(Parse({ forceStream: true }));
@@ -115,7 +115,7 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
         bpm = timingPoints.reduce((acc, curr) => acc + curr.length * curr.bpm, 0) / timingPoints.reduce((acc, curr) => acc + curr.length, 0);
 
     // Obtaining star rating
-    const calc = new osu.std_diff().calc({map: beatmap, mods: slot.allowedMods || 0});
+    const calc = new osu.std_diff().calc({map: beatmap, mods: slot.allowedMods ?? 0});
     const aimSR = calc.aim;
     const speedSR = calc.speed;
     const sr = calc.total;
@@ -230,7 +230,7 @@ export async function ojsamaToCustom (m: Message | ChatInputCommandInteraction, 
         "difficultyrating": `${mappoolMap.customBeatmap.totalSR}`,
     });
     const set = [apiBeatmap];
-    const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slot.allowedMods || 0)), modsToAcronym(slot.allowedMods || 0), set);
+    const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slot.allowedMods ?? 0)), modsToAcronym(slot.allowedMods ?? 0), set);
     mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
     await respond(m, `Submitted \`${artist} - ${title} [${diff}]\` to \`${mappoolSlot}\``, [mappoolMapEmbed]);

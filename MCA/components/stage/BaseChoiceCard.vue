@@ -134,7 +134,7 @@ export default class BaseChoiceCard extends Vue {
     }
 
     get invalidNomination (): boolean {
-        return (this.currentNomination && !this.currentNomination.isValid) || false;
+        return (this.currentNomination && !this.currentNomination.isValid) ?? false;
     }
 
     async triggerAction () {

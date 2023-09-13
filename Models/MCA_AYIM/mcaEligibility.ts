@@ -32,7 +32,7 @@ export class MCAEligibility extends BaseEntity {
         user!: User;
 
     static whereMode (modeId: number, qb?: SelectQueryBuilder<MCAEligibility>): SelectQueryBuilder<MCAEligibility> {
-        const eligibilityQuery = qb || this.createQueryBuilder("eligibility");
+        const eligibilityQuery = qb ?? this.createQueryBuilder("eligibility");
         
         switch (modeId) {
             case ModeDivisionType.standard:

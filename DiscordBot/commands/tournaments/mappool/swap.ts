@@ -103,7 +103,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const order1Text = `${order1 === true ? "" : order1}`;
     const order2Text = `${order2 === true ? "" : order2}`;
 
-    const pool2 = pool2Text || pool1Text;
+    const pool2 = pool2Text ?? pool1Text;
 
     const tournament = await getTournament(m, channelID(m), "channel", unFinishedTournaments);
     if (!tournament) 

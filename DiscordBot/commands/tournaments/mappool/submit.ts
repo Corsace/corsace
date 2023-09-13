@@ -37,7 +37,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "pool" , paramType: "string"},
         { name: "slot", paramType: "string", postProcess: postProcessSlotOrder },
         { name: "difficulty", paramType: "string", optional: true },
@@ -47,7 +47,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, slot, order, difficulty } = params;
 
-    const components = await mappoolComponents(m, pool, slot, order || true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments);
+    const components = await mappoolComponents(m, pool, slot, order ?? true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments);
     if (!components || !("mappoolMap" in components)) {
         if (components && "slotMod" in components)
             await respond(m, "Invalid slot");
@@ -63,7 +63,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     // Obtain beatmap data
-    const beatmapData = await ojsamaParse(m, difficulty || "", link);
+    const beatmapData = await ojsamaParse(m, difficulty ?? "", link);
     if (!beatmapData?.beatmap) {
         await respond(m, `Can't find **${difficulty !== "" ? `[${difficulty}]` : "a single difficulty(????)"}** in ur osz`);
         return;

@@ -210,7 +210,7 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
                     return ctx.body = {
                         error: "Beatmap exceeds maximum CS requirement!", 
                     };
-                if ((category.filter.topOnly || category.mode.ID === ModeDivisionType.storyboard)) {
+                if ((category.filter.topOnly ?? category.mode.ID === ModeDivisionType.storyboard.valueOf())) {
                     const set = await Beatmap
                         .createQueryBuilder("beatmap")
                         .where("beatmapsetID = :id", { id: beatmap.beatmapsetID })

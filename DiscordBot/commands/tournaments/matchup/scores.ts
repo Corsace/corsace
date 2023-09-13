@@ -58,12 +58,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .map(score => {
             // Identify the user, team, and mp like you're currently doing
             const user = score.user?.osu.username;
-            const team = teams.find(team => team.members.some(member => member.ID === score.user?.ID))?.name || "N/A";
-            const mp = matchups.find(matchup => matchup.sets?.some(set => set.maps?.some(map => map.scores?.some(s => s.ID === score.ID)) ?? false))?.mp || "N/A";
+            const team = teams.find(team => team.members.some(member => member.ID === score.user?.ID))?.name ?? "N/A";
+            const mp = matchups.find(matchup => matchup.sets?.some(set => set.maps?.some(map => map.scores?.some(s => s.ID === score.ID)) ?? false))?.mp ?? "N/A";
 
             // Obtain map name
             const map = maps.find(map => map.scores?.some(s => s.ID === score.ID));
-            const mapName = mapNames.find(mapName => mapName === `${map?.map?.slot?.acronym}${map?.map?.order}`) || "N/A";
+            const mapName = mapNames.find(mapName => mapName === `${map?.map?.slot?.acronym}${map?.map?.order}`) ?? "N/A";
 
             // Return the combined data
             return `${user},${team},${mp},${mapName},${score.score}`;

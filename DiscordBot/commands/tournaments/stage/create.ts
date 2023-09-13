@@ -95,15 +95,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
     stageType = stageType.replace(/\s/g, "").charAt(0).toUpperCase() + stageType.replace(/\s/g, "").slice(1);
-    if (StageType[stageType] === undefined) {
+    if (!(stageType in StageType)) {
         await respond(m, "DUDE????? Provide a valid type for ur stage");
         return;
     }
-    if (StageType[stageType] === StageType.Qualifiers && tournament.stages.find(s => s.stageType === StageType.Qualifiers)) {
+    const stageTypeEnum = StageType[stageType as keyof typeof StageType];
+    if (stageTypeEnum === StageType.Qualifiers && tournament.stages.find(s => s.stageType === StageType.Qualifiers)) {
         await respond(m, "There can only be 1 qualifier stage and u already have 1");
         return;
     }
-    stage.stageType = StageType[stageType];
+    stage.stageType = stageTypeEnum;
 
     // Check for stage date validity
     const startText = m instanceof Message ? dateRegex.exec(m.content)?.[1] : m.options.getString("start");
@@ -118,7 +119,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         await respond(m, "Invalid timespan. Provide 2 dates in consecutive order.\n\n(e.g. `2021-01-01 2021-01-02`)");
         return;
     }
-    if (StageType[stageType] !== StageType.Qualifiers && (start.getTime() < tournament.registrations.end.getTime() || end.getTime() < tournament.registrations.end.getTime())) {
+    if (stageTypeEnum !== StageType.Qualifiers && (start.getTime() < tournament.registrations.end.getTime() || end.getTime() < tournament.registrations.end.getTime())) {
         await respond(m, "The stage overlaps with registrations. It's recommended to have between 2 weeks between registration end and the first stage's start in order to screen players as necessary");
         return;
     }
@@ -152,11 +153,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
     scoringMethod = scoringMethod.replace(/\s/g, "").charAt(0).toUpperCase() + scoringMethod.replace(/\s/g, "").slice(1);
-    if (ScoringMethod[scoringMethod] === undefined) {
+    if (!(scoringMethod in ScoringMethod)) {
         await respond(m, "Provide a valid scoring method for ur stage. Come on .");
         return;
     }
-    stage.scoringMethod = ScoringMethod[scoringMethod];
+    stage.scoringMethod = ScoringMethod[scoringMethod as keyof typeof ScoringMethod];
 
     // Check for initial + final team count validity
     let initial: number | null = 0;
@@ -270,7 +271,7 @@ async function stageDone (m: Message | ChatInputCommandInteraction, stage: Stage
             { name: "Initial → Final Team Count", value: stage.initialSize + " → " + stage.finalSize, inline: true }
         )
         .setTimestamp(new Date)
-        .setAuthor({ name: commandUser(m).username, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined });
+        .setAuthor({ name: commandUser(m).username, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined });
 
     if (stage.stageType === StageType.Qualifiers)
         embed.addFields({ name: "Team Qualifier Choose Order", value: stage.qualifierTeamChooseOrder ? "Yes" : "No", inline: true });

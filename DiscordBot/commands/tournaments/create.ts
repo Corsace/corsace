@@ -406,7 +406,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         }
         if (i.customId === ids.role) {
             const roleString = (i as StringSelectMenuInteraction).values[0];
-            const roleType = TournamentRoleType[roleString];
+            const roleType = TournamentRoleType[roleString as keyof typeof TournamentRoleType];
             if (tournament.roles.find(r => r.roleType === roleType)) {
                 await i.reply("A role with this type already exists.\n If u wanna create another role with this type, manually create it and then mention it here");
                 setTimeout(async () => (await i.deleteReply()), 5000);
@@ -434,21 +434,25 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         if (stopped)
             return;
 
-        const role = msg.mentions.roles.first() || m.guild!.roles.cache.get(msg.content.split(" ")[0]);
+        const role = msg.mentions.roles.first() ?? m.guild!.roles.cache.get(msg.content.split(" ")[0]);
         if (!role) {
             const reply = await msg.reply("Invalid role");
             setTimeout(async () => {
-                reply.delete();
-                msg.delete();
+                await Promise.all([
+                    reply.delete(),
+                    msg.delete(),
+                ]);
             }, 5000);
             return;
         }
         const roleType = msg.content.split(" ")[1].charAt(0).toUpperCase() + msg.content.split(" ")[1].slice(1);
-        if (TournamentRoleType[roleType] === undefined) {
+        if (!(roleType in TournamentRoleType)) {
             const reply = await msg.reply(`Invalid role type ${roleType}`);
             setTimeout(async () => {
-                reply.delete();
-                msg.delete();
+                await Promise.all([
+                    reply.delete(),
+                    msg.delete(),
+                ]);
             }, 5000);
             return;
         }
@@ -456,22 +460,26 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
         if (dupeRole) {
             const reply = await msg.reply(`${role.name} (${role.id}) is already designated as \`${TournamentRoleType[dupeRole.roleType]}\``);
             setTimeout(async () => {
-                reply.delete();
-                msg.delete();
+                await Promise.all([
+                    reply.delete(),
+                    msg.delete(),
+                ]);
             }, 5000);
             return;
         }
         const tournamentRole = new TournamentRole();
         tournamentRole.roleID = role.id;
-        tournamentRole.roleType = TournamentRoleType[roleType];
+        tournamentRole.roleType = TournamentRoleType[roleType as keyof typeof TournamentRoleType];
         tournament.roles.push(tournamentRole);
 
         content += `\nDesignated role \`${role.name} (${role.id})\` for \`${roleType}\``;
         await roleMessage.edit(content);
         const reply = await msg.reply(`Designated role \`${role.name} (${role.id})\` for \`${roleType}\``);
         setTimeout(async () => {
-            reply.delete();
-            msg.delete();
+            await Promise.all([
+                reply.delete(),
+                msg.delete(),
+            ]);
         }, 5000);
     });
     roleCollector.on("end", () => timedOut(roleMessage, stopped, "Tournament creation"));
@@ -616,7 +624,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         }
         if (i.customId === ids.channel) {
             const channelTypeMenu = (i as StringSelectMenuInteraction).values[0];
-            const tournamentChannelType = TournamentChannelType[channelTypeMenu];
+            const tournamentChannelType = TournamentChannelType[channelTypeMenu as keyof typeof TournamentChannelType];
             if (tournament.channels.find(c => c.channelType === tournamentChannelType)) {
                 await i.reply("A channel of this type has already been designated. If u wanna create another channel of this type, manually create it and then mention it here");
                 setTimeout(async () => (await i.deleteReply()), 5000);
@@ -703,19 +711,21 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         if (stopped)
             return;
 
-        const channel = msg.mentions.channels.first() || m.guild!.channels.cache.get(msg.content.split(" ")[0]);
+        const channel = msg.mentions.channels.first() ?? m.guild!.channels.cache.get(msg.content.split(" ")[0]);
         if (!channel || (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement && channel.type !== ChannelType.GuildForum)) {
             const reply = await msg.reply("Invalid channel");
             setTimeout(async () => {
-                reply.delete();
-                msg.delete();
+                await Promise.all([
+                    reply.delete(),
+                    msg.delete(),
+                ]);
             }, 5000);
             return;
         }
         const channelType = msg.content.split(" ")[1].charAt(0).toUpperCase() + msg.content.split(" ")[1].slice(1);
         if (
             !channelType || 
-            TournamentChannelType[channelType] === undefined || 
+            !(channelType in TournamentChannelType) || 
             (channelType.toLowerCase() === "announcements" && channelType.toLowerCase() === "streamannouncements" && channel.type !== ChannelType.GuildAnnouncement) || 
             (channelType.toLowerCase() === "mappoolqa" && channel.type !== ChannelType.GuildForum) ||
             (channelType.toLowerCase() === "jobboard" && channel.type !== ChannelType.GuildForum) ||
@@ -723,8 +733,10 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         ) {
             const reply = await msg.reply(`Invalid channel type ${channelType}.\nAnnouncements should be a guild announcement channel\nMappool QA and Job Board should be guild forum channels\nAll other channels should be guild text channels`);
             setTimeout(async () => {
-                reply.delete();
-                msg.delete();
+                await Promise.all([
+                    reply.delete(),
+                    msg.delete(),
+                ]);
             }, 5000);
             return;
         }
@@ -732,8 +744,10 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         if (dupeChannel) {
             const reply = await msg.reply(`Channel <#${channel.id}> has already been designated for \`${TournamentChannelType[dupeChannel.channelType]}\``);
             setTimeout(async () => {
-                reply.delete();
-                msg.delete();
+                await Promise.all([
+                    reply.delete(),
+                    msg.delete(),
+                ]);
             }, 5000);
             return;
         }
@@ -741,7 +755,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         const tournamentChannel = new TournamentChannel();
         tournamentChannel.createdBy = creator;
         tournamentChannel.channelID = channel.id;
-        tournamentChannel.channelType = TournamentChannelType[channelType];
+        tournamentChannel.channelType = TournamentChannelType[channelType as keyof typeof TournamentChannelType];
         tournament.channels.push(tournamentChannel);
 
         const tags = forumTags()[tournamentChannel.channelType];
@@ -760,8 +774,10 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
         await channelMessage.edit(content);
         const reply = await msg.reply(`Channel <#${channel.id}> designated for \`${channelType}\``);
         setTimeout(async () => {
-            reply.delete();
-            msg.delete();
+            await Promise.all([
+                reply.delete(),
+                msg.delete(),
+            ]); 
         }, 5000);
     });
     channelCollector.on("end", () => timedOut(channelMessage, stopped, "Tournament creation"));
@@ -863,7 +879,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Corsace", value: tournament.isOpen ? "Open" : "Closed", inline: true }
         );
 
-    m.reply({ content: "Nice u saved the tournament!!!1\nHere's the tournament embed:", embeds: [embed] });
+    await m.reply({ content: "Nice u saved the tournament!!!1\nHere's the tournament embed:", embeds: [embed] });
 }
 
 const data = new SlashCommandBuilder()

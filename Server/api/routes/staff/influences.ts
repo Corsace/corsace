@@ -13,8 +13,8 @@ influencesReviewRouter.use(isMCAStaff);
 
 influencesReviewRouter.get("/", async (ctx) => {
     const filter = ctx.query.filter ?? undefined;
-    const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) || "") : 0;
-    const year = ctx.query.year ? parseInt(parseQueryParam(ctx.query.year) || "") : undefined;
+    const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
+    const year = ctx.query.year ? parseInt(parseQueryParam(ctx.query.year) ?? "") : undefined;
     const text = ctx.query.text ?? undefined;
     const query = Influence
         .createQueryBuilder("influence")

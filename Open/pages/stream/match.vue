@@ -155,7 +155,7 @@ import { MapStatus, Matchup as MatchupInterface } from "../../../Interfaces/matc
 import { MapOrderTeam, Stage } from "../../../Interfaces/stage";
 import { Round } from "../../../Interfaces/round";
 import { freemodRGB, freemodButFreerRGB, modsToRGB } from "../../../Interfaces/mods";
-import { Centrifuge, PublicationContext, Subscription } from "centrifuge";
+import { Centrifuge, ExtendedPublicationContext, Subscription } from "centrifuge";
 import { MappoolMap } from "../../../Interfaces/mappool";
 
 const streamModule = namespace("stream");
@@ -183,7 +183,7 @@ export default class Match extends Vue {
         if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.maps)
             return [];
 
-        return this.matchup.sets[this.matchup.sets.length - 1].maps!.filter(map => map.status === 2).sort((a, b) => a.order - b.order);
+        return this.matchup.sets[this.matchup.sets.length - 1].maps!.filter(map => map.status === MapStatus.Picked).sort((a, b) => a.order - b.order);
     }
 
     get pickedBy () {
@@ -191,7 +191,7 @@ export default class Match extends Vue {
             return null;
 
         // TODO: support for sets
-        const pickOrder = this.mapOrder[(this.matchup?.sets?.[this.matchup.sets.length - 1]?.order || 1) - 1]?.order?.filter(p => p.status === MapStatus.Picked);
+        const pickOrder = this.mapOrder[(this.matchup?.sets?.[this.matchup.sets.length - 1]?.order ?? 1) - 1]?.order?.filter(p => p.status === MapStatus.Picked);
         if (!pickOrder)
             return null;
     
@@ -214,11 +214,11 @@ export default class Match extends Vue {
             .map(set => ({
                 set,
                 order: this.stageOrRound?.mapOrder?.filter(mapOrder => mapOrder.set === set),
-            })) || [];
+            })) ?? [];
     }
 
     get firstTo () {
-        return (this.mapOrder[(this.matchup?.sets?.[this.matchup.sets.length - 1]?.order || 1) - 1]?.order?.filter(p => p.status === MapStatus.Picked).length || 0) / 2 + 1;
+        return (this.mapOrder[(this.matchup?.sets?.[this.matchup.sets.length - 1]?.order ?? 1) - 1]?.order?.filter(p => p.status === MapStatus.Picked).length ?? 0) / 2 + 1;
     }
 
     get slotMod (): string {
@@ -311,14 +311,14 @@ export default class Match extends Vue {
             this.latestMap = this.stageOrRound?.mappool
                 .flatMap(m => m.slots)
                 .flatMap(s => s.maps)
-                .find(m => m.beatmap?.ID === data.beatmapID) || null;
+                .find(m => m.beatmap?.ID === data.beatmapID) ?? null;
             this.matchup.team1Score = data.team1Score;
             this.matchup.team2Score = data.team2Score;
         }
         this.loading = false;
     }
 
-    handleData = (ctx: PublicationContext) => {
+    handleData = (ctx: ExtendedPublicationContext) => {
         console.log("publication", ctx);
 
         if (!ctx.channel.startsWith("matchup:"))
@@ -335,7 +335,7 @@ export default class Match extends Vue {
                 this.latestMap = this.stageOrRound?.mappool
                     .flatMap(m => m.slots)
                     .flatMap(s => s.maps)
-                    .find(m => m.beatmap?.ID === ctx.data.beatmapID) || null;
+                    .find(m => m.beatmap?.ID === ctx.data.beatmapID) ?? null;
                 break;
             case "matchFinished":
                 this.matchup.team1Score = ctx.data.team1Score;
