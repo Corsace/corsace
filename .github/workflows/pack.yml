@@ -1,4 +1,4 @@
-name: Build and publish
+name: Lint, build and publish
 
 on:
   push:
@@ -9,8 +9,29 @@ on:
       - '*'
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Install Node Dependencies
+        run: |
+          npm install
+
+      - name: Lint
+        run: |
+          npm run lint
+
   push_to_registry:
     runs-on: ubuntu-latest
+    needs: lint
     steps:
       -
         name: Checkout
