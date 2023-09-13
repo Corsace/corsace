@@ -114,7 +114,7 @@
     "mca": {
         "main": {
             "banner": "LET'S LOOK BACK <br> AT",
-            "click": "CLICK HERE TO ENTER",
+            "click": "여기를 클릭해 입장하세요",
             "welcome": "MCA에 오신것을 환영합니다",
             "voting": "투표",
             "nominating": "추천",
@@ -647,7 +647,7 @@
             "avatarInfo3": "모든 이름과 아바타는 스태프가 확인하게 됩니다",
             "avatarInfo4": "부적절하다고 판단되는 경우, 변경 요청을 통보받게 됩니다",
             "teamManagement": "팀 관리",
-            "teamManagers": "<div>팀 <span>매니저(즉, 귀하)</span>는 플레이하면서 캡틴의 역할을 수행할 수 있습니다.</div><div><span>또는</span> 팀과 함께 플레이 하지 않고 캡틴 역할만 수행이 가능합니다. </div>",
+            "teamManagers": "<div>팀 <span>매니저</span>(즉, 귀하)는 플레이하면서 캡틴의 역할을 수행할 수 있습니다.</div><div><span>또는</span> 팀과 함께 플레이 하지 않고 캡틴 역할만 수행이 가능합니다. </div>",
             "teamManagersFree": "만약 플레이하지 않고 매니저만 희망하는 경우, 플레이어 슬롯에 <span>들어가지 않습니다</span>",
             "selectManager": "팀과 함께 플레이하지 <span>않고</span>, <span>매니저 역할</span> 만 할 경우에 이 체크란을 선택해 주세요",
             "confirmManager": "<div>이것을 체크함으로써 나는 팀 매니저로만 활동할 것이며</div>, <div>어떤 경기에도 참여할 수 없음을 이해했습니다.</div>",
