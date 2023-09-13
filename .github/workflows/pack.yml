@@ -34,6 +34,8 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           eslint: true
+          eslint_extensions: ts,vue
+          eslint_args: --ignore-path .gitignore
 
   push_to_registry:
     runs-on: ubuntu-latest
