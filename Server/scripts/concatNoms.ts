@@ -53,7 +53,11 @@ async function script () {
             uniqCount++;
             console.log(`Running unique nomination ${uniqCount}/${uniqueNominations.length}`);
             // Get all nominations for the target user/map/set (including itself)
-            const dupeNoms = (await Nomination
+            const dupeNoms: {
+                ID: number;
+                isValid: boolean;
+                reviewerID: number;
+            }[] = (await Nomination
                 .createQueryBuilder("nomination")
                 .select("nomination.ID")
                 .addSelect("nomination.isValid")
@@ -73,7 +77,10 @@ async function script () {
             });
 
             // Get all nominators for the target user/map/set (including from itself)
-            const nominators = (await Nomination
+            const nominatorsQueryResult: {
+                nominator_ID: number;
+                categoryID: number;
+            }[] = (await Nomination
                 .createQueryBuilder("nomination")
                 .leftJoin("nomination.nominators", "nominator")
                 .select("nominator.ID")
@@ -84,7 +91,9 @@ async function script () {
                     setID: nom.beatmapsetID ?? null,
                 })
                 .getRawMany()
-            ).filter(v => v.categoryID === cat.ID && v.nominator_ID != null).map(v => v.nominator_ID);
+            );
+            
+            const nominators = nominatorsQueryResult.filter(v => v.categoryID === cat.ID && v.nominator_ID !== null).map(v => v.nominator_ID);
             // Check for validity conflicts, will decide on if a reviewer should still be assigned or not
             const conflict = dupeNoms.some(v => !v.isValid) && dupeNoms.some(v => v.isValid && v.reviewerID !== null);
             const reviewer = conflict ? null : dupeNoms.find(v => v.reviewerID !== null)?.reviewerID ?? null;

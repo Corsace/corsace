@@ -135,6 +135,8 @@ export default class Comments extends Vue {
             const {data} = await this.$axios.get(`/api/influences?user=${this.loggedInUser.osu.userID}&mode=${this.selectedMode}&year=${maxYear}`);
 
             if (!data.error) {
+                // TODO: Implement proper typing for when MCA coding begins again
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return data.influences;
             } else {
                 alert(data.error);
@@ -179,7 +181,7 @@ export default class Comments extends Vue {
     users: User[] = [];
     comment = "";
 
-    async search (userSearch) {
+    async search (userSearch: any) {
         try {
             const {data} = await this.$axios.get(`/api/users/search?user=${userSearch}`);
 

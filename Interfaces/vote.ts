@@ -55,12 +55,7 @@ export interface ResultVote extends StaffVote {
     placement: number;
 }
 
-export interface UserVote {
-    voter: {
-        osuID: string;
-        osuUsername: string;
-        discordUsername: string;
-    },
+export interface UserVote extends StaffVote {
     votes: ResultVote[]
 }
 

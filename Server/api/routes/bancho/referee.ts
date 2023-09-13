@@ -78,7 +78,8 @@ banchoRefereeRouter.post("/:matchupID/pulse", validateMatchup, async (ctx) => {
         return;
     }
 
-    const mpLobby = state.matchups[ctx.state.matchupID].lobby;
+    // TODO: Remove ! after reactive koa typing is functional
+    const mpLobby = state.matchups[ctx.state.matchupID!].lobby;
     await mpLobby.updateSettings();
 
     await publish(state.matchups[ctx.state.matchupID].matchup, { 
@@ -288,7 +289,8 @@ banchoRefereeRouter.post("/:matchupID/selectMap", validateMatchup, async (ctx) =
         return;
     }
 
-    const slot = state.matchups[ctx.state.matchupID].matchup.stage!.mappool!.flatMap(pool => pool.slots).find(slot => slot.maps.some(map => map.ID === mapID));
+    // TODO: Remove ! after reactive koa typing is functional
+    const slot = state.matchups[ctx.state.matchupID!].matchup.stage!.mappool!.flatMap(pool => pool.slots).find(slot => slot.maps.some(map => map.ID === mapID));
     if (!slot) {
         ctx.body = {
             success: false,
@@ -389,7 +391,7 @@ banchoRefereeRouter.post("/:matchupID/deleteMap", validateMatchup, async (ctx) =
     try {
         await ormConfig.transaction(async manager => {
             state.matchups[ctx.state.matchupID].matchup.sets![set].maps = state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.filter(map => map.ID !== mapID);
-            state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.forEach((map, i) => map.order = i + 1);
+            state.matchups[ctx.state.matchupID!].matchup.sets![set].maps!.forEach((map, i) => map.order = i + 1);
             
             await manager.remove(matchupMap);
             await Promise.all(state.matchups[ctx.state.matchupID].matchup.sets![set].maps!.map(map => manager.save(map)));
@@ -474,7 +476,7 @@ banchoRefereeRouter.post("/:matchupID/settings", validateMatchup, async (ctx) =>
         return;
     }
 
-    const mpLobby = state.matchups[ctx.state.matchupID].lobby;
+    const mpLobby = state.matchups[ctx.state.matchupID!].lobby;
     await mpLobby.updateSettings();
 
     await publish(state.matchups[ctx.state.matchupID].matchup, { 

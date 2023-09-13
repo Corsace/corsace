@@ -144,8 +144,8 @@ export const getters: GetterTree<RootState, RootState> = {
     
             if (state.loggedInMCAUser?.eligibility) {
                 const eligibility = state.loggedInMCAUser?.eligibility?.find(e => e.year === state.mca?.year);
-
-                return eligibility?.[mode];
+                if (eligibility && mode in eligibility)
+                    return eligibility[mode as keyof typeof eligibility] === true;
             }
         
             return false;
@@ -158,7 +158,7 @@ export const getters: GetterTree<RootState, RootState> = {
 
         if (!eligibility) return state.modes;
 
-        return state.modes.filter(m => !eligibility[m]);
+        return state.modes.filter(m => m in eligibility ? !eligibility[m as keyof typeof eligibility] : false);
     },
 };
 

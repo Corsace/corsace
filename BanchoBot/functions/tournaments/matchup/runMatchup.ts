@@ -766,7 +766,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
 
             state.runningMatchups--;
             delete state.matchups[matchup.ID];
-            maybeShutdown();
+            await maybeShutdown();
         }
     });
 }

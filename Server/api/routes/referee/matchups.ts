@@ -64,7 +64,7 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
 
     ctx.body = {
         success: true,
-        matchups,
+        matchups: await Promise.all(matchups.map(async m => await dbMatchupToInterface(m, null))),
     };
 });
 

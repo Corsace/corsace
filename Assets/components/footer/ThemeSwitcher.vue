@@ -28,7 +28,7 @@ export default class ThemeSwitcher extends Vue {
 
     getMode () {
         if (this.site === "mca-ayim" && this.$store.state["mca-ayim"].selectedMode) {
-            return this.$store.state["mca-ayim"].selectedMode;
+            return this.$store.state["mca-ayim"].selectedMode as "standard" | "taiko" | "fruits" | "mania" | "storyboard";
         }
         return this.site;
     }

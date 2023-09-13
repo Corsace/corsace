@@ -78,8 +78,14 @@ export default class Referee extends Vue {
     moreMatchups = true;
 
     async mounted () {
-        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}`);
-        if (matchupData.error) {
+        const { data: matchupData } = await this.$axios.get<{
+            success: false;
+            error: string;
+        } | {
+            success: true;
+            matchups: Matchup[];
+        }>(`/api/referee/matchups/${this.tournament?.ID}`);
+        if (!matchupData.success) {
             alert(matchupData.error);
             await this.$router.push("/");
             return;
@@ -95,8 +101,14 @@ export default class Referee extends Vue {
     }
 
     async loadMore () {
-        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}?skip=${this.matchupList.length}`);
-        if (matchupData.error) {
+        const { data: matchupData } = await this.$axios.get<{
+            success: false;
+            error: string;
+        } | {
+            success: true;
+            matchups: Matchup[];
+        }>(`/api/referee/matchups/${this.tournament?.ID}?skip=${this.matchupList.length}`);
+        if (!matchupData.success) {
             alert(matchupData.error);
             await this.$router.push("/");
             return;
