@@ -487,8 +487,8 @@
                 "startDate": "시작 일자",
                 "endDate": "종료 일자",
                 "rounds": "라운드",
-                "initialSize": "INITIAL SIZE",
-                "finalSize": "FINAL SIZE"
+                "initialSize": "시작 팀",
+                "finalSize": "남은 팀"
             },
             "headings": {
                 "mappools": "맵풀 목록",
@@ -602,13 +602,13 @@
                 "teamMembers": "팀 멤버 목록",
                 "editTeamMembers": "팀 멤버 수정",
                 "closeTeamMembers": "팀 멤버 수정 닫기",
-                "becomeMember": "become a member and play as well",
-                "becomeManager": "become manager only",
-                "teamInvites": "TEAM INVITES",
+                "becomeMember": "팀원이 되고 플레이도 해보세요",
+                "becomeManager": "관리자만 가능합니다",
+                "teamInvites": "팀 초대",
                 "editTeamInvites": "팀 초대 수정하기",
                 "closeTeamInvites": "팀 초대 닫기",
-                "qualifier": "QUALIFIER",
-                "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
+                "qualifier": "퀄리파이어",
+                "requiredMessageExact": "퀄리파이어에 등록하기 위해서는 정확히 {minTeamSize} 명의 팀원이 필요합니다",
                 "requiredMessageRange": "퀄리파이어에 등록하고 참여할려면 {minTeamSize} ~ {maxTeamSize} 명의 팀원이 필요합니다."
             },
             "registration": {
@@ -622,17 +622,17 @@
             "averageRank": "평균 순위",
             "averagePP": "평균 PP",
             "editQualifierTime": "퀄리파이어 시간 수정",
-            "deleteTeam": "delete qualifier/unregister team",
+            "deleteTeam": "퀄리파이어 취소/팀 등록 철회",
             "createJoinQualifier": "퀄리파이어 로비 만들기 / 참여하기",
             "notRegistered": "현재 코사스 오픈에 등록되어 있지 않습니다"
         },
         "create": {
             "title": "팀 만들기",
-            "info1": "Registrations will end on",
+            "info1": "에 등록이 마감됩니다",
             "info2": "완료하기 전에 모든 정보가 올바른지 확인해 주세요",
             "teamName": "팀 이름",
             "teamLength": "5 ~ 20자 이내여야 합니다. \"Team\"을 팀 이름에 넣을 경우 자동으로 삭제되며, 부적절한 표현은 확인 대상입니다.",
-            "teamAcronym": "TEAM ACRONYM",
+            "teamAcronym": "팀 약어",
             "acronymLength": "2 ~ 4자 이내여야 합니다. 부적절한 표현은 확인 대상입니다.",
             "teamTimezone": "팀 시간대",
             "timezoneText": "당신의 팀이 선택한 시간대의 <span class='bold'>10:00부터 22:00</span> 사이에 플레이가 가능하다고 가정합니다.<span class='bold'>",
@@ -649,8 +649,8 @@
             "teamManagement": "팀 관리",
             "teamManagers": "<div>팀 <span>매니저(즉, 귀하)</span>는 플레이하면서 캡틴의 역할을 수행할 수 있습니다.</div><div><span>또는</span> 팀과 함께 플레이 하지 않고 캡틴 역할만 수행이 가능합니다. </div>",
             "teamManagersFree": "만약 플레이하지 않고 매니저만 희망하는 경우, 플레이어 슬롯에 <span>들어가지 않습니다</span>",
-            "selectManager": "팀과 함께 플레이하지 <span>않고</span>, <span>매니저</span> 역할만 할 경우에 이 체크란을 선택해 주세요",
-            "confirmManager": "<div>이것을 체크함으로써 나는 팀 매니저로만 활동할 것이며</div> <div>어떤 경기에도 참여할 수 없음을 이해했습니다.</div>",
+            "selectManager": "팀과 함께 플레이하지 <span>않고</span>, <span>매니저 역할</span> 만 할 경우에 이 체크란을 선택해 주세요",
+            "confirmManager": "<div>이것을 체크함으로써 나는 팀 매니저로만 활동할 것이며</div>, <div>어떤 경기에도 참여할 수 없음을 이해했습니다.</div>",
             "create": "팀 만들기"
         },
         "components": {
@@ -683,15 +683,15 @@
             "loading": "로딩중"
         },
         "mappool": {
-            "title": "MAPPOOL"
+            "title": "맵풀"
         }
     },
     "main": {
         "construction": {
-            "underConstruction": "under construction",
+            "underConstruction": "작업중",
             "sorry": "불편하게 해 죄송합니다.",
             "development": "코사스 웹사이트는 아직 초기 개발 단계입니다.",
-            "theTeam": "the corsace team"
+            "theTeam": "코사스 팀"
         },
         "merch": {
             "code": "Tap Trio - 코사스 번들",
