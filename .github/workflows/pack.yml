@@ -40,7 +40,6 @@ jobs:
   push_to_registry:
     runs-on: ubuntu-latest
     needs: lint
-    if: ${{ github.event_name != 'pull_request_target' }}
     steps:
       -
         name: Checkout
@@ -77,6 +76,6 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ github.repository == 'Corsace/Corsace' && github.event_name != 'pull_request_target' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
