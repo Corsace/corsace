@@ -127,7 +127,6 @@
       "concatNoms": "ts-node ./Server/scripts/concatNoms.ts",
       "dupeCmds": "ts-node ./Server/scripts/duplicateCommands.ts",
       "dupeLangProps": "ts-node ./Server/scripts/duplicateLanguageProperties.ts",
-      "updLangs": "ts-node ./Server/scripts/updateLanguages.ts",
       "fetchMaps": "ts-node ./Server/scripts/fetchYearMaps.ts",
 
       "centrifugo": "docker-compose up -d centrifugo",
