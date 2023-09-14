@@ -226,7 +226,7 @@ export default class Scores extends Vue {
         );
 
         if (this.mapName) {
-            const { data } = await this.$axios.get(`/api/mappool/map/${this.mapName}?key=${this.key}`);
+            const { data } = await this.$axios.get<{ mappoolMap: MappoolMap }>(`/api/mappool/map/${this.mapName}?key=${this.key}`);
             if (data.success)
                 this.mappoolMap = data.mappoolMap;
         }

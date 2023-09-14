@@ -1,16 +1,25 @@
 import Router from "@koa/router";
+import { UserAuthenticatedState } from "koa";
 import { OAuth, User } from "../../../Models/user";
 import { UsernameChange } from "../../../Models/usernameChange";
-import { isCorsace, isHeadStaff, isLoggedIn, isLoggedInDiscord } from "../../middleware";
+import { isCorsace, isHeadStaff, isLoggedIn } from "../../middleware";
 
-const userRouter = new Router();
+const userRouter = new Router<UserAuthenticatedState>();
 
-userRouter.get("/", isLoggedIn, async (ctx) => {
-    ctx.body = await ctx.state.user.getInfo();
+userRouter.use(isLoggedIn);
+
+userRouter.get("/", async (ctx) => {
+    ctx.body = {
+        success: true,
+        user: await ctx.state.user.getInfo(),
+    };
 });
 
-userRouter.get("/mca", isLoggedIn, async (ctx) => {
-    ctx.body = await ctx.state.user.getMCAInfo();
+userRouter.get("/mca", async (ctx) => {
+    ctx.body = {
+        success: true,
+        user: await ctx.state.user.getMCAInfo(),
+    };
 });
 
 interface connectBody {
@@ -24,7 +33,7 @@ interface connectBody {
     };
 }
 
-userRouter.post("/connect", isLoggedInDiscord, isCorsace, async (ctx) => {
+userRouter.post("/connect", isCorsace, async (ctx) => {
     const body: connectBody = ctx.request.body;
     if (!body.osu || !body.discord)
         return ctx.body = { 

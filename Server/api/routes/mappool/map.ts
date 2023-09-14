@@ -29,6 +29,7 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
     } else {
         if (!ctx.query.tournamentID) {
             ctx.body = {
+                success: false,
                 error: "Missing tournamentID",
             };
             return;
@@ -42,6 +43,7 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
 
     if (!tournament) {
         ctx.body = {
+            success: false,
             error: "Invalid tournament",
         };
         return;
@@ -52,6 +54,7 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
 
     if (isNaN(order)) {
         ctx.body = {
+            success: false,
             error: "Invalid map name",  
         };
         return;
@@ -87,6 +90,7 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
 
     if (!mappoolMap) {
         ctx.body = {
+            success: false,
             error: "Invalid map name",
         };
         return;
@@ -94,6 +98,7 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
 
     if (!showPrivate && !mappoolMap.slot.mappool.isPublic) {
         ctx.body = {
+            success: false,
             error: "This mappool is private",
         };
         return;

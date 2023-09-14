@@ -98,10 +98,9 @@ export default class VotingBox extends Vue {
     @stageModule.State beatmaps!: BeatmapsetInfo[];
     @stageModule.State users!: UserChoiceInfo[];
     @stageModule.Getter relatedCandidacies!: Vote[];
-    @stageModule.Mutation toggleVoteChoiceBox;
-    @stageModule.Action createVote;
-    @stageModule.Action removeVote;
-    @stageModule.Action swapVotes;
+    @stageModule.Mutation toggleVoteChoiceBox!: () => void;
+    @stageModule.Action removeVote!: (voteId: number) => Promise<void>;
+    @stageModule.Action swapVotes!: (votes: Vote[]) => Promise<void>;
 
     @Watch("relatedCandidacies", { immediate: true })
     onChanged () {

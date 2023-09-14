@@ -7,6 +7,7 @@ import { inviteAcceptChecks, invitePlayer } from "../../../functions/tournaments
 import getTeamInvites from "../../../functions/get/getTeamInvites";
 import { BaseTeam, TeamUser } from "../../../../Interfaces/team";
 import { TeamInvite } from "../../../../Models/tournaments/teamInvite";
+import { TeamAuthenticatedState, UserAuthenticatedState } from "koa";
 
 type idType = "osu" | "discord" | "corsace";
 
@@ -14,36 +15,44 @@ function isIdType (value: any): value is idType {
     return value === "osu" || value === "discord" || value === "corsace";
 }
 
-const inviteRouter = new Router();
+const inviteRouter = new Router<UserAuthenticatedState>();
 
-inviteRouter.get("/user", isLoggedInDiscord, async (ctx) => {
+inviteRouter.use(isLoggedInDiscord);
+
+inviteRouter.get("/user", async (ctx) => {
     const user: User = ctx.state.user;
 
     const invites = await getTeamInvites(user.ID, "userID");
 
-    ctx.body = invites.map<BaseTeam>(i => {
-        return {
-            ID: i.team.ID,
-            name: i.team.name,
-        };
-    });
+    ctx.body = {
+        success: true,
+        invites: invites.map<BaseTeam>(i => {
+            return {
+                ID: i.team.ID,
+                name: i.team.name,
+            };
+        }),
+    };
 });
 
-inviteRouter.get("/:teamID", isLoggedInDiscord, validateTeam(false), async (ctx) => {
+inviteRouter.get<TeamAuthenticatedState>("/:teamID", validateTeam(false), async (ctx) => {
     const team: Team = ctx.state.team;
 
     const invites = await getTeamInvites(team.ID, "teamID");
 
-    ctx.body = invites.map<TeamUser>(i => {
-        return {
-            ID: i.user.ID,
-            username: i.user.osu.username,
-            osuID: i.user.osu.userID,
-        };
-    });
+    ctx.body = {
+        success: true,
+        invites: invites.map<TeamUser>(i => {
+            return {
+                ID: i.user.ID,
+                username: i.user.osu.username,
+                osuID: i.user.osu.userID,
+            };
+        })
+    };
 });
 
-inviteRouter.post("/:teamID", isLoggedInDiscord, validateTeam(true, true), async (ctx) => {
+inviteRouter.post<TeamAuthenticatedState>("/:teamID", validateTeam(true, true), async (ctx) => {
     const team: Team = ctx.state.team;
 
     const userID = ctx.request.body?.userID;
@@ -90,7 +99,7 @@ inviteRouter.post("/:teamID", isLoggedInDiscord, validateTeam(true, true), async
     }
 });
 
-inviteRouter.post("/:teamID/accept", isLoggedInDiscord, async (ctx) => {
+inviteRouter.post("/:teamID/accept", async (ctx) => {
     const user: User = ctx.state.user;
     let invite: TeamInvite;
     try {
@@ -131,7 +140,7 @@ inviteRouter.post("/:teamID/accept", isLoggedInDiscord, async (ctx) => {
     ctx.body = { success: "Invite accepted", team };
 });
 
-inviteRouter.post("/:teamID/decline", isLoggedInDiscord, async (ctx) => {
+inviteRouter.post("/:teamID/decline", async (ctx) => {
     const user: User = ctx.state.user;
     let invite: TeamInvite;
     try {
@@ -156,7 +165,7 @@ inviteRouter.post("/:teamID/decline", isLoggedInDiscord, async (ctx) => {
     ctx.body = { success: "Invite declined" };
 });
 
-inviteRouter.post("/:teamID/cancel/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+inviteRouter.post<TeamAuthenticatedState>("/:teamID/cancel/:userID", validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team;
 
     const userID = ctx.params.userID;

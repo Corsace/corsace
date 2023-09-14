@@ -3,6 +3,15 @@ import getTeams from "../../../functions/get/getTeams";
 
 export function validateTeam (isManager?: boolean, invites?: boolean) {
     return async function (ctx: ParameterizedContext, next: Next) {
+        if (!ctx.state.user) {
+            ctx.body = {
+                success: false,
+                error: "User is not logged in via osu! for the validateTeam middleware!",
+            };
+            return;
+        }
+        const user = ctx.state.user;
+
         const ID = ctx.request.body?.ID || ctx.params?.teamID || ctx.query.ID || ctx.query.teamID;
 
         if (ID === undefined || isNaN(parseInt(ID)) || parseInt(ID) < 1) {
@@ -33,14 +42,14 @@ export function validateTeam (isManager?: boolean, invites?: boolean) {
             return;
         }
 
-        if (isManager && team.manager.ID !== ctx.state.user.ID) {
+        if (isManager && team.manager.ID !== user.ID) {
             ctx.body = {
                 success: false,
                 error: "You are not the manager of this team",
             };
             return;
         }
-        if (!isManager && team.manager.ID !== ctx.state.user.ID && !team.members.find(member => member.ID === ctx.state.user.ID)) {
+        if (!isManager && team.manager.ID !== user.ID && !team.members.find(member => member.ID === user.ID)) {
             ctx.body = {
                 success: false,
                 error: "You are not a member of this team",

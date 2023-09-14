@@ -21,7 +21,8 @@ export class MCA extends BaseEntity {
     @OneToMany(() => Category, category => category.mca)
         categories!: Category[];
 
-    static fillAndSave (data, mca?: MCA): Promise<MCA> {
+    // TODO: What teh fucvk is the type for this
+    static fillAndSave (data: any, mca?: MCA): Promise<MCA> {
         if (!mca) {
             mca = new MCA;
             mca.year = data.year;

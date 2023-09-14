@@ -22,6 +22,7 @@ import { Stage } from "../../../Models/tournaments/stage";
 import { config } from "node-config-ts";
 import { MatchupSet } from "../../../Models/tournaments/matchupSet";
 import dbMatchupToInterface from "../../functions/tournaments/matchups/dbMatchupToInterface";
+import { TournamentStageState, TournamentState } from "koa";
 
 const matchupRouter = new Router();
 
@@ -324,7 +325,7 @@ matchupRouter.get("/:matchupID/teams", async (ctx) => {
     };
 });
 
-matchupRouter.post("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+matchupRouter.post<TournamentStageState>("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const matchups: Partial<postMatchup>[] | postMatchup[] = ctx.request.body?.matchups;
     if (!matchups) {
         ctx.body = {
@@ -391,7 +392,7 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
                 dbMatchup.potentials = [];
                 const teams = previousMatchups?.map(m => {
                     if (m.winner)
-                        return [m.winner];
+                        return [ m.winner ];
 
                     const teamArray: Team[] = [];
                     if (m.team1)
@@ -472,22 +473,16 @@ matchupRouter.post("/create", validateTournament, validateStageOrRound, isLogged
     }
 });
 
-matchupRouter.post("/assignTeam", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
-    const tournament: Tournament | null = ctx.state.tournament ?? null;
-    if (!tournament) {
+matchupRouter.post<TournamentState>("/assignTeam", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+    const tournament: Tournament = ctx.state.tournament;
+    const stageOrRound: Stage | Round | null = ctx.state.stage ?? ctx.state.round ?? null;
+    if (!stageOrRound) {
         ctx.body = {
-            error: "Tournament not found",
+            error: "No stage or round provided",
         };
         return;
     }
 
-    const stageOrRound: Stage | Round | null = ctx.state.stage ?? ctx.state.round ?? null;
-    if (!stageOrRound) {
-        ctx.body = {
-            error: "Stage or round not found",
-        };
-        return;
-    }
 
     const matchupID = ctx.request.body?.matchupID;
     if (!matchupID || isNaN(parseInt(matchupID))) {
@@ -593,19 +588,12 @@ matchupRouter.post("/assignTeam", validateTournament, validateStageOrRound, isLo
     };
 });
 
-matchupRouter.post("/date", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
-    const tournament: Tournament | null = ctx.state.tournament ?? null;
-    if (!tournament) {
-        ctx.body = {
-            error: "Tournament not found",
-        };
-        return;
-    }
-
+matchupRouter.post<TournamentState>("/date", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+    const tournament: Tournament = ctx.state.tournament;
     const stageOrRound: Stage | Round | null = ctx.state.stage ?? ctx.state.round ?? null;
     if (!stageOrRound) {
         ctx.body = {
-            error: "Stage or round not found",
+            error: "No stage or round provided",
         };
         return;
     }

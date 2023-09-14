@@ -14,7 +14,7 @@ export default async function getFromList<T extends { ID: number, name: string }
         return list[0];
 
     const [stopID, stop] = stopRow();
-    const ids = {
+    const ids: Record<string | number, string> = {
         stop: stopID,
     };
     const rows: ActionRowBuilder<ButtonBuilder>[] = [];

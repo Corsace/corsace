@@ -1,9 +1,10 @@
 import Router from "@koa/router";
 import { config } from "node-config-ts";
+import { CategoryCondensedInfo } from "../../../Interfaces/category";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
-import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { discordGuild } from "../../discord";
 import { parseQueryParam } from "../../utils/query";
 
@@ -16,12 +17,18 @@ mcaRouter.get("/", async (ctx) => {
 
     const param = parseQueryParam(ctx.query.year);
     if (!param) {
-        ctx.body = {error: "No year specified!"};
+        ctx.body = {
+            success: false,
+            error: "No year specified!",
+        };
         return;
     }
     const year = parseInt(param);
     if (isNaN(year)) {
-        ctx.body = {error: "Invalid year specified!"};
+        ctx.body = {
+            success: false,
+            error: "Invalid year specified!",
+        };
         return;
     }
 
@@ -32,16 +39,25 @@ mcaRouter.get("/", async (ctx) => {
     });
 
     if (mca)
-        ctx.body = mca;
+        ctx.body = {
+            success: true,
+            mca,
+        };
     else
-        ctx.body = {error: "No MCA for this year exists!"};
+        ctx.body = {
+            success: false,
+            error: "No MCA for this year exists!",
+        };
 });
 
 mcaRouter.get("/all", async (ctx) => {
     const mca = await MCA.find();
     const mcaInfo = mca.map(x => x.getInfo());
 
-    ctx.body = mcaInfo;
+    ctx.body = {
+        success: true,
+        mca: mcaInfo,
+    };
 });
 
 mcaRouter.get("/front", async (ctx) => {
@@ -53,10 +69,22 @@ mcaRouter.get("/front", async (ctx) => {
     if (!mca)
         return ctx.body = { error: "There is no MCA for this year currently!" };
 
-    const frontData = {};
+    const frontData: Record<keyof typeof ModeDivisionType, {
+        categoryInfos: CategoryCondensedInfo[];
+        beatmapCount: number;
+        organizers: string[];
+    } | undefined> = {
+        standard: undefined,
+        taiko: undefined,
+        fruits: undefined,
+        mania: undefined,
+        storyboard: undefined,
+    };
 
     const modes = await ModeDivision.find();
     await Promise.all(modes.map(mode => (async () => {
+        const modeName: keyof typeof ModeDivisionType = mode.name as keyof typeof ModeDivisionType;
+
         const beatmapCounter = Beatmapset
             .createQueryBuilder("beatmapset")
             .innerJoinAndSelect("beatmapset.beatmaps", "beatmap", mode.ID === 5 ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: mode.ID === 5 ? true : mode.ID })
@@ -75,12 +103,12 @@ mcaRouter.get("/front", async (ctx) => {
                 },
             }), 
             beatmapCounter,
-            (await discordGuild()).members.cache.filter(x => x.roles.cache.has(modeStaff[mode.name])).map(x => x.nickname ?? x.user.username),
+            (await discordGuild()).members.cache.filter(x => x.roles.cache.has(modeStaff[modeName])).map(x => x.nickname ?? x.user.username),
         ]);
 
         const categoryInfos = categories.map(x => x.getCondensedInfo());
 
-        frontData[mode.name] = {
+        frontData[modeName] = {
             categoryInfos,
             beatmapCount,
             organizers,

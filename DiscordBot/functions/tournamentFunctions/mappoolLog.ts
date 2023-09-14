@@ -7,9 +7,9 @@ import modeColour from "../modeColour";
 import { discordClient } from "../../../Server/discord";
 import { TournamentChannelType } from "../../../Interfaces/tournament";
 
-export default async function mappoolLog(tournament: Tournament, command: string, user: User, log: MappoolMapHistory, mappoolSlot: string);
-export default async function mappoolLog(tournament: Tournament, command: string, user: User, event: string);
-export default async function mappoolLog (tournament: Tournament, command: string, user: User, logOrEvent: MappoolMapHistory | string, mappoolSlot?: string) {
+export default async function mappoolLog(tournament: Tournament, command: string, user: User, log: MappoolMapHistory, mappoolSlot: string): Promise<void>;
+export default async function mappoolLog(tournament: Tournament, command: string, user: User, event: string): Promise<void>;
+export default async function mappoolLog (tournament: Tournament, command: string, user: User, logOrEvent: MappoolMapHistory | string, mappoolSlot?: string): Promise<void> {
     const tournamentChannels = await TournamentChannel.find({
         where: {
             tournament: { ID: tournament.ID },

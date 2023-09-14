@@ -6,6 +6,8 @@ import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
+import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
+import { parseQueryParam } from "../../utils/query";
 
 const influencesRouter = new Router();
 
@@ -15,19 +17,22 @@ influencesRouter.get("/", async (ctx) => {
     
     if (!ctx.query.mode) {
         return ctx.body = {
+            success: false,
             error: "Missing mode",
         };
     }
-    const mode = ModeDivisionType[ctx.query.mode.toString()];
+    const mode = ModeDivisionType[parseQueryParam(ctx.query.mode) as keyof typeof ModeDivisionType];
 
     if (typeof yearSearch !== "string" || !/^20[0-9]{2}$/.test(yearSearch)) {
         ctx.body = {
+            success: false,
             error: "Invalid year value.",
         };
         return;
     }
     if (typeof userSearch !== "string") {
         ctx.body = {
+            success: false,
             error: "Invalid search query value.",
         };
         return;
@@ -52,14 +57,19 @@ influencesRouter.get("/", async (ctx) => {
     const latestRecordedYear = Math.max(...user.influences.map(i => i.year));
     user.influences = user.influences.filter(i => i.year === latestRecordedYear);
 
-    ctx.body = user;
+    ctx.body = {
+        success: true,
+        user: await user.getInfo(),
+        influences: user.influences,
+    };
 });
 
-influencesRouter.post("/create", isLoggedIn, async (ctx) => {
+influencesRouter.post<UserAuthenticatedState>("/create", isLoggedIn, async (ctx) => {
     const query = ctx.request.body;
 
     if (!query.year || !/^20[0-9]{2}$/.test(query.year)) {
-        ctx.body = { 
+        ctx.body = {
+            success: false,
             error: "A year is not provided!",
         };
         return;
@@ -67,6 +77,7 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
     query.year = parseInt(query.year, 10);
     if (!query.target || !/^\d+$/.test(query.target)) {
         ctx.body = { 
+            success: false,
             error: "Missing corsace ID!",
         };
         return;
@@ -74,7 +85,8 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
     query.target = parseInt(query.target, 10);
 
     if (!query.mode) {
-        ctx.body = { 
+        ctx.body = {
+            success: false,
             error: "Missing mode!",
         };
         return;
@@ -86,6 +98,7 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
     const modeDivision = await ModeDivision.findOne(query.mode);
     if (!modeDivision) {
         ctx.body = { 
+            success: false,
             error: "Could not find the appropriate mode!",
         };
         return;
@@ -93,6 +106,7 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
     
     if (!isEligibleFor(ctx.state.user, modeDivision.ID, query.year)) {
         ctx.body = { 
+            success: false,
             error: "You did not rank a set or guest difficulty this year!",
         };
         return;
@@ -101,7 +115,7 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
     // Check if there are 5 influences already, or if this influence already exists, or if the year is in the future
     const influences = await Influence.find({
         where: {
-            user: ctx.state.user,
+            user: { ID: ctx.state.user.ID },
             year: query.year,
             mode: {
                 ID: modeDivision.ID,
@@ -111,18 +125,21 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
     });
     if (influences.length === 5) {
         ctx.body = { 
+            success: false,
             error: "There are 5 influences already!",
         };
         return;
     }
     if (influences.some(inf => inf.influence.ID === query.target)) {
         ctx.body = { 
+            success: false,
             error: "This influence already exists!",
         };
         return;
     }
     if (query.year > (new Date).getUTCFullYear()) {
         ctx.body = { 
+            success: false,
             error: "You cannot provide influences for future years!",
         };
         return;
@@ -130,6 +147,7 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
     const target = await User.findOne(query.target);
     if (!target) {
         ctx.body = { 
+            success: false,
             error: `No user with corsace ID ${query.target} found!`,
         };
         return;
@@ -143,10 +161,13 @@ influencesRouter.post("/create", isLoggedIn, async (ctx) => {
     newInfluence.rank = influences.length + 1;
     newInfluence.mode = modeDivision;
     await newInfluence.save();
-    return ctx.body = newInfluence;
+    return ctx.body = {
+        success: true,
+        newInfluence,
+    };
 });
 
-influencesRouter.delete("/:id", isLoggedIn, currentMCA, async (ctx) => {
+influencesRouter.delete<MCAAuthenticatedState>("/:id", isLoggedIn, currentMCA, async (ctx) => {
     const id = ctx.params.id;
     if (!/^\d+$/.test(id)) {
         ctx.body = { 
@@ -180,7 +201,7 @@ influencesRouter.delete("/:id", isLoggedIn, currentMCA, async (ctx) => {
     const influences = await Influence.find({
         where: {
             user: {
-                ID: ctx.state.user,
+                ID: ctx.state.user.ID,
             },
             year: mca.year,
             rank: MoreThan(influence.rank),

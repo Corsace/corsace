@@ -67,7 +67,7 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
     else if (ctx.state.user && (
         tournament.organizer.ID === ctx.state.user.ID || 
         qualifier.referee?.ID === ctx.state.user.ID ||
-        qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user.ID) || team.manager.ID === ctx.state.user.ID)
+        qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user!.ID) || team.manager.ID === ctx.state.user!.ID)
     ))
         getScores = true;
     else {

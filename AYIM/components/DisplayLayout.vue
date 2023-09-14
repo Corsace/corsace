@@ -130,8 +130,8 @@ export default class DisplayLayout extends Vue {
         }
     }
 
-    handleScroll = (event) => {
-        if (event.target) {
+    handleScroll = (event: Event) => {
+        if (event.target instanceof HTMLElement) {
             this.scrollPos = event.target.scrollTop;
             this.scrollSize = event.target.scrollHeight - event.target.clientHeight; // U know... just in case the window size changes Lol
 

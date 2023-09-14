@@ -8,10 +8,11 @@ import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { discordClient } from "../../../discord";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
 import { User } from "../../../../Models/user";
+import { TournamentAuthenticatedState } from "koa";
 
 const refereeBanchoRouter = new Router();
 
-refereeBanchoRouter.post("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+refereeBanchoRouter.post<TournamentAuthenticatedState>("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     if (!ctx.request.body.endpoint) {
         ctx.body = {
             success: false,

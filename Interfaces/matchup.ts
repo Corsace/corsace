@@ -156,7 +156,18 @@ export function computeScoreViews (
         if (nonZeroScores.length === 0)
             continue;
 
-        const scoreView: MatchupScoreView = {
+        const filterValues: MatchupScoreFilterValues = {
+            sum: scores.reduce((a, b) => a + b.score, 0),
+            average: Math.round(nonZeroScores.reduce((a, b) => a + b.score, 0) / (nonZeroScores.length || 1)),
+            relMax: -100,
+            percentMax: -100,
+            relAvg: -100,
+            percentAvg: -100,
+            zScore: -100,
+        };
+
+        const scoreView = {
+            ...filterValues,
             ID: idName.id,
             name: idName.name,
             avatar: idName.avatar,
@@ -170,9 +181,7 @@ export function computeScoreViews (
                 mapScoreHash.push(score);
                 scoresByMapID.set(mapID, mapScoreHash);
 
-                const result: MatchupScoreViewScore = {
-                    map: map.map,
-                    mapID: map.mapID,
+                const filterValues: MatchupScoreFilterValues = {
                     sum: score,
                     average: avgScore,
                     relMax: -100,
@@ -180,22 +189,21 @@ export function computeScoreViews (
                     relAvg: -100,
                     percentAvg: -100,
                     zScore: -100,
-                    isBest: false,
                 };
+                
+                const result = {
+                    ...filterValues,
+                    map: map.map,
+                    mapID: map.mapID,
+                    isBest: false,
+                } as MatchupScoreViewScore;
                 
                 return result;
             }),
             best: "",
             worst: "",
-            sum: scores.reduce((a, b) => a + b.score, 0),
-            average: Math.round(nonZeroScores.reduce((a, b) => a + b.score, 0) / (nonZeroScores.length || 1)),
-            relMax: -100,
-            percentMax: -100,
-            relAvg: -100,
-            percentAvg: -100,
-            zScore: -100,
             placement: -1,
-        };
+        } as MatchupScoreView;
         scoreView.scores.sort((a, b) => a.mapID - b.mapID);
 
         if (syncView === "players") {

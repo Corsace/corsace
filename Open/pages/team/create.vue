@@ -324,7 +324,7 @@ export default class Create extends Vue {
 
         ({ name: this.name, abbreviation: this.abbreviation } = validate);
 
-        const { data: res } = await this.$axios.post("/api/team/create", {
+        const { data: res } = await this.$axios.post<{ team: Team, error?: string }>("/api/team/create", {
             name: this.name,
             abbreviation: this.abbreviation,
             isPlaying: !this.isNotPlaying,
@@ -335,12 +335,12 @@ export default class Create extends Vue {
             if (this.image) {
                 const formData = new FormData();
                 formData.append("avatar", this.image, this.image.name);
-                const { data: resAvatar } = await this.$axios.post(`/api/team/${res.team.ID}/avatar`, formData, {
+                const { data: resAvatar } = await this.$axios.post<{ avatar: string }>(`/api/team/${res.team.ID}/avatar`, formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
                 });
-                if (resAvatar.error)
+                if (!resAvatar.success)
                     alert(`Error adding team avatar:\n${resAvatar.error}\n\nYou can try adding a team avatar again on the team page`);
             }
 

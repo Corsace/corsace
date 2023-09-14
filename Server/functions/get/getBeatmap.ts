@@ -6,6 +6,7 @@ import { osuClient } from "../../osu";
 import getBeatmapset from "./getBeatmapset";
 import getMCAEligibility from "./getMCAEligibility";
 import getModeDivison from "./getModeDivision";
+import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 
 export default async function getBeatmap (apiBeatmap: APIBeatmap | number, save: boolean) {
     const targetBeatmap: APIBeatmap | undefined = typeof apiBeatmap === "number" ? (await osuClient.beatmaps.getByBeatmapId(apiBeatmap) as APIBeatmap[])[0] : apiBeatmap;
@@ -53,8 +54,9 @@ export default async function getBeatmap (apiBeatmap: APIBeatmap | number, save:
 
     if (!isPossessive(beatmap.difficulty)) {
         const eligibility = await getMCAEligibility(targetBeatmap, beatmap.beatmapset.creator, save);
-        if (eligibility && !eligibility[modeList[targetBeatmap.mode!]]) {
-            eligibility[modeList[targetBeatmap.mode!]] = true;
+        const mode = modeList[targetBeatmap.mode!];
+        if (eligibility && mode in ModeDivisionType) {
+            eligibility[mode as keyof typeof ModeDivisionType] = true;
             eligibility.storyboard = true;
             await eligibility.save();
         }

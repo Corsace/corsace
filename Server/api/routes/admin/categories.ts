@@ -67,7 +67,8 @@ adminCategoriesRouter.get("/:year/categories", async (ctx) => {
         },
     });
 
-    ctx.body = { 
+    ctx.body = {
+        success: true,
         categories: categories.map(x => x.getInfo()),
     };
 });
@@ -120,7 +121,10 @@ adminCategoriesRouter.delete("/:year/categories/:id", async (ctx) => {
 
     const category = await Category.findOne({ where: { ID: categoryID }});
     if (!category)
-        return ctx.body = { error: "No category with this ID exists!" };
+        return ctx.body = { 
+            success: false,
+            error: "No category with this ID exists!",
+        };
 
     await Promise.all((await Nomination.find({
         where: {
@@ -130,7 +134,10 @@ adminCategoriesRouter.delete("/:year/categories/:id", async (ctx) => {
         },
     })).map(nom => nom.remove()));
     const categoryRes = await category.remove(); 
-    ctx.body = { message: "Success! attached is the delete result.", categoryRes };
+    ctx.body = { 
+        success: true,
+        categoryRes,
+    };
 });
 
 export default adminCategoriesRouter;

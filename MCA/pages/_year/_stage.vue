@@ -75,7 +75,6 @@ export default class Stage extends Vue {
     @mcaAyimModule.State loggedInMCAUser!: UserMCAInfo | null;
     @mcaAyimModule.State mca!: MCA | null;
     @mcaAyimModule.Getter phase!: MCAPhase | null;
-    @mcaAyimModule.Mutation toggleGuestDifficultyModal;
     
     async mounted () {
         
@@ -93,7 +92,16 @@ export default class Stage extends Vue {
     }
 
     get onTime () {
-        return this.phase?.phase && (((this.phase.phase === "nominating" || this.phase.phase === "voting") && this.phase.phase === this.$route.params.stage) || (this.mca && this.mca[this.$route.params.stage === "nominating" ? "nomination" : this.$route.params.stage].start <= new Date()));
+        return this.phase?.phase && (
+            (
+                (this.phase.phase === "nominating" || this.phase.phase === "voting") && 
+                this.phase.phase === this.$route.params.stage
+            ) || (
+                this.mca && 
+                (this.$route.params.stage === "nomination" || this.$route.params.stage === "voting") && 
+                this.mca[this.$route.params.stage].start <= new Date()
+            )
+        );
     }
 
     async goBack () {

@@ -55,9 +55,7 @@ export default class Years extends Vue {
         
         const { data } = await this.$axios.get(`/api/admin/reset`);
         
-        if (data.error)
-            alert(data.error);
-        else if (data.success)
+        if (data.success)
             alert(data.success);
         else {
             alert("Yo check console");

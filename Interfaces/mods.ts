@@ -144,7 +144,8 @@ export function acronymtoMods (text: string): ModsType | undefined {
         return;
     let val = 0;
     for (const mod of modStrings)
-        val += modAcronyms[mod.toUpperCase()];
+        if (mod.toUpperCase() in modAcronyms)
+            val += modAcronyms[mod.toUpperCase() as keyof typeof modAcronyms];
     
     if (isNaN(val))
         return;
@@ -162,7 +163,7 @@ export function modsToAcronym (mod?: ModsType): string {
         return "NM";
     let text = "";
     for (const acronym in modAcronyms) {
-        const modValue = modAcronyms[acronym];
+        const modValue = modAcronyms[acronym as keyof typeof modAcronyms];
         if ((mod & modValue) !== 0)
             text += acronym;
     }

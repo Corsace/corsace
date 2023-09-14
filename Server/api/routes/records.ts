@@ -252,7 +252,10 @@ recordsRouter.get("/mappers", async (ctx) => {
     const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
     const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
     if (!(modeString in ModeDivisionType)) {
-        ctx.body = { error: "Invalid mode, please use standard, taiko, fruits or mania" };
+        ctx.body = { 
+            success: false,
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
         return;
     }
     const modeId = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
@@ -464,7 +467,10 @@ recordsRouter.get("/mappers", async (ctx) => {
         lowestAvgSr: lowestAvgSr.map(o => valueToFixed(o)),
     };
 
-    ctx.body = records;
+    ctx.body = {
+        success: true,
+        records,
+    };
 });
 
 // recordsRouter.get("/nominators", async (ctx) => {

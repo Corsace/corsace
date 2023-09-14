@@ -8,6 +8,18 @@ import { getMember } from "../discord";
 import { hasRoles } from ".";
 
 async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
+    if (!ctx.state.user) {
+        ctx.body = { error: "User is not logged in via osu! for the isEligible middleware!" };
+        return;
+    }
+
+    if (!ctx.state.mca) {
+        ctx.body = {
+            error: "MCA not found for the isEligible middleware!",
+        };
+        return;
+    }
+
     const mca: MCA = ctx.state.mca;
     const user: User = ctx.state.user;
     
@@ -84,8 +96,15 @@ async function validatePhaseYear (ctx: ParameterizedContext, next: Next): Promis
     await next();
 }
 
-function isPhase (phase: string) {
+function isPhase (phase: "nomination" | "voting") {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
+        if (!ctx.state.mca) {
+            ctx.body = {
+                error: "MCA not found for the isPhase middleware!",
+            };
+            return;
+        }
+
         const mca: MCA = ctx.state.mca;
         const now = new Date();
 
@@ -99,8 +118,15 @@ function isPhase (phase: string) {
     };
 }
 
-function isPhaseStarted (phase: string) {
+function isPhaseStarted (phase: "nomination" | "voting") {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
+        if (!ctx.state.mca) {
+            ctx.body = {
+                error: "MCA not found for the isPhaseStarted middleware!",
+            };
+            return;
+        }
+
         const mca: MCA = ctx.state.mca;
         const now = new Date();
 
@@ -115,6 +141,18 @@ function isPhaseStarted (phase: string) {
 }
 
 async function isResults (ctx: ParameterizedContext, next: Next): Promise<any> {
+    if (!ctx.state.user?.discord?.userID) {
+        ctx.body = { error: "User is not logged in via discord for the isResults middleware!" };
+        return;
+    }
+
+    if (!ctx.state.mca) {
+        ctx.body = {
+            error: "MCA not found for the isResults middleware!",
+        };
+        return;
+    }
+
     if (ctx.state.mca.currentPhase() === "results") {
         await next();
         return;
@@ -140,7 +178,7 @@ async function isResults (ctx: ParameterizedContext, next: Next): Promise<any> {
     }
 }
 
-const isMCAStaff = hasRoles([{
+const isMCAStaff = hasRoles<"mca">([{
     section: "mca",
     role: "standard",
 }, {

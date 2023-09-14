@@ -33,7 +33,7 @@ import { namespace } from "vuex-class";
 import DropdownSelector from "../../../Assets/components/DropdownSelector.vue";
 import StagePageFilters from "../stage/StagePageFilters.vue";
 
-import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
+import { CategoryStageInfo, CategoryType, SectionCategory } from "../../../Interfaces/category";
 import { TranslateResult } from "vue-i18n";
 
 const mcaAyimModule = namespace("mca-ayim");
@@ -50,10 +50,10 @@ export default class ResultsFilters extends Vue {
 
     @stageModule.Getter categoriesInfo!: CategoryStageInfo[];
 
-    @stageModule.Action reset;
-    @stageModule.Action updateSelectedCategory;
-    @stageModule.Action updateSection;
-    @stageModule.Action setInitialData;
+    @stageModule.Action reset!: (sectionReset?: boolean) => void;
+    @stageModule.Action updateSelectedCategory!: (category: CategoryStageInfo) => void;
+    @stageModule.Action updateSection!: (section: SectionCategory) => void;
+    @stageModule.Action setInitialData!: () => void;
 
     @Watch("selectedMode")
     onSelectedModeChange () {

@@ -10,10 +10,14 @@ import { isLoggedInDiscord } from "../../../middleware";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
 import { parseQueryParam } from "../../../utils/query";
 import dbMatchupToInterface from "../../../functions/tournaments/matchups/dbMatchupToInterface";
+import { TournamentAuthenticatedState } from "koa";
 
-const refereeMatchupsRouter = new Router();
+const refereeMatchupsRouter = new Router<TournamentAuthenticatedState>();
 
 //TODO: Look into making refereeRouter.use work for the middleware functions
+refereeMatchupsRouter.use(isLoggedInDiscord);
+refereeMatchupsRouter.use(validateTournament);
+refereeMatchupsRouter.use(hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]));
 
 refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup

@@ -248,9 +248,14 @@ export default class Match extends Vue {
         if (typeof matchupID !== "string")
             return;
 
-        const { data: centrifugoURL } = await this.$axios.get("/api/centrifugo/publicUrl");
+        const { data: centrifugoURLData } = await this.$axios.get<{ url: string }>("/api/centrifugo/publicUrl");
+        if (!centrifugoURLData.success) {
+            alert("Couldn't get centrifugo URL");
+            console.log(centrifugoURLData.error);
+            return;
+        }
 
-        const centrifuge = new Centrifuge(`${centrifugoURL}/connection/websocket`, {
+        const centrifuge = new Centrifuge(`${centrifugoURLData.url}/connection/websocket`, {
 
         });
 
@@ -270,8 +275,11 @@ export default class Match extends Vue {
 
         this.centrifuge = centrifuge;
 
-        const { data } = await this.$axios.get(`/api/matchup/${matchupID}`);
-        if (data.error)
+        const { data } = await this.$axios.get<{ 
+            matchup: MatchupInterface;
+            stageOrRound: Stage | Round;
+        }>(`/api/matchup/${matchupID}`);
+        if (!data.success)
             return;
 
         this.matchup = data.matchup;
@@ -305,8 +313,13 @@ export default class Match extends Vue {
         this.matchupChannel.subscribe();
 
         if (this.matchup?.mp) {
-            const { data } = await this.$axios.get(`/api/matchup/${this.matchup.ID}/bancho/pulseMatch`);
-            if (data.error || !data.pulse)
+            const { data } = await this.$axios.get<{
+                pulse: boolean;
+                beatmapID: number;
+                team1Score: number;
+                team2Score: number;
+            }>(`/api/matchup/${this.matchup.ID}/bancho/pulseMatch`);
+            if (!data.success || !data.pulse)
                 return;
             this.latestMap = this.stageOrRound?.mappool
                 .flatMap(m => m.slots)
@@ -331,12 +344,14 @@ export default class Match extends Vue {
             case "first":
                 this.$set(this.matchup, "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2); // In order to make the computed properties watchers work 
                 break;
-            case "beatmap":
+            case "beatmap": {
+                const ID = ctx.data.beatmapID;
                 this.latestMap = this.stageOrRound?.mappool
                     .flatMap(m => m.slots)
                     .flatMap(s => s.maps)
-                    .find(m => m.beatmap?.ID === ctx.data.beatmapID) ?? null;
+                    .find(m => m.beatmap?.ID === ID) ?? null;
                 break;
+            }
             case "matchFinished":
                 this.matchup.team1Score = ctx.data.team1Score;
                 this.matchup.team2Score = ctx.data.team2Score;

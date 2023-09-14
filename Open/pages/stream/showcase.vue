@@ -123,7 +123,7 @@ export default class Showcase extends Vue {
             if (this.$route.query.mappoolID)
                 query += `&mappoolID=${this.$route.query.mappoolID}`;
 
-            const { data } = await this.$axios.get(query);
+            const { data } = await this.$axios.get<{ mappoolMap: MappoolMap }>(query);
             if (data.success)
                 this.mappoolMap = data.mappoolMap;
         }

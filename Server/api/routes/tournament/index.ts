@@ -4,7 +4,7 @@ import { Tournament } from "../../../../Models/tournaments/tournament";
 import { BaseQualifier } from "../../../../Interfaces/qualifier";
 import { Next, ParameterizedContext } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
-import { StaffMember } from "../../../../Interfaces/staff";
+import { StaffList, StaffMember } from "../../../../Interfaces/staff";
 import { Team } from "../../../../Models/tournaments/team";
 import { playingRoles, TournamentRoleType, tournamentStaffRoleOrder } from "../../../../Interfaces/tournament";
 import { discordClient } from "../../../discord";
@@ -97,7 +97,10 @@ tournamentRouter.get("/open/:year", async (ctx) => {
         });
     });
 
-    ctx.body = tournament;
+    ctx.body = {
+        success: true,
+        tournament,
+    };
 });
 
 tournamentRouter.get("/validateKey", async (ctx) => {
@@ -153,28 +156,31 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
         .leftJoinAndSelect("stats.modeDivision", "mode")
         .getMany();
 
-    ctx.body = teams.map<TeamList>(t => {
-        const members = t.members;
-        if (!members.some(m => m.ID === t.manager.ID))
-            members.push(t.manager);
-        return {
-            ID: t.ID,
-            name: t.name,
-            avatarURL: t.avatarURL,
-            pp: t.pp,
-            BWS: t.BWS,
-            rank: t.rank,
-            members: members
-                .map<TeamMember>(m => ({
-                    ID: m.ID,
-                    username: m.osu.username,
-                    osuID: m.osu.userID,
-                    BWS: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.BWS ?? 0,
-                    isManager: m.ID === t.manager.ID,
-                })),
-            isRegistered: tournament.teams.some(team => team.ID === t.ID),
-        };
-    });
+    ctx.body = {
+        success: true,
+        teams: teams.map<TeamList>(t => {
+            const members = t.members;
+            if (!members.some(m => m.ID === t.manager.ID))
+                members.push(t.manager);
+            return {
+                ID: t.ID,
+                name: t.name,
+                avatarURL: t.avatarURL,
+                pp: t.pp,
+                BWS: t.BWS,
+                rank: t.rank,
+                members: members
+                    .map<TeamMember>(m => ({
+                        ID: m.ID,
+                        username: m.osu.username,
+                        osuID: m.osu.userID,
+                        BWS: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.BWS ?? 0,
+                        isManager: m.ID === t.manager.ID,
+                    })),
+                isRegistered: tournament.teams.some(team => team.ID === t.ID),
+            };
+        }),
+    };
 });
 
 tournamentRouter.get("/:tournamentID/teams/screening", validateID, async (ctx) => {
@@ -219,23 +225,26 @@ tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
         .andWhere("stage.stageType = '0'")
         .getMany();
     
-    ctx.body = qualifiers.flatMap<BaseQualifier>(q => {
-        const qualData = {
-            ID: q.ID,
-            date: q.date,
-        };
-        if (!q.teams)
-            return [qualData];
+    ctx.body = {
+        success: true,
+        qualifiers: qualifiers.flatMap<BaseQualifier>(q => {
+            const qualData = {
+                ID: q.ID,
+                date: q.date,
+            };
+            if (!q.teams)
+                return [qualData];
 
-        return q.teams.map<BaseQualifier>(t => ({
-            ...qualData,
-            team: {
-                ID: t.ID,
-                name: t.name,
-                avatarURL: t.avatarURL,
-            },
-        }));
-    });
+            return q.teams.map<BaseQualifier>(t => ({
+                ...qualData,
+                team: {
+                    ID: t.ID,
+                    name: t.name,
+                    avatarURL: t.avatarURL,
+                },
+            }));
+        }),
+    };
 });
 
 tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
@@ -268,11 +277,7 @@ tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
         const server = await discordClient.guilds.fetch(tournament.server);
         await server.members.fetch();
 
-        const staff: {
-            role: string;
-            roleType: TournamentRoleType;
-            users: StaffMember[];
-        }[] = [{
+        const staff: StaffList[] = [{
             role: "Organizer",
             roleType: TournamentRoleType.Organizer,
             users: [{
@@ -314,7 +319,10 @@ tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
             });
         }
 
-        ctx.body = staff;
+        ctx.body = {
+            success: true,
+            staff,
+        };
     } catch (e) {
         ctx.body = {
             success: false,

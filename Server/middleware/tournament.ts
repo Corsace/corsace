@@ -108,6 +108,16 @@ export async function validateStageOrRound (ctx: ParameterizedContext, next: Nex
 
 export function hasRoles (roles: TournamentRoleType[]) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
+        if (!ctx.state.user?.discord?.userID) {
+            ctx.body = { error: "User is not logged in via discord for the hasRoles middleware!" };
+            return;
+        }
+
+        if (!ctx.state.tournament?.ID) {
+            ctx.body = { error: "Tournament not found for the hasRoles middleware!" };
+            return;
+        }
+
         const member = await getMember(ctx.state.user.discord.userID);
         if (!member) {
             ctx.body = { error: "Could not obtain any discord user!" };

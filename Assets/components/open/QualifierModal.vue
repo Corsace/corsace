@@ -108,7 +108,7 @@ export default class QualifierModal extends Vue {
             qualifierAt: date.getTime(),
         });
 
-        if (res.error)
+        if (!res.success)
             alert(res.error);
 
         this.loading = false;
@@ -153,7 +153,7 @@ export default class QualifierModal extends Vue {
             qualifierAt: date.getTime(),
         });
         
-        if (res.error)
+        if (!res.success)
             alert(res.error);
 
         this.loading = false;

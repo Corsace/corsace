@@ -672,7 +672,7 @@ export default class Referee extends Vue {
         }
     }
 
-    updateTooltipPosition (event) {
+    updateTooltipPosition (event: MouseEvent) {
         const x = event.clientX;
         const y = event.clientY;
 
@@ -707,8 +707,8 @@ export default class Referee extends Vue {
     }
 
     async mounted () {
-        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}/${this.$route.params.id}`);
-        if (matchupData.error) {
+        const { data: matchupData } = await this.$axios.get<{ matchup: Matchup }>(`/api/referee/matchups/${this.tournament?.ID}/${this.$route.params.id}`);
+        if (!matchupData.success) {
             alert(matchupData.error);
             await this.$router.push("/");
             return;
@@ -796,9 +796,13 @@ export default class Referee extends Vue {
         this.mapTimer = `${this.tournament?.mapTimer ?? 90}`;
         this.readyTimer = `${this.tournament?.readyTimer ?? 90}`;
 
-        const { data: centrifugoURL } = await this.$axios.get("/api/centrifugo/publicUrl");
+        const { data: urlData } = await this.$axios.get<{url: string}>("/api/centrifugo/publicUrl");
+        if (!urlData.success) {
+            alert(urlData.error);
+            return;
+        }
 
-        const centrifuge = new Centrifuge(`${centrifugoURL}/connection/websocket`, {
+        const centrifuge = new Centrifuge(`${urlData.url}/connection/websocket`, {
 
         });
 
@@ -952,45 +956,46 @@ export default class Referee extends Vue {
             return;
 
         switch (ctx.data.type) {
-            case "created":
+            case "created": {
+                const firstSet = ctx.data.firstSet;
                 this.matchup.baseURL = ctx.data.baseURL;
                 this.matchup.mp = ctx.data.mpID;
                 this.runningLobby = true;
                 this.matchup.sets = [{
-                    ...ctx.data.firstSet,
-                    first: ctx.data.firstSet.first === this.matchup.team1?.ID ? this.matchup.team1 : ctx.data.firstSet.first === this.matchup.team2?.ID ? this.matchup.team2 : null,
+                    ...firstSet,
+                    maps: [],
+                    first: firstSet.first === this.matchup.team1?.ID ? this.matchup.team1 : firstSet.first === this.matchup.team2?.ID ? this.matchup.team2 : null,
                 }];
                 break;
+            }
             case "message":
                 this.addMessage(ctx.data);
                 break;
             case "first":
                 this.$set(this.matchup.sets![this.matchup.sets!.length - 1], "first", ctx.data.first === this.matchup.team1?.ID ? this.matchup.team1 : this.matchup.team2); // In order to make the computed properties watchers work 
                 break;
-            case "settings":
-                this.team1PlayerStates = this.team1PlayerStates.map(player => {
-                    const slotPlayer = ctx.data.slots.find(slot => slot.playerOsuID === parseInt(player.osuID));
-                    return {
-                        ...player,
-                        inLobby: slotPlayer !== undefined,
-                        ready: slotPlayer?.ready || false,
-                        team: slotPlayer?.team,
-                        mods: slotPlayer?.mods || "",
-                        slot: slotPlayer?.slot,
-                    };
+            case "settings": {
+                const slots = ctx.data.slots;
+                this.team1PlayerStates = this.team1PlayerStates.map<playerState>(player => {
+                    const slotPlayer = slots.find(slot => slot.playerOsuID === parseInt(player.osuID));
+                    player.inLobby = slotPlayer !== undefined;
+                    player.ready = slotPlayer?.ready ?? false;
+                    player.team = slotPlayer?.team;
+                    player.mods = slotPlayer?.mods ?? "";
+                    player.slot = slotPlayer?.slot ?? 0;
+                    return player;
                 });
-                this.team2PlayerStates = this.team2PlayerStates.map(player => {
-                    const slotPlayer = ctx.data.slots.find(slot => slot.playerOsuID === parseInt(player.osuID));
-                    return {
-                        ...player,
-                        inLobby: slotPlayer !== undefined,
-                        ready: slotPlayer?.ready || false,
-                        team: slotPlayer?.team,
-                        mods: slotPlayer?.mods || "",
-                        slot: slotPlayer?.slot,
-                    };
+                this.team2PlayerStates = this.team2PlayerStates.map<playerState>(player => {
+                    const slotPlayer = slots.find(slot => slot.playerOsuID === parseInt(player.osuID));
+                    player.inLobby = slotPlayer !== undefined;
+                    player.ready = slotPlayer?.ready ?? false;
+                    player.team = slotPlayer?.team;
+                    player.mods = slotPlayer?.mods ?? "";
+                    player.slot = slotPlayer?.slot ?? 0;
+                    return player;
                 });
                 break;
+            }
             case "selectMap":
                 if (!this.matchup.sets)
                     this.matchup.sets = [{
@@ -1080,12 +1085,12 @@ export default class Referee extends Vue {
         if (endpoint === "deleteMap" && !confirm("Are you REALLY SURE you want to delete a map? If this is a pick, this is irreversible."))
             return;
 
-        const { data: lobbyData } = await this.$axios.post(`/api/referee/bancho/${this.tournament?.ID}/${this.matchup.ID}`, {
+        const { data: lobbyData } = await this.$axios.post<{ pulse?: boolean }>(`/api/referee/bancho/${this.tournament?.ID}/${this.matchup.ID}`, {
             endpoint,
             ...data,
         });
 
-        if (lobbyData.error) {
+        if (!lobbyData.success) {
             if (endpoint === "pulse") {
                 this.runningLobby = false;
                 return;
@@ -1096,7 +1101,7 @@ export default class Referee extends Vue {
             return;
         }
 
-        if (endpoint === "pulse")
+        if (endpoint === "pulse" && lobbyData.pulse)
             this.runningLobby = lobbyData.pulse;
 
         if (endpoint === "deleteMap" && this.matchup.sets?.[data.set]) {

@@ -43,7 +43,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "filter", paramType: "string" },
         { name: "tournament", paramType: "string", optional: true },
         { name: "user", paramType: "string", customHandler: extractTargetText, optional: true },

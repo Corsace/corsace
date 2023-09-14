@@ -10,6 +10,7 @@ const mappersRouter = new Router();
 mappersRouter.get("/search", async (ctx) => {
     if (!ctx.query.year)
         return ctx.body = {
+            success: false,
             error: "No year given!",
         };
 
@@ -17,6 +18,7 @@ mappersRouter.get("/search", async (ctx) => {
     const order = parseQueryParam(ctx.query.order);
     if (order !== undefined && order !== "ASC" && order !== "DESC")
         return ctx.body = {
+            success: false,
             error: "order must be undefined, ASC or DESC",
         };
 
@@ -32,20 +34,29 @@ mappersRouter.get("/search", async (ctx) => {
     
     if (ctx.query.friendFilter === "true") {
         if (!ctx.state.user)
-            return ctx.body = { error: "Please login via osu! to use the friends filter!" };
+            return ctx.body = {
+                success: false,
+                error: "Please login via osu! to use the friends filter!",
+            };
         try {
             const accessToken: string = await ctx.state.user.getAccessToken("osu");
             const data = await osuV2Client.getUserFriends(accessToken);
             query.friends = data.map(friend => friend.id);
         } catch (e) {
             if (Axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) 
-                return ctx.body = { error: "Please re-login via osu! again in order to use the friends filter! If you logged in again via osu! and it still isn't working, contact VINXIS!" };
+                return ctx.body = { 
+                    success: false,
+                    error: "Please re-login via osu! again in order to use the friends filter! If you logged in again via osu! and it still isn't working, contact VINXIS!",
+                };
             else 
                 throw e;
         }
     }
 
-    ctx.body = await User.basicSearch(query);
+    ctx.body = {
+        success: true,
+        users: await User.basicSearch(query),
+    };
 });
 
 export default mappersRouter;

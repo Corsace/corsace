@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "ESNext",
+        "target": "ES2022",
         "module": "CommonJS",
         "moduleResolution": "Node",
         "emitDecoratorMetadata": true,
@@ -8,7 +8,6 @@
         "experimentalDecorators": true,
         "resolveJsonModule": true,
         "strict": true,
-        "noImplicitAny": true,
         "types": [
             "@types/node",
             "@nuxt/types",
@@ -23,6 +22,7 @@
         "sourceMap": true,
     },
     "include": [
+        // Don't know why, but this is needed for the typescript compiler to actually work with the .d.ts files + eslint properly
         "**/*",
     ],
     "exclude": [

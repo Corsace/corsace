@@ -4,13 +4,12 @@ import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
 import { isEligibleFor, currentMCA } from "../../../Server/middleware/mca-ayim";
 import { config } from "node-config-ts";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";
 import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { RequestStatus } from "../../../Interfaces/guestRequests";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
-
-const guestRequestRouter = new Router();
+import { MCAAuthenticatedState } from "koa";
 
 interface BodyData {
     mode: string;
@@ -59,7 +58,7 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     }
 
     // Get beatmap information
-    const beatmaps = (await axios.get(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&b=${beatmapID}`)).data;
+    const { data: beatmaps } = await axios.get<any, AxiosResponse<any>>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&b=${beatmapID}`);
     if (beatmaps.length !== 1) {
         return { error: "Error in obtaining beatmap info!"};
     }
@@ -87,6 +86,8 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     };
 }
 
+const guestRequestRouter = new Router<MCAAuthenticatedState>();
+
 guestRequestRouter.use(isLoggedIn);
 guestRequestRouter.use(currentMCA);
 
@@ -96,7 +97,10 @@ guestRequestRouter.post("/create", async (ctx) => {
     const res = await validateBody(user, mca.year, ctx.request.body);
 
     if ("error" in res) {
-        return ctx.body = res;
+        return ctx.body = {
+            success: false,
+            error: res.error,
+        };
     }
 
     // Create guest requesst
@@ -108,7 +112,10 @@ guestRequestRouter.post("/create", async (ctx) => {
     guestReq.status = RequestStatus.Pending;
     await guestReq.save();
 
-    ctx.body = guestReq;
+    ctx.body = {
+        success: true,
+        guestReq,
+    };
 });
 
 guestRequestRouter.post("/:id/update", async (ctx) => {
@@ -119,6 +126,7 @@ guestRequestRouter.post("/:id/update", async (ctx) => {
 
     if (!request || request.status === RequestStatus.Accepted) {
         return ctx.body = {
+            success: false,
             error: "Not valid request",
         };
     }
@@ -126,7 +134,10 @@ guestRequestRouter.post("/:id/update", async (ctx) => {
     const res = await validateBody(user, mca.year, ctx.request.body, id);
 
     if ("error" in res) {
-        return ctx.body = res;
+        return ctx.body = {
+            success: false,
+            error: res.error,
+        };
     }
 
     request.mode = res.mode;
@@ -134,7 +145,10 @@ guestRequestRouter.post("/:id/update", async (ctx) => {
     request.status = RequestStatus.Pending;
     await request.save();
 
-    ctx.body = request;
+    ctx.body = {
+        success: true,
+        request,
+    };
 });
 
 export default guestRequestRouter;

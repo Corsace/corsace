@@ -1,16 +1,8 @@
 import "centrifuge";
 import { PublicationContext } from "centrifuge";
-import { MapStatus } from "../Interfaces/matchup";
-import { MappoolMap } from "../Models/tournaments/mappools/mappoolMap";
-import { MatchupMap } from "../Models/tournaments/matchupMap";
+import { MatchupMap } from "../Interfaces/matchup";
 
 declare module "centrifuge" {
-    interface MapData {
-        ID: number;
-        map: MappoolMap;
-        order: number;
-        status: MapStatus;
-    }
 
     interface CreatedData {
         type: "created";
@@ -50,14 +42,14 @@ declare module "centrifuge" {
             playerOsuID: number;
             slot: number;
             mods: string;
-            team: string;
+            team: "Blue" | "Red";
             ready: boolean;
         }[];
     }
 
     interface SelectMapData {
         type: "selectMap";
-        map: MapData;
+        map: MatchupMap;
     }
 
     interface BeatmapData {
@@ -79,7 +71,7 @@ declare module "centrifuge" {
         setTeam2Score: number;
         team1Score: number;
         team2Score: number;
-        map: MapData;
+        map: MatchupMap;
     }
 
     interface ClosedData {

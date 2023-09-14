@@ -27,7 +27,7 @@ export function osuLogTimestamp (date: Date) {
 export function toLocalISOString (date: Date) {
     const tzo = -date.getTimezoneOffset(),
         dif = tzo >= 0 ? "+" : "-",
-        pad = function(num) {
+        pad = function(num: number) {
             const norm = Math.floor(Math.abs(num));
             return (norm < 10 ? "0" : "") + norm;
         };

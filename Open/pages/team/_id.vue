@@ -662,8 +662,8 @@ export default class Team extends Vue {
         });
         this.image = undefined;
     
-        if (resAvatar.error) {
-            alert(this.$t("open.teams.edit.errors.errorAddingTeamAvatar", {error: resAvatar.error}));
+        if (!resAvatar.success) {
+            alert(this.$t("open.teams.edit.errors.errorAddingTeamAvatar", { error: resAvatar.error }));
             this.teamData = await this.getTeam(true);
             return;
         }
@@ -733,12 +733,12 @@ export default class Team extends Vue {
 
     async search (userSearch: string) {
         try {
-            const { data } = await this.$axios.get(`/api/users/search?user=${userSearch}`);
+            const { data } = await this.$axios.get<{ users: User[] }>(`/api/users/search?user=${userSearch}`);
 
-            if (!data.error)
-                this.users = data;
-            else
+            if (!data.success)
                 alert(data.error);
+            else
+                this.users = data.users;
         } catch (error) {
             alert(this.$t("open.teams.edit.errors.contactVinxis") as string);
             console.error(error);

@@ -20,7 +20,10 @@ usersRouter.get("/search", async (ctx) => {
         .limit(10)
         .getMany();
 
-    ctx.body = users;
+    ctx.body = {
+        success: true,
+        users,
+    };
 });
 
 usersRouter.get("/advSearch", async (ctx) => {

@@ -27,7 +27,7 @@
                     selectedMode === mode ? `mode__${mode}--selected--${viewTheme}` : '',
                 ]" 
             />
-            {{ isSmall ? modeShort[mode] : mode.toUpperCase() }}
+            {{ isSmall ? modeShort[mode as keyof typeof modeShort] : mode.toUpperCase() }}
         </div>
     </div>
 </template>
@@ -52,7 +52,7 @@ export default class ModeSwitcher extends Vue {
     @mcaAyimModule.State modes!: string[];
     @mcaAyimModule.Getter phase!: MCAPhase;
     @mcaAyimModule.Getter isEligibleFor!: (mode: string) => boolean;
-    @mcaAyimModule.Action updateSelectedMode;
+    @mcaAyimModule.Action updateSelectedMode!: (mode: string) => void;
 
     modeShort = {
         standard: "STD",
@@ -67,7 +67,7 @@ export default class ModeSwitcher extends Vue {
         return this.modes.filter(m => !this.ignoreModes?.includes(m));
     }
 
-    setMode (mode): void {
+    setMode (mode: string): void {
         if (this.selectedMode === mode && this.$route.name === "year")
             this.updateSelectedMode("");
         else if (!this.enableModeEligibility || this.isEligibleFor(mode))

@@ -1,7 +1,7 @@
 import { BanchoMessage } from "bancho.js";
 import { User } from "../../../../Models/user";
 
-const bots = {
+const bots: Record<string, string> = {
     "Corsace": "29191632",
     "BanchoBot": "3",
 };

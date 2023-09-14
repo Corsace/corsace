@@ -2,7 +2,7 @@ import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { RootState } from "../../Assets/store/mca-ayim";
 import { UserChoiceInfo } from "../../Interfaces/user";
 import { CategoryStageInfo, SectionCategory } from "../../Interfaces/category";
-import { BeatmapsetInfo } from "../../Interfaces/beatmap";
+import { BeatmapInfo, BeatmapsetInfo } from "../../Interfaces/beatmap";
 import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
 import { StageQuery } from "../../Interfaces/queries";
@@ -62,7 +62,7 @@ export const mutations: MutationTree<StageState> = {
     selected (state, bool) {
         state.selected = bool;
     },
-    updateStage (state, stage) {
+    updateStage (state, stage: StageType) {
         state.stage = stage;
     },
     updateCategories (state, categories) {
@@ -109,7 +109,7 @@ export const mutations: MutationTree<StageState> = {
     updateSelectedCategory (state, category) {
         state.selectedCategory = category;
     },
-    updateSection (state, section) {
+    updateSection (state, section: SectionCategory) {
         if (state.section !== section) {
             state.section = section;
         }
@@ -120,10 +120,10 @@ export const mutations: MutationTree<StageState> = {
             ...query,
         };
     },
-    updateFavourites (state, favourites) {
+    updateFavourites (state, favourites: boolean) {
         state.favourites = favourites;
     },
-    updatePlayed (state, played) {
+    updatePlayed (state, played: boolean) {
         state.played = played;
     },
     reset (state, sectionReset: boolean) {
@@ -185,11 +185,11 @@ interface InitialData {
 }
 
 export const actions: ActionTree<StageState, RootState> = {
-    updateStage ({ commit }, stage) {
+    updateStage ({ commit }, stage: StageType) {
         commit("updateStage", stage);
     },
     async setInitialData ({ state, commit, dispatch, rootState }) {
-        const mcaState = rootState["mca-ayim"] as RootState;
+        const mcaState = (rootState as any)["mca-ayim"] as RootState;
         if (!mcaState.mca?.year) {
             await this.$router.push("/");
             return;
@@ -216,18 +216,18 @@ export const actions: ActionTree<StageState, RootState> = {
         commit("updateSelectedCategory", category);
         await dispatch("search");
     },
-    updateSection ({ commit }, section) {
+    updateSection ({ commit }, section: SectionCategory) {
         commit("updateSection", section);
     },
     async updateQuery ({ commit, dispatch }, query) {
         commit("updateQuery", query);
         await dispatch("search");
     },
-    async updateFavourites ({ commit, dispatch }, favourites) {
+    async updateFavourites ({ commit, dispatch }, favourites: boolean) {
         commit("updateFavourites", favourites);
         await dispatch("search");
     },
-    async updatePlayed ({ commit, dispatch }, played) {
+    async updatePlayed ({ commit, dispatch }, played: boolean) {
         commit("updatePlayed", played);
         await dispatch("search");
     },
@@ -243,8 +243,11 @@ export const actions: ActionTree<StageState, RootState> = {
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
 
-        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState["mca-ayim"].mca?.year}/search?mode=${state.selectedCategory.mode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&favourites=${state.favourites}&played=${state.played}&text=${state.query.text}&skip=${skip}`);
-        if (data.error)
+        const { data } = await this.$axios.get<{
+            list: BeatmapsetInfo[] | BeatmapInfo[] | UserChoiceInfo[],
+            count: number,
+        }>(`/api/${state.stage}/${(rootState as any)["mca-ayim"].mca?.year}/search?mode=${state.selectedCategory.mode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&favourites=${state.favourites}&played=${state.played}&text=${state.query.text}&skip=${skip}`);
+        if (!data.success)
             return alert(data.error);
 
         commit("loading", false);
@@ -260,12 +263,12 @@ export const actions: ActionTree<StageState, RootState> = {
                 commit("updateBeatmapsetResults", data.list);
         } else {
             if (state.selectedCategory.type === "Users") {
-                let users = data.list;
-                if (skipping) users = [...state.users, ...data.list];
+                let users = data.list as UserChoiceInfo[];
+                if (skipping) users = [...state.users, ...data.list as UserChoiceInfo[]];
                 commit("updateUsers", users.filter((val, i, self) => self.findIndex(v => v.corsaceID === val.corsaceID) === i));
             } else if (state.selectedCategory.type === "Beatmapsets") {
-                let beatmaps = data.list;
-                if (skipping) beatmaps = [...state.beatmaps, ...data.list];
+                let beatmaps = data.list as BeatmapsetInfo[];
+                if (skipping) beatmaps = [...state.beatmaps, ...data.list as BeatmapsetInfo[]];
                 commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
             }
         }
@@ -285,7 +288,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
             commit("selected", false);
 
-            if (data.error) {
+            if (!data.success) {
                 alert(data.error);
                 return;
             }
@@ -305,7 +308,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
             commit("selected", false);
 
-            if (data.error) {
+            if (!data.success) {
                 alert(data.error);
                 return;
             }
@@ -331,7 +334,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
             commit("selected", false);
 
-            if (data.error) {
+            if (!data.success) {
                 alert(data.error);
                 return;
             }
@@ -353,7 +356,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
             commit("selected", false);
 
-            if (data.error) {
+            if (!data.success) {
                 alert(data.error);
                 return;
             }
@@ -369,7 +372,7 @@ export const actions: ActionTree<StageState, RootState> = {
     async swapVotes ({ dispatch }, newOrder: Vote[]) {
         const { data } = await this.$axios.post(`/api/voting/swap`, newOrder);
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
             return;
         }

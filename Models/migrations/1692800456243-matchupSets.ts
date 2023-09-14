@@ -14,7 +14,10 @@ export class MatchupSets1692800456243 implements MigrationInterface {
             FROM matchup
         `);
 
-        const rawMaps = await queryRunner.query(`
+        const rawMaps: {
+            matchupID: number;
+            ID: number;
+        }[] = await queryRunner.query(`
             SELECT
                 matchup_map.ID AS ID,
                 matchup_map.matchupID AS matchupID

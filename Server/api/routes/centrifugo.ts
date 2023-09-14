@@ -50,7 +50,10 @@ async function getChannel (channelType: string, channelID: number): Promise<any>
 }
 
 centrifugoRouter.get("/publicUrl", (ctx) => {
-    ctx.body = config.centrifugo.publicUrl;
+    ctx.body = {
+        success: true,
+        url: config.centrifugo.publicUrl,
+    };
 });
 
 centrifugoRouter.post("/connect", ipWhitelist, (ctx) => {
@@ -101,7 +104,7 @@ centrifugoRouter.post("/subscribe", ipWhitelist, async (ctx) => {
     if (channel instanceof Matchup && channel.stage?.stageType === StageType.Qualifiers && !channel.stage.publicScores) {
         let authorized = false;
         const user = body.user ? await User.findOne({ where: { ID: Number(body.user) } }) : null;
-        if (user) {
+        if (user?.discord?.userID) {
             const roles = await TournamentRole
                 .createQueryBuilder("role")
                 .leftJoinAndSelect("role.tournament", "tournament")
@@ -110,8 +113,8 @@ centrifugoRouter.post("/subscribe", ipWhitelist, async (ctx) => {
             if (roles.length > 0) {
                 try {
                     const privilegedRoles = roles.filter(r => unallowedToPlay.some(u => u === r.roleType));
-                    const tournamentServer = await discordClient.guilds.fetch(ctx.state.tournament.server);
-                    const discordMember = await tournamentServer.members.fetch(ctx.state.user.discord.userID);
+                    const tournamentServer = await discordClient.guilds.fetch(channel.stage.tournament.server);
+                    const discordMember = await tournamentServer.members.fetch(user.discord.userID);
                     authorized = privilegedRoles.some(r => discordMember.roles.cache.has(r.roleID));
                 } catch (e) {
                     authorized = false;

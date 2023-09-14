@@ -99,7 +99,7 @@ export function getTournamentChannelTypeRoles () {
     return {
         [TournamentChannelType.General]: undefined,
         [TournamentChannelType.Participants]: Object.values(TournamentRoleType).filter((role) => typeof role === "number") as TournamentRoleType[],
-        [TournamentChannelType.Managers]: Object.values(TournamentRoleType).filter((role) => typeof role === "number").filter(role => role !== TournamentRoleType.Participants) as TournamentRoleType[],
+        [TournamentChannelType.Managers]: Object.values(TournamentRoleType).filter((role) => typeof role === "number" && role !== TournamentRoleType.Participants) as TournamentRoleType[],
         [TournamentChannelType.Announcements]: undefined,
         [TournamentChannelType.Admin]: [TournamentRoleType.Organizer],
         [TournamentChannelType.Mappool]: [TournamentRoleType.Organizer, TournamentRoleType.Mappoolers],

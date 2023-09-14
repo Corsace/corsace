@@ -55,7 +55,7 @@ export interface ResultVote extends StaffVote {
     placement: number;
 }
 
-export interface UserVote extends StaffVote {
+export interface UserVote extends Partial<StaffVote> {
     votes: ResultVote[]
 }
 
@@ -70,7 +70,7 @@ export function groupVotesByVoters (staffVotes: StaffVote[]): UserVote[] {
             inRace: true,
             used: false,
         } as ResultVote;
-        const i = userVotes.findIndex(userVote => userVote.voter.osuID === staffVote.voter.osuID);
+        const i = userVotes.findIndex(userVote => userVote.voter?.osuID === staffVote.voter.osuID);
         if (i === -1) {
             userVotes.push({
                 voter: staffVote.voter,

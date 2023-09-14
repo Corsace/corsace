@@ -153,23 +153,23 @@ export const getters: GetterTree<OpenState, OpenState> = {
 
 export const actions: ActionTree<OpenState, OpenState> = {
     async setTournament ({ commit }, year) {
-        const { data } = await this.$axios.get(`/api/tournament/open/${year}`);
+        const { data } = await this.$axios.get<{ tournament: Tournament }>(`/api/tournament/open/${year}`);
 
-        if (!data.error) {
-            commit("setTournament", data);
+        if (data.success) {
+            commit("setTournament", data.tournament);
         }
     },
     async setTeamList ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/teams`);
+        const { data } = await this.$axios.get<{ teams: Team[] }>(`/api/tournament/${tournamentID}/teams`);
 
-        if (!data.error)
-            commit("setTeamList", data);
+        if (data.success)
+            commit("setTeamList", data.teams);
     },
     async setTeam ({ commit, dispatch }) {
-        const { data } = await this.$axios.get(`/api/team`);
+        const { data } = await this.$axios.get<{ teams: Team[] }>(`/api/team`);
 
-        if (!data.error)
-            commit("setTeam", data);
+        if (data.success)
+            commit("setTeam", data.teams);
         
         await dispatch("setTeamInvites");
     },
@@ -178,55 +178,55 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (!team)
             return;
 
-        const { data } = await this.$axios.get(`/api/team/invite/${team.ID}`);
+        const { data } = await this.$axios.get<{ invites: TeamUser[] }>(`/api/team/invite/${team.ID}`);
 
-        if (!data.error)
-            commit("setTeamInvites", data);
+        if (data.success)
+            commit("setTeamInvites", data.invites);
     },
     async setInvites ({ commit }) {
-        const { data } = await this.$axios.get(`/api/team/invite/user`);
+        const { data } = await this.$axios.get<{ invites: BaseTeam[] }>(`/api/team/invite/user`);
 
-        if (!data.error)
-            commit("setInvites", data);
+        if (data.success)
+            commit("setInvites", data.invites);
     },
     async setQualifierList ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/qualifiers`);
+        const { data } = await this.$axios.get<{ qualifiers: BaseQualifier[] }>(`/api/tournament/${tournamentID}/qualifiers`);
 
-        if (!data.error)
-            commit("setQualifierList", data);
+        if (data.success)
+            commit("setQualifierList", data.qualifiers);
     },
     async setMatchups ({ commit }, stageID) {
         if (!stageID || isNaN(parseInt(stageID)))
             return;
 
-        const { data } = await this.$axios.get(`/api/stage/${stageID}/matchups`);
+        const { data } = await this.$axios.get<{ matchups: MatchupList[] }>(`/api/stage/${stageID}/matchups`);
 
-        if (!data.error)
+        if (data.success)
             commit("setMatchups", data.matchups);
     },
     async setMappools ({ commit }, stageID) {
         if (!stageID || isNaN(parseInt(stageID)))
             return;
 
-        const { data } = await this.$axios.get(`/api/stage/${stageID}/mappools`);
+        const { data } = await this.$axios.get<{ mappools: Mappool[] }>(`/api/stage/${stageID}/mappools`);
 
-        if (!data.error)
+        if (data.success)
             commit("setMappools", data.mappools);
     },
     async setScores ({ commit }, stageID) {
         if (!stageID || isNaN(parseInt(stageID)))
             return;
 
-        const { data } = await this.$axios.get(`/api/stage/${stageID}/scores`);
+        const { data } = await this.$axios.get<{ scores: MatchupScore[] }>(`/api/stage/${stageID}/scores`);
 
-        if (!data.error)
+        if (data.success)
             commit("setScores", data.scores);
     },
     async setStaffList ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/staff`);
+        const { data } = await this.$axios.get<{ staff: StaffList[] }>(`/api/tournament/${tournamentID}/staff`);
 
-        if (!data.error)
-            commit("setStaffList", data);
+        if (data.success)
+            commit("setStaffList", data.staff);
     },
     async setInitialData ({ commit, dispatch }, year) {
         await Promise.all([

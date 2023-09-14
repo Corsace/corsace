@@ -132,15 +132,12 @@ export default class Comments extends Vue {
 
     async getLastestInfluences (maxYear: number): Promise<Influence[]> {
         try {
-            const {data} = await this.$axios.get(`/api/influences?user=${this.loggedInUser.osu.userID}&mode=${this.selectedMode}&year=${maxYear}`);
+            const {data} = await this.$axios.get<{ user: UserInfo, influences: Influence[] }>(`/api/influences?user=${this.loggedInUser.osu.userID}&mode=${this.selectedMode}&year=${maxYear}`);
 
-            if (!data.error) {
-                // TODO: Implement proper typing for when MCA coding begins again
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            if (data.success)
                 return data.influences;
-            } else {
+            else
                 alert(data.error);
-            }
         } catch (error) {
             console.log(error);
         }
@@ -183,13 +180,12 @@ export default class Comments extends Vue {
 
     async search (userSearch: any) {
         try {
-            const {data} = await this.$axios.get(`/api/users/search?user=${userSearch}`);
+            const { data } = await this.$axios.get<{ users: User[] }>(`/api/users/search?user=${userSearch}`);
 
-            if (!data.error) {
-                this.users = data;
-            } else {
+            if (data.success)
+                this.users = data.users;
+            else
                 alert(data.error);
-            }
         } catch (error) {
             console.log(error);
         }
@@ -197,18 +193,17 @@ export default class Comments extends Vue {
 
     async add (id: number) {
         try {
-            const {data} = await this.$axios.post(`/api/influences/create`, {
+            const { data } = await this.$axios.post<{ newInfluence: Influence }>(`/api/influences/create`, {
                 year: this.mca.year,
                 target: id,
                 mode: this.selectedMode,
                 comment: this.comment,
             });
         
-            if (!data.error) {
-                this.influences.push(data);
-            } else {
+            if (data.success)
+                this.influences.push(data.newInfluence);
+            else
                 alert(data.error);
-            }
         } catch (error) {
             console.log(error);
         }

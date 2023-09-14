@@ -54,7 +54,10 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
     const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
     const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
     if (!(modeString in ModeDivisionType)) {
-        ctx.body = { error: "Invalid mode, please use standard, taiko, fruits or mania" };
+        ctx.body = { 
+            success: false,
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
         return;
     }
     const modeId = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
@@ -353,7 +356,10 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
     else if (modeId === ModeDivisionType.mania)
         statistics.keys = CS;
 
-    ctx.body = statistics;
+    ctx.body = {
+        success: true,
+        statistics,
+    };
 });
 
 statisticsRouter.get("/mappers", async (ctx) => {
@@ -363,7 +369,10 @@ statisticsRouter.get("/mappers", async (ctx) => {
     const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
     const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
     if (!(modeString in ModeDivisionType)) {
-        ctx.body = { error: "Invalid mode, please use standard, taiko, fruits or mania" };
+        ctx.body = { 
+            success: false,
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
         return;
     }
     const modeId = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
@@ -451,7 +460,10 @@ statisticsRouter.get("/mappers", async (ctx) => {
         mapsPerMapperAges: mapYears,
     };
 
-    ctx.body = statistics;
+    ctx.body = {
+        success: true,
+        statistics,
+    };
 });
 
 // statisticsRouter.get("/nominators", async (ctx) => {

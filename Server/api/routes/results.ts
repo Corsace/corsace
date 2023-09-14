@@ -7,10 +7,13 @@ import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import { parseQueryParam } from "../../../Server/utils/query";
 import { osuV2Client } from "../../osu";
+import { MCAState } from "koa";
 
-const resultsRouter = new Router();
+const resultsRouter = new Router<MCAState>();
 
-resultsRouter.get("/:year?", validatePhaseYear, isResults, async (ctx) => {
+resultsRouter.use(validatePhaseYear);
+
+resultsRouter.get("/:year?", isResults, async (ctx) => {
     const categories = await Category.find({
         where: {
             mca: {
@@ -26,7 +29,7 @@ resultsRouter.get("/:year?", validatePhaseYear, isResults, async (ctx) => {
     };
 });
 
-resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => {
+resultsRouter.get("/:year/search", isResults, async (ctx) => {
     if (await ctx.cashed() && ctx.state.mca.currentPhase() === "results")
         return;
 

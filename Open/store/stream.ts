@@ -15,9 +15,9 @@ export const state = (): StreamState => ({
 });
 
 export const mutations: MutationTree<StreamState> = {
-    setKey (state, data) {
+    setKey (state, data: { key: string, tournamentID?: number }) {
         state.key = data.key;
-        state.tournamentID = data.tournamentID;
+        state.tournamentID = data.tournamentID ?? null;
     },
     setScores (state, scores: MatchupScore[] | undefined) {
         state.scores = scores ?? null;
@@ -30,18 +30,18 @@ export const getters: GetterTree<StreamState, OpenState> = {
 export const actions: ActionTree<StreamState, OpenState> = {
     async setScores ({ commit }, stageID) {
         const state = this.state as any;
-        const { data } = await this.$axios.get(`/api/tournament/${stageID}/scores?key=${state.stream.key}`);
+        const { data } = await this.$axios.get<{ scores: MatchupScore[] }>(`/api/${stageID}/scores?key=${state.stream.key}`);
 
-        if (!data.error)
-            commit("setScores", data);
+        if (data.success)
+            commit("setScores", data.scores);
     },
-    async setInitialData ({ commit, dispatch }, payload) {
+    async setInitialData ({ commit, dispatch }, payload: { key: string, stageID: string | (string | null)[] }) {
         if (!payload.key)
             return;
 
-        const { data } = await this.$axios.get(`/api/tournament/validateKey?key=${payload.key}`);
+        const { data } = await this.$axios.get<{ tournamentID?: number }>(`/api/tournament/validateKey?key=${payload.key}`);
 
-        if (data.error)
+        if (!data.success)
             return;
 
         commit("setKey", {
@@ -49,7 +49,7 @@ export const actions: ActionTree<StreamState, OpenState> = {
             tournamentID: data.tournamentID,
         });
 
-        if (payload.stageID && !isNaN(parseInt(payload.stageID)))
+        if (typeof payload.stageID === "string" && !isNaN(parseInt(payload.stageID)))
             await dispatch("setScores", parseInt(payload.stageID));
     },
 };

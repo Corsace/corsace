@@ -1,13 +1,15 @@
 import Router from "@koa/router";
-import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
+import { isLoggedInDiscord } from "../../../../Server/middleware";
 import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
 import { StaffNomination } from "../../../../Interfaces/nomination";
 import { parseQueryParam } from "../../../../Server/utils/query";
+import { UserAuthenticatedState } from "koa";
+import { isMCAStaff } from "../../../middleware/mca-ayim";
 
-const staffNominationsRouter = new Router;
+const staffNominationsRouter = new Router<UserAuthenticatedState>();
 
 staffNominationsRouter.use(isLoggedInDiscord);
-staffNominationsRouter.use(isStaff);
+staffNominationsRouter.use(isMCAStaff);
 
 // Endpoint for getting information for a category
 staffNominationsRouter.get("/", async (ctx) => {

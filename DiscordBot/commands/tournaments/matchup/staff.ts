@@ -59,7 +59,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!tournament)
         return;
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "matchup", paramType: "integer" },
         { name: "staff_type", paramType: "string", optional: true },
         { name: "user", paramType: "string", customHandler: extractTargetText, optional: true },

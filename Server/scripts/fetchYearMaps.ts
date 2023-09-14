@@ -4,7 +4,7 @@ import memoizee from "memoizee";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { config } from "node-config-ts";
 import { Beatmapset } from "../../Models/beatmapset";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Beatmap } from "../../Models/beatmap";
 import { OAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
@@ -52,7 +52,7 @@ const getModeDivison = memoizee(async (modeDivisionId: number) => {
 
 // API call to fetch a user's country.
 async function getMissingOsuUserProperties (userID: number): Promise<{ country: string; username: string; }> {
-    const userApi = (await axios.get(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`)).data as any[];
+    const { data: userApi } = await axios.get<any, AxiosResponse<any[]>>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`);
     if (userApi.length === 0)
         return { country: "", username: "" };
     return {
@@ -201,12 +201,13 @@ const getBNsApiCallRawData = async (beatmapSetID: BeatmapsetID): Promise<null | 
     if (config.bn.username && config.bn.secret) {
         try {
             await bnFetchingLimiter.removeTokens(1);
-            return (await axios.get<BNEvent[]>(`https://bn.mappersguild.com/interOp/events/${beatmapSetID}`, {
+            const { data } = await axios.get<any, AxiosResponse<BNEvent[]>>(`https://bn.mappersguild.com/interOp/events/${beatmapSetID}`, {
                 headers: {
                     username: config.bn.username,
                     secret: config.bn.secret,
                 },
-            })).data;
+            });
+            return data;
         } catch (err: any) {
             console.error("An error occured while fetching BNs for beatmap set " + beatmapSetID);
             console.error(err.stack);
@@ -307,7 +308,7 @@ async function script () {
     printStatus();
     const queuedBeatmapIds: number[] = [];
     while (since.getTime() < until.getTime()) {
-        const newBeatmapsApi = (await axios.get(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${(new Date(since.getTime() - 1000)).toJSON().slice(0,19).replace("T", " ")}`)).data as any[];
+        const { data: newBeatmapsApi } = await axios.get<any, AxiosResponse<any[]>>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&since=${(new Date(since.getTime() - 1000)).toJSON().slice(0,19).replace("T", " ")}`);
         for(const newBeatmapApi of newBeatmapsApi) {
             const newBeatmap = new APIBeatmap(newBeatmapApi);
             if(queuedBeatmapIds.includes(newBeatmap.id))

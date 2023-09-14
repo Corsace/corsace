@@ -22,7 +22,7 @@ export function publishSettings (matchup: Matchup, slots: BanchoLobbyPlayer[]) {
             playerOsuID: slot?.user.id,
             slot: i + 1,
             mods: slot?.mods.map(mod => mod.shortMod).join(""),
-            team: slot?.team,
+            team: slot?.team as "Blue" | "Red",
             ready: slot?.state === BanchoLobbyPlayerStates.Ready,
         })),
     });

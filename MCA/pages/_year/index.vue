@@ -309,7 +309,7 @@ export default class Index extends Vue {
     @mcaAyimModule.State selectedMode!: string;
     @mcaAyimModule.Getter phase!: MCAPhase | null;
     @mcaAyimModule.Getter isEligibleFor!: (mode: string) => boolean;
-    @mcaAyimModule.Mutation toggleGuestDifficultyModal!;
+    @mcaAyimModule.Mutation toggleGuestDifficultyModal!: () => void;
 
     @State viewTheme!: "light" | "dark";
 
@@ -378,8 +378,8 @@ export default class Index extends Vue {
 
     async mounted () {
         if (this.mca) {
-            const { data } = await this.$axios.get(`/api/mca/front?year=${this.mca.year}`);
-            if (data.error) {
+            const { data } = await this.$axios.get<{ frontData: FullFrontInfo }>(`/api/mca/front?year=${this.mca.year}`);
+            if (!data.success) {
                 alert(data.error);
                 return;
             }

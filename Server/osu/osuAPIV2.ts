@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { RateLimiter } from "limiter";
 import { osuV2Token, osuAPIV2Options, osuAPIV2ClientCredentials, osuV2Beatmapset, osuV2PlayedBeatmaps, osuV2User, osuV2Friend, osuV2Me } from "../../Interfaces/osuAPIV2";
 import { User } from "../../Models/user";
@@ -96,7 +96,7 @@ export class osuAPIV2 {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
 
-        const { data } = await axios.post<osuV2Token>(`${this.baseURL}/oauth/token`, {
+        const { data } = await axios.post<any, AxiosResponse<osuV2Token>>(`${this.baseURL}/oauth/token`, {
             grant_type,
             client_id: this.clientID,
             client_secret: this.clientSecret,
@@ -111,7 +111,7 @@ export class osuAPIV2 {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
         
-        const { data } = await axios.post<T>(this.apiV2URL + endpoint, payload, {
+        const { data } = await axios.post<any, AxiosResponse<T>>(this.apiV2URL + endpoint, payload, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -123,7 +123,7 @@ export class osuAPIV2 {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
         
-        const { data } = await axios.get<T>(this.apiV2URL + endpoint, {
+        const { data } = await axios.get<any, AxiosResponse<T>>(this.apiV2URL + endpoint, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },

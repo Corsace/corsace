@@ -15,7 +15,10 @@ staffVotesRouter.get("/", async (ctx) => {
     const categoryIDString = parseQueryParam(ctx.query.category);
     
     if (!categoryIDString || !/\d+/.test(categoryIDString))
-        return ctx.body = { error: "Invalid category ID given!" };
+        return ctx.body = { 
+            success: false,
+            error: "Invalid category ID given!",
+        };
 
     const categoryID = parseInt(categoryIDString);
 
@@ -117,7 +120,10 @@ staffVotesRouter.get("/", async (ctx) => {
         return staffVote;
     });
 
-    ctx.body = staffVotes;
+    ctx.body = {
+        success: true, 
+        staffVotes,
+    };
 });
 
 staffVotesRouter.delete("/:id/:user", async (ctx) => {
@@ -155,7 +161,7 @@ staffVotesRouter.delete("/:id/:user", async (ctx) => {
     ]);
 
     ctx.body = {
-        success: "removed",
+        success: true,
     };
 });
 

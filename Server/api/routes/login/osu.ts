@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import passport from "koa-passport";
-import { ParameterizedContext } from "koa";
+import { ParameterizedContext, UserAuthenticatedState } from "koa";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { config } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
@@ -46,7 +46,7 @@ osuRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext, next)
     await next();
 }, passport.authenticate("oauth2", { scope: scopes }));
 
-osuRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
+osuRouter.get<UserAuthenticatedState>("/callback", async (ctx: ParameterizedContext, next) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
@@ -63,7 +63,7 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
 }, async (ctx, next) => {
     try {
         // api v2 data
-        const data = await osuV2Client.getMe(ctx.state.user.osu.accessToken);
+        const data = await osuV2Client.getMe(ctx.state.user.osu.accessToken!);
 
         // User Statistics
         ctx.state.user.userStatistics = await UserStatistics
@@ -73,8 +73,8 @@ osuRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
             .where("user.ID = :ID", { ID: ctx.state.user.ID })
             .getMany();
         await Promise.all(Object.values(ModeDivisionType)
-            .filter(mode => typeof mode !== "string")
-            .map(modeID => ctx.state.user.refreshStatistics(modeID, data)));
+            .filter(mode => typeof mode === "number")
+            .map(modeID => ctx.state.user.refreshStatistics(modeID as ModeDivisionType, data)));
 
         // Username changes
         const usernames: string[] = data.previous_usernames ?? [];

@@ -34,7 +34,10 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
         .getRawMany();
 
     if (teamIDs.length === 0) {
-        ctx.body = [];
+        ctx.body = {
+            success: true,
+            teams: [],
+        };
         return;
     }
 
@@ -48,7 +51,10 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
         .where("team.ID IN (:...teamIDs)", { teamIDs: teamIDs.map(t => t.ID) })
         .getMany();
 
-    ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface(true, true)));
+    ctx.body = {
+        success: true,
+        teams: await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface(true, true))),
+    };
 });
 
 teamRouter.get("/all", async (ctx) => {
@@ -93,21 +99,30 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
     const isPlaying = ctx.request.body?.isPlaying;
 
     if (!name || !abbreviation || !timezoneOffset) {
-        ctx.body = { error: "Missing parameters" };
+        ctx.body = { 
+            success: false,
+            error: "Missing parameters",
+        };
         return;
     }
 
     if (typeof timezoneOffset !== "number") {
         timezoneOffset = parseInt(timezoneOffset);
         if (isNaN(timezoneOffset) || timezoneOffset < -12 || timezoneOffset > 14) {
-            ctx.body = { error: "Invalid timezone" };
+            ctx.body = { 
+                success: false,
+                error: "Invalid timezone",
+            };
             return;
         }
     }
 
     const res = validateTeamText(name, abbreviation);
     if ("error" in res) {
-        ctx.body = res;
+        ctx.body = {
+            success: false,
+            error: res.error,
+        };
         return;
     }
 
@@ -128,15 +143,28 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
         await team.save();
     } catch (e) {
         if (e instanceof QueryFailedError && e.driverError.sqlState === "45000")
-            ctx.body = { error: "Team already exists, you may have double clicked" };
+            ctx.body = { 
+                success: false,
+                error: "Team already exists, you may have double clicked",
+            };
         else
-            ctx.body = { error: `Error creating team\n${e}` };
+            ctx.body = {
+                success: false,
+                error: `Error creating team\n${e}`,
+            };
         return;
     }
     if (!noErr)
-        ctx.body = { success: "Team created, but there was an error calculating stats. Please contact VINXIS", team, error: !noErr };
+        ctx.body = { 
+            success: true,
+            team: await team.teamInterface(false, false),
+            error: "Team created, but there was an error calculating stats. Please contact VINXIS",
+        };
     else
-        ctx.body = { success: "Team created", team, error: !noErr };
+        ctx.body = { 
+            success: true,
+            team: await team.teamInterface(true, true),
+        };
 });
 
 teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async (ctx) => {
@@ -145,7 +173,10 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
     // Get the file from the request
     const files = ctx.request.files?.avatar;
     if (!files) {
-        ctx.body = { error: "Missing avatar" };
+        ctx.body = { 
+            success: false,
+            error: "Missing avatar",
+        };
         return;
     }
 
@@ -154,7 +185,10 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
 
     // Check if the file is an image and not a gif
     if (!file.mimetype?.startsWith("image/") || file.mimetype === "image/gif") {
-        ctx.body = { error: "Invalid file type" };
+        ctx.body = { 
+            success: false,
+            error: "Invalid file type",
+        };
         return;
     }
 
@@ -166,9 +200,15 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
         team.avatarURL = avatarPath;
         await team.save();
 
-        ctx.body = { success: "Avatar updated", avatar: avatarPath };
+        ctx.body = { 
+            success: true,
+            avatar: avatarPath,
+        };
     } catch (e) {
-        ctx.body = { error: `Error saving avatar\n${e}` };
+        ctx.body = { 
+            success: false,
+            error: `Error saving avatar\n${e}`,
+        };
     }
 });
 

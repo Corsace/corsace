@@ -5,8 +5,9 @@ import { Brackets } from "typeorm";
 import { parseQueryParam } from "../../../../Server/utils/query";
 import { StaffComment } from "../../../../Interfaces/comment";
 import { isMCAStaff } from "../../../middleware/mca-ayim";
+import { UserAuthenticatedState } from "koa";
 
-const influencesReviewRouter = new Router();
+const influencesReviewRouter = new Router<UserAuthenticatedState>();
 
 influencesReviewRouter.use(isLoggedInDiscord);
 influencesReviewRouter.use(isMCAStaff);
@@ -52,34 +53,30 @@ influencesReviewRouter.get("/", async (ctx) => {
     
     const comments = await query.offset(isNaN(skip) ? 0 : skip).limit(10).getRawMany();
     const staffComments = comments.map(comment => {
-        const keys = Object.keys(comment);
         const staffComment: StaffComment = {
             ID: comment.ID,
             comment: comment.comment,
             isValid: comment.isValid === 1,
             mode: comment.modeName,
             commenter: {
-                ID: 0,
-                osuID: "",
-                osuUsername: "",
+                ID: comment.commenterID,
+                osuID: comment.commenterosuID,
+                osuUsername: comment.commenterosuUsername,
             },
             target: {
-                osuID: "",
-                osuUsername: "",
+                osuID: comment.targetosuID,
+                osuUsername: comment.targetosuUsername,
             },
             lastReviewedAt: comment.lastReviewedAt ?? undefined,
             reviewer: comment.reviewer ?? undefined,
         };
-        for (const key of keys) {
-            if (key.includes("commenter"))
-                staffComment.commenter[key.replace("commenter", "")] = comment[key];
-            else if (key.includes("target"))
-                staffComment.target[key.replace("target", "")] = comment[key];
-        }
 
         return staffComment;
     });
-    ctx.body = staffComments;
+    ctx.body = {
+        success: true,
+        staffComments,
+    };
 });
 
 influencesReviewRouter.post("/:id/review", async (ctx) => {
@@ -90,7 +87,12 @@ influencesReviewRouter.post("/:id/review", async (ctx) => {
     influence.lastReviewedAt = new Date();
     await influence.save();
 
-    ctx.body = influence;
+    ctx.body = {
+        success: true,
+        isValid: true,
+        reviewer: ctx.state.user.osu.username,
+        lastReviewedAt: influence.lastReviewedAt,
+    };
 });
 
 influencesReviewRouter.post("/:id/remove", async (ctx) => {
@@ -99,7 +101,7 @@ influencesReviewRouter.post("/:id/remove", async (ctx) => {
     await influence.save();
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 

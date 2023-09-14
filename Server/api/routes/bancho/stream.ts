@@ -1,10 +1,10 @@
 import Router from "@koa/router";
 import koaBasicAuth from "koa-basic-auth";
 import { config } from "node-config-ts";
-import { Next, ParameterizedContext } from "koa";
+import { BanchoMatchupState, Next, ParameterizedContext } from "koa";
 import state from "../../../../BanchoBot/state";
 
-const banchoRefereeRouter = new Router();
+const banchoRefereeRouter = new Router<BanchoMatchupState>();
 
 banchoRefereeRouter.use(koaBasicAuth({
     name: config.interOpAuth.username,
@@ -44,7 +44,7 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
 }
 
 banchoRefereeRouter.get("/:matchupID/pulseMatch", validateMatchup, async (ctx) => {
-    if (!state.matchups[parseInt(ctx.state.matchupID)]) {
+    if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: true,
             pulse: false,
@@ -52,14 +52,14 @@ banchoRefereeRouter.get("/:matchupID/pulseMatch", validateMatchup, async (ctx) =
         return;
     }
 
-    const mpLobby = state.matchups[parseInt(ctx.state.matchupID)].lobby;
+    const mpLobby = state.matchups[ctx.state.matchupID].lobby;
     await mpLobby.updateSettings();
 
     ctx.body = {
         success: true,
         pulse: true,
-        team1Score: state.matchups[parseInt(ctx.state.matchupID)].matchup.team1Score,
-        team2Score: state.matchups[parseInt(ctx.state.matchupID)].matchup.team2Score,
+        team1Score: state.matchups[ctx.state.matchupID].matchup.team1Score,
+        team2Score: state.matchups[ctx.state.matchupID].matchup.team2Score,
         beatmapID: mpLobby.beatmapId,
     };
 });

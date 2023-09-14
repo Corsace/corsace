@@ -274,8 +274,8 @@ export default class Pickban extends Vue {
         if (typeof matchupID !== "string")
             return;
 
-        const { data } = await this.$axios.get(`/api/matchup/${matchupID}`);
-        if (data.error)
+        const { data } = await this.$axios.get<{ matchup: MatchupInterface }>(`/api/matchup/${matchupID}`);
+        if (!data.success)
             return;
 
         this.matchup = data.matchup;

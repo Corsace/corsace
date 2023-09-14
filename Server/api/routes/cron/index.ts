@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import koaBasicAuth from "koa-basic-auth";
-import { ParameterizedContext, Next } from "koa";
+import { ParameterizedContext, Next, CronJobState, DefaultState } from "koa";
 import { cron } from "../../../cron";
 import { CronJobType } from "../../../../Interfaces/cron";
 import { config } from "node-config-ts";
@@ -43,7 +43,7 @@ async function validateData (ctx: ParameterizedContext, next: Next) {
     await next();
 }
 
-const cronRouter = new Router();
+const cronRouter = new Router<DefaultState>();
 
 cronRouter.use(koaBasicAuth({
     name: config.interOpAuth.username,
@@ -54,7 +54,7 @@ cronRouter.get("/", (ctx) => {
     ctx.body = cron.listJobs();
 });
 
-cronRouter.post("/add", validateData, async (ctx) => {
+cronRouter.post<CronJobState>("/add", validateData, async (ctx) => {
     const { type, date } = ctx.state.cronJob;
 
     await cron.add(type, date);
@@ -63,7 +63,7 @@ cronRouter.post("/add", validateData, async (ctx) => {
     };
 });
 
-cronRouter.post("/remove", validateData, async (ctx) => {
+cronRouter.post<CronJobState>("/remove", validateData, async (ctx) => {
     const { type, date } = ctx.state.cronJob;
 
     await cron.remove(type, date);

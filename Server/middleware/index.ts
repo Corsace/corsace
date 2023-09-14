@@ -11,6 +11,36 @@ interface discordRoleInfo<T extends discordRoleSection> {
     role: discordRolesInSection<T>;
 }
 
+// Middleware helper functions
+function checkUserDiscordLogin (ctx: ParameterizedContext): boolean {
+    if (!ctx.state.user?.discord?.userID) {
+        ctx.body = { error: "User is not logged in via discord!" };
+        return false;
+    }
+    return true;
+}
+
+function memberHasRole<T extends discordRoleSection> (member: GuildMember, section: T, role: discordRolesInSection<T>): boolean {
+    const configRole = config.discord.roles[section][role] as string | string[];
+    return Array.isArray(configRole) 
+        ? configRole.some(r => member.roles.cache.has(r)) 
+        : member.roles.cache.has(configRole);
+}
+
+async function checkUserRoles<T extends discordRoleSection> (ctx: ParameterizedContext, roles: discordRoleInfo<T>[]): Promise<boolean> {
+    const member = await getMember(ctx.state.user?.discord?.userID ?? "");
+    if (!member) {
+        ctx.body = { error: "Could not obtain any discord user!" };
+        return false;
+    }
+
+    if (memberHasRole(member, "corsace", "corsace") || memberHasRole(member, "corsace", "core")) {
+        return true;
+    }
+
+    return roles.some(role => memberHasRole(member, role.section, role.role));
+}
+
 // General middlewares
 async function isLoggedIn (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (!ctx.state.user) {
@@ -22,7 +52,7 @@ async function isLoggedIn (ctx: ParameterizedContext, next: Next): Promise<void>
 }
 
 async function isLoggedInDiscord (ctx: ParameterizedContext, next: Next): Promise<void> {
-    if (!ctx.state.user?.discord?.userID) {
+    if (!checkUserDiscordLogin(ctx)) {
         ctx.body = { error: "User is not logged in via discord!" };
         return; 
     }
@@ -55,61 +85,29 @@ async function isStaff (ctx: ParameterizedContext, next: Next): Promise<void> {
     return; 
 }
 
-function memberHasRole<T extends discordRoleSection> (member: GuildMember, section: T, role: discordRolesInSection<T>): boolean {
-    const configRole = config.discord.roles[section][role] as string | string[];
-    return Array.isArray(configRole) 
-        ? configRole.some(r => member.roles.cache.has(r)) 
-        : member.roles.cache.has(configRole);
-}
-
-function hasRole<T extends discordRoleSection> ({ section, role }: discordRoleInfo<T>) {
+function hasRole<T extends discordRoleSection> (role: discordRoleInfo<T>) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
-        if (!ctx.state.user?.discord?.userID) {
-            ctx.body = { error: "User is not logged in via discord!" };
-            return; 
+        if (!checkUserDiscordLogin(ctx)) return;
+        
+        if (await checkUserRoles(ctx, [role])) {
+            await next();
+            return;
         }
 
-        const member = await getMember(ctx.state.user.discord.userID);
-        if (member) {
-            if (memberHasRole(member, "corsace", "corsace") || memberHasRole(member, "corsace", "core")) {
-                await next();
-                return;
-            }
-
-            if (memberHasRole(member, section, role)) {
-                await next();
-                return;
-            }
-        } 
-        
         ctx.body = { error: `User does not have the ${String(role)} role!` };
         return;
     };
 }
 
-function hasRoles (roles: discordRoleInfo<discordRoleSection>[]) {
+function hasRoles<T extends discordRoleSection> (roles: discordRoleInfo<T>[]) {
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
-        if (!ctx.state.user?.discord?.userID) {
-            ctx.body = { error: "User is not logged in via discord!" };
-            return; 
-        }
-
-        const member = await getMember(ctx.state.user.discord.userID);
-        if (!member) {
-            ctx.body = { error: "Could not obtain any discord user!" };
-            return;
-        }
-
-        if (memberHasRole(member, "corsace", "corsace") || memberHasRole(member, "corsace", "core")) {
-            await next();
-            return;
-        }
-
-        if (roles.some(role => memberHasRole(member, role.section, role.role))) {
-            await next();
-            return;
-        }
+        if (!checkUserDiscordLogin(ctx)) return;
         
+        if (await checkUserRoles(ctx, roles)) {
+            await next();
+            return;
+        }
+
         ctx.body = { error: "User does not have any of the required roles!" };
         return;
     };

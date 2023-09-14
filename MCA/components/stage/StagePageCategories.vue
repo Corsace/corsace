@@ -54,9 +54,9 @@ export default class StagePageCategories extends Vue {
     @stageModule.State section!: string;
     @stageModule.State stage!: StageType;
     @stageModule.Getter categoriesInfo!: CategoryStageInfo[];
-    @stageModule.Action updateSelectedCategory;
-    @stageModule.Action updateSection;
-    @stageModule.Action reset;
+    @stageModule.Action updateSelectedCategory!: (category: string) => void;
+    @stageModule.Action updateSection!: (section: string) => void;
+    @stageModule.Action reset!: (sectionReset?: boolean) => void;
     
     toUpdateSection = "";
 

@@ -115,11 +115,10 @@ export default class MapsetRecords extends Vue {
     }
 
     async getRecords () {
-        const { data } = await this.$axios.get(`/api/records/beatmapsets?year=${this.mca.year}&mode=${this.selectedMode}`);
+        const { data } = await this.$axios.get<{ records: Record<string, BeatmapsetRecord[]> }>(`/api/records/beatmapsets?year=${this.mca.year}&mode=${this.selectedMode}`);
 
-        if (!data.error) {
-            this.records = data;
-        }
+        if (data.success)
+            this.records = data.records;
     }
     
 }

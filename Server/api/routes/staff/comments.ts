@@ -7,13 +7,14 @@ import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { StaffComment } from "../../../../Interfaces/comment";
 import { Brackets } from "typeorm";
 import { parseQueryParam } from "../../../utils/query";
+import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
 
-const commentsReviewRouter = new Router();
+const commentsReviewRouter = new Router<UserAuthenticatedState>();
 
 commentsReviewRouter.use(isLoggedInDiscord);
 commentsReviewRouter.use(isMCAStaff);
 
-commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
+commentsReviewRouter.get<MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
@@ -106,6 +107,7 @@ commentsReviewRouter.post("/:id/ban", async (ctx) => {
     const ID = parseInt(ctx.params.id, 10);
     if (!ID) {
         ctx.body = {
+            success: false,
             error: "Invalid ID provided.",
         };
         return;
@@ -126,7 +128,7 @@ commentsReviewRouter.post("/:id/ban", async (ctx) => {
     ]);
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 

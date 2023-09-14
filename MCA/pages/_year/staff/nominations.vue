@@ -190,10 +190,6 @@ export default class Nominations extends Vue {
             return;
         }
         const { data } = await this.$axios.get<{
-            success: false;
-            error: string;
-        } | {
-            success: true;
             staffNominations: StaffNomination[];
         }>(`/api/staff/nominations?category=${id}`);
 
@@ -211,10 +207,6 @@ export default class Nominations extends Vue {
             return;
 
         const { data } = await this.$axios.post<{
-            success: false;
-            error: string;
-        } | {
-            success: true;
             isValid: boolean;
             reviewer: string;
             lastReviewedAt: string;
@@ -250,7 +242,7 @@ export default class Nominations extends Vue {
 
         const { data } = await this.$axios.delete(`/api/staff/nominations/${id}`);
 
-        if (!data.error) {
+        if (data.success) {
             this.deleteLocalNomination(id);
         } else {
             alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)");

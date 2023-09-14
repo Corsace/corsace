@@ -143,7 +143,7 @@ export default class Votes extends Vue {
             const groupIndex = groups.findIndex(g => g.category === vote.category);
 
             if (groupIndex !== -1) {
-                const voterIndex = groups[groupIndex].userVotes.findIndex(v => v.voter.osuID === vote.voter.osuID);
+                const voterIndex = groups[groupIndex].userVotes.findIndex(v => v.voter?.osuID === vote.voter.osuID);
 
                 if (voterIndex !== -1) {
                     groups[groupIndex].userVotes[voterIndex].votes.push(resultVote);
@@ -208,14 +208,14 @@ export default class Votes extends Vue {
             return;
         }
 
-        const { data } = await this.$axios.get(`/api/staff/votes?category=${id}`);
+        const { data } = await this.$axios.get<{ staffVotes: StaffVote[] }>(`/api/staff/votes?category=${id}`);
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
             return;
         }
 
-        this.votes = data;
+        this.votes = data.staffVotes;
         this.selectedCategoryId = id;
     }
 
@@ -226,7 +226,7 @@ export default class Votes extends Vue {
         try {
             const { data } = await this.$axios.delete(`/api/staff/votes/${id}/${userID}`);
 
-            if (data.error) {
+            if (!data.success) {
                 alert(data.error);
                 return;
             }

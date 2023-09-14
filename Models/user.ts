@@ -379,8 +379,8 @@ export class User extends BaseEntity {
     }
 
     public async getRefreshToken (tokenType: "osu" | "discord" = "osu"): Promise<string> {
-        if (this[tokenType].refreshToken)
-            return this[tokenType].refreshToken!;
+        if (this[tokenType]?.refreshToken)
+            return this[tokenType]!.refreshToken!;
 
         const sqlCol = tokenType === "osu" ? "osuRefreshtoken" : "discordRefreshtoken";
 
@@ -408,8 +408,8 @@ export class User extends BaseEntity {
             return data.access_token;
         }
 
-        if (this[tokenType].accessToken)
-            return this[tokenType].accessToken!;
+        if (this[tokenType]?.accessToken)
+            return this[tokenType]!.accessToken!;
 
         const sqlCol = tokenType === "osu" ? "osuAccesstoken" : "discordAccesstoken";
 

@@ -62,7 +62,7 @@ async function execute (job: CronJobData) {
                     .getOne();
 
                 if (tournament)
-                    mappoolLog(tournament, "customMapCron", tournament.organizer, `Applied the \`late\` tag for \`${thread.name}\` <#${thread.id}>`);
+                    await mappoolLog(tournament, "customMapCron", tournament.organizer, `Applied the \`late\` tag for \`${thread.name}\` <#${thread.id}>`);
             }
         } catch (err) {
             if (!(err instanceof DiscordAPIError && err.code === 10003))

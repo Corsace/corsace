@@ -23,8 +23,9 @@ export default class OpenInput extends Vue {
     @PropSync("disabled", { type: Boolean, default: false }) readonly disabledVal!: boolean;
     @PropSync("text", { type: String, default: "" }) textVal!: string;
 
-    updateText (e) {
-        this.$emit("input", e.target.value);
+    updateText (e: Event) {
+        if (e.target instanceof HTMLInputElement)
+            this.$emit("input", e.target.value);
     }
 }
 </script>

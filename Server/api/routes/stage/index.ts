@@ -1,5 +1,6 @@
 import Router from "@koa/router";
 import { createHash } from "crypto";
+import { TournamentStageState } from "koa";
 import { Beatmap, Mode } from "nodesu";
 import { MatchupList, MatchupScore } from "../../../../Interfaces/matchup";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
@@ -16,9 +17,11 @@ import { discordClient } from "../../../discord";
 import { validateStageOrRound } from "../../../middleware/tournament";
 import { osuClient } from "../../../osu";
 
-const stageRouter = new Router();
+const stageRouter = new Router<TournamentStageState>();
 
-stageRouter.get("/:stageID/matchups", validateStageOrRound, async (ctx) => {
+stageRouter.use(validateStageOrRound);
+
+stageRouter.get("/:stageID/matchups", async (ctx) => {
     const stage: Stage = ctx.state.stage;
 
     let matchups = await Matchup
@@ -84,7 +87,7 @@ stageRouter.get("/:stageID/matchups", validateStageOrRound, async (ctx) => {
     };
 });
 
-stageRouter.get("/:stageID/mappools", validateStageOrRound, async (ctx) => {
+stageRouter.get("/:stageID/mappools", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -199,7 +202,7 @@ stageRouter.get("/:stageID/mappools", validateStageOrRound, async (ctx) => {
     };
 });
 
-stageRouter.get("/:stageID/scores", validateStageOrRound, async (ctx) => {
+stageRouter.get("/:stageID/scores", async (ctx) => {
     const stage: Stage = ctx.state.stage;
 
     const tournament = await Tournament

@@ -1,6 +1,7 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { RootState } from "../../Assets/store/mca-ayim";
-import { User } from "../../Interfaces/user";
+import { User, UserInfo } from "../../Interfaces/user";
+import { Influence } from "../../Interfaces/influence";
 
 export interface InfluenceState {
     users: User[];
@@ -41,13 +42,13 @@ export const actions: ActionTree<InfluenceState, RootState> = {
         }
 
         try {
-            const { data } = await this.$axios.get(`/api/influences?user=${value}&year=${rootState.mca?.year}&mode=${rootState.selectedMode}`);
+            const { data } = await this.$axios.get<{ user: UserInfo, influences: Influence[] }>(`/api/influences?user=${value}&year=${rootState.mca?.year}&mode=${rootState.selectedMode}`);
         
-            if (!data.error) {
-                commit("addUser", data);
+            if (data.success) {
+                commit("addUser", data.user);
 
                 if (!state.root) {
-                    commit("setRoot", data);
+                    commit("setRoot", data.user);
                 }
             }
         } catch (error) {
