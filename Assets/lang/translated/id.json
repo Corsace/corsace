@@ -56,7 +56,7 @@
             "length": "DURASI LAGU TERPANJANG",
             "difficulties": "TINGKAT KESULITAN",
             "playTime": "TOTAL DURASI SELURUH TINGKAT KESULITAN",
-            "totalRanked": "TOTAL RANKED",
+            "totalRanked": "TOTAL MAP RANKED",
             "totalDiff": "TOTAL TINGKAT KESULITAN",
             "submitDates": "WAKTU PENGUNGGAHAN",
             "starRatings": "STAR RATING",
@@ -114,8 +114,8 @@
     "mca": {
         "main": {
             "banner": "LET'S LOOK BACK <br> AT",
-            "click": "CLICK HERE TO ENTER",
-            "welcome": "WELCOME TO MCA",
+            "click": "KLIK DI SINI UNTUK MASUK",
+            "welcome": "SELAMAT DATANG DI MCA",
             "voting": "voting",
             "nominating": "nominasi",
             "preparation": "persiapan",
@@ -129,8 +129,8 @@
             "stage": {
                 "voting": "tahapan voting",
                 "nominating": "tahapan nominasi",
-                "preparation": "preparation stage",
-                "stage": "stage"
+                "preparation": "tahap persiapan",
+                "stage": "tahap"
             },
             "rankedSets": "TOTAL BEATMAP RANKED",
             "nominateNow": "berikan nominasimu sekarang !",
@@ -144,7 +144,7 @@
                 "2022": "<p>Kami kembali menghadirkan ajang Mapper's Choice Awards (yang kali ini berlangsung hampir sesuai jadwal!)</p><p>Ajang ini merupakan ajang penganugerahan bagi para mapper/modder untuk saling menominasikan dan memilih map/mapper terbaik selama setahun ke belakang dalam berbagai kategori.</p><p>Seluruh hadiah osu! supporter dipersembahkan oleh staf osu! secara langsung. Para pemenang masing-masing kategori akan memperoleh osu! supporter selama 2 bulan, dan para pemenang Grand Award akan memperoleh osu! supporter selama 4 bulan!</p><p>Kami berharap kalian semua dapat berpartisipasi dalam ajang ini!</p>"
             },
             "categories": {
-                "index": "categories",
+                "index": "kategori",
                 "map": "kategori map",
                 "user": "kategori pengguna"
             },
