@@ -1,17 +1,17 @@
 [![Crowdin](https://badges.crowdin.net/corsace/localized.svg)](https://translate.corsace.io) If you wish to translate, you can do so [here](https://translate.corsace.io)
 
-To clone the repository:
+Untuk menggandakan repositori:
 
 | OS       | Cmd                                                                |
 | -------- | ------------------------------------------------------------------ |
 | WSL/Unix | git clone https://github.com/Corsace/Corsace                       |
 | Windows* | git clone -c core.symlinks=true https://github.com/Corsace/Corsace |
 
-*Use admin privileges in your console when running the command.
+*Gunakan hak admin pada konsolmu pada saat menjalankan perintah.
 
-## Initial Setup
+## Pengaturan Awal
 
-Install node-modules:
+Instal node-modules:
 ```
 npm i
 ```
@@ -47,7 +47,7 @@ If your account is a bot account, then make sure to have `botAccount` set to tru
 
 ### Database
 `config.database`
-#### Setup
+#### Pengaturan
 
 There are 2 ways to setup the database, either via Docker or manually.
 
