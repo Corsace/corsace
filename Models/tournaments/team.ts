@@ -5,8 +5,8 @@ import { TeamInvite } from "./teamInvite";
 import { Matchup } from "./matchup";
 import { Team as TeamInterface, TeamMember } from "../../Interfaces/team";
 import { BaseTournament } from "../../Interfaces/tournament";
-import { ModeDivisionType } from "../MCA_AYIM/modeDivision";
 import { MatchupSet } from "./matchupSet";
+import { ModeDivisionType } from "../../Interfaces/modes";
 
 @Entity()
 export class Team extends BaseEntity {

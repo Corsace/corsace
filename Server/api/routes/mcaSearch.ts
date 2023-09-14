@@ -4,7 +4,6 @@ import { StageQuery } from "../../../Interfaces/queries";
 import { UserChoiceInfo } from "../../../Interfaces/user";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { Category } from "../../../Models/MCA_AYIM/category";
-import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { User } from "../../../Models/user";
@@ -13,6 +12,7 @@ import { parseQueryParam } from "../../utils/query";
 import { Beatmap } from "../../../Models/beatmap";
 import { osuV2Client } from "../../osu";
 import { MCAYearState, ParameterizedContext } from "koa";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 
 export default function mcaSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext<MCAYearState>, category: Category) => Promise<Vote[] | Nomination[]>) {
     return async (ctx: ParameterizedContext<MCAYearState>) => {

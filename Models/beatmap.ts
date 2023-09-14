@@ -1,6 +1,6 @@
 import { Entity, BaseEntity, PrimaryColumn, Column, ManyToOne, OneToMany, Index } from "typeorm";
 import { GuestRequest } from "./MCA_AYIM/guestRequest";
-import { ModeDivision, ModeDivisionType } from "./MCA_AYIM/modeDivision";
+import { ModeDivision } from "./MCA_AYIM/modeDivision";
 import { Beatmapset } from "./beatmapset";
 import { Nomination } from "./MCA_AYIM/nomination";
 import { Vote } from "./MCA_AYIM/vote";
@@ -9,6 +9,7 @@ import { Category } from "../Interfaces/category";
 import { StageQuery } from "../Interfaces/queries";
 import { MappoolMap } from "./tournaments/mappools/mappoolMap";
 import { MappoolMapHistory } from "./tournaments/mappools/mappoolMapHistory";
+import { ModeDivisionType } from "../Interfaces/modes";
 
 @Entity()
 export class Beatmap extends BaseEntity {

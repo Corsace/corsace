@@ -9,9 +9,10 @@ import { SortOrder, Tournament, TournamentStatus, sortTextToOrder } from "../../
 import respond from "../../functions/respond";
 import editProperty from "../../functions/tournamentFunctions/editProperty";
 import { profanityFilterStrong } from "../../../Interfaces/comment";
-import { ModeDivision, ModeDivisionType, modeTextHash, modeTextToID } from "../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivision, modeTextHash, modeTextToID } from "../../../Models/MCA_AYIM/modeDivision";
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../Server/utils/dateParse";
 import { StageType } from "../../../Interfaces/stage";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))

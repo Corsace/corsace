@@ -1,6 +1,6 @@
 import { Entity, Column, BaseEntity, ManyToOne, PrimaryGeneratedColumn, SelectQueryBuilder, Index } from "typeorm";
+import { ModeDivisionType } from "../../Interfaces/modes";
 import { User } from "../user";
-import { ModeDivisionType } from "./modeDivision";
 
 @Entity()
 @Index(["year", "standard", "taiko", "fruits", "mania", "storyboard"])

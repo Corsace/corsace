@@ -1,12 +1,11 @@
 import { Beatmap } from "../../../Models/beatmap";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { isPossessive } from "../../../Models/MCA_AYIM/guestRequest";
-import { modeList } from "../../../Interfaces/modes";
+import { ModeDivisionType, modeList } from "../../../Interfaces/modes";
 import { osuClient } from "../../osu";
 import getBeatmapset from "./getBeatmapset";
 import getMCAEligibility from "./getMCAEligibility";
 import getModeDivison from "./getModeDivision";
-import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 
 export default async function getBeatmap (apiBeatmap: APIBeatmap | number, save: boolean) {
     const targetBeatmap: APIBeatmap | undefined = typeof apiBeatmap === "number" ? (await osuClient.beatmaps.getByBeatmapId(apiBeatmap) as APIBeatmap[])[0] : apiBeatmap;

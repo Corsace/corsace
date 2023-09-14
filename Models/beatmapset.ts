@@ -2,8 +2,8 @@ import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne, Select
 import { BeatmapsetInfo } from "../Interfaces/beatmap";
 import { Category } from "../Interfaces/category";
 import { StageQuery } from "../Interfaces/queries";
+import { ModeDivisionType } from "../Interfaces/modes";
 import { Beatmap } from "./beatmap";
-import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Nomination } from "./MCA_AYIM/nomination";
 import { Vote } from "./MCA_AYIM/vote";
 import { User } from "./user";

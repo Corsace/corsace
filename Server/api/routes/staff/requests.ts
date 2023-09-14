@@ -5,8 +5,8 @@ import { GuestRequest } from "../../../../Models/MCA_AYIM/guestRequest";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { RequestStatus, StaffGuestRequest } from "../../../../Interfaces/guestRequests";
-import { ModeDivisionType } from "../../../../Models/MCA_AYIM/modeDivision";
 import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
+import { ModeDivisionType } from "../../../../Interfaces/modes";
 
 const staffRequestsRouter = new Router<UserAuthenticatedState>();
 

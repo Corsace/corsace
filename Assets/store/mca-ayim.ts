@@ -3,7 +3,7 @@ import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { MCA, MCAInfo, MCAPhase, PhaseType } from "../../Interfaces/mca";
 import { UserMCAInfo } from "../../Interfaces/user";
 import { GuestRequest } from "../../Interfaces/guestRequests";
-import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
+import { ModeDivisionType } from "../../Interfaces/modes";
 
 const modeRegex = /^(standard|taiko|fruits|mania|storyboard)$/;
 

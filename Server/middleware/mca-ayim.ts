@@ -1,11 +1,11 @@
 import { config } from "node-config-ts";
 import { ParameterizedContext, Next } from "koa";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
-import { ModeDivisionType } from "../../Models/MCA_AYIM/modeDivision";
 import { MCA } from "../../Models/MCA_AYIM/mca";
 import { User } from "../../Models/user";
 import { getMember } from "../discord";
 import { hasRoles } from ".";
+import { ModeDivisionType } from "../../Interfaces/modes";
 
 async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
     if (!ctx.state.user) {

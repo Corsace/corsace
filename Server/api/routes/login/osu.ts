@@ -9,9 +9,9 @@ import { osuClient, osuV2Client } from "../../../osu";
 import { isPossessive } from "../../../../Models/MCA_AYIM/guestRequest";
 import { scopes } from "../../../../Interfaces/osuAPIV2";
 import { parseQueryParam } from "../../../utils/query";
-import { ModeDivisionType } from "../../../../Models/MCA_AYIM/modeDivision";
 import { UserStatistics } from "../../../../Models/userStatistics";
 import { Beatmap, Mode } from "nodesu";
+import { ModeDivisionType } from "../../../../Interfaces/modes";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 

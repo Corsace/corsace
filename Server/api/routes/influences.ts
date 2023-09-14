@@ -3,11 +3,12 @@ import { Brackets, MoreThan } from "typeorm";
 import { currentMCA, isEligibleFor } from "../../../Server/middleware/mca-ayim";
 import { Influence } from "../../../Models/MCA_AYIM/influence";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
-import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
 import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
 import { parseQueryParam } from "../../utils/query";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 
 const influencesRouter = new Router();
 
@@ -15,13 +16,21 @@ influencesRouter.get("/", async (ctx) => {
     const userSearch = ctx.query.user;
     const yearSearch = ctx.query.year;
     
-    if (!ctx.query.mode) {
+    const modeQ = parseQueryParam(ctx.query.mode);
+    if (!modeQ) {
         return ctx.body = {
             success: false,
             error: "Missing mode",
         };
     }
-    const mode = ModeDivisionType[parseQueryParam(ctx.query.mode) as keyof typeof ModeDivisionType];
+    if (!(modeQ in ModeDivisionType)) {
+        return ctx.body = {
+            success: false,
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
+    }
+
+    const mode = ModeDivisionType[modeQ as keyof typeof ModeDivisionType];
 
     if (typeof yearSearch !== "string" || !/^20[0-9]{2}$/.test(yearSearch)) {
         ctx.body = {

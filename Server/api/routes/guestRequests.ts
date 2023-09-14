@@ -6,10 +6,11 @@ import { isEligibleFor, currentMCA } from "../../../Server/middleware/mca-ayim";
 import { config } from "node-config-ts";
 import axios, { AxiosResponse } from "axios";
 import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";
-import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { RequestStatus } from "../../../Interfaces/guestRequests";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { MCAAuthenticatedState } from "koa";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 
 interface BodyData {
     mode: string;

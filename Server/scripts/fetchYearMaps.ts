@@ -1,4 +1,4 @@
-import { ModeDivisionType, ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
+import { ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
 import { queue } from "async";
 import memoizee from "memoizee";
 import { Beatmap as APIBeatmap } from "nodesu";
@@ -12,7 +12,7 @@ import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
 import { RateLimiterMemory, RateLimiterQueue } from "rate-limiter-flexible";
 import { isPossessive } from "../../Models/MCA_AYIM/guestRequest";
 import { sleep } from "../utils/sleep";
-import { modeList } from "../../Interfaces/modes";
+import { ModeDivisionType, modeList } from "../../Interfaces/modes";
 import { genres, langs } from "../../Interfaces/beatmap";
 import ormConfig from "../../ormconfig";
 

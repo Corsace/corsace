@@ -9,7 +9,7 @@ import { OAuth, User } from "../../../../Models/user";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { osuClient } from "../../../osu";
 import { MCAAuthenticatedState } from "koa";
-import { ModeDivisionType } from "../../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivisionType } from "../../../../Interfaces/modes";
 
 const staffRouter = new Router<MCAAuthenticatedState>();
 

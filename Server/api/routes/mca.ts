@@ -1,10 +1,11 @@
 import Router from "@koa/router";
 import { config } from "node-config-ts";
 import { CategoryCondensedInfo } from "../../../Interfaces/category";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
-import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { discordGuild } from "../../discord";
 import { parseQueryParam } from "../../utils/query";
 

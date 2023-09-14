@@ -1,8 +1,8 @@
 import Router from "@koa/router";
 import { createQueryBuilder, SelectQueryBuilder } from "typeorm";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 import { Statistic } from "../../../Interfaces/records";
 import { Beatmapset } from "../../../Models/beatmapset";
-import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { User } from "../../../Models/user";
 import { parseQueryParam } from "../../utils/query";
 // import getHistoryStat from "../data/bnNatHistory";

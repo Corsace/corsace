@@ -2,13 +2,14 @@ import Router from "@koa/router";
 import { ParameterizedContext, Next, UserAuthenticatedState, CommentAuthenticatedState } from "koa";
 import { User } from "../../../Models/user";
 import { UserComment } from "../../../Models/MCA_AYIM/userComments";
-import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { isEligibleFor } from "../../middleware/mca-ayim";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { FindOptionsWhere } from "typeorm";
 import { isLoggedIn } from "../../middleware";
 import { parseQueryParam } from "../../utils/query";
 import { profanityFilter } from "../../../Interfaces/comment";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 
 // These 2 middleware functions (canComment and isCommentOwner) MUST be used after isLoggedIn or isLoggedInDiscord
 async function canComment (ctx: ParameterizedContext<UserAuthenticatedState>, next: Next): Promise<any> {

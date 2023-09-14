@@ -8,9 +8,9 @@ import { User } from "../../../Models/user";
 import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear } from "../../middleware/mca-ayim";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import mcaSearch from "./mcaSearch";
-import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { isPossessive } from "../../../Models/MCA_AYIM/guestRequest";
 import { MCAYearState, UserAuthenticatedState } from "koa";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 
 const nominatingRouter = new Router<UserAuthenticatedState>();
 

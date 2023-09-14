@@ -16,7 +16,7 @@ import { getMember } from "../Server/discord";
 import { UserChoiceInfo, UserInfo, UserMCAInfo } from "../Interfaces/user";
 import { Category } from "../Interfaces/category";
 import { MapperQuery, StageQuery } from "../Interfaces/queries";
-import { ModeDivision, ModeDivisionType } from "./MCA_AYIM/modeDivision";
+import { ModeDivision } from "./MCA_AYIM/modeDivision";
 import { Influence } from "./MCA_AYIM/influence";
 import { Tournament } from "./tournaments/tournament";
 import { MappoolMap } from "./tournaments/mappools/mappoolMap";
@@ -36,7 +36,7 @@ import { Matchup } from "./tournaments/matchup";
 import { MatchupScore } from "./tournaments/matchupScore";
 import { MatchupMessage } from "./tournaments/matchupMessage";
 import { UserStatistics } from "./userStatistics";
-import { modeIDToMode } from "../Interfaces/modes";
+import { ModeDivisionType, modeIDToMode } from "../Interfaces/modes";
 import { MappoolReplay } from "./tournaments/mappools/mappoolReplay";
 
 // General middlewares

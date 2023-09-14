@@ -1,4 +1,5 @@
-import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivisionType } from "../../../Interfaces/modes";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 
 export default async function getModeDivison (modeDivisionId: number, save: boolean) {
     modeDivisionId += 1;
