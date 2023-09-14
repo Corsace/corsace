@@ -48,7 +48,7 @@ inviteRouter.get<TeamAuthenticatedState>("/:teamID", validateTeam(false), async 
                 username: i.user.osu.username,
                 osuID: i.user.osu.userID,
             };
-        })
+        }),
     };
 });
 
