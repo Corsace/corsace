@@ -545,7 +545,7 @@
                     "placement": "PLACE",
                     "player": "PLAYER",
                     "team": "TEAM",
-                    "best": "BEST",
+                    "best": "TERBAIK",
                     "worst": "WORST"
                 },
                 "categorySelect": "CATEGORY SELECT",
@@ -616,31 +616,31 @@
                 "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
             },
             "teamID": "TEAM ID",
-            "member": "member",
-            "members": "members",
+            "member": "anggota",
+            "members": "anggota",
             "averageBWS": "BWS rata-rata",
-            "averageRank": "Average Rank",
-            "averagePP": "Average PP",
-            "editQualifierTime": "edit qualifier time",
+            "averageRank": "Peringkat Rata-Rata",
+            "averagePP": "PP Rata-Rata",
+            "editQualifierTime": "sunting waktu kualifikasi",
             "deleteTeam": "delete qualifier/unregister team",
-            "createJoinQualifier": "create/join qualifier",
-            "notRegistered": "Currently not registered in Corsace Open."
+            "createJoinQualifier": "buat/gabung lobi kualifikasi",
+            "notRegistered": "Saat ini tidak terdaftar pada Corsace Open."
         },
         "create": {
-            "title": "CREATE A TEAM",
-            "info1": "Registrations will end on",
-            "info2": "Please ensure all information is correct before finalizing.",
-            "teamName": "TEAM NAME",
+            "title": "BUAT TIM",
+            "info1": "Pendaftaran akan berakhir pada",
+            "info2": "Pastikan seluruh informasi yang tertera sudah benar sebelum menyelesaikan pendaftaran.",
+            "teamName": "NAMA TIM",
             "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
             "teamAcronym": "TEAM ACRONYM",
             "acronymLength": "2 - 4 characters. Profanity will be checked.",
-            "teamTimezone": "TEAM TIMEZONE",
-            "timezoneText": "We will assume your team can play between <span class='bold'>10:00 to 22:00</span> in the selected timezone.",
-            "teamAvatar": "TEAM AVATAR",
-            "upload": "UPLOAD",
-            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
-            "fileSizeError": "file size too big! please upload a smaller image",
-            "fileTypeError": "incorrect file type! please upload a .jpg or .png",
+            "teamTimezone": "ZONA WAKTU TIM",
+            "timezoneText": "Kami akan menganggap bahwa tim kamu akan dapat bertanding di antara pukul <span class='bold'>10:00 hingga 22:00</span> pada zona waktu yang dipilih.",
+            "teamAvatar": "AVATAR TIM",
+            "upload": "UNGGAH",
+            "fileSizeLimit": "batas ukuran 5mb. tipe berkas yang diterima: .jpg .png",
+            "fileSizeError": "ukuran berkas terlalu besar! silakan unggah gambar yang lebih kecil",
+            "fileTypeError": "tipe berkas salah! silakan unggah .jpg atau .png",
             "preview": "PRATINJAU",
             "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
             "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
@@ -650,17 +650,17 @@
             "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
             "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
             "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
-            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
-            "create": "CREATE TEAM"
+            "confirmManager": "<div>Dengan mencentang pilihan ini, saya menyatakan diri bahwa saya hanya akan bertindak sebagai manager, dan saya paham bahwa</div> <div>saya tidak akan dapat ikut serta dalam pertandingan apa pun.</div>",
+            "create": "BUAT TIM"
         },
         "components": {
             "openCardTeam": {
-                "rank": "RANK",
-                "teambwsAverage": "TEAM BWS AVG",
-                "unregistered": "UNREGISTERED",
+                "rank": "PERINGKAT",
+                "teambwsAverage": "RATA-RATA BWS TIM",
+                "unregistered": "BELUM TERDAFTAR",
                 "bws": "BWS"
             },
-            "stageSelector": "STAGE SELECT"
+            "stageSelector": "PILIH TAHAPAN"
         },
         "staff": {
             "title": "STAFF",
