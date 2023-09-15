@@ -1,0 +1,701 @@
+{
+    "language": "Inglês",
+    "flag": "https://assets.ppy.sh/old-flags/BR.png",
+    "header": {
+        "welcomeBack": "bem-vindo de volta",
+        "login": "login",
+        "register": "registrar",
+        "changeDiscord": "mudar discord",
+        "logout": "sair"
+    },
+    "mca_ayim": {
+        "banner": {
+            "merch": "LOJA OFICIAL",
+            "corsace": "CENTRAL DO EVENTO PRINCIPAL"
+        },
+        "header": {
+            "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
+            "ayim": "UM ANO <br> DE <br> MAPPING",
+            "login": "ENTRAR",
+            "welcomeBack": "bem-vindo de volta",
+            "admin": "ADMIN",
+            "staff": "STAFF",
+            "logout": "SAIR"
+        },
+        "login": {
+            "login": "login",
+            "message": {
+                "1": "Parece que você não está autenticado!<br>Entre com o osu! e você conseguirá votar e nomear imediatamente!",
+                "2": "Você pode fazer login no Discord também, mas <b>não é obrigatório</b> para votar/nomear.<br>O login no Discord <b>é obrigatório</b> para os membros da equipe que trabalham no MCA/AYIM</span>"
+            },
+            "authOsu": "clique aqui para se autenticar com o osu!",
+            "authOsuComp": "verficação do osu! completa. Olá ",
+            "authDiscord": "clique aqui para se autenticar com o discord",
+            "authDiscordComp": "Verificação do Discord completa. Olá "
+        }
+    },
+    "ayim": {
+        "main": {
+            "records": "RECORDES",
+            "statistics": "ESTATÍSTICAS",
+            "search": "pesquise por um mapper",
+            "numberof": "número de",
+            "numberwith": "número de mapas com",
+            "message": {
+                "2019": "<p>Olá 2020.</p><p>Um Ano de Mapping em 2019 voltou para trazer a você os recordes do ano e as estatísticas detalhadas acumuladas também!</p><p>Com este site, agora podemos adicionar o máximo de informações que pudermos recuperar para todos os anos! Se você tiver alguma sugestão (bem como qualquer bug do site), avise ao VINXIS no servidor da corsace (link na parte inferior esquerda!)</p><p>TAMBÉM ESTAMOS COM O CROWDFUNDING DE COMENTÁRIOS! Isso significa que VOCÊ pode escrever e enviar um comentário para quantos mappers quiser!</p><p>Selecione o seu modo preferido com os ícones abaixo para começar!</p>",
+                "2020": "<p>Olá 2021... desta vez, o ano certo!</p><p>Um Ano de Mapping em 2020 chegou novamente para trazer a você os recordes deste ano e as estatísticas detalhadas acumuladas também!</p><p>Os comentários estão desativados para 2020. Esperamos poder trazê-los de volta no futuro! Enquanto isso, confira todos os recordes e estatísticas!</p>",
+                "2021": "<p>2022 está aqui!</p> <p>Um Ano de Mapping em 2022 está aqui para fornecer os registros e estatísticas conseguidos ou até mesmo batidos!</p>",
+                "2022": "<p>Bem-vindo a 2023!</p> <p>Um Ano de Mapping em 2022 está aqui para fornecer os registros e estatísticas conseguidos ou até mesmo batidos! Desta vez, realmente (mais ou menos) no cronograma!</p>"
+            }
+        },
+        "mapsets": {
+            "name": "MAPSETS",
+            "playcount": "VEZES JOGADAS",
+            "favourites": "FAVORITOS",
+            "favouritesExclHybrid": "FAVORITOS (SEM OS HÍBRIDOS)",
+            "length": "DURAÇÃO",
+            "difficulties": "DIFICULDADES",
+            "playTime": "DURAÇÃO (SOMA DE TODAS AS DIFICULDADES)",
+            "totalRanked": "TOTAL DE RANQUEADOS",
+            "totalDiff": "TOTAL DE DIFICULDADES",
+            "submitDates": "DATAS DE ENVIO",
+            "starRatings": "STAR RATINGS",
+            "approachRate": "APPROACH RATE",
+            "overallDifficulty": "OVERALL DIFFICULTY",
+            "hpDrain": "HP DRAIN",
+            "circleSize": "CIRCLE SIZE",
+            "spinners": "SPINNERS",
+            "sliders": "SLIDERS",
+            "circles": "CIRCLES",
+            "avgSpinnersPerDiff": "MÉDIA DE SLIDERS POR DIFICULDADE",
+            "avgSlidersPerDiff": "MÉDIA DE SLIDERS POR DIFICULDADE",
+            "avgCirclesPerDiff": "MÉDIA DE CIRCLES POR DIFICULDADE",
+            "highestSr": "MAIOR STAR RATING",
+            "lowestSr": "MENOR STAR RATING"
+        },
+        "mappers": {
+            "name": "MAPPERS",
+            "mostRanked": "MAIS MAPAS RANQUEADOS",
+            "mostDiffs": "MAIS DIFICULDADES",
+            "mostFavs": "MAIS FAVORITOS",
+            "mostFavsExclHybrid": "MAIS FAVORITOS (SEM OS HÍBRIDOS)",
+            "mostPlayed": "MAIS JOGADOS",
+            "totalMappers": "TOTAL DE MAPPERS",
+            "newMapperAges": "ÉPOCA DE NOVOS MAPPERS",
+            "mapperAges": "ÉPOCA DE MAPPERS",
+            "mapsPerMapperAges": "MAPAS POR ÉPOCA DE MAPPERS",
+            "bng": "BNG",
+            "nat": "NAT",
+            "uniqueMappers": "TOTAL DE MAPPERS",
+            "newMappers": "NOVOS MAPPERS",
+            "highestAvgSr": "MAIOR MÉDIA DE SR",
+            "lowestAvgSr": "MENOR MÉDIA DE SR",
+            "mappers": "MAPPERS"
+        },
+        "statistics": {
+            "numberOf": "número de",
+            "numberOfMapsWith": "número de mapas com",
+            "average": "média"
+        },
+        "comments": {
+            "name": "COMENTÁRIOS",
+            "info": "Todos os comentários se tornarão públicos após os resultados deste MCA serem divulgados! Você pode enviar seus comentários até lá.",
+            "search": "pesquise por um mapper",
+            "viewSubmit": "ver/enviar comentários",
+            "writeHere": "Escreva seu comentário para esse mapper aqui!",
+            "update": "Atualizar",
+            "remove": "Remover",
+            "create": "Criar",
+            "login": "Entre para comentar!",
+            "visible": "(ainda não visível)",
+            "notice": "Olá! Esta pode ser a primeira vez que você navegou para (uma das) a página de comentários! <br> Por favor, note que os comentários são crowdfunded! <br> Qualquer pessoa (incluindo você) pode escrever comentários para qualquer pessoa até que o MCA deste ano seja concluído! <br> Escreva sobre o que eles fizeram ou suas realizações em [YEAR] para mostrar apreço aos mappers que participam da comunidade!"
+        }
+    },
+    "mca": {
+        "main": {
+            "banner": "VAMOS RELEMBRAR <br>",
+            "click": "CLIQUE AQUI PARA ENTRAR",
+            "welcome": "BEM-VINDO AO MCA",
+            "voting": "votação",
+            "nominating": "nomeação",
+            "preparation": "preparação",
+            "results": "resultados",
+            "timeline": "datas",
+            "mapsetsLabel": "MAPSETS",
+            "mappersLabel": "MAPPERS",
+            "commentsLabel": "COMENTÁRIOS",
+            "recordsLabel": "RECORDES",
+            "statisticsLabel": "ESTATÍSTICAS",
+            "stage": {
+                "voting": "fase de votação",
+                "nominating": "fase de nomeação",
+                "preparation": "fase de preparação",
+                "stage": "fase"
+            },
+            "rankedSets": "MAPSETS RANQUEADOS",
+            "nominateNow": "nomeie agora!",
+            "voteNow": "vote agora!",
+            "viewResults": "ver resultados!",
+            "daysLeft": "dias faltando",
+            "message": {
+                "2019": "<p>O Mapper's Choice Awards está de volta para a quarta rodada em 2019! Este é um evento de votação no qual todos os mappers/modders podem indicar e votar no que acham ser o melhor mapa/mapper para cada categoria!</p><p>Nossa intenção é fornecer uma nova perspectiva sobre os melhores mapas de 2019 através dos olhos da comunidade de mappers!</p><p>Este ano, nós criamos um site completo para tornar o processo o mais fácil possível para os eleitores elegíveis indicarem e votarem agora!</p><p>Todos os prêmios de osu! supporter são fornecidos diretamente pela equipe do osu!. 2 meses de osu! supporter para os vencedores de cada categoria e 6 meses para os vencedores dos Grandes Prêmios!</p><p>Esperamos que o maior número possível de participantes participe deste evento! Avise ao VINXIS no servidor de discord da corsace sobre quaisquer bugs ou problemas com o site!</p>",
+                "2020": "<p>De volta novamente, o Mapper's Choice Awards encerra a sua quinta rodada com o ano de 2020! Este é um evento de votação no qual todos os mappers/modders podem indicar e votar no que acham ser o melhor mapa/mapper para cada categoria!</p><p>Nossa intenção é fornecer uma nova perspectiva sobre os melhores mapas de 2020 através dos olhos da comunidade de mappers!</p><p>Fizemos muitas mudanças e esperamos ter resolvido todos os bugs encontrados ao longo do MCA 2019, além de ajustar as categorias conforme necessário, então este deve ser muito mais tranquilo!</p><p>Todos os prêmios de osu! supporter são fornecidos diretamente pela equipe do osu!. 2 meses de osu! supporter para os vencedores de cada categoria e 6 meses para os vencedores dos Grandes Prêmios!</p><p>Esperamos que o maior número possível de participantes participe deste evento!</p>",
+                "2021": "<p>O Mapper's Choice Awards está de volta para 2021! Este é um evento de votação no qual todos os mappers/modders podem indicar e votar no que acham ser o melhor mapa/mapper para cada categoria!</p><p>Todos os prêmios de osu! supporter são fornecidos diretamente pela equipe do osu!. 2 meses de osu! supporter para os vencedores de cada categoria e 4 meses para os vencedores dos Grandes Prêmios!</p><p>Esperamos que o maior número possível de participantes participe deste evento!</p>",
+                "2022": "Estamos de volta para mais uma edição do Mapper's Choice Awards! (Desta vez, quase no cronograma!)<br>Este é um evento de votação no qual todos os mappers/modders podem indicar e votar no que acham ser o melhor mapa/mapper para cada categoria!<br>Todos os prêmios de osu! supporter são fornecidos diretamente pela equipe do osu!. 2 meses de osu! supporter para os vencedores de cada categoria e 4 meses para os vencedores dos Grandes Prêmios!<br>Esperamos que o maior número possível de participantes participe deste evento!"
+            },
+            "categories": {
+                "index": "categorias",
+                "map": "categorias de mapas",
+                "user": "categoria de usuários"
+            },
+            "organized": "ORGANIZADORES"
+        },
+        "categories": {
+            "grandAward": {
+                "name": "Grande Prêmio",
+                "description": "O melhor do melhor."
+            },
+            "grandStoryboard": {
+                "name": "Grande Storyboard",
+                "description": "A melhor storyboard por aí."
+            },
+            "grandStoryboarder": {
+                "name": "Grande Storyboarder",
+                "description": "O melhor storyboarder por aí."
+            },
+            "marathon": {
+                "name": "Melhor Maratona",
+                "description": "O melhor mapa com mais de cinco minutos de drain time."
+            },
+            "marathonMan": {
+                "name": "Melhor Maratona",
+                "description": "O melhor mapa com mais de quatro minutos."
+            },
+            "hitsounding": {
+                "name": "Melhor Hitsounding",
+                "description": "Os melhores sinos e apitos por aí."
+            },
+            "collab": {
+                "name": "Melhor Collab",
+                "description": "O melhor mapa com mais de dois mappers criando a maior dificuldade."
+            },
+            "simple": {
+                "name": "Melhor Simples",
+                "description": "O melhor mapa com a maior dificuldade menor que uma insane."
+            },
+            "highBPM": {
+                "name": "Melhor BPM Alto",
+                "description": "O melhor mapa com streams estranhamente rápidas ou alta tensão de singletap."
+            },
+            "smallCircles": {
+                "name": "Melhor Small Circles",
+                "description": "O melhor mapa em que a maior dificuldade está usando circle size 5 ou menor."
+            },
+            "heavy13": {
+                "name": "Melhor com Foco em 1/3",
+                "description": "O melhor mapa com a maior dificuldade usando bastantes tiques roxos."
+            },
+            "throwback": {
+                "name": "Melhor Throwback",
+                "description": "O melhor mapa com o estilo antigo."
+            },
+            "mapper": {
+                "name": "Melhor mapper",
+                "description": "Aquele que criou os melhores mapas."
+            },
+            "modder": {
+                "name": "Melhor Modder",
+                "description": "Aquele que fez os melhores mods."
+            },
+            "hitsounder": {
+                "name": "Melhor Hitsounder",
+                "description": "Aquele que criou os melhores hitsounds."
+            },
+            "mostPromising": {
+                "name": "Mais Promissor",
+                "description": "O melhor mapper que ranqueou o primeiro mapset neste ano."
+            },
+            "mostInfluential": {
+                "name": "Mais Influente",
+                "description": "Aquele que mais inspirou e influenciou outros mappers."
+            },
+            "outCont": {
+                "name": "Contribuidor Destaque",
+                "description": "Aquele que contribuiu de forma positiva para a saúde do osu! mais do que qualquer outro."
+            },
+            "spread": {
+                "name": "Melhor Spread",
+                "description": "O mapset com a melhor spread de dificuldades."
+            },
+            "experimental": {
+                "name": "Melhor Experimental",
+                "description": "O melhor mapa \"tech\" / fora do meta."
+            },
+            "stream": {
+                "name": "Melhor Streams",
+                "description": "O mapa com as melhores streams contínuas."
+            },
+            "highBPMTaiko": {
+                "name": "Melhor BPM Alto",
+                "description": "O melhor mapa com BPM maior que 240."
+            },
+            "lowBPMTaiko": {
+                "name": "Melhor BPM Baixo",
+                "description": "O melhor mapa com BPM menor que 130."
+            },
+            "simplistic": {
+                "name": "Melhor Simplista",
+                "description": "O melhor mapa clean por aí."
+            },
+            "sliderVelocity": {
+                "name": "Melhor Slider Velocity",
+                "description": "O melhor mapa com um uso intenso de slider velocities."
+            },
+            "featuredArtist": {
+                "name": "Melhor Artista em Destaque",
+                "description": "O melhor map com uma música de Artista em Destaque."
+            },
+            "longNotes": {
+                "name": "Melhor Long Notes",
+                "description": "O melhor mapa com um uso intenso de LNs."
+            },
+            "longNotes4K": {
+                "name": "Melhor Long Notes para 4K",
+                "description": "O melhor mapa para 4K com um uso intenso de LNs."
+            },
+            "longNotes7K": {
+                "name": "Melhor Long Notes para 7K",
+                "description": "O melhor mapa para 7K com um uso intenso de LNs."
+            },
+            "rice": {
+                "name": "Melhor Rice",
+                "description": "O melhor mapa com um uso intenso de rice."
+            },
+            "rice4K": {
+                "name": "Melhor Rice para 4K",
+                "description": "O melhor mapa para 4k com um uso intenso de rice."
+            },
+            "rice7K": {
+                "name": "Melhor Rice para 7K",
+                "description": "O melhor mapa para 7K com um uso intenso de rice."
+            },
+            "antiMeta": {
+                "name": "Melhor Anti Meta",
+                "description": "O melhor mapa para 5K/6K/8K/9K."
+            },
+            "7K": {
+                "name": "Melhor Específico para 7K",
+                "description": "O melhor mapa para 7K."
+            },
+            "technical": {
+                "name": "Melhor Técnico",
+                "description": "O melhor storyboard em termos de capacidades técnicas."
+            },
+            "gameplay": {
+                "name": "Melhor Gameplay",
+                "description": "O melhor storyboard utilizando elementos de gameplay."
+            },
+            "minimalistic": {
+                "name": "Melhor Minimalista",
+                "description": "O melhor storyboard em fazer muito com pouco."
+            },
+            "narrative": {
+                "name": "Melhor Narrativa",
+                "description": "O melhor storyboard em contar uma boa história."
+            },
+            "technicalTaiko": {
+                "name": "Melhor Técnico",
+                "description": "O melhor mapa rico em complexidade de patterning e combinação de snaps."
+            },
+            "fastTaiko": {
+                "name": "Melhor Rápido",
+                "description": "O melhor mapa com um tapping rápido e SV alta."
+            },
+            "slowTaiko": {
+                "name": "Melhor Lento",
+                "description": "O melhor mapa com um tapping lento e SV baixa."
+            },
+            "hybrid": {
+                "name": "Melhor Híbrido",
+                "description": "O melhor mapa que demonstra quantidades substanciais tanto de LN quanto de rice."
+            },
+            "hybrid4K": {
+                "name": "Melhor Híbrido para 4K",
+                "description": "O melhor mapa para 4K que apresenta quantidades substanciais tanto de LN quanto de rice."
+            },
+            "hybrid7K": {
+                "name": "Melhor Híbrido para 7K",
+                "description": "O melhor mapa para 7K que apresenta quantidades substanciais tanto de LN quanto de rice."
+            },
+            "highBPMAlternator": {
+                "name": "Melhor BPM Alto / Alternate",
+                "description": "O melhor mapa com prioridade em tapping extremamente rápido e / ou habilidades de mira. (240+ BPM)"
+            },
+            "vanilla": {
+                "name": "Melhor Vanilla",
+                "description": "O melhor mapa utilizando técnicas simples de mapping com grande eficácia."
+            },
+            "complex": {
+                "name": "Melhor Ritmo Complexo / Swing",
+                "description": "O melhor mapa com um uso extensivo de snaps incomuns, incluindo doubles, 1/3, 1/5, 1/7, etc."
+            },
+            "unorthodox": {
+                "name": "Melhor Não Convencional / Gimmick",
+                "description": "O melhor mapa que mostra técnicas de mapping ou ideias que não são frequentemente vistas."
+            },
+            "sliderTech": {
+                "name": "Melhor Tech Slider",
+                "description": "O melhor mapa que apresenta elementos técnicos, design de sliders complexos, uso de SVs e patterns complexas para streams."
+            },
+            "mostInspiring": {
+                "name": "Mais Inspirador",
+                "description": "Aquele que mais influenciou e proveu inspiração para os outros."
+            },
+            "mostInnovative": {
+                "name": "Mais Inovador",
+                "description": "Aquele que mais influenciou e proveu inspiração para os outros."
+            },
+            "communityPillar": {
+                "name": "Pilar da Comunidade",
+                "description": "O usuário que mais proveu contribuição para a comunidade por trás dos cenários."
+            },
+            "simplisticTaiko": {
+                "name": "Melhor Simplista",
+                "description": "O melhor mapa que utiliza padrões e ritmos simples."
+            },
+            "technicalCatch": {
+                "name": "Melhor Técnico",
+                "description": "O melhor mapa que utiliza conceitos que desafiam os limites da jogabilidade de catch."
+            },
+            "antiMetaCatch": {
+                "name": "Melhor Anti-Meta",
+                "description": "O melhor mapa que utiliza padrões não convencionais / gimmicky patterning."
+            },
+            "unconventionalCtb": {
+                "name": "Melhor AR/CS Não Convencional",
+                "description": "O melhor mapa com AR (Aprox. <=8.5) incomum ou CS (Aprox. >=5, <=3) incomum."
+            },
+            "diversity": {
+                "name": "Melhor Diversidade",
+                "description": "O melhor mapa focando em várias skillsets / categorias."
+            }
+        },
+        "nom_vote": {
+            "search": "procure por um mapa / usuário",
+            "select": "Por favor, selecione uma categoria!",
+            "candidates": "candidatos",
+            "options": {
+                "date": "DATA",
+                "artist": "ARTISTA",
+                "title": "TÍTULO",
+                "favs": "FAVORITOS",
+                "creator": "CRIADOR",
+                "sr": "SR",
+                "id": "ID",
+                "alph": "ALFABÉTICA",
+                "asc": "CRESCENTE",
+                "desc": "DECRESCENTE",
+                "voteOrder": "ORDEM DE VOTAÇÃO",
+                "valid": "VÁLIDO",
+                "invalid": "INVÁLIDO",
+                "both": "AMBOS",
+                "all": "TODOS",
+                "played": "JOGADOS",
+                "results": "RESULTADOS",
+                "voters": "VOTANTES"
+            },
+            "votingOverlay": "Olá! Esta pode ser a primeira vez que você acessa a página de votação! <br> A votação do MCA utiliza o <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>sistema de votação de escolha ranqueada!</a> <br> Isso significa que você pode selecionar qualquer número de beatmaps/usuários para votar! <br> Todos os votos são ordenados por escolha, então <span class='notice-modal--bold'>a primeira escolha terá a maior prioridade!</span> <br> Sua primeira escolha será considerada até que não tenha mais chances de vencer. Em seguida, sua segunda escolha, depois a terceira, a quarta, etc. <br> Boa sorte e mal podemos esperar para ver os resultados do MCA [YEAR]",
+            "hosted": "ORGANIZADO POR",
+            "userID": "ID DO USUÁRIO"
+        },
+        "results": {
+            "headings": {
+                "placement": "COLOCAÇÃO",
+                "map": "MAPA",
+                "title": "TÍTULO",
+                "artist": "ARTISTA",
+                "hoster": "ORGANIZADOR",
+                "username": "USUÁRIO",
+                "firstChoice": "PRIMEIRAS ESCOLHAS",
+                "secondThirdChoice": "SEGUNDA E TERCEIRA ESCOLHAS",
+                "restChoice": "QUARTA OU MAIS ESCOLHAS"
+            },
+            "resultsOverlay": "Olá! Esta é provavelmente a primeira vez que você acessou a página de resultados! <br> Estes resultados mostram as colocações finais dos beatmaps/usuários usando <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>o sistema de votação de escolha ranqueada,</a> juntamente com a quantidade de vezes que a beatmap/usuário foi a primeira escolha e o número total de aparições!<br> Esperamos que você goste desses resultados para o MCA [YEAR]! Mal podemos esperar para vê-los novamente no próximo MCA!"
+        }
+    },
+    "open": {
+        "navbar": {
+            "home": "INÍCIO",
+            "info": "INFORMAÇÕES",
+            "qualifiers": "QUALIFICATÓRIAS",
+            "teams": "TIMES",
+            "schedule": "CALENDÁRIO",
+            "mappool": "MAPPOOL",
+            "staff": "STAFF",
+            "createTeam": "CRIAR TIME",
+            "invitations": "CONVITES",
+            "loginDiscord": "ENTRE PELO DISCORD PARA GERENCIAR TIMES/CONVITES",
+            "teamInvites": "CONVITES DE TIME",
+            "noInvites": "Você não tem nenhum convite no momento"
+        },
+        "footer": {
+            "corsace": "CORSACE",
+            "twitter": "TWITTER",
+            "discord": "DISCORD",
+            "twitch": "TWITCH",
+            "youtube": "YOUTUBE"
+        },
+        "stages": {
+            "qualifiers": "QUALIFICATÓRIAS",
+            "round robin": "TODOS CONTRA TODOS",
+            "runoff bracket": "REPESCAGEM",
+            "knockout 1": "MATA-MATA 1",
+            "knockout 2": "MATA-MATA 2",
+            "abbreviations": {
+                "ql": "(QL)",
+                "rr": "(RR)",
+                "ro": "(RO)",
+                "ko1": "(KO1)",
+                "ko2": "(KO2)"
+            }
+        },
+        "home": {
+            "description": "Entre de cara na Corsace Open 2023 - onde os melhores jogadores de osu! do mundo se enfrentam.",
+            "timeline": "LINHA DO TEMPO",
+            "presentedBy": "CORSACE OPEN 23 É APRESENTADA POR",
+            "registrations": "INSCRIÇÕES",
+            "button": {
+                "qualifiersMappool": "MAPPOOLS DAS QUALIFICATÓRIAS",
+                "mappoolDownload": "Baixar mappool e estatísticas",
+                "register": "CRIAR E INSCREVER SEU TIME",
+                "registrationsEnd": "Fim das inscrições em"
+            }
+        },
+        "info": {
+            "title": "INFORMAÇÃO",
+            "condensed": "INFORMAÇÃO CONDENSADA",
+            "error": "Não foi possível encontrar o torneio",
+            "matchInfo": {
+                "matchSize": "CONFIGURAÇÃO DA PARTIDA",
+                "minPlayers": "MÍNIMO DE JOGADORES",
+                "maxPlayers": "MÁXIMO DE JOGADORES",
+                "pickTimer": "TEMPO DE PICK POR MAPA",
+                "readyTimer": "TEMPO PARA DAR READY",
+                "order": "ORDEM",
+                "scoringMethod": "MÉTODO DE PONTUAÇÃO",
+                "type": "TIPO",
+                "startDate": "DATA DE INÍCIO",
+                "endDate": "DATA DE TÉRMINO",
+                "rounds": "RODADAS",
+                "initialSize": "TAMANHO INICIAL",
+                "finalSize": "TAMANHO FINAL"
+            },
+            "headings": {
+                "mappools": "MAPPOOLS",
+                "stage": "FASE"
+            },
+            "status": {
+                "notStarted": "NÃO INICIADO",
+                "complete": "COMPLETO",
+                "ongoing": "EM ANDAMENTO"
+            },
+            "mappools": {
+                "info": "INFORMAÇÃO DA MAPPOOL",
+                "notAvailable": "INFORMAÇÃO NÃO DISPONÍVEL",
+                "mappackDownload": "BAIXAR O MAPPACK",
+                "mappacknotAvailable": "MAPPACK NÃO DISPONÍVEL"
+            },
+            "prizes": "PRÊMIOS",
+            "donateToCorsace": "DOAR PARA A CORSACE",
+            "supportViaSponsorship": "APOIO ATRAVÉS DO PATROCÍNIO DA MOMOKAI",
+            "generalInfo": "INFORMAÇÕES GERAIS",
+            "teamStructure": "ESTRUTURA DO TIME",
+            "qualifiersProcedures": "PROCEDIMENTOS DAS QUALIFICATÓRIAS",
+            "tournamentStructure": "ESTRUTURA DO TORNEIO",
+            "infoGraphic": "INFOGRÁFICO",
+            "matchProcedures": "PROCEDIMENTOS DA PARTIDA",
+            "reportTournament": "DENUNCIE TORNEIOS AQUI",
+            "subjectToChange": "todas as regras estão sujeitas a mudanças para clarificação ou ajustes"
+        },
+        "qualifiers": {
+            "nav": {
+                "mappool": "MAPPOOL",
+                "qualifiers": "QUALIFICATÓRIAS",
+                "scores": "PONTUAÇÕES"
+            },
+            "mappool": {
+                "sheets": "PLANILHAS",
+                "mappool": "MAPPOOL",
+                "notAvailable": "A mappool não está disponível ainda",
+                "banner": {
+                    "mapper": "MAPPER",
+                    "difficulty": "DIFICULDADE"
+                }
+            },
+            "scores": {
+                "nav": {
+                    "sort": "ORDENAR",
+                    "average": "MÉDIA",
+                    "sum": "SOMA",
+                    "percentAvg": "%MÉDIA",
+                    "relAvg": "MÉDIA RELATIVA",
+                    "percentMax": "%MÁXIMA",
+                    "relMax": "MÁXIMA RELATIVA",
+                    "zScore": "Z-SCORE",
+                    "placement": "COLOCAÇÃO",
+                    "player": "JOGADOR",
+                    "team": "TIME",
+                    "best": "MELHOR",
+                    "worst": "PIOR"
+                },
+                "categorySelect": "SELEÇÃO DE CATEGORIAS",
+                "players": "JOGADORES",
+                "teams": "TIMES"
+            },
+            "create": "CRIAR",
+            "error": {
+                "message": "Você não pode criar ou entrar em uma fase qualificatória até ter {numPlayers} jogadores!",
+                "pressToClose": "Pressione em qualquer lugar para fechar"
+            }
+        },
+        "teams": {
+            "teamsList": "LISTA DE TIMES",
+            "error": "NÃO FOI POSSÍVEL PEGAR A LISTA DE TIMES",
+            "searchPlaceholder": "procurar por usuário/time",
+            "editTeamInfo": "editar informações do time",
+            "qualifierId": "ID da Qualificatória",
+            "placeholders": {
+                "searchUser": "nome de usuário no osu! (necessário ter conta na corsace)",
+                "name": "nome",
+                "abbreviation": "abreviação"
+            },
+            "edit": {
+                "teamName": "NOME DO TIME",
+                "teamAbbreviation": "ABREVIAÇÃO DO TIME",
+                "timezone": "FUSO HORÁRIO",
+                "teamAvatar": "AVATAR DO TIME",
+                "errors": {
+                    "size": "A imagem é muito grande! Verifique se a imagem é menor que 5MB.",
+                    "type": "Arquivo de imagem inválido. Verifique se a imagem é um PNG ou JPG.",
+                    "invalidImage": "Arquivo de imagem inválido. Verifique se a imagem é um PNG ou JPG e é menor que 5MB.",
+                    "invalidTimezone": "Fuso Horário inválido.",
+                    "errorAddingTeamAvatar": "Erro ao adicionar o avatar do time:\n{error}",
+                    "invalidName": "",
+                    "contactVinxis": "Entre em contato com o VINXIS, pois há um erro de busca. Consulte o console para obter mais detalhes via Ctrl + Shift + I."
+                },
+                "confirm": {
+                    "deleteTeam": "Você tem certeza que quer deletar este time?",
+                    "deleteTeamFinal": "Você tem CERTEZA mesmo que deseja excluir este time? Isso não pode ser desfeito!",
+                    "removeMember": "Você tem certeza de que deseja remover {username} de seu time?",
+                    "transferManager": "Você tem certeza de que deseja transferir a função de manager para {username}?",
+                    "invite": "Você tem certeza de que deseja convidar {username} para seu time?",
+                    "removeInvite": "Você tem certeza de que deseja remover o convite de {username} para seu time?",
+                    "unregister": "Você tem certeza de que deseja cancelar a inscrição deste torneio? Você pode se registrar novamente a qualquer momento se ainda tiver 6 membros."
+                },
+                "save": "SALVAR",
+                "deleteTeam": "APAGAR TIME"
+            },
+            "headers": {
+                "tournaments": "TORNEIOS",
+                "teamStats": "ESTATÍSTICAS DO TIME",
+                "teamManager": "MANAGER DO TIME",
+                "teamMembers": "MEMBROS DO TIME",
+                "editTeamMembers": "editar membros do time",
+                "closeTeamMembers": "fechar edição dos membros do time",
+                "becomeMember": "se tornar um membro e jogar também",
+                "becomeManager": "se tornar apenas um manager",
+                "teamInvites": "CONVITES DE TIME",
+                "editTeamInvites": "editar convites de time",
+                "closeTeamInvites": "fechar edição dos convites de time",
+                "qualifier": "QUALIFICATÓRIA",
+                "requiredMessageExact": "Você precisa de exatamente {minTeamSize} membros no time para se registrar e participar de uma fase qualificatória",
+                "requiredMessageRange": "Você precisa de um time com entre {minTeamSize} e {maxTeamSize} membros para se registrar e participar de uma fase qualificatória"
+            },
+            "registration": {
+                "noRegistration": "Inscrito em nenhum torneio",
+                "toPlay": "Para jogar na Corsace Open, consiga 6 membros e escolha uma data e hora de qualificatória abaixo"
+            },
+            "teamID": "ID DO TIME",
+            "member": "membro",
+            "members": "membros",
+            "averageBWS": "Média BWS",
+            "averageRank": "Média de Rank",
+            "averagePP": "Média de PP",
+            "editQualifierTime": "editar hora da qualificatória",
+            "deleteTeam": "apagar qualificatória/desinscrever time",
+            "createJoinQualifier": "criar/entrar em qualificatória",
+            "notRegistered": "Atualmente não inscrito na Corsace Open."
+        },
+        "create": {
+            "title": "CRIAR UM TIME",
+            "info1": "As inscrições vão acabar em",
+            "info2": "Por favor, verifique se todas as informações do time estão corretas antes de terminar.",
+            "teamName": "NOME DO TIME",
+            "teamLength": "De 5 a 20 caracteres. NÃO inclua \"team\" no nome, pois será automaticamente removido. Palavras ofensivas serão verificadas.",
+            "teamAcronym": "SIGLA DO TIME",
+            "acronymLength": "2 a 4 caracteres. Palavras ofensivas serão verificadas.",
+            "teamTimezone": "FUSO HORÁRIO DO TIME",
+            "timezoneText": "Vamos presumir que sua equipe pode jogar entre <span class='bold'>10:00 às 22:00</span> no fuso horário selecionado.",
+            "teamAvatar": "AVATAR DO TIME",
+            "upload": "ENVIAR",
+            "fileSizeLimit": "limite máximo de 5mb. tipos de arquivo aceitos: .jpg .png",
+            "fileSizeError": "tamanho do arquivo muito grande! por favor, faça o upload de uma imagem menor",
+            "fileTypeError": "tipo de arquivo incorreto! por favor, faça o upload de um .jpg ou .png",
+            "preview": "PRÉVIA",
+            "avatarInfo1": "É recomendado usar uma proporção de <span>3:1</span> para o seu avatar.",
+            "avatarInfo2": "Os capitães podem modificar nomes dos times e avatares antes do encerramento das inscrições.",
+            "avatarInfo3": "Todos os nomes e avatares serão submetidos a aprovação da staff.",
+            "avatarInfo4": "Se julgado inapropiado, você será notificado para realizar mudanças.",
+            "teamManagement": "GERENCIAMENTO DO TIME",
+            "teamManagers": "<div>Os <span>managers</span> de times (ou seja, você) têm a opção de jogar e ser capitão simultaneamente</div> <div><span>OU</span> não jogar com o time e apenas ser o capitão.</div>",
+            "teamManagersFree": "Se você não deseja jogar e apenas participar como um manager, você <span>não</span> irá ocupar um slot de jogador.",
+            "selectManager": "Marque esta checkbox se você <span>não</span> vai jogar com o time e apenas atuar como <span>manager</span>.",
+            "confirmManager": "<div>Ao marcar esta opção, eu atuarei apenas como manager e entendo que não poderei participar </div> <div>em nenhuma das partidas.</div>",
+            "create": "CRIAR TIME"
+        },
+        "components": {
+            "openCardTeam": {
+                "rank": "RANK",
+                "teambwsAverage": "MÉDIA DE BWS DO TIME",
+                "unregistered": "NÃO INSCRITO",
+                "bws": "BWS"
+            },
+            "stageSelector": "SELEÇÃO DE FASE"
+        },
+        "staff": {
+            "title": "STAFF",
+            "notLoggedIn": "NÃO AUTENTICADO"
+        },
+        "referee": {
+            "title": "JUIZ",
+            "loadMore": "CARREGAR MAIS",
+            "back": "VOLTAR A LISTA DE PARTIDAS",
+            "createLobby": "CRIAR LOBBY",
+            "roll": "ROLL",
+            "reroll": "RE-ROLL",
+            "settings": "!MP SETTINGS",
+            "timer": "!MP TIMER",
+            "startMap": "!MP START",
+            "abortMap": "!MP ABORT",
+            "closeLobby": "FECHAR LOBBY"
+        },
+        "status": {
+            "loading": "CARREGANDO"
+        },
+        "mappool": {
+            "title": "MAPPOOL"
+        }
+    },
+    "main": {
+        "construction": {
+            "underConstruction": "em construção",
+            "sorry": "desculpe pela incoveniência",
+            "development": "o site da corsace ainda está em estágio inicial desenvolvimento",
+            "theTeam": "o time da corsace"
+        },
+        "merch": {
+            "code": "Tap Trio - Corsace Bundle",
+            "products": "Quantidade limitada disponível"
+        }
+    }
+}

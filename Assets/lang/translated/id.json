@@ -1,7 +1,18 @@
 {
     "language": "bahasa Indonesia",
     "flag": "https://osu.ppy.sh/images/flags/ID.png",
+    "header": {
+        "welcomeBack": "selamat datang kembali",
+        "login": "masuk",
+        "register": "daftar",
+        "changeDiscord": "ubah discord",
+        "logout": "keluar"
+    },
     "mca_ayim": {
+        "banner": {
+            "merch": "TOKO CINDERAMATA RESMI",
+            "corsace": "HUB EVENT UTAMA"
+        },
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
             "ayim": "A YEAR <br> IN <br> MAPPING",
@@ -21,10 +32,6 @@
             "authOsuComp": "verifikasi akun osu! berhasil. Halo ",
             "authDiscord": "klik di sini untuk masuk dengan akun Discord milikmu",
             "authDiscordComp": "verifikasi akun Discord berhasil. Halo "
-        },
-        "banner": {
-            "merch": "",
-            "corsace": ""
         }
     },
     "ayim": {
@@ -49,7 +56,7 @@
             "length": "DURASI LAGU TERPANJANG",
             "difficulties": "TINGKAT KESULITAN",
             "playTime": "TOTAL DURASI SELURUH TINGKAT KESULITAN",
-            "totalRanked": "TOTAL RANKED",
+            "totalRanked": "TOTAL MAP RANKED",
             "totalDiff": "TOTAL TINGKAT KESULITAN",
             "submitDates": "WAKTU PENGUNGGAHAN",
             "starRatings": "STAR RATING",
@@ -57,9 +64,9 @@
             "overallDifficulty": "OVERALL DIFFICULTY",
             "hpDrain": "HP DRAIN",
             "circleSize": "CIRCLE SIZE",
+            "spinners": "TOTAL SPINNER",
             "sliders": "TOTAL SLIDER",
             "circles": "TOTAL CIRCLE",
-            "spinners": "TOTAL SPINNER",
             "avgSpinnersPerDiff": "RATA-RATA SPINNER PER TINGKAT KESULITAN",
             "avgSlidersPerDiff": "RATA-RATA SLIDER PER TINGKAT KESULITAN",
             "avgCirclesPerDiff": "RATA-RATA CIRCLE PER TINGKAT KESULITAN",
@@ -69,10 +76,10 @@
         "mappers": {
             "name": "MAPPER",
             "mostRanked": "TOTAL BEATMAP RANKED TERBANYAK",
+            "mostDiffs": "TOTAL TINGKAT KESULITAN TERBANYAK",
             "mostFavs": "TOTAL FAVORIT TERBANYAK",
             "mostFavsExclHybrid": "TOTAL FAVORIT (KHUSUS MAP NON-HYBRID) TERBANYAK",
             "mostPlayed": "TOTAL PLAYCOUNT TERBANYAK",
-            "mostDiffs": "TOTAL TINGKAT KESULITAN TERBANYAK",
             "totalMappers": "TOTAL MAPPER",
             "newMapperAges": "USIA AKUN MAPPER BARU",
             "mapperAges": "USIA AKUN MAPPER",
@@ -101,15 +108,19 @@
             "create": "Tulis",
             "login": "Silakan masuk terlebih dahulu sebelum menulis komentar!",
             "visible": "(belum tersedia)",
-            "notice": ""
+            "notice": "Hello! This may be the first time you have navigated to (one of) the comments page! <br> Please note that comments are crowdfunded! <br> Anyone (including you) can write comments for anyone until this year's MCA is done! <br> Write about what they did or their achievements in [YEAR] to show appreciation to the mappers participating in the community!"
         }
     },
     "mca": {
         "main": {
+            "banner": "LET'S LOOK BACK <br> AT",
+            "click": "KLIK DI SINI UNTUK MASUK",
+            "welcome": "SELAMAT DATANG DI MCA",
             "voting": "voting",
             "nominating": "nominasi",
             "preparation": "persiapan",
             "results": "hasil",
+            "timeline": "timeline",
             "mapsetsLabel": "MAPSET",
             "mappersLabel": "MAPPER",
             "commentsLabel": "KOMENTAR",
@@ -118,8 +129,8 @@
             "stage": {
                 "voting": "tahapan voting",
                 "nominating": "tahapan nominasi",
-                "preparation": "",
-                "stage": ""
+                "preparation": "tahap persiapan",
+                "stage": "tahap"
             },
             "rankedSets": "TOTAL BEATMAP RANKED",
             "nominateNow": "berikan nominasimu sekarang !",
@@ -133,15 +144,11 @@
                 "2022": "<p>Kami kembali menghadirkan ajang Mapper's Choice Awards (yang kali ini berlangsung hampir sesuai jadwal!)</p><p>Ajang ini merupakan ajang penganugerahan bagi para mapper/modder untuk saling menominasikan dan memilih map/mapper terbaik selama setahun ke belakang dalam berbagai kategori.</p><p>Seluruh hadiah osu! supporter dipersembahkan oleh staf osu! secara langsung. Para pemenang masing-masing kategori akan memperoleh osu! supporter selama 2 bulan, dan para pemenang Grand Award akan memperoleh osu! supporter selama 4 bulan!</p><p>Kami berharap kalian semua dapat berpartisipasi dalam ajang ini!</p>"
             },
             "categories": {
+                "index": "kategori",
                 "map": "kategori map",
-                "user": "kategori pengguna",
-                "index": ""
+                "user": "kategori pengguna"
             },
-            "organized": "DIORGANISIR OLEH",
-            "banner": "",
-            "click": "",
-            "welcome": "",
-            "timeline": ""
+            "organized": "DIORGANISIR OLEH"
         },
         "categories": {
             "grandAward": {
@@ -416,276 +423,279 @@
             "resultsOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses laman hasil voting MCA. <br> Seluruh hasil yang tertera pada laman ini dihitung berdasarkan sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting</a>, yang kemudian diurutkan berdasarkan jumlah pemilih pertama, jumlah pemilih kedua, dan seterusnya.<br> Akhir kata, semoga kamu terpuaskan dengan penyelenggaraan MCA kali ini, dan sampai jumpa lagi di MCA selanjutnya!"
         }
     },
-    "main": {
-        "merch": {
-            "code": "Tap Trio - Corsace Bundle",
-            "products": "Persediaan terbatas"
-        },
-        "construction": {
-            "underConstruction": "",
-            "sorry": "",
-            "development": "",
-            "theTeam": ""
-        }
-    },
-    "header": {
-        "welcomeBack": "",
-        "login": "",
-        "register": "",
-        "changeDiscord": "",
-        "logout": ""
-    },
     "open": {
         "navbar": {
-            "home": "",
-            "info": "",
-            "qualifiers": "",
-            "teams": "",
-            "schedule": "",
-            "mappool": "",
-            "staff": "",
-            "createTeam": "",
-            "invitations": "",
-            "loginDiscord": "",
-            "teamInvites": "",
-            "noInvites": ""
+            "home": "HOME",
+            "info": "INFO",
+            "qualifiers": "QUALIFIERS",
+            "teams": "TEAMS",
+            "schedule": "SCHEDULE",
+            "mappool": "MAPPOOL",
+            "staff": "STAFF",
+            "createTeam": "CREATE TEAM",
+            "invitations": "INVITATIONS",
+            "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
+            "teamInvites": "TEAM INVITES",
+            "noInvites": "You currently have no invites"
         },
         "footer": {
-            "corsace": "",
-            "twitter": "",
-            "discord": "",
-            "twitch": "",
-            "youtube": ""
+            "corsace": "CORSACE",
+            "twitter": "TWITTER",
+            "discord": "DISCORD",
+            "twitch": "TWITCH",
+            "youtube": "YOUTUBE"
         },
         "stages": {
-            "qualifiers": "",
-            "round robin": "",
-            "runoff bracket": "",
-            "knockout 1": "",
-            "knockout 2": "",
+            "qualifiers": "QUALIFIERS",
+            "round robin": "ROUND ROBIN",
+            "runoff bracket": "RUNOFF BRACKET",
+            "knockout 1": "KNOCKOUT 1",
+            "knockout 2": "KNOCKOUT 2",
             "abbreviations": {
-                "ql": "",
-                "rr": "",
-                "ro": "",
-                "ko1": "",
-                "ko2": ""
+                "ql": "(QL)",
+                "rr": "(RR)",
+                "ro": "(RO)",
+                "ko1": "(KO1)",
+                "ko2": "(KO2)"
             }
         },
         "home": {
-            "description": "",
-            "timeline": "",
-            "presentedBy": "",
-            "registrations": "",
+            "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
+            "timeline": "TIMELINE",
+            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
+            "registrations": "REGISTRATIONS",
             "button": {
-                "qualifiersMappool": "",
-                "mappoolDownload": "",
-                "register": "",
-                "registrationsEnd": ""
+                "qualifiersMappool": "QUALIFIERS MAPPOOLS",
+                "mappoolDownload": "Mappool download and statistics",
+                "register": "CREATE AND REGISTER YOUR TEAM",
+                "registrationsEnd": "Registrations end"
             }
         },
         "info": {
-            "title": "",
-            "condensed": "",
-            "error": "",
+            "title": "INFORMATION",
+            "condensed": "CONDENSED INFO",
+            "error": "Could not find tournament",
             "matchInfo": {
-                "matchSize": "",
-                "minPlayers": "",
-                "maxPlayers": "",
-                "pickTimer": "",
-                "readyTimer": "",
-                "order": "",
-                "scoringMethod": "",
-                "type": "",
-                "startDate": "",
-                "endDate": "",
-                "rounds": "",
-                "initialSize": "",
-                "finalSize": ""
+                "matchSize": "MATCH SIZE",
+                "minPlayers": "MIN. PLAYERS",
+                "maxPlayers": "MAX. PLAYERS",
+                "pickTimer": "MAP PICK TIMER",
+                "readyTimer": "READY TIMER",
+                "order": "ORDER",
+                "scoringMethod": "SCORING METHOD",
+                "type": "TYPE",
+                "startDate": "START DATE",
+                "endDate": "END DATE",
+                "rounds": "ROUNDS",
+                "initialSize": "INITIAL SIZE",
+                "finalSize": "FINAL SIZE"
             },
             "headings": {
-                "mappools": "",
-                "stage": ""
+                "mappools": "MAPPOOLS",
+                "stage": "STAGE"
             },
             "status": {
-                "notStarted": "",
-                "complete": "",
-                "ongoing": ""
+                "notStarted": "NOT STARTED",
+                "complete": "COMPLETE",
+                "ongoing": "ONGOING"
             },
             "mappools": {
-                "info": "",
-                "notAvailable": "",
-                "mappackDownload": "",
-                "mappacknotAvailable": ""
+                "info": "MAPPOOL INFO",
+                "notAvailable": "INFO NOT AVAILABLE",
+                "mappackDownload": "DOWNLOAD MAP PACK",
+                "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
             },
-            "donateToCorsace": "",
-            "supportViaSponsorship": "",
-            "generalInfo": "",
-            "teamStructure": "",
-            "qualifiersProcedures": "",
-            "tournamentStructure": "",
-            "infoGraphic": "",
-            "matchProcedures": "",
-            "reportTournament": "",
-            "subjectToChange": ""
+            "prizes": "PRIZES",
+            "donateToCorsace": "DONATE TO CORSACE",
+            "supportViaSponsorship": "SUPPORT VIA MOMOKAI SPONSORSHIP",
+            "generalInfo": "GENERAL INFORMATION",
+            "teamStructure": "TEAM STRUCTURE",
+            "qualifiersProcedures": "QUALIFIERS PROCEDURES",
+            "tournamentStructure": "TOURNAMENT STRUCTURE",
+            "infoGraphic": "INFOGRAPHIC",
+            "matchProcedures": "MATCH PROCEDURES",
+            "reportTournament": "REPORT TOURNAMENTS HERE",
+            "subjectToChange": "all rules are subject to change for clarification and/or adjustments"
         },
         "qualifiers": {
             "nav": {
-                "mappool": "",
-                "qualifiers": "",
-                "scores": ""
+                "mappool": "MAPPOOL",
+                "qualifiers": "QUALIFIERS",
+                "scores": "SCORES"
             },
             "mappool": {
-                "sheets": "",
-                "mappool": "",
-                "notAvailable": "",
+                "sheets": "SHEETS",
+                "mappool": "MAPPOOL",
+                "notAvailable": "Mappool not available yet",
                 "banner": {
-                    "mapper": "",
-                    "difficulty": ""
+                    "mapper": "MAPPER",
+                    "difficulty": "DIFFICULTY"
                 }
             },
             "scores": {
                 "nav": {
-                    "sort": "",
-                    "average": "",
-                    "sum": "",
-                    "percentAvg": "",
-                    "relAvg": "",
-                    "percentMax": "",
-                    "relMax": "",
-                    "zScore": "",
-                    "placement": "",
-                    "player": "",
-                    "team": "",
-                    "best": "",
-                    "worst": ""
+                    "sort": "SORT",
+                    "average": "AVERAGE",
+                    "sum": "SUM",
+                    "percentAvg": "%AVG",
+                    "relAvg": "REL. AVG",
+                    "percentMax": "%MAX",
+                    "relMax": "REL. MAX",
+                    "zScore": "Z-SCORE",
+                    "placement": "PLACE",
+                    "player": "PLAYER",
+                    "team": "TEAM",
+                    "best": "BEST",
+                    "worst": "WORST"
                 },
-                "category": "",
-                "select": "",
-                "players": "",
-                "teams": ""
+                "categorySelect": "CATEGORY SELECT",
+                "players": "PLAYERS",
+                "teams": "TEAMS"
             },
-            "create": "",
+            "create": "CREATE",
             "error": {
-                "message": "",
-                "pressToClose": ""
+                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
+                "pressToClose": "Press anywhere to close"
             }
         },
         "teams": {
-            "teamsList": "",
-            "error": "",
-            "searchPlaceholder": "",
-            "editTeamInfo": "",
-            "qualifierId": "",
+            "teamsList": "TEAMS LIST",
+            "error": "COULD NOT GET TEAM LIST",
+            "searchPlaceholder": "search for user/team",
+            "editTeamInfo": "edit team info",
+            "qualifierId": "Qualifier ID",
             "placeholders": {
-                "searchUser": "",
-                "name": "",
-                "abbreviation": ""
+                "searchUser": "osu! username (must have corsace account)",
+                "name": "name",
+                "abbreviation": "abbreviation"
             },
             "edit": {
-                "teamName": "",
-                "teamAbbreviation": "",
-                "timezone": "",
-                "teamAvatar": "",
+                "teamName": "TEAM NAME",
+                "teamAbbreviation": "TEAM ABBREVIATION",
+                "timezone": "TIMEZONE",
+                "teamAvatar": "TEAM AVATAR",
                 "errors": {
-                    "size": "",
-                    "type": "",
-                    "invalidImage": "",
-                    "invalidTimezone": "",
-                    "errorAddingTeamAvatar": "",
+                    "size": "Image is too large. Ensure the image is less than 5MB.",
+                    "type": "Invalid image file. Ensure the image is a PNG or JPG.",
+                    "invalidImage": "Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.",
+                    "invalidTimezone": "Invalid timezone.",
+                    "errorAddingTeamAvatar": "Error adding team avatar:\n{error}",
                     "invalidName": "",
-                    "contactVinxis": ""
+                    "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
                 },
                 "confirm": {
-                    "deleteTeam": "",
-                    "deleteTeamFinal": "",
-                    "removeMember": "",
-                    "transferManager": "",
-                    "invite": "",
-                    "removeInvite": "",
-                    "unregister": ""
+                    "deleteTeam": "Are you sure you want to delete this team?",
+                    "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!",
+                    "removeMember": "Are you sure you want to remove {username} from your team?",
+                    "transferManager": "Are you sure you want to transfer manager to {username}?",
+                    "invite": "Are you sure you want to invite {username} to your team?",
+                    "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
+                    "unregister": "Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."
                 },
-                "save": "",
-                "deleteTeam": ""
+                "save": "SAVE",
+                "deleteTeam": "DELETE TEAM"
             },
             "headers": {
-                "tournaments": "",
-                "teamStats": "",
-                "teamManager": "",
-                "teamMembers": "",
-                "editTeamMembers": "",
-                "closeTeamMembers": "",
-                "becomeMember": "",
-                "becomeManager": "",
-                "teamInvites": "",
-                "editTeamInvites": "",
-                "closeTeamInvites": "",
-                "qualifier": "",
-                "requiredMessageExact": "",
-                "requiredMessageRange": ""
+                "tournaments": "TOURNAMENTS",
+                "teamStats": "TEAM STATS",
+                "teamManager": "TEAM MANAGER",
+                "teamMembers": "TEAM MEMBERS",
+                "editTeamMembers": "edit team members",
+                "closeTeamMembers": "close team members edit",
+                "becomeMember": "become a member and play as well",
+                "becomeManager": "become manager only",
+                "teamInvites": "TEAM INVITES",
+                "editTeamInvites": "edit team invites",
+                "closeTeamInvites": "close team invites edit",
+                "qualifier": "QUALIFIER",
+                "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
+                "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
             },
             "registration": {
-                "noRegistration": "",
-                "toPlay": ""
+                "noRegistration": "Registered in no tournaments",
+                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
             },
-            "teamID": "",
-            "member": "",
-            "members": "",
-            "averageBWS": "",
-            "averageRank": "",
-            "averagePP": "",
-            "editQualifierTime": "",
-            "deleteTeam": "",
-            "createJoinQualifier": "",
-            "notRegistered": ""
+            "teamID": "TEAM ID",
+            "member": "member",
+            "members": "members",
+            "averageBWS": "BWS rata-rata",
+            "averageRank": "Average Rank",
+            "averagePP": "Average PP",
+            "editQualifierTime": "edit qualifier time",
+            "deleteTeam": "delete qualifier/unregister team",
+            "createJoinQualifier": "create/join qualifier",
+            "notRegistered": "Currently not registered in Corsace Open."
         },
         "create": {
-            "title": "",
-            "info1": "",
-            "info2": "",
-            "teamName": "",
-            "teamLength": "",
-            "teamAcronym": "",
-            "acronymLength": "",
-            "teamTimezone": "",
-            "timezoneText": "",
-            "teamAvatar": "",
-            "upload": "",
-            "fileSizeLimit": "",
-            "fileSizeError": "",
-            "fileTypeError": "",
-            "preview": "",
-            "avatarInfo1": "",
-            "avatarInfo2": "",
-            "avatarInfo3": "",
-            "avatarInfo4": "",
-            "teamManagement": "",
-            "teamManagers": "",
-            "teamManagersFree": "",
-            "selectManager": "",
-            "confirmManager": "",
-            "create": ""
+            "title": "CREATE A TEAM",
+            "info1": "Registrations will end on",
+            "info2": "Please ensure all information is correct before finalizing.",
+            "teamName": "TEAM NAME",
+            "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
+            "teamAcronym": "TEAM ACRONYM",
+            "acronymLength": "2 - 4 characters. Profanity will be checked.",
+            "teamTimezone": "TEAM TIMEZONE",
+            "timezoneText": "We will assume your team can play between <span class='bold'>10:00 to 22:00</span> in the selected timezone.",
+            "teamAvatar": "TEAM AVATAR",
+            "upload": "UPLOAD",
+            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
+            "fileSizeError": "file size too big! please upload a smaller image",
+            "fileTypeError": "incorrect file type! please upload a .jpg or .png",
+            "preview": "PRATINJAU",
+            "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
+            "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
+            "avatarInfo3": "All names and avatars will be approved by staff.",
+            "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
+            "teamManagement": "TEAM MANAGEMENT",
+            "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
+            "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
+            "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
+            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "create": "CREATE TEAM"
         },
         "components": {
             "openCardTeam": {
-                "rank": "",
-                "teambwsAverage": "",
-                "unregistered": "",
-                "bws": ""
+                "rank": "RANK",
+                "teambwsAverage": "TEAM BWS AVG",
+                "unregistered": "UNREGISTERED",
+                "bws": "BWS"
             },
-            "stageSelector": {
-                "select": "",
-                "stage": ""
-            }
+            "stageSelector": "STAGE SELECT"
         },
         "staff": {
-            "title": "",
-            "notLoggedIn": ""
+            "title": "STAFF",
+            "notLoggedIn": "NOT LOGGED IN"
+        },
+        "referee": {
+            "title": "REFEREE",
+            "loadMore": "LOAD MORE",
+            "back": "BACK TO MATCHUP LIST",
+            "createLobby": "CREATE LOBBY",
+            "roll": "ROLL",
+            "reroll": "RE-ROLL",
+            "settings": "!MP SETTINGS",
+            "timer": "!MP TIMER",
+            "startMap": "!MP START",
+            "abortMap": "!MP ABORT",
+            "closeLobby": "CLOSE LOBBY"
         },
         "status": {
-            "loading": ""
+            "loading": "LOADING"
         },
         "mappool": {
-            "title": ""
+            "title": "MAPPOOL"
+        }
+    },
+    "main": {
+        "construction": {
+            "underConstruction": "under construction",
+            "sorry": "sorry for the inconvenience",
+            "development": "the corsace website is still in early development",
+            "theTeam": "tim corsace"
+        },
+        "merch": {
+            "code": "Tap Trio - Bundel Corsace",
+            "products": "Persediaan terbatas"
         }
     }
 }

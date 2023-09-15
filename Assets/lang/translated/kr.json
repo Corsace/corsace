@@ -1,13 +1,24 @@
 {
     "language": "한국어",
     "flag": "https://osu.ppy.sh/images/flags/KR.png",
+    "header": {
+        "welcomeBack": "환영합니다",
+        "login": "로그인",
+        "register": "등록",
+        "changeDiscord": "디스코드 계정 변경",
+        "logout": "로그아웃"
+    },
     "mca_ayim": {
+        "banner": {
+            "merch": "공식 굿즈 샵",
+            "corsace": "메인 이벤트 허브"
+        },
         "header": {
             "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "로그인",
             "welcomeBack": "환영합니다",
-            "admin": "어드민",
+            "admin": "관리자",
             "staff": "스태프",
             "logout": "로그아웃"
         },
@@ -18,13 +29,9 @@
                 "2": "이후 디스코드로도 로그인하실 수 있지만, 추천/투표하는 데에는 <b>필요하지 않습니다.</b><br>MCA/AYIM 관련 스태프분들은 디스코드로 로그인을 <b>반드시</b> 하셔야 합니다."
             },
             "authOsu": "여기를 클릭하여 osu!로 로그인하세요",
-            "authOsuComp": "osu!로 로그인되었습니다. 안녕하세요 ",
+            "authOsuComp": "osu! 계정 인증이 완료되었습니다. 안녕하세요 ",
             "authDiscord": "여기를 클릭하여 디스코드로 로그인하세요",
-            "authDiscordComp": "디스코드로 로그인되었습니다. 안녕하세요 "
-        },
-        "banner": {
-            "merch": "",
-            "corsace": ""
+            "authDiscordComp": "디스코드 인증이 완료되었습니다. 안녕하세요 "
         }
     },
     "ayim": {
@@ -37,8 +44,8 @@
             "message": {
                 "2019": "<p>2020</p><p>A Year in Mapping 2019가 2019년 한 해의 기록들과 통계를 들고 돌아왔습니다!</p><p>이 웹사이트를 통해, 지금까지 기록된 모든 통계 및 정보들을 검색할 수 있습니다! 기타 의견 또는 제안사항이 있다면, corsace 서버의 VINXIS에게 연락주세요. (좌하단 링크 참조)</p><p>또한 이제 크라우드펀딩식 코멘트를 지원합니다! 즉, 아무나 원하는 만큼 원하는 매퍼에게 코멘트를 쓸 수 있다는 말이죠!</p><p>하단에 있는 게임모드 중 자신의 주 모드를 선택하여 시작하세요!</p>",
                 "2020": "<p>2021... 작년이 아닌 올해입니다!</p><p>A Year in Mapping 2020가 2020년 한 해의 기록들과 통계를 들고 드디어 제 시간에 찾아왔습니다!</p><p>작년과 마찬가지로, 코멘트는 크라우드펀딩식으로 진행됩니다! 하단에 있는 게임모드 중 자신의 주 모드를 선택하여 시작하세요!</p>",
-                "2021": "",
-                "2022": ""
+                "2021": "<p>2022 is here!</p> <p>A Year in Mapping 2021 is here to provide the records and stats made or even broken!</p>",
+                "2022": "<p>Welcome to 2023!</p> <p>A Year in Mapping 2022 is here to provide the records and stats made or even broken! This time actually (kind of) on schedule!</p>"
             }
         },
         "mapsets": {
@@ -52,7 +59,7 @@
             "totalRanked": "전체 랭크",
             "totalDiff": "전체 난이도",
             "submitDates": "업로드 날짜",
-            "starRatings": "별 개수",
+            "starRatings": "스타레이팅",
             "approachRate": "AR",
             "overallDifficulty": "OD",
             "hpDrain": "HP",
@@ -78,7 +85,7 @@
             "mapperAges": "매퍼 계정 나이",
             "mapsPerMapperAges": "매퍼 계정 나이 별 맵 개수",
             "bng": "BNG",
-            "nat": "NAT",
+            "nat": "노미네이션 어세스먼트 팀",
             "uniqueMappers": "전체 매퍼 수",
             "newMappers": "신인 매퍼 수",
             "highestAvgSr": "최고 평균 스타레이팅",
@@ -106,9 +113,14 @@
     },
     "mca": {
         "main": {
+            "banner": "LET'S LOOK BACK <br> AT",
+            "click": "여기를 클릭해 입장하세요",
+            "welcome": "MCA에 오신것을 환영합니다",
             "voting": "투표",
             "nominating": "추천",
+            "preparation": "preparation",
             "results": "결과",
+            "timeline": "일정",
             "mapsetsLabel": "맵셋",
             "mappersLabel": "매퍼",
             "commentsLabel": "코멘트",
@@ -117,35 +129,30 @@
             "stage": {
                 "voting": "투표 기간",
                 "nominating": "추천 기간",
-                "preparation": "",
-                "stage": ""
+                "preparation": "준비 기간",
+                "stage": "stage"
             },
             "rankedSets": "랭크맵 수",
             "nominateNow": "지금 추천하세요 !",
             "voteNow": "지금 투표하세요 !",
+            "viewResults": "결과 보기!",
             "daysLeft": "일 남음",
             "message": {
                 "2019": "<p>Mapper's Choice Awards가 2019년 4회차로 돌아왔습니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2019년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>올해는 저희가 새로 완성한 홈페이지를 통해 투표가 더욱 쉬워졌습니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨으면 좋겠습니다!</p>",
-                "2020": "<p>바로 이어서, MCA가 2020년 제 5회차를 맞이합니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2020년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>MCA 2019가 진행되는 동안 받은 제안과 피드백을 바탕으로 올해는 더 매끄러운 진행이 될거라 예상됩니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨!</p>",
-                "2021": "",
-                "2022": ""
+                "2020": "<p>바로 이어서, MCA가 2020년 제 5회차를 맞이합니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2020년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>MCA 2019가 진행되는 동안 받은 제안과 피드백을 바탕으로 올해는 더 매끄러운 진행이 될거라 예상됩니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해 주셨습니다!</p>",
+                "2021": "<p>Mapper's Choice Awards가 2021년으로 돌아왔습니다! 이 이벤트는 모든 매퍼/모더가 각 카테고리에마다 가장 적합한 맵/매퍼라고 생각하는 것을 추천하고 투표하는 이벤트입니다!</p><p>모든 osu! 서포터는 osu! 스태프에서 직접 지급합니다. 각 카테고리별 수상자는 2개월, 대상 수상자는 4개월을 받게 됩니다!</p><p>이번 이벤트에는 최대한 많은 참가자들의 참여를 부탁드립니다!</p>",
+                "2022": "Mapper's Choice Awards가 또다른 이벤트로 돌아왔습니다! (이번엔 예정대로 말이죠!)<br>이 이벤트는 모든 매퍼/모더가 각 카테고리에마다 가장 적합한 맵/매퍼라고 생각하는 것을 추천하고 투표하는 이벤트입니다!<br>모든 osu! 서포터는 osu! 스태프에서 직접 지급합니다. 각 카테고리별 수상자는 2개월, 대상 수상자는 4개월을 받게 됩니다!<br> 이번 이벤트에는 최대한 많은 참가자들의 참여를 부탁드립니다!"
             },
             "categories": {
+                "index": "카테고리",
                 "map": "맵 카테고리",
-                "user": "매퍼 카테고리",
-                "index": ""
+                "user": "매퍼 카테고리"
             },
-            "organized": "주최자",
-            "banner": "",
-            "click": "",
-            "welcome": "",
-            "preparation": "",
-            "timeline": "",
-            "viewResults": ""
+            "organized": "주최자"
         },
         "categories": {
             "grandAward": {
-                "name": "그랜드 어워드",
+                "name": "대상",
                 "description": "한 해를 빛낸 최고의 비트맵"
             },
             "grandStoryboard": {
@@ -160,12 +167,16 @@
                 "name": "마라톤",
                 "description": "5분 이상의 장곡 중 최고의 비트맵"
             },
+            "marathonMan": {
+                "name": "최고의 마라톤",
+                "description": "4분 이상의 장곡중 최고의 비트맵"
+            },
             "hitsounding": {
                 "name": "히트사운딩",
                 "description": "당신의 귀를 즐겁게 해줄 최고의 히트사운드"
             },
             "collab": {
-                "name": "콜라보레이션",
+                "name": "최고의 콜랍",
                 "description": "2명 이상의 매퍼들이 공동 제작한 최고의 비트맵"
             },
             "simple": {
@@ -209,8 +220,8 @@
                 "description": "매핑 전반적으로 가장 영향력을 끼친 매퍼"
             },
             "outCont": {
-                "name": "뛰어난 공헌",
-                "description": "osu! 커뮤니티 전반에 가장 많이 공헌한 유저"
+                "name": "뛰어난 기여자",
+                "description": "osu! 커뮤니티 전반에 가장 많이 기여한 유저"
             },
             "spread": {
                 "name": "스프레드",
@@ -241,12 +252,32 @@
                 "description": "슬라이더 SV를 가장 잘 활용한 비트맵셋"
             },
             "featuredArtist": {
-                "name": "피쳐드 아티스트",
-                "description": "공식 FA 곡으로 제작한 최고의 비트맵셋"
+                "name": "공식 아티스트",
+                "description": "공식 아티스트 곡으로 제작한 최고의 비트맵셋"
             },
             "longNotes": {
                 "name": "롱 노트",
                 "description": "롱 노트를 가장 잘 활용한 비트맵셋"
+            },
+            "longNotes4K": {
+                "name": "Best 4K Long Notes",
+                "description": "The best 4K beatmap with an intense usage of LNs."
+            },
+            "longNotes7K": {
+                "name": "Best 7K Long Notes",
+                "description": "The best 7K beatmap with an intense usage of LNs."
+            },
+            "rice": {
+                "name": "Best Rice",
+                "description": "The best beatmap with an intense usage of rice."
+            },
+            "rice4K": {
+                "name": "Best 4K Rice",
+                "description": "The best 4K beatmap with an intense usage of rice."
+            },
+            "rice7K": {
+                "name": "Best 7K Rice",
+                "description": "The best 7K beatmap with an intense usage of rice."
             },
             "antiMeta": {
                 "name": "안티 메타",
@@ -286,7 +317,15 @@
             },
             "hybrid": {
                 "name": "하이브리드",
-                "description": "롱놋과  적절한 조화를 이루어낸 최고의 비트맵"
+                "description": "롱놋과 적절한 조화를 이루어낸 최고의 비트맵"
+            },
+            "hybrid4K": {
+                "name": "Best 4K Hybrid",
+                "description": "The best 4K beatmap which showcases substantial amounts of both LN and rice patterning."
+            },
+            "hybrid7K": {
+                "name": "Best 7K Hybrid",
+                "description": "The best 7K beatmap which showcases substantial amounts of both LN and rice patterning."
             },
             "highBPMAlternator": {
                 "name": "고BPM / 양타",
@@ -305,12 +344,20 @@
                 "description": "보통 매핑에서 잘 쓰이지 않는 특이한 기술이나 아이디어로 구성된 최고의 비트맵"
             },
             "sliderTech": {
-                "name": "슬라이더 테크",
+                "name": "최고의 슬라이더 테크",
                 "description": "복잡한 슬라이더, SV 변속, 특이한 연타 패턴 등으로 구성된 최고의 테크니컬 맵"
             },
             "mostInspiring": {
                 "name": "선구자",
                 "description": "다른 매퍼들에게 막대한 영향력을 끼치고 영감을 불어넣어준 유저"
+            },
+            "mostInnovative": {
+                "name": "Most Innovative",
+                "description": "The one who influenced and provided inspiration to others the most."
+            },
+            "communityPillar": {
+                "name": "Community Pillar",
+                "description": "The best user in providing outstanding contribution to the community behind-the-scenes."
             },
             "simplisticTaiko": {
                 "name": "심플",
@@ -324,57 +371,18 @@
                 "name": "안티 메타",
                 "description": "특이하거나 기믹성 패턴을 위주로 구성된 최고의 비트맵"
             },
-            "marathonMan": {
-                "name": "",
-                "description": ""
-            },
-            "longNotes4K": {
-                "name": "",
-                "description": ""
-            },
-            "longNotes7K": {
-                "name": "",
-                "description": ""
-            },
-            "rice": {
-                "name": "",
-                "description": ""
-            },
-            "rice4K": {
-                "name": "",
-                "description": ""
-            },
-            "rice7K": {
-                "name": "",
-                "description": ""
-            },
-            "hybrid4K": {
-                "name": "",
-                "description": ""
-            },
-            "hybrid7K": {
-                "name": "",
-                "description": ""
-            },
-            "mostInnovative": {
-                "name": "",
-                "description": ""
-            },
-            "communityPillar": {
-                "name": "",
-                "description": ""
-            },
             "unconventionalCtb": {
-                "name": "",
-                "description": ""
+                "name": "색다른 AR/CS",
+                "description": "AR이 8.5 이하이거나, CS가 5이상 또는 3이하인 최고의 비트맵"
             },
             "diversity": {
-                "name": "",
-                "description": ""
+                "name": "Best Diversity",
+                "description": "다양한 스킬셋/카테고리에 초점을 맞춘 최고의 비트맵"
             }
         },
         "nom_vote": {
             "search": "맵/매퍼 검색",
+            "select": "카테고리를 선택해 주세요!",
             "candidates": "후보",
             "options": {
                 "date": "날짜",
@@ -382,310 +390,312 @@
                 "title": "제목",
                 "favs": "즐겨찾기 수",
                 "creator": "매퍼",
-                "sr": "별 개수",
+                "sr": "스타레이팅",
                 "id": "ID",
                 "alph": "알파벳순",
                 "asc": "오름차순",
                 "desc": "내림차순",
                 "voteOrder": "투표 순서",
-                "valid": "",
-                "invalid": "",
-                "both": "",
-                "all": "",
-                "played": "",
-                "results": "",
-                "voters": ""
+                "valid": "유효한",
+                "invalid": "유효하지 않은",
+                "both": "BOTH",
+                "all": "ALL",
+                "played": "PLAYED",
+                "results": "결과",
+                "voters": "투표자"
             },
             "votingOverlay": "안녕하세요! 투표 페이지에는 처음이신 것 같네요. <br> MCA 투표는 <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>선호투표제</a>를 채용합니다! <br> 이는 즉 투표 개수에 제한 없이 여러분이 원하는 만큼 투표할 수 있다는 뜻이죠! <br> 모든 투표는 순위를 가지게 되며, <span class='notice-modal--bold'>첫 투표가 가장 높은 순위를 차지합니다!</span> <br> 투표에 신중한 선택 부탁드리며 MCA [YEAR] 결과를 기대해 봅니다!",
             "hosted": "매퍼",
-            "userID": "유저 ID",
-            "select": ""
+            "userID": "유저 ID"
         },
         "results": {
             "headings": {
-                "placement": "",
-                "map": "",
-                "title": "",
-                "artist": "",
-                "hoster": "",
-                "username": "",
-                "firstChoice": "",
-                "secondThirdChoice": "",
-                "restChoice": ""
+                "placement": "PLACE",
+                "map": "MAP",
+                "title": "TITLE",
+                "artist": "ARTIST",
+                "hoster": "HOST",
+                "username": "USER",
+                "firstChoice": "1ST CHOICES",
+                "secondThirdChoice": "2ND-3RD CHOICES",
+                "restChoice": "4TH+ CHOICES"
             },
-            "resultsOverlay": ""
+            "resultsOverlay": "Hello! This is possibly the first time you have navigated to the results page! <br> These results show the final placements of the beatmaps/users using <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> alongside the amount of times the beatmap/user was a first choice, and the total number of appearances!<br> Hopefully these results for MCA [YEAR] are to your liking! Can't wait to see you all for next MCA!"
         }
-    },
-    "main": {
-        "construction": {
-            "underConstruction": "",
-            "sorry": "",
-            "development": "",
-            "theTeam": ""
-        },
-        "merch": {
-            "code": "",
-            "products": ""
-        }
-    },
-    "header": {
-        "welcomeBack": "",
-        "login": "",
-        "register": "",
-        "changeDiscord": "",
-        "logout": ""
     },
     "open": {
         "navbar": {
-            "home": "",
-            "info": "",
-            "qualifiers": "",
-            "teams": "",
-            "schedule": "",
-            "mappool": "",
-            "staff": "",
-            "createTeam": "",
-            "invitations": "",
-            "loginDiscord": "",
-            "teamInvites": "",
-            "noInvites": ""
+            "home": "HOME",
+            "info": "INFO",
+            "qualifiers": "퀄리파이어",
+            "teams": "팀 목록",
+            "schedule": "일정",
+            "mappool": "맵풀",
+            "staff": "스태프",
+            "createTeam": "팀 만들기",
+            "invitations": "초대장",
+            "loginDiscord": "팀 관리/초대를 하려면 디스코드 로그인을 해 주세요",
+            "teamInvites": "받은 팀 초대",
+            "noInvites": "받은 초대가 없습니다"
         },
         "footer": {
-            "corsace": "",
-            "twitter": "",
-            "discord": "",
-            "twitch": "",
-            "youtube": ""
+            "corsace": "코사스",
+            "twitter": "트위터",
+            "discord": "디스코드",
+            "twitch": "트위치",
+            "youtube": "유튜브"
         },
         "stages": {
-            "qualifiers": "",
-            "round robin": "",
-            "runoff bracket": "",
-            "knockout 1": "",
-            "knockout 2": "",
+            "qualifiers": "퀄리파이어",
+            "round robin": "라운드 로빈",
+            "runoff bracket": "런오프 브라켓",
+            "knockout 1": "녹아웃 1",
+            "knockout 2": "녹아웃 2",
             "abbreviations": {
-                "ql": "",
-                "rr": "",
-                "ro": "",
-                "ko1": "",
-                "ko2": ""
+                "ql": "(QL)",
+                "rr": "(RR)",
+                "ro": "(RO)",
+                "ko1": "(KO1)",
+                "ko2": "(KO2)"
             }
         },
         "home": {
-            "description": "",
-            "timeline": "",
-            "presentedBy": "",
-            "registrations": "",
+            "description": "세계 최고의 Osu! 플레이어들이 배틀하는 코사스 오픈 2023에 빠져보세요!",
+            "timeline": "타임라인",
+            "presentedBy": "코사스 2023은 다음과 같은 곳에서 제공합니다",
+            "registrations": "등록 기간",
             "button": {
-                "qualifiersMappool": "",
-                "mappoolDownload": "",
-                "register": "",
-                "registrationsEnd": ""
+                "qualifiersMappool": "퀄리파이어 맵풀",
+                "mappoolDownload": "맵풀 다운로드와 통계 보기",
+                "register": "당신의 팀을 만들고 등록하세요",
+                "registrationsEnd": "등록이 마감됩니다"
             }
         },
         "info": {
-            "title": "",
-            "condensed": "",
-            "error": "",
+            "title": "토너먼트 정보",
+            "condensed": "세부 정보",
+            "error": "토너먼트를 찾을수 없습니다",
             "matchInfo": {
-                "matchSize": "",
-                "minPlayers": "",
-                "maxPlayers": "",
-                "pickTimer": "",
-                "readyTimer": "",
-                "order": "",
-                "scoringMethod": "",
-                "type": "",
-                "startDate": "",
-                "endDate": "",
-                "rounds": "",
-                "initialSize": "",
-                "finalSize": ""
+                "matchSize": "매치 규모",
+                "minPlayers": "최소 플레이어",
+                "maxPlayers": "최대 플레이어",
+                "pickTimer": "맵 선택 타이머",
+                "readyTimer": "준비 타이머",
+                "order": "스테이지 순번",
+                "scoringMethod": "점수 집계 방식",
+                "type": "경기 유형",
+                "startDate": "시작 일자",
+                "endDate": "종료 일자",
+                "rounds": "라운드",
+                "initialSize": "시작 팀",
+                "finalSize": "남은 팀"
             },
             "headings": {
-                "mappools": "",
-                "stage": ""
+                "mappools": "맵풀 목록",
+                "stage": "스테이지"
             },
             "status": {
-                "notStarted": "",
-                "complete": "",
-                "ongoing": ""
+                "notStarted": "시작하지 않았음",
+                "complete": "완료됨",
+                "ongoing": "진행중"
             },
             "mappools": {
-                "info": "",
-                "notAvailable": "",
-                "mappackDownload": "",
-                "mappacknotAvailable": ""
+                "info": "맵풀 정보",
+                "notAvailable": "정보를 가져올 수 없습니다",
+                "mappackDownload": "맵팩 다운로드",
+                "mappacknotAvailable": "맵팩을 가져올 수 없습니다"
             },
-            "donateToCorsace": "",
-            "supportViaSponsorship": "",
-            "generalInfo": "",
-            "teamStructure": "",
-            "qualifiersProcedures": "",
-            "tournamentStructure": "",
-            "infoGraphic": "",
-            "matchProcedures": "",
-            "reportTournament": "",
-            "subjectToChange": ""
+            "prizes": "상품",
+            "donateToCorsace": "코사스에 후원하기",
+            "supportViaSponsorship": "MOMOKAI SPONSORSHIP을 통한 지원",
+            "generalInfo": "기본 정보",
+            "teamStructure": "팀 구성",
+            "qualifiersProcedures": "퀄리파이어 규칙",
+            "tournamentStructure": "토너먼트 구성",
+            "infoGraphic": "인포그래픽",
+            "matchProcedures": "경기 규칙",
+            "reportTournament": "토너먼트 신고하기",
+            "subjectToChange": "모든 규칙은 설명 혹은 조정을 위해 변경될 수 있습니다."
         },
         "qualifiers": {
             "nav": {
-                "mappool": "",
-                "qualifiers": "",
-                "scores": ""
+                "mappool": "맵풀",
+                "qualifiers": "퀄리파이어",
+                "scores": "통계"
             },
             "mappool": {
-                "sheets": "",
-                "mappool": "",
-                "notAvailable": "",
+                "sheets": "시트 열기",
+                "mappool": "맵풀",
+                "notAvailable": "맵풀을 아직 이용할 수 없습니다.",
                 "banner": {
-                    "mapper": "",
-                    "difficulty": ""
+                    "mapper": "매퍼",
+                    "difficulty": "난이도"
                 }
             },
             "scores": {
                 "nav": {
-                    "sort": "",
-                    "average": "",
-                    "sum": "",
-                    "percentAvg": "",
-                    "relAvg": "",
-                    "percentMax": "",
-                    "relMax": "",
-                    "zScore": "",
-                    "placement": "",
-                    "player": "",
-                    "team": "",
-                    "best": "",
-                    "worst": ""
+                    "sort": "정렬",
+                    "average": "평균 점수",
+                    "sum": "SUM",
+                    "percentAvg": "%AVG",
+                    "relAvg": "REL. AVG",
+                    "percentMax": "%MAX",
+                    "relMax": "REL. MAX",
+                    "zScore": "Z-SCORE",
+                    "placement": "순위",
+                    "player": "플레이어",
+                    "team": "소속 팀",
+                    "best": "최고 퍼포먼스",
+                    "worst": "최저 퍼포먼스"
                 },
-                "category": "",
-                "select": "",
-                "players": "",
-                "teams": ""
+                "categorySelect": "카테고리 선택",
+                "players": "플레이어",
+                "teams": "팀"
             },
-            "create": "",
+            "create": "만들기",
             "error": {
-                "message": "",
-                "pressToClose": ""
+                "message": "{numPlayers}명의 플레이어가 있기 전까지 퀄리파이어 로비를 만들거나 참여할 수 없습니다!",
+                "pressToClose": "닫으려면 아무곳이나 클릭해 주세요."
             }
         },
         "teams": {
-            "teamsList": "",
-            "error": "",
-            "searchPlaceholder": "",
-            "editTeamInfo": "",
-            "qualifierId": "",
+            "teamsList": "팀 목록",
+            "error": "팀 목록을 가져올 수 없습니다",
+            "searchPlaceholder": "팀/유저 검색",
+            "editTeamInfo": "팀 정보 수정",
+            "qualifierId": "퀄리파이어 ID",
             "placeholders": {
-                "searchUser": "",
-                "name": "",
-                "abbreviation": ""
+                "searchUser": "Osu! 닉네임 (코사스 계정이 있어야 합니다)",
+                "name": "팀 이름",
+                "abbreviation": "약어"
             },
             "edit": {
-                "teamName": "",
-                "teamAbbreviation": "",
-                "timezone": "",
-                "teamAvatar": "",
+                "teamName": "팀 이름",
+                "teamAbbreviation": "팀 약어",
+                "timezone": "시간대",
+                "teamAvatar": "팀 아바타",
                 "errors": {
-                    "size": "",
-                    "type": "",
-                    "invalidImage": "",
-                    "invalidTimezone": "",
-                    "errorAddingTeamAvatar": "",
+                    "size": "이미지 크키가 너무 큽니다. 이미지 크기가 5MB 이내인지 확인해 주세요.",
+                    "type": "유효하지 않은 이미지 파일입니다. 이미지 확장자가 PNG 혹은 JPG인지 확인해 주세요.",
+                    "invalidImage": "유효하지 않은 이미지 파일입니다. 이미지 확장자가 PNG 혹은 JPG이고, 용량이 5MB 이내인지 확인해 주세요.",
+                    "invalidTimezone": "유효허지 않은 시간대입니다.",
+                    "errorAddingTeamAvatar": "팀 아바타 추가 오류:\n{error}",
                     "invalidName": "",
-                    "contactVinxis": ""
+                    "contactVinxis": "검색오류가 있는 경우, VINXIS에게 문의해 주세요. 자세한 정보는 Ctrl + Shift + I를 사용해 콘솔을 참조해 주세요."
                 },
                 "confirm": {
-                    "deleteTeam": "",
-                    "deleteTeamFinal": "",
-                    "removeMember": "",
-                    "transferManager": "",
-                    "invite": "",
-                    "removeInvite": "",
-                    "unregister": ""
+                    "deleteTeam": "팀을 지우는게 확실한가요?",
+                    "deleteTeamFinal": "팀을 지우는게 정말 확실한가요? 이 행동은 되돌릴 수 없습니다!",
+                    "removeMember": "정말 {username} 이 유저를 당신의 팀에서 제거하는 것이 확실한가요?",
+                    "transferManager": "{username} 이 유저를 팀 매니저로 변경하는게 확실한가요?",
+                    "invite": "정말 {username} 이 유저를 당신의 팀으로 초대하는 것이 확실한가요?",
+                    "removeInvite": "정말 {username} 이 유저의 팀 초대를 취소하는 것이 확실한가요?",
+                    "unregister": "토너먼트에서 등록을 취소하시겠습니까? 6명이 있다면 언제든지 재등록이 가능합니다."
                 },
-                "save": "",
-                "deleteTeam": ""
+                "save": "저장하기",
+                "deleteTeam": "팀 지우기"
             },
             "headers": {
-                "tournaments": "",
-                "teamStats": "",
-                "teamManager": "",
-                "teamMembers": "",
-                "editTeamMembers": "",
-                "closeTeamMembers": "",
-                "becomeMember": "",
-                "becomeManager": "",
-                "teamInvites": "",
-                "editTeamInvites": "",
-                "closeTeamInvites": "",
-                "qualifier": "",
-                "requiredMessageExact": "",
-                "requiredMessageRange": ""
+                "tournaments": "토너먼트",
+                "teamStats": "팀 통계",
+                "teamManager": "팀 매니저",
+                "teamMembers": "팀 멤버 목록",
+                "editTeamMembers": "팀 멤버 수정",
+                "closeTeamMembers": "팀 멤버 수정 닫기",
+                "becomeMember": "팀원이 되고 플레이도 해보세요",
+                "becomeManager": "관리자만 가능합니다",
+                "teamInvites": "팀 초대",
+                "editTeamInvites": "팀 초대 수정하기",
+                "closeTeamInvites": "팀 초대 닫기",
+                "qualifier": "퀄리파이어",
+                "requiredMessageExact": "퀄리파이어에 등록하기 위해서는 정확히 {minTeamSize} 명의 팀원이 필요합니다",
+                "requiredMessageRange": "퀄리파이어에 등록하고 참여할려면 {minTeamSize} ~ {maxTeamSize} 명의 팀원이 필요합니다."
             },
             "registration": {
-                "noRegistration": "",
-                "toPlay": ""
+                "noRegistration": "토너먼트에 등록되지 않았습니다",
+                "toPlay": "코사스 오픈에서 플레이하기 위해, 6명의 팀원을 확보하고 아래에서 퀄리파이어 날짜와 시간을 선택해 주세요."
             },
-            "teamID": "",
-            "member": "",
-            "members": "",
-            "averageBWS": "",
-            "averageRank": "",
-            "averagePP": "",
-            "editQualifierTime": "",
-            "deleteTeam": "",
-            "createJoinQualifier": "",
-            "notRegistered": ""
+            "teamID": "팀 ID",
+            "member": "멤버",
+            "members": "멤버들",
+            "averageBWS": "평균 BWS 순위",
+            "averageRank": "평균 순위",
+            "averagePP": "평균 PP",
+            "editQualifierTime": "퀄리파이어 시간 수정",
+            "deleteTeam": "퀄리파이어 취소/팀 등록 철회",
+            "createJoinQualifier": "퀄리파이어 로비 만들기 / 참여하기",
+            "notRegistered": "현재 코사스 오픈에 등록되어 있지 않습니다"
         },
         "create": {
-            "title": "",
-            "info1": "",
-            "info2": "",
-            "teamName": "",
-            "teamLength": "",
-            "teamAcronym": "",
-            "acronymLength": "",
-            "teamTimezone": "",
-            "timezoneText": "",
-            "teamAvatar": "",
-            "upload": "",
-            "fileSizeLimit": "",
-            "fileSizeError": "",
-            "fileTypeError": "",
-            "preview": "",
-            "avatarInfo1": "",
-            "avatarInfo2": "",
-            "avatarInfo3": "",
-            "avatarInfo4": "",
-            "teamManagement": "",
-            "teamManagers": "",
-            "teamManagersFree": "",
-            "selectManager": "",
-            "confirmManager": "",
-            "create": ""
+            "title": "팀 만들기",
+            "info1": "에 등록이 마감됩니다",
+            "info2": "완료하기 전에 모든 정보가 올바른지 확인해 주세요",
+            "teamName": "팀 이름",
+            "teamLength": "5 ~ 20자 이내여야 합니다. \"Team\"을 팀 이름에 넣을 경우 자동으로 삭제되며, 부적절한 표현은 확인 대상입니다.",
+            "teamAcronym": "팀 약어",
+            "acronymLength": "2 ~ 4자 이내여야 합니다. 부적절한 표현은 확인 대상입니다.",
+            "teamTimezone": "팀 시간대",
+            "timezoneText": "당신의 팀이 선택한 시간대의 <span class='bold'>10:00부터 22:00</span> 사이에 플레이가 가능하다고 가정합니다.<span class='bold'>",
+            "teamAvatar": "팀 아바타",
+            "upload": "업로드",
+            "fileSizeLimit": "5mb 이하여야 하며 .JPG 혹은 .PNG만 가능합니다",
+            "fileSizeError": "파일의 크기가 너무 큽니다! 더 작은 크기의 이미지를 올려주세요",
+            "fileTypeError": "파일 확장자가 다릅니다! .jpg 혹은 .png 확장자만 업로드 해주세요",
+            "preview": "미리보기",
+            "avatarInfo1": "아바타에는 <span>3:1 비율</span>을 사용하는 것이 좋습니다",
+            "avatarInfo2": "캡틴은 등록 마감 전에 팀 이름과 아바타를 수정할 수 있습니다",
+            "avatarInfo3": "모든 이름과 아바타는 스태프가 확인하게 됩니다",
+            "avatarInfo4": "부적절하다고 판단되는 경우, 변경 요청을 통보받게 됩니다",
+            "teamManagement": "팀 관리",
+            "teamManagers": "<div>팀 <span>매니저</span>(즉, 귀하)는 플레이하면서 캡틴의 역할을 수행할 수 있습니다.</div><div><span>또는</span> 팀과 함께 플레이 하지 않고 캡틴 역할만 수행이 가능합니다. </div>",
+            "teamManagersFree": "만약 플레이하지 않고 매니저만 희망하는 경우, 플레이어 슬롯에 <span>들어가지 않습니다</span>",
+            "selectManager": "팀과 함께 플레이하지 <span>않고</span>, <span>매니저 역할</span> 만 할 경우에 이 체크란을 선택해 주세요",
+            "confirmManager": "<div>이것을 체크함으로써 나는 팀 매니저로만 활동할 것이며</div>, <div>어떤 경기에도 참여할 수 없음을 이해했습니다.</div>",
+            "create": "팀 만들기"
         },
         "components": {
             "openCardTeam": {
-                "rank": "",
-                "teambwsAverage": "",
-                "unregistered": "",
-                "bws": ""
+                "rank": "순위",
+                "teambwsAverage": "팀 평균 BWS순위",
+                "unregistered": "등록되지 않음",
+                "bws": "BWS"
             },
-            "stageSelector": {
-                "select": "",
-                "stage": ""
-            }
+            "stageSelector": "스테이지 선택"
         },
         "staff": {
-            "title": "",
-            "notLoggedIn": ""
+            "title": "스태프",
+            "notLoggedIn": "로그인하지 않았습니다"
+        },
+        "referee": {
+            "title": "심판",
+            "loadMore": "LOAD MORE",
+            "back": "매치업 목록으로 돌아가기",
+            "createLobby": "로비 만들기",
+            "roll": "롤 굴리기",
+            "reroll": "다시 굴리기",
+            "settings": "!MP SETTINGS",
+            "timer": "!MP TIMER",
+            "startMap": "!MP START",
+            "abortMap": "!MP ABORT",
+            "closeLobby": "로비 닫기"
         },
         "status": {
-            "loading": ""
+            "loading": "로딩중"
         },
         "mappool": {
-            "title": ""
+            "title": "맵풀"
+        }
+    },
+    "main": {
+        "construction": {
+            "underConstruction": "작업중",
+            "sorry": "불편하게 해 죄송합니다.",
+            "development": "코사스 웹사이트는 아직 초기 개발 단계입니다.",
+            "theTeam": "코사스 팀"
+        },
+        "merch": {
+            "code": "Tap Trio - 코사스 번들",
+            "products": "수량이 한정되어 있습니다"
         }
     }
 }
