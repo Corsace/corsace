@@ -435,8 +435,8 @@
             "createTeam": "CREATE TEAM",
             "invitations": "INVITATIONS",
             "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
-            "teamInvites": "TEAM INVITES",
-            "noInvites": "You currently have no invites"
+            "teamInvites": "UNDANGAN TIM",
+            "noInvites": "Kamu saat ini tidak memiliki undangan"
         },
         "footer": {
             "corsace": "CORSACE",
@@ -462,8 +462,8 @@
         "home": {
             "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
             "timeline": "TIMELINE",
-            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
-            "registrations": "REGISTRATIONS",
+            "presentedBy": "CORSACE OPEN 23 DIPERSEMBAHKAN OLEH",
+            "registrations": "PENDAFTARAN",
             "button": {
                 "qualifiersMappool": "QUALIFIERS MAPPOOLS",
                 "mappoolDownload": "Mappool download and statistics",
@@ -478,7 +478,7 @@
             "matchInfo": {
                 "matchSize": "MATCH SIZE",
                 "minPlayers": "MIN. PLAYERS",
-                "maxPlayers": "MAX. PLAYERS",
+                "maxPlayers": "PEMAIN MAKS.",
                 "pickTimer": "MAP PICK TIMER",
                 "readyTimer": "READY TIMER",
                 "order": "ORDER",
