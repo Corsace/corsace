@@ -84,7 +84,7 @@
             "newMapperAges": "새 매퍼 계정 나이",
             "mapperAges": "매퍼 계정 나이",
             "mapsPerMapperAges": "매퍼 계정 나이 별 맵 개수",
-            "bng": "BNG",
+            "bng": "비트맵 노미네이터",
             "nat": "노미네이션 어세스먼트 팀",
             "uniqueMappers": "전체 매퍼 수",
             "newMappers": "신인 매퍼 수",
@@ -118,7 +118,7 @@
             "welcome": "MCA에 오신것을 환영합니다",
             "voting": "투표",
             "nominating": "추천",
-            "preparation": "preparation",
+            "preparation": "준비",
             "results": "결과",
             "timeline": "일정",
             "mapsetsLabel": "맵셋",
@@ -130,7 +130,7 @@
                 "voting": "투표 기간",
                 "nominating": "추천 기간",
                 "preparation": "준비 기간",
-                "stage": "stage"
+                "stage": "기간"
             },
             "rankedSets": "랭크맵 수",
             "nominateNow": "지금 추천하세요 !",
@@ -353,11 +353,11 @@
             },
             "mostInnovative": {
                 "name": "Most Innovative",
-                "description": "The one who influenced and provided inspiration to others the most."
+                "description": "다른 사람들에게 막대한 영향력을 끼치고 영감을 불어넣어준 유저"
             },
             "communityPillar": {
-                "name": "Community Pillar",
-                "description": "The best user in providing outstanding contribution to the community behind-the-scenes."
+                "name": "커뮤니티의 기둥",
+                "description": "커뮤니티 뒤에서 많은 기여를 하는 최고의 유저"
             },
             "simplisticTaiko": {
                 "name": "심플",
