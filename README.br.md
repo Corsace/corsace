@@ -23,7 +23,7 @@ Duplique `config/default.json` para `config/user/$USER.json`, onde `$USER` é o 
 
 `config.osu.v1.apiKey`
 
-Você pode conseguir a chave API V1 [aqui](https://osu.ppy.sh/p/api/)
+Você pode conseguir a chave Você pode conseguir a chave API V1 [aqui](https://osu.ppy.sh/p/api/)
 
 ```
 config.osu.v2.clientId
@@ -63,8 +63,7 @@ Se você não deseja usar o Docker, precisará instalar o [MariaDB](https://mari
 
 Pode ser tão simples quanto executar:
 ```
-mysql -u root -p
-MySQL> create database <new_db_name>; 
+mysql -u root -p MySQL> create database <new_db_name>; 
 ```
 
 Certifique-se de atualizar `config.database` para refletir sua escolha de nome e credenciais do banco de dados.
