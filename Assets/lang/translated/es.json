@@ -2,8 +2,8 @@
     "language": "Español",
     "flag": "https://osu.ppy.sh/images/flags/ES.png",
     "header": {
-        "welcomeBack": "welcome back",
-        "login": "login",
+        "welcomeBack": "bienvenido",
+        "login": "iniciar sesión",
         "register": "register",
         "changeDiscord": "change discord",
         "logout": "logout"
