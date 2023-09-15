@@ -19,7 +19,7 @@ npm i
 
 Duplicate `config/default.json` to `config/user/$USER.json`, `$USER` being your system username [(accessible via node's process.env.USER or USERNAME)](https://github.com/tusharmath/node-config-ts#using-files). The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
 
-### osu! API
+### osu! osu! API
 
 `config.osu.v1.apiKey`
 
@@ -172,9 +172,9 @@ We use Centrifugo for real-time notifications. You can find the documentation [h
 
 #### Setup
 
-On Unix: Run `npm run centrifugo` to start the centrifugo server. It will be available at `http://localhost:8001` by default, unless you change the port in the config files.
+Afterwards, run `npm run centrifugo:local` to start the centrifugo server. It will be available at `http://localhost:8001` by default, unless you change the port in the config files.
 
-On WSL/Windows OR if the above doesn't work: Install the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and add it to the root folder of this project. Afterwards, run `npm run centrifugo:local` to start the centrifugo server. If you want to change the port, change the `-p` flag in the repective script in `package.json`, and your config file's api URL.
+On Unix: Run `npm run centrifugo` to start the centrifugo server. It will be available at `http://localhost:8001` by default, unless you change the port in the config files.
 
 ## Development
 
