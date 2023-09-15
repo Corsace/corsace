@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="https://github.com/Corsace/Corsace">
     <img src="Assets/img/corsace-docs.svg" alt="Logo" width="80" height="80">
   </a>
 
