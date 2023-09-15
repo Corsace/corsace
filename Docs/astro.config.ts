@@ -41,10 +41,16 @@ export default defineConfig({
     },
     publicDir: "../Assets/static",
     site: config.docs.publicUrl,
+    redirects: {
+        "/": {
+            status: 308,
+            destination: "/en",
+        },
+    },
     integrations: [
         starlight({
             editLink: {
-                baseUrl: "https://github.com/Corsace/Corsace/Docs",
+                baseUrl: "https://github.com/Corsace/Corsace/blob/master/Docs",
             },
             title: "Corsace Documentation",
             social: {
@@ -59,7 +65,9 @@ export default defineConfig({
             locales,
             customCss: [
                 "./src/styles/custom.scss",
+                "./src/fonts/font-face.scss",
             ],
+            lastUpdated: true,
             sidebar: [
                 {
                     label: "Design",
