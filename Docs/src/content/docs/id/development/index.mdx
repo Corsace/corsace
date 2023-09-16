@@ -1,19 +1,19 @@
 ---
-title: Getting Started
-description: Documentation to get started on Corsace development.
+title: Memulai
+description: Dokumentasi untuk memulai pengembangan Corsace.
 lastUpdated: 2023-09-15
 sidebar:
   order: 1
 ---
 
-The following documentation is for setting up a local development environment for Corsace.
-The project uses the following technologies:
+Dokumentasi berikut ditujukan untuk menyiapkan lingkungan pengembangan lokal Corsace.
+Proyek ini menggunakan rangkaian teknologi berikut:
 
--   [Node.js](https://nodejs.org/en/) (v16.6.0 or higher)
--   [TypeScript](https://www.typescriptlang.org/) (v4.9.4 or higher)
--   [Docker](https://www.docker.com/) (v3.8 or higher)
+-   [Node.js](https://nodejs.org/en/) (v16.6.0 atau lebih tinggi)
+-   [TypeScript](https://www.typescriptlang.org/) (v4.9.4 atau lebih tinggi)
+-   [Docker](https://www.docker.com/) (v3.8 atau lebih tinggi)
 
-Main packages:
+Paket utama:
 
 -   [TypeORM](https://typeorm.io/) (v0.3.11)
 -   [Koa](https://koajs.com/) (v2.13.1)
@@ -22,24 +22,24 @@ Main packages:
 -   [Nuxt 2](https://v2.nuxt.com/) (v2.16.3)
 -   [Astro/Starlight](https://starlight.astro.build/) (v0.9.1)
 
-Other packages:
+Paket lainnya:
 
 -   [Centrifugo](https://centrifugal.dev/)
 
-To clone the repository:
+Untuk menggandakan repositori:
 
 | OS        | Cmd                                                                  |
 | --------- | -------------------------------------------------------------------- |
 | WSL/Unix  | `git clone https://github.com/Corsace/Corsace`                       |
 | Windows\* | `git clone -c core.symlinks=true https://github.com/Corsace/Corsace` |
 
-\*Use admin privileges in your console when running the command.
+\*Gunakan hak admin pada konsolmu pada saat menjalankan perintah.
 
-## Installation
+## Instalasi
 
-**Note: Please ensure that your node version is 16.6.0 or higher in order to use any of the discord features in this repository.**
+**Catatan: Pastikan kamu menggunakan node versi 16.6.0 atau lebih tinggi untuk dapat menjalankan berbagai fitur Discord pada repositori ini.**
 
-Install node-modules:
+Instal node-modules:
 
 ```
 npm i
@@ -51,11 +51,11 @@ In a terminal, run `node`, then type `process.env.USER` to find out your usernam
 
 The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
 
-### osu! API
+### API osu!
 
 `config.osu.v1.apiKey`
 
-You can obtain your osu! API V1 key [here](https://osu.ppy.sh/p/api/)
+Kamu dapat memperoleh kunci API osu! V1 kamu [di sini](https://osu.ppy.sh/p/api/).
 
 ```
 config.osu.v2.clientId
@@ -190,7 +190,7 @@ discord: {
 
 ###### OAuth2
 
-Head to the OAuth2 section of the bot and add the following redirect URL:
+Tuju kolom OAuth2 pada bot dan tambahkan URL redirect berikut:
 
 ```
 config.corsace.publicUrl + /api/login/discord/callback
@@ -228,12 +228,12 @@ Set the content type to `application/json`, and the secret to the password you c
 
 ### Centrifugo
 
-We use Centrifugo for real-time notifications. You can find the documentation [here](https://centrifugal.dev/docs/getting-started/introduction).
+Kami menggunakan Centrifugo untuk menampilkan notifikasi secara real-time. Kamu dapat menemukan dokumentasi seputar Centrifugo [di sini](https://centrifugal.dev/docs/getting-started/introduction).
 
-#### Setup
+#### Pengaturan
 
-On Unix:
-Run `npm run centrifugo` to start the centrifugo server. It will be available at `http://localhost:8001` by default, unless you change the port in the config files.
+Pada Unix:
+Jalankan perintah `npm run centrifugo` untuk memulai server Centrifugo. Secara default, server ini akan tersedia pada `http://localhost:8001` selama kamu tidak mengubah nilai port pada berkas konfigurasi.
 
 On WSL/Windows OR if the above doesn't work:
 Install the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and add it to the root folder of this project.
