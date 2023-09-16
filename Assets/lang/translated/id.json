@@ -446,9 +446,9 @@
             "youtube": "YOUTUBE"
         },
         "stages": {
-            "qualifiers": "QUALIFIERS",
+            "qualifiers": "KUALIFIKASI",
             "round robin": "ROUND ROBIN",
-            "runoff bracket": "RUNOFF BRACKET",
+            "runoff bracket": "BRACKET RUNOFF",
             "knockout 1": "KNOCKOUT 1",
             "knockout 2": "KNOCKOUT 2",
             "abbreviations": {
@@ -474,11 +474,11 @@
         "info": {
             "title": "INFORMATION",
             "condensed": "CONDENSED INFO",
-            "error": "Could not find tournament",
+            "error": "Turnamen tidak dapat ditemukan",
             "matchInfo": {
-                "matchSize": "MATCH SIZE",
-                "minPlayers": "MIN. PLAYERS",
-                "maxPlayers": "PEMAIN MAKS.",
+                "matchSize": "FORMAT PERTANDINGAN",
+                "minPlayers": "JML. PEMAIN MINIMAL",
+                "maxPlayers": "JML. PEMAIN MAKSIMAL",
                 "pickTimer": "MAP PICK TIMER",
                 "readyTimer": "READY TIMER",
                 "order": "ORDER",
@@ -501,7 +501,7 @@
             },
             "mappools": {
                 "info": "MAPPOOL INFO",
-                "notAvailable": "INFO NOT AVAILABLE",
+                "notAvailable": "INFO TIDAK TERSEDIA",
                 "mappackDownload": "DOWNLOAD MAP PACK",
                 "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
             },
@@ -549,12 +549,12 @@
                     "worst": "WORST"
                 },
                 "categorySelect": "CATEGORY SELECT",
-                "players": "PLAYERS",
+                "players": "PEMAIN",
                 "teams": "TEAMS"
             },
             "create": "CREATE",
             "error": {
-                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
+                "message": "Kamu tidak dapat membuat/bergabung ke lobi kualifikasi sebelum kamu memiliki {numPlayers} pemain!",
                 "pressToClose": "Press anywhere to close"
             }
         },
