@@ -1,0 +1,148 @@
+---
+title: Directory Structure
+description: Documentation on the Corsace repository's directory structure.
+lastUpdated: 2023-09-15
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import DirectoryItem from '../../../../components/DirectoryItem.astro';
+
+export const labels = [
+    { name: "Frontend/Client", color: "#B3F2B8" },
+    { name: "Backend/Server", color: "#F2B8B3" },
+    { name: "Both/Miscellaneous", color: "#B8B3F2" },
+]
+
+export const folders = [
+    { name: "AYIM             - Frontend/Client", color: "#B3F2B8" },
+    { name: "Assets           - Frontend/Client", color: "#B3F2B8" },
+    { name: "BanchoBot        - Backend/Server", color: "#F2B8B3" },
+    { name: "Closed           - Frontend/Client", color: "#B3F2B8" },
+    { name: "DiscordBot       - Backend/Server", color: "#F2B8B3" },
+    { name: "Docs             - Frontend/Client", color: "#B3F2B8" },
+    { name: "Interfaces       - Both/Miscellaneous", color: "#B8B3F2" },
+    { name: "MCA              - Frontend/Client", color: "#B3F2B8" },
+    { name: "Main             - Frontend/Client", color: "#B3F2B8" },
+    { name: "Models           - Backend/Server", color: "#F2B8B3" },
+    { name: "Open             - Frontend/Client", color: "#B3F2B8" },
+    { name: "Server           - Backend/Server", color: "#F2B8B3" },
+    { name: "Typing           - Both/Miscellaneous", color: "#B8B3F2" },
+    { name: "config           - Both/Miscellaneous", color: "#B8B3F2" },
+    { name: "corsace-chart    - Both/Miscellaneous", color: "#B8B3F2" },
+];
+
+This section will explain the directory structure of the Corsace repository. This is useful for understanding where to find certain files, and where to put new files. It is also useful for understanding how the repository is organised, and how the different parts of the website interact with each other.
+
+This is only a brief overview of the directory structure.\
+For more detailed information, click one of the links in the [Navigation](#navigation) section below.
+
+## Primary Folders
+
+Corsace can be split into three main parts:
+
+*   **Frontend/Client** - The websites and assets the user interacts with. All sites are made with [Nuxt 2](https://v2.nuxt.com/) aside for this documentation site, which is made with [Astro/Starlight](https://starlight.astro.build/).
+*   **Backend/Server** - Programs that run on the server, and are sometimes interacted with by the frontend.
+*   **Both/Miscellaneous** - Files that are used by both the frontend and backend, or files that don't fit into either category.
+
+These three parts are represented by the following folders:
+
+<Tabs>
+  <TabItem label="Colour Coded">
+    The following labels are used to key-note the purpose of each folder:
+
+    <DirectoryItem folders={labels} />
+
+    These are the relevant folders within the repository:
+
+    <DirectoryItem folders={folders} />
+  </TabItem>
+
+  <TabItem label="Raw">
+    These are the relevant folders within the repository:
+
+    ```
+        📁 AYIM             - Frontend/Client
+        📁 Assets           - Frontend/Client
+        📁 BanchoBot        - Backend/Server
+        📁 Closed           - Frontend/Client
+        📁 DiscordBot       - Backend/Server
+        📁 Docs             - Frontend/Client
+        📁 Interfaces       - Both/Miscellaneous
+        📁 MCA              - Frontend/Client
+        📁 Main             - Frontend/Client
+        📁 Models           - Backend/Server
+        📁 Open             - Frontend/Client
+        📁 Server           - Backend/Server
+        📁 Typing           - Both/Miscellaneous
+        📁 config           - Both/Miscellaneous
+        📁 corsace-chart    - Both/Miscellaneous
+    ```
+  </TabItem>
+</Tabs>
+
+## Navigation
+
+Depending on your focus, you may only need to look at a few of these folders. You can find more specific information for each folder below:
+
+*   **[Frontend/Client](#frontendclient)**
+    *   **[AYIM/Closed/MCA/Main/Open](#)** - Made with [Nuxt 2](https://v2.nuxt.com/)
+    *   **[Docs](#)** - Made with [Astro/Starlight](https://starlight.astro.build/)
+    *   **[Assets](#)** - Images/Icons, Fonts, CSS, Components, Translations
+*   [Backend/Server](#backendserver)
+    *   **[BanchoBot](#)** - Made with [Bancho.js](https://bancho.js.org/)
+    *   **[DiscordBot](#)** - Made with [Discord.js](https://discord.js.org/)
+    *   **[Server/CronRunner/Centrifugo](#)** - Made with [Koa](https://koajs.com/)
+    *   **[Models](#)** - Made with [TypeORM](https://typeorm.io/)
+*   [Both/Miscellaneous](#bothmiscellaneous)
+    *   **[Interfaces](#)** - Typing files for communication between Nuxt and Koa
+    *   **[Typing](#)** - Files containing custom type augments for npm libraries
+    *   **[config](#)** - Configuration files for every instance
+    *   **[corsace-chart](#)** - Files for helm chart for Kubernetes
+
+## Frontend/Client
+
+These folders are used for the frontend of the website, which is what the user sees and interacts with.
+
+The following folders are website-specific:
+
+*   **📁 AYIM** - https://ayim.corsace.io
+*   **📁 Closed** - https://closed.corsace.io (Currently does not exist)
+*   **📁 Docs** - https://docs.corsace.io
+*   **📁 MCA** - https://mca.corsace.io
+*   **📁 Main** - https://corsace.io
+*   **📁 Open** - https://open.corsace.io
+
+The remaining folder (**📁 Assets**) is used for storing the following assets for all of the above websites:
+
+*   Images/Icons
+*   Fonts
+*   CSS
+*   Components
+*   Translations
+
+## Backend/Server
+
+These folders are used for the backend of the website, which either consist of the server that the websites communicate with, or node instances to interact with other services such as Discord, osu!, e.t.c.
+
+The following folders consist of the following services:
+
+*   **📁 BanchoBot** - An osu! IRC bot
+*   **📁 DiscordBot** - A Discord bot
+*   **📁 Server**
+    *   **Server** - A node instance that runs the main server for the websites
+    *   **CronRunner** - A node instance that runs cron jobs created by different server instances
+*   **Centrifugo** - A node instance that runs a Centrifugo server
+    *   This doesn't have a folder, as it is a single file run via npm commands (see [Development/Getting Started#Centrifugo](/en/development/#centrifugo) for more information)
+
+The remaining folder (**📁 Models**) is used for storing the database models for the server.
+
+## Both/Miscellaneous
+
+These folders have their own unique uses that don't fit into either of the above categories:
+
+*   **📁 Interfaces** - Typing files for communication between Nuxt and Koa
+*   **📁 Typing** - Custom type augments for various npm libraries used
+*   **📁 config** - Configuration files for every instance
+*   **📁 corsace-chart** - Files for helm chart for Kubernetes
