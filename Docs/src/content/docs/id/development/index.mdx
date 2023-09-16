@@ -45,11 +45,11 @@ Instal node-modules:
 npm i
 ```
 
-Duplicate `config/default.json` to `config/user/$USER.json`, `$USER` being your system username [(accessible via node's `process.env.USER` or `USERNAME`)](https://github.com/tusharmath/node-config-ts#using-files).
+Gandakan `config/default.json` ke `config/user/$USER.json`, dengan `$USER` merupakan nama pengguna sistem [(yang dapat kamu akses melalui `process.env.USER` atau `USERNAME` milik node)](https://github.com/tusharmath/node-config-ts#using-files).
 
-In a terminal, run `node`, then type `process.env.USER` to find out your username.
+Pada terminal, jalankan `node` dan ketik `process.env.USER` untuk mencari tahu nama penggunamu.
 
-The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
+Ke depannya, dokumentasi ini akan merujuk pada nilai `config/user/$USER.json` personal pada berkas config milikmu dengan istilah `config`.
 
 ### API osu!
 
@@ -172,13 +172,13 @@ config.discord.roles.corsace.staff
 
 and then into every other "staff" role in the config.
 
-##### Discord Application
+##### Aplikasi Discord
 
-Go to https://discord.com/developers/applications and create a "New Application".
+Tuju https://discord.com/developers/applications dan buat aplikasi baru melalui menu "New Application".
 
-###### Client
+###### Klien
 
-You will need to add the "Client ID" and "Client Secret" to the config as follows:
+Kamu akan perlu untuk menambahkan "Client ID" dan "Client Secret" kepada config sebagai berikut:
 
 ```
 discord: {
