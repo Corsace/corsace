@@ -153,15 +153,15 @@ User Settings > Appearance > Advanced > Developer Mode
 
 This will allow you to right click users, roles, channels, etc to copy their IDs.
 
-##### A Discord Server
+##### Server Discord
 
-Create a new Discord Server if you don't have one already. All it needs to have is a single channel.
-Create a "staff" role and give it to yourself.
+Buat server Discord baru apabila kamu belum memiliki server. Proses ini hanya akan memerlukan satu channel.
+Buat role "staff" dan berikan role ini kepada dirimu sendiri.
 
-Right-click your server name and "Copy ID". Paste this into `config.discord.guild`.
+Klik kanan nama servermu dan pilih "Copy ID". Salin ID ini ke `config.discord.guild`.
 
-Right-click your staff role and "Copy ID". You can either create a role for each corresponding role in the config, OR 
-paste that role ID into the following config values to give yourself god-tier permissions.
+Klik kanan role staff-mu dan klik "Copy ID". Kamu dapat membuat role untuk berbagai kebutuhan pada config, ATAU 
+kamu juga dapat menyalin ID role ini pada baris config berikut untuk memberikanmu kuasa penuh akan segala sesuatunya.
 
 ```
 config.discord.roles.corsace.corsace
@@ -170,7 +170,7 @@ config.discord.roles.corsace.headStaff
 config.discord.roles.corsace.staff
 ```
 
-and then into every other "staff" role in the config.
+yang dilanjutkan dengan menyalin ID kamu pada seluruh role "staff" lainnya pada config.
 
 ##### Aplikasi Discord
 
@@ -190,41 +190,41 @@ discord: {
 
 ###### OAuth2
 
-Tuju kolom OAuth2 pada bot dan tambahkan URL redirect berikut:
+Tuju bagian OAuth2 pada bot dan tambahkan URL redirect berikut:
 
 ```
 config.corsace.publicUrl + /api/login/discord/callback
 ```
 
-Also add a redirect URL with your bot's specific Client ID that looks like:
+Tambahkan juga URL redirect yang menyertakan Client ID spesifik milik bot-mu dengan format sebagai berikut:
 
 ```
 https://discordapp.com/oauth2/authorize?&client_id=<CLIENT ID>&scope=bot&permissions=8
 ```
 
-Follow this link to add your bot to your server.
+Ikuti tautan ini untuk menambahkan bot milikmu ke dalam server.
 
 ###### Bot
 
-Head to the Bot section of the bot and copy your bot token. 
-Paste it into `config.discord.token`
+Tuju bagian Bot dan salin token bot milikmu. 
+Sisipkan token tersebut pada `config.discord.token`.
 
-Ensure you enable the `Server Members` and `Message Content` intents under the **Privileged Gateway Intents** subsection before usage, the bot will not start otherwise, and you will be provided a `[DISALLOWED INTENTS]` error.
+Pastikan kamu telah mencentang `Server Members` dan `Message Content` pada daftar pilihan yang tersedia pada menu **Privileged Gateway Intents** sebelum memulai bot. Apabila tidak, bot kamu tidak akan berjalan dan kamu akan dihadapkan dengan pesan error `[DISALLOWED INTENTS]`.
 
-###### GitHub Webhook
+###### Webhook GitHub
 
-Completely optional, and only if you really want to track your GitHub fork's events on discord and want to utilize Corsace's Github Webhook.
+Langkah ini sepenuhnya opsional, dan hanya akan berguna apabila kamu benar-benar ingin melacak rekam jejak aktivitas fork GitHub milikmu di Discord dan memanfaatkan webhook GitHub milik Corsace.
 
 In the discord channel you want to obtain GitHub notifications from, create a webhook from `settings -> Integrations -> Create Webhook`, copy its Webhook URL, and place it into your config in `config.github.webhookUrl`.
 Create a password and place it in `config.github.webhookSecret`.
 
-On GitHub, go to the repository's settings, and create a new webhook. Place the following URL in:
+Pada Github, tuju pengaturan repositori dan buat webhook baru. Tulis URL berikut pada kolom yang tersedia:
 
 ```
 config.corsace.publicUrl + /api/github
 ```
 
-Set the content type to `application/json`, and the secret to the password you created earlier.
+Tentukan tipe konten ke `application/json` beserta dengan secret webhook milik kata sandi yang kamu buat sebelumnya.
 
 ### Centrifugo
 
@@ -235,6 +235,6 @@ Kami menggunakan Centrifugo untuk menampilkan notifikasi secara real-time. Kamu 
 Pada Unix:
 Jalankan perintah `npm run centrifugo` untuk memulai server Centrifugo. Secara default, server ini akan tersedia pada `http://localhost:8001` selama kamu tidak mengubah nilai port pada berkas konfigurasi.
 
-On WSL/Windows OR if the above doesn't work:
-Install the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and add it to the root folder of this project.
-Afterwards, run `npm run centrifugo:local` to start the centrifugo server. If you want to change the port, change the `-p` flag in the repective script in `package.json`, and your config file's api URL.
+Pada WSL/Windows ATAU apabila metode di atas tidak bekerja:
+Instal berkas biner (.exe) dari [daftar rilisan terbaru](https://github.com/centrifugal/centrifugo/releases) dan tambahkan ke folder root proyek ini.
+Setelahnya, jalankan perintah `npm run centrifugo:local` untuk memulai server Centrifugo. Apabila kamu ingin mengubah nomor port yang digunakan, ubah nilai parameter '-p' pada script yang terkait di berkas `package.json` dan URL API config milikmu.
