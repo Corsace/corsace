@@ -10,7 +10,7 @@
     },
     "mca_ayim": {
         "banner": {
-            "merch": "OFFICIAL MERCHANDISE STORE",
+            "merch": "ОФИЦИАЛЬНЫЙ МАГАЗИН",
             "corsace": "MAIN EVENT HUB"
         },
         "header": {
@@ -18,8 +18,8 @@
             "ayim": "A YEAR <br> IN <br> MAPPING",
             "login": "ВОЙТИ",
             "welcomeBack": "добро пожаловать",
-            "admin": "ADMIN",
-            "staff": "STAFF",
+            "admin": "АДМИНИСТРАТОР",
+            "staff": "ОРГАНИЗАТОРЫ",
             "logout": "ВЫЙТИ"
         },
         "login": {
