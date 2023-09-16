@@ -60,6 +60,10 @@ export default defineConfig({
                 twitter: "https://twitter.com/corsace_",
                 youtube: "https://youtube.com/corsace",
             },
+            tableOfContents: {
+                minHeadingLevel: 1,
+                maxHeadingLevel: 5,
+            },
             favicon: "/favicon.ico",
             defaultLocale: "en",
             locales,

@@ -1,32 +1,49 @@
 ---
 title: Getting Started
 description: Documentation to get started on Corsace development.
-lastUpdated: 2023-09-10
-sidebar: 
+lastUpdated: 2023-09-15
+sidebar:
     order: 1
 ---
+The following documentation is for setting up a local development environment for Corsace.
+The project uses the following technologies:
+- [Node.js](https://nodejs.org/en/) (v16.6.0 or higher)
+- [TypeScript](https://www.typescriptlang.org/) (v4.9.4 or higher)
+- [Docker](https://www.docker.com/) (v3.8 or higher)
 
-[![Crowdin](https://badges.crowdin.net/corsace/localized.svg)](https://translate.corsace.io)
-If you wish to translate, you can do so [here](https://translate.corsace.io)
+Main packages:
+- [TypeORM](https://typeorm.io/) (v0.3.11)
+- [Koa](https://koajs.com/) (v2.13.1)
+- [Discord.js](https://discord.js.org/) (v14.9.0)
+- [Bancho.js](https://bancho.js.org/) (v0.11.3)
+- [Nuxt 2](https://v2.nuxt.com/) (v2.16.3)
+- [Astro/Starlight](https://starlight.astro.build/) (v0.9.1)
+
+Other packages:
+- [Centrifugo](https://centrifugal.dev/)
+
 
 To clone the repository:
 
 |OS| Cmd |
 |--|--|
-| WSL/Unix | git clone https://github.com/Corsace/Corsace |
-| Windows* | git clone -c core.symlinks=true https://github.com/Corsace/Corsace
+| WSL/Unix | `git clone https://github.com/Corsace/Corsace` |
+| Windows* | `git clone -c core.symlinks=true https://github.com/Corsace/Corsace`
 
 *Use admin privileges in your console when running the command.
 
-## Initial Setup
+## Installation
+**Note: Please ensure that your node version is 16.6.0 or higher in order to use any of the discord features in this repository.**
 
 Install node-modules:
 ```
 npm i
 ```
-**Note: Please ensure that your node version is 16.6.0 or higher in order to use any of the discord features in this repository.**
 
-Duplicate `config/default.json` to `config/user/$USER.json`, `$USER` being your system username [(accessible via node's process.env.USER or USERNAME)](https://github.com/tusharmath/node-config-ts#using-files).
+Duplicate `config/default.json` to `config/user/$USER.json`, `$USER` being your system username [(accessible via node's `process.env.USER` or `USERNAME`)](https://github.com/tusharmath/node-config-ts#using-files).
+
+In a terminal, run `node`, then type `process.env.USER` to find out your username.
+
 The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
 
 ### osu! API
@@ -42,10 +59,11 @@ config.osu.v2.clientSecret
 
 You will need to create a "New OAuth Application" at the bottom of https://osu.ppy.sh/home/account/edit.
 
-The callback URL should be set to:
-```
-config.corsace.publicUrl + /api/login/osu/callback
-```
+Add `config.corsace.publicUrl + /api/login/osu/callback` to the `Application Callback URLs` section in the popup.
+
+For example, if your `config.corsace.publicUrl` is `http://localhost:5000`, then the callback URL should be `http://localhost:5000/api/login/osu/callback`.
+
+Afterwards, you will be given a `Client ID` and `Client Secret` which you will need to add to your config to the respective fields.
 
 ```
 config.osu.bancho
@@ -81,7 +99,7 @@ Make sure to update `config.database` to reflect your choice of database name an
 
 #### Seeding the database
 
-Create and seed the whole Corsace database using: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
+Seed the whole Corsace database using: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
 
 ### Object Storage/S3
 
@@ -193,10 +211,3 @@ Run `npm run centrifugo` to start the centrifugo server. It will be available at
 On WSL/Windows OR if the above doesn't work:
 Install the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and add it to the root folder of this project.
 Afterwards, run `npm run centrifugo:local` to start the centrifugo server. If you want to change the port, change the `-p` flag in the repective script in `package.json`, and your config file's api URL.
-
-## Development
-
-Run `npm run dev`, if you only want to run one of the projects, refer to the scripts in `package.json`.
-To run the project without the api, use `npm run dev-client`.
-
-For more specific instructions on developing/contributing to some of these projects, refer to the documentation [here](https://docs.corsace.io/development/)
