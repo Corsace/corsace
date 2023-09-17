@@ -467,7 +467,7 @@
             "button": {
                 "qualifiersMappool": "ОТБОРОЧНЫЙ МАППУЛ",
                 "mappoolDownload": "Скачать маппул и статистика",
-                "register": "CREATE AND REGISTER YOUR TEAM",
+                "register": "СОЗДАТЬ И ЗАРЕГИСТРИРОВАТЬ КОМАНДУ",
                 "registrationsEnd": "Регистрация заканчивается"
             }
         },
@@ -514,7 +514,7 @@
             "tournamentStructure": "ПОРЯДОК ПРОВЕДЕНИЯ ТУРНИРА",
             "infoGraphic": "ИНФОГРАФИКА",
             "matchProcedures": "ПОРЯДОК ПРОВЕДЕНИЯ МАТЧА",
-            "reportTournament": "REPORT TOURNAMENTS HERE",
+            "reportTournament": "СООБЩИТЬ О НАРУШЕНИЯХ В ТУРНИРЕ",
             "subjectToChange": "правила могут быть изменены для уточнения и/или корректировки"
         },
         "qualifiers": {
@@ -548,13 +548,13 @@
                     "best": "ЛУЧШИЙ",
                     "worst": "ХУДШИЙ"
                 },
-                "categorySelect": "CATEGORY SELECT",
+                "categorySelect": "ВЫБОР КАТЕГОРИИ",
                 "players": "ИГРОКИ",
                 "teams": "КОМАНДЫ"
             },
             "create": "СОЗДАТЬ",
             "error": {
-                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
+                "message": "Вы не можете создать/присоединиться к отборочному матчу, пока у вас не будет {numPlayers} игрока(ов)!",
                 "pressToClose": "Нажмите в любом месте, чтобы закрыть"
             }
         },
@@ -563,7 +563,7 @@
             "error": "НЕ УДАЛОСЬ НАЙТИ СПИСОК КОМАНД",
             "searchPlaceholder": "искать пользователя/команду",
             "editTeamInfo": "изменить информацию о команде",
-            "qualifierId": "Qualifier ID",
+            "qualifierId": "ID Отборочного Матча",
             "placeholders": {
                 "searchUser": "ник в osu! (требуется аккаунт corsace)",
                 "name": "название",
@@ -587,10 +587,10 @@
                     "deleteTeam": "Вы уверены, что хотите удалить эту команду?",
                     "deleteTeamFinal": "Вы ДЕЙСТВИТЕЛЬНО уверены, что хотите удалить эту команду? Это не может быть отменено!",
                     "removeMember": "Вы уверены, что хотите убрать {username} из вашей команды?",
-                    "transferManager": "Are you sure you want to transfer manager to {username}?",
+                    "transferManager": "Вы уверены, что хотите передать роль менеджера {username}?",
                     "invite": "Вы уверены, что хотите пригласить {username} в вашу команду?",
                     "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
-                    "unregister": "Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."
+                    "unregister": "Вы уверены, что хотите отменить регистрацию в этом турнире? Вы сможете зарегистрироваться заново в любое время, если у вас будет 6 членов."
                 },
                 "save": "СОХРАНИТЬ",
                 "deleteTeam": "УДАЛИТЬ КОМАНДУ"
@@ -607,21 +607,21 @@
                 "teamInvites": "TEAM INVITES",
                 "editTeamInvites": "edit team invites",
                 "closeTeamInvites": "close team invites edit",
-                "qualifier": "QUALIFIER",
+                "qualifier": "ОТБОРОЧНЫЙ",
                 "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
                 "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
             },
             "registration": {
-                "noRegistration": "Registered in no tournaments",
+                "noRegistration": "Не зарегистрирован ни в одном турнире",
                 "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
             },
             "teamID": "ID КОМАНДЫ",
             "member": "член",
             "members": "члены",
-            "averageBWS": "Average BWS",
-            "averageRank": "Average Rank",
-            "averagePP": "Average PP",
-            "editQualifierTime": "edit qualifier time",
+            "averageBWS": "Среднее BWS",
+            "averageRank": "Средний Ранк",
+            "averagePP": "Средние PP",
+            "editQualifierTime": "изменить время отборочного матча",
             "deleteTeam": "delete qualifier/unregister team",
             "createJoinQualifier": "create/join qualifier",
             "notRegistered": "Currently not registered in Corsace Open."
@@ -660,14 +660,14 @@
                 "unregistered": "UNREGISTERED",
                 "bws": "BWS"
             },
-            "stageSelector": "STAGE SELECT"
+            "stageSelector": "ВЫБОР ЭТАПА"
         },
         "staff": {
             "title": "ОРГАНИЗАТОРЫ",
             "notLoggedIn": "NOT LOGGED IN"
         },
         "referee": {
-            "title": "REFEREE",
+            "title": "СУДЬЯ",
             "loadMore": "ЗАГРУЗИТЬ ЕЩЕ",
             "back": "BACK TO MATCHUP LIST",
             "createLobby": "СОЗДАТЬ ЛОББИ",
