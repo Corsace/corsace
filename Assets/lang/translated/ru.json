@@ -60,7 +60,7 @@
             "totalDiff": "СУММА СЛОЖНОСТЕЙ",
             "submitDates": "SUBMIT DATES",
             "starRatings": "STAR RATINGS",
-            "approachRate": "СКОРОСТЬ ПОЯВЛЕНИЯ НОТ (AR)",
+            "approachRate": "СКОРОСТЬ ПОЯВЛЕНИЯ НОТ (АР)",
             "overallDifficulty": "ОБЩАЯ СЛОЖНОСТЬ (ОД)",
             "hpDrain": "УТЕЧКА ХП",
             "circleSize": "РАЗМЕР КРУЖКОВ",
@@ -635,20 +635,20 @@
             "teamAcronym": "АББРЕВИАТУРА КОМАНДЫ",
             "acronymLength": "2 - 4 characters. Profanity will be checked.",
             "teamTimezone": "ЧАСОВОЙ ПОЯС КОМАНДЫ",
-            "timezoneText": "We will assume your team can play between <span class='bold'>10:00 to 22:00</span> in the selected timezone.",
+            "timezoneText": "Мы будем считать, что ваша команда сможет играть с <span class='bold'>10:00 до 22:00</span> в выбранном часовом поясе.",
             "teamAvatar": "АВАТАРКА КОМАНДЫ",
             "upload": "ВЫГРУЗИТЬ",
-            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
-            "fileSizeError": "file size too big! please upload a smaller image",
+            "fileSizeLimit": "максимальный размер 5мб. поддерживаемые типы файлов: .jpg .png",
+            "fileSizeError": "размер файла слишком большой! пожалуйста, загрузите изображение меньшего размера",
             "fileTypeError": "неверный тип файла! пожалуйста, загрузите .jpg или .png",
-            "preview": "ПРЕВЬЮ",
-            "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
-            "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
-            "avatarInfo3": "All names and avatars will be approved by staff.",
+            "preview": "ПРЕДПРОСМОТР",
+            "avatarInfo1": "Для аватарки рекомендуется использовать изображение с <span>соотношением сторон 3:1</span>.",
+            "avatarInfo2": "Капитаны могут изменять названия команд и аватарки до окончания регистрации.",
+            "avatarInfo3": "Все названия и аватарки будут проверены организаторами.",
             "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
             "teamManagement": "УПРАВЛЕНИЕ КОМАНДОЙ",
-            "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
-            "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
+            "teamManagers": "<div><span>Менеджеры</span> команды (т. е. вы) имеют возможность играть и быть капитаном одновременно</div> <div><span>ИЛИ</span> не играть с командой, а просто быть капитаном.</div>",
+            "teamManagersFree": "Если вы не хотите играть и выступаете только в роли менеджера, вы <span>не</span> занимаете слот игрока.",
             "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
             "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
             "create": "СОЗДАТЬ КОМАНДУ"
@@ -663,7 +663,7 @@
             "stageSelector": "STAGE SELECT"
         },
         "staff": {
-            "title": "STAFF",
+            "title": "ОРГАНИЗАТОРЫ",
             "notLoggedIn": "NOT LOGGED IN"
         },
         "referee": {
@@ -694,7 +694,7 @@
             "theTeam": "команда corsace"
         },
         "merch": {
-            "code": "Tap Trio - Corsace Bundle",
+            "code": "Tap Trio - набор Corsace",
             "products": "Доступно в ограниченном количестве"
         }
     }
