@@ -2,16 +2,16 @@
     "language": "简体中文",
     "flag": "https://osu.ppy.sh/images/flags/CN.png",
     "header": {
-        "welcomeBack": "welcome back",
-        "login": "login",
-        "register": "register",
-        "changeDiscord": "change discord",
-        "logout": "logout"
+        "welcomeBack": "欢迎回来",
+        "login": "登录",
+        "register": "注册",
+        "changeDiscord": "修改 Discord",
+        "logout": "退出登录"
     },
     "mca_ayim": {
         "banner": {
-            "merch": "OFFICIAL MERCHANDISE STORE",
-            "corsace": "MAIN EVENT HUB"
+            "merch": "官方周边商店",
+            "corsace": "活动中心"
         },
         "header": {
             "mca": "谱师之选奖 <br> (MCA)",
@@ -113,9 +113,9 @@
     },
     "mca": {
         "main": {
-            "banner": "LET'S LOOK BACK <br> AT",
-            "click": "CLICK HERE TO ENTER",
-            "welcome": "WELCOME TO MCA",
+            "banner": "让我们一起 <br> 回顾",
+            "click": "点击加入",
+            "welcome": "欢迎来到 MCA",
             "voting": "投票",
             "nominating": "提名",
             "preparation": "准备",
