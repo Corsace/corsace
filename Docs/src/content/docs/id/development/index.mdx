@@ -1,19 +1,47 @@
 ---
 title: Memulai
 description: Dokumentasi untuk memulai pengembangan Corsace.
-lastUpdated: 2023-09-15
+lastUpdated: 2023-09-16
 sidebar:
   order: 1
 ---
 
-Dokumentasi berikut ditujukan untuk menyiapkan lingkungan pengembangan lokal Corsace.
-Proyek ini menggunakan rangkaian teknologi berikut:
+import { Card, LinkCard } from '@astrojs/starlight/components';
 
--   [Node.js](https://nodejs.org/en/) (v16.6.0 atau lebih tinggi)
--   [TypeScript](https://www.typescriptlang.org/) (v4.9.4 atau lebih tinggi)
--   [Docker](https://www.docker.com/) (v3.8 atau lebih tinggi)
+The following documentation is for setting up a local development environment for Corsace.
 
-Paket utama:
+<Card title="Warning" icon="warning">
+    We HIGHLY recommend installing a code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [NotePad++](https://notepad-plus-plus.org/) to work on this project.
+</Card>
+
+To clone the repository, run the following command in your terminal/console:
+
+| OS        | Cmd                                                                  |
+| --------- | -------------------------------------------------------------------- |
+| WSL/Unix  | `git clone https://github.com/Corsace/Corsace`                       |
+| Windows\* | `git clone -c core.symlinks=true https://github.com/Corsace/Corsace` |
+
+\*Use admin privileges in your console when running the command.
+
+## Installation
+
+**Note: Please ensure that your node version is 16.6.0 or higher in order to use any of the discord features in this repository.**
+
+Install node-modules:
+
+```bash
+npm i
+```
+
+### Packages
+
+For the curious, the project primarily uses the following technologies and versions that are installed by the above command:
+
+-   [Node.js](https://nodejs.org/en/) (v16.6.0 or higher)
+-   [TypeScript](https://www.typescriptlang.org/) (v4.9.4 or higher)
+-   [Docker](https://www.docker.com/) (v3.8 or higher)
+
+Main packages:
 
 -   [TypeORM](https://typeorm.io/) (v0.3.11)
 -   [Koa](https://koajs.com/) (v2.13.1)
@@ -22,40 +50,29 @@ Paket utama:
 -   [Nuxt 2](https://v2.nuxt.com/) (v2.16.3)
 -   [Astro/Starlight](https://starlight.astro.build/) (v0.10.0)
 
-Paket lainnya:
+Other packages:
 
 -   [Centrifugo](https://centrifugal.dev/)
 
-Untuk menggandakan repositori:
+### Initial Configuration
 
-| OS        | Cmd                                                                  |
-| --------- | -------------------------------------------------------------------- |
-| WSL/Unix  | `git clone https://github.com/Corsace/Corsace`                       |
-| Windows\* | `git clone -c core.symlinks=true https://github.com/Corsace/Corsace` |
+Duplicate `config/default.json` to `config/user/$USER.json`, `$USER` being your system username [(accessible via node's `process.env.USER` or `USERNAME`)](https://github.com/tusharmath/node-config-ts#using-files).
 
-\*Gunakan hak admin pada konsolmu pada saat menjalankan perintah.
+In a terminal, run `node`, then type `process.env.USER` to find out your username.
 
-## Instalasi
+The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
 
-**Catatan: Pastikan kamu menggunakan node versi 16.6.0 atau lebih tinggi untuk dapat menjalankan berbagai fitur Discord pada repositori ini.**
+<LinkCard 
+    title="STOP HERE FOR DOCS DEV SETUP"
+    description="If you wish to work on documentation, you may stop here and continue at the client guides section."
+    href="client/guide/docs-running-environment"
+/>
 
-Instal node-modules:
-
-```
-npm i
-```
-
-Gandakan `config/default.json` ke `config/user/$USER.json`, dengan `$USER` merupakan nama pengguna sistem [(yang dapat kamu akses melalui `process.env.USER` atau `USERNAME` milik node)](https://github.com/tusharmath/node-config-ts#using-files).
-
-Pada terminal, jalankan `node` dan ketik `process.env.USER` untuk mencari tahu nama penggunamu.
-
-Ke depannya, dokumentasi ini akan merujuk pada nilai `config/user/$USER.json` personal pada berkas config milikmu dengan istilah `config`.
-
-### API osu!
+### osu! API
 
 `config.osu.v1.apiKey`
 
-Kamu dapat memperoleh kunci API osu! V1 kamu [di sini](https://osu.ppy.sh/p/api/).
+You can obtain your osu! API V1 key [here](https://osu.ppy.sh/p/api/)
 
 ```
 config.osu.v2.clientId
@@ -98,14 +115,14 @@ If you do not want to use Docker, you will need to install [MariaDB](https://mar
 
 It can be as simple as running:
 
-```
+```bash
 mysql -u root -p
 MySQL> create database <new_db_name>; 
 ```
 
 Make sure to update `config.database` to reflect your choice of database name and credentials.
 
-#### Seeding the database
+#### Seeding the Database
 
 Seed the whole Corsace database using: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
 
@@ -143,25 +160,25 @@ Set hostname to `<cloudflare account id>.r2.cloudflarestorage.com`, and obtain S
 This is the most time-consuming part of the setup. 
 You will need the following:
 
-##### Aktifkan Developer Mode
+##### Enable Developer Mode
 
-Centang opsi yang terdapat pada 
+Check the option at 
 
 ```
 User Settings > Appearance > Advanced > Developer Mode
 ```
 
-Opsi ini akan memungkinkan kamu untuk mengklik kanan ID pengguna, role, channel, dan lain sebagainya dan menyalin ID mereka.
+This will allow you to right click users, roles, channels, etc to copy their IDs.
 
-##### Server Discord
+##### A Discord Server
 
-Buat server Discord baru apabila kamu belum memiliki server. Proses ini hanya akan memerlukan satu channel.
-Buat role "staff" dan berikan role ini kepada dirimu sendiri.
+Create a new Discord Server if you don't have one already. All it needs to have is a single channel.
+Create a "staff" role and give it to yourself.
 
-Klik kanan nama servermu dan pilih "Copy ID". Salin ID ini ke `config.discord.guild`.
+Right-click your server name and "Copy ID". Paste this into `config.discord.guild`.
 
-Klik kanan role staff-mu dan klik "Copy ID". Kamu dapat membuat role untuk berbagai kebutuhan pada config, ATAU 
-kamu juga dapat menyalin ID role ini pada baris config berikut untuk memberikanmu kuasa penuh akan segala sesuatunya.
+Right-click your staff role and "Copy ID". You can either create a role for each corresponding role in the config, OR 
+paste that role ID into the following config values to give yourself god-tier permissions.
 
 ```
 config.discord.roles.corsace.corsace
@@ -170,17 +187,17 @@ config.discord.roles.corsace.headStaff
 config.discord.roles.corsace.staff
 ```
 
-yang dilanjutkan dengan menyalin ID kamu pada seluruh role "staff" lainnya pada config.
+and then into every other "staff" role in the config.
 
-##### Aplikasi Discord
+##### Discord Application
 
-Tuju https://discord.com/developers/applications dan buat aplikasi baru melalui menu "New Application".
+Go to https://discord.com/developers/applications and create a "New Application".
 
-###### Klien
+###### Client
 
-Kamu akan perlu untuk menambahkan "Client ID" dan "Client Secret" kepada config sebagai berikut:
+You will need to add the "Client ID" and "Client Secret" to the config as follows:
 
-```
+```json
 discord: {
     ...,
     clientId: "<Client ID>",
@@ -190,51 +207,51 @@ discord: {
 
 ###### OAuth2
 
-Tuju bagian OAuth2 pada bot dan tambahkan URL redirect berikut:
+Head to the OAuth2 section of the bot and add the following redirect URL:
 
 ```
 config.corsace.publicUrl + /api/login/discord/callback
 ```
 
-Tambahkan juga URL redirect yang menyertakan Client ID spesifik milik bot-mu dengan format sebagai berikut:
+Also add a redirect URL with your bot's specific Client ID that looks like:
 
 ```
 https://discordapp.com/oauth2/authorize?&client_id=<CLIENT ID>&scope=bot&permissions=8
 ```
 
-Ikuti tautan ini untuk menambahkan bot milikmu ke dalam server.
+Follow this link to add your bot to your server.
 
 ###### Bot
 
-Tuju bagian Bot dan salin token bot milikmu. 
-Sisipkan token tersebut pada `config.discord.token`.
+Head to the Bot section of the bot and copy your bot token. 
+Paste it into `config.discord.token`
 
-Pastikan kamu telah mencentang `Server Members` dan `Message Content` pada daftar pilihan yang tersedia pada menu **Privileged Gateway Intents** sebelum memulai bot. Apabila tidak, bot kamu tidak akan berjalan dan kamu akan dihadapkan dengan pesan error `[DISALLOWED INTENTS]`.
+Ensure you enable the `Server Members` and `Message Content` intents under the **Privileged Gateway Intents** subsection before usage, the bot will not start otherwise, and you will be provided a `[DISALLOWED INTENTS]` error.
 
-###### Webhook GitHub
+###### GitHub Webhook
 
-Langkah ini sepenuhnya opsional, dan hanya akan berguna apabila kamu benar-benar ingin melacak rekam jejak aktivitas fork GitHub milikmu di Discord dan memanfaatkan webhook GitHub milik Corsace.
+Completely optional, and only if you really want to track your GitHub fork's events on discord and want to utilize Corsace's Github Webhook.
 
-Pada channel Discord yang ingin kamu gunakan sebagai tempat untuk menerima notifikasi, buat webhook baru melalui `Settings -> Integrations -> Create Webhook`, salin URL webhook tersebut, dan sisipkan pada `config.github.webhookUrl` di configmu.
-Buat kata sandi dan tempatkan kata sandi ini pada `config.github.webhookSecret`.
+In the discord channel you want to obtain GitHub notifications from, create a webhook from `settings -> Integrations -> Create Webhook`, copy its Webhook URL, and place it into your config in `config.github.webhookUrl`.
+Create a password and place it in `config.github.webhookSecret`.
 
-Pada Github, tuju pengaturan repositori dan buat webhook baru. Tulis URL berikut pada kolom yang tersedia:
+On GitHub, go to the repository's settings, and create a new webhook. Place the following URL in:
 
 ```
 config.corsace.publicUrl + /api/github
 ```
 
-Tentukan tipe konten ke `application/json` beserta dengan secret webhook milik kata sandi yang kamu buat sebelumnya.
+Set the content type to `application/json`, and the secret to the password you created earlier.
 
 ### Centrifugo
 
-Kami menggunakan Centrifugo untuk menampilkan notifikasi secara real-time. Kamu dapat menemukan dokumentasi seputar Centrifugo [di sini](https://centrifugal.dev/docs/getting-started/introduction).
+We use Centrifugo for real-time notifications. You can find the documentation [here](https://centrifugal.dev/docs/getting-started/introduction).
 
-#### Pengaturan
+#### Setup
 
-Pada Unix:
-Jalankan perintah `npm run centrifugo` untuk memulai server Centrifugo. Secara default, server ini akan tersedia pada `http://localhost:8001` selama kamu tidak mengubah nilai port pada berkas konfigurasi.
+On Unix:
+Run `npm run centrifugo` to start the centrifugo server. It will be available at `http://localhost:8001` by default, unless you change the port in the config files.
 
-Pada WSL/Windows ATAU apabila metode di atas tidak bekerja:
-Instal berkas biner (.exe) dari [daftar rilisan terbaru](https://github.com/centrifugal/centrifugo/releases) dan tambahkan ke folder root proyek ini.
-Setelahnya, jalankan perintah `npm run centrifugo:local` untuk memulai server Centrifugo. Apabila kamu ingin mengubah nomor port yang digunakan, ubah nilai parameter '-p' pada script yang terkait di berkas `package.json` dan URL API config milikmu.
+On WSL/Windows OR if the above doesn't work:
+Install the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and add it to the root folder of this project.
+Afterwards, run `npm run centrifugo:local` to start the centrifugo server. If you want to change the port, change the `-p` flag in the respective script in `package.json`, and your config file's api URL.
