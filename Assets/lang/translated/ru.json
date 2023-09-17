@@ -26,7 +26,7 @@
             "login": "войти",
             "message": {
                 "1": "Похоже, вы не вошли в систему!<br> Просто войдите через osu! и вы сможете сразу же начать голосовать и номинировать!",
-                "2": "Вы также сможете войти потом с помощью Discord, он <b>не требуется</b> для голосования/номинирования. <br>Вход в Discord<b> необходим</b> для организаторов MCA/AYIM.</span>"
+                "2": "Вы также сможете потом войти с помощью Discord, он <b>не требуется</b> для голосования/номинирования. <br>Вход в Discord<b> необходим</b> для организаторов MCA/AYIM.</span>"
             },
             "authOsu": "нажмите здесь, чтобы аутентифицироваться через osu!",
             "authOsuComp": "Верификация аккаунта osu! прошла успешно. Привет ",
@@ -67,9 +67,9 @@
             "spinners": "СПИННЕРЫ",
             "sliders": "СЛАЙДЕРЫ",
             "circles": "КРУЖКИ",
-            "avgSpinnersPerDiff": "СРЕДНЕЕ ЧИСЛО СПИННЕРОВ НА СЛОЖНОСТИ",
-            "avgSlidersPerDiff": "СРЕДНЕЕ ЧИСЛО СЛАЙДЕРОВ НА СЛОЖНОСТИ",
-            "avgCirclesPerDiff": "СРЕДНЕЕ ЧИСЛО КРУЖКОВ НА СЛОЖНОСТИ",
+            "avgSpinnersPerDiff": "СРЕДНЕЕ КОЛ-ВО СПИННЕРОВ НА СЛОЖНОСТИ",
+            "avgSlidersPerDiff": "СРЕДНЕЕ КОЛ-ВО СЛАЙДЕРОВ НА СЛОЖНОСТИ",
+            "avgCirclesPerDiff": "СРЕДНЕЕ КОЛ-ВО КРУЖКОВ НА СЛОЖНОСТИ",
             "highestSr": "HIGHEST STAR RATING",
             "lowestSr": "LOWEST STAR RATING"
         },
@@ -133,8 +133,8 @@
                 "stage": "этап"
             },
             "rankedSets": "РАНКНУТЫЕ КАРТЫ",
-            "nominateNow": "nominate now!",
-            "voteNow": "vote now!",
+            "nominateNow": "номинируй сейчас!",
+            "voteNow": "голосуй сейчас!",
             "viewResults": "посмотреть результаты!",
             "daysLeft": "days left",
             "message": {
@@ -152,31 +152,31 @@
         },
         "categories": {
             "grandAward": {
-                "name": "Grand Award",
+                "name": "Главный Приз",
                 "description": "Лучший из лучших."
             },
             "grandStoryboard": {
-                "name": "Grand Storyboard",
-                "description": "The best storyboard out there."
+                "name": "Лучший Сториборд",
+                "description": "Лучший сториборд на свете."
             },
             "grandStoryboarder": {
-                "name": "Grand Storyboarder",
-                "description": "The best storyboarder out there."
+                "name": "Лучший Сторибордер",
+                "description": "Лучший сторибордер на свете."
             },
             "marathon": {
-                "name": "Best Marathon",
-                "description": "The best beatmap with 5+ minute drain time."
+                "name": "Лучший Марафон",
+                "description": "Лучшая карта продолжительностью 5 минут и более."
             },
             "marathonMan": {
-                "name": "Best Marathon",
-                "description": "The best beatmap with 4+ minute drain time."
+                "name": "Лучший Марафон",
+                "description": "Лучшая карта продолжительностью 4 минуты и более."
             },
             "hitsounding": {
-                "name": "Best Hitsounding",
+                "name": "Лучший Хитсаундинг",
                 "description": "The best bells and whistles out there."
             },
             "collab": {
-                "name": "Best Collab",
+                "name": "Лучший Коллаб",
                 "description": "The best beatmap with 2+ mappers creating the top difficulty."
             },
             "simple": {
@@ -200,19 +200,19 @@
                 "description": "The best beatmap with a style of the old."
             },
             "mapper": {
-                "name": "Лучший маппер",
+                "name": "Лучший Маппер",
                 "description": "Тот, кто сделал лучшие карты."
             },
             "modder": {
-                "name": "Лучший моддер",
+                "name": "Лучший Моддер",
                 "description": "Тот, кто написал лучшие моды."
             },
             "hitsounder": {
-                "name": "Лучший хитсаундер",
+                "name": "Лучший Хитсаундер",
                 "description": "Тот, кто сделал лучшие хитсаунды."
             },
             "mostPromising": {
-                "name": "Самый многообещающий",
+                "name": "Самый Многообещающий",
                 "description": "Лучший маппер, который ранкнул свою первую карту в этом году."
             },
             "mostInfluential": {
@@ -221,7 +221,7 @@
             },
             "outCont": {
                 "name": "Outstanding Contributor",
-                "description": "The one who positively contributed to the health of osu! the most."
+                "description": "Тот, кто внес наибольший вклад в развитие osu!"
             },
             "spread": {
                 "name": "Best Spread",
@@ -414,8 +414,8 @@
                 "map": "MAP",
                 "title": "НАЗВАНИЕ",
                 "artist": "ИСПОЛНИТЕЛЬ",
-                "hoster": "HOST",
-                "username": "USER",
+                "hoster": "ХОСТ",
+                "username": "ПОЛЬЗОВАТЕЛЬ",
                 "firstChoice": "1ST CHOICES",
                 "secondThirdChoice": "2ND-3RD CHOICES",
                 "restChoice": "4TH+ CHOICES"
@@ -431,15 +431,15 @@
             "teams": "КОМАНДЫ",
             "schedule": "РАСПИСАНИЕ",
             "mappool": "МАППУЛ",
-            "staff": "STAFF",
+            "staff": "ОРГАНИЗАТОРЫ",
             "createTeam": "СОЗДАТЬ КОМАНДУ",
             "invitations": "ПРИГЛАШЕНИЯ",
             "loginDiscord": "ВОЙДИТЕ В DISCORD, ЧТОБЫ УПРАВЛЯТЬ КОМАНДАМИ/ПРИГЛАШЕНИЯМИ",
             "teamInvites": "TEAM INVITES",
-            "noInvites": "You currently have no invites"
+            "noInvites": "У вас нет приглашений"
         },
         "footer": {
-            "corsace": "КОРСЕЙС",
+            "corsace": "CORSACE",
             "twitter": "ТВИТТЕР",
             "discord": "ДИСКОРД",
             "twitch": "ТВИЧ",
@@ -468,19 +468,19 @@
                 "qualifiersMappool": "QUALIFIERS MAPPOOLS",
                 "mappoolDownload": "Mappool download and statistics",
                 "register": "CREATE AND REGISTER YOUR TEAM",
-                "registrationsEnd": "Registrations end"
+                "registrationsEnd": "Регистрация заканчивается"
             }
         },
         "info": {
-            "title": "INFORMATION",
+            "title": "ИНФОРМАЦИЯ",
             "condensed": "CONDENSED INFO",
-            "error": "Could not find tournament",
+            "error": "Не удалось найти турнир",
             "matchInfo": {
                 "matchSize": "РАЗМЕР МАТЧА",
                 "minPlayers": "МИН. КОЛ-ВО ИГРОКОВ",
                 "maxPlayers": "МАКС. КОЛ-ВО ИГРОКОВ",
-                "pickTimer": "MAP PICK TIMER",
-                "readyTimer": "READY TIMER",
+                "pickTimer": "ТАЙМЕР ВЫБОРА КАРТЫ",
+                "readyTimer": "ТАЙМЕР ГОТОВНОСТИ",
                 "order": "ORDER",
                 "scoringMethod": "SCORING METHOD",
                 "type": "ТИП",
@@ -492,7 +492,7 @@
             },
             "headings": {
                 "mappools": "MAPPOOLS",
-                "stage": "STAGE"
+                "stage": "ЭТАП"
             },
             "status": {
                 "notStarted": "NOT STARTED",
@@ -505,7 +505,7 @@
                 "mappackDownload": "DOWNLOAD MAP PACK",
                 "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
             },
-            "prizes": "PRIZES",
+            "prizes": "ПРИЗЫ",
             "donateToCorsace": "DONATE TO CORSACE",
             "supportViaSponsorship": "SUPPORT VIA MOMOKAI SPONSORSHIP",
             "generalInfo": "GENERAL INFORMATION",
@@ -542,11 +542,11 @@
                     "percentMax": "%MAX",
                     "relMax": "REL. MAX",
                     "zScore": "Z-SCORE",
-                    "placement": "PLACE",
-                    "player": "PLAYER",
-                    "team": "TEAM",
-                    "best": "BEST",
-                    "worst": "WORST"
+                    "placement": "МЕСТО",
+                    "player": "ИГРОК",
+                    "team": "КОМАНДА",
+                    "best": "ЛУЧШИЙ",
+                    "worst": "ХУДШИЙ"
                 },
                 "categorySelect": "CATEGORY SELECT",
                 "players": "ИГРОКИ",
@@ -575,10 +575,10 @@
                 "timezone": "ЧАСОВОЙ ПОЯС",
                 "teamAvatar": "АВАТАРКА КОМАНДЫ",
                 "errors": {
-                    "size": "Image is too large. Ensure the image is less than 5MB.",
-                    "type": "Invalid image file. Ensure the image is a PNG or JPG.",
-                    "invalidImage": "Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.",
-                    "invalidTimezone": "Invalid timezone.",
+                    "size": "Изображение слишком большое. Убедитесь, что изображение меньше 5MБ.",
+                    "type": "Неверный файл изображения. Убедитесь, что изображение PNG или JPG.",
+                    "invalidImage": "Неверный файл изображения. Убедитесь, что изображение PNG или JPG и меньше 5МБ.",
+                    "invalidTimezone": "Неверный часовой пояс.",
                     "errorAddingTeamAvatar": "Ошибка при загрузке аватарки команды:\n{error}",
                     "invalidName": "",
                     "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
