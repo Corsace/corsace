@@ -60,7 +60,7 @@
             "totalDiff": "СУММА СЛОЖНОСТЕЙ",
             "submitDates": "SUBMIT DATES",
             "starRatings": "STAR RATINGS",
-            "approachRate": "APPROACH RATE",
+            "approachRate": "СКОРОСТЬ ПОЯВЛЕНИЯ НОТ (AR)",
             "overallDifficulty": "ОБЩАЯ СЛОЖНОСТЬ (ОД)",
             "hpDrain": "УТЕЧКА ХП",
             "circleSize": "РАЗМЕР КРУЖКОВ",
@@ -389,7 +389,7 @@
                 "artist": "ИСПОЛНИТЕЛЬ",
                 "title": "НАЗВАНИЕ",
                 "favs": "FAVS",
-                "creator": "CREATOR",
+                "creator": "СОЗДАТЕЛЬ",
                 "sr": "SR",
                 "id": "ID",
                 "alph": "ALPH",
@@ -400,7 +400,7 @@
                 "invalid": "INVALID",
                 "both": "BOTH",
                 "all": "ALL",
-                "played": "PLAYED",
+                "played": "СЫГРАНО",
                 "results": "РЕЗУЛЬТАТЫ",
                 "voters": "VOTERS"
             },
@@ -426,7 +426,7 @@
     "open": {
         "navbar": {
             "home": "ГЛАВНАЯ",
-            "info": "INFO",
+            "info": "ИНФОРМАЦИЯ",
             "qualifiers": "КВАЛИФИКАЦИИ",
             "teams": "КОМАНДЫ",
             "schedule": "РАСПИСАНИЕ",
@@ -473,7 +473,7 @@
         },
         "info": {
             "title": "ИНФОРМАЦИЯ",
-            "condensed": "CONDENSED INFO",
+            "condensed": "СОКРАЩЕННАЯ ИНФОРМАЦИЯ",
             "error": "Не удалось найти турнир",
             "matchInfo": {
                 "matchSize": "РАЗМЕР МАТЧА",
@@ -528,18 +528,18 @@
                 "mappool": "MAPPOOL",
                 "notAvailable": "Mappool not available yet",
                 "banner": {
-                    "mapper": "MAPPER",
-                    "difficulty": "DIFFICULTY"
+                    "mapper": "МАППЕР",
+                    "difficulty": "СЛОЖНОСТЬ"
                 }
             },
             "scores": {
                 "nav": {
                     "sort": "SORT",
                     "average": "AVERAGE",
-                    "sum": "SUM",
+                    "sum": "СУММА",
                     "percentAvg": "%AVG",
                     "relAvg": "REL. AVG",
-                    "percentMax": "%MAX",
+                    "percentMax": "%МАКС",
                     "relMax": "REL. MAX",
                     "zScore": "Z-SCORE",
                     "placement": "МЕСТО",
@@ -581,7 +581,7 @@
                     "invalidTimezone": "Неверный часовой пояс.",
                     "errorAddingTeamAvatar": "Ошибка при загрузке аватарки команды:\n{error}",
                     "invalidName": "",
-                    "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
+                    "contactVinxis": "Свяжитесь с VINXIS, так как возникла ошибка поиска. Откройте консоль для дополнительной информации с помощью Ctrl + Shift + I."
                 },
                 "confirm": {
                     "deleteTeam": "Вы уверены, что хотите удалить эту команду?",
