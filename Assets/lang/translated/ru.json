@@ -57,7 +57,7 @@
             "difficulties": "СЛОЖНОСТИ",
             "playTime": "LENGTH (SUM OF ALL DIFFICULTIES)",
             "totalRanked": "TOTAL RANKED",
-            "totalDiff": "СУММА СЛОЖНОСТЕЙ",
+            "totalDiff": "КОЛИЧЕСТВО СЛОЖНОСТЕЙ",
             "submitDates": "SUBMIT DATES",
             "starRatings": "STAR RATINGS",
             "approachRate": "СКОРОСТЬ ПОЯВЛЕНИЯ НОТ (АР)",
@@ -80,16 +80,16 @@
             "mostFavs": "БОЛЬШЕ ВСЕГО ИЗБРАННЫХ",
             "mostFavsExclHybrid": "БОЛЬШЕ ВСЕГО ИЗБРАННЫХ (ИСКЛ. ГИБРИДЫ)",
             "mostPlayed": "БОЛЬШЕ ВСЕГО СЫГРАНО",
-            "totalMappers": "TOTAL MAPPERS",
+            "totalMappers": "ВСЕГО МАППЕРОВ",
             "newMapperAges": "NEW MAPPER AGES",
             "mapperAges": "MAPPER AGES",
             "mapsPerMapperAges": "MAPS PER MAPPER PER AGE",
             "bng": "НОМИНАТОРЫ КАРТ (BNG)",
             "nat": "КОМАНДА ОЦЕНКИ НОМИНАЦИЙ (NAT)",
-            "uniqueMappers": "TOTAL MAPPERS",
+            "uniqueMappers": "УНИКАЛЬНЫХ МАППЕРОВ",
             "newMappers": "НАЧИНАЮЩИЕ МАППЕРЫ",
-            "highestAvgSr": "HIGHEST AVG SR",
-            "lowestAvgSr": "LOWEST AVG SR",
+            "highestAvgSr": "САМЫЙ ВЫСОКИЙ СРЕДНИЙ СР",
+            "lowestAvgSr": "САМЫЙ НИЗКИЙ СРЕДНИЙ СР",
             "mappers": "МАППЕРЫ"
         },
         "statistics": {
@@ -173,7 +173,7 @@
             },
             "hitsounding": {
                 "name": "Лучший Хитсаундинг",
-                "description": "The best bells and whistles out there."
+                "description": "Лучшие хитсаунды на свете."
             },
             "collab": {
                 "name": "Лучший Коллаб",
@@ -404,7 +404,7 @@
                 "results": "РЕЗУЛЬТАТЫ",
                 "voters": "VOTERS"
             },
-            "votingOverlay": "Hello! this may be the first time you have navigated to the voting page! <br> MCA Voting utilizes <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting!</a> <br> This means you can select any number of beatmaps/users to vote for! <br> All votes are ordered by choice, so <span class='notice-modal--bold'>the first choice will have the highest priority!</span> <br> Your first choice will count until it loses the race. Then your second, then your third, then 4th, e.t.c. <br> Good luck and can't wait to see the results for MCA [YEAR]",
+            "votingOverlay": "Привет! Возможно, вы впервые зашли на страницу голосования! <br> MCA использует систему <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>преференциального голосования!</a> <br> Это значит, что вы можете проголосовать за любое количество карт/пользователей! <br> Голоса будут подсчитываться в соответствии с порядком их выбора, где <span class='notice-modal--bold'>первый голос будет иметь больший вес</span> <br>, чем второй, и так далее. <br> Удачи! Увидимся на результатах MCA [YEAR]",
             "hosted": "HOSTED BY",
             "userID": "ID ПОЛЬЗОВАТЕЛЯ"
         },
@@ -416,9 +416,9 @@
                 "artist": "ИСПОЛНИТЕЛЬ",
                 "hoster": "ХОСТ",
                 "username": "ПОЛЬЗОВАТЕЛЬ",
-                "firstChoice": "1ST CHOICES",
-                "secondThirdChoice": "2ND-3RD CHOICES",
-                "restChoice": "4TH+ CHOICES"
+                "firstChoice": "1-Й ВЫБОР",
+                "secondThirdChoice": "2-Й И 3-Й ВЫБОРЫ",
+                "restChoice": "4-Й И БОЛЕЕ ВЫБОРЫ"
             },
             "resultsOverlay": "Привет! Возможно, вы впервые зашли на страницу результатов! <br> Эти результаты показывают окончательное размещение карт/пользователей согласно <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>преференциальному голосованию</a>, при котором участники могут упорядочить карты/пользователей по своему предпочтению!<br> Надеюсь, вам понравились результаты MCA [YEAR], и увидимся снова на следующем MCA!"
         }
@@ -435,7 +435,7 @@
             "createTeam": "СОЗДАТЬ КОМАНДУ",
             "invitations": "ПРИГЛАШЕНИЯ",
             "loginDiscord": "ВОЙДИТЕ В DISCORD, ЧТОБЫ УПРАВЛЯТЬ КОМАНДАМИ/ПРИГЛАШЕНИЯМИ",
-            "teamInvites": "TEAM INVITES",
+            "teamInvites": "ПРИГЛАШЕНИЯ КОМАНДЫ",
             "noInvites": "У вас нет приглашений"
         },
         "footer": {
@@ -448,7 +448,7 @@
         "stages": {
             "qualifiers": "ОТБОРОЧНЫЕ",
             "round robin": "ВСЕ ПРОТИВ ВСЕХ",
-            "runoff bracket": "RUNOFF BRACKET",
+            "runoff bracket": "РАН-ОФФ",
             "knockout 1": "НОКАУТ 1",
             "knockout 2": "НОКАУТ 2",
             "abbreviations": {
@@ -460,7 +460,7 @@
             }
         },
         "home": {
-            "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
+            "description": "Погрузись в Corsace Open 2023 - место, где лучшие игроки osu! сходятся лицом к лицу.",
             "timeline": "TIMELINE",
             "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
             "registrations": "РЕГИСТРАЦИЯ",
