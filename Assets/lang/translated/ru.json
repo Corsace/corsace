@@ -75,11 +75,11 @@
         },
         "mappers": {
             "name": "МАППЕРЫ",
-            "mostRanked": "MOST RANKED",
-            "mostDiffs": "MOST DIFFICULTIES",
-            "mostFavs": "MOST FAVOURITES",
-            "mostFavsExclHybrid": "MOST FAVOURITES (EXCL. HYBRIDS)",
-            "mostPlayed": "MOST PLAYED",
+            "mostRanked": "БОЛЬШЕ ВСЕГО РАНКНУТЫХ КАРТ",
+            "mostDiffs": "БОЛЬШЕ ВСЕГО СЛОЖНОСТЕЙ",
+            "mostFavs": "БОЛЬШЕ ВСЕГО ИЗБРАННЫХ",
+            "mostFavsExclHybrid": "БОЛЬШЕ ВСЕГО ИЗБРАННЫХ (ИСКЛ. ГИБРИДЫ)",
+            "mostPlayed": "БОЛЬШЕ ВСЕГО СЫГРАНО",
             "totalMappers": "TOTAL MAPPERS",
             "newMapperAges": "NEW MAPPER AGES",
             "mapperAges": "MAPPER AGES",
@@ -221,7 +221,7 @@
             },
             "outCont": {
                 "name": "Outstanding Contributor",
-                "description": "Тот, кто внес наибольший вклад в развитие osu!"
+                "description": "Тот, кто внес наибольший вклад в развитие osu!."
             },
             "spread": {
                 "name": "Best Spread",
@@ -381,13 +381,13 @@
             }
         },
         "nom_vote": {
-            "search": "search for a beatmap / user",
-            "select": "Please select a category!",
+            "search": "поиск карты / пользователя",
+            "select": "Пожалуйста, выберите категорию!",
             "candidates": "candidates",
             "options": {
                 "date": "DATE",
-                "artist": "ARTIST",
-                "title": "TITLE",
+                "artist": "ИСПОЛНИТЕЛЬ",
+                "title": "НАЗВАНИЕ",
                 "favs": "FAVS",
                 "creator": "CREATOR",
                 "sr": "SR",
@@ -401,17 +401,17 @@
                 "both": "BOTH",
                 "all": "ALL",
                 "played": "PLAYED",
-                "results": "RESULTS",
+                "results": "РЕЗУЛЬТАТЫ",
                 "voters": "VOTERS"
             },
             "votingOverlay": "Hello! this may be the first time you have navigated to the voting page! <br> MCA Voting utilizes <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting!</a> <br> This means you can select any number of beatmaps/users to vote for! <br> All votes are ordered by choice, so <span class='notice-modal--bold'>the first choice will have the highest priority!</span> <br> Your first choice will count until it loses the race. Then your second, then your third, then 4th, e.t.c. <br> Good luck and can't wait to see the results for MCA [YEAR]",
             "hosted": "HOSTED BY",
-            "userID": "USER ID"
+            "userID": "ID ПОЛЬЗОВАТЕЛЯ"
         },
         "results": {
             "headings": {
-                "placement": "PLACE",
-                "map": "MAP",
+                "placement": "МЕСТО",
+                "map": "КАРТА",
                 "title": "НАЗВАНИЕ",
                 "artist": "ИСПОЛНИТЕЛЬ",
                 "hoster": "ХОСТ",
@@ -425,7 +425,7 @@
     },
     "open": {
         "navbar": {
-            "home": "HOME",
+            "home": "ГЛАВНАЯ",
             "info": "INFO",
             "qualifiers": "КВАЛИФИКАЦИИ",
             "teams": "КОМАНДЫ",
@@ -463,10 +463,10 @@
             "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
             "timeline": "TIMELINE",
             "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
-            "registrations": "REGISTRATIONS",
+            "registrations": "РЕГИСТРАЦИЯ",
             "button": {
                 "qualifiersMappool": "QUALIFIERS MAPPOOLS",
-                "mappoolDownload": "Mappool download and statistics",
+                "mappoolDownload": "Скачать маппул и статистика",
                 "register": "CREATE AND REGISTER YOUR TEAM",
                 "registrationsEnd": "Регистрация заканчивается"
             }
@@ -501,14 +501,14 @@
             },
             "mappools": {
                 "info": "MAPPOOL INFO",
-                "notAvailable": "INFO NOT AVAILABLE",
+                "notAvailable": "ИНФОРМАЦИЯ НЕДОСТУПНА",
                 "mappackDownload": "DOWNLOAD MAP PACK",
                 "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
             },
             "prizes": "ПРИЗЫ",
             "donateToCorsace": "DONATE TO CORSACE",
             "supportViaSponsorship": "SUPPORT VIA MOMOKAI SPONSORSHIP",
-            "generalInfo": "GENERAL INFORMATION",
+            "generalInfo": "ОСНОВНАЯ ИНФОРМАЦИЯ",
             "teamStructure": "TEAM STRUCTURE",
             "qualifiersProcedures": "QUALIFIERS PROCEDURES",
             "tournamentStructure": "TOURNAMENT STRUCTURE",
@@ -584,11 +584,11 @@
                     "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
                 },
                 "confirm": {
-                    "deleteTeam": "Are you sure you want to delete this team?",
-                    "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!",
-                    "removeMember": "Are you sure you want to remove {username} from your team?",
+                    "deleteTeam": "Вы уверены, что хотите удалить эту команду?",
+                    "deleteTeamFinal": "Вы ДЕЙСТВИТЕЛЬНО уверены, что хотите удалить эту команду? Это не может быть отменено!",
+                    "removeMember": "Вы уверены, что хотите убрать {username} из вашей команды?",
                     "transferManager": "Are you sure you want to transfer manager to {username}?",
-                    "invite": "Are you sure you want to invite {username} to your team?",
+                    "invite": "Вы уверены, что хотите пригласить {username} в вашу команду?",
                     "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
                     "unregister": "Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."
                 },
@@ -615,7 +615,7 @@
                 "noRegistration": "Registered in no tournaments",
                 "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
             },
-            "teamID": "TEAM ID",
+            "teamID": "ID КОМАНДЫ",
             "member": "член",
             "members": "члены",
             "averageBWS": "Average BWS",
@@ -628,7 +628,7 @@
         },
         "create": {
             "title": "СОЗДАНИЕ КОМАНДЫ",
-            "info1": "Registrations will end on",
+            "info1": "Регистрация закончится",
             "info2": "Please ensure all information is correct before finalizing.",
             "teamName": "НАЗВАНИЕ КОМАНДЫ",
             "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
@@ -640,7 +640,7 @@
             "upload": "ВЫГРУЗИТЬ",
             "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
             "fileSizeError": "file size too big! please upload a smaller image",
-            "fileTypeError": "incorrect file type! please upload a .jpg or .png",
+            "fileTypeError": "неверный тип файла! пожалуйста, загрузите .jpg или .png",
             "preview": "ПРЕВЬЮ",
             "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
             "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
@@ -690,12 +690,12 @@
         "construction": {
             "underConstruction": "в разработке",
             "sorry": "извините за неудобства",
-            "development": "the corsace website is still in early development",
+            "development": "сайт corsace всё ещё в ранней разработке",
             "theTeam": "команда corsace"
         },
         "merch": {
             "code": "Tap Trio - Corsace Bundle",
-            "products": "Limited quantity available"
+            "products": "Доступно в ограниченном количестве"
         }
     }
 }
