@@ -1,7 +1,7 @@
 ---
 title: Memulai
 description: Dokumentasi untuk memulai pengembangan Corsace.
-lastUpdated: 2023-09-16
+lastUpdated: 2023-09-17
 sidebar:
   order: 1
 ---
@@ -10,9 +10,13 @@ import { Card, LinkCard } from '@astrojs/starlight/components';
 
 The following documentation is for setting up a local development environment for Corsace.
 
-<Card title="Warning" icon="warning">
-    We HIGHLY recommend installing a code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [NotePad++](https://notepad-plus-plus.org/) to work on this project.
-</Card>
+If you are looking into translating for Corsace, request access at https://translate.corsace.io, and join the [Corsace discord server](https://discord.gg/Z6vEMsr)
+
+Please make sure to first [fork the repository](https://github.com/Corsace/Corsace/fork)
+
+:::caution null
+We HIGHLY recommend installing a code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [NotePad++](https://notepad-plus-plus.org/) to work on this project.
+:::
 
 To clone the repository, run the following command in your terminal/console:
 
@@ -22,6 +26,8 @@ To clone the repository, run the following command in your terminal/console:
 | Windows\* | `git clone -c core.symlinks=true https://github.com/Corsace/Corsace` |
 
 \*Use admin privileges in your console when running the command.
+
+For your forked repository instead, you can change the github link as needed.
 
 ## Installation
 
@@ -62,11 +68,14 @@ In a terminal, run `node`, then type `process.env.USER` to find out your usernam
 
 The values in your personal `config/user/$USER.json` config file will be referred to as `config` from now on.
 
+:::note
+
 <LinkCard 
-    title="STOP HERE FOR DOCS DEV SETUP"
+    title="STOP HERE FOR DOCS SETUP"
     description="If you wish to work on documentation, you may stop here and continue at the client guides section."
     href="client/guide/docs-running-environment"
 />
+:::
 
 ### osu! API
 
