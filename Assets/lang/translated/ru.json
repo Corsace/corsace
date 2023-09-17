@@ -55,23 +55,23 @@
             "favouritesExclHybrid": "ИЗБРАННЫЕ (ИСКЛ. ГИБРИДЫ)",
             "length": "ДЛИНА",
             "difficulties": "СЛОЖНОСТИ",
-            "playTime": "LENGTH (SUM OF ALL DIFFICULTIES)",
-            "totalRanked": "TOTAL RANKED",
-            "totalDiff": "КОЛИЧЕСТВО СЛОЖНОСТЕЙ",
+            "playTime": "СУММАРНАЯ ДЛИНА ВСЕХ СЛОЖНОСТЕЙ",
+            "totalRanked": "ВСЕГО РЕЙТИНГОВЫХ КАРТ",
+            "totalDiff": "ВСЕГО СЛОЖНОСТЕЙ",
             "submitDates": "SUBMIT DATES",
-            "starRatings": "STAR RATINGS",
+            "starRatings": "ЗВЕЗДНЫЙ РЕЙТИНГ",
             "approachRate": "СКОРОСТЬ ПОЯВЛЕНИЯ НОТ (АР)",
             "overallDifficulty": "ОБЩАЯ СЛОЖНОСТЬ (ОД)",
             "hpDrain": "УТЕЧКА ХП",
-            "circleSize": "РАЗМЕР КРУЖКОВ",
+            "circleSize": "РАЗМЕР НОТ",
             "spinners": "СПИННЕРЫ",
             "sliders": "СЛАЙДЕРЫ",
             "circles": "КРУЖКИ",
             "avgSpinnersPerDiff": "СРЕДНЕЕ КОЛ-ВО СПИННЕРОВ НА СЛОЖНОСТИ",
             "avgSlidersPerDiff": "СРЕДНЕЕ КОЛ-ВО СЛАЙДЕРОВ НА СЛОЖНОСТИ",
             "avgCirclesPerDiff": "СРЕДНЕЕ КОЛ-ВО КРУЖКОВ НА СЛОЖНОСТИ",
-            "highestSr": "HIGHEST STAR RATING",
-            "lowestSr": "LOWEST STAR RATING"
+            "highestSr": "САМЫЙ ВЫСОКИЙ ЗВЕЗДНЫЙ РЕЙТИНГ",
+            "lowestSr": "САМЫЙ НИЗКИЙ ЗВЕЗДНЫЙ РЕЙТИНГ"
         },
         "mappers": {
             "name": "МАППЕРЫ",
@@ -177,27 +177,27 @@
             },
             "collab": {
                 "name": "Лучший Коллаб",
-                "description": "The best beatmap with 2+ mappers creating the top difficulty."
+                "description": "Лучшая карта, наивысшая сложность которой была создана 2 и более мапперами."
             },
             "simple": {
-                "name": "Best Simple",
-                "description": "The best beatmap with the top difficulty lower than an insane."
+                "name": "Лучшая Простая Карта",
+                "description": "Лучшая карта с наивысшей сложностью ниже insane."
             },
             "highBPM": {
-                "name": "Best High BPM",
-                "description": "The best beatmap with atypically fast streaming or high singletap strain."
+                "name": "Лучшая Карта С Высоким BPM",
+                "description": "Лучшая карта, требующая очень высокую скорость нажатия клавиш."
             },
             "smallCircles": {
-                "name": "Best Small Circles",
-                "description": "The best beatmap with the top difficulty using circle size 5 or smaller."
+                "name": "Лучшая Карта С Маленькими Нотами",
+                "description": "Лучшая карта с размером нот 5 или меньше на наивысшей сложности."
             },
             "heavy13": {
-                "name": "Best 1/3 Heavy",
-                "description": "The best beatmap with top difficulties using lots of purple ticks."
+                "name": "Лучшая 1/3 Карта",
+                "description": "Лучшая карта, где преобладают 1/3, 1/6 или 1/12 ритмы."
             },
             "throwback": {
-                "name": "Best Throwback",
-                "description": "The best beatmap with a style of the old."
+                "name": "Лучшее Возвращение К Истокам",
+                "description": "Лучшая карта в старом стиле."
             },
             "mapper": {
                 "name": "Лучший Маппер",
@@ -216,32 +216,32 @@
                 "description": "Лучший маппер, который ранкнул свою первую карту в этом году."
             },
             "mostInfluential": {
-                "name": "Most Influential",
-                "description": "The one who inspired and influenced other mappers the most."
+                "name": "Самый Влиятельный",
+                "description": "Тот, кто сильнее всего вдохновил и повлиял на других мапперов."
             },
             "outCont": {
-                "name": "Outstanding Contributor",
+                "name": "Выдающийся Вклад",
                 "description": "Тот, кто внес наибольший вклад в развитие osu!."
             },
             "spread": {
-                "name": "Best Spread",
-                "description": "The set with the best spread of difficulties."
+                "name": "Лучший Набор Сложностей",
+                "description": "Карта с лучшим набором сложностей."
             },
             "experimental": {
                 "name": "Best Experimental",
                 "description": "The best \"tech\" / off meta beatmap."
             },
             "stream": {
-                "name": "Best Streams",
-                "description": "The beatmap with the best continuous streams."
+                "name": "Лучшая Карта Со Стримами",
+                "description": "Карта с лучшими стримами."
             },
             "highBPMTaiko": {
-                "name": "Best High BPM",
-                "description": "The best beatmap with over 240 BPM."
+                "name": "Лучшая Карта С Высоким BPM",
+                "description": "Лучшая карта с BPM выше 240."
             },
             "lowBPMTaiko": {
-                "name": "Best Low BPM",
-                "description": "The best beatmap with under 130 BPM."
+                "name": "Лучшая Карта С Низким BPM",
+                "description": "Лучшая карта с BPM ниже 130."
             },
             "simplistic": {
                 "name": "Best Simplistic",
