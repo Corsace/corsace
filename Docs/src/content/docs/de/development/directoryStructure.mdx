@@ -1,13 +1,14 @@
 ---
 title: Directory Structure
 description: Documentation on the Corsace repository's directory structure.
-lastUpdated: 2023-09-15
+lastUpdated: 2023-09-16
 sidebar:
   order: 2
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import DirectoryItem from '../../../../components/DirectoryItem.astro';
+import WorkInProgress from '../../../../components/WorkInProgress.astro';
 
 export const labels = [
     { name: "Frontend/Client", color: "#B3F2B8" },
@@ -84,16 +85,19 @@ These three parts are represented by the following folders:
 
 ## Navigation
 
+<WorkInProgress section="navigation" />
+
 Depending on your focus, you may only need to look at a few of these folders. You can find more specific information for each folder below:
 
 *   **[Frontend/Client](#frontendclient)**
-    *   **[AYIM/Closed/MCA/Main/Open](#)** - Made with [Nuxt 2](https://v2.nuxt.com/)
-    *   **[Docs](#)** - Made with [Astro/Starlight](https://starlight.astro.build/)
+    *   **[AYIM/Closed/MCA/Main/Open](../client/guide/web-running-environment)** - Made with [Nuxt 2](https://v2.nuxt.com/)
+    *   **[Docs](../client/guide/docs-running-environment)** - Made with [Astro/Starlight](https://starlight.astro.build/)
     *   **[Assets](#)** - Images/Icons, Fonts, CSS, Components, Translations
 *   [Backend/Server](#backendserver)
     *   **[BanchoBot](#)** - Made with [Bancho.js](https://bancho.js.org/)
     *   **[DiscordBot](#)** - Made with [Discord.js](https://discord.js.org/)
-    *   **[Server/CronRunner/Centrifugo](#)** - Made with [Koa](https://koajs.com/)
+    *   **[Server/CronRunner](#)** - Made with [Koa](https://koajs.com/)
+    *   **[Centrifugo](#)** - Made with [Centrifugo](https://centrifugal.dev/)
     *   **[Models](#)** - Made with [TypeORM](https://typeorm.io/)
 *   [Both/Miscellaneous](#bothmiscellaneous)
     *   **[Interfaces](#)** - Typing files for communication between Nuxt and Koa
@@ -124,6 +128,8 @@ The remaining folder (**📁 Assets**) is used for storing the following assets 
 
 ## Backend/Server
 
+<WorkInProgress section="backend/server" />
+
 These folders are used for the backend of the website, which either consist of the server that the websites communicate with, or node instances to interact with other services such as Discord, osu!, e.t.c.
 
 The following folders consist of the following services:
@@ -134,7 +140,7 @@ The following folders consist of the following services:
     *   **Server** - A node instance that runs the main server for the websites
     *   **CronRunner** - A node instance that runs cron jobs created by different server instances
 *   **Centrifugo** - A node instance that runs a Centrifugo server
-    *   This doesn't have a folder, as it is a single file run via npm commands (see [Development/Getting Started#Centrifugo](/en/development/#centrifugo) for more information)
+    *   This doesn't have a folder, as it is a single file run via npm commands (see [Development/Getting Started#Centrifugo](/en/development/#centrifugo) for more information), [but there are endpoints that exist for it in the 📁 Server folder](#).
 
 The remaining folder (**📁 Models**) is used for storing the database models for the server.
 
