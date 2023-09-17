@@ -17,11 +17,12 @@ import { Mappool } from "../../Models/tournaments/mappools/mappool";
 import { MappoolSlot } from "../../Models/tournaments/mappools/mappoolSlot";
 import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
-import { ParserBeatmap, parseBeatmapExtra,  parseBeatmapAttributes, ParserBeatmapAttributes } from "wasm-replay-parser-rs";
+import { ParserBeatmap, parseBeatmap,  parseBeatmapAttributes, ParserBeatmapAttributes, parseBeatmapStrains, ParserStrains } from "wasm-replay-parser-rs";
 
-export async function beatmapParse (m: Message | ChatInputCommandInteraction, diff: string, link: string) {
+export async function beatmapParse (m: Message | ChatInputCommandInteraction, diff: string, link: string, mods = 0) {
     let beatmap: ParserBeatmap | undefined = undefined;
     let beatmapAttributes: ParserBeatmapAttributes | undefined = undefined;
+    let beatmapStrains: ParserStrains | undefined = undefined;
     let background: string | undefined = undefined;
     let axiosData: any = null;
     try {
@@ -38,13 +39,13 @@ export async function beatmapParse (m: Message | ChatInputCommandInteraction, di
         const buffer = await entry.buffer();
 
         if (entry.type === "File" && entry.props.path.endsWith(".osu") && !foundBeatmap) {
-            const parsedBeatmap = parseBeatmapExtra(Uint8Array.from(buffer));
+            beatmap = parseBeatmap(Uint8Array.from(buffer));
             beatmapAttributes = parseBeatmapAttributes(undefined, Uint8Array.from(buffer));
+            beatmapStrains = parseBeatmapStrains(Uint8Array.from(buffer), undefined, mods);
 
-            if (diff !== "" && parsedBeatmap.diff_name.toLowerCase() !== diff.toLowerCase())
+            if (diff !== "" && beatmap.diff_name.toLowerCase() !== diff.toLowerCase())
                 continue;
 
-            beatmap = parsedBeatmap;
             foundBeatmap = true;
             if (background)
                 break;
@@ -71,6 +72,7 @@ export async function beatmapParse (m: Message | ChatInputCommandInteraction, di
     return {
         beatmap,
         beatmapAttributes,
+        beatmapStrains,
         background,
     };
 }
@@ -81,7 +83,7 @@ export async function parsedBeatmapToCustom (
     mappool: Mappool,
     slot: MappoolSlot,
     mappoolMap: MappoolMap,
-    beatmapData: { beatmap: ParserBeatmap | undefined, beatmapAttributes: ParserBeatmapAttributes | undefined, background: string | undefined },
+    beatmapData: { beatmap: ParserBeatmap | undefined, beatmapAttributes: ParserBeatmapAttributes | undefined, beatmapStrains: ParserStrains | undefined, background: string | undefined },
     link: string,
     user: User,
     mappoolSlot: string
@@ -105,16 +107,18 @@ export async function parsedBeatmapToCustom (
     const maxCombo = beatmap.max_combo;
 
     // Obtaining length
-    const lengthMs = (beatmap.hit_objects?.[beatmap.hit_objects?.length - 1]?.start_time ?? 0) - (beatmap.hit_objects?.[0]?.start_time ?? 0);
+    const lengthMs = beatmap.map_length;
     const length = lengthMs / 1000;
+    const drainTimeMs = beatmap.drain_time;
+    const drainTime = drainTimeMs / 1000;
 
     // Obtaining bpm
     const bpm = beatmap.bpm ?? 0;
 
     // Obtaining star rating
-    const aimSR = beatmapData.beatmapAttributes?.difficulty?.aim_strain ?? 0;
-    const speedSR = beatmapData.beatmapAttributes?.difficulty?.speed_strain ?? 0;
-    const sr = beatmapData.beatmapAttributes?.difficulty?.stars ?? 0;
+    const aimSR = beatmapData.beatmapStrains?.difficulty?.at(-1)?.aim_strain ?? 0;
+    const speedSR = beatmapData.beatmapStrains?.difficulty?.at(-1)?.speed_strain ?? 0;
+    const sr = beatmapData.beatmapStrains?.difficulty?.at(-1)?.stars ?? 0;
 
     mappoolMap.customBeatmap.link = link;
     mappoolMap.customBeatmap.background = beatmapData.background;
@@ -122,7 +126,7 @@ export async function parsedBeatmapToCustom (
     mappoolMap.customBeatmap.title = title;
     mappoolMap.customBeatmap.BPM = parseFloat(bpm.toFixed(2));
     mappoolMap.customBeatmap.totalLength = length;
-    mappoolMap.customBeatmap.hitLength = length;
+    mappoolMap.customBeatmap.hitLength = drainTime;
     mappoolMap.customBeatmap.difficulty = diff;
     mappoolMap.customBeatmap.circleSize = cs;
     mappoolMap.customBeatmap.overallDifficulty = od;

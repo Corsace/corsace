@@ -63,7 +63,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     // Obtain beatmap data
-    const beatmapData = await beatmapParse(m, difficulty || "", link);
+    const beatmapData = await beatmapParse(m, difficulty || "", link, slotMod.allowedMods ?? 0);
     if (!beatmapData?.beatmap) {
         await respond(m, `Can't find **${difficulty !== "" ? `[${difficulty}]` : "a single difficulty(????)"}** in ur osz`);
         return;
