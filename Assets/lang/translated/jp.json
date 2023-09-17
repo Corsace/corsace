@@ -2,11 +2,11 @@
     "language": "日本語",
     "flag": "https://osu.ppy.sh/images/flags/JP.png",
     "header": {
-        "welcomeBack": "welcome back",
-        "login": "login",
+        "welcomeBack": "おかえりなさい",
+        "login": "ログイン",
         "register": "register",
         "changeDiscord": "change discord",
-        "logout": "logout"
+        "logout": "ログアウト"
     },
     "mca_ayim": {
         "banner": {
@@ -44,7 +44,7 @@
             "message": {
                 "2019": "<p>こんにちは、2020年。</p><p>A Year in Mapping 2019が当年に叩き出された記録と、蓄積された詳細な統計データをお届けしに帰ってきました！</p><p>このウェブサイトを使って、全ての年について検索できるだけの情報を含めることができました。ウェブサイト上のバグを含め、何か提案があればcorsaceのサーバー内でVINXISの元へ教えてください（リンクは左下にあります）。</p><p>また、コメントの募集も行っています。これを読んでいるあなたも、マッパーに対して好きなだけコメントを書いて送ることができます。</p><p>まずは下にあるアイコンからお好きなモードを選んで始めましょう！</p>",
                 "2020": "<p>こんにちは、2021年... 今度は間違いのない年です！</p><p>A Year in Mapping 2020が本年に叩き出された記録と、蓄積された詳細な統計データをお届けしに帰ってきました！</p><p>そして改めてにはなりますが、コメントは絶賛募集中です。早速下にあるアイコンからお好きなモードを選んで始めましょう！</p>",
-                "2021": "<p>2022 is here!</p> <p>A Year in Mapping 2021 is here to provide the records and stats made or even broken!</p>",
+                "2021": "<p>2022年になりました。</p> <p>A Year in Mapping 2021では、2021年に達成された、あるいは破られた記録や統計をお届けします！</p>",
                 "2022": "<p>Welcome to 2023!</p> <p>A Year in Mapping 2022 is here to provide the records and stats made or even broken! This time actually (kind of) on schedule!</p>"
             }
         },
@@ -120,7 +120,7 @@
             "nominating": "ノミネート",
             "preparation": "準備",
             "results": "結果",
-            "timeline": "timeline",
+            "timeline": "予定表",
             "mapsetsLabel": "マップセット",
             "mappersLabel": "マッパー",
             "commentsLabel": "コメント",
@@ -431,9 +431,9 @@
             "teams": "TEAMS",
             "schedule": "SCHEDULE",
             "mappool": "MAPPOOL",
-            "staff": "STAFF",
-            "createTeam": "CREATE TEAM",
-            "invitations": "INVITATIONS",
+            "staff": "スタッフ",
+            "createTeam": "チームを作成",
+            "invitations": "招待",
             "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
             "teamInvites": "TEAM INVITES",
             "noInvites": "You currently have no invites"
