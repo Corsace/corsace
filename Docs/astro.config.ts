@@ -75,15 +75,15 @@ export default defineConfig({
             sidebar: [
                 {
                     label: "Design",
-                    autogenerate: { directory: "design" },
+                    autogenerate: { directory: "design", collapsed: true },
                 },
                 {
                     label: "Development",
-                    autogenerate: { directory: "development" },
+                    autogenerate: { directory: "development", collapsed: true },
                 },
                 {
                     label: "Running Tournaments",
-                    autogenerate: { directory: "tournaments" },
+                    autogenerate: { directory: "tournaments", collapsed: true },
                 },
             ],
         }),
