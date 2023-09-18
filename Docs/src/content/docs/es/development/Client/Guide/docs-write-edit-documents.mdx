@@ -1,7 +1,7 @@
 ---
 title: Docs - Write/Edit Documents
 description: Writing/Editing documentation for Corsace
-lastUpdated: 2023-09-17
+lastUpdated: 2023-09-18
 sidebar:
   order: 1110
 ---
@@ -86,6 +86,12 @@ To access an image in `Assets/img/docs` from this file (which is at `Docs/src/co
 
 Each `../` moves up one folder in the directory.
 
+### Variables
+
+If you ever need to add something that should be denoted as a variable, do so by writing it as `[VARIABLE]`.
+
+For example, `config.[SITE].host` means that `SITE` is a variable, and this is referring to the `host` option for a given site.
+
 ## Work In Progress Documents
 
 As Corsace is an ever-growing repository with many moving parts that are still being built on, there will be a lot of documentation that can't be fully finished.
@@ -148,8 +154,6 @@ Afterwards, you can place it into whichever section like so:
 <WorkInProgress section="section/name" />
 ```
 
+Which will look like:
+
 <WorkInProgress section="section/name" />
-
-## Submitting New/Changed Documents
-
-Push all your changes into your forked repository, and create a Pull Request. Ping VINXIS (`corsace.io` or `vinxis` on discord) or ThePooN (`thepoon` on discord) in the #dev channel in the [Corsace Discord Server](https://discord.gg/Z6vEMsr)
