@@ -3,7 +3,7 @@ import { TournamentChannel } from "../../../../Models/tournaments/tournamentChan
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { Brackets } from "typeorm";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
-import { ojsamaParse, ojsamaToCustom } from "../../../functions/beatmapParse";
+import { beatmapParse, parsedBeatmapToCustom } from "../../../functions/beatmapParse";
 import getUser from "../../../../Server/functions/get/getUser";
 import bypassSubmit from "../../../functions/tournamentFunctions/bypassSubmit";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
@@ -48,7 +48,7 @@ export default async function autoSubmit (m: Message) {
         .andWhere("channel.channelID = :channelID", { channelID: channelID(m) })
         .andWhere("tournament.status IN (:...status)", { status: [ TournamentStatus.NotStarted.toString(), TournamentStatus.Ongoing.toString(), TournamentStatus.Registrations.toString() ]})
         .getMany();
-    
+
     if (tournaments.length !== 1)
         return;
 
@@ -69,7 +69,7 @@ export default async function autoSubmit (m: Message) {
     // Obtain beatmap data
     const diffRegex = /-d (.+)/;
     const diffMatch = diffRegex.exec(m.content);
-    const beatmapData = await ojsamaParse(m, diffMatch?.[1] || "", link);
+    const beatmapData = await beatmapParse(m, diffMatch?.[1] || "", link);
     if (!beatmapData?.beatmap)
         return;
 
@@ -91,7 +91,7 @@ export default async function autoSubmit (m: Message) {
                 .where(new Brackets(qb2 => {
                     qb2.where("customBeatmap.artist LIKE :artist", { artist: `%${beatmapData.beatmap!.artist}%` })
                         .andWhere("customBeatmap.title LIKE :title", { title: `%${beatmapData.beatmap!.title}%` })
-                        .andWhere("customBeatmap.difficulty LIKE :diff", { diff: `%${beatmapData.beatmap!.version}%` });
+                        .andWhere("customBeatmap.difficulty LIKE :diff", { diff: `%${beatmapData.beatmap!.diff_name}%` });
                 }))
                 .orWhere("map.customThreadID = :threadID", { threadID: m.channel.id });
         }))
@@ -103,9 +103,9 @@ export default async function autoSubmit (m: Message) {
     const mappoolMap = mappoolMaps.length === 1 ? mappoolMaps[0] : mappoolMaps.find(map => map.customThreadID === m.channel.id)!;
     if (mappoolMap.slot.mappool.isPublic || (!bypass && !mappoolMap.customMappers.some(mapper => mapper.discord.userID === commandUser(m).id)))
         return;
-        
+
     const mappoolSlot = `${mappoolMap.slot.mappool.abbreviation.toUpperCase()} ${mappoolMap.slot.acronym.toUpperCase()}${mappoolMap.slot.maps.length === 1 ? "" : mappoolMap.order}`;
 
-    await ojsamaToCustom(m, tournament, mappoolMap.slot.mappool, mappoolMap.slot, mappoolMap, beatmapData, link, user, mappoolSlot);
+    await parsedBeatmapToCustom(m, tournament, mappoolMap.slot.mappool, mappoolMap.slot, mappoolMap, beatmapData, link, user, mappoolSlot);
     return;
 }
