@@ -34,16 +34,16 @@ export const folders = [
     { name: "corsace-chart    - Both/Miscellaneous", color: "#B8B3F2" },
 ];
 
-This section will explain the directory structure of the Corsace repository. This is useful for understanding where to find certain files, and where to put new files. It is also useful for understanding how the repository is organised, and how the different parts of the website interact with each other.
+Bagian ini akan menjelaskan struktur direktori repositori Corsace. Informasi di bawah ini akan berguna bagi kamu untuk memahami bagaimana caranya untuk menemukan berkas tertentu, dan di mana kamu harus menempatkan berkas baru. It is also useful for understanding how the repository is organised, and how the different parts of the website interact with each other.
 
 This is only a brief overview of the directory structure.\
 For more detailed information, click one of the links in the [Navigation](#navigation) section below.
 
-## Primary Folders
+## Folder Utama
 
-Corsace can be split into three main parts:
+Sistem Corsace dapat dibagi menjadi tiga bagian utama:
 
-*   **Frontend/Client** - The websites and assets the user interacts with. All sites are made with [Nuxt 2](https://v2.nuxt.com/) aside for this documentation site, which is made with [Astro/Starlight](https://starlight.astro.build/).
+*   **Frontend/Client** - Rangkaian situs web yang dikunjungi oleh pengguna beserta seluruh asetnya. Seluruh situs Corsace dibuat dengan framework [Nuxt 2](https://v2.nuxt.com/), kecuali bagian dokumentasi yang dibuat dengan [Astro/Starlight](https://starlight.astro.build/).
 *   **Backend/Server** - Programs that run on the server, and are sometimes interacted with by the frontend.
 *   **Both/Miscellaneous** - Files that are used by both the frontend and backend, or files that don't fit into either category.
 
@@ -51,17 +51,17 @@ These three parts are represented by the following folders:
 
 <Tabs>
   <TabItem label="Colour Coded">
-    The following labels are used to key-note the purpose of each folder:
+    Berikut merupakan berbagai label yang digunakan untuk menandai kegunaan masing-masing folder:
 
     <DirectoryItem folders={labels} />
 
-    These are the relevant folders within the repository:
+    Berikut merupakan berbagai folder di dalam repositori yang relevan terhadap proyek Corsace:
 
     <DirectoryItem folders={folders} />
   </TabItem>
 
   <TabItem label="Raw">
-    These are the relevant folders within the repository:
+    Berikut merupakan berbagai folder di dalam repositori yang relevan terhadap proyek Corsace:
 
     ```
         📁 AYIM             - Frontend/Client
@@ -134,8 +134,8 @@ These folders are used for the backend of the website, which either consist of t
 
 The following folders consist of the following services:
 
-*   **📁 BanchoBot** - An osu! IRC bot
-*   **📁 DiscordBot** - A Discord bot
+*   **📁 BanchoBot** - Bot IRC osu!
+*   **📁 DiscordBot** - Bot Discord
 *   **📁 Server**
     *   **Server** - A node instance that runs the main server for the websites
     *   **CronRunner** - A node instance that runs cron jobs created by different server instances
