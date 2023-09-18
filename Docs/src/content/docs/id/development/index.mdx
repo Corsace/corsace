@@ -139,14 +139,14 @@ Berikan seed kepada seluruh database Corsace melalui perintah: `NODE_ENV=develop
 
 Kami menggunakan media penyimpanan objek yang kompatibel dengan S3 untuk menyimpan dan melayani paket beatmap, yang seluruhnya terkonfigurasi dalam `config.s3`.
 
-While we target Cloudflare R2, any S3 provider should work as long as they support multipart uploads and pre-signed URLs.
+Walaupun proyek ini diutamakan untuk Cloudflare R2, kamu dapat menggunakan layanan penyimpanan objek S3 lainnya selama layanan tersebut mendukung unggahan multi-bagian dan URL pre-signed.
 
 Kami menggunakan tiga bucket:
 
--   `team-avatars` is a public bucket that stores team avatars, can be served by a CDN without authentication
--   `mappacks` is a public bucket that stores public mappacks, can be served by a CDN without authentication
--   `mappacks-temp` is a private bucket that stores private mappacks that should not have public access\
-    Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.\
+-   `team-avatars` merupakan bucket publik yang menyimpan avatar tim, yang dapat dilayani oleh CDN tanpa autentikasi
+-   `mappacks` merupakan bucket publik yang menyimpan paket map publik, yang dapat dilayani oleh CDN tanpa autentikasi
+-   `mappacks-temp` merupakan bucket privat yang menyimpan paket beatmap rahasia, yang izin aksesnya tidak terbuka secara publik. 
+    Paket beatmap yang dihasilkan akan terlebih dahulu diunggah ke bucket ini, di mana pengguna yang berkepentingan akan dapat diberikan izin akses melalui URL yang bersifat pre-signed.\
     Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.\
     Mappacks that should become public get moved to the `mappacks` bucket.
 
