@@ -147,7 +147,7 @@ Kami menggunakan tiga bucket:
 -   `mappacks` merupakan bucket publik yang menyimpan paket map publik, yang dapat dilayani oleh CDN tanpa autentikasi
 -   `mappacks-temp` merupakan bucket privat yang menyimpan paket beatmap rahasia, yang izin aksesnya tidak terbuka secara publik. 
     Paket beatmap yang dihasilkan akan terlebih dahulu diunggah ke bucket ini, di mana pengguna yang berkepentingan akan dapat diberikan izin akses melalui URL yang bersifat pre-signed.\
-    Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.\
+    Paket beatmap yang bersifat privat tidak ditujukan untuk disimpan secara permanen. Kamu dihimbau untuk mengatur agar paket beatmap ini akan dihapus secara otomatis setelah 1 hari.\
     Mappacks that should become public get moved to the `mappacks` bucket.
 
 #### Cloudflare R2
