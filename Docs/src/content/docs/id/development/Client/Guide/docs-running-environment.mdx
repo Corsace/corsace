@@ -1,6 +1,6 @@
 ---
 title: Dokumentasi - Menjalankan Lingkungan Sistem
-description: Starting and running the environment for documentation development.
+description: Panduan memulai dan menjalankan lingkungan sistem untuk dokumentasi pengembangan.
 lastUpdated: 2023-09-16
 sidebar:
   order: 1100
@@ -10,19 +10,19 @@ sidebar:
 
 *   [Pengembangan/Memulai](../../..)
 
-## Nilai Config yang Relevan
+## Nilai Parameter Config yang Relevan
 
-Based on what config values you had provided for the website's `config.docs.host` and `config.docs.port`, you should be able to access the website at `http://host:port`
+Berdasarkan nilai parameter config yang telah kamu tetapkan pada `config.docs.host` dan `config.docs.port` milik situs lokalmu, kamu akan dapat mengakses Corsace secara lokal pada `http://host:port`.
 
-For example, `http://localhost:10000` if your `config.docs.host` is `localhost` and your `config.docs.port` is `10000`.
+Sebagai contoh, apabila `config.docs.host` kamu diatur ke `localhost` dan nilai `config.docs.port` kamu adalah `10000`, maka situs lokalmu akan dapat diakses pada `http://localhost:10000`.
 
-`config.docs.publicUrl` should be equivalent to `config.docs.host` and `config.docs.port` combined. In the example above, this would be `http://localhost:10000`.
+Nilai parameter `config.docs.publicUrl` di sini harus merupakan gabungan antara nilai `config.docs.host` dan `config.docs.port`. Pada contoh di atas, nilai ini adalah `http://localhost:10000`.
 
-See the [Config Reference](../../../misc/reference/config) for more information.
+Lihat halaman [Referensi Config](../../../misc/reference/config) untuk informasi lebih lanjut.
 
-## Running the Environment
+## Menjalankan Lingkungan Sistem
 
-Run the following command to start the website in development mode:
+Jalankan perintah berikut untuk memulai situs web dalam mode pengembangan:
 
 ```bash
 npm run docs-dev
