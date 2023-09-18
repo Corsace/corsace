@@ -88,21 +88,21 @@ config.osu.v2.clientId
 config.osu.v2.clientSecret
 ```
 
-You will need to create a "New OAuth Application" at the bottom of https://osu.ppy.sh/home/account/edit.
+Kamu akan perlu untuk membuat "Aplikasi OAuth Baru" pada sisi bawah halaman https://osu.ppy.sh/home/account/edit.
 
-Add `config.corsace.publicUrl + /api/login/osu/callback` to the `Application Callback URLs` section in the popup.
+Tambahkan `config.corsace.publicUrl + /api/login/osu/callback` ke kolom `URL Callback Aplikasi` yang muncul pada jendela popup.
 
-For example, if your `config.corsace.publicUrl` is `http://localhost:5000`, then the callback URL should be `http://localhost:5000/api/login/osu/callback`.
+Sebagai contoh, apabila `config.corsace.publicUrl` kamu adalah `http://localhost:5000`, maka URL callback yang harus kamu isi adalah `http://localhost:5000/api/login/osu/callback`.
 
-Afterwards, you will be given a `Client ID` and `Client Secret` which you will need to add to your config to the respective fields.
+Apabila sudah, kamu akan memperoleh `Client ID` dan `Client Secret` yang akan perlu untuk kamu salin ke berkas config milikmu pada kolomnya masing-masing.
 
 ```
 config.osu.bancho
 ```
 
-You can obtain your osu IRC password from the same place as the osu OAuth Application at https://osu.ppy.sh/home/account/edit#irc.
+Kamu dapat memperoleh kata sandi IRC milik akun osu!-mu dari halaman yang sama dengan tempat kamu memperoleh OAuth Aplikasi, yakni di https://osu.ppy.sh/home/account/edit#irc.
 
-If your account is a bot account, then make sure to have `botAccount` set to true; otherwise, make set it to false.
+Apabila kamu menggunakan akan osu! khusus bot, pastikan kamu mengatur nilai parameter `botAccount` ke true; apabila tidak, atur nilai ini ke false.
 
 ### Database
 
@@ -148,7 +148,7 @@ Kami menggunakan tiga bucket:
 -   `mappacks-temp` merupakan bucket privat yang menyimpan paket beatmap rahasia, yang izin aksesnya tidak terbuka secara publik. 
     Paket beatmap yang dihasilkan akan terlebih dahulu diunggah ke bucket ini, di mana pengguna yang berkepentingan akan dapat diberikan izin akses melalui URL yang bersifat pre-signed.\
     Paket beatmap yang bersifat privat tidak ditujukan untuk disimpan secara permanen. Kamu dihimbau untuk mengatur agar paket beatmap ini akan dihapus secara otomatis setelah 1 hari.\
-    Mappacks that should become public get moved to the `mappacks` bucket.
+    Paket beatmap yang ke depannya akan dirilis secara publik akan dipindahkan ke bucket `mappacks`.
 
 #### Cloudflare R2
 
