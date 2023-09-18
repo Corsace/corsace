@@ -74,16 +74,16 @@ export default defineConfig({
             lastUpdated: true,
             sidebar: [
                 {
-                    label: "Design",
-                    autogenerate: { directory: "design", collapsed: true },
+                    label: "Running Tournaments",
+                    autogenerate: { directory: "tournaments", collapsed: true },
                 },
                 {
                     label: "Development",
                     autogenerate: { directory: "development", collapsed: true },
                 },
                 {
-                    label: "Running Tournaments",
-                    autogenerate: { directory: "tournaments", collapsed: true },
+                    label: "Design",
+                    autogenerate: { directory: "design", collapsed: true },
                 },
             ],
         }),

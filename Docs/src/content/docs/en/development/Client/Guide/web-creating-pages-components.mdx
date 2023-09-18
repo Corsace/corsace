@@ -1,0 +1,131 @@
+---
+title: Web - Creating Pages/Components
+description: Creating a page or component for a Corsace website.
+lastUpdated: 2023-09-16
+sidebar:
+    order: 1210
+---
+## Pre-requisite Reading
+- [Development/Guide/Web - Running Environment](../web-running-environment)
+- [Nuxt 2/Pages Directory](https://v2.nuxt.com/docs/directory-structure/pages)
+- [vue-class-component/Class Component](https://class-component.vuejs.org/guide/class-component.html)
+- [BEM/Naming](https://getbem.com/naming/)
+
+## Directory Structure
+Pages are where they are expected based on Nuxt's directory structure. `[WEBSITE]/components`\
+Components on the other hand are currently located at 2 places:
+- If the component is used for 1 site only, then it will be in the `[WEBSITE]/components` folder (under that site's folder).
+- If the component is used for multiple sites, then it will be in `Assets/components`.
+
+:::caution
+This may change in the near future based on [this GitHub issue](https://github.com/Corsace/Corsace/issues/292)
+::: 
+
+## Page/Component Anatomy
+
+Corsace uses SASS/SCSS for styling everything, and ts for any scripting.\
+Specifically for vue files, the `vue-property-decorator` decorators are used to create pages and components alike.
+When you have created a vue file, the basic template that should be followed is as this:
+
+```vue
+<template>
+    ...
+</template>
+
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
+    ...
+})
+export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
+    ...
+}
+</script>
+
+<style lang="scss">
+@import '@s-sass/[FILENAME FROM Assets/sass]';
+</style>
+```
+
+## When to Make a Component
+For this repository, the primary cases where you would want to split the code into its own component are when:
+- The section of the HTML you are writing possibly/will be reused somewhere else
+- The component **could** be considered/used by itself outside of its parent component (standalone)
+- The complexity of the current page/component can be greatly reduced without increasing the complexity of the general repository
+
+It is **highly recommended** to split parts of the code as necessary as possible to create ease of understanding and use, and to avoid DRY (Don't Repeat Yourself).
+
+## Accessing Store
+
+### Accessing Main Store
+The main store file is located at `Assets/store/index.ts`. To access any variable from it's state, you simply add the following within the `script` section:
+```vue
+<script lang="ts">
+import { State } from "vuex-class";
+...
+export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
+    ...
+    @State [VARIABLE'S NAME FROM STORE]!: [VARIABLE'S TYPES];
+    ...
+}
+</script>
+```
+
+### Accessing Specific Store
+To access a specific store, it is very similar to accessing the main store, but a `namespace` needs to be created first.\
+For example, if you wish to access a variable in the `Assets/store/mca-ayim.ts` store state, you would do it like so:
+```vue
+<script lang="ts">
+import { namespace } from "vuex-class";
+...
+const mcaAyimModule = namespace("mca-ayim");
+...
+export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
+    ...
+    @mcaAyimModule.State [VARIABLE'S NAME FROM STORE]!: [VARIABLE'S TYPES];
+    ...
+}
+</script>
+```
+
+## SASS/SCSS and Styling Protocol
+:::danger
+To ensure BEM nomenclature clarity:
+- A block is a "standalone section"
+- An element is a "non-standalone section"
+- A modifier is an "effect"
+
+For example, `red` is not a block/element, it is a modifier at all times.
+:::
+As vue templates typically allow 1 child element only, and the styling nomenclature follows BEM, there is usually only 1 block with multiple elements and modifiers branching off it.\
+For example:
+```vue
+<template>
+    <tag class="block">
+        <tag class="block__elem1">
+            <tag class="block__elem1--mod1">
+                ...
+            </tag>
+            ...
+        </tag>
+        ...
+    </tag>
+</template>
+...
+<style lang="scss">
+...
+.block {
+    &__elem1 {
+        &--mod1 {
+            ...
+        }
+        ...
+    }
+    ...
+}
+</style>
+```
+
+All style names should be done in `snake-case` instead of `camelCase`.\
+For example: `mainPage` should instead be `main-page`.
