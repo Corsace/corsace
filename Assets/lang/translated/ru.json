@@ -42,10 +42,10 @@
             "numberof": "количество",
             "numberwith": "количество карт с",
             "message": {
-                "2019": "<p>Hello 2020.</p><p>A Year in Mapping 2019 has returned to bring you the record-breaks of the year, and the detailed statistics amassed as well!</p><p>With this website, we can now add as much information as we can feasibly retrieve for all years! If you have any suggestions (as well as any website bugs), let VINXIS know in the corsace server (link at the bottom left!)</p><p>WE ARE ALSO CROWDFUNDING COMMENTS! That means YOU can write and submit a comment for as many mappers as you want!</p><p>Select your preferred mode with the icons below to get started!</p>",
-                "2020": "<p>Hello 2021... the correct year this time!</p><p>A Year in Mapping 2020 has come to you back to back to bring you the record-breaks of THIS year, and the detailed statistics amassed as well!</p><p>Comments are closed off for 2020. Hopefully we will be able to bring them back in the future! In the meantime, check out all the records and stats!</p>",
-                "2021": "<p>2022 is here!</p> <p>A Year in Mapping 2021 is here to provide the records and stats made or even broken!</p>",
-                "2022": "<p>Welcome to 2023!</p> <p>A Year in Mapping 2022 is here to provide the records and stats made or even broken! This time actually (kind of) on schedule!</p>"
+                "2019": "<p>Привет 2020.</p><p>A Year in Mapping 2019 вернулся, чтобы поделиться рекордами и подробной статистикой за прошедший год!</p><p>С помощью этого сайта мы теперь можем добавлять столько информации, сколько сможем найти за все время! Если у вас есть какие-либо предложения или замечания, не стесняйтесь обращаться к VINXIS на сервере corsace (ссылка внизу слева!)</p><p>ТАКЖЕ У НАС ТЕПЕРЬ ЕСТЬ КОММЕНТАРИИ СООБЩЕСТВА! Это означает, что ВЫ можете оставить комментарий для любого количества мапперов!</p><p>Выберите предпочитаемый режим с помощью значков ниже, чтобы начать!</p>",
+                "2020": "<p>Привет 2021... на этот раз правильный год!</p><p>A Year in Mapping 2020 вернулся, чтобы поделиться рекордами и подробной статистикой уже за ЭТОТ год!!</p><p>Комментарии для 2020 отключены, но надеемся, что сможем вернуть их в будущем! А пока, ознакомьтесь со всеми рекордами и статистикой!</p>",
+                "2021": "<p>2022 уже здесь!</p> <p>A Year in Mapping 2021 вернулся, чтобы поделиться статистикой и новыми рекордами!</p>",
+                "2022": "<p>Добро пожаловать в 2023!</p> <p>A Year in Mapping 2022 уже здесь со статистикой и новыми рекордами!! На этот раз (вроде как) по расписанию!</p>"
             }
         },
         "mapsets": {
@@ -95,7 +95,7 @@
         "statistics": {
             "numberOf": "количество",
             "numberOfMapsWith": "количество карт с",
-            "average": "average"
+            "average": "среднее"
         },
         "comments": {
             "name": "КОММЕНТАРИИ",
@@ -113,14 +113,14 @@
     },
     "mca": {
         "main": {
-            "banner": "LET'S LOOK BACK <br> AT",
+            "banner": "ДАВАЙТЕ ЕЩЕ РАЗ ВЗГЛЯНЕМ <br> НА",
             "click": "НАЖМИТЕ СЮДА, ЧТОБЫ ВОЙТИ",
             "welcome": "ДОБРО ПОЖАЛОВАТЬ В MCA",
             "voting": "голосование",
             "nominating": "номинация",
             "preparation": "подготовка",
             "results": "результаты",
-            "timeline": "timeline",
+            "timeline": "график",
             "mapsetsLabel": "КАРТЫ",
             "mappersLabel": "МАППЕРЫ",
             "commentsLabel": "КОММЕНТАРИИ",
@@ -136,7 +136,7 @@
             "nominateNow": "номинируй сейчас!",
             "voteNow": "голосуй сейчас!",
             "viewResults": "посмотреть результаты!",
-            "daysLeft": "days left",
+            "daysLeft": "дня(ей) осталось",
             "message": {
                 "2019": "<p>Mapper's Choice Awards возвращается в третий раз в 2019! Это голосование, в котором все мапперы/моддеры могут номинировать и голосовать за лучшую, по их мнению, карту/маппера в каждой категории!</p><p>Мы хотим дать новый взгляд на лучшие карты 2019 года глазами маппинг сообщества!</p><p>В этом году мы запустили сайт, чтобы максимально упростить процесс номинирования и голосования!</p><p>Все награды в виде osu! саппортера предоставлены командой osu! напрямую. 2 месяца саппортера для победителей в каждой категории, и 6 месяцев для победителей Grand Awards!</p><p>Мы надеемся, что как можно больше человек примет участие в этом событии! Дайте знать VINXIS на дискорд сервере corsace о любых проблемах или ошибках в работе сайта!</p>",
                 "2020": "<p>Mapper's Choice Awards не заставил себя долго ждать и возвращается в четвертый раз в 2020 году! Это голосование, в котором все мапперы/моддеры могут номинировать и голосовать за лучшую, по их мнению, карту/маппера в каждой категории!</p><p>Мы хотим дать новый взгляд на лучшие карты 2020 года глазами маппинг сообщества!</p><p>Мы внесли много изменений и, надеемся, исправили все ошибки, обнаруженные в ходе MCA 2019, так что все должно пройти намного более гладко!</p><p>Все награды в виде osu! саппортера предоставлены командой osu! напрямую. 2 месяца саппортера для победителей в каждой категории, и 6 месяцев для победителей Grand Awards!</p><p>Мы надеемся, что как можно больше человек примет участие в этом событии!</p>",
@@ -316,7 +316,7 @@
                 "description": "The best beatmap with slow tapping and low SV."
             },
             "hybrid": {
-                "name": "Best Hybrid",
+                "name": "Лучший Гибрид",
                 "description": "The best beatmap which showcases substantial amounts of both LN and rice patterning."
             },
             "hybrid4K": {
@@ -372,8 +372,8 @@
                 "description": "The best beatmap at using unconventional / gimmicky patterning."
             },
             "unconventionalCtb": {
-                "name": "Best Unconventional AR/CS",
-                "description": "The best beatmap with unusual AR (Approx. <=8.5) or unusual CS (Approx. >=5, <=3)."
+                "name": "Лучший Необычный АR/CS",
+                "description": "Лучшая карта с необычным AR (Приблиз. <=8.5) или CS (Приблиз. >=5, <=3)."
             },
             "diversity": {
                 "name": "Best Diversity",
@@ -461,7 +461,7 @@
         },
         "home": {
             "description": "Погрузись в Corsace Open 2023 - место, где лучшие игроки osu! сходятся лицом к лицу.",
-            "timeline": "TIMELINE",
+            "timeline": "ГРАФИК",
             "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
             "registrations": "РЕГИСТРАЦИЯ",
             "button": {
@@ -487,8 +487,8 @@
                 "startDate": "ВРЕМЯ НАЧАЛА",
                 "endDate": "ВРЕМЯ ОКОНЧАНИЯ",
                 "rounds": "РАУНДЫ",
-                "initialSize": "INITIAL SIZE",
-                "finalSize": "FINAL SIZE"
+                "initialSize": "ЧИСЛО КОМАНД В НАЧАЛЕ",
+                "finalSize": "ЧИСЛО КОМАНД В КОНЦЕ"
             },
             "headings": {
                 "mappools": "МАППУЛЫ",
@@ -502,8 +502,8 @@
             "mappools": {
                 "info": "ИНФОРМАЦИЯ О МАППУЛЕ",
                 "notAvailable": "ИНФОРМАЦИЯ НЕДОСТУПНА",
-                "mappackDownload": "DOWNLOAD MAP PACK",
-                "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
+                "mappackDownload": "СКАЧАТЬ ПАК С КАРТАМИ",
+                "mappacknotAvailable": "ПАК С КАРТАМИ НЕДОСТУПЕН"
             },
             "prizes": "ПРИЗЫ",
             "donateToCorsace": "ПОЖЕРТВОВАТЬ CORSACE",
@@ -514,7 +514,7 @@
             "tournamentStructure": "ПОРЯДОК ПРОВЕДЕНИЯ ТУРНИРА",
             "infoGraphic": "ИНФОГРАФИКА",
             "matchProcedures": "ПОРЯДОК ПРОВЕДЕНИЯ МАТЧА",
-            "reportTournament": "СООБЩИТЬ О НАРУШЕНИЯХ В ТУРНИРЕ",
+            "reportTournament": "СООБЩИТЬ О НАРУШЕНИЯХ В ТУРНИРАХ",
             "subjectToChange": "правила могут быть изменены для уточнения и/или корректировки"
         },
         "qualifiers": {
@@ -589,7 +589,7 @@
                     "removeMember": "Вы уверены, что хотите убрать {username} из вашей команды?",
                     "transferManager": "Вы уверены, что хотите передать роль менеджера {username}?",
                     "invite": "Вы уверены, что хотите пригласить {username} в вашу команду?",
-                    "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
+                    "removeInvite": "Вы уверены, что хотите удалить приглашение {username} в вашу команду?",
                     "unregister": "Вы уверены, что хотите отменить регистрацию в этом турнире? Вы сможете зарегистрироваться заново в любое время, если у вас будет 6 членов."
                 },
                 "save": "СОХРАНИТЬ",
@@ -608,8 +608,8 @@
                 "editTeamInvites": "изменить приглашения команды",
                 "closeTeamInvites": "закрыть редактирование приглашений команды",
                 "qualifier": "ОТБОРОЧНЫЙ",
-                "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
-                "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
+                "requiredMessageExact": "Вам нужно ровно {minTeamSize} члена(ов) команды для регистрации и участия в отборочном турнире",
+                "requiredMessageRange": "Вам нужно от {minTeamSize} до {maxTeamSize} членов команды для регистрации и участия в отборочном турнире"
             },
             "registration": {
                 "noRegistration": "Не зарегистрирован ни в одном турнире",
@@ -624,12 +624,12 @@
             "editQualifierTime": "изменить время отборочного матча",
             "deleteTeam": "delete qualifier/unregister team",
             "createJoinQualifier": "создать/присоединиться к отборочному матчу",
-            "notRegistered": "Currently not registered in Corsace Open."
+            "notRegistered": "В данный момент не зарегистрирован в Corsace Open."
         },
         "create": {
             "title": "СОЗДАНИЕ КОМАНДЫ",
             "info1": "Регистрация закончится",
-            "info2": "Please ensure all information is correct before finalizing.",
+            "info2": "Перед завершением регистрации убедитесь, что вся указанная информация верна.",
             "teamName": "НАЗВАНИЕ КОМАНДЫ",
             "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
             "teamAcronym": "АББРЕВИАТУРА КОМАНДЫ",
