@@ -1,12 +1,13 @@
 ---
 title: Web - Running Environment
 description: Starting and running the environment for web development.
-lastUpdated: 2023-09-16
+lastUpdated: 2023-09-19
 sidebar:
     order: 1200
 ---
 ## Pre-requisite Reading
 - [Development/Getting Started](../../..)
+- [Development/Server/Guide/Server + CronRunner - Running Environment](../../../server/guide/server-running-environment)
 
 ## Relevant Config Values
 
@@ -20,28 +21,20 @@ See the [Config Reference](../config) for more information.
 
 ## Running the Environment
 
-
-### Running the API Server
-
-You will likely need to have the server running to access the majority of the functionalities and pages any website in this repository provides. To do so, simply run the following command:
-
-```bash
-npm run database
-npm run api-dev
-```
-
-More information about the API server can be found [here](../../../server/guide/api-running-environment).
-
-### Running the Website
+:::note
+Make sure to start the API server if you haven't already.
+:::
 
 Depending on which website(s) you want to run, you will need to run the following command(s) in a separate terminal:
 
 |Website| Cmd |
 |--|--|
 | AYIM | `npm run ayim-dev` |
-| Closed | `npm run closed-dev` |
+| Closed | `npm run closed-dev`* |
 | MCA | `npm run mca-dev` |
 | Main | `npm run main-dev` |
 | Open | `npm run open-dev` |
+
+*Currently does not exist
 
 The website should now be available at the URL you configured in the [Config Reference](../config).
