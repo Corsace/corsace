@@ -1,7 +1,7 @@
 ---
 title: Memulai
 description: Dokumentasi untuk memulai pengembangan Corsace.
-lastUpdated: 2023-09-17
+lastUpdated: 2023-09-19
 sidebar:
   order: 1
 ---
@@ -214,53 +214,66 @@ discord: {
 }
 ```
 
+The client ID and secret are found in the discord application's `OAuth2` tab.\\
+
 ###### OAuth2
 
-Tuju bagian OAuth2 pada bot dan tambahkan URL redirect berikut:
+Head to the OAuth2 section of the bot and add the following redirect URL:
 
 ```
 config.corsace.publicUrl + /api/login/discord/callback
 ```
 
-Tambahkan juga URL redirect yang mengandung Client ID milik bot milikmu dengan format sebagai berikut:
+Also add a redirect URL with your bot's specific Client ID that looks like:
 
 ```
 https://discordapp.com/oauth2/authorize?&client_id=<CLIENT ID>&scope=bot&permissions=8
 ```
 
-Ikuti tautan ini untuk menambahkan bot milikmu ke dalam server.
+Follow this link to add your bot to your server.
 
 ###### Bot
 
-Tuju bagian Bot dan salin token bot milikmu. 
-Sisipkan token tersebut pada `config.discord.token`.
+Head to the `Bot` section of the Discord application and copy your bot token. 
+Paste it into `config.discord.token`
 
-Pastikan kamu telah mencentang `Server Members` dan `Message Content` pada daftar pilihan yang tersedia pada menu **Privileged Gateway Intents** sebelum memulai bot. Apabila tidak, bot kamu tidak akan berjalan dan kamu akan dihadapkan dengan pesan error `[DISALLOWED INTENTS]`.
+Ensure you enable the `Server Members` and `Message Content` intents under the **Privileged Gateway Intents** subsection before usage, the bot will not start otherwise, and you will be provided a `[DISALLOWED INTENTS]` error.
 
-###### Webhook GitHub
+###### GitHub Webhook
 
-Langkah ini sepenuhnya opsional, dan hanya akan berguna apabila kamu benar-benar ingin melacak rekam jejak aktivitas fork GitHub milikmu di Discord dan memanfaatkan webhook GitHub milik Corsace.
+Completely optional, and only if you really want to track your GitHub fork's events on discord and want to utilize Corsace's Github Webhook.
 
-Pada channel Discord yang ingin kamu gunakan sebagai tempat untuk menerima notifikasi, buat webhook baru melalui `Settings -> Integrations -> Create Webhook`, salin URL webhook tersebut, dan sisipkan pada `config.github.webhookUrl` di configmu.
-Buat kata sandi dan tempatkan kata sandi ini pada `config.github.webhookSecret`.
+In the discord channel you want to obtain GitHub notifications from, create a webhook from `settings -> Integrations -> Create Webhook`, copy its Webhook URL, and place it into your config in `config.github.webhookUrl`.
+Create a password and place it in `config.github.webhookSecret`.
 
-Pada Github, tuju pengaturan repositori dan buat webhook baru. Tulis URL berikut pada kolom yang tersedia:
+On GitHub, go to the repository's settings, and create a new webhook. Place the following URL in:
 
 ```
 config.corsace.publicUrl + /api/github
 ```
 
-Tentukan tipe konten ke `application/json` beserta dengan secret webhook milik kata sandi yang kamu buat sebelumnya.
+Set the content type to `application/json`, and the secret to the password you created earlier.
 
 ### Centrifugo
 
-Kami menggunakan Centrifugo untuk menampilkan notifikasi secara real-time. Kamu dapat menemukan dokumentasi seputar Centrifugo [di sini](https://centrifugal.dev/docs/getting-started/introduction).
+We use Centrifugo for real-time notifications. You can find the documentation [here](https://centrifugal.dev/docs/getting-started/introduction).
 
-#### Pengaturan
+#### Setup
 
-Pada Unix:
-Jalankan perintah `npm run centrifugo` untuk memulai server Centrifugo. Secara default, server ini akan tersedia pada `http://localhost:8001` selama kamu tidak mengubah nilai port pada berkas konfigurasi.
+On Unix:
+Run `npm run centrifugo` to start the centrifugo server. It will be available at `http://localhost:8001` by default, unless you change the port in the config files.
 
-Pada WSL/Windows ATAU apabila metode di atas tidak bekerja:
-Instal berkas biner (.exe) dari [daftar rilisan terbaru](https://github.com/centrifugal/centrifugo/releases) dan tambahkan ke folder root proyek ini.
-Setelahnya, jalankan perintah `npm run centrifugo:local` untuk memulai server Centrifugo. Apabila kamu ingin mengubah nomor port yang digunakan, ubah nilai parameter '-p' pada script yang terkait di berkas `package.json` dan URL API config milikmu.
+On WSL/Windows OR if the above doesn't work:
+Download the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and add it to the root folder of this project.
+Afterwards, run `npm run centrifugo:local` to start the centrifugo server. If you want to change the port, change the `-p` flag in the respective script in `package.json`, and your config file's api URL.
+
+## Next Steps
+
+For frontend web development, it's suggested to go through the following documents in order:
+
+-   [Server + CronRunner - Running Environment](server/guide/server-running-environment)
+-   [Web - Running Environment](client/guide/web-running-environment)
+
+For docs development, you can simply go [here](client/guide/docs-running-environment)
+
+For any specific backend development, you can go to their respective `Running Environment` pages in `Server/Guide` from the sidebar.
