@@ -598,22 +598,22 @@
             "headers": {
                 "tournaments": "ТУРНИРЫ",
                 "teamStats": "СТАТИСТИКА КОМАНДЫ",
-                "teamManager": "TEAM MANAGER",
+                "teamManager": "МЕНЕДЖЕР КОМАНДЫ",
                 "teamMembers": "СОСТАВ КОМАНДЫ",
                 "editTeamMembers": "изменить состав команды",
-                "closeTeamMembers": "close team members edit",
+                "closeTeamMembers": "закрыть редактирование членов команды",
                 "becomeMember": "become a member and play as well",
-                "becomeManager": "become manager only",
-                "teamInvites": "TEAM INVITES",
-                "editTeamInvites": "edit team invites",
-                "closeTeamInvites": "close team invites edit",
+                "becomeManager": "стать просто менеджером",
+                "teamInvites": "ПРИГЛАШЕНИЯ КОМАНДЫ",
+                "editTeamInvites": "изменить приглашения команды",
+                "closeTeamInvites": "закрыть редактирование приглашений команды",
                 "qualifier": "ОТБОРОЧНЫЙ",
                 "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
                 "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
             },
             "registration": {
                 "noRegistration": "Не зарегистрирован ни в одном турнире",
-                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
+                "toPlay": "Чтобы играть в Corsace Open, наберите 6 членов и выберите ниже время и дату отборочного матча"
             },
             "teamID": "ID КОМАНДЫ",
             "member": "член",
@@ -623,7 +623,7 @@
             "averagePP": "Средние PP",
             "editQualifierTime": "изменить время отборочного матча",
             "deleteTeam": "delete qualifier/unregister team",
-            "createJoinQualifier": "create/join qualifier",
+            "createJoinQualifier": "создать/присоединиться к отборочному матчу",
             "notRegistered": "Currently not registered in Corsace Open."
         },
         "create": {
@@ -649,22 +649,22 @@
             "teamManagement": "УПРАВЛЕНИЕ КОМАНДОЙ",
             "teamManagers": "<div><span>Менеджеры</span> команды (т. е. вы) имеют возможность играть и быть капитаном одновременно</div> <div><span>ИЛИ</span> не играть с командой, а просто быть капитаном.</div>",
             "teamManagersFree": "Если вы не хотите играть и выступаете только в роли менеджера, вы <span>не</span> занимаете слот игрока.",
-            "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
-            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "selectManager": "Поставьте галочку, если вы <span>не</span> собираетесь играть с командой и выступаете только в роли <span>менеджера</span>.",
+            "confirmManager": "<div>Ставя галочку, я буду выступать только в качестве менеджера и понимаю, что не смогу участвовать </div> <div>в каком-либо матче.</div>",
             "create": "СОЗДАТЬ КОМАНДУ"
         },
         "components": {
             "openCardTeam": {
                 "rank": "РАНК",
                 "teambwsAverage": "TEAM BWS AVG",
-                "unregistered": "UNREGISTERED",
+                "unregistered": "НЕ ЗАРЕГИСТРИРОВАН",
                 "bws": "BWS"
             },
             "stageSelector": "ВЫБОР ЭТАПА"
         },
         "staff": {
             "title": "ОРГАНИЗАТОРЫ",
-            "notLoggedIn": "NOT LOGGED IN"
+            "notLoggedIn": "ВЫ НЕ АВТОРИЗОВАНЫ"
         },
         "referee": {
             "title": "СУДЬЯ",
