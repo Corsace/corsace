@@ -300,8 +300,8 @@
                 "description": "The best storyboard in saying a lot with very little."
             },
             "narrative": {
-                "name": "Best Narrative",
-                "description": "The best storyboard in telling a great story."
+                "name": "Лучшее Повествование",
+                "description": "Лучший сториборд, рассказывающий хорошую историю."
             },
             "technicalTaiko": {
                 "name": "Best Technical",
@@ -320,44 +320,44 @@
                 "description": "The best beatmap which showcases substantial amounts of both LN and rice patterning."
             },
             "hybrid4K": {
-                "name": "Best 4K Hybrid",
+                "name": "Лучший 4K Гибрид",
                 "description": "The best 4K beatmap which showcases substantial amounts of both LN and rice patterning."
             },
             "hybrid7K": {
-                "name": "Best 7K Hybrid",
+                "name": "Лучший 7K Гибрид",
                 "description": "The best 7K beatmap which showcases substantial amounts of both LN and rice patterning."
             },
             "highBPMAlternator": {
-                "name": "Best High BPM / Alternator",
-                "description": "The best beatmap with priority on extremely fast tapping and / or aim skills. (240+ BPM)"
+                "name": "Лучшая Карта С Высоким BPM / Альтернейт",
+                "description": "Лучшая карта, требующая необычно высокую скорость нажатия клавиш и/или аим. (240+ BPM)"
             },
             "vanilla": {
                 "name": "Best Vanilla",
                 "description": "The best beatmap utilizing simple mapping techniques to great effect."
             },
             "complex": {
-                "name": "Best Complex Rhythm / Swing",
-                "description": "The best beatmap with extensive usage of uncommon snappings, including doubles, 1/3, 1/5, 1/7, and more."
+                "name": "Лучшая Карта Со Сложным Ритмом",
+                "description": "Лучшая карта с огромным количеством редких снапов, включая двойки, 1/3, 1/5, 1/7 и прочее."
             },
             "unorthodox": {
-                "name": "Best Unorthodox / Gimmick",
-                "description": "The best beatmap showcasing mapping techniques or ideas that are not frequently seen."
+                "name": "Самая Необычная Карта",
+                "description": "Лучшая карта, демонстрирующая необычные идеи или техники маппинга."
             },
             "sliderTech": {
                 "name": "Best Slider Tech",
                 "description": "The best beatmap featuring technical elements, intricate slider design and velocity usage, and complex stream patterns."
             },
             "mostInspiring": {
-                "name": "Most Inspiring",
-                "description": "The one who influenced and provided inspiration to others the most."
+                "name": "Самый Вдохновляющий",
+                "description": "Тот, кто больше всего послужил вдохновением для других."
             },
             "mostInnovative": {
-                "name": "Most Innovative",
-                "description": "The one who influenced and provided inspiration to others the most."
+                "name": "Самый Инновационный",
+                "description": "Тот, кто больше всего послужил вдохновением для других."
             },
             "communityPillar": {
-                "name": "Community Pillar",
-                "description": "The best user in providing outstanding contribution to the community behind-the-scenes."
+                "name": "Столп Сообщества",
+                "description": "Пользователь, внесший выдающийся вклад в развитие сообщества за кулисами."
             },
             "simplisticTaiko": {
                 "name": "Best Simplistic",
@@ -372,7 +372,7 @@
                 "description": "The best beatmap at using unconventional / gimmicky patterning."
             },
             "unconventionalCtb": {
-                "name": "Лучший Необычный АR/CS",
+                "name": "Лучший Нестандартный АR/CS",
                 "description": "Лучшая карта с необычным AR (Приблиз. <=8.5) или CS (Приблиз. >=5, <=3)."
             },
             "diversity": {
@@ -487,8 +487,8 @@
                 "startDate": "ВРЕМЯ НАЧАЛА",
                 "endDate": "ВРЕМЯ ОКОНЧАНИЯ",
                 "rounds": "РАУНДЫ",
-                "initialSize": "ЧИСЛО КОМАНД В НАЧАЛЕ",
-                "finalSize": "ЧИСЛО КОМАНД В КОНЦЕ"
+                "initialSize": "КОМАНД В НАЧАЛЕ",
+                "finalSize": "КОМАНД В КОНЦЕ"
             },
             "headings": {
                 "mappools": "МАППУЛЫ",
@@ -622,7 +622,7 @@
             "averageRank": "Средний Ранк",
             "averagePP": "Средние PP",
             "editQualifierTime": "изменить время отборочного матча",
-            "deleteTeam": "delete qualifier/unregister team",
+            "deleteTeam": "удалить отборочный/отменить регистрацию команды",
             "createJoinQualifier": "создать/присоединиться к отборочному матчу",
             "notRegistered": "В данный момент не зарегистрирован в Corsace Open."
         },
@@ -631,9 +631,9 @@
             "info1": "Регистрация закончится",
             "info2": "Перед завершением регистрации убедитесь, что вся указанная информация верна.",
             "teamName": "НАЗВАНИЕ КОМАНДЫ",
-            "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
+            "teamLength": "От 5 до 20 символов. НЕ добавляйте слово \"team\" в название, оно будет автоматически удалено. Ненормативная лексика будет проверена.",
             "teamAcronym": "АББРЕВИАТУРА КОМАНДЫ",
-            "acronymLength": "2 - 4 characters. Profanity will be checked.",
+            "acronymLength": "От 2 до 4 символов. Ненормативная лексика будет проверена.",
             "teamTimezone": "ЧАСОВОЙ ПОЯС КОМАНДЫ",
             "timezoneText": "Мы будем считать, что ваша команда сможет играть с <span class='bold'>10:00 до 22:00</span> в выбранном часовом поясе.",
             "teamAvatar": "АВАТАРКА КОМАНДЫ",
@@ -644,8 +644,8 @@
             "preview": "ПРЕДПРОСМОТР",
             "avatarInfo1": "Для аватарки рекомендуется использовать изображение с <span>соотношением сторон 3:1</span>.",
             "avatarInfo2": "Капитаны могут изменять названия команд и аватарки до окончания регистрации.",
-            "avatarInfo3": "Все названия и аватарки будут проверены организаторами.",
-            "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
+            "avatarInfo3": "Все названия и аватарки будут утверждены организаторами.",
+            "avatarInfo4": "Если они будут сочтены неуместными, вы будете уведомлены о необходимости внесения изменений.",
             "teamManagement": "УПРАВЛЕНИЕ КОМАНДОЙ",
             "teamManagers": "<div><span>Менеджеры</span> команды (т. е. вы) имеют возможность играть и быть капитаном одновременно</div> <div><span>ИЛИ</span> не играть с командой, а просто быть капитаном.</div>",
             "teamManagersFree": "Если вы не хотите играть и выступаете только в роли менеджера, вы <span>не</span> занимаете слот игрока.",
@@ -669,7 +669,7 @@
         "referee": {
             "title": "СУДЬЯ",
             "loadMore": "ЗАГРУЗИТЬ ЕЩЕ",
-            "back": "BACK TO MATCHUP LIST",
+            "back": "ВЕРНУТЬСЯ К СПИСКУ МАТЧЕЙ",
             "createLobby": "СОЗДАТЬ ЛОББИ",
             "roll": "ROLL",
             "reroll": "RE-ROLL",
