@@ -65,8 +65,8 @@ import influenceRemove from "./osu/influenceRemove";
 import profile from "./osu/profile";
 import recent from "./osu/recent";
 
-import { mappoolQACreate, mappoolQADelete } from "./threadCommands/mapoolQA";
-import { jobBoardCreate, jobBoardDelete } from "./threadCommands/jobBoard";
+import { mappoolQACreate, mappoolQADelete } from "../commandsInexplicit/threadCommands/mapoolQA";
+import { jobBoardCreate, jobBoardDelete } from "../commandsInexplicit/threadCommands/jobBoard";
 import { mappoolComponentsThreadType } from "../functions/tournamentFunctions/mappoolComponentsThread";
 import { TournamentChannelType } from "../../Interfaces/tournament";
 
