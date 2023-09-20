@@ -107,42 +107,42 @@ Tergantung dari area yang ingin kamu kembangkan, kamu mungkin hanya akan perlu m
 
 ## Frontend/Client
 
-These folders are used for the frontend of the website, which is what the user sees and interacts with.
+Rangkaian folder berikut digunakan untuk bagian frontend situs web, yang merupakan bagian dari sistem yang dilihat dan diinteraksikan oleh pengguna.
 
-Berikut merupakan daftar folder yang khusus digunakan untuk situs web:
+Folder-folder ini (beserta situs web-nya masing-masing) meliputi:
 
 *   **📁 AYIM** - https://ayim.corsace.io
-*   **📁 Closed** - https://closed.corsace.io (Currently does not exist)
+*   **📁 Closed** - https://closed.corsace.io (Saat ini belum dibuat)
 *   **📁 Docs** - https://docs.corsace.io
 *   **📁 MCA** - https://mca.corsace.io
 *   **📁 Main** - https://corsace.io
 *   **📁 Open** - https://open.corsace.io
 
-The remaining folder (**📁 Assets**) is used for storing the following assets for all of the above websites:
+Folder sisanya (**📁 Assets**) digunakan untuk menyimpan aset-aset berikut untuk seluruh situs web di atas:
 
-*   Images/Icons
-*   Fonts
+*   Gambar/Ikon
+*   Font
 *   CSS
-*   Components
-*   Translations
+*   Komponen
+*   Terjemahan
 
 ## Backend/Server
 
 <WorkInProgress section="backend/server" />
 
-These folders are used for the backend of the website, which either consist of the server that the websites communicate with, or node instances to interact with other services such as Discord, osu!, e.t.c.
+Rangkaian folder berikut digunakan untuk bagian backend situs web, yang berisi server tempat situs web saling berkomunikasi atau node yang digunakan untuk berinteraksi dengan layanan eksternal seperti Discord, osu!, dan lain sebagainya.
 
-The following folders consist of the following services:
+Folder-folder ini (beserta layanannya masing-masing) meliputi:
 
 *   **📁 BanchoBot** - Bot IRC osu!
 *   **📁 DiscordBot** - Bot Discord
 *   **📁 Server**
-    *   **Server** - A node instance that runs the main server for the websites
-    *   **CronRunner** - A node instance that runs cron jobs created by different server instances
-*   **Centrifugo** - A node instance that runs a Centrifugo server
-    *   This doesn't have a folder, as it is a single file run via npm commands (see [Development/Getting Started#Centrifugo](/en/development/#centrifugo) for more information), [but there are endpoints that exist for it in the 📁 Server folder](#).
+    *   **Server** - Instansi node yang berjalan pada server utama situs web
+    *   **CronRunner** - Instansi node yang menjalankan job cron yang dihasilkan oleh berbagai instansi server yang berbeda
+*   **Centrifugo** - Instansi node yang menjalankan server Centrifugo
+    *   Berhubung Centrifugo merupakan berkas tunggal yang dijalankan melalui perintah npm (lihat [Development/Getting Started#Centrifugo](/en/development/#centrifugo), layanan ini tidak memiliki foldernya tersendiri. Meskipun demikian, terdapat endpoint untuk Centrifugo yang tersimpan pada folder 📁 Server]\(#).
 
-The remaining folder (**📁 Models**) is used for storing the database models for the server.
+Folder sisanya (**📁 Models**) digunakan untuk menyimpan model database untuk server.
 
 ## Both/Miscellaneous
 
