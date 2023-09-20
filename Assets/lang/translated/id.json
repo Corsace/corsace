@@ -688,9 +688,9 @@
     },
     "main": {
         "construction": {
-            "underConstruction": "under construction",
-            "sorry": "sorry for the inconvenience",
-            "development": "the corsace website is still in early development",
+            "underConstruction": "dalam pengerjaan",
+            "sorry": "mohon maaf atas ketidaknyamanannya",
+            "development": "situs web corsace masih berada dalam tahap pengembangan dini",
             "theTeam": "tim corsace"
         },
         "merch": {
