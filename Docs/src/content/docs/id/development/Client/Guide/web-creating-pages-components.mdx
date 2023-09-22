@@ -56,17 +56,17 @@ export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
 
 Untuk repositori ini, rangkaian situasi di mana kamu mungkin akan perlu untuk memisahkan kode yang ada ke masing-masing komponennya meliputi antara lain:
 
-*   The section of the HTML you are writing possibly/will be reused somewhere else
-*   The component **could** be considered/used by itself outside of its parent component (standalone)
-*   The complexity of the current page/component can be greatly reduced without increasing the complexity of the general repository
+*   Ketika bagian HTML yang sedang kamu tulis nantinya akan/berkemungkinan untuk digunakan kembali di tempat lain
+*   Ketika komponen yang bersangkutan **dapat** dianggap/digunakan sebagai komponen tunggal yang tidak terikat komponen induk (standalone)
+*   Ketika halaman/komponen yang sedang kamu kerjakan dapat jauh lebih disederhanakan tanpa membuat repositori yang ada menjadi terlalu kompleks
 
-It is **highly recommended** to split parts of the code as necessary as possible to create ease of understanding and use, and to avoid DRY (Don't Repeat Yourself).
+Kamu **sangat disarankan** untuk memisahkan bagian kode yang ada hanya seperlunya, agar segala sesuatunya mudah untuk dipahami/digunakan dan kamu tidak terjebak dalam pusaran DRY (Don't Repeat Yourself).
 
 ## Mengakses Store
 
 ### Mengakses Store Utama
 
-The main store file is located at `Assets/store/index.ts`. To access any variable from it's state, you simply add the following within the `script` section:
+Berkas store utama terletak pada `Assets/store/index.ts`. To access any variable from it's state, you simply add the following within the `script` section:
 
 ```vue
 <script lang="ts">
