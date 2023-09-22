@@ -425,32 +425,32 @@
     },
     "open": {
         "navbar": {
-            "home": "HOME",
-            "info": "INFO",
-            "qualifiers": "QUALIFIERS",
-            "teams": "TEAMS",
-            "schedule": "SCHEDULE",
-            "mappool": "MAPPOOL",
-            "staff": "STAFF",
-            "createTeam": "CREATE TEAM",
-            "invitations": "INVITATIONS",
-            "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
-            "teamInvites": "TEAM INVITES",
-            "noInvites": "You currently have no invites"
+            "home": "主页",
+            "info": "比赛信息",
+            "qualifiers": "资格赛",
+            "teams": "队伍",
+            "schedule": "排程",
+            "mappool": "图池",
+            "staff": "工作人员",
+            "createTeam": "创建队伍",
+            "invitations": "邀请",
+            "loginDiscord": "登录 Discord 来管理队伍或邀请",
+            "teamInvites": "队伍邀请",
+            "noInvites": "你目前没有收到任何邀请"
         },
         "footer": {
             "corsace": "CORSACE",
-            "twitter": "TWITTER",
+            "twitter": "推特",
             "discord": "DISCORD",
             "twitch": "TWITCH",
             "youtube": "YOUTUBE"
         },
         "stages": {
-            "qualifiers": "QUALIFIERS",
-            "round robin": "ROUND ROBIN",
-            "runoff bracket": "RUNOFF BRACKET",
-            "knockout 1": "KNOCKOUT 1",
-            "knockout 2": "KNOCKOUT 2",
+            "qualifiers": "资格赛",
+            "round robin": "循环赛",
+            "runoff bracket": "突围赛",
+            "knockout 1": "淘汰赛一轮",
+            "knockout 2": "淘汰赛二轮",
             "abbreviations": {
                 "ql": "(QL)",
                 "rr": "(RR)",
@@ -624,7 +624,7 @@
             "editQualifierTime": "edit qualifier time",
             "deleteTeam": "delete qualifier/unregister team",
             "createJoinQualifier": "create/join qualifier",
-            "notRegistered": "Currently not registered in Corsace Open."
+            "notRegistered": "目前尚未报名 Corsace Open。"
         },
         "create": {
             "title": "CREATE A TEAM",
