@@ -1,35 +1,35 @@
 ---
-title: Web - Creating Pages/Components
-description: Creating a page or component for a Corsace website.
+title: Web - Membuat Halaman/Komponen
+description: Cara untuk membuat halaman atau komponen pada situs web Corsace.
 lastUpdated: 2023-09-20
 sidebar:
   order: 1210
 ---
 
-## Pre-requisite Reading
+## Bacaan Prasyarat
 
-*   [Development/Client/Guide/Web - Running Environment](../web-running-environment)
+*   [Development/Client/Guide/Web - Menjalankan Lingkungan Sistem](../web-running-environment)
 *   [Nuxt 2/Direktori Halaman](https://v2.nuxt.com/docs/directory-structure/pages)
 *   [vue-class-component/Class Component](https://class-component.vuejs.org/guide/class-component.html)
-*   [BEM/Naming](https://getbem.com/naming/)
+*   [BEM/Penamaan](https://getbem.com/naming/)
 
-## Directory Structure
+## Struktur Direktori
 
-Pages are where they are expected based on Nuxt's directory structure. `[WEBSITE]/components`\
-Components on the other hand are currently located at 2 places:
+Berkas halaman pada umumnya terletak pada lokasi yang sesuai dengan struktur direktori Nuxt. `[WEBSITE]/components`\
+Di sisi lain, berkas komponen saat ini terletak di dua lokasi berikut:
 
-*   If the component is used for 1 site only, then it will be in the `[WEBSITE]/components` folder (under that site's folder).
-*   If the component is used for multiple sites, then it will be in `Assets/components`.
+*   Apabila suatu komponen hanya digunakan untuk satu situs, maka komponen tersebut akan terletak pada folder `[WEBSITE]/components` (di bawah folder situs web yang bersangkutan).
+*   Apabila suatu komponen digunakan untuk berbagai situs, maka komponen tersebut akan terletak pada `Assets/components`.
 
 :::caution
 This may change in the near future based on [this GitHub issue](https://github.com/Corsace/Corsace/issues/292)
 :::
 
-## Page/Component Anatomy
+## Anatomi Halaman/Komponen
 
-Corsace uses SASS/SCSS for styling everything, and ts for any scripting.\
-Specifically for vue files, the `vue-property-decorator` decorators are used to create pages and components alike.
-When you have created a vue file, the basic template that should be followed is as this:
+Corsace menggunakan SASS/SCSS untuk pengayaan dan ts untuk penulisan script.\
+Khusus untuk berkas vue, dekorator `vue-property-decorator` digunakan untuk membuat baik halaman maupun komponen.
+Pada saat kamu membuat berkas vue baru, kamu disarankan untuk mengikuti template dasar sebagai sebagai berikut:
 
 ```vue
 <template>
@@ -52,9 +52,9 @@ export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
 </style>
 ```
 
-## When to Make a Component
+## Waktu Yang Tepat Untuk Membuat Komponen
 
-For this repository, the primary cases where you would want to split the code into its own component are when:
+Untuk repositori ini, rangkaian situasi di mana kamu mungkin akan perlu untuk memisahkan kode yang ada ke masing-masing komponennya meliputi antara lain:
 
 *   The section of the HTML you are writing possibly/will be reused somewhere else
 *   The component **could** be considered/used by itself outside of its parent component (standalone)
@@ -62,9 +62,9 @@ For this repository, the primary cases where you would want to split the code in
 
 It is **highly recommended** to split parts of the code as necessary as possible to create ease of understanding and use, and to avoid DRY (Don't Repeat Yourself).
 
-## Accessing Store
+## Mengakses Store
 
-### Accessing Main Store
+### Mengakses Store Utama
 
 The main store file is located at `Assets/store/index.ts`. To access any variable from it's state, you simply add the following within the `script` section:
 
