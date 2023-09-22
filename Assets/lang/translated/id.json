@@ -108,7 +108,7 @@
             "create": "Tulis",
             "login": "Silakan masuk terlebih dahulu sebelum menulis komentar!",
             "visible": "(belum tersedia)",
-            "notice": "Hello! This may be the first time you have navigated to (one of) the comments page! <br> Please note that comments are crowdfunded! <br> Anyone (including you) can write comments for anyone until this year's MCA is done! <br> Write about what they did or their achievements in [YEAR] to show appreciation to the mappers participating in the community!"
+            "notice": "Halo! Sepertinya ini kali pertama kamu mengunjungi halaman komentar! <br> Corsace menggalang komentar secara terbuka, yang berarti bahwa... <br> Siapa pun juga (termasuk kamu) dapat menulis komentar bagi siapa saja hingga MCA tahun ini berakhir! <br> Berikanlah apresiasimu kepada para mapper kita beserta karya atau prestasi yang telah mereka buat di tahun [YEAR]!"
         }
     },
     "mca": {
@@ -344,39 +344,39 @@
                 "description": "Beatmap terbaik yang mengusung ide atau teknik mapping yang tidak umum."
             },
             "sliderTech": {
-                "name": "Best Slider Tech",
+                "name": "Map Slider Tech Terbaik",
                 "description": "Beatmap terbaik yang kesulitannya bertitik berat pada desain slider, manipulasi SV, dan pattern stream yang kompleks."
             },
             "mostInspiring": {
-                "name": "Most Inspiring",
+                "name": "Paling Menginspirasi",
                 "description": "Mereka yang paling memberikan pengaruh dan inspirasi bagi sesama."
             },
             "mostInnovative": {
-                "name": "Most Innovative",
+                "name": "Paling Inovatif",
                 "description": "Mereka yang paling memberikan pengaruh dan inspirasi bagi sesama."
             },
             "communityPillar": {
-                "name": "Community Pillar",
+                "name": "Pilar Komunitas",
                 "description": "Mereka yang paling berkontribusi dalam memajukan dunia mapping dan modding dari balik layar."
             },
             "simplisticTaiko": {
-                "name": "Best Simplistic",
+                "name": "Map Sederhana Terbaik",
                 "description": "Beatmap terbaik yang mengusung desain yang sederhana."
             },
             "technicalCatch": {
-                "name": "Best Technical",
+                "name": "Map Technical Terbaik",
                 "description": "Beatmap terbaik yang kesulitannya bertitik berat pada penggunaan berbagai konsep osu!catch yang kompleks."
             },
             "antiMetaCatch": {
-                "name": "Best Anti-Meta",
+                "name": "Map Anti-Meta Terbaik",
                 "description": "Beatmap terbaik yang mengusung gimmick atau teknik mapping yang tidak umum."
             },
             "unconventionalCtb": {
-                "name": "Best Unconventional AR/CS",
+                "name": "Map dengan AR/CS Non-Konvensional Terbaik",
                 "description": "Beatmap terbaik yang mengusung nilai AR atau CS yang tidak lazim (~AR <=8.5 atau ~CS >=5 / <=3)."
             },
             "diversity": {
-                "name": "Best Diversity",
+                "name": "Map Berkeragaman Terbaik",
                 "description": "Beatmap terbaik yang mengusung berbagai macam skillset / kategori di dalamnya."
             }
         },
