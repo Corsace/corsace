@@ -428,13 +428,13 @@
             "home": "BERANDA",
             "info": "INFO",
             "qualifiers": "KUALIFIKASI",
-            "teams": "TEAMS",
-            "schedule": "SCHEDULE",
+            "teams": "TIM",
+            "schedule": "JADWAL",
             "mappool": "MAPPOOL",
-            "staff": "STAFF",
-            "createTeam": "CREATE TEAM",
-            "invitations": "INVITATIONS",
-            "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
+            "staff": "STAF",
+            "createTeam": "BUAT TIM",
+            "invitations": "UNDANGAN",
+            "loginDiscord": "MASUK VIA DISCORD UNTUK MENGELOLA TIM/UNDANGAN",
             "teamInvites": "UNDANGAN TIM",
             "noInvites": "Kamu saat ini tidak memiliki undangan"
         },
@@ -468,18 +468,18 @@
                 "qualifiersMappool": "QUALIFIERS MAPPOOLS",
                 "mappoolDownload": "Mappool download and statistics",
                 "register": "CREATE AND REGISTER YOUR TEAM",
-                "registrationsEnd": "Registrations end"
+                "registrationsEnd": "Pendaftaran berakhir pada"
             }
         },
         "info": {
-            "title": "INFORMATION",
-            "condensed": "CONDENSED INFO",
+            "title": "INFORMASI",
+            "condensed": "INFO RINGKAS",
             "error": "Turnamen tidak dapat ditemukan",
             "matchInfo": {
                 "matchSize": "FORMAT PERTANDINGAN",
                 "minPlayers": "JML. PEMAIN MINIMAL",
                 "maxPlayers": "JML. PEMAIN MAKSIMAL",
-                "pickTimer": "MAP PICK TIMER",
+                "pickTimer": "WAKTU PEMILIHAN MAP",
                 "readyTimer": "READY TIMER",
                 "order": "ORDER",
                 "scoringMethod": "SCORING METHOD",
@@ -604,7 +604,7 @@
                 "closeTeamMembers": "close team members edit",
                 "becomeMember": "become a member and play as well",
                 "becomeManager": "become manager only",
-                "teamInvites": "TEAM INVITES",
+                "teamInvites": "UNDANGAN TIM",
                 "editTeamInvites": "edit team invites",
                 "closeTeamInvites": "close team invites edit",
                 "qualifier": "QUALIFIER",
@@ -646,7 +646,7 @@
             "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
             "avatarInfo3": "All names and avatars will be approved by staff.",
             "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
-            "teamManagement": "TEAM MANAGEMENT",
+            "teamManagement": "MANAJEMEN TIM",
             "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
             "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
             "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
@@ -663,21 +663,21 @@
             "stageSelector": "PILIH TAHAPAN"
         },
         "staff": {
-            "title": "STAFF",
-            "notLoggedIn": "NOT LOGGED IN"
+            "title": "STAF",
+            "notLoggedIn": "BELUM MASUK"
         },
         "referee": {
-            "title": "REFEREE",
-            "loadMore": "LOAD MORE",
-            "back": "BACK TO MATCHUP LIST",
-            "createLobby": "CREATE LOBBY",
+            "title": "WASIT",
+            "loadMore": "MUAT LEBIH BANYAK",
+            "back": "KEMBALI KE DAFTAR PERTANDINGAN",
+            "createLobby": "BUAT LOBI",
             "roll": "ROLL",
-            "reroll": "RE-ROLL",
+            "reroll": "ROLL ULANG",
             "settings": "!MP SETTINGS",
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
-            "closeLobby": "CLOSE LOBBY"
+            "closeLobby": "TUTUP LOBI"
         },
         "status": {
             "loading": "MEMUAT"
