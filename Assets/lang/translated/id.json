@@ -560,31 +560,31 @@
         },
         "teams": {
             "teamsList": "DAFTAR TIM",
-            "error": "COULD NOT GET TEAM LIST",
-            "searchPlaceholder": "search for user/team",
-            "editTeamInfo": "edit team info",
-            "qualifierId": "Qualifier ID",
+            "error": "DAFTAR TIM TIDAK DAPAT DIPEROLEH",
+            "searchPlaceholder": "cari pengguna/tim",
+            "editTeamInfo": "sunting info tim",
+            "qualifierId": "ID Kualifikasi",
             "placeholders": {
-                "searchUser": "osu! username (must have corsace account)",
-                "name": "name",
-                "abbreviation": "abbreviation"
+                "searchUser": "nama pengguna osu! (harus memiliki akun corsace yang terhubung)",
+                "name": "nama",
+                "abbreviation": "singkatan"
             },
             "edit": {
-                "teamName": "TEAM NAME",
-                "teamAbbreviation": "TEAM ABBREVIATION",
-                "timezone": "TIMEZONE",
-                "teamAvatar": "TEAM AVATAR",
+                "teamName": "NAMA TIM",
+                "teamAbbreviation": "SINGKATAN TIM",
+                "timezone": "ZONA WAKTU",
+                "teamAvatar": "AVATAR TIM",
                 "errors": {
-                    "size": "Image is too large. Ensure the image is less than 5MB.",
-                    "type": "Invalid image file. Ensure the image is a PNG or JPG.",
-                    "invalidImage": "Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.",
-                    "invalidTimezone": "Invalid timezone.",
-                    "errorAddingTeamAvatar": "Error adding team avatar:\n{error}",
+                    "size": "Gambar terlalu besar. Pastikan ukuran gambar lebih kecil dari 5MB.",
+                    "type": "Berkas gambar tidak valid. Pastikan gambar berupa PNG atau JPG.",
+                    "invalidImage": "Berkas gambar tidak valid. Pastikan gambar berupa PNG atau JPG dan berukuran lebih kecil dari 5MB.",
+                    "invalidTimezone": "Zona waktu tidak valid.",
+                    "errorAddingTeamAvatar": "Terdapat kesalahan dalam menambahkan avatar tim:\n{error}",
                     "invalidName": "",
-                    "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
+                    "contactVinxis": "Terdapat kesalahan dalam pencarian. Hubungi VINXIS seiring dengan kesalahan ini. Akses konsol melalui Ctrl + Shift + I untuk keterangan lebih lanjut."
                 },
                 "confirm": {
-                    "deleteTeam": "Are you sure you want to delete this team?",
+                    "deleteTeam": "Apakah Anda yakin untuk menghapus tim ini?",
                     "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!",
                     "removeMember": "Are you sure you want to remove {username} from your team?",
                     "transferManager": "Are you sure you want to transfer manager to {username}?",
@@ -680,7 +680,7 @@
             "closeLobby": "CLOSE LOBBY"
         },
         "status": {
-            "loading": "LOADING"
+            "loading": "MEMUAT"
         },
         "mappool": {
             "title": "MAPPOOL"
