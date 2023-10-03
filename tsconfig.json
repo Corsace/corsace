@@ -8,16 +8,21 @@
         "experimentalDecorators": true,
         "resolveJsonModule": true,
         "strict": true,
+        "types": [
+            "@nuxt/types",
+            "@nuxtjs/axios",
+            "nuxt-i18n",
+        ],
         "lib": [
             "esnext",
             "esnext.asynciterable",
-            "dom"
+            "dom",
         ],
         "sourceMap": true,
     },
     "include": [
         "config/Config.d.ts",
         "Typing/*.d.ts",
-        "node_modules/vue/types/jsx.d.ts"
+        "node_modules/vue/types/jsx.d.ts",
     ]
 }

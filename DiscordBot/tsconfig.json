@@ -2,8 +2,14 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "outDir": "./dist",
+        "types": [
+            "@types/node",
+        ],
     },
     "files": [
-        "index.ts"
+        "index.ts",
+    ],
+    "exclude": [
+        "../Typing/vue-shim.d.ts",
     ],
 }

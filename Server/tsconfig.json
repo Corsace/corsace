@@ -2,12 +2,15 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "outDir": "./dist",
+        "types": [
+            "@types/node",
+        ],
     },
     "files": [
         "index.ts",
-        "cron-runner.ts"
+        "cron-runner.ts",
     ],
     "exclude": [
-        "../Typing/vue-shim.d.ts"
-    ]
+        "../Typing/vue-shim.d.ts",
+    ],
 }
