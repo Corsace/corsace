@@ -8,12 +8,6 @@
         "experimentalDecorators": true,
         "resolveJsonModule": true,
         "strict": true,
-        "types": [
-            "@types/node",
-            "@nuxt/types",
-            "@nuxtjs/axios",
-            "nuxt-i18n",
-        ],
         "lib": [
             "esnext",
             "esnext.asynciterable",
@@ -22,13 +16,8 @@
         "sourceMap": true,
     },
     "include": [
-        // Don't know why, but this is needed for the typescript compiler to actually work with the .d.ts files + eslint properly
-        "**/*",
-    ],
-    "exclude": [
-        "node_modules",
-        ".nuxt",
-        ".astro",
-        "dist",
+        "config/Config.d.ts",
+        "Typing/*.d.ts",
+        "node_modules/vue/types/jsx.d.ts"
     ]
 }

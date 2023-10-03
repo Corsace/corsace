@@ -7,4 +7,7 @@
         "index.ts",
         "cron-runner.ts"
     ],
+    "exclude": [
+        "../Typing/vue-shim.d.ts"
+    ]
 }

@@ -27,7 +27,7 @@
                     selectedMode === mode ? `mode__${mode}--selected--${viewTheme}` : '',
                 ]" 
             />
-            {{ isSmall ? modeShort[mode as keyof typeof modeShort] : mode.toUpperCase() }}
+            {{ isSmall ? modeShort[mode] : mode.toUpperCase() }}
         </div>
     </div>
 </template>
