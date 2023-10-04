@@ -1,6 +1,6 @@
 ---
 title: Dokumentasi - Menulis/Menyuting Dokumen
-description: Menulis/Menyunting dokumentasi Corsace
+description: Panduan untuk menulis/menyunting dokumentasi Corsace
 lastUpdated: 2023-09-18
 sidebar:
   order: 1110
@@ -24,39 +24,39 @@ Apabila kamu ingin membantu menerjemahkan, mintalah akses sebagai penerjemah pad
 
 Dokumen yang akan kamu buat harus ditempatkan pada `Docs/src/content/docs/en` atau salah satu sub-folder di dalamnya.\
 Struktur direktori yang dimiliki oleh folder ini serupa dengan struktur direktori yang tertera pada sidebar.\
-Secara garis besar, terdapat 3 bagian utama pada folder ini:
+Secara garis besar, dokumentasi proyek ini terbagi menjadi 3 bagian utama:
 
 *   [Dokumentasi Desain](design)
 *   [Dokumentasi Pengembangan](development)
 *   [Dokumentasi cara menjalankan turnamen melalui Corsace](tournaments)
 
-Within these, the [Diátaxis framework](https://diataxis.fr/) is used as the structural guide for writing documentation; however, the main focus is on writing [Guides](https://diataxis.fr/how-to-guides/) and [References](https://diataxis.fr/reference/).
+Proyek ini menggunakan [framework Diátaxis](https://diataxis.fr/) digunakan sebagai panduan umum untuk menulis dokumen. Meskipun demikian, kamu hanya perlu untuk memahami cara untuk menulis [Panduan](https://diataxis.fr/how-to-guides/) dan [Referensi](https://diataxis.fr/reference/) untuk dapat berkontribusi.
 
-## Document Anatomy
+## Anatomi Dokumen
 
-It will be assumed that you understand the markdown format and extra features Starlight provides for writing it based on the [Pre-requisite Reading](#pre-requisite-reading) section.
+Dokumentasi ini ditulis dengan asumsi bahwa kamu telah memahami cara kerja markdown beserta dengan berbagai fitur penulisan tambahan yang disediakan oleh Starlight sebagaimana yang tertera pada [Bacaan Prasyarat](#pre-requisite-reading).
 
-It's recommended to use a .mdx file for documentation in order to provide extra functionality via Javascript/JSX.
+Kamu disarankan untuk menyimpan berkas dokumentasimu dalam format .mdx agar ke depannya dokumentasi ini dapat terintegrasi dengan kode Javascript/JSX.
 
-For any document that is expected to not be fully written/linked to other documents to, make sure to read the [Work In Progress Documents](#work-in-progress-documents) section.
+Untuk dokumen yang statusnya masih dalam pengerjaan (WIP) atau yang tidak dibuat untuk dihubungkan ke dokumen lainnya, lihat bagian [Dokumen WIP](#work-in-progress-documents).
 
-### File name
+### Penamaan Berkas
 
-Simply create a document with the title of the file as lowercased and with words separated by hypens `-`.
-For example, since the title of this document is `Docs - Write/Edit Documents`, the file name is `docs-write-edit-documents.mdx`.
+Namai dokumen kamu sesuai dengan judul dokumen yang ditulis dengan huruf kecil dan tanda strip `-` sebagai pengganti spasi.
+Sebagai contoh, pada dokumen yang berjudul `Docs - Write/Edit Documents` ini, nama berkas yang sesuai adalah `docs-write-edit-documents.mdx`.
 
-### Frontmatter
+### Kop Dokumen (Frontmatter)
 
-Almost every document should have the following in its frontmatter:
+Pada umumnya, suatu dokumen harus menyertakan berbagai keterangan berikut pada bagian kop-nya:
 
-*   `title` - The title of the document
-*   `description` - A short description for the document's use case
-*   `lastUpdated` - The date you are creating/editing the document in `YYYY-MM-DD` format
+*   `title` - Judul dokumen yang bersangkutan
+*   `description` - Penjelasan singkat seputar kegunaan dokumen
+*   `lastUpdated` - Tanggal dokumen terakhir dibuat/diperbarui dalam format `YYYY-MM-DD`
 *   `sidebar`
-    *   `order` - The order of the document, the lower the number, the higher it will appear on the left sidebar.
-    *   Note: The ordering for sub-documents is created using a 4 digit number. This is used similarly to an ID system for the documents.
+    *   `order` - Ordo/tingkatan dokumen. Semakin rendah angka yang tertera, semakin awal dokumen akan terurut pada sidebar.
+    *   Catatan: Pengurutan sub-dokumen dilangsungkan dengan sistem angka 4 digit. Sistem ini serupa dengan sistem ID untuk dokumen utama.
 
-Here is this file's frontmatter as an example:
+Sebagai contoh, berikut merupakan kop yang digunakan oleh dokumen ini:
 
 ```yml
 ---
@@ -68,7 +68,7 @@ sidebar:
 ---
 ```
 
-### Main Body
+### Badan Dokumen
 
 All headers shuold use at least 2 hashtags `##` in order to properly appear.\
 Astro Starlight automtically creates an `## Overview` internally, so for any introductory text, you do not need to add an extra header.
