@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "resolveJsonModule": true,
+        "strict": true,
+        "types": [
+            "@nuxt/types",
+            "@nuxtjs/axios",
+            "nuxt-i18n",
+        ],
+        "lib": [
+            "esnext",
+            "esnext.asynciterable",
+            "dom",
+        ],
+        "sourceMap": true,
+    },
+    "include": [
+        "config/Config.d.ts",
+        "Typing/*.d.ts",
+        "node_modules/vue/types/jsx.d.ts",
+    ]
+}
