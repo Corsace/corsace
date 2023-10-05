@@ -4,7 +4,7 @@ WORKDIR /src
 
 FROM base AS builder
 
-COPY LICENSE package.json package-lock.json README.md tsconfig.json ormconfig.ts /src/
+COPY LICENSE package.json package-lock.json README.md tsconfig.json tsconfig.base.json ormconfig.ts /src/
 
 RUN npm ci
 
