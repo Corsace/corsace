@@ -4,6 +4,7 @@
         "noEmit": true
     },
     "include": [
+        "**/*",
         "**/*.vue",
     ],
 }
