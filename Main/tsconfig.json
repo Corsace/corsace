@@ -1,9 +1,12 @@
 {
-    "extends": "../tsconfig.base.json",
+    "extends": "../tsconfig.json",
     "compilerOptions": {
         "noEmit": true
     },
-    "files": [
+    "include": [
+        "../config/Config.d.ts",
+        "../Typing/*.d.ts",
+        "../node_modules/vue/types/jsx.d.ts",
         "**/*",
         "**/*.vue",
     ],

@@ -3,7 +3,10 @@
     "compilerOptions": {
         "noEmit": true
     },
-    "files": [
+    "include": [
+        "../config/Config.d.ts",
+        "../Typing/*.d.ts",
+        "../node_modules/vue/types/jsx.d.ts",
         "**/*",
         "**/*.vue",
     ],
