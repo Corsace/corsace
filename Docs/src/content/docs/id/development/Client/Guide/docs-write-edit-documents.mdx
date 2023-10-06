@@ -73,34 +73,34 @@ sidebar:
 Seluruh header pada badan dokumen harus ditulis dengan diawali oleh setidaknya 2 simbol tagar `##` untuk dapat muncul.\
 Astro Starlight akan secara otomatis membuat `## Overview` untuk setiap dokumen baru, sehingga kamu tidak perlu membuat header tambahan untuk teks perkenalan.
 
-If your documentation is dependant on any other documents within this repository, or from Astro Starlight, then make sure to add a `## Pre-requisite Reading` section after your introductory text, but BEFORE any other section you create.
+Apabila dokumentasi kamu bergantung pada dokumen lain pada repositori ini atau pada Astro Starlight, pastikan untuk menambahkan bagian `## Bacaan Prasyarat` setelah teks perkenalan NAMUN sebelum bagian lainnya yang kamu buat.
 
-### Images
+### Gambar
 
-Images should be put in the `Assets/img/docs` directory. When you want to input an image into your document you can do so with a relative link.
-To access an image in `Assets/img/docs` from this file (which is at `Docs/src/content/docs/en/development/Client/Guide/docs-write-edit-documents.mdx`), you require the following relative direction:
+Tempatkan seluruh gambar pada direktori `Assets/img/docs`. Kamu akan dapat menyisipkan gambar-gambar ini ke dokumenmu melalui tautan relatif (relative link).
+Untuk mengakses gambar di `Assets/img/docs` dari dokumen ini (yang berlokasi di `Docs/src/content/docs/en/development/Client/Guide/docs-write-edit-documents.mdx`), tautan relatif yang kamu butuhkan adalah sebagai berikut:
 
 ```mdx
 ![Image](../../../../../../../../Assets/img/docs/image.png)
 ```
 
-Each `../` moves up one folder in the directory.
+Dengan masing-masing tanda `../` digunakan untuk naik satu folder.
 
-### Variables
+### Variabel
 
-If you ever need to add something that should be denoted as a variable, do so by writing it as `[VARIABLE]`.
+Apabila kamu perlu untuk menyisipkan variabel tertentu, kamu dapat menuliskannya sebagai `[VARIABLE]`.
 
-For example, `config.[SITE].host` means that `SITE` is a variable, and this is referring to the `host` option for a given site.
+Sebagai contoh, pada parameter `config.[SITE].host`, `SITE` merupakan variabel yang merujuk pada `host` situs yang bersangkutan.
 
-## Work In Progress Documents
+## Dokumen WIP
 
-As Corsace is an ever-growing repository with many moving parts that are still being built on, there will be a lot of documentation that can't be fully finished.
+Berhubung Corsace merupakan repositori yang senantiasa berkembang dengan berbagai elemen yang terus-menerus dipindahkan dan dikerjakan, repositori Corsace tak pelak akan memiliki banyak dokumentasi yang tidak dapat diselesaikan sepenuhnya.
 
-When this is the case, the following features should be added into your document:
+Pada kasus yang seperti ini, kamu akan perlu untuk menambahkan berbagai fitur berikut ke dalam dokumenmu:
 
-### WIP Frontmatter
+### Kop Dokumen WIP
 
-In your frontmatter, the following should be added into `sidebar`:
+Pada kop dokumenmu, tambahkan kode berikut pada `sidebar`:
 
 ```yml
   badge:
@@ -108,7 +108,7 @@ In your frontmatter, the following should be added into `sidebar`:
     variant: caution
 ```
 
-Sebagai contoh, dengan dokumen ini:
+Sebagai contoh, apabila dokumen ini merupakan dokumen WIP, maka kodenya adalah:
 
 ```yml
 ---
