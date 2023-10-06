@@ -4,7 +4,7 @@ import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
 import { isEligibleFor, currentMCA } from "../../../Server/middleware/mca-ayim";
 import { config } from "node-config-ts";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { RequestStatus } from "../../../Interfaces/guestRequests";
@@ -59,7 +59,7 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     }
 
     // Get beatmap information
-    const { data: beatmaps } = await axios.get<any, AxiosResponse<any>>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&b=${beatmapID}`);
+    const { data: beatmaps } = await axios.get<any[]>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&b=${beatmapID}`);
     if (beatmaps.length !== 1) {
         return { error: "Error in obtaining beatmap info!"};
     }

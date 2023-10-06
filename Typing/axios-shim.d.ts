@@ -1,8 +1,9 @@
-import "axios";
+import "@nuxtjs/axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { ResponseBody } from "koa";
 
-declare module "axios" {
-    interface AxiosInstance {
+declare module "@nuxtjs/axios" {
+    interface NuxtAxiosInstance {
         // Did not equate T to any to ensure that the response body is always defined
         request<T, R = AxiosResponse<ResponseBody<T>>> (config: AxiosRequestConfig): Promise<R>;
         get<T, R = AxiosResponse<ResponseBody<T>>>(url: string, config?: AxiosRequestConfig): Promise<R>;

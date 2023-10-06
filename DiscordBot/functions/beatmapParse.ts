@@ -1,5 +1,5 @@
 
-import Axios from "axios";
+import axios from "axios";
 import osu from "ojsama";
 import { Entry, Parse } from "unzipper";
 import { once } from "events";
@@ -26,7 +26,7 @@ export async function ojsamaParse (m: Message | ChatInputCommandInteraction, dif
     let background: string | undefined = undefined;
     let axiosData: any = null;
     try {
-        const { data } = await Axios.get(link, { responseType: "stream" });
+        const { data } = await axios.get(link, { responseType: "stream" });
         axiosData = data;
     } catch (e) {
         await m.reply("Can't download the map. Make sure the link is valid");

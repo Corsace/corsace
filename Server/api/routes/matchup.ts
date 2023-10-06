@@ -1,4 +1,4 @@
-import Axios from "axios";
+import axios from "axios";
 import Router from "@koa/router";
 import { Multi } from "nodesu";
 import { Brackets, EntityManager } from "typeorm";
@@ -22,7 +22,7 @@ import { Stage } from "../../../Models/tournaments/stage";
 import { config } from "node-config-ts";
 import { MatchupSet } from "../../../Models/tournaments/matchupSet";
 import dbMatchupToInterface from "../../functions/tournaments/matchups/dbMatchupToInterface";
-import { TournamentStageState, TournamentState } from "koa";
+import { ResponseBody, TournamentStageState, TournamentState } from "koa";
 
 const matchupRouter = new Router();
 
@@ -273,13 +273,13 @@ matchupRouter.get("/:matchupID/bancho/:endpoint", async (ctx) => {
     }
 
     try {
-        const { data } = await Axios.get(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
+        const { data } = await axios.get<ResponseBody>(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
             auth: config.interOpAuth,
         });
 
         ctx.body = data;
     } catch (e) {
-        if (Axios.isAxiosError(e)) {
+        if (axios.isAxiosError(e)) {
             ctx.body = e.response?.data ?? {
                 success: false,
                 error: e.message,

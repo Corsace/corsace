@@ -123,7 +123,7 @@ export class osuAPIV2 {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
         
-        const { data } = await axios.get<any, AxiosResponse<T>>(this.apiV2URL + endpoint, {
+        const { data } = await axios.get<T>(this.apiV2URL + endpoint, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
