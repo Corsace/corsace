@@ -18,7 +18,7 @@ Pastikan bahwa kamu telah membuat fork, karena kami menerima kontribusi melalui 
 
 ## Struktur Direktori
 
-Pada repositori ini, seluruh dokumentasi yang dihasilkan terletak pada `Docs/src/content/docs/en`.\
+Pada repositori ini, seluruh dokumentasi yang dihasilkan akan dapat ditemui pada `Docs/src/content/docs/en`.\
 Folder `docs` ini juga mengandung dokumentasi dalam berbagai bahasa yang pada umumnya diterjemahkan dari folder `en`.\
 Apabila kamu ingin membantu menerjemahkan, mintalah akses sebagai penerjemah pada https://translate.corsace.io dan bergabunglah ke [server Discord Corsace](https://discord.gg/Z6vEMsr)
 
@@ -123,14 +123,14 @@ sidebar:
 ---
 ```
 
-This will provide a WIP icon to the document on the left sidebar like so:\
-![Example of the WIP badge](../../../../../../../../Assets/img/docs/wipExample.png)
+Kode ini akan menampilkan ikon WIP pada dokumen di sidebar sebagai berikut:\
+![Contoh badge WIP](../../../../../../../../Assets/img/docs/wipExample.png)
 
-### WIP section
+### Bagian WIP
 
-If there's a specific section that is a work in progress, a component has been created called `WorkInProgress` within the `Docs/src/components` folder to label them as such.\
-You should import it AFTER your frontmatter, but BEFORE any text is added, and use a similar method of relative directory writing for importing images.\
-For this document as an example:
+Apabila terdapat bagian tertentu pada dokumen yang masih dalam pengerjaan, kamu harus membuat komponen bernama `WorkInProgress` di dalam folder `Docs/src/components` untuk menandai bagian ini sebagai WIP.\
+Kamu harus mengimpor komponen ini SETELAH bagian kop dokumen, namun SEBELUM kamu menempatkan teks apapun. Untuk mengimpor, panggil komponen menggunakan tautan relatif sebagaimana ketika kamu ingin menampilkan gambar.\
+Sebagai contoh, pada dokumen ini, kode untuk mengimpor komponen adalah:
 
 ```mdx
 ---
@@ -148,7 +148,7 @@ import WorkInProgress from '../../../../../../components/WorkInProgress.astro';
 ## Pre-requisite Reading
 ```
 
-Afterwards, you can place it into whichever section like so:
+Setelahnya, kamu dapat menempatkan komponen yang kamu impor pada bagian manapun yang ingin kamu tandai WIP sebagai berikut:
 
 ```mdx
 <WorkInProgress section="section/name" />
