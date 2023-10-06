@@ -102,13 +102,13 @@ export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
 ## Protokol SASS/SCSS dan Pengayaan (Styling)
 
 :::danger
-To ensure BEM nomenclature clarity:
+Untuk memastikan kejelasan nomenklatur BEM:
 
-*   A block is a "standalone section"
-*   An element is a "non-standalone section"
-*   A modifier is an "effect"
+*   Blok merupakan "bagian mandiri" ("standalone section")
+*   Elemen merupakan "bagian berketergantungan" ("non-standalone section")
+*   Pengubah/modifier merupakan "efek" ("effect")
 
-For example, `red` is not a block/element, it is a modifier at all times.
+Sebagai contoh, berhubung `red` bukan merupakan blok/elemen, maka `red` akan selalu berlaku sebagai pengubah/modifier.
 :::
 As vue templates typically allow 1 child element only, and the styling nomenclature follows BEM, there is usually only 1 block with multiple elements and modifiers branching off it.\
 For example:
