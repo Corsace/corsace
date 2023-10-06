@@ -15,28 +15,28 @@ sidebar:
 
 Berdasarkan nilai parameter config yang telah kamu tetapkan pada `config.[WEBSITE].host` dan `config.[WEBSITE].port` milik situs lokalmu, kamu akan dapat mengakses Corsace secara lokal pada `http://host:port`.
 
-For example, `http://localhost:3000` for the ayim website if your `config.ayim.host` is `localhost` and your `config.ayim.port` is `3000`.
+Sebagai contoh, apabila `config.ayim.host` kamu diatur ke `localhost` dan nilai `config.ayim.port` kamu adalah `3000`, maka situs lokalmu akan dapat diakses pada `http://localhost:3000`.
 
-`config.[WEBSITE].publicUrl` should be equivalent to `config.[WEBSITE].host` and `config.[WEBSITE].port` combined. In the example above, this would be `http://localhost:3000`.
+Nilai parameter `config.[WEBSITE].publicUrl` di sini harus merupakan gabungan antara nilai `config.[WEBSITE].host` dan `config.[WEBSITE].port`. Pada contoh di atas, nilai ini adalah `http://localhost:3000`.
 
-See the [Config Reference](../config) for more information.
+Lihat halaman [Referensi Config](../../../misc/reference/config) untuk informasi lebih lanjut.
 
-## Running the Environment
+## Menjalankan Lingkungan Sistem
 
 :::note null
-Make sure to start the API server if you haven't already.
+Pastikan untuk menjalankan server API apabila server ini belum aktif.
 :::
 
-Depending on which website(s) you want to run, you will need to run the following command(s) in a separate terminal:
+Jalankan masing-masing perintah berikut pada terminal yang terpisah sesuai dengan situs web yang ingin kamu jalankan:
 
-| Website | Cmd                    |
-| ------- | ---------------------- |
-| AYIM    | `npm run ayim-dev`     |
-| Closed  | `npm run closed-dev`\* |
-| MCA     | `npm run mca-dev`      |
-| Main    | `npm run main-dev`     |
-| Open    | `npm run open-dev`     |
+| Situs  | Cmd                    |
+| ------ | ---------------------- |
+| AYIM   | `npm run ayim-dev`     |
+| Closed | `npm run closed-dev`\* |
+| MCA    | `npm run mca-dev`      |
+| Utama  | `npm run main-dev`     |
+| Open   | `npm run open-dev`     |
 
-\*Currently does not exist
+\*Saat ini belum tersedia
 
-The website should now be available at the URL you configured in the [Config Reference](../config).
+Situs web lokalmu akan dapat ditemui pada alamat URL yang kamu tentukan pada [Referensi Config](../../../misc/reference/config).
