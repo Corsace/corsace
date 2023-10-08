@@ -23,7 +23,7 @@ const modes = [
     "mania",
 ];
 
-osuRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext, next) => {
+osuRouter.$get("/", redirectToMainDomain, async (ctx: ParameterizedContext, next) => {
     const site = parseQueryParam(ctx.query.site);
     if (!site) {
         ctx.body = "No site specified";
@@ -46,7 +46,7 @@ osuRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext, next)
     await next();
 }, passport.authenticate("oauth2", { scope: scopes }));
 
-osuRouter.get<UserAuthenticatedState>("/callback", async (ctx: ParameterizedContext, next) => {
+osuRouter.$get<UserAuthenticatedState>("/callback", async (ctx: ParameterizedContext, next) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
@@ -61,6 +61,13 @@ osuRouter.get<UserAuthenticatedState>("/callback", async (ctx: ParameterizedCont
         }
     })(ctx, next);
 }, async (ctx, next) => {
+    if (!ctx.state.user) {
+        const redirect = ctx.cookies.get("redirect");
+        ctx.cookies.set("redirect", "");
+        ctx.redirect(redirect ?? "back");
+        return;
+    }
+
     try {
         // api v2 data
         const data = await osuV2Client.getMe(ctx.state.user.osu.accessToken!);
@@ -74,7 +81,7 @@ osuRouter.get<UserAuthenticatedState>("/callback", async (ctx: ParameterizedCont
             .getMany();
         await Promise.all(Object.values(ModeDivisionType)
             .filter(mode => typeof mode === "number")
-            .map(modeID => ctx.state.user.refreshStatistics(modeID as ModeDivisionType, data)));
+            .map(modeID => ctx.state.user!.refreshStatistics(modeID as ModeDivisionType, data)));
 
         // Username changes
         const usernames: string[] = data.previous_usernames ?? [];
@@ -155,12 +162,22 @@ osuRouter.get<UserAuthenticatedState>("/callback", async (ctx: ParameterizedCont
         if (e) {
             ctx.status = 500;
             console.error(e);
-            ctx.body = { error: e };
+            ctx.body = {
+                success: false, 
+                error: typeof e === "string" ? e : "Internal server error",
+            };
         } else {
             throw e;
         }
     }
 }, async ctx => {
+    if (!ctx.state.user) {
+        const redirect = ctx.cookies.get("redirect");
+        ctx.cookies.set("redirect", "");
+        ctx.redirect(redirect ?? "back");
+        return;
+    }
+
     try {
         // MCA data
         ctx.state.user.mcaEligibility = ctx.state.user.mcaEligibility || [];
@@ -200,7 +217,10 @@ osuRouter.get<UserAuthenticatedState>("/callback", async (ctx: ParameterizedCont
         if (e) {
             ctx.status = 500;
             console.error(e);
-            ctx.body = { error: e };
+            ctx.body = {
+                success: false, 
+                error: typeof e === "string" ? e : "Internal server error",
+            };
         } else {
             throw e;
         }

@@ -43,7 +43,7 @@ async function isCommentOwner (ctx: ParameterizedContext<UserAuthenticatedState>
 
 const commentsRouter  = new CorsaceRouter();
 
-commentsRouter.get("/", async (ctx) => {
+commentsRouter.$get("/", async (ctx) => {
     if (!ctx.query.user) {
         ctx.body = {
             success: false,
@@ -129,7 +129,7 @@ commentsRouter.get("/", async (ctx) => {
     };
 });
 
-commentsRouter.post<UserAuthenticatedState>("/create", isLoggedIn, canComment, async (ctx) => {
+commentsRouter.$post<UserAuthenticatedState>("/create", isLoggedIn, canComment, async (ctx) => {
     const newComment: string = ctx.request.body.comment.trim();
     const year: number = ctx.request.body.year;
     const targetID: number = ctx.request.body.targetID;
@@ -241,7 +241,7 @@ commentsRouter.post<UserAuthenticatedState>("/create", isLoggedIn, canComment, a
     };
 });
 
-commentsRouter.post<CommentAuthenticatedState>("/:id/update", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
+commentsRouter.$post<CommentAuthenticatedState>("/:id/update", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
     const newComment: string = ctx.request.body.comment.trim();
 
     if (!newComment) {
@@ -269,7 +269,7 @@ commentsRouter.post<CommentAuthenticatedState>("/:id/update", isLoggedIn, canCom
     ctx.body = comment;
 });
 
-commentsRouter.post<CommentAuthenticatedState>("/:id/remove", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
+commentsRouter.$post<CommentAuthenticatedState>("/:id/remove", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
     const comment: UserComment = ctx.state.comment;
     const mca = await MCA.findOneOrFail({
         where: { year: comment.year },

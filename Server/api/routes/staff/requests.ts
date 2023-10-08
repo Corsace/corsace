@@ -10,10 +10,10 @@ import { ModeDivisionType } from "../../../../Interfaces/modes";
 
 const staffRequestsRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-staffRequestsRouter.use(isLoggedInDiscord);
-staffRequestsRouter.use(isMCAStaff);
+staffRequestsRouter.$use(isLoggedInDiscord);
+staffRequestsRouter.$use(isMCAStaff);
 
-staffRequestsRouter.get<MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
+staffRequestsRouter.$get<MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const requests: StaffGuestRequest[] = await GuestRequest
         .createQueryBuilder("guestReq")
@@ -42,7 +42,7 @@ staffRequestsRouter.get<MCAAuthenticatedState>("/:year", validatePhaseYear, asyn
     };
 });
 
-staffRequestsRouter.post("/:id/update", async (ctx) => {
+staffRequestsRouter.$post("/:id/update", async (ctx) => {
     const request = await GuestRequest.findOneOrFail({
         where: {
             ID: parseInt(ctx.params.id, 10),

@@ -11,10 +11,10 @@ import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
 
 const commentsReviewRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-commentsReviewRouter.use(isLoggedInDiscord);
-commentsReviewRouter.use(isMCAStaff);
+commentsReviewRouter.$use(isLoggedInDiscord);
+commentsReviewRouter.$use(isMCAStaff);
 
-commentsReviewRouter.get<MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
+commentsReviewRouter.$get<MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
@@ -83,7 +83,7 @@ commentsReviewRouter.get<MCAAuthenticatedState>("/:year", validatePhaseYear, asy
     ctx.body = staffComments;
 });
 
-commentsReviewRouter.post("/:id/review", async (ctx) => {
+commentsReviewRouter.$post("/:id/review", async (ctx) => {
     const comment = await UserComment.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     comment.comment = ctx.request.body.comment.trim();
     comment.isValid = true;
@@ -94,7 +94,7 @@ commentsReviewRouter.post("/:id/review", async (ctx) => {
     ctx.body = comment;
 });
 
-commentsReviewRouter.post("/:id/remove", async (ctx) => {
+commentsReviewRouter.$post("/:id/remove", async (ctx) => {
     const comment = await UserComment.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     await comment.remove();
 
@@ -103,7 +103,7 @@ commentsReviewRouter.post("/:id/remove", async (ctx) => {
     };
 });
 
-commentsReviewRouter.post("/:id/ban", async (ctx) => {
+commentsReviewRouter.$post("/:id/ban", async (ctx) => {
     const ID = parseInt(ctx.params.id, 10);
     if (!ID) {
         ctx.body = {
@@ -132,7 +132,7 @@ commentsReviewRouter.post("/:id/ban", async (ctx) => {
     };
 });
 
-commentsReviewRouter.post("/:id/unban", async (ctx) => {
+commentsReviewRouter.$post("/:id/unban", async (ctx) => {
     const ID = parseInt(ctx.params.id, 10);
     if (!ID) {
         ctx.body = {

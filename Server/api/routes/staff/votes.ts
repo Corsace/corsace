@@ -7,11 +7,11 @@ import { parseQueryParam } from "../../../../Server/utils/query";
 
 const staffVotesRouter  = new CorsaceRouter();
 
-staffVotesRouter.use(isLoggedInDiscord);
-staffVotesRouter.use(isStaff);
+staffVotesRouter.$use(isLoggedInDiscord);
+staffVotesRouter.$use(isStaff);
 
 // Endpoint for getting information for a category
-staffVotesRouter.get("/", async (ctx) => {
+staffVotesRouter.$get("/", async (ctx) => {
     const categoryIDString = parseQueryParam(ctx.query.category);
     
     if (!categoryIDString || !/\d+/.test(categoryIDString))
@@ -126,7 +126,7 @@ staffVotesRouter.get("/", async (ctx) => {
     };
 });
 
-staffVotesRouter.delete("/:id/:user", async (ctx) => {
+staffVotesRouter.$delete("/:id/:user", async (ctx) => {
     const vote = await Vote.findOneOrFail({
         where: {
             ID: parseInt(ctx.params.id, 10),

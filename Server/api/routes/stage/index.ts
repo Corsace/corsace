@@ -19,9 +19,9 @@ import { osuClient } from "../../../osu";
 
 const stageRouter  = new CorsaceRouter<TournamentStageState>();
 
-stageRouter.use(validateStageOrRound);
+stageRouter.$use(validateStageOrRound);
 
-stageRouter.get("/:stageID/matchups", async (ctx) => {
+stageRouter.$get("/:stageID/matchups", async (ctx) => {
     const stage: Stage = ctx.state.stage;
 
     let matchups = await Matchup
@@ -87,7 +87,7 @@ stageRouter.get("/:stageID/matchups", async (ctx) => {
     };
 });
 
-stageRouter.get("/:stageID/mappools", async (ctx) => {
+stageRouter.$get("/:stageID/mappools", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -202,7 +202,7 @@ stageRouter.get("/:stageID/mappools", async (ctx) => {
     };
 });
 
-stageRouter.get("/:stageID/scores", async (ctx) => {
+stageRouter.$get("/:stageID/scores", async (ctx) => {
     const stage: Stage = ctx.state.stage;
 
     const tournament = await Tournament

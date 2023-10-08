@@ -178,7 +178,7 @@ function validatePOSTMatchups (matchups: Partial<postMatchup>[]): asserts matchu
     }
 }
 
-matchupRouter.get("/:matchupID", async (ctx) => {
+matchupRouter.$get("/:matchupID", async (ctx) => {
     const dbMatchup = await Matchup
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.round", "round")
@@ -256,7 +256,7 @@ matchupRouter.get("/:matchupID", async (ctx) => {
     ctx.body = body;
 });
 
-matchupRouter.get("/:matchupID/bancho/:endpoint", async (ctx) => {
+matchupRouter.$get("/:matchupID/bancho/:endpoint", async (ctx) => {
     const endpoint = ctx.params.endpoint;
 
     const matchup = await Matchup
@@ -299,7 +299,7 @@ matchupRouter.get("/:matchupID/bancho/:endpoint", async (ctx) => {
     }
 });
 
-matchupRouter.get("/:matchupID/teams", async (ctx) => {
+matchupRouter.$get("/:matchupID/teams", async (ctx) => {
     const matchup = await Matchup
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.team1", "team1")
@@ -325,7 +325,7 @@ matchupRouter.get("/:matchupID/teams", async (ctx) => {
     };
 });
 
-matchupRouter.post<TournamentStageState>("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+matchupRouter.$post<TournamentStageState>("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const matchups: Partial<postMatchup>[] | postMatchup[] = ctx.request.body?.matchups;
     if (!matchups) {
         ctx.body = {
@@ -473,7 +473,7 @@ matchupRouter.post<TournamentStageState>("/create", validateTournament, validate
     }
 });
 
-matchupRouter.post<TournamentState>("/assignTeam", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+matchupRouter.$post<TournamentState>("/assignTeam", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const tournament: Tournament = ctx.state.tournament;
     const stageOrRound: Stage | Round | null = ctx.state.stage ?? ctx.state.round ?? null;
     if (!stageOrRound) {
@@ -588,7 +588,7 @@ matchupRouter.post<TournamentState>("/assignTeam", validateTournament, validateS
     };
 });
 
-matchupRouter.post<TournamentState>("/date", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+matchupRouter.$post<TournamentState>("/date", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const tournament: Tournament = ctx.state.tournament;
     const stageOrRound: Stage | Round | null = ctx.state.stage ?? ctx.state.round ?? null;
     if (!stageOrRound) {
@@ -643,7 +643,7 @@ matchupRouter.post<TournamentState>("/date", validateTournament, validateStageOr
     };
 });
 
-matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
+matchupRouter.$post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
     if (!ctx.request.body) {
         ctx.body = {
             error: "No request body",
@@ -808,7 +808,7 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
     };
 });
 
-matchupRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
+matchupRouter.$post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
     if (!ctx.request.body) {
         ctx.body = {
             error: "No request body",
@@ -937,7 +937,7 @@ matchupRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
     };
 }); 
 
-matchupRouter.delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (ctx) => {
+matchupRouter.$delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (ctx) => {
     const scoreID = parseInt(ctx.params.scoreID);
     if (isNaN(scoreID)) {
         ctx.body = {
@@ -969,7 +969,7 @@ matchupRouter.delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (ctx
     };
 });
 
-matchupRouter.delete("/map/:mapID", isLoggedInDiscord, isCorsace, async (ctx) => {
+matchupRouter.$delete("/map/:mapID", isLoggedInDiscord, isCorsace, async (ctx) => {
     const mapID = parseInt(ctx.params.mapID);
     if (isNaN(mapID)) {
         ctx.body = {

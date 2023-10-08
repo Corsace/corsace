@@ -12,7 +12,7 @@ import { ModeDivisionType } from "../../../Interfaces/modes";
 
 const influencesRouter  = new CorsaceRouter();
 
-influencesRouter.get("/", async (ctx) => {
+influencesRouter.$get("/", async (ctx) => {
     const userSearch = ctx.query.user;
     const yearSearch = ctx.query.year;
     
@@ -73,7 +73,7 @@ influencesRouter.get("/", async (ctx) => {
     };
 });
 
-influencesRouter.post<UserAuthenticatedState>("/create", isLoggedIn, async (ctx) => {
+influencesRouter.$post<UserAuthenticatedState>("/create", isLoggedIn, async (ctx) => {
     const query = ctx.request.body;
 
     if (!query.year || !/^20[0-9]{2}$/.test(query.year)) {
@@ -176,7 +176,7 @@ influencesRouter.post<UserAuthenticatedState>("/create", isLoggedIn, async (ctx)
     };
 });
 
-influencesRouter.delete<MCAAuthenticatedState>("/:id", isLoggedIn, currentMCA, async (ctx) => {
+influencesRouter.$delete<MCAAuthenticatedState>("/:id", isLoggedIn, currentMCA, async (ctx) => {
     const id = ctx.params.id;
     if (!/^\d+$/.test(id)) {
         ctx.body = { 

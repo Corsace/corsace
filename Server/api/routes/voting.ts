@@ -14,9 +14,9 @@ import { Beatmap } from "../../../Models/beatmap";
 
 const votingRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-votingRouter.use(isLoggedIn);
+votingRouter.$use(isLoggedIn);
 
-votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
+votingRouter.$get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
     const [votes, categories] = await Promise.all([
         Vote.find({
             where: {
@@ -44,7 +44,7 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
     };
 });
 
-votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), mcaSearch("voting", async (ctx, category: Category) => {
+votingRouter.$get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), mcaSearch("voting", async (ctx, category: Category) => {
     let votes = await Vote.find({
         where: {
             voter: {
@@ -58,7 +58,7 @@ votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), 
     return votes;
 }));
 
-votingRouter.post<MCAYearState>("/:year?/create", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+votingRouter.$post<MCAYearState>("/:year?/create", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const nomineeId = ctx.request.body.nomineeId;
     const categoryId = ctx.request.body.category;
     const choice = ctx.request.body.choice;
@@ -162,7 +162,7 @@ votingRouter.post<MCAYearState>("/:year?/create", validatePhaseYear, isPhase("vo
     };
 });
 
-votingRouter.delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+votingRouter.$delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const vote = await Vote.findOneOrFail({
         where: {
             ID: parseInt(ctx.params.id, 10),
@@ -201,7 +201,7 @@ votingRouter.delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, as
     };
 });
 
-votingRouter.post<MCAYearState>("/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+votingRouter.$post<MCAYearState>("/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const votesInput: Vote[] = ctx.request.body;
     const year: number = ctx.state.year;
     

@@ -62,14 +62,17 @@ function padLengthWithZero (lengthRecord: {
 
 const recordsRouter  = new CorsaceRouter();
 
-recordsRouter.get("/beatmapsets", async (ctx) => {
+recordsRouter.$get("/beatmapsets", async (ctx) => {
     if (await ctx.cashed())
         return;
 
     const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
     const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
     if (!(modeString in ModeDivisionType)) {
-        ctx.body = { error: "Invalid mode, please use standard, taiko, fruits or mania" };
+        ctx.body = {
+            success: false,
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
         return;
     }
     const modeId = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
@@ -245,7 +248,7 @@ recordsRouter.get("/beatmapsets", async (ctx) => {
     ctx.body = records;
 });
 
-recordsRouter.get("/mappers", async (ctx) => {
+recordsRouter.$get("/mappers", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -473,7 +476,7 @@ recordsRouter.get("/mappers", async (ctx) => {
     };
 });
 
-// recordsRouter.get("/nominators", async (ctx) => {
+// recordsRouter.$get("/nominators", async (ctx) => {
 //     if (await ctx.cashed())
 //         return;
 

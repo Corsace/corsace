@@ -37,12 +37,12 @@ async function validateData (ctx: ParameterizedContext, next: Next) {
 
 const banchoRouter  = new CorsaceRouter();
 
-banchoRouter.use(koaBasicAuth({
+banchoRouter.$use(koaBasicAuth({
     name: config.interOpAuth.username,
     pass: config.interOpAuth.password,
 }));
 
-banchoRouter.post("/runQualifiers", validateData, async (ctx) => {
+banchoRouter.$post("/runQualifiers", validateData, async (ctx) => {
     ctx.body = {
         success: true,
     };
@@ -77,7 +77,7 @@ banchoRouter.post("/runQualifiers", validateData, async (ctx) => {
     }
 });
 
-banchoRouter.post("/stopAutoLobby", (ctx) => {
+banchoRouter.$post("/stopAutoLobby", (ctx) => {
     const matchupID = ctx.request.body.matchupID;
     if (!matchupID || typeof matchupID !== "number" || isNaN(matchupID)) {
         ctx.body = {

@@ -89,10 +89,10 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
 
 const guestRequestRouter  = new CorsaceRouter<MCAAuthenticatedState>();
 
-guestRequestRouter.use(isLoggedIn);
-guestRequestRouter.use(currentMCA);
+guestRequestRouter.$use(isLoggedIn);
+guestRequestRouter.$use(currentMCA);
 
-guestRequestRouter.post("/create", async (ctx) => {
+guestRequestRouter.$post("/create", async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const user: User = ctx.state.user;
     const res = await validateBody(user, mca.year, ctx.request.body);
@@ -119,7 +119,7 @@ guestRequestRouter.post("/create", async (ctx) => {
     };
 });
 
-guestRequestRouter.post("/:id/update", async (ctx) => {
+guestRequestRouter.$post("/:id/update", async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const id: number = parseInt(ctx.params.id);
     const user: User = ctx.state.user;

@@ -17,9 +17,9 @@ function isIdType (value: any): value is idType {
 
 const inviteRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-inviteRouter.use(isLoggedInDiscord);
+inviteRouter.$use(isLoggedInDiscord);
 
-inviteRouter.get("/user", async (ctx) => {
+inviteRouter.$get("/user", async (ctx) => {
     const user: User = ctx.state.user;
 
     const invites = await getTeamInvites(user.ID, "userID");
@@ -35,7 +35,7 @@ inviteRouter.get("/user", async (ctx) => {
     };
 });
 
-inviteRouter.get<TeamAuthenticatedState>("/:teamID", validateTeam(false), async (ctx) => {
+inviteRouter.$get<TeamAuthenticatedState>("/:teamID", validateTeam(false), async (ctx) => {
     const team: Team = ctx.state.team;
 
     const invites = await getTeamInvites(team.ID, "teamID");
@@ -52,7 +52,7 @@ inviteRouter.get<TeamAuthenticatedState>("/:teamID", validateTeam(false), async 
     };
 });
 
-inviteRouter.post<TeamAuthenticatedState>("/:teamID", validateTeam(true, true), async (ctx) => {
+inviteRouter.$post<TeamAuthenticatedState>("/:teamID", validateTeam(true, true), async (ctx) => {
     const team: Team = ctx.state.team;
 
     const userID = ctx.request.body?.userID;
@@ -99,7 +99,7 @@ inviteRouter.post<TeamAuthenticatedState>("/:teamID", validateTeam(true, true), 
     }
 });
 
-inviteRouter.post("/:teamID/accept", async (ctx) => {
+inviteRouter.$post("/:teamID/accept", async (ctx) => {
     const user: User = ctx.state.user;
     let invite: TeamInvite;
     try {
@@ -140,7 +140,7 @@ inviteRouter.post("/:teamID/accept", async (ctx) => {
     ctx.body = { success: "Invite accepted", team };
 });
 
-inviteRouter.post("/:teamID/decline", async (ctx) => {
+inviteRouter.$post("/:teamID/decline", async (ctx) => {
     const user: User = ctx.state.user;
     let invite: TeamInvite;
     try {
@@ -165,7 +165,7 @@ inviteRouter.post("/:teamID/decline", async (ctx) => {
     ctx.body = { success: "Invite declined" };
 });
 
-inviteRouter.post<TeamAuthenticatedState>("/:teamID/cancel/:userID", validateTeam(true), async (ctx) => {
+inviteRouter.$post<TeamAuthenticatedState>("/:teamID/cancel/:userID", validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team;
 
     const userID = ctx.params.userID;

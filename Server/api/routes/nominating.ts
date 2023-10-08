@@ -14,9 +14,9 @@ import { ModeDivisionType } from "../../../Interfaces/modes";
 
 const nominatingRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-nominatingRouter.use(isLoggedIn);
+nominatingRouter.$use(isLoggedIn);
 
-nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"), async (ctx) => {
+nominatingRouter.$get("/:year?", validatePhaseYear, isPhaseStarted("nomination"), async (ctx) => {
     const [nominations, categories] = await Promise.all([
         Nomination
             .userNominations({
@@ -43,7 +43,7 @@ nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"),
     };
 });
 
-nominatingRouter.get<MCAYearState>("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), mcaSearch("nominating", async (ctx, category) => {
+nominatingRouter.$get<MCAYearState>("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), mcaSearch("nominating", async (ctx, category) => {
     return await Nomination
         .userNominations({
             userID: ctx.state.user.ID,
@@ -52,7 +52,7 @@ nominatingRouter.get<MCAYearState>("/:year?/search", validatePhaseYear, isPhaseS
         .getMany();
 }));
 
-nominatingRouter.post<MCAYearState>("/:year?/create", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
+nominatingRouter.$post<MCAYearState>("/:year?/create", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const category = await Category.findOneOrFail({
         where: {
             ID: ctx.request.body.categoryId,
@@ -298,7 +298,7 @@ nominatingRouter.post<MCAYearState>("/:year?/create", validatePhaseYear, isPhase
     };
 });
 
-nominatingRouter.delete("/:id", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
+nominatingRouter.$delete("/:id", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const nomination = await Nomination
         .populate()
         .andWhere("nomination.ID = :id", { id: ctx.params.id })

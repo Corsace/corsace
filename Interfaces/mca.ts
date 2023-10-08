@@ -1,4 +1,5 @@
-import { Category } from "./category";
+import { Category, CategoryCondensedInfo } from "./category";
+import { ModeDivisionType } from "./modes";
 import { Phase } from "./phase";
 
 export interface MCA {
@@ -16,6 +17,12 @@ export interface MCAInfo {
     results: Date;
     categories: Category[];
 }
+
+export type MCAFrontData = Record<keyof typeof ModeDivisionType, {
+    categoryInfos: CategoryCondensedInfo[];
+    beatmapCount: number;
+    organizers: string[];
+} | undefined>;
 
 export type StageType = "nominating" | "voting" | "results";
 export type PhaseType = StageType | "preparation";

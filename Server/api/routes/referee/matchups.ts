@@ -15,11 +15,11 @@ import { TournamentAuthenticatedState } from "koa";
 const refereeMatchupsRouter  = new CorsaceRouter<TournamentAuthenticatedState>();
 
 //TODO: Look into making refereeRouter.use work for the middleware functions
-refereeMatchupsRouter.use(isLoggedInDiscord);
-refereeMatchupsRouter.use(validateTournament);
-refereeMatchupsRouter.use(hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]));
+refereeMatchupsRouter.$use(isLoggedInDiscord);
+refereeMatchupsRouter.$use(validateTournament);
+refereeMatchupsRouter.$use(hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]));
 
-refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+refereeMatchupsRouter.$get("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.round", "round")
@@ -72,7 +72,7 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
     };
 });
 
-refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+refereeMatchupsRouter.$get("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup
         .createQueryBuilder("matchup")
         // round and stage

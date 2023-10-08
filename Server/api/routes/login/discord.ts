@@ -11,7 +11,7 @@ import { DiscordAPIError } from "discord.js";
 
 const discordRouter  = new CorsaceRouter();
 
-discordRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext, next) => {
+discordRouter.$get("/", redirectToMainDomain, async (ctx: ParameterizedContext, next) => {
     const site = parseQueryParam(ctx.query.site);
     if (!site) {
         ctx.body = "No site specified";
@@ -34,7 +34,7 @@ discordRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext, n
     await next();
 }, passport.authenticate("discord", { scope: ["identify", "guilds.join"] }));
 
-discordRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
+discordRouter.$get("/callback", async (ctx: ParameterizedContext, next) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await passport.authenticate("discord", { scope: ["identify", "guilds.join"], failureRedirect: "/" }, async (err, user) => {
         if (user) {

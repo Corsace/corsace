@@ -1,5 +1,5 @@
 import { CorsaceRouter } from "../../corsaceRouter";
-import Axios from "axios";
+import axios from "axios";
 import { User } from "../../../Models/user";
 import { MapperQuery } from "../../../Interfaces/queries";
 import { parseQueryParam } from "../../../Server/utils/query";
@@ -7,7 +7,7 @@ import { osuV2Client } from "../../osu";
 
 const mappersRouter  = new CorsaceRouter();
 
-mappersRouter.get("/search", async (ctx) => {
+mappersRouter.$get("/search", async (ctx) => {
     if (!ctx.query.year)
         return ctx.body = {
             success: false,
@@ -43,7 +43,7 @@ mappersRouter.get("/search", async (ctx) => {
             const data = await osuV2Client.getUserFriends(accessToken);
             query.friends = data.map(friend => friend.id);
         } catch (e) {
-            if (Axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) 
+            if (axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) 
                 return ctx.body = { 
                     success: false,
                     error: "Please re-login via osu! again in order to use the friends filter! If you logged in again via osu! and it still isn't working, contact VINXIS!",

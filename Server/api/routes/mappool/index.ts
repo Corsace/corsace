@@ -2,7 +2,7 @@ import { CorsaceRouter } from "../../../corsaceRouter";
 
 const mappoolRouter  = new CorsaceRouter();
 
-mappoolRouter.get("/", (ctx) => {
+mappoolRouter.$get("/", (ctx) => {
     ctx.body = {
         success: true,
     };

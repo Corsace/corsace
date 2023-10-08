@@ -45,16 +45,16 @@ async function validateData (ctx: ParameterizedContext, next: Next) {
 
 const cronRouter  = new CorsaceRouter<DefaultState>();
 
-cronRouter.use(koaBasicAuth({
+cronRouter.$use(koaBasicAuth({
     name: config.interOpAuth.username,
     pass: config.interOpAuth.password,
 }));
 
-cronRouter.get("/", (ctx) => {
+cronRouter.$get("/", (ctx) => {
     ctx.body = cron.listJobs();
 });
 
-cronRouter.post<CronJobState>("/add", validateData, async (ctx) => {
+cronRouter.$post<CronJobState>("/add", validateData, async (ctx) => {
     const { type, date } = ctx.state.cronJob;
 
     await cron.add(type, date);
@@ -63,7 +63,7 @@ cronRouter.post<CronJobState>("/add", validateData, async (ctx) => {
     };
 });
 
-cronRouter.post<CronJobState>("/remove", validateData, async (ctx) => {
+cronRouter.$post<CronJobState>("/remove", validateData, async (ctx) => {
     const { type, date } = ctx.state.cronJob;
 
     await cron.remove(type, date);

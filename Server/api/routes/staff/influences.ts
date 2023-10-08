@@ -9,10 +9,10 @@ import { UserAuthenticatedState } from "koa";
 
 const influencesReviewRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-influencesReviewRouter.use(isLoggedInDiscord);
-influencesReviewRouter.use(isMCAStaff);
+influencesReviewRouter.$use(isLoggedInDiscord);
+influencesReviewRouter.$use(isMCAStaff);
 
-influencesReviewRouter.get("/", async (ctx) => {
+influencesReviewRouter.$get("/", async (ctx) => {
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
     const year = ctx.query.year ? parseInt(parseQueryParam(ctx.query.year) ?? "") : undefined;
@@ -79,7 +79,7 @@ influencesReviewRouter.get("/", async (ctx) => {
     };
 });
 
-influencesReviewRouter.post("/:id/review", async (ctx) => {
+influencesReviewRouter.$post("/:id/review", async (ctx) => {
     const influence = await Influence.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     influence.comment = ctx.request.body.comment.trim();
     influence.isValid = true;
@@ -95,7 +95,7 @@ influencesReviewRouter.post("/:id/review", async (ctx) => {
     };
 });
 
-influencesReviewRouter.post("/:id/remove", async (ctx) => {
+influencesReviewRouter.$post("/:id/remove", async (ctx) => {
     const influence = await Influence.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     influence.comment = "";
     await influence.save();

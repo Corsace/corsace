@@ -8,13 +8,13 @@ import { osuClient } from "../../../osu";
 
 const mappoolMapRouter  = new CorsaceRouter();
 
-mappoolMapRouter.get("/", (ctx) => {
+mappoolMapRouter.$get("/", (ctx) => {
     ctx.body = {
         success: true,
     };
 });
 
-mappoolMapRouter.get("/:mapName", async (ctx) => {
+mappoolMapRouter.$get("/:mapName", async (ctx) => {
     let showPrivate = false;
     let tournament: Tournament | null = null;
     if (ctx.query.key) {

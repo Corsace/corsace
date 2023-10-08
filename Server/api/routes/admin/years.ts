@@ -11,8 +11,8 @@ import { CorsaceMiddleware, CorsaceRouter } from "../../../corsaceRouter";
 const adminYearsRouter = new CorsaceRouter();
 const categoryGenerator = new CategoryGenerator();
 
-adminYearsRouter.use(isLoggedInDiscord);
-adminYearsRouter.use(isCorsace);
+adminYearsRouter.$use(isLoggedInDiscord);
+adminYearsRouter.$use(isCorsace);
 
 const validate: CorsaceMiddleware = async (ctx, next) => {
     const data = ctx.request.body;
@@ -35,7 +35,7 @@ const validate: CorsaceMiddleware = async (ctx, next) => {
 };
 
 // Endpoints for creating a year
-adminYearsRouter.post("/", validate, async (ctx) => {
+adminYearsRouter.$post("/", validate, async (ctx) => {
     const data = ctx.request.body;
 
     let mca = await MCA.findOne(data.year);
@@ -67,7 +67,7 @@ adminYearsRouter.post("/", validate, async (ctx) => {
 });
 
 // Endpoints for updating a year
-adminYearsRouter.put("/:year", validate, async (ctx) => {
+adminYearsRouter.$put("/:year", validate, async (ctx) => {
     const data = ctx.request.body;
 
     let mca = await MCA.findOneOrFail(data.year);    
@@ -84,7 +84,7 @@ adminYearsRouter.put("/:year", validate, async (ctx) => {
 });
 
 // Endpoint for deleting a year
-adminYearsRouter.delete("/:year/delete", async (ctx) => {
+adminYearsRouter.$delete("/:year/delete", async (ctx) => {
     const yearStr = ctx.params.year;
     if (!yearStr || !/20\d\d/.test(yearStr))
         return ctx.body = { error: "Invalid year given!" };

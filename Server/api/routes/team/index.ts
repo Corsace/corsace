@@ -21,7 +21,7 @@ import { unallowedToPlay, TournamentRoleType } from "../../../../Interfaces/tour
 
 const teamRouter = new CorsaceRouter();
 
-teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
+teamRouter.$get("/", isLoggedInDiscord, async (ctx) => {
     const teamIDs: {
         ID: number;
     }[] = await Team
@@ -57,7 +57,7 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
     };
 });
 
-teamRouter.get("/all", async (ctx) => {
+teamRouter.$get("/all", async (ctx) => {
     const teamQ = Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
@@ -76,7 +76,7 @@ teamRouter.get("/all", async (ctx) => {
     ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface()));
 });
 
-teamRouter.get("/:teamID", async (ctx) => {
+teamRouter.$get("/:teamID", async (ctx) => {
     const team = await Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
@@ -94,7 +94,7 @@ teamRouter.get("/:teamID", async (ctx) => {
     ctx.body = await team.teamInterface(true, true);
 });
 
-teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
+teamRouter.$post("/create", isLoggedInDiscord, async (ctx) => {
     let { name, abbreviation, timezoneOffset } = ctx.request.body;
     const isPlaying = ctx.request.body?.isPlaying;
 
@@ -167,7 +167,7 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
         };
 });
 
-teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team!;
 
     // Get the file from the request
@@ -212,7 +212,7 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
     }
 });
 
-teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
@@ -360,7 +360,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     ctx.body = { success: "Team registered" };
 });
 
-teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
@@ -423,7 +423,7 @@ teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), as
     ctx.body = { success: "Team unregistered" };
 });
 
-teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
@@ -511,7 +511,7 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
     ctx.body = { success: "Qualifier date set" };
 });
 
-teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team!;
 
     const tournaments = await Tournament
@@ -567,7 +567,7 @@ teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async
     }
 });
 
-teamRouter.post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team!;
 
     const tournaments = await Tournament
@@ -626,7 +626,7 @@ teamRouter.post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true
     ctx.body = { success: "Manager changed" };
 });
 
-teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team!;
 
     const tournaments = await Tournament
@@ -675,7 +675,7 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
     ctx.body = { success: "User removed from the team" };
 });
 
-teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team!;
     const body: Partial<Team> | undefined = ctx.request.body;
     if (body?.timezoneOffset) {
@@ -720,7 +720,7 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
     ctx.body = { success: "Team updated", name: team.name, abbreviation: team.abbreviation };
 });
 
-teamRouter.patch("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => {
+teamRouter.$patch("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => {
     const team = await Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
@@ -767,7 +767,7 @@ teamRouter.patch("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => 
     ctx.body = { success: "Team updated", name: team.name, abbreviation: team.abbreviation };
 });
 
-teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
     const team: Team = ctx.state.team!;
 
     const tournaments = await Tournament

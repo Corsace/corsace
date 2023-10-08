@@ -1,5 +1,5 @@
 import { CorsaceRouter } from "../../corsaceRouter";
-import Axios from "axios";
+import axios from "axios";
 import { User } from "../../../Models/user";
 import { MapperQuery } from "../../../Interfaces/queries";
 import { parseQueryParam } from "../../utils/query";
@@ -8,7 +8,7 @@ import { osuV2Client } from "../../osu";
 
 const usersRouter  = new CorsaceRouter();
 
-usersRouter.get("/search", async (ctx) => {
+usersRouter.$get("/search", async (ctx) => {
     const userSearch = ctx.query.user;
     const users = await User
         .createQueryBuilder("user")
@@ -26,7 +26,7 @@ usersRouter.get("/search", async (ctx) => {
     };
 });
 
-usersRouter.get("/advSearch", async (ctx) => {
+usersRouter.$get("/advSearch", async (ctx) => {
     if (!ctx.query.year)
         return ctx.body = {
             error: "No year given!",
@@ -57,7 +57,7 @@ usersRouter.get("/advSearch", async (ctx) => {
             const friends = await osuV2Client.getUserFriends(accessToken);
             query.friends = friends.map(friend => friend.id);
         } catch (e) {
-            if (Axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) 
+            if (axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) 
                 return ctx.body = { error: "Please re-login via osu! again in order to use the friends filter! If you logged in again via osu! and it still isn't working, contact VINXIS!" };
             else 
                 throw e;
@@ -67,7 +67,7 @@ usersRouter.get("/advSearch", async (ctx) => {
     ctx.body = await User.basicSearch(query);
 });
 
-usersRouter.get("/deepSearch", isLoggedInDiscord, isCorsace, async (ctx) => {
+usersRouter.$get("/deepSearch", isLoggedInDiscord, isCorsace, async (ctx) => {
     const userSearch = ctx.query.user;
     const users = await User
         .createQueryBuilder("user")

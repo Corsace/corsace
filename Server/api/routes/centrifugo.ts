@@ -13,10 +13,8 @@ const centrifugoRouter  = new CorsaceRouter();
 const ipWhitelist = koaIp(config.centrifugo.ipWhitelist);
 
 interface ConnectResponse {
-    result: {
-        user: string;
-        expire_at?: number;
-    };
+    user: string;
+    expire_at?: number;
 }
 
 interface SubscribeRequest {
@@ -49,33 +47,35 @@ async function getChannel (channelType: string, channelID: number): Promise<any>
     return `${channelType}:${channelID}`;
 }
 
-centrifugoRouter.get("/publicUrl", (ctx) => {
+centrifugoRouter.$get<{ url: string }>("/publicUrl", (ctx) => {
     ctx.body = {
         success: true,
         url: config.centrifugo.publicUrl,
     };
 });
 
-centrifugoRouter.post("/connect", ipWhitelist, (ctx) => {
+centrifugoRouter.$post<{ result: ConnectResponse }>("/connect", ipWhitelist, (ctx) => {
     if (ctx.state?.user?.ID) {
         ctx.body = {
+            success: true,
             result: {
                 user: `${ctx.state.user.ID}`,
                 // Use undocumented koa session trick. If unavailable, set a 1hr expire time.
                 expire_at: ctx.session?._expire ? Math.ceil(ctx.session?._expire) : Math.ceil(Date.now() / 1000) + 60 * 60,
             },
-        } as ConnectResponse;
+        };
     } else {
         // Allow anonymous connections
         ctx.body = {
+            success: true,
             result: {
                 user: "",
             },
-        } as ConnectResponse;
+        };
     }
 });
 
-centrifugoRouter.post("/subscribe", ipWhitelist, async (ctx) => {
+centrifugoRouter.$post("/subscribe", ipWhitelist, async (ctx) => {
     const body = ctx.request.body as SubscribeRequest;
     const channelName = body.channel;
     if (!channelName.includes(":") || channelName.split(":").length !== 2 || isNaN(parseInt(channelName.split(":")[1]))) {

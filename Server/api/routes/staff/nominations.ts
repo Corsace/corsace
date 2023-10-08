@@ -8,11 +8,11 @@ import { isMCAStaff } from "../../../middleware/mca-ayim";
 
 const staffNominationsRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-staffNominationsRouter.use(isLoggedInDiscord);
-staffNominationsRouter.use(isMCAStaff);
+staffNominationsRouter.$use(isLoggedInDiscord);
+staffNominationsRouter.$use(isMCAStaff);
 
 // Endpoint for getting information for a category
-staffNominationsRouter.get("/", async (ctx) => {
+staffNominationsRouter.$get("/", async (ctx) => {
     const categoryIDString = parseQueryParam(ctx.query.category);
     
     if (!categoryIDString || !/\d+/.test(categoryIDString)) {
@@ -108,7 +108,7 @@ staffNominationsRouter.get("/", async (ctx) => {
 });
 
 // Endpoint for accepting a nomination
-staffNominationsRouter.post("/:id/update", async (ctx) => {
+staffNominationsRouter.$post("/:id/update", async (ctx) => {
     const nominationID = ctx.params.id;
     if (!nominationID || !/\d+/.test(nominationID)) {
         ctx.body = { 
@@ -139,7 +139,7 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
 });
 
 // Endpoint for deleting a nomination
-staffNominationsRouter.delete("/:id", async (ctx) => {
+staffNominationsRouter.$delete("/:id", async (ctx) => {
     const nominationID = ctx.params.id;
     if (!nominationID || !/\d+/.test(nominationID))
         return ctx.body = { error: "Invalid nomination ID given!" };

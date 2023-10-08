@@ -10,8 +10,8 @@ import { CorsaceContext, CorsaceRouter, CorsaceSuccessMessage } from "../../../c
 const adminCategoriesRouter  = new CorsaceRouter();
 const categoryGenerator = new CategoryGenerator();
 
-adminCategoriesRouter.use(isLoggedInDiscord);
-adminCategoriesRouter.use(isCorsace);
+adminCategoriesRouter.$use(isLoggedInDiscord);
+adminCategoriesRouter.$use(isCorsace);
 
 const validate: compose.Middleware<CorsaceContext<CorsaceSuccessMessage>> = async (ctx, next) => {
     const categoryInfo = ctx.request.body.category;
@@ -47,7 +47,7 @@ const validate: compose.Middleware<CorsaceContext<CorsaceSuccessMessage>> = asyn
 };
 
 // Endpoint for getting categories from a year
-adminCategoriesRouter.get("/:year/categories", async (ctx) => {
+adminCategoriesRouter.$get("/:year/categories", async (ctx) => {
     const yearString = ctx.params.year;
     if (!yearString || !/20\d\d/.test(yearString))
         return ctx.body = { error: "Invalid year given!" };
@@ -75,7 +75,7 @@ adminCategoriesRouter.get("/:year/categories", async (ctx) => {
 });
 
 // Endpoint for creating a category
-adminCategoriesRouter.post("/:year/categories", validate, async (ctx) => {
+adminCategoriesRouter.$post("/:year/categories", validate, async (ctx) => {
     const categoryInfo = ctx.request.body.category;
     const filter: CategoryFilter = ctx.request.body.filter;
 
@@ -93,7 +93,7 @@ adminCategoriesRouter.post("/:year/categories", validate, async (ctx) => {
 });
 
 // Endpoint for updating a category
-adminCategoriesRouter.put("/:year/categories/:id", validate, async (ctx) => {
+adminCategoriesRouter.$put("/:year/categories/:id", validate, async (ctx) => {
     const categoryInfo = ctx.request.body.category;
     const filter: CategoryFilter = ctx.request.body.filter;
 
@@ -113,7 +113,7 @@ adminCategoriesRouter.put("/:year/categories/:id", validate, async (ctx) => {
 });
 
 // Endpoint for deleting a category
-adminCategoriesRouter.delete("/:year/categories/:id", async (ctx) => {
+adminCategoriesRouter.$delete("/:year/categories/:id", async (ctx) => {
     const categoryIDString = ctx.params.id;
     if (!categoryIDString || !/\d+/.test(categoryIDString))
         return ctx.body = { error: "Invalid category ID given!" };

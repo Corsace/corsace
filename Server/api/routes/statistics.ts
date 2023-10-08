@@ -47,7 +47,7 @@ function valueToFixed (record: any, digits = 2): any {
     return record;
 }
 
-statisticsRouter.get("/beatmapsets", async (ctx) => {
+statisticsRouter.$get("/beatmapsets", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -362,7 +362,7 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
     };
 });
 
-statisticsRouter.get("/mappers", async (ctx) => {
+statisticsRouter.$get("/mappers", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -466,7 +466,7 @@ statisticsRouter.get("/mappers", async (ctx) => {
     };
 });
 
-// statisticsRouter.get("/nominators", async (ctx) => {
+// statisticsRouter.$get("/nominators", async (ctx) => {
 //     if (await ctx.cashed())
 //         return;
 

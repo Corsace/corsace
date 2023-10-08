@@ -14,12 +14,12 @@ import { StageType } from "../../../../Interfaces/stage";
 
 const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
-banchoRefereeRouter.use(koaBasicAuth({
+banchoRefereeRouter.$use(koaBasicAuth({
     name: config.interOpAuth.username,
     pass: config.interOpAuth.password,
 }));
 
-banchoRefereeRouter.use(async (ctx: ParameterizedContext, next: Next) => {
+banchoRefereeRouter.$use(async (ctx: ParameterizedContext, next: Next) => {
     const id = ctx.params.matchupID;
     if (!id || isNaN(parseInt(id))) {
         ctx.body = {
@@ -69,7 +69,7 @@ banchoRefereeRouter.use(async (ctx: ParameterizedContext, next: Next) => {
     await next();
 });
 
-banchoRefereeRouter.post("/:matchupID/pulse", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/pulse", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: true,
@@ -99,7 +99,7 @@ banchoRefereeRouter.post("/:matchupID/pulse", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.post("/:matchupID/createLobby", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/createLobby", async (ctx) => {
     const matchupList: MatchupList | undefined | null = state.matchups[ctx.state.matchupID];
     let matchup: Matchup | undefined | null = matchupList?.matchup;
     if (!matchup) {
@@ -166,7 +166,7 @@ banchoRefereeRouter.post("/:matchupID/createLobby", async (ctx) => {
     }
 });
 
-banchoRefereeRouter.post("/:matchupID/roll", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/roll", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: false,
@@ -211,7 +211,7 @@ banchoRefereeRouter.post("/:matchupID/roll", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.post("/:matchupID/invite", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/invite", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: false,
@@ -236,7 +236,7 @@ banchoRefereeRouter.post("/:matchupID/invite", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.post("/:matchupID/addRef", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/addRef", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: false,
@@ -261,7 +261,7 @@ banchoRefereeRouter.post("/:matchupID/addRef", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.post("/:matchupID/selectMap", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
     const mapID = ctx.request.body.mapID;
     if (!state.matchups[ctx.state.matchupID] || !mapID || typeof mapID !== "number" || isNaN(mapID)) {
         ctx.body = {
@@ -352,7 +352,7 @@ banchoRefereeRouter.post("/:matchupID/selectMap", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.post("/:matchupID/deleteMap", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/deleteMap", async (ctx) => {
     const mapID = ctx.request.body.mapID;
     if (!state.matchups[ctx.state.matchupID] || !mapID || typeof mapID !== "number" || isNaN(mapID)) {
         ctx.body = {
@@ -417,7 +417,7 @@ banchoRefereeRouter.post("/:matchupID/deleteMap", async (ctx) => {
     }
 });
 
-banchoRefereeRouter.post("/:matchupID/startMap", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/startMap", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: false,
@@ -442,7 +442,7 @@ banchoRefereeRouter.post("/:matchupID/startMap", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.post("/:matchupID/timer", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/timer", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: false,
@@ -467,7 +467,7 @@ banchoRefereeRouter.post("/:matchupID/timer", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.post("/:matchupID/settings", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/settings", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: false,
@@ -495,7 +495,7 @@ banchoRefereeRouter.post("/:matchupID/settings", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.post("/:matchupID/abortMap", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/abortMap", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: false,
@@ -512,7 +512,7 @@ banchoRefereeRouter.post("/:matchupID/abortMap", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.post("/:matchupID/message", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/message", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: false,
@@ -529,7 +529,7 @@ banchoRefereeRouter.post("/:matchupID/message", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.post("/:matchupID/closeLobby", async (ctx) => {
+banchoRefereeRouter.$post("/:matchupID/closeLobby", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: false,

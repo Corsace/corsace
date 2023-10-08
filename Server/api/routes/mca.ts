@@ -8,11 +8,12 @@ import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { discordGuild } from "../../discord";
 import { parseQueryParam } from "../../utils/query";
+import { MCAFrontData, MCAInfo } from "../../../Interfaces/mca";
 
 const mcaRouter  = new CorsaceRouter();
 const modeStaff = config.discord.roles.mca;
 
-mcaRouter.get("/", async (ctx) => {
+mcaRouter.$get<{ mca: MCAInfo }>("/", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -42,7 +43,7 @@ mcaRouter.get("/", async (ctx) => {
     if (mca)
         ctx.body = {
             success: true,
-            mca,
+            mca: mca.getInfo(),
         };
     else
         ctx.body = {
@@ -51,7 +52,7 @@ mcaRouter.get("/", async (ctx) => {
         };
 });
 
-mcaRouter.get("/all", async (ctx) => {
+mcaRouter.$get<{ mca: MCAInfo[] }>("/all", async (ctx) => {
     const mca = await MCA.find();
     const mcaInfo = mca.map(x => x.getInfo());
 
@@ -61,20 +62,19 @@ mcaRouter.get("/all", async (ctx) => {
     };
 });
 
-mcaRouter.get("/front", async (ctx) => {
+mcaRouter.$get<{ frontData: MCAFrontData }>("/front", async (ctx) => {
     if (await ctx.cashed())
         return;
 
     const mca = ctx.query.year ? await MCA.findOne({ where: { year: parseInt(parseQueryParam(ctx.query.year)!.toString(), 10) }}) : null;
 
     if (!mca)
-        return ctx.body = { error: "There is no MCA for this year currently!" };
+        return ctx.body = {
+            success: false,
+            error: "There is no MCA for this year currently!",
+        };
 
-    const frontData: Record<keyof typeof ModeDivisionType, {
-        categoryInfos: CategoryCondensedInfo[];
-        beatmapCount: number;
-        organizers: string[];
-    } | undefined> = {
+    const frontData: MCAFrontData = {
         standard: undefined,
         taiko: undefined,
         fruits: undefined,
@@ -116,7 +116,10 @@ mcaRouter.get("/front", async (ctx) => {
         };
     })()));
 
-    ctx.body = { frontData };
+    ctx.body = {
+        success: true,
+        frontData,
+    };
 });
 
 export default mcaRouter;

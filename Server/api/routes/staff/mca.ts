@@ -13,12 +13,12 @@ import { ModeDivisionType } from "../../../../Interfaces/modes";
 
 const staffRouter  = new CorsaceRouter<MCAAuthenticatedState>();
 
-staffRouter.use(isLoggedInDiscord);
-staffRouter.use(isMCAStaff);
-staffRouter.use(validatePhaseYear);
+staffRouter.$use(isLoggedInDiscord);
+staffRouter.$use(isMCAStaff);
+staffRouter.$use(validatePhaseYear);
 
 // Endpoint to obtain current MCA and its info
-staffRouter.get("/:year", async (ctx) => {
+staffRouter.$get("/:year", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -29,7 +29,7 @@ staffRouter.get("/:year", async (ctx) => {
 });
 
 // Endpoint for getting information for a year
-staffRouter.get("/categories/:year", async (ctx) => {
+staffRouter.$get("/categories/:year", async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const categories = await Category.find({
         where: {
@@ -52,7 +52,7 @@ staffRouter.get("/categories/:year", async (ctx) => {
 });
 
 // Endpoint for granting direct MCA nom/vote access to users
-staffRouter.post("/grant/:year", isCorsace, async (ctx) => {
+staffRouter.$post("/grant/:year", isCorsace, async (ctx) => {
     if (!ctx.request.body.user)
         return ctx.body = {
             success: false,

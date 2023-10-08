@@ -6,7 +6,7 @@ import state from "../../../../BanchoBot/state";
 
 const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
-banchoRefereeRouter.use(koaBasicAuth({
+banchoRefereeRouter.$use(koaBasicAuth({
     name: config.interOpAuth.username,
     pass: config.interOpAuth.password,
 }));
@@ -43,7 +43,7 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
     await next();
 }
 
-banchoRefereeRouter.get("/:matchupID/pulseMatch", validateMatchup, async (ctx) => {
+banchoRefereeRouter.$get("/:matchupID/pulseMatch", validateMatchup, async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: true,

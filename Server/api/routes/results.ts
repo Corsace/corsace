@@ -11,9 +11,9 @@ import { MCAState } from "koa";
 
 const resultsRouter  = new CorsaceRouter<MCAState>();
 
-resultsRouter.use(validatePhaseYear);
+resultsRouter.$use(validatePhaseYear);
 
-resultsRouter.get("/:year?", isResults, async (ctx) => {
+resultsRouter.$get("/:year?", isResults, async (ctx) => {
     const categories = await Category.find({
         where: {
             mca: {
@@ -29,14 +29,17 @@ resultsRouter.get("/:year?", isResults, async (ctx) => {
     };
 });
 
-resultsRouter.get("/:year/search", isResults, async (ctx) => {
+resultsRouter.$get("/:year/search", isResults, async (ctx) => {
     if (await ctx.cashed() && ctx.state.mca.currentPhase() === "results")
         return;
 
     const categoryIDString = parseQueryParam(ctx.query.category);
     
     if (!categoryIDString || !/\d+/.test(categoryIDString))
-        return ctx.body = { error: "Invalid category ID given!" };
+        return ctx.body = {
+            success: false,
+            error: "Invalid category ID given!",
+        };
 
     const categoryID = parseInt(categoryIDString);
 

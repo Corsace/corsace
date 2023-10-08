@@ -30,7 +30,7 @@ async function validateID (ctx: ParameterizedContext, next: Next) {
 
 const tournamentRouter  = new CorsaceRouter();
 
-tournamentRouter.get("/open/:year", async (ctx) => {
+tournamentRouter.$get("/open/:year", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -103,7 +103,7 @@ tournamentRouter.get("/open/:year", async (ctx) => {
     };
 });
 
-tournamentRouter.get("/validateKey", async (ctx) => {
+tournamentRouter.$get("/validateKey", async (ctx) => {
     const key = ctx.query.key as string;
     if (!key) {
         ctx.body = {
@@ -128,7 +128,7 @@ tournamentRouter.get("/validateKey", async (ctx) => {
     };
 });
 
-tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
+tournamentRouter.$get("/:tournamentID/teams", validateID, async (ctx) => {
     // TODO: Use tournament ID and only bring registered teams
     // TODO: Effectively, we also removed isRegistered from the response
     const ID: number = ctx.state.ID;
@@ -183,7 +183,7 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
     };
 });
 
-tournamentRouter.get("/:tournamentID/teams/screening", validateID, async (ctx) => {
+tournamentRouter.$get("/:tournamentID/teams/screening", validateID, async (ctx) => {
     const ID: number = ctx.state.ID;
 
     const teams = await Team
@@ -213,7 +213,7 @@ tournamentRouter.get("/:tournamentID/teams/screening", validateID, async (ctx) =
     ctx.body = csv;
 });
 
-tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
+tournamentRouter.$get("/:tournamentID/qualifiers", validateID, async (ctx) => {
     const ID: number = ctx.state.ID;
 
     const qualifiers = await Matchup
@@ -247,7 +247,7 @@ tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
     };
 });
 
-tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
+tournamentRouter.$get("/:tournamentID/staff", validateID, async (ctx) => {
     if (await ctx.cashed())
         return;
 

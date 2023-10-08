@@ -4,10 +4,10 @@ import { isCorsace, isLoggedInDiscord } from "../../../../Server/middleware";
 
 const adminRouter  = new CorsaceRouter();
 
-adminRouter.use(isLoggedInDiscord);
-adminRouter.use(isCorsace);
+adminRouter.$use(isLoggedInDiscord);
+adminRouter.$use(isCorsace);
 
-adminRouter.get("/reset", (ctx) => {
+adminRouter.$get("/reset", (ctx) => {
     cache.reset();
     ctx.body = {
         success: "Success",

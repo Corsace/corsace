@@ -3,19 +3,20 @@ import { UserAuthenticatedState } from "koa";
 import { OAuth, User } from "../../../Models/user";
 import { UsernameChange } from "../../../Models/usernameChange";
 import { isCorsace, isHeadStaff, isLoggedIn } from "../../middleware";
+import { UserInfo, UserMCAInfo } from "../../../Interfaces/user";
 
 const userRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-userRouter.use(isLoggedIn);
+userRouter.$use(isLoggedIn);
 
-userRouter.get("/", async (ctx) => {
+userRouter.$get<{ user: UserInfo }>("/", async (ctx) => {
     ctx.body = {
         success: true,
         user: await ctx.state.user.getInfo(),
     };
 });
 
-userRouter.get("/mca", async (ctx) => {
+userRouter.$get<{ user: UserMCAInfo }>("/mca", async (ctx) => {
     ctx.body = {
         success: true,
         user: await ctx.state.user.getMCAInfo(),
@@ -33,10 +34,11 @@ interface connectBody {
     };
 }
 
-userRouter.post("/connect", isCorsace, async (ctx) => {
+userRouter.$post<{ user: UserInfo }>("/connect", isCorsace, async (ctx) => {
     const body: connectBody = ctx.request.body;
     if (!body.osu || !body.discord)
-        return ctx.body = { 
+        return ctx.body = {
+            success: false,
             error: "Missing parameters",
         };
 
@@ -51,7 +53,8 @@ userRouter.post("/connect", isCorsace, async (ctx) => {
     });
 
     if (!user)
-        return ctx.body = { 
+        return ctx.body = {
+            success: false,
             error: "User not found",
         };
 
@@ -61,14 +64,15 @@ userRouter.post("/connect", isCorsace, async (ctx) => {
 
     ctx.body = {
         success: true,
-        user,
+        user: await user.getInfo(),
     };
 });
 
-userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
+userRouter.$post<{ user: UserInfo }>("/username/delete", isHeadStaff, async (ctx) => {
     const body = ctx.request.body;
     if (!body.ID || !body.username)
-        return ctx.body = { 
+        return ctx.body = {
+            success: false,
             error: "Missing parameters",
         };
     
@@ -87,7 +91,8 @@ userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
             },
         });
         if (otherNames.length === 0) {
-            return ctx.body = { 
+            return ctx.body = {
+                success: false,
                 error: "No remaining username to change to.",
             };
         }
@@ -96,7 +101,7 @@ userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
         await otherNames[0].remove();
         return ctx.body = {
             success: true,
-            user,
+            user: await user.getInfo(),
         };
     }
 
@@ -111,7 +116,7 @@ userRouter.post("/username/delete", isHeadStaff, async (ctx) => {
     await name.remove();
     return ctx.body = {
         success: true,
-        user,
+        user: await user.getInfo(),
     };
 });
 
