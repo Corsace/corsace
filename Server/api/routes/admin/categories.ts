@@ -1,18 +1,19 @@
-import Router, { Middleware } from "@koa/router";
+import * as compose from "koa-compose";
 import { isLoggedInDiscord, isCorsace } from "../../../../Server/middleware";
 import { Category, CategoryGenerator } from "../../../../Models/MCA_AYIM/category";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { ModeDivision } from "../../../../Models/MCA_AYIM/modeDivision";
 import { CategoryFilter, CategoryType } from "../../../../Interfaces/category";
 import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
+import { CorsaceContext, CorsaceRouter, CorsaceSuccessMessage } from "../../../corsaceRouter";
 
-const adminCategoriesRouter = new Router;
+const adminCategoriesRouter  = new CorsaceRouter();
 const categoryGenerator = new CategoryGenerator;
 
 adminCategoriesRouter.use(isLoggedInDiscord);
 adminCategoriesRouter.use(isCorsace);
 
-const validate: Middleware = async (ctx, next) => {
+const validate: compose.Middleware<CorsaceContext<CorsaceSuccessMessage>> = async (ctx, next) => {
     const categoryInfo = ctx.request.body.category;
     const year: string = ctx.params.year;
     const modeString: string = ctx.request.body.mode;

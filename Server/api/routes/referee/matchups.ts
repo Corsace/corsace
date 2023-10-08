@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
 import { Matchup as MatchupInterface } from "../../../../Interfaces/matchup";
 import { Matchup } from "../../../../Models/tournaments/matchup";
@@ -12,7 +12,7 @@ import { parseQueryParam } from "../../../utils/query";
 import dbMatchupToInterface from "../../../functions/tournaments/matchups/dbMatchupToInterface";
 import { TournamentAuthenticatedState } from "koa";
 
-const refereeMatchupsRouter = new Router<TournamentAuthenticatedState>();
+const refereeMatchupsRouter  = new CorsaceRouter<TournamentAuthenticatedState>();
 
 //TODO: Look into making refereeRouter.use work for the middleware functions
 refereeMatchupsRouter.use(isLoggedInDiscord);

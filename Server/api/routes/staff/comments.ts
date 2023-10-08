@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { isLoggedInDiscord } from "../../../middleware";
 import { User } from "../../../../Models/user";
 import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
@@ -9,7 +9,7 @@ import { Brackets } from "typeorm";
 import { parseQueryParam } from "../../../utils/query";
 import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
 
-const commentsReviewRouter = new Router<UserAuthenticatedState>();
+const commentsReviewRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
 commentsReviewRouter.use(isLoggedInDiscord);
 commentsReviewRouter.use(isMCAStaff);

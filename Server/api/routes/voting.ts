@@ -1,5 +1,5 @@
 import { MCAYearState, UserAuthenticatedState } from "koa";
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { isLoggedIn } from "../../../Server/middleware";
 import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase } from "../../../Server/middleware/mca-ayim";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
@@ -12,7 +12,7 @@ import { MoreThan, Not } from "typeorm";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Beatmap } from "../../../Models/beatmap";
 
-const votingRouter = new Router<UserAuthenticatedState>();
+const votingRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
 votingRouter.use(isLoggedIn);
 

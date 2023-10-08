@@ -1,11 +1,11 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import Axios from "axios";
 import { User } from "../../../Models/user";
 import { MapperQuery } from "../../../Interfaces/queries";
 import { parseQueryParam } from "../../../Server/utils/query";
 import { osuV2Client } from "../../osu";
 
-const mappersRouter = new Router();
+const mappersRouter  = new CorsaceRouter();
 
 mappersRouter.get("/search", async (ctx) => {
     if (!ctx.query.year)

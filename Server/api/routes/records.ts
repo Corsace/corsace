@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { createQueryBuilder } from "typeorm";
 import { ModeDivisionType } from "../../../Interfaces/modes";
 import { BeatmapsetRecord, MapperRecord } from "../../../Interfaces/records";
@@ -60,7 +60,7 @@ function padLengthWithZero (lengthRecord: {
     return lengthRecord;
 }
 
-const recordsRouter = new Router();
+const recordsRouter  = new CorsaceRouter();
 
 recordsRouter.get("/beatmapsets", async (ctx) => {
     if (await ctx.cashed())

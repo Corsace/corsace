@@ -1,4 +1,4 @@
-import { CorsaceRouter } from "../../router";
+import { CorsaceRouter } from "../../corsaceRouter";
 
 const helloWorldRouter = new CorsaceRouter();
 

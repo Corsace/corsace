@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import passport from "koa-passport";
 import { ParameterizedContext, UserAuthenticatedState } from "koa";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
@@ -15,7 +15,7 @@ import { ModeDivisionType } from "../../../../Interfaces/modes";
 
 // If you are looking for osu! passport info then go to Server > passportFunctions.ts
 
-const osuRouter = new Router();
+const osuRouter  = new CorsaceRouter();
 const modes = [
     "standard",
     "taiko",

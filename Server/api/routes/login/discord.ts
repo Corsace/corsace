@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import passport from "koa-passport";
 import { discordGuild } from "../../../discord";
 import { config } from "node-config-ts";
@@ -9,7 +9,7 @@ import { DiscordAPIError } from "discord.js";
 
 // If you are looking for discord passport info then go to Server > passportFunctions.ts
 
-const discordRouter = new Router();
+const discordRouter  = new CorsaceRouter();
 
 discordRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext, next) => {
     const site = parseQueryParam(ctx.query.site);

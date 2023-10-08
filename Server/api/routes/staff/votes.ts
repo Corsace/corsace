@@ -1,11 +1,11 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
 import { Vote } from "../../../../Models/MCA_AYIM/vote";
 import { StaffVote } from "../../../../Interfaces/vote";
 import { MoreThan, Not } from "typeorm";
 import { parseQueryParam } from "../../../../Server/utils/query";
 
-const staffVotesRouter = new Router;
+const staffVotesRouter  = new CorsaceRouter;
 
 staffVotesRouter.use(isLoggedInDiscord);
 staffVotesRouter.use(isStaff);

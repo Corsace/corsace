@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { BaseQualifier } from "../../../../Interfaces/qualifier";
@@ -28,7 +28,7 @@ async function validateID (ctx: ParameterizedContext, next: Next) {
     await next();
 }
 
-const tournamentRouter = new Router();
+const tournamentRouter  = new CorsaceRouter();
 
 tournamentRouter.get("/open/:year", async (ctx) => {
     if (await ctx.cashed())

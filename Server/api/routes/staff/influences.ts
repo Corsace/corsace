@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { Influence } from "../../../../Models/MCA_AYIM/influence";
 import { isLoggedInDiscord } from "../../../../Server/middleware";
 import { Brackets } from "typeorm";
@@ -7,7 +7,7 @@ import { StaffComment } from "../../../../Interfaces/comment";
 import { isMCAStaff } from "../../../middleware/mca-ayim";
 import { UserAuthenticatedState } from "koa";
 
-const influencesReviewRouter = new Router<UserAuthenticatedState>();
+const influencesReviewRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
 influencesReviewRouter.use(isLoggedInDiscord);
 influencesReviewRouter.use(isMCAStaff);

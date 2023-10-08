@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import koaBasicAuth from "koa-basic-auth";
 import { config } from "node-config-ts";
 import { Matchup } from "../../../../Models/tournaments/matchup";
@@ -12,7 +12,7 @@ import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
 import ormConfig from "../../../../ormconfig";
 import { StageType } from "../../../../Interfaces/stage";
 
-const banchoRefereeRouter = new Router<BanchoMatchupState>();
+const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
 banchoRefereeRouter.use(koaBasicAuth({
     name: config.interOpAuth.username,

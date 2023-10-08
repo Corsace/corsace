@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { createHash } from "crypto";
 import { Beatmap, Mode } from "nodesu";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
@@ -6,7 +6,7 @@ import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { osuClient } from "../../../osu";
 
-const mappoolMapRouter = new Router();
+const mappoolMapRouter  = new CorsaceRouter();
 
 mappoolMapRouter.get("/", (ctx) => {
     ctx.body = {

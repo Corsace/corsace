@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { isLoggedInDiscord } from "../../../../Server/middleware";
 import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
 import { StaffNomination } from "../../../../Interfaces/nomination";
@@ -6,7 +6,7 @@ import { parseQueryParam } from "../../../../Server/utils/query";
 import { UserAuthenticatedState } from "koa";
 import { isMCAStaff } from "../../../middleware/mca-ayim";
 
-const staffNominationsRouter = new Router<UserAuthenticatedState>();
+const staffNominationsRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
 staffNominationsRouter.use(isLoggedInDiscord);
 staffNominationsRouter.use(isMCAStaff);

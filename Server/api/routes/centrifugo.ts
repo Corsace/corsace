@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import koaIp from "koa-ip";
 import { config } from "node-config-ts";
 import { StageType } from "../../../Interfaces/stage";
@@ -8,7 +8,7 @@ import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
 import { User } from "../../../Models/user";
 import { discordClient } from "../../discord";
 
-const centrifugoRouter = new Router();
+const centrifugoRouter  = new CorsaceRouter();
 
 const ipWhitelist = koaIp(config.centrifugo.ipWhitelist);
 

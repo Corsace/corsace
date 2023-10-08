@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { ParameterizedContext, Next, UserAuthenticatedState, CommentAuthenticatedState } from "koa";
 import { User } from "../../../Models/user";
 import { UserComment } from "../../../Models/MCA_AYIM/userComments";
@@ -41,7 +41,7 @@ async function isCommentOwner (ctx: ParameterizedContext<UserAuthenticatedState>
     await next();
 }
 
-const commentsRouter = new Router();
+const commentsRouter  = new CorsaceRouter();
 
 commentsRouter.get("/", async (ctx) => {
     if (!ctx.query.user) {

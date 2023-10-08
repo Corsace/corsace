@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { isLoggedInDiscord } from "../../../../Server/middleware";
 import { isMCAStaff, validatePhaseYear } from "../../../../Server/middleware/mca-ayim";
 import { GuestRequest } from "../../../../Models/MCA_AYIM/guestRequest";
@@ -8,7 +8,7 @@ import { RequestStatus, StaffGuestRequest } from "../../../../Interfaces/guestRe
 import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
 import { ModeDivisionType } from "../../../../Interfaces/modes";
 
-const staffRequestsRouter = new Router<UserAuthenticatedState>();
+const staffRequestsRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
 staffRequestsRouter.use(isLoggedInDiscord);
 staffRequestsRouter.use(isMCAStaff);

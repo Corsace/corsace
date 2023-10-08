@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { isCorsace, isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
 import { Team as TeamInterface, validateTeamText } from "../../../../Interfaces/team";
@@ -19,7 +19,7 @@ import { Stage } from "../../../../Models/tournaments/stage";
 import { User } from "../../../../Models/user";
 import { unallowedToPlay, TournamentRoleType } from "../../../../Interfaces/tournament";
 
-const teamRouter = new Router();
+const teamRouter = new CorsaceRouter();
 
 teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
     const teamIDs: {

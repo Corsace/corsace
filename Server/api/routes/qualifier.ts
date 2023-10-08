@@ -1,10 +1,10 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { Qualifier, QualifierTeam } from "../../../Interfaces/qualifier";
 import { unallowedToPlay } from "../../../Interfaces/tournament";
 import { Matchup } from "../../../Models/tournaments/matchup";
 import { discordClient } from "../../discord";
 
-const qualifierRouter = new Router();
+const qualifierRouter  = new CorsaceRouter();
 
 qualifierRouter.get("/:qualifierID", async (ctx) => {
     const qualifierID = parseInt(ctx.params.qualifierID);

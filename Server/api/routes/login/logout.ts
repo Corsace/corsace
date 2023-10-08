@@ -1,7 +1,7 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { isLoggedIn } from "../../../middleware";
 
-const logoutRouter = new Router();
+const logoutRouter  = new CorsaceRouter();
 
 logoutRouter.get("/", isLoggedIn, async (ctx) => {
     if (ctx.isAuthenticated()) {

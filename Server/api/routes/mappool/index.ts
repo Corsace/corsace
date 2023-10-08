@@ -1,6 +1,6 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 
-const mappoolRouter = new Router();
+const mappoolRouter  = new CorsaceRouter();
 
 mappoolRouter.get("/", (ctx) => {
     ctx.body = {

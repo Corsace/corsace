@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import koaBasicAuth from "koa-basic-auth";
 import { ParameterizedContext, Next, CronJobState, DefaultState } from "koa";
 import { cron } from "../../../cron";
@@ -43,7 +43,7 @@ async function validateData (ctx: ParameterizedContext, next: Next) {
     await next();
 }
 
-const cronRouter = new Router<DefaultState>();
+const cronRouter  = new CorsaceRouter<DefaultState>();
 
 cronRouter.use(koaBasicAuth({
     name: config.interOpAuth.username,

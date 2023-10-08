@@ -1,5 +1,5 @@
 import Axios from "axios";
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { config } from "node-config-ts";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { isLoggedInDiscord } from "../../../middleware";
@@ -10,7 +10,7 @@ import { hasRoles, validateTournament } from "../../../middleware/tournament";
 import { User } from "../../../../Models/user";
 import { TournamentAuthenticatedState } from "koa";
 
-const refereeBanchoRouter = new Router();
+const refereeBanchoRouter  = new CorsaceRouter();
 
 refereeBanchoRouter.post<TournamentAuthenticatedState>("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     if (!ctx.request.body.endpoint) {

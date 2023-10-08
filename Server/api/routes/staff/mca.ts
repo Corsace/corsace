@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { isLoggedInDiscord } from "../../../middleware";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { Category } from "../../../../Models/MCA_AYIM/category";
@@ -11,7 +11,7 @@ import { osuClient } from "../../../osu";
 import { MCAAuthenticatedState } from "koa";
 import { ModeDivisionType } from "../../../../Interfaces/modes";
 
-const staffRouter = new Router<MCAAuthenticatedState>();
+const staffRouter  = new CorsaceRouter<MCAAuthenticatedState>();
 
 staffRouter.use(isLoggedInDiscord);
 staffRouter.use(isMCAStaff);

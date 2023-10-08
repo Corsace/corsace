@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { config } from "node-config-ts";
 import { CategoryCondensedInfo } from "../../../Interfaces/category";
 import { ModeDivisionType } from "../../../Interfaces/modes";
@@ -9,7 +9,7 @@ import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { discordGuild } from "../../discord";
 import { parseQueryParam } from "../../utils/query";
 
-const mcaRouter = new Router();
+const mcaRouter  = new CorsaceRouter();
 const modeStaff = config.discord.roles.mca;
 
 mcaRouter.get("/", async (ctx) => {

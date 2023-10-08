@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { Brackets, MoreThan } from "typeorm";
 import { currentMCA, isEligibleFor } from "../../../Server/middleware/mca-ayim";
 import { Influence } from "../../../Models/MCA_AYIM/influence";
@@ -10,7 +10,7 @@ import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
 import { parseQueryParam } from "../../utils/query";
 import { ModeDivisionType } from "../../../Interfaces/modes";
 
-const influencesRouter = new Router();
+const influencesRouter  = new CorsaceRouter();
 
 influencesRouter.get("/", async (ctx) => {
     const userSearch = ctx.query.user;

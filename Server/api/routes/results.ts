@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { BeatmapResult, BeatmapsetResult, UserResult, votesToResults } from "../../../Interfaces/result";
 import { groupVotesByVoters, StaffVote, voteCounter } from "../../../Interfaces/vote";
 import { isResults, validatePhaseYear } from "../../../Server/middleware/mca-ayim";
@@ -9,7 +9,7 @@ import { parseQueryParam } from "../../../Server/utils/query";
 import { osuV2Client } from "../../osu";
 import { MCAState } from "koa";
 
-const resultsRouter = new Router<MCAState>();
+const resultsRouter  = new CorsaceRouter<MCAState>();
 
 resultsRouter.use(validatePhaseYear);
 

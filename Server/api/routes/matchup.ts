@@ -1,5 +1,5 @@
 import axios from "axios";
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { Multi } from "nodesu";
 import { Brackets, EntityManager } from "typeorm";
 import { StageType } from "../../../Interfaces/stage";
@@ -24,7 +24,7 @@ import { MatchupSet } from "../../../Models/tournaments/matchupSet";
 import dbMatchupToInterface from "../../functions/tournaments/matchups/dbMatchupToInterface";
 import { ResponseBody, TournamentStageState, TournamentState } from "koa";
 
-const matchupRouter = new Router();
+const matchupRouter  = new CorsaceRouter();
 
 interface postMatchup {
     ID: number;

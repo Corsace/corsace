@@ -1,9 +1,9 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { createHmac, timingSafeEqual } from "crypto";
 import { config } from "node-config-ts";
 import Axios from "axios";
 
-const githubRouter = new Router();
+const githubRouter  = new CorsaceRouter();
 
 githubRouter.post("/", async (ctx) => {
     const signature = createHmac("sha256", config.github.webhookSecret)

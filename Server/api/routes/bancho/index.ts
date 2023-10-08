@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import koaBasicAuth from "koa-basic-auth";
 import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
 import { ParameterizedContext, Next } from "koa";
@@ -35,7 +35,7 @@ async function validateData (ctx: ParameterizedContext, next: Next) {
     await next();
 }
 
-const banchoRouter = new Router();
+const banchoRouter  = new CorsaceRouter();
 
 banchoRouter.use(koaBasicAuth({
     name: config.interOpAuth.username,

@@ -1,4 +1,3 @@
-import Router, { Middleware } from "@koa/router";
 import { isLoggedInDiscord, isCorsace } from "../../../../Server/middleware";
 import { Category, CategoryGenerator } from "../../../../Models/MCA_AYIM/category";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
@@ -7,14 +6,15 @@ import { CategoryType } from "../../../../Interfaces/category";
 import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
 import { Vote } from "../../../../Models/MCA_AYIM/vote";
 import { cache } from "../../../../Server/cache";
+import { CorsaceMiddleware, CorsaceRouter } from "../../../corsaceRouter";
 
-const adminYearsRouter = new Router;
+const adminYearsRouter = new CorsaceRouter;
 const categoryGenerator = new CategoryGenerator;
 
 adminYearsRouter.use(isLoggedInDiscord);
 adminYearsRouter.use(isCorsace);
 
-const validate: Middleware = async (ctx, next) => {
+const validate: CorsaceMiddleware = async (ctx, next) => {
     const data = ctx.request.body;
 
     if (!data.year) {

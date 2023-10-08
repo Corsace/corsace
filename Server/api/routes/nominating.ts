@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { isLoggedIn } from "../../middleware";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Category } from "../../../Models/MCA_AYIM/category";
@@ -12,7 +12,7 @@ import { isPossessive } from "../../../Models/MCA_AYIM/guestRequest";
 import { MCAYearState, UserAuthenticatedState } from "koa";
 import { ModeDivisionType } from "../../../Interfaces/modes";
 
-const nominatingRouter = new Router<UserAuthenticatedState>();
+const nominatingRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
 nominatingRouter.use(isLoggedIn);
 

@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { Beatmap } from "../../../Models/beatmap";
 import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
@@ -87,7 +87,7 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     };
 }
 
-const guestRequestRouter = new Router<MCAAuthenticatedState>();
+const guestRequestRouter  = new CorsaceRouter<MCAAuthenticatedState>();
 
 guestRequestRouter.use(isLoggedIn);
 guestRequestRouter.use(currentMCA);

@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { createHash } from "crypto";
 import { TournamentStageState } from "koa";
 import { Beatmap, Mode } from "nodesu";
@@ -17,7 +17,7 @@ import { discordClient } from "../../../discord";
 import { validateStageOrRound } from "../../../middleware/tournament";
 import { osuClient } from "../../../osu";
 
-const stageRouter = new Router<TournamentStageState>();
+const stageRouter  = new CorsaceRouter<TournamentStageState>();
 
 stageRouter.use(validateStageOrRound);
 

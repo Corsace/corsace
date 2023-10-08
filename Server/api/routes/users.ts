@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import Axios from "axios";
 import { User } from "../../../Models/user";
 import { MapperQuery } from "../../../Interfaces/queries";
@@ -6,7 +6,7 @@ import { parseQueryParam } from "../../utils/query";
 import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { osuV2Client } from "../../osu";
 
-const usersRouter = new Router();
+const usersRouter  = new CorsaceRouter();
 
 usersRouter.get("/search", async (ctx) => {
     const userSearch = ctx.query.user;

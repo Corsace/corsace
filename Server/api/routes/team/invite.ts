@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { validateTeam } from "./middleware";
 import { isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
@@ -15,7 +15,7 @@ function isIdType (value: any): value is idType {
     return value === "osu" || value === "discord" || value === "corsace";
 }
 
-const inviteRouter = new Router<UserAuthenticatedState>();
+const inviteRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
 inviteRouter.use(isLoggedInDiscord);
 

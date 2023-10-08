@@ -1,10 +1,10 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { UserAuthenticatedState } from "koa";
 import { OAuth, User } from "../../../Models/user";
 import { UsernameChange } from "../../../Models/usernameChange";
 import { isCorsace, isHeadStaff, isLoggedIn } from "../../middleware";
 
-const userRouter = new Router<UserAuthenticatedState>();
+const userRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
 userRouter.use(isLoggedIn);
 

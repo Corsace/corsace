@@ -1,6 +1,6 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 
-const osuURIRouter = new Router();
+const osuURIRouter = new CorsaceRouter();
 
 osuURIRouter.get("/edit", (ctx) => {
     ctx.redirect(`osu://edit/${ctx.query.time}`);

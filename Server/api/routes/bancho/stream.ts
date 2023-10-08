@@ -1,10 +1,10 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import koaBasicAuth from "koa-basic-auth";
 import { config } from "node-config-ts";
 import { BanchoMatchupState, Next, ParameterizedContext } from "koa";
 import state from "../../../../BanchoBot/state";
 
-const banchoRefereeRouter = new Router<BanchoMatchupState>();
+const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
 banchoRefereeRouter.use(koaBasicAuth({
     name: config.interOpAuth.username,
