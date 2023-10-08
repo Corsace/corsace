@@ -98,11 +98,4 @@ declare module "koa" {
     } & BodyT;
 
     type ResponseBody<BodyT = any> = ErrorResponseBody | SuccessResponseBody<BodyT>;
-
-    interface DefaultContext<BodyT = any> {
-        body: ResponseBody<BodyT>;
-        response: {
-            body: ResponseBody<BodyT>;
-        }
-    }
 }

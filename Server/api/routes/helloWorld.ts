@@ -1,9 +1,13 @@
 import Router from "@koa/router";
+import { requestWithCorsaceContext } from "../../router";
 
 const helloWorldRouter = new Router();
 
-helloWorldRouter.get("/", (ctx) => {
-    ctx.body = "Hello World!";
+requestWithCorsaceContext<{ message: string }>(helloWorldRouter, "get", "/", (ctx) => {
+    ctx.body = {
+        success: true,
+        message: "Hello World!",
+    };
 });
 
 export default helloWorldRouter;
