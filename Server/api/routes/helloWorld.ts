@@ -1,9 +1,8 @@
-import Router from "@koa/router";
-import { requestWithCorsaceContext } from "../../router";
+import { CorsaceRouter } from "../../router";
 
-const helloWorldRouter = new Router();
+const helloWorldRouter = new CorsaceRouter();
 
-requestWithCorsaceContext<{ message: string }>(helloWorldRouter, "get", "/", (ctx) => {
+helloWorldRouter.$get<{ message: string }>("/", (ctx) => {
     ctx.body = {
         success: true,
         message: "Hello World!",
