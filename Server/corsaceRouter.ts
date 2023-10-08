@@ -2,9 +2,9 @@ import Router from "@koa/router";
 import * as compose from "koa-compose";
 import { DefaultContext, DefaultState, ParameterizedContext, ResponseBody } from "koa";
 
-export type CorsaceContext<BodyT = any, StateT = DefaultState, ContextT = DefaultContext> = ParameterizedContext<StateT, ContextT, ResponseBody<BodyT>>;
+export type CorsaceContext<BodyT, StateT = DefaultState, ContextT = DefaultContext> = ParameterizedContext<StateT, ContextT, ResponseBody<BodyT>>;
 
-export type CorsaceMiddleware<BodyT = any, StateT = DefaultState, ContextT = DefaultContext> = compose.Middleware<CorsaceContext<BodyT, StateT, ContextT>>;
+export type CorsaceMiddleware<BodyT, StateT = DefaultState, ContextT = DefaultContext> = compose.Middleware<CorsaceContext<BodyT, StateT, ContextT>>;
 
 export interface CorsaceSuccessMessage { message: string }
 

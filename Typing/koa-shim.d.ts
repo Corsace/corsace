@@ -93,9 +93,9 @@ declare module "koa" {
         error: string;
     }
 
-    type SuccessResponseBody<BodyT = any> = {
+    type SuccessResponseBody<BodyT> = {
         success: true;
     } & BodyT;
 
-    type ResponseBody<BodyT = any> = ErrorResponseBody | SuccessResponseBody<BodyT>;
+    type ResponseBody<BodyT> = ErrorResponseBody | SuccessResponseBody<BodyT>;
 }
