@@ -22,7 +22,7 @@ export default async function getBeatmap (apiBeatmap: APIBeatmap | number, save:
     if (!mode)
         return;
 
-    beatmap = new Beatmap;
+    beatmap = new Beatmap();
     beatmap.ID = targetBeatmap.id;
     beatmap.mode = mode;
     beatmap.difficulty = targetBeatmap.version;

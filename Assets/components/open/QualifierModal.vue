@@ -78,7 +78,7 @@ export default class QualifierModal extends Vue {
         return dateString[dateString.length - 1];
     }
 
-    qualifierAt = toLocalISOString(new Date).slice(0, 16);
+    qualifierAt = toLocalISOString(new Date()).slice(0, 16);
     loading = false;
 
     async registerTeam () {

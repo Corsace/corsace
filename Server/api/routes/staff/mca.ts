@@ -85,9 +85,9 @@ staffRouter.post("/grant/:year", isCorsace, async (ctx) => {
                 error: "Invalid user ID given!",
             };
 
-        user = new User;
+        user = new User();
         user.country = apiUser.country.toString();
-        user.osu = new OAuth;
+        user.osu = new OAuth();
         user.osu.userID = `${apiUser.userId}`;
         user.osu.username = apiUser.username;
         user.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;

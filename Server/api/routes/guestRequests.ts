@@ -105,7 +105,7 @@ guestRequestRouter.post("/create", async (ctx) => {
     }
 
     // Create guest requesst
-    const guestReq = new GuestRequest;
+    const guestReq = new GuestRequest();
     guestReq.user = user;
     guestReq.mca = mca;
     guestReq.mode = res.mode;

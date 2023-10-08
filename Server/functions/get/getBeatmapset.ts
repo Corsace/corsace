@@ -15,7 +15,7 @@ export default async function getBeatmapset (apiBeatmap: APIBeatmap | number, sa
     if (!save)
         return;
 
-    beatmapSet = new Beatmapset;
+    beatmapSet = new Beatmapset();
     beatmapSet.ID = targetBeatmap.beatmapSetId;
     beatmapSet.approvedDate = targetBeatmap.approvedDate;
     beatmapSet.rankedStatus = targetBeatmap.approved;

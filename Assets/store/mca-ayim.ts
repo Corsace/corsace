@@ -97,7 +97,7 @@ export const getters: GetterTree<RootState, RootState> = {
         if (!state.mca) return undefined;
 
         let phase: PhaseType = "preparation";
-        const newDate = new Date;
+        const newDate = new Date();
         let startDate: Date = newDate;
         let endDate: Date = newDate;
         

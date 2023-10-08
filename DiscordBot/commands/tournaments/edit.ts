@@ -284,7 +284,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Invitational", value: tournament.invitational ? "Yes" : "No", inline: true },
             { name: "Server", value: tournament.server, inline: true }
         )
-        .setTimestamp(new Date)
+        .setTimestamp(new Date())
         .setAuthor({ name: m.author.username, iconURL: m.member?.avatarURL() ?? undefined });
 
     if (tournament.isOpen || tournament.isClosed)

@@ -99,7 +99,7 @@ export class Category extends BaseEntity {
         if (!params)
             return;
 
-        const filter = new CategoryFilter;
+        const filter = new CategoryFilter();
         filter.minLength = params.minLength ?? undefined;
         filter.maxLength = params.maxLength ?? undefined;
         filter.minBPM = params.minBPM ?? undefined;
@@ -119,7 +119,7 @@ export class CategoryGenerator {
      * Creates a grand award.
      */
     public createGrandAward = function(mca: MCA, mode: ModeDivision, type: CategoryType, isStoryboard = false): Category {
-        const category = new Category;
+        const category = new Category();
         
         category.name = "grandAward";
         category.maxNominations = 3;
@@ -138,7 +138,7 @@ export class CategoryGenerator {
      */
     public createOrUpdate = function(categoryInfo: Category, filter: CategoryFilter, category?: Category): Category {
         if (!category) {
-            category = new Category;
+            category = new Category();
         }
         
         category.name = categoryInfo.name;

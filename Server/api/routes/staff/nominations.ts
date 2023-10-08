@@ -125,7 +125,7 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
     });
     nomination.isValid = ctx.request.body.isValid; 
     nomination.reviewer = ctx.state.user;
-    nomination.lastReviewedAt = new Date;
+    nomination.lastReviewedAt = new Date();
     if (!nomination.isValid)
         nomination.nominators = [];
     await nomination.save();
@@ -134,7 +134,7 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
         success: true,
         isValid: ctx.request.body.isValid,
         reviewer: ctx.state.user.osu.username,
-        lastReviewedAt: new Date,
+        lastReviewedAt: new Date(),
     };
 });
 

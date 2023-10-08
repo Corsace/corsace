@@ -5,7 +5,7 @@ import { StaffVote } from "../../../../Interfaces/vote";
 import { MoreThan, Not } from "typeorm";
 import { parseQueryParam } from "../../../../Server/utils/query";
 
-const staffVotesRouter  = new CorsaceRouter;
+const staffVotesRouter  = new CorsaceRouter();
 
 staffVotesRouter.use(isLoggedInDiscord);
 staffVotesRouter.use(isStaff);

@@ -6,7 +6,7 @@ export default async function getModeDivison (modeDivisionId: number, save: bool
     let mode = await ModeDivision.findOne({ where: { ID: modeDivisionId }});
     if (!mode) {
         if (save) {
-            mode = new ModeDivision;
+            mode = new ModeDivision();
             mode.ID = modeDivisionId;
             mode.name = ModeDivisionType[mode.ID];
             mode = await mode.save();

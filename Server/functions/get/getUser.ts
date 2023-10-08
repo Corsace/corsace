@@ -12,8 +12,8 @@ export default async function getUser (ID: number | string, IDType: "osu" | "dis
     if (!save)
         return;
 
-    user = new User;
-    user[IDType] = new OAuth;
+    user = new User();
+    user[IDType] = new OAuth();
     user[IDType].userID = ID.toString();
     if (IDType === "osu") {
         const apiUser = await osuClient.user.get(ID) as APIUser;

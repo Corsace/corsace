@@ -697,7 +697,7 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
     }
 
     const mpData = await osuClient.multi.getMatch(mpID) as Multi;
-    const set = new MatchupSet;
+    const set = new MatchupSet();
     set.matchup = matchup;
     set.order = 1;
     set.maps = [];
@@ -707,7 +707,7 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
         if (!beatmap)
             return;
 
-        const map = new MatchupMap;
+        const map = new MatchupMap();
         map.set = sets[sets.length - 1];
         map.map = beatmap;
         map.order = i + 1;
@@ -721,7 +721,7 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
             if (!user)
                 return;
 
-            const matchupScore      = new MatchupScore;
+            const matchupScore      = new MatchupScore();
             matchupScore.user       = user;
             matchupScore.score      = score.score;
             matchupScore.mods       = ((score.enabledMods ?? game.mods) | 1) ^ 1; // Remove NF from mods (the OR 1 is to ensure NM is 0 after XOR)
@@ -763,7 +763,7 @@ matchupRouter.post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
                     sets[sets.length - 1].winner = matchup.team2;
 
                 if (sets[sets.length - 1].winner) {
-                    const nextSet = new MatchupSet;
+                    const nextSet = new MatchupSet();
                     nextSet.matchup = matchup;
                     nextSet.order = sets.length + 1;
                     nextSet.maps = [];
@@ -891,7 +891,7 @@ matchupRouter.post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
         return;
     }
 
-    const matchupScore      = new MatchupScore;
+    const matchupScore      = new MatchupScore();
     matchupScore.user       = user;
     matchupScore.score      = score;
     matchupScore.mods       = mods;

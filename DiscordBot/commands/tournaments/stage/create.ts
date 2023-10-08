@@ -270,7 +270,7 @@ async function stageDone (m: Message | ChatInputCommandInteraction, stage: Stage
             { name: "# of Rounds", value: stage.rounds.length.toString(), inline: true },
             { name: "Initial → Final Team Count", value: stage.initialSize + " → " + stage.finalSize, inline: true }
         )
-        .setTimestamp(new Date)
+        .setTimestamp(new Date())
         .setAuthor({ name: commandUser(m).username, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined });
 
     if (stage.stageType === StageType.Qualifiers)

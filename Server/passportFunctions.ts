@@ -57,9 +57,9 @@ export async function discordPassport (accessToken: string, refreshToken: string
 
         if (!user)
         {
-            user = new User;
-            user.discord = new OAuth;
-            user.discord.dateAdded = user.registered = new Date;
+            user = new User();
+            user.discord = new OAuth();
+            user.discord.dateAdded = user.registered = new Date();
         }
 
         user.discord.userID = profile.id;
@@ -67,7 +67,7 @@ export async function discordPassport (accessToken: string, refreshToken: string
         user.discord.accessToken = accessToken;
         user.discord.refreshToken = refreshToken;
         user.discord.avatar = (await discordClient.users.fetch(profile.id)).displayAvatarURL();
-        user.lastLogin = user.discord.lastVerified = new Date;
+        user.lastLogin = user.discord.lastVerified = new Date();
 
         done(null, user);
     } catch(error: any) {
@@ -88,9 +88,9 @@ export async function osuPassport (accessToken: string, refreshToken: string, pr
         });
 
         if (!user) {
-            user = new User;
-            user.osu = new OAuth;
-            user.osu.dateAdded = user.registered = new Date;
+            user = new User();
+            user.osu = new OAuth();
+            user.osu.dateAdded = user.registered = new Date();
         } else if (user.osu.username !== userProfile.username) {
             let nameChange = await UsernameChange.findOne({ 
                 where: {
@@ -101,7 +101,7 @@ export async function osuPassport (accessToken: string, refreshToken: string, pr
                 }, 
             });
             if (!nameChange) {
-                nameChange = new UsernameChange;
+                nameChange = new UsernameChange();
                 nameChange.name = user.osu.username;
                 nameChange.user = user;
                 await nameChange.save();
@@ -114,7 +114,7 @@ export async function osuPassport (accessToken: string, refreshToken: string, pr
         user.osu.avatar = userProfile.avatar_url;
         user.osu.accessToken = accessToken;
         user.osu.refreshToken = refreshToken;
-        user.osu.lastVerified = user.lastLogin = new Date;
+        user.osu.lastVerified = user.lastLogin = new Date();
 
         done(null, user);
     } catch (error) {

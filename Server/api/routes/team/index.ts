@@ -129,7 +129,7 @@ teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
     name = res.name;
     abbreviation = res.abbreviation;
 
-    const team = new Team;
+    const team = new Team();
     team.name = name;
     team.abbreviation = abbreviation;
     team.timezoneOffset = timezoneOffset;
@@ -335,7 +335,7 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         }
 
         try {
-            const matchup = new Matchup;
+            const matchup = new Matchup();
             matchup.date = qualifierDate;
             matchup.teams = [ team ];
             matchup.stage = qualifierStage;

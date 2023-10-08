@@ -320,7 +320,7 @@ banchoRefereeRouter.post("/:matchupID/selectMap", async (ctx) => {
         // Add map to matchup.maps
         if (!state.matchups[ctx.state.matchupID].matchup.sets![set].maps)
             state.matchups[ctx.state.matchupID].matchup.sets![set].maps = [];
-        const matchupMap = new MatchupMap;
+        const matchupMap = new MatchupMap();
         matchupMap.map = map;
         matchupMap.set = state.matchups[ctx.state.matchupID].matchup.sets![set];
         matchupMap.status = status;

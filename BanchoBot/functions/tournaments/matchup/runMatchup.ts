@@ -637,7 +637,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         playersPlaying = undefined;
         matchStart = undefined;
 
-        const matchupMap = new MatchupMap;
+        const matchupMap = new MatchupMap();
         matchupMap.set = matchup.sets![matchup.sets!.length - 1];
         matchupMap.map = beatmap;
         matchupMap.order = mapsPlayed.length;
@@ -649,7 +649,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
                 await mpChannel.sendMessage(`cant find the user in slot ${score.slot} (ID ${score.userId}) in the matchup contact Corsace IMMEDIATELY"`);
                 throw new Error("User not found");
             }
-            const matchupScore = new MatchupScore;
+            const matchupScore = new MatchupScore();
             matchupScore.user = user;
             matchupScore.map = matchupMap;
             matchupScore.score = score.score;
@@ -688,7 +688,7 @@ async function runMatchupListeners (matchup: Matchup, mpLobby: BanchoLobby, mpCh
         }
 
         if (matchup.sets![matchup.sets!.length - 1].winner) {
-            const nextSet = new MatchupSet;
+            const nextSet = new MatchupSet();
             nextSet.order = matchup.sets![matchup.sets!.length - 1].order + 1;
             nextSet.matchup = matchup;
             nextSet.maps = [];

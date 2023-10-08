@@ -146,7 +146,7 @@ influencesRouter.post<UserAuthenticatedState>("/create", isLoggedIn, async (ctx)
         };
         return;
     }
-    if (query.year > (new Date).getUTCFullYear()) {
+    if (query.year > (new Date()).getUTCFullYear()) {
         ctx.body = { 
             success: false,
             error: "You cannot provide influences for future years!",
@@ -162,7 +162,7 @@ influencesRouter.post<UserAuthenticatedState>("/create", isLoggedIn, async (ctx)
         return;
     }
 
-    const newInfluence = new Influence;
+    const newInfluence = new Influence();
     newInfluence.user = ctx.state.user;
     newInfluence.influence = target;
     newInfluence.year = query.year;

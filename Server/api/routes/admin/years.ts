@@ -8,8 +8,8 @@ import { Vote } from "../../../../Models/MCA_AYIM/vote";
 import { cache } from "../../../../Server/cache";
 import { CorsaceMiddleware, CorsaceRouter } from "../../../corsaceRouter";
 
-const adminYearsRouter = new CorsaceRouter;
-const categoryGenerator = new CategoryGenerator;
+const adminYearsRouter = new CorsaceRouter();
+const categoryGenerator = new CategoryGenerator();
 
 adminYearsRouter.use(isLoggedInDiscord);
 adminYearsRouter.use(isCorsace);

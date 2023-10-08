@@ -24,7 +24,7 @@ export class MCA extends BaseEntity {
     // TODO: What teh fucvk is the type for this
     static fillAndSave (data: any, mca?: MCA): Promise<MCA> {
         if (!mca) {
-            mca = new MCA;
+            mca = new MCA();
             mca.year = data.year;
         }
 
@@ -88,7 +88,7 @@ export class MCA extends BaseEntity {
 
     public currentPhase (this: MCA): PhaseType {
         let phase: PhaseType = "preparation";
-        const newDate = new Date;
+        const newDate = new Date();
         
         if (newDate > this.nomination.start && newDate < this.nomination.end) {
             phase = "nominating";

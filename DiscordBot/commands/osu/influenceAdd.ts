@@ -38,7 +38,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     // Get year, search, mode, and/or comment params
     let comment = "";
-    let year = (new Date).getUTCFullYear();
+    let year = (new Date()).getUTCFullYear();
     let search = "";
     let mode: ModeDivision | null = null;
     if (m instanceof Message) {
@@ -59,7 +59,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             }
         }
         if (year === 0) {
-            year = (new Date).getUTCFullYear();
+            year = (new Date()).getUTCFullYear();
             search = params.join(" ");
         }
         for (const param of params) {
@@ -76,7 +76,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         search = m.options.getString("user") ?? "";
         year = m.options.getInteger("year") ?? 0;
         if (year < 2007)
-            year = (new Date).getUTCFullYear();
+            year = (new Date()).getUTCFullYear();
         const modeText = m.options.getString("mode");
         if (modeText)
             mode = await ModeDivision.modeSelect(modeText);
@@ -86,7 +86,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         mode = await ModeDivision.findOne({ where: { ID: 1 }});
 
     if (!isEligibleFor(user, mode!.ID, year)) {
-        await respond(m, `U didnt rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date).getUTCFullYear() ? "\nFor adding influences in the current year, u need to have ranked a set, and u should re-login to Corsace with ur osu! account if it was recent. U should be able to add them after" : ""}`);
+        await respond(m, `U didnt rank a set or guest difficulty this year in **${mode!.name}**!${year === (new Date()).getUTCFullYear() ? "\nFor adding influences in the current year, u need to have ranked a set, and u should re-login to Corsace with ur osu! account if it was recent. U should be able to add them after" : ""}`);
         return;
     }
 
@@ -116,9 +116,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     });
 
     if (!influenceUser) {
-        influenceUser = new User;
+        influenceUser = new User();
         influenceUser.country = apiUser.country.toString();
-        influenceUser.osu = new OAuth;
+        influenceUser.osu = new OAuth();
         influenceUser.osu.userID = `${apiUser.userId}`;
         influenceUser.osu.username = apiUser.username;
         influenceUser.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;
@@ -146,7 +146,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const influence = new Influence;
+    const influence = new Influence();
     influence.user = user;
     influence.influence = influenceUser!;
     influence.year = year;
@@ -186,7 +186,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const collector = message.createMessageComponentCollector({ componentType: ComponentType.Button, time: 10000 });
         collector.on("collect", async (i) => {
             if (i.user.id !== authorID) {
-                i.reply({ content: "Fack off cunt", ephemeral: true });
+                await i.reply({ content: "Fack off cunt", ephemeral: true });
                 return;
             }
 

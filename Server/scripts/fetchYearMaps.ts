@@ -42,7 +42,7 @@ const getModeDivison = memoizee(async (modeDivisionId: number) => {
     modeDivisionId += 1;
     let mode = await ModeDivision.findOne({ where: { ID: modeDivisionId }});
     if (!mode) {
-        mode = new ModeDivision;
+        mode = new ModeDivision();
         mode.ID = modeDivisionId;
         mode.name = ModeDivisionType[mode.ID];
         mode = await mode.save();
@@ -73,8 +73,8 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
             username = newUsername ?? username ?? "";
         }
 
-        user = new User;
-        user.osu = new OAuth;
+        user = new User();
+        user.osu = new OAuth();
         user.osu.userID = `${targetUser.userID}`;
         user.osu.username = username;
         user.osu.avatar = "https://a.ppy.sh/" + targetUser.userID;
@@ -90,7 +90,7 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
         if (currentUsername && user.osu.username !== currentUsername) {
             // The username from DB doesn't match their current name; adding to history and updating.
             if (!user.otherNames.some(v => v.name === user!.osu.username)) {
-                const nameChange = new UsernameChange;
+                const nameChange = new UsernameChange();
                 nameChange.name = user.osu.username;
                 nameChange.user = user;
                 await nameChange.save();
@@ -102,7 +102,7 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
         if (targetUser.username !== user.osu.username) {
             // The name that we got from a beatmapset isn't their current name according to current API or DB if restricted; adding to history.
             if (!user.otherNames.some(v => v.name === targetUser.username)) {
-                const nameChange = new UsernameChange;
+                const nameChange = new UsernameChange();
                 nameChange.name = targetUser.username;
                 nameChange.user = user;
                 await nameChange.save();
@@ -143,7 +143,7 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
         },
     });
     if (!beatmapSet)
-        beatmapSet = new Beatmapset;
+        beatmapSet = new Beatmapset();
 
     beatmapSet.ID = beatmap.setId;
     beatmapSet.approvedDate = beatmap.approvedDate;
@@ -224,7 +224,7 @@ async function insertBeatmap (apiBeatmap: APIBeatmap) {
         },
     });
     if (!beatmap)
-        beatmap = new Beatmap;
+        beatmap = new Beatmap();
 
     beatmap.ID = apiBeatmap.id;
     beatmap.mode = await getModeDivison(apiBeatmap.mode!);

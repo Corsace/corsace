@@ -42,7 +42,7 @@ export default class AdminModalYear extends Vue {
         
     @Watch("info", { immediate: true })
     onInfoChanged (info: MCAInfo | null) {
-        let now = new Date;
+        let now = new Date();
         this.mcaInfo = {
             year: info?.name ?? now.getUTCFullYear() - 1,
             nominationStart: this.formatDate(info?.nomination.start ?? now),

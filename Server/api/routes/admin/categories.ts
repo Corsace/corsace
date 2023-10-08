@@ -8,7 +8,7 @@ import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
 import { CorsaceContext, CorsaceRouter, CorsaceSuccessMessage } from "../../../corsaceRouter";
 
 const adminCategoriesRouter  = new CorsaceRouter();
-const categoryGenerator = new CategoryGenerator;
+const categoryGenerator = new CategoryGenerator();
 
 adminCategoriesRouter.use(isLoggedInDiscord);
 adminCategoriesRouter.use(isCorsace);

@@ -5,7 +5,7 @@ import Mount from "koa-mount";
 
 import helloWorldRouter from "./api/routes/helloWorld";
 
-const koa = new Koa;
+const koa = new Koa();
 koa.keys = config.koaKeys;
 koa.proxy = true;
 

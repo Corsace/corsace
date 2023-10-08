@@ -2,7 +2,7 @@ import { CorsaceRouter } from "../../../corsaceRouter";
 import { cache } from "../../../../Server/cache";
 import { isCorsace, isLoggedInDiscord } from "../../../../Server/middleware";
 
-const adminRouter  = new CorsaceRouter;
+const adminRouter  = new CorsaceRouter();
 
 adminRouter.use(isLoggedInDiscord);
 adminRouter.use(isCorsace);

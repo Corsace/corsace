@@ -168,7 +168,7 @@ async function mappoolSave (m: Message, mappool: Mappool, tournament: Tournament
                     value: `${slot.maps.length} map${slot.maps.length > 1 ? "s" : ""}`,
                 };
             }))
-        .setTimestamp(new Date)
+        .setTimestamp(new Date())
         .setAuthor({ name: commandUser(m).username, iconURL: m.member?.displayAvatarURL() ?? undefined });
 
     await Promise.all([

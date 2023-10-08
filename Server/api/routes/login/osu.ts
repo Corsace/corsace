@@ -88,7 +88,7 @@ osuRouter.get<UserAuthenticatedState>("/callback", async (ctx: ParameterizedCont
                 },
             });
             if (!nameChange) {
-                nameChange = new UsernameChange;
+                nameChange = new UsernameChange();
                 nameChange.name = name;
                 nameChange.user = ctx.state.user;
                 await nameChange.save();
@@ -124,7 +124,7 @@ osuRouter.get<UserAuthenticatedState>("/callback", async (ctx: ParameterizedCont
                 eligibleModes = eligibleModes.map(mode => mode === "osu" ? "standard" : mode);
             }
 
-            for (let year = 2007; year <= (new Date).getUTCFullYear(); year++) {
+            for (let year = 2007; year <= (new Date()).getUTCFullYear(); year++) {
                 let eligibility = await MCAEligibility.findOne({ relations: ["user"], where: { year: year, user: { ID: ctx.state.user.ID }}});
                 if (!eligibility) {
                     eligibility = new MCAEligibility();

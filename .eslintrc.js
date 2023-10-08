@@ -41,6 +41,14 @@ module.exports = {
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
+
+        "vue/no-v-html": "off",
+        "vue/html-indent": [
+            "error", 
+            4,
+        ],
+
+        "new-parens": "error",
         "space-infix-ops": "error",
         "space-before-function-paren": ["error", {
             "anonymous": "ignore",
@@ -50,11 +58,6 @@ module.exports = {
         "no-constant-condition": [
             "error",
             { checkLoops: false },
-        ],
-        "vue/no-v-html": "off",
-        "vue/html-indent": [
-            "error", 
-            4,
         ],
         semi: [
             "error",
