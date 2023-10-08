@@ -13,47 +13,47 @@ export class CorsaceRouter<StateT = DefaultState, ContextT = DefaultContext> ext
         return super.use(...middleware);
     }
 
-    $get<T> (path: string, ...middleware: CorsaceMiddleware<T>[]) {
-        return super.get(path, ...middleware);
+    $get<T, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
+        return super.get<MethodStateT, MethodContextT>(path, ...middleware);
     }
 
-    $post<T> (path: string, ...middleware: CorsaceMiddleware<T>[]) {
-        return super.post(path, ...middleware);
+    $post<T, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
+        return super.post<MethodStateT, MethodContextT>(path, ...middleware);
     }
 
-    $put<T> (path: string, ...middleware: CorsaceMiddleware<T>[]) {
-        return super.put(path, ...middleware);
+    $put<T, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
+        return super.put<MethodStateT, MethodContextT>(path, ...middleware);
     }
 
-    $link<T> (path: string, ...middleware: CorsaceMiddleware<T>[]) {
-        return super.link(path, ...middleware);
+    $link<T, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
+        return super.link<MethodStateT, MethodContextT>(path, ...middleware);
     }
 
-    $unlink<T> (path: string, ...middleware: CorsaceMiddleware<T>[]) {
-        return super.unlink(path, ...middleware);
+    $unlink<T, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
+        return super.unlink<MethodStateT, MethodContextT>(path, ...middleware);
     }
 
-    $delete<T> (path: string, ...middleware: CorsaceMiddleware<T>[]) {
-        return super.delete(path, ...middleware);
+    $delete<T, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
+        return super.delete<MethodStateT, MethodContextT>(path, ...middleware);
     }
 
-    $del<T> (path: string, ...middleware: CorsaceMiddleware<T>[]) {
-        return super.del(path, ...middleware);
+    $del<T, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
+        return super.del<MethodStateT, MethodContextT>(path, ...middleware);
     }
 
-    $head<T> (path: string, ...middleware: CorsaceMiddleware<T>[]) {
-        return super.head(path, ...middleware);
+    $head<T, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
+        return super.head<MethodStateT, MethodContextT>(path, ...middleware);
     }
 
-    $options<T> (path: string, ...middleware: CorsaceMiddleware<T>[]) {
-        return super.options(path, ...middleware);
+    $options<T, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
+        return super.options<MethodStateT, MethodContextT>(path, ...middleware);
     }
 
-    $patch<T> (path: string, ...middleware: CorsaceMiddleware<T>[]) {
-        return super.patch(path, ...middleware);
+    $patch<T, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
+        return super.patch<MethodStateT, MethodContextT>(path, ...middleware);
     }
 
-    $all<T> (path: string, ...middleware: CorsaceMiddleware<T>[]) {
-        return super.all(path, ...middleware);
+    $all<T, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
+        return super.all<MethodStateT, MethodContextT>(path, ...middleware);
     }
 }
