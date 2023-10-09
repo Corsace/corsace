@@ -273,7 +273,7 @@ matchupRouter.$get("/:matchupID/bancho/:endpoint", async (ctx) => {
     }
 
     try {
-        const { data } = await axios.get<ResponseBody>(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
+        const { data } = await axios.get<ResponseBody<unknown>>(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/stream/${matchup.ID}/${endpoint}`, {
             auth: config.interOpAuth,
         });
 
@@ -299,7 +299,7 @@ matchupRouter.$get("/:matchupID/bancho/:endpoint", async (ctx) => {
     }
 });
 
-matchupRouter.$get("/:matchupID/teams", async (ctx) => {
+matchupRouter.$get<{ matchup: Matchup }>("/:matchupID/teams", async (ctx) => {
     const matchup = await Matchup
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.team1", "team1")
@@ -325,10 +325,11 @@ matchupRouter.$get("/:matchupID/teams", async (ctx) => {
     };
 });
 
-matchupRouter.$post<TournamentStageState>("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const matchups: Partial<postMatchup>[] | postMatchup[] = ctx.request.body?.matchups;
     if (!matchups) {
         ctx.body = {
+            success: false,
             error: "No matchups provided",
         };
         return;
@@ -466,18 +467,20 @@ matchupRouter.$post<TournamentStageState>("/create", validateTournament, validat
             };
         });
     } catch (err) {
+        console.error(err);
         ctx.body = {
             success: false,
-            error: err instanceof Error ? err.message : err,
+            error: err instanceof Error ? err.message : typeof err === "string" ? err : "Internal server error",
         };
     }
 });
 
-matchupRouter.$post<TournamentState>("/assignTeam", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/assignTeam", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const tournament: Tournament = ctx.state.tournament;
     const stageOrRound: Stage | Round | null = ctx.state.stage ?? ctx.state.round ?? null;
     if (!stageOrRound) {
         ctx.body = {
+            success: false,
             error: "No stage or round provided",
         };
         return;
@@ -487,6 +490,7 @@ matchupRouter.$post<TournamentState>("/assignTeam", validateTournament, validate
     const matchupID = ctx.request.body?.matchupID;
     if (!matchupID || isNaN(parseInt(matchupID))) {
         ctx.body = {
+            success: false,
             error: "No matchup ID provided",
         };
         return;
@@ -495,6 +499,7 @@ matchupRouter.$post<TournamentState>("/assignTeam", validateTournament, validate
     const teamID = ctx.request.body?.teamID;
     if (!teamID || isNaN(parseInt(teamID))) {
         ctx.body = {
+            success: false,
             error: "No team ID provided",
         };
         return;
@@ -507,6 +512,7 @@ matchupRouter.$post<TournamentState>("/assignTeam", validateTournament, validate
         .getOne();
     if (!team) {
         ctx.body = {
+            success: false,
             error: "Team not found",
         };
         return;
@@ -515,6 +521,7 @@ matchupRouter.$post<TournamentState>("/assignTeam", validateTournament, validate
     const team1Or2 = ctx.request.body?.team1Or2;
     if (team1Or2 !== 1 && team1Or2 !== 2) {
         ctx.body = {
+            success: false,
             error: "No team1 or team2 provided",
         };
         return;
@@ -540,6 +547,7 @@ matchupRouter.$post<TournamentState>("/assignTeam", validateTournament, validate
 
     if (!matchup) {
         ctx.body = {
+            success: false,
             error: "Matchup not found",
         };
         return;
@@ -547,6 +555,7 @@ matchupRouter.$post<TournamentState>("/assignTeam", validateTournament, validate
 
     if (matchup.team1?.ID === parseInt(teamID) || matchup.team2?.ID === parseInt(teamID)) {
         ctx.body = {
+            success: false,
             error: "Team is already assigned to matchup",
         };
         return;
@@ -555,6 +564,7 @@ matchupRouter.$post<TournamentState>("/assignTeam", validateTournament, validate
     if (team1Or2 === 1) {
         if (matchup.team1) {
             ctx.body = {
+                success: false,
                 error: "Team1 is already assigned to matchup",
             };
             return;
@@ -563,6 +573,7 @@ matchupRouter.$post<TournamentState>("/assignTeam", validateTournament, validate
     } else {
         if (matchup.team2) {
             ctx.body = {
+                success: false,
                 error: "Team2 is already assigned to matchup",
             };
             return;
@@ -588,11 +599,12 @@ matchupRouter.$post<TournamentState>("/assignTeam", validateTournament, validate
     };
 });
 
-matchupRouter.$post<TournamentState>("/date", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
+matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/date", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
     const tournament: Tournament = ctx.state.tournament;
     const stageOrRound: Stage | Round | null = ctx.state.stage ?? ctx.state.round ?? null;
     if (!stageOrRound) {
         ctx.body = {
+            success: false,
             error: "No stage or round provided",
         };
         return;
@@ -601,6 +613,7 @@ matchupRouter.$post<TournamentState>("/date", validateTournament, validateStageO
     const matchupID = ctx.request.body?.matchupID;
     if (!matchupID || isNaN(parseInt(matchupID))) {
         ctx.body = {
+            success: false,
             error: "No matchup ID provided",
         };
         return;
@@ -609,6 +622,7 @@ matchupRouter.$post<TournamentState>("/date", validateTournament, validateStageO
     const date = ctx.request.body?.date;
     if (!date || (isNaN(parseDateOrTimestamp(date).getTime()) || parseDateOrTimestamp(date).getTime() < 0)) {
         ctx.body = {
+            success: false,
             error: "No date provided",
         };
         return;
@@ -629,6 +643,7 @@ matchupRouter.$post<TournamentState>("/date", validateTournament, validateStageO
 
     if (!matchup) {
         ctx.body = {
+            success: false,
             error: "Matchup not found",
         };
         return;
@@ -643,9 +658,10 @@ matchupRouter.$post<TournamentState>("/date", validateTournament, validateStageO
     };
 });
 
-matchupRouter.$post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
+matchupRouter.$post<{ matchup: object }>("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
     if (!ctx.request.body) {
         ctx.body = {
+            success: false,
             error: "No request body",
         };
         return;
@@ -654,6 +670,7 @@ matchupRouter.$post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
     const obj = requiredNumberFields(ctx.request.body, ["mpID", "matchID"]);
     if (typeof obj === "string") {
         ctx.body = {
+            success: false,
             error: obj,
         };
         return;
@@ -691,6 +708,7 @@ matchupRouter.$post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
         .getOne();
     if (!matchup) {
         ctx.body = {
+            success: false,
             error: "Matchup not found",
         };
         return;
@@ -808,9 +826,10 @@ matchupRouter.$post("/mp", isLoggedInDiscord, isCorsace, async (ctx) => {
     };
 });
 
-matchupRouter.$post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
+matchupRouter.$post<{ matchup: object }>("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
     if (!ctx.request.body) {
         ctx.body = {
+            success: false,
             error: "No request body",
         };
         return;
@@ -819,6 +838,7 @@ matchupRouter.$post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
     const obj = requiredNumberFields(ctx.request.body, ["matchID", "teamID", "setNum", "mapOrder", "userID", "score", "mods", "misses", "combo", "accuracy"]);
     if (typeof obj === "string") {
         ctx.body = {
+            success: false,
             error: obj,
         };
         return;
@@ -850,6 +870,7 @@ matchupRouter.$post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
         .getOne();
     if (!matchup) {
         ctx.body = {
+            success: false,
             error: "Matchup not found",
         };
         return;
@@ -858,6 +879,7 @@ matchupRouter.$post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
     const set = matchup.sets!.find(set => set.order === setNum);
     if (!set) {
         ctx.body = {
+            success: false,
             error: "Set not found",
         };
         return;
@@ -866,6 +888,7 @@ matchupRouter.$post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
     const map = set.maps!.find(map => map.order === mapOrder);
     if (!map) {
         ctx.body = {
+            success: false,
             error: "Map not found",
         };
         return;
@@ -878,6 +901,7 @@ matchupRouter.$post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
         team = matchup.team1?.ID === teamID ? matchup.team1 : matchup.team2?.ID === teamID ? matchup.team2 : undefined;
     if (!team) {
         ctx.body = {
+            success: false,
             error: "Team not found",
         };
         return;
@@ -886,6 +910,7 @@ matchupRouter.$post("/score", isLoggedInDiscord, isCorsace, async (ctx) => {
     const user = team.members.find(member => member.ID === userID);
     if (!user) {
         ctx.body = {
+            success: false,
             error: "User not found",
         };
         return;
@@ -941,6 +966,7 @@ matchupRouter.$delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (ct
     const scoreID = parseInt(ctx.params.scoreID);
     if (isNaN(scoreID)) {
         ctx.body = {
+            success: false,
             error: "Invalid score ID",
         };
         return;
@@ -955,6 +981,7 @@ matchupRouter.$delete("/score/:scoreID", isLoggedInDiscord, isCorsace, async (ct
         .getOne();
     if (!score) {
         ctx.body = {
+            success: false,
             error: "Score not found",
         };
         return;
@@ -973,6 +1000,7 @@ matchupRouter.$delete("/map/:mapID", isLoggedInDiscord, isCorsace, async (ctx) =
     const mapID = parseInt(ctx.params.mapID);
     if (isNaN(mapID)) {
         ctx.body = {
+            success: false,
             error: "Invalid map ID",
         };
         return;
@@ -987,6 +1015,7 @@ matchupRouter.$delete("/map/:mapID", isLoggedInDiscord, isCorsace, async (ctx) =
         .getOne();
     if (!map) {
         ctx.body = {
+            success: false,
             error: "Map not found",
         };
         return;

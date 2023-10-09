@@ -11,12 +11,13 @@ import mcaSearch from "./mcaSearch";
 import { isPossessive } from "../../../Models/MCA_AYIM/guestRequest";
 import { MCAYearState, UserAuthenticatedState } from "koa";
 import { ModeDivisionType } from "../../../Interfaces/modes";
+import { MCAStageData } from "../../../Interfaces/mca";
 
 const nominatingRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
 nominatingRouter.$use(isLoggedIn);
 
-nominatingRouter.$get("/:year?", validatePhaseYear, isPhaseStarted("nomination"), async (ctx) => {
+nominatingRouter.$get<MCAStageData>("/:year?", validatePhaseYear, isPhaseStarted("nomination"), async (ctx) => {
     const [nominations, categories] = await Promise.all([
         Nomination
             .userNominations({
@@ -38,12 +39,13 @@ nominatingRouter.$get("/:year?", validatePhaseYear, isPhaseStarted("nomination")
     const categoryInfos: CategoryStageInfo[] = categories.map(x => x.getInfo() as CategoryStageInfo);
 
     ctx.body = {
+        success: true,
         nominations: filteredNominations,
         categories: categoryInfos,
     };
 });
 
-nominatingRouter.$get<MCAYearState>("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), mcaSearch("nominating", async (ctx, category) => {
+nominatingRouter.$get("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), mcaSearch("nominating", async (ctx, category) => {
     return await Nomination
         .userNominations({
             userID: ctx.state.user.ID,
@@ -52,7 +54,7 @@ nominatingRouter.$get<MCAYearState>("/:year?/search", validatePhaseYear, isPhase
         .getMany();
 }));
 
-nominatingRouter.$post<MCAYearState>("/:year?/create", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
+nominatingRouter.$post<{ nomination: Nomination }, MCAYearState>("/:year?/create", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const category = await Category.findOneOrFail({
         where: {
             ID: ctx.request.body.categoryId,
@@ -307,6 +309,7 @@ nominatingRouter.$delete("/:id", validatePhaseYear, isPhase("nomination"), isEli
 
     if (!nomination.isValid)
         return ctx.body = {
+            success: false,
             error: "Cannot remove reviewed nominations, contact a member of the staff!",
         };
     
@@ -317,7 +320,7 @@ nominatingRouter.$delete("/:id", validatePhaseYear, isPhase("nomination"), isEli
         await nomination.save();
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 

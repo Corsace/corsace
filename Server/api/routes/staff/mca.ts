@@ -10,6 +10,8 @@ import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { osuClient } from "../../../osu";
 import { MCAAuthenticatedState } from "koa";
 import { ModeDivisionType } from "../../../../Interfaces/modes";
+import { MCAInfo } from "../../../../Interfaces/mca";
+import { CategoryInfo } from "../../../../Interfaces/category";
 
 const staffRouter  = new CorsaceRouter<MCAAuthenticatedState>();
 
@@ -18,7 +20,7 @@ staffRouter.$use(isMCAStaff);
 staffRouter.$use(validatePhaseYear);
 
 // Endpoint to obtain current MCA and its info
-staffRouter.$get("/:year", async (ctx) => {
+staffRouter.$get<{ mca: MCAInfo }>("/:year", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -29,7 +31,7 @@ staffRouter.$get("/:year", async (ctx) => {
 });
 
 // Endpoint for getting information for a year
-staffRouter.$get("/categories/:year", async (ctx) => {
+staffRouter.$get<{ categories: CategoryInfo[] }>("/categories/:year", async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const categories = await Category.find({
         where: {
@@ -46,7 +48,7 @@ staffRouter.$get("/categories/:year", async (ctx) => {
         };
 
     ctx.body = {
-        success: false,
+        success: true,
         categories: categories.map(x => x.getInfo()),
     };
 });

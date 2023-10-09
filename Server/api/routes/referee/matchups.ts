@@ -19,7 +19,7 @@ refereeMatchupsRouter.$use(isLoggedInDiscord);
 refereeMatchupsRouter.$use(validateTournament);
 refereeMatchupsRouter.$use(hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]));
 
-refereeMatchupsRouter.$get("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+refereeMatchupsRouter.$get<{ matchups: MatchupInterface[] }>("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.round", "round")
@@ -72,7 +72,7 @@ refereeMatchupsRouter.$get("/:tournamentID", validateTournament, isLoggedInDisco
     };
 });
 
-refereeMatchupsRouter.$get("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+refereeMatchupsRouter.$get<{ matchup: MatchupInterface }>("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup
         .createQueryBuilder("matchup")
         // round and stage
@@ -160,16 +160,11 @@ refereeMatchupsRouter.$get("/:tournamentID/:matchupID", validateTournament, isLo
                     .where("matchup.ID = :ID", { ID: dbMatchup.ID })
                     .getOne() : 
                 null;
-
-    const body: {
-        success: true;
-        matchup: MatchupInterface;
-    } = {
+    
+    ctx.body = {
         success: true,
         matchup: await dbMatchupToInterface(dbMatchup, roundOrStage),
     };
-    
-    ctx.body = body;
 });
 
 export default refereeMatchupsRouter;

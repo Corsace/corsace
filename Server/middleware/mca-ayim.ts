@@ -1,20 +1,25 @@
 import { config } from "node-config-ts";
-import { ParameterizedContext, Next } from "koa";
+import { DefaultState, Next } from "koa";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { MCA } from "../../Models/MCA_AYIM/mca";
 import { User } from "../../Models/user";
 import { getMember } from "../discord";
 import { hasRoles } from ".";
 import { ModeDivisionType } from "../../Interfaces/modes";
+import { CorsaceContext, CorsaceMiddleware } from "../corsaceRouter";
 
-async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void> {
+async function isEligible<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next) {
     if (!ctx.state.user) {
-        ctx.body = { error: "User is not logged in via osu! for the isEligible middleware!" };
+        ctx.body = { 
+            success: false,
+            error: "User is not logged in via osu! for the isEligible middleware!",
+        };
         return;
     }
 
     if (!ctx.state.mca) {
         ctx.body = {
+            success: false,
             error: "MCA not found for the isEligible middleware!",
         };
         return;
@@ -29,6 +34,7 @@ async function isEligible (ctx: ParameterizedContext, next: Next): Promise<void>
     }
     
     ctx.body = {
+        success: false,
         error: "User wasn't active last year!",
     };
 }
@@ -55,7 +61,7 @@ function isEligibleFor (user: User, modeID: number, year: number): boolean {
     }
 }
 
-async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> {
+async function currentMCA<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next) {
     const mca = await MCA.findOne({
         where: {
             results: MoreThanOrEqual(new Date()),
@@ -67,6 +73,7 @@ async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> 
 
     if (!mca) {
         return ctx.body = {
+            success: false,
             error: "No MCA found for this year",
         };
     }
@@ -76,7 +83,7 @@ async function currentMCA (ctx: ParameterizedContext, next: Next): Promise<any> 
     await next();
 }
 
-async function validatePhaseYear (ctx: ParameterizedContext, next: Next): Promise<any> {
+async function validatePhaseYear<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next) {
     try {
         let year = ctx.params.year;
         if (!year || !/^20[0-9]{2}$/.test(year)) {
@@ -89,17 +96,21 @@ async function validatePhaseYear (ctx: ParameterizedContext, next: Next): Promis
 
         ctx.state.year = year;
     } catch (e) {
-        ctx.body = { error: "No Currently running MCA found." };
+        ctx.body = { 
+            success: false,
+            error: "No Currently running MCA found.",
+        };
         return;
     }
     
     await next();
 }
 
-function isPhase (phase: "nomination" | "voting") {
-    return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
+function isPhase<S extends DefaultState = DefaultState> (phase: "nomination" | "voting"): CorsaceMiddleware<object, S> {
+    return async (ctx: CorsaceContext<object, S>, next: Next): Promise<void> => {
         if (!ctx.state.mca) {
             ctx.body = {
+                success: false,
                 error: "MCA not found for the isPhase middleware!",
             };
             return;
@@ -109,7 +120,10 @@ function isPhase (phase: "nomination" | "voting") {
         const now = new Date();
 
         if (now < mca[phase].start || now > mca[phase].end) {
-            ctx.body = { error: "Not the right time" };
+            ctx.body = {
+                success: false,
+                error: "Not the right time",
+            };
             return;
         }
 
@@ -118,10 +132,11 @@ function isPhase (phase: "nomination" | "voting") {
     };
 }
 
-function isPhaseStarted (phase: "nomination" | "voting") {
-    return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
+function isPhaseStarted<S extends DefaultState = DefaultState> (phase: "nomination" | "voting"): CorsaceMiddleware<object, S> {
+    return async (ctx: CorsaceContext<object, S>, next: Next): Promise<void> => {
         if (!ctx.state.mca) {
             ctx.body = {
+                success: false,
                 error: "MCA not found for the isPhaseStarted middleware!",
             };
             return;
@@ -131,7 +146,10 @@ function isPhaseStarted (phase: "nomination" | "voting") {
         const now = new Date();
 
         if (now < mca[phase].start) {
-            ctx.body = { error: "Not the right time" };
+            ctx.body = {
+                success: false, 
+                error: "Not the right time",
+            };
             return;
         }
 
@@ -140,14 +158,18 @@ function isPhaseStarted (phase: "nomination" | "voting") {
     };
 }
 
-async function isResults (ctx: ParameterizedContext, next: Next): Promise<any> {
+async function isResults<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next) {
     if (!ctx.state.user?.discord?.userID) {
-        ctx.body = { error: "User is not logged in via discord for the isResults middleware!" };
+        ctx.body = {
+            success: false,
+            error: "User is not logged in via discord for the isResults middleware!",
+        };
         return;
     }
 
     if (!ctx.state.mca) {
         ctx.body = {
+            success: false,
             error: "MCA not found for the isResults middleware!",
         };
         return;
@@ -160,7 +182,10 @@ async function isResults (ctx: ParameterizedContext, next: Next): Promise<any> {
 
     const member = await getMember(ctx.state.user.discord.userID);
     if (!member) {
-        ctx.body = { error: "Not the right time" };
+        ctx.body = {
+            success: false,
+            error: "Not the right time",
+        };
         return;
     }
     if (

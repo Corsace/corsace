@@ -7,7 +7,7 @@ import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
 import { StageQuery } from "../../Interfaces/queries";
 import { BeatmapsetResult, UserResult } from "../../Interfaces/result";
-import { StageType } from "../../Interfaces/mca";
+import { MCAStageData, StageType } from "../../Interfaces/mca";
 
 interface StageState {
     selected: boolean;
@@ -178,12 +178,6 @@ export const getters: GetterTree<StageState, RootState> = {
     },
 };
 
-interface InitialData {
-    categories: CategoryStageInfo[];
-    nominations: Nomination[];
-    votes: Vote[];
-}
-
 export const actions: ActionTree<StageState, RootState> = {
     updateStage ({ commit }, stage: StageType) {
         commit("updateStage", stage);
@@ -195,7 +189,7 @@ export const actions: ActionTree<StageState, RootState> = {
             return;
         }
 
-        const { data } = await this.$axios.get<InitialData | { error: string }>(`/api/${state.stage}/${mcaState.mca?.year}`);
+        const { data } = await this.$axios.get<MCAStageData | { error: string }>(`/api/${state.stage}/${mcaState.mca?.year}`);
 
         if ("error" in data) {
             console.error(data.error);
@@ -204,12 +198,14 @@ export const actions: ActionTree<StageState, RootState> = {
         }
 
         commit("updateCategories", data.categories);
-        commit("updateNominations", data.nominations);
-        commit("updateVotes", data.votes);
+        if ("nominations" in data)
+            commit("updateNominations", data.nominations);
+        else
+            commit("updateVotes", data.votes);
 
-        if (state.stage === "nominating" && data.nominations?.length && data.nominations.some(n => !n.isValid)) {
+        if ("nominations" in data && data.nominations?.length && data.nominations.some(n => !n.isValid))
             alert("Some nominations were denied, contact a staff member if you already haven't!");
-        } else if (state.stage === "results")
+        else if (state.stage === "results")
             await dispatch("updateSelectedCategory", state.categories.filter(category => category.type === "Beatmapsets" && (category.mode === mcaState.selectedMode || category.mode === "storyboard"))[0]);
     },
     async updateSelectedCategory ({ commit, dispatch }, category) {

@@ -5,9 +5,9 @@ import { Statistic } from "../../../Interfaces/records";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
 import { parseQueryParam } from "../../utils/query";
+import { DefaultState } from "koa";
 // import getHistoryStat from "../data/bnNatHistory";
 
-const statisticsRouter  = new CorsaceRouter();
 const yearIDthresholds = [
     1, // 2007
     5130, // 2008
@@ -47,7 +47,9 @@ function valueToFixed (record: any, digits = 2): any {
     return record;
 }
 
-statisticsRouter.$get("/beatmapsets", async (ctx) => {
+const statisticsRouter  = new CorsaceRouter<DefaultState>();
+
+statisticsRouter.$get<{ statistics: Record<string, Statistic[]> }>("/beatmapsets", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -362,7 +364,7 @@ statisticsRouter.$get("/beatmapsets", async (ctx) => {
     };
 });
 
-statisticsRouter.$get("/mappers", async (ctx) => {
+statisticsRouter.$get<{ statistics: Record<string, Statistic[]> }>("/mappers", async (ctx) => {
     if (await ctx.cashed())
         return;
 

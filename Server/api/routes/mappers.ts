@@ -7,7 +7,7 @@ import { osuV2Client } from "../../osu";
 
 const mappersRouter  = new CorsaceRouter();
 
-mappersRouter.$get("/search", async (ctx) => {
+mappersRouter.$get<{ users: User[] }>("/search", async (ctx) => {
     if (!ctx.query.year)
         return ctx.body = {
             success: false,

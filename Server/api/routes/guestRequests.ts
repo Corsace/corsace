@@ -92,7 +92,7 @@ const guestRequestRouter  = new CorsaceRouter<MCAAuthenticatedState>();
 guestRequestRouter.$use(isLoggedIn);
 guestRequestRouter.$use(currentMCA);
 
-guestRequestRouter.$post("/create", async (ctx) => {
+guestRequestRouter.$post<{ request: GuestRequest }>("/create", async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const user: User = ctx.state.user;
     const res = await validateBody(user, mca.year, ctx.request.body);
@@ -105,21 +105,21 @@ guestRequestRouter.$post("/create", async (ctx) => {
     }
 
     // Create guest requesst
-    const guestReq = new GuestRequest();
-    guestReq.user = user;
-    guestReq.mca = mca;
-    guestReq.mode = res.mode;
-    guestReq.beatmap = res.beatmap;
-    guestReq.status = RequestStatus.Pending;
-    await guestReq.save();
+    const request = new GuestRequest();
+    request.user = user;
+    request.mca = mca;
+    request.mode = res.mode;
+    request.beatmap = res.beatmap;
+    request.status = RequestStatus.Pending;
+    await request.save();
 
     ctx.body = {
         success: true,
-        guestReq,
+        request,
     };
 });
 
-guestRequestRouter.$post("/:id/update", async (ctx) => {
+guestRequestRouter.$post<{ request: GuestRequest }>("/:id/update", async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const id: number = parseInt(ctx.params.id);
     const user: User = ctx.state.user;

@@ -13,7 +13,7 @@ const resultsRouter  = new CorsaceRouter<MCAState>();
 
 resultsRouter.$use(validatePhaseYear);
 
-resultsRouter.$get("/:year?", isResults, async (ctx) => {
+resultsRouter.$get<{ categories: CategoryStageInfo[] }>("/:year?", isResults, async (ctx) => {
     const categories = await Category.find({
         where: {
             mca: {
@@ -25,11 +25,12 @@ resultsRouter.$get("/:year?", isResults, async (ctx) => {
     const categoryInfos: CategoryStageInfo[] = categories.map(c => c.getInfo() as CategoryStageInfo);
 
     ctx.body = {
+        success: true,
         categories: categoryInfos,
     };
 });
 
-resultsRouter.$get("/:year/search", isResults, async (ctx) => {
+resultsRouter.$get<{ list: BeatmapsetResult[] | BeatmapResult[] | UserResult[] }>("/:year/search", isResults, async (ctx) => {
     if (await ctx.cashed() && ctx.state.mca.currentPhase() === "results")
         return;
 
@@ -210,6 +211,7 @@ resultsRouter.$get("/:year/search", isResults, async (ctx) => {
             results = (results as UserResult[]).filter(result => result.username.toLowerCase().includes(text) || result.userID.toLowerCase().includes(text));
     }
     ctx.body = {
+        success: true,
         list: results,
     };
 });

@@ -1,8 +1,7 @@
-import { CorsaceRouter } from "../../../corsaceRouter";
+import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import passport from "koa-passport";
 import { discordGuild } from "../../../discord";
 import { config } from "node-config-ts";
-import { ParameterizedContext } from "koa";
 import { redirectToMainDomain } from "./middleware";
 import { parseQueryParam } from "../../../utils/query";
 import { DiscordAPIError } from "discord.js";
@@ -11,19 +10,28 @@ import { DiscordAPIError } from "discord.js";
 
 const discordRouter  = new CorsaceRouter();
 
-discordRouter.$get("/", redirectToMainDomain, async (ctx: ParameterizedContext, next) => {
+discordRouter.$get("/", redirectToMainDomain, async (ctx: CorsaceContext<object>, next) => {
     const site = parseQueryParam(ctx.query.site);
     if (!site) {
-        ctx.body = "No site specified";
+        ctx.body = {
+            success: false,
+            error: "No site specified",
+        };
         return;
     }
     if (!(site in config)) {
-        ctx.body = "Invalid site";
+        ctx.body = {
+            success: false,
+            error: "Invalid site",
+        };
         return;
     }
     const configInfo = config[site as keyof typeof config];
     if (typeof configInfo === "object" && !("publicUrl" in configInfo)) {
-        ctx.body = "Invalid config";
+        ctx.body = {
+            success: false,
+            error: "Invalid config",
+        };
         return;
     }
 
@@ -34,7 +42,7 @@ discordRouter.$get("/", redirectToMainDomain, async (ctx: ParameterizedContext, 
     await next();
 }, passport.authenticate("discord", { scope: ["identify", "guilds.join"] }));
 
-discordRouter.$get("/callback", async (ctx: ParameterizedContext, next) => {
+discordRouter.$get("/callback", async (ctx: CorsaceContext<object>, next) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await passport.authenticate("discord", { scope: ["identify", "guilds.join"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
@@ -43,7 +51,10 @@ discordRouter.$get("/callback", async (ctx: ParameterizedContext, next) => {
                 user = ctx.state.user;
             } else if (!user.osu)
             {
-                ctx.body = { error: "There is no osu! account linked to this discord account! Please register via osu! first." };
+                ctx.body = {
+                    success: false,
+                    error: "There is no osu! account linked to this discord account! Please register via osu! first.",
+                };
                 return;
             }
 

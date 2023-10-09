@@ -13,7 +13,7 @@ const staffRequestsRouter  = new CorsaceRouter<UserAuthenticatedState>();
 staffRequestsRouter.$use(isLoggedInDiscord);
 staffRequestsRouter.$use(isMCAStaff);
 
-staffRequestsRouter.$get<MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
+staffRequestsRouter.$get<{ requests: StaffGuestRequest[] }, MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const requests: StaffGuestRequest[] = await GuestRequest
         .createQueryBuilder("guestReq")

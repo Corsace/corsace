@@ -5,6 +5,7 @@ import { BeatmapsetRecord, MapperRecord } from "../../../Interfaces/records";
 import { Beatmap } from "../../../Models/beatmap";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { parseQueryParam } from "../../../Server/utils/query";
+import { DefaultState } from "koa";
 
 function mapBeatmapsetRecord (response: {
     beatmapset_ID: number;
@@ -60,9 +61,9 @@ function padLengthWithZero (lengthRecord: {
     return lengthRecord;
 }
 
-const recordsRouter  = new CorsaceRouter();
+const recordsRouter  = new CorsaceRouter<DefaultState>();
 
-recordsRouter.$get("/beatmapsets", async (ctx) => {
+recordsRouter.$get<{ records: Record<string, BeatmapsetRecord[]> }>("/beatmapsets", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -245,10 +246,13 @@ recordsRouter.$get("/beatmapsets", async (ctx) => {
         lowestSr: mapBeatmapsetRecord(lowestSr).map(o => valueToFixed(o)),
     };
 
-    ctx.body = records;
+    ctx.body = {
+        success: true,
+        records,
+    };
 });
 
-recordsRouter.$get("/mappers", async (ctx) => {
+recordsRouter.$get<{ records: Record<string, MapperRecord[]> }>("/mappers", async (ctx) => {
     if (await ctx.cashed())
         return;
 

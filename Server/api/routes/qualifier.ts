@@ -6,7 +6,7 @@ import { discordClient } from "../../discord";
 
 const qualifierRouter  = new CorsaceRouter();
 
-qualifierRouter.$get("/:qualifierID", async (ctx) => {
+qualifierRouter.$get<{ qualifierData: Qualifier }>("/:qualifierID", async (ctx) => {
     const qualifierID = parseInt(ctx.params.qualifierID);
     if (isNaN(qualifierID)) {
         ctx.body = {

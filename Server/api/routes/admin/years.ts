@@ -7,6 +7,7 @@ import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
 import { Vote } from "../../../../Models/MCA_AYIM/vote";
 import { cache } from "../../../../Server/cache";
 import { CorsaceMiddleware, CorsaceRouter } from "../../../corsaceRouter";
+import { MCAInfo } from "../../../../Interfaces/mca";
 
 const adminYearsRouter = new CorsaceRouter();
 const categoryGenerator = new CategoryGenerator();
@@ -14,33 +15,53 @@ const categoryGenerator = new CategoryGenerator();
 adminYearsRouter.$use(isLoggedInDiscord);
 adminYearsRouter.$use(isCorsace);
 
-const validate: CorsaceMiddleware = async (ctx, next) => {
+const validate: CorsaceMiddleware<{ mca: MCAInfo }> = async (ctx, next) => {
     const data = ctx.request.body;
 
-    if (!data.year) {
-        return ctx.body = { error: "Missing year!" };
-    } else if (!data.nominationStart) {
-        return ctx.body = { error: "Missing nominationStart date!" };
-    } else if (!data.nominationEnd) {
-        return ctx.body = { error: "Missing nominationEnd date!" };
-    } else if (!data.votingStart) {
-        return ctx.body = { error: "Missing votingStart date!" };
-    } else if (!data.votingEnd) {
-        return ctx.body = { error: "Missing votingEnd date!" };
-    } else if (!data.results) {
-        return ctx.body = { error: "Missing results date!" };
-    }
+    if (!data.year)
+        return ctx.body = {
+            success: false,
+            error: "Missing year!",
+        };
+    else if (!data.nominationStart)
+        return ctx.body = {
+            success: false,
+            error: "Missing nominationStart date!",
+        };
+    else if (!data.nominationEnd)
+        return ctx.body = {
+            success: false,
+            error: "Missing nominationEnd date!",
+        };
+    else if (!data.votingStart)
+        return ctx.body = {
+            success: false,
+            error: "Missing votingStart date!",
+        };
+    else if (!data.votingEnd)
+        return ctx.body = {
+            success: false,
+            error: "Missing votingEnd date!",
+        };
+    else if (!data.results)
+        return ctx.body = {
+            success: false,
+            error: "Missing results date!",
+        };
 
     await next();
 };
 
 // Endpoints for creating a year
-adminYearsRouter.$post("/", validate, async (ctx) => {
+adminYearsRouter.$post<{ mca: MCAInfo }>("/", validate, async (ctx) => {
     const data = ctx.request.body;
 
     let mca = await MCA.findOne(data.year);
     if (mca)
-        return ctx.body = { error: "This year already exists!" };
+        return ctx.body = { 
+            success: false,
+            error: "This year already exists!",
+        };
         
     mca = await MCA.fillAndSave(data);
 
@@ -61,13 +82,13 @@ adminYearsRouter.$post("/", validate, async (ctx) => {
     cache.del("/api/staff");
 
     ctx.body = { 
-        message: "Success! attached is the new MCA.", 
-        mca,
+        success: true,
+        mca: mca.getInfo(),
     };
 });
 
 // Endpoints for updating a year
-adminYearsRouter.$put("/:year", validate, async (ctx) => {
+adminYearsRouter.$put<{ mca: MCAInfo }>("/:year", validate, async (ctx) => {
     const data = ctx.request.body;
 
     let mca = await MCA.findOneOrFail(data.year);    
@@ -78,16 +99,19 @@ adminYearsRouter.$put("/:year", validate, async (ctx) => {
     cache.del("/api/staff");
 
     ctx.body = { 
-        message: "updated",
-        mca,
+        success: true,
+        mca: mca.getInfo(),
     };
 });
 
 // Endpoint for deleting a year
-adminYearsRouter.$delete("/:year/delete", async (ctx) => {
+adminYearsRouter.$delete<{ mca: MCAInfo }>("/:year/delete", async (ctx) => {
     const yearStr = ctx.params.year;
     if (!yearStr || !/20\d\d/.test(yearStr))
-        return ctx.body = { error: "Invalid year given!" };
+        return ctx.body = { 
+            success: false,
+            error: "Invalid year given!",
+        };
     
     const year = parseInt(yearStr);
 
@@ -96,7 +120,8 @@ adminYearsRouter.$delete("/:year/delete", async (ctx) => {
             where: { year },
         });
         if (!mca)
-            return ctx.body = { error: "This year doesn't exist!" };
+            return ctx.body = {
+                success: false, error: "This year doesn't exist!" };
 
         const categories = await Category.find({
             where: {
@@ -133,10 +158,19 @@ adminYearsRouter.$delete("/:year/delete", async (ctx) => {
 
         const mcares = await mca.remove();
         
-        ctx.body = { message: "Success! attached is the delete result.", mcares };
+        ctx.body = {
+            success: true,
+            mca: mcares.getInfo(),
+        };
     } catch (e) {
-        if (e)
-            ctx.body = { error: e };  
+        if (e) {
+            ctx.status = 500;
+            console.error(e);
+            ctx.body = {
+                success: false,
+                error: typeof e === "string" ? e : "Internal server error",
+            };  
+        }
     }
 });
 

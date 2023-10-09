@@ -12,7 +12,7 @@ const influencesReviewRouter  = new CorsaceRouter<UserAuthenticatedState>();
 influencesReviewRouter.$use(isLoggedInDiscord);
 influencesReviewRouter.$use(isMCAStaff);
 
-influencesReviewRouter.$get("/", async (ctx) => {
+influencesReviewRouter.$get<{ staffComments: StaffComment[] }>("/", async (ctx) => {
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
     const year = ctx.query.year ? parseInt(parseQueryParam(ctx.query.year) ?? "") : undefined;
@@ -79,7 +79,11 @@ influencesReviewRouter.$get("/", async (ctx) => {
     };
 });
 
-influencesReviewRouter.$post("/:id/review", async (ctx) => {
+influencesReviewRouter.$post<{
+    isValid: true;
+    reviewer: string;
+    lastReviewedAt: Date;
+}>("/:id/review", async (ctx) => {
     const influence = await Influence.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     influence.comment = ctx.request.body.comment.trim();
     influence.isValid = true;

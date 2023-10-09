@@ -1,5 +1,5 @@
-import { CorsaceRouter } from "../../corsaceRouter";
-import { ParameterizedContext, Next, UserAuthenticatedState, CommentAuthenticatedState } from "koa";
+import { CorsaceContext, CorsaceRouter } from "../../corsaceRouter";
+import { Next, UserAuthenticatedState, CommentAuthenticatedState } from "koa";
 import { User } from "../../../Models/user";
 import { UserComment } from "../../../Models/MCA_AYIM/userComments";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
@@ -12,7 +12,7 @@ import { profanityFilter } from "../../../Interfaces/comment";
 import { ModeDivisionType } from "../../../Interfaces/modes";
 
 // These 2 middleware functions (canComment and isCommentOwner) MUST be used after isLoggedIn or isLoggedInDiscord
-async function canComment (ctx: ParameterizedContext<UserAuthenticatedState>, next: Next): Promise<any> {
+async function canComment (ctx: CorsaceContext<object, UserAuthenticatedState>, next: Next) {
     if (!ctx.state.user.canComment) {
         return ctx.body = {
             success: false,
@@ -23,7 +23,7 @@ async function canComment (ctx: ParameterizedContext<UserAuthenticatedState>, ne
     await next();
 }
 
-async function isCommentOwner (ctx: ParameterizedContext<UserAuthenticatedState>, next: Next): Promise<any> {
+async function isCommentOwner (ctx: CorsaceContext<object, UserAuthenticatedState>, next: Next) {
     const comment = await UserComment.findOneOrFail({ 
         where: {
             ID: ctx.params.id,
@@ -33,6 +33,7 @@ async function isCommentOwner (ctx: ParameterizedContext<UserAuthenticatedState>
 
     if (comment.commenterID !== ctx.state.user.ID) {
         return ctx.body = {
+            success: false,
             error: "Not your comment",
         };
     }
@@ -43,7 +44,10 @@ async function isCommentOwner (ctx: ParameterizedContext<UserAuthenticatedState>
 
 const commentsRouter  = new CorsaceRouter();
 
-commentsRouter.$get("/", async (ctx) => {
+commentsRouter.$get<{
+    user: User;
+    comments: UserComment[];
+}>("/", async (ctx) => {
     if (!ctx.query.user) {
         ctx.body = {
             success: false,
@@ -129,7 +133,7 @@ commentsRouter.$get("/", async (ctx) => {
     };
 });
 
-commentsRouter.$post<UserAuthenticatedState>("/create", isLoggedIn, canComment, async (ctx) => {
+commentsRouter.$post<{ comment: UserComment }, UserAuthenticatedState>("/create", isLoggedIn, canComment, async (ctx) => {
     const newComment: string = ctx.request.body.comment.trim();
     const year: number = ctx.request.body.year;
     const targetID: number = ctx.request.body.targetID;
@@ -241,11 +245,12 @@ commentsRouter.$post<UserAuthenticatedState>("/create", isLoggedIn, canComment, 
     };
 });
 
-commentsRouter.$post<CommentAuthenticatedState>("/:id/update", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
+commentsRouter.$post<{ comment: UserComment }, CommentAuthenticatedState>("/:id/update", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
     const newComment: string = ctx.request.body.comment.trim();
 
     if (!newComment) {
         return ctx.body = {
+            success: false,
             error: "Add a comment",
         };
     }
@@ -257,6 +262,7 @@ commentsRouter.$post<CommentAuthenticatedState>("/:id/update", isLoggedIn, canCo
 
     if (mca.currentPhase() === "results") {
         return ctx.body = {
+            success: false,
             error: "Can only remove before MCA results",
         };
     }
@@ -266,10 +272,13 @@ commentsRouter.$post<CommentAuthenticatedState>("/:id/update", isLoggedIn, canCo
     comment.reviewer = comment.lastReviewedAt = undefined;
     await comment.save();
 
-    ctx.body = comment;
+    ctx.body = {
+        success: true,
+        comment,
+    };
 });
 
-commentsRouter.$post<CommentAuthenticatedState>("/:id/remove", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
+commentsRouter.$post<object, CommentAuthenticatedState>("/:id/remove", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
     const comment: UserComment = ctx.state.comment;
     const mca = await MCA.findOneOrFail({
         where: { year: comment.year },
@@ -277,6 +286,7 @@ commentsRouter.$post<CommentAuthenticatedState>("/:id/remove", isLoggedIn, canCo
 
     if (mca.currentPhase() === "results") {
         return ctx.body = {
+            success: false,
             error: "Can only remove before MCA results",
         };
     }
@@ -284,7 +294,7 @@ commentsRouter.$post<CommentAuthenticatedState>("/:id/remove", isLoggedIn, canCo
     await ctx.state.comment.remove();
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 

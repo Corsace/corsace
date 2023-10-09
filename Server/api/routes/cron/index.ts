@@ -1,11 +1,11 @@
-import { CorsaceRouter } from "../../../corsaceRouter";
+import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import koaBasicAuth from "koa-basic-auth";
-import { ParameterizedContext, Next, CronJobState, DefaultState } from "koa";
+import { Next, CronJobState, DefaultState } from "koa";
 import { cron } from "../../../cron";
-import { CronJobType } from "../../../../Interfaces/cron";
+import { CronJobData, CronJobType } from "../../../../Interfaces/cron";
 import { config } from "node-config-ts";
 
-async function validateData (ctx: ParameterizedContext, next: Next) {
+async function validateData (ctx: CorsaceContext<object>, next: Next) {
     const body = ctx.request.body;
 
     if (body.type === undefined || body.date === undefined) {
@@ -50,11 +50,14 @@ cronRouter.$use(koaBasicAuth({
     pass: config.interOpAuth.password,
 }));
 
-cronRouter.$get("/", (ctx) => {
-    ctx.body = cron.listJobs();
+cronRouter.$get<{ jobs: CronJobData[] }>("/", (ctx) => {
+    ctx.body = {
+        success: true,
+        jobs: cron.listJobs(),
+    };
 });
 
-cronRouter.$post<CronJobState>("/add", validateData, async (ctx) => {
+cronRouter.$post<object, CronJobState>("/add", validateData, async (ctx) => {
     const { type, date } = ctx.state.cronJob;
 
     await cron.add(type, date);
@@ -63,7 +66,7 @@ cronRouter.$post<CronJobState>("/add", validateData, async (ctx) => {
     };
 });
 
-cronRouter.$post<CronJobState>("/remove", validateData, async (ctx) => {
+cronRouter.$post<object, CronJobState>("/remove", validateData, async (ctx) => {
     const { type, date } = ctx.state.cronJob;
 
     await cron.remove(type, date);

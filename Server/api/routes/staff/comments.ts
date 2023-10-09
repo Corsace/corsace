@@ -14,7 +14,7 @@ const commentsReviewRouter  = new CorsaceRouter<UserAuthenticatedState>();
 commentsReviewRouter.$use(isLoggedInDiscord);
 commentsReviewRouter.$use(isMCAStaff);
 
-commentsReviewRouter.$get<MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
+commentsReviewRouter.$get<{staffComments: StaffComment[] }, MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
     const mca: MCA = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
@@ -80,10 +80,13 @@ commentsReviewRouter.$get<MCAAuthenticatedState>("/:year", validatePhaseYear, as
         lastReviewedAt: comment.lastReviewedAt ?? undefined,
         reviewer: comment.reviewer ?? undefined,
     }));
-    ctx.body = staffComments;
+    ctx.body = {
+        success: true,
+        staffComments,
+    };
 });
 
-commentsReviewRouter.$post("/:id/review", async (ctx) => {
+commentsReviewRouter.$post<{ comment: UserComment }>("/:id/review", async (ctx) => {
     const comment = await UserComment.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     comment.comment = ctx.request.body.comment.trim();
     comment.isValid = true;
@@ -91,7 +94,10 @@ commentsReviewRouter.$post("/:id/review", async (ctx) => {
     comment.lastReviewedAt = new Date();
     await comment.save();
 
-    ctx.body = comment;
+    ctx.body = {
+        success: true,
+        comment,
+    };
 });
 
 commentsReviewRouter.$post("/:id/remove", async (ctx) => {
@@ -99,7 +105,7 @@ commentsReviewRouter.$post("/:id/remove", async (ctx) => {
     await comment.remove();
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 
@@ -136,6 +142,7 @@ commentsReviewRouter.$post("/:id/unban", async (ctx) => {
     const ID = parseInt(ctx.params.id, 10);
     if (!ID) {
         ctx.body = {
+            success: false,
             error: "Invalid ID provided.",
         };
         return;
@@ -150,7 +157,7 @@ commentsReviewRouter.$post("/:id/unban", async (ctx) => {
     await user.save();
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 

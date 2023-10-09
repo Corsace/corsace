@@ -11,12 +11,13 @@ import { User } from "../../../Models/user";
 import { MoreThan, Not } from "typeorm";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Beatmap } from "../../../Models/beatmap";
+import { MCAStageData } from "../../../Interfaces/mca";
 
 const votingRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
 votingRouter.$use(isLoggedIn);
 
-votingRouter.$get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
+votingRouter.$get<MCAStageData>("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
     const [votes, categories] = await Promise.all([
         Vote.find({
             where: {
@@ -39,12 +40,13 @@ votingRouter.$get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async 
     const categoryInfos: CategoryStageInfo[] = categories.map(c => c.getInfo() as CategoryStageInfo);
 
     ctx.body = {
+        success: true,
         votes: filteredVotes,
         categories: categoryInfos,
     };
 });
 
-votingRouter.$get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), mcaSearch("voting", async (ctx, category: Category) => {
+votingRouter.$get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), mcaSearch("voting", async (ctx, category) => {
     let votes = await Vote.find({
         where: {
             voter: {
@@ -58,7 +60,7 @@ votingRouter.$get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"),
     return votes;
 }));
 
-votingRouter.$post<MCAYearState>("/:year?/create", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+votingRouter.$post<{ vote: Vote }, MCAYearState>("/:year?/create", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const nomineeId = ctx.request.body.nomineeId;
     const categoryId = ctx.request.body.category;
     const choice = ctx.request.body.choice;
@@ -201,7 +203,7 @@ votingRouter.$delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, a
     };
 });
 
-votingRouter.$post<MCAYearState>("/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+votingRouter.$post<object, MCAYearState>("/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const votesInput: Vote[] = ctx.request.body;
     const year: number = ctx.state.year;
     

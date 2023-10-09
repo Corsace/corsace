@@ -3,9 +3,9 @@ import { isLoggedInDiscord, isCorsace } from "../../../../Server/middleware";
 import { Category, CategoryGenerator } from "../../../../Models/MCA_AYIM/category";
 import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { ModeDivision } from "../../../../Models/MCA_AYIM/modeDivision";
-import { CategoryFilter, CategoryType } from "../../../../Interfaces/category";
+import { CategoryFilter, CategoryInfo, CategoryType } from "../../../../Interfaces/category";
 import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
-import { CorsaceContext, CorsaceRouter, CorsaceSuccessMessage } from "../../../corsaceRouter";
+import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 
 const adminCategoriesRouter  = new CorsaceRouter();
 const categoryGenerator = new CategoryGenerator();
@@ -13,32 +13,56 @@ const categoryGenerator = new CategoryGenerator();
 adminCategoriesRouter.$use(isLoggedInDiscord);
 adminCategoriesRouter.$use(isCorsace);
 
-const validate: compose.Middleware<CorsaceContext<CorsaceSuccessMessage>> = async (ctx, next) => {
+const validate: compose.Middleware<CorsaceContext<{ category: CategoryInfo }>> = async (ctx, next) => {
     const categoryInfo = ctx.request.body.category;
     const year: string = ctx.params.year;
     const modeString: string = ctx.request.body.mode;
 
     if (!categoryInfo.name)
-        return ctx.body = { error: "Missing category name!" };
+        return ctx.body = {
+            success: false,
+            error: "Missing category name!",
+        };
     else if (categoryInfo.type !== 0 && !categoryInfo.type)
-        return ctx.body = { error: "Missing category type!" };
+        return ctx.body = {
+            success: false,
+            error: "Missing category type",
+        };
     else if (!categoryInfo.maxNominations || categoryInfo.maxNominations <= 0)
-        return ctx.body = { error: "Missing non-zero positive nomination count!" };
+        return ctx.body = {
+            success: false,
+            error: "Missing non-zero positive nomination count!",
+        };
     else if (!year)
-        return ctx.body = { error: "Missing year for category!" };
+        return ctx.body = {
+            success: false,
+            error: "Missing year for category!",
+        };
     else if (!modeString)
-        return ctx.body = { error: "Missing mode for category!" };
+        return ctx.body = {
+            success: false,
+            error: "Missing mode for category!",
+        };
 
     if (categoryInfo.type !== CategoryType.Users && categoryInfo.type !== CategoryType.Beatmapsets)
-        return ctx.body = { error: "The category type provided does not exist!"};
+        return ctx.body = {
+            success: false,
+            error: "The category type provided does not exist!",
+        };
 
     const mca = await MCA.findOne({ where: { year: parseInt(year, 10) }});
     if (!mca)
-        return ctx.body = { error: "MCA for this year does not exist currently!" };
+        return ctx.body = {
+            success: false,
+            error: "MCA for this year does not exist currently!",
+        };
 
     const mode = await ModeDivision.findOne({ where: { name: modeString }});
     if (!mode)
-        return ctx.body = { error: "The mode provided does not exist!" };
+        return ctx.body = {
+            success: false,
+            error: "The mode provided does not exist!",
+        };
 
     ctx.state.mca = mca;
     ctx.state.mode = mode;
@@ -47,10 +71,13 @@ const validate: compose.Middleware<CorsaceContext<CorsaceSuccessMessage>> = asyn
 };
 
 // Endpoint for getting categories from a year
-adminCategoriesRouter.$get("/:year/categories", async (ctx) => {
+adminCategoriesRouter.$get<{ categories: CategoryInfo[] }>("/:year/categories", async (ctx) => {
     const yearString = ctx.params.year;
     if (!yearString || !/20\d\d/.test(yearString))
-        return ctx.body = { error: "Invalid year given!" };
+        return ctx.body = {
+            success: false,
+            error: "Invalid year given!",
+        };
     
     const year = parseInt(yearString);
 
@@ -75,7 +102,7 @@ adminCategoriesRouter.$get("/:year/categories", async (ctx) => {
 });
 
 // Endpoint for creating a category
-adminCategoriesRouter.$post("/:year/categories", validate, async (ctx) => {
+adminCategoriesRouter.$post<{ category: CategoryInfo }>("/:year/categories", validate, async (ctx) => {
     const categoryInfo = ctx.request.body.category;
     const filter: CategoryFilter = ctx.request.body.filter;
 
@@ -87,13 +114,13 @@ adminCategoriesRouter.$post("/:year/categories", validate, async (ctx) => {
     await category.save();
 
     ctx.body = {
-        message: "Success! attached is the new category.",
-        category,
+        success: true,
+        category: category.getInfo(),
     };
 });
 
 // Endpoint for updating a category
-adminCategoriesRouter.$put("/:year/categories/:id", validate, async (ctx) => {
+adminCategoriesRouter.$put<{ category: CategoryInfo }>("/:year/categories/:id", validate, async (ctx) => {
     const categoryInfo = ctx.request.body.category;
     const filter: CategoryFilter = ctx.request.body.filter;
 
@@ -107,16 +134,19 @@ adminCategoriesRouter.$put("/:year/categories/:id", validate, async (ctx) => {
     await category.save();
 
     ctx.body = {
-        message: "Updated",
-        category,
+        success: true,
+        category: category.getInfo(),
     };
 });
 
 // Endpoint for deleting a category
-adminCategoriesRouter.$delete("/:year/categories/:id", async (ctx) => {
+adminCategoriesRouter.$delete<{ category: CategoryInfo }>("/:year/categories/:id", async (ctx) => {
     const categoryIDString = ctx.params.id;
     if (!categoryIDString || !/\d+/.test(categoryIDString))
-        return ctx.body = { error: "Invalid category ID given!" };
+        return ctx.body = { 
+            success: false,
+            error: "Invalid category ID given!",
+        };
 
     const categoryID = parseInt(categoryIDString);
 
@@ -137,7 +167,7 @@ adminCategoriesRouter.$delete("/:year/categories/:id", async (ctx) => {
     const categoryRes = await category.remove(); 
     ctx.body = { 
         success: true,
-        categoryRes,
+        category: categoryRes.getInfo(),
     };
 });
 

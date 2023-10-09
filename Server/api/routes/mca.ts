@@ -1,6 +1,5 @@
 import { CorsaceRouter } from "../../corsaceRouter";
 import { config } from "node-config-ts";
-import { CategoryCondensedInfo } from "../../../Interfaces/category";
 import { ModeDivisionType } from "../../../Interfaces/modes";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { Category } from "../../../Models/MCA_AYIM/category";

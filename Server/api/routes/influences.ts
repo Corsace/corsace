@@ -9,10 +9,14 @@ import { isLoggedIn } from "../../../Server/middleware";
 import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
 import { parseQueryParam } from "../../utils/query";
 import { ModeDivisionType } from "../../../Interfaces/modes";
+import { UserInfo } from "../../../Interfaces/user";
 
 const influencesRouter  = new CorsaceRouter();
 
-influencesRouter.$get("/", async (ctx) => {
+influencesRouter.$get<{
+    user: UserInfo;
+    influences: Influence[]
+}>("/", async (ctx) => {
     const userSearch = ctx.query.user;
     const yearSearch = ctx.query.year;
     
@@ -73,7 +77,7 @@ influencesRouter.$get("/", async (ctx) => {
     };
 });
 
-influencesRouter.$post<UserAuthenticatedState>("/create", isLoggedIn, async (ctx) => {
+influencesRouter.$post<{ newInfluence: Influence }, UserAuthenticatedState>("/create", isLoggedIn, async (ctx) => {
     const query = ctx.request.body;
 
     if (!query.year || !/^20[0-9]{2}$/.test(query.year)) {
@@ -176,10 +180,11 @@ influencesRouter.$post<UserAuthenticatedState>("/create", isLoggedIn, async (ctx
     };
 });
 
-influencesRouter.$delete<MCAAuthenticatedState>("/:id", isLoggedIn, currentMCA, async (ctx) => {
+influencesRouter.$delete<object, MCAAuthenticatedState>("/:id", isLoggedIn, currentMCA, async (ctx) => {
     const id = ctx.params.id;
     if (!/^\d+$/.test(id)) {
         ctx.body = { 
+            success: false,
             error: "An influence ID is not provided!",
         };
         return;
@@ -193,6 +198,7 @@ influencesRouter.$delete<MCAAuthenticatedState>("/:id", isLoggedIn, currentMCA, 
         .getOne();
     if (!influence) {
         ctx.body = { 
+            success: false,
             error: "Invalid influence ID!",
         };
         return;
@@ -200,6 +206,7 @@ influencesRouter.$delete<MCAAuthenticatedState>("/:id", isLoggedIn, currentMCA, 
     const mca: MCA = ctx.state.mca;
     if (influence.year < mca.year) {
         ctx.body = {
+            success: false,
             error: "You cannot remove influences for previous years!",
         };
         return;
@@ -227,7 +234,7 @@ influencesRouter.$delete<MCAAuthenticatedState>("/:id", isLoggedIn, currentMCA, 
         })
     );
     ctx.body = {
-        success: "removed",
+        success: true,
     };
     return;
 });

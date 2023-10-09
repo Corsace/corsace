@@ -10,7 +10,7 @@ adminRouter.$use(isCorsace);
 adminRouter.$get("/reset", (ctx) => {
     cache.reset();
     ctx.body = {
-        success: "Success",
+        success: true,
     };
 });
 

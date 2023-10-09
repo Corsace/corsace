@@ -11,23 +11,36 @@ import { isEligibleFor } from "../../middleware/mca-ayim";
 import { parseQueryParam } from "../../utils/query";
 import { Beatmap } from "../../../Models/beatmap";
 import { osuV2Client } from "../../osu";
-import { MCAYearState, ParameterizedContext } from "koa";
+import { MCAYearState } from "koa";
 import { ModeDivisionType } from "../../../Interfaces/modes";
+import { CorsaceContext } from "../../corsaceRouter";
 
-export default function mcaSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext<MCAYearState>, category: Category) => Promise<Vote[] | Nomination[]>) {
-    return async (ctx: ParameterizedContext<MCAYearState>) => {
+export default function mcaSearch (stage: "nominating" | "voting", initialCall: (ctx: CorsaceContext<object, MCAYearState>, category: Category) => Promise<Vote[] | Nomination[]>) {
+    return async (ctx: CorsaceContext<{
+        list: BeatmapsetInfo[] | BeatmapInfo[] | UserChoiceInfo[]
+        count: number;
+    }, MCAYearState>) => {
         if (!ctx.query.category)
-            return ctx.body = { success: false, error: "Missing category ID!" };
+            return ctx.body = {
+                success: false,
+                error: "Missing category ID!",
+            };
 
         // Make sure user is eligible to nominate in this mode
         const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
         if (!(modeString in ModeDivisionType)) {
-            ctx.body = { success: false, error: "Invalid mode, please use standard, taiko, fruits or mania" };
+            ctx.body = {
+                success: false,
+                error: "Invalid mode, please use standard, taiko, fruits or mania",
+            };
             return;
         } 
         const modeId = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
         if (!isEligibleFor(ctx.state.user, modeId, ctx.state.year))
-            return ctx.body = { success: false, error: "Not eligible for this mode!" };
+            return ctx.body = {
+                success: false,
+                error: "Not eligible for this mode!",
+            };
 
         let list: BeatmapInfo[] | BeatmapsetInfo[] | UserChoiceInfo[] = [];
         let setList: BeatmapsetInfo[] = [];
@@ -130,7 +143,10 @@ export default function mcaSearch (stage: "nominating" | "voting", initialCall: 
             list = userList;
             count = totalCount;
         } else
-            return ctx.body = { success: false, error: "Invalid type parameter. Only 'beatmapsets' or 'users' are allowed."};
+            return ctx.body = {
+                success: false,
+                error: "Invalid type parameter. Only 'beatmapsets' or 'users' are allowed.",
+            };
     
         ctx.body = {
             success: true,

@@ -11,7 +11,7 @@ staffVotesRouter.$use(isLoggedInDiscord);
 staffVotesRouter.$use(isStaff);
 
 // Endpoint for getting information for a category
-staffVotesRouter.$get("/", async (ctx) => {
+staffVotesRouter.$get<{ staffVotes: StaffVote[] }>("/", async (ctx) => {
     const categoryIDString = parseQueryParam(ctx.query.category);
     
     if (!categoryIDString || !/\d+/.test(categoryIDString))

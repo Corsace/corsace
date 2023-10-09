@@ -1,7 +1,7 @@
-import { CorsaceRouter } from "../../../corsaceRouter";
+import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import koaBasicAuth from "koa-basic-auth";
 import { config } from "node-config-ts";
-import { BanchoMatchupState, Next, ParameterizedContext } from "koa";
+import { BanchoMatchupState, Next } from "koa";
 import state from "../../../../BanchoBot/state";
 
 const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
@@ -11,7 +11,14 @@ banchoRefereeRouter.$use(koaBasicAuth({
     pass: config.interOpAuth.password,
 }));
 
-async function validateMatchup (ctx: ParameterizedContext, next: Next) {
+type pulseType = { pulse: false } | {
+    pulse: true;
+    team1Score: number;
+    team2Score: number;
+    beatmapID: number;
+}
+
+async function validateMatchup (ctx: CorsaceContext<pulseType>, next: Next) {
     const id = ctx.params.matchupID;
     if (!id || isNaN(parseInt(id))) {
         ctx.body = {
@@ -43,7 +50,7 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
     await next();
 }
 
-banchoRefereeRouter.$get("/:matchupID/pulseMatch", validateMatchup, async (ctx) => {
+banchoRefereeRouter.$get<pulseType>("/:matchupID/pulseMatch", validateMatchup, async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: true,

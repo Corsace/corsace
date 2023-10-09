@@ -5,7 +5,8 @@ import axios from "axios";
 
 const githubRouter  = new CorsaceRouter();
 
-githubRouter.$post("/", async (ctx) => {
+// any is used here to send the discord github webhook data back to github as a response
+githubRouter.$post<any>("/", async (ctx) => {
     const signature = createHmac("sha256", config.github.webhookSecret)
         .update(JSON.stringify(ctx.request.body))
         .digest("hex");

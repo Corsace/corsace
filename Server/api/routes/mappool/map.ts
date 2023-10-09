@@ -14,7 +14,7 @@ mappoolMapRouter.$get("/", (ctx) => {
     };
 });
 
-mappoolMapRouter.$get("/:mapName", async (ctx) => {
+mappoolMapRouter.$get<{ mappoolMap: MappoolMap }>("/:mapName", async (ctx) => {
     let showPrivate = false;
     let tournament: Tournament | null = null;
     if (ctx.query.key) {

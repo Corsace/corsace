@@ -12,7 +12,7 @@ staffNominationsRouter.$use(isLoggedInDiscord);
 staffNominationsRouter.$use(isMCAStaff);
 
 // Endpoint for getting information for a category
-staffNominationsRouter.$get("/", async (ctx) => {
+staffNominationsRouter.$get<{ staffNominations: StaffNomination[] }>("/", async (ctx) => {
     const categoryIDString = parseQueryParam(ctx.query.category);
     
     if (!categoryIDString || !/\d+/.test(categoryIDString)) {
@@ -108,7 +108,11 @@ staffNominationsRouter.$get("/", async (ctx) => {
 });
 
 // Endpoint for accepting a nomination
-staffNominationsRouter.$post("/:id/update", async (ctx) => {
+staffNominationsRouter.$post<{
+    isValid: boolean;
+    reviewer: string;
+    lastReviewedAt: Date;
+}>("/:id/update", async (ctx) => {
     const nominationID = ctx.params.id;
     if (!nominationID || !/\d+/.test(nominationID)) {
         ctx.body = { 
@@ -142,7 +146,10 @@ staffNominationsRouter.$post("/:id/update", async (ctx) => {
 staffNominationsRouter.$delete("/:id", async (ctx) => {
     const nominationID = ctx.params.id;
     if (!nominationID || !/\d+/.test(nominationID))
-        return ctx.body = { error: "Invalid nomination ID given!" };
+        return ctx.body = {
+            success: false, 
+            error: "Invalid nomination ID given!",
+        };
 
     const nomination = await Nomination.findOneOrFail({
         where: {
@@ -152,7 +159,7 @@ staffNominationsRouter.$delete("/:id", async (ctx) => {
     await nomination.remove();
 
     ctx.body = {
-        status: "success",
+        success: true,
     };
 });
 

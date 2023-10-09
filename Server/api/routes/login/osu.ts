@@ -1,6 +1,6 @@
 import { CorsaceRouter } from "../../../corsaceRouter";
 import passport from "koa-passport";
-import { ParameterizedContext, UserAuthenticatedState } from "koa";
+import { UserAuthenticatedState } from "koa";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { config } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
@@ -23,7 +23,7 @@ const modes = [
     "mania",
 ];
 
-osuRouter.$get("/", redirectToMainDomain, async (ctx: ParameterizedContext, next) => {
+osuRouter.$get("/", redirectToMainDomain, async (ctx, next) => {
     const site = parseQueryParam(ctx.query.site);
     if (!site) {
         ctx.body = "No site specified";
@@ -46,7 +46,7 @@ osuRouter.$get("/", redirectToMainDomain, async (ctx: ParameterizedContext, next
     await next();
 }, passport.authenticate("oauth2", { scope: scopes }));
 
-osuRouter.$get<UserAuthenticatedState>("/callback", async (ctx: ParameterizedContext, next) => {
+osuRouter.$get<object, UserAuthenticatedState>("/callback", async (ctx, next) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await passport.authenticate("oauth2", { scope: ["identify", "public", "friends.read"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
@@ -81,7 +81,7 @@ osuRouter.$get<UserAuthenticatedState>("/callback", async (ctx: ParameterizedCon
             .getMany();
         await Promise.all(Object.values(ModeDivisionType)
             .filter(mode => typeof mode === "number")
-            .map(modeID => ctx.state.user!.refreshStatistics(modeID as ModeDivisionType, data)));
+            .map(modeID => ctx.state.user.refreshStatistics(modeID as ModeDivisionType, data)));
 
         // Username changes
         const usernames: string[] = data.previous_usernames ?? [];

@@ -8,11 +8,11 @@ import { TournamentRoleType } from "../../../../Interfaces/tournament";
 import { discordClient } from "../../../discord";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
 import { User } from "../../../../Models/user";
-import { TournamentAuthenticatedState } from "koa";
+import { ResponseBody, TournamentAuthenticatedState } from "koa";
 
 const refereeBanchoRouter  = new CorsaceRouter();
 
-refereeBanchoRouter.$post<TournamentAuthenticatedState>("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+refereeBanchoRouter.$post<unknown, TournamentAuthenticatedState>("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     if (!ctx.request.body.endpoint) {
         ctx.body = {
             success: false,
@@ -74,7 +74,7 @@ refereeBanchoRouter.$post<TournamentAuthenticatedState>("/:tournamentID/:matchup
     }
 
     try {
-        const { data } = await axios.post(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`, {
+        const { data } = await axios.post<ResponseBody<unknown>>(`${matchup.baseURL ?? config.banchoBot.publicUrl}/api/bancho/referee/${matchup.ID}/${ctx.request.body.endpoint}`, {
             ...ctx.request.body,
             endpoint: undefined,
             user,

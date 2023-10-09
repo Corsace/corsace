@@ -1,14 +1,14 @@
-import { CorsaceRouter } from "../../../corsaceRouter";
+import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import koaBasicAuth from "koa-basic-auth";
 import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
-import { ParameterizedContext, Next } from "koa";
+import { Next } from "koa";
 import { config } from "node-config-ts";
 import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
 import { TextChannel } from "discord.js";
 import { discordClient } from "../../../discord";
 import state from "../../../../BanchoBot/state";
 
-async function validateData (ctx: ParameterizedContext, next: Next) {
+async function validateData (ctx: CorsaceContext<object>, next: Next) {
     const body = ctx.request.body;
 
     if (body.time === undefined) {

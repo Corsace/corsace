@@ -1,8 +1,8 @@
-import { CorsaceRouter } from "../../../corsaceRouter";
+import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { BaseQualifier } from "../../../../Interfaces/qualifier";
-import { Next, ParameterizedContext } from "koa";
+import { Next } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
 import { StaffList, StaffMember } from "../../../../Interfaces/staff";
 import { Team } from "../../../../Models/tournaments/team";
@@ -13,7 +13,7 @@ import { User } from "../../../../Models/user";
 import { createHash } from "crypto";
 import { Stage } from "../../../../Models/tournaments/stage";
 
-async function validateID (ctx: ParameterizedContext, next: Next) {
+async function validateID (ctx: CorsaceContext<object>, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
     if (isNaN(ID)) {
         ctx.body = {
@@ -30,7 +30,7 @@ async function validateID (ctx: ParameterizedContext, next: Next) {
 
 const tournamentRouter  = new CorsaceRouter();
 
-tournamentRouter.$get("/open/:year", async (ctx) => {
+tournamentRouter.$get<{ tournament: Tournament }>("/open/:year", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -103,7 +103,7 @@ tournamentRouter.$get("/open/:year", async (ctx) => {
     };
 });
 
-tournamentRouter.$get("/validateKey", async (ctx) => {
+tournamentRouter.$get<{ tournamentID?: number }>("/validateKey", async (ctx) => {
     const key = ctx.query.key as string;
     if (!key) {
         ctx.body = {
@@ -128,7 +128,7 @@ tournamentRouter.$get("/validateKey", async (ctx) => {
     };
 });
 
-tournamentRouter.$get("/:tournamentID/teams", validateID, async (ctx) => {
+tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID, async (ctx) => {
     // TODO: Use tournament ID and only bring registered teams
     // TODO: Effectively, we also removed isRegistered from the response
     const ID: number = ctx.state.ID;
@@ -183,7 +183,8 @@ tournamentRouter.$get("/:tournamentID/teams", validateID, async (ctx) => {
     };
 });
 
-tournamentRouter.$get("/:tournamentID/teams/screening", validateID, async (ctx) => {
+// <any> is used here to be able to send a raw csv file to the endpoint user
+tournamentRouter.$get<any>("/:tournamentID/teams/screening", validateID, async (ctx) => {
     const ID: number = ctx.state.ID;
 
     const teams = await Team
@@ -213,7 +214,7 @@ tournamentRouter.$get("/:tournamentID/teams/screening", validateID, async (ctx) 
     ctx.body = csv;
 });
 
-tournamentRouter.$get("/:tournamentID/qualifiers", validateID, async (ctx) => {
+tournamentRouter.$get<{ qualifiers: BaseQualifier[] }>("/:tournamentID/qualifiers", validateID, async (ctx) => {
     const ID: number = ctx.state.ID;
 
     const qualifiers = await Matchup
@@ -247,7 +248,7 @@ tournamentRouter.$get("/:tournamentID/qualifiers", validateID, async (ctx) => {
     };
 });
 
-tournamentRouter.$get("/:tournamentID/staff", validateID, async (ctx) => {
+tournamentRouter.$get<{ staff: StaffList[] }>("/:tournamentID/staff", validateID, async (ctx) => {
     if (await ctx.cashed())
         return;
 

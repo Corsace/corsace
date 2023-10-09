@@ -1,4 +1,4 @@
-import { CorsaceRouter } from "../../corsaceRouter";
+import { CorsaceMiddleware, CorsaceRouter } from "../../corsaceRouter";
 import koaIp from "koa-ip";
 import { config } from "node-config-ts";
 import { StageType } from "../../../Interfaces/stage";
@@ -10,7 +10,7 @@ import { discordClient } from "../../discord";
 
 const centrifugoRouter  = new CorsaceRouter();
 
-const ipWhitelist = koaIp(config.centrifugo.ipWhitelist);
+const ipWhitelist = koaIp(config.centrifugo.ipWhitelist) as CorsaceMiddleware<object>;
 
 interface ConnectResponse {
     user: string;
@@ -75,12 +75,13 @@ centrifugoRouter.$post<{ result: ConnectResponse }>("/connect", ipWhitelist, (ct
     }
 });
 
-centrifugoRouter.$post("/subscribe", ipWhitelist, async (ctx) => {
+centrifugoRouter.$post<any>("/subscribe", ipWhitelist, async (ctx) => {
     const body = ctx.request.body as SubscribeRequest;
     const channelName = body.channel;
     if (!channelName.includes(":") || channelName.split(":").length !== 2 || isNaN(parseInt(channelName.split(":")[1]))) {
         ctx.body = {
             error: {
+                success: false,
                 code: 102,
                 message: "unknown channel",
             },
@@ -94,6 +95,7 @@ centrifugoRouter.$post("/subscribe", ipWhitelist, async (ctx) => {
     if (!channel) {
         ctx.body = {
             error: {
+                success: false,
                 code: 102,
                 message: "unknown channel",
             },
@@ -123,6 +125,7 @@ centrifugoRouter.$post("/subscribe", ipWhitelist, async (ctx) => {
         }
         if (!authorized) {
             ctx.body = {
+                success: false,
                 error: {
                     code: 103,
                     message: "permission denied",
@@ -133,6 +136,7 @@ centrifugoRouter.$post("/subscribe", ipWhitelist, async (ctx) => {
     }
 
     ctx.body = {
+        success: true,
         result: {},
     };
 });

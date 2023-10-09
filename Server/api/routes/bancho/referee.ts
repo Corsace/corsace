@@ -2,7 +2,7 @@ import { CorsaceRouter } from "../../../corsaceRouter";
 import koaBasicAuth from "koa-basic-auth";
 import { config } from "node-config-ts";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { BanchoMatchupState, Next, ParameterizedContext } from "koa";
+import { BanchoMatchupState } from "koa";
 import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
 import state, { MatchupList } from "../../../../BanchoBot/state";
 import { publish } from "../../../../BanchoBot/functions/tournaments/matchup/centrifugo";
@@ -19,7 +19,7 @@ banchoRefereeRouter.$use(koaBasicAuth({
     pass: config.interOpAuth.password,
 }));
 
-banchoRefereeRouter.$use(async (ctx: ParameterizedContext, next: Next) => {
+banchoRefereeRouter.$use<{ pulse: boolean }>(async (ctx, next) => {
     const id = ctx.params.matchupID;
     if (!id || isNaN(parseInt(id))) {
         ctx.body = {
@@ -69,7 +69,7 @@ banchoRefereeRouter.$use(async (ctx: ParameterizedContext, next: Next) => {
     await next();
 });
 
-banchoRefereeRouter.$post("/:matchupID/pulse", async (ctx) => {
+banchoRefereeRouter.$post<{ pulse: boolean }>("/:matchupID/pulse", async (ctx) => {
     if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: true,
@@ -352,7 +352,7 @@ banchoRefereeRouter.$post("/:matchupID/selectMap", async (ctx) => {
     };
 });
 
-banchoRefereeRouter.$post("/:matchupID/deleteMap", async (ctx) => {
+banchoRefereeRouter.$post<{ mapID: number }>("/:matchupID/deleteMap", async (ctx) => {
     const mapID = ctx.request.body.mapID;
     if (!state.matchups[ctx.state.matchupID] || !mapID || typeof mapID !== "number" || isNaN(mapID)) {
         ctx.body = {
