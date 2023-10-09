@@ -2,7 +2,7 @@ import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import passport from "koa-passport";
 import { discordGuild } from "../../../discord";
 import { config } from "node-config-ts";
-import { redirectToMainDomain } from "./middleware";
+import { redirectToMainDomain } from "../../../middleware/login";
 import { parseQueryParam } from "../../../utils/query";
 import { DiscordAPIError } from "discord.js";
 

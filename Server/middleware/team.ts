@@ -1,6 +1,6 @@
 import { DefaultState, Next } from "koa";
-import { CorsaceContext } from "../../../corsaceRouter";
-import getTeams from "../../../functions/get/getTeams";
+import { CorsaceContext } from "../corsaceRouter";
+import getTeams from "../functions/get/getTeams";
 
 export function validateTeam (isManager?: boolean, invites?: boolean) {
     return async function<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next) {

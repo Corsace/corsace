@@ -1,5 +1,5 @@
 import { CorsaceRouter } from "../../../corsaceRouter";
-import { validateTeam } from "./middleware";
+import { validateTeam } from "../../../middleware/team";
 import { isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
 import { User } from "../../../../Models/user";

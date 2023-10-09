@@ -5,7 +5,7 @@ import { Team as TeamInterface, validateTeamText } from "../../../../Interfaces/
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
-import { validateTeam } from "./middleware";
+import { validateTeam } from "../../../middleware/team";
 import { parseQueryParam } from "../../../utils/query";
 import { deleteTeamAvatar, uploadTeamAvatar } from "../../../functions/tournaments/teams/teamAvatarFunctions";
 import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";

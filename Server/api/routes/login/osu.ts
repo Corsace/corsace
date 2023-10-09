@@ -4,7 +4,7 @@ import { UserAuthenticatedState } from "koa";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { config } from "node-config-ts";
 import { UsernameChange } from "../../../../Models/usernameChange";
-import { redirectToMainDomain } from "./middleware";
+import { redirectToMainDomain } from "../../../middleware/login";
 import { osuClient, osuV2Client } from "../../../osu";
 import { isPossessive } from "../../../../Models/MCA_AYIM/guestRequest";
 import { scopes } from "../../../../Interfaces/osuAPIV2";

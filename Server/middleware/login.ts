@@ -1,6 +1,6 @@
 import { config } from "node-config-ts";
 import { Next, DefaultState } from "koa";
-import { CorsaceContext } from "../../../corsaceRouter";
+import { CorsaceContext } from "../corsaceRouter";
 
 const mainHost = new URL(config[process.env.NODE_ENV === "production" ? "corsace" : "api"].publicUrl).host;
 
