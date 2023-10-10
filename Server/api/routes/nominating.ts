@@ -60,7 +60,7 @@ nominatingRouter.$post<{ nomination: Nomination }, MCAYearState>("/:year?/create
             ID: ctx.request.body.categoryId,
         },
     });
-    const nominator: User = ctx.state.user;
+    const nominator = ctx.state.user;
     const nomineeID: number = ctx.request.body.nomineeId;
     
     if (!isEligibleFor(nominator, category.mode.ID, ctx.state.year))

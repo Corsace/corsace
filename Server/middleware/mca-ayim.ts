@@ -25,8 +25,8 @@ async function isEligible<S extends DefaultState = DefaultState> (ctx: CorsaceCo
         return;
     }
 
-    const mca: MCA = ctx.state.mca;
-    const user: User = ctx.state.user;
+    const mca = ctx.state.mca;
+    const user = ctx.state.user;
     
     if (user.mcaEligibility.find(e => e.year === mca.year)) {
         await next();
@@ -116,7 +116,7 @@ function isPhase<S extends DefaultState = DefaultState> (phase: "nomination" | "
             return;
         }
 
-        const mca: MCA = ctx.state.mca;
+        const mca = ctx.state.mca;
         const now = new Date();
 
         if (now < mca[phase].start || now > mca[phase].end) {
@@ -142,7 +142,7 @@ function isPhaseStarted<S extends DefaultState = DefaultState> (phase: "nominati
             return;
         }
 
-        const mca: MCA = ctx.state.mca;
+        const mca = ctx.state.mca;
         const now = new Date();
 
         if (now < mca[phase].start) {

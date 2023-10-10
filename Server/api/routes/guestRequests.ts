@@ -8,7 +8,6 @@ import axios from "axios";
 import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { RequestStatus } from "../../../Interfaces/guestRequests";
-import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { MCAAuthenticatedState } from "koa";
 import { ModeDivisionType } from "../../../Interfaces/modes";
 
@@ -93,8 +92,8 @@ guestRequestRouter.$use(isLoggedIn);
 guestRequestRouter.$use(currentMCA);
 
 guestRequestRouter.$post<{ request: GuestRequest }>("/create", async (ctx) => {
-    const mca: MCA = ctx.state.mca;
-    const user: User = ctx.state.user;
+    const mca = ctx.state.mca;
+    const user = ctx.state.user;
     const res = await validateBody(user, mca.year, ctx.request.body);
 
     if ("error" in res) {
@@ -120,9 +119,9 @@ guestRequestRouter.$post<{ request: GuestRequest }>("/create", async (ctx) => {
 });
 
 guestRequestRouter.$post<{ request: GuestRequest }>("/:id/update", async (ctx) => {
-    const mca: MCA = ctx.state.mca;
+    const mca = ctx.state.mca;
     const id: number = parseInt(ctx.params.id);
-    const user: User = ctx.state.user;
+    const user = ctx.state.user;
     const request = user.guestRequests.find(r => r.ID === id && r.mca.year === mca.year);
 
     if (!request || request.status === RequestStatus.Accepted) {

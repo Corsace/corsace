@@ -205,7 +205,7 @@ votingRouter.$delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, a
 
 votingRouter.$post<object, MCAYearState>("/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const votesInput: Vote[] = ctx.request.body;
-    const year: number = ctx.state.year;
+    const year = ctx.state.year;
     
     const votes = await Vote.createQueryBuilder("vote")
         .leftJoinAndSelect("vote.voter", "voter")

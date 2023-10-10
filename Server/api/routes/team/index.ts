@@ -180,7 +180,7 @@ teamRouter.$post<{
 });
 
 teamRouter.$post<{ avatar: string }>("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team!;
+    const team = ctx.state.team!;
 
     // Get the file from the request
     const files = ctx.request.files?.avatar;
@@ -225,7 +225,7 @@ teamRouter.$post<{ avatar: string }>("/:teamID/avatar", isLoggedInDiscord, valid
 });
 
 teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team!;
+    const team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
     if (!tournamentID || isNaN(parseInt(tournamentID))) {
@@ -416,7 +416,7 @@ teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asy
 });
 
 teamRouter.$post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team!;
+    const team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
     if (!tournamentID || isNaN(parseInt(tournamentID))) {
@@ -497,7 +497,7 @@ teamRouter.$post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), a
 });
 
 teamRouter.$post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team!;
+    const team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
     if (!tournamentID || isNaN(parseInt(tournamentID))) {
@@ -615,7 +615,7 @@ teamRouter.$post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), as
 });
 
 teamRouter.$post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team!;
+    const team = ctx.state.team!;
 
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
@@ -683,7 +683,7 @@ teamRouter.$post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), asyn
 });
 
 teamRouter.$post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team!;
+    const team = ctx.state.team!;
 
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
@@ -757,7 +757,7 @@ teamRouter.$post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(tru
 });
 
 teamRouter.$post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team!;
+    const team = ctx.state.team!;
 
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
@@ -821,7 +821,7 @@ teamRouter.$patch<{
     name: string;
     abbreviation: string;
 }>("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team!;
+    const team = ctx.state.team!;
     const body: Partial<Team> | undefined = ctx.request.body;
     if (body?.timezoneOffset) {
         if (typeof body.timezoneOffset !== "number" || body.timezoneOffset < -12 || body.timezoneOffset > 14) {
@@ -942,7 +942,7 @@ teamRouter.$patch<{
 });
 
 teamRouter.$delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team!;
+    const team = ctx.state.team!;
 
     const tournaments = await Tournament
         .createQueryBuilder("tournament")

@@ -146,7 +146,7 @@ commentsRouter.$post<{ comment: UserComment }, UserAuthenticatedState>("/create"
         return;
     }
     const modeID = ModeDivisionType[modeInput as keyof typeof ModeDivisionType];
-    const commenter: User = ctx.state.user;
+    const commenter = ctx.state.user;
     
     if (!newComment || !modeInput || !year || !targetID) {
         return ctx.body = {
@@ -255,7 +255,7 @@ commentsRouter.$post<{ comment: UserComment }, CommentAuthenticatedState>("/:id/
         };
     }
 
-    const comment: UserComment = ctx.state.comment;
+    const comment = ctx.state.comment;
     const mca = await MCA.findOneOrFail({
         where: { year: comment.year },
     });
@@ -279,7 +279,7 @@ commentsRouter.$post<{ comment: UserComment }, CommentAuthenticatedState>("/:id/
 });
 
 commentsRouter.$post<object, CommentAuthenticatedState>("/:id/remove", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
-    const comment: UserComment = ctx.state.comment;
+    const comment = ctx.state.comment;
     const mca = await MCA.findOneOrFail({
         where: { year: comment.year },
     });

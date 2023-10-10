@@ -10,7 +10,6 @@ import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { Stage } from "../../../../Models/tournaments/stage";
 import { Team } from "../../../../Models/tournaments/team";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { discordClient } from "../../../discord";
@@ -22,7 +21,7 @@ const stageRouter  = new CorsaceRouter<TournamentStageState>();
 stageRouter.$use(validateStageOrRound);
 
 stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) => {
-    const stage: Stage = ctx.state.stage;
+    const stage = ctx.state.stage;
 
     let matchups = await Matchup
         .createQueryBuilder("matchup")
@@ -91,7 +90,7 @@ stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const stage: Stage = ctx.state.stage;
+    const stage = ctx.state.stage;
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
@@ -203,7 +202,7 @@ stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", async (ctx) => {
 });
 
 stageRouter.$get<{ scores: MatchupScore[] }>("/:stageID/scores", async (ctx) => {
-    const stage: Stage = ctx.state.stage;
+    const stage = ctx.state.stage;
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")

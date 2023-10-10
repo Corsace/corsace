@@ -131,7 +131,7 @@ tournamentRouter.$get<{ tournamentID?: number }>("/validateKey", async (ctx) => 
 tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID, async (ctx) => {
     // TODO: Use tournament ID and only bring registered teams
     // TODO: Effectively, we also removed isRegistered from the response
-    const ID: number = ctx.state.ID;
+    const ID = ctx.state.ID;
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
@@ -185,7 +185,7 @@ tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID,
 
 // <any> is used here to be able to send a raw csv file to the endpoint user
 tournamentRouter.$get<any>("/:tournamentID/teams/screening", validateID, async (ctx) => {
-    const ID: number = ctx.state.ID;
+    const ID = ctx.state.ID;
 
     const teams = await Team
         .createQueryBuilder("team")
@@ -215,7 +215,7 @@ tournamentRouter.$get<any>("/:tournamentID/teams/screening", validateID, async (
 });
 
 tournamentRouter.$get<{ qualifiers: BaseQualifier[] }>("/:tournamentID/qualifiers", validateID, async (ctx) => {
-    const ID: number = ctx.state.ID;
+    const ID = ctx.state.ID;
 
     const qualifiers = await Matchup
         .createQueryBuilder("matchup")
@@ -252,7 +252,7 @@ tournamentRouter.$get<{ staff: StaffList[] }>("/:tournamentID/staff", validateID
     if (await ctx.cashed())
         return;
 
-    const ID: number = ctx.state.ID;
+    const ID = ctx.state.ID;
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")

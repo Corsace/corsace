@@ -1,6 +1,5 @@
 import { CorsaceRouter } from "../../../corsaceRouter";
 import { isLoggedInDiscord } from "../../../middleware";
-import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { Category } from "../../../../Models/MCA_AYIM/category";
 import { isMCAStaff, validatePhaseYear } from "../../../middleware/mca-ayim";
 import { User as APIUser } from "nodesu";
@@ -32,7 +31,7 @@ staffRouter.$get<{ mca: MCAInfo }>("/:year", async (ctx) => {
 
 // Endpoint for getting information for a year
 staffRouter.$get<{ categories: CategoryInfo[] }>("/categories/:year", async (ctx) => {
-    const mca: MCA = ctx.state.mca;
+    const mca = ctx.state.mca;
     const categories = await Category.find({
         where: {
             mca: {
@@ -71,7 +70,7 @@ staffRouter.$post("/grant/:year", isCorsace, async (ctx) => {
             error: "Invalid mode given!",
         };
 
-    const mca: MCA = ctx.state.mca;
+    const mca = ctx.state.mca;
     let user = await User.findOne({
         where: {
             osu: {

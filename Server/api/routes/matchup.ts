@@ -16,7 +16,6 @@ import { validateTournament, hasRoles, validateStageOrRound } from "../../middle
 import { osuClient } from "../../osu";
 import { parseDateOrTimestamp } from "../../utils/dateParse";
 import assignTeamsToNextMatchup from "../../functions/tournaments/matchups/assignTeamsToNextMatchup";
-import { Tournament } from "../../../Models/tournaments/tournament";
 import { Round } from "../../../Models/tournaments/round";
 import { Stage } from "../../../Models/tournaments/stage";
 import { config } from "node-config-ts";
@@ -476,8 +475,8 @@ matchupRouter.$post<{ matchups: Matchup[] }, TournamentStageState>("/create", va
 });
 
 matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/assignTeam", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
-    const tournament: Tournament = ctx.state.tournament;
-    const stageOrRound: Stage | Round | null = ctx.state.stage ?? ctx.state.round ?? null;
+    const tournament = ctx.state.tournament;
+    const stageOrRound = ctx.state.stage ?? ctx.state.round ?? null;
     if (!stageOrRound) {
         ctx.body = {
             success: false,
@@ -600,8 +599,8 @@ matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/assignTeam", valida
 });
 
 matchupRouter.$post<{ matchup: Matchup }, TournamentState>("/date", validateTournament, validateStageOrRound, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer]), async (ctx) => {
-    const tournament: Tournament = ctx.state.tournament;
-    const stageOrRound: Stage | Round | null = ctx.state.stage ?? ctx.state.round ?? null;
+    const tournament = ctx.state.tournament;
+    const stageOrRound = ctx.state.stage ?? ctx.state.round ?? null;
     if (!stageOrRound) {
         ctx.body = {
             success: false,

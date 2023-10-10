@@ -3,7 +3,6 @@ import { isLoggedInDiscord } from "../../../middleware";
 import { User } from "../../../../Models/user";
 import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
 import { isMCAStaff, validatePhaseYear } from "../../../middleware/mca-ayim";
-import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { StaffComment } from "../../../../Interfaces/comment";
 import { Brackets } from "typeorm";
 import { parseQueryParam } from "../../../utils/query";
@@ -15,7 +14,7 @@ commentsReviewRouter.$use(isLoggedInDiscord);
 commentsReviewRouter.$use(isMCAStaff);
 
 commentsReviewRouter.$get<{staffComments: StaffComment[] }, MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
-    const mca: MCA = ctx.state.mca;
+    const mca = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
     const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
     const text = ctx.query.text ?? undefined;

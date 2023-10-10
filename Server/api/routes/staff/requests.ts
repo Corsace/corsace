@@ -2,7 +2,6 @@ import { CorsaceRouter } from "../../../corsaceRouter";
 import { isLoggedInDiscord } from "../../../../Server/middleware";
 import { isMCAStaff, validatePhaseYear } from "../../../../Server/middleware/mca-ayim";
 import { GuestRequest } from "../../../../Models/MCA_AYIM/guestRequest";
-import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { RequestStatus, StaffGuestRequest } from "../../../../Interfaces/guestRequests";
 import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
@@ -14,7 +13,7 @@ staffRequestsRouter.$use(isLoggedInDiscord);
 staffRequestsRouter.$use(isMCAStaff);
 
 staffRequestsRouter.$get<{ requests: StaffGuestRequest[] }, MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
-    const mca: MCA = ctx.state.mca;
+    const mca = ctx.state.mca;
     const requests: StaffGuestRequest[] = await GuestRequest
         .createQueryBuilder("guestReq")
         .innerJoin("guestReq.beatmap", "beatmap")

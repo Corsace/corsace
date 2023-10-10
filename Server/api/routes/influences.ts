@@ -2,7 +2,6 @@ import { CorsaceRouter } from "../../corsaceRouter";
 import { Brackets, MoreThan } from "typeorm";
 import { currentMCA, isEligibleFor } from "../../../Server/middleware/mca-ayim";
 import { Influence } from "../../../Models/MCA_AYIM/influence";
-import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
@@ -203,7 +202,7 @@ influencesRouter.$delete<object, MCAAuthenticatedState>("/:id", isLoggedIn, curr
         };
         return;
     }
-    const mca: MCA = ctx.state.mca;
+    const mca = ctx.state.mca;
     if (influence.year < mca.year) {
         ctx.body = {
             success: false,
