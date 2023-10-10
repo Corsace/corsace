@@ -159,8 +159,6 @@ export default class MapperComments extends Vue {
     @mcaAyimModule.State selectedMode!: string;
     @mcaAyimModule.State mca!: MCA;
 
-    @mcaAyimModule.Action updateSelectedMode;
-
     user: User | null = null;
     comments: Comment[] = [];
     targetID = this.$route.params.mapper;
@@ -192,16 +190,16 @@ export default class MapperComments extends Vue {
 
     async mounted () {
         if (this.mca.year >= 2020)
-            this.$router.replace(`/${this.mca.year}`);
+            await this.$router.replace(`/${this.mca.year}`);
         await this.getData();
     }
     
     async getData () {
-        const { data } = await this.$axios.get(`/api/comments?year=${this.mca.year}&user=${this.targetID}&mode=${this.selectedMode}`);
+        const { data } = await this.$axios.get<{ user: User, comments: Comment[] }>(`/api/comments?year=${this.mca.year}&user=${this.targetID}&mode=${this.selectedMode}`);
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
-            this.$router.push(`/comments`);
+            await this.$router.push(`/comments`);
         } else {
             this.comments = data.comments;
             this.user = data.user;
@@ -210,19 +208,19 @@ export default class MapperComments extends Vue {
 
     async create () {
         this.info = "";
-        const { data } = await this.$axios.post("/api/comments/create", {
+        const { data } = await this.$axios.post<{ comment: Comment }>("/api/comments/create", {
             targetID: this.targetID,
             comment: this.newComment,
             mode: this.selectedMode,
             year: this.mca.year,
         });
             
-        if (data.error) {
+        if (!data.success)
             this.info = data.error;
-        } else {
+        else {
             this.info = "Created comment!";
             this.removeInfo();
-            this.comments = [data, ...this.comments];
+            this.comments = [data.comment, ...this.comments];
         }
     }
 
@@ -240,9 +238,9 @@ export default class MapperComments extends Vue {
             comment: this.newComment,
         });
             
-        if (data.error) {
+        if (!data.success)
             this.info = data.error;
-        } else {
+        else {
             this.info = "Updated comment!";
             this.removeInfo();
             this.$set(this.comments, this.ownCommentIndex, data);
@@ -250,24 +248,23 @@ export default class MapperComments extends Vue {
     }
 
     async remove () {
-        if (!this.ownComment) return;
-
-        if (!confirm("Are you sure?")) {
+        if (!this.ownComment)
             return;
-        }
+
+        if (!confirm("Are you sure?"))
+            return;
 
         this.info = "Removed comment!";
         this.removeInfo();
         const { data } = await this.$axios.post(`/api/comments/${this.ownComment.ID}/remove`);
             
-        if (data.error) {
+        if (!data.success)
             this.info = data.error;
-        } else {
+        else
             this.comments.splice(this.ownCommentIndex, 1);
-        }
     }
 
-    async removeInfo () {
+    removeInfo () {
         setTimeout(() => this.info = "", 5000);
     }
 }

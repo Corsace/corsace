@@ -222,6 +222,6 @@ const bnNatHistory = [
 export default function getHistoryStat (year: number, mode: string, group: "bns" | "nat", kind: "joined" | "left"): Statistic {
     return {
         constraint: group + " " + kind,
-        value: bnNatHistory.find(h => h.year === year && h.mode === mode)?.[group][kind].toString() || "",
+        value: bnNatHistory.find(h => h.year === year && h.mode === mode)?.[group][kind].toString() ?? "",
     };
 }

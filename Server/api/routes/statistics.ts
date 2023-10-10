@@ -1,13 +1,13 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { createQueryBuilder, SelectQueryBuilder } from "typeorm";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 import { Statistic } from "../../../Interfaces/records";
 import { Beatmapset } from "../../../Models/beatmapset";
-import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { User } from "../../../Models/user";
 import { parseQueryParam } from "../../utils/query";
+import { DefaultState } from "koa";
 // import getHistoryStat from "../data/bnNatHistory";
 
-const statisticsRouter = new Router();
 const yearIDthresholds = [
     1, // 2007
     5130, // 2008
@@ -28,7 +28,7 @@ const yearIDthresholds = [
     32413926, // 2023
 ]; // IDs where they are the first for each year starting from 2007
 
-function createUserQuery (year, modeId, i) : SelectQueryBuilder<User> {
+function createUserQuery (year: number, modeId: number, i: number) : SelectQueryBuilder<User> {
     let query = User
         .createQueryBuilder("user")
         .innerJoin("user.beatmapsets", "beatmapset","beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
@@ -47,13 +47,22 @@ function valueToFixed (record: any, digits = 2): any {
     return record;
 }
 
-statisticsRouter.get("/beatmapsets", async (ctx) => {
+const statisticsRouter  = new CorsaceRouter<DefaultState>();
+
+statisticsRouter.$get<{ statistics: Record<string, Statistic[]> }>("/beatmapsets", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
-    const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
-    const modeId = ModeDivisionType[modeString];
+    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
+    const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
+    if (!(modeString in ModeDivisionType)) {
+        ctx.body = { 
+            success: false,
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
+        return;
+    }
+    const modeId = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
 
     // Create loops for AR/OD/CS/HP/SR stats
     const [CSq, ARq, ODq, HPq, SRq]: [Promise<any>[], Promise<any>[], Promise<any>[], Promise<any>[], Promise<any>[]] = [[], [], [], [], []];
@@ -349,16 +358,26 @@ statisticsRouter.get("/beatmapsets", async (ctx) => {
     else if (modeId === ModeDivisionType.mania)
         statistics.keys = CS;
 
-    ctx.body = statistics;
+    ctx.body = {
+        success: true,
+        statistics,
+    };
 });
 
-statisticsRouter.get("/mappers", async (ctx) => {
+statisticsRouter.$get<{ statistics: Record<string, Statistic[]> }>("/mappers", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
-    const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
-    const modeId = ModeDivisionType[modeString];
+    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
+    const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
+    if (!(modeString in ModeDivisionType)) {
+        ctx.body = { 
+            success: false,
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
+        return;
+    }
+    const modeId = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
 
     const [yearQ, newyearQ, mapsQ]: [Promise<any>[], Promise<any>[], Promise<any>[]] = [[], [], []];
     for (let i = 0; i < yearIDthresholds.length; i++) {
@@ -443,10 +462,13 @@ statisticsRouter.get("/mappers", async (ctx) => {
         mapsPerMapperAges: mapYears,
     };
 
-    ctx.body = statistics;
+    ctx.body = {
+        success: true,
+        statistics,
+    };
 });
 
-// statisticsRouter.get("/nominators", async (ctx) => {
+// statisticsRouter.$get("/nominators", async (ctx) => {
 //     if (await ctx.cashed())
 //         return;
 

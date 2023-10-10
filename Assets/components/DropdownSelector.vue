@@ -60,9 +60,9 @@ export default class DropdownSelector extends Vue{
         this.$emit("relayOption", newOption);
     }
 
-    get triangleClass (): Record<string, any>  {
+    get triangleClass (): Record<string, boolean>  {
         const className = `triangle-active--${this.selectedMode}`;
-        const obj = {};
+        const obj: Record<string, boolean> = {};
         obj[className] = this.showDropdown;
         return obj;
     }

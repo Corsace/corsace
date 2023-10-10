@@ -1,20 +1,27 @@
-import Router from "@koa/router";
-import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
+import { CorsaceRouter } from "../../../corsaceRouter";
+import { isLoggedInDiscord } from "../../../../Server/middleware";
 import { Nomination } from "../../../../Models/MCA_AYIM/nomination";
 import { StaffNomination } from "../../../../Interfaces/nomination";
 import { parseQueryParam } from "../../../../Server/utils/query";
+import { UserAuthenticatedState } from "koa";
+import { isMCAStaff } from "../../../middleware/mca-ayim";
 
-const staffNominationsRouter = new Router;
+const staffNominationsRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-staffNominationsRouter.use(isLoggedInDiscord);
-staffNominationsRouter.use(isStaff);
+staffNominationsRouter.$use(isLoggedInDiscord);
+staffNominationsRouter.$use(isMCAStaff);
 
 // Endpoint for getting information for a category
-staffNominationsRouter.get("/", async (ctx) => {
+staffNominationsRouter.$get<{ staffNominations: StaffNomination[] }>("/", async (ctx) => {
     const categoryIDString = parseQueryParam(ctx.query.category);
     
-    if (!categoryIDString || !/\d+/.test(categoryIDString))
-        return ctx.body = { error: "Invalid category ID given!" };
+    if (!categoryIDString || !/\d+/.test(categoryIDString)) {
+        ctx.body = { 
+            success: false,
+            error: "Invalid category ID given!",
+        };
+        return;
+    }
 
     const categoryID = parseInt(categoryIDString);
 
@@ -94,14 +101,26 @@ staffNominationsRouter.get("/", async (ctx) => {
         return staffNom;
     });
 
-    ctx.body = staffNominations;
+    ctx.body = {
+        success: true,
+        staffNominations,
+    };
 });
 
 // Endpoint for accepting a nomination
-staffNominationsRouter.post("/:id/update", async (ctx) => {
+staffNominationsRouter.$post<{
+    isValid: boolean;
+    reviewer: string;
+    lastReviewedAt: Date;
+}>("/:id/update", async (ctx) => {
     const nominationID = ctx.params.id;
-    if (!nominationID || !/\d+/.test(nominationID))
-        return ctx.body = { error: "Invalid nomination ID given!" };
+    if (!nominationID || !/\d+/.test(nominationID)) {
+        ctx.body = { 
+            success: false,
+            error: "Invalid nomination ID given!",
+        };
+        return;
+    }
 
     const nomination = await Nomination.findOneOrFail({
         where: {
@@ -110,23 +129,27 @@ staffNominationsRouter.post("/:id/update", async (ctx) => {
     });
     nomination.isValid = ctx.request.body.isValid; 
     nomination.reviewer = ctx.state.user;
-    nomination.lastReviewedAt = new Date;
+    nomination.lastReviewedAt = new Date();
     if (!nomination.isValid)
         nomination.nominators = [];
     await nomination.save();
 
     ctx.body = {
+        success: true,
         isValid: ctx.request.body.isValid,
         reviewer: ctx.state.user.osu.username,
-        lastReviewedAt: new Date,
+        lastReviewedAt: new Date(),
     };
 });
 
 // Endpoint for deleting a nomination
-staffNominationsRouter.delete("/:id", async (ctx) => {
+staffNominationsRouter.$delete("/:id", async (ctx) => {
     const nominationID = ctx.params.id;
     if (!nominationID || !/\d+/.test(nominationID))
-        return ctx.body = { error: "Invalid nomination ID given!" };
+        return ctx.body = {
+            success: false, 
+            error: "Invalid nomination ID given!",
+        };
 
     const nomination = await Nomination.findOneOrFail({
         where: {
@@ -136,7 +159,7 @@ staffNominationsRouter.delete("/:id", async (ctx) => {
     await nomination.remove();
 
     ctx.body = {
-        status: "success",
+        success: true,
     };
 });
 

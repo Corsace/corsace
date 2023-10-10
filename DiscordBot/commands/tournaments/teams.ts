@@ -32,7 +32,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             }).join("\n\n"))
         .setFooter({
             text: `Requested by ${m instanceof Message ? m.author.username : m.user.username}`,
-            iconURL: (m instanceof Message ? m.author.avatarURL() : m.user.avatarURL()) || undefined,
+            iconURL: (m instanceof Message ? m.author.avatarURL() : m.user.avatarURL()) ?? undefined,
         });
 
     await respond(m, undefined, [ embed ]);

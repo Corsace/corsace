@@ -111,18 +111,18 @@ const openModule = namespace("open");
     },
     head () {
         return {
-            title: this.$store.state["open"].title,
+            title: this.$store.state.open.title,
             meta: [
-                {hid: "description", name: "description", content: this.$store.state["open"].tournament.description},
+                {hid: "description", name: "description", content: this.$store.state.open.tournament.description},
 
-                {hid: "og:site_name", property: "og:site_name", content: this.$store.state["open"].title},
-                {hid: "og:title", property: "og:title", content: this.$store.state["open"].title},
+                {hid: "og:site_name", property: "og:site_name", content: this.$store.state.open.title},
+                {hid: "og:title", property: "og:title", content: this.$store.state.open.title},
                 {hid: "og:url", property: "og:url", content: `https://open.corsace.io${this.$route.path}`}, 
-                {hid: "og:description", property: "og:description", content: `${this.$store.state["open"].tournament.description}`},
+                {hid: "og:description", property: "og:description", content: `${this.$store.state.open.tournament.description}`},
                 {hid: "og:image",property: "og:image", content: require("../../Assets/img/site/open/banner.png")},
                 
-                {name: "twitter:title", content: this.$store.state["open"].title},
-                {name: "twitter:description", content: this.$store.state["open"].tournament.description},
+                {name: "twitter:title", content: this.$store.state.open.title},
+                {name: "twitter:description", content: this.$store.state.open.tournament.description},
                 {name: "twitter:image", content: require("../../Assets/img/site/open/banner.png")},
                 {name: "twitter:image:src", content: require("../../Assets/img/site/open/banner.png")},
             ],
@@ -152,7 +152,7 @@ export default class Default extends Vue {
     @State loggedInUser!: UserInfo | null;
 
     get avatarURL (): string  {
-        return this.loggedInUser?.osu.avatar || "";
+        return this.loggedInUser?.osu.avatar ?? "";
     }
 
     async mounted () {

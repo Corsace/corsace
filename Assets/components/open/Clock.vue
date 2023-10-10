@@ -12,7 +12,7 @@ export default class Clock extends Vue {
     time = "";
     timer: any = undefined;
 
-    updateTime () {
+    updateTime = () => {
         const now = new Date();
         const hh = String(now.getUTCHours()).padStart(2, "0");
         const mm = String(now.getUTCMinutes()).padStart(2, "0");
@@ -21,12 +21,13 @@ export default class Clock extends Vue {
 
         const delayUntilNextSecond = 1000 - (now.getMilliseconds());
         setTimeout(this.updateTime, delayUntilNextSecond);
-    }
+    };
 
     mounted () {
         this.updateTime();
         this.timer = setInterval(this.updateTime, 1000);
     }
+
     beforeDestroy () {
         clearInterval(this.timer);
     }

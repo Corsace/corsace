@@ -151,7 +151,7 @@ import QualifiersView from "../../Assets/components/open/QualifiersView.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import BaseModal from "../../Assets/components/BaseModal.vue";
 
-import { Stage } from "../../Interfaces/stage";
+import { Stage, StageType } from "../../Interfaces/stage";
 import { Tournament } from "../../Interfaces/tournament";
 import { Team } from "../../Interfaces/team";
 import { UserInfo } from "../../Interfaces/user";
@@ -173,18 +173,18 @@ const openModule = namespace("open");
     },
     head () {
         return {
-            title: this.$store.state["open"].title,
+            title: this.$store.state.open.title,
             meta: [
-                {hid: "description", name: "description", content: this.$store.state["open"].tournament.description},
+                {hid: "description", name: "description", content: this.$store.state.open.tournament.description},
 
-                {hid: "og:site_name", property: "og:site_name", content: this.$store.state["open"].title},
-                {hid: "og:title", property: "og:title", content: this.$store.state["open"].title},
+                {hid: "og:site_name", property: "og:site_name", content: this.$store.state.open.title},
+                {hid: "og:title", property: "og:title", content: this.$store.state.open.title},
                 {hid: "og:url", property: "og:url", content: `https://open.corsace.io${this.$route.path}`}, 
-                {hid: "og:description", property: "og:description", content: this.$store.state["open"].tournament.description},
+                {hid: "og:description", property: "og:description", content: this.$store.state.open.tournament.description},
                 {hid: "og:image",property: "og:image", content: require("../../Assets/img/site/open/banner.png")},
                 
-                {name: "twitter:title", content: this.$store.state["open"].title},
-                {name: "twitter:description", content: this.$store.state["open"].tournament.description},
+                {name: "twitter:title", content: this.$store.state.open.title},
+                {name: "twitter:description", content: this.$store.state.open.tournament.description},
                 {name: "twitter:image", content: require("../../Assets/img/site/open/banner.png")},
                 {name: "twitter:image:src", content: require("../../Assets/img/site/open/banner.png")},
             ],
@@ -205,7 +205,7 @@ export default class Qualifiers extends Vue {
     @openModule.State mappools!: Mappool[] | null;
 
     get qualifiersStage (): Stage | null {
-        return this.tournament?.stages.find(s => s.stageType === 0) || null;
+        return this.tournament?.stages.find(s => s.stageType === StageType.Qualifiers) ?? null;
     }
 
     togglePopup () {
@@ -224,12 +224,12 @@ export default class Qualifiers extends Vue {
 
     async getMappool () {
         this.page = "mappool";
-        this.$store.dispatch("open/setMappools", this.qualifiersStage?.ID);
+        await this.$store.dispatch("open/setMappools", this.qualifiersStage?.ID);
     }
 
     async getScores () {
         this.page = "scores";
-        this.$store.dispatch("open/setScores", this.qualifiersStage?.ID);
+        await this.$store.dispatch("open/setScores", this.qualifiersStage?.ID);
     }
 }
 </script>

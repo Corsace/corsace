@@ -147,9 +147,9 @@ export default class Years extends Vue {
     }
 
     async getCategories () {
-        const { data } = await this.$axios.get(`/api/admin/years/${this.$route.params.adminYear}/categories`);
+        const { data } = await this.$axios.get<{ categories: CategoryInfo[] }>(`/api/admin/years/${this.$route.params.adminYear}/categories`);
 
-        if (data.error) {
+        if (!data.success) {
             console.error(data.error);
             return;
         }
@@ -162,7 +162,7 @@ export default class Years extends Vue {
         await this.getCategories();
     }
 
-    changeMode (mode) {
+    changeMode (mode: string) {
         this.selectedMode = mode;
     }
 
@@ -182,7 +182,7 @@ export default class Years extends Vue {
 
         const { data } = await this.$axios.delete(`/api/admin/years/${this.$route.params.adminYear}/categories/${category.id}`);
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
             return;
         }

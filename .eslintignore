@@ -1,3 +1,8 @@
-node_modules
-dist
+node_modules/*
+dist/*
 build/*
+.vscode
+.github
+.astro/*
+.nuxt/*
+.eslintrc.js

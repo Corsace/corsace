@@ -63,7 +63,7 @@ async function execute (job: CronJobData) {
                 await thread.setAppliedTags(tags, "This slot is now assigned.");
                 await thread.setArchived(true, "This slot is now assigned.");
 
-                const tournament = tournaments.find(t => t.server === thread.guildId) || await Tournament
+                const tournament = tournaments.find(t => t.server === thread.guildId) ?? await Tournament
                     .createQueryBuilder("tournament")
                     .leftJoinAndSelect("tournament.organizer", "organizer")
                     .leftJoinAndSelect("tournament.mode", "mode")
@@ -71,7 +71,7 @@ async function execute (job: CronJobData) {
                     .getOne();
 
                 if (tournament)
-                    mappoolLog(tournament, "jobCron", tournament.organizer, `Closed job board post for \`${thread.name}\``);
+                    await mappoolLog(tournament, "jobCron", tournament.organizer, `Closed job board post for \`${thread.name}\``);
             }
         } catch (err) {
             if (!(err instanceof DiscordAPIError && err.code === 10003))

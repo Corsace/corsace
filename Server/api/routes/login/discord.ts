@@ -1,31 +1,49 @@
-import Router from "@koa/router";
+import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import passport from "koa-passport";
 import { discordGuild } from "../../../discord";
 import { config } from "node-config-ts";
-import { ParameterizedContext } from "koa";
-import { redirectToMainDomain } from "./middleware";
+import { redirectToMainDomain } from "../../../middleware/login";
 import { parseQueryParam } from "../../../utils/query";
 import { DiscordAPIError } from "discord.js";
 
 // If you are looking for discord passport info then go to Server > passportFunctions.ts
 
-const discordRouter = new Router();
+const discordRouter  = new CorsaceRouter();
 
-discordRouter.get("/", redirectToMainDomain, async (ctx: ParameterizedContext<any>, next) => {
+discordRouter.$get("/", redirectToMainDomain, async (ctx: CorsaceContext<object>, next) => {
     const site = parseQueryParam(ctx.query.site);
     if (!site) {
-        ctx.body = "No site specified";
+        ctx.body = {
+            success: false,
+            error: "No site specified",
+        };
+        return;
+    }
+    if (!(site in config)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid site",
+        };
+        return;
+    }
+    const configInfo = config[site as keyof typeof config];
+    if (typeof configInfo === "object" && !("publicUrl" in configInfo)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid config",
+        };
         return;
     }
 
-    const baseURL = ctx.query.site ? (config[site] ? config[site].publicUrl : config.corsace.publicUrl) : "";
-    const params = ctx.query.redirect ?? "";
-    const redirectURL = baseURL + params ?? "back";
+    const baseURL = ctx.query.site ? (typeof configInfo === "object" ? configInfo.publicUrl : config.corsace.publicUrl) : "";
+    const params = parseQueryParam(ctx.query.redirect) ?? "";
+    const redirectURL = (baseURL + params) ?? "back";
     ctx.cookies.set("redirect", redirectURL, { overwrite: true });
     await next();
 }, passport.authenticate("discord", { scope: ["identify", "guilds.join"] }));
 
-discordRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
+discordRouter.$get("/callback", async (ctx: CorsaceContext<object>, next) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await passport.authenticate("discord", { scope: ["identify", "guilds.join"], failureRedirect: "/" }, async (err, user) => {
         if (user) {
             if (ctx.state.user) {
@@ -33,7 +51,10 @@ discordRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
                 user = ctx.state.user;
             } else if (!user.osu)
             {
-                ctx.body = { error: "There is no osu! account linked to this discord account! Please register via osu! first." };
+                ctx.body = {
+                    success: false,
+                    error: "There is no osu! account linked to this discord account! Please register via osu! first.",
+                };
                 return;
             }
 
@@ -57,7 +78,7 @@ discordRouter.get("/callback", async (ctx: ParameterizedContext, next) => {
                 }
             } catch (err) {
                 if (!(err instanceof DiscordAPIError) || err.code !== 50007)
-                    console.log("An error occurred in adding a user to the server / changing their nickname: " + err);
+                    console.log(`An error occurred in adding a user to the server / changing their nickname: ${err}`);
             }
 
             ctx.login(user);

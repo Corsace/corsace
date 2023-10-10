@@ -1,4 +1,5 @@
-import Router from "@koa/router";
+import { MCAYearState, UserAuthenticatedState } from "koa";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { isLoggedIn } from "../../../Server/middleware";
 import { isEligible, isEligibleFor, isPhaseStarted, validatePhaseYear, isPhase } from "../../../Server/middleware/mca-ayim";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
@@ -10,16 +11,19 @@ import { User } from "../../../Models/user";
 import { MoreThan, Not } from "typeorm";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Beatmap } from "../../../Models/beatmap";
+import { MCAStageData } from "../../../Interfaces/mca";
 
-const votingRouter = new Router();
+const votingRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-votingRouter.use(isLoggedIn);
+votingRouter.$use(isLoggedIn);
 
-votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
+votingRouter.$get<MCAStageData>("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (ctx) => {
     const [votes, categories] = await Promise.all([
         Vote.find({
             where: {
-                voter: ctx.state.user,
+                voter: {
+                    ID: ctx.state.user.ID,
+                },
             },
         }),
             
@@ -36,15 +40,18 @@ votingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("voting"), async (
     const categoryInfos: CategoryStageInfo[] = categories.map(c => c.getInfo() as CategoryStageInfo);
 
     ctx.body = {
+        success: true,
         votes: filteredVotes,
         categories: categoryInfos,
     };
 });
 
-votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), mcaSearch("voting", async (ctx, category) => {
+votingRouter.$get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), mcaSearch("voting", async (ctx, category) => {
     let votes = await Vote.find({
         where: {
-            voter: ctx.state.user,
+            voter: {
+                ID: ctx.state.user.ID,
+            },
         },
         relations: ["user", "beatmapset", "beatmap", "beatmap.beatmapset", "beatmap.beatmapset.creator"],
     });
@@ -53,7 +60,7 @@ votingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("voting"), 
     return votes;
 }));
 
-votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+votingRouter.$post<{ vote: Vote }, MCAYearState>("/:year?/create", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const nomineeId = ctx.request.body.nomineeId;
     const categoryId = ctx.request.body.category;
     const choice = ctx.request.body.choice;
@@ -62,6 +69,7 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
     
     if (choice < 1 || choice > 100) {
         return ctx.body = {
+            success: false,
             error: "Invalid choice",
         };
     }
@@ -81,12 +89,14 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
     const exists = await nomQ.getRawOne();
     if (!exists) {
         return ctx.body = {
+            success: false,
             error: `It wasn't nominated :(`,
         };
     }
     
     if (!isEligibleFor(ctx.state.user, category.mode.ID, ctx.state.year)) {
         return ctx.body = {
+            success: false,
             error: "You weren't active for this mode",
         };
     }
@@ -94,7 +104,7 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
     let votes = await Vote.find({
         where: {
             voter: {
-                ID: ctx.state.user,
+                ID: ctx.state.user.ID,
             },
         },
     });
@@ -104,6 +114,7 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
 
     if (categoryVotes.some(v => v.choice === choice)) {
         return ctx.body = {
+            success: false,
             error: `Already voted: ${choice}`,
         };
     }
@@ -139,6 +150,7 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
     
     if (alreadyVoted) {
         return ctx.body = {
+            success: false,
             error: "Already voted for this",
         };
     }
@@ -146,10 +158,13 @@ votingRouter.post("/:year?/create", validatePhaseYear, isPhase("voting"), isElig
     vote.choice = choice;
     await vote.save();
 
-    ctx.body = vote;
+    ctx.body = {
+        success: true,
+        vote,
+    };
 });
 
-votingRouter.delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+votingRouter.$delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const vote = await Vote.findOneOrFail({
         where: {
             ID: parseInt(ctx.params.id, 10),
@@ -184,13 +199,13 @@ votingRouter.delete("/:id", validatePhaseYear, isPhase("voting"), isEligible, as
     ]);
 
     ctx.body = {
-        success: "removed",
+        success: true,
     };
 });
 
-votingRouter.post("/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
+votingRouter.$post<object, MCAYearState>("/swap", validatePhaseYear, isPhase("voting"), isEligible, async (ctx) => {
     const votesInput: Vote[] = ctx.request.body;
-    const year: number = ctx.state.year;
+    const year = ctx.state.year;
     
     const votes = await Vote.createQueryBuilder("vote")
         .leftJoinAndSelect("vote.voter", "voter")
@@ -214,7 +229,7 @@ votingRouter.post("/swap", validatePhaseYear, isPhase("voting"), isEligible, asy
     await Promise.all(updates);
 
     ctx.body = {
-        success: "swapped",
+        success: true,
     };
 });
 

@@ -1,30 +1,37 @@
-import Router from "@koa/router";
-import { isLoggedInDiscord, isStaff } from "../../../middleware";
-import { MCA } from "../../../../Models/MCA_AYIM/mca";
+import { CorsaceRouter } from "../../../corsaceRouter";
+import { isLoggedInDiscord } from "../../../middleware";
 import { Category } from "../../../../Models/MCA_AYIM/category";
-import { validatePhaseYear } from "../../../middleware/mca-ayim";
+import { isMCAStaff, validatePhaseYear } from "../../../middleware/mca-ayim";
 import { User as APIUser } from "nodesu";
 import { isCorsace } from "../../../../Server/middleware";
 import { OAuth, User } from "../../../../Models/user";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { osuClient } from "../../../osu";
+import { MCAAuthenticatedState } from "koa";
+import { ModeDivisionType } from "../../../../Interfaces/modes";
+import { MCAInfo } from "../../../../Interfaces/mca";
+import { CategoryInfo } from "../../../../Interfaces/category";
 
-const staffRouter = new Router;
+const staffRouter  = new CorsaceRouter<MCAAuthenticatedState>();
 
-staffRouter.use(isLoggedInDiscord);
-staffRouter.use(isStaff);
+staffRouter.$use(isLoggedInDiscord);
+staffRouter.$use(isMCAStaff);
+staffRouter.$use(validatePhaseYear);
 
 // Endpoint to obtain current MCA and its info
-staffRouter.get("/:year", validatePhaseYear, async (ctx) => {
+staffRouter.$get<{ mca: MCAInfo }>("/:year", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    ctx.body = ctx.state.mca.getInfo();
+    ctx.body = {
+        success: true,
+        mca: ctx.state.mca.getInfo(),
+    };
 });
 
 // Endpoint for getting information for a year
-staffRouter.get("/categories/:year", validatePhaseYear, async (ctx) => {
-    const mca: MCA = ctx.state.mca;
+staffRouter.$get<{ categories: CategoryInfo[] }>("/categories/:year", async (ctx) => {
+    const mca = ctx.state.mca;
     const categories = await Category.find({
         where: {
             mca: {
@@ -34,21 +41,36 @@ staffRouter.get("/categories/:year", validatePhaseYear, async (ctx) => {
     });
 
     if (categories.length === 0)
-        return ctx.body = { error: "No categories found for this year!" };
+        return ctx.body = { 
+            success: false,
+            error: "No categories found for this year!",
+        };
 
-    ctx.body = categories.map(x => x.getInfo());
+    ctx.body = {
+        success: true,
+        categories: categories.map(x => x.getInfo()),
+    };
 });
 
 // Endpoint for granting direct MCA nom/vote access to users
-staffRouter.post("/grant/:year", isLoggedInDiscord, isCorsace, validatePhaseYear, async (ctx) => {
+staffRouter.$post("/grant/:year", isCorsace, async (ctx) => {
     if (!ctx.request.body.user)
-        return ctx.body = { error: "No user ID given!" };
+        return ctx.body = {
+            success: false,
+            error: "No user ID given!",
+        };
     if (!ctx.request.body.mode)
-        return ctx.body = { error: "No mode given!" };
-    if (!/^(standard|taiko|fruits|mania|storyboard)$/.test(ctx.request.body.mode))
-        return ctx.body = { error: "Invalid mode given!" };
+        return ctx.body = {
+            success: false,
+            error: "No mode given!",
+        };
+    if (!(ctx.request.body.mode in ModeDivisionType))
+        return ctx.body = {
+            success: false,
+            error: "Invalid mode given!",
+        };
 
-    const mca: MCA = ctx.state.mca;
+    const mca = ctx.state.mca;
     let user = await User.findOne({
         where: {
             osu: {
@@ -59,11 +81,14 @@ staffRouter.post("/grant/:year", isLoggedInDiscord, isCorsace, validatePhaseYear
     if (!user) {
         const apiUser = (await osuClient.user.get(ctx.request.body.user)) as APIUser;
         if (!apiUser)
-            return ctx.body = { error: "Invalid user ID given!" };
+            return ctx.body = { 
+                success: false,
+                error: "Invalid user ID given!",
+            };
 
-        user = new User;
+        user = new User();
         user.country = apiUser.country.toString();
-        user.osu = new OAuth;
+        user.osu = new OAuth();
         user.osu.userID = `${apiUser.userId}`;
         user.osu.username = apiUser.username;
         user.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;
@@ -85,7 +110,7 @@ staffRouter.post("/grant/:year", isLoggedInDiscord, isCorsace, validatePhaseYear
         eligibility.year = mca.year;
     }
 
-    eligibility[ctx.request.body.mode] = true;
+    eligibility[ctx.request.body.mode as keyof typeof ModeDivisionType] = true;
     eligibility.storyboard = true;
     await eligibility.save();
 });    

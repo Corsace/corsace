@@ -90,7 +90,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     // Give the user's own assignments if they are in a DM
     if (m.channel?.type === ChannelType.DM) {
-        assignmentListDM(m);
+        await assignmentListDM(m);
         return;
     }
 
@@ -104,7 +104,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
 
     // Get specific pool and user
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "pool", paramType: "string", optional: true },
         { name: "target", paramType: "string", optional: true, customHandler: extractTargetText },
     ]);
@@ -128,8 +128,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .leftJoinAndSelect("maps.testplayers", "testplayer")
         .where("tournament.ID = :tournament")
         .andWhere(targetUser ? new Brackets(qb => {
-            qb.where(`customMapper.ID = ${targetUser!.ID}`)
-                .orWhere(`testplayer.ID = ${targetUser!.ID}`);
+            qb.where(`customMapper.ID = ${targetUser.ID}`)
+                .orWhere(`testplayer.ID = ${targetUser.ID}`);
         }) : "1 = 1")
         .andWhere(pool ? new Brackets(qb => {
             qb.where("mappool.name LIKE :criteria")
@@ -146,7 +146,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         })).flat();
 
     if (mappoolMaps.length === 0) {
-        await respond(m, `No maps found${pool || targetUser ? ` with the given parameters: **${pool ? `pool: \`${pool}\`` : ""} ${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`);
+        await respond(m, `No maps found${pool ?? targetUser ? ` with the given parameters: **${pool ? `pool: \`${pool}\`` : ""} ${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`);
         return;
     }
 
@@ -155,7 +155,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const embed = new EmbedBuilder()
         .setTitle("Mappool Assignments")
-        .setDescription(`Here are the current mappool assignments${pool || targetUser ? ` with the given parameters: **${pool ? `pool: \`${pool}\` ` : ""}${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`)
+        .setDescription(`Here are the current mappool assignments${pool ?? targetUser ? ` with the given parameters: **${pool ? `pool: \`${pool}\` ` : ""}${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`)
         .setTimestamp(new Date())
         .setFields();
 

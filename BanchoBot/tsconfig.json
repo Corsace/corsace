@@ -1,13 +1,15 @@
 {
-    "extends": "../tsconfig.json",
+    "extends": "../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./dist",
-        "sourceMap": true,
+        "types": [
+            "@types/node",
+        ],
     },
     "files": [
-        "index.ts"
+        "index.ts",
     ],
-    "include": [
-        "../config/Config.d.ts"
+    "exclude": [
+        "../Typing/vue-shim.d.ts",
     ],
 }

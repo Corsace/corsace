@@ -1,7 +1,7 @@
 import { Beatmap } from "../../../Models/beatmap";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { isPossessive } from "../../../Models/MCA_AYIM/guestRequest";
-import { modeList } from "../../../Interfaces/modes";
+import { ModeDivisionType, modeList } from "../../../Interfaces/modes";
 import { osuClient } from "../../osu";
 import getBeatmapset from "./getBeatmapset";
 import getMCAEligibility from "./getMCAEligibility";
@@ -18,11 +18,11 @@ export default async function getBeatmap (apiBeatmap: APIBeatmap | number, save:
     if (!save)
         return;
 
-    const mode = await getModeDivison(targetBeatmap.mode as number, save);
+    const mode = await getModeDivison(targetBeatmap.mode!, save);
     if (!mode)
         return;
 
-    beatmap = new Beatmap;
+    beatmap = new Beatmap();
     beatmap.ID = targetBeatmap.id;
     beatmap.mode = mode;
     beatmap.difficulty = targetBeatmap.version;
@@ -53,8 +53,9 @@ export default async function getBeatmap (apiBeatmap: APIBeatmap | number, save:
 
     if (!isPossessive(beatmap.difficulty)) {
         const eligibility = await getMCAEligibility(targetBeatmap, beatmap.beatmapset.creator, save);
-        if (eligibility && !eligibility[modeList[targetBeatmap.mode as number]]) {
-            eligibility[modeList[targetBeatmap.mode as number]] = true;
+        const mode = modeList[targetBeatmap.mode!];
+        if (eligibility && mode in ModeDivisionType) {
+            eligibility[mode as keyof typeof ModeDivisionType] = true;
             eligibility.storyboard = true;
             await eligibility.save();
         }

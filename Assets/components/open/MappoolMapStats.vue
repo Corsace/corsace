@@ -18,13 +18,25 @@
 
 <script lang="ts">
 import { Vue, Component, PropSync } from "vue-property-decorator";
-import { MappoolMap } from "../../../Interfaces/mappool";
+import { CustomBeatmap, MappoolMap } from "../../../Interfaces/mappool";
+import { Beatmap, Beatmapset } from "../../../Interfaces/beatmap";
+
+type NumberKeys<T> = {
+    [K in keyof T]: T[K] extends number ? K : never;
+}[keyof T];
+type statProperty = Exclude<NumberKeys<Beatmap> | NumberKeys<Beatmapset> | NumberKeys<CustomBeatmap>, undefined>;
+
+interface Stat {
+    image: string;
+    property: statProperty;
+    decimals: number;
+}
 
 @Component
 export default class MappoolMapStats extends Vue {
     @PropSync("mappoolMap", { default: null }) readonly map!: MappoolMap | null;
 
-    stats = [
+    stats: Stat[] = [
         { image: "LEN", property: "totalLength", decimals: 0 },
         { image: "BPM", property: "BPM", decimals: 0 },
         { image: "SR", property: "totalSR", decimals: 2 },
@@ -34,15 +46,19 @@ export default class MappoolMapStats extends Vue {
         { image: "HP", property: "hpDrain", decimals: 1 },
     ];
 
-    formatStat (stat: { property: string, decimals: number }): string {
-        const value = this.map?.beatmap?.[stat.property]?.toFixed(stat.decimals)
-            || this.map?.beatmap?.beatmapset?.[stat.property]?.toFixed(stat.decimals)
-            || this.map?.customBeatmap?.[stat.property]?.toFixed(stat.decimals)
-            || "";
+    formatStat (stat: Stat): string {
+        let value = "";
+
+        if (this.map?.beatmap && stat.property in this.map.beatmap)
+            value = this.map.beatmap[stat.property as Exclude<NumberKeys<typeof this.map.beatmap>, undefined>].toFixed(stat.decimals);
+        else if (this.map?.beatmap?.beatmapset && stat.property in this.map.beatmap.beatmapset)
+            value = this.map.beatmap.beatmapset[stat.property as Exclude<NumberKeys<typeof this.map.beatmap.beatmapset>, undefined>].toFixed(stat.decimals);
+        else if (this.map?.customBeatmap && stat.property in this.map.customBeatmap)
+            value = this.map.customBeatmap[stat.property as Exclude<NumberKeys<typeof this.map.customBeatmap>, undefined>].toFixed(stat.decimals);
 
         // If the property is "totalLength", convert the value to mm:ss
         if (stat.property === "totalLength" && (
-            this.map?.beatmap?.totalLength ||
+            this.map?.beatmap?.totalLength ??
             this.map?.customBeatmap?.totalLength
         )) {
             const seconds = parseInt(value);

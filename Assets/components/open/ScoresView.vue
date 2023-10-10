@@ -185,7 +185,7 @@ export default class ScoresView extends Vue {
     @openModule.State scores!: MatchupScore[] | null;
     @openModule.State teamList!: TeamList[] | null;
 
-    updateTooltipPosition (event) {
+    updateTooltipPosition (event: MouseEvent) {
         const x = event.clientX;
         const y = event.clientY;
 
@@ -216,7 +216,7 @@ export default class ScoresView extends Vue {
             return null;
         return this.selectedMappool?.slots.filter(map => 
             this.mapSearchID.toLowerCase().includes(map.acronym.toLowerCase())
-        )[0]?.maps[+(this.mapSearchID.match(/(\d+)/)?.[0] || 1) - 1];
+        )[0]?.maps[+(this.mapSearchID.match(/(\d+)/)?.[0] ?? 1) - 1];
     }
     
     async mounted () {

@@ -1,10 +1,10 @@
-import Router from "@koa/router";
+import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { BaseQualifier } from "../../../../Interfaces/qualifier";
-import { Next, ParameterizedContext } from "koa";
+import { Next } from "koa";
 import { TeamList, TeamMember } from "../../../../Interfaces/team";
-import { StaffMember } from "../../../../Interfaces/staff";
+import { StaffList, StaffMember } from "../../../../Interfaces/staff";
 import { Team } from "../../../../Models/tournaments/team";
 import { playingRoles, TournamentRoleType, tournamentStaffRoleOrder } from "../../../../Interfaces/tournament";
 import { discordClient } from "../../../discord";
@@ -13,7 +13,7 @@ import { User } from "../../../../Models/user";
 import { createHash } from "crypto";
 import { Stage } from "../../../../Models/tournaments/stage";
 
-async function validateID (ctx: ParameterizedContext, next: Next) {
+async function validateID (ctx: CorsaceContext<object>, next: Next) {
     const ID = parseInt(ctx.params.tournamentID);
     if (isNaN(ID)) {
         ctx.body = {
@@ -28,9 +28,9 @@ async function validateID (ctx: ParameterizedContext, next: Next) {
     await next();
 }
 
-const tournamentRouter = new Router();
+const tournamentRouter  = new CorsaceRouter();
 
-tournamentRouter.get("/open/:year", async (ctx) => {
+tournamentRouter.$get<{ tournament: Tournament }>("/open/:year", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -97,10 +97,13 @@ tournamentRouter.get("/open/:year", async (ctx) => {
         });
     });
 
-    ctx.body = tournament;
+    ctx.body = {
+        success: true,
+        tournament,
+    };
 });
 
-tournamentRouter.get("/validateKey", async (ctx) => {
+tournamentRouter.$get<{ tournamentID?: number }>("/validateKey", async (ctx) => {
     const key = ctx.query.key as string;
     if (!key) {
         ctx.body = {
@@ -125,10 +128,10 @@ tournamentRouter.get("/validateKey", async (ctx) => {
     };
 });
 
-tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
+tournamentRouter.$get<{ teams: TeamList[] }>("/:tournamentID/teams", validateID, async (ctx) => {
     // TODO: Use tournament ID and only bring registered teams
     // TODO: Effectively, we also removed isRegistered from the response
-    const ID: number = ctx.state.ID;
+    const ID = ctx.state.ID;
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
@@ -153,32 +156,36 @@ tournamentRouter.get("/:tournamentID/teams", validateID, async (ctx) => {
         .leftJoinAndSelect("stats.modeDivision", "mode")
         .getMany();
 
-    ctx.body = await Promise.all(teams.map<Promise<TeamList>>(async t => {
-        const members = t.members;
-        if (!members.some(m => m.ID === t.manager.ID))
-            members.push(t.manager);
-        return {
-            ID: t.ID,
-            name: t.name,
-            avatarURL: t.avatarURL,
-            pp: t.pp,
-            BWS: t.BWS,
-            rank: t.rank,
-            members: members
-                .map<TeamMember>(m => ({
-                    ID: m.ID,
-                    username: m.osu.username,
-                    osuID: m.osu.userID,
-                    BWS: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.BWS ?? 0,
-                    isManager: m.ID === t.manager.ID,
-                })),
-            isRegistered: tournament.teams.some(team => team.ID === t.ID),
-        };
-    }));
+    ctx.body = {
+        success: true,
+        teams: teams.map<TeamList>(t => {
+            const members = t.members;
+            if (!members.some(m => m.ID === t.manager.ID))
+                members.push(t.manager);
+            return {
+                ID: t.ID,
+                name: t.name,
+                avatarURL: t.avatarURL,
+                pp: t.pp,
+                BWS: t.BWS,
+                rank: t.rank,
+                members: members
+                    .map<TeamMember>(m => ({
+                        ID: m.ID,
+                        username: m.osu.username,
+                        osuID: m.osu.userID,
+                        BWS: m.userStatistics?.find(s => s.modeDivision.ID === tournament.mode.ID)?.BWS ?? 0,
+                        isManager: m.ID === t.manager.ID,
+                    })),
+                isRegistered: tournament.teams.some(team => team.ID === t.ID),
+            };
+        }),
+    };
 });
 
-tournamentRouter.get("/:tournamentID/teams/screening", validateID, async (ctx) => {
-    const ID: number = ctx.state.ID;
+// <any> is used here to be able to send a raw csv file to the endpoint user
+tournamentRouter.$get<any>("/:tournamentID/teams/screening", validateID, async (ctx) => {
+    const ID = ctx.state.ID;
 
     const teams = await Team
         .createQueryBuilder("team")
@@ -207,8 +214,8 @@ tournamentRouter.get("/:tournamentID/teams/screening", validateID, async (ctx) =
     ctx.body = csv;
 });
 
-tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
-    const ID: number = ctx.state.ID;
+tournamentRouter.$get<{ qualifiers: BaseQualifier[] }>("/:tournamentID/qualifiers", validateID, async (ctx) => {
+    const ID = ctx.state.ID;
 
     const qualifiers = await Matchup
         .createQueryBuilder("matchup")
@@ -219,30 +226,33 @@ tournamentRouter.get("/:tournamentID/qualifiers", validateID, async (ctx) => {
         .andWhere("stage.stageType = '0'")
         .getMany();
     
-    ctx.body = qualifiers.flatMap<BaseQualifier>(q => {
-        const qualData = {
-            ID: q.ID,
-            date: q.date,
-        };
-        if (!q.teams)
-            return [qualData];
+    ctx.body = {
+        success: true,
+        qualifiers: qualifiers.flatMap<BaseQualifier>(q => {
+            const qualData = {
+                ID: q.ID,
+                date: q.date,
+            };
+            if (!q.teams)
+                return [qualData];
 
-        return q.teams.map<BaseQualifier>(t => ({
-            ...qualData,
-            team: {
-                ID: t.ID,
-                name: t.name,
-                avatarURL: t.avatarURL,
-            },
-        }));
-    });
+            return q.teams.map<BaseQualifier>(t => ({
+                ...qualData,
+                team: {
+                    ID: t.ID,
+                    name: t.name,
+                    avatarURL: t.avatarURL,
+                },
+            }));
+        }),
+    };
 });
 
-tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
+tournamentRouter.$get<{ staff: StaffList[] }>("/:tournamentID/staff", validateID, async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const ID: number = ctx.state.ID;
+    const ID = ctx.state.ID;
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
@@ -268,11 +278,7 @@ tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
         const server = await discordClient.guilds.fetch(tournament.server);
         await server.members.fetch();
 
-        const staff: {
-            role: string;
-            roleType: TournamentRoleType;
-            users: StaffMember[];
-        }[] = [{
+        const staff: StaffList[] = [{
             role: "Organizer",
             roleType: TournamentRoleType.Organizer,
             users: [{
@@ -301,7 +307,7 @@ tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
                     ID: dbUser?.ID,
                     username: dbUser?.osu.username ?? m.user.username,
                     osuID: dbUser?.osu.userID,
-                    avatar: dbUser?.osu.avatar || dbUser?.discord.avatar || m.displayAvatarURL(),
+                    avatar: dbUser?.osu.avatar ?? dbUser?.discord.avatar ?? m.displayAvatarURL(),
                     country: dbUser?.country,
                     loggedIn: dbUser !== undefined,
                 };
@@ -314,7 +320,10 @@ tournamentRouter.get("/:tournamentID/staff", validateID, async (ctx) => {
             });
         }
 
-        ctx.body = staff;
+        ctx.body = {
+            success: true,
+            staff,
+        };
     } catch (e) {
         ctx.body = {
             success: false,

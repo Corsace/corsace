@@ -42,8 +42,9 @@ export function votesToResults (votes: ResultVote[], categoryType: CategoryType)
     const beatmapResults: BeatmapResult[] = [];
     const userResults: UserResult[] = [];
     for (const vote of votes) {
-        let res = 0; 
-        Object.keys(vote.placeCounts).filter(k => parseInt(k) > 3).forEach(k => res += vote.placeCounts[k]);
+        let res = 0;
+        const keys = Object.keys(vote.placeCounts).map(k => parseInt(k));
+        keys.filter(k => k > 3).forEach(k => res += vote.placeCounts[k]);
         if (categoryType === CategoryType.Beatmapsets && vote.beatmap) {
             beatmapResults.push({
                 id: vote.beatmapset!.ID,

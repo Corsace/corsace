@@ -93,7 +93,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     await mappoolLog(tournament, "publish", user, `\`${mappool.name.toUpperCase()} (${mappool.abbreviation.toUpperCase()})\` is now \`public\`\nMappack: ${mappool.mappackLink}`);
 
-    if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
+    if (m instanceof Message) 
+        await m.reactions.cache.get("⏳")?.remove();
 }
 
 const data = new SlashCommandBuilder()

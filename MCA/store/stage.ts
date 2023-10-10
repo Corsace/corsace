@@ -2,12 +2,12 @@ import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { RootState } from "../../Assets/store/mca-ayim";
 import { UserChoiceInfo } from "../../Interfaces/user";
 import { CategoryStageInfo, SectionCategory } from "../../Interfaces/category";
-import { BeatmapsetInfo } from "../../Interfaces/beatmap";
+import { BeatmapInfo, BeatmapsetInfo } from "../../Interfaces/beatmap";
 import { Vote } from "../../Interfaces/vote";
 import { Nomination } from "../../Interfaces/nomination";
 import { StageQuery } from "../../Interfaces/queries";
 import { BeatmapsetResult, UserResult } from "../../Interfaces/result";
-import { StageType } from "../../Interfaces/mca";
+import { MCAStageData, StageType } from "../../Interfaces/mca";
 
 interface StageState {
     selected: boolean;
@@ -62,7 +62,7 @@ export const mutations: MutationTree<StageState> = {
     selected (state, bool) {
         state.selected = bool;
     },
-    updateStage (state, stage) {
+    updateStage (state, stage: StageType) {
         state.stage = stage;
     },
     updateCategories (state, categories) {
@@ -72,14 +72,12 @@ export const mutations: MutationTree<StageState> = {
         state.votes = votes || [];
     },
     addVote (state, vote) {
-        if (vote) {
+        if (vote)
             state.votes.push(vote);
-        }
     },
     addNomination (state, nomination) {
-        if (nomination) {
+        if (nomination)
             state.nominations.push(nomination);
-        }
     },
     removeNomination (state, nominationId: number) {
         const i = state.nominations.findIndex(n => n.ID === nominationId);
@@ -109,10 +107,9 @@ export const mutations: MutationTree<StageState> = {
     updateSelectedCategory (state, category) {
         state.selectedCategory = category;
     },
-    updateSection (state, section) {
-        if (state.section !== section) {
+    updateSection (state, section: SectionCategory) {
+        if (state.section !== section)
             state.section = section;
-        }
     },
     updateQuery (state, query) {
         state.query = {
@@ -120,10 +117,10 @@ export const mutations: MutationTree<StageState> = {
             ...query,
         };
     },
-    updateFavourites (state, favourites) {
+    updateFavourites (state, favourites: boolean) {
         state.favourites = favourites;
     },
-    updatePlayed (state, played) {
+    updatePlayed (state, played: boolean) {
         state.played = played;
     },
     reset (state, sectionReset: boolean) {
@@ -151,7 +148,8 @@ export const mutations: MutationTree<StageState> = {
 
 export const getters: GetterTree<StageState, RootState> = {
     relatedCandidacies (state): Vote[] | Nomination[] {
-        if (!state.selectedCategory) return [];
+        if (!state.selectedCategory)
+            return [];
 
         const arr = state.stage === "nominating" ? state.nominations : state.votes;
 
@@ -160,7 +158,7 @@ export const getters: GetterTree<StageState, RootState> = {
     },
 
     categoriesInfo (state): CategoryStageInfo[] {
-        if (state.stage === "voting") {
+        if (state.stage === "voting")
             return state.categories.map(c => {
                 const info = {
                     ...c,
@@ -169,7 +167,6 @@ export const getters: GetterTree<StageState, RootState> = {
                 info.maxNominations = 100;
                 return info;
             });
-        }
 
         return state.categories.map(c => ({
             ...c,
@@ -178,61 +175,58 @@ export const getters: GetterTree<StageState, RootState> = {
     },
 };
 
-interface InitialData {
-    categories: CategoryStageInfo[];
-    nominations: Nomination[];
-    votes: Vote[];
-}
-
 export const actions: ActionTree<StageState, RootState> = {
-    updateStage ({ commit }, stage) {
+    updateStage ({ commit }, stage: StageType) {
         commit("updateStage", stage);
     },
     async setInitialData ({ state, commit, dispatch, rootState }) {
-        const mcaState = rootState["mca-ayim"] as RootState;
+        const mcaState = (rootState as any)["mca-ayim"] as RootState;
         if (!mcaState.mca?.year) {
-            this.$router.push("/");
+            await this.$router.push("/");
             return;
         }
 
-        const { data } = await this.$axios.get<InitialData | { error: string }>(`/api/${state.stage}/${mcaState.mca?.year}`);
+        const { data } = await this.$axios.get<MCAStageData | { error: string }>(`/api/${state.stage}/${mcaState.mca?.year}`);
 
         if ("error" in data) {
             console.error(data.error);
-            this.$router.push("/" + mcaState.mca?.year);
+            await this.$router.push("/" + mcaState.mca?.year);
             return;
         }
 
         commit("updateCategories", data.categories);
-        commit("updateNominations", data.nominations);
-        commit("updateVotes", data.votes);
+        if ("nominations" in data)
+            commit("updateNominations", data.nominations);
+        else
+            commit("updateVotes", data.votes);
 
-        if (state.stage === "nominating" && data.nominations?.length && data.nominations.some(n => !n.isValid)) {
+        if ("nominations" in data && data.nominations?.length && data.nominations.some(n => !n.isValid))
             alert("Some nominations were denied, contact a staff member if you already haven't!");
-        } else if (state.stage === "results")
-            dispatch("updateSelectedCategory", state.categories.filter(category => category.type === "Beatmapsets" && (category.mode === mcaState.selectedMode || category.mode === "storyboard"))[0]);
+        else if (state.stage === "results")
+            await dispatch("updateSelectedCategory", state.categories.filter(category => category.type === "Beatmapsets" && (category.mode === mcaState.selectedMode || category.mode === "storyboard"))[0]);
     },
     async updateSelectedCategory ({ commit, dispatch }, category) {
         commit("updateSelectedCategory", category);
-        dispatch("search");
+        await dispatch("search");
     },
-    async updateSection ({ commit }, section) {
+    updateSection ({ commit }, section: SectionCategory) {
         commit("updateSection", section);
     },
     async updateQuery ({ commit, dispatch }, query) {
         commit("updateQuery", query);
-        dispatch("search");
+        await dispatch("search");
     },
-    async updateFavourites ({ commit, dispatch }, favourites) {
+    async updateFavourites ({ commit, dispatch }, favourites: boolean) {
         commit("updateFavourites", favourites);
-        dispatch("search");
+        await dispatch("search");
     },
-    async updatePlayed ({ commit, dispatch }, played) {
+    async updatePlayed ({ commit, dispatch }, played: boolean) {
         commit("updatePlayed", played);
-        dispatch("search");
+        await dispatch("search");
     },
     async search ({ state, commit, rootState }, skipping = false) {
-        if (!state.selectedCategory) return;
+        if (!state.selectedCategory)
+            return;
 
         let skip = 0;
     
@@ -243,31 +237,33 @@ export const actions: ActionTree<StageState, RootState> = {
             else if (state.selectedCategory.type === "Beatmapsets") skip = state.beatmaps.length;
         }
 
-        const { data } = await this.$axios.get(`/api/${state.stage}/${rootState["mca-ayim"].mca?.year}/search?mode=${state.selectedCategory.mode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&favourites=${state.favourites}&played=${state.played}&text=${state.query.text}&skip=${skip}`);
-        if (data.error)
+        const { data } = await this.$axios.get<{
+            list: BeatmapsetInfo[] | BeatmapInfo[] | UserChoiceInfo[],
+            count: number,
+        }>(`/api/${state.stage}/${(rootState as any)["mca-ayim"].mca?.year}/search?mode=${state.selectedCategory.mode}&category=${state.selectedCategory.id}&option=${state.query.option}&order=${state.query.order}&favourites=${state.favourites}&played=${state.played}&text=${state.query.text}&skip=${skip}`);
+        if (!data.success)
             return alert(data.error);
 
         commit("loading", false);
 
         commit("updateCount", data.count);
 
-        if (!data.list) return;
+        if (!data.list)
+            return;
 
         if (state.stage === "results") {
             if (state.selectedCategory.type === "Users")
                 commit("updateUserResults", data.list);
             else if (state.selectedCategory.type === "Beatmapsets")
                 commit("updateBeatmapsetResults", data.list);
-        } else {
-            if (state.selectedCategory.type === "Users") {
-                let users = data.list;
-                if (skipping) users = [...state.users, ...data.list];
-                commit("updateUsers", users.filter((val, i, self) => self.findIndex(v => v.corsaceID === val.corsaceID) === i));
-            } else if (state.selectedCategory.type === "Beatmapsets") {
-                let beatmaps = data.list;
-                if (skipping) beatmaps = [...state.beatmaps, ...data.list];
-                commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
-            }
+        } else if (state.selectedCategory.type === "Users") {
+            let users = data.list as UserChoiceInfo[];
+            if (skipping) users = [...state.users, ...data.list as UserChoiceInfo[]];
+            commit("updateUsers", users.filter((val, i, self) => self.findIndex(v => v.corsaceID === val.corsaceID) === i));
+        } else if (state.selectedCategory.type === "Beatmapsets") {
+            let beatmaps = data.list as BeatmapsetInfo[];
+            if (skipping) beatmaps = [...state.beatmaps, ...data.list as BeatmapsetInfo[]];
+            commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
         }
     },
     reset ({ commit }, sectionReset = false) {
@@ -285,7 +281,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
             commit("selected", false);
 
-            if (data.error) {
+            if (!data.success) {
                 alert(data.error);
                 return;
             }
@@ -305,7 +301,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
             commit("selected", false);
 
-            if (data.error) {
+            if (!data.success) {
                 alert(data.error);
                 return;
             }
@@ -331,7 +327,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
             commit("selected", false);
 
-            if (data.error) {
+            if (!data.success) {
                 alert(data.error);
                 return;
             }
@@ -353,7 +349,7 @@ export const actions: ActionTree<StageState, RootState> = {
 
             commit("selected", false);
 
-            if (data.error) {
+            if (!data.success) {
                 alert(data.error);
                 return;
             }
@@ -369,7 +365,7 @@ export const actions: ActionTree<StageState, RootState> = {
     async swapVotes ({ dispatch }, newOrder: Vote[]) {
         const { data } = await this.$axios.post(`/api/voting/swap`, newOrder);
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
             return;
         }

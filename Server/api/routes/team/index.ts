@@ -1,11 +1,11 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { isCorsace, isLoggedInDiscord } from "../../../middleware";
 import { Team } from "../../../../Models/tournaments/team";
 import { Team as TeamInterface, validateTeamText } from "../../../../Interfaces/team";
 import { Tournament, TournamentStatus } from "../../../../Models/tournaments/tournament";
 import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import { discordClient } from "../../../discord";
-import { validateTeam } from "./middleware";
+import { validateTeam } from "../../../middleware/team";
 import { parseQueryParam } from "../../../utils/query";
 import { deleteTeamAvatar, uploadTeamAvatar } from "../../../functions/tournaments/teams/teamAvatarFunctions";
 import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
@@ -19,20 +19,25 @@ import { Stage } from "../../../../Models/tournaments/stage";
 import { User } from "../../../../Models/user";
 import { unallowedToPlay, TournamentRoleType } from "../../../../Interfaces/tournament";
 
-const teamRouter = new Router();
+const teamRouter = new CorsaceRouter();
 
-teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
-    const teamIDs = await Team
+teamRouter.$get<{ teams: TeamInterface[] }>("/", isLoggedInDiscord, async (ctx) => {
+    const teamIDs: {
+        ID: number;
+    }[] = await Team
         .createQueryBuilder("team")
         .leftJoin("team.manager", "manager")
         .leftJoin("team.members", "member")
-        .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
-        .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user.discord.userID })
+        .where("manager.discordUserID = :discordUserID", { discordUserID: ctx.state.user!.discord.userID })
+        .orWhere("member.discordUserID = :discordUserID", { discordUserID: ctx.state.user!.discord.userID })
         .select("team.ID", "ID")
         .getRawMany();
 
     if (teamIDs.length === 0) {
-        ctx.body = [];
+        ctx.body = {
+            success: true,
+            teams: [],
+        };
         return;
     }
 
@@ -46,10 +51,13 @@ teamRouter.get("/", isLoggedInDiscord, async (ctx) => {
         .where("team.ID IN (:...teamIDs)", { teamIDs: teamIDs.map(t => t.ID) })
         .getMany();
 
-    ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface(true, true)));
+    ctx.body = {
+        success: true,
+        teams: await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface(true, true))),
+    };
 });
 
-teamRouter.get("/all", async (ctx) => {
+teamRouter.$get<{ teams: TeamInterface[] }>("/all", async (ctx) => {
     const teamQ = Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
@@ -65,10 +73,13 @@ teamRouter.get("/all", async (ctx) => {
 
     const teams = await teamQ.getMany();
 
-    ctx.body = await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface()));
+    ctx.body = {
+        success: true,
+        teams: await Promise.all(teams.map<Promise<TeamInterface>>(team => team.teamInterface())),
+    };
 });
 
-teamRouter.get("/:teamID", async (ctx) => {
+teamRouter.$get<{ team: TeamInterface }>("/:teamID", async (ctx) => {
     const team = await Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
@@ -79,71 +90,105 @@ teamRouter.get("/:teamID", async (ctx) => {
         .getOne();
 
     if (!team) {
-        ctx.body = { error: "Team not found" };
+        ctx.body = {
+            success: false,
+            error: "Team not found",
+        };
         return;
     }
 
-    ctx.body = await team.teamInterface(true, true);
+    ctx.body = {
+        success: true,
+        team: await team.teamInterface(true, true),
+    };
 });
 
-teamRouter.post("/create", isLoggedInDiscord, async (ctx) => {
+teamRouter.$post<{
+    team: TeamInterface;
+    error?: string;
+}>("/create", isLoggedInDiscord, async (ctx) => {
     let { name, abbreviation, timezoneOffset } = ctx.request.body;
     const isPlaying = ctx.request.body?.isPlaying;
 
     if (!name || !abbreviation || !timezoneOffset) {
-        ctx.body = { error: "Missing parameters" };
+        ctx.body = { 
+            success: false,
+            error: "Missing parameters",
+        };
         return;
     }
 
     if (typeof timezoneOffset !== "number") {
         timezoneOffset = parseInt(timezoneOffset);
         if (isNaN(timezoneOffset) || timezoneOffset < -12 || timezoneOffset > 14) {
-            ctx.body = { error: "Invalid timezone" };
+            ctx.body = { 
+                success: false,
+                error: "Invalid timezone",
+            };
             return;
         }
     }
 
     const res = validateTeamText(name, abbreviation);
     if ("error" in res) {
-        ctx.body = res;
+        ctx.body = {
+            success: false,
+            error: res.error,
+        };
         return;
     }
 
     name = res.name;
     abbreviation = res.abbreviation;
 
-    const team = new Team;
+    const team = new Team();
     team.name = name;
     team.abbreviation = abbreviation;
     team.timezoneOffset = timezoneOffset;
-    team.manager = ctx.state.user;
+    team.manager = ctx.state.user!;
     team.members = [];
     if (isPlaying)
-        team.members = [ctx.state.user];
+        team.members = [ctx.state.user!];
 
     const noErr = await team.calculateStats();
     try {
         await team.save();
     } catch (e) {
         if (e instanceof QueryFailedError && e.driverError.sqlState === "45000")
-            ctx.body = { error: "Team already exists, you may have double clicked" };
+            ctx.body = { 
+                success: false,
+                error: "Team already exists, you may have double clicked",
+            };
         else
-            ctx.body = { error: `Error creating team\n${e}` };
+            ctx.body = {
+                success: false,
+                error: `Error creating team\n${e}`,
+            };
         return;
     }
     if (!noErr)
-        ctx.body = { success: "Team created, but there was an error calculating stats. Please contact VINXIS", team, error: !noErr };
+        ctx.body = { 
+            success: true,
+            team: await team.teamInterface(false, false),
+            error: "Team created, but there was an error calculating stats. Please contact VINXIS",
+        };
     else
-        ctx.body = { success: "Team created", team, error: !noErr };
+        ctx.body = { 
+            success: true,
+            team: await team.teamInterface(true, true),
+        };
 });
 
-teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+teamRouter.$post<{ avatar: string }>("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team = ctx.state.team!;
 
     // Get the file from the request
     const files = ctx.request.files?.avatar;
     if (!files) {
-        ctx.body = { error: "Missing avatar" };
+        ctx.body = { 
+            success: false,
+            error: "Missing avatar",
+        };
         return;
     }
 
@@ -152,7 +197,10 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
 
     // Check if the file is an image and not a gif
     if (!file.mimetype?.startsWith("image/") || file.mimetype === "image/gif") {
-        ctx.body = { error: "Invalid file type" };
+        ctx.body = { 
+            success: false,
+            error: "Invalid file type",
+        };
         return;
     }
 
@@ -164,18 +212,27 @@ teamRouter.post("/:teamID/avatar", isLoggedInDiscord, validateTeam(true), async 
         team.avatarURL = avatarPath;
         await team.save();
 
-        ctx.body = { success: "Avatar updated", avatar: avatarPath };
+        ctx.body = { 
+            success: true,
+            avatar: avatarPath,
+        };
     } catch (e) {
-        ctx.body = { error: `Error saving avatar\n${e}` };
+        ctx.body = { 
+            success: false,
+            error: `Error saving avatar\n${e}`,
+        };
     }
 });
 
-teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+teamRouter.$post("/:teamID/register", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
     if (!tournamentID || isNaN(parseInt(tournamentID))) {
-        ctx.body = { error: "Missing tournament ID" };
+        ctx.body = {
+            success: false,
+            error: "Missing tournament ID",
+        };
         return;
     }
 
@@ -186,27 +243,42 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         .getOne();
 
     if (!tournament) {
-        ctx.body = { error: "Tournament not found" };
+        ctx.body = {
+            success: false,
+            error: "Tournament not found",
+        };
         return;
     }
     if (tournament.status !== TournamentStatus.Registrations) {
-        ctx.body = { error: "Tournament is not in registration phase" };
+        ctx.body = {
+            success: false,
+            error: "Tournament is not in registration phase",
+        };
         return;
     }
 
     if (tournament.teams.find(t => t.ID === team.ID)) {
-        ctx.body = { error: "Team already registered" };
+        ctx.body = {
+            success: false,
+            error: "Team already registered",
+        };
         return;
     }
 
     // Check if team member count is within the tournament's limits
     if (tournament.maxTeamSize < team.members.length) {
-        ctx.body = { error: `Team has too many members (${team.members.length}). Maximum is ${tournament.maxTeamSize}` };
+        ctx.body = {
+            success: false,
+            error: `Team has too many members (${team.members.length}). Maximum is ${tournament.maxTeamSize}`,
+        };
         return;
     }
 
     if (tournament.minTeamSize > team.members.length) {
-        ctx.body = { error: `Team has too few members (${team.members.length}). Minimum is ${tournament.minTeamSize}` };
+        ctx.body = {
+            success: false,
+            error: `Team has too few members (${team.members.length}). Minimum is ${tournament.minTeamSize}`,
+        };
         return;
     }
 
@@ -219,7 +291,10 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         .andWhere("user.ID IN (:...IDs)", { IDs: teamMembers.map(m => m.ID) })
         .getMany();
     if (alreadyRegistered.length > 0) {
-        ctx.body = { error: `Some members are already registered in this tournament:\n${alreadyRegistered.map(m => m.osu.username).join(", ")}` };
+        ctx.body = {
+            success: false,
+            error: `Some members are already registered in this tournament:\n${alreadyRegistered.map(m => m.osu.username).join(", ")}`,
+        };
         return;
     }
 
@@ -237,7 +312,10 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
         await tournamentServer.members.fetch();
         const discordMembers = teamMembers.map(m => tournamentServer.members.resolve(m.discord.userID));
         if (!discordMembers.some(m => team.manager.discord.userID === m?.id)) {
-            ctx.body = { error: "Team managers are required to be in the discord server" };
+            ctx.body = {
+                success: false,
+                error: "Team managers are required to be in the discord server",
+            };
             return;
         }
 
@@ -249,7 +327,8 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
                 memberStaff.push(discordMember);
         }
         if (memberStaff.length > 0) {
-            ctx.body = { 
+            ctx.body = {
+                success: false,
                 error: `Some members are staffing and are thus not allowed to play in this tournament:\n${memberStaff.map(m => m.displayName).join(", ")}}`,
             };
             return;
@@ -265,7 +344,10 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
                 await discordMember.roles.add(participantRoles.map(r => r.roleID));
         }
     } catch (e) {
-        ctx.body = { error: `Error fetching tournament server. The bot may not be in the server anymore. Contact the tournament's organizers to readd the bot to the server.\n${e}` };
+        ctx.body = {
+            success: false,
+            error: `Error fetching tournament server. The bot may not be in the server anymore. Contact the tournament's organizers to readd the bot to the server.\n${e}`,
+        };
         return;
     }
 
@@ -278,31 +360,46 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     if (qualifierStage) {
         const qualifierAt = ctx.request.body?.qualifierAt;
         if (!qualifierAt) {
-            ctx.body = { error: "Missing qualifier date" };
+            ctx.body = {
+                success: false,
+                error: "Missing qualifier date",
+            };
             return;
         }
 
         const qualifierDate = parseDateOrTimestamp(qualifierAt);
         if (isNaN(qualifierDate.getTime())) {
-            ctx.body = { error: "Invalid qualifier date" };
+            ctx.body = {
+                success: false,
+                error: "Invalid qualifier date",
+            };
             return;
         }
         if (qualifierDate.getTime() < qualifierStage.timespan.start.getTime() || qualifierDate.getTime() > qualifierStage.timespan.end.getTime()) {
-            ctx.body = { error: "Qualifier date is not within the qualifier stage" };
+            ctx.body = {
+                success: false,
+                error: "Qualifier date is not within the qualifier stage",
+            };
             return;
         }
 
         try {
-            const matchup = new Matchup;
+            const matchup = new Matchup();
             matchup.date = qualifierDate;
             matchup.teams = [ team ];
             matchup.stage = qualifierStage;
             await matchup.save();
         } catch (e) {
             if (e instanceof QueryFailedError && e.driverError.sqlState === "45000")
-                ctx.body = { error: "Team already has a qualifier matchup, you may have double clicked" };
+                ctx.body = {
+                    success: false,
+                    error: "Team already has a qualifier matchup, you may have double clicked",
+                };
             else
-                ctx.body = { error: `Error creating qualifier matchup\n${e}` };
+                ctx.body = {
+                    success: false,
+                    error: `Error creating qualifier matchup\n${e}`,
+                };
             return;
         }
 
@@ -315,15 +412,18 @@ teamRouter.post("/:teamID/register", isLoggedInDiscord, validateTeam(true), asyn
     await team.calculateStats();
     await team.save();
 
-    ctx.body = { success: "Team registered" };
+    ctx.body = { success: true };
 });
 
-teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+teamRouter.$post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
     if (!tournamentID || isNaN(parseInt(tournamentID))) {
-        ctx.body = { error: "Missing tournament ID" };
+        ctx.body = {
+            success: false,
+            error: "Missing tournament ID",
+        };
         return;
     }
 
@@ -334,17 +434,26 @@ teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), as
         .getOne();
 
     if (!tournament) {
-        ctx.body = { error: "Tournament not found" };
+        ctx.body = {
+            success: false,
+            error: "Tournament not found",
+        };
         return;
     }
 
     if (!tournament.teams.find(t => t.ID === team.ID)) {
-        ctx.body = { error: "Team not registered" };
+        ctx.body = {
+            success: false,
+            error: "Team not registered",
+        };
         return;
     }
 
     if (tournament.status !== TournamentStatus.Registrations) {
-        ctx.body = { error: "Tournament is not in registration phase" };
+        ctx.body = {
+            success: false,
+            error: "Tournament is not in registration phase",
+        };
         return;
     }
 
@@ -363,12 +472,18 @@ teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), as
             .andWhere("team.ID = :teamID", { teamID: team.ID })
             .getOne();
         if (!qualifier) {
-            ctx.body = { error: "No qualifier found assigned to this team" };
+            ctx.body = {
+                success: false,
+                error: "No qualifier found assigned to this team",
+            };
             return;
         }
         
         if (qualifier.mp) {
-            ctx.body = { error: "Team has already played a qualifier match" };
+            ctx.body = {
+                success: false,
+                error: "Team has already played a qualifier match",
+            };
             return;
         }
 
@@ -378,15 +493,18 @@ teamRouter.post("/:teamID/unregister", isLoggedInDiscord, validateTeam(true), as
     tournament.teams = tournament.teams.filter(t => t.ID !== team.ID);
     await tournament.save();
 
-    ctx.body = { success: "Team unregistered" };
+    ctx.body = { success: true };
 });
 
-teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+teamRouter.$post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team = ctx.state.team!;
 
     const tournamentID = ctx.request.body?.tournamentID;
     if (!tournamentID || isNaN(parseInt(tournamentID))) {
-        ctx.body = { error: "Missing tournament ID" };
+        ctx.body = {
+            success: false,
+            error: "Missing tournament ID",
+        };
         return;
     }
 
@@ -396,12 +514,18 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         .getOne();
 
     if (!tournament) {
-        ctx.body = { error: "Tournament not found" };
+        ctx.body = {
+            success: false,
+            error: "Tournament not found",
+        };
         return;
     }
 
     if (tournament.status !== TournamentStatus.Registrations) {
-        ctx.body = { error: "Tournament is not in registration phase" };
+        ctx.body = {
+            success: false,
+            error: "Tournament is not in registration phase",
+        };
         return;
     }
 
@@ -412,7 +536,10 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         .andWhere("tournament.ID = :tournamentID", { tournamentID })
         .getExists();
     if (!teamRegistered) {
-        ctx.body = { error: "Team not registered" };
+        ctx.body = {
+            success: false,
+            error: "Team not registered",
+        };
         return;
     }
 
@@ -423,24 +550,36 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         .andWhere("stage.stageType = '0'")
         .getOne();
     if (!qualifierStage) {
-        ctx.body = { error: "Tournament does not have a qualifier stage" };
+        ctx.body = {
+            success: false,
+            error: "Tournament does not have a qualifier stage",
+        };
         return;
     }
 
     const qualifierAt = ctx.request.body?.qualifierAt;
     if (!qualifierAt) {
-        ctx.body = { error: "Missing qualifier date" };
+        ctx.body = {
+            success: false,
+            error: "Missing qualifier date",
+        };
         return;
     }
 
     const qualifierDate = parseDateOrTimestamp(qualifierAt);
     if (isNaN(qualifierDate.getTime())) {
-        ctx.body = { error: "Invalid qualifier date" };
+        ctx.body = {
+            success: false,
+            error: "Invalid qualifier date",
+        };
         return;
     }
 
     if (qualifierDate.getTime() < qualifierStage.timespan.start.getTime() || qualifierDate.getTime() > qualifierStage.timespan.end.getTime()) {
-        ctx.body = { error: "Qualifier date is not within the qualifier stage" };
+        ctx.body = {
+            success: false,
+            error: "Qualifier date is not within the qualifier stage",
+        };
         return;
     }
 
@@ -452,12 +591,18 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
         .andWhere("team.ID = :teamID", { teamID: team.ID })
         .getOne();
     if (!qualifier) {
-        ctx.body = { error: "No qualifier found assigned to this team" };
+        ctx.body = {
+            success: false,
+            error: "No qualifier found assigned to this team",
+        };
         return;
     }
 
     if (qualifier.mp) {
-        ctx.body = { error: "Team has already played a qualifier match" };
+        ctx.body = {
+            success: false,
+            error: "Team has already played a qualifier match",
+        };
         return;
     }
 
@@ -466,11 +611,11 @@ teamRouter.post("/:teamID/qualifier", isLoggedInDiscord, validateTeam(true), asy
 
     await cron.add(CronJobType.QualifierMatchup, new Date(Math.max(qualifierDate.getTime() - preInviteTime, Date.now() + 10 * 1000)));
 
-    ctx.body = { success: "Qualifier date set" };
+    ctx.body = { success: true };
 });
 
-teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+teamRouter.$post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team = ctx.state.team!;
 
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
@@ -490,43 +635,55 @@ teamRouter.post("/:teamID/manager", isLoggedInDiscord, validateTeam(true), async
             .getExists();
 
         if (qualifierMatches) {
-            ctx.body = { error: "Team is currently registered in a tournament where they have already played a qualifier match" };
+            ctx.body = {
+                success: false,
+                error: "Team is currently registered in a tournament where they have already played a qualifier match",
+            };
             return;
         }
     }
 
     if (tournaments.some(t => t.status !== TournamentStatus.Registrations && t.status !== TournamentStatus.NotStarted)) {
-        ctx.body = { error: "Team cannot change lineup" };
+        ctx.body = {
+            success: false,
+            error: "Team cannot change lineup",
+        };
         return;
     }
 
-    if (team.members.some(m => m.ID === ctx.state.user.ID)) {
+    if (team.members.some(m => m.ID === ctx.state.user!.ID)) {
         if (tournaments.some(t => team.members.length - 1 < t.minTeamSize)) {
-            ctx.body = { error: "Team cannot have less than the minimum amount of players for the tournaments the team is in." };
+            ctx.body = {
+                success: false,
+                error: "Team cannot have less than the minimum amount of players for the tournaments the team is in.",
+            };
             return;
         }
 
-        team.members = team.members.filter(m => m.ID !== ctx.state.user.ID);
+        team.members = team.members.filter(m => m.ID !== ctx.state.user!.ID);
         await team.calculateStats();
         await team.save();
 
-        ctx.body = { success: "Manager removed from the team" };
+        ctx.body = { success: true };
     } else {
         if (tournaments.some(t => team.members.length + 1 > t.maxTeamSize)) {
-            ctx.body = { error: "Team cannot have more than the maximum amount of players for the tournaments the team is in." };
+            ctx.body = {
+                success: false,
+                error: "Team cannot have more than the maximum amount of players for the tournaments the team is in.",
+            };
             return;
         }
 
-        team.members.push(ctx.state.user);
+        team.members.push(ctx.state.user!);
         await team.calculateStats();
         await team.save();
 
-        ctx.body = { success: "Manager added to the team" };
+        ctx.body = { success: true };
     }
 });
 
-teamRouter.post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+teamRouter.$post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team = ctx.state.team!;
 
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
@@ -546,46 +703,61 @@ teamRouter.post("/:teamID/manager/:userID", isLoggedInDiscord, validateTeam(true
             .getMany();
 
         if (qualifierMatches.length > 0) {
-            ctx.body = { error: "Team is currently registered in a tournament where they have already played a qualifier match" };
+            ctx.body = {
+                success: false,
+                error: "Team is currently registered in a tournament where they have already played a qualifier match",
+            };
             return;
         }
     }
 
     if (tournaments.some(t => t.status !== TournamentStatus.Registrations && t.status !== TournamentStatus.NotStarted)) {
-        ctx.body = { error: "Team cannot change lineup" };
+        ctx.body = {
+            success: false,
+            error: "Team cannot change lineup",
+        };
         return;
     }
 
     const userID = parseInt(ctx.params.userID);
     if (isNaN(userID)) {
-        ctx.body = { error: "Invalid user ID" };
+        ctx.body = {
+            success: false,
+            error: "Invalid user ID",
+        };
         return;
     }
 
     if (team.manager.ID === userID) {
-        ctx.body = { error: "User is already the manager" };
+        ctx.body = {
+            success: false,
+            error: "User is already the manager",
+        };
         return;
     }
 
     if (team.members.every(m => m.ID !== userID)) {
-        ctx.body = { error: "User is not in the team" };
+        ctx.body = {
+            success: false,
+            error: "User is not in the team",
+        };
         return;
     }
 
     team.manager = team.members.find(m => m.ID === userID)!;
 
-    if (!team.members.some(m => m.ID === ctx.state.user.ID)) {
-        team.members.push(ctx.state.user);
+    if (!team.members.some(m => m.ID === ctx.state.user!.ID)) {
+        team.members.push(ctx.state.user!);
         team.members = team.members.filter(m => m.ID !== userID);
     }
     
     await team.save();
 
-    ctx.body = { success: "Manager changed" };
+    ctx.body = { success: true };
 });
 
-teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+teamRouter.$post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team = ctx.state.team!;
 
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
@@ -605,24 +777,36 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
             .getMany();
 
         if (qualifierMatches.length > 0) {
-            ctx.body = { error: "Team is currently registered in a tournament where they have already played a qualifier match" };
+            ctx.body = {
+                success: false,
+                error: "Team is currently registered in a tournament where they have already played a qualifier match",
+            };
             return;
         }
     }
 
     if (tournaments.some(t => t.status !== TournamentStatus.Registrations && t.status !== TournamentStatus.NotStarted)) {
-        ctx.body = { error: "Team cannot change lineup" };
+        ctx.body = {
+            success: false,
+            error: "Team cannot change lineup",
+        };
         return;
     }
 
     const userID = parseInt(ctx.params.userID);
     if (isNaN(userID)) {
-        ctx.body = { error: "Invalid user ID" };
+        ctx.body = {
+            success: false,
+            error: "Invalid user ID",
+        };
         return;
     }
 
     if (team.members.every(m => m.ID !== userID)) {
-        ctx.body = { error: "User is not in the team" };
+        ctx.body = {
+            success: false,
+            error: "User is not in the team",
+        };
         return;
     }
 
@@ -630,31 +814,40 @@ teamRouter.post("/:teamID/remove/:userID", isLoggedInDiscord, validateTeam(true)
     await team.calculateStats();
     await team.save();
 
-    ctx.body = { success: "User removed from the team" };
+    ctx.body = { success: true };
 });
 
-teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
-    const team: Team = ctx.state.team;
+teamRouter.$patch<{
+    name: string;
+    abbreviation: string;
+}>("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team = ctx.state.team!;
     const body: Partial<Team> | undefined = ctx.request.body;
     if (body?.timezoneOffset) {
         if (typeof body.timezoneOffset !== "number" || body.timezoneOffset < -12 || body.timezoneOffset > 14) {
-            ctx.body = { error: "Invalid timezone" };
+            ctx.body = {
+                success: false,
+                error: "Invalid timezone",
+            };
             return;
         }
         team.timezoneOffset = body.timezoneOffset;
     }
     if (
-        (body?.name && body.name !== team.name) || 
+        (body?.name && body.name !== team.name) ?? 
         (body?.abbreviation && body.abbreviation !== team.abbreviation)
     ) {
         const tournaments = await Tournament
             .createQueryBuilder("tournament")
             .leftJoin("tournament.teams", "team")
-            .where("team.ID = :ID", { ID: ctx.state.team.ID })
+            .where("team.ID = :ID", { ID: team.ID })
             .getMany();
 
         if (tournaments.some(t => t.status !== TournamentStatus.NotStarted)) {
-            ctx.body = { error: "Team is currently playing/has played in a tournament" };
+            ctx.body = {
+                success: false,
+                error: "Team is currently playing/has played in a tournament",
+            };
             return;
         }
 
@@ -666,7 +859,10 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
 
     const res = validateTeamText(team.name, team.abbreviation);
     if ("error" in res) {
-        ctx.body = res;
+        ctx.body = {
+            success: false,
+            error: res.error,
+        };
         return;
     }
 
@@ -675,10 +871,17 @@ teamRouter.patch("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) 
 
     await team.save();
 
-    ctx.body = { success: "Team updated", name: team.name, abbreviation: team.abbreviation };
+    ctx.body = {
+        success: true,
+        name: team.name,
+        abbreviation: team.abbreviation,
+    };
 });
 
-teamRouter.patch("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => {
+teamRouter.$patch<{
+    name: string;
+    abbreviation: string;
+}>("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => {
     const team = await Team
         .createQueryBuilder("team")
         .leftJoinAndSelect("team.manager", "manager")
@@ -689,7 +892,10 @@ teamRouter.patch("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => 
         .getOne();
 
     if (!team) {
-        ctx.body = { error: "Team not found" };
+        ctx.body = {
+            success: false,
+            error: "Team not found",
+        };
         return;
     }
 
@@ -701,7 +907,10 @@ teamRouter.patch("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => 
         team.abbreviation = body.abbreviation;
     if (body?.timezoneOffset) {
         if (typeof body.timezoneOffset !== "number" || body.timezoneOffset < -12 || body.timezoneOffset > 14) {
-            ctx.body = { error: "Invalid timezone" };
+            ctx.body = {
+                success: false,
+                error: "Invalid timezone",
+            };
             return;
         }
         team.timezoneOffset = body.timezoneOffset;
@@ -713,7 +922,10 @@ teamRouter.patch("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => 
 
     const res = validateTeamText(team.name, team.abbreviation);
     if ("error" in res) {
-        ctx.body = res;
+        ctx.body = {
+            success: false,
+            error: res.error,
+        };
         return;
     }
 
@@ -722,29 +934,37 @@ teamRouter.patch("/:teamID/force", isLoggedInDiscord, isCorsace, async (ctx) => 
 
     await team.save();
 
-    ctx.body = { success: "Team updated", name: team.name, abbreviation: team.abbreviation };
+    ctx.body = {
+        success: true,
+        name: team.name,
+        abbreviation: team.abbreviation,
+    };
 });
 
-teamRouter.delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+teamRouter.$delete("/:teamID", isLoggedInDiscord, validateTeam(true), async (ctx) => {
+    const team = ctx.state.team!;
+
     const tournaments = await Tournament
         .createQueryBuilder("tournament")
         .leftJoin("tournament.teams", "team")
-        .where("team.ID = :ID", { ID: ctx.state.team.ID })
+        .where("team.ID = :ID", { ID: team.ID })
         .getMany();
 
     if (tournaments.some(t => t.status !== TournamentStatus.NotStarted)) {
-        ctx.body = { error: "Team is currently playing/has played in a tournament" };
+        ctx.body = {
+            success: false,
+            error: "Team is currently playing/has played in a tournament",
+        };
         return;
     }
 
-    const team: Team = ctx.state.team;
     await deleteTeamAvatar(team);
     const invites = await getTeamInvites(team.ID, "teamID");
     await Promise.all(invites.map(i => i.remove()));
 
-    await ctx.state.team.remove();
+    await team.remove();
 
-    ctx.body = { success: "Team deleted" };
+    ctx.body = { success: true };
 });
 
 export default teamRouter;

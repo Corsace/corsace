@@ -14,7 +14,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "pool", paramType: "string" },
         { name: "slot", paramType: "string", postProcess: postProcessSlotOrder },
     ]); 
@@ -23,7 +23,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, slot, order } = params;
 
-    const components = await mappoolComponents(m, pool, slot, order || true);
+    const components = await mappoolComponents(m, pool, slot, order ?? true);
     if (!components || !("mappoolMap" in components)) {
         if (components && "slotMod" in components)
             await respond(m, "Invalid slot");

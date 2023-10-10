@@ -58,7 +58,7 @@
                             </a>
                         </div>
                         <div v-if="comment.isValid">
-                            Validated by {{ comment.reviewer }} at {{ new Date(comment.lastReviewedAt).toString() }}
+                            Validated by {{ comment.reviewer }} at {{ comment.lastReviewedAt?.toString() }}
                         </div>
                     </div>
 
@@ -112,7 +112,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter } from "vuex-class";
+import { Getter, State } from "vuex-class";
 
 import SearchBar from "../../../../Assets/components/SearchBar.vue";
 
@@ -129,6 +129,8 @@ import { StaffComment } from "../../../../Interfaces/comment";
     },
 })
 export default class StaffComments extends Vue {
+    @State viewTheme!: "light" | "dark";
+
     @Getter isHeadStaff!: boolean;
 
     info = "";
@@ -161,14 +163,14 @@ export default class StaffComments extends Vue {
         if (!this.showValidated) url += "?filter=true";
         if (this.text) url += (url.includes("?") ? "&" : "?") + `text=${this.text}`;
 
-        const { data } = await this.$axios.get(url);
+        const { data } = await this.$axios.get<{ staffComments: StaffComment[] }>(url);
 
         this.loading = false;
 
-        if (data.error)
+        if (!data.success)
             return alert(data.error);
         
-        this.comments = data;
+        this.comments = data.staffComments;
     
         for (;;) {
             const box = document.querySelector(".staff-scrollTrack");
@@ -186,16 +188,18 @@ export default class StaffComments extends Vue {
         if (!this.showValidated) url += "&filter=true";
         if (this.text) url += `&text=${this.text}`;
 
-        const { data } = await this.$axios.get(url);
+        const { data } = await this.$axios.get<{ staffComments: StaffComment[] }>(url);
 
         this.loading = false;
 
-        if (data.error)
+        if (!data.success)
             return alert(data.error);
-        else if (data.length === 0)
+        
+        const staffComments = data.staffComments;
+        if (staffComments.length === 0)
             this.end = true;
         else {
-            this.comments.push(...data);
+            this.comments.push(...staffComments);
             this.comments = this.comments.filter((val, i, self) => self.findIndex(v => v.ID === val.ID) === i);
         }
     }
@@ -203,17 +207,20 @@ export default class StaffComments extends Vue {
     async update (id: number) {
         this.info = "";
         const i = this.comments.findIndex(c => c.ID === id);
-        const res = await this.$axios.post(`/api/staff/comments/${id}/review`, {
+        const { data } = await this.$axios.post<{
+            isValid: boolean;
+            reviewer: string;
+            lastReviewedAt: string;
+        }>(`/api/staff/comments/${id}/review`, {
             comment: this.comments[i].comment,
         });
             
-        if (res.data.error) {
-            this.info = res.data.error;
-        } else if (res.data) {
-            const resComment = res.data;
-            this.comments[i].isValid = resComment.isValid;
-            this.comments[i].reviewer = resComment.reviewer.osu.username;
-            this.comments[i].lastReviewedAt = resComment.lastReviewedAt;
+        if (!data.success)
+            this.info = data.error;
+        else {
+            this.comments[i].isValid = data.isValid;
+            this.comments[i].reviewer = data.reviewer;
+            this.comments[i].lastReviewedAt = new Date(data.lastReviewedAt);
         }
     }
 
@@ -223,11 +230,11 @@ export default class StaffComments extends Vue {
         if (!confirm("Are you sure?")) 
             return;
             
-        const res = await this.$axios.post(`/api/staff/comments/${id}/remove`);
+        const { data } = await this.$axios.post(`/api/staff/comments/${id}/remove`);
             
-        if (res.data.error) {
-            this.info = res.data.error;
-        } else if (res.data) {
+        if (!data.success)
+            this.info = data.error;
+        else {
             const i = this.comments.findIndex(c => c.ID === id);
 
             if (i !== -1) {
@@ -242,12 +249,12 @@ export default class StaffComments extends Vue {
         if (!confirm(`User will not be able to submit new comments and invalidated comments will be removed. Are you sure?`)) 
             return;
         
-        const { data } = await this.$axios.post(`/api/staff/users/${id}/ban`);
+        const { data } = await this.$axios.post(`/api/staff/comments/${id}/ban`);
             
-        if (data.error) {
+        if (!data.success)
             this.info = data.error;
-        } else if (data.success) {
-            this.info = data.success;
+        else {
+            this.info = "ok";
             this.comments = this.comments.filter(c => !(c.commenter.ID === id && !c.isValid));
         }
     }

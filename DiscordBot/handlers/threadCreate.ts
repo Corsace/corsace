@@ -9,7 +9,7 @@ export default async function threadCreate (t: ThreadChannel, newlyCreated: bool
         return;
 
     const owner = await t.fetchOwner();
-    if (!owner || !owner.user)
+    if (!owner?.user)
         return;
 
     const channel = await TournamentChannel.findOne({ where: { channelID: t.parentId } });

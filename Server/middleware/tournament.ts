@@ -1,12 +1,13 @@
-import { Next, ParameterizedContext } from "koa";
+import { DefaultState, Next } from "koa";
 import { Brackets } from "typeorm";
 import { TournamentRoleType } from "../../Interfaces/tournament";
 import { Stage } from "../../Models/tournaments/stage";
 import { Tournament } from "../../Models/tournaments/tournament";
 import { TournamentRole } from "../../Models/tournaments/tournamentRole";
+import { CorsaceContext } from "../corsaceRouter";
 import { getMember } from "../discord";
 
-export async function validateTournament (ctx: ParameterizedContext, next: Next): Promise<void> {
+export async function validateTournament<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next): Promise<void> {
     const ID = ctx.request.body?.tournamentID || ctx.params?.tournamentID || ctx.query.tournamentID || ctx.request.body?.tournament || ctx.params?.tournament || ctx.query.tournament;
 
     if (ID === undefined || isNaN(parseInt(ID)) || parseInt(ID) < 1) {
@@ -37,7 +38,7 @@ export async function validateTournament (ctx: ParameterizedContext, next: Next)
 
 }
 
-export async function validateStageOrRound (ctx: ParameterizedContext, next: Next): Promise<void> {
+export async function validateStageOrRound<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next): Promise<void> {
     const stageID = ctx.request.body?.stageID || ctx.params?.stageID || ctx.query.stageID || ctx.request.body?.stage || ctx.params?.stage || ctx.query.stage;
     const roundID = ctx.request.body?.roundID || ctx.params?.roundID || ctx.query.roundID || ctx.request.body?.round || ctx.params?.round || ctx.query.round;
     
@@ -107,10 +108,29 @@ export async function validateStageOrRound (ctx: ParameterizedContext, next: Nex
 }
 
 export function hasRoles (roles: TournamentRoleType[]) {
-    return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
+    return async<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next): Promise<void> => {
+        if (!ctx.state.user?.discord?.userID) {
+            ctx.body = {
+                success: false,
+                error: "User is not logged in via discord for the hasRoles middleware!",
+            };
+            return;
+        }
+
+        if (!ctx.state.tournament?.ID) {
+            ctx.body = {
+                success: false,
+                error: "Tournament not found for the hasRoles middleware!",
+            };
+            return;
+        }
+
         const member = await getMember(ctx.state.user.discord.userID);
         if (!member) {
-            ctx.body = { error: "Could not obtain any discord user!" };
+            ctx.body = {
+                success: false,
+                error: "Could not obtain any discord user!",
+            };
             return;
         }
 
@@ -127,7 +147,10 @@ export function hasRoles (roles: TournamentRoleType[]) {
             return;
         }
         
-        ctx.body = { error: "User does not have any of the required tournament roles!" };
+        ctx.body = {
+            success: false,
+            error: "User does not have any of the required tournament roles!",
+        };
         return;
     };
 }

@@ -50,10 +50,10 @@ export default class Comments extends Vue {
     @influencesModule.State users!: any[];
     @influencesModule.State root!: Record<string, any> | null;
 
-    @influencesModule.Action search;
-    @influencesModule.Action resetRoot;
+    @influencesModule.Action search!: (userSearch: any) => void;
+    @influencesModule.Action resetRoot!: () => void;
     
-    async resetSearch (userSearch) {
+    resetSearch (userSearch: any) {
         this.resetRoot();
         this.search(userSearch);
     }

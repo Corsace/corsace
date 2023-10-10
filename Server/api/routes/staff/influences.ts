@@ -1,20 +1,21 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { Influence } from "../../../../Models/MCA_AYIM/influence";
 import { isLoggedInDiscord } from "../../../../Server/middleware";
 import { Brackets } from "typeorm";
 import { parseQueryParam } from "../../../../Server/utils/query";
 import { StaffComment } from "../../../../Interfaces/comment";
 import { isMCAStaff } from "../../../middleware/mca-ayim";
+import { UserAuthenticatedState } from "koa";
 
-const influencesReviewRouter = new Router();
+const influencesReviewRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-influencesReviewRouter.use(isLoggedInDiscord);
-influencesReviewRouter.use(isMCAStaff);
+influencesReviewRouter.$use(isLoggedInDiscord);
+influencesReviewRouter.$use(isMCAStaff);
 
-influencesReviewRouter.get("/", async (ctx) => {
+influencesReviewRouter.$get<{ staffComments: StaffComment[] }>("/", async (ctx) => {
     const filter = ctx.query.filter ?? undefined;
-    const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) || "") : 0;
-    const year = ctx.query.year ? parseInt(parseQueryParam(ctx.query.year) || "") : undefined;
+    const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
+    const year = ctx.query.year ? parseInt(parseQueryParam(ctx.query.year) ?? "") : undefined;
     const text = ctx.query.text ?? undefined;
     const query = Influence
         .createQueryBuilder("influence")
@@ -52,37 +53,37 @@ influencesReviewRouter.get("/", async (ctx) => {
     
     const comments = await query.offset(isNaN(skip) ? 0 : skip).limit(10).getRawMany();
     const staffComments = comments.map(comment => {
-        const keys = Object.keys(comment);
         const staffComment: StaffComment = {
             ID: comment.ID,
             comment: comment.comment,
             isValid: comment.isValid === 1,
             mode: comment.modeName,
             commenter: {
-                ID: 0,
-                osuID: "",
-                osuUsername: "",
+                ID: comment.commenterID,
+                osuID: comment.commenterosuID,
+                osuUsername: comment.commenterosuUsername,
             },
             target: {
-                osuID: "",
-                osuUsername: "",
+                osuID: comment.targetosuID,
+                osuUsername: comment.targetosuUsername,
             },
             lastReviewedAt: comment.lastReviewedAt ?? undefined,
             reviewer: comment.reviewer ?? undefined,
         };
-        for (const key of keys) {
-            if (key.includes("commenter"))
-                staffComment.commenter[key.replace("commenter", "")] = comment[key];
-            else if (key.includes("target"))
-                staffComment.target[key.replace("target", "")] = comment[key];
-        }
 
         return staffComment;
     });
-    ctx.body = staffComments;
+    ctx.body = {
+        success: true,
+        staffComments,
+    };
 });
 
-influencesReviewRouter.post("/:id/review", async (ctx) => {
+influencesReviewRouter.$post<{
+    isValid: true;
+    reviewer: string;
+    lastReviewedAt: Date;
+}>("/:id/review", async (ctx) => {
     const influence = await Influence.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     influence.comment = ctx.request.body.comment.trim();
     influence.isValid = true;
@@ -90,16 +91,21 @@ influencesReviewRouter.post("/:id/review", async (ctx) => {
     influence.lastReviewedAt = new Date();
     await influence.save();
 
-    ctx.body = influence;
+    ctx.body = {
+        success: true,
+        isValid: true,
+        reviewer: ctx.state.user.osu.username,
+        lastReviewedAt: influence.lastReviewedAt,
+    };
 });
 
-influencesReviewRouter.post("/:id/remove", async (ctx) => {
+influencesReviewRouter.$post("/:id/remove", async (ctx) => {
     const influence = await Influence.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     influence.comment = "";
     await influence.save();
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 

@@ -9,9 +9,10 @@ import { SortOrder, Tournament, TournamentStatus, sortTextToOrder } from "../../
 import respond from "../../functions/respond";
 import editProperty from "../../functions/tournamentFunctions/editProperty";
 import { profanityFilterStrong } from "../../../Interfaces/comment";
-import { ModeDivision, ModeDivisionType, modeTextHash, modeTextToID } from "../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivision, modeTextHash, modeTextToID } from "../../../Models/MCA_AYIM/modeDivision";
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../Server/utils/dateParse";
 import { StageType } from "../../../Interfaces/stage";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -283,7 +284,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Invitational", value: tournament.invitational ? "Yes" : "No", inline: true },
             { name: "Server", value: tournament.server, inline: true }
         )
-        .setTimestamp(new Date)
+        .setTimestamp(new Date())
         .setAuthor({ name: m.author.username, iconURL: m.member?.avatarURL() ?? undefined });
 
     if (tournament.isOpen || tournament.isClosed)
@@ -291,7 +292,7 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Corsace", value: tournament.isOpen ? "Open" : "Closed", inline: true }
         );
 
-    m.reply({ content: "Nice u saved the tournament!!!1\nHere's the tournament embed:", embeds: [embed] });
+    await m.reply({ content: "Nice u saved the tournament!!!1\nHere's the tournament embed:", embeds: [embed] });
 }
 
 const data = new SlashCommandBuilder()

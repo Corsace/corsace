@@ -1,4 +1,4 @@
-import { Message, SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ThreadChannel, GuildMember } from "discord.js";
+import { Message, SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ThreadChannel } from "discord.js";
 import { Command } from "../../index";
 import respond from "../../../functions/respond";
 import { extractParameter } from "../../../functions/parameterFunctions";
@@ -156,7 +156,7 @@ async function mappoolTargetSR (m: Message, mappool: Mappool, tournament: Tourna
 async function mappoolSave (m: Message, mappool: Mappool, tournament: Tournament, user: User) {
     await mappool.save();
 
-    await updateMapThreads(m, mappool, tournament);
+    updateMapThreads(m, mappool, tournament);
 
     const embed = new EmbedBuilder()
         .setTitle(`${mappool.name} (${mappool.abbreviation.toUpperCase()})`)
@@ -168,17 +168,17 @@ async function mappoolSave (m: Message, mappool: Mappool, tournament: Tournament
                     value: `${slot.maps.length} map${slot.maps.length > 1 ? "s" : ""}`,
                 };
             }))
-        .setTimestamp(new Date)
-        .setAuthor({ name: commandUser(m).username, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined });
+        .setTimestamp(new Date())
+        .setAuthor({ name: commandUser(m).username, iconURL: m.member?.displayAvatarURL() ?? undefined });
 
     await Promise.all([
-        m.channel!.send({ embeds: [embed] }),
+        m.channel.send({ embeds: [embed] }),
         mappoolLog(tournament, "mappoolEdit", user, `Edited mappool ${mappool.name} (${mappool.abbreviation.toUpperCase()})`),
     ]);
 }
 
-async function updateMapThreads (m: Message, mappool: Mappool, tournament: Tournament) {
-    mappool.slots.forEach(async (slot) => {
+function updateMapThreads (m: Message, mappool: Mappool, tournament: Tournament) {
+    mappool.slots.forEach((slot) => {
         slot.maps.forEach(async (map) => {
             const mappoolSlot = `${mappool.abbreviation.toUpperCase()} ${slot.acronym.toUpperCase()}${slot.maps.length === 1 ? "" : map.order}`;
             if (map.customThreadID)

@@ -13,7 +13,7 @@ export async function invitePlayer (team: Team, user: User) {
     if (team.members.some(m => m.ID === user?.ID) || team.manager.ID === user?.ID)
         return "User is already in the team";
 
-    const invite = new TeamInvite;
+    const invite = new TeamInvite();
     invite.team = team;
     invite.user = user;
 

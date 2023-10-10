@@ -1,11 +1,11 @@
 <template>
     <div class="staff-accordion-body">
         <!-- results view -->
-        <template v-if="viewOption === 'results'">
+        <template v-if="viewOption === 'results' && resultVotes">
             <div class="staff-accordion-section">
                 <ul class="staff-list">
                     <li
-                        v-for="result in data"
+                        v-for="result in resultVotes"
                         :key="result.ID"
                     >
                         <div class="staff-nomVote">
@@ -39,21 +39,21 @@
         </template>
 
         <!-- voter view -->
-        <template v-else-if="viewOption === 'voters'">
+        <template v-else-if="viewOption === 'voters' && userVotes">
             <div
-                v-for="userVotes in data"
-                :key="userVotes.voter.osuID + '-voter'"
+                v-for="userVote in userVotes"
+                :key="userVote.voter.osuID + '-voter'"
                 class="staff-accordion-section"
             >
                 <user-avatar
                     :avatar-location="'left'"
-                    :user-id="userVotes.voter.osuID"
-                    :username="userVotes.voter.osuUsername"
+                    :user-id="userVote.voter.osuID"
+                    :username="userVote.voter.osuUsername"
                     class="staff-accordion-section__heading"
                 />
                 <ul class="staff-list">
                     <li
-                        v-for="vote in userVotes.votes"
+                        v-for="vote in userVote.votes"
                         :key="vote.ID + '-voter'"
                     >
                         <div class="staff-nomVote">
@@ -79,7 +79,7 @@
                                 <div class="staff-list__action">
                                     <button
                                         class="button button--small staff-list__action"
-                                        @click="$emit('remove-vote', vote.ID, userVotes.voter.ID)"
+                                        @click="$emit('remove-vote', vote.ID, userVote.voter.ID)"
                                     >
                                         remove vote
                                     </button>
@@ -107,6 +107,20 @@ export default class StaffVoteAccordion extends Vue {
     @Prop({ type: String, default: "results" }) viewOption!: string;
     @Prop({ type: Array, default: {} }) data!: ResultVote[] | UserVote[];
 
+    get resultVotes () {
+        if (this.data.length === 0 || !("placement" in this.data[0]))
+            return undefined;
+
+        return this.data as ResultVote[];
+    }
+
+    get userVotes () {
+        if (this.data.length === 0 || "placement" in this.data[0])
+            return undefined;
+
+        return this.data as UserVote[];
+    }
+
     getBanner (vote: ResultVote) {
         if (vote.beatmapset)
             return { "background-image": `url('https://assets.ppy.sh/beatmaps/${vote.beatmapset.ID}/covers/cover.jpg?1560315422')` };
@@ -130,17 +144,18 @@ export default class StaffVoteAccordion extends Vue {
     getVoteName (vote: StaffVote) {
         if (vote.beatmapset) {
             if (vote.beatmap)
-                return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator!.osuUsername} [${vote.beatmap.difficulty}]`;
+                return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator.osuUsername} [${vote.beatmap.difficulty}]`;
             else
-                return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator!.osuUsername}`;
+                return `${vote.beatmapset.artist} - ${vote.beatmapset.title} by ${vote.beatmapset.creator.osuUsername}`;
         }
 
         return `${vote.user?.osuUsername}`;
     }
 
-    count4thChoices (placeCounts) {
-        let res = 0; 
-        Object.keys(placeCounts).filter(k => parseInt(k) > 3).forEach(k => res += placeCounts[k]);
+    count4thChoices (placeCounts: Record<number, number>) {
+        let res = 0;
+        const keys = Object.keys(placeCounts).map(k => parseInt(k));
+        keys.filter(k => k > 3).forEach(k => res += placeCounts[k]);
         return res;
     }
 

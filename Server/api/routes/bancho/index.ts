@@ -1,14 +1,14 @@
-import Router from "@koa/router";
+import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import koaBasicAuth from "koa-basic-auth";
 import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
-import { ParameterizedContext, Next } from "koa";
+import { Next } from "koa";
 import { config } from "node-config-ts";
 import { Matchup, preInviteTime } from "../../../../Models/tournaments/matchup";
 import { TextChannel } from "discord.js";
 import { discordClient } from "../../../discord";
 import state from "../../../../BanchoBot/state";
 
-async function validateData (ctx: ParameterizedContext, next: Next) {
+async function validateData (ctx: CorsaceContext<object>, next: Next) {
     const body = ctx.request.body;
 
     if (body.time === undefined) {
@@ -35,14 +35,14 @@ async function validateData (ctx: ParameterizedContext, next: Next) {
     await next();
 }
 
-const banchoRouter = new Router();
+const banchoRouter  = new CorsaceRouter();
 
-banchoRouter.use(koaBasicAuth({
+banchoRouter.$use(koaBasicAuth({
     name: config.interOpAuth.username,
     pass: config.interOpAuth.password,
 }));
 
-banchoRouter.post("/runQualifiers", validateData, async (ctx) => {
+banchoRouter.$post("/runQualifiers", validateData, async (ctx) => {
     ctx.body = {
         success: true,
     };
@@ -68,16 +68,16 @@ banchoRouter.post("/runQualifiers", validateData, async (ctx) => {
         .getMany();
 
     for (const matchup of matchups) {
-        await runMatchup(matchup, false, true).catch(err => {
+        await runMatchup(matchup, false, true).catch(async err => {
             console.error(err);
             const channel = discordClient.channels.cache.get(config.discord.coreChannel);
             if (channel instanceof TextChannel)
-                channel.send(`Error running qualifier GHIVE THIS IMMEDIATE ATTENTION:\n\`\`\`\n${err}\n\`\`\``);
+                await channel.send(`Error running qualifier GHIVE THIS IMMEDIATE ATTENTION:\n\`\`\`\n${err}\n\`\`\``);
         });
     }
 });
 
-banchoRouter.post("/stopAutoLobby", async (ctx) => {
+banchoRouter.$post("/stopAutoLobby", (ctx) => {
     const matchupID = ctx.request.body.matchupID;
     if (!matchupID || typeof matchupID !== "number" || isNaN(matchupID)) {
         ctx.body = {

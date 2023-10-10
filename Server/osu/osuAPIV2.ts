@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { RateLimiter } from "limiter";
 import { osuV2Token, osuAPIV2Options, osuAPIV2ClientCredentials, osuV2Beatmapset, osuV2PlayedBeatmaps, osuV2User, osuV2Friend, osuV2Me } from "../../Interfaces/osuAPIV2";
 import { User } from "../../Models/user";
@@ -20,9 +20,9 @@ export class osuAPIV2 {
     constructor (clientID: string, clientSecret: string, options?: osuAPIV2Options) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
-        this.disableRateLimiting = options?.disableRateLimiting || false;
-        this.requestsPerMinute = options?.requestsPerMinute || 60;
-        this.baseURL = options?.baseURL || "https://osu.ppy.sh";
+        this.disableRateLimiting = options?.disableRateLimiting ?? false;
+        this.requestsPerMinute = options?.requestsPerMinute ?? 60;
+        this.baseURL = options?.baseURL ?? "https://osu.ppy.sh";
         this.apiV2URL = `${this.baseURL}/api/v2`;
         
         if (!this.disableRateLimiting)
@@ -36,7 +36,7 @@ export class osuAPIV2 {
         let endpoint = `/users/${userID}/beatmapsets/favourite?limit=51`;
         if (offset)
             endpoint += `&offset=${offset}`;
-        return this.get<osuV2Beatmapset[]>(endpoint, accessToken || await this.getClientCredentials());
+        return this.get<osuV2Beatmapset[]>(endpoint, accessToken ?? await this.getClientCredentials());
     }
 
     public async getPlayedBeatmaps (accessToken: string, year?: number, cursorString?: string): Promise<osuV2PlayedBeatmaps> {
@@ -49,7 +49,7 @@ export class osuAPIV2 {
     }
 
     public async getUser (userID: string, mode?: "osu" | "taiko" | "fruits" | "mania", accessToken?: string): Promise<osuV2User> {
-        return this.get<osuV2User>(`/users/${userID}${mode ? `/${mode}` : ""}`, accessToken || await this.getClientCredentials());
+        return this.get<osuV2User>(`/users/${userID}${mode ? `/${mode}` : ""}`, accessToken ?? await this.getClientCredentials());
     }
 
     public getMe (accessToken: string, mode?: "osu" | "taiko" | "fruits" | "mania"): Promise<osuV2Me> {
@@ -96,7 +96,7 @@ export class osuAPIV2 {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
 
-        const { data } = await axios.post(`${this.baseURL}/oauth/token`, {
+        const { data } = await axios.post<any, AxiosResponse<osuV2Token>>(`${this.baseURL}/oauth/token`, {
             grant_type,
             client_id: this.clientID,
             client_secret: this.clientSecret,
@@ -111,7 +111,7 @@ export class osuAPIV2 {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
         
-        const { data } = await axios.post(this.apiV2URL + endpoint, payload, {
+        const { data } = await axios.post<any, AxiosResponse<T>>(this.apiV2URL + endpoint, payload, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -123,7 +123,7 @@ export class osuAPIV2 {
         if (this.bucket) 
             await this.bucket.removeTokens(1);
         
-        const { data } = await axios.get(this.apiV2URL + endpoint, {
+        const { data } = await axios.get<T>(this.apiV2URL + endpoint, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },

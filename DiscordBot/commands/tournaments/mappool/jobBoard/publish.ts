@@ -30,7 +30,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "pool", paramType: "string" },
         { name: "end_time", paramType: "string", customHandler: extractDate  },
     ]);
@@ -58,7 +58,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     try {
         await cron.add(CronJobType.Jobboard, end_time);
     } catch (err) {
-        m.channel?.send(`Failed to get cron job running to close job board posts on time. Contact VINXIS`);
+        await m.channel?.send(`Failed to get cron job running to close job board posts on time. Contact VINXIS`);
         console.log(err);
         return;
     }

@@ -106,10 +106,10 @@ export default class BaseChoiceCard extends Vue {
     @stageModule.State selected!: boolean;
     @stageModule.State stage!: StageType;
     @stageModule.Getter relatedCandidacies!: Vote[] | Nomination[];
-    @stageModule.Action createVote;
-    @stageModule.Action removeVote;
-    @stageModule.Action createNomination;
-    @stageModule.Action removeNomination;
+    @stageModule.Action createVote!: (payload: { nomineeId: number, vote: number }) => Promise<void>;
+    @stageModule.Action removeVote!: (voteId: number) => Promise<void>;
+    @stageModule.Action createNomination!: (nomineeId: number) => Promise<void>;
+    @stageModule.Action removeNomination!: (nominationId: number) => Promise<void>;
 
     currentSelected = false;
 
@@ -134,7 +134,7 @@ export default class BaseChoiceCard extends Vue {
     }
 
     get invalidNomination (): boolean {
-        return (this.currentNomination && !this.currentNomination.isValid) || false;
+        return (this.currentNomination && !this.currentNomination.isValid) ?? false;
     }
 
     async triggerAction () {

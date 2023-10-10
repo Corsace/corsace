@@ -3,6 +3,7 @@ import { ActionTree, MutationTree, GetterTree } from "vuex";
 import { MCA, MCAInfo, MCAPhase, PhaseType } from "../../Interfaces/mca";
 import { UserMCAInfo } from "../../Interfaces/user";
 import { GuestRequest } from "../../Interfaces/guestRequests";
+import { ModeDivisionType } from "../../Interfaces/modes";
 
 const modeRegex = /^(standard|taiko|fruits|mania|storyboard)$/;
 
@@ -96,7 +97,7 @@ export const getters: GetterTree<RootState, RootState> = {
         if (!state.mca) return undefined;
 
         let phase: PhaseType = "preparation";
-        const newDate = new Date;
+        const newDate = new Date();
         let startDate: Date = newDate;
         let endDate: Date = newDate;
         
@@ -144,8 +145,8 @@ export const getters: GetterTree<RootState, RootState> = {
     
             if (state.loggedInMCAUser?.eligibility) {
                 const eligibility = state.loggedInMCAUser?.eligibility?.find(e => e.year === state.mca?.year);
-
-                return eligibility?.[mode];
+                if (eligibility && mode in ModeDivisionType)
+                    return eligibility[mode as keyof typeof ModeDivisionType] === true;
             }
         
             return false;
@@ -158,27 +159,27 @@ export const getters: GetterTree<RootState, RootState> = {
 
         if (!eligibility) return state.modes;
 
-        return state.modes.filter(m => !eligibility[m]);
+        return state.modes.filter(m => m in eligibility ? !eligibility[m as keyof typeof ModeDivisionType] : false);
     },
 };
 
 export const actions: ActionTree<RootState, RootState> = {
     async setLoggedInMCAUser ({ commit }) {
-        const { data } = await this.$axios.get(`/api/user/mca`);
+        const { data } = await this.$axios.get<{ user: UserMCAInfo }>(`/api/user/mca`);
 
-        if (!data.error) {
-            commit("setLoggedInMCAUser", data);
-        }
+        if (data.success)
+            commit("setLoggedInMCAUser", data.user);
     },
     async setMCA ({ commit }, year: number) {
-        const { data } = await this.$axios.get(`/api/mca?year=${year}`);
+        const { data } = await this.$axios.get<{ mca: MCA }>(`/api/mca?year=${year}`);
 
-        if (!data.error) {
-            commit("setMCA", data);
-        } else {
-            const { data } = await this.$axios.get(`/api/mca/all`);
+        if (data.success)
+            commit("setMCA", data.mca);
+        else {
+            const { data } = await this.$axios.get<{ mca: MCAInfo[] }>(`/api/mca/all`);
             commit("setMCA", {});
-            commit("setAllMCA", data);
+            if (data.success)
+                commit("setAllMCA", data.mca);
         }
     },
     async setInitialData ({ dispatch }, year: number) {
@@ -198,31 +199,31 @@ export const actions: ActionTree<RootState, RootState> = {
     async submitGuestRequest ({ commit, state }, payload: GuestRequestPayload) {
         if (!state.mca) return;
 
-        const { data } = await this.$axios.post(`/api/guestRequests/create`, {
+        const { data } = await this.$axios.post<{ guestReq: GuestRequest }>(`/api/guestRequests/create`, {
             mode: payload.mode,
             url: payload.url,
         });
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
             return;
         }
 
-        commit("addGuestRequest", data);
+        commit("addGuestRequest", data.guestReq);
     },
     async updateGuestRequest ({ commit, state }, payload: UpdateGuestRequestPayload) {
         if (!state.mca) return;
 
-        const { data } = await this.$axios.post(`/api/guestRequests/${payload.id}/update`, {
+        const { data } = await this.$axios.post<{ request: GuestRequest }>(`/api/guestRequests/${payload.id}/update`, {
             mode: payload.mode,
             url: payload.url,
         });
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
             return;
         }
 
-        commit("updateGuestRequest", data);
+        commit("updateGuestRequest", data.request);
     },
 };

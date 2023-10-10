@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../index";
 import respond from "../../../functions/respond";
 import channelID from "../../../functions/channelID";
@@ -105,14 +105,15 @@ async function stageType (m: Message, stage: Stage, userID: string) {
         return;
 
     if (typeof type === "string") {
-        const stageEnum = StageType[type.charAt(0).toUpperCase() + type.slice(1)];
-        if (stageType === undefined) {
+        const key = type.charAt(0).toUpperCase() + type.slice(1);
+        if (!(key in StageType)) {
             const reply = await m.channel.send("Invalid type");
             setTimeout(async () => (await reply.delete()), 5000);
             await stageType(m, stage, userID);
             return;
         }
 
+        const stageEnum = StageType[key as keyof typeof StageType] as StageType;
         if (stageEnum === StageType.Qualifiers && stage.tournament.stages.some(s => s.stageType === StageType.Qualifiers)) {
             const reply = await m.channel.send("There is already a qualifiers stage u can't make another one Lol");
             setTimeout(async () => (await reply.delete()), 5000);
@@ -196,8 +197,8 @@ async function stageScoring (m: Message, stage: Stage, userID: string) {
     if (!scoring)
         return;
 
-    if (typeof scoring === "string") {
-        const scoringMethod = ScoringMethod[scoring];
+    if (typeof scoring === "string" && scoring in ScoringMethod) {
+        const scoringMethod = ScoringMethod[scoring as keyof typeof ScoringMethod];
         if (!scoringMethod) {
             const reply = await m.channel.send("Invalid scoring method");
             setTimeout(async () => (await reply.delete()), 5000);
@@ -244,7 +245,7 @@ async function stageTeamSize (m: Message, stage: Stage, userID: string, property
 }
 
 async function stageQualifierTeamChoose (m: Message, stage: Stage, userID: string) {
-    const chooseOrder = await editProperty(m, "qualifierTeamChooseOrder", "stage", `${stage.qualifierTeamChooseOrder || false}`, userID);
+    const chooseOrder = await editProperty(m, "qualifierTeamChooseOrder", "stage", `${stage.qualifierTeamChooseOrder ?? false}`, userID);
     if (!chooseOrder)
         return;
 
@@ -293,8 +294,8 @@ async function stageSave (m: Message, stage: Stage) {
             { name: "# of Rounds", value: stage.rounds.length.toString(), inline: true },
             { name: "Initial → Final Team Count", value: stage.initialSize + " → " + stage.finalSize, inline: true }
         )
-        .setTimestamp(new Date)
-        .setAuthor({ name: commandUser(m).username, iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined });
+        .setTimestamp(new Date())
+        .setAuthor({ name: commandUser(m).username, iconURL: (m.member )?.displayAvatarURL() ?? undefined });
 
     if (stage.stageType === StageType.Qualifiers)
         embed.addFields({ name: "Team Qualifier Choose Order", value: stage.qualifierTeamChooseOrder ? "Yes" : "No", inline: true });

@@ -4,9 +4,18 @@ module.exports = {
         browser: true,
         node: true,
     },
+    overrides: [
+        {
+            extends: ['plugin:@typescript-eslint/disable-type-checked'],
+            files: ['./config/Config.d.ts', './*/config/Config.d.ts'],
+        },
+    ],
     parser: "vue-eslint-parser",
     parserOptions: {
         parser: "@typescript-eslint/parser",
+        sourceType: "module",
+        project: "./tsconfig.json",
+        extraFileExtensions: [ ".vue" ],
     },
     plugins: [
         "@typescript-eslint",
@@ -14,15 +23,32 @@ module.exports = {
     ],
     extends: [
         "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-type-checked",
+        "plugin:@typescript-eslint/stylistic-type-checked",
         "plugin:vue/recommended",
     ],
     rules: {
+        // TODO: Remove these rules when it's actually feasible
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-argument": "off",
+        // 
+        "@typescript-eslint/prefer-nullish-coalescing": "warn",
+        "@typescript-eslint/restrict-template-expressions": "off",
+        "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
+
+        "vue/no-v-html": "off",
+        "vue/html-indent": [
+            "error", 
+            4,
+        ],
+
+        "new-parens": "error",
         "space-infix-ops": "error",
         "space-before-function-paren": ["error", {
             "anonymous": "ignore",
@@ -32,11 +58,6 @@ module.exports = {
         "no-constant-condition": [
             "error",
             { checkLoops: false },
-        ],
-        "vue/no-v-html": "off",
-        "vue/html-indent": [
-            "error", 
-            4,
         ],
         semi: [
             "error",

@@ -1,5 +1,6 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { createHash } from "crypto";
+import { TournamentStageState } from "koa";
 import { Beatmap, Mode } from "nodesu";
 import { MatchupList, MatchupScore } from "../../../../Interfaces/matchup";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
@@ -9,17 +10,18 @@ import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { Matchup } from "../../../../Models/tournaments/matchup";
-import { Stage } from "../../../../Models/tournaments/stage";
 import { Team } from "../../../../Models/tournaments/team";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { discordClient } from "../../../discord";
 import { validateStageOrRound } from "../../../middleware/tournament";
 import { osuClient } from "../../../osu";
 
-const stageRouter = new Router();
+const stageRouter  = new CorsaceRouter<TournamentStageState>();
 
-stageRouter.get("/:stageID/matchups", validateStageOrRound, async (ctx) => {
-    const stage: Stage = ctx.state.stage;
+stageRouter.$use(validateStageOrRound);
+
+stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) => {
+    const stage = ctx.state.stage;
 
     let matchups = await Matchup
         .createQueryBuilder("matchup")
@@ -84,11 +86,11 @@ stageRouter.get("/:stageID/matchups", validateStageOrRound, async (ctx) => {
     };
 });
 
-stageRouter.get("/:stageID/mappools", validateStageOrRound, async (ctx) => {
+stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", async (ctx) => {
     if (await ctx.cashed())
         return;
 
-    const stage: Stage = ctx.state.stage;
+    const stage = ctx.state.stage;
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
@@ -105,7 +107,7 @@ stageRouter.get("/:stageID/mappools", validateStageOrRound, async (ctx) => {
         return;
     }
 
-    const mappoolQ = await Mappool
+    const mappoolQ = Mappool
         .createQueryBuilder("mappool")
         .innerJoinAndSelect("mappool.stage", "stage")
         .innerJoinAndSelect("mappool.slots", "slots")
@@ -199,8 +201,8 @@ stageRouter.get("/:stageID/mappools", validateStageOrRound, async (ctx) => {
     };
 });
 
-stageRouter.get("/:stageID/scores", validateStageOrRound, async (ctx) => {
-    const stage: Stage = ctx.state.stage;
+stageRouter.$get<{ scores: MatchupScore[] }>("/:stageID/scores", async (ctx) => {
+    const stage = ctx.state.stage;
 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
@@ -315,7 +317,7 @@ stageRouter.get("/:stageID/scores", validateStageOrRound, async (ctx) => {
         ])
         .getRawMany();
     const scores: MatchupScore[] = rawScores.map(score => {
-        const team = teamLookup.get(score.osuUserid) || { ID: -1, name: "N/A", avatarURL: undefined };
+        const team = teamLookup.get(score.osuUserid) ?? { ID: -1, name: "N/A", avatarURL: undefined };
         return {
             teamID: team.ID,
             teamName: team.name,

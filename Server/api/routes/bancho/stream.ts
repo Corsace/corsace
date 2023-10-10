@@ -1,24 +1,24 @@
-import Router from "@koa/router";
+import { CorsaceContext, CorsaceRouter } from "../../../corsaceRouter";
 import koaBasicAuth from "koa-basic-auth";
 import { config } from "node-config-ts";
-import { Matchup } from "../../../../Models/tournaments/matchup";
-import { Next, ParameterizedContext } from "koa";
-import runMatchup from "../../../../BanchoBot/functions/tournaments/matchup/runMatchup";
-import state, { MatchupList } from "../../../../BanchoBot/state";
-import { publish } from "../../../../BanchoBot/functions/tournaments/matchup/centrifugo";
-import { BanchoLobbyPlayerStates } from "bancho.js";
-import getMappoolSlotMods from "../../../../BanchoBot/functions/tournaments/matchup/getMappoolSlotMods";
-import { MatchupMap } from "../../../../Models/tournaments/matchupMap";
-import ormConfig from "../../../../ormconfig";
+import { BanchoMatchupState, Next } from "koa";
+import state from "../../../../BanchoBot/state";
 
-const banchoRefereeRouter = new Router();
+const banchoRefereeRouter  = new CorsaceRouter<BanchoMatchupState>();
 
-banchoRefereeRouter.use(koaBasicAuth({
+banchoRefereeRouter.$use(koaBasicAuth({
     name: config.interOpAuth.username,
     pass: config.interOpAuth.password,
 }));
 
-async function validateMatchup (ctx: ParameterizedContext, next: Next) {
+type pulseType = { pulse: false } | {
+    pulse: true;
+    team1Score: number;
+    team2Score: number;
+    beatmapID: number;
+}
+
+async function validateMatchup (ctx: CorsaceContext<pulseType>, next: Next) {
     const id = ctx.params.matchupID;
     if (!id || isNaN(parseInt(id))) {
         ctx.body = {
@@ -50,8 +50,8 @@ async function validateMatchup (ctx: ParameterizedContext, next: Next) {
     await next();
 }
 
-banchoRefereeRouter.get("/:matchupID/pulseMatch", validateMatchup, async (ctx) => {
-    if (!state.matchups[parseInt(ctx.state.matchupID)]) {
+banchoRefereeRouter.$get<pulseType>("/:matchupID/pulseMatch", validateMatchup, async (ctx) => {
+    if (!state.matchups[ctx.state.matchupID]) {
         ctx.body = {
             success: true,
             pulse: false,
@@ -59,14 +59,14 @@ banchoRefereeRouter.get("/:matchupID/pulseMatch", validateMatchup, async (ctx) =
         return;
     }
 
-    const mpLobby = state.matchups[parseInt(ctx.state.matchupID)].lobby;
+    const mpLobby = state.matchups[ctx.state.matchupID].lobby;
     await mpLobby.updateSettings();
 
     ctx.body = {
         success: true,
         pulse: true,
-        team1Score: state.matchups[parseInt(ctx.state.matchupID)].matchup.team1Score,
-        team2Score: state.matchups[parseInt(ctx.state.matchupID)].matchup.team2Score,
+        team1Score: state.matchups[ctx.state.matchupID].matchup.team1Score,
+        team2Score: state.matchups[ctx.state.matchupID].matchup.team2Score,
         beatmapID: mpLobby.beatmapId,
     };
 });

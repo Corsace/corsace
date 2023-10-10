@@ -118,7 +118,7 @@ export default class TheHeader extends Vue {
     @State viewTheme!: "light" | "dark";
 
     get avatarURL (): string  {
-        return this.loggedInUser?.osu?.avatar || "";
+        return this.loggedInUser?.osu?.avatar ?? "";
     }
 
     isSmall = false;

@@ -34,17 +34,17 @@ export default class NoticeModal extends Vue {
 
     overlay = false;
 
-    async mounted () {
-        await this.toggleOverlay();
+    mounted () {
+        this.toggleOverlay();
     }
 
-    async toggleOverlay () {
+    toggleOverlay () {
         if (!localStorage.getItem(this.localKey + this.$route.params.year)) {
             this.overlay = true;
         }
     }
 
-    async closeOverlay () {
+    closeOverlay () {
         this.overlay = false;
         localStorage.setItem(this.localKey + this.$route.params.year, "true");
     }

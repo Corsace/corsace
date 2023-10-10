@@ -56,8 +56,9 @@ export default class SearchBar extends Vue {
 
     showActions = false;
 
-    updateText (e) {
-        this.debounce(e.target.value);
+    updateText (e: Event) {
+        if (e.target instanceof HTMLInputElement)
+            this.debounce(e.target.value);
     }
     
     // Vue doesnt allow using debounce inside methods, so no idea how this stuff below works, but works Ok
@@ -68,13 +69,13 @@ export default class SearchBar extends Vue {
         });
     }
 
-    debounce (text){
+    debounce (text: string){
         this.emitUpdate(text);
     }
 
-    emitUpdate (text) {
+    emitUpdate = (text: string) => {
         this.$emit("update:search", text);
-    }
+    };
 }
 </script>
 

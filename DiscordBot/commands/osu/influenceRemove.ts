@@ -49,7 +49,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             }
         }
         if (year === 0) {
-            year = (new Date).getUTCFullYear();
+            year = (new Date()).getUTCFullYear();
             search = params.join(" ");
         }
         for (const param of params) {
@@ -65,7 +65,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         search = m.options.getString("user") ?? "";
         year = m.options.getInteger("year") ?? 0;
         if (year < 2007)
-            year = (new Date).getUTCFullYear();
+            year = (new Date()).getUTCFullYear();
         const modeText = m.options.getString("mode");
         if (modeText)
             mode = await ModeDivision.modeSelect(modeText);

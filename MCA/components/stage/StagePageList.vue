@@ -102,7 +102,7 @@ export default class StagePageList extends Vue {
 
     @stageModule.State showVoteChoiceBox!: boolean;
 
-    @stageModule.Action search;
+    @stageModule.Action search!: (skipping: boolean) => void;
 
     @State viewTheme!: "light" | "dark";
 
@@ -128,15 +128,15 @@ export default class StagePageList extends Vue {
         }
     }
 
-    handleScroll (event) {
-        if (event.target) {
+    handleScroll = (event: Event) => {
+        if (event.target instanceof HTMLElement) {
             this.scrollPos = event.target.scrollTop;
             this.scrollSize = event.target.scrollHeight - event.target.clientHeight; // U know... just in case the window size changes Lol
 
             const diff = Math.abs(this.scrollSize - this.scrollPos);
             this.emit(diff <= 50);
         }
-    }
+    };
 
     emit (currentlyBottom: boolean): void {
         if (currentlyBottom !== this.bottom) {

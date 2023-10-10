@@ -42,5 +42,4 @@ export interface StaffComment {
     }
     reviewer?: string;
     lastReviewedAt?: Date;
-
 }

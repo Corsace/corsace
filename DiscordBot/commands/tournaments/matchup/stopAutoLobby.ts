@@ -39,7 +39,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         auth: config.interOpAuth,
     });
 
-    if (data.error) {
+    if (!data.success) {
         await respond(m, data.error);
         return;
     }

@@ -154,8 +154,6 @@ export default class Comments extends Vue {
 
     @mcaAyimModule.Getter phase!: MCAPhase | null;
 
-    @mcaAyimModule.Action updateSelectedMode;
-
     loading = false;
     text = "";
     notCommented = false;
@@ -177,7 +175,7 @@ export default class Comments extends Vue {
     
     async mounted () {
         if (this.mca.year >= 2020)
-            this.$router.replace(`/${this.mca.year}`);
+            await this.$router.replace(`/${this.mca.year}`);
         await this.getMappers();
     }
 
@@ -208,14 +206,14 @@ export default class Comments extends Vue {
 
     async getMappers (replace = true) {
         this.loading = true;
-        const { data } = await this.$axios.get(`/api/mappers/search?skip=${replace ? 0 : this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&option=${this.userOption}&order=${this.orderOption.toUpperCase()}&text=${this.text}&notCommented=${this.notCommented}&friendFilter=${this.filterFriends}`);
+        const { data } = await this.$axios.get<{ users: User[] }>(`/api/mappers/search?skip=${replace ? 0 : this.mappers.length}&year=${this.mca.year}&mode=${this.selectedMode}&option=${this.userOption}&order=${this.orderOption.toUpperCase()}&text=${this.text}&notCommented=${this.notCommented}&friendFilter=${this.filterFriends}`);
 
-        if (data.error)
+        if (!data.success)
             alert(data.error);
         else if (replace)
-            this.mappers = data;
+            this.mappers = data.users;
         else
-            this.mappers.push(...data);
+            this.mappers.push(...data.users);
 
         this.loading = false;
     }

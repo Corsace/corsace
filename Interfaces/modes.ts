@@ -1,5 +1,3 @@
-import { ModeDivisionType } from "../Models/MCA_AYIM/modeDivision";
-
 export interface ModeDivision {
     ID: number;
     name: string;
@@ -11,6 +9,14 @@ export const modeList = [
     "fruits",
     "mania",
 ];
+
+export enum ModeDivisionType {
+    standard = 1,
+    taiko,
+    fruits,
+    mania,
+    storyboard,
+}
 
 // Having this as a function instead of a constant avoids possible circular dependencies and undefined errors on instance startup
 export function modeIDToMode () {

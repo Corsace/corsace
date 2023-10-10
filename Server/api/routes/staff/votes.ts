@@ -1,21 +1,24 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
 import { Vote } from "../../../../Models/MCA_AYIM/vote";
 import { StaffVote } from "../../../../Interfaces/vote";
 import { MoreThan, Not } from "typeorm";
 import { parseQueryParam } from "../../../../Server/utils/query";
 
-const staffVotesRouter = new Router;
+const staffVotesRouter  = new CorsaceRouter();
 
-staffVotesRouter.use(isLoggedInDiscord);
-staffVotesRouter.use(isStaff);
+staffVotesRouter.$use(isLoggedInDiscord);
+staffVotesRouter.$use(isStaff);
 
 // Endpoint for getting information for a category
-staffVotesRouter.get("/", async (ctx) => {
+staffVotesRouter.$get<{ staffVotes: StaffVote[] }>("/", async (ctx) => {
     const categoryIDString = parseQueryParam(ctx.query.category);
     
     if (!categoryIDString || !/\d+/.test(categoryIDString))
-        return ctx.body = { error: "Invalid category ID given!" };
+        return ctx.body = { 
+            success: false,
+            error: "Invalid category ID given!",
+        };
 
     const categoryID = parseInt(categoryIDString);
 
@@ -117,10 +120,13 @@ staffVotesRouter.get("/", async (ctx) => {
         return staffVote;
     });
 
-    ctx.body = staffVotes;
+    ctx.body = {
+        success: true, 
+        staffVotes,
+    };
 });
 
-staffVotesRouter.delete("/:id/:user", async (ctx) => {
+staffVotesRouter.$delete("/:id/:user", async (ctx) => {
     const vote = await Vote.findOneOrFail({
         where: {
             ID: parseInt(ctx.params.id, 10),
@@ -155,7 +161,7 @@ staffVotesRouter.delete("/:id/:user", async (ctx) => {
     ]);
 
     ctx.body = {
-        success: "removed",
+        success: true,
     };
 });
 

@@ -25,6 +25,6 @@ export default async function errorHandler (err: unknown, m?: Message | ChatInpu
     }
 
     console.error(err);
-    respond(m, "The command was unable to be fulfilled.\nAn error unrelated to discord occurred while executing this command. Contact VINXIS");
+    await respond(m, "The command was unable to be fulfilled.\nAn error unrelated to discord occurred while executing this command. Contact VINXIS");
     return true;
 }

@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { TournamentRoleType, unallowedToPlay } from "../../../../Interfaces/tournament";
 import { Matchup as MatchupInterface } from "../../../../Interfaces/matchup";
 import { Matchup } from "../../../../Models/tournaments/matchup";
@@ -10,12 +10,16 @@ import { isLoggedInDiscord } from "../../../middleware";
 import { hasRoles, validateTournament } from "../../../middleware/tournament";
 import { parseQueryParam } from "../../../utils/query";
 import dbMatchupToInterface from "../../../functions/tournaments/matchups/dbMatchupToInterface";
+import { TournamentAuthenticatedState } from "koa";
 
-const refereeMatchupsRouter = new Router();
+const refereeMatchupsRouter  = new CorsaceRouter<TournamentAuthenticatedState>();
 
 //TODO: Look into making refereeRouter.use work for the middleware functions
+refereeMatchupsRouter.$use(isLoggedInDiscord);
+refereeMatchupsRouter.$use(validateTournament);
+refereeMatchupsRouter.$use(hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]));
 
-refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+refereeMatchupsRouter.$get<{ matchups: MatchupInterface[] }>("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup
         .createQueryBuilder("matchup")
         .leftJoinAndSelect("matchup.round", "round")
@@ -55,7 +59,7 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
         matchupQ
             .andWhere("referee.ID = :refereeID", { refereeID: ctx.state.user.ID });
         
-    const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
+    const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") ?? 0;
     const matchups = await matchupQ
         .skip(skip)
         .take(5)
@@ -64,11 +68,11 @@ refereeMatchupsRouter.get("/:tournamentID", validateTournament, isLoggedInDiscor
 
     ctx.body = {
         success: true,
-        matchups,
+        matchups: await Promise.all(matchups.map(async m => await dbMatchupToInterface(m, null))),
     };
 });
 
-refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
+refereeMatchupsRouter.$get<{ matchup: MatchupInterface }>("/:tournamentID/:matchupID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup
         .createQueryBuilder("matchup")
         // round and stage
@@ -156,16 +160,11 @@ refereeMatchupsRouter.get("/:tournamentID/:matchupID", validateTournament, isLog
                     .where("matchup.ID = :ID", { ID: dbMatchup.ID })
                     .getOne() : 
                 null;
-
-    const body: {
-        success: true;
-        matchup: MatchupInterface;
-    } = {
+    
+    ctx.body = {
         success: true,
         matchup: await dbMatchupToInterface(dbMatchup, roundOrStage),
     };
-    
-    ctx.body = body;
 });
 
 export default refereeMatchupsRouter;

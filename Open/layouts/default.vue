@@ -274,7 +274,7 @@ export default class Default extends Vue {
 
     async inviteAction (inviteID: number, action: "accept" | "decline") {
         try {
-            await this.$axios.post(`api/team/invite/${inviteID}/${action}`);
+            await this.$axios.post(`/api/team/invite/${inviteID}/${action}`);
             await this.$store.dispatch("open/setTeam");
             await this.$store.dispatch("open/setInvites");
         } catch (e) {

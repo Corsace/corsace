@@ -10,13 +10,13 @@ import { discordClient } from "../../../Server/discord";
 import { threadNameRegex } from "./getCustomThread";
 import { TournamentRoleType, TournamentChannelType } from "../../../Interfaces/tournament";
 
-export type mappoolComponentsThreadType = {
+export interface mappoolComponentsThreadType {
     m: Message;
     creator: User;
     tournament: Tournament;
     mappoolMap: MappoolMap;
     mappers: string[];
-};
+}
 
 export default async function mappoolComponentsThread (t: ThreadChannel, owner: DiscordUser, channel?: TournamentChannel): Promise<mappoolComponentsThreadType | undefined> {
     const creator = await User.findOne({ where: { discord: { userID: owner.id } } });

@@ -26,7 +26,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "channel", paramType: "channel" },
         { name: "remove", shortName: "r", paramType: "boolean", optional: true },
         { name: "channel_type", paramType: "string", optional: true },
@@ -88,7 +88,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const channelType = channel_type.toLowerCase().charAt(0).toUpperCase() + channel_type.toLowerCase().slice(1);
     if (
-        TournamentChannelType[channelType] === undefined ||
+        !(channelType in TournamentChannelType) ||
         (channelType.toLowerCase() === "announcements" && channelType.toLowerCase() === "streamannouncements" && discordChannel.type !== ChannelType.GuildAnnouncement) || 
         (channelType.toLowerCase() === "mappoolqa" && discordChannel.type !== ChannelType.GuildForum) ||
         (channelType.toLowerCase() === "jobboard" && discordChannel.type !== ChannelType.GuildForum) ||
@@ -112,7 +112,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     tournamentChannel = new TournamentChannel();
     tournamentChannel.createdBy = user;
     tournamentChannel.channelID = discordChannel.id;
-    tournamentChannel.channelType = TournamentChannelType[channelType];
+    tournamentChannel.channelType = TournamentChannelType[channelType as keyof typeof TournamentChannelType];
 
     const tags = forumTags()[tournamentChannel.channelType];
     if (tags) {

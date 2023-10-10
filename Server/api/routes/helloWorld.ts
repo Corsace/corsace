@@ -1,9 +1,12 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 
-const helloWorldRouter = new Router();
+const helloWorldRouter = new CorsaceRouter();
 
-helloWorldRouter.get("/", (ctx) => {
-    ctx.body = "Hello World!";
+helloWorldRouter.$get<{ message: string }>("/", (ctx) => {
+    ctx.body = {
+        success: true,
+        message: "Hello World!",
+    };
 });
 
 export default helloWorldRouter;

@@ -82,11 +82,10 @@ export default class MapperStatistics extends Vue {
     }
 
     async getStats () {
-        const { data } = await this.$axios.get(`/api/statistics/mappers?year=${this.mca.year}&mode=${this.selectedMode}`);
+        const { data } = await this.$axios.get<{ statistics: Record<string, Statistic[]> }>(`/api/statistics/mappers?year=${this.mca.year}&mode=${this.selectedMode}`);
 
-        if (!data.error) {
-            this.statistics = data;
-        }
+        if (data.success)
+            this.statistics = data.statistics;
     }
     
 }

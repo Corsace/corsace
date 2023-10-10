@@ -73,16 +73,13 @@ export default class Results extends Vue {
     @mcaAyimModule.Getter phase!: MCAPhase | null;
     @mcaAyimModule.Getter isMCAStaff!: boolean;
 
-    @mcaAyimModule.Mutation toggleGuestDifficultyModal;
-
     @stageModule.State section!: SectionCategory;
     @stageModule.State stage!: StageType;
 
-    @stageModule.Action reset;
-    @stageModule.Action updateSelectedCategory;
-    @stageModule.Action updateSection;
-    @stageModule.Action updateStage;
-    @stageModule.Action setInitialData;
+    @stageModule.Action reset!: (sectionReset?: boolean) => void;
+    @stageModule.Action updateSection!: (section: SectionCategory) => void;
+    @stageModule.Action updateStage!: (stage: StageType) => void;
+    @stageModule.Action setInitialData!: () => void;
 
     windowWidth = -1;
     mobile = false;
@@ -111,15 +108,15 @@ export default class Results extends Vue {
     get filtCol () {
         return this.columns.filter(
             c => (!c.category || c.category === this.section) &&
-            ((c.mobileOnly && this.mobile) || 
-             (c.desktopOnly && !this.mobile) ||
+            ((c.mobileOnly && this.mobile) ??
+             (c.desktopOnly && !this.mobile) ??
              (!c.mobileOnly && !c.desktopOnly))
         );
     }
 
-    mounted () {
+    async mounted () {
         if (!(this.phase?.phase === "results" || this.isMCAStaff)) {
-            this.$router.push("/" + this.$route.params.year);
+            await this.$router.push("/" + this.$route.params.year);
             return;
         }
         
@@ -139,11 +136,11 @@ export default class Results extends Vue {
         }
     }
 
-    handleWindowResize () {
+    handleWindowResize = () => {
         if (process.client) {
             this.windowWidth = window.innerWidth;
         }
-    }
+    };
 
 }
 </script>

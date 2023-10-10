@@ -13,7 +13,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "pool", paramType: "string" },
         { name: "slot", paramType: "string", postProcess: postProcessSlotOrder, optional: true },
         { name: "video", shortName: "v", paramType: "boolean", optional: true },
@@ -23,7 +23,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, slot, order, video } = params;
 
-    const components = await mappoolComponents(m, pool, slot || true, order || true);
+    const components = await mappoolComponents(m, pool, slot ?? true, order ?? true);
     if (!components || !("mappool" in components))
         return;
 
@@ -103,7 +103,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     await respond(m, `Here's a temp. mappack link valid for 1 day:\n${mappool.mappackLink}`);
 
-    if (m instanceof Message) m.reactions.cache.get("⏳")?.remove();
+    if (m instanceof Message) 
+        await m.reactions.cache.get("⏳")?.remove();
 }
 
 const data = new SlashCommandBuilder()

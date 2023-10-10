@@ -1,18 +1,21 @@
-import Router from "@koa/router";
-import { ParameterizedContext, Next } from "koa";
+import { CorsaceContext, CorsaceRouter } from "../../corsaceRouter";
+import { Next, UserAuthenticatedState, CommentAuthenticatedState } from "koa";
 import { User } from "../../../Models/user";
 import { UserComment } from "../../../Models/MCA_AYIM/userComments";
-import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { isEligibleFor } from "../../middleware/mca-ayim";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { FindOptionsWhere } from "typeorm";
 import { isLoggedIn } from "../../middleware";
 import { parseQueryParam } from "../../utils/query";
 import { profanityFilter } from "../../../Interfaces/comment";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 
-async function canComment (ctx: ParameterizedContext, next: Next): Promise<any> {
+// These 2 middleware functions (canComment and isCommentOwner) MUST be used after isLoggedIn or isLoggedInDiscord
+async function canComment (ctx: CorsaceContext<object, UserAuthenticatedState>, next: Next) {
     if (!ctx.state.user.canComment) {
         return ctx.body = {
+            success: false,
             error: "You cannot comment",
         };
     }
@@ -20,7 +23,7 @@ async function canComment (ctx: ParameterizedContext, next: Next): Promise<any> 
     await next();
 }
 
-async function isCommentOwner (ctx: ParameterizedContext, next: Next): Promise<any> {
+async function isCommentOwner (ctx: CorsaceContext<object, UserAuthenticatedState>, next: Next) {
     const comment = await UserComment.findOneOrFail({ 
         where: {
             ID: ctx.params.id,
@@ -30,6 +33,7 @@ async function isCommentOwner (ctx: ParameterizedContext, next: Next): Promise<a
 
     if (comment.commenterID !== ctx.state.user.ID) {
         return ctx.body = {
+            success: false,
             error: "Not your comment",
         };
     }
@@ -38,21 +42,35 @@ async function isCommentOwner (ctx: ParameterizedContext, next: Next): Promise<a
     await next();
 }
 
-const commentsRouter = new Router();
+const commentsRouter  = new CorsaceRouter();
 
-commentsRouter.get("/", async (ctx) => {
-    if (!ctx.query.user)
-        return ctx.body = {
+commentsRouter.$get<{
+    user: User;
+    comments: UserComment[];
+}>("/", async (ctx) => {
+    if (!ctx.query.user) {
+        ctx.body = {
+            success: false,
             error: "No user ID provided!",
         };
+        return;
+    }
 
-    const userId = parseInt(parseQueryParam(ctx.query.user) || "");
-    const year = parseInt(parseQueryParam(ctx.query.year) || "") || new Date().getUTCFullYear();
-    const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
-    const modeID = ModeDivisionType[modeString];
+    const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
+    if (!(modeString in ModeDivisionType)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
+        return;
+    }
+    const modeID = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
+    const userId = parseInt(parseQueryParam(ctx.query.user) ?? "");
+    const year = parseInt(parseQueryParam(ctx.query.year) ?? "") ?? new Date().getUTCFullYear();
 
     if (year >= 2020) {
         ctx.body = {
+            success: false,
             error: `MCA ${year} is not running comments for AYIM. Sorry for the inconvenience.`,
         };
         return;
@@ -62,21 +80,23 @@ commentsRouter.get("/", async (ctx) => {
         where: { year },
     });
 
-    let query: FindOptionsWhere<UserComment> | FindOptionsWhere<UserComment>[] = {
+    const baseQuery: FindOptionsWhere<UserComment> = {
         targetID: userId,
         year: year,
-        mode: modeID,
-        commenter: ctx.state.user,
+        mode: { ID: modeID },
+        commenter: ctx.state.user ? { ID: ctx.state.user.ID } : undefined,
     };
+
+    let query: FindOptionsWhere<UserComment> | FindOptionsWhere<UserComment>[] = baseQuery;
 
     // Show all comments if mca results are out
     if (new Date() >= mca?.results) {
         query = [
-            query,
+            baseQuery,
             {
                 targetID: userId,
                 year: year,
-                mode: modeID,
+                mode: { ID: modeID },
                 isValid: true,
             },
         ];
@@ -99,33 +119,45 @@ commentsRouter.get("/", async (ctx) => {
     ]);
 
     if (!isEligibleFor(target, modeID, year)) {
-        return ctx.body = {
+        ctx.body = {
+            success: false,
             error: `User wasn't active for the selected mode`,
         };
+        return;
     }
 
     ctx.body = {
+        success: true,
         user: target,
         comments,
     };
 });
 
-commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
+commentsRouter.$post<{ comment: UserComment }, UserAuthenticatedState>("/create", isLoggedIn, canComment, async (ctx) => {
     const newComment: string = ctx.request.body.comment.trim();
     const year: number = ctx.request.body.year;
     const targetID: number = ctx.request.body.targetID;
     const modeInput: string = ctx.request.body.mode;
-    const modeID = ModeDivisionType[modeInput];
-    const commenter: User = ctx.state.user;
+    if (!(modeInput in ModeDivisionType)) {
+        ctx.body = {
+            success: false,
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
+        return;
+    }
+    const modeID = ModeDivisionType[modeInput as keyof typeof ModeDivisionType];
+    const commenter = ctx.state.user;
     
     if (!newComment || !modeInput || !year || !targetID) {
         return ctx.body = {
+            success: false,
             error: "Missing data",
         };
     }
 
     if (year >= 2020) {
         ctx.body = {
+            success: false,
             error: `MCA ${year} is not running comments for AYIM. Sorry for the inconvenience.`,
         };
         return;
@@ -137,12 +169,14 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
 
     if (mca.currentPhase() === "results") {
         return ctx.body = {
+            success: false,
             error: "You can only create before MCA results are out!",
         };
     }
 
     if (targetID == ctx.state.user.ID) {
         return ctx.body = {
+            success: false,
             error: `It's yourself`,
         };
     }
@@ -177,18 +211,21 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
 
     if (hasCommented) {
         return ctx.body = {
+            success: false,
             error: "Already commented on the selected user this year and mode",
         };
     }
 
     if (!isEligibleFor(target, modeID, year)) {
         return ctx.body = {
+            success: false,
             error: `User wasn't active for the selected mode`,
         };
     }
 
     if (profanityFilter.test(newComment)) {
         return ctx.body = {
+            success: false,
             error: "Comment is TERRIBLE .",
         };
     }
@@ -202,25 +239,30 @@ commentsRouter.post("/create", isLoggedIn, canComment, async (ctx) => {
     comment.isValid = false;
     await comment.save();
 
-    ctx.body = comment;
+    ctx.body = {
+        success: true,
+        comment,
+    };
 });
 
-commentsRouter.post("/:id/update", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
+commentsRouter.$post<{ comment: UserComment }, CommentAuthenticatedState>("/:id/update", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
     const newComment: string = ctx.request.body.comment.trim();
 
     if (!newComment) {
         return ctx.body = {
+            success: false,
             error: "Add a comment",
         };
     }
 
-    const comment: UserComment = ctx.state.comment;
+    const comment = ctx.state.comment;
     const mca = await MCA.findOneOrFail({
         where: { year: comment.year },
     });
 
     if (mca.currentPhase() === "results") {
         return ctx.body = {
+            success: false,
             error: "Can only remove before MCA results",
         };
     }
@@ -230,17 +272,21 @@ commentsRouter.post("/:id/update", isLoggedIn, canComment, isCommentOwner, async
     comment.reviewer = comment.lastReviewedAt = undefined;
     await comment.save();
 
-    ctx.body = comment;
+    ctx.body = {
+        success: true,
+        comment,
+    };
 });
 
-commentsRouter.post("/:id/remove", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
-    const comment: UserComment = ctx.state.comment;
+commentsRouter.$post<object, CommentAuthenticatedState>("/:id/remove", isLoggedIn, canComment, isCommentOwner, async (ctx) => {
+    const comment = ctx.state.comment;
     const mca = await MCA.findOneOrFail({
         where: { year: comment.year },
     });
 
     if (mca.currentPhase() === "results") {
         return ctx.body = {
+            success: false,
             error: "Can only remove before MCA results",
         };
     }
@@ -248,7 +294,7 @@ commentsRouter.post("/:id/remove", isLoggedIn, canComment, isCommentOwner, async
     await ctx.state.comment.remove();
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 

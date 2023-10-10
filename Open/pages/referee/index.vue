@@ -51,18 +51,18 @@ const openModule = namespace("open");
     },
     head () {
         return {
-            title: this.$store.state["open"].title,
+            title: this.$store.state.open.title,
             meta: [
-                {hid: "description", name: "description", content: this.$store.state["open"].tournament.description},
+                {hid: "description", name: "description", content: this.$store.state.open.tournament.description},
 
-                {hid: "og:site_name", property: "og:site_name", content: this.$store.state["open"].title},
-                {hid: "og:title", property: "og:title", content: this.$store.state["open"].title},
+                {hid: "og:site_name", property: "og:site_name", content: this.$store.state.open.title},
+                {hid: "og:title", property: "og:title", content: this.$store.state.open.title},
                 {hid: "og:url", property: "og:url", content: `https://open.corsace.io${this.$route.path}`}, 
-                {hid: "og:description", property: "og:description", content: this.$store.state["open"].tournament.description},
+                {hid: "og:description", property: "og:description", content: this.$store.state.open.tournament.description},
                 {hid: "og:image",property: "og:image", content: require("../../../Assets/img/site/open/banner.png")},
                 
-                {name: "twitter:title", content: this.$store.state["open"].title},
-                {name: "twitter:description", content: this.$store.state["open"].tournament.description},
+                {name: "twitter:title", content: this.$store.state.open.title},
+                {name: "twitter:description", content: this.$store.state.open.tournament.description},
                 {name: "twitter:image", content: require("../../../Assets/img/site/open/banner.png")},
                 {name: "twitter:image:src", content: require("../../../Assets/img/site/open/banner.png")},
             ],
@@ -78,10 +78,16 @@ export default class Referee extends Vue {
     moreMatchups = true;
 
     async mounted () {
-        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}`);
-        if (matchupData.error) {
+        const { data: matchupData } = await this.$axios.get<{
+            success: false;
+            error: string;
+        } | {
+            success: true;
+            matchups: Matchup[];
+        }>(`/api/referee/matchups/${this.tournament?.ID}`);
+        if (!matchupData.success) {
             alert(matchupData.error);
-            this.$router.push("/");
+            await this.$router.push("/");
             return;
         }
 
@@ -95,10 +101,16 @@ export default class Referee extends Vue {
     }
 
     async loadMore () {
-        const { data: matchupData } = await this.$axios.get(`/api/referee/matchups/${this.tournament?.ID}?skip=${this.matchupList.length}`);
-        if (matchupData.error) {
+        const { data: matchupData } = await this.$axios.get<{
+            success: false;
+            error: string;
+        } | {
+            success: true;
+            matchups: Matchup[];
+        }>(`/api/referee/matchups/${this.tournament?.ID}?skip=${this.matchupList.length}`);
+        if (!matchupData.success) {
             alert(matchupData.error);
-            this.$router.push("/");
+            await this.$router.push("/");
             return;
         }
 

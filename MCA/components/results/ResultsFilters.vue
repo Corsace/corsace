@@ -33,7 +33,7 @@ import { namespace } from "vuex-class";
 import DropdownSelector from "../../../Assets/components/DropdownSelector.vue";
 import StagePageFilters from "../stage/StagePageFilters.vue";
 
-import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
+import { CategoryStageInfo, CategoryType, SectionCategory } from "../../../Interfaces/category";
 import { TranslateResult } from "vue-i18n";
 
 const mcaAyimModule = namespace("mca-ayim");
@@ -50,10 +50,10 @@ export default class ResultsFilters extends Vue {
 
     @stageModule.Getter categoriesInfo!: CategoryStageInfo[];
 
-    @stageModule.Action reset;
-    @stageModule.Action updateSelectedCategory;
-    @stageModule.Action updateSection;
-    @stageModule.Action setInitialData;
+    @stageModule.Action reset!: (sectionReset?: boolean) => void;
+    @stageModule.Action updateSelectedCategory!: (category: CategoryStageInfo) => void;
+    @stageModule.Action updateSection!: (section: SectionCategory) => void;
+    @stageModule.Action setInitialData!: () => void;
 
     @Watch("selectedMode")
     onSelectedModeChange () {
@@ -68,7 +68,7 @@ export default class ResultsFilters extends Vue {
     }
 
     // track current index of arrays selected by dropdowns
-    activeCategoryType = <CategoryType> 0;
+    activeCategoryType = 0 as CategoryType;
     activeCategory = 0;
 
     // dropdown lists
@@ -83,7 +83,7 @@ export default class ResultsFilters extends Vue {
 
     // change category index on dropdown selection
     changeCategoryType (newCategoryType: number) {
-        this.activeCategoryType = <CategoryType> newCategoryType;
+        this.activeCategoryType = newCategoryType as CategoryType;
         this.changeCategory(0);
     }
 
@@ -101,14 +101,17 @@ export default class ResultsFilters extends Vue {
 
     // dropdown styles
     get catTypeStyle () {
-        const longestStr = Math.max(...this.localCatTypes.map(lct => lct.toString().length));
+        const longestStr = Math.max(...this.localCatTypes.map(lct => typeof lct === "string" ? lct.length : 0));
         return {
             "width": `${longestStr * 0.82}em`,
-        };
+        } as Record<string, string>;
     }
 
     get catStyle () {
-        const longestStr = Math.max(...this.categoriesInfo.map(c => this.$t(`mca.categories.${c.name}.name`).toString().length));
+        const longestStr = Math.max(...this.categoriesInfo.map(c => {
+            const tl = this.$t(`mca.categories.${c.name}.name`);
+            return typeof tl === "string" ? tl.length : 0;
+        }));
         return {
             "width": `${longestStr * 0.82}em`,
             "clip-path": "inset(-8px -8px -8px 0)",
@@ -118,13 +121,13 @@ export default class ResultsFilters extends Vue {
     get catTypeDropStyle () {
         return {
             "margin-left": this.catTypeStyle["margin-left"],
-            "width": this.catTypeStyle["width"],
+            "width": this.catTypeStyle.width,
         };
     }
 
     get catDropStyle () {
         return {
-            "width": this.catStyle["width"],
+            "width": this.catStyle.width,
         };
     }
 }

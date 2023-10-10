@@ -20,7 +20,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "pool", paramType: "string", optional: true },
         { name: "slot", paramType: "string", postProcess: postProcessSlotOrder, optional: true },
     ]);
@@ -50,14 +50,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .setColor(modeColour(tournament.mode.ID - 1))
             .setFooter({
                 text: `Requested by ${m.member?.user.username}`,
-                iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined,
+                iconURL: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
             })
             .setTimestamp();
         await respond(m, undefined, [embed]);
         return;
     }
 
-    const components = await mappoolComponents(m, pool, slot || true, order || true, undefined, { text: channelID(m), searchType: "channel" }, undefined, undefined, undefined, true);
+    const components = await mappoolComponents(m, pool, slot ?? true, order ?? true, undefined, { text: channelID(m), searchType: "channel" }, undefined, undefined, undefined, true);
     if (!components || !("mappool" in components))
         return;
 
@@ -71,10 +71,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const { mappoolMap, mappoolSlot, slotMod } = components;
 
         if (mappoolMap.beatmap) {
-            const set = (await osuClient.beatmaps.getBySetId(mappoolMap.beatmap.beatmapsetID, Mode.all, undefined, undefined, slotMod.allowedMods || 0) as APIBeatmap[]);
+            const set = (await osuClient.beatmaps.getBySetId(mappoolMap.beatmap.beatmapsetID, Mode.all, undefined, undefined, slotMod.allowedMods ?? 0) as APIBeatmap[]);
             const apiMap = set.find(m => m.beatmapId === mappoolMap.beatmap!.ID)!;
 
-            const mappoolMapEmbed = await beatmapEmbed(apiMap, modsToAcronym(slotMod.allowedMods || 0), set);
+            const mappoolMapEmbed = await beatmapEmbed(apiMap, modsToAcronym(slotMod.allowedMods ?? 0), set);
             mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
             await respond(m, `Info for **${mappoolSlot}**:`, [mappoolMapEmbed]);
@@ -159,10 +159,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         const embed = new EmbedBuilder()
             .setTitle(`Info for ${slotMod.name}`)
-            .setDescription(`**Acronym:** ${modsToAcronym(slotMod.allowedMods || 0)}\n**Mode:** ${tournament.mode.name}\n**Mappool:** ${mappool.name} (${mappool.abbreviation.toUpperCase()})\n**Allowed Mods:** ${modsToAcronym(slotMod.allowedMods || 0)}`)
+            .setDescription(`**Acronym:** ${modsToAcronym(slotMod.allowedMods ?? 0)}\n**Mode:** ${tournament.mode.name}\n**Mappool:** ${mappool.name} (${mappool.abbreviation.toUpperCase()})\n**Allowed Mods:** ${modsToAcronym(slotMod.allowedMods ?? 0)}`)
             .setFields(slotMod.maps.map(map => ({
                 name: `**${slotMod.acronym}${slotMod.maps.length === 1 ? "" : map.order}**`,
-                value: map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap && map.customBeatmap.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]` : "No beatmap",
+                value: map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap?.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]` : "No beatmap",
             })))
             .setColor(modeColour(tournament.mode.ID - 1));
 
@@ -172,16 +172,16 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const embed = new EmbedBuilder()
         .setTitle(`Info for ${mappool.name} (${mappool.abbreviation.toUpperCase()})`)
-        .setDescription(`**ID:** ${mappool.ID}\n**Target SR:** ${mappool.targetSR}\n**Mappack Link:** ${mappool.mappackLink || "N/A"}\n**Mappack Expiry:** ${mappool.mappackExpiry ? discordStringTimestamp(mappool.mappackExpiry) : "N/A"}`)
+        .setDescription(`**ID:** ${mappool.ID}\n**Target SR:** ${mappool.targetSR}\n**Mappack Link:** ${mappool.mappackLink ?? "N/A"}\n**Mappack Expiry:** ${mappool.mappackExpiry ? discordStringTimestamp(mappool.mappackExpiry) : "N/A"}`)
         .setFields(mappool.slots.map(slot => ({
             name: `**${slot.name}**`,
-            value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap && map.customBeatmap.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : "N/A"}`).join("\n"),
+            value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap?.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : "N/A"}`).join("\n"),
             inline: true,
         })))
         .setColor(modeColour(tournament.mode.ID - 1))
         .setFooter({
             text: `Requested by ${m.member?.user.username}`,
-            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() || undefined,
+            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
         })
         .setTimestamp();
     

@@ -1,19 +1,20 @@
-import Router from "@koa/router";
-import { isLoggedInDiscord, isStaff } from "../../../../Server/middleware";
-import { validatePhaseYear } from "../../../../Server/middleware/mca-ayim";
+import { CorsaceRouter } from "../../../corsaceRouter";
+import { isLoggedInDiscord } from "../../../../Server/middleware";
+import { isMCAStaff, validatePhaseYear } from "../../../../Server/middleware/mca-ayim";
 import { GuestRequest } from "../../../../Models/MCA_AYIM/guestRequest";
-import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
-import { RequestStatus } from "../../../../Interfaces/guestRequests";
+import { RequestStatus, StaffGuestRequest } from "../../../../Interfaces/guestRequests";
+import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
+import { ModeDivisionType } from "../../../../Interfaces/modes";
 
-const staffRequestsRouter = new Router;
+const staffRequestsRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-staffRequestsRouter.use(isLoggedInDiscord);
-staffRequestsRouter.use(isStaff);
+staffRequestsRouter.$use(isLoggedInDiscord);
+staffRequestsRouter.$use(isMCAStaff);
 
-staffRequestsRouter.get("/:year", validatePhaseYear, async (ctx) => {
-    const mca: MCA = ctx.state.mca;
-    const requests = await GuestRequest
+staffRequestsRouter.$get<{ requests: StaffGuestRequest[] }, MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
+    const mca = ctx.state.mca;
+    const requests: StaffGuestRequest[] = await GuestRequest
         .createQueryBuilder("guestReq")
         .innerJoin("guestReq.beatmap", "beatmap")
         .innerJoin("guestReq.mca", "mca")
@@ -34,10 +35,13 @@ staffRequestsRouter.get("/:year", validatePhaseYear, async (ctx) => {
         .addOrderBy("status", "ASC")
         .getRawMany();
 
-    ctx.body = requests;
+    ctx.body = {
+        success: true,
+        requests,
+    };
 });
 
-staffRequestsRouter.post("/:id/update", async (ctx) => {
+staffRequestsRouter.$post("/:id/update", async (ctx) => {
     const request = await GuestRequest.findOneOrFail({
         where: {
             ID: parseInt(ctx.params.id, 10),
@@ -63,7 +67,7 @@ staffRequestsRouter.post("/:id/update", async (ctx) => {
             eligibility.year = request.mca.year;
         }
 
-        eligibility[request.mode.name] = true;
+        eligibility[request.mode.name as keyof typeof ModeDivisionType] = true;
         eligibility.storyboard = true;
         await eligibility.save();
     } else if (request.status === RequestStatus.Rejected) {
@@ -78,7 +82,7 @@ staffRequestsRouter.post("/:id/update", async (ctx) => {
         });
 
         if (eligibility) {
-            eligibility[request.mode.name] = false;
+            eligibility[request.mode.name as keyof typeof ModeDivisionType] = false;
             if (!eligibility.standard && !eligibility.taiko && !eligibility.fruits && !eligibility.mania)
                 eligibility.storyboard = false;
             await eligibility.save();
@@ -88,7 +92,7 @@ staffRequestsRouter.post("/:id/update", async (ctx) => {
     await request.save();
 
     ctx.body = {
-        success: "Saved",
+        success: true,
     };
 });
 

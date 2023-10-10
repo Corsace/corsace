@@ -1,27 +1,35 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { config } from "node-config-ts";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { MCA } from "../../../Models/MCA_AYIM/mca";
 import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { discordGuild } from "../../discord";
 import { parseQueryParam } from "../../utils/query";
+import { MCAFrontData, MCAInfo } from "../../../Interfaces/mca";
 
-const mcaRouter = new Router();
+const mcaRouter  = new CorsaceRouter();
 const modeStaff = config.discord.roles.mca;
 
-mcaRouter.get("/", async (ctx) => {
+mcaRouter.$get<{ mca: MCAInfo }>("/", async (ctx) => {
     if (await ctx.cashed())
         return;
 
     const param = parseQueryParam(ctx.query.year);
     if (!param) {
-        ctx.body = {error: "No year specified!"};
+        ctx.body = {
+            success: false,
+            error: "No year specified!",
+        };
         return;
     }
     const year = parseInt(param);
     if (isNaN(year)) {
-        ctx.body = {error: "Invalid year specified!"};
+        ctx.body = {
+            success: false,
+            error: "Invalid year specified!",
+        };
         return;
     }
 
@@ -32,31 +40,51 @@ mcaRouter.get("/", async (ctx) => {
     });
 
     if (mca)
-        ctx.body = mca;
+        ctx.body = {
+            success: true,
+            mca: mca.getInfo(),
+        };
     else
-        ctx.body = {error: "No MCA for this year exists!"};
+        ctx.body = {
+            success: false,
+            error: "No MCA for this year exists!",
+        };
 });
 
-mcaRouter.get("/all", async (ctx) => {
+mcaRouter.$get<{ mca: MCAInfo[] }>("/all", async (ctx) => {
     const mca = await MCA.find();
     const mcaInfo = mca.map(x => x.getInfo());
 
-    ctx.body = mcaInfo;
+    ctx.body = {
+        success: true,
+        mca: mcaInfo,
+    };
 });
 
-mcaRouter.get("/front", async (ctx) => {
+mcaRouter.$get<{ frontData: MCAFrontData }>("/front", async (ctx) => {
     if (await ctx.cashed())
         return;
 
     const mca = ctx.query.year ? await MCA.findOne({ where: { year: parseInt(parseQueryParam(ctx.query.year)!.toString(), 10) }}) : null;
 
     if (!mca)
-        return ctx.body = { error: "There is no MCA for this year currently!" };
+        return ctx.body = {
+            success: false,
+            error: "There is no MCA for this year currently!",
+        };
 
-    const frontData = {};
+    const frontData: MCAFrontData = {
+        standard: undefined,
+        taiko: undefined,
+        fruits: undefined,
+        mania: undefined,
+        storyboard: undefined,
+    };
 
     const modes = await ModeDivision.find();
     await Promise.all(modes.map(mode => (async () => {
+        const modeName: keyof typeof ModeDivisionType = mode.name as keyof typeof ModeDivisionType;
+
         const beatmapCounter = Beatmapset
             .createQueryBuilder("beatmapset")
             .innerJoinAndSelect("beatmapset.beatmaps", "beatmap", mode.ID === 5 ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: mode.ID === 5 ? true : mode.ID })
@@ -75,19 +103,22 @@ mcaRouter.get("/front", async (ctx) => {
                 },
             }), 
             beatmapCounter,
-            (await discordGuild()).members.cache.filter(x => x.roles.cache.has(modeStaff[mode.name])).map(x => x.nickname ?? x.user.username),
+            (await discordGuild()).members.cache.filter(x => x.roles.cache.has(modeStaff[modeName])).map(x => x.nickname ?? x.user.username),
         ]);
 
         const categoryInfos = categories.map(x => x.getCondensedInfo());
 
-        frontData[mode.name] = {
+        frontData[modeName] = {
             categoryInfos,
             beatmapCount,
             organizers,
         };
     })()));
 
-    ctx.body = { frontData };
+    ctx.body = {
+        success: true,
+        frontData,
+    };
 });
 
 export default mcaRouter;

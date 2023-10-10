@@ -1,14 +1,14 @@
-import Router from "@koa/router";
-import Axios from "axios";
+import { CorsaceRouter } from "../../corsaceRouter";
+import axios from "axios";
 import { User } from "../../../Models/user";
 import { MapperQuery } from "../../../Interfaces/queries";
 import { parseQueryParam } from "../../utils/query";
 import { isCorsace, isLoggedInDiscord } from "../../middleware";
 import { osuV2Client } from "../../osu";
 
-const usersRouter = new Router();
+const usersRouter = new CorsaceRouter();
 
-usersRouter.get("/search", async (ctx) => {
+usersRouter.$get<{ users: User[] }>("/search", async (ctx) => {
     const userSearch = ctx.query.user;
     const users = await User
         .createQueryBuilder("user")
@@ -20,24 +20,29 @@ usersRouter.get("/search", async (ctx) => {
         .limit(10)
         .getMany();
 
-    ctx.body = users;
+    ctx.body = {
+        success: true,
+        users,
+    };
 });
 
-usersRouter.get("/advSearch", async (ctx) => {
+usersRouter.$get<{ users: User[] }>("/advSearch", async (ctx) => {
     if (!ctx.query.year)
         return ctx.body = {
+            success: false,
             error: "No year given!",
         };
 
-    const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
+    const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") || 0;
     const order = parseQueryParam(ctx.query.order);
     if (order !== undefined && order !== "ASC" && order !== "DESC")
         return ctx.body = {
+            success: false,
             error: "order must be undefined, ASC or DESC",
         };
 
     const query: MapperQuery = {
-        text: parseQueryParam(ctx.query.text) || "",
+        text: parseQueryParam(ctx.query.text) ?? "",
         skip: String(skip),
         year: parseQueryParam(ctx.query.year)!,
         mode: parseQueryParam(ctx.query.mode),
@@ -48,23 +53,32 @@ usersRouter.get("/advSearch", async (ctx) => {
     
     if (ctx.query.friendFilter === "true") {
         if (!ctx.state.user)
-            return ctx.body = { error: "Please login via osu! to use the friends filter!" };
+            return ctx.body = {
+                success: false,
+                error: "Please login via osu! to use the friends filter!",
+            };
         try {
             const accessToken: string = await ctx.state.user.getAccessToken("osu");
             const friends = await osuV2Client.getUserFriends(accessToken);
             query.friends = friends.map(friend => friend.id);
         } catch (e) {
-            if (Axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) 
-                return ctx.body = { error: "Please re-login via osu! again in order to use the friends filter! If you logged in again via osu! and it still isn't working, contact VINXIS!" };
+            if (axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) 
+                return ctx.body = {
+                    success: false,
+                    error: "Please re-login via osu! again in order to use the friends filter! If you logged in again via osu! and it still isn't working, contact VINXIS!",
+                };
             else 
                 throw e;
         }
     }
 
-    ctx.body = await User.basicSearch(query);
+    ctx.body = {
+        success: true,
+        users: await User.basicSearch(query),
+    };
 });
 
-usersRouter.get("/deepSearch", isLoggedInDiscord, isCorsace, async (ctx) => {
+usersRouter.$get<{ users: User[] }>("/deepSearch", isLoggedInDiscord, isCorsace, async (ctx) => {
     const userSearch = ctx.query.user;
     const users = await User
         .createQueryBuilder("user")
@@ -83,7 +97,10 @@ usersRouter.get("/deepSearch", isLoggedInDiscord, isCorsace, async (ctx) => {
         .limit(10)
         .getMany();
 
-    ctx.body = users;
+    ctx.body = {
+        success: true,
+        users,
+    };
 });
 
 export default usersRouter;

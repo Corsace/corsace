@@ -21,7 +21,7 @@ export function gets3Key (bucket: string, obj?: string | null | Mappool): string
     const urlObject = new URL(url);
     const segments = urlObject.pathname.split("/");
 
-    const s3Bucket = buckets[bucket];
+    const s3Bucket = buckets[bucket as keyof typeof buckets];
     if (!s3Bucket)
         return;
 

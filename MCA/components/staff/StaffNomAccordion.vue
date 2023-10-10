@@ -124,9 +124,9 @@ export default class StaffNominationAccordion extends Vue {
     getNomineeName (nomination: StaffNomination) {
         if (nomination.beatmapset) {
             if (nomination.beatmap)
-                return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title} by ${nomination.beatmapset.creator!.osuUsername} [${nomination.beatmap?.difficulty}]`;
+                return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title} by ${nomination.beatmapset.creator.osuUsername} [${nomination.beatmap?.difficulty}]`;
 
-            return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title} by ${nomination.beatmapset.creator!.osuUsername}`;
+            return `${nomination.beatmapset.artist} - ${nomination.beatmapset.title} by ${nomination.beatmapset.creator.osuUsername}`;
         }
 
         return `${nomination.user?.osuUsername}`;

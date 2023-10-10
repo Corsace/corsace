@@ -31,6 +31,7 @@ import StagePageHeader from "./StagePageHeader.vue";
 import StagePageFilters from "./StagePageFilters.vue";
 import StagePageList from "./StagePageList.vue";
 import { CategoryStageInfo } from "../../../Interfaces/category";
+import { StageType } from "../../../Interfaces/mca";
 
 const mcaAyimModule = namespace("mca-ayim");
 const stageModule = namespace("stage");
@@ -51,9 +52,9 @@ export default class StateContent extends Vue {
     @stageModule.State count!: number;
     @stageModule.State selectedCategory!: CategoryStageInfo;
 
-    @stageModule.Action updateStage;
-    @stageModule.Action setInitialData;
-    @stageModule.Action reset;
+    @stageModule.Action updateStage!: (stage: StageType) => void;
+    @stageModule.Action setInitialData!: () => Promise<void>;
+    @stageModule.Action reset!: (sectionReset?: boolean) => void;
 
     @Watch("selectedMode")
     onSelectedModeChange () {

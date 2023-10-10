@@ -11,7 +11,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
         await m.deferReply();
         
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "all", shortName: "a", paramType: "boolean", optional: true },
         { name: "manager", shortName: "m", paramType: "boolean", optional: true },
     ]);

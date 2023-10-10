@@ -38,12 +38,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
         (m instanceof Message && m.content.split(" ").length === 3) ||
         (m instanceof ChatInputCommandInteraction && m.options.getSubcommand() === "map")
     )
-        params = extractParameters<parametersMap>(m, [
+        params = await extractParameters<parametersMap>(m, [
             { name: "pool", paramType: "string" },
             { name: "slot", paramType: "string", postProcess: postProcessSlotOrder },
         ]);
     else
-        params = extractParameters<parametersSlot>(m, [
+        params = await extractParameters<parametersSlot>(m, [
             { name: "pool", paramType: "string" },
             { name: "slot_acronym", paramType: "string" },
             { name: "slot_name", paramType: "string" },

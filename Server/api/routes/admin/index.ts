@@ -1,16 +1,16 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { cache } from "../../../../Server/cache";
 import { isCorsace, isLoggedInDiscord } from "../../../../Server/middleware";
 
-const adminRouter = new Router;
+const adminRouter  = new CorsaceRouter();
 
-adminRouter.use(isLoggedInDiscord);
-adminRouter.use(isCorsace);
+adminRouter.$use(isLoggedInDiscord);
+adminRouter.$use(isCorsace);
 
-adminRouter.get("/reset", async (ctx) => {
+adminRouter.$get("/reset", (ctx) => {
     cache.reset();
     ctx.body = {
-        success: "Success",
+        success: true,
     };
 });
 

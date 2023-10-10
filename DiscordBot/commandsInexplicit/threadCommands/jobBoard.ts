@@ -37,7 +37,7 @@ export async function jobBoardCreate (t: ThreadChannel, { m, creator, tournament
         if (response.content.toLowerCase() === "yes" || response.content.toLowerCase() === "y") {
             const date = new Date(parseDateOrTimestamp(response.content));
             if (isNaN(date.getTime()) || date.getTime() < Date.now()) {
-                m.channel.send("Invalid date.");
+                await m.channel.send("Invalid date.");
                 return;
             }
 

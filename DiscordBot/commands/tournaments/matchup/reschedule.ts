@@ -43,7 +43,7 @@ async function rescheduleLog (matchup: Matchup, prevDate: Date) {
             pings.push(`<@${matchup.streamer.discord.userID}>`);
         if (matchup.commentators && matchup.commentators.length > 0)
             pings.push(matchup.commentators.map((commentator) => `<@${commentator.discord.userID}>`).join(" "));
-        await rescheduleChannelMessage.send(`${pings.join(" ")}\n\nMatchup ID ${matchup.ID} in stage \`${matchup.stage?.name || "N/A"}\` between \`${matchup.team1?.name || "N/A"}\` and \`${matchup.team2?.name || "N/A"}\` has been rescheduled from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${matchup.date.toUTCString()} ${discordStringTimestamp(matchup.date)}\n\nAny relevant staff members should confirm that they are available at this time, or remove themselves from the matchup otherwise.`);
+        await rescheduleChannelMessage.send(`${pings.join(" ")}\n\nMatchup ID ${matchup.ID} in stage \`${matchup.stage?.name ?? "N/A"}\` between \`${matchup.team1?.name ?? "N/A"}\` and \`${matchup.team2?.name ?? "N/A"}\` has been rescheduled from ${prevDate.toUTCString()} ${discordStringTimestamp(prevDate)} to ${matchup.date.toUTCString()} ${discordStringTimestamp(matchup.date)}\n\nAny relevant staff members should confirm that they are available at this time, or remove themselves from the matchup otherwise.`);
     } catch (e) {
         if (!(e instanceof DiscordAPIError) || e.code !== 10003) 
             throw e;
@@ -53,7 +53,7 @@ async function rescheduleLog (matchup: Matchup, prevDate: Date) {
 async function run (m: Message | ChatInputCommandInteraction) {
     const message = await respond(m, "Rescheduling matchup...");
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "date", paramType: "string", customHandler: extractDate },
         { name: "matchup", paramType: "integer", optional: true },
         { name: "tournament", paramType: "string", optional: true },
@@ -110,7 +110,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             if (!await securityChecks(m, true, false, [], [TournamentRoleType.Organizer, TournamentRoleType.Referees]))
                 return;
 
-            if (!await confirmCommand(m, `Do you wish to reschedule the matchup ID ${matchup.ID} in stage \`${matchup.stage?.name || "N/A"}\` between \`${matchup.team1?.name || "N/A"}\` and \`${matchup.team2?.name || "N/A"}\` to ${discordStringTimestamp(date)}?`)) {
+            if (!await confirmCommand(m, `Do you wish to reschedule the matchup ID ${matchup.ID} in stage \`${matchup.stage?.name ?? "N/A"}\` between \`${matchup.team1?.name ?? "N/A"}\` and \`${matchup.team2?.name ?? "N/A"}\` to ${discordStringTimestamp(date)}?`)) {
                 await message.edit("Ok Lol . stopped reschedule");
                 return;
             }
@@ -155,10 +155,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const matchupList = matchups.map((matchup) => {
             return {
                 ID: matchup.ID,
-                name: `${matchup.team1?.name || "N/A"} vs ${matchup.team2?.name || "N/A"} in ${matchup.stage?.name || "N/A"}`,
+                name: `${matchup.team1?.name ?? "N/A"} vs ${matchup.team2?.name ?? "N/A"} in ${matchup.stage?.name ?? "N/A"}`,
             };
         });
-        const matchupListResult = await getFromList(m, matchupList, "matchup", tournamentParam || channelID(m));
+        const matchupListResult = await getFromList(m, matchupList, "matchup", tournamentParam ?? channelID(m));
         if (!matchupListResult) {
             await message.edit("Could not find a valid matchup");
             return;
@@ -229,9 +229,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .andWhere("matchup.date < :date2", { date2: new Date(date.getTime() + 3600000) })
         .andWhere(new Brackets((qb) => {
             qb.where("matchup.ID != :matchupID", { matchupID: matchup!.ID })
-                .orWhere("matchup.ID != :potentialID", { potentialID: matchup!.potentialFor?.ID || 0 })
+                .orWhere("matchup.ID != :potentialID", { potentialID: matchup!.potentialFor?.ID ?? 0 })
                 .orWhere("potentialFor.ID != :matchupID2", { matchupID2: matchup!.ID })
-                .orWhere("potentialFor.ID != :potentialID2", { potentialID2: matchup!.potentialFor?.ID || 0 });
+                .orWhere("potentialFor.ID != :potentialID2", { potentialID2: matchup!.potentialFor?.ID ?? 0 });
         }))
         .andWhere("matchup.invalid = 0")
         .andWhere(new Brackets((qb) => {
@@ -243,7 +243,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .getOne();
 
     if (existing) {
-        await message.edit(`YO theres already a matchup scheduled for ${date.toUTCString()} ${discordStringTimestamp(date)} between \`${existing.team1?.name || "N/A"}\` and \`${existing.team2?.name || "N/A"}\` this is gonna cause a conflict for the teams cuz it's within 1 hour of the new time`);
+        await message.edit(`YO theres already a matchup scheduled for ${date.toUTCString()} ${discordStringTimestamp(date)} between \`${existing.team1?.name ?? "N/A"}\` and \`${existing.team2?.name ?? "N/A"}\` this is gonna cause a conflict for the teams cuz it's within 1 hour of the new time`);
         return;
     }
 

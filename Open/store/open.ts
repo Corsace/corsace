@@ -33,7 +33,7 @@ export const state = (): OpenState => ({
 });
 
 export const mutations: MutationTree<OpenState> = {
-    async setTitle (state, year: number | undefined) {
+    setTitle (state, year: number | undefined) {
         state.title = `Corsace Open - ${year}` || "";
     },
     setTournament (state, tournament: Tournament | undefined) {
@@ -84,8 +84,8 @@ export const mutations: MutationTree<OpenState> = {
             state.tournament.stages.sort((a, b) => a.order - b.order);
         }
     },
-    async setTeamList (state, teams: TeamList[] | undefined) {
-        state.teamList = teams || null;
+    setTeamList (state, teams: TeamList[] | undefined) {
+        state.teamList = teams ?? null;
         if (state.teamList) {
             const unregisteredTeams = state.teamList.filter(team => !team.isRegistered);
             unregisteredTeams
@@ -99,37 +99,37 @@ export const mutations: MutationTree<OpenState> = {
             state.teamList = [...registeredTeams, ...unregisteredTeams];
         }
     },
-    async setTeam (state, teams: Team[] | undefined) {
+    setTeam (state, teams: Team[] | undefined) {
         teams = teams?.filter(team => !team.tournaments || !team.tournaments.some(tournament => tournament.ID !== state.tournament?.ID)); // TODO: Remove this when the website supports multiple teams for a user
 
-        state.team = teams?.[0] || null;
+        state.team = teams?.[0] ?? null;
         if (state.team?.qualifier)
             state.team.qualifier = {
                 ...state.team.qualifier,
                 date: new Date(state.team.qualifier.date),
             };
     },
-    async setTeamInvites (state, invites: TeamUser[] | undefined) {
+    setTeamInvites (state, invites: TeamUser[] | undefined) {
         if (state.team)
             state.team.invites = invites;
     },
-    async setInvites (state, invites: BaseTeam[] | undefined) {
-        state.teamInvites = invites || null;
+    setInvites (state, invites: BaseTeam[] | undefined) {
+        state.teamInvites = invites ?? null;
     },
-    async setQualifierList (state, qualifiers: BaseQualifier[] | undefined) {
+    setQualifierList (state, qualifiers: BaseQualifier[] | undefined) {
         state.qualifierList = qualifiers?.map(q => ({
             ...q,
             date: new Date(q.date),
-        })) || null;
+        })) ?? null;
     },
-    async setMatchups (state, matchups: MatchupList[] | undefined) {
+    setMatchups (state, matchups: MatchupList[] | undefined) {
         state.matchupList = matchups?.map(matchup => {
             matchup.date = new Date(matchup.date);
             return matchup;
-        }) || [];
+        }) ?? [];
         state.matchupList.sort((a, b) => a.date.getTime() - b.date.getTime());
     },
-    async setMappools (state, mappools: Mappool[] | undefined) {
+    setMappools (state, mappools: Mappool[] | undefined) {
         state.mappools = mappools?.map(mappool => ({
             ...mappool,
             createdAt: new Date(mappool.createdAt),
@@ -138,13 +138,13 @@ export const mutations: MutationTree<OpenState> = {
                 ...slot,
                 createdAt: new Date(slot.createdAt),
             })),
-        })) || [];
+        })) ?? [];
     },
-    async setScores (state, scores: MatchupScore[] | undefined) {
-        state.scores = scores || null;
+    setScores (state, scores: MatchupScore[] | undefined) {
+        state.scores = scores ?? null;
     },
-    async setStaffList (state, staff: StaffList[] | undefined) {
-        state.staffList = staff || null;
+    setStaffList (state, staff: StaffList[] | undefined) {
+        state.staffList = staff ?? null;
     },
 };
 
@@ -153,23 +153,23 @@ export const getters: GetterTree<OpenState, OpenState> = {
 
 export const actions: ActionTree<OpenState, OpenState> = {
     async setTournament ({ commit }, year) {
-        const { data } = await this.$axios.get(`/api/tournament/open/${year}`);
+        const { data } = await this.$axios.get<{ tournament: Tournament }>(`/api/tournament/open/${year}`);
 
-        if (!data.error) {
-            commit("setTournament", data);
+        if (data.success) {
+            commit("setTournament", data.tournament);
         }
     },
     async setTeamList ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/teams`);
+        const { data } = await this.$axios.get<{ teams: Team[] }>(`/api/tournament/${tournamentID}/teams`);
 
-        if (!data.error)
-            commit("setTeamList", data);
+        if (data.success)
+            commit("setTeamList", data.teams);
     },
     async setTeam ({ commit, dispatch }) {
-        const { data } = await this.$axios.get(`/api/team`);
+        const { data } = await this.$axios.get<{ teams: Team[] }>(`/api/team`);
 
-        if (!data.error)
-            commit("setTeam", data);
+        if (data.success)
+            commit("setTeam", data.teams);
         
         await dispatch("setTeamInvites");
     },
@@ -178,55 +178,55 @@ export const actions: ActionTree<OpenState, OpenState> = {
         if (!team)
             return;
 
-        const { data } = await this.$axios.get(`/api/team/invite/${team.ID}`);
+        const { data } = await this.$axios.get<{ invites: TeamUser[] }>(`/api/team/invite/${team.ID}`);
 
-        if (!data.error)
-            commit("setTeamInvites", data);
+        if (data.success)
+            commit("setTeamInvites", data.invites);
     },
     async setInvites ({ commit }) {
-        const { data } = await this.$axios.get(`/api/team/invite/user`);
+        const { data } = await this.$axios.get<{ invites: BaseTeam[] }>(`/api/team/invite/user`);
 
-        if (!data.error)
-            commit("setInvites", data);
+        if (data.success)
+            commit("setInvites", data.invites);
     },
     async setQualifierList ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/qualifiers`);
+        const { data } = await this.$axios.get<{ qualifiers: BaseQualifier[] }>(`/api/tournament/${tournamentID}/qualifiers`);
 
-        if (!data.error)
-            commit("setQualifierList", data);
+        if (data.success)
+            commit("setQualifierList", data.qualifiers);
     },
     async setMatchups ({ commit }, stageID) {
         if (!stageID || isNaN(parseInt(stageID)))
             return;
 
-        const { data } = await this.$axios.get(`/api/stage/${stageID}/matchups`);
+        const { data } = await this.$axios.get<{ matchups: MatchupList[] }>(`/api/stage/${stageID}/matchups`);
 
-        if (!data.error)
+        if (data.success)
             commit("setMatchups", data.matchups);
     },
     async setMappools ({ commit }, stageID) {
         if (!stageID || isNaN(parseInt(stageID)))
             return;
 
-        const { data } = await this.$axios.get(`/api/stage/${stageID}/mappools`);
+        const { data } = await this.$axios.get<{ mappools: Mappool[] }>(`/api/stage/${stageID}/mappools`);
 
-        if (!data.error)
+        if (data.success)
             commit("setMappools", data.mappools);
     },
     async setScores ({ commit }, stageID) {
         if (!stageID || isNaN(parseInt(stageID)))
             return;
 
-        const { data } = await this.$axios.get(`/api/stage/${stageID}/scores`);
+        const { data } = await this.$axios.get<{ scores: MatchupScore[] }>(`/api/stage/${stageID}/scores`);
 
-        if (!data.error)
+        if (data.success)
             commit("setScores", data.scores);
     },
     async setStaffList ({ commit }, tournamentID) {
-        const { data } = await this.$axios.get(`/api/tournament/${tournamentID}/staff`);
+        const { data } = await this.$axios.get<{ staff: StaffList[] }>(`/api/tournament/${tournamentID}/staff`);
 
-        if (!data.error)
-            commit("setStaffList", data);
+        if (data.success)
+            commit("setStaffList", data.staff);
     },
     async setInitialData ({ commit, dispatch }, year) {
         await Promise.all([

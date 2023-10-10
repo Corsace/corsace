@@ -22,7 +22,8 @@ export class MCA2021Seeding1655696966203 implements MigrationInterface {
         console.warn("MCA 2021 seeding file doesn't exist, skipping migration");
     }
 
-    public async down (queryRunner: QueryRunner): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public down (queryRunner: QueryRunner): Promise<void> {
         throw new Error("There is no going back.");
     }
 

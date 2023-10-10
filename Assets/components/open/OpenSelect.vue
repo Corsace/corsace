@@ -22,8 +22,9 @@ export default class OpenSelect extends Vue {
     @PropSync("value", { type: String }) baseVal!: string;
     @PropSync("options", { type: Array }) optionsVal!: { value: string, text: string }[];
 
-    updateValue (e) {
-        this.$emit("change", e.target.value);
+    updateValue (e: Event) {
+        if (e.target instanceof HTMLSelectElement)
+            this.$emit("change", e.target.value);
     }
 }
 </script>

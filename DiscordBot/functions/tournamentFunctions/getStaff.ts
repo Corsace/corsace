@@ -11,13 +11,13 @@ export default async function getStaff (m: Message | ChatInputCommandInteraction
     let discordUser: DiscordUser | GuildMember;
     if (m instanceof ChatInputCommandInteraction)
         discordUser = m.options.getUser("user")!;
-    else if (m.mentions.members && m.mentions.members.first())
+    else if (m.mentions.members?.first())
         discordUser = m.mentions.members.first()!;
     else {
         const members = await m.guild!.members.fetch({ query: target });
         const member = members.first();
         if (!member) {
-            m.reply(`Can't find user \`${target}\` in the server. Contact VINXIS if the problem persists`);
+            await m.reply(`Can't find user \`${target}\` in the server. Contact VINXIS if the problem persists`);
             return;
         }
         discordUser = member;

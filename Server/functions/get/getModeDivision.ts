@@ -1,11 +1,12 @@
-import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivisionType } from "../../../Interfaces/modes";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 
 export default async function getModeDivison (modeDivisionId: number, save: boolean) {
     modeDivisionId += 1;
     let mode = await ModeDivision.findOne({ where: { ID: modeDivisionId }});
     if (!mode) {
         if (save) {
-            mode = new ModeDivision;
+            mode = new ModeDivision();
             mode.ID = modeDivisionId;
             mode.name = ModeDivisionType[mode.ID];
             mode = await mode.save();

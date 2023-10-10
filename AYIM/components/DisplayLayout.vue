@@ -7,51 +7,49 @@
         stretch
         :ignore-modes="['storyboard']"
     >
-        <template>
-            <div class="ayim-nav">
-                <nuxt-link
-                    :to="`/${mca.year}/mapsets/records`"
-                    class="ayim-nav__item button"
-                    :class="[
-                        getNavClass('mapsets'),
-                        `button--${viewTheme}`,
-                    ]"
-                >
-                    {{ $t('ayim.mapsets.name') }}
-                </nuxt-link>
-                <nuxt-link
-                    :to="`/${mca.year}/mappers/records`"
-                    class="ayim-nav__item button"
-                    :class="[
-                        getNavClass('mappers'),
-                        `button--${viewTheme}`,
-                    ]"
-                >
-                    {{ $t('ayim.mappers.name') }}
-                </nuxt-link>
-                <nuxt-link
-                    :to="`/${mca.year}/nominators/records`"
-                    class="ayim-nav__item button"
-                    :class="[
-                        getNavClass('nominators'),
-                        `button--${viewTheme}`,
-                    ]"
-                >
-                    {{ $t('ayim.nominators.name') }}
-                </nuxt-link>
-                <nuxt-link
-                    v-if="mca.year < 2020"
-                    :to="`/${mca.year}/comments`"
-                    class="ayim-nav__item button"
-                    :class="[
-                        getNavClass('comments'),
-                        `button--${viewTheme}`,
-                    ]"
-                >
-                    {{ $t('ayim.comments.name') }}
-                </nuxt-link>
-            </div>
-        </template>
+        <div class="ayim-nav">
+            <nuxt-link
+                :to="`/${mca.year}/mapsets/records`"
+                class="ayim-nav__item button"
+                :class="[
+                    getNavClass('mapsets'),
+                    `button--${viewTheme}`,
+                ]"
+            >
+                {{ $t('ayim.mapsets.name') }}
+            </nuxt-link>
+            <nuxt-link
+                :to="`/${mca.year}/mappers/records`"
+                class="ayim-nav__item button"
+                :class="[
+                    getNavClass('mappers'),
+                    `button--${viewTheme}`,
+                ]"
+            >
+                {{ $t('ayim.mappers.name') }}
+            </nuxt-link>
+            <nuxt-link
+                :to="`/${mca.year}/nominators/records`"
+                class="ayim-nav__item button"
+                :class="[
+                    getNavClass('nominators'),
+                    `button--${viewTheme}`,
+                ]"
+            >
+                {{ $t('ayim.nominators.name') }}
+            </nuxt-link>
+            <nuxt-link
+                v-if="mca.year < 2020"
+                :to="`/${mca.year}/comments`"
+                class="ayim-nav__item button"
+                :class="[
+                    getNavClass('comments'),
+                    `button--${viewTheme}`,
+                ]"
+            >
+                {{ $t('ayim.comments.name') }}
+            </nuxt-link>
+        </div>
 
         <div class="ayim-content">
             <div
@@ -132,15 +130,15 @@ export default class DisplayLayout extends Vue {
         }
     }
 
-    handleScroll (event) {
-        if (event.target) {
+    handleScroll = (event: Event) => {
+        if (event.target instanceof HTMLElement) {
             this.scrollPos = event.target.scrollTop;
             this.scrollSize = event.target.scrollHeight - event.target.clientHeight; // U know... just in case the window size changes Lol
 
             const diff = Math.abs(this.scrollSize - this.scrollPos);
             this.emit(diff <= 50);
         }
-    }
+    };
 
     emit (currentlyBottom: boolean): void {
         if (currentlyBottom !== this.bottom) {

@@ -25,8 +25,8 @@ export default async function editProperty (m: Message, property: string, entity
     });
     return new Promise<boolean | string>((resolve) => {
         const filter = (msg: Message | MessageComponentInteraction) => commandUser(msg).id ===  userID;
-        const confirmationCollector = m.channel!.createMessageComponentCollector({ filter, time: 6000000 });
-        const idCollector = m.channel!.createMessageCollector({ filter, time: 6000000 });
+        const confirmationCollector = m.channel.createMessageComponentCollector({ filter, time: 6000000 });
+        const idCollector = m.channel.createMessageCollector({ filter, time: 6000000 });
         confirmationCollector.on("collect", async (i: MessageComponentInteraction) => {
             if (i.customId === ids.stop) {
                 await i.reply("Stopped command");
@@ -43,7 +43,7 @@ export default async function editProperty (m: Message, property: string, entity
             }
         });
 
-        idCollector.on("collect", async (msg: Message) => {
+        idCollector.on("collect", (msg: Message) => {
             resolve(msg.content);
             confirmationCollector.stop();
             idCollector.stop();

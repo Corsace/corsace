@@ -126,9 +126,9 @@ export default class Votes extends Vue {
                         !vote.beatmapset.artist.toLowerCase().includes(lowerText) &&
                         !vote.beatmapset.title.toLowerCase().includes(lowerText) &&
                         !vote.beatmapset.tags.toLowerCase().includes(lowerText) &&
-                        !vote.beatmapset.creator!.osuUsername.toLowerCase().includes(lowerText) && 
-                        !vote.beatmapset.creator!.osuID.includes(lowerText) &&
-                        !vote.beatmapset.creator!.discordUsername.toLowerCase().includes(lowerText)
+                        !vote.beatmapset.creator.osuUsername.toLowerCase().includes(lowerText) && 
+                        !vote.beatmapset.creator.osuID.includes(lowerText) &&
+                        !vote.beatmapset.creator.discordUsername.toLowerCase().includes(lowerText)
                     )
                         continue;
                 }
@@ -143,7 +143,7 @@ export default class Votes extends Vue {
             const groupIndex = groups.findIndex(g => g.category === vote.category);
 
             if (groupIndex !== -1) {
-                const voterIndex = groups[groupIndex].userVotes.findIndex(v => v.voter.osuID === vote.voter.osuID);
+                const voterIndex = groups[groupIndex].userVotes.findIndex(v => v.voter?.osuID === vote.voter.osuID);
 
                 if (voterIndex !== -1) {
                     groups[groupIndex].userVotes[voterIndex].votes.push(resultVote);
@@ -188,11 +188,11 @@ export default class Votes extends Vue {
     get selectedCategoryInfo (): UserVote[] | ResultVote[] {
         if (this.viewOption === "voters") {
             const group = this.votesByCategory.find(group => group.category === this.selectedCategoryId);
-            return group?.userVotes || [];
+            return group?.userVotes ?? [];
         }
 
         const group = this.resultsByCategory.find(group => group.category === this.selectedCategoryId);
-        return group?.results || [];
+        return group?.results ?? [];
     }
 
     get canSearch (): boolean {
@@ -208,14 +208,14 @@ export default class Votes extends Vue {
             return;
         }
 
-        const { data } = await this.$axios.get(`/api/staff/votes?category=${id}`);
+        const { data } = await this.$axios.get<{ staffVotes: StaffVote[] }>(`/api/staff/votes?category=${id}`);
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
             return;
         }
 
-        this.votes = data;
+        this.votes = data.staffVotes;
         this.selectedCategoryId = id;
     }
 
@@ -226,7 +226,7 @@ export default class Votes extends Vue {
         try {
             const { data } = await this.$axios.delete(`/api/staff/votes/${id}/${userID}`);
 
-            if (data.error) {
+            if (!data.success) {
                 alert(data.error);
                 return;
             }
@@ -238,7 +238,7 @@ export default class Votes extends Vue {
         }
     }
 
-    async changeView (option: ViewOption) {
+    changeView (option: ViewOption) {
         if (option !== this.viewOption) {
             this.votes = [];
             this.selectedCategoryId = null;

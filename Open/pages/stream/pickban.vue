@@ -204,6 +204,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+import { MapStatus } from "../../../Interfaces/matchup";
 import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue";
 
 import { Matchup as MatchupInterface } from "../../../Interfaces/matchup";
@@ -230,7 +231,7 @@ export default class Pickban extends Vue {
         if (!this.matchup?.sets?.[this.matchup.sets.length - 1]?.maps)
             return [];
 
-        return this.matchup.sets[this.matchup.sets.length - 1].maps!.filter(map => map.status === 2).sort((a, b) => a.order - b.order);
+        return this.matchup.sets[this.matchup.sets.length - 1].maps!.filter(map => map.status === MapStatus.Picked).sort((a, b) => a.order - b.order);
     }
 
     get latestMap () {
@@ -273,8 +274,8 @@ export default class Pickban extends Vue {
         if (typeof matchupID !== "string")
             return;
 
-        const { data } = await this.$axios.get(`/api/matchup/${matchupID}`);
-        if (data.error)
+        const { data } = await this.$axios.get<{ matchup: MatchupInterface }>(`/api/matchup/${matchupID}`);
+        if (!data.success)
             return;
 
         this.matchup = data.matchup;

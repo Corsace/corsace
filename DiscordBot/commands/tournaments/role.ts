@@ -26,7 +26,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "role", paramType: "role" },
         { name: "remove", shortName: "r", paramType: "boolean", optional: true },
         { name: "role_type", paramType: "string", optional: true },
@@ -87,7 +87,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     const roleType = role_type.toLowerCase().charAt(0).toUpperCase() + role_type.toLowerCase().slice(1);
-    if (TournamentRoleType[roleType] === undefined) {
+    if (!(roleType in TournamentRoleType)) {
         await respond(m, `Invalid role type \`${role_type}\` (Valid role types are: Participants, Staff, Managers, Mappoolers, Mappers, Testplayers, Referees, Streamers, Commentators, Designers, Developers)`);
         return;
     }
@@ -105,7 +105,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     tournamentRole = new TournamentRole();
     tournamentRole.roleID = discordRole.id;
-    tournamentRole.roleType = TournamentRoleType[roleType];
+    tournamentRole.roleType = TournamentRoleType[roleType as keyof typeof TournamentRoleType];
     tournamentRole.tournament = tournament;
     await tournamentRole.save();
     await respond(m, `Added ${discordRole.name} to ${tournament.name} as a \`${roleType}\` role`);

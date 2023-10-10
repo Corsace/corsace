@@ -4,13 +4,13 @@ import { User } from "./user";
 
 export interface Nomination {
     ID: number;
-    nominator: User;
+    nominator?: User;
     category: Category;
     user?: User;
     beatmapset?: Beatmapset;
     beatmap?: Beatmap;
     isValid: boolean;
-    reviewer: User;
+    reviewer?: User;
     lastReviewedAt: Date;
 }
 

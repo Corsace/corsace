@@ -21,7 +21,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "team", paramType: "string", optional: true },
         { name: "user", paramType: "string", customHandler: extractTargetText },
     ]);
@@ -30,7 +30,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { user, team } = params;
 
-    const tournamentTeam = await getTeam(m, team || cmdUser.ID, team ? "name" : "managerID", cmdUser.ID, true, true);
+    const tournamentTeam = await getTeam(m, team ?? cmdUser.ID, team ? "name" : "managerID", cmdUser.ID, true, true);
     if (!tournamentTeam)
         return;
     
@@ -40,7 +40,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .addSelect("user.osuUsername")
         .where("user.osuUsername LIKE :username", { username: `%${user}%` })
         .orWhere("user.osuUserID = :userID", { userID: user })
-        .getRawMany() as { user_ID: number, osuUsername: string }[];
+        .getRawMany() ;
 
     const baseUsers = users.map(u => {
         return {

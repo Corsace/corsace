@@ -12,7 +12,7 @@ export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel
 
     const logs = await nt.guild.fetchAuditLogs({ type: AuditLogEvent.ThreadUpdate });
     const log = logs.entries.first();
-    if (!log || !log.executor || !log.executorId || log.executorId === discordClient.user!.id)
+    if (!log?.executor || !log.executorId || log.executorId === discordClient.user!.id)
         return;
 
     if (!nt.parentId)
@@ -46,7 +46,7 @@ export default async function threadUpdate (ot: ThreadChannel, nt: ThreadChannel
         return;
     }
     if (!poolMatchOld) {
-        oldComponents.m.delete();
+        await oldComponents.m.delete();
         await command.create(nt, newComponents);
         await newComponents.m.delete();
         return;

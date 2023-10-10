@@ -7,6 +7,7 @@ import { Influence } from "./influence";
 import { Tournament } from "../tournaments/tournament";
 import { CustomBeatmap } from "../tournaments/mappools/customBeatmap";
 import { UserStatistics } from "../userStatistics";
+import { ModeDivisionType } from "../../Interfaces/modes";
 
 @Entity()
 export class ModeDivision extends BaseEntity {
@@ -50,17 +51,7 @@ export class ModeDivision extends BaseEntity {
 
 }
 
-export enum ModeDivisionType {
-    standard = 1,
-    taiko,
-    fruits,
-    mania,
-    storyboard,
-}
-
-export const modeTextHash: {
-    [key: string]: ModeDivisionType;
-} = {
+export const modeTextHash: Record<string, ModeDivisionType> = {
     "0": 1, 
     "standard": 1,
     "osu": 1,

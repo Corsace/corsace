@@ -19,7 +19,7 @@ export async function archiveJobThread (map: MappoolMap) {
         const ch = await discordClient.channels.fetch(map.jobPost.jobBoardThread) as ThreadChannel | null;
         if (ch) {
             const forum = ch.parent as ForumChannel;
-            await ch.setAppliedTags([ forum.availableTags.find(tag => tag.name.toLowerCase() === "closed")?.id || "" ]);
+            await ch.setAppliedTags([ forum.availableTags.find(tag => tag.name.toLowerCase() === "closed")?.id ?? "" ]);
             await ch.setArchived(true);
         }
     }

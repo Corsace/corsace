@@ -22,7 +22,7 @@ export default async function guildMemberRemove (member: GuildMember | PartialGu
         } as EmbedData);
 
         const channel = await discordClient.channels.fetch(config.discord.logChannel);
-        (channel as TextChannel).send({
+        await (channel as TextChannel).send({
             embeds: [embed],
         });
     }

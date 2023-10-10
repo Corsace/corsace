@@ -1,5 +1,5 @@
 
-import Axios from "axios";
+import axios from "axios";
 import { Entry, Parse } from "unzipper";
 import { ChatInputCommandInteraction, ForumChannel, Message } from "discord.js";
 import { Beatmap as APIBeatmap} from "nodesu";
@@ -26,10 +26,10 @@ export async function beatmapParse (m: Message | ChatInputCommandInteraction, di
     let background: string | undefined = undefined;
     let axiosData: any = null;
     try {
-        const { data } = await Axios.get(link, { responseType: "stream" });
+        const { data } = await axios.get(link, { responseType: "stream" });
         axiosData = data;
     } catch (e) {
-        m.reply("Can't download the map. Make sure the link is valid");
+        await m.reply("Can't download the map. Make sure the link is valid");
         return;
     }
     const zip = axiosData.pipe(Parse({ forceStream: true }));
@@ -230,7 +230,7 @@ export async function parsedBeatmapToCustom (
         "difficultyrating": `${mappoolMap.customBeatmap.totalSR}`,
     });
     const set = [apiBeatmap];
-    const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slot.allowedMods || 0)), modsToAcronym(slot.allowedMods || 0), set);
+    const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slot.allowedMods ?? 0)), modsToAcronym(slot.allowedMods ?? 0), set);
     mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
 
     await respond(m, `Submitted \`${artist} - ${title} [${diff}]\` to \`${mappoolSlot}\``, [mappoolMapEmbed]);

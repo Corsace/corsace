@@ -1,22 +1,22 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { isLoggedInDiscord } from "../../../middleware";
 import { User } from "../../../../Models/user";
 import { UserComment } from "../../../../Models/MCA_AYIM/userComments";
 import { isMCAStaff, validatePhaseYear } from "../../../middleware/mca-ayim";
-import { MCA } from "../../../../Models/MCA_AYIM/mca";
 import { StaffComment } from "../../../../Interfaces/comment";
 import { Brackets } from "typeorm";
 import { parseQueryParam } from "../../../utils/query";
+import { MCAAuthenticatedState, UserAuthenticatedState } from "koa";
 
-const commentsReviewRouter = new Router();
+const commentsReviewRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-commentsReviewRouter.use(isLoggedInDiscord);
-commentsReviewRouter.use(isMCAStaff);
+commentsReviewRouter.$use(isLoggedInDiscord);
+commentsReviewRouter.$use(isMCAStaff);
 
-commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
-    const mca: MCA = ctx.state.mca;
+commentsReviewRouter.$get<{staffComments: StaffComment[] }, MCAAuthenticatedState>("/:year", validatePhaseYear, async (ctx) => {
+    const mca = ctx.state.mca;
     const filter = ctx.query.filter ?? undefined;
-    const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) || "") : 0;
+    const skip = ctx.query.skip ? parseInt(parseQueryParam(ctx.query.skip) ?? "") : 0;
     const text = ctx.query.text ?? undefined;
     const query = UserComment
         .createQueryBuilder("userComment")
@@ -49,39 +49,43 @@ commentsReviewRouter.get("/:year", validatePhaseYear, async (ctx) => {
             .setParameter("criteria", `%${text}%`);
     }
     
-    const comments = await query.offset(isNaN(skip) ? 0 : skip).limit(10).getRawMany();
-    const staffComments = comments.map(comment => {
-        const keys = Object.keys(comment);
-        const staffComment: StaffComment = {
-            ID: comment.ID,
-            comment: comment.comment,
-            isValid: comment.isValid === 1,
-            mode: comment.modeName,
-            commenter: {
-                ID: 0,
-                osuID: "",
-                osuUsername: "",
-            },
-            target: {
-                osuID: "",
-                osuUsername: "",
-            },
-            lastReviewedAt: comment.lastReviewedAt ?? undefined,
-            reviewer: comment.reviewer ?? undefined,
-        };
-        for (const key of keys) {
-            if (key.includes("commenter"))
-                staffComment.commenter[key.replace("commenter", "")] = comment[key];
-            else if (key.includes("target"))
-                staffComment.target[key.replace("target", "")] = comment[key];
-        }
-
-        return staffComment;
-    });
-    ctx.body = staffComments;
+    const comments: {
+        ID: number;
+        comment: string;
+        commenterID: number;
+        isValid: number;
+        lastReviewedAt: Date;
+        modeName: string;
+        commenterosuID: string;
+        commenterosuUsername: string;
+        targetosuID: string;
+        targetosuUsername: string;
+        reviewer: string;
+    }[] = await query.offset(isNaN(skip) ? 0 : skip).limit(10).getRawMany();
+    const staffComments = comments.map<StaffComment>(comment => ({
+        ID: comment.ID,
+        comment: comment.comment,
+        isValid: comment.isValid === 1,
+        mode: comment.modeName,
+        commenter: {
+            ID: comment.commenterID,
+            osuID: comment.commenterosuID,
+            osuUsername: comment.commenterosuUsername,
+        },
+        target: {
+            osuID: comment.targetosuID,
+            osuUsername: comment.targetosuUsername,
+        },
+        lastReviewedAt: comment.lastReviewedAt ?? undefined,
+        reviewer: comment.reviewer ?? undefined,
+    }));
+    ctx.body = {
+        success: true,
+        staffComments,
+    };
 });
 
-commentsReviewRouter.post("/:id/review", async (ctx) => {
+commentsReviewRouter.$post<{ comment: UserComment }>("/:id/review", async (ctx) => {
     const comment = await UserComment.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     comment.comment = ctx.request.body.comment.trim();
     comment.isValid = true;
@@ -89,22 +93,26 @@ commentsReviewRouter.post("/:id/review", async (ctx) => {
     comment.lastReviewedAt = new Date();
     await comment.save();
 
-    ctx.body = comment;
+    ctx.body = {
+        success: true,
+        comment,
+    };
 });
 
-commentsReviewRouter.post("/:id/remove", async (ctx) => {
+commentsReviewRouter.$post("/:id/remove", async (ctx) => {
     const comment = await UserComment.findOneOrFail({ where: { ID: parseInt(ctx.params.id, 10) }});
     await comment.remove();
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 
-commentsReviewRouter.post("/:id/ban", async (ctx) => {
+commentsReviewRouter.$post("/:id/ban", async (ctx) => {
     const ID = parseInt(ctx.params.id, 10);
     if (!ID) {
         ctx.body = {
+            success: false,
             error: "Invalid ID provided.",
         };
         return;
@@ -125,14 +133,15 @@ commentsReviewRouter.post("/:id/ban", async (ctx) => {
     ]);
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 
-commentsReviewRouter.post("/:id/unban", async (ctx) => {
+commentsReviewRouter.$post("/:id/unban", async (ctx) => {
     const ID = parseInt(ctx.params.id, 10);
     if (!ID) {
         ctx.body = {
+            success: false,
             error: "Invalid ID provided.",
         };
         return;
@@ -147,7 +156,7 @@ commentsReviewRouter.post("/:id/unban", async (ctx) => {
     await user.save();
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 

@@ -1,12 +1,12 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { Qualifier, QualifierTeam } from "../../../Interfaces/qualifier";
 import { unallowedToPlay } from "../../../Interfaces/tournament";
 import { Matchup } from "../../../Models/tournaments/matchup";
 import { discordClient } from "../../discord";
 
-const qualifierRouter = new Router();
+const qualifierRouter  = new CorsaceRouter();
 
-qualifierRouter.get("/:qualifierID", async (ctx) => {
+qualifierRouter.$get<{ qualifierData: Qualifier }>("/:qualifierID", async (ctx) => {
     const qualifierID = parseInt(ctx.params.qualifierID);
     if (isNaN(qualifierID)) {
         ctx.body = {
@@ -55,7 +55,7 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
             ID: t.ID,
             name: t.name,
             avatarURL: t.avatarURL,
-        })) || [],
+        })) ?? [],
         scores: [],
     };
 
@@ -67,7 +67,7 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
     else if (ctx.state.user && (
         tournament.organizer.ID === ctx.state.user.ID || 
         qualifier.referee?.ID === ctx.state.user.ID ||
-        qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user.ID) || team.manager.ID === ctx.state.user.ID)
+        qualifier.teams?.some(team => team.members.some(member => member.ID === ctx.state.user!.ID) || team.manager.ID === ctx.state.user!.ID)
     ))
         getScores = true;
     else {
@@ -97,17 +97,20 @@ qualifierRouter.get("/:qualifierID", async (ctx) => {
                     teamID: team.ID,
                     teamName: team.name,
                     teamAvatar: team.avatarURL,
-                    username: score.user!.osu.username,
-                    userID: parseInt(score.user!.osu.userID),
+                    username: score.user.osu.username,
+                    userID: parseInt(score.user.osu.userID),
                     score: score.score,
-                    map: `${matchupMap.map!.slot!.acronym}${matchupMap.map!.order}`,
-                    mapID: parseInt(`${matchupMap.map!.slot.ID}${matchupMap.map!.order}`),
+                    map: `${matchupMap.map.slot.acronym}${matchupMap.map.order}`,
+                    mapID: parseInt(`${matchupMap.map.slot.ID}${matchupMap.map.order}`),
                 });
             }
         }
     }
 
-    ctx.body = qualifierData;
+    ctx.body = {
+        success: true,
+        qualifierData,
+    };
 });
 
 export default qualifierRouter;

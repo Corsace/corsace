@@ -49,16 +49,15 @@ export const getters: GetterTree<BaseState, BaseState> = {
 
 export const actions: ActionTree<BaseState, BaseState> = {
     async setLoggedInUser ({ commit }) {
-        const { data } = await this.$axios.get(`/api/user`);
+        const { data } = await this.$axios.get<{ user: UserInfo }>(`/api/user`);
 
-        if (!data.error) {
-            commit("setLoggedInUser", data);
-        }
+        if (data.success)
+            commit("setLoggedInUser", data.user);
     },
-    async setViewTheme ({ commit }, defaultTheme: "light" | "dark") {
+    setViewTheme ({ commit }, defaultTheme: "light" | "dark") {
         commit("setViewTheme", defaultTheme);
     },
-    async updateViewTheme ({ commit }, theme) {
+    updateViewTheme ({ commit }, theme) {
         commit("updateViewTheme", theme);
     },
     async setInitialData ({ commit, dispatch }, site) {

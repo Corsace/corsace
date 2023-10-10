@@ -46,7 +46,7 @@ export default class Years extends Vue {
 
     async mounted () {
         if (!(this.loggedInUser?.staff?.corsace || this.loggedInUser?.staff?.headStaff))
-            this.$router.replace("/");
+            await this.$router.replace("/");
     }
 
     async resetCache () {
@@ -55,9 +55,7 @@ export default class Years extends Vue {
         
         const { data } = await this.$axios.get(`/api/admin/reset`);
         
-        if (data.error)
-            alert(data.error);
-        else if (data.success)
+        if (data.success)
             alert(data.success);
         else {
             alert("Yo check console");

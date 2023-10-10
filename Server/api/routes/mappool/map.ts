@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../../corsaceRouter";
 import { createHash } from "crypto";
 import { Beatmap, Mode } from "nodesu";
 import { applyMods, modsToAcronym } from "../../../../Interfaces/mods";
@@ -6,15 +6,15 @@ import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
 import { Tournament } from "../../../../Models/tournaments/tournament";
 import { osuClient } from "../../../osu";
 
-const mappoolMapRouter = new Router();
+const mappoolMapRouter  = new CorsaceRouter();
 
-mappoolMapRouter.get("/", async (ctx) => {
+mappoolMapRouter.$get("/", (ctx) => {
     ctx.body = {
         success: true,
     };
 });
 
-mappoolMapRouter.get("/:mapName", async (ctx) => {
+mappoolMapRouter.$get<{ mappoolMap: MappoolMap }>("/:mapName", async (ctx) => {
     let showPrivate = false;
     let tournament: Tournament | null = null;
     if (ctx.query.key) {
@@ -29,6 +29,7 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
     } else {
         if (!ctx.query.tournamentID) {
             ctx.body = {
+                success: false,
                 error: "Missing tournamentID",
             };
             return;
@@ -42,6 +43,7 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
 
     if (!tournament) {
         ctx.body = {
+            success: false,
             error: "Invalid tournament",
         };
         return;
@@ -52,6 +54,7 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
 
     if (isNaN(order)) {
         ctx.body = {
+            success: false,
             error: "Invalid map name",  
         };
         return;
@@ -87,6 +90,7 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
 
     if (!mappoolMap) {
         ctx.body = {
+            success: false,
             error: "Invalid map name",
         };
         return;
@@ -94,6 +98,7 @@ mappoolMapRouter.get("/:mapName", async (ctx) => {
 
     if (!showPrivate && !mappoolMap.slot.mappool.isPublic) {
         ctx.body = {
+            success: false,
             error: "This mappool is private",
         };
         return;

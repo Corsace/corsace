@@ -4,7 +4,7 @@ import { Command } from "../index";
 
 const avatarOptions: ImageURLOptions = { extension: "png", size: 2048 };
 
-async function getAvatar (target: User | Guild | GuildMember, negate: boolean, guildSpecific?: boolean): Promise<string> {
+function getAvatar (target: User | Guild | GuildMember, negate: boolean, guildSpecific?: boolean): string {
     let ava: string | null;
 
     if (target instanceof Guild) {
@@ -15,22 +15,22 @@ async function getAvatar (target: User | Guild | GuildMember, negate: boolean, g
         ava = target.displayAvatarURL(avatarOptions);
     }
 
-    return negate ? `<${ava}>` : ava || "";
+    return negate ? `<${ava}>` : ava ?? "";
 }
 
 function getAvatarText (username: string, avatar: string): string {
     return `${username}'s avatar is: ${avatar}\n`;
 }
 
-async function getAvatarForUser (user: User | GuildMember, negate: boolean, guildSpecific?: boolean): Promise<string> {
-    const avatar = await getAvatar(user, negate, guildSpecific);
+function getAvatarForUser (user: User | GuildMember, negate: boolean, guildSpecific?: boolean): string {
+    const avatar = getAvatar(user, negate, guildSpecific);
     const username = user instanceof GuildMember ? user.user.username : user.username;
     return getAvatarText(username, avatar);
 }
 
-async function getAvatarForServer (m: Message | ChatInputCommandInteraction, negate: boolean): Promise<string> {
+function getAvatarForServer (m: Message | ChatInputCommandInteraction, negate: boolean): string {
     if (!m.guild) return "This isn't a server";
-    const avatar = await getAvatar(m.guild, negate);
+    const avatar = getAvatar(m.guild, negate);
     return `Here's the server avatar: ${avatar}`;
 }
 
@@ -47,24 +47,24 @@ async function handleAvatarCommand (m: Message): Promise<string> {
     m.content = m.content.replace(serverRegex, "").replace(negateRegex, "").replace(nonServerSpecificRegex, "").trim();
 
     if (serverAvatar) {
-        return await getAvatarForServer(m, negate);
+        return getAvatarForServer(m, negate);
     }
 
     if (m.mentions.members && m.mentions.members.size > 0) {
         let text = "";
         for (const user of m.mentions.users.values()) {
-            text += await getAvatarForUser(user, negate, guildSpecific);
+            text += getAvatarForUser(user, negate, guildSpecific);
         }
         return text;
     }
 
     if (avatarRegex.test(m.content)) {
         const regRes = avatarRegex.exec(m.content);
-        const target = regRes && regRes[4] ? regRes[4] : "";
+        const target = regRes?.[4] ?? "";
         if (!target) return "No target found";
         try {
             const user = await discordClient.users.fetch(target);
-            return await getAvatarForUser(user, negate, guildSpecific);
+            return getAvatarForUser(user, negate, guildSpecific);
         } catch (err) {
             return "Couldn't find that user";
         }
@@ -73,15 +73,15 @@ async function handleAvatarCommand (m: Message): Promise<string> {
     if (m.guild && m.guild.members.cache.has(m.author.id)) {
         const guildMember = m.guild.members.cache.get(m.author.id);
         if (!guildMember)
-            return await getAvatarForUser(m.author, negate);
+            return getAvatarForUser(m.author, negate);
         
-        return await getAvatarForUser(guildMember, negate, guildSpecific);
+        return getAvatarForUser(guildMember, negate, guildSpecific);
     }
     
-    return await getAvatarForUser(m.author, negate, guildSpecific);
+    return getAvatarForUser(m.author, negate, guildSpecific);
 }
 
-async function handleSlashCommand (m: ChatInputCommandInteraction): Promise<string> {
+function handleSlashCommand (m: ChatInputCommandInteraction): string {
     const preview = m.options.getBoolean("preview");
     const subcommand = m.options.getSubcommand();
     const guildSpecific = m.options.getBoolean("server_specific") !== null ? m.options.getBoolean("server_specific")! : true;
@@ -90,11 +90,11 @@ async function handleSlashCommand (m: ChatInputCommandInteraction): Promise<stri
     if (subcommand === "user") {
         const target = m.options.getUser("target");
         if (target) {
-            return await getAvatarForUser(target, negate, guildSpecific);
+            return getAvatarForUser(target, negate, guildSpecific);
         }
-        return await getAvatarForUser(m.user, negate);
+        return getAvatarForUser(m.user, negate);
     } else if (subcommand === "server" && m.guild) {
-        return await getAvatarForServer(m, negate);
+        return getAvatarForServer(m, negate);
     }
 
     return "Invalid subcommand";
@@ -103,13 +103,12 @@ async function handleSlashCommand (m: ChatInputCommandInteraction): Promise<stri
 async function run (m: Message | ChatInputCommandInteraction) {
     let text = "";
 
-    if (m instanceof Message) {
+    if (m instanceof Message)
         text = await handleAvatarCommand(m);
-    } else {
-        text = await handleSlashCommand(m);
-    }
+    else
+        text = handleSlashCommand(m);
 
-    m.reply(text);
+    await m.reply(text);
 }
 
 const data = new SlashCommandBuilder()

@@ -102,11 +102,11 @@ export default class StagePageFilters extends Vue {
 
     @stageModule.State showVoteChoiceBox!: boolean;
 
-    @stageModule.Action updateQuery;
-    @stageModule.Action updateFavourites;
-    @stageModule.Action updatePlayed;
+    @stageModule.Action updateQuery!: (query: Partial<StageQuery>) => void;
+    @stageModule.Action updateFavourites!: (favourites: boolean) => void;
+    @stageModule.Action updatePlayed!: (played: boolean) => void;
 
-    @stageModule.Mutation toggleVoteChoiceBox;
+    @stageModule.Mutation toggleVoteChoiceBox!: () => void;
 
     @mcaAyimModule.State loggedInMCAUser!: UserMCAInfo | null;
     @mcaAyimModule.State selectedMode!: string;
@@ -152,13 +152,13 @@ export default class StagePageFilters extends Vue {
         this.emitUpdate = _.debounce(this.emitUpdate, 500);
     }
 
-    debounce (event){
+    debounce (event: any){
         this.emitUpdate(event);
     }
 
-    emitUpdate (query: Partial<StageQuery>) {
+    emitUpdate = (query: Partial<StageQuery>) => {
         this.updateQuery(query);
-    }
+    };
 
 }
 </script>

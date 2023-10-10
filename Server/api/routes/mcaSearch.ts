@@ -1,11 +1,9 @@
-import { ParameterizedContext } from "koa";
 import { BeatmapInfo, BeatmapsetInfo } from "../../../Interfaces/beatmap";
 import { CategoryType } from "../../../Interfaces/category";
 import { StageQuery } from "../../../Interfaces/queries";
 import { UserChoiceInfo } from "../../../Interfaces/user";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { Category } from "../../../Models/MCA_AYIM/category";
-import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { User } from "../../../Models/user";
@@ -13,19 +11,36 @@ import { isEligibleFor } from "../../middleware/mca-ayim";
 import { parseQueryParam } from "../../utils/query";
 import { Beatmap } from "../../../Models/beatmap";
 import { osuV2Client } from "../../osu";
+import { MCAYearState } from "koa";
+import { ModeDivisionType } from "../../../Interfaces/modes";
+import { CorsaceContext } from "../../corsaceRouter";
 
-export default function mcaSearch (stage: "nominating" | "voting", initialCall: (ctx: ParameterizedContext, category: Category) => Promise<Vote[] | Nomination[]>) {
-    return async (ctx: ParameterizedContext) => {
+export default function mcaSearch (stage: "nominating" | "voting", initialCall: (ctx: CorsaceContext<object, MCAYearState>, category: Category) => Promise<Vote[] | Nomination[]>) {
+    return async (ctx: CorsaceContext<{
+        list: BeatmapsetInfo[] | BeatmapInfo[] | UserChoiceInfo[]
+        count: number;
+    }, MCAYearState>) => {
         if (!ctx.query.category)
             return ctx.body = {
+                success: false,
                 error: "Missing category ID!",
             };
 
         // Make sure user is eligible to nominate in this mode
-        const modeString: string = parseQueryParam(ctx.query.mode) || "standard";
-        const modeId = ModeDivisionType[modeString];
+        const modeString: string = parseQueryParam(ctx.query.mode) ?? "standard";
+        if (!(modeString in ModeDivisionType)) {
+            ctx.body = {
+                success: false,
+                error: "Invalid mode, please use standard, taiko, fruits or mania",
+            };
+            return;
+        } 
+        const modeId = ModeDivisionType[modeString as keyof typeof ModeDivisionType];
         if (!isEligibleFor(ctx.state.user, modeId, ctx.state.year))
-            return ctx.body = { error: "Not eligible for this mode!" };
+            return ctx.body = {
+                success: false,
+                error: "Not eligible for this mode!",
+            };
 
         let list: BeatmapInfo[] | BeatmapsetInfo[] | UserChoiceInfo[] = [];
         let setList: BeatmapsetInfo[] = [];
@@ -43,17 +58,17 @@ export default function mcaSearch (stage: "nominating" | "voting", initialCall: 
     
         
         // Check if this is the initial call, add currently nominated beatmaps/users at the top of the list
-        const skip = parseInt(parseQueryParam(ctx.query.skip) || "") || 0;
+        const skip = parseInt(parseQueryParam(ctx.query.skip) ?? "") ?? 0;
         if (skip === 0) {
             let objects = await initialCall(ctx, category) as Vote[]; // doesnt really matter the type in this case
             objects = objects.filter(o => o.category.ID === category.ID);
 
             if (category.type == CategoryType.Beatmapsets && ctx.state.year < 2021)
-                setList = objects.map(o => o.beatmapset?.getInfo(true) as BeatmapsetInfo);  
+                setList = objects.map(o => o.beatmapset!.getInfo(true)!);  
             else if (category.type == CategoryType.Beatmapsets && ctx.state.year >= 2021)
-                mapList = objects.map(o => o.beatmap?.getInfo(true) as BeatmapInfo);
+                mapList = objects.map(o => o.beatmap!.getInfo(true)!);
             else if (category.type == CategoryType.Users)
-                userList = objects.map(o => o.user?.getCondensedInfo(true) as UserChoiceInfo);
+                userList = objects.map(o => o.user!.getCondensedInfo(true)!);
         }
         
         if ((ctx.query.favourites === "true" || ctx.query.played === "true") && category.type == CategoryType.Beatmapsets) {
@@ -94,6 +109,7 @@ export default function mcaSearch (stage: "nominating" | "voting", initialCall: 
         const order = parseQueryParam(ctx.query.order);
         if (order !== undefined && order !== "ASC" && order !== "DESC")
             return ctx.body = {
+                success: false,
                 error: "order must be undefined, ASC or DESC",
             };
 
@@ -101,9 +117,9 @@ export default function mcaSearch (stage: "nominating" | "voting", initialCall: 
         const query: StageQuery = {
             category: category.ID,
             skip,
-            option: parseQueryParam(ctx.query.option) || "",
+            option: parseQueryParam(ctx.query.option) ?? "",
             order,
-            text: parseQueryParam(ctx.query.text) || "",
+            text: parseQueryParam(ctx.query.text) ?? "",
             favourites: favIDs,
             played: playedIDs,
         };
@@ -127,9 +143,13 @@ export default function mcaSearch (stage: "nominating" | "voting", initialCall: 
             list = userList;
             count = totalCount;
         } else
-            return ctx.body = { error: "Invalid type parameter. Only 'beatmapsets' or 'users' are allowed."};
+            return ctx.body = {
+                success: false,
+                error: "Invalid type parameter. Only 'beatmapsets' or 'users' are allowed.",
+            };
     
         ctx.body = {
+            success: true,
             list,
             count,
         };

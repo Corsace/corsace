@@ -54,7 +54,7 @@ async function execute (job: CronJobData) {
                 const tag = forumChannel.availableTags.find(t => t.name.toLowerCase() === "late")?.id;
                 if (tag) await thread.setAppliedTags([...thread.appliedTags, tag], "The deadline for this beatmap has now passed.");
 
-                const tournament = tournaments.find(t => t.server === thread.guildId) || await Tournament
+                const tournament = tournaments.find(t => t.server === thread.guildId) ?? await Tournament
                     .createQueryBuilder("tournament")
                     .leftJoinAndSelect("tournament.organizer", "organizer")
                     .leftJoinAndSelect("tournament.mode", "mode")
@@ -62,7 +62,7 @@ async function execute (job: CronJobData) {
                     .getOne();
 
                 if (tournament)
-                    mappoolLog(tournament, "customMapCron", tournament.organizer, `Applied the \`late\` tag for \`${thread.name}\` <#${thread.id}>`);
+                    await mappoolLog(tournament, "customMapCron", tournament.organizer, `Applied the \`late\` tag for \`${thread.name}\` <#${thread.id}>`);
             }
         } catch (err) {
             if (!(err instanceof DiscordAPIError && err.code === 10003))

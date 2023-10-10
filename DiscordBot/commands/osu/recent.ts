@@ -84,9 +84,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         });
 
         if (!userQ) {
-            userQ = new User;
+            userQ = new User();
             userQ.country = apiUser.country.toString();
-            userQ.osu = new OAuth;
+            userQ.osu = new OAuth();
             userQ.osu.userID = `${apiUser.userId}`;
             userQ.osu.username = apiUser.username;
             userQ.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;
@@ -131,7 +131,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
             await respond(m, `Error parsing the mods ${mods}`);
             return;
         }
-        scores = scores.filter(score => (!score.enabledMods && modVal === 0) || (strict && score.enabledMods && modVal === score.enabledMods) || (!strict && score.enabledMods && (modVal & score.enabledMods) === modVal));
+        scores = scores.filter(score => (!score.enabledMods && modVal === 0) ?? (strict && score.enabledMods && modVal === score.enabledMods) ?? (!strict && score.enabledMods && (modVal & score.enabledMods) === modVal));
         await respond(m, `No scores with the mod combination **${mods}** exist Lol`);
         return;
     }

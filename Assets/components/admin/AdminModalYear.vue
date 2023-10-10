@@ -42,14 +42,14 @@ export default class AdminModalYear extends Vue {
         
     @Watch("info", { immediate: true })
     onInfoChanged (info: MCAInfo | null) {
-        let now = new Date;
+        let now = new Date();
         this.mcaInfo = {
-            year: info?.name || now.getUTCFullYear() - 1,
-            nominationStart: this.formatDate(info?.nomination.start || now),
-            nominationEnd: this.formatDate(info?.nomination.end || this.addWeeks(now)),
-            votingStart: this.formatDate(info?.voting.start || this.addWeeks(now, 2)),
-            votingEnd: this.formatDate(info?.voting.end || this.addWeeks(now, 4)),
-            results: this.formatDate(info?.results || this.addWeeks(now, 5)),
+            year: info?.name ?? now.getUTCFullYear() - 1,
+            nominationStart: this.formatDate(info?.nomination.start ?? now),
+            nominationEnd: this.formatDate(info?.nomination.end ?? this.addWeeks(now)),
+            votingStart: this.formatDate(info?.voting.start ?? this.addWeeks(now, 2)),
+            votingEnd: this.formatDate(info?.voting.end ?? this.addWeeks(now, 4)),
+            results: this.formatDate(info?.results ?? this.addWeeks(now, 5)),
         };
     }
 
@@ -65,7 +65,7 @@ export default class AdminModalYear extends Vue {
     ] as InputField[];
 
     async save () {
-        let request: Promise<any>;
+        let request;
 
         if (this.info) {
             request = this.$axios.put(`/api/admin/years/${this.info.name}`, this.mcaInfo);
@@ -75,7 +75,7 @@ export default class AdminModalYear extends Vue {
 
         const { data } = await request;
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
             return;
         }

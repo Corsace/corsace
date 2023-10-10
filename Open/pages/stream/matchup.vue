@@ -213,8 +213,8 @@ export default class Matchup extends Vue {
         if (typeof matchupID !== "string")
             return;
 
-        const { data } = await this.$axios.get(`/api/matchup/${matchupID}/teams`);
-        if (data.error)
+        const { data } = await this.$axios.get<{ matchup: MatchupInterface }>(`/api/matchup/${matchupID}/teams`);
+        if (!data.success)
             return;
 
         this.matchup = data.matchup;

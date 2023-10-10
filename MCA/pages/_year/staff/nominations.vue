@@ -140,9 +140,9 @@ export default class Nominations extends Vue {
                         !nomination.beatmapset.artist.toLowerCase().includes(lowerText) &&
                         !nomination.beatmapset.title.toLowerCase().includes(lowerText) &&
                         !nomination.beatmapset.tags.toLowerCase().includes(lowerText) &&
-                        !nomination.beatmapset.creator!.osuUsername.toLowerCase().includes(lowerText) && 
-                        !nomination.beatmapset.creator!.osuID.includes(lowerText) &&
-                        !nomination.beatmapset.creator!.discordUsername.toLowerCase().includes(lowerText)
+                        !nomination.beatmapset.creator.osuUsername.toLowerCase().includes(lowerText) && 
+                        !nomination.beatmapset.creator.osuID.includes(lowerText) &&
+                        !nomination.beatmapset.creator.discordUsername.toLowerCase().includes(lowerText)
                     )
                         continue;
                 }
@@ -165,10 +165,10 @@ export default class Nominations extends Vue {
 
     get selectedCategoryNominations (): StaffNomination[] {
         const group = this.nominationsByCategory.find(group => group.categoryId === this.selectedCategoryId);
-        return group?.userNominations || [];
+        return group?.userNominations ?? [];
     }
 
-    async changeView (option: string) {
+    changeView (option: string) {
         const newSelection = this.selectedViewOptions.filter(o => o !== option);
         const arrayEquality = newSelection.every(e => this.selectedViewOptions.includes(e)) && 
             this.selectedViewOptions.length === newSelection.length;
@@ -189,14 +189,16 @@ export default class Nominations extends Vue {
             this.selectedCategoryId = null;
             return;
         }
-        const { data } = await this.$axios.get(`/api/staff/nominations?category=${id}`);
+        const { data } = await this.$axios.get<{
+            staffNominations: StaffNomination[];
+        }>(`/api/staff/nominations?category=${id}`);
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
             return;
         }
 
-        this.nominations = data.sort((a, b) => b.nominators.length - a.nominators.length);
+        this.nominations = data.staffNominations.sort((a, b) => b.nominators.length - a.nominators.length);
         this.selectedCategoryId = id;
     }
 
@@ -204,23 +206,32 @@ export default class Nominations extends Vue {
         if (!isValid && !confirm("Marking a nomination as invalid will hide the nomination from the list of choices in the nominating page and remove all nominators from the nomination. You will require to delete the nomination in order to remove the invalidation. Do you understand"))
             return;
 
-        const { data } = await this.$axios.post(`/api/staff/nominations/${id}/update`, {
+        const { data } = await this.$axios.post<{
+            isValid: boolean;
+            reviewer: string;
+            lastReviewedAt: string;
+        }>(`/api/staff/nominations/${id}/update`, {
             isValid,
         });
 
-        if (!data.error) {
+        if (data.success)
             this.updateLocalNomination(id, data);
-        } else {
+        else {
             alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)");
             console.error(data.error);
         }
     }
 
-    updateLocalNomination (id: number, data) {
+    updateLocalNomination (id: number, data: {
+        success: true;
+        isValid: boolean;
+        reviewer: string;
+        lastReviewedAt: string;
+    }) {
         const i = this.nominations.findIndex(n => n.ID === id);
         if (i !== -1) {
             this.nominations[i].reviewer = data.reviewer;
-            this.nominations[i].lastReviewedAt = data.lastReviewedAt;
+            this.nominations[i].lastReviewedAt = new Date(data.lastReviewedAt);
             this.nominations[i].isValid = data.isValid;
         }
     }
@@ -231,7 +242,7 @@ export default class Nominations extends Vue {
 
         const { data } = await this.$axios.delete(`/api/staff/nominations/${id}`);
 
-        if (!data.error) {
+        if (data.success) {
             this.deleteLocalNomination(id);
         } else {
             alert("Hellooo peep console (Ctrl + Shift + I then console tab at top)");

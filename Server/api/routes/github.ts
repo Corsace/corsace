@@ -1,11 +1,12 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { createHmac, timingSafeEqual } from "crypto";
 import { config } from "node-config-ts";
-import Axios from "axios";
+import axios from "axios";
 
-const githubRouter = new Router();
+const githubRouter  = new CorsaceRouter();
 
-githubRouter.post("/", async (ctx) => {
+// any is used here to send the discord github webhook data back to github as a response
+githubRouter.$post<any>("/", async (ctx) => {
     const signature = createHmac("sha256", config.github.webhookSecret)
         .update(JSON.stringify(ctx.request.body))
         .digest("hex");
@@ -36,7 +37,7 @@ githubRouter.post("/", async (ctx) => {
     }
 
     try {
-        const res = await Axios.post(`${config.github.webhookUrl}/github`, ctx.request.body, {
+        const res = await axios.post(`${config.github.webhookUrl}/github`, ctx.request.body, {
             headers: {
                 "content-type": "application/json",
                 "User-Agent": ctx.get("User-Agent"),
@@ -51,7 +52,10 @@ githubRouter.post("/", async (ctx) => {
         ctx.body = res.data;
     } catch (e) {
         ctx.status = 500;
-        ctx.body = "Internal server error";
+        ctx.body = {
+            success: false,
+            error: "Internal server error",
+        };
         console.error(e);
     }
 });

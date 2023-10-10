@@ -47,7 +47,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         round = await getRound(m, stage);
 
     // Check if a pickban order already exists
-    const orderQ = await MapOrder
+    const orderQ = MapOrder
         .createQueryBuilder("order")
         .leftJoinAndSelect("order.round", "round")
         .leftJoinAndSelect("order.stage", "stage");
@@ -133,8 +133,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const orderMade: MapOrder[] = [];
 
         let newOrder = "";
-        for (let i = 0; i < orderMsg.length; i++) {
-            const o = orderMsg[i];
+        for (const o of orderMsg) {
             if (o.length !== 2) {
                 const reply = await msg.reply(`Invalid pickban order: ${o}`);
                 setTimeout(async () => {

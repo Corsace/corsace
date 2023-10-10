@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { isLoggedIn } from "../../middleware";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Category } from "../../../Models/MCA_AYIM/category";
@@ -8,14 +8,16 @@ import { User } from "../../../Models/user";
 import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear } from "../../middleware/mca-ayim";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import mcaSearch from "./mcaSearch";
-import { ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
 import { isPossessive } from "../../../Models/MCA_AYIM/guestRequest";
+import { MCAYearState, UserAuthenticatedState } from "koa";
+import { ModeDivisionType } from "../../../Interfaces/modes";
+import { MCAStageData } from "../../../Interfaces/mca";
 
-const nominatingRouter = new Router();
+const nominatingRouter  = new CorsaceRouter<UserAuthenticatedState>();
 
-nominatingRouter.use(isLoggedIn);
+nominatingRouter.$use(isLoggedIn);
 
-nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"), async (ctx) => {
+nominatingRouter.$get<MCAStageData>("/:year?", validatePhaseYear, isPhaseStarted("nomination"), async (ctx) => {
     const [nominations, categories] = await Promise.all([
         Nomination
             .userNominations({
@@ -37,12 +39,13 @@ nominatingRouter.get("/:year?", validatePhaseYear, isPhaseStarted("nomination"),
     const categoryInfos: CategoryStageInfo[] = categories.map(x => x.getInfo() as CategoryStageInfo);
 
     ctx.body = {
+        success: true,
         nominations: filteredNominations,
         categories: categoryInfos,
     };
 });
 
-nominatingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), mcaSearch("nominating", async (ctx, category) => {
+nominatingRouter.$get("/:year?/search", validatePhaseYear, isPhaseStarted("nomination"), mcaSearch("nominating", async (ctx, category) => {
     return await Nomination
         .userNominations({
             userID: ctx.state.user.ID,
@@ -51,17 +54,18 @@ nominatingRouter.get("/:year?/search", validatePhaseYear, isPhaseStarted("nomina
         .getMany();
 }));
 
-nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
+nominatingRouter.$post<{ nomination: Nomination }, MCAYearState>("/:year?/create", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const category = await Category.findOneOrFail({
         where: {
             ID: ctx.request.body.categoryId,
         },
     });
-    const nominator: User = ctx.state.user;
+    const nominator = ctx.state.user;
     const nomineeID: number = ctx.request.body.nomineeId;
     
     if (!isEligibleFor(nominator, category.mode.ID, ctx.state.year))
-        return ctx.body = { 
+        return ctx.body = {
+            success: false,
             error: "You weren't active for this mode",
         };
     
@@ -75,6 +79,7 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
 
     if (categoryNominations.length >= category.maxNominations) {
         return ctx.body = { 
+            success: false,
             error: "You have already reached the max amount of nominations for this category! Please remove any current nomination(s) you may have in order to nominate anything else!", 
         };
     }
@@ -87,12 +92,16 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
     
     if (nomination && !nomination.isValid) {
         return ctx.body = {
+            success: false,
             error: "Selected nominee was denied for this category",
         };
     }
 
     if (nomination?.nominators.some(n => n.ID === nominator.ID)) {
-        throw new Error("Aldeady nominated");
+        return ctx.body = {
+            success: false,
+            error: "Already nominated",
+        };
     }
 
     if (!nomination) {
@@ -114,11 +123,13 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
 
             if (beatmapset.approvedDate?.getUTCFullYear() !== category.mca.year)
                 return ctx.body = {
+                    success: false,
                     error: "Mapset is ineligible for the given MCA year!",
                 };
 
             if (categoryNominations.some(n => n.beatmapset?.ID === beatmapset.ID)) {
                 return ctx.body = {
+                    success: false,
                     error: "You have already nominated this beatmap!", 
                 };
             }
@@ -126,34 +137,42 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
             if (category.filter) {
                 if (category.filter.minLength && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength >= category.filter!.minLength!))
                     return ctx.body = {
+                        success: false,
                         error: "Beatmapset does not exceed minimum length requirement!", 
                     };
                 if (category.filter.maxLength && !beatmapset.beatmaps.some(beatmap => beatmap.hitLength <= category.filter!.maxLength!))
                     return ctx.body = {
+                        success: false,
                         error: "Beatmapset exceeds maximum length requirement!", 
                     };
-                if (category.filter.minBPM && beatmapset.BPM < category.filter!.minBPM!)
+                if (category.filter.minBPM && beatmapset.BPM < category.filter.minBPM)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmapset does not exceed minimum BPM requirement!", 
                     };
-                if (category.filter.maxBPM && beatmapset.BPM > category.filter!.maxBPM!)
+                if (category.filter.maxBPM && beatmapset.BPM > category.filter.maxBPM)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmapset exceeds maximum BPM requirement!", 
                     };
                 if (category.filter.minSR && !beatmapset.beatmaps.some(beatmap => beatmap.totalSR >= category.filter!.minSR!))
                     return ctx.body = {
+                        success: false,
                         error: "Beatmapset does not exceed minimum SR requirement!", 
                     };
                 if (category.filter.maxSR && beatmapset.beatmaps.some(beatmap => beatmap.totalSR >= category.filter!.maxSR!))
                     return ctx.body = {
+                        success: false,
                         error: "Beatmapset exceeds maximum SR requirement!", 
                     };
                 if (category.filter.minCS && beatmapset.beatmaps.find(beatmap => beatmap.totalSR === beatmapset.beatmaps.reduce((prev, current) => (prev.totalSR > current.totalSR) ? prev : current).totalSR)!.circleSize < category.filter.minCS)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmapset does not exceed minimum CS requirement!", 
                     };
                 if (category.filter.maxCS && beatmapset.beatmaps.find(beatmap => beatmap.totalSR === beatmapset.beatmaps.reduce((prev, current) => (prev.totalSR > current.totalSR) ? prev : current).totalSR)!.circleSize > category.filter.maxCS)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmapset exceeds maximum CS requirement!", 
                     };
             }
@@ -168,55 +187,66 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
             });
             if (beatmap.beatmapset.approvedDate?.getUTCFullYear() !== category.mca.year)
                 return ctx.body = {
+                    success: false,
                     error: "Mapset is ineligible for the given MCA year!",
                 };
 
             if (categoryNominations.some(n => n.beatmap?.ID === beatmap.ID)) {
                 return ctx.body = {
+                    success: false,
                     error: "You have already nominated this beatmap!",
                 };
             }
             // Check if the category has filters since this is a beatmap search
             if (category.filter) {
-                if (category.filter.minLength && beatmap.hitLength < category.filter!.minLength!)
+                if (category.filter.minLength && beatmap.hitLength < category.filter.minLength)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmap does not exceed minimum length requirement!", 
                     };
-                if (category.filter.maxLength && beatmap.hitLength > category.filter!.maxLength!)
+                if (category.filter.maxLength && beatmap.hitLength > category.filter.maxLength)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmap exceeds maximum length requirement!", 
                     };
-                if (category.filter.minBPM && beatmap.beatmapset.BPM < category.filter!.minBPM!)
+                if (category.filter.minBPM && beatmap.beatmapset.BPM < category.filter.minBPM)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmap does not exceed minimum BPM requirement!", 
                     };
-                if (category.filter.maxBPM && beatmap.beatmapset.BPM > category.filter!.maxBPM!)
+                if (category.filter.maxBPM && beatmap.beatmapset.BPM > category.filter.maxBPM)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmap exceeds maximum BPM requirement!", 
                     };
-                if (category.filter.minSR && beatmap.totalSR < category.filter!.minSR!)
+                if (category.filter.minSR && beatmap.totalSR < category.filter.minSR)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmap does not exceed minimum SR requirement!", 
                     };
-                if (category.filter.maxSR && beatmap.totalSR > category.filter!.maxSR!)
+                if (category.filter.maxSR && beatmap.totalSR > category.filter.maxSR)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmap exceeds maximum SR requirement!", 
                     };
                 if (category.filter.minCS && beatmap.circleSize < category.filter.minCS)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmap does not exceed minimum CS requirement!", 
                     };
                 if (category.filter.maxCS && beatmap.circleSize > category.filter.maxCS)
                     return ctx.body = {
+                        success: false,
                         error: "Beatmap exceeds maximum CS requirement!", 
                     };
-                if ((category.filter.topOnly || category.mode.ID === ModeDivisionType.storyboard)) {
+                if ((category.filter.topOnly ?? category.mode.ID === ModeDivisionType.storyboard.valueOf())) {
                     const set = await Beatmap
                         .createQueryBuilder("beatmap")
                         .where("beatmapsetID = :id", { id: beatmap.beatmapsetID })
                         .getMany();
                     if (beatmap.totalSR !== Math.max(...set.map(b => b.totalSR)))
                         return ctx.body = {
+                            success: false,
                             error: "Beatmap is not the top diff! This category only focuses on the top diffs only.", 
                         };
                 }
@@ -245,12 +275,14 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
                 
                 if (Math.min(...years) !== ctx.state.year)
                     return ctx.body = {
+                        success: false,
                         error: "User is not eligible for this category!", 
                     };
             }
 
             if (categoryNominations.some(n => n.user?.ID === user.ID)) {
                 return ctx.body = {
+                    success: false,
                     error: "You have already nominated this user!", 
                 };
             }
@@ -262,10 +294,13 @@ nominatingRouter.post("/:year?/create", validatePhaseYear, isPhase("nomination")
     nomination.nominators.push(nominator);
     await nomination.save();
 
-    ctx.body = nomination;
+    ctx.body = {
+        success: true,
+        nomination,
+    };
 });
 
-nominatingRouter.delete("/:id", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
+nominatingRouter.$delete("/:id", validatePhaseYear, isPhase("nomination"), isEligible, async (ctx) => {
     const nomination = await Nomination
         .populate()
         .andWhere("nomination.ID = :id", { id: ctx.params.id })
@@ -274,6 +309,7 @@ nominatingRouter.delete("/:id", validatePhaseYear, isPhase("nomination"), isElig
 
     if (!nomination.isValid)
         return ctx.body = {
+            success: false,
             error: "Cannot remove reviewed nominations, contact a member of the staff!",
         };
     
@@ -284,7 +320,7 @@ nominatingRouter.delete("/:id", validatePhaseYear, isPhase("nomination"), isElig
         await nomination.save();
 
     ctx.body = {
-        success: "ok",
+        success: true,
     };
 });
 

@@ -138,11 +138,10 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { QualifierScore, computeQualifierScoreViews } from "../../../Interfaces/qualifier";
-import { QualifierScoreView } from "../../../Interfaces/qualifier";
 import MappoolMapStats from "../../../Assets/components/open/MappoolMapStats.vue";
 import { MappoolMap } from "../../../Interfaces/mappool";
 import { censor, profanityFilter } from "../../../Interfaces/comment";
+import { MatchupScore, MatchupScoreView, computeScoreViews } from "../../../Interfaces/matchup";
 
 const streamModule = namespace("stream");
 
@@ -156,11 +155,11 @@ export default class Scores extends Vue {
 
     @streamModule.State key!: string | null;
     @streamModule.State tournamentID!: number | null;
-    @streamModule.State scores!: QualifierScore[] | null;
+    @streamModule.State scores!: MatchupScore[] | null;
 
     loading = false;
     mapName: string | null = null;
-    finalScores: QualifierScoreView[] = [];
+    finalScores: MatchupScoreView[] = [];
     binNumber = 11;
     mappoolMap: MappoolMap | null = null;
 
@@ -168,7 +167,7 @@ export default class Scores extends Vue {
         return censor(input, profanityFilter);
     }
 
-    get filteredScores (): QualifierScore[] | null {
+    get filteredScores (): MatchupScore[] | null {
         if (!this.scores)
             return null;
 
@@ -217,17 +216,17 @@ export default class Scores extends Vue {
             this.mapName = mapName;
 
         console.log(this.filteredScores);
-        this.finalScores = computeQualifierScoreViews(
+        this.finalScores = computeScoreViews(
             score => ({ id: score.teamID, name: score.teamName, avatar: score.teamAvatar }),
             this.filteredScores,
             "teams",
             "zScore",
-            this.mapName ? this.filteredScores?.[0]?.mapID || -1 : -1,
+            this.mapName ? this.filteredScores?.[0]?.mapID ?? -1 : -1,
             "desc"
         );
 
         if (this.mapName) {
-            const { data } = await this.$axios.get(`/api/mappool/map/${this.mapName}?key=${this.key}`);
+            const { data } = await this.$axios.get<{ mappoolMap: MappoolMap }>(`/api/mappool/map/${this.mapName}?key=${this.key}`);
             if (data.success)
                 this.mappoolMap = data.mappoolMap;
         }

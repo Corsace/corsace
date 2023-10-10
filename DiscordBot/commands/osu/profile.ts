@@ -62,9 +62,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
         });
 
         if (!userQ) {
-            userQ = new User;
+            userQ = new User();
             userQ.country = apiUser.country.toString();
-            userQ.osu = new OAuth;
+            userQ.osu = new OAuth();
             userQ.osu.userID = `${apiUser.userId}`;
             userQ.osu.username = apiUser.username;
             userQ.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;

@@ -32,7 +32,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
-    const params = extractParameters<parameters>(m, [
+    const params = await extractParameters<parameters>(m, [
         { name: "pool", paramType: "string" },
         { name: "slot", paramType: "string", postProcess: postProcessSlotOrder, optional: true },
     ]);
@@ -41,7 +41,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
     const { pool, slot, order } = params;
 
-    const components = await mappoolComponents(m, pool, slot || true, order || true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, undefined, undefined, true);
+    const components = await mappoolComponents(m, pool, slot ?? true, order ?? true, true, { text: channelID(m), searchType: "channel" }, unFinishedTournaments, undefined, undefined, true);
     if (!components || !("mappool" in components))
         return;
 
@@ -74,8 +74,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }
         
         await Promise.all([
-            respond(m, `**${components.mappoolSlot}** has been deleted ${components.mappoolMap.customBeatmap || components.mappoolMap.jobPost ? "along with the custom beatmap and/or job posts" : ""}`),
-            mappoolLog(tournament, "deleteMappoolMap", user, `\`${components.mappoolSlot}\` has been deleted ${components.mappoolMap.customBeatmap || components.mappoolMap.jobPost ? "along with the custom beatmap and/or job posts" : ""}`),
+            respond(m, `**${components.mappoolSlot}** has been deleted ${components.mappoolMap.customBeatmap ?? components.mappoolMap.jobPost ? "along with the custom beatmap and/or job posts" : ""}`),
+            mappoolLog(tournament, "deleteMappoolMap", user, `\`${components.mappoolSlot}\` has been deleted ${components.mappoolMap.customBeatmap ?? components.mappoolMap.jobPost ? "along with the custom beatmap and/or job posts" : ""}`),
         ]);
         return;
     }

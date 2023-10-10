@@ -454,18 +454,18 @@ const openModule = namespace("open");
     },
     head () {
         return {
-            title: this.$store.state["open"].title,
+            title: this.$store.state.open.title,
             meta: [
-                {hid: "description", name: "description", content: this.$store.state["open"].tournament.description},
+                {hid: "description", name: "description", content: this.$store.state.open.tournament.description},
 
-                {hid: "og:site_name", property: "og:site_name", content: this.$store.state["open"].title},
-                {hid: "og:title", property: "og:title", content: this.$store.state["open"].title},
+                {hid: "og:site_name", property: "og:site_name", content: this.$store.state.open.title},
+                {hid: "og:title", property: "og:title", content: this.$store.state.open.title},
                 {hid: "og:url", property: "og:url", content: `https://open.corsace.io${this.$route.path}`}, 
-                {hid: "og:description", property: "og:description", content: this.$store.state["open"].tournament.description},
+                {hid: "og:description", property: "og:description", content: this.$store.state.open.tournament.description},
                 {hid: "og:image",property: "og:image", content: require("../../../Assets/img/site/open/banner.png")},
                 
-                {name: "twitter:title", content: this.$store.state["open"].title},
-                {name: "twitter:description", content: this.$store.state["open"].tournament.description},
+                {name: "twitter:title", content: this.$store.state.open.title},
+                {name: "twitter:description", content: this.$store.state.open.tournament.description},
                 {name: "twitter:image", content: require("../../../Assets/img/site/open/banner.png")},
                 {name: "twitter:image:src", content: require("../../../Assets/img/site/open/banner.png")},  
             ],
@@ -545,19 +545,25 @@ export default class Team extends Vue {
             return this.team;
         }
 
-        const { data: teamData } = await this.$axios.get(`/api/team/${this.$route.params.id}`);
+        const { data: teamData } = await this.$axios.get<{ error: string } | TeamInterface>(`/api/team/${this.$route.params.id}`);
+        if ("error" in teamData) {
+            alert(teamData.error);
+            this.loading = false;
+            return null;
+        }
+
         if (teamData?.qualifier)
             teamData.qualifier.date = new Date(teamData.qualifier.date);
         this.loading = false;
-        return teamData.error ? null : teamData;
+        return teamData;
     }
 
     async mounted () {
         this.teamData = await this.getTeam(false);
-        this.name = this.teamData?.name || "";
-        this.abbreviation = this.teamData?.abbreviation || "";
-        this.timezone = this.teamData?.timezoneOffset.toString() || getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone).toString();
-        this.previewBase64 = this.teamData?.avatarURL || null;
+        this.name = this.teamData?.name ?? "";
+        this.abbreviation = this.teamData?.abbreviation ?? "";
+        this.timezone = this.teamData?.timezoneOffset.toString() ?? getTimezoneOffset(Intl.DateTimeFormat().resolvedOptions().timeZone).toString();
+        this.previewBase64 = this.teamData?.avatarURL ?? null;
     }
 
     get isManager (): boolean {
@@ -656,8 +662,8 @@ export default class Team extends Vue {
         });
         this.image = undefined;
     
-        if (resAvatar.error) {
-            alert(this.$t("open.teams.edit.errors.errorAddingTeamAvatar", {error: resAvatar.error}));
+        if (!resAvatar.success) {
+            alert(this.$t("open.teams.edit.errors.errorAddingTeamAvatar", { error: resAvatar.error }));
             this.teamData = await this.getTeam(true);
             return;
         }
@@ -677,7 +683,7 @@ export default class Team extends Vue {
 
         if (res.success) {
             await this.$store.dispatch("open/setTeam");
-            this.$router.push("/team/create");
+            await this.$router.push("/team/create");
         } else
             alert(res.error);
     }
@@ -727,12 +733,12 @@ export default class Team extends Vue {
 
     async search (userSearch: string) {
         try {
-            const { data } = await this.$axios.get(`/api/users/search?user=${userSearch}`);
+            const { data } = await this.$axios.get<{ users: User[] }>(`/api/users/search?user=${userSearch}`);
 
-            if (!data.error)
-                this.users = data;
-            else
+            if (!data.success)
                 alert(data.error);
+            else
+                this.users = data.users;
         } catch (error) {
             alert(this.$t("open.teams.edit.errors.contactVinxis") as string);
             console.error(error);

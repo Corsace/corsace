@@ -2,8 +2,8 @@ import { Entity, BaseEntity, PrimaryColumn, OneToMany, Column, ManyToOne, Select
 import { BeatmapsetInfo } from "../Interfaces/beatmap";
 import { Category } from "../Interfaces/category";
 import { StageQuery } from "../Interfaces/queries";
+import { ModeDivisionType } from "../Interfaces/modes";
 import { Beatmap } from "./beatmap";
-import { ModeDivisionType } from "./MCA_AYIM/modeDivision";
 import { Nomination } from "./MCA_AYIM/nomination";
 import { Vote } from "./MCA_AYIM/vote";
 import { User } from "./user";
@@ -80,7 +80,7 @@ export class Beatmapset extends BaseEntity {
 
     static search (year: number, modeId: number, stage: "voting" | "nominating", category: Category, query: StageQuery): Promise<[Beatmapset[], number]> {
         // Initial repo setup
-        const includeStoryboard = modeId === ModeDivisionType.storyboard;
+        const includeStoryboard = modeId === ModeDivisionType.storyboard.valueOf();
         const queryBuilder = this.createQueryBuilder("beatmapset");
         
         if (stage === "voting") {
@@ -226,7 +226,7 @@ export class Beatmapset extends BaseEntity {
                    
         // Ordering
         const optionQuery = query.option ? query.option.toLowerCase() : "";
-        const order = query.order || "ASC";
+        const order = query.order ?? "ASC";
         let option = "beatmapset.approvedDate";
         if (/(artist|title|favs|creator|sr)/i.test(optionQuery)) {
             if (optionQuery.includes("artist"))

@@ -1,18 +1,16 @@
 {
-    "extends": "../tsconfig.json",
+    "extends": "../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./dist",
-        "sourceMap": true,
+        "types": [
+            "@types/node",
+        ],
     },
     "files": [
         "index.ts",
-        "cron-runner.ts"
+        "cron-runner.ts",
     ],
-    "include": [
-        "../config/Config.d.ts",
-        "../Typing/passport.d.ts"
+    "exclude": [
+        "../Typing/vue-shim.d.ts",
     ],
-    "ts-node": {
-        "files": true
-    }
 }

@@ -163,7 +163,7 @@ export default class Default extends Vue {
     @mcaAyimModule.State loggedInMCAUser!: null | UserMCAInfo;
     @mcaAyimModule.State selectedMode!: string;
 
-    @mcaAyimModule.Action updateSelectedMode;
+    @mcaAyimModule.Action updateSelectedMode!: (mode: string) => void;
 
     devBanner = true;
     isSmall = false;

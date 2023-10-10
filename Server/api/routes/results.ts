@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { BeatmapResult, BeatmapsetResult, UserResult, votesToResults } from "../../../Interfaces/result";
 import { groupVotesByVoters, StaffVote, voteCounter } from "../../../Interfaces/vote";
 import { isResults, validatePhaseYear } from "../../../Server/middleware/mca-ayim";
@@ -7,10 +7,13 @@ import { Vote } from "../../../Models/MCA_AYIM/vote";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
 import { parseQueryParam } from "../../../Server/utils/query";
 import { osuV2Client } from "../../osu";
+import { MCAState } from "koa";
 
-const resultsRouter = new Router();
+const resultsRouter  = new CorsaceRouter<MCAState>();
 
-resultsRouter.get("/:year?", validatePhaseYear, isResults, async (ctx) => {
+resultsRouter.$use(validatePhaseYear);
+
+resultsRouter.$get<{ categories: CategoryStageInfo[] }>("/:year?", isResults, async (ctx) => {
     const categories = await Category.find({
         where: {
             mca: {
@@ -22,18 +25,22 @@ resultsRouter.get("/:year?", validatePhaseYear, isResults, async (ctx) => {
     const categoryInfos: CategoryStageInfo[] = categories.map(c => c.getInfo() as CategoryStageInfo);
 
     ctx.body = {
+        success: true,
         categories: categoryInfos,
     };
 });
 
-resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => {
+resultsRouter.$get<{ list: BeatmapsetResult[] | BeatmapResult[] | UserResult[] }>("/:year/search", isResults, async (ctx) => {
     if (await ctx.cashed() && ctx.state.mca.currentPhase() === "results")
         return;
 
     const categoryIDString = parseQueryParam(ctx.query.category);
     
     if (!categoryIDString || !/\d+/.test(categoryIDString))
-        return ctx.body = { error: "Invalid category ID given!" };
+        return ctx.body = {
+            success: false,
+            error: "Invalid category ID given!",
+        };
 
     const categoryID = parseInt(categoryIDString);
 
@@ -204,6 +211,7 @@ resultsRouter.get("/:year/search", validatePhaseYear, isResults, async (ctx) => 
             results = (results as UserResult[]).filter(result => result.username.toLowerCase().includes(text) || result.userID.toLowerCase().includes(text));
     }
     ctx.body = {
+        success: true,
         list: results,
     };
 });

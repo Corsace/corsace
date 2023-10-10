@@ -68,7 +68,7 @@ interface RequestData {
 export default class GuestDifficultyModal extends Vue {
 
     @State showGuestDifficultyModal!: boolean;
-    @Mutation toggleGuestDifficultyModal;
+    @Mutation toggleGuestDifficultyModal!: () => void;
 
     @State loggedInUser!: UserMCAInfo;
     @Action updateGuestRequest!: (payload: UpdateGuestRequestPayload) => Promise<void>;
@@ -79,9 +79,12 @@ export default class GuestDifficultyModal extends Vue {
     }
 
     generateUrl (request: GuestRequest) {
-        const mode = request.beatmap.mode.name === "standard" ? "osu" : request.beatmap.mode.name;
+        const mode = request.beatmap.mode?.name === "standard" ? "osu" : request.beatmap.mode?.name;
 
-        return `https://osu.ppy.sh/beatmapsets/${request.beatmap.beatmapsetID}#${mode}/${request.beatmap.ID}`;
+        if (mode)
+            return `https://osu.ppy.sh/beatmapsets/${request.beatmap.beatmapsetID}#${mode}/${request.beatmap.ID}`;
+
+        return "";
     }
 
     getStatusName (status: RequestStatus) {

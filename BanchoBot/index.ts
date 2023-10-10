@@ -53,7 +53,7 @@ koa.use(Mount("/api/bancho/stream", banchoStreamRouter.routes()));
 
 let httpShutdown: () => Promise<void> | undefined;
 ormConfig.initialize()
-    .then(async (connection) => {
+    .then((connection) => {
         console.log(`Connected to the ${connection.options.database} database!`);
         const server = koa.listen(config.banchoBot.port);
         httpShutdown = gracefulShutdown(server, {
@@ -61,13 +61,13 @@ ormConfig.initialize()
             onShutdown: async () => {
                 state.httpServerShutDown = true;
                 console.log("Done handling all API requests.");
-                maybeShutdown();
+                await maybeShutdown();
             },
         });
     })
     .catch((error) => console.log("An error has occurred in connecting.", error));
 
-const maybeShutdown = () => {
+const maybeShutdown = async () => {
     if (!state.shuttingDown || !state.httpServerShutDown)
         return;
 
@@ -75,7 +75,7 @@ const maybeShutdown = () => {
         console.log(`Waiting for ${state.runningMatchups} matchups to finish...`);
     } else {
         console.log("No running matchup.");
-        ormConfig.destroy();
+        await ormConfig.destroy();
         discordClient.destroy();
         banchoClient.disconnect();
         console.log("Disconnected from every service, shutting down now.");
@@ -83,7 +83,7 @@ const maybeShutdown = () => {
     }
 };
 
-const onTerminationSignal = (signal: NodeJS.Signals) => {
+const onTerminationSignal = async (signal: NodeJS.Signals) => {
     // HTTP server not initiated yet, simply exiting.
     if (!httpShutdown) {
         process.exit();
@@ -97,7 +97,7 @@ const onTerminationSignal = (signal: NodeJS.Signals) => {
     state.shuttingDown = true;
     console.log(`Received shutdown signal (${signal}), initiating shutdown sequence.`);
     
-    httpShutdown();
+    await httpShutdown?.();
 };
 
 process.on("SIGTERM", () => onTerminationSignal("SIGTERM"));

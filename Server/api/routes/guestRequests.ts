@@ -1,4 +1,4 @@
-import Router from "@koa/router";
+import { CorsaceRouter } from "../../corsaceRouter";
 import { Beatmap } from "../../../Models/beatmap";
 import { User } from "../../../Models/user";
 import { isLoggedIn } from "../../../Server/middleware";
@@ -6,11 +6,10 @@ import { isEligibleFor, currentMCA } from "../../../Server/middleware/mca-ayim";
 import { config } from "node-config-ts";
 import axios from "axios";
 import { GuestRequest } from "../../../Models/MCA_AYIM/guestRequest";
-import { ModeDivision, ModeDivisionType } from "../../../Models/MCA_AYIM/modeDivision";
+import { ModeDivision } from "../../../Models/MCA_AYIM/modeDivision";
 import { RequestStatus } from "../../../Interfaces/guestRequests";
-import { MCA } from "../../../Models/MCA_AYIM/mca";
-
-const guestRequestRouter = new Router();
+import { MCAAuthenticatedState } from "koa";
+import { ModeDivisionType } from "../../../Interfaces/modes";
 
 interface BodyData {
     mode: string;
@@ -19,8 +18,13 @@ interface BodyData {
 
 async function validateBody (user: User, year: number, data: BodyData, currentRequestId?: number): Promise<{ error: string } | { beatmap: Beatmap; mode: ModeDivision; }> {
     // Validate mode
-    const modeId = ModeDivisionType[data.mode];
-    const mode = await ModeDivision.findOneOrFail(modeId);
+    if (!(data.mode in ModeDivisionType)) {
+        return { 
+            error: "Invalid mode, please use standard, taiko, fruits or mania",
+        };
+    }
+    const modeId = ModeDivisionType[data.mode as keyof typeof ModeDivisionType];
+    const mode = await ModeDivision.findOneOrFail({ where: { ID: modeId }});
     
     if (isEligibleFor(user, mode.ID, year)) {
         return {
@@ -54,7 +58,7 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     }
 
     // Get beatmap information
-    const beatmaps = (await axios.get(`${config.osu.proxyBaseUrl || "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&b=${beatmapID}`)).data;
+    const { data: beatmaps } = await axios.get<any[]>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_beatmaps?k=${config.osu.v1.apiKey}&b=${beatmapID}`);
     if (beatmaps.length !== 1) {
         return { error: "Error in obtaining beatmap info!"};
     }
@@ -82,38 +86,47 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     };
 }
 
-guestRequestRouter.use(isLoggedIn);
-guestRequestRouter.use(currentMCA);
+const guestRequestRouter  = new CorsaceRouter<MCAAuthenticatedState>();
 
-guestRequestRouter.post("/create", async (ctx) => {
-    const mca: MCA = ctx.state.mca;
-    const user: User = ctx.state.user;
+guestRequestRouter.$use(isLoggedIn);
+guestRequestRouter.$use(currentMCA);
+
+guestRequestRouter.$post<{ request: GuestRequest }>("/create", async (ctx) => {
+    const mca = ctx.state.mca;
+    const user = ctx.state.user;
     const res = await validateBody(user, mca.year, ctx.request.body);
 
     if ("error" in res) {
-        return ctx.body = res;
+        return ctx.body = {
+            success: false,
+            error: res.error,
+        };
     }
 
     // Create guest requesst
-    const guestReq = new GuestRequest;
-    guestReq.user = user;
-    guestReq.mca = mca;
-    guestReq.mode = res.mode;
-    guestReq.beatmap = res.beatmap;
-    guestReq.status = RequestStatus.Pending;
-    await guestReq.save();
+    const request = new GuestRequest();
+    request.user = user;
+    request.mca = mca;
+    request.mode = res.mode;
+    request.beatmap = res.beatmap;
+    request.status = RequestStatus.Pending;
+    await request.save();
 
-    ctx.body = guestReq;
+    ctx.body = {
+        success: true,
+        request,
+    };
 });
 
-guestRequestRouter.post("/:id/update", async (ctx) => {
-    const mca: MCA = ctx.state.mca;
+guestRequestRouter.$post<{ request: GuestRequest }>("/:id/update", async (ctx) => {
+    const mca = ctx.state.mca;
     const id: number = parseInt(ctx.params.id);
-    const user: User = ctx.state.user;
+    const user = ctx.state.user;
     const request = user.guestRequests.find(r => r.ID === id && r.mca.year === mca.year);
 
     if (!request || request.status === RequestStatus.Accepted) {
         return ctx.body = {
+            success: false,
             error: "Not valid request",
         };
     }
@@ -121,7 +134,10 @@ guestRequestRouter.post("/:id/update", async (ctx) => {
     const res = await validateBody(user, mca.year, ctx.request.body, id);
 
     if ("error" in res) {
-        return ctx.body = res;
+        return ctx.body = {
+            success: false,
+            error: res.error,
+        };
     }
 
     request.mode = res.mode;
@@ -129,7 +145,10 @@ guestRequestRouter.post("/:id/update", async (ctx) => {
     request.status = RequestStatus.Pending;
     await request.save();
 
-    ctx.body = request;
+    ctx.body = {
+        success: true,
+        request,
+    };
 });
 
 export default guestRequestRouter;

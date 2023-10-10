@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, ForumChannel, Message, MessageComponentInteraction, ThreadChannel } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Message, MessageComponentInteraction, ThreadChannel } from "discord.js";
 import { MappoolMap } from "../../../Models/tournaments/mappools/mappoolMap";
 import { Tournament } from "../../../Models/tournaments/tournament";
 import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
@@ -27,7 +27,7 @@ export default async function getCustomThread (m: Message | ChatInputCommandInte
         if (!(mappoolChannel && mappoolChannel.type === ChannelType.GuildForum))
             return true;
     
-        const forumChannel = mappoolChannel as ForumChannel;
+        const forumChannel = mappoolChannel ;
         const ids = {
             stop: randomUUID(),
             create: randomUUID(),
