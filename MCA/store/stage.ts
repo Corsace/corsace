@@ -72,14 +72,12 @@ export const mutations: MutationTree<StageState> = {
         state.votes = votes || [];
     },
     addVote (state, vote) {
-        if (vote) {
+        if (vote)
             state.votes.push(vote);
-        }
     },
     addNomination (state, nomination) {
-        if (nomination) {
+        if (nomination)
             state.nominations.push(nomination);
-        }
     },
     removeNomination (state, nominationId: number) {
         const i = state.nominations.findIndex(n => n.ID === nominationId);
@@ -110,9 +108,8 @@ export const mutations: MutationTree<StageState> = {
         state.selectedCategory = category;
     },
     updateSection (state, section: SectionCategory) {
-        if (state.section !== section) {
+        if (state.section !== section)
             state.section = section;
-        }
     },
     updateQuery (state, query) {
         state.query = {
@@ -151,7 +148,8 @@ export const mutations: MutationTree<StageState> = {
 
 export const getters: GetterTree<StageState, RootState> = {
     relatedCandidacies (state): Vote[] | Nomination[] {
-        if (!state.selectedCategory) return [];
+        if (!state.selectedCategory)
+            return [];
 
         const arr = state.stage === "nominating" ? state.nominations : state.votes;
 
@@ -160,7 +158,7 @@ export const getters: GetterTree<StageState, RootState> = {
     },
 
     categoriesInfo (state): CategoryStageInfo[] {
-        if (state.stage === "voting") {
+        if (state.stage === "voting")
             return state.categories.map(c => {
                 const info = {
                     ...c,
@@ -169,7 +167,6 @@ export const getters: GetterTree<StageState, RootState> = {
                 info.maxNominations = 100;
                 return info;
             });
-        }
 
         return state.categories.map(c => ({
             ...c,
@@ -228,7 +225,8 @@ export const actions: ActionTree<StageState, RootState> = {
         await dispatch("search");
     },
     async search ({ state, commit, rootState }, skipping = false) {
-        if (!state.selectedCategory) return;
+        if (!state.selectedCategory)
+            return;
 
         let skip = 0;
     
@@ -250,23 +248,22 @@ export const actions: ActionTree<StageState, RootState> = {
 
         commit("updateCount", data.count);
 
-        if (!data.list) return;
+        if (!data.list)
+            return;
 
         if (state.stage === "results") {
             if (state.selectedCategory.type === "Users")
                 commit("updateUserResults", data.list);
             else if (state.selectedCategory.type === "Beatmapsets")
                 commit("updateBeatmapsetResults", data.list);
-        } else {
-            if (state.selectedCategory.type === "Users") {
-                let users = data.list as UserChoiceInfo[];
-                if (skipping) users = [...state.users, ...data.list as UserChoiceInfo[]];
-                commit("updateUsers", users.filter((val, i, self) => self.findIndex(v => v.corsaceID === val.corsaceID) === i));
-            } else if (state.selectedCategory.type === "Beatmapsets") {
-                let beatmaps = data.list as BeatmapsetInfo[];
-                if (skipping) beatmaps = [...state.beatmaps, ...data.list as BeatmapsetInfo[]];
-                commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
-            }
+        } else if (state.selectedCategory.type === "Users") {
+            let users = data.list as UserChoiceInfo[];
+            if (skipping) users = [...state.users, ...data.list as UserChoiceInfo[]];
+            commit("updateUsers", users.filter((val, i, self) => self.findIndex(v => v.corsaceID === val.corsaceID) === i));
+        } else if (state.selectedCategory.type === "Beatmapsets") {
+            let beatmaps = data.list as BeatmapsetInfo[];
+            if (skipping) beatmaps = [...state.beatmaps, ...data.list as BeatmapsetInfo[]];
+            commit("updateBeatmaps", beatmaps.filter((val, i, self) => self.findIndex(v => v.id === val.id) === i));
         }
     },
     reset ({ commit }, sectionReset = false) {

@@ -248,11 +248,11 @@ export default class MapperComments extends Vue {
     }
 
     async remove () {
-        if (!this.ownComment) return;
-
-        if (!confirm("Are you sure?")) {
+        if (!this.ownComment)
             return;
-        }
+
+        if (!confirm("Are you sure?"))
+            return;
 
         this.info = "Removed comment!";
         this.removeInfo();

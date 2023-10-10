@@ -137,22 +137,21 @@ export default class AdminModalCategory extends Vue {
     }
 
     async save () {
-        let request: Promise<any>;
+        let request;
         const postData = {
             category: this.category,
             filter: this.filterParams,
             mode: this.selectedMode,
         };
 
-        if (this.info) {
+        if (this.info)
             request = this.$axios.put(`/api/admin/years/${this.$route.params.adminYear}/categories/${this.info.id}`, postData);
-        } else {
+        else
             request = this.$axios.post(`/api/admin/years/${this.$route.params.adminYear}/categories`, postData);
-        }
 
         const { data } = await request;
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
             return;
         }

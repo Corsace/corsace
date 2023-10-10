@@ -65,7 +65,7 @@ export default class AdminModalYear extends Vue {
     ] as InputField[];
 
     async save () {
-        let request: Promise<any>;
+        let request;
 
         if (this.info) {
             request = this.$axios.put(`/api/admin/years/${this.info.name}`, this.mcaInfo);
@@ -75,7 +75,7 @@ export default class AdminModalYear extends Vue {
 
         const { data } = await request;
 
-        if (data.error) {
+        if (!data.success) {
             alert(data.error);
             return;
         }

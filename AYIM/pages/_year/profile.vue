@@ -165,11 +165,10 @@ export default class Comments extends Vue {
         try {
             const {data} = await this.$axios.delete(`/api/influences/${id}`);
         
-            if (data.success) {
+            if (data.success)
                 this.influences = await this.getInfluences(this.mca.year);
-            } else {
+            else
                 alert(data.error);
-            }
         } catch (error) {
             console.log(error);
         }
