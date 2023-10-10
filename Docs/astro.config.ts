@@ -39,10 +39,16 @@ export default defineConfig({
     },
     publicDir: "../Assets/static",
     site: config.docs.publicUrl,
+    redirects: {
+        "/": {
+            status: 308,
+            destination: "/en",
+        },
+    },
     integrations: [
         starlight({
             editLink: {
-                baseUrl: "https://github.com/Corsace/Corsace/Docs",
+                baseUrl: "https://github.com/Corsace/Corsace/blob/master/Docs",
             },
             title: "Corsace Documentation",
             social: {
@@ -52,24 +58,30 @@ export default defineConfig({
                 twitter: "https://twitter.com/corsace_",
                 youtube: "https://youtube.com/corsace",
             },
+            tableOfContents: {
+                minHeadingLevel: 1,
+                maxHeadingLevel: 5,
+            },
             favicon: "/favicon.ico",
             defaultLocale: "en",
             locales,
             customCss: [
                 "./src/styles/custom.scss",
+                "./src/fonts/font-face.scss",
             ],
+            lastUpdated: true,
             sidebar: [
                 {
-                    label: "Design",
-                    autogenerate: { directory: "design" },
+                    label: "Running Tournaments",
+                    autogenerate: { directory: "tournaments", collapsed: true },
                 },
                 {
                     label: "Development",
-                    autogenerate: { directory: "development" },
+                    autogenerate: { directory: "development", collapsed: true },
                 },
                 {
-                    label: "Running Tournaments",
-                    autogenerate: { directory: "tournaments" },
+                    label: "Design",
+                    autogenerate: { directory: "design", collapsed: true },
                 },
             ],
         }),

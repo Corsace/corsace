@@ -1,0 +1,25 @@
+---
+const folders: {
+    name: string;
+    color: string;
+}[] = Astro.props.folders || [];
+---
+<style>
+    .flexBox {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .flexBox span {
+        font-weight: bold;
+        padding: 0 0.25rem;
+        color: #272727;
+    }   
+</style>
+
+
+<div class="flexBox">
+{folders.map(folder => (
+    <span style={{ backgroundColor: folder.color }}>📁 {folder.name}</span>
+))}
+</div>

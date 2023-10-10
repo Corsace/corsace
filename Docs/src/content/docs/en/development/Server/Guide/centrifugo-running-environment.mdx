@@ -1,0 +1,57 @@
+---
+title: Centrifugo - Running Environment
+description: Starting and running the environment for centrifugo.
+lastUpdated: 2023-09-19
+sidebar:
+    order: 3400
+---
+## Pre-requisite Reading
+- [Development/Getting Started](../../..)
+- [Development/Server/Guide/Server + CronRunner - Running Environment](/server-running-environment)
+
+## Relevant Config Values
+
+### Config/config.json
+The majority of the setup should already be done based on the parent Getting Started page, but ensure that the `config.centrifugo.publicUrl` and `config.centrifugo.apiUrl` are pointing towards the same host/port, and that the port is free.
+
+### centrifugo-config.json
+In the main directory, there is a `centrifugo-config.json`.
+
+Ensure that in `allowed_origins` that the value in `config.open.publicUrl` is the array value.\
+Ensure that in `proxy_connect_endpoint` and `proxy_subscribe_endpoint` that the value in `config.api.publicUrl` is there. It should consist of api endpoints `/api/centrifugo/connect` and `/api/centrifugo/subscribe` in there respectively.\
+The value for `proxy_subscribe` should also be `true`.
+
+For example, if my `config.open.publicUrl` was `http://localhost:7000`, and my `config.api.publicUrl` was `http://localhost:8080`, then my `centrifugo-config.json` would look like this:
+```json
+{
+    ...,
+    "allowed_origins": [..., "http://localhost:7000", ...],
+    ...,
+    "proxy_connect_endpoint": "http://127.0.0.1:8080/api/centrifugo/connect",
+    ...,
+    "proxy_subscribe_endpoint": "http://127.0.0.1:8080/api/centrifugo/subscribe",
+    ...,
+    "proxy_subscribe": true
+}
+```
+
+## Running the Environment
+
+To reiterate from the parent Getting Started page, run the following command to start the centrifugo server in development mode:
+
+```bash
+npm run centrifugo
+```
+In the console, there should be no errors when running.
+
+### Local Centrifugo
+
+This is only for if the above doesn't work, which can happen in Windows/WSL.
+
+Download the binary from [latest releases](https://github.com/centrifugal/centrifugo/releases), and place it in the parent directory.\
+Afterwards, go to `scripts.centrifugo:local` in `package.json` located in the parent directory, and ensure it has the same port listed in `config.centrifugo.publicUrl` and `config.centrifugo.apiUrl`.
+Once done, it should run using the following command
+```bash
+npm run centrifugo:local
+```
+In the console, there should be no errors when running.

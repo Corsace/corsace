@@ -3,9 +3,11 @@
 files:
   - source: /Assets/lang/en.json
     translation: /Assets/lang/translated/%two_letters_code%.json
+    skip_untranslated_files: true
+    skip_untranslated_strings: true
   - source: /Docs/src/content/docs/en/**/*.mdx
     translation: /Docs/src/content/docs/%two_letters_code%/**/%original_file_name%
+    skip_untranslated_files: true
   - source: /Docs/src/content/docs/en/**/*.md
     translation: /Docs/src/content/docs/%two_letters_code%/**/%original_file_name%
-  - source: /README.md
-    translation: /README.%two_letters_code%.md
+    skip_untranslated_files: true
