@@ -69,7 +69,7 @@ export default async function autoSubmit (m: Message) {
     // Obtain beatmap data
     const diffRegex = /-d (.+)/;
     const diffMatch = diffRegex.exec(m.content);
-    const beatmapData = await beatmapParse(m, diffMatch?.[1] || "", link);
+    const beatmapData = await beatmapParse(m, diffMatch?.[1] ?? "", link);
     if (!beatmapData?.beatmap)
         return;
 
