@@ -1,24 +1,24 @@
 ---
 title: Memulai
 description: Dokumentasi untuk memulai pengembangan Corsace.
-lastUpdated: 2023-09-19
+lastUpdated: 2023-09-10
 sidebar:
   order: 1
 ---
 
 import { Card, LinkCard } from '@astrojs/starlight/components';
 
-Dokumentasi berikut ditujukan untuk menyiapkan lingkungan pengembangan lokal Corsace.
+Untuk menggandakan repositori:
 
 Apabila kamu ingin membantu untuk menerjemahkan Corsace, kamu dapat meminta akses sebagai penerjemah pada https://translate.corsace.io dan [server Discord Corsace](https://discord.gg/Z6vEMsr)
 
-Pastikan kamu telah memiliki [fork repositori Corsace](https://github.com/Corsace/Corsace/fork) sebelum melanjutkan.
+\*Gunakan hak admin pada konsolmu pada saat menjalankan perintah.
 
 :::caution null
 Kami SANGAT menyarankan kamu untuk menginstal aplikasi code editor seperti Visual Studio Code](https://code.visualstudio.com/) atau [NotePad++](https://notepad-plus-plus.org/) untuk proyek ini.
 :::
 
-Untuk menggandakan repositori, jalankan perintah berikut pada terminal/console yang kamu gunakan:
+Instal node-modules:
 
 | OS        | Cmd                                                                  |
 | --------- | -------------------------------------------------------------------- |
@@ -41,7 +41,7 @@ npm i
 
 ### Paket
 
-Proyek ini menggunakan rangkaian teknologi berikut yang akan terinstal secara otomatis seiring dengan perintah di atas:
+The callback URL should be set to:
 
 -   [Node.js](https://nodejs.org/en/) (v16.6.0 atau lebih tinggi)
 -   [TypeScript](https://www.typescriptlang.org/) (v4.9.4 atau lebih tinggi)
@@ -92,7 +92,7 @@ Kamu akan perlu untuk membuat "Aplikasi OAuth Baru" pada sisi bawah halaman http
 
 Tambahkan `config.corsace.publicUrl + /api/login/osu/callback` ke kolom `URL Callback Aplikasi` yang muncul pada jendela popup.
 
-Sebagai contoh, apabila `config.corsace.publicUrl` kamu adalah `http://localhost:5000`, maka URL callback yang harus kamu isi adalah `http://localhost:5000/api/login/osu/callback`.
+Create and seed the whole Corsace database using: `NODE_ENV=development npm run -- typeorm migration:run -d ormconfig`
 
 Apabila sudah, kamu akan memperoleh `Client ID` dan `Client Secret` yang akan perlu untuk kamu salin ke berkas config milikmu pada kolomnya masing-masing.
 
