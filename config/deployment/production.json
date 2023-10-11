@@ -61,41 +61,41 @@
     "koaKeys": ["@@KOA_KEY"],
     "cookiesDomain": "corsace.io",
     "ayim": {
-        "host": "0.0.0.0",
+        "host": "::",
         "port": 80,
         "publicUrl": "@@AYIM_PUBLICURL",
         "ssr": "@@AYIM_SSR"
     },
     "corsace": {
-        "host": "0.0.0.0",
+        "host": "::",
         "port": 80,
         "publicUrl": "@@CORSACE_PUBLICURL",
         "ssr": "@@CORSACE_SSR"
     },
     "mca": {
-        "host": "0.0.0.0",
+        "host": "::",
         "port": 80,
         "publicUrl": "@@MCA_PUBLICURL",
         "ssr": "@@MCA_SSR"
     },
     "open": {
-        "host": "0.0.0.0",
+        "host": "::",
         "port": 80,
         "publicUrl": "@@OPEN_PUBLICURL",
         "ssr": "@@OPEN_SSR"
     },
     "api": {
-        "host": "0.0.0.0",
+        "host": "::",
         "port": 80,
         "publicUrl": "@@API_PUBLICURL"
     },
     "cronRunner": {
-        "host": "0.0.0.0",
+        "host": "::",
         "port": 80,
         "publicUrl": "@@CRONRUNNER_PUBLICURL"
     },
     "banchoBot": {
-        "host": "0.0.0.0",
+        "host": "::",
         "port": 80,
         "publicUrl": "@@BANCHOBOT_PUBLICURL"
     },
