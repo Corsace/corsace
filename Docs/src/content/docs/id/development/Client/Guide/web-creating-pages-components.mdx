@@ -110,8 +110,8 @@ Untuk memastikan kejelasan nomenklatur BEM:
 
 Sebagai contoh, berhubung `red` bukan merupakan blok/elemen, maka `red` akan selalu berlaku sebagai pengubah/modifier.
 :::
-As vue templates typically allow 1 child element only, and the styling nomenclature follows BEM, there is usually only 1 block with multiple elements and modifiers branching off it.\
-For example:
+Mengingat template vue pada umumnya hanya mengizinkan penggunaan 1 elemen anak (child element) dan nomenklatur pengayaan yang ada harus mengikuti BEM, berkas store ini biasanya hanya akan dipanggil oleh 1 blok yang kemudian dibuat bercabang dengan berbagai elemen dan pengubah/modifier.\
+Sebagai contoh:
 
 ```vue
 <template>
@@ -140,5 +140,5 @@ For example:
 </style>
 ```
 
-All style names should be done in `snake-case` instead of `camelCase`.\
-For example: `mainPage` should instead be `main-page`.
+Seluruh nama elemen pengayaan harus ditulis dengan format `snake-case` alih-alih `camelCase`.\
+Sebagai contoh: Penulisan yang tepat untuk `mainPage` adalah `main-page`.
