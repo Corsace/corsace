@@ -1,6 +1,6 @@
 import { NuxtConfig } from "@nuxt/types";
 import * as fs from "fs";
-import { config } from "node-config-ts";
+import { ISubSiteConfig, config } from "node-config-ts";
 import path from "path";
 
 const locales: {
@@ -26,12 +26,9 @@ export default (subSite: string): Partial<NuxtConfig> => {
         throw new Error(`Invalid subSite: ${subSite}`);
 
     const subSiteConfig = subSite as keyof typeof config;
-    const configObj = config[subSiteConfig];
+    const configObj = config[subSiteConfig] as ISubSiteConfig;
     if (typeof configObj !== "object")
         throw new Error(`Invalid subSite: ${subSite} - config.subSite is not an object`);
-
-    if (!("ssr" in configObj))
-        throw new Error(`Invalid subSite: ${subSite} - no ssr property found`);
 
 
     return {
@@ -40,7 +37,7 @@ export default (subSite: string): Partial<NuxtConfig> => {
             host: configObj.host,
             port: configObj.port,
         },
-        ssr: configObj.ssr,
+        ssr: !["0", "false", ""].includes(`${configObj.ssr}`.toLowerCase()),
         modules: [
             "@nuxtjs/axios",
             [

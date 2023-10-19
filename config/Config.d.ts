@@ -4,7 +4,7 @@ declare module "node-config-ts" {
         port: number;
         publicUrl: string;
     }
-    interface ISubSiteConfig extends IWebServiceConfig {
+    export interface ISubSiteConfig extends IWebServiceConfig {
         ssr: boolean;
     }
 
