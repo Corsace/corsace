@@ -84,7 +84,7 @@
     "docs": {
         "host": "localhost",
         "port": 10000,
-        "publicUrl": "https://docs.corsace.io"
+        "publicUrl": "http://localhost:10000"
     },
     "mca": {
         "host": "localhost",
