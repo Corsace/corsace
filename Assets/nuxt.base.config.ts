@@ -69,7 +69,7 @@ export default (subSite: string): Partial<NuxtConfig> => {
         },
         axios: {
             proxy: true,
-            host: '127.0.0.1',
+            host: "127.0.0.1",
             headers: {
                 common: {
                     // Allow secure cookies to be set by the `cookies` module
