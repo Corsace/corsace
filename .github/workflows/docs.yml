@@ -28,6 +28,8 @@ jobs:
           npm install
 
       - name: Build Docs
+        env:
+          DEPLOYMENT: gh-pages
         run: |
           npm run build:docs
           
