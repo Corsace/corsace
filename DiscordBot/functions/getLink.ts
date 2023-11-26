@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, Message} from "discord.js";
 import { download } from "../../Server/utils/download";
+import { cleanLink } from "../../Server/utils/link";
 
 export async function getLink (m: Message | ChatInputCommandInteraction, optionName: string, permanent: boolean, optional: boolean) {
     let link: string | undefined = undefined;
@@ -47,11 +48,5 @@ export async function getLink (m: Message | ChatInputCommandInteraction, optionN
         }
     }
 
-    // clean link from query parameters and other stuff
-    if (link) {
-        link = link.split("?")[0];
-        link = link.split("#")[0];
-    }
-
-    return link;
+    return cleanLink(link);
 }

@@ -10,6 +10,7 @@ import { TournamentRole } from "../../../../Models/tournaments/tournamentRole";
 import commandUser from "../../../functions/commandUser";
 import channelID from "../../../functions/channelID";
 import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
+import { cleanLink } from "../../../../Server/utils/link";
 
 export default async function autoSubmit (m: Message) {
     if (!m.guild)
@@ -23,6 +24,8 @@ export default async function autoSubmit (m: Message) {
         link = /https?:\/\/\S+/.exec(m.content)![0];
     else
         return;
+
+    link = cleanLink(link);
 
     // Check if the link is an osz file
     if (!link.endsWith(".osz"))
