@@ -46,5 +46,12 @@ export async function getLink (m: Message | ChatInputCommandInteraction, optionN
                 link = newLink;
         }
     }
+
+    // clean link from query parameters and other stuff
+    if (link) {
+        link = link.split("?")[0];
+        link = link.split("#")[0];
+    }
+
     return link;
 }
