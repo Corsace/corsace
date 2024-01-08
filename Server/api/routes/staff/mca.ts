@@ -16,10 +16,9 @@ const staffRouter  = new CorsaceRouter<MCAAuthenticatedState>();
 
 staffRouter.$use(isLoggedInDiscord);
 staffRouter.$use(isMCAStaff);
-staffRouter.$use(validatePhaseYear);
 
 // Endpoint to obtain current MCA and its info
-staffRouter.$get<{ mca: MCAInfo }>("/:year", async (ctx) => {
+staffRouter.$get<{ mca: MCAInfo }>("/:year", validatePhaseYear, async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -30,7 +29,7 @@ staffRouter.$get<{ mca: MCAInfo }>("/:year", async (ctx) => {
 });
 
 // Endpoint for getting information for a year
-staffRouter.$get<{ categories: CategoryInfo[] }>("/categories/:year", async (ctx) => {
+staffRouter.$get<{ categories: CategoryInfo[] }>("/categories/:year", validatePhaseYear, async (ctx) => {
     const mca = ctx.state.mca;
     const categories = await Category.find({
         where: {
@@ -53,7 +52,7 @@ staffRouter.$get<{ categories: CategoryInfo[] }>("/categories/:year", async (ctx
 });
 
 // Endpoint for granting direct MCA nom/vote access to users
-staffRouter.$post("/grant/:year", isCorsace, async (ctx) => {
+staffRouter.$post("/grant/:year", isCorsace, validatePhaseYear, async (ctx) => {
     if (!ctx.request.body.user)
         return ctx.body = {
             success: false,

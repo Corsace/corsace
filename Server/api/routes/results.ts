@@ -11,9 +11,7 @@ import { MCAState } from "koa";
 
 const resultsRouter  = new CorsaceRouter<MCAState>();
 
-resultsRouter.$use(validatePhaseYear);
-
-resultsRouter.$get<{ categories: CategoryStageInfo[] }>("/:year?", isResults, async (ctx) => {
+resultsRouter.$get<{ categories: CategoryStageInfo[] }>("/:year?", validatePhaseYear, isResults, async (ctx) => {
     const categories = await Category.find({
         where: {
             mca: {
@@ -30,7 +28,7 @@ resultsRouter.$get<{ categories: CategoryStageInfo[] }>("/:year?", isResults, as
     };
 });
 
-resultsRouter.$get<{ list: BeatmapsetResult[] | BeatmapResult[] | UserResult[] }>("/:year/search", isResults, async (ctx) => {
+resultsRouter.$get<{ list: BeatmapsetResult[] | BeatmapResult[] | UserResult[] }>("/:year/search", validatePhaseYear, isResults, async (ctx) => {
     if (await ctx.cashed() && ctx.state.mca.currentPhase() === "results")
         return;
 
