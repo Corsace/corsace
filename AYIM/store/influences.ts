@@ -43,10 +43,10 @@ export const actions: ActionTree<InfluenceState, RootState> = {
             const {data} = await this.$axios.get(`/api/influences?user=${value}&year=${rootState.mca?.year}&mode=${rootState.selectedMode}`);
         
             if (!data.error) {
-                commit("addUser", data);
+                commit("addUser", data.influences);
 
                 if (!state.root) {
-                    commit("setRoot", data);
+                    commit("setRoot", data.influences);
                 }
             }
         } catch (error) {

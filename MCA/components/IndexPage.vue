@@ -183,7 +183,7 @@ export default class IndexContent extends Vue {
 
     async mounted () {
         if (this.mca) {
-            const { data } = await this.$axios.get(`/api/mcaInfo/front?year=${this.mca.year}`);
+            const { data } = await this.$axios.get(`/api/mca/front?year=${this.mca.year}`);
             if (data.error) {
                 alert(data.error);
                 return;

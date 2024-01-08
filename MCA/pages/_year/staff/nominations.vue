@@ -199,7 +199,7 @@ export default class Nominations extends Vue {
             return;
         }
 
-        this.nominations = data.sort((a, b) => b.nominators.length - a.nominators.length);
+        this.nominations = data.staffNominations.sort((a, b) => b.nominators.length - a.nominators.length);
         this.selectedCategoryId = id;
     }
 

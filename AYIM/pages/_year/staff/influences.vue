@@ -173,7 +173,7 @@ export default class StaffComments extends Vue {
         if (data.error)
             return alert(data.error);
         
-        this.comments = data;
+        this.comments = data.staffComments;
     
         for (;;) {
             const box = document.querySelector(".staff-scrollTrack");
@@ -200,7 +200,7 @@ export default class StaffComments extends Vue {
         else if (data.length === 0)
             this.end = true;
         else {
-            this.comments.push(...data);
+            this.comments.push(...data.staffComments);
             this.comments = this.comments.filter((val, i, self) => self.findIndex(v => v.ID === val.ID) === i);
         }
     }
@@ -246,7 +246,8 @@ export default class StaffComments extends Vue {
 
         if (!confirm(`User will not be able to submit new comments and invalidated comments will be removed. Are you sure?`)) 
             return;
-        
+
+        // pretty sure this route is now /api/staff/comments/:id/ban...
         const { data } = await this.$axios.post(`/api/staff/users/${id}/ban`);
             
         if (data.error) {

@@ -213,7 +213,7 @@ export default class MapperComments extends Vue {
         } else {
             this.info = "Created comment!";
             this.removeInfo();
-            this.comments = [data, ...this.comments];
+            this.comments = [data.comment, ...this.comments];
         }
     }
 
@@ -236,7 +236,7 @@ export default class MapperComments extends Vue {
         } else {
             this.info = "Updated comment!";
             this.removeInfo();
-            this.$set(this.comments, this.ownCommentIndex, data);
+            this.$set(this.comments, this.ownCommentIndex, data.comment);
         }
     }
 

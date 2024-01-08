@@ -113,7 +113,7 @@ export default class MappersRecords extends Vue {
         const { data } = await this.$axios.get(`/api/records/mappers?year=${this.mca.year}&mode=${this.selectedMode}`);
 
         if (!data.error) {
-            this.records = data;
+            this.records = data.records;
         }
     }
     

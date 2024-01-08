@@ -38,6 +38,9 @@ export const mutations: MutationTree<RootState> = {
         state.loggedInUser = user;
     },
     setMCA (state, mca: MCA) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        mca.year = mca.name;
         if (mca.year)
             state.mca = {
                 year: mca.year,
@@ -162,7 +165,7 @@ export const getters: GetterTree<RootState, RootState> = {
 
 export const actions: ActionTree<RootState, RootState> = {
     async setLoggedInUser ({ commit }) {
-        const { data } = await this.$axios.get(`/api/mca/user`);
+        const { data } = await this.$axios.get(`/api/user/mca`);
 
         if (!data.error) {
             commit("setLoggedInUser", data);
@@ -172,7 +175,7 @@ export const actions: ActionTree<RootState, RootState> = {
         const { data } = await this.$axios.get(`/api/mca?year=${year}`);
 
         if (!data.error) {
-            commit("setMCA", data);
+            commit("setMCA", data.mca);
         } else {
             const { data } = await this.$axios.get(`/api/mca/all`);
             commit("setMCA", {});
@@ -206,7 +209,7 @@ export const actions: ActionTree<RootState, RootState> = {
             return;
         }
 
-        commit("addGuestRequest", data);
+        commit("addGuestRequest", data.request);
     },
     async updateGuestRequest ({ commit, state }, payload: UpdateGuestRequestPayload) {
         if (!state.mca) return;
@@ -221,6 +224,6 @@ export const actions: ActionTree<RootState, RootState> = {
             return;
         }
 
-        commit("updateGuestRequest", data);
+        commit("updateGuestRequest", data.request);
     },
 };

@@ -222,7 +222,7 @@ export default class Votes extends Vue {
             return;
         }
 
-        this.votes = data;
+        this.votes = data.staffVotes;
         this.selectedCategoryId = id;
     }
 

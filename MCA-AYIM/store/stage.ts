@@ -291,7 +291,7 @@ export const actions: ActionTree<StageState, RootState> = {
                 return;
             }
 
-            commit("addNomination", data);
+            commit("addNomination", data.nomination);
         } catch (e) {
             commit("selected", false);
             alert(e);
@@ -337,7 +337,7 @@ export const actions: ActionTree<StageState, RootState> = {
                 return;
             }
 
-            commit("addVote", data);
+            commit("addVote", data.vote);
         } catch (e) {
             commit("selected", false);
             alert(e);

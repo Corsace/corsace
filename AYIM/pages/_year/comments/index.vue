@@ -207,9 +207,9 @@ export default class Comments extends Vue {
         if (data.error)
             alert(data.error);
         else if (replace)
-            this.mappers = data;
+            this.mappers = data.users;
         else
-            this.mappers.push(...data);
+            this.mappers.push(...data.users);
 
         this.loading = false;
     }

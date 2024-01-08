@@ -183,7 +183,7 @@ export default class Comments extends Vue {
             const {data} = await this.$axios.get(`/api/users/search?user=${userSearch}`);
 
             if (!data.error) {
-                this.users = data;
+                this.users = data.users;
             } else {
                 alert(data.error);
             }
@@ -202,7 +202,7 @@ export default class Comments extends Vue {
             });
         
             if (!data.error) {
-                this.influences.push(data);
+                this.influences.push(data.newInfluence);
             } else {
                 alert(data.error);
             }

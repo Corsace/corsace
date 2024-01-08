@@ -88,7 +88,7 @@ export default class AdminPage extends Vue {
         if (res.error)
             console.error(res.error);
         else {
-            this.years = res;
+            this.years = res.mca;
             this.years.sort((a, b) => b.name - a.name);
         }
     }

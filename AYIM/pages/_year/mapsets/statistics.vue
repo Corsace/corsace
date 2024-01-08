@@ -86,7 +86,7 @@ export default class MapsetStatistics extends Vue {
         const { data } = await this.$axios.get(`/api/statistics/beatmapsets?year=${this.mca.year}&mode=${this.selectedMode}`);
 
         if (!data.error) {
-            this.statistics = data;
+            this.statistics = data.statistics;
         }
     }
 
