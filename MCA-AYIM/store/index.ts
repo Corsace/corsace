@@ -168,7 +168,7 @@ export const actions: ActionTree<RootState, RootState> = {
         const { data } = await this.$axios.get(`/api/user/mca`);
 
         if (!data.error) {
-            commit("setLoggedInUser", data);
+            commit("setLoggedInUser", data.user);
         }
     },
     async setMCA ({ commit }, year: number) {
