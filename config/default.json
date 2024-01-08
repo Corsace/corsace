@@ -107,7 +107,7 @@
         "host": "localhost",
         "port": 3000,
         "publicUrl": "http://localhost:3000",
-        "ssr": true
+        "ssr": false
     },
     "corsace": {
         "host": "localhost",
@@ -125,7 +125,7 @@
         "host": "localhost",
         "port": 8000,
         "publicUrl": "http://localhost:8000",
-        "ssr": true
+        "ssr": false
     },
     "open": {
         "host": "localhost",
