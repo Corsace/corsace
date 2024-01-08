@@ -91,7 +91,7 @@ async function validatePhaseYear<S extends DefaultState = DefaultState> (ctx: Co
             year = ctx.state.mca.year;
         } else {
             year = parseInt(year, 10);
-            ctx.state.mca = await MCA.findOneOrFail(year);
+            ctx.state.mca = await MCA.findOneOrFail({ where: { year } });
         }
 
         ctx.state.year = year;
