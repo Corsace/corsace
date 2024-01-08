@@ -1,11 +1,11 @@
 import { CorsaceRouter } from "../../corsaceRouter";
-import { createQueryBuilder } from "typeorm";
 import { ModeDivisionType } from "../../../Interfaces/modes";
 import { BeatmapsetRecord, MapperRecord } from "../../../Interfaces/records";
 import { Beatmap } from "../../../Models/beatmap";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { parseQueryParam } from "../../../Server/utils/query";
 import { DefaultState } from "koa";
+import { createQueryBuilder } from "../../../ormconfig";
 
 function mapBeatmapsetRecord (response: {
     beatmapset_ID: number;

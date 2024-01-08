@@ -27,4 +27,6 @@ const ormConfig = new DataSource({
     ],
 });
 
+export const createQueryBuilder = () => ormConfig.createQueryBuilder();
+
 export default ormConfig;

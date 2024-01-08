@@ -1,11 +1,12 @@
 import { CorsaceRouter } from "../../corsaceRouter";
-import { createQueryBuilder, SelectQueryBuilder } from "typeorm";
+import { SelectQueryBuilder } from "typeorm";
 import { ModeDivisionType } from "../../../Interfaces/modes";
 import { Statistic } from "../../../Interfaces/records";
 import { Beatmapset } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
 import { parseQueryParam } from "../../utils/query";
 import { DefaultState } from "koa";
+import { createQueryBuilder } from "../../../ormconfig";
 // import getHistoryStat from "../data/bnNatHistory";
 
 const yearIDthresholds = [
