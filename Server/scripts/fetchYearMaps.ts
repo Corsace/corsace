@@ -63,7 +63,7 @@ async function getMissingOsuUserProperties (userID: number): Promise<{ country: 
 
 const getUser = async (targetUser: { username?: string, userID: number, country?: string }): Promise<User> => {
     let user = await User.findOne({ where: { osu: { userID: `${targetUser.userID}` }}});
-    
+
     if (!user) {
         let country = targetUser.country;
         let username = targetUser.username;
@@ -119,8 +119,8 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
 const getRankers = async (beatmapEvents: BNEvent[]): Promise<User[]> => {
     const rankers: User[] = [];
     if (beatmapEvents.length > 0)
-        for (const bnEvent of beatmapEvents.reverse()) { 
-            // Run from rank to the last disqual/nom_reset event 
+        for (const bnEvent of beatmapEvents.reverse()) {
+            // Run from rank to the last disqual/nom_reset event
             // (or to the beginning of list if no disqual/nom_reset)
             if (bnEvent.type === "rank")
                 continue;
@@ -159,13 +159,13 @@ const getBeatmapSet = memoizee(async (beatmap: APIBeatmap): Promise<Beatmapset> 
 
     const user = await getUser({ username: beatmap.creator, userID: beatmap.creatorId });
     beatmapSet.creator = user;
-    
+
     // interOp call to pishi's BN site to get the user IDs of the BNs of a beatmapset.
     // NOTE: The BN site only has nomination data from ~mid 2019 onward.
     const beatmapEvents = await bnsRawData.get(beatmapSet.ID);
     bnsRawData.delete(beatmapSet.ID);
     beatmapSet.rankers = beatmapEvents ? await getRankers(beatmapEvents) : [];
-    
+
     beatmapSet = await beatmapSet.save();
     bmsInserted++;
     return beatmapSet;
@@ -286,10 +286,7 @@ async function script () {
     console.log("This script will automatically continue in 5 seconds. Cancel using Ctrl+C.");
     await sleep(5000);
 
-    const conn = await ormConfig.initialize();
-    // ensure schema is up-to-date
-    await conn.synchronize();
-    console.log("DB schema is now up-to-date!");
+    await ormConfig.initialize();
     const start = Date.now();
 
     const processingQueue = queue(async (beatmap: APIBeatmap, cb: () => void) => {
