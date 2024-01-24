@@ -321,7 +321,9 @@ async function script () {
             }
 
             queuedBeatmapIds.push(newBeatmap.id);
-            await processingQueue.push(newBeatmap);
+            processingQueue.push(newBeatmap).catch((err) => {
+                console.error("An error occured while processing beatmap " + newBeatmap.id, err);
+            });
             bmQueued++;
         }
     }
