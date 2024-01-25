@@ -386,7 +386,7 @@
             },
             "highDifficulty": {
                 "name": "Best High Difficulty",
-                "description": "The best difficult beatmap with Star Rating around 8 or more."
+                "description": "The best difficult beatmap with a very high Star Rating (>=8 stars)."
             },
             "complexOnly": {
                 "name": "Best Complex",
@@ -402,7 +402,7 @@
             },
             "antiMetaMapper": {
                 "name": "Best Anti Meta",
-                "description": "The one who create the best 5K/6K/8K/9K beatmaps."
+                "description": "The one who created the best 5K/6K/8K/9K beatmaps."
             },
             "motionDesign": {
                 "name": "Best Motion Design / Animation",
