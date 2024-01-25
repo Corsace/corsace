@@ -141,7 +141,8 @@
                 "2019": "<p>Mapper's Choice Awards가 2019년 4회차로 돌아왔습니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2019년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>올해는 저희가 새로 완성한 홈페이지를 통해 투표가 더욱 쉬워졌습니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨으면 좋겠습니다!</p>",
                 "2020": "<p>바로 이어서, MCA가 2020년 제 5회차를 맞이합니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2020년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>MCA 2019가 진행되는 동안 받은 제안과 피드백을 바탕으로 올해는 더 매끄러운 진행이 될거라 예상됩니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해 주셨습니다!</p>",
                 "2021": "<p>Mapper's Choice Awards가 2021년으로 돌아왔습니다! 이 이벤트는 모든 매퍼/모더가 각 카테고리에마다 가장 적합한 맵/매퍼라고 생각하는 것을 추천하고 투표하는 이벤트입니다!</p><p>모든 osu! 서포터는 osu! 스태프에서 직접 지급합니다. 각 카테고리별 수상자는 2개월, 대상 수상자는 4개월을 받게 됩니다!</p><p>이번 이벤트에는 최대한 많은 참가자들의 참여를 부탁드립니다!</p>",
-                "2022": "Mapper's Choice Awards가 또다른 이벤트로 돌아왔습니다! (이번엔 예정대로 말이죠!)<br>이 이벤트는 모든 매퍼/모더가 각 카테고리에마다 가장 적합한 맵/매퍼라고 생각하는 것을 추천하고 투표하는 이벤트입니다!<br>모든 osu! 서포터는 osu! 스태프에서 직접 지급합니다. 각 카테고리별 수상자는 2개월, 대상 수상자는 4개월을 받게 됩니다!<br> 이번 이벤트에는 최대한 많은 참가자들의 참여를 부탁드립니다!"
+                "2022": "Mapper's Choice Awards가 또다른 이벤트로 돌아왔습니다! (이번엔 예정대로 말이죠!)<br>이 이벤트는 모든 매퍼/모더가 각 카테고리에마다 가장 적합한 맵/매퍼라고 생각하는 것을 추천하고 투표하는 이벤트입니다!<br>모든 osu! 서포터는 osu! 스태프에서 직접 지급합니다. 각 카테고리별 수상자는 2개월, 대상 수상자는 4개월을 받게 됩니다!<br> 이번 이벤트에는 최대한 많은 참가자들의 참여를 부탁드립니다!",
+                "2023": "New year, new iteration of Mapper's Choice Awards!<br>This is a voting event where all mappers and modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!"
             },
             "categories": {
                 "index": "카테고리",
@@ -378,6 +379,38 @@
             "diversity": {
                 "name": "Best Diversity",
                 "description": "다양한 스킬셋/카테고리에 초점을 맞춘 최고의 비트맵"
+            },
+            "altSwing": {
+                "name": "Best Alternator / Swing",
+                "description": "The best beatmap focusing on alt-styled or swing-styled beatmaps."
+            },
+            "highDifficulty": {
+                "name": "Best High Difficulty",
+                "description": "The best difficult beatmap with a very high Star Rating (>=8 stars)."
+            },
+            "complexOnly": {
+                "name": "Best Complex",
+                "description": "The best beatmap with extensive usage of uncommon snappings."
+            },
+            "unorthodoxTaiko": {
+                "name": "Best Unorthodox",
+                "description": "The best beatmap that utilizes gimmicks and/or concepts."
+            },
+            "unorthodoxCatch": {
+                "name": "Best Unorthodox",
+                "description": "The best beatmap that strongly deviates from common norms."
+            },
+            "antiMetaMapper": {
+                "name": "Best Anti Meta",
+                "description": "The one who created the best 5K/6K/8K/9K beatmaps."
+            },
+            "motionDesign": {
+                "name": "Best Motion Design / Animation",
+                "description": "The storyboard with the most satisfying animations and transitions."
+            },
+            "lyrics": {
+                "name": "Best Lyrics / Text",
+                "description": "The best storyboard that utilizes well-designed text effects for lyrics."
             }
         },
         "nom_vote": {
