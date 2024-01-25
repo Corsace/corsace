@@ -56,13 +56,17 @@ const validate: CorsaceMiddleware<{ mca: MCAInfo }> = async (ctx, next) => {
 adminYearsRouter.$post<{ mca: MCAInfo }>("/", validate, async (ctx) => {
     const data = ctx.request.body;
 
-    let mca = await MCA.findOne(data.year);
+    let mca = await MCA.findOne({
+        where: {
+            year: data.year,
+        },
+    });
     if (mca)
-        return ctx.body = { 
+        return ctx.body = {
             success: false,
             error: "This year already exists!",
         };
-        
+
     mca = await MCA.fillAndSave(data);
 
     // Create the grand awards
@@ -81,7 +85,7 @@ adminYearsRouter.$post<{ mca: MCAInfo }>("/", validate, async (ctx) => {
     cache.del("/api/mca?year=" + data.year);
     cache.del("/api/staff");
 
-    ctx.body = { 
+    ctx.body = {
         success: true,
         mca: mca.getInfo(),
     };
@@ -91,14 +95,18 @@ adminYearsRouter.$post<{ mca: MCAInfo }>("/", validate, async (ctx) => {
 adminYearsRouter.$put<{ mca: MCAInfo }>("/:year", validate, async (ctx) => {
     const data = ctx.request.body;
 
-    let mca = await MCA.findOneOrFail(data.year);    
+    let mca = await MCA.findOneOrFail({
+        where: {
+            year: data.year,
+        },
+    });
     mca = await MCA.fillAndSave(data, mca);
 
     cache.del("/api/mcaInfo/front?year=" + data.year);
     cache.del("/api/mca?year=" + data.year);
     cache.del("/api/staff");
 
-    ctx.body = { 
+    ctx.body = {
         success: true,
         mca: mca.getInfo(),
     };
@@ -108,11 +116,11 @@ adminYearsRouter.$put<{ mca: MCAInfo }>("/:year", validate, async (ctx) => {
 adminYearsRouter.$delete<{ mca: MCAInfo }>("/:year/delete", async (ctx) => {
     const yearStr = ctx.params.year;
     if (!yearStr || !/20\d\d/.test(yearStr))
-        return ctx.body = { 
+        return ctx.body = {
             success: false,
             error: "Invalid year given!",
         };
-    
+
     const year = parseInt(yearStr);
 
     try {
@@ -157,7 +165,7 @@ adminYearsRouter.$delete<{ mca: MCAInfo }>("/:year/delete", async (ctx) => {
         }
 
         const mcares = await mca.remove();
-        
+
         ctx.body = {
             success: true,
             mca: mcares.getInfo(),
@@ -169,7 +177,7 @@ adminYearsRouter.$delete<{ mca: MCAInfo }>("/:year/delete", async (ctx) => {
             ctx.body = {
                 success: false,
                 error: typeof e === "string" ? e : "Internal server error",
-            };  
+            };
         }
     }
 });
