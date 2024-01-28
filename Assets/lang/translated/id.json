@@ -294,7 +294,7 @@
             },
             "gameplay": {
                 "name": "Storyboard Permainan Terbaik",
-                "description": "Storyboard terbaik yang memperkaya permainan."
+                "description": "Storyboard terbaik yang menggunakan elemen permainan di dalamnya."
             },
             "minimalistic": {
                 "name": "Storyboard Minimalis Terbaik",
@@ -390,15 +390,15 @@
             },
             "complexOnly": {
                 "name": "Map Kompleks Terbaik",
-                "description": "The best beatmap with extensive usage of uncommon snappings."
+                "description": "Beatmap terbaik yang bertitik berat pada penggunaan snapping yang tidak umum."
             },
             "unorthodoxTaiko": {
-                "name": "Best Unorthodox",
-                "description": "The best beatmap that utilizes gimmicks and/or concepts."
+                "name": "Map Non-Ortodoks Terbaik",
+                "description": "Beatmap terbaik yang mengusung gimmick dan/atau konsep yang tidak lazim."
             },
             "unorthodoxCatch": {
-                "name": "Best Unorthodox",
-                "description": "The best beatmap that strongly deviates from common norms."
+                "name": "Map Non-Ortodoks Terbaik",
+                "description": "Beatmap terbaik yang mengusung gaya mapping yang bertentangan dengan beatmap lain pada umumnya."
             },
             "antiMetaMapper": {
                 "name": "Map Anti Meta Terbaik",
@@ -410,7 +410,7 @@
             },
             "lyrics": {
                 "name": "Storyboard Lirik / Teks Terbaik",
-                "description": "The best storyboard that utilizes well-designed text effects for lyrics."
+                "description": "Storyboard terbaik yang mengusung teks lirik dengan efek visual yang megah."
             }
         },
         "nom_vote": {
