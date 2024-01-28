@@ -381,8 +381,8 @@
                 "description": "Beatmap terbaik yang mengusung berbagai macam skillset / kategori di dalamnya."
             },
             "altSwing": {
-                "name": "Best Alternator / Swing",
-                "description": "The best beatmap focusing on alt-styled or swing-styled beatmaps."
+                "name": "Map Alternator / Swing Terbaik",
+                "description": "Beatmap terbaik yang mengusung gaya mapping alt atau swing."
             },
             "highDifficulty": {
                 "name": "Best High Difficulty",
@@ -401,15 +401,15 @@
                 "description": "The best beatmap that strongly deviates from common norms."
             },
             "antiMetaMapper": {
-                "name": "Best Anti Meta",
-                "description": "The one who created the best 5K/6K/8K/9K beatmaps."
+                "name": "Map Anti Meta Terbaik",
+                "description": "Mereka yang menghasilkan beatmap 5K/6K/8K/9K terbaik."
             },
             "motionDesign": {
                 "name": "Best Motion Design / Animation",
                 "description": "The storyboard with the most satisfying animations and transitions."
             },
             "lyrics": {
-                "name": "Best Lyrics / Text",
+                "name": "Storyboard Lirik / Teks Terbaik",
                 "description": "The best storyboard that utilizes well-designed text effects for lyrics."
             }
         },
