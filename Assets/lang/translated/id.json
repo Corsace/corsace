@@ -389,7 +389,7 @@
                 "description": "The best difficult beatmap with a very high Star Rating (>=8 stars)."
             },
             "complexOnly": {
-                "name": "Best Complex",
+                "name": "Map Kompleks Terbaik",
                 "description": "The best beatmap with extensive usage of uncommon snappings."
             },
             "unorthodoxTaiko": {
