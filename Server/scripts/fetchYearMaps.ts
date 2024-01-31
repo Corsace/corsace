@@ -21,7 +21,7 @@ let bmQueued = 0; // beatmaps inserted in queue
 let bmInserted = 0; // beatmaps inserted in db (no longer in queue)
 let bmsInserted = 0; // beatmapsets inserted in db (no longer in queue)
 
-function timeFormatter (ms: number): string {
+export function timeFormatter (ms: number): string {
     if (isNaN(ms) || ms <= 0)
         return "0:00:00";
 
