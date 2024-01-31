@@ -401,9 +401,17 @@
                 "name": "Map Non-Ortodoks Terbaik",
                 "description": "Beatmap terbaik yang mengusung gaya mapping yang bertentangan dengan beatmap lain pada umumnya."
             },
-            "antiMetaMapper": {
-                "name": "Map Anti Meta Terbaik",
-                "description": "Mereka yang menghasilkan beatmap 5K/6K/8K/9K terbaik."
+            "mapper4K": {
+                "name": "Best 4K Mapper",
+                "description": "The one who created the best 4K beatmaps."
+            },
+            "mapper7K": {
+                "name": "Best 7K Mapper",
+                "description": "The one who created the best 7K beatmaps."
+            },
+            "mapperAntiMeta": {
+                "name": "Best Anti Meta Mapper",
+                "description": "The one who created the best 5K/6K/8K/9K beatmaps."
             },
             "motionDesign": {
                 "name": "Storyboard Desain Animasi Terbaik",
