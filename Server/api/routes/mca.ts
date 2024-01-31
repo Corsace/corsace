@@ -89,6 +89,7 @@ mcaRouter.$get<{ frontData: MCAFrontData }>("/front", async (ctx) => {
             .createQueryBuilder("beatmapset")
             .innerJoinAndSelect("beatmapset.beatmaps", "beatmap", mode.ID === 5 ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: mode.ID === 5 ? true : mode.ID })
             .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${mca.year}-01-01`, end: `${mca.year + 1}-01-01` })
+            .andWhere("(beatmapset.rankedStatus = '1' OR beatmapset.rankedStatus = '2')")
             .getCount();
 
         const [categories, beatmapCount, organizers] = await Promise.all([

@@ -3,7 +3,7 @@ import { isLoggedIn } from "../../middleware";
 import { Nomination } from "../../../Models/MCA_AYIM/nomination";
 import { Category } from "../../../Models/MCA_AYIM/category";
 import { Beatmap } from "../../../Models/beatmap";
-import { Beatmapset } from "../../../Models/beatmapset";
+import { Beatmapset, BeatmapsetRankedStatus } from "../../../Models/beatmapset";
 import { User } from "../../../Models/user";
 import { isEligibleFor, isEligible, isPhaseStarted, isPhase, validatePhaseYear } from "../../middleware/mca-ayim";
 import { CategoryStageInfo, CategoryType } from "../../../Interfaces/category";
@@ -121,7 +121,7 @@ nominatingRouter.$post<{ nomination: Nomination }, MCAYearState>("/:year?/create
                 relations: ["beatmaps"],
             });
 
-            if (beatmapset.approvedDate?.getUTCFullYear() !== category.mca.year)
+            if (beatmapset.approvedDate?.getUTCFullYear() !== category.mca.year || (beatmapset.rankedStatus !== BeatmapsetRankedStatus.Approved && beatmapset.rankedStatus !== BeatmapsetRankedStatus.Ranked))
                 return ctx.body = {
                     success: false,
                     error: "Mapset is ineligible for the given MCA year!",
@@ -185,7 +185,7 @@ nominatingRouter.$post<{ nomination: Nomination }, MCAYearState>("/:year?/create
                 },
                 relations: ["beatmapset"],
             });
-            if (beatmap.beatmapset.approvedDate?.getUTCFullYear() !== category.mca.year)
+            if (beatmap.beatmapset.approvedDate?.getUTCFullYear() !== category.mca.year || (beatmap.beatmapset.rankedStatus !== BeatmapsetRankedStatus.Approved && beatmap.beatmapset.rankedStatus !== BeatmapsetRankedStatus.Ranked))
                 return ctx.body = {
                     success: false,
                     error: "Mapset is ineligible for the given MCA year!",

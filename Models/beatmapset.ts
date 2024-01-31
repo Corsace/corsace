@@ -106,7 +106,8 @@ export class Beatmapset extends BaseEntity {
             .leftJoinAndSelect("beatmapset.creator", "user")
             .leftJoinAndSelect("user.otherNames", "otherName")
             .innerJoinAndSelect("beatmapset.beatmaps", "beatmap", includeStoryboard ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: includeStoryboard ? true : modeId })
-            .andWhere("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${year}-01-01`, end: `${year + 1}-01-01` });
+            .andWhere("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${year}-01-01`, end: `${year + 1}-01-01` })
+            .andWhere("(beatmapset.rankedStatus = '1' OR beatmapset.rankedStatus = '2')");
 
         // Only include if there are more than 2 nominators in voting stage
         if (stage === "voting" && modeId === 1) {
@@ -259,6 +260,7 @@ export class Beatmapset extends BaseEntity {
             .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
             .innerJoin("beatmapset.creator", "creator")
             .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+            .andWhere("(beatmapset.rankedStatus = '1' OR beatmapset.rankedStatus = '2')")
             .select(["beatmapset.ID", "beatmapset.title", "beatmapset.artist"])
             .addSelect(["creator.ID", "creator.osu.username", "creator.osu.userID"])
             .limit(3);
@@ -270,6 +272,7 @@ export class Beatmapset extends BaseEntity {
             .innerJoin("beatmapset.beatmaps", "beatmap", "beatmap.mode = :mode", { mode: modeId })
             .innerJoin("beatmapset.creator", "creator")
             .where("beatmapset.approvedDate BETWEEN :start AND :end", { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) })
+            .andWhere("(beatmapset.rankedStatus = '1' OR beatmapset.rankedStatus = '2')")
             .limit(1);
     }
 
