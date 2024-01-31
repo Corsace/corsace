@@ -136,7 +136,8 @@ export class Beatmap extends BaseEntity {
             .leftJoinAndSelect("beatmapset.creator", "user")
             .leftJoinAndSelect("user.otherNames", "otherName")
             .andWhere(includeStoryboard ? "beatmap.storyboard = :q" : "beatmap.mode = :q", { q: includeStoryboard ? true : modeId })
-            .andWhere("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${year}-01-01`, end: `${year + 1}-01-01` });
+            .andWhere("beatmapset.approvedDate BETWEEN :start AND :end", { start: `${year}-01-01`, end: `${year + 1}-01-01` })
+            .andWhere("(beatmapset.rankedStatus = '1' OR beatmapset.rankedStatus = '2')");
                                 
         // Only include if there are more than 2 nominators in voting stage
         if (stage === "voting" && modeId === 1) {
