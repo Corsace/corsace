@@ -1,14 +1,15 @@
-import { ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
 import { queue } from "async";
 import memoizee from "memoizee";
 import { Beatmap as APIBeatmap } from "nodesu";
 import { config } from "node-config-ts";
-import { Beatmapset } from "../../Models/beatmapset";
 import axios from "axios";
+import { LessThan } from "typeorm";
 import { Beatmap } from "../../Models/beatmap";
+import { Beatmapset } from "../../Models/beatmapset";
 import { OAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
+import { ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
 import { RateLimiterMemory, RateLimiterQueue } from "rate-limiter-flexible";
 import { isPossessive } from "../../Models/MCA_AYIM/guestRequest";
 import { sleep } from "../utils/sleep";
@@ -300,7 +301,7 @@ async function script () {
     };
     const progressInterval = setInterval(printStatus, 1000);
 
-    let since = new Date((await Beatmapset.findOne({ where: {}, order: { approvedDate: "DESC" } }))?.approvedDate ?? new Date("2006-01-01"));
+    let since = new Date((await Beatmapset.findOne({ where: { approvedDate: LessThan(new Date(`${year}-01-01`)) }, order: { approvedDate: "DESC" } }))?.approvedDate ?? new Date("2006-01-01"));
     console.log(`Fetching all beatmaps starting from ${since.toJSON()} until ${year}-12-31...`);
     printStatus();
     const queuedBeatmapIds: number[] = [];
