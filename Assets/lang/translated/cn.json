@@ -290,19 +290,19 @@
                 "description": "最佳 7K 谱面。"
             },
             "technical": {
-                "name": "最高技术含量",
+                "name": "Best Technical Storyboard",
                 "description": "技术含量最高的故事板。"
             },
             "gameplay": {
-                "name": "最佳游玩体验",
+                "name": "Best Gameplay Storyboard",
                 "description": "能够提供最佳游玩体验的故事板。"
             },
             "minimalistic": {
-                "name": "最佳极简风格",
+                "name": "Best Minimalistic Storyboard",
                 "description": "最能够由小见大的故事板。"
             },
             "narrative": {
-                "name": "最佳叙事性",
+                "name": "Best Narrative Storyboard",
                 "description": "叙事性最强的故事板。"
             },
             "technicalTaiko": {
@@ -414,12 +414,20 @@
                 "description": "The one who created the best 5K/6K/8K/9K beatmaps."
             },
             "motionDesign": {
-                "name": "Best Motion Design / Animation",
+                "name": "Best Motion Design / Animation Storyboard",
                 "description": "The storyboard with the most satisfying animations and transitions."
             },
             "lyrics": {
-                "name": "Best Lyrics / Text",
+                "name": "Best Lyrics / Text Storyboard",
                 "description": "The best storyboard that utilizes well-designed text effects for lyrics."
+            },
+            "mostPromisingSB": {
+                "name": "Most Promising Storyboarder",
+                "description": "The best storyboarder who ranked their first storyboard this year."
+            },
+            "outContSB": {
+                "name": "Outstanding Contributor (Storyboard)",
+                "description": "The one who positively contributed to the health of the storyboarding scene the most."
             }
         },
         "nom_vote": {
