@@ -290,19 +290,19 @@
                 "description": "Beatmap 7K terbaik."
             },
             "technical": {
-                "name": "Map Technical Terbaik",
+                "name": "Best Technical Storyboard",
                 "description": "Storyboard yang paling memukau secara teknis."
             },
             "gameplay": {
-                "name": "Storyboard Permainan Terbaik",
+                "name": "Best Gameplay Storyboard",
                 "description": "Storyboard terbaik yang menggunakan elemen permainan di dalamnya."
             },
             "minimalistic": {
-                "name": "Storyboard Minimalis Terbaik",
+                "name": "Best Minimalistic Storyboard",
                 "description": "Storyboard terbaik yang mengusung elemen desain yang minimalis."
             },
             "narrative": {
-                "name": "Storyboard Naratif Terbaik",
+                "name": "Best Narrative Storyboard",
                 "description": "Storyboard terbaik yang menceritakan suatu kisah."
             },
             "technicalTaiko": {
@@ -414,12 +414,20 @@
                 "description": "The one who created the best 5K/6K/8K/9K beatmaps."
             },
             "motionDesign": {
-                "name": "Storyboard Desain Animasi Terbaik",
+                "name": "Best Motion Design / Animation Storyboard",
                 "description": "The storyboard with the most satisfying animations and transitions."
             },
             "lyrics": {
-                "name": "Storyboard Lirik / Teks Terbaik",
+                "name": "Best Lyrics / Text Storyboard",
                 "description": "Storyboard terbaik yang mengusung teks lirik dengan efek visual yang megah."
+            },
+            "mostPromisingSB": {
+                "name": "Most Promising Storyboarder",
+                "description": "The best storyboarder who ranked their first storyboard this year."
+            },
+            "outContSB": {
+                "name": "Outstanding Contributor (Storyboard)",
+                "description": "The one who positively contributed to the health of the storyboarding scene the most."
             }
         },
         "nom_vote": {
