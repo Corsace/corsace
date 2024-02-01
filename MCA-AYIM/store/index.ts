@@ -139,9 +139,10 @@ export const getters: GetterTree<RootState, RootState> = {
     },
     isEligibleFor (state) {
         return (mode: string): boolean => {
-            if (state.loggedInUser?.staff?.headStaff) {
-                return true;
-            }
+            // Inconsistent with requirements to nom/vote currently
+            // if (state.loggedInUser?.staff?.headStaff) {
+            //     return true;
+            // }
     
             if (state.loggedInUser?.eligibility) {
                 const eligibility = state.loggedInUser?.eligibility?.find(e => e.year === state.mca?.year);
