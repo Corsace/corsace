@@ -290,19 +290,19 @@
                 "description": "Das beste auf 7K basierende Set."
             },
             "technical": {
-                "name": "Technisch",
+                "name": "Best Technical Storyboard",
                 "description": "Das technisch beeindruckenste Storyboard."
             },
             "gameplay": {
-                "name": "Gameplay",
+                "name": "Best Gameplay Storyboard",
                 "description": "Das beste Gameplay-Elemente verwendende Storyboard."
             },
             "minimalistic": {
-                "name": "Minimalistisch",
+                "name": "Best Minimalistic Storyboard",
                 "description": "Das beste Storyboard, das mit ganz wenig ganz viel aussagt."
             },
             "narrative": {
-                "name": "Erzählung",
+                "name": "Best Narrative Storyboard",
                 "description": "Das beste Storyboard, das eine Geschichte erzählt."
             },
             "technicalTaiko": {
@@ -414,12 +414,20 @@
                 "description": "The one who created the best 5K/6K/8K/9K beatmaps."
             },
             "motionDesign": {
-                "name": "Best Motion Design / Animation",
+                "name": "Best Motion Design / Animation Storyboard",
                 "description": "The storyboard with the most satisfying animations and transitions."
             },
             "lyrics": {
-                "name": "Best Lyrics / Text",
+                "name": "Best Lyrics / Text Storyboard",
                 "description": "The best storyboard that utilizes well-designed text effects for lyrics."
+            },
+            "mostPromisingSB": {
+                "name": "Most Promising Storyboarder",
+                "description": "The best storyboarder who ranked their first storyboard this year."
+            },
+            "outContSB": {
+                "name": "Outstanding Contributor (Storyboard)",
+                "description": "The one who positively contributed to the health of the storyboarding scene the most."
             }
         },
         "nom_vote": {
