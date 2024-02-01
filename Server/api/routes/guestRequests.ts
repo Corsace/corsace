@@ -70,7 +70,7 @@ async function validateBody (user: User, year: number, data: BodyData, currentRe
     }
 
     // Find beatmap in DB
-    const dbMap = await Beatmap.findOne(beatmap.beatmap_id);
+    const dbMap = await Beatmap.findOne({where: { ID: beatmap.beatmap_id }});
     if (!dbMap) {
         return { error: "Map is not in our database! If this map was ranked this year, please let VINXIS know." };
     }
