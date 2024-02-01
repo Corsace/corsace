@@ -403,11 +403,11 @@
                 "name": "Best Lyrics / Text Storyboard",
                 "description": "The best storyboard that utilizes well-designed text effects for lyrics."
             },
-	        "mostPromisingSB": {
+			"mostPromisingSB": {
                 "name": "Most Promising Storyboarder",
                 "description": "The best storyboarder who ranked their first storyboard this year."
             },
-	        "outContSB": {
+			"outContSB": {
                 "name": "Outstanding Contributor (Storyboard)",
                 "description": "The one who positively contributed to the health of the storyboarding scene the most."
             }
