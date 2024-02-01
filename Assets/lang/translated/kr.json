@@ -290,19 +290,19 @@
                 "description": "7K 최고의 비트맵셋"
             },
             "technical": {
-                "name": "테크니컬",
+                "name": "Best Technical Storyboard",
                 "description": "가장 복잡하고 화려한 스토리보드"
             },
             "gameplay": {
-                "name": "게임플레이",
+                "name": "Best Gameplay Storyboard",
                 "description": "게임플레이 요소를 잘 녹여낸 최고의 스토리보드"
             },
             "minimalistic": {
-                "name": "심플",
+                "name": "Best Minimalistic Storyboard",
                 "description": "최소한으로 최대한을 표현하는 최고의 스토리보드"
             },
             "narrative": {
-                "name": "동화책",
+                "name": "Best Narrative Storyboard",
                 "description": "최고의 이야기를 선사하는 스토리보드"
             },
             "technicalTaiko": {
@@ -414,12 +414,20 @@
                 "description": "The one who created the best 5K/6K/8K/9K beatmaps."
             },
             "motionDesign": {
-                "name": "Best Motion Design / Animation",
+                "name": "Best Motion Design / Animation Storyboard",
                 "description": "The storyboard with the most satisfying animations and transitions."
             },
             "lyrics": {
-                "name": "Best Lyrics / Text",
+                "name": "Best Lyrics / Text Storyboard",
                 "description": "The best storyboard that utilizes well-designed text effects for lyrics."
+            },
+            "mostPromisingSB": {
+                "name": "Most Promising Storyboarder",
+                "description": "The best storyboarder who ranked their first storyboard this year."
+            },
+            "outContSB": {
+                "name": "Outstanding Contributor (Storyboard)",
+                "description": "The one who positively contributed to the health of the storyboarding scene the most."
             }
         },
         "nom_vote": {
