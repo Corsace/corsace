@@ -428,8 +428,7 @@
 	    "outContSB": {
                 "name": "Outstanding Contributor (Storyboard)",
                 "description": "The one who positively contributed to the health of the storyboarding scene the most."
-            },
-		
+            }
         },
         "nom_vote": {
             "search": "search for a beatmap / user",
