@@ -290,19 +290,19 @@
                 "description": "De beste beatmap van 7K."
             },
             "technical": {
-                "name": "Beste Technical",
+                "name": "Best Technical Storyboard",
                 "description": "Het beste storyboard met zijn technische aspecten."
             },
             "gameplay": {
-                "name": "Beste Gameplay",
+                "name": "Best Gameplay Storyboard",
                 "description": "Het beste storyboard in zijn gebruik van gameplay elementen."
             },
             "minimalistic": {
-                "name": "Beste Minimalistic",
+                "name": "Best Minimalistic Storyboard",
                 "description": "Het beste storyboard in veel zeggen met weinig."
             },
             "narrative": {
-                "name": "Beste Narrative",
+                "name": "Best Narrative Storyboard",
                 "description": "Het beste storyboard in het vertellen van een verhaal."
             },
             "technicalTaiko": {
@@ -414,12 +414,20 @@
                 "description": "The one who created the best 5K/6K/8K/9K beatmaps."
             },
             "motionDesign": {
-                "name": "Best Motion Design / Animation",
+                "name": "Best Motion Design / Animation Storyboard",
                 "description": "The storyboard with the most satisfying animations and transitions."
             },
             "lyrics": {
-                "name": "Best Lyrics / Text",
+                "name": "Best Lyrics / Text Storyboard",
                 "description": "The best storyboard that utilizes well-designed text effects for lyrics."
+            },
+            "mostPromisingSB": {
+                "name": "Most Promising Storyboarder",
+                "description": "The best storyboarder who ranked their first storyboard this year."
+            },
+            "outContSB": {
+                "name": "Outstanding Contributor (Storyboard)",
+                "description": "The one who positively contributed to the health of the storyboarding scene the most."
             }
         },
         "nom_vote": {
