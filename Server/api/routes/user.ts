@@ -76,11 +76,17 @@ userRouter.$post<{ user: UserInfo }>("/username/delete", isHeadStaff, async (ctx
             error: "Missing parameters",
         };
     
-    const user = await User.findOneOrFail({
+    const user = await User.findOne({
         where: {
             ID: body.ID,  
         },
     });
+    if (!user) {
+        return ctx.body = {
+            success: false,
+            error: `Could not find a user with the corsace ID ${body.ID}.`,
+        };
+    }
 
     if (user.osu.username === body.username) {
         const otherNames = await UsernameChange.find({  
@@ -105,7 +111,7 @@ userRouter.$post<{ user: UserInfo }>("/username/delete", isHeadStaff, async (ctx
         };
     }
 
-    const name = await UsernameChange.findOneOrFail({
+    const name = await UsernameChange.findOne({
         where: {  
             user: {
                 ID: user.ID,
@@ -113,6 +119,12 @@ userRouter.$post<{ user: UserInfo }>("/username/delete", isHeadStaff, async (ctx
             name: body.username,
         },
     });
+    if (!name) {
+        return ctx.body = {
+            success: false,
+            error: `Could not find a username change for corsace ID ${user.ID} username ${user.osu.username} with a previous username of ${body.username}.`,
+        };
+    }
     await name.remove();
     return ctx.body = {
         success: true,
