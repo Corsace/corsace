@@ -52,10 +52,10 @@ const getModeDivison = memoizee(async (modeDivisionId: number) => {
 });
 
 // API call to fetch a user's country.
-async function getMissingOsuUserProperties (userID: number): Promise<{ country: string; username: string; }> {
+async function getMissingOsuUserProperties (userID: number): Promise<{ country: string | null; username: string | null; }> {
     const { data: userApi } = await axios.get<any[]>(`${config.osu.proxyBaseUrl ?? "https://osu.ppy.sh"}/api/get_user?k=${config.osu.v1.apiKey}&u=${userID}&type=id`);
     if (userApi.length === 0)
-        return { country: "", username: "" };
+        return { country: null, username: null };
     return {
         country: userApi[0].country,
         username: userApi[0].username,
