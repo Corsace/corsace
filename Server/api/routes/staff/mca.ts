@@ -52,7 +52,7 @@ staffRouter.$get<{ categories: CategoryInfo[] }>("/categories/:year", validatePh
 });
 
 // Endpoint for granting direct MCA nom/vote access to users
-staffRouter.$post("/grant/:year", isCorsace, validatePhaseYear, async (ctx) => {
+staffRouter.$post<{ eligibility: MCAEligibility }>("/grant/:year", isCorsace, validatePhaseYear, async (ctx) => {
     if (!ctx.request.body.user)
         return ctx.body = {
             success: false,
@@ -112,6 +112,10 @@ staffRouter.$post("/grant/:year", isCorsace, validatePhaseYear, async (ctx) => {
     eligibility[ctx.request.body.mode as keyof typeof ModeDivisionType] = true;
     eligibility.storyboard = true;
     await eligibility.save();
+    return ctx.body = {
+        success: true,
+        eligibility,
+    };
 });    
 
 export default staffRouter;
