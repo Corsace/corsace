@@ -46,7 +46,7 @@
                 "2020": "<p>2021... 작년이 아닌 올해입니다!</p><p>A Year in Mapping 2020가 2020년 한 해의 기록들과 통계를 들고 드디어 제 시간에 찾아왔습니다!</p><p>작년과 마찬가지로, 코멘트는 크라우드펀딩식으로 진행됩니다! 하단에 있는 게임모드 중 자신의 주 모드를 선택하여 시작하세요!</p>",
                 "2021": "<p>2022 is here!</p> <p>A Year in Mapping 2021 is here to provide the records and stats made or even broken!</p>",
                 "2022": "<p>Welcome to 2023!</p> <p>A Year in Mapping 2022 is here to provide the records and stats made or even broken! This time actually (kind of) on schedule!</p>",
-                "2023": "<p>2024 is now here!</p> <p>A Year in Mapping 2023 is here to provide the records and stats made or even broken!</p>"
+                "2023": "<p>이제 2024년입니다!</p> <p> Year in Mapping 2023이 왔으며 깨진 기록과 통계를 제공하기 위해 왔습니다!</p>"
             }
         },
         "mapsets": {
@@ -142,7 +142,7 @@
                 "2019": "<p>Mapper's Choice Awards가 2019년 4회차로 돌아왔습니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2019년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>올해는 저희가 새로 완성한 홈페이지를 통해 투표가 더욱 쉬워졌습니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해주셨으면 좋겠습니다!</p>",
                 "2020": "<p>바로 이어서, MCA가 2020년 제 5회차를 맞이합니다! MCA는 매퍼들과 모더들이 각 카테고리에 해당하는 한 해 최고의 맵을 뽑는 투표 이벤트입니다!</p><p>Community Choice와는 다른, 매퍼 커뮤니티가 생각하는 2020년 최고의 비트맵을 선정하는 것이 이 이벤트의 목적입니다!</p><p>MCA 2019가 진행되는 동안 받은 제안과 피드백을 바탕으로 올해는 더 매끄러운 진행이 될거라 예상됩니다!</p><p>이 이벤트에 가능한 한 많은 매퍼 및 모더분들이 참가해 주셨습니다!</p>",
                 "2021": "<p>Mapper's Choice Awards가 2021년으로 돌아왔습니다! 이 이벤트는 모든 매퍼/모더가 각 카테고리에마다 가장 적합한 맵/매퍼라고 생각하는 것을 추천하고 투표하는 이벤트입니다!</p><p>모든 osu! 서포터는 osu! 스태프에서 직접 지급합니다. 각 카테고리별 수상자는 2개월, 대상 수상자는 4개월을 받게 됩니다!</p><p>이번 이벤트에는 최대한 많은 참가자들의 참여를 부탁드립니다!</p>",
-                "2022": "Mapper's Choice Awards가 또다른 이벤트로 돌아왔습니다! (이번엔 예정대로 말이죠!)<br>이 이벤트는 모든 매퍼/모더가 각 카테고리에마다 가장 적합한 맵/매퍼라고 생각하는 것을 추천하고 투표하는 이벤트입니다!<br>모든 osu! 서포터는 osu! 스태프에서 직접 지급합니다. 각 카테고리별 수상자는 2개월, 대상 수상자는 4개월을 받게 됩니다!<br> 이번 이벤트에는 최대한 많은 참가자들의 참여를 부탁드립니다!",
+                "2022": "Mapper's Choice Awards가 또다른 이벤트로 돌아왔습니다! (이번엔 예정대로 말이죠!)<br>이 이벤트는 모든 매퍼/모더가 각 카테고리에마다 가장 적합한 맵/매퍼라고 생각하는 것을 추천하고 투표하는 이벤트입니다!<br>모든 osu! 서포터는 osu! 스태프가 직접 지급합니다. 각 카테고리별 수상자는 2개월, 대상 수상자는 4개월을 받게 됩니다!<br> 이번 이벤트에는 최대한 많은 참가자들의 참여를 부탁드립니다!",
                 "2023": "New year, new iteration of Mapper's Choice Awards!<br>This is a voting event where all mappers and modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!"
             },
             "categories": {
@@ -243,7 +243,7 @@
             },
             "lowBPMTaiko": {
                 "name": "저 BPM",
-                "description": "140bpm 이하의 최고의 비트맵셋"
+                "description": "130bpm 이하의 최고의 비트맵셋"
             },
             "simplistic": {
                 "name": "간소화",
@@ -251,35 +251,35 @@
             },
             "sliderVelocity": {
                 "name": "SV",
-                "description": "슬라이더 SV를 가장 잘 활용한 비트맵셋"
+                "description": "슬라이더 Sv를 가장 잘 활용한 비트맵"
             },
             "featuredArtist": {
                 "name": "공식 아티스트",
                 "description": "공식 아티스트 곡으로 제작한 최고의 비트맵셋"
             },
             "longNotes": {
-                "name": "롱 노트",
-                "description": "롱 노트를 가장 잘 활용한 비트맵셋"
+                "name": "롱놋",
+                "description": "롱놋을 가장 잘 활용한 비트맵셋"
             },
             "longNotes4K": {
-                "name": "최고의 4키 롱노트",
-                "description": "롱 노트를 가장 잘 활용한 4키 비트맵"
+                "name": "최고의 4키 롱놋",
+                "description": "롱놋을 가장 잘 활용한 4키 비트맵"
             },
             "longNotes7K": {
                 "name": "최고의 7키 롱노트",
-                "description": "롱 노트를 가장 잘 활용한 7키 비트맵"
+                "description": "롱놋을 가장 잘 활용한 7키 비트맵"
             },
             "rice": {
-                "name": "최고의 단노트",
-                "description": "단 노트를 가장 잘 활용한 비트맵"
+                "name": "최고의 단놋",
+                "description": "단놋을 가장 잘 활용한 비트맵"
             },
             "rice4K": {
-                "name": "최고의 4키 단노트",
-                "description": "단 노트를 가장 잘 활용한 4키 비트맵"
+                "name": "최고의 4키 단놋",
+                "description": "단놋을 가장 잘 활용한 4키 비트맵"
             },
             "rice7K": {
-                "name": "최고의 7키 단노트",
-                "description": "단 노트를 가장 잘 활용한 7키 비트맵"
+                "name": "최고의 7키 단놋",
+                "description": "단놋을 가장 잘 활용한 7키 비트맵"
             },
             "antiMeta": {
                 "name": "안티 메타",
@@ -287,14 +287,14 @@
             },
             "7K": {
                 "name": "7K",
-                "description": "7K 최고의 비트맵셋"
+                "description": "7키 최고의 비트맵"
             },
             "technical": {
                 "name": "Best Technical Storyboard",
                 "description": "가장 복잡하고 화려한 스토리보드"
             },
             "gameplay": {
-                "name": "Best Gameplay Storyboard",
+                "name": "게임플레이에 최고인 스토리보드",
                 "description": "게임플레이 요소를 잘 녹여낸 최고의 스토리보드"
             },
             "minimalistic": {
@@ -319,22 +319,22 @@
             },
             "hybrid": {
                 "name": "하이브리드",
-                "description": "롱놋과 적절한 조화를 이루어낸 최고의 비트맵"
+                "description": "롱놋과 단놋이 적절한 조화를 이루어낸 최고의 비트맵"
             },
             "hybrid4K": {
                 "name": "최고의 4키 하이브리드",
-                "description": "상당한 개수의 단놋과 롱놋을 보여주는 최고의 4키 비트맵"
+                "description": "상당한 개수의 롱놋과 단놋을 보여주는 최고의 4키 비트맵"
             },
             "hybrid7K": {
-                "name": "Best 7K Hybrid",
-                "description": "The best 7K beatmap which showcases substantial amounts of both LN and rice patterning."
+                "name": "최고의 7키 하이브리드",
+                "description": "상당한 단놋과 롱놋 패턴을 보여주는 최고의 7키 비트맵"
             },
             "highBPMAlternator": {
                 "name": "고BPM / 양타",
-                "description": "빠른 연타 및/혹은 에임을 요구로 하는 최고의 비트맵 (240+ BPM)"
+                "description": "빠른 연타 혹은 에임을 요구로 하는 최고의 비트맵 (240+ BPM)"
             },
             "vanilla": {
-                "name": "제너릭",
+                "name": "제네릭",
                 "description": "단순한 매핑 기술만으로 구성된 최고의 비트맵"
             },
             "complex": {
@@ -359,7 +359,7 @@
             },
             "communityPillar": {
                 "name": "커뮤니티의 기둥",
-                "description": "커뮤니티 뒤에서 많은 기여를 하는 최고의 유저"
+                "description": "커뮤니티 뒤에서 많은 기여를 하는 유저"
             },
             "simplisticTaiko": {
                 "name": "심플",
@@ -402,8 +402,8 @@
                 "description": "The best beatmap that strongly deviates from common norms."
             },
             "mapper4K": {
-                "name": "Best 4K Mapper",
-                "description": "The one who created the best 4K beatmaps."
+                "name": "최고의 4키 매퍼",
+                "description": "최고의 4키 비트맵을 만든 사람"
             },
             "mapper7K": {
                 "name": "최고의 7키 매퍼",
@@ -422,12 +422,12 @@
                 "description": "잘 디자인된 효과를 가사에 활용한 최고의 스토리보드"
             },
             "mostPromisingSB": {
-                "name": "Most Promising Storyboarder",
+                "name": "가장 유망있는 스토리보더",
                 "description": "The best storyboarder who ranked their first storyboard this year."
             },
             "outContSB": {
-                "name": "Outstanding Contributor (Storyboard)",
-                "description": "The one who positively contributed to the health of the storyboarding scene the most."
+                "name": "뛰어난 기여자 (스토리보드)",
+                "description": "스토리보드의 건전성에 가장 긍정적인 기여를 한 사람"
             }
         },
         "nom_vote": {
