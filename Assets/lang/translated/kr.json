@@ -158,27 +158,27 @@
                 "description": "한 해를 빛낸 최고의 비트맵"
             },
             "grandStoryboard": {
-                "name": "그랜드 스토리보드",
+                "name": "멋진 스토리보드",
                 "description": "한 해를 빛낸 최고의 스토리보드"
             },
             "grandStoryboarder": {
-                "name": "그랜드 스토리보더",
+                "name": "멋진 스토리보드를 만드는 사람",
                 "description": "한 해를 빛낸 최고의 스토리보드를 만든 유저"
             },
             "marathon": {
-                "name": "마라톤",
+                "name": "최고의 마라톤",
                 "description": "5분 이상의 장곡 중 최고의 비트맵"
             },
             "marathonMan": {
-                "name": "최고의 마라톤",
+                "name": "최고의 마라톤 맵을 만드는 사람",
                 "description": "4분 이상의 장곡중 최고의 비트맵"
             },
             "hitsounding": {
-                "name": "히트사운딩",
+                "name": "최고의 히트사운딩",
                 "description": "당신의 귀를 즐겁게 해줄 최고의 히트사운드"
             },
             "collab": {
-                "name": "최고의 콜랍",
+                "name": "콜랍",
                 "description": "2명 이상의 매퍼들이 공동 제작한 최고의 비트맵"
             },
             "simple": {
@@ -262,24 +262,24 @@
                 "description": "롱 노트를 가장 잘 활용한 비트맵셋"
             },
             "longNotes4K": {
-                "name": "Best 4K Long Notes",
-                "description": "The best 4K beatmap with an intense usage of LNs."
+                "name": "최고의 4키 롱노트",
+                "description": "롱 노트를 가장 잘 활용한 4키 비트맵"
             },
             "longNotes7K": {
-                "name": "Best 7K Long Notes",
-                "description": "The best 7K beatmap with an intense usage of LNs."
+                "name": "최고의 7키 롱노트",
+                "description": "롱 노트를 가장 잘 활용한 7키 비트맵"
             },
             "rice": {
-                "name": "Best Rice",
-                "description": "The best beatmap with an intense usage of rice."
+                "name": "최고의 단노트",
+                "description": "단 노트를 가장 잘 활용한 비트맵"
             },
             "rice4K": {
-                "name": "Best 4K Rice",
-                "description": "The best 4K beatmap with an intense usage of rice."
+                "name": "최고의 4키 단노트",
+                "description": "단 노트를 가장 잘 활용한 4키 비트맵"
             },
             "rice7K": {
-                "name": "Best 7K Rice",
-                "description": "The best 7K beatmap with an intense usage of rice."
+                "name": "최고의 7키 단노트",
+                "description": "단 노트를 가장 잘 활용한 7키 비트맵"
             },
             "antiMeta": {
                 "name": "안티 메타",
@@ -322,8 +322,8 @@
                 "description": "롱놋과 적절한 조화를 이루어낸 최고의 비트맵"
             },
             "hybrid4K": {
-                "name": "Best 4K Hybrid",
-                "description": "The best 4K beatmap which showcases substantial amounts of both LN and rice patterning."
+                "name": "최고의 4키 하이브리드",
+                "description": "상당한 개수의 단놋과 롱놋을 보여주는 최고의 4키 비트맵"
             },
             "hybrid7K": {
                 "name": "Best 7K Hybrid",
@@ -406,20 +406,20 @@
                 "description": "The one who created the best 4K beatmaps."
             },
             "mapper7K": {
-                "name": "Best 7K Mapper",
-                "description": "The one who created the best 7K beatmaps."
+                "name": "최고의 7키 매퍼",
+                "description": "최고의 7키 비트맵을 만든 사람"
             },
             "mapperAntiMeta": {
-                "name": "Best Anti Meta Mapper",
-                "description": "The one who created the best 5K/6K/8K/9K beatmaps."
+                "name": "메타를 거스른 최고의 매퍼",
+                "description": "최고의 5키/6키/8키/9키 비트맵을 만든 사람"
             },
             "motionDesign": {
-                "name": "Best Motion Design / Animation Storyboard",
-                "description": "The storyboard with the most satisfying animations and transitions."
+                "name": "최고의 모션 디자인 / 스토리보드 애니메이션",
+                "description": "가장 만족스러운 애니메이션과 트렌지션을 갖춘 스토리보드"
             },
             "lyrics": {
-                "name": "Best Lyrics / Text Storyboard",
-                "description": "The best storyboard that utilizes well-designed text effects for lyrics."
+                "name": "최고의 가사/텍스트를 갖춘 스토리보드",
+                "description": "잘 디자인된 효과를 가사에 활용한 최고의 스토리보드"
             },
             "mostPromisingSB": {
                 "name": "Most Promising Storyboarder",
