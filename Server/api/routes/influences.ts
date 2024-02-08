@@ -107,7 +107,7 @@ influencesRouter.$post<{ newInfluence: Influence }, UserAuthenticatedState>("/cr
     if (isNaN(query.mode)) {
         query.mode = ModeDivisionType[query.mode];
     }
-    const modeDivision = await ModeDivision.findOne(query.mode);
+    const modeDivision = await ModeDivision.findOne({ where: { ID: query.mode }});
     if (!modeDivision) {
         ctx.body = { 
             success: false,
@@ -156,7 +156,7 @@ influencesRouter.$post<{ newInfluence: Influence }, UserAuthenticatedState>("/cr
         };
         return;
     }
-    const target = await User.findOne(query.target);
+    const target = await User.findOne({ where: { ID: query.target }});
     if (!target) {
         ctx.body = { 
             success: false,
