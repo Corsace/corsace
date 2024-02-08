@@ -65,7 +65,7 @@ votingRouter.$post<{ vote: Vote }, MCAYearState>("/:year?/create", validatePhase
     const categoryId = ctx.request.body.category;
     const choice = ctx.request.body.choice;
 
-    const category = await Category.findOneOrFail(categoryId);
+    const category = await Category.findOneOrFail({ where: { ID: categoryId }});
     
     if (choice < 1 || choice > 100) {
         return ctx.body = {
@@ -126,21 +126,21 @@ votingRouter.$post<{ vote: Vote }, MCAYearState>("/:year?/create", validatePhase
     vote.category = category;
     
     if (category.type === CategoryType.Beatmapsets && ctx.state.year < 2021) {
-        const nominee = await Beatmapset.findOneOrFail(nomineeId);
+        const nominee = await Beatmapset.findOneOrFail({ where: { ID: nomineeId }});
         vote.beatmapset = nominee;
 
         if (categoryVotes.some(v => v.beatmapset?.ID == nominee.ID)) {
             alreadyVoted = true;
         }
     } else if (category.type === CategoryType.Beatmapsets && ctx.state.year >= 2021) {
-        const nominee = await Beatmap.findOneOrFail(nomineeId);
+        const nominee = await Beatmap.findOneOrFail({ where: { ID: nomineeId }});
         vote.beatmap = nominee;
 
         if (categoryVotes.some(v => v.beatmap?.ID == nominee.ID)) {
             alreadyVoted = true;
         }
     } else if (category.type === CategoryType.Users) {
-        const nominee = await User.findOneOrFail(nomineeId);
+        const nominee = await User.findOneOrFail({ where: { ID: nomineeId }});
         vote.user = nominee;
         
         if (categoryVotes.some(v => v.user?.ID == nominee.ID)) {
