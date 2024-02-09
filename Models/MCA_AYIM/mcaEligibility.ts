@@ -28,7 +28,7 @@ export class MCAEligibility extends BaseEntity {
     @Column({ default: false })
         storyboard!: boolean;
 
-    @ManyToOne(() => User, user => user.mcaEligibility)
+    @ManyToOne(() => User, user => user.mcaEligibility, { nullable: false })
         user!: User;
 
     static whereMode (modeId: number, qb?: SelectQueryBuilder<MCAEligibility>): SelectQueryBuilder<MCAEligibility> {
