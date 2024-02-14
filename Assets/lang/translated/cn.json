@@ -46,7 +46,7 @@
                 "2020": "<p>时间来到 2021 年...这下对了吧！</p><p>做谱又一年：2020，再次回归！这里有<b>今年</b>做谱界破纪录的创举，以及大量、详细的统计数据！</p><p>并且同样地，我们依旧在公开征集评论！在下方的图标中选择你关心的游戏模式以开始！</p>",
                 "2021": "<p>现在是 2022 年！</p> <p>在做谱又一年：2021 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！</p>",
                 "2022": "<p>欢迎来到 2023 年！</p> <p>在做谱又一年：2022 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！这次总算（差不多）如期公布了！</p>",
-                "2023": "<p>2024 is now here!</p> <p>A Year in Mapping 2023 is here to provide the records and stats made or even broken!</p>"
+                "2023": "<p>现在是 2024 年！</p> <p>在做谱又一年：2023 里，你可以看到各项统计数据，以及被创造、甚至是被打破的纪录！</p>"
             }
         },
         "mapsets": {
@@ -121,7 +121,7 @@
             "nominating": "提名",
             "preparation": "准备",
             "results": "结果",
-            "timeline": "timeline",
+            "timeline": "日程表",
             "mapsetsLabel": "谱面",
             "mappersLabel": "谱师",
             "commentsLabel": "评论",
@@ -130,7 +130,7 @@
             "stage": {
                 "voting": "投票阶段",
                 "nominating": "提名阶段",
-                "preparation": "preparation stage",
+                "preparation": "准备阶段",
                 "stage": "stage"
             },
             "rankedSets": "上架（Ranked）谱面",
@@ -146,7 +146,7 @@
                 "2023": "New year, new iteration of Mapper's Choice Awards!<br>This is a voting event where all mappers and modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!"
             },
             "categories": {
-                "index": "categories",
+                "index": "类别",
                 "map": "谱面分类",
                 "user": "谱师分类"
             },
@@ -290,19 +290,19 @@
                 "description": "最佳 7K 谱面。"
             },
             "technical": {
-                "name": "Best Technical Storyboard",
+                "name": "最佳技术性故事版",
                 "description": "技术含量最高的故事板。"
             },
             "gameplay": {
-                "name": "Best Gameplay Storyboard",
+                "name": "最佳游戏性故事版",
                 "description": "能够提供最佳游玩体验的故事板。"
             },
             "minimalistic": {
-                "name": "Best Minimalistic Storyboard",
+                "name": "最佳简约风格故事版",
                 "description": "最能够由小见大的故事板。"
             },
             "narrative": {
-                "name": "Best Narrative Storyboard",
+                "name": "最佳叙事性故事版",
                 "description": "叙事性最强的故事板。"
             },
             "technicalTaiko": {
