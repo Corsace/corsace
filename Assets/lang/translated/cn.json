@@ -143,7 +143,7 @@
                 "2020": "<p>2020 年，第五届谱师之选奖（Mapper's Choice Awards），再次归来! 在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>我们的目标是为“2020 年度最佳谱面”提供一个基于制谱（Mapping）社群的全新视角！</p><p>我们在 MCA 2019 的基础上网站进行了（希望是）彻底的 Debug，并对部分分类进行了更改，所以现在的网站应该如丝般顺滑！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>",
                 "2021": "<p>2021 年，第六届谱师之选奖（Mapper's Choice Awards），又一次归来！在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>所有 osu! supporter 奖品均由 osu! 工作人员直接提供。获得各分类小奖第一名的谱师将收到 2 个月的 osu! supporter 奖励，而获得各项大奖的谱师将获得 4 个月的 osu! supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>",
                 "2022": "<p>新一届谱师之选奖（Mapper's Choice Awards）再一次拉开了帷幕！（这一届基本可以说是如期而至！）在此，所有谱师（Mapper）和审谱人（Modder）都能够在不同的奖项分类下为他们认为最优秀的谱面/谱师进行提名、投票！</p><p>所有 osu! supporter 奖品均由 osu! 工作人员直接提供。获得各分类小奖第一名的谱师将收到 2 个月的 osu! supporter 奖励，而获得各项大奖的谱师将获得 4 个月的 osu! supporter 奖励！</p><p>我们希望尽量多的人能够参与到这次评选当中来！</p>",
-                "2023": "New year, new iteration of Mapper's Choice Awards!<br>This is a voting event where all mappers and modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!"
+                "2023": "新的一年，新的一轮谱师之选奖！<br>这是一个投票活动，所有谱师和摸图员都可以提名并投票选出他们认为每个类别中的最佳谱面/谱师！<br>所有支持者标签奖品均由 osu! 工作人员直接提供。每个类别的获奖者可获得 2 个月的支持者标签，大奖得主可获得 4 个月的支持者标签！<br>我们希望尽可能多的人来参加此次活动！"
             },
             "categories": {
                 "index": "类别",
@@ -402,12 +402,12 @@
                 "description": "The best beatmap that strongly deviates from common norms."
             },
             "mapper4K": {
-                "name": "Best 4K Mapper",
-                "description": "The one who created the best 4K beatmaps."
+                "name": "最佳4K谱师",
+                "description": "创造了最佳4K谱面的那个人。"
             },
             "mapper7K": {
-                "name": "Best 7K Mapper",
-                "description": "The one who created the best 7K beatmaps."
+                "name": "最佳7K谱师",
+                "description": "创造了最佳7K谱面的那个人。"
             },
             "mapperAntiMeta": {
                 "name": "Best Anti Meta Mapper",
