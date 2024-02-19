@@ -1,6 +1,6 @@
 ---
-title: Docs - Write/Edit Documents
-description: Writing/Editing documentation for Corsace
+title: 文档 - 编写文档
+description: 编写 Corsace 的文档
 lastUpdated: 2023-09-18
 sidebar:
   order: 1110
@@ -8,31 +8,31 @@ sidebar:
 
 import WorkInProgress from '../../../../../../components/WorkInProgress.astro';
 
-Please make sure to have created a fork, as we accept contributions via pull requests from repository forks.
+由于我们仅仅接受从仓库分支 (Folk) 提交来的拉取请求 (PR)，请确保先创建一个分支。
 
-## Pre-requisite Reading
+## 推荐先阅读
 
-*   [Development/Guide/Docs - Running Environment](../docs-running-environment)
-*   [Starlight/Authoring Content in Markdown](https://starlight.astro.build/guides/authoring-content/)
-*   [GitHub/Creating a pull request from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)
+*   [开发/导引/文档 - 运行环境](../docs-running-environment)
+*   [Starlight/编写 Markdown 内容](https://starlight.astro.build/guides/authoring-content/)
+*   [GitHub/从分支 (Fork) 创建拉取请求 (PR)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)
 
-## Directory Structure
+## 目录结构
 
-In the repository, all documentation that is generated is located at `Docs/src/content/docs/en`.\
-Other languages are also there, but are typically translated from the `en` folder.\
-If you wish to translate instead, request access at https://translate.corsace.io, and join the [Corsace discord server](https://discord.gg/Z6vEMsr)
+在仓库中，所有文档均生成并存放在 `Docs/src/content/docs/en`。\
+其他以 `en` 文件夹内的文档作为原文的翻译文档也存放在这里。\
+如果你想要贡献翻译，请申请 https://translate.corsace.io 的访问权限，并加入 [Corsace Discord 服务器](https://discord.gg/Z6vEMsr)。
 
-For any document you wish to create, it must reside somewhere within `Docs/src/content/docs/en` or its sub-folders.\
-The folder structure within this is similar to the sidebar's hierarchy on the website.\
-Primarily, there are 3 main sections:
+如果你想创建任意文件，请确保它存放在 `Docs/src/content/docs/en` 或其下的子文件夹。\
+其中的文件夹结构类似于网站上侧边栏的层次结构。\
+总的来看，有三个主要部分：
 
-*   [Design Documentation](design)
-*   [Development Documentation](development)
-*   [Documentation on how to run tournaments via Corsace](tournaments)
+*   [设计文档](design)
+*   [开发文档](development)
+*   [如何在 Corsace 运行比赛的文档](tournaments)
 
-Within these, the [Diátaxis framework](https://diataxis.fr/) is used as the structural guide for writing documentation; however, the main focus is on writing [Guides](https://diataxis.fr/how-to-guides/) and [References](https://diataxis.fr/reference/).
+在此之中，我们主要使用 [Diátaxis 框架](https://diataxis.fr/)作为文档编写的[结构指南](https://diataxis.fr/how-to-guides/)，并主要关注编写指南和[参考](https://diataxis.fr/reference/)。
 
-## Document Anatomy
+## 文档解析
 
 It will be assumed that you understand the markdown format and extra features Starlight provides for writing it based on the [Pre-requisite Reading](#pre-requisite-reading) section.
 
@@ -84,23 +84,23 @@ To access an image in `Assets/img/docs` from this file (which is at `Docs/src/co
 ![Image](../../../../../../../../Assets/img/docs/image.png)
 ```
 
-Each `../` moves up one folder in the directory.
+每个 `../` 表示路径往外移动一个文件夹。
 
-### Variables
+### 变量
 
-If you ever need to add something that should be denoted as a variable, do so by writing it as `[VARIABLE]`.
+如果您需要添加应该表示为变量的内容，请使用 `[VARIABLE]`。
 
-For example, `config.[SITE].host` means that `SITE` is a variable, and this is referring to the `host` option for a given site.
+比如，`config.[SITE].host` 中，`SITE` 是变量，并可以根据`主机`设定的域名自动切换。
 
-## Work In Progress Documents
+## 正在编写中 (WIP) 的文档
 
 As Corsace is an ever-growing repository with many moving parts that are still being built on, there will be a lot of documentation that can't be fully finished.
 
 When this is the case, the following features should be added into your document:
 
-### WIP Frontmatter
+### WIP 前言
 
-In your frontmatter, the following should be added into `sidebar`:
+在文章的前文中，这个标签必须添加到 `sidebar` 中：
 
 ```yml
   badge:
@@ -108,7 +108,7 @@ In your frontmatter, the following should be added into `sidebar`:
     variant: caution
 ```
 
-For example with this document:
+比如这个文档：
 
 ```yml
 ---
