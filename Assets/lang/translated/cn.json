@@ -410,19 +410,19 @@
                 "description": "创造了最佳7K谱面的那个人。"
             },
             "mapperAntiMeta": {
-                "name": "Best Anti Meta Mapper",
-                "description": "The one who created the best 5K/6K/8K/9K beatmaps."
+                "name": "最佳非主流谱师",
+                "description": "创造了最佳5K/6K/8K/9K谱面的那个人。"
             },
             "motionDesign": {
-                "name": "Best Motion Design / Animation Storyboard",
-                "description": "The storyboard with the most satisfying animations and transitions."
+                "name": "最佳动效设计 / 动画制作故事版",
+                "description": "具有最令人满意的动画和过渡效果的故事板。"
             },
             "lyrics": {
-                "name": "Best Lyrics / Text Storyboard",
-                "description": "The best storyboard that utilizes well-designed text effects for lyrics."
+                "name": "最佳歌词 / 文本故事版",
+                "description": "利用精心设计的文字效果来制作歌词的最佳故事板。"
             },
             "mostPromisingSB": {
-                "name": "Most Promising Storyboarder",
+                "name": "最具潜力故事版作者",
                 "description": "The best storyboarder who ranked their first storyboard this year."
             },
             "outContSB": {
