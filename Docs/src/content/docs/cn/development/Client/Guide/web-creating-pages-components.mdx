@@ -1,35 +1,35 @@
 ---
-title: Web - Creating Pages/Components
-description: Creating a page or component for a Corsace website.
+title: 网页 - 创建页面/组件
+description: 为Corsace网站创建一个页面或组件。
 lastUpdated: 2023-09-20
 sidebar:
   order: 1210
 ---
 
-## Pre-requisite Reading
+## 推荐先阅读
 
-*   [Development/Client/Guide/Web - Running Environment](../web-running-environment)
-*   [Nuxt 2/Pages Directory](https://v2.nuxt.com/docs/directory-structure/pages)
-*   [vue-class-component/Class Component](https://class-component.vuejs.org/guide/class-component.html)
-*   [BEM/Naming](https://getbem.com/naming/)
+*   [开发/客户端/指南/网站 - 运行环境](../web-running-environment)
+*   [Nuxt 2/页面目录](https://v2.nuxt.com/docs/directory-structure/pages)
+*   [vue-class-component/类组件](https://class-component.vuejs.org/guide/class-component.html)
+*   [BEM/命名方式](https://getbem.com/naming/)
 
-## Directory Structure
+## 目录结构
 
-Pages are where they are expected based on Nuxt's directory structure. `[WEBSITE]/components`\
-Components on the other hand are currently located at 2 places:
+根据 Nuxt 的目录结构，页面会出现在它们预期的位置。 `[网站]/components`\
+而另一方面，组件目前分布在两个地方：
 
-*   If the component is used for 1 site only, then it will be in the `[WEBSITE]/components` folder (under that site's folder).
-*   If the component is used for multiple sites, then it will be in `Assets/components`.
+*   如果组件只用于一个站点，那么它将会在`[网站]/components` 文件夹（该网站文件夹）里。
+*   如果组件被用于多个站点，那么它将会在`Assets/components`。
 
 :::caution
 This may change in the near future based on [this GitHub issue](https://github.com/Corsace/Corsace/issues/292)
 :::
 
-## Page/Component Anatomy
+## 页面/组件剖析
 
-Corsace uses SASS/SCSS for styling everything, and ts for any scripting.\
-Specifically for vue files, the `vue-property-decorator` decorators are used to create pages and components alike.
-When you have created a vue file, the basic template that should be followed is as this:
+Corsace 使用 SASS/SCSS 来设计所有样式，并使用 ts 来编写任何脚本。\
+针对 vue 文件，`vue-property-decorator` 装饰器被用于创建页面和组件。
+当你创建 vue 文件时，应遵循以下基本模板：
 
 ```vue
 <template>
@@ -52,21 +52,21 @@ export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
 </style>
 ```
 
-## When to Make a Component
+## 什么时候制作组件
 
-For this repository, the primary cases where you would want to split the code into its own component are when:
+对于这个仓库，你想把代码拆分成组件的主要情况是：
 
-*   The section of the HTML you are writing possibly/will be reused somewhere else
-*   The component **could** be considered/used by itself outside of its parent component (standalone)
-*   The complexity of the current page/component can be greatly reduced without increasing the complexity of the general repository
+*   您正在编写的 HTML 部分可能/将在其他地方重复使用
+*   组件**可能**会在其父组件（独立组件）之外单独考虑/使用
+*   在不会增加总仓库的复杂性时当前页面/组件的复杂性可以被大大降低
 
-It is **highly recommended** to split parts of the code as necessary as possible to create ease of understanding and use, and to avoid DRY (Don't Repeat Yourself).
+**强烈建议**尽可能地拆分部分代码以便于理解和使用，并避免 DRY（不要重复自己）。
 
-## Accessing Store
+## 访问数据仓库
 
-### Accessing Main Store
+### 访问主数据仓库
 
-The main store file is located at `Assets/store/index.ts`. To access any variable from it's state, you simply add the following within the `script` section:
+主数据仓库位于`Assets/store/index.ts`。 要从它的状态中访问任何变量，你只需在`script` 部分添加以下内容：
 
 ```vue
 <script lang="ts">
@@ -80,10 +80,10 @@ export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
 </script>
 ```
 
-### Accessing Specific Store
+### 访问特定的数据仓库
 
-To access a specific store, it is very similar to accessing the main store, but a `namespace` needs to be created first.\
-For example, if you wish to access a variable in the `Assets/store/mca-ayim.ts` store state, you would do it like so:
+要想访问一个特定的数据仓库，过程与访问主数据仓库相似只是要想创建`namespace`。\
+例如你想访问一个位于`Assets/store/mca-ayim.ts`数据仓库状态的变量，你可以这样做：
 
 ```vue
 <script lang="ts">
@@ -99,19 +99,19 @@ export default class [PAGE/COMPONENT CAMELCASE NAME] extends Vue {
 </script>
 ```
 
-## SASS/SCSS and Styling Protocol
+## SASS/SCSS和样式协议
 
 :::danger
-To ensure BEM nomenclature clarity:
+请确保 BEM 术语清晰：
 
-*   A block is a "standalone section"
-*   An element is a "non-standalone section"
-*   A modifier is an "effect"
+*   块是“独立的一部分”
+*   元素是“与其他有联系的部分”
+*   修改器是一种“效果”
 
-For example, `red` is not a block/element, it is a modifier at all times.
+例如`red`不是一个块/元素，它始终是一个修改器。
 :::
-As vue templates typically allow 1 child element only, and the styling nomenclature follows BEM, there is usually only 1 block with multiple elements and modifiers branching off it.\
-For example:
+由于 vue 模板通常只允许 1 个子元素，并且样式命名法遵循 BEM，因此通常只有 1 个块，其中有多个元素和修饰符分支。\
+例如：
 
 ```vue
 <template>
@@ -140,5 +140,5 @@ For example:
 </style>
 ```
 
-All style names should be done in `snake-case` instead of `camelCase`.\
-For example: `mainPage` should instead be `main-page`.
+所有样式的命名应采用`snake-case`而不是`camelCase`。\
+例如：`mainPage` 应该改为`main-page`。
