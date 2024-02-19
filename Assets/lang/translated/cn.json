@@ -75,7 +75,7 @@
             "lowestSr": "最低星级"
         },
         "mappers": {
-            "name": "谱师姓名",
+            "name": "谱师",
             "mostRanked": "拥有最多上架（Ranked）谱面",
             "mostDiffs": "拥有最多难度",
             "mostFavs": "拥有最多收藏",
@@ -109,7 +109,7 @@
             "create": "新建",
             "login": "登录以创建评论！",
             "visible": "（暂不可见）",
-            "notice": "你好！这或许是你第一次来到评论页面（中的一张）！注意：所有的评论都是公开征集的！<br>任何人（包括你）在今年的谱师之选奖结束前，都可以为任何人撰写评论！<br>为你关注的谱师们撰写评论，描述他们在 [YEAR] 年的所作所为或获得的成就，以表达你对他们在做谱社群内活动的感谢！"
+            "notice": "你好！这或许是你第一次来到评论页面！注意，我们公开征集所有评论！<br>包括你在内的任何人，在今年的谱师之选奖评选结束之前，都可以为其他任何谱师撰写评论！<br>评论你关注的谱师，描述他们在 [YEAR] 年内的成果和成就，来表达对他们对作图社区的感谢！"
         }
     },
     "mca": {
@@ -379,27 +379,27 @@
             },
             "diversity": {
                 "name": "最具有多样性的谱面",
-                "description": "风格多变、能够全面测试玩家各项技能的谱面当中最优秀的那一张"
+                "description": "风格多变、能够全面测试玩家各项技能的最佳谱面"
             },
             "altSwing": {
-                "name": "Best Alternator / Swing",
-                "description": "The best beatmap focusing on alt-styled or swing-styled beatmaps."
+                "name": "最佳强双 / 摇摆拍子谱面",
+                "description": "专注于强双 (Alt) 风格或摇摆拍子 (Swing) 风格的最佳谱面。"
             },
             "highDifficulty": {
-                "name": "Best High Difficulty",
-                "description": "The best difficult beatmap with a very high Star Rating (>=8 stars)."
+                "name": "最佳高难度谱面",
+                "description": "难度星级很高 (>= 8 星) 的最佳谱面。"
             },
             "complexOnly": {
-                "name": "Best Complex",
-                "description": "The best beatmap with extensive usage of uncommon snappings."
+                "name": "最佳复杂拍子谱面",
+                "description": "大量使用非常规节拍的最佳谱面。"
             },
             "unorthodoxTaiko": {
-                "name": "Best Unorthodox",
-                "description": "The best beatmap that utilizes gimmicks and/or concepts."
+                "name": "最佳非常规谱面",
+                "description": "利用与众不同的梗或理念的最佳谱面"
             },
             "unorthodoxCatch": {
-                "name": "Best Unorthodox",
-                "description": "The best beatmap that strongly deviates from common norms."
+                "name": "最佳非常规谱面",
+                "description": "强烈偏离常规作图规范的最佳谱面"
             },
             "mapper4K": {
                 "name": "最佳4K谱师",
@@ -510,7 +510,7 @@
             }
         },
         "home": {
-            "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
+            "description": "探索 Corsace 2023 公开赛——全世界 osu! 精英玩家一决高下的比赛。",
             "timeline": "时间线",
             "presentedBy": "CORSACE OPEN 23 是由",
             "registrations": "注册",
@@ -531,14 +531,14 @@
                 "maxPlayers": "最多玩家人数",
                 "pickTimer": "谱面选择时长",
                 "readyTimer": "玩家准备时长",
-                "order": "ORDER",
+                "order": "顺序",
                 "scoringMethod": "计分方式",
                 "type": "比赛类型",
                 "startDate": "开始日期",
                 "endDate": "结束日期",
                 "rounds": "回合数",
-                "initialSize": "INITIAL SIZE",
-                "finalSize": "FINAL SIZE"
+                "initialSize": "初始容量",
+                "finalSize": "最终容量"
             },
             "headings": {
                 "mappools": "图池",
@@ -565,7 +565,7 @@
             "infoGraphic": "信息图",
             "matchProcedures": "比赛流程",
             "reportTournament": "点击此处举报赛事",
-            "subjectToChange": "all rules are subject to change for clarification and/or adjustments"
+            "subjectToChange": "所有规则如有变更，将予以澄清和/或调整"
         },
         "qualifiers": {
             "nav": {
@@ -639,7 +639,7 @@
                     "removeMember": "您确定要将 {username} 从队伍中删除吗？",
                     "transferManager": "您确定要将经理转到 {username}？",
                     "invite": "您确定要邀请 {username} 加入您的队伍吗？",
-                    "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
+                    "removeInvite": "您确定要将 {username} 的入队申请删除吗？",
                     "unregister": "您确定要从本次比赛中取消注册吗？如果仍有 6 名成员，您可以随时重新注册。"
                 },
                 "save": "保存",
@@ -682,7 +682,7 @@
             "info2": "请确保所有信息准确无误后再进行最终确认。",
             "teamName": "队伍名",
             "teamLength": "5 - 20 个字符。请勿在名称中使用 \"team\"，它会被自动删除。违禁内容将会被审查。",
-            "teamAcronym": "队伍首字母缩写",
+            "teamAcronym": "队名缩写",
             "acronymLength": "2 - 4 个字符。违禁内容将会被审查。",
             "teamTimezone": "队伍时区",
             "timezoneText": "我们假定您的队伍可以在所选时区的 <span class='bold'>10:00-22:00</span>之间进行比赛。",
@@ -697,10 +697,10 @@
             "avatarInfo3": "所有名称和头像都将由工作人员批准。",
             "avatarInfo4": "如果认为不合适，将通知您进行更改。",
             "teamManagement": "队伍管理",
-            "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
-            "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
-            "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
-            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
+            "teamManagers": "<div>队伍<span>管理者</span> （你）既可以参加比赛并履行队长职责</div> <div><span>也可以</span> 不参加比赛只履行队长职责。</div>",
+            "teamManagersFree": "如果你不想参加比赛只想担任管理者，那么你<span>不会</span>占用一个玩家名额。",
+            "selectManager": "如果你 <span>不想</span>和队伍一起参加比赛只想担任<span>管理者</span>，请选择此复选框。",
+            "confirmManager": "<div>勾选此项后，我将只会承担管理员职责，并已了解</div><div>我不能参加任何比赛。</div>",
             "create": "创建队伍"
         },
         "components": {
@@ -720,14 +720,14 @@
             "title": "裁判",
             "loadMore": "加载更多",
             "back": "回到匹配列表",
-            "createLobby": "CREATE LOBBY",
+            "createLobby": "创建大厅",
             "roll": "摇点",
             "reroll": "重新摇点",
             "settings": "!MP SETTINGS",
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
-            "closeLobby": "CLOSE LOBBY"
+            "closeLobby": "关闭大厅"
         },
         "status": {
             "loading": "加载中"
