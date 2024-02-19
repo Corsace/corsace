@@ -542,7 +542,7 @@
             },
             "headings": {
                 "mappools": "图池",
-                "stage": "STAGE"
+                "stage": "阶段"
             },
             "status": {
                 "notStarted": "未开始",
@@ -564,34 +564,34 @@
             "tournamentStructure": "锦标赛结构",
             "infoGraphic": "信息图",
             "matchProcedures": "比赛流程",
-            "reportTournament": "REPORT TOURNAMENTS HERE",
+            "reportTournament": "点击此处举报赛事",
             "subjectToChange": "all rules are subject to change for clarification and/or adjustments"
         },
         "qualifiers": {
             "nav": {
-                "mappool": "MAPPOOL",
-                "qualifiers": "QUALIFIERS",
-                "scores": "SCORES"
+                "mappool": "图池",
+                "qualifiers": "资格赛",
+                "scores": "分数"
             },
             "mappool": {
-                "sheets": "SHEETS",
-                "mappool": "MAPPOOL",
-                "notAvailable": "Mappool not available yet",
+                "sheets": "表格",
+                "mappool": "图池",
+                "notAvailable": "图池尚未提供",
                 "banner": {
-                    "mapper": "MAPPER",
-                    "difficulty": "DIFFICULTY"
+                    "mapper": "谱师",
+                    "difficulty": "难度"
                 }
             },
             "scores": {
                 "nav": {
                     "sort": "排序方式",
-                    "average": "AVERAGE",
-                    "sum": "SUM",
-                    "percentAvg": "%AVG",
-                    "relAvg": "REL. AVG",
-                    "percentMax": "%MAX",
-                    "relMax": "REL. MAX",
-                    "zScore": "Z-SCORE",
+                    "average": "平均",
+                    "sum": "总和",
+                    "percentAvg": "%平均",
+                    "relAvg": "相对平均",
+                    "percentMax": "%最大",
+                    "relMax": "相对最大",
+                    "zScore": "Z-分数",
                     "placement": "排名",
                     "player": "玩家",
                     "team": "队伍",
@@ -604,18 +604,18 @@
             },
             "create": "创建",
             "error": {
-                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
-                "pressToClose": "Press anywhere to close"
+                "message": "在拥有 {numPlayers} 名玩家之前，无法创建/加入资格赛！",
+                "pressToClose": "按任意位置关闭"
             }
         },
         "teams": {
             "teamsList": "队伍列表",
-            "error": "COULD NOT GET TEAM LIST",
-            "searchPlaceholder": "search for user/team",
-            "editTeamInfo": "edit team info",
-            "qualifierId": "Qualifier ID",
+            "error": "无法获得队伍名单",
+            "searchPlaceholder": "搜索用户/队伍",
+            "editTeamInfo": "编辑队伍信息",
+            "qualifierId": "资格赛ID",
             "placeholders": {
-                "searchUser": "osu! username (must have corsace account)",
+                "searchUser": "osu! 用户名（必须有 Corsace 账号）",
                 "name": "队伍名",
                 "abbreviation": "队伍缩写"
             },
@@ -671,31 +671,31 @@
             "averageBWS": "平均BWS",
             "averageRank": "平均排名",
             "averagePP": "平均表现分",
-            "editQualifierTime": "edit qualifier time",
-            "deleteTeam": "delete qualifier/unregister team",
+            "editQualifierTime": "编辑资格赛时间",
+            "deleteTeam": "删除资格赛/未注册的队伍",
             "createJoinQualifier": "创建/参加资格赛",
             "notRegistered": "目前尚未报名 Corsace Open。"
         },
         "create": {
             "title": "创建一个队伍",
-            "info1": "Registrations will end on",
-            "info2": "Please ensure all information is correct before finalizing.",
+            "info1": "注册截止日期为",
+            "info2": "请确保所有信息准确无误后再进行最终确认。",
             "teamName": "队伍名",
-            "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
-            "teamAcronym": "TEAM ACRONYM",
-            "acronymLength": "2 - 4 characters. Profanity will be checked.",
-            "teamTimezone": "TEAM TIMEZONE",
-            "timezoneText": "We will assume your team can play between <span class='bold'>10:00 to 22:00</span> in the selected timezone.",
-            "teamAvatar": "TEAM AVATAR",
-            "upload": "UPLOAD",
-            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
-            "fileSizeError": "file size too big! please upload a smaller image",
-            "fileTypeError": "incorrect file type! please upload a .jpg or .png",
-            "preview": "PREVIEW",
-            "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
-            "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
-            "avatarInfo3": "All names and avatars will be approved by staff.",
-            "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
+            "teamLength": "5 - 20 个字符。请勿在名称中使用 \"team\"，它会被自动删除。违禁内容将会被审查。",
+            "teamAcronym": "队伍首字母缩写",
+            "acronymLength": "2 - 4 个字符。违禁内容将会被审查。",
+            "teamTimezone": "队伍时区",
+            "timezoneText": "我们假定您的队伍可以在所选时区的 <span class='bold'>10:00-22:00</span>之间进行比赛。",
+            "teamAvatar": "队伍图标",
+            "upload": "上传",
+            "fileSizeLimit": "接受的文件类型： .jpg .png",
+            "fileSizeError": "文件大小太大！ 请上传小一点的图片",
+            "fileTypeError": "文件类型错误！请上传 .jpg 或 .png 后缀的图片",
+            "preview": "预览",
+            "avatarInfo1": "建议使用 <span>3:1 宽高比</span>的头像。",
+            "avatarInfo2": "队长可在注册结束前修改队名和头像。",
+            "avatarInfo3": "所有名称和头像都将由工作人员批准。",
+            "avatarInfo4": "如果认为不合适，将通知您进行更改。",
             "teamManagement": "队伍管理",
             "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
             "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
@@ -706,7 +706,7 @@
         "components": {
             "openCardTeam": {
                 "rank": "排名",
-                "teambwsAverage": "TEAM BWS AVG",
+                "teambwsAverage": "队伍平均BWS",
                 "unregistered": "未注册",
                 "bws": "BWS"
             },
