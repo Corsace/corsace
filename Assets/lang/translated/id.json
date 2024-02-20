@@ -454,7 +454,7 @@
                 "results": "HASIL",
                 "voters": "SUARA"
             },
-            "votingOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses laman voting MCA. <br> MCA tahun ini menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suara sebanyak-banyaknya tanpa ada batasan jumlah suara. <br> Seluruh suara yang masuk akan dihitung berdasarkan urutan pemilihannya masing-masing, di mana <span class='notice-modal--bold'>pilihan pertamamu akan memiliki bobot suara yang lebih tinggi dari pilihan keduamu dan seterusnya.</span> <br> Selamat memilih, dan jangan lewatkan pengumuman hasil akhir MCA [YEAR] pada saatnya nanti!",
+            "votingOverlay": "Halo! Sepertinya ini merupakan kali pertamamu mengakses halaman voting MCA! <br> MCA menganut sistem <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/IRV_counting_flowchart.svg/300px-IRV_counting_flowchart.svg.png'>ranked choice voting,</a> <br> di mana kamu bebas untuk memberikan suaramu sebanyak-banyaknya! <br> Seluruh suara yang masuk akan dihitung berdasarkan urutan pemilihannya masing-masing, di mana <span class='notice-modal--bold'>pilihan pertamamu akan memiliki bobot suara yang lebih tinggi dari pilihan keduamu dan seterusnya.</span> <br> Selamat memilih, dan jangan lewatkan pengumuman hasil akhir MCA [YEAR] pada saatnya nanti!",
             "hosted": "DI-HOST OLEH",
             "userID": "ID PENGGUNA"
         },
