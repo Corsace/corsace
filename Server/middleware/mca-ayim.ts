@@ -159,14 +159,7 @@ function isPhaseStarted<S extends DefaultState = DefaultState> (phase: "nominati
 }
 
 async function isResults<S extends DefaultState = DefaultState> (ctx: CorsaceContext<object, S>, next: Next) {
-    if (!ctx.state.user?.discord?.userID) {
-        ctx.body = {
-            success: false,
-            error: "User is not logged in via discord for the isResults middleware!",
-        };
-        return;
-    }
-
+    // Check if there is an MCA and if it's in the results phase
     if (!ctx.state.mca) {
         ctx.body = {
             success: false,
@@ -177,6 +170,15 @@ async function isResults<S extends DefaultState = DefaultState> (ctx: CorsaceCon
 
     if (ctx.state.mca.currentPhase() === "results") {
         await next();
+        return;
+    }
+    
+    // Check if the user is logged is a staff member or a head staff member in the discord server if it's not the results phase
+    if (!ctx.state.user?.discord?.userID) {
+        ctx.body = {
+            success: false,
+            error: "User is not logged in via discord for the isResults middleware!",
+        };
         return;
     }
 
