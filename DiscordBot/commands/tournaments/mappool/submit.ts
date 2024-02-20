@@ -14,6 +14,7 @@ import mappoolComponents from "../../../functions/tournamentFunctions/mappoolCom
 import bypassSubmit from "../../../functions/tournamentFunctions/bypassSubmit";
 import channelID from "../../../functions/channelID";
 import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
+import { cleanLink } from "../../../../Server/utils/link";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -32,7 +33,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!link)
         return;
 
-    if (!link.endsWith(".osz")) {
+    if (!cleanLink(link).endsWith(".osz")) {
         await respond(m, "Pleaseee provide a proper .osz file STOP TROLLING ME");
         return;
     }

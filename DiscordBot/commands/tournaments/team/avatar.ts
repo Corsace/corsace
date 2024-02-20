@@ -8,6 +8,7 @@ import commandUser from "../../../functions/commandUser";
 import getTeam from "../../../functions/tournamentFunctions/getTeam";
 import getUser from "../../../../Server/functions/get/getUser";
 import { loginResponse } from "../../../functions/loginResponse";
+import { cleanLink } from "../../../../Server/utils/link";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -23,7 +24,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!link)
         return;
 
-    if (!link.endsWith(".png") && !link.endsWith(".jpg") && !link.endsWith(".jpeg")) {
+    const cLink = cleanLink(link);
+    if (!cLink.endsWith(".png") && !cLink.endsWith(".jpg") && !cLink.endsWith(".jpeg")) {
         await respond(m, "Pleaseee provide a proper image OHG MYGODDD (png, jpg, jpeg)");
         return;
     }

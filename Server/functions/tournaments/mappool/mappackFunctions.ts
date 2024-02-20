@@ -13,6 +13,7 @@ import respond from "../../../../DiscordBot/functions/respond";
 import { getLink } from "../../../../DiscordBot/functions/getLink";
 import { Readable } from "stream";
 import { BeatmapsetRankedStatus } from "../../../../Models/beatmapset";
+import { cleanLink } from "../../../utils/link";
 
 export async function createPack (m: Message | ChatInputCommandInteraction, bucket: "mappacks" | "mappacksTemp", mappool: Mappool, packName: string, video = false): Promise<string | undefined> {
     const mappoolMaps = mappool.slots.flatMap(s => s.maps);
@@ -48,7 +49,7 @@ export async function createPack (m: Message | ChatInputCommandInteraction, buck
     }
 
     const link = await getLink(m, "mappack", false, true);
-    if (link && !link.endsWith(".zip")) {
+    if (link && !cleanLink(link).endsWith(".zip")) {
         await respond(m, "Pleaseee provide a proper .zip file STOP TROLLING ME");
         return;
     }

@@ -25,10 +25,8 @@ export default async function autoSubmit (m: Message) {
     else
         return;
 
-    link = cleanLink(link);
-
     // Check if the link is an osz file
-    if (!link.endsWith(".osz"))
+    if (!cleanLink(link).endsWith(".osz"))
         return;
 
     const channel = await TournamentChannel.findOne({

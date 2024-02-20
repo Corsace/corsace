@@ -16,6 +16,7 @@ import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import { MappoolReplay } from "../../../../Models/tournaments/mappools/mappoolReplay";
 import { extractTargetText } from "../../../functions/tournamentFunctions/paramaterExtractionFunctions";
 import getStaff from "../../../functions/tournamentFunctions/getStaff";
+import { cleanLink } from "../../../../Server/utils/link";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -34,7 +35,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!link)
         return;
 
-    if (!link.endsWith(".osr")) {
+    if (!cleanLink(link).endsWith(".osr")) {
         await respond(m, "Pleaseee provide a proper .osr file STOP TROLLING ME");
         return;
     }
