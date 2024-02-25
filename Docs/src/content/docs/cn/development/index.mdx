@@ -1,6 +1,6 @@
 ---
-title: Getting Started
-description: Documentation to get started on Corsace development.
+title: 让我们开始吧！
+description: 关于开始在 Corsace 中开发的文档。
 lastUpdated: 2023-09-19
 sidebar:
   order: 1
@@ -14,7 +14,7 @@ If you are looking into translating for Corsace, request access at https://trans
 
 Please make sure to first [fork the repository](https://github.com/Corsace/Corsace/fork)
 
-:::caution null
+:::caution
 We HIGHLY recommend installing a code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [NotePad++](https://notepad-plus-plus.org/) to work on this project.
 :::
 
@@ -43,22 +43,22 @@ npm i
 
 For the curious, the project primarily uses the following technologies and versions that are installed by the above command:
 
--   [Node.js](https://nodejs.org/en/) (v16.6.0 or higher)
--   [TypeScript](https://www.typescriptlang.org/) (v4.9.4 or higher)
--   [Docker](https://www.docker.com/) (v3.8 or higher)
+- [Node.js](https://nodejs.org/en/) (v16.6.0 or higher)
+- [TypeScript](https://www.typescriptlang.org/) (v4.9.4 or higher)
+- [Docker](https://www.docker.com/) (v3.8 or higher)
 
 Main packages:
 
--   [TypeORM](https://typeorm.io/) (v0.3.11)
--   [Koa](https://koajs.com/) (v2.13.1)
--   [Discord.js](https://discord.js.org/) (v14.9.0)
--   [Bancho.js](https://bancho.js.org/) (v0.11.3)
--   [Nuxt 2](https://v2.nuxt.com/) (v2.16.3)
--   [Astro/Starlight](https://starlight.astro.build/) (v0.10.0)
+- [TypeORM](https://typeorm.io/) (v0.3.11)
+- [Koa](https://koajs.com/) (v2.13.1)
+- [Discord.js](https://discord.js.org/) (v14.9.0)
+- [Bancho.js](https://bancho.js.org/) (v0.11.3)
+- [Nuxt 2](https://v2.nuxt.com/) (v2.16.3)
+- [Astro/Starlight](https://starlight.astro.build/) (v0.10.0)
 
 Other packages:
 
--   [Centrifugo](https://centrifugal.dev/)
+- [Centrifugo](https://centrifugal.dev/)
 
 ### Initial Configuration
 
@@ -143,12 +143,12 @@ While we target Cloudflare R2, any S3 provider should work as long as they suppo
 
 We use three buckets:
 
--   `team-avatars` is a public bucket that stores team avatars, can be served by a CDN without authentication
--   `mappacks` is a public bucket that stores public mappacks, can be served by a CDN without authentication
--   `mappacks-temp` is a private bucket that stores private mappacks that should not have public access\
-    Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.\
-    Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.\
-    Mappacks that should become public get moved to the `mappacks` bucket.
+- `team-avatars` is a public bucket that stores team avatars, can be served by a CDN without authentication
+- `mappacks` is a public bucket that stores public mappacks, can be served by a CDN without authentication
+- `mappacks-temp` is a private bucket that stores private mappacks that should not have public access\
+  Generated mappacks are first uploaded to this bucket, users are given access through pre-signed URLs.\
+  Private mappacks are not meant to be permanently stored, a lifecycle policy should be added to that bucket to automatically delete objects after 1 day.\
+  Mappacks that should become public get moved to the `mappacks` bucket.
 
 #### Cloudflare R2
 
@@ -271,8 +271,8 @@ Afterwards, run `npm run centrifugo:local` to start the centrifugo server. If yo
 
 For frontend web development, it's suggested to go through the following documents in order:
 
--   [Server + CronRunner - Running Environment](server/guide/server-running-environment)
--   [Web - Running Environment](client/guide/web-running-environment)
+- [Server + CronRunner - Running Environment](server/guide/server-running-environment)
+- [Web - Running Environment](client/guide/web-running-environment)
 
 For docs development, you can simply go [here](client/guide/docs-running-environment)
 
