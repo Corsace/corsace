@@ -2,15 +2,15 @@
     "language": "日本語",
     "flag": "https://osu.ppy.sh/images/flags/JP.png",
     "header": {
-        "welcomeBack": "welcome back",
-        "login": "login",
-        "register": "register",
-        "changeDiscord": "change discord",
-        "logout": "logout"
+        "welcomeBack": "おかえりなさい",
+        "login": "ログイン",
+        "register": "新規登録",
+        "changeDiscord": "Discordを変更",
+        "logout": "ログアウト"
     },
     "mca_ayim": {
         "banner": {
-            "merch": "OFFICIAL MERCHANDISE STORE",
+            "merch": "公式グッズストア",
             "corsace": "MAIN EVENT HUB"
         },
         "header": {
@@ -44,8 +44,9 @@
             "message": {
                 "2019": "<p>こんにちは、2020年。</p><p>A Year in Mapping 2019が当年に叩き出された記録と、蓄積された詳細な統計データをお届けしに帰ってきました！</p><p>このウェブサイトを使って、全ての年について検索できるだけの情報を含めることができました。ウェブサイト上のバグを含め、何か提案があればcorsaceのサーバー内でVINXISの元へ教えてください（リンクは左下にあります）。</p><p>また、コメントの募集も行っています。これを読んでいるあなたも、マッパーに対して好きなだけコメントを書いて送ることができます。</p><p>まずは下にあるアイコンからお好きなモードを選んで始めましょう！</p>",
                 "2020": "<p>こんにちは、2021年... 今度は間違いのない年です！</p><p>A Year in Mapping 2020が本年に叩き出された記録と、蓄積された詳細な統計データをお届けしに帰ってきました！</p><p>そして改めてにはなりますが、コメントは絶賛募集中です。早速下にあるアイコンからお好きなモードを選んで始めましょう！</p>",
-                "2021": "<p>2022 is here!</p> <p>A Year in Mapping 2021 is here to provide the records and stats made or even broken!</p>",
-                "2022": "<p>Welcome to 2023!</p> <p>A Year in Mapping 2022 is here to provide the records and stats made or even broken! This time actually (kind of) on schedule!</p>"
+                "2021": "<p>2022年になりました。</p> <p>A Year in Mapping 2021では、2021年に達成された、あるいは破られた記録や統計をお届けします！</p>",
+                "2022": "<p>2023年へようこそ！</p> <p>A Year in Mapping 2022では、2021年に達成された、あるいは破られた記録や統計をお届けします！今度こそはある意味予定通りです。</p>",
+                "2023": "<p>2024 is now here!</p> <p>A Year in Mapping 2023 is here to provide the records and stats made or even broken!</p>"
             }
         },
         "mapsets": {
@@ -120,7 +121,7 @@
             "nominating": "ノミネート",
             "preparation": "準備",
             "results": "結果",
-            "timeline": "timeline",
+            "timeline": "予定表",
             "mapsetsLabel": "マップセット",
             "mappersLabel": "マッパー",
             "commentsLabel": "コメント",
@@ -141,7 +142,8 @@
                 "2019": "<p>Mapper's Choice Awardsが帰ってきました！これはすべてのマッパー・モッダーが各部門で最高の譜面・マッパーだと思うものに投票するイベントです。</p><p>Community Choiceとの違いは、マッピングコミュニティーの目線から2019年を代表する譜面を決めることが目的だという点です。</p><p>今年はできる限り簡単に参加できるように、ウェブサイトの開発を本格的に行いました。</p><p>すべてのosu!サポーターはスタッフが直接送ります。各部門の勝者には2ヶ月分、グランプリには6ヶ月分のサポーターが贈呈されます。</p><p>一人でも多くの人に投票してもらえることを期待しています！</p>",
                 "2020": "<p>2020年の仕上げに、Mapper's Choice Awardsがまたまた帰ってきました！これはすべてのマッパー・モッダーが各部門で最高の譜面・マッパーだと思うものに投票するイベントです。</p><p>Community Choiceとの違いは、マッピングコミュニティーの目線から2020年を代表する譜面を決めることが目的だという点です。</p><p>様々な変更を加え、MCA2019で見つかったすべてのバグへの対処とともに、必要に応じて部門を修正したため、今回ははるかにスムーズなはずです。</p><p>一人でも多くの人に投票してもらえることを期待しています！</p>",
                 "2021": "<p>Mapper's Choice Awards is back again for 2021! This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!</p><p>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!</p><p>We hope as many participants as possible take part in this event!</p>",
-                "2022": "We are back for another installment of Mapper's Choice Awards! (This time almost on schedule!)<br>This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!"
+                "2022": "We are back for another installment of Mapper's Choice Awards! (This time almost on schedule!)<br>This is a voting event where all mappers/modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!",
+                "2023": "New year, new iteration of Mapper's Choice Awards!<br>This is a voting event where all mappers and modders can nominate and vote what they think is the best map/mapper for each category!<br>All osu! supporter prizes are provided by the osu! staff directly. 2 months of supporter for winners of each category, and 4 months for winners of the Grand Awards!<br>We hope as many participants as possible take part in this event!"
             },
             "categories": {
                 "index": "categories",
@@ -288,19 +290,19 @@
                 "description": "7Kで作られた譜面"
             },
             "technical": {
-                "name": "技術者",
+                "name": "Best Technical Storyboard",
                 "description": "高度な技術を使用したストーリーボード"
             },
             "gameplay": {
-                "name": "プレイング",
+                "name": "Best Gameplay Storyboard",
                 "description": "プレイにかかわる要素を使用したストーリーボード"
             },
             "minimalistic": {
-                "name": "ミニマリズム",
+                "name": "Best Minimalistic Storyboard",
                 "description": "簡潔なコードで作られたストーリーボード"
             },
             "narrative": {
-                "name": "物語性",
+                "name": "Best Narrative Storyboard",
                 "description": "ストーリー展開を含んだストーリーボード"
             },
             "technicalTaiko": {
@@ -378,6 +380,54 @@
             "diversity": {
                 "name": "多様性",
                 "description": "多くの部門や技能を内包した譜面"
+            },
+            "altSwing": {
+                "name": "Best Alternator / Swing",
+                "description": "The best beatmap focusing on alt-styled or swing-styled beatmaps."
+            },
+            "highDifficulty": {
+                "name": "Best High Difficulty",
+                "description": "The best difficult beatmap with a very high Star Rating (>=8 stars)."
+            },
+            "complexOnly": {
+                "name": "Best Complex",
+                "description": "The best beatmap with extensive usage of uncommon snappings."
+            },
+            "unorthodoxTaiko": {
+                "name": "Best Unorthodox",
+                "description": "The best beatmap that utilizes gimmicks and/or concepts."
+            },
+            "unorthodoxCatch": {
+                "name": "Best Unorthodox",
+                "description": "The best beatmap that strongly deviates from common norms."
+            },
+            "mapper4K": {
+                "name": "Best 4K Mapper",
+                "description": "The one who created the best 4K beatmaps."
+            },
+            "mapper7K": {
+                "name": "Best 7K Mapper",
+                "description": "The one who created the best 7K beatmaps."
+            },
+            "mapperAntiMeta": {
+                "name": "Best Anti Meta Mapper",
+                "description": "The one who created the best 5K/6K/8K/9K beatmaps."
+            },
+            "motionDesign": {
+                "name": "Best Motion Design / Animation Storyboard",
+                "description": "The storyboard with the most satisfying animations and transitions."
+            },
+            "lyrics": {
+                "name": "Best Lyrics / Text Storyboard",
+                "description": "The best storyboard that utilizes well-designed text effects for lyrics."
+            },
+            "mostPromisingSB": {
+                "name": "Most Promising Storyboarder",
+                "description": "The best storyboarder who ranked their first storyboard this year."
+            },
+            "outContSB": {
+                "name": "Outstanding Contributor (Storyboard)",
+                "description": "The one who positively contributed to the health of the storyboarding scene the most."
             }
         },
         "nom_vote": {
@@ -431,9 +481,9 @@
             "teams": "TEAMS",
             "schedule": "SCHEDULE",
             "mappool": "MAPPOOL",
-            "staff": "STAFF",
-            "createTeam": "CREATE TEAM",
-            "invitations": "INVITATIONS",
+            "staff": "スタッフ",
+            "createTeam": "チームを作成",
+            "invitations": "招待",
             "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
             "teamInvites": "TEAM INVITES",
             "noInvites": "You currently have no invites"
@@ -627,7 +677,7 @@
             "notRegistered": "Currently not registered in Corsace Open."
         },
         "create": {
-            "title": "CREATE A TEAM",
+            "title": "チームを作成",
             "info1": "Registrations will end on",
             "info2": "Please ensure all information is correct before finalizing.",
             "teamName": "TEAM NAME",

@@ -1,0 +1,42 @@
+---
+title: Web - Running Environment
+description: Starting and running the environment for web development.
+lastUpdated: 2023-09-19
+sidebar:
+  order: 1200
+---
+
+## Pre-requisite Reading
+
+*   [Development/Getting Started](../../..)
+*   [Development/Server/Guide/Server + CronRunner - Running Environment](../../../server/guide/server-running-environment)
+
+## Relevant Config Values
+
+Based on what config values you had provided for the website's `config.[WEBSITE].host` and `config.[WEBSITE].port`, you should be able to access the website at `http://host:port`
+
+For example, `http://localhost:3000` for the ayim website if your `config.ayim.host` is `localhost` and your `config.ayim.port` is `3000`.
+
+`config.[WEBSITE].publicUrl` should be equivalent to `config.[WEBSITE].host` and `config.[WEBSITE].port` combined. In the example above, this would be `http://localhost:3000`.
+
+See the [Config Reference](../config) for more information.
+
+## Running the Environment
+
+:::note
+Make sure to start the API server if you haven't already.
+:::
+
+Depending on which website(s) you want to run, you will need to run the following command(s) in a separate terminal:
+
+| Website | Cmd                    |
+| ------- | ---------------------- |
+| AYIM    | `npm run ayim-dev`     |
+| Closed  | `npm run closed-dev`\* |
+| MCA     | `npm run mca-dev`      |
+| Main    | `npm run main-dev`     |
+| Open    | `npm run open-dev`     |
+
+\*Currently does not exist
+
+The website should now be available at the URL you configured in the [Config Reference](../config).

@@ -1,0 +1,165 @@
+---
+title: Discord - Creating Commands
+description: Creating a command for the discord bot
+lastUpdated: 2023-09-20
+sidebar:
+  order: 3310
+---
+
+## Pre-requisite Reading
+
+*   [Development/Server/Guide/Discord - Running Environment](../discord-running-environment)
+*   [Discord.js/Creating slash commands](https://discordjs.guide/creating-your-bot/slash-commands.html)
+
+## Directory Structure
+
+### Explicit Commands
+
+Explicit commands are the most common types of commands. These commands are one that have to be directly called for with a prefix or a slash command, such as `/ping` or `!ping`.
+
+In `Discord/commands` there are folders to create general categorization for the commands that are created for discord. The current categories are:
+
+*   `osu` - For osu!-related commands
+*   `tournaments` - For commands that are related to running osu! tournaments
+*   `utility` - For general purpose commands such as `ping`
+
+But there may be more as time goes on, and imported from [MaquiaBot](https://github.com/VINXIS/maquiaBot).\
+[See this GitHub issue.](https://github.com/Corsace/corsace/issues/179)
+
+There is also an `index.ts` file that concatenates all of the commands into a list.
+
+### Inexplicit Commands
+
+These commands are run when something unrelated to directly calling for a command is done. Such as submitting a file for an assigned task in a channel where that would be relevant
+They are located in `Discord/commandsInexplicit` and have the same categorization with the exception of `threadCommands`.
+
+`threadCommands` are commands that contain functions that are run when a thread is created/deleted/updated.
+
+## Command Anatomy
+
+All file names and commands should be based on camelCase.
+
+### Explicit Commands
+
+Every command file typically has a structure like so:
+
+```ts
+Imports
+...
+Helper functions // If needed
+...
+async function run (m: Message | ChatInputCommandInteraction) {
+    ...
+}
+...
+const data = new SlashCommandBuilder()
+    .setName("[COMMAND NAME]")
+    .setDescription("[COMMAND DESCRIPTION]")
+    ...
+...
+// If parameters are extracted with the extractParameter function, then this interface should also be written
+interface parameters {
+    ...
+}
+
+const [COMMAND NAME]: Command = {
+    data,
+    alternativeNames: [...],
+    category: "[FOLDER]/[SUBFOLDER]/...",
+    run,
+}
+```
+
+In this case, imports would be any library/file imported such as `import { Message } from "discord.js"` while helper functions are any ts function that you will then use later for the `run` function.
+
+The `run` function is meant to contain the core functionality of the command you are writing.
+
+The `extractParameter` function is detailed more in [Discord - Extracting Parameters](../discord-extracting-parameters), but this document is only focused on the general gist of creating a command.\
+If you are to use it though, then write a parameters interface to pass into it, as the function takes in a generic type.
+
+All commands are meant to support the ability of using messages and slash commands to trigger commands to allow flexibility in use for the end-user.
+
+### Inexplicit Commands
+
+The file structure for inexplicit commands is much more simpler, as its only concerned with messages. It will typically look like this:
+
+```ts
+Imports
+...
+Helper functions // If needed
+...
+export default async function [COMMAND NAME] (m: Message) {
+    ...
+}
+```
+
+Likewise, the core functionality would be contained within the `[COMMAND NAME]` function.
+
+### Thread Commands
+
+```ts
+Imports
+...
+Helper functions // IF needed
+...
+export async function [COMMAND NAME]Create (t: ThreadChannel, ...) {
+    ...
+}
+
+export async function [COMMAND NAME]Delete (t: ThreadChannel. ...) {
+    ...
+}
+```
+
+Functionality needs to be written for both when the type of thread is created, and when the type of thread is deleted. This will then be used for create/delete/update thread as necessary.
+
+## Installing Commands
+
+### Explicit Commands
+
+Installing explicit commands occurs in `DiscordBot/commands/index.ts`, where the file is first imported, and then pushed into the commands array.\
+Commands are grouped by their categories, and sorted alphabetically within the groups for easier searching.\
+Make sure to follow the ordering.
+
+Like so:
+
+```ts
+...
+import [COMMAND NAME] from "./**/[COMMAND NAME]";
+...
+commands.push([COMMAND NAME]);
+```
+
+Afterwards when running the discord bot, you should be able to access it via slash commands and with the command's prefix.
+
+#### Duplicate aliases
+
+As the bot will catch any alias listed in the command's `alternativeNames` property, it's possible that different commands may end up having duplicate aliases.
+
+To check this, simply run `npm run dupeCmds` in the console, and fix as necessary.
+
+### Inexplicit Commands
+
+Inexplicit commands are dependant on each command's use case, but typically they would be installed in `DiscordBot/handlers/messageCreate.ts` like so:
+
+```ts
+import [COMMAND NAME] from "../commandsInexplicit/**/[COMMAND NAME]";
+...
+if ([CONDITIONALS] && !commandRun)
+    [COMMAND NAME](m);
+```
+
+If the command should be run regardless if another command is run, then you don't need to add `&& !commandRun`, but it is HIGHLY RECOMMENDED otherwise.
+
+### Thread Commands
+
+Similar to explicit commands, these will be installed in `DiscordBot/commands/index.ts` like so:
+
+```ts
+import { [COMMAND NAME]Create, [COMMAND NAME]Delete } from "../commandsInexplicit/threadCommands/**/[COMMAND NAME]";
+...
+const threadCommands = {
+    ...
+    [ [THREAD TYPE] ]: { create: [COMMAND NAME]Create, delete: [COMMAND NAME]Delete },
+} as threadCommands;
+```
