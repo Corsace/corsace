@@ -19,7 +19,9 @@ export class Stage extends BaseEntity {
     @CreateDateColumn()
         createdAt!: Date;
 
-    @ManyToOne(() => User, user => user.stagesCreated)
+    @ManyToOne(() => User, user => user.stagesCreated, {
+        nullable: false,
+    })
         createdBy!: User;
 
     @Column()
@@ -49,7 +51,9 @@ export class Stage extends BaseEntity {
     @Column(() => Phase)
         timespan!: Phase;
 
-    @ManyToOne(() => Tournament, tournament => tournament.stages)
+    @ManyToOne(() => Tournament, tournament => tournament.stages, {
+        nullable: false,
+    })
         tournament!: Tournament;
 
     @OneToMany(() => Round, bracket => bracket.stage)

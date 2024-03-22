@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 import { Influence } from "../MCA_AYIM/influence";
 import { ModeDivision } from "../MCA_AYIM/modeDivision";
-import { OAuth, User } from "../user";
+import { OsuOAuth, User } from "../user";
 import { UsernameChange } from "../usernameChange";
 import output from "./1642302144275-SeedingInfluenceTable.json";
 
@@ -60,7 +60,7 @@ export class SeedingInfluenceTable1642302144275 implements MigrationInterface {
                 missingUsers.push(item);
                 
                 user = new User();
-                user.osu = new OAuth();
+                user.osu = new OsuOAuth();
                 user.osu.username = item.username;
                 user.osu.userID = item.userId;
                 user.country = item.country;

@@ -26,10 +26,14 @@ export class MappoolMapSkill extends BaseEntity {
     @Column({ type: "enum", enum: MappoolMapSkillType, nullable: false })
         skill!: MappoolMapSkillType;
 
-    @ManyToOne(() => User, user => user.mappoolMapSkillRatings)
+    @ManyToOne(() => User, user => user.mappoolMapSkillRatings, {
+        nullable: false,
+    })
         user!: User;
 
-    @ManyToOne(() => MappoolMap, mappoolMap => mappoolMap.skillRatings)
+    @ManyToOne(() => MappoolMap, mappoolMap => mappoolMap.skillRatings, {
+        nullable: false,
+    })
         mappoolMap!: MappoolMap;
 
 }

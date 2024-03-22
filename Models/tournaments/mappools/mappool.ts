@@ -13,7 +13,9 @@ export class Mappool extends BaseEntity {
     @CreateDateColumn()
         createdAt!: Date;
 
-    @ManyToOne(() => User, user => user.mappoolsCreated)
+    @ManyToOne(() => User, user => user.mappoolsCreated, {
+        nullable: false,
+    })
         createdBy!: User;
 
     @Column()
@@ -40,7 +42,9 @@ export class Mappool extends BaseEntity {
     @Column()
         order!: number;
 
-    @ManyToOne(() => Stage, stage => stage.mappool)
+    @ManyToOne(() => Stage, stage => stage.mappool, {
+        nullable: false,
+    })
         stage!: Stage;
 
     @ManyToOne(() => Round, round => round.mappool)

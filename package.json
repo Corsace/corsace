@@ -44,7 +44,7 @@
       "reflect-metadata": "^0.1.10",
       "stream-to-string": "^1.2.0",
       "ts-node": "^10.4.0",
-      "typeorm": "^0.3.11",
+      "typeorm": "^0.3.20",
       "typescript": "^4.9.4",
       "unzipper": "^0.10.11",
       "vue-class-component": "^7.2.6",
@@ -89,6 +89,8 @@
       "ts-node-dev": "^2.0.0"
    },
    "scripts": {
+      "postinstall": "cp ./config/Config.d.ts ./node_modules/node-config-ts/index.d.ts",
+
       "build:ayim": "cd ./AYIM && nuxt build",
       "build:mca": "cd ./MCA && nuxt build",
       "build:main": "cd ./Main && nuxt build",
@@ -134,7 +136,7 @@
 
       "database": "docker-compose up -d database",
       "mariadb": "docker-compose exec database mariadb -u corsace -p",
-      "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
+      "typeorm": "typeorm-ts-node-esm",
       "migration-dev": "NODE_ENV=development npm run -- typeorm migration:run -d ormconfig",
       "migration": "npm run -- typeorm migration:run -d ormconfig",
       "astro": "astro"

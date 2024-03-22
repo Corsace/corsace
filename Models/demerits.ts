@@ -16,7 +16,9 @@ export class DemeritReport extends BaseEntity {
     @Column({ default: 0 })
         amount!: number;
 
-    @ManyToOne(() => User, user => user.demerits)
+    @ManyToOne(() => User, user => user.demerits, {
+        nullable: false,
+    })
         user!: User;
 
     public getInfo = function(this: DemeritReport): DemeritInfo {

@@ -52,7 +52,9 @@ export class Tournament extends BaseEntity {
     @CreateDateColumn()
         createdAt!: Date;
 
-    @ManyToOne(() => User, user => user.tournamentsOrganized)
+    @ManyToOne(() => User, user => user.tournamentsOrganized, {
+        nullable: false,
+    })
         organizer!: User;
 
     @ManyToOne(() => ModeDivision, mode => mode.tournaments, {

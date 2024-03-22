@@ -11,10 +11,14 @@ export class TeamInvite extends BaseEntity {
     @CreateDateColumn()
         createdAt!: Date;
 
-    @ManyToOne(() => User, user => user.teamInvites)
+    @ManyToOne(() => User, user => user.teamInvites, {
+        nullable: false,
+    })
         user!: User;
 
-    @ManyToOne(() => Team, team => team.invites)
+    @ManyToOne(() => Team, team => team.invites, {
+        nullable: false,
+    })
         team!: Team;
 
 }

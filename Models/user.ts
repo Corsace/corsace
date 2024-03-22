@@ -39,12 +39,7 @@ import { UserStatistics } from "./userStatistics";
 import { ModeDivisionType, modeIDToMode } from "../Interfaces/modes";
 import { MappoolReplay } from "./tournaments/mappools/mappoolReplay";
 
-// General middlewares
-
 export class OAuth {
-
-    @Column({ default: null })
-        userID!: string;
 
     @Index()
     @Column({ default: "" })
@@ -65,17 +60,28 @@ export class OAuth {
     @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
         lastVerified!: Date;
 }
+
+export class DiscordOAuth extends OAuth {
+    @Column({ default: null })
+        userID!: string;
+}
+
+export class OsuOAuth extends OAuth {
+    @Column({ nullable: false })
+        userID!: string;
+}
+
 @Entity()
 export class User extends BaseEntity {
 
     @PrimaryGeneratedColumn()
         ID!: number;
 
-    @Column(() => OAuth)
-        discord!: OAuth;
+    @Column(() => DiscordOAuth)
+        discord!: DiscordOAuth;
     
-    @Column(() => OAuth)
-        osu!: OAuth;
+    @Column(() => OsuOAuth)
+        osu!: OsuOAuth;
 
     @Column({ type: "tinytext" })
         country!: string;

@@ -11,7 +11,9 @@ export class MappoolReplay extends BaseEntity {
     @CreateDateColumn()
         createdAt!: Date;
     
-    @ManyToOne(() => User, user => user.mappoolReplaysCreated)
+    @ManyToOne(() => User, user => user.mappoolReplaysCreated, {
+        nullable: false,
+    })
         createdBy!: User;
 
     @Column()

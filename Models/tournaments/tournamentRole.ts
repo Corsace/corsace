@@ -11,13 +11,17 @@ export class TournamentRole extends BaseEntity {
     @CreateDateColumn()
         createdAt!: Date;
 
-    @ManyToOne(() => User, user => user.tournamentRolesCreated)
+    @ManyToOne(() => User, user => user.tournamentRolesCreated, {
+        nullable: false,
+    })
         createdBy!: User;
 
     @Column()
         roleID!: string;
 
-    @ManyToOne(() => Tournament, tournament => tournament.channels)
+    @ManyToOne(() => Tournament, tournament => tournament.channels, {
+        nullable: false,
+    })
         tournament!: Tournament;
 
     @Column({ type: "enum", enum: TournamentRoleType })

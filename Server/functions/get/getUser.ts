@@ -1,4 +1,4 @@
-import { OAuth, User } from "../../../Models/user";
+import { DiscordOAuth, OsuOAuth, User } from "../../../Models/user";
 import { User as APIUser } from "nodesu";
 import { osuClient } from "../../osu";
 import { discordClient } from "../../discord";
@@ -13,9 +13,9 @@ export default async function getUser (ID: number | string, IDType: "osu" | "dis
         return;
 
     user = new User();
-    user[IDType] = new OAuth();
-    user[IDType].userID = ID.toString();
     if (IDType === "osu") {
+        user.osu = new OsuOAuth();
+        user.osu.userID = ID.toString();
         const apiUser = await osuClient.user.get(ID) as APIUser;
         if (apiUser) {
             user.osu.username = apiUser.username;
@@ -23,6 +23,8 @@ export default async function getUser (ID: number | string, IDType: "osu" | "dis
             user.country = apiUser.country;
         }
     } else if (IDType === "discord") {
+        user.discord = new DiscordOAuth();
+        user.discord.userID = ID.toString();
         const apiUser = await discordClient.users.fetch(ID.toString());
         if (apiUser) {
             user.discord.username = apiUser.username;

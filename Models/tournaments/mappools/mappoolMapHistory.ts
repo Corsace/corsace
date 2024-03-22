@@ -12,10 +12,14 @@ export class MappoolMapHistory extends BaseEntity {
     @CreateDateColumn()
         createdAt!: Date;
 
-    @ManyToOne(() => User, user => user.mappoolMapHistoryEntriesCreated)
+    @ManyToOne(() => User, user => user.mappoolMapHistoryEntriesCreated, {
+        nullable: false,
+    })
         createdBy!: User;
 
-    @ManyToOne(() => MappoolMap, mappoolMap => mappoolMap.history)
+    @ManyToOne(() => MappoolMap, mappoolMap => mappoolMap.history, {
+        nullable: false,
+    })
         mappoolMap!: MappoolMap;
 
     @ManyToOne(() => Beatmap, beatmap => beatmap.mappoolMapHistoryEntries)

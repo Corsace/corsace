@@ -8,10 +8,14 @@ export class UserStatistics extends BaseEntity {
     @PrimaryGeneratedColumn()
         ID!: number;
 
-    @ManyToOne(() => ModeDivision, modeDivision => modeDivision.userStatistics)
+    @ManyToOne(() => ModeDivision, modeDivision => modeDivision.userStatistics, {
+        nullable: false,
+    })
         modeDivision!: ModeDivision;
 
-    @ManyToOne(() => User, user => user.userStatistics)
+    @ManyToOne(() => User, user => user.userStatistics, {
+        nullable: false,
+    })
         user!: User;
 
     @Column("double", { default: 0 })

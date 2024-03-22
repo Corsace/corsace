@@ -8,10 +8,14 @@ export class MatchupScore extends BaseEntity {
     @PrimaryGeneratedColumn()
         ID!: number;
 
-    @ManyToOne(() => User, user => user.matchupScores)
+    @ManyToOne(() => User, user => user.matchupScores, {
+        nullable: false,
+    })
         user!: User;
 
-    @ManyToOne(() => MatchupMap, map => map.scores)
+    @ManyToOne(() => MatchupMap, map => map.scores, {
+        nullable: false,
+    })
         map!: MatchupMap;
 
     @Column("int")

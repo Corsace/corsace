@@ -1,5 +1,5 @@
 import { Message, EmbedBuilder, EmbedData, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { OAuth, User } from "../../../Models/user";
+import { OsuOAuth, User } from "../../../Models/user";
 import { Command } from "../index";
 import { User as APIUser } from "nodesu";
 import { osuClient } from "../../../Server/osu";
@@ -64,7 +64,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (!userQ) {
             userQ = new User();
             userQ.country = apiUser.country.toString();
-            userQ.osu = new OAuth();
+            userQ.osu = new OsuOAuth();
             userQ.osu.userID = `${apiUser.userId}`;
             userQ.osu.username = apiUser.username;
             userQ.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;
