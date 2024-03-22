@@ -10,7 +10,9 @@ export class UsernameChange extends BaseEntity {
     @Column()
         name!: string;
 
-    @ManyToOne(() => User, user => user.otherNames)
+    @ManyToOne(() => User, user => user.otherNames, {
+        nullable: false,
+    })
         user!: User;
 
 }

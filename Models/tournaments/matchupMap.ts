@@ -11,7 +11,9 @@ export class MatchupMap extends BaseEntity {
     @PrimaryGeneratedColumn()
         ID!: number;
 
-    @ManyToOne(() => MappoolMap, map => map.matchMaps)
+    @ManyToOne(() => MappoolMap, map => map.matchMaps, {
+        nullable: false,
+    })
         map!: MappoolMap;
 
     @Column({ type: "enum", enum: MapStatus, default: MapStatus.Picked })
@@ -32,7 +34,9 @@ export class MatchupMap extends BaseEntity {
     @ManyToOne(() => Team, team => team.wins)
         winner?: Team | null;
 
-    @ManyToOne(() => MatchupSet, set => set.maps)
+    @ManyToOne(() => MatchupSet, set => set.maps, {
+        nullable: false,
+    })
         set!: MatchupSet;
 
 }

@@ -6,7 +6,7 @@ import axios from "axios";
 import { LessThan } from "typeorm";
 import { Beatmap } from "../../Models/beatmap";
 import { Beatmapset } from "../../Models/beatmapset";
-import { OAuth, User } from "../../Models/user";
+import { OsuOAuth, User } from "../../Models/user";
 import { UsernameChange } from "../../Models/usernameChange";
 import { MCAEligibility } from "../../Models/MCA_AYIM/mcaEligibility";
 import { ModeDivision } from "../../Models/MCA_AYIM/modeDivision";
@@ -75,7 +75,7 @@ const getUser = async (targetUser: { username?: string, userID: number, country?
         }
 
         user = new User();
-        user.osu = new OAuth();
+        user.osu = new OsuOAuth();
         user.osu.userID = `${targetUser.userID}`;
         user.osu.username = username;
         user.osu.avatar = "https://a.ppy.sh/" + targetUser.userID;

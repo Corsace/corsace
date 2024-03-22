@@ -26,13 +26,17 @@ export class UserComment extends BaseEntity {
     @Column()
         commenterID!: number;
 
-    @ManyToOne(() => User, user => user.commentsMade, { nullable: false })
+    @ManyToOne(() => User, user => user.commentsMade, {
+        nullable: false,
+    })
         commenter!: User;
 
     @Column()
         targetID!: number;
 
-    @ManyToOne(() => User, user => user.commentsReceived, { nullable: false })
+    @ManyToOne(() => User, user => user.commentsReceived, {
+        nullable: false,
+    })
         target!: User;
 
     @ManyToOne(() => User, user => user.commentReviews)

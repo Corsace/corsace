@@ -15,10 +15,14 @@ export class MappoolMapWeight extends BaseEntity {
     @Column({ type: "enum", enum: MappoolMapSkillType, nullable: false })
         skill!: MappoolMapSkillType;
 
-    @ManyToOne(() => User, user => user.mappoolMapSkillWeights)
+    @ManyToOne(() => User, user => user.mappoolMapSkillWeights, {
+        nullable: false,
+    })
         user!: User;
 
-    @ManyToOne(() => MappoolMap, mappoolMap => mappoolMap.skillWeights)
+    @ManyToOne(() => MappoolMap, mappoolMap => mappoolMap.skillWeights, {
+        nullable: false,
+    })
         mappoolMap!: MappoolMap;
 
 }

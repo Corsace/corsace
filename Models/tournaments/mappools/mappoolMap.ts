@@ -19,7 +19,9 @@ export class MappoolMap extends BaseEntity {
     @CreateDateColumn()
         createdAt!: Date;
     
-    @ManyToOne(() => User, user => user.mappoolMapsCreated)
+    @ManyToOne(() => User, user => user.mappoolMapsCreated, {
+        nullable: false,
+    })
         createdBy!: User;
 
     @ManyToOne(() => User, user => user.mappoolMapsAssigned)
@@ -37,7 +39,9 @@ export class MappoolMap extends BaseEntity {
     @Column({ type: "datetime", nullable: true })
         deadline?: Date | null;
 
-    @ManyToOne(() => MappoolSlot, slot => slot.maps)
+    @ManyToOne(() => MappoolSlot, slot => slot.maps, {
+        nullable: false,
+    })
         slot!: MappoolSlot;
 
     @Column({ type: "varchar", nullable: true })

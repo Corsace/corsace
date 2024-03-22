@@ -19,7 +19,9 @@ export class Round extends BaseEntity {
     @Column("boolean", { nullable: true })
         isDraft?: boolean | null;
     
-    @ManyToOne(() => Stage, stage => stage.rounds)
+    @ManyToOne(() => Stage, stage => stage.rounds, {
+        nullable: false,
+    })
         stage!: Stage;
 
     @OneToMany(() => Mappool, mappool => mappool.round)

@@ -4,7 +4,7 @@ import { Category } from "../../../../Models/MCA_AYIM/category";
 import { isMCAStaff, validatePhaseYear } from "../../../middleware/mca-ayim";
 import { User as APIUser } from "nodesu";
 import { isCorsace } from "../../../../Server/middleware";
-import { OAuth, User } from "../../../../Models/user";
+import { OsuOAuth, User } from "../../../../Models/user";
 import { MCAEligibility } from "../../../../Models/MCA_AYIM/mcaEligibility";
 import { osuClient } from "../../../osu";
 import { MCAAuthenticatedState } from "koa";
@@ -87,7 +87,7 @@ staffRouter.$post<{ eligibility: MCAEligibility }>("/grant/:year", isCorsace, va
 
         user = new User();
         user.country = apiUser.country.toString();
-        user.osu = new OAuth();
+        user.osu = new OsuOAuth();
         user.osu.userID = `${apiUser.userId}`;
         user.osu.username = apiUser.username;
         user.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;

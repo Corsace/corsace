@@ -26,7 +26,9 @@ export class Team extends BaseEntity {
     @Column({ type: "int", default: 0 })
         timezoneOffset!: number;
 
-    @ManyToOne(() => User, user => user.teamsManaged)
+    @ManyToOne(() => User, user => user.teamsManaged, {
+        nullable: false,
+    })
         manager!: User;
 
     @ManyToMany(() => User, user => user.teams)
