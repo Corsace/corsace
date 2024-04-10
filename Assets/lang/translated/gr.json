@@ -1,37 +1,37 @@
 {
-    "language": "English",
-    "flag": "https://osu.ppy.sh/images/flags/GB.png",
+    "language": "Αγγλικά",
+    "flag": "https://osu.ppy.sh/images/flags/GR.png",
     "header": {
-        "welcomeBack": "welcome back",
-        "login": "login",
-        "register": "register",
-        "changeDiscord": "change discord",
-        "logout": "logout"
+        "welcomeBack": "Γειά σου",
+        "login": "Σύνδεση",
+        "register": "Εγγράψου",
+        "changeDiscord": "Αλλαγή του discord",
+        "logout": "Αποσύνδεση"
     },
     "mca_ayim": {
         "banner": {
-            "merch": "OFFICIAL MERCHANDISE STORE",
-            "corsace": "MAIN EVENT HUB"
+            "merch": "ΕΠΙΣΗΜΟ ΚΑΤΑΣΤΗΜΑ ΕΜΠΟΡΕΥΜΑΤΩΝ",
+            "corsace": "ΚΕΝΤΡΙΚΟ ΣΗΜΕΙΟ ΕΚΔΗΛΩΣΕΩΝ"
         },
         "header": {
-            "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
-            "ayim": "A YEAR <br> IN <br> MAPPING",
-            "login": "LOG IN",
-            "welcomeBack": "welcome back",
-            "admin": "ADMIN",
-            "staff": "STAFF",
-            "logout": "LOGOUT"
+            "mca": "ΒΡΑΒΕΙΑ <br> ΕΠΙΛΟΓΗΣ <br> MAPPER",
+            "ayim": "ΕΝΑΣ ΧΡΟΝΟΣ <br> ΣΤΟ <br> MAPPING",
+            "login": "Σύνδεση",
+            "welcomeBack": "καλώς όρισες",
+            "admin": "ΔΕΙΑΧΕΙΡΙΣΤΗΣ",
+            "staff": "ΠΡΟΣΩΠΙΚΟ",
+            "logout": "ΑΠΟΣΥΝΔΕΣΗ"
         },
         "login": {
-            "login": "login",
+            "login": "συνδεση",
             "message": {
-                "1": "It seems that you are not logged in!<br>Simply login with osu! and you can start voting/nominating immediately!",
-                "2": "You may login on discord in addition as well after, but it is <b>not required</b> to vote/nominate.<br>Discord login <b>is required</b> for staff members working on MCA/AYIM.</span>"
+                "1": "Απ'οτι φαίνεται δεν είστε συνδεδεμένος!<br>Απλά συνδεθείτε με το osu! και μπορείτε να αρχίσετε να ψηφίζετε/προτείνετε!",
+                "2": "Επιπλέον, μπορείτε να συνδεθείτε στο discord, αλλά <b>δεν είναι απαραίτητο</b> το ψηφισετε/προτεινετε.<br>Η σύνδεση στο Discord <b>είναι απαραίτητη</b> για μέλη του προσωπικού τα οποία δουλεύουν πάνω στο MCA/AYIM.</span>"
             },
-            "authOsu": "click here to authenticate with osu!",
-            "authOsuComp": "osu! verification complete. Hi ",
-            "authDiscord": "click here to authenticate with discord",
-            "authDiscordComp": "Discord verification complete. Hi "
+            "authOsu": "κάντε κλικ εδώ για έλεγχο ταυτότητας με το osu!",
+            "authOsuComp": "Η επαλήθευση με το osu! ολοκληρώθηκε. Γειά ",
+            "authDiscord": "κάντε κλικ εδώ για έλεγχο ταυτότητας με το discord",
+            "authDiscordComp": "Η επαλήθευση με το discord ολοκληρώθηκε. Γειά "
         }
     },
     "ayim": {
