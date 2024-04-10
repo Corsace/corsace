@@ -36,8 +36,8 @@
     },
     "ayim": {
         "main": {
-            "records": "RECORDS",
-            "statistics": "STATISTICS",
+            "records": "ΡΕΚΟΡ",
+            "statistics": "ΣΤΑΤΙΣΤΙΚΗ",
             "search": "search for a mapper",
             "numberof": "number of",
             "numberwith": "number of maps with",
