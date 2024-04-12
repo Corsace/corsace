@@ -475,8 +475,8 @@
     },
     "open": {
         "navbar": {
-            "home": "HOME",
-            "info": "INFO",
+            "home": "ホーム",
+            "info": "詳細",
             "qualifiers": "QUALIFIERS",
             "teams": "TEAMS",
             "schedule": "SCHEDULE",
@@ -522,8 +522,8 @@
             }
         },
         "info": {
-            "title": "INFORMATION",
-            "condensed": "CONDENSED INFO",
+            "title": "詳細",
+            "condensed": "要約",
             "error": "Could not find tournament",
             "matchInfo": {
                 "matchSize": "MATCH SIZE",
@@ -550,17 +550,17 @@
                 "ongoing": "ONGOING"
             },
             "mappools": {
-                "info": "MAPPOOL INFO",
-                "notAvailable": "INFO NOT AVAILABLE",
+                "info": "マッププール詳細",
+                "notAvailable": "詳細は利用できません",
                 "mappackDownload": "DOWNLOAD MAP PACK",
                 "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
             },
             "prizes": "PRIZES",
             "donateToCorsace": "DONATE TO CORSACE",
-            "supportViaSponsorship": "SUPPORT VIA MOMOKAI SPONSORSHIP",
-            "generalInfo": "GENERAL INFORMATION",
-            "teamStructure": "TEAM STRUCTURE",
-            "qualifiersProcedures": "QUALIFIERS PROCEDURES",
+            "supportViaSponsorship": "MOMOKAI SPONSORSHIPによるサポート",
+            "generalInfo": "基本情報",
+            "teamStructure": "チーム構成",
+            "qualifiersProcedures": "予選進行",
             "tournamentStructure": "TOURNAMENT STRUCTURE",
             "infoGraphic": "INFOGRAPHIC",
             "matchProcedures": "MATCH PROCEDURES",
@@ -627,100 +627,100 @@
                 "errors": {
                     "size": "Image is too large. Ensure the image is less than 5MB.",
                     "type": "Invalid image file. Ensure the image is a PNG or JPG.",
-                    "invalidImage": "Invalid image file. Ensure the image is a PNG or JPG and is less than 5MB.",
-                    "invalidTimezone": "Invalid timezone.",
-                    "errorAddingTeamAvatar": "Error adding team avatar:\n{error}",
+                    "invalidImage": "無効な画像ファイルです。ファイルがPNGかJPGであるか、5MB以下であることを確認してください。",
+                    "invalidTimezone": "無効なタイムゾーンです。",
+                    "errorAddingTeamAvatar": "チームアバターを追加時にエラーが発生しました:\n{error}",
                     "invalidName": "",
                     "contactVinxis": "Contact VINXIS as there is a search error. See console for more details via Ctrl + Shift + I."
                 },
                 "confirm": {
-                    "deleteTeam": "Are you sure you want to delete this team?",
-                    "deleteTeamFinal": "Are you REALLY sure you want to delete this team? This can't be undone!",
-                    "removeMember": "Are you sure you want to remove {username} from your team?",
-                    "transferManager": "Are you sure you want to transfer manager to {username}?",
-                    "invite": "Are you sure you want to invite {username} to your team?",
-                    "removeInvite": "Are you sure you want to remove {username}'s invite to your team?",
-                    "unregister": "Are you sure you want to unregister from this tournament? You can re-register at any time if you still have 6 members."
+                    "deleteTeam": "本当にこのチームを削除しますか？",
+                    "deleteTeamFinal": "本当にこのチームを削除しますか？この操作は取り消せません！",
+                    "removeMember": "このチームから {username} を削除しますか？",
+                    "transferManager": "このチームのマネージャー権を {username} に移行しますか？",
+                    "invite": "{username} をこのチームに招待しますか？",
+                    "removeInvite": "{username} へのチーム招待を取り消してもよろしいですか？",
+                    "unregister": "この大会の登録を取り消しますか？6人のメンバーがいれば、いつでも再登録できます。"
                 },
-                "save": "SAVE",
-                "deleteTeam": "DELETE TEAM"
+                "save": "セーブ",
+                "deleteTeam": "チームを削除"
             },
             "headers": {
-                "tournaments": "TOURNAMENTS",
-                "teamStats": "TEAM STATS",
-                "teamManager": "TEAM MANAGER",
-                "teamMembers": "TEAM MEMBERS",
-                "editTeamMembers": "edit team members",
-                "closeTeamMembers": "close team members edit",
-                "becomeMember": "become a member and play as well",
-                "becomeManager": "become manager only",
-                "teamInvites": "TEAM INVITES",
-                "editTeamInvites": "edit team invites",
-                "closeTeamInvites": "close team invites edit",
-                "qualifier": "QUALIFIER",
-                "requiredMessageExact": "You need exactly {minTeamSize} team members to register and join a qualifier",
-                "requiredMessageRange": "You need within {minTeamSize} to {maxTeamSize} team members to register and join a qualifier"
+                "tournaments": "トーナメント",
+                "teamStats": "チームスタッツ",
+                "teamManager": "チームマネージャー",
+                "teamMembers": "チームメンバー",
+                "editTeamMembers": "チームメンバーを編集",
+                "closeTeamMembers": "閉じる",
+                "becomeMember": "メンバーになりプレイに参加する",
+                "becomeManager": "マネージャーになる",
+                "teamInvites": "チーム招待",
+                "editTeamInvites": "チーム招待を編集",
+                "closeTeamInvites": "閉じる",
+                "qualifier": "予選",
+                "requiredMessageExact": "予選に登録、参加するには {minTeamSize} 人のチームメンバーが必要です",
+                "requiredMessageRange": "予選に登録、参加するには {minTeamSize} 人から {maxTeamSize} 人までのチームメンバーが必要です"
             },
             "registration": {
-                "noRegistration": "Registered in no tournaments",
-                "toPlay": "To play in Corsace Open, get 6 members, and choose a qualifier date and time below"
+                "noRegistration": "トーナメントに登録していません",
+                "toPlay": "Corsace Openに参加するには、6人のメンバーを集めて、予選日時を選択してください"
             },
-            "teamID": "TEAM ID",
-            "member": "member",
-            "members": "members",
-            "averageBWS": "Average BWS",
-            "averageRank": "Average Rank",
-            "averagePP": "Average PP",
-            "editQualifierTime": "edit qualifier time",
+            "teamID": "チームID",
+            "member": "メンバー",
+            "members": "メンバー",
+            "averageBWS": "平均BWS",
+            "averageRank": "平均ランク",
+            "averagePP": "平均PP",
+            "editQualifierTime": "予選時刻の変更",
             "deleteTeam": "delete qualifier/unregister team",
             "createJoinQualifier": "create/join qualifier",
-            "notRegistered": "Currently not registered in Corsace Open."
+            "notRegistered": "Corsace Open に登録していません。"
         },
         "create": {
             "title": "チームを作成",
-            "info1": "Registrations will end on",
-            "info2": "Please ensure all information is correct before finalizing.",
-            "teamName": "TEAM NAME",
-            "teamLength": "5 - 20 characters. DO NOT put \"team\" in the name, it will be automatically removed. Profanity will be checked.",
-            "teamAcronym": "TEAM ACRONYM",
-            "acronymLength": "2 - 4 characters. Profanity will be checked.",
-            "teamTimezone": "TEAM TIMEZONE",
-            "timezoneText": "We will assume your team can play between <span class='bold'>10:00 to 22:00</span> in the selected timezone.",
-            "teamAvatar": "TEAM AVATAR",
-            "upload": "UPLOAD",
-            "fileSizeLimit": "max 5mb limit. accepted file types: .jpg .png",
-            "fileSizeError": "file size too big! please upload a smaller image",
-            "fileTypeError": "incorrect file type! please upload a .jpg or .png",
-            "preview": "PREVIEW",
-            "avatarInfo1": "It's recommended to use a <span>3:1 aspect ratio</span> for your avatar.",
-            "avatarInfo2": "Captains can modify team names and avatars before registrations close.",
-            "avatarInfo3": "All names and avatars will be approved by staff.",
-            "avatarInfo4": "If deemed inappropriate, you will be notified to make changes.",
-            "teamManagement": "TEAM MANAGEMENT",
-            "teamManagers": "<div>Team <span>managers</span> (that is you) have the option to play and be captain simultaneously</div> <div><span>OR</span> not play with the team and only be captain.</div>",
-            "teamManagersFree": "If you wish to not play, and only act as a manager, you will <span>not</span> take up a player slot.",
-            "selectManager": "Select this checkbox if you are <span>not</span> going to play with the team, and only act as <span>manager</span>.",
-            "confirmManager": "<div>By checking this, I will only act as manager, and I understand I will not be able to participate</div> <div>in any matches.</div>",
-            "create": "CREATE TEAM"
+            "info1": "登録期間は次の時刻に終了します",
+            "info2": "確定する前に、すべての情報が間違っていないか確認してください。",
+            "teamName": "チーム名",
+            "teamLength": "5 - 20文字まで。チーム名に \"team\" を含めないでください。自動的に削除されます。",
+            "teamAcronym": "チーム簡略名",
+            "acronymLength": "2 - 4文字まで。冒涜的なワードがないかチェックされます。",
+            "teamTimezone": "チームタイムゾーン",
+            "timezoneText": "あなたのチームが選択したタイムゾーンの<span class='bold'>10:00から22:00</span>の間にプレイできると想定します。",
+            "teamAvatar": "チームアバター",
+            "upload": "アップロード",
+            "fileSizeLimit": "最大5mb。使用可能なファイルタイプ: .jpg .png",
+            "fileSizeError": "ファイルサイズが大きすぎます！容量の小さい画像をアップロードしてください",
+            "fileTypeError": "不正なファイルタイプです！.jpgか.pngを使用してください",
+            "preview": "プレビュー",
+            "avatarInfo1": "アバターのアスペクト比は <span>3:1</span> にすることを推奨します。",
+            "avatarInfo2": "キャプテンは登録終了までチーム名とアバターを自由に変更できます。",
+            "avatarInfo3": "全てのチーム名とアバターはスタッフによって審査されます。",
+            "avatarInfo4": "不適切と判断された場合、変更するよう通知されます。",
+            "teamManagement": "チーム管理",
+            "teamManagers": "<div>チーム<span>マネージャー</span>（あなた）は、プレイとキャプテンを同時に行うか</div><div>チームでプレイせずキャプテンだけを行うか選択することが出来ます。</div>",
+            "teamManagersFree": "プレイはせずマネージャーとしてのみ参加する場合、プレイヤー枠を獲得することは<span>できません。</span>",
+            "selectManager": "チームでプレイせず、<span>マネージャーとしてのみ</span>活動する場合は、このチェックボックスを選択してください。",
+            "confirmManager": "<div>ここにチェックを入れることで、私はマネージャーとしてのみ参加し</div> <div>どの試合にも参加できないことに同意します。</div>",
+            "create": "チームを作成"
         },
         "components": {
             "openCardTeam": {
-                "rank": "RANK",
-                "teambwsAverage": "TEAM BWS AVG",
-                "unregistered": "UNREGISTERED",
+                "rank": "ランク",
+                "teambwsAverage": "平均チームBWS",
+                "unregistered": "未登録",
                 "bws": "BWS"
             },
-            "stageSelector": "STAGE SELECT"
+            "stageSelector": "ステージ選択"
         },
         "staff": {
-            "title": "STAFF",
-            "notLoggedIn": "NOT LOGGED IN"
+            "title": "スタッフ",
+            "notLoggedIn": "ログインしていません"
         },
         "referee": {
-            "title": "REFEREE",
-            "loadMore": "LOAD MORE",
+            "title": "レフェリー",
+            "loadMore": "さらに読み込む",
             "back": "BACK TO MATCHUP LIST",
-            "createLobby": "CREATE LOBBY",
+            "createLobby": "アップロード",
             "roll": "ROLL",
             "reroll": "RE-ROLL",
             "settings": "!MP SETTINGS",
@@ -730,10 +730,10 @@
             "closeLobby": "CLOSE LOBBY"
         },
         "status": {
-            "loading": "LOADING"
+            "loading": "ロード中"
         },
         "mappool": {
-            "title": "MAPPOOL"
+            "title": "マッププール"
         }
     },
     "main": {
@@ -741,10 +741,10 @@
             "underConstruction": "未実装",
             "sorry": "ご不便をおかけして申し訳ございません",
             "development": "corsaceのウェブサイトはまだ開発中です",
-            "theTeam": "the corsace team"
+            "theTeam": "corsace チーム"
         },
         "merch": {
-            "code": "Tap Trio - Corsase バンドル",
+            "code": "Tap Trio - Corsace バンドル",
             "products": "数量限定"
         }
     }
