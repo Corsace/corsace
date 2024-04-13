@@ -477,16 +477,16 @@
         "navbar": {
             "home": "ホーム",
             "info": "詳細",
-            "qualifiers": "QUALIFIERS",
-            "teams": "TEAMS",
-            "schedule": "SCHEDULE",
-            "mappool": "MAPPOOL",
+            "qualifiers": "予選",
+            "teams": "チーム",
+            "schedule": "スケジュール",
+            "mappool": "マッププール",
             "staff": "スタッフ",
             "createTeam": "チームを作成",
             "invitations": "招待",
-            "loginDiscord": "LOGIN DISCORD TO MANAGE TEAMS/INVITES",
-            "teamInvites": "TEAM INVITES",
-            "noInvites": "You currently have no invites"
+            "loginDiscord": "Discordにログインしてチームを編集または招待",
+            "teamInvites": "チーム招待",
+            "noInvites": "招待はありません"
         },
         "footer": {
             "corsace": "CORSACE",
@@ -510,123 +510,123 @@
             }
         },
         "home": {
-            "description": "Dive into Corsace Open 2023 - where the world's osu! elites battle it out.",
-            "timeline": "TIMELINE",
-            "presentedBy": "CORSACE OPEN 23 IS PRESENTED BY",
-            "registrations": "REGISTRATIONS",
+            "description": "Corsace Open 2023へ飛び込もう - 世界の osu! エリート達が戦いを繰り広げる。",
+            "timeline": "タイムライン",
+            "presentedBy": "CORSACE OPEN 23 は以下によって主催",
+            "registrations": "登録期間",
             "button": {
-                "qualifiersMappool": "QUALIFIERS MAPPOOLS",
-                "mappoolDownload": "Mappool download and statistics",
-                "register": "CREATE AND REGISTER YOUR TEAM",
-                "registrationsEnd": "Registrations end"
+                "qualifiersMappool": "予選マッププール",
+                "mappoolDownload": "マッププールのダウンロードと詳細",
+                "register": "チームを作成して登録する",
+                "registrationsEnd": "登録期間終了"
             }
         },
         "info": {
             "title": "詳細",
             "condensed": "要約",
-            "error": "Could not find tournament",
+            "error": "トーナメントが見つかりません",
             "matchInfo": {
-                "matchSize": "MATCH SIZE",
-                "minPlayers": "MIN. PLAYERS",
-                "maxPlayers": "MAX. PLAYERS",
-                "pickTimer": "MAP PICK TIMER",
-                "readyTimer": "READY TIMER",
-                "order": "ORDER",
-                "scoringMethod": "SCORING METHOD",
-                "type": "TYPE",
-                "startDate": "START DATE",
-                "endDate": "END DATE",
-                "rounds": "ROUNDS",
+                "matchSize": "マッチサイズ",
+                "minPlayers": "最低プレイヤー数",
+                "maxPlayers": "最大プレイヤー数",
+                "pickTimer": "マップピックタイマー",
+                "readyTimer": "レディータイマー",
+                "order": "人数",
+                "scoringMethod": "スコア計算方法",
+                "type": "タイプ",
+                "startDate": "開始日時",
+                "endDate": "終了日時",
+                "rounds": "ラウンド",
                 "initialSize": "INITIAL SIZE",
                 "finalSize": "FINAL SIZE"
             },
             "headings": {
-                "mappools": "MAPPOOLS",
-                "stage": "STAGE"
+                "mappools": "マッププール",
+                "stage": "ステージ"
             },
             "status": {
                 "notStarted": "NOT STARTED",
-                "complete": "COMPLETE",
-                "ongoing": "ONGOING"
+                "complete": "終了",
+                "ongoing": "進行中"
             },
             "mappools": {
                 "info": "マッププール詳細",
                 "notAvailable": "詳細は利用できません",
-                "mappackDownload": "DOWNLOAD MAP PACK",
-                "mappacknotAvailable": "MAP PACK NOT AVAILABLE"
+                "mappackDownload": "マップパックをダウンロード",
+                "mappacknotAvailable": "マップパックは利用できません"
             },
-            "prizes": "PRIZES",
-            "donateToCorsace": "DONATE TO CORSACE",
+            "prizes": "賞品",
+            "donateToCorsace": "Corsaceに寄付する",
             "supportViaSponsorship": "MOMOKAI SPONSORSHIPによるサポート",
             "generalInfo": "基本情報",
             "teamStructure": "チーム構成",
             "qualifiersProcedures": "予選進行",
-            "tournamentStructure": "TOURNAMENT STRUCTURE",
-            "infoGraphic": "INFOGRAPHIC",
-            "matchProcedures": "MATCH PROCEDURES",
-            "reportTournament": "REPORT TOURNAMENTS HERE",
-            "subjectToChange": "all rules are subject to change for clarification and/or adjustments"
+            "tournamentStructure": "トーナメント構成",
+            "infoGraphic": "インフォグラフィック",
+            "matchProcedures": "試合進行",
+            "reportTournament": "ここからトーナメントを報告",
+            "subjectToChange": "すべてのルールは、明確化および調整のために変更される可能性があります"
         },
         "qualifiers": {
             "nav": {
-                "mappool": "MAPPOOL",
-                "qualifiers": "QUALIFIERS",
-                "scores": "SCORES"
+                "mappool": "マッププール",
+                "qualifiers": "予選",
+                "scores": "スコア"
             },
             "mappool": {
-                "sheets": "SHEETS",
-                "mappool": "MAPPOOL",
-                "notAvailable": "Mappool not available yet",
+                "sheets": "シート",
+                "mappool": "マッププール",
+                "notAvailable": "マッププールはまだ利用できません",
                 "banner": {
-                    "mapper": "MAPPER",
-                    "difficulty": "DIFFICULTY"
+                    "mapper": "マッパー",
+                    "difficulty": "難易度"
                 }
             },
             "scores": {
                 "nav": {
-                    "sort": "SORT",
-                    "average": "AVERAGE",
+                    "sort": "ソート",
+                    "average": "平均",
                     "sum": "SUM",
                     "percentAvg": "%AVG",
                     "relAvg": "REL. AVG",
                     "percentMax": "%MAX",
                     "relMax": "REL. MAX",
                     "zScore": "Z-SCORE",
-                    "placement": "PLACE",
-                    "player": "PLAYER",
-                    "team": "TEAM",
-                    "best": "BEST",
-                    "worst": "WORST"
+                    "placement": "順位",
+                    "player": "プレイヤー",
+                    "team": "チーム",
+                    "best": "ベスト",
+                    "worst": "ワースト"
                 },
-                "categorySelect": "CATEGORY SELECT",
-                "players": "PLAYERS",
-                "teams": "TEAMS"
+                "categorySelect": "カテゴリー選択",
+                "players": "プレイヤー",
+                "teams": "チーム"
             },
-            "create": "CREATE",
+            "create": "作成",
             "error": {
-                "message": "You cannot create/join a qualifier until you have {numPlayers} players!",
-                "pressToClose": "Press anywhere to close"
+                "message": "{numPlayers} 人のプレイヤーが揃うまで、予選に作成したり参加することはできません！",
+                "pressToClose": "空白を押して閉じる"
             }
         },
         "teams": {
-            "teamsList": "TEAMS LIST",
-            "error": "COULD NOT GET TEAM LIST",
-            "searchPlaceholder": "search for user/team",
-            "editTeamInfo": "edit team info",
-            "qualifierId": "Qualifier ID",
+            "teamsList": "チームリスト",
+            "error": "チームリストを取得できませんでした",
+            "searchPlaceholder": "ユーザー/チームを検索",
+            "editTeamInfo": "チーム情報を編集",
+            "qualifierId": "予選ID",
             "placeholders": {
-                "searchUser": "osu! username (must have corsace account)",
-                "name": "name",
-                "abbreviation": "abbreviation"
+                "searchUser": "osu! ユーザー名 (corsaceアカウントが必要です)",
+                "name": "名前",
+                "abbreviation": "略称"
             },
             "edit": {
-                "teamName": "TEAM NAME",
-                "teamAbbreviation": "TEAM ABBREVIATION",
-                "timezone": "TIMEZONE",
-                "teamAvatar": "TEAM AVATAR",
+                "teamName": "チーム名",
+                "teamAbbreviation": "チーム略称",
+                "timezone": "タイムゾーン",
+                "teamAvatar": "チームアバター",
                 "errors": {
-                    "size": "Image is too large. Ensure the image is less than 5MB.",
-                    "type": "Invalid image file. Ensure the image is a PNG or JPG.",
+                    "size": "画像が大きすぎます。5MB以下の画像をアップロードしてください。",
+                    "type": "無効な画像ファイルです。ファイルがPNGかJPGであることを確認してください。",
                     "invalidImage": "無効な画像ファイルです。ファイルがPNGかJPGであるか、5MB以下であることを確認してください。",
                     "invalidTimezone": "無効なタイムゾーンです。",
                     "errorAddingTeamAvatar": "チームアバターを追加時にエラーが発生しました:\n{error}",
