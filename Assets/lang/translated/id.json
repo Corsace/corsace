@@ -10,7 +10,7 @@
     },
     "mca_ayim": {
         "banner": {
-            "merch": "TOKO CINDERAMATA RESMI",
+            "merch": "TOKO CENDERA MATA RESMI",
             "corsace": "HUB EVENT UTAMA"
         },
         "header": {
@@ -25,7 +25,7 @@
         "login": {
             "login": "masuk",
             "message": {
-                "1": "Sepertinya kamu belum terhubung masuk!<br>Kamu harus masuk terlebih dahulu dengan menggunakan akun osu! milikmu untuk dapat menominasikan beatmap dan memberikan suara.",
+                "1": "Sepertinya kamu belum terhubung masuk!<br>Silakan masuk dengan akun osu! milikmu untuk mulai menominasikan beatmap dan memberikan suara.",
                 "2": "Kamu juga dapat masuk dengan menggunakan Discord, namun hal ini <b>tidak diwajibkan</b>.<br>Otorisasi akun Discord <b>hanya diwajibkan bagi para staf yang bertugas.</b></span>"
             },
             "authOsu": "klik di sini untuk masuk dengan akun osu! milikmu",
