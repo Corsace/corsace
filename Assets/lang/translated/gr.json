@@ -14,19 +14,19 @@
             "corsace": "ΚΕΝΤΡΙΚΟ ΣΗΜΕΙΟ ΕΚΔΗΛΩΣΕΩΝ"
         },
         "header": {
-            "mca": "ΒΡΑΒΕΙΑ <br> ΕΠΙΛΟΓΗΣ <br> MAPPER",
-            "ayim": "ΕΝΑΣ ΧΡΟΝΟΣ <br> ΣΤΟ <br> MAPPING",
-            "login": "Σύνδεση",
+            "mca": "MAPPER'S <br> CHOICE <br> AWARDS",
+            "ayim": "A YEAR <br> IN <br> MAPPING",
+            "login": "ΣΥΝΔΕΣΗ",
             "welcomeBack": "καλώς όρισες",
             "admin": "ΔΕΙΑΧΕΙΡΙΣΤΗΣ",
             "staff": "ΠΡΟΣΩΠΙΚΟ",
             "logout": "ΑΠΟΣΥΝΔΕΣΗ"
         },
         "login": {
-            "login": "συνδεση",
+            "login": "Σύνδεση",
             "message": {
                 "1": "Απ'οτι φαίνεται δεν είστε συνδεδεμένος!<br>Απλά συνδεθείτε με το osu! και μπορείτε να αρχίσετε να ψηφίζετε/προτείνετε!",
-                "2": "Επιπλέον, μπορείτε να συνδεθείτε στο discord, αλλά <b>δεν είναι απαραίτητο</b> το ψηφισετε/προτεινετε.<br>Η σύνδεση στο Discord <b>είναι απαραίτητη</b> για μέλη του προσωπικού τα οποία δουλεύουν πάνω στο MCA/AYIM.</span>"
+                "2": "Επιπλέον, μπορείτε να συνδεθείτε στο discord, αλλά <b>δεν είναι απαραίτητο</b> για να ψηφίσετε/προτείνετε.<br>Η σύνδεση στο Discord <b>είναι απαραίτητη</b> για μέλη του προσωπικού τα οποία δουλεύουν πάνω στο MCA/AYIM.</span>"
             },
             "authOsu": "κάντε κλικ εδώ για έλεγχο ταυτότητας με το osu!",
             "authOsuComp": "Η επαλήθευση με το osu! ολοκληρώθηκε. Γειά ",
@@ -37,8 +37,8 @@
     "ayim": {
         "main": {
             "records": "ΡΕΚΟΡ",
-            "statistics": "ΣΤΑΤΙΣΤΙΚΗ",
-            "search": "αναζήτηση για ένα mapper",
+            "statistics": "ΣΤΑΤΙΣΤΙΚΑ",
+            "search": "αναζήτησε ένα mapper",
             "numberof": "αριθμός των",
             "numberwith": "αριθμός των map με",
             "message": {
@@ -57,7 +57,7 @@
             "length": "ΔΙΑΡΚΕΙΑ",
             "difficulties": "ΔΥΣΚΟΛΙΕΣ",
             "playTime": "ΔΙΑΡΚΕΙΑ (ΑΘΡΟΙΣΜΑ ΟΛΩΝ ΤΩΝ ΔΥΣΚΟΛΙΩΝ)",
-            "totalRanked": "ΣΥΝΟΛΙΚΑ RANKED",
+            "totalRanked": "ΣΥΝΟΛΟ RANKED",
             "totalDiff": "ΣΥΝΟΛΙΚΕΣ ΔΥΣΚΟΛΙΕΣ",
             "submitDates": "ΗΜΕΡΟΜΗΝΙΕΣ ΥΠΟΒΟΛΗΣ",
             "starRatings": "STAR RATING (TL note: Ι removed the \"S\" intentionally, i didn't forget to type it)",
