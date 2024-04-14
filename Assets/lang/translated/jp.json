@@ -727,7 +727,7 @@
             "timer": "!MP TIMER",
             "startMap": "!MP START",
             "abortMap": "!MP ABORT",
-            "closeLobby": "CLOSE LOBBY"
+            "closeLobby": "ロビーを閉じる"
         },
         "status": {
             "loading": "ロード中"
