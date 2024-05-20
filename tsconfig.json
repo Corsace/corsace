@@ -1,8 +1,10 @@
 {
     "extends": "./tsconfig.base.json",
-    "files": [
-        "config/Config.d.ts",
+    "include": [
         "**/*",
         "**/*.vue",
+    ],
+    "files": [
+        "config/Config.d.ts",
     ]
 }
