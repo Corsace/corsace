@@ -468,6 +468,7 @@ async function tournamentRoles (m: Message, tournament: Tournament, creator: Use
             return;
         }
         const tournamentRole = new TournamentRole();
+        tournamentRole.createdBy = creator;
         tournamentRole.roleID = role.id;
         tournamentRole.roleType = TournamentRoleType[roleType as keyof typeof TournamentRoleType];
         tournament.roles.push(tournamentRole);
