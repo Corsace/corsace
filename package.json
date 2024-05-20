@@ -89,8 +89,6 @@
       "ts-node-dev": "^2.0.0"
    },
    "scripts": {
-      "postinstall": "cp ./config/Config.d.ts ./node_modules/node-config-ts/index.d.ts",
-
       "build:ayim": "cd ./AYIM && nuxt build",
       "build:mca": "cd ./MCA && nuxt build",
       "build:main": "cd ./Main && nuxt build",
