@@ -85,14 +85,6 @@ declare module "node-config-ts" {
             secret: string;
         }
 
-        google: {
-            credentials: {
-                private_key: string;
-                client_email: string;
-            };
-            // sheets: { };
-        };
-
         s3: {
             clients: {
                 r2: S3ClientConfig;

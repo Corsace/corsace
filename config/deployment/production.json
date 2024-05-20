@@ -52,12 +52,6 @@
             "botAccount": "@@OSU_BANCHO_BOT_ACCOUNT"
         }
     },
-    "google": {
-        "credentials": {
-            "private_key": "@@GOOGLE_CREDENTIALS_PRIVATEKEY",
-            "client_email": "@@GOOGLE_CREDENTIALS_CLIENTEMAIL"
-        }
-    },
     "koaKeys": ["@@KOA_KEY"],
     "cookiesDomain": "corsace.io",
     "ayim": {
