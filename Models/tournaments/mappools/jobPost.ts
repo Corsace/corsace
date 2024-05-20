@@ -11,7 +11,9 @@ export class JobPost extends BaseEntity {
     @CreateDateColumn()
         createdAt!: Date;
     
-    @ManyToOne(() => User, user => user.jobPostsCreated)
+    @ManyToOne(() => User, user => user.jobPostsCreated, {
+        nullable: false,
+    })
         createdBy!: User;
 
     @Column({ type: "datetime", nullable: true })
@@ -20,7 +22,9 @@ export class JobPost extends BaseEntity {
     @Column("text")
         description!: string;
 
-    @OneToOne(() => MappoolMap, map => map.jobPost)
+    @OneToOne(() => MappoolMap, map => map.jobPost, {
+        nullable: false,
+    })
         map!: MappoolMap;
 
     @Column({ type: "varchar", nullable: true })

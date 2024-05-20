@@ -1,6 +1,6 @@
 import { CorsaceRouter } from "../../corsaceRouter";
 import { UserAuthenticatedState } from "koa";
-import { OAuth, User } from "../../../Models/user";
+import { DiscordOAuth, User } from "../../../Models/user";
 import { UsernameChange } from "../../../Models/usernameChange";
 import { isCorsace, isHeadStaff, isLoggedIn } from "../../middleware";
 import { UserInfo, UserMCAInfo } from "../../../Interfaces/user";
@@ -58,7 +58,7 @@ userRouter.$post<{ user: UserInfo }>("/connect", isCorsace, async (ctx) => {
             error: "User not found",
         };
 
-    user.discord = discord as OAuth;
+    user.discord = discord as DiscordOAuth;
 
     await user.save();
 

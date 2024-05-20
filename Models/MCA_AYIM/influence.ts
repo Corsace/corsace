@@ -8,10 +8,14 @@ export class Influence extends BaseEntity {
     @PrimaryGeneratedColumn()
         ID!: number;
 
-    @ManyToOne(() => User, user => user.influences, { nullable: false })
+    @ManyToOne(() => User, user => user.influences, {
+        nullable: false,
+    })
         user!: User;
 
-    @ManyToOne(() => User, user => user.influencing, { nullable: false })
+    @ManyToOne(() => User, user => user.influencing, {
+        nullable: false,
+    })
         influence!: User;
 
     @Column({ type: "year", nullable: false })

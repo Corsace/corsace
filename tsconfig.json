@@ -3,5 +3,8 @@
     "include": [
         "**/*",
         "**/*.vue",
+    ],
+    "files": [
+        "config/Config.d.ts",
     ]
 }

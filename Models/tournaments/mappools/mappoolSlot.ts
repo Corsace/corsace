@@ -12,10 +12,14 @@ export class MappoolSlot extends BaseEntity {
     @CreateDateColumn()
         createdAt!: Date;
 
-    @ManyToOne(() => User, user => user.mappoolSlotsCreated)
+    @ManyToOne(() => User, user => user.mappoolSlotsCreated, {
+        nullable: false,
+    })
         createdBy!: User;
 
-    @ManyToOne(() => Mappool, mappool => mappool.slots)
+    @ManyToOne(() => Mappool, mappool => mappool.slots, {
+        nullable: false,
+    })
         mappool!: Mappool;
 
     @Column()

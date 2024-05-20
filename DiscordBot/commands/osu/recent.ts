@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "disco
 import { osuClient } from "../../../Server/osu";
 import { Command } from "../index";
 import { Beatmap, Mode, User as APIUser, UserScore } from "nodesu";
-import { OAuth, User } from "../../../Models/user";
+import { OsuOAuth, User } from "../../../Models/user";
 import { applyMods, acronymtoMods, modsToAcronym } from "../../../Interfaces/mods";
 import beatmapEmbed from "../../functions/beatmapEmbed";
 import { loginResponse } from "../../functions/loginResponse";
@@ -86,7 +86,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         if (!userQ) {
             userQ = new User();
             userQ.country = apiUser.country.toString();
-            userQ.osu = new OAuth();
+            userQ.osu = new OsuOAuth();
             userQ.osu.userID = `${apiUser.userId}`;
             userQ.osu.username = apiUser.username;
             userQ.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;

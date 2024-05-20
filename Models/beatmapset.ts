@@ -66,6 +66,7 @@ export class Beatmapset extends BaseEntity {
 
     @ManyToOne(() => User, user => user.beatmapsets, {
         eager: true,
+        nullable: false,
     })
         creator!: User;
     

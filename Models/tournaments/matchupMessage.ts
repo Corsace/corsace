@@ -11,10 +11,14 @@ export class MatchupMessage extends BaseEntity {
     @Column("datetime")
         timestamp!: Date;
 
-    @ManyToOne(() => User, user => user.matchupMessages)
+    @ManyToOne(() => User, user => user.matchupMessages, {
+        nullable: false,
+    })
         user!: User;
 
-    @ManyToOne(() => Matchup, matchup => matchup.messages)
+    @ManyToOne(() => Matchup, matchup => matchup.messages, {
+        nullable: false,
+    })
         matchup!: Matchup;
 
     @Column("text")

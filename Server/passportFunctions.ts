@@ -2,7 +2,7 @@ import passport from "koa-passport";
 import { config } from "node-config-ts";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import OAuth2Strategy from "passport-oauth2";
-import { User, OAuth } from "../Models/user";
+import { User, DiscordOAuth, OsuOAuth } from "../Models/user";
 import { discordClient } from "./discord";
 import { UsernameChange } from "../Models/usernameChange";
 import { osuV2Client } from "./osu";
@@ -58,7 +58,7 @@ export async function discordPassport (accessToken: string, refreshToken: string
         if (!user)
         {
             user = new User();
-            user.discord = new OAuth();
+            user.discord = new DiscordOAuth();
             user.discord.dateAdded = user.registered = new Date();
         }
 
@@ -89,7 +89,7 @@ export async function osuPassport (accessToken: string, refreshToken: string, pr
 
         if (!user) {
             user = new User();
-            user.osu = new OAuth();
+            user.osu = new OsuOAuth();
             user.osu.dateAdded = user.registered = new Date();
         } else if (user.osu.username !== userProfile.username) {
             let nameChange = await UsernameChange.findOne({ 

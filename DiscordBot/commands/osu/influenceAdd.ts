@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType, Message, SlashCommandBuilder } from "discord.js";
-import { OAuth, User } from "../../../Models/user";
+import { OsuOAuth, User } from "../../../Models/user";
 import { Command } from "../index";
 import { User as APIUser } from "nodesu";
 import { osuClient } from "../../../Server/osu";
@@ -118,7 +118,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (!influenceUser) {
         influenceUser = new User();
         influenceUser.country = apiUser.country.toString();
-        influenceUser.osu = new OAuth();
+        influenceUser.osu = new OsuOAuth();
         influenceUser.osu.userID = `${apiUser.userId}`;
         influenceUser.osu.username = apiUser.username;
         influenceUser.osu.avatar = "https://a.ppy.sh/" + apiUser.userId;

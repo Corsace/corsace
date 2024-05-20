@@ -12,13 +12,17 @@ export class TournamentChannel extends BaseEntity {
     @CreateDateColumn()
         createdAt!: Date;
 
-    @ManyToOne(() => User, user => user.tournamentChannelsCreated)
+    @ManyToOne(() => User, user => user.tournamentChannelsCreated, {
+        nullable: false,
+    })
         createdBy!: User;
 
     @Column()
         channelID!: string;
 
-    @ManyToOne(() => Tournament, tournament => tournament.channels)
+    @ManyToOne(() => Tournament, tournament => tournament.channels, {
+        nullable: false,
+    })
         tournament!: Tournament;
 
     @Column({ type: "enum", enum: TournamentChannelType, default: TournamentChannelType.General })
