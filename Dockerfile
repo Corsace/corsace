@@ -5,7 +5,6 @@ WORKDIR /src
 FROM base AS builder
 
 COPY LICENSE package.json package-lock.json README.md tsconfig.json tsconfig.base.json ormconfig.ts /src/
-COPY config/ /src/config/
 
 RUN npm ci
 
@@ -21,6 +20,7 @@ COPY Models/ /src/Models/
 COPY Open/ /src/Open/
 COPY Server/ /src/Server/
 COPY Typing/ /src/Typing/
+COPY config/ /src/config/
 
 RUN npm run build:ayim
 RUN npm run build:mca
