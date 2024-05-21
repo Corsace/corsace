@@ -639,6 +639,7 @@ async function tournamentChannels (m: Message, tournament: Tournament, creator: 
                 channelType = ChannelType.GuildForum;
 
             const tournamentChannel = new TournamentChannel();
+            tournamentChannel.createdBy = creator;
             tournamentChannel.channelType = tournamentChannelType;
 
             const channelObject: GuildChannelCreateOptions = {
