@@ -4,14 +4,19 @@ import getTournaments, { tournamentSearchConditions } from "../../../Server/func
 import respond from "../respond";
 import getFromList from "../getFromList";
 
-export default async function getTournament (m: Message | ChatInputCommandInteraction, target: string = m.guild?.id ?? "", searchType: keyof typeof tournamentSearchConditions = m.guild ? "server" : "ID", tournamentStatusFilters?: TournamentStatus[], stageOrRound?: boolean, mappools?: boolean, slots?: boolean, maps?: boolean, jobPosts?: boolean) {
-    const tournamentList = await getTournaments(target, searchType, tournamentStatusFilters, stageOrRound, mappools, slots, maps, jobPosts);
+export default async function getTournament (m: Message | ChatInputCommandInteraction, target: string = m.channel?.isThread() && m.channel.parent?.id ? m.channel.parent?.id : m.channel?.id ?? m.guild?.id ?? "", searchType: keyof typeof tournamentSearchConditions = m.channel ? "channel" : m.guild ? "server" : "ID", tournamentStatusFilters?: TournamentStatus[], stageOrRound?: boolean, mappools?: boolean, slots?: boolean, maps?: boolean, jobPosts?: boolean) {
+    let tournamentList = await getTournaments(target, searchType, tournamentStatusFilters, stageOrRound, mappools, slots, maps, jobPosts);
     if (tournamentList.length === 0) {
-        if (searchType === "channel")
-            await respond(m, `Can't find any tournaments with ${searchType} in <#${target}>`);
-        else
+        if (searchType !== "channel" || !m.guild) {
             await respond(m, `Can't find any tournaments with ${searchType} \`${target}\` in this server`);
-        return;
+            return;
+        }
+
+        tournamentList = await getTournaments(m.guild.id, "server", tournamentStatusFilters, stageOrRound, mappools, slots, maps, jobPosts);
+        if (tournamentList.length === 0) {
+            await respond(m, `Can't find any tournaments with ${searchType} in <#${target}>`);
+            return;
+        }
     }
 
     const tournament = await getFromList(m, tournamentList, "tournament", target);

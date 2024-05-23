@@ -104,6 +104,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     }
 
     tournamentRole = new TournamentRole();
+    tournamentRole.createdBy = user;
     tournamentRole.roleID = discordRole.id;
     tournamentRole.roleType = TournamentRoleType[roleType as keyof typeof TournamentRoleType];
     tournamentRole.tournament = tournament;
