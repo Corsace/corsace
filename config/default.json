@@ -53,12 +53,6 @@
         "username": "",
         "secret": ""
     },
-    "google": {
-        "credentials": {
-            "private_key": "Create a service account",
-            "client_email": "Create a service account"
-        }
-    },
     "koaKeys": [
         ""
     ],
