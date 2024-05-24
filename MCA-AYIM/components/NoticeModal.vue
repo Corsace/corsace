@@ -59,11 +59,11 @@ export default class NoticeModal extends Vue {
     line-height: 2rem;
     @include breakpoint(tablet) {
         font-size: 1.25rem;
-        line-height: 3.5rem;
+        line-height: min(2rem, calc(3.5rem - 952px + 100vh))
     }
     @include breakpoint(desktop) { 
         font-size: 1.5rem;
-        line-height: 5rem;
+        line-height: min(2rem, calc(5rem - 952px + 100vh));
     }
 
     & > a, &--bold {
