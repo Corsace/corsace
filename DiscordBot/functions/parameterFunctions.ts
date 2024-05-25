@@ -2,6 +2,8 @@ import { ChatInputCommandInteraction, Message, ThreadChannel } from "discord.js"
 import respond from "./respond";
 import { threadNameRegex } from "./tournamentFunctions/getCustomThread";
 
+type AtLeastTwo<T> = [T, T, ...T[]];
+
 interface ParamTypeMap {
     boolean: boolean | null;
     integer: number | null;
@@ -121,9 +123,10 @@ function invalidParameter (param: any, optional?: boolean) {
         (param instanceof Date && isNaN(param.getTime()));
 }
 
-export async function extractParameters<T> (m: Message | ChatInputCommandInteraction, parameterOptions: parameterOptions<T>[]) {
+export async function extractParameters<T> (m: Message | ChatInputCommandInteraction, parameterOptions: AtLeastTwo<parameterOptions<T>>) {
     const parameters: Partial<T> = {};
     let useThreadName = false;
+    let filteredParameterOptions: parameterOptions<T>[] = parameterOptions;
 
     if (
         m instanceof Message && 
@@ -134,11 +137,11 @@ export async function extractParameters<T> (m: Message | ChatInputCommandInterac
         useThreadName = true;
         const nonPoolSlotFilter = parameterOptions.filter(p => p.name !== "pool" && p.name !== "slot");
         const poolSlotFilter = parameterOptions.filter(p => p.name === "pool" || p.name === "slot");
-        parameterOptions = [...nonPoolSlotFilter, ...poolSlotFilter];
+        filteredParameterOptions = [...nonPoolSlotFilter, ...poolSlotFilter];
     }
     
     let index = 1;
-    for (const parameterOption of parameterOptions) {
+    for (const parameterOption of filteredParameterOptions) {
         let parameter = extractParameter(m, parameterOption, index);
 
         if (parameter !== undefined && parameterOption.name === "pool")
