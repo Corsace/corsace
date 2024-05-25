@@ -2,6 +2,8 @@ import { ChatInputCommandInteraction, Message, ThreadChannel } from "discord.js"
 import respond from "./respond";
 import { threadNameRegex } from "./tournamentFunctions/getCustomThread";
 
+type AtLeastTwo<T> = [T, T, ...T[]];
+
 interface ParamTypeMap {
     boolean: boolean | null;
     integer: number | null;
@@ -91,6 +93,23 @@ function extractThreadParameter<T> (channel: ThreadChannel, parameterOption: par
     return;
 }
 
+/**
+ * Extracts a parameter from a message or slash command interaction.
+ * 
+ * **NOTE:** For extracting 2 or more parameters, use `extractParameters` instead.
+ * 
+ * @template T The type of the parameter to extract.
+ * @param m The message or slash command interaction to extract the parameter from.
+ * @param parameterOption The options for the parameter to extract.
+ * @param index The index of the parameter to extract.
+ * @returns The extracted parameter with the specified type or undefined if the parameter is missing or invalid.
+ * @example
+ * const param = await extractParameter<parameters>(m, { name: "role", paramType: "string" }, 1);
+ * if (!param)
+ *    return;
+ * 
+ * const { role } = param;
+ */
 export function extractParameter<T> (m: Message | ChatInputCommandInteraction, parameterOption: parameterOptions<T>, index: number) {
     if (parameterOption.customHandler)
         return parameterOption.customHandler(m, index);
@@ -121,9 +140,30 @@ function invalidParameter (param: any, optional?: boolean) {
         (param instanceof Date && isNaN(param.getTime()));
 }
 
-export async function extractParameters<T> (m: Message | ChatInputCommandInteraction, parameterOptions: parameterOptions<T>[]) {
+/**
+ * Extracts 2 or more parameters from a message or slash command interaction.
+ * 
+ * **NOTE:** For extracting only 1 parameter, use `extractParameter` instead.
+ * 
+ * @template T The type of the parameters to extract.
+ * @param m The message or slash command interaction to extract parameters from.
+ * @param parameterOptions The options for the parameters to extract.
+ * @returns The extracted parameters with the specified types or undefined if a parameter is missing or invalid.
+ * @example
+ * const params = await extractParameters<parameters>(m, [
+ *      { name: "role", paramType: "role" },
+ *      { name: "remove", shortName: "r", paramType: "boolean", optional: true },
+ *      { name: "role_type", paramType: "string", optional: true },
+ * ]);
+ * if (!params)
+ *      return;
+ * 
+ * const { role, remove, role_type } = params;
+ */
+export async function extractParameters<T> (m: Message | ChatInputCommandInteraction, parameterOptions: AtLeastTwo<parameterOptions<T>>) {
     const parameters: Partial<T> = {};
     let useThreadName = false;
+    let filteredParameterOptions: parameterOptions<T>[] = parameterOptions;
 
     if (
         m instanceof Message && 
@@ -134,11 +174,11 @@ export async function extractParameters<T> (m: Message | ChatInputCommandInterac
         useThreadName = true;
         const nonPoolSlotFilter = parameterOptions.filter(p => p.name !== "pool" && p.name !== "slot");
         const poolSlotFilter = parameterOptions.filter(p => p.name === "pool" || p.name === "slot");
-        parameterOptions = [...nonPoolSlotFilter, ...poolSlotFilter];
+        filteredParameterOptions = [...nonPoolSlotFilter, ...poolSlotFilter];
     }
     
     let index = 1;
-    for (const parameterOption of parameterOptions) {
+    for (const parameterOption of filteredParameterOptions) {
         let parameter = extractParameter(m, parameterOption, index);
 
         if (parameter !== undefined && parameterOption.name === "pool")
