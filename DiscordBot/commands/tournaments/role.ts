@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "..";
 import { securityChecks } from "../../functions/tournamentFunctions/securityChecks";
 import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
@@ -92,6 +92,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         return;
     }
 
+    if (role_type === "Organizer" && !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator)) {
+        await respond(m, "U need to be an administrator of the server to add an organizer role");
+        return;
+    }
+
     let tournamentRole = tournamentRoles.find(tournamentRole => tournamentRole.roleID === role);
     if (tournamentRole) {
         await respond(m, `This role's already a tournament role for ${tournament.name}, it's a \`${TournamentRoleType[tournamentRole.roleType]}\` role`);
@@ -171,6 +176,10 @@ const data = new SlashCommandBuilder()
             {
                 name: "Developer",
                 value: "Developer",
+            },
+            {
+                name: "Organizer",
+                value: "Organizer",
             }))
     .setDMPermission(false);
 
