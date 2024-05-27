@@ -84,7 +84,7 @@ export default class Default extends Vue {
         },
         "closed": {
             title: "CORSACE CLOSED",
-            url: "https://osu.ppy.sh/community/forums/topics/1744515",
+            url: "https://osu.ppy.sh/community/forums/topics/1906592",
         },
     };
     

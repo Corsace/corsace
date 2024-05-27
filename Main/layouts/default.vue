@@ -136,12 +136,21 @@ export default class Default extends Vue {
 @import '@s-sass/_mixins';
 @import '@s-sass/_variables';
 
-.main__header {
-    border-bottom: 1px solid $pink;
-}
+.main {
+    &__header {
+        border-bottom: 1px solid $pink;
+    }
 
-.main__footer {
-    border-top: 1px solid $pink;
+    &__footer {
+        border-top: 1px solid $pink;
+    }
+
+    &--light {
+        background-color: $white;
+    }
+    &--dark {
+        background-color: $darker-gray;
+    }
 }
 
 .header-nav {
