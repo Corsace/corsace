@@ -18,9 +18,7 @@ import { osuClient } from "../../../osu";
 
 const stageRouter  = new CorsaceRouter<TournamentStageState>();
 
-stageRouter.$use(validateStageOrRound);
-
-stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) => {
+stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", validateStageOrRound, async (ctx) => {
     const stage = ctx.state.stage;
 
     let matchups = await Matchup
@@ -35,10 +33,10 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
         .getMany();
 
     matchups.sort((a, b) => a.ID - b.ID);
-    matchups = matchups.filter((matchup) => 
-        matchup.potentialFor && 
-        matchups.filter((m) => m.potentialFor && m.potentialFor.ID === matchup.potentialFor!.ID).length === 1 ? 
-            false : 
+    matchups = matchups.filter((matchup) =>
+        matchup.potentialFor &&
+        matchups.filter((m) => m.potentialFor && m.potentialFor.ID === matchup.potentialFor!.ID).length === 1 ?
+            false :
             true
     );
 
@@ -86,7 +84,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
     };
 });
 
-stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", async (ctx) => {
+stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", validateStageOrRound, async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -201,7 +199,7 @@ stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", async (ctx) => {
     };
 });
 
-stageRouter.$get<{ scores: MatchupScore[] }>("/:stageID/scores", async (ctx) => {
+stageRouter.$get<{ scores: MatchupScore[] }>("/:stageID/scores", validateStageOrRound, async (ctx) => {
     const stage = ctx.state.stage;
 
     const tournament = await Tournament
@@ -248,7 +246,7 @@ stageRouter.$get<{ scores: MatchupScore[] }>("/:stageID/scores", async (ctx) => 
                 return;
             }
         } else if (
-            !stage.publicScores && 
+            !stage.publicScores &&
             tournament.organizer.ID !== ctx.state.user?.ID
         ) {
             if (!ctx.state.user?.discord.userID) {
