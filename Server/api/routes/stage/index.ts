@@ -86,7 +86,7 @@ stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) 
     };
 });
 
-stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", validateStageOrRound, async (ctx) => {
+stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", async (ctx) => {
     if (await ctx.cashed())
         return;
 
@@ -201,7 +201,7 @@ stageRouter.$get<{ mappools: Mappool[] }>("/:stageID/mappools", validateStageOrR
     };
 });
 
-stageRouter.$get<{ scores: MatchupScore[] }>("/:stageID/scores", validateStageOrRound, async (ctx) => {
+stageRouter.$get<{ scores: MatchupScore[] }>("/:stageID/scores", async (ctx) => {
     const stage = ctx.state.stage;
 
     const tournament = await Tournament
