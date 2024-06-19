@@ -46,8 +46,9 @@ tournamentRouter.$get<{ tournament: Tournament }>("/open/:year", async (ctx) => 
     const tournament = await Tournament
         .createQueryBuilder("tournament")
         .innerJoinAndSelect("tournament.organizer", "organizer")
-        .where("tournament.year = :year", { year })
+        .where("tournament.year <= :year", { year })
         .andWhere("tournament.isOpen = true")
+        .andWhere("tournament.status != '0'")
         .getOne();
 
     if (!tournament) {
