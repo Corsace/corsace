@@ -19,7 +19,7 @@ banchoRefereeRouter.$use(koaBasicAuth({
     pass: config.interOpAuth.password,
 }));
 
-banchoRefereeRouter.$use<{ pulse: boolean }>(async (ctx, next) => {
+banchoRefereeRouter.$use<{ pulse: boolean }>("/:matchupID", async (ctx, next) => {
     const id = ctx.params.matchupID;
     if (!id || isNaN(parseInt(id))) {
         ctx.body = {

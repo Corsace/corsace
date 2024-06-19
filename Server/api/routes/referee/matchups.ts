@@ -16,8 +16,7 @@ const refereeMatchupsRouter  = new CorsaceRouter<TournamentAuthenticatedState>()
 
 //TODO: Look into making refereeRouter.use work for the middleware functions
 refereeMatchupsRouter.$use(isLoggedInDiscord);
-refereeMatchupsRouter.$use(validateTournament);
-refereeMatchupsRouter.$use(hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]));
+refereeMatchupsRouter.$use("/:tournamentID", validateTournament, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]));
 
 refereeMatchupsRouter.$get<{ matchups: MatchupInterface[] }>("/:tournamentID", validateTournament, isLoggedInDiscord, hasRoles([TournamentRoleType.Organizer, TournamentRoleType.Referees]), async (ctx) => {
     const matchupQ = Matchup

@@ -18,7 +18,9 @@ import { osuClient } from "../../../osu";
 
 const stageRouter  = new CorsaceRouter<TournamentStageState>();
 
-stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", validateStageOrRound, async (ctx) => {
+stageRouter.$use("/:stageID", validateStageOrRound);
+
+stageRouter.$get<{ matchups: MatchupList[] }>("/:stageID/matchups", async (ctx) => {
     const stage = ctx.state.stage;
 
     let matchups = await Matchup

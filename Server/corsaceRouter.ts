@@ -13,8 +13,16 @@ export class CorsaceRouter<StateT = DefaultState, ContextT = DefaultContext> ext
         super(opt);
     }
 
-    $use<T = object> (...middleware: CorsaceMiddleware<T, StateT, ContextT>[]) {
-        return super.use(...middleware);
+    /** 
+     * In order for middleware that uses `ctx.params`, a path must be provided.
+     */
+    $use<T = object>(path: string, ...middleware: CorsaceMiddleware<T, StateT, ContextT>[]): this;
+    $use<T = object>(...middleware: CorsaceMiddleware<T, StateT, ContextT>[]): this;
+    $use<T = object> (pathOrMiddleware: string | CorsaceMiddleware<T, StateT, ContextT>, ...middleware: CorsaceMiddleware<T, StateT, ContextT>[]) {
+        if (typeof pathOrMiddleware === "string")
+            return super.use(pathOrMiddleware, ...middleware);
+        else
+            return super.use(pathOrMiddleware, ...middleware);
     }
 
     $get<T = object, MethodStateT = StateT, MethodContextT = ContextT> (path: string, ...middleware: CorsaceMiddleware<T, MethodStateT, MethodContextT>[]) {
