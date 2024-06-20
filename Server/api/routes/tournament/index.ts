@@ -49,6 +49,7 @@ tournamentRouter.$get<{ tournament: Tournament }>("/open/:year", async (ctx) => 
         .where("tournament.year <= :year", { year })
         .andWhere("tournament.isOpen = true")
         .andWhere("tournament.status != '0'")
+        .orderBy("tournament.year", "DESC")
         .getOne();
 
     if (!tournament) {
