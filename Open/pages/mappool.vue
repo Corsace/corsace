@@ -4,14 +4,14 @@
             <div
                 class="qualifiers__sub_header_item"
                 :class="{ 'qualifiers__sub_header_item--active': page === 'mappool' }"
-                @click="page = 'mappool'"
+                @click="changePage('mappool')"
             >
                 {{ $t('open.qualifiers.nav.mappool') }}
             </div>
             <div
                 class="qualifiers__sub_header_item"
                 :class="{ 'qualifiers__sub_header_item--active': page === 'scores' }"
-                @click="page = 'scores'"
+                @click="changePage('scores')"
             >
                 {{ $t('open.qualifiers.nav.scores') }}
             </div>
@@ -135,20 +135,21 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch} from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+
+import { Tournament } from "../../Interfaces/tournament";
+import { Stage } from "../../Interfaces/stage";
+import { Mappool as MappoolInterface } from "../../Interfaces/mappool";
+import { MatchupScore } from "../../Interfaces/matchup";
 
 import MappoolView from "../../Assets/components/open/MappoolView.vue";
 import OpenTitle from "../../Assets/components/open/OpenTitle.vue";
 import StageSelector from "../../Assets/components/open/StageSelector.vue";
 
-import { Tournament } from "../../Interfaces/tournament";
-import { Mappool as MappoolInterface } from "../../Interfaces/mappool";
-
 import OpenButton from "../../Assets/components/open/OpenButton.vue";
 import ContentButton from "../../Assets/components/open/ContentButton.vue";
 import ScoresView from "../../Assets/components/open/ScoresView.vue";
-import { Stage } from "../../Interfaces/stage";
 
 const openModule = namespace("open");
 
@@ -188,6 +189,7 @@ export default class Mappool extends Vue {
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State mappools!: MappoolInterface[] | null;
+    @openModule.State scores!: MatchupScore[] | null;
 
     stageList: Stage[] = [];
     index = 0;
@@ -212,7 +214,18 @@ export default class Mappool extends Vue {
         if (ID !== this.selectedStage.ID) return;
 
         await this.$store.dispatch("open/setMappools", this.selectedStage?.ID);
-        await this.$store.dispatch("open/setScores", this.selectedStage?.ID);
+        if (this.page === "scores")
+            await this.$store.dispatch("open/setScores", this.selectedStage?.ID);
+    }
+
+    async changePage (page: "mappool" | "scores") {
+        if (page === this.page)
+            return;
+        if (page === "scores" && !this.selectedStage)
+            return;
+        if (page === "scores" && (!this.scores || this.scores.length === 0))
+            await this.$store.dispatch("open/setScores", this.selectedStage?.ID);
+        this.page = page;
     }
 
     async pause (ms: number) {

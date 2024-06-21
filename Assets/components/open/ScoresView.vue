@@ -221,7 +221,7 @@ export default class ScoresView extends Vue {
     
     async mounted () {
         this.loading = true;
-        if (this.tournament)
+        if (this.tournament && (!this.teamList || this.teamList.length === 0))
             await this.$store.dispatch("open/setTeamList", this.tournament.ID);
         this.loading = false;
     }
