@@ -195,6 +195,8 @@ const openModule = namespace("open");
 export default class Qualifiers extends Vue {
     isOpen = false;
     editQualifier = false;
+    calledScores = false;
+    calledMappool = false;
     page: "mappool" | "qualifiers" | "scores" = "qualifiers";
     scoreView: "players" | "teams" = "teams";
 
@@ -224,12 +226,22 @@ export default class Qualifiers extends Vue {
 
     async getMappool () {
         this.page = "mappool";
-        await this.$store.dispatch("open/setMappools", this.qualifiersStage?.ID);
+        if (!this.calledMappool) {
+            await this.$store.dispatch("open/setMappools", this.qualifiersStage?.ID);
+            this.calledMappool = true;
+        }
     }
 
     async getScores () {
         this.page = "scores";
-        await this.$store.dispatch("open/setScores", this.qualifiersStage?.ID);
+        if (!this.calledScores) {
+            if (!this.calledMappool) {
+                await this.$store.dispatch("open/setMappools", this.qualifiersStage?.ID);
+                this.calledMappool = true;
+            }
+            await this.$store.dispatch("open/setScores", this.qualifiersStage?.ID);
+            this.calledScores = true;
+        }
     }
 }
 </script>

@@ -84,9 +84,9 @@
                     </ContentButton>
                 </div>
                 <ScoresView
-                    v-if="qualifiersStage?.mappool?.[0].isPublic"
+                    v-if="mappools?.[0].isPublic"
                     :view="scoreView"
-                    :pool="qualifiersStage.mappool"
+                    :pool="mappools[0]"
                 />
             </div>
         </div>
@@ -120,6 +120,7 @@ import { namespace } from "vuex-class";
 import { Qualifier as QualifierInterface } from "../../../Interfaces/qualifier";
 import { Tournament } from "../../../Interfaces/tournament";
 import { Stage, StageType } from "../../../Interfaces/stage";
+import { Mappool } from "../../../Interfaces/mappool";
 import { Team } from "../../../Interfaces/team";
 
 import ContentButton from "../../../Assets/components/open/ContentButton.vue";
@@ -162,10 +163,11 @@ const openModule = namespace("open");
 })
 export default class Qualifier extends Vue {
 
-    scoreView: "teams" | "players"  = "teams";
+    scoreView: "teams" | "players"  = "players";
 
     @openModule.State tournament!: Tournament | null;
     @openModule.State team!: Team | null;
+    @openModule.State mappools!: Mappool[] | null;
 
     loading = false;
     qualifierData: QualifierInterface | null = null;
@@ -213,7 +215,8 @@ export default class Qualifier extends Vue {
     async mounted () {
         this.qualifierData = await this.getQualifier();
         if (this.qualifierData) {
-            this.$store.commit("open/setQualifierScores", this.qualifierData.scores);
+            await this.$store.dispatch("open/setMappools", this.qualifiersStage?.ID);
+            this.$store.commit("open/setScores", this.qualifierData.scores);
             this.qualifierData.date = new Date(this.qualifierData.date);
         }
     }
