@@ -359,7 +359,6 @@ export default class ScoresView extends Vue {
         border-collapse: collapse;
         box-sizing: border-box;
         white-space: nowrap;
-        display: block;
         overflow-x: auto;
 
         &::-webkit-scrollbar {
