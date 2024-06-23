@@ -13,6 +13,6 @@ const config: Record<string, Property[]> = JSON.parse(data);
 ---
 
 {Object.entries(config).map(([interfaceName, properties]) => (
-    <h2>{interfaceName}</h2>
+    <h3>{interfaceName}</h2>
     <RenderProperties properties={properties} />
 ))}

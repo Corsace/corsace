@@ -4,27 +4,26 @@ interface Property {
     type: string | Property[];
 }
 
-function renderProperties(properties: Property[]) {
-    return properties.map((prop) => {
-        if (Array.isArray(prop.type)) {
+interface Props {
+    properties: Property[];
+}
+
+const { properties } = Astro.props;
+---
+<ul>
+    {properties.map((p) => {
+        if (Array.isArray(p.type)) {
             return (
                 <li>
-                    <strong>{prop.name}:</strong>
-                    <ul>
-                        {renderProperties(prop.type)}
-                    </ul>
+                    <strong>{p.name}:</strong>
+                    <Astro.self properties={p.type} />
                 </li>
             );
         }
         return (
             <li>
-                <strong>{prop.name}:</strong> {prop.type}
+                <strong>{p.name}:</strong> {p.type}
             </li>
         );
-    });
-}
----
-
-<ul>
-    {renderProperties(Astro.props.properties)}
+    })}
 </ul>
