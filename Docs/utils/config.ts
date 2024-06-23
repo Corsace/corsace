@@ -55,7 +55,7 @@ function processProperties (properties: PropertySignature[]): Property[] {
 
         return {
             name: prop.getName(),
-            type: propType.getText().replace(/import\(".*"\)\./g, ""),
+            type: propType.getText(),
         };
     });
 }

@@ -13,6 +13,6 @@ const config: Record<string, Property[]> = JSON.parse(data);
 ---
 
 {Object.entries(config).map(([interfaceName, properties]) => (
-    <h3>{interfaceName}</h2>
-    <RenderProperties properties={properties} />
+    <h3 id={interfaceName}>{interfaceName}</h2>
+    <RenderProperties properties={properties} importName="node-config-ts" />
 ))}

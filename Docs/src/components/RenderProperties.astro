@@ -6,9 +6,15 @@ interface Property {
 
 interface Props {
     properties: Property[];
+    importName: string;
 }
 
-const { properties } = Astro.props;
+const { properties, importName } = Astro.props;
+
+function extractInterfaceName (type: string): [undefined | string, string] {
+    const match = type.match(/import\("(\S+)"\)\.(\w+)/);
+    return match ? [match[1], match[2]] : [undefined, type];
+};
 ---
 <ul>
     {properties.map((p) => {
@@ -16,13 +22,23 @@ const { properties } = Astro.props;
             return (
                 <li>
                     <strong>{p.name}:</strong>
-                    <Astro.self properties={p.type} />
+                    <Astro.self properties={p.type} importName={importName} />
                 </li>
             );
         }
+
+        const [importModule, extractedType] = extractInterfaceName(p.type);
+        const isLocal = extractedType !== p.type && importModule === importName;
         return (
             <li>
-                <strong>{p.name}:</strong> {p.type}
+                <strong>{p.name}:</strong> 
+                {extractedType !== p.type ? isLocal ?(
+                    <a href={`#${extractedType}`}>{extractedType}</a>
+                ) : (
+                    <a href={`../../${importModule}#${extractedType}`}>{extractedType}</a>
+                ) : (
+                    extractedType
+                )}
             </li>
         );
     })}
