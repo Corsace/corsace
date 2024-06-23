@@ -1,0 +1,18 @@
+---
+import { readFile } from "fs/promises";
+
+import RenderProperties from "./RenderProperties.astro";
+
+interface Property {
+    name: string;
+    type: string | Property[];
+}
+
+const data = await readFile("./src/data/config.json", "utf8");
+const config: Record<string, Property[]> = JSON.parse(data);
+---
+
+{Object.entries(config).map(([interfaceName, properties]) => (
+    <h2>{interfaceName}</h2>
+    <RenderProperties properties={properties} />
+))}

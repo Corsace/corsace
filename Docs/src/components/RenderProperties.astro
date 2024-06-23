@@ -1,0 +1,30 @@
+---
+interface Property {
+    name: string;
+    type: string | Property[];
+}
+
+function renderProperties(properties: Property[]) {
+    return properties.map((prop) => {
+        if (Array.isArray(prop.type)) {
+            return (
+                <li>
+                    <strong>{prop.name}:</strong>
+                    <ul>
+                        {renderProperties(prop.type)}
+                    </ul>
+                </li>
+            );
+        }
+        return (
+            <li>
+                <strong>{prop.name}:</strong> {prop.type}
+            </li>
+        );
+    });
+}
+---
+
+<ul>
+    {renderProperties(Astro.props.properties)}
+</ul>

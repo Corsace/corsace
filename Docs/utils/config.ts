@@ -13,7 +13,7 @@ export function configExport () {
         const properties = iface.getProperties().map((prop) => {
             return {
                 name: prop.getName(),
-                type: prop.getType().getText(),
+                type: prop.getType().getText().replace(/import\(".*"\)\./g, ""),
             };
         });
         interfaces[name] = properties;
