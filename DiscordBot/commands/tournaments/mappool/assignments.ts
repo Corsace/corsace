@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, SlashCommandBuilder, ChatInputCommandInteraction, ChannelType, TextChannel } from "discord.js";
+import { Message, EmbedBuilder, SlashCommandBuilder, ChatInputCommandInteraction, ChannelType } from "discord.js";
 import { Command } from "../../index";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { Brackets } from "typeorm";
@@ -59,29 +59,16 @@ async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
         .setTimestamp(new Date())
         .setFields();
 
-    let replied = false;
     for (const map of mappoolMaps) {
         embed.addFields(
             { name: `**${map.slot.mappool.stage.tournament.abbreviation}** ${map.slot.mappool.abbreviation.toUpperCase()} ${map.slot.acronym}${map.order}`, value: `${map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]` : "No Submitted Beatmap"}\nDeadline: ${map.deadline ? discordStringTimestamp(map.deadline) : "No Deadline For Beatmap"}`, inline: true }
         );
-
-        if (embed.data.fields!.length === 25) {
-            if (!replied) {
-                await respond(m, undefined, [embed]);
-                replied = true;
-            } else {
-                await (m.channel as TextChannel).send({ embeds: [embed] });
-            }
-            embed.data.fields = [];
-        }
     }    
 
-    if (!replied || embed.data.fields!.length > 0) {
-        if (embed.data.fields!.length === 0)
-            embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters"});
-        
-        await respond(m, undefined, [embed]);
-    }
+    if (embed.data.fields!.length === 0)
+        embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters"});
+
+    await respond(m, undefined, [embed]);
 }
 
 async function run (m: Message | ChatInputCommandInteraction) {
@@ -159,7 +146,6 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .setTimestamp(new Date())
         .setFields();
 
-    let replied = false;
     for (const map of mappoolMaps) {
         const beatmapText = map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]\n` : "";
         const customMappers = map.customMappers.length > 0 ? `Custom Mappers: **${map.customMappers.map(u => u.osu.username).join(", ")}**\n` : "";
@@ -174,25 +160,12 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     value,
                     inline: true }
             );
-
-        if (embed.data.fields!.length !== 25)
-            continue;
-
-        if (!replied) {
-            await respond(m, undefined, [embed]);
-            replied = true;
-        } else
-            await (m.channel as TextChannel).send({ embeds: [embed] });
-        embed.data.fields = [];
     }
 
-    if (!replied || embed.data.fields!.length > 0) {
-        if (embed.data.fields!.length === 0)
-            embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters GJ ."});
+    if (embed.data.fields!.length === 0)
+        embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters GJ ."});
         
-        replied ? await respond(m, undefined, [embed]) : await m.channel?.send({ embeds: [embed] });
-    }
-
+    await respond(m, undefined, [embed]);
 }
 
 const data = new SlashCommandBuilder()

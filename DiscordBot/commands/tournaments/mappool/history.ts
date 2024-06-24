@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder, TextChannel } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
 import { extractParameters } from "../../../functions/parameterFunctions";
 import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
@@ -50,32 +50,18 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .setDescription(`**CURRENT VERSION:** ${mappoolMap.beatmap ? `${mappoolMap.beatmap.beatmapset.artist} - ${mappoolMap.beatmap.beatmapset.title} [${mappoolMap.beatmap.difficulty}]` : mappoolMap.customBeatmap ? `${mappoolMap.customBeatmap.artist} - ${mappoolMap.customBeatmap.title} [${mappoolMap.customBeatmap.difficulty}]` : "No map"}`)
         .setColor(modeColour(tournament.mode.ID - 1))
         .setFields();
-    
-    let replied = false;
+
     for (const h of history) {
         embed.addFields({
             name: `Added by ${h.createdBy.osu.username}`,
             value: discordStringTimestamp(h.createdAt) + "\n" + (h.beatmap ? `**Beatmap:** ${h.beatmap.beatmapset.artist} - ${h.beatmap.beatmapset.title} [${h.beatmap.difficulty}]` : h.artist ? `**Custom:** ${h.artist} - ${h.title} [${h.difficulty}]\n${h.link}` : "No map(? Shouldn't happen tell VINXIS)"),
         });
-
-        if (embed.data.fields!.length === 25) {
-            if (!replied) {
-                await respond(m, undefined, [embed]);
-                replied = true;
-            } else
-                await (m.channel as TextChannel).send({ embeds: [embed] });
-
-            embed.data.fields = [];
-        }
     }
 
-    if (!replied || embed.data.fields!.length > 0) {
-        if (embed.data.fields!.length === 0)
-            embed.addFields({ name: "No History Found", value: "No history found for this given slot GJ ."});
+    if (embed.data.fields!.length === 0)
+        embed.addFields({ name: "No History Found", value: "No history found for this given slot GJ ."});
         
-        replied ? await respond(m, undefined, [embed]) : await m.channel?.send({ embeds: [embed] });
-    }
-
+    await respond(m, undefined, [embed]);
 }
 
 const data = new SlashCommandBuilder()
