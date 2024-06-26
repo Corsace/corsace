@@ -15,6 +15,7 @@ import { securityChecks } from "../../../functions/tournamentFunctions/securityC
 import channelID from "../../../functions/channelID";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
+import customBeatmapToNodesu from "../../../../Server/functions/tournaments/mappool/customBeatmapToNodesu";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -86,68 +87,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        const apiBeatmap = new APIBeatmap({
-            "beatmapset_id": "-1",
-            "beatmap_id": "-1",
-            "approved": "-3",
-            "total_length": `${mappoolMap.customBeatmap.totalLength}`,
-            "hit_length": `${mappoolMap.customBeatmap.hitLength}`,
-            "version": mappoolMap.customBeatmap.difficulty,
-            "file_md5": "",
-            "diff_size": `${mappoolMap.customBeatmap.circleSize}`,
-            "diff_overall": `${mappoolMap.customBeatmap.overallDifficulty}`,
-            "diff_approach": `${mappoolMap.customBeatmap.approachRate}`,
-            "diff_drain": `${mappoolMap.customBeatmap.hpDrain}`,
-            "mode": `${mappoolMap.customBeatmap.mode.ID - 1}`,
-            "count_normal": `${mappoolMap.customBeatmap.circles}`,
-            "count_slider": `${mappoolMap.customBeatmap.sliders}`,
-            "count_spinner": `${mappoolMap.customBeatmap.spinners}`,
-            "submit_date": [
-                mappoolMap.createdAt.getUTCMonth() + 1,
-                mappoolMap.createdAt.getUTCDate(),
-                mappoolMap.createdAt.getUTCFullYear(),
-            ].join("/") + " " + [
-                mappoolMap.createdAt.getUTCHours(),
-                mappoolMap.createdAt.getUTCMinutes(),
-                mappoolMap.createdAt.getUTCSeconds(),
-            ].join(":"),
-            "approved_date": null,
-            "last_update": [
-                mappoolMap.lastUpdate.getUTCMonth() + 1,
-                mappoolMap.lastUpdate.getUTCDate(),
-                mappoolMap.lastUpdate.getUTCFullYear(),
-            ].join("/") + " " + [
-                mappoolMap.lastUpdate.getUTCHours(),
-                mappoolMap.lastUpdate.getUTCMinutes(),
-                mappoolMap.lastUpdate.getUTCSeconds(),
-            ].join(":"),
-            "artist": mappoolMap.customBeatmap.artist,
-            "artist_unicode": mappoolMap.customBeatmap.artist,
-            "title": mappoolMap.customBeatmap.title,
-            "title_unicode": mappoolMap.customBeatmap.title,
-            "creator": mappoolMap.customMappers.map(u => u.osu.username).join(", "),
-            "creator_id": "-1",
-            "bpm": `${mappoolMap.customBeatmap.BPM}`,
-            "source": "",
-            "tags": `${mappoolMap.customBeatmap.link ?? ""}`,
-            "genre_id": "0",
-            "language_id": "0",
-            "favourite_count": "0",
-            "rating": "0",
-            "storyboard": "0",
-            "video": "0",
-            "download_unavailable": "0",
-            "audio_unavailable": "0",
-            "playcount": "0",
-            "passcount": "0",
-            "packs": null,
-            "max_combo": mappoolMap.customBeatmap.maxCombo ? `${mappoolMap.customBeatmap.maxCombo}` : null,
-            "diff_aim": mappoolMap.customBeatmap.aimSR ? `${mappoolMap.customBeatmap.aimSR}` : null,
-            "diff_speed": mappoolMap.customBeatmap.speedSR ? `${mappoolMap.customBeatmap.speedSR}` : null,
-            "difficultyrating": `${mappoolMap.customBeatmap.totalSR}`,
-        });
-        const set = [apiBeatmap];
-        const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slotMod.allowedMods ?? 0)), modsToAcronym(slotMod.allowedMods ?? 0), set);
+        const nodesuBeatmap = customBeatmapToNodesu({...mappoolMap, customBeatmap: mappoolMap.customBeatmap});
+        const mappoolMapEmbed = await beatmapEmbed(applyMods(nodesuBeatmap, modsToAcronym(slotMod.allowedMods ?? 0)), modsToAcronym(slotMod.allowedMods ?? 0), [nodesuBeatmap]);
         mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
         
         await respond(m, `Info for **${mappoolSlot}**:\n\n${mappoolMap.customThreadID ? `Thread: <#${mappoolMap.customThreadID}>\n` : ""}${mappoolMap.deadline ? `Deadline: ${discordStringTimestamp(mappoolMap.deadline)}` : ""}`, [mappoolMapEmbed]);
