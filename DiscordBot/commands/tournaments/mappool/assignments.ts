@@ -63,7 +63,10 @@ async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
         embed.addFields(
             { name: `**${map.slot.mappool.stage.tournament.abbreviation}** ${map.slot.mappool.abbreviation.toUpperCase()} ${map.slot.acronym}${map.order}`, value: `${map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]` : "No Submitted Beatmap"}\nDeadline: ${map.deadline ? discordStringTimestamp(map.deadline) : "No Deadline For Beatmap"}`, inline: true }
         );
-    }    
+    }
+
+    if (!embed.embed.fields || embed.embed.fields.length === 0)
+        embed.addField({ name: "No Maps Found", value: "No maps found with the given parameters"});
 
     await respond(m, undefined, embed);
 }
@@ -157,6 +160,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     inline: true }
             );
     }
+
+    if (!embed.embed.fields || embed.embed.fields.length === 0)
+        embed.addField({ name: "No Maps Found", value: "No maps found with the given parameters"});
         
     await respond(m, undefined, embed);
 }
