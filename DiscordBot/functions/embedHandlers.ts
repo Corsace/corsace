@@ -1,4 +1,4 @@
-import { APIEmbed, APIEmbedAuthor, APIEmbedField, APIEmbedFooter, JSONEncodable } from "discord.js";
+import { APIEmbed, APIEmbedAuthor, APIEmbedField, APIEmbedFooter, JSONEncodable, RestOrArray } from "discord.js";
 import truncate from "../../Server/utils/truncate";
 
 export interface EmbedPage {
@@ -69,10 +69,10 @@ export class EmbedBuilder {
         return this;
     }
 
-    public addFields (fields: APIEmbedField[]) {
+    public addFields (...fields: RestOrArray<APIEmbedField>) {
         if (!this.embed.fields)
             this.embed.fields = [];
-        this.embed.fields.push(...fields.map(f => ({
+        this.embed.fields.push(...fields.flat().map(f => ({
             name: truncate(f.name, 256),
             value: truncate(f.value, 1024),
             inline: f.inline,
