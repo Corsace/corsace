@@ -149,7 +149,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     let beatmap = ((await osuClient.beatmaps.getByBeatmapId(score.beatmapId, Mode.all, 1, undefined, score.enabledMods)) as Beatmap[])[0];
     beatmap = applyMods(beatmap, mods);
 
-    const message = await beatmapEmbed(beatmap, mods, user, undefined, score);
+    const embed = await beatmapEmbed(beatmap, mods, user, undefined, score);
 
     if (!(
         (m instanceof Message && /^(rb|recentb|recentbest)/i.test(m.content.substring(1))) ||
@@ -163,11 +163,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
             else
                 break;
         }
-        message.setFooter({ text: `Try #${attempt} | <t:${score.date.getTime() / 1000}:R>` });
+        embed.setFooter({ text: `Try #${attempt} | <t:${score.date.getTime() / 1000}:R>` });
     } else
-        message.setFooter({ text: `<t:${score.date.getTime() / 1000}:R>` });
+        embed.setFooter({ text: `<t:${score.date.getTime() / 1000}:R>` });
 
-    await respond(m, warning, [message]);
+    await respond(m, warning, embed);
 }
 
 const data = new SlashCommandBuilder()

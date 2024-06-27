@@ -171,9 +171,9 @@ export async function parsedBeatmapToCustom (
 
     const nodesuBeatmap = customBeatmapToNodesu({...mappoolMap, customBeatmap: mappoolMap.customBeatmap});
     const mappoolMapEmbed = await beatmapEmbed(applyMods(nodesuBeatmap, modsToAcronym(slot.allowedMods ?? 0)), modsToAcronym(slot.allowedMods ?? 0), [nodesuBeatmap]);
-    mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
+    mappoolMapEmbed.embed.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.embed.author!.name}`;
 
-    await respond(m, `Submitted \`${artist} - ${title} [${diff}]\` to \`${mappoolSlot}\``, [mappoolMapEmbed]);
+    await respond(m, `Submitted \`${artist} - ${title} [${diff}]\` to \`${mappoolSlot}\``, mappoolMapEmbed);
 
     await mappoolLog(tournament, "submit", user, log, mappoolSlot);
 }

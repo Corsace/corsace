@@ -114,9 +114,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (slotMod.allowedMods)
         apiMap = (await osuClient.beatmaps.getBySetId(parseInt(link[1]), undefined, undefined, undefined, slotMod.allowedMods) as APIBeatmap[]).find(m => m.beatmapId === beatmapID)!;
     const mappoolMapEmbed = await beatmapEmbed(apiMap, slot, set);
-    mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
+    mappoolMapEmbed.embed.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.embed.author!.name}`;
 
-    await respond(m, `Set **${mappoolSlot}** as finished, and to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`, [mappoolMapEmbed]);
+    await respond(m, `Set **${mappoolSlot}** as finished, and to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`, mappoolMapEmbed);
 
     await mappoolLog(tournament, "finishedMap", assigner, log, mappoolSlot);
     return;
