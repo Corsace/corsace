@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "..";
 import getTournament from "../../functions/tournamentFunctions/getTournament";
 import channelID from "../../functions/channelID";
@@ -12,6 +12,7 @@ import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
 import { Stage } from "../../../Models/tournaments/stage";
 import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
 import { TournamentChannelType, TournamentRoleType } from "../../../Interfaces/tournament";
+import { EmbedBuilder } from "../../functions/embedBuilder";
 
 const info_typeToFunction = {
     "Stages": stageInfos,
@@ -89,7 +90,7 @@ async function stageInfos (m: Message<boolean> | ChatInputCommandInteraction, to
         })
     );
 
-    await respond(m, undefined, [ embed ]);
+    await respond(m, undefined, embed);
 }
 
 async function roleInfos (m: Message<boolean> | ChatInputCommandInteraction, tournament: Tournament, embed: EmbedBuilder) {
@@ -108,7 +109,7 @@ async function roleInfos (m: Message<boolean> | ChatInputCommandInteraction, tou
         })
     );
 
-    await respond(m, undefined, [ embed ]);
+    await respond(m, undefined, embed);
 }
 
 async function channelInfos (m: Message<boolean> | ChatInputCommandInteraction, tournament: Tournament, embed: EmbedBuilder) {
@@ -127,7 +128,7 @@ async function channelInfos (m: Message<boolean> | ChatInputCommandInteraction, 
         })
     );
 
-    await respond(m, undefined, [ embed ]);
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()

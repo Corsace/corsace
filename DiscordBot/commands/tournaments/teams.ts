@@ -1,10 +1,11 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "..";
 import { Team } from "../../../Models/tournaments/team";
 import { extractParameter } from "../../functions/parameterFunctions";
 import getTournament from "../../functions/tournamentFunctions/getTournament";
 import channelID from "../../functions/channelID";
 import respond from "../../functions/respond";
+import { EmbedBuilder } from "../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -32,10 +33,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             }).join("\n\n"))
         .setFooter({
             text: `Requested by ${m instanceof Message ? m.author.username : m.user.username}`,
-            iconURL: (m instanceof Message ? m.author.avatarURL() : m.user.avatarURL()) ?? undefined,
+            icon_url: (m instanceof Message ? m.author.avatarURL() : m.user.avatarURL()) ?? undefined,
         });
 
-    await respond(m, undefined, [ embed ]);
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()

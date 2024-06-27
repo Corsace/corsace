@@ -1,4 +1,4 @@
-import { Message, SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, GuildMember } from "discord.js";
+import { Message, SlashCommandBuilder, ChatInputCommandInteraction, GuildMember } from "discord.js";
 import { Command } from "../../index";
 import { osuClient } from "../../../../Server/osu";
 import { Beatmap as APIBeatmap, Mode } from "nodesu";
@@ -15,6 +15,8 @@ import { securityChecks } from "../../../functions/tournamentFunctions/securityC
 import channelID from "../../../functions/channelID";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
+import customBeatmapToNodesu from "../../../../Server/functions/tournaments/mappool/customBeatmapToNodesu";
+import { EmbedBuilder } from "../../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -42,7 +44,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         
         const embed = new EmbedBuilder()
             .setTitle(`Mappools for ${tournament.name}`)
-            .setFields(mappools.map(mappool => ({
+            .addFields(mappools.map(mappool => ({
                 name: `**${mappool.name}**`,
                 value: `${mappool.slots.map(slot => `${slot.name}: ${slot.maps.length}`).join("\n")}\n${mappool.isPublic ? `Link: ${mappool.mappackLink}` : ""}`,
                 inline: true,
@@ -50,10 +52,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .setColor(modeColour(tournament.mode.ID - 1))
             .setFooter({
                 text: `Requested by ${m.member?.user.username}`,
-                iconURL: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
+                icon_url: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
             })
             .setTimestamp();
-        await respond(m, undefined, [embed]);
+        await respond(m, undefined, embed);
         return;
     }
 
@@ -75,9 +77,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
             const apiMap = set.find(m => m.beatmapId === mappoolMap.beatmap!.ID)!;
 
             const mappoolMapEmbed = await beatmapEmbed(apiMap, modsToAcronym(slotMod.allowedMods ?? 0), set);
-            mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
+            mappoolMapEmbed.embed.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.embed.author!.name}`;
 
-            await respond(m, `Info for **${mappoolSlot}**:`, [mappoolMapEmbed]);
+            await respond(m, `Info for **${mappoolSlot}**:`, mappoolMapEmbed);
             return;
         }
 
@@ -86,71 +88,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
             return;
         }
 
-        const apiBeatmap = new APIBeatmap({
-            "beatmapset_id": "-1",
-            "beatmap_id": "-1",
-            "approved": "-3",
-            "total_length": `${mappoolMap.customBeatmap.totalLength}`,
-            "hit_length": `${mappoolMap.customBeatmap.hitLength}`,
-            "version": mappoolMap.customBeatmap.difficulty,
-            "file_md5": "",
-            "diff_size": `${mappoolMap.customBeatmap.circleSize}`,
-            "diff_overall": `${mappoolMap.customBeatmap.overallDifficulty}`,
-            "diff_approach": `${mappoolMap.customBeatmap.approachRate}`,
-            "diff_drain": `${mappoolMap.customBeatmap.hpDrain}`,
-            "mode": `${mappoolMap.customBeatmap.mode.ID - 1}`,
-            "count_normal": `${mappoolMap.customBeatmap.circles}`,
-            "count_slider": `${mappoolMap.customBeatmap.sliders}`,
-            "count_spinner": `${mappoolMap.customBeatmap.spinners}`,
-            "submit_date": [
-                mappoolMap.createdAt.getUTCMonth() + 1,
-                mappoolMap.createdAt.getUTCDate(),
-                mappoolMap.createdAt.getUTCFullYear(),
-            ].join("/") + " " + [
-                mappoolMap.createdAt.getUTCHours(),
-                mappoolMap.createdAt.getUTCMinutes(),
-                mappoolMap.createdAt.getUTCSeconds(),
-            ].join(":"),
-            "approved_date": null,
-            "last_update": [
-                mappoolMap.lastUpdate.getUTCMonth() + 1,
-                mappoolMap.lastUpdate.getUTCDate(),
-                mappoolMap.lastUpdate.getUTCFullYear(),
-            ].join("/") + " " + [
-                mappoolMap.lastUpdate.getUTCHours(),
-                mappoolMap.lastUpdate.getUTCMinutes(),
-                mappoolMap.lastUpdate.getUTCSeconds(),
-            ].join(":"),
-            "artist": mappoolMap.customBeatmap.artist,
-            "artist_unicode": mappoolMap.customBeatmap.artist,
-            "title": mappoolMap.customBeatmap.title,
-            "title_unicode": mappoolMap.customBeatmap.title,
-            "creator": mappoolMap.customMappers.map(u => u.osu.username).join(", "),
-            "creator_id": "-1",
-            "bpm": `${mappoolMap.customBeatmap.BPM}`,
-            "source": "",
-            "tags": `${mappoolMap.customBeatmap.link ?? ""}`,
-            "genre_id": "0",
-            "language_id": "0",
-            "favourite_count": "0",
-            "rating": "0",
-            "storyboard": "0",
-            "video": "0",
-            "download_unavailable": "0",
-            "audio_unavailable": "0",
-            "playcount": "0",
-            "passcount": "0",
-            "packs": null,
-            "max_combo": mappoolMap.customBeatmap.maxCombo ? `${mappoolMap.customBeatmap.maxCombo}` : null,
-            "diff_aim": mappoolMap.customBeatmap.aimSR ? `${mappoolMap.customBeatmap.aimSR}` : null,
-            "diff_speed": mappoolMap.customBeatmap.speedSR ? `${mappoolMap.customBeatmap.speedSR}` : null,
-            "difficultyrating": `${mappoolMap.customBeatmap.totalSR}`,
-        });
-        const set = [apiBeatmap];
-        const mappoolMapEmbed = await beatmapEmbed(applyMods(apiBeatmap, modsToAcronym(slotMod.allowedMods ?? 0)), modsToAcronym(slotMod.allowedMods ?? 0), set);
-        mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
+        const nodesuBeatmap = customBeatmapToNodesu({...mappoolMap, customBeatmap: mappoolMap.customBeatmap});
+        const mappoolMapEmbed = await beatmapEmbed(applyMods(nodesuBeatmap, modsToAcronym(slotMod.allowedMods ?? 0)), modsToAcronym(slotMod.allowedMods ?? 0), [nodesuBeatmap]);
+        mappoolMapEmbed.embed.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.embed.author!.name}`;
         
-        await respond(m, `Info for **${mappoolSlot}**:\n\n${mappoolMap.customThreadID ? `Thread: <#${mappoolMap.customThreadID}>\n` : ""}${mappoolMap.deadline ? `Deadline: ${discordStringTimestamp(mappoolMap.deadline)}` : ""}`, [mappoolMapEmbed]);
+        await respond(m, `Info for **${mappoolSlot}**:\n\n${mappoolMap.customThreadID ? `Thread: <#${mappoolMap.customThreadID}>\n` : ""}${mappoolMap.deadline ? `Deadline: ${discordStringTimestamp(mappoolMap.deadline)}` : ""}`, mappoolMapEmbed);
         return;
     }
 
@@ -160,20 +102,20 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const embed = new EmbedBuilder()
             .setTitle(`Info for ${slotMod.name}`)
             .setDescription(`**Acronym:** ${modsToAcronym(slotMod.allowedMods ?? 0)}\n**Mode:** ${tournament.mode.name}\n**Mappool:** ${mappool.name} (${mappool.abbreviation.toUpperCase()})\n**Allowed Mods:** ${modsToAcronym(slotMod.allowedMods ?? 0)}`)
-            .setFields(slotMod.maps.map(map => ({
+            .addFields(slotMod.maps.map(map => ({
                 name: `**${slotMod.acronym}${slotMod.maps.length === 1 ? "" : map.order}**`,
                 value: map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap?.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]` : "No beatmap",
             })))
             .setColor(modeColour(tournament.mode.ID - 1));
 
-        await respond(m, `Info for **${slotMod.name}**:`, [embed]);
+        await respond(m, `Info for **${slotMod.name}**:`, embed);
         return;
     }
 
     const embed = new EmbedBuilder()
         .setTitle(`Info for ${mappool.name} (${mappool.abbreviation.toUpperCase()})`)
         .setDescription(`**ID:** ${mappool.ID}\n**Target SR:** ${mappool.targetSR}\n**Mappack Link:** ${mappool.mappackLink ?? "N/A"}\n**Mappack Expiry:** ${mappool.mappackExpiry ? discordStringTimestamp(mappool.mappackExpiry) : "N/A"}`)
-        .setFields(mappool.slots.map(slot => ({
+        .addFields(mappool.slots.map(slot => ({
             name: `**${slot.name}**`,
             value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap?.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : "N/A"}`).join("\n"),
             inline: true,
@@ -181,11 +123,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .setColor(modeColour(tournament.mode.ID - 1))
         .setFooter({
             text: `Requested by ${m.member?.user.username}`,
-            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
+            icon_url: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
         })
         .setTimestamp();
     
-    await respond(m, undefined, [embed]);
+    await respond(m, undefined, embed);
 }
 
 interface parameters {

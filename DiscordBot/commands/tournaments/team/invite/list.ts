@@ -1,10 +1,11 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../../";
 import commandUser from "../../../../functions/commandUser";
 import respond from "../../../../functions/respond";
 import getTeamInvites from "../../../../../Server/functions/get/getTeamInvites";
 import getUser from "../../../../../Server/functions/get/getUser";
 import { loginResponse } from "../../../../functions/loginResponse";
+import { EmbedBuilder } from "../../../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -21,14 +22,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const embed = new EmbedBuilder()
         .setTitle("Team Invites")
         .setDescription(`Showing ${invites.length} invites`)
-        .setFields(invites.map(invite => {
+        .addFields(invites.map(invite => {
             return {
                 name: `${invite.team.name} (${invite.team.abbreviation})`,
                 value: `Manager: ${invite.team.manager.osu.username} <@${invite.team.manager.discord.userID}> (${invite.team.manager.osu.userID})`,
             };
         }));
 
-    await respond(m, undefined, [ embed ]);
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()

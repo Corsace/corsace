@@ -169,9 +169,9 @@ async function handleBeatmapLink (m: Message | ChatInputCommandInteraction, targ
     if (allowedMods)
         apiMap = (await osuClient.beatmaps.getBySetId(parseInt(link[1]), undefined, undefined, undefined, allowedMods) as APIBeatmap[]).find(m => m.beatmapId === beatmapID)!;
     const mappoolMapEmbed = await beatmapEmbed(apiMap, mod, set);
-    mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
+    mappoolMapEmbed.embed.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.embed.author!.name}`;
 
-    await respond(m, `Set **${mappoolSlot}** to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`, [mappoolMapEmbed]);
+    await respond(m, `Set **${mappoolSlot}** to **${beatmap.beatmapset.artist} - ${beatmap.beatmapset.title} [${beatmap.difficulty}]**`, mappoolMapEmbed);
 
     await mappoolLog(tournament, "assignMap", assigner, log, mappoolSlot);
     return;

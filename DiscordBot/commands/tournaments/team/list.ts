@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../";
 import { extractParameters } from "../../../functions/parameterFunctions";
 import { Team } from "../../../../Models/tournaments/team";
@@ -6,6 +6,7 @@ import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
 import getUser from "../../../../Server/functions/get/getUser";
 import { loginResponse } from "../../../functions/loginResponse";
+import { EmbedBuilder } from "../../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -43,14 +44,14 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const embed = new EmbedBuilder()
         .setTitle("Teams")
         .setDescription(`Showing ${teams.length} teams`)
-        .setFields(teams.map(team => {
+        .addFields(teams.map(team => {
             return {
                 name: `${team.name} (${team.abbreviation})`,
                 value: `Manager: ${team.manager.osu.username} <@${team.manager.discord.userID}> (${team.manager.osu.userID})\nMembers: ${team.members.map(member => `${member.osu.username} <@${member.discord.userID}> (${member.osu.userID})`).join(", ")}\nTournaments: ${team.tournaments.map(tournament => `${tournament.name} (${tournament.abbreviation})`).join(", ")}`,
             };
         }));
 
-    await respond(m, undefined, [ embed ]);
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()

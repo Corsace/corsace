@@ -1,4 +1,4 @@
-import { EmbedBuilder, TextChannel } from "discord.js";
+import { TextChannel } from "discord.js";
 import { MappoolMapHistory } from "../../../Models/tournaments/mappools/mappoolMapHistory";
 import { Tournament } from "../../../Models/tournaments/tournament";
 import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
@@ -6,6 +6,7 @@ import { User } from "../../../Models/user";
 import modeColour from "../modeColour";
 import { discordClient } from "../../../Server/discord";
 import { TournamentChannelType } from "../../../Interfaces/tournament";
+import { EmbedBuilder } from "../embedBuilder";
 
 export default async function mappoolLog(tournament: Tournament, command: string, user: User, log: MappoolMapHistory, mappoolSlot: string): Promise<void>;
 export default async function mappoolLog(tournament: Tournament, command: string, user: User, event: string): Promise<void>;
@@ -19,15 +20,15 @@ export default async function mappoolLog (tournament: Tournament, command: strin
     if (mappoolLogChannels.length === 0)
         return;
 
-    const embed = new EmbedBuilder();
-    embed.setTitle(`\`${command}\` was run by ${user.osu.username}`);
+    const embed = new EmbedBuilder()
+        .setTitle(`\`${command}\` was run by ${user.osu.username}`);
 
     if (logOrEvent instanceof MappoolMapHistory) {
         const log = logOrEvent;
         embed.setDescription(`${log.link ? "Custom map" : "Beatmap" } was added to slot \`${mappoolSlot!}\``);
         embed.addFields({ name: "Map", value: log.beatmap ? `${log.beatmap.beatmapset.artist} - ${log.beatmap.beatmapset.title} [${log.beatmap.difficulty}]` : `${log.artist} - ${log.title} [${log.difficulty}]`});
         if (log.link) embed.addFields({ name: "Link", value: log.link });
-        embed.setThumbnail(log.beatmap ? `https://b.ppy.sh/thumb/${log.beatmap.beatmapset.ID}l.jpg` : null);
+        embed.setThumbnail(log.beatmap ? `https://b.ppy.sh/thumb/${log.beatmap.beatmapset.ID}l.jpg` : "");
         embed.setColor(modeColour(tournament.mode.ID - 1));
         embed.setTimestamp();
     } else {
@@ -40,6 +41,6 @@ export default async function mappoolLog (tournament: Tournament, command: strin
     await Promise.all(mappoolLogChannels.map(async channel => {
         const c = await discordClient.channels.fetch(channel.channelID) as TextChannel | null;
         if (c)
-            return c.send({ embeds: [embed] });
+            return c.send({ embeds: embed.build() });
     }));
 }

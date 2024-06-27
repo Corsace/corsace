@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, EmbedData, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { Message, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { OsuOAuth, User } from "../../../Models/user";
 import { Command } from "../index";
 import { User as APIUser } from "nodesu";
@@ -8,6 +8,7 @@ import getUser from "../../../Server/functions/get/getUser";
 import commandUser from "../../functions/commandUser";
 import respond from "../../functions/respond";
 import { discordStringTimestamp } from "../../../Server/utils/dateParse";
+import { EmbedBuilder } from "../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -73,23 +74,19 @@ async function run (m: Message | ChatInputCommandInteraction) {
         user = userQ;
     }
     
-    const embedMsg: EmbedData = {
-        author: {
+    const embed = new EmbedBuilder()
+        .setAuthor({
             url: `https://osu.ppy.sh/users/${user.osu.userID}`,
             name: `${user.osu.username} (${user.osu.userID})`,
-            iconURL: `https://osu.ppy.sh/images/flags/${user.country}.png`,
-        },
-        description: `**PP:** ${apiUser.pp}\n **Rank:** #${apiUser.rank} (${user.country}#${apiUser.countryRank})\n **Acc:** ${apiUser.accuracy.toFixed(2)}%\n **Playcount:** ${apiUser.playcount}\n **SS**: ${apiUser.countRankSS} **S:** ${apiUser.countRankS} **A:** ${apiUser.countRankA}\n **Joined:** ${discordStringTimestamp(apiUser.joinDate)}`,
-        color: 0xFB2475,
-        footer: {
+            icon_url: `https://osu.ppy.sh/images/flags/${user.country}.png`,
+        })
+        .setDescription(`**PP:** ${apiUser.pp}\n **Rank:** #${apiUser.rank} (${user.country}#${apiUser.countryRank})\n **Acc:** ${apiUser.accuracy.toFixed(2)}%\n **Playcount:** ${apiUser.playcount}\n **SS**: ${apiUser.countRankSS} **S:** ${apiUser.countRankS} **A:** ${apiUser.countRankA}\n **Joined:** ${discordStringTimestamp(apiUser.joinDate)}`)
+        .setColor(0xFB2475)
+        .setFooter({
             text: `Corsace ID #${user.ID}`,
-        },
-        thumbnail: {
-            url: user.osu.avatar,
-        },
-    };
-    const message = new EmbedBuilder(embedMsg);
-    await respond(m, undefined, [message]);
+        })
+        .setThumbnail(user.osu.avatar);
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()

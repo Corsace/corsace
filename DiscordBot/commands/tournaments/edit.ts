@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "..";
 import getUser from "../../../Server/functions/get/getUser";
 import commandUser from "../../functions/commandUser";
@@ -13,6 +13,7 @@ import { ModeDivision, modeTextHash, modeTextToID } from "../../../Models/MCA_AY
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../Server/utils/dateParse";
 import { StageType } from "../../../Interfaces/stage";
 import { ModeDivisionType } from "../../../Interfaces/modes";
+import { EmbedBuilder } from "../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -284,15 +285,15 @@ async function tournamentSave (m: Message, tournament: Tournament) {
             { name: "Invitational", value: tournament.invitational ? "Yes" : "No", inline: true },
             { name: "Server", value: tournament.server, inline: true }
         )
-        .setTimestamp(new Date())
-        .setAuthor({ name: m.author.username, iconURL: m.member?.avatarURL() ?? undefined });
+        .setTimestamp()
+        .setAuthor({ name: m.author.username, icon_url: m.member?.avatarURL() ?? undefined });
 
     if (tournament.isOpen || tournament.isClosed)
         embed.addFields(
             { name: "Corsace", value: tournament.isOpen ? "Open" : "Closed", inline: true }
         );
 
-    await m.reply({ content: "Nice u saved the tournament!!!1\nHere's the tournament embed:", embeds: [embed] });
+    await respond(m, "Nice u saved the tournament!!!1\nHere's the tournament embed:", embed);
 }
 
 const data = new SlashCommandBuilder()

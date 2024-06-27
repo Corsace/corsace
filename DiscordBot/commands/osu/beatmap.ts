@@ -132,8 +132,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
     if (mods.includes("NC") && mods.includes("DT"))
         mods = mods.replace("DT", "");
 
-    const message = await beatmapEmbed(beatmap, mods, set, misses);
-    await respond(m, undefined, [message]);
+    const embed = await beatmapEmbed(beatmap, mods, set, misses);
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()
