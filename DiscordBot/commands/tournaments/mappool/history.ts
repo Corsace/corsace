@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { extractParameters } from "../../../functions/parameterFunctions";
 import { postProcessSlotOrder } from "../../../functions/tournamentFunctions/parameterPostProcessFunctions";
 import { securityChecks } from "../../../functions/tournamentFunctions/securityChecks";
@@ -9,6 +9,7 @@ import { Command } from "../..";
 import modeColour from "../../../functions/modeColour";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
+import { EmbedBuilder } from "../../../functions/embedHandlers";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -48,8 +49,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const embed = new EmbedBuilder()
         .setTitle(`History of ${mappoolSlot}`)
         .setDescription(`**CURRENT VERSION:** ${mappoolMap.beatmap ? `${mappoolMap.beatmap.beatmapset.artist} - ${mappoolMap.beatmap.beatmapset.title} [${mappoolMap.beatmap.difficulty}]` : mappoolMap.customBeatmap ? `${mappoolMap.customBeatmap.artist} - ${mappoolMap.customBeatmap.title} [${mappoolMap.customBeatmap.difficulty}]` : "No map"}`)
-        .setColor(modeColour(tournament.mode.ID - 1))
-        .setFields();
+        .setColor(modeColour(tournament.mode.ID - 1));
 
     for (const h of history) {
         embed.addFields({
@@ -57,11 +57,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
             value: discordStringTimestamp(h.createdAt) + "\n" + (h.beatmap ? `**Beatmap:** ${h.beatmap.beatmapset.artist} - ${h.beatmap.beatmapset.title} [${h.beatmap.difficulty}]` : h.artist ? `**Custom:** ${h.artist} - ${h.title} [${h.difficulty}]\n${h.link}` : "No map(? Shouldn't happen tell VINXIS)"),
         });
     }
-
-    if (embed.data.fields!.length === 0)
-        embed.addFields({ name: "No History Found", value: "No history found for this given slot GJ ."});
         
-    await respond(m, undefined, [embed]);
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()

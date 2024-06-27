@@ -1,4 +1,4 @@
-import { Message, SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, GuildMember } from "discord.js";
+import { Message, SlashCommandBuilder, ChatInputCommandInteraction, GuildMember } from "discord.js";
 import { Command } from "../../index";
 import { osuClient } from "../../../../Server/osu";
 import { Beatmap as APIBeatmap, Mode } from "nodesu";
@@ -16,6 +16,7 @@ import channelID from "../../../functions/channelID";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
 import customBeatmapToNodesu from "../../../../Server/functions/tournaments/mappool/customBeatmapToNodesu";
+import { EmbedBuilder } from "../../../functions/embedHandlers";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -43,7 +44,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         
         const embed = new EmbedBuilder()
             .setTitle(`Mappools for ${tournament.name}`)
-            .setFields(mappools.map(mappool => ({
+            .addFields(mappools.map(mappool => ({
                 name: `**${mappool.name}**`,
                 value: `${mappool.slots.map(slot => `${slot.name}: ${slot.maps.length}`).join("\n")}\n${mappool.isPublic ? `Link: ${mappool.mappackLink}` : ""}`,
                 inline: true,
@@ -51,10 +52,10 @@ async function run (m: Message | ChatInputCommandInteraction) {
             .setColor(modeColour(tournament.mode.ID - 1))
             .setFooter({
                 text: `Requested by ${m.member?.user.username}`,
-                iconURL: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
+                icon_url: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
             })
             .setTimestamp();
-        await respond(m, undefined, [embed]);
+        await respond(m, undefined, embed);
         return;
     }
 
@@ -76,9 +77,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
             const apiMap = set.find(m => m.beatmapId === mappoolMap.beatmap!.ID)!;
 
             const mappoolMapEmbed = await beatmapEmbed(apiMap, modsToAcronym(slotMod.allowedMods ?? 0), set);
-            mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
+            mappoolMapEmbed.embed.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.embed.author!.name}`;
 
-            await respond(m, `Info for **${mappoolSlot}**:`, [mappoolMapEmbed]);
+            await respond(m, `Info for **${mappoolSlot}**:`, mappoolMapEmbed);
             return;
         }
 
@@ -89,9 +90,9 @@ async function run (m: Message | ChatInputCommandInteraction) {
 
         const nodesuBeatmap = customBeatmapToNodesu({...mappoolMap, customBeatmap: mappoolMap.customBeatmap});
         const mappoolMapEmbed = await beatmapEmbed(applyMods(nodesuBeatmap, modsToAcronym(slotMod.allowedMods ?? 0)), modsToAcronym(slotMod.allowedMods ?? 0), [nodesuBeatmap]);
-        mappoolMapEmbed.data.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.data.author!.name}`;
+        mappoolMapEmbed.embed.author!.name = `${mappoolSlot}: ${mappoolMapEmbed.embed.author!.name}`;
         
-        await respond(m, `Info for **${mappoolSlot}**:\n\n${mappoolMap.customThreadID ? `Thread: <#${mappoolMap.customThreadID}>\n` : ""}${mappoolMap.deadline ? `Deadline: ${discordStringTimestamp(mappoolMap.deadline)}` : ""}`, [mappoolMapEmbed]);
+        await respond(m, `Info for **${mappoolSlot}**:\n\n${mappoolMap.customThreadID ? `Thread: <#${mappoolMap.customThreadID}>\n` : ""}${mappoolMap.deadline ? `Deadline: ${discordStringTimestamp(mappoolMap.deadline)}` : ""}`, mappoolMapEmbed);
         return;
     }
 
@@ -101,20 +102,20 @@ async function run (m: Message | ChatInputCommandInteraction) {
         const embed = new EmbedBuilder()
             .setTitle(`Info for ${slotMod.name}`)
             .setDescription(`**Acronym:** ${modsToAcronym(slotMod.allowedMods ?? 0)}\n**Mode:** ${tournament.mode.name}\n**Mappool:** ${mappool.name} (${mappool.abbreviation.toUpperCase()})\n**Allowed Mods:** ${modsToAcronym(slotMod.allowedMods ?? 0)}`)
-            .setFields(slotMod.maps.map(map => ({
+            .addFields(slotMod.maps.map(map => ({
                 name: `**${slotMod.acronym}${slotMod.maps.length === 1 ? "" : map.order}**`,
                 value: map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap?.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]` : "No beatmap",
             })))
             .setColor(modeColour(tournament.mode.ID - 1));
 
-        await respond(m, `Info for **${slotMod.name}**:`, [embed]);
+        await respond(m, `Info for **${slotMod.name}**:`, embed);
         return;
     }
 
     const embed = new EmbedBuilder()
         .setTitle(`Info for ${mappool.name} (${mappool.abbreviation.toUpperCase()})`)
         .setDescription(`**ID:** ${mappool.ID}\n**Target SR:** ${mappool.targetSR}\n**Mappack Link:** ${mappool.mappackLink ?? "N/A"}\n**Mappack Expiry:** ${mappool.mappackExpiry ? discordStringTimestamp(mappool.mappackExpiry) : "N/A"}`)
-        .setFields(mappool.slots.map(slot => ({
+        .addFields(mappool.slots.map(slot => ({
             name: `**${slot.name}**`,
             value: slot.maps.map(map => `**${slot.acronym}${slot.maps.length === 1 ? "" : map.order}:** ${map.beatmap ? `[${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.difficulty}]](https://osu.ppy.sh/b/${map.beatmap.ID})` : map.customBeatmap?.link ? `[${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]](${map.customBeatmap.link})` : "N/A"}`).join("\n"),
             inline: true,
@@ -122,11 +123,11 @@ async function run (m: Message | ChatInputCommandInteraction) {
         .setColor(modeColour(tournament.mode.ID - 1))
         .setFooter({
             text: `Requested by ${m.member?.user.username}`,
-            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
+            icon_url: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
         })
         .setTimestamp();
     
-    await respond(m, undefined, [embed]);
+    await respond(m, undefined, embed);
 }
 
 interface parameters {

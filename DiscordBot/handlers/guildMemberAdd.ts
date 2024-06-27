@@ -1,10 +1,11 @@
-import { EmbedBuilder, EmbedData, GuildMember, TextChannel } from "discord.js";
+import { GuildMember, TextChannel } from "discord.js";
 import { config } from "node-config-ts";
 import { Brackets } from "typeorm";
 import { TournamentRoleType } from "../../Interfaces/tournament";
 import { TournamentRole } from "../../Models/tournaments/tournamentRole";
 import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
+import { EmbedBuilder } from "../functions/embedHandlers";
 
 export default async function guildMemberAdd (member: GuildMember) {
     const tournamentRolesToAdd = await TournamentRole
@@ -64,29 +65,24 @@ export default async function guildMemberAdd (member: GuildMember) {
         }       
 
         const memberUser = member.user;
-        const embed = new EmbedBuilder({
-            title: `${memberUser.username} joined`,
-            description: `Users currently in server: ${member.guild.memberCount}`,
-            color: 3066993,
-            timestamp: new Date(),
-            footer: {
-                iconURL: member.guild.iconURL() ?? undefined,
+        const embed = new EmbedBuilder()
+            .setTitle(`${memberUser.username} joined`)
+            .setDescription(`Users currently in server: ${member.guild.memberCount}`)
+            .setColor(3066993)
+            .setTimestamp()
+            .setFooter({
                 text: "Corsace Logger",
-            },
-            thumbnail: {
-                url: memberUser.avatarURL() ?? undefined,
-            },
-            fields: [
-                {
-                    name: "Registered?",
-                    value: user ? `${memberUser.username} is registered` : `${memberUser.username} isn't registered`,
-                },
-            ],
-        } as EmbedData);
+                icon_url: member.guild.iconURL() ?? undefined,
+            })
+            .setThumbnail(memberUser.avatarURL() ?? "")
+            .addField({
+                name: "Registered?",
+                value: user ? `${memberUser.username} is registered` : `${memberUser.username} isn't registered`,
+            });
 
         const channel = (await discordClient.channels.fetch(config.discord.logChannel))!;
         await (channel as TextChannel).send({
-            embeds: [embed],
+            embeds: embed.build(),
         });
     }
 }

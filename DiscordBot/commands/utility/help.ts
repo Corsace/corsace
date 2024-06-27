@@ -1,5 +1,7 @@
-import { Message, EmbedBuilder, ChatInputCommandInteraction, SlashCommandBuilder, APIApplicationCommandOption, GuildMember, ApplicationCommandOptionType } from "discord.js";
+import { Message, ChatInputCommandInteraction, SlashCommandBuilder, APIApplicationCommandOption, GuildMember, ApplicationCommandOptionType } from "discord.js";
 import { Command, commands } from "..";
+import { EmbedBuilder } from "../../functions/embedHandlers";
+import respond from "../../functions/respond";
 
 function optionParser (options: APIApplicationCommandOption[] | undefined): string {
     if (!options) return "";
@@ -63,24 +65,23 @@ function optionParser (options: APIApplicationCommandOption[] | undefined): stri
 
 async function run (m: Message | ChatInputCommandInteraction) {
     const helpRegex = /help\s+(.+)/i; // General command
-    const embed = new EmbedBuilder({
-        author: {
+    const embed = new EmbedBuilder()
+        .setAuthor({
             //name: "Click here to invite Corsace!", <-- Add later when bot is public
             //url: `https://discordapp.com/oauth2/authorize?&client_id=${config.discord.clientId}&scope=bot&permissions=0`
             name: "corsace",
-            iconURL: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
-        },
-        description: "**Most commands have other forms as well for convenience!**\n\n**Do `!help <command>` for more information about the command!**\nHelp information format: `(cmd|names) <args> [optional args]`\n\nWrap args around in quotes if they have spaces within them.\n**Example:** `\"2024-01-01 3:00:00\"`",
-        color: 0xFB2475,
-        fields: [{
+            icon_url: (m.member as GuildMember | null)?.displayAvatarURL() ?? undefined,
+        })
+        .setDescription("**Most commands have other forms as well for convenience!**\n\n**Do `!help <command>` for more information about the command!**\nHelp information format: `(cmd|names) <args> [optional args]`\n\nWrap args around in quotes if they have spaces within them.\n**Example:** `\"2024-01-01 3:00:00\"`")
+        .setColor(0xFB2475)
+        .addField({
             name: "categories:",
             value: commands.filter((v, i, s) => s.findIndex(c => c.category === v.category) === i).map(c => `\`${c.category}\``).join("\n"),
-        }],
-    });
+        });
 
     const arg = m instanceof Message ? helpRegex.exec(m.content)?.[1] : m.options.getString("command", false);
     if (!arg) {
-        await m.reply({ embeds: [embed] });
+        await respond(m, undefined, embed);
         return;
     }
 
@@ -105,7 +106,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         }));
     }
 
-    await m.reply({ embeds: [embed] });
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()

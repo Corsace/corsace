@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../index";
 import respond from "../../../functions/respond";
 import channelID from "../../../functions/channelID";
@@ -12,6 +12,7 @@ import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Round } from "../../../../Models/tournaments/round";
 import { extractParameter } from "../../../functions/parameterFunctions";
+import { EmbedBuilder } from "../../../functions/embedHandlers";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)
@@ -69,7 +70,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
         );
 
     // Send the embed
-    await respond(m, undefined, [ embed ]);
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()

@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, SlashCommandBuilder, ChatInputCommandInteraction, ChannelType } from "discord.js";
+import { Message, SlashCommandBuilder, ChatInputCommandInteraction, ChannelType } from "discord.js";
 import { Command } from "../../index";
 import { MappoolSlot } from "../../../../Models/tournaments/mappools/mappoolSlot";
 import { Brackets } from "typeorm";
@@ -13,6 +13,7 @@ import getStaff from "../../../functions/tournamentFunctions/getStaff";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
+import { EmbedBuilder } from "../../../functions/embedHandlers";
 
 async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
     // Check if they had -incfin in their text, or if they said true for the include_finished option in the slash command
@@ -56,8 +57,7 @@ async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
     const embed = new EmbedBuilder()
         .setTitle("Mappool Assignments")
         .setDescription(`Here are ur current mappool assignments`)
-        .setTimestamp(new Date())
-        .setFields();
+        .setTimestamp();
 
     for (const map of mappoolMaps) {
         embed.addFields(
@@ -65,10 +65,7 @@ async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
         );
     }    
 
-    if (embed.data.fields!.length === 0)
-        embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters"});
-
-    await respond(m, undefined, [embed]);
+    await respond(m, undefined, embed);
 }
 
 async function run (m: Message | ChatInputCommandInteraction) {
@@ -143,8 +140,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const embed = new EmbedBuilder()
         .setTitle("Mappool Assignments")
         .setDescription(`Here are the current mappool assignments${pool ?? targetUser ? ` with the given parameters: **${pool ? `pool: \`${pool}\` ` : ""}${targetUser ? `user: \`${targetUser.osu.username}|${targetUser.discord.username}\`` : ""}**` : ``}`)
-        .setTimestamp(new Date())
-        .setFields();
+        .setTimestamp();
 
     for (const map of mappoolMaps) {
         const beatmapText = map.customBeatmap ? `${map.customBeatmap.artist} - ${map.customBeatmap.title} [${map.customBeatmap.difficulty}]\n` : "";
@@ -161,11 +157,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
                     inline: true }
             );
     }
-
-    if (embed.data.fields!.length === 0)
-        embed.addFields({ name: "No Maps Found", value: "No maps found with the given parameters GJ ."});
         
-    await respond(m, undefined, [embed]);
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()

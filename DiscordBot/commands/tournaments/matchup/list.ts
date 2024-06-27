@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
+import { Message, SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { Command } from "../../index";
 import { loginResponse } from "../../../functions/loginResponse";
 import { extractParameters } from "../../../functions/parameterFunctions";
@@ -12,6 +12,7 @@ import getStaff from "../../../functions/tournamentFunctions/getStaff";
 import channelID from "../../../functions/channelID";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
+import { EmbedBuilder } from "../../../functions/embedHandlers";
 
 const refValues = ["referee", "ref", "r", "referees", "refs", "rs"] as const;
 const commentValues = ["commentator", "comment", "c", "commentators", "comments", "cs"] as const;
@@ -114,8 +115,7 @@ async function run (m: Message | ChatInputCommandInteraction) {
     const embed = new EmbedBuilder()
         .setTitle("Matchups")
         .setDescription(`Here are the current matchups${filter === "assigned" ? " with u as a ref streamer or comm" : filter === "unassigned" ? " that r unassigned" : filter === "team" ? " with u as a team member/manager" : ""}`)
-        .setTimestamp(new Date())
-        .setFields();
+        .setTimestamp();
 
     for (const matchup of matchups) {
         const team1 = matchup.team1 ? `${matchup.team1.name} (${matchup.team1.abbreviation})` : "TBD";
@@ -133,11 +133,8 @@ async function run (m: Message | ChatInputCommandInteraction) {
                 }
             );
     }
-
-    if (embed.data.fields!.length === 0)
-        embed.addFields({ name: "No Matchups Found", value: "No matchups found with the given parameters GJ ."});
         
-    await respond(m, undefined, [embed]);
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()
