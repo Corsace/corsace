@@ -23,12 +23,21 @@ export class EmbedBuilder {
         return this;
     }
 
+    public setURL (url: string) {
+        try {
+            this.embed.url = new URL(url).toString();
+        } catch {
+            this.embed.url = undefined;
+        }
+        return this;
+    }
+
     public setColor (color: number) {
         this.embed.color = color;
         return this;
     }
 
-    public setTimestamp (timestamp: Date) {
+    public setTimestamp (timestamp: Date = new Date()) {
         // ISO 8601 format string according to https://discord.com/developers/docs/resources/channel#embed-object-embed-structure
         this.embed.timestamp = timestamp.toISOString();
         return this;
