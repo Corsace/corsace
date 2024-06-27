@@ -214,7 +214,7 @@
             </div>
             <div 
                 name="temp"
-                style="width: 85%;"
+                style="width: 84%;"
             />
         </the-footer>
     </div>
@@ -291,7 +291,7 @@ export default class Default extends Vue {
 
 .header {
     border-bottom: 1px solid $open-red;
-    background-image: url("../../Assets/img/site/open/checkers.svg"), linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
+    background-image: url("../../Assets/img/site/open/checkers.svg"), linear-gradient(0deg, white, white);
     background-repeat: no-repeat;
     background-position: left center;
     width: 100vw;
@@ -353,11 +353,11 @@ export default class Default extends Vue {
             font-family: $font-ggsans;
             font-weight: 500;
             text-decoration: none;
+            color: $open-red;
 
             &:hover {
                 text-decoration: none;
                 cursor: pointer;
-                color: $open-red;
             }
         
             &:after {
@@ -399,6 +399,7 @@ export default class Default extends Vue {
         &-item {
             font-weight: 600;
             text-decoration: none;
+            color: $open-red;
 
             &:hover {
                 color: $open-red;
@@ -426,8 +427,8 @@ export default class Default extends Vue {
 }
 
 .footer {
-    border-top: 1px solid $open-red;
-    background: linear-gradient(0deg, #0F0F0F -32.92%, #2F2F2F 84.43%);
+    border-top: 1px solid white;
+    background-color: $open-red;
 }
 
 .socials {
@@ -456,12 +457,12 @@ export default class Default extends Vue {
             margin-right: 10px;
             height: 30px;   
         }
-        &--light {
-            filter: invert(1);
-        }
-        &--dark {
-            color: white;
-        }
+        // &--light {
+        //     filter: invert(1);
+        // }
+        // &--dark {
+        //     color: white;
+        // }
     }
 }
 

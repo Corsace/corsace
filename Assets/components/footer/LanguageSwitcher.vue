@@ -4,7 +4,7 @@
             <div
                 v-if="showDropdown && availableLocales"
                 class="locale__selector"
-                :class="`locale__selector--${viewTheme}`"
+                :class="`locale__selector--${viewTheme} locale__selector--${site}`"
             >
                 <div
                     v-for="locale in availableLocales"
@@ -22,7 +22,15 @@
             class="locale__current" 
             @click="showDropdown = !showDropdown"
         >
-            <div class="locale__text">
+            <img 
+                class="locale__flag"
+                :class="`locale__flag--${site}`"
+                :src="$t('flag').toString()"
+            >
+            <div 
+                class="locale__text"
+                :class="`locale__text--${site}`"
+            >
                 {{ $i18n.locale }}
             </div>
         </div>
@@ -36,21 +44,10 @@ import { NuxtVueI18n } from "nuxt-i18n";
 
 @Component
 export default class LanguagueSwitcher extends Vue {
-
+    @State site!: string;
     @State viewTheme!: "light" | "dark";
 
     showDropdown = false;
-
-    languages = {
-        "cn": "chinese",
-        "de": "german",
-        "en": "english",
-        "es": "spanish",
-        "fr": "french",
-        "id": "indonesian",
-        "jp": "japanese",
-        "kr": "korean",
-    };
 
     get availableLocales (): NuxtVueI18n.Options.LocaleObject[] | null {
         const locales = this.$i18n.locales as NuxtVueI18n.Options.LocaleObject[];
@@ -72,6 +69,10 @@ export default class LanguagueSwitcher extends Vue {
 <style lang="scss">
 @import '@s-sass/_mixins';
 
+$gray: #343434;
+$selector-white: #fff6ed;
+$selector-orange: #ff890a;
+
 .locale {
     display: flex;
     position: relative;
@@ -79,57 +80,77 @@ export default class LanguagueSwitcher extends Vue {
     @include breakpoint(laptop) {
         width: 45px;
     }
-}
 
-.locale__current {
-    display: flex;
-    align-items: center;
-    margin: auto;
+    &__current {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
 
-    cursor: pointer;
-}
-
-.locale__text {
-    user-select: none;
-}
-
-$gray: #343434;
-$selector-white: #fff6ed;
-$selector-orange: #ff890a;
-
-.locale__selector {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    right: 0;
-    bottom: 100%;
-    padding: 5px 10px;
-    width: 40px;
-    @include breakpoint(laptop) {
-        width: 45px;
+        cursor: pointer;
     }
-    border-radius: 7px 7px 0 0;
 
-    &--light {
-        color: black;
-        background-color: white;
+    &__flag {
+        height: 13px;
+        margin-right: 5px;
+        display: none;
+
+        &--open {
+            display: block;
+        }
     }
-    &--dark {
-        color: $selector-white;
-        background-color: $dark-gray;
+
+    &__text {
+        user-select: none;
+
+        &--open {
+            text-transform: uppercase;
+            font-size: 17px;
+            font-weight: bold;
+        }
     }
-}
 
-.locale__option {
-    text-align: center;
-    padding: 5px 5px 5px 0;
-    cursor: pointer;
+    &__selector {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        right: 0;
+        bottom: 100%;
+        padding: 5px 10px;
+        width: 40px;
+        @include breakpoint(laptop) {
+            width: 45px;
+        }
+        border-radius: 7px 7px 0 0;
 
-    &:hover {
-        background-color: $selector-white;
-        color: $selector-orange;
+        &--light {
+            color: black;
+            background-color: white;
+        }
+        &--dark {
+            color: $selector-white;
+            background-color: $dark-gray;
+        }
+        &--open {
+            color: $open-red;
+            background-color: white;
+            text-transform: uppercase;
+            font-size: 17px;
+            font-weight: bold;
+        }
+    }
+
+    &__option {
+        text-align: center;
+        padding: 5px 5px 5px 0;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $selector-white;
+            color: $selector-orange;
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 <template>
     <div 
         class="dev_banner"
-        :class="`dev_banner--${site}_${viewTheme}`"
+        :class="`dev_banner--${site}`"
         @click="$emit('close')"
     >
         This site is a work in progress! Please be patient as we work to improve it, add features, and fix bugs as they arise. 😃 <span>X</span>
@@ -66,31 +66,41 @@ export default class DevBanner extends Vue {
     }
 
     &--open {
-        &_light {
-            background-color: #2F2F2F;
-            color: $white;
+        background-color: white;
+        color: $open-red;
 
-            & span {
-                color: $open-red;
-            }
-
-            &:hover {
-                background-color: $dark;
-            }
+        & span {
+            color: black;
         }
 
-        &_dark {
-            background-color: #2F2F2F;
-            color: $white;
-
-            & span {
-                color: $open-red;
-            }
-
-            &:hover {
-                background-color: $dark;
-            }
+        &:hover {
+            background-color: #EEEEEE;
         }
+        // &_light {
+        //     background-color: #2F2F2F;
+        //     color: $white;
+
+        //     & span {
+        //         color: $open-red;
+        //     }
+
+        //     &:hover {
+        //         background-color: $dark;
+        //     }
+        // }
+
+        // &_dark {
+        //     background-color: #2F2F2F;
+        //     color: $white;
+
+        //     & span {
+        //         color: $open-red;
+        //     }
+
+        //     &:hover {
+        //         background-color: $dark;
+        //     }
+        // }
     }
 }
 </style>

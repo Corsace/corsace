@@ -7,7 +7,9 @@
         
         <language-switcher />
 
-        <theme-switcher />
+        <theme-switcher 
+            v-if="site !== 'open'"
+        />
     </div>
 </template>
 
@@ -25,6 +27,7 @@ import ThemeSwitcher from "./ThemeSwitcher.vue";
     },
 })
 export default class TheFooter extends Vue {
+    @State site!: string;
     @State viewTheme!: "light" | "dark";
 
     isSmall = false;

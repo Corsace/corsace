@@ -8,6 +8,7 @@
         <div 
             v-if="loggedInUser"
             class="header-login"
+            :class="`header-login--${site}`"
         >
             <div class="header-login__welcome-container">
                 <slot name="login" />
@@ -87,11 +88,11 @@
         <div
             v-else
             class="header-login"
-            :class="`header-login--${viewTheme}`"
+            :class="`header-login--${site}`"
         >
             <a
                 class="header-login__link"
-                :class="`header-login__link--${viewTheme}`"
+                :class="`header-login__link--${viewTheme} header-login__link--${site}`"
                 :href="`/api/login/osu?site=${site}&redirect=${$route.fullPath}`"
             >
                 <div 
@@ -175,6 +176,10 @@ export default class TheHeader extends Vue {
     @include breakpoint(laptop) {
         margin-right: 30px;
     }
+    
+    &--open {
+        color: $open-red;
+    }
 
     &__welcome-container {
         display: flex;
@@ -211,6 +216,10 @@ export default class TheHeader extends Vue {
         }
         &--dark {
             color: white;
+        }
+
+        &--open {
+            color: $open-red;
         }
     }
 

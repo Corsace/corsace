@@ -45,9 +45,12 @@ export default class Tooltip extends Vue {
         }
 
         &--open {
-            background-color: $open-red;
+            color: $open-red;
+            font-family: $font-univers;
+            font-stretch: condensed;
+            background-color: white;
             &::after {
-                border-top-color: $open-red;
+                border-top-color: white;
             }
         }
 

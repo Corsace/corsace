@@ -15,7 +15,7 @@
         <div class="index__content">
             <div class="index__banner">
                 <img src="../../Assets/img/site/open/banner.png">
-                <div>{{ $t('open.home.description') }}</div>
+                <!-- <div>{{ $t('open.home.description') }}</div> -->
             </div>
             <div class="index_portal">
                 <div class="index_portal__section">
