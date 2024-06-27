@@ -13,7 +13,7 @@ import getStaff from "../../../functions/tournamentFunctions/getStaff";
 import getTournament from "../../../functions/tournamentFunctions/getTournament";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 import { TournamentRoleType, TournamentChannelType } from "../../../../Interfaces/tournament";
-import { EmbedBuilder } from "../../../functions/embedHandlers";
+import { EmbedBuilder } from "../../../functions/embedBuilder";
 
 async function assignmentListDM (m: Message | ChatInputCommandInteraction) {
     // Check if they had -incfin in their text, or if they said true for the include_finished option in the slash command

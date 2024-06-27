@@ -5,7 +5,7 @@ import respond from "../../../../functions/respond";
 import getTeamInvites from "../../../../../Server/functions/get/getTeamInvites";
 import getUser from "../../../../../Server/functions/get/getUser";
 import { loginResponse } from "../../../../functions/loginResponse";
-import { EmbedBuilder } from "../../../../functions/embedHandlers";
+import { EmbedBuilder } from "../../../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

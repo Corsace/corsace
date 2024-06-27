@@ -8,7 +8,7 @@ import getUser from "../../../Server/functions/get/getUser";
 import commandUser from "../../functions/commandUser";
 import respond from "../../functions/respond";
 import { discordStringTimestamp } from "../../../Server/utils/dateParse";
-import { EmbedBuilder } from "../../functions/embedHandlers";
+import { EmbedBuilder } from "../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

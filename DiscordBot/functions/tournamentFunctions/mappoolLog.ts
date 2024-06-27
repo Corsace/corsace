@@ -6,7 +6,7 @@ import { User } from "../../../Models/user";
 import modeColour from "../modeColour";
 import { discordClient } from "../../../Server/discord";
 import { TournamentChannelType } from "../../../Interfaces/tournament";
-import { EmbedBuilder } from "../embedHandlers";
+import { EmbedBuilder } from "../embedBuilder";
 
 export default async function mappoolLog(tournament: Tournament, command: string, user: User, log: MappoolMapHistory, mappoolSlot: string): Promise<void>;
 export default async function mappoolLog(tournament: Tournament, command: string, user: User, event: string): Promise<void>;

@@ -12,7 +12,7 @@ import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { Round } from "../../../../Models/tournaments/round";
 import { extractParameter } from "../../../functions/parameterFunctions";
-import { EmbedBuilder } from "../../../functions/embedHandlers";
+import { EmbedBuilder } from "../../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

@@ -13,7 +13,7 @@ import editProperty from "../../../functions/tournamentFunctions/editProperty";
 import { profanityFilterStrong } from "../../../../Interfaces/comment";
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../../Server/utils/dateParse";
 import { ScoringMethod, StageType } from "../../../../Interfaces/stage";
-import { EmbedBuilder } from "../../../functions/embedHandlers";
+import { EmbedBuilder } from "../../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))

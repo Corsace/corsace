@@ -12,7 +12,7 @@ import getStaff from "../../../functions/tournamentFunctions/getStaff";
 import channelID from "../../../functions/channelID";
 import { Matchup } from "../../../../Models/tournaments/matchup";
 import { discordStringTimestamp } from "../../../../Server/utils/dateParse";
-import { EmbedBuilder } from "../../../functions/embedHandlers";
+import { EmbedBuilder } from "../../../functions/embedBuilder";
 
 const refValues = ["referee", "ref", "r", "referees", "refs", "rs"] as const;
 const commentValues = ["commentator", "comment", "c", "commentators", "comments", "cs"] as const;

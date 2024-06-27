@@ -13,7 +13,7 @@ import { ModeDivision, modeTextHash, modeTextToID } from "../../../Models/MCA_AY
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../Server/utils/dateParse";
 import { StageType } from "../../../Interfaces/stage";
 import { ModeDivisionType } from "../../../Interfaces/modes";
-import { EmbedBuilder } from "../../functions/embedHandlers";
+import { EmbedBuilder } from "../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))

@@ -1,7 +1,7 @@
 import { GuildMember, PartialGuildMember, TextChannel } from "discord.js";
 import { config } from "node-config-ts";
 import { discordClient } from "../../Server/discord";
-import { EmbedBuilder } from "../functions/embedHandlers";
+import { EmbedBuilder } from "../functions/embedBuilder";
 
 export default async function guildMemberRemove (member: GuildMember | PartialGuildMember) {
 

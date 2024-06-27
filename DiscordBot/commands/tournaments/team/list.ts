@@ -6,7 +6,7 @@ import commandUser from "../../../functions/commandUser";
 import respond from "../../../functions/respond";
 import getUser from "../../../../Server/functions/get/getUser";
 import { loginResponse } from "../../../functions/loginResponse";
-import { EmbedBuilder } from "../../../functions/embedHandlers";
+import { EmbedBuilder } from "../../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

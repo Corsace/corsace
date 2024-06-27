@@ -18,7 +18,7 @@ import confirmCommand from "../../../functions/confirmCommand";
 import channelID from "../../../functions/channelID";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import { profanityFilterStrong } from "../../../../Interfaces/comment";
-import { EmbedBuilder } from "../../../functions/embedHandlers";
+import { EmbedBuilder } from "../../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))

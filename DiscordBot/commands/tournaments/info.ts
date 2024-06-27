@@ -12,7 +12,7 @@ import { TournamentRole } from "../../../Models/tournaments/tournamentRole";
 import { Stage } from "../../../Models/tournaments/stage";
 import { TournamentChannel } from "../../../Models/tournaments/tournamentChannel";
 import { TournamentChannelType, TournamentRoleType } from "../../../Interfaces/tournament";
-import { EmbedBuilder } from "../../functions/embedHandlers";
+import { EmbedBuilder } from "../../functions/embedBuilder";
 
 const info_typeToFunction = {
     "Stages": stageInfos,

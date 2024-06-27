@@ -9,7 +9,7 @@ import mappoolComponents from "../../../../functions/tournamentFunctions/mappool
 import { unFinishedTournaments } from "../../../../../Models/tournaments/tournament";
 import channelID from "../../../../functions/channelID";
 import { TournamentRoleType, TournamentChannelType } from "../../../../../Interfaces/tournament";
-import { EmbedBuilder } from "../../../../functions/embedHandlers";
+import { EmbedBuilder } from "../../../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

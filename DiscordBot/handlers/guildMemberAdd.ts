@@ -5,7 +5,7 @@ import { TournamentRoleType } from "../../Interfaces/tournament";
 import { TournamentRole } from "../../Models/tournaments/tournamentRole";
 import { User } from "../../Models/user";
 import { discordClient } from "../../Server/discord";
-import { EmbedBuilder } from "../functions/embedHandlers";
+import { EmbedBuilder } from "../functions/embedBuilder";
 
 export default async function guildMemberAdd (member: GuildMember) {
     const tournamentRolesToAdd = await TournamentRole

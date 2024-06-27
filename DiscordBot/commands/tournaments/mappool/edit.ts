@@ -17,7 +17,7 @@ import getCustomThread from "../../../functions/tournamentFunctions/getCustomThr
 import { discordClient } from "../../../../Server/discord";
 import { profanityFilterStrong } from "../../../../Interfaces/comment";
 import { TournamentRoleType } from "../../../../Interfaces/tournament";
-import { EmbedBuilder } from "../../../functions/embedHandlers";
+import { EmbedBuilder } from "../../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

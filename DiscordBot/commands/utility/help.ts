@@ -1,6 +1,6 @@
 import { Message, ChatInputCommandInteraction, SlashCommandBuilder, APIApplicationCommandOption, GuildMember, ApplicationCommandOptionType } from "discord.js";
 import { Command, commands } from "..";
-import { EmbedBuilder } from "../../functions/embedHandlers";
+import { EmbedBuilder } from "../../functions/embedBuilder";
 import respond from "../../functions/respond";
 
 function optionParser (options: APIApplicationCommandOption[] | undefined): string {

@@ -5,7 +5,7 @@ import { extractParameter } from "../../functions/parameterFunctions";
 import getTournament from "../../functions/tournamentFunctions/getTournament";
 import channelID from "../../functions/channelID";
 import respond from "../../functions/respond";
-import { EmbedBuilder } from "../../functions/embedHandlers";
+import { EmbedBuilder } from "../../functions/embedBuilder";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (m instanceof ChatInputCommandInteraction)

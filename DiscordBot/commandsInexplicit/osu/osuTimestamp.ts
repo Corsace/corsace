@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { config } from "node-config-ts";
-import { EmbedBuilder } from "../../functions/embedHandlers";
+import { EmbedBuilder } from "../../functions/embedBuilder";
 import respond from "../../functions/respond";
 
 export default async function osuTimestamp (m: Message) {

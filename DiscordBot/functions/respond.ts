@@ -1,5 +1,5 @@
 import { APIActionRowComponent, APIEmbed, APIMessageActionRowComponent, ActionRowBuilder, AttachmentPayload, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType, JSONEncodable, Message } from "discord.js";
-import { EmbedBuilder } from "./embedHandlers";
+import { EmbedBuilder } from "./embedBuilder";
 import commandUser from "./commandUser";
 
 export default async function respond (m: Message | ChatInputCommandInteraction, content?: string, embeds?: EmbedBuilder | (APIEmbed | JSONEncodable<APIEmbed>)[], components?: JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>[], files?: AttachmentPayload[]) {

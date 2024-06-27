@@ -5,7 +5,7 @@ import { discordGuild } from "../../Server/discord";
 import { osuClient } from "../../Server/osu";
 import modeColour from "./modeColour";
 import ppCalculator from "./ppCalculator";
-import { EmbedBuilder } from "./embedHandlers";
+import { EmbedBuilder } from "./embedBuilder";
 
 // TODO: Implement isRecent and remove the eslint disable rule
 export default async function beatmapEmbed (beatmap: Beatmap, mods: string, user: User, missCount?: number, userScore?: UserScore, isRecent?: boolean): Promise<EmbedBuilder>;
