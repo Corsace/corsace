@@ -1,5 +1,7 @@
-import { EmbedBuilder, Message } from "discord.js";
+import { Message } from "discord.js";
 import { config } from "node-config-ts";
+import { EmbedBuilder } from "../../functions/embedHandlers";
+import respond from "../../functions/respond";
 
 export default async function osuTimestamp (m: Message) {
     const timestampRegex = /(\d+):(\d{2}):(\d{3})\s*(\(((\d,?)+)\))?/gmi;
@@ -26,16 +28,15 @@ export default async function osuTimestamp (m: Message) {
 
     const splits = description.split("\n").reduce((acc: string[], line: string) => {
         const last = acc[acc.length - 1];
-        if (last && (last + line).length <= 4096) {
+        if (last && (last + line).length <= 4096)
             acc[acc.length - 1] += line + "\n";
-        } else {
+        else
             acc.push(line + "\n");
-        }
         return acc;
     }, []);
 
     for (const desc of splits) {
         embed.setDescription(desc);
-        await m.channel.send({ embeds: [embed] });
+        await respond(m, undefined, embed);
     }
 }

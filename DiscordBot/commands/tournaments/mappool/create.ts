@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, EmbedBuilder, Message, MessageComponentInteraction, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Message, MessageComponentInteraction, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../..";
 import { Mappool } from "../../../../Models/tournaments/mappools/mappool";
 import { MappoolMap } from "../../../../Models/tournaments/mappools/mappoolMap";
@@ -18,6 +18,7 @@ import confirmCommand from "../../../functions/confirmCommand";
 import channelID from "../../../functions/channelID";
 import mappoolLog from "../../../functions/tournamentFunctions/mappoolLog";
 import { profanityFilterStrong } from "../../../../Interfaces/comment";
+import { EmbedBuilder } from "../../../functions/embedHandlers";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -443,7 +444,7 @@ async function mappoolDone (m: Message, mappool: Mappool, tournament: Tournament
             }));
 
     await Promise.all([
-        m.channel.send({ embeds: [embed] }),
+        respond(m, undefined, embed),
         mappoolLog(tournament, "mappoolCreate", mappool.createdBy, `Created mappool ${mappool.name} (${mappool.abbreviation.toUpperCase()})`),
     ]);
 }

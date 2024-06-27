@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Message, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { Command } from "../../index";
 import respond from "../../../functions/respond";
 import channelID from "../../../functions/channelID";
@@ -13,6 +13,7 @@ import editProperty from "../../../functions/tournamentFunctions/editProperty";
 import { profanityFilterStrong } from "../../../../Interfaces/comment";
 import { discordStringTimestamp, parseDateOrTimestamp } from "../../../../Server/utils/dateParse";
 import { ScoringMethod, StageType } from "../../../../Interfaces/stage";
+import { EmbedBuilder } from "../../../functions/embedHandlers";
 
 async function run (m: Message | ChatInputCommandInteraction) {
     if (!m.guild || !(m.member!.permissions as Readonly<PermissionsBitField>).has(PermissionFlagsBits.Administrator))
@@ -294,13 +295,13 @@ async function stageSave (m: Message, stage: Stage) {
             { name: "# of Rounds", value: stage.rounds.length.toString(), inline: true },
             { name: "Initial → Final Team Count", value: stage.initialSize + " → " + stage.finalSize, inline: true }
         )
-        .setTimestamp(new Date())
-        .setAuthor({ name: commandUser(m).username, iconURL: (m.member )?.displayAvatarURL() ?? undefined });
+        .setTimestamp()
+        .setAuthor({ name: commandUser(m).username, icon_url: m.member?.displayAvatarURL() ?? undefined });
 
     if (stage.stageType === StageType.Qualifiers)
         embed.addFields({ name: "Team Qualifier Choose Order", value: stage.qualifierTeamChooseOrder ? "Yes" : "No", inline: true });
 
-    await m.channel.send({ embeds: [ embed ] });
+    await respond(m, undefined, embed);
 }
 
 const data = new SlashCommandBuilder()
