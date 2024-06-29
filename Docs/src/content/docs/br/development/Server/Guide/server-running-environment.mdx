@@ -1,0 +1,48 @@
+---
+title: Server + CronRunner - Running Environment
+description: Starting and running the environment for the web server.
+lastUpdated: 2023-09-19
+sidebar:
+  order: 3100
+---
+
+Typically, the API server is necessary to run any frontend website, so it is recommended to read this before reading the guides for frontend/client web development.
+
+## Pre-requisite Reading
+
+* [Development/Getting Started](../../..)
+
+## Relevant Config Values
+
+Based on what config values you had provided for the server's `config.api.host` and `config.api.port`, you should be able to access the API server at `http://host:port`
+
+For example, `http://localhost:8080` for the API server if your `config.api.host` is `localhost` and your `config.api.port` is `8080`.
+
+`config.api.publicUrl` should be equivalent to `config.api.host` and `config.api.port` combined. In the example above, this would be `http://localhost:8080`.
+
+The same would apply for the CronRunner within `config.cronRunner`.
+
+See the [Config Reference](../config) for more information.
+
+## Running the Environment
+
+Run the following command to start the API server in development mode:
+
+```bash
+npm run api-dev
+```
+
+The server should now be available at the URL you configured in the [Config Reference](../../../misc/reference/config)\
+Accessing the page in the browser should show `Hello World!`.
+
+### CronRunner
+
+The CronRunner server instance is necessary for features such as tournament creation, and to run timed/cron jobs in general. It's a separate HTTP server instance that only communicates with other Corsace server instances.\
+Run the following command to start the CronRunner server in development mode:
+
+```bash
+npm run cron-runner-dev
+```
+
+The server should now be available at the URL you configured in the [Config Reference](../../../misc/reference/config)\
+Accessing the page in the browser should show `Hello World!`.
